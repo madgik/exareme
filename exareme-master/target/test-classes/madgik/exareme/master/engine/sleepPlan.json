@@ -1,0 +1,180 @@
+{
+  "containers": [
+    {
+      "name": "c0",
+      "IP": "195.134.66.100_container_195.134.66.100",
+      "port": 1099,
+      "data_transfer_port": 8088
+    },
+    {
+      "name": "c1",
+      "IP": "195.134.66.100_container_195.134.66.100_0",
+      "port": 1099,
+      "data_transfer_port": 8089
+    },
+    {
+      "name": "c2",
+      "IP": "195.134.66.100_container_195.134.66.100_1",
+      "port": 1099,
+      "data_transfer_port": 8090
+    },
+    {
+      "name": "c3",
+      "IP": "195.134.66.100_container_195.134.66.100_2",
+      "port": 1099,
+      "data_transfer_port": 8091
+    },
+    {
+      "name": "c4",
+      "IP": "195.134.66.100_container_195.134.66.100_3",
+      "port": 1099,
+      "data_transfer_port": 8092
+    },
+    {
+      "name": "c5",
+      "IP": "195.134.66.100_container_195.134.66.100_4",
+      "port": 1099,
+      "data_transfer_port": 8093
+    },
+    {
+      "name": "any0",
+      "IP": "any0",
+      "port": 1099,
+      "data_transfer_port": 8088
+    },
+    {
+      "name": "any1",
+      "IP": "any1",
+      "port": 1099,
+      "data_transfer_port": 8088
+    },
+    {
+      "name": "any2",
+      "IP": "any2",
+      "port": 1099,
+      "data_transfer_port": 8088
+    },
+    {
+      "name": "any3",
+      "IP": "any3",
+      "port": 1099,
+      "data_transfer_port": 8088
+    },
+    {
+      "name": "any4",
+      "IP": "any4",
+      "port": 1099,
+      "data_transfer_port": 8088
+    },
+    {
+      "name": "any5",
+      "IP": "any5",
+      "port": 1099,
+      "data_transfer_port": 8088
+    },
+    {
+      "name": "any6",
+      "IP": "any6",
+      "port": 1099,
+      "data_transfer_port": 8088
+    }
+  ],
+  "operators": [
+    {
+      "container": "c0",
+      "operator": "madgik.exareme.master.engine.executor.remote.operator.sleepOperator",
+      "name": "Sleep0",
+      "queryString": "sleep 0",
+      "parameters": [
+        [
+          "time",
+          "20"
+        ]
+      ]
+    },
+    {
+      "container": "c1",
+      "operator": "madgik.exareme.master.engine.executor.remote.operator.sleepOperator",
+      "name": "Sleep1",
+      "queryString": "sleep 0",
+      "parameters": [
+        [
+          "time",
+          "20"
+        ]
+      ]
+    },
+    {
+      "container": "c2",
+      "operator": "madgik.exareme.master.engine.executor.remote.operator.sleepOperator",
+      "name": "Sleep2",
+      "queryString": "sleep 0",
+      "parameters": [
+        [
+          "time",
+          "20"
+        ]
+      ]
+    },
+    {
+      "container": "c3",
+      "operator": "madgik.exareme.master.engine.executor.remote.operator.sleepOperator",
+      "name": "Sleep3",
+      "queryString": "sleep 0",
+      "parameters": [
+        [
+          "time",
+          "20"
+        ]
+      ]
+    },
+    {
+      "container": "c4",
+      "operator": "madgik.exareme.master.engine.executor.remote.operator.sleepOperator",
+      "name": "Sleep4",
+      "queryString": "sleep 0",
+      "parameters": [
+        [
+          "time",
+          "20"
+        ]
+      ]
+    },
+    {
+      "container": "c5",
+      "operator": "madgik.exareme.master.engine.executor.remote.operator.sleepOperator",
+      "name": "Sleep5",
+      "queryString": "sleep 0",
+      "parameters": [
+        [
+          "time",
+          "20"
+        ]
+      ]
+    }
+  ],
+  "op_links": [
+  ],
+  "pragma": [
+    {
+      "name": "materialized_reader",
+      "value": "madgik.exareme.master.engine.executor.remote.operator.data.MaterializedReader"
+    },
+    {
+      "name": "materialized_writer",
+      "value": "madgik.exareme.master.engine.executor.remote.operator.data.MaterializedWriter"
+    },
+    {
+      "name": "inter_container_mediator_from",
+      "value": "madgik.exareme.master.engine.executor.remote.operator.data.InterContainerMediatorFrom"
+    },
+    {
+      "name": "inter_container_mediator_to",
+      "value": "madgik.exareme.master.engine.executor.remote.operator.data.InterContainerMediatorTo"
+    },
+    {
+      "name": "inter_container_data_transfer",
+      "value": "madgik.exareme.master.engine.executor.remote.operator.data.DataTransferRegister"
+    }
+  ]
+}

@@ -1,0 +1,130 @@
+{
+  "containers": [
+    {
+      "name": "c",
+      "IP": "'localhost'",
+      "port": "1099"
+    }
+  ],
+  "operators": [
+    {
+      "name": "hello1",
+      "container": "c",
+      "operator": "'madgik.adp.operatorLibrary.test.HelloWorld'",
+      "parameters": [
+        [
+          "id",
+          "'value'"
+        ],
+        [
+          "id",
+          "'value'"
+        ]
+      ]
+    },
+    {
+      "name": "hello2",
+      "container": "c",
+      "operator": "'madgik.adp.operatorLibrary.test.HelloWorld'",
+      "parameters": [
+        [
+          "id",
+          "'value'"
+        ],
+        [
+          "id",
+          "'value'"
+        ]
+      ]
+    },
+    {
+      "name": "count",
+      "container": "c",
+      "operator": "'madgik.adp.operatorLibrary.test.Count'",
+      "parameters": [
+        [
+          "id",
+          "'value'"
+        ],
+        [
+          "id",
+          "'value'"
+        ]
+      ]
+    },
+    {
+      "name": "merge",
+      "container": "c",
+      "operator": "'madgik.adp.operatorLibrary.test.Merge'",
+      "parameters": [
+        [
+          "id",
+          "'value'"
+        ],
+        [
+          "id",
+          "'value'"
+        ]
+      ]
+    }
+  ],
+  "buffers": [
+    {
+      "name": "hello1_out",
+      "container": "c",
+      "QoS": "10"
+    },
+    {
+      "name": "hello2_out",
+      "container": "c",
+      "QoS": "10"
+    },
+    {
+      "name": "count_out",
+      "container": "c",
+      "QoS": "10"
+    },
+    {
+      "name": "merge_out",
+      "container": "c",
+      "QoS": "10"
+    }
+  ],
+  "links": [
+    {
+      "container": "c",
+      "from": "hello1",
+      "to": "hello1_out"
+    },
+    {
+      "container": "c",
+      "from": "hello2",
+      "to": "hello2_out"
+    },
+    {
+      "container": "c",
+      "from": "merge",
+      "to": "merge_out"
+    },
+    {
+      "container": "c",
+      "from": "hello1_out",
+      "to": "merge"
+    },
+    {
+      "container": "c",
+      "from": "hello2_out",
+      "to": "merge"
+    },
+    {
+      "container": "c",
+      "from": "merge_out",
+      "to": "count"
+    },
+    {
+      "container": "c",
+      "from": "count",
+      "to": "count_out"
+    }
+  ]
+}
