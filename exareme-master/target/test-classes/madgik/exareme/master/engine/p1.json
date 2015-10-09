@@ -1,0 +1,70 @@
+{
+  "containers": [
+    {
+      "name": "0",
+      "IP": "127.0.0.1_container_0",
+      "port": 1099
+    }
+  ],
+  "operators": [
+    {
+      "container": "0",
+      "operator": "madgik.exareme.master.engine.executor.remote.operator.admin.DBAdminMaster",
+      "name": "AdminMaster",
+      "queryString": "demo master",
+      "parameters": [
+        [
+          "behavior",
+          "pipeline"
+        ],
+        [
+          "category",
+          "exe_emp_200001"
+        ],
+        [
+          "memoryPercentage",
+          60
+        ]
+      ]
+    },
+    {
+      "container": "0",
+      "operator": "madgik.exareme.master.engine.executor.remote.operator.admin.DBAdminWorker",
+      "name": "AdminWorker",
+      "queryString": "demo worker",
+      "parameters": [
+        [
+          "behavior",
+          "pipeline"
+        ],
+        [
+          "category",
+          "exe_emp_200001"
+        ],
+        [
+          "memoryPercentage",
+          60
+        ]
+      ]
+    }
+  ],
+  "op_links": [
+    {
+      "container": "0",
+      "from": "AdminWorker",
+      "to": "AdminMaster",
+      "parameters": [
+        [
+          "table",
+          "results3to4"
+        ],
+        [
+          "part",
+          0
+        ]
+      ]
+    }
+  ],
+  "pragma": [
+  ]
+}

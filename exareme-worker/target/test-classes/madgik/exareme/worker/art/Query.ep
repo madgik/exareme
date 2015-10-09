@@ -1,0 +1,16 @@
+container c ('localhost',1099);
+operator hello1 c('madgik.adp.operatorLibrary.test.HelloWorld', id = 'value', id = 'value');
+operator hello2 c('madgik.adp.operatorLibrary.test.HelloWorld', id = 'value', id = 'value');
+operator count c('madgik.adp.operatorLibrary.test.Count', id = 'value', id = 'value');
+operator merge c('madgik.adp.operatorLibrary.test.Merge', id = 'value', id = 'value');
+buffer hello1_out c('10');
+buffer hello2_out c('10');
+buffer count_out c('10');
+buffer merge_out c('10');
+connect c(hello1, hello1_out);
+connect c(hello2, hello2_out);
+connect c(merge, merge_out);
+connect c(hello1_out, merge);
+connect c(hello2_out, merge);
+connect c(merge_out, count);
+connect c(count, count_out);
