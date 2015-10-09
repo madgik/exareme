@@ -1,0 +1,208 @@
+{
+  "containers": [
+    {
+      "name": "c0",
+      "IP": "195.134.66.100_container_195.134.66.100",
+      "port": 1099,
+      "data_transfer_port": 8088
+    },
+    {
+      "name": "c1",
+      "IP": "195.134.66.100_container_195.134.66.100_0",
+      "port": 1099,
+      "data_transfer_port": 8089
+    },
+    {
+      "name": "c2",
+      "IP": "195.134.66.100_container_195.134.66.100_1",
+      "port": 1099,
+      "data_transfer_port": 8090
+    }
+  ],
+  "operators": [
+    {
+      "container": "c2",
+      "operator": "madgik.exareme.master.engine.executor.remote.operator.buggyOperator",
+      "name": "bug0",
+      "queryString": "sleep 0",
+      "parameters": [
+        [
+          "time",
+          "6"
+        ],
+        [
+          "memoryPercentage",
+          1
+        ]
+      ]
+    },
+    {
+      "container": "c0",
+      "operator": "madgik.exareme.master.engine.executor.remote.operator.sleepOperator",
+      "name": "Sleep01",
+      "queryString": "sleep 01",
+      "parameters": [
+        [
+          "time",
+          "25"
+        ],
+        [
+          "memoryPercentage",
+          1
+        ]
+      ]
+    },
+    {
+      "container": "c0",
+      "operator": "madgik.exareme.master.engine.executor.remote.operator.sleepOperator",
+      "name": "Sleep02",
+      "queryString": "sleep 02",
+      "parameters": [
+        [
+          "time",
+          "7"
+        ],
+        [
+          "memoryPercentage",
+          1
+        ]
+      ]
+    },
+    {
+      "container": "c0",
+      "operator": "madgik.exareme.master.engine.executor.remote.operator.sleepOperator",
+      "name": "Sleep03",
+      "queryString": "sleep 03",
+      "parameters": [
+        [
+          "time",
+          "7"
+        ],
+        [
+          "memoryPercentage",
+          1
+        ]
+      ]
+    },
+    {
+      "container": "c0",
+      "operator": "madgik.exareme.master.engine.executor.remote.operator.sleepOperator",
+      "name": "Sleep04",
+      "queryString": "sleep 04",
+      "parameters": [
+        [
+          "time",
+          "7"
+        ],
+        [
+          "memoryPercentage",
+          1
+        ]
+      ]
+    },
+    {
+      "container": "c0",
+      "operator": "madgik.exareme.master.engine.executor.remote.operator.sleepOperator",
+      "name": "Sleep05",
+      "queryString": "sleep 05",
+      "parameters": [
+        [
+          "time",
+          "7"
+        ],
+        [
+          "memoryPercentage",
+          1
+        ]
+      ]
+    },
+    {
+      "container": "c1",
+      "operator": "madgik.exareme.master.engine.executor.remote.operator.sleepOperator",
+      "name": "Sleep1",
+      "queryString": "sleep 0",
+      "parameters": [
+        [
+          "time",
+          "7"
+        ],
+        [
+          "memoryPercentage",
+          1
+        ]
+      ]
+    },
+    {
+      "container": "c1",
+      "operator": "madgik.exareme.master.engine.executor.remote.operator.sleepOperator",
+      "name": "Sleep11",
+      "queryString": "sleep 0",
+      "parameters": [
+        [
+          "time",
+          "7"
+        ],
+        [
+          "memoryPercentage",
+          1
+        ]
+      ]
+    },
+    {
+      "container": "c2",
+      "operator": "madgik.exareme.master.engine.executor.remote.operator.sleepOperator",
+      "name": "Sleep2",
+      "queryString": "sleep 0",
+      "parameters": [
+        [
+          "time",
+          "7"
+        ],
+        [
+          "memoryPercentage",
+          1
+        ]
+      ]
+    },
+    {
+      "container": "c1",
+      "operator": "madgik.exareme.master.engine.executor.remote.operator.sleepOperator",
+      "name": "Sleep12",
+      "queryString": "sleep 0",
+      "parameters": [
+        [
+          "time",
+          "3"
+        ],
+        [
+          "memoryPercentage",
+          1
+        ]
+      ]
+    }
+  ],
+  "op_links": [
+  ],
+  "pragma": [
+    {
+      "name": "materialized_reader",
+      "value": "madgik.exareme.master.engine.executor.remote.operator.data.MaterializedReader"
+    },
+    {
+      "name": "materialized_writer",
+      "value": "madgik.exareme.master.engine.executor.remote.operator.data.MaterializedWriter"
+    },
+    {
+      "name": "inter_container_mediator_from",
+      "value": "madgik.exareme.master.engine.executor.remote.operator.data.InterContainerMediatorFrom"
+    },
+    {
+      "name": "inter_container_mediator_to",
+      "value": "madgik.exareme.master.engine.executor.remote.operator.data.InterContainerMediatorTo"
+    },
+    {
+      "name": "inter_container_data_transfer",
+      "value": "madgik.exareme.master.engine.executor.remote.operator.data.DataTransferRegister"
+    }
+  ]
+}
