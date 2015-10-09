@@ -1,0 +1,170 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Exareme by madgik</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+</head>
+<body>
+<div class="wrapper">
+    <header>
+        <a href="index.html"><h1>Exareme</h1></a>
+
+        <p>Sailing through Flows of Big Data</p>
+
+        <p class="view "><a href="index.html">About</a></p>
+        <p class="view"><a href="architecture.html">Architecture</a></p>
+        <p class="view"><a href="dfl.html">Query Language</a></p>
+        <p class="view"><a href="https://groups.google.com/forum/#!forum/exareme-support">Support</a></p>
+        <p class="view"><a href="contributors.html">Contributors</a></p>
+        <br>
+        <ul>
+            <li><a href="https://github.com/madgik/exareme/zipball/master">Download <strong>ZIP File</strong></a></li>
+            <li><a href="https://github.com/madgik/exareme/tarball/master">Download <strong>TAR Ball</strong></a></li>
+            <li><a href="https://github.com/madgik/exareme">View On <strong>GitHub</strong></a></li>
+        </ul>
+    </header>
+    <section>
+        <h3>
+            <a id="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages" aria-hidden="true"><span
+                    class="octicon octicon-link"></span></a>Exareme Dataflow Language</h3>
+
+        <h4>Extending Functionality</h4>
+
+        <p>The system uses extensively the UDF extensions APIs of SQLite. SQLite supports the following
+            UDF categories: <b>Row functions</b> take as input one or more columns from a row and produce
+            one value. An example is the UPPER() function. <b>Aggregate functions</b> can be used to capture
+            arbitrary aggregation functionality beyond the one predefined in SQL (i.e., SUM(), AVG(), etc.).
+            <b>Virtual table functions</b> (also known as table functions in Postgresql and Oracle) are used to
+            create virtual tables that can be used in a similar way with tables. The API offers both serial
+            access via a cursor, and random access via an index. The SQLite engine is not aware of the
+            table size allowing the input and output to be arbitrarily large. All UDFs are implemented in
+            Python. Both Python and SQLite are not strictly typed. This enables the implementation of UDFs
+            that have dynamic schemas based on their input data.</p>
+
+        <h4>Dataflow Language</h4>
+
+        <p>The dataflow language of Exareme (DFL) is based on SQL. We present some examples that use a subset of the
+            TPC-H schema:</p>
+        <ol>
+            <li>orders (o_orderkey, o_orderstatus, ...)</li>
+            <li>lineitem (l_orderkey, l_partkey, l_quantity, ...)</li>
+            <li>part (p_partkey, p_name, ...)</li>
+        </ol>
+        Assume that tables are horizontally partitioned as follows:
+        <ol>
+            <li>orders to 2 parts on hash(o_orderkey)</li>
+            <li>lineitem to 3 parts on hash(l_orderkey)</li>
+            <li>part to 2 parts on hash(p_partkey)</li>
+        </ol>
+        <p><b>distributed create table</b> lineitem_large as \\Distributed part <br>
+            <b>select * from</b> lineitem <b>where</b> l_quantity > 20; \\Local part</p>
+
+        <p>
+            In general, a query has two semantically different parts: <i>distributed</i> and <i>local</i>. The <i>distributed</i>
+            part
+            defines how the input table partitions are combined and how the output will be partitioned. The
+            local part defines the SQL query that will be evaluated against all the combinations of the input
+            (possibly, in parallel). In the example, the system will run the SQL query on every partition of
+            table <i>lineitem</i>. Consequently, table <i>lineitem_large</i> will be created and partitioned into the
+            same
+            number of partitions as <i>lineitem</i>.
+        </p>
+
+        <p>
+            The output table can be partitioned based on specific columns. All the records with the same
+            values on the specified columns will be on the same partition. For example, consider the
+            following query were the user specifies the partition key (l_orderkey) and the number of output
+            partitions(2).
+        </p>
+
+        <p><b>distributed create table</b> lineitemm_large <b>to 2 on l_orderkey</b> as<br>
+            select * from lineitem where l_quantity > 20;
+        </p>
+
+        <p>The execution plan produced by this query is shown in the figure below. The output
+            of each query, is partitioned on column l_orderkey. Notice that all records with the same
+            l_orderkey value must be unioned in order to produce the 2 partitions of table lineitem_large,
+            creating the lattice after the queries are executed.</p>
+        <figure><img alt="" src="images/q1.png"
+                     title="">
+            <figcaption>Figure 1: The query graph produced.
+            </figcaption>
+        </figure>
+
+
+        <p>If more than one input tables are used, the table partitions are combined and the query is
+            executed on each combination. The combination is either direct or a cartesian product, with the
+            later being the default behavior. An example is the following query.</p>
+
+        <p><b>distributed create table</b> lineitem_part <b>as</b><br>
+            <b>select * from</b> lineitem, part <b>where</b> l_partkey=p_partkey;</p>
+
+        <p>The system evaluates the query by combining all the partitions of lineitem with all the partitions of
+            part. As a result, table lineitem_part will have 6 partitions (3 x 2). If tables lineitem and part have
+            the <b>same</b> number of partitions, the combination can be a direct product. This is shown in the
+            following query.</p>
+
+        <p><b>distributed create table</b> lineitem_part <b>as direct</b><br>
+            <b>select * from</b> lineitem, part <b>where</b> l_partkey = p_partkey;</p>
+
+        <figure><img alt="" src="images/q2.png"
+                     title="">
+            <figcaption>Figure 2: The query graph produced from the above query.
+            </figcaption>
+        </figure>
+
+        <p>Notice that, in order the query to be a correct join, the tables <i>lineitem</i> and <i>part</i> must be
+            partitioned on columns l_partkey and p_partkey respectively.</p>
+
+        <p>The local part of the query can be as complex as needed using the full expressivity of SQL
+            enhanced with the extensions described above. Queries can be combined in order to express
+            complex data flows. For example, a distributed hash join can be expressed as follows:</p>
+
+        <p><b>distributed create temporary table</b> lineitem_p <b>on</b> l_partkey <b>as</b></br>
+            <b>select * from</b> lineitem;</p>
+
+        <p><b>distributed create temporary table</b> part_p <b>on</b> p_partkey <b>as</b></br>
+            <b>select * from</b> part;</p>
+
+        <p><b>distributed create table</b> lineitem_part <b>as direct</b></br>
+            <b>select * from</b> lineitem_p, part_p <b>where</b> l_partkey = p_partkey;</p>
+
+        <p>Tables lineitem_p and part_p are temporary and are destroyed after execution. Notice that in this
+            example, the system must choose the same parallelism for tables lineitem_p and part_p in order
+            to combined as a direct product. A MapReduce flow can be expressed as follows:</p>
+
+        <p><b>distributed create temporary table</b> map <b>on</b> key <b>as</b></br>
+            <b>select</b> keyFunc(c1, c2, ...) as key, valueFunc(c1, c2, ...) as value <b>from</b> input;</p>
+
+        <p><b>distributed create table</b> reduce <b>as</b></br>
+            <b>select</b> reduceFunc(value) <b>from</b> map <b>group by</b> key;</p>
+
+        <p>with, key(*), being a row function that returns the key of the row, and value(*) being a row
+            function that produces the value. In the second query, the reduce(*) is a aggregate function that
+            is applied on each group.</p>
+
+
+
+
+    </section>
+    <footer>
+        <p>This project is maintained by <a href="https://github.com/madgik">madgik</a></p>
+
+        <p>
+            <small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a>
+            </small>
+        </p>
+    </footer>
+</div>
+<script src="javascripts/scale.fix.js"></script>
+
+</body>
+</html>
