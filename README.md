@@ -1,6 +1,9 @@
 # Exareme
 Exareme is an auto-tuned, highly scalable, elastic system for processing arbitrary dataflows on top of IaaS clouds.
 
+## Branches
+* master: Compiled binary, ready to use.
+* dev: The branch we are currently working on.
 
 ## Documentation
 
