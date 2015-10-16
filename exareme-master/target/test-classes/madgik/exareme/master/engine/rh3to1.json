@@ -1,0 +1,219 @@
+{
+  "buffers": [
+    {
+      "name": "b_R_results3to4_0_TR_results3to4_P_0",
+      "container": "c0",
+      "QoS": "1"
+    },
+    {
+      "name": "b_R_results3to4_1_TR_results3to4_P_0",
+      "container": "c1",
+      "QoS": "1"
+    },
+    {
+      "name": "b_R_results3to4_2_TR_results3to4_P_0",
+      "container": "c2",
+      "QoS": "1"
+    }
+  ],
+  "links": [
+    {
+      "container": "c0",
+      "from": "R_results3to4_0",
+      "to": "b_R_results3to4_0_TR_results3to4_P_0",
+      "parameters": [
+        [
+          "table",
+          "results3to4"
+        ],
+        [
+          "part",
+          0
+        ]
+      ]
+    },
+    {
+      "container": "c0",
+      "from": "b_R_results3to4_0_TR_results3to4_P_0",
+      "to": "TR_results3to4_P_0",
+      "parameters": [
+        [
+          "table",
+          "results3to4"
+        ],
+        [
+          "part",
+          0
+        ]
+      ]
+    },
+    {
+      "container": "c1",
+      "from": "R_results3to4_1",
+      "to": "b_R_results3to4_1_TR_results3to4_P_0",
+      "parameters": [
+        [
+          "table",
+          "results3to4"
+        ],
+        [
+          "part",
+          0
+        ]
+      ]
+    },
+    {
+      "container": "c1",
+      "from": "b_R_results3to4_1_TR_results3to4_P_0",
+      "to": "TR_results3to4_P_0",
+      "parameters": [
+        [
+          "table",
+          "results3to4"
+        ],
+        [
+          "part",
+          0
+        ]
+      ]
+    },
+    {
+      "container": "c2",
+      "from": "R_results3to4_2",
+      "to": "b_R_results3to4_2_TR_results3to4_P_0",
+      "parameters": [
+        [
+          "table",
+          "results3to4"
+        ],
+        [
+          "part",
+          0
+        ]
+      ]
+    },
+    {
+      "container": "c2",
+      "from": "b_R_results3to4_2_TR_results3to4_P_0",
+      "to": "TR_results3to4_P_0",
+      "parameters": [
+        [
+          "table",
+          "results3to4"
+        ],
+        [
+          "part",
+          0
+        ]
+      ]
+    }
+  ],
+  "containers": [
+    {
+      "name": "c0",
+      "IP": "83.212.98.239_container_0",
+      "port": 1099
+    }
+  ],
+  "operators": [
+    {
+      "container": "c0",
+      "operator": "madgik.exareme.core.app.db.engine.executor.remote.operator.process.ExecuteSelect",
+      "name": "R_results3to4_0",
+      "queryString": "{H4sIAAAAAAAAAJ1YS2wcRRCtXa9_a8dZO5AQKQkLJJYTol2QnQ84ieNflJWWOIkNByOI2zu99iTzc09PsuYQEYnPAYkTQeKAxAEkDjnkgkDcEAcOOYHEhRPKGQ5IoBxAQHX3zPSMx1knXsmzU7XV1VWvqquqfed36PQZHLOJsWJeq9AWYdSmlYbLaIV4XsVYrlBnxXRoZdLwZqbmqUUbfM6jjHCXgfrk8tBdg36fMpNYFwJ7mbIa9HGXE6vmeAH38UdJzQVckHXoMiWfw676VXKdVANuWtXzxF99hXjjdeh2leAa3IRcHTrXAsrWOTxXV1ZWQyurwsoqWlk1lqvKMlxc4Ose5XCsnbByqSpdipxZwGXjLS_ySfwhMIPCvoqwrxLa19n9y3ff7176sQPy56BoucQ4Rxq4vga9fJVRf9W1jJY3cVaq6b_Rg8-SUMah18JNTU7tUelZZ1Ym3tAizkql5nC6QtnQ_c8-f3Dr_ZN5yNWg8zqxAtpiUNJyCvL37tze3_fRrx_kAZQXcpNeobbVetiGHPrQ5MDi_ih3xx4mJdh94tGPmhg80yZZVBh0YnTVoafh2jZ1RLiHVLiF1dV5zkxnBQPWJ5NhgSxbFEWeTGTEJGNkvW76IqwDCSmMQpgafSpTJJvDcLuYS5nXTHpDKPMI86kxv2ZdUqk18QjZItcwlPAQMt90ner8pXqcdv1-qKzmNF0ORzZVKL0SyXqpHsuOYzDLbRCVghrQnhrkTWMRunyXcWok4BWQDCIkBuFkmfh0xmQhq8dGXQh2JKIOVEgUWeDMORcJUxqGEB3NEXhxKCViIsOhEgyzBzjsrK666B8xECtqu1UOuSKHPb4Epnyk2GSuXdaZz2CXPlJxgFu3ftr_yQ_k0w6R4wXffIuqLW4UxFMk3bBeNe1aQjdGwD_4qmO7htk0RXCFon92Hnrxq98-LOVFdhQs5Ain9iDGR7dWoPl7p-Dte28-OCDV5DChdycg0GIIhFB_QD54eOT2C2ik4eI8H2wT2jgldXg7a7DTCey5poDflCZiPfQI55Q5HCa3laczmBEXlQrM1KFQG7oR2M4FYtMo8J1cnaNntzxH4tgGeIKUDrW-5f2Hn5sMJrZuJsrGiraxkrAxRAOGMPIMBnShm0Vkkj96HAYbiBP1TeJc8ZhrBA0exyCRPO3Ol_RHB6CANdai16m1iJ2E2h5mkYMQhYdlB57yGdo0HRkayVRuQ7K8c_hz-vLs5MJseWFyqj6rs788smRdcZlB2TW6vnQUCQSCR-9-4HnRu1jiyLouybWAOJgO6jfa4tQxqOExs0ElxzD9hhs4XBKctOQ3ozxgTtMiK7FGnxMe-GqzVdPDSqHWixJi8phktEFNT9NC1nR8zhDemIHHRi_G-rN0OEa-JJEvcehPOoKlYoPtHPtnbDuHHamd5Wrtg5SNjJZEhKMkIoBiMWGeVKF94zCQ9kXELIqAfA8jwDEFBIyxAwo3KRJ6u6GlgmyWuahZviAeI0rkkGDeFG-HORRs4qxvrBIpb9SiiuBLVQM815VKpkS_HimWy3rlUUmF7igi9EcROhKKjiBTVCowihVFRlGIh3rRMdF6FUDhpmGQFKXhj1bHEdbiUUA0R4RPK0DAi4c3O9int1Nq4radGFMWcQzxF_C8u4xgX4anFFJzTTWzJqtxSU4iiXol7Bquw6CaRbI_lLxodbJc1qPRSxYgVUoYnNqmQxumhI7U2HVmW11jOlyPtb5XeOBj4XPCOtiBdTCsfv42jY7Ua6Pz2IFkMoX45P1lDnszI-NUYFqY8dh7N8uIPbpdpMRP_fz3E4v1q_c6RN9Q4gGD_OvTd4ebd--_8c6daG4uwRYf1fP3xYf9efGY3XioBXm-JU8wWjWyGUJyFhEzc2IaTIUwPRmfePhI2dADTfUyJcacY62LuSKcnVPzXrJvczj--ErFHU2GfdNLo3QqsbSy0Z5UvPWEhhM0S0iqqc3LlkrdZVWlfFo8rsSPfWjX2GPbhS6lzOrAgRnbVWLmUxfTjImN0MRN-kDqvpe5SM5T_u3Mu7c__ubrMZWR_bimHGopiXm3Xcao8KXzpbAIPU3TwrpDxfXgqoub4_Wg2IjHvDABeuWUFzNE0ouXUfFoSm9MxRnLcI5nOMcynBMZzskM56UM5-UM51SGM57hnM5wzmQ4ExnO2QxnMsOZkhx53T209cUBs-OPL778l__VPaVuDHaYHOKL4kg8-oj_X0n-MyI56Qo9Rzj04M1Mlor_AbA3J6q3EQAA};",
+      "parameters": [
+        [
+          "behavior",
+          "store_and_forward"
+        ],
+        [
+          "category",
+          "exe_results3to4"
+        ],
+        [
+          "memoryPercentage",
+          0.6000000238418579
+        ]
+      ]
+    },
+    {
+      "container": "c1",
+      "operator": "madgik.exareme.core.app.db.engine.executor.remote.operator.process.ExecuteSelect",
+      "name": "R_results3to4_1",
+      "queryString": "{H4sIAAAAAAAAAJ1YS2wcRRCtXa9_aydZO5AQKQkLJJYTol2QnQ84ieNflJWWOIkNByOI2zu99iTzc09PsuYQEYnPAYkTQeKAxAEkDj7kgkDcEAcOOYHEhRPKGQ5IoBxAQHX3zPSMx1knXsmzU7XV1VWvqquqvf47dPoMjtvEWDavV2iLMGrTSsNltEI8r2IsVaizbDq0MmF405Nz1KINPutRRrjLQH1yeeiuQb9PmUmsi4G9RFkN-rjLiVVzvID7-KOkZgMuyDp0mZLPYXf9GrlBqgE3reoF4q-8QryxOnS7SnAVbkGuDp2rAWVrHJ6rKyuroZVVYWUVrawaS1VlGS4u8DWPcjjeTli5VJUuRc7M47Kxlif8if4QmAFhX0XYVwnt6-z-5bvv9yz-2AH581C0XGKcJw1cX4NevsKov-JaRssbPyeh6b_Zg8-SUMah18JNTU7tEelZZ1Ym3tAiznKl5nC6TNng_c8-f3D7_VN5yNWg8waxAtpiUNJyCvL31u8c6Pvo1w_yAMoLsUdfq_WwvTj0obWBxf0R7o4-1CLB7xXMSB2DZ9okiwqDToyuOvQ0XNumjgj3oAq3sLo6x5npLGPA-mQyzJMli6LIk4mMmGCMrNVNX4R1Z0IKoxCmRp_KFMnmMNQu5lLmNZPeFMo8wnxqzK1al1VqjT9Ctsg1DCU8xM03Xac6d7kep12_HyqrOU2Xw9FNFUqvRLJerseyYxjMchtEpaAGtKcGedNYgC7fZZwaCXgFJAMIiUE4WSI-nTZZyOqxUReCHYmoAxUSRRY4s84lwpSGQURHcwReHEqJmMhwyAQTKQQcdlVXXPSPGIgVtd0qh1yRw15fAlM-Wmwy1y7rzGewWx-pOMCt2z8d-OQH8mmHyPGCb75F1RY3C-Ipkm5Ir5pyLaEbI-AfetWxXcNsmiK4QtE_uw6_-NVvH5byIjsKFnKEU3sR42NbK9D8fZPw9r03HxyUanKY0HsSEGgxBEKoPygfiIZE8ICARhouzvOhNqGNU1KHt7MGu5zAnm0K-E1pItZDj3BOmcNhYlt5Oo0ZcUmpwEwdDLWhG4HtXCQ2jQLfydU5enbLcySObYAnSOlQ61vef_i5xWB862aibKxoGysJG0M0YBAjz2CnLnQziEzyR4_DQANxor5JnKsec42gweMYJJKn3fmS_ugAFLDGWvQGtRawk1DbwyxyEKLwsOzAUz5Nm6YjQyOZym1IlncOf05dmZmYnynPT0zWZ3T2l4cXrasuMyi7TtcWjyGBQPDo3Q88L3oXSxxZ1yW5GhAH00H9RlucOgY1PGY2qOQYpt9wA4dLgpOW_GaUB8xpWmQ51uhzwgNfbbZielgp1HpRQkwek4w2qOlpWsiajs8Zwhsz8NjoxVh_Fo_EyJck8iUO_UlHsFRssJ1j_4xt57AjtbNcrX2QspHRkohwlEQEUCwmzJMqtG8cdqZ9ETGLIiDfwwhwTAEBY-yAwk2KhN5u6KsgO2YuarsviMewEjksmLfE2xEOBZs4axurRMobtagi-FLVDp7rSiVTomkPF8tlvfKYpEJ3FBH6owgdCUVHkCkqFRjFiiKjKMRDveiYaL0KoHDTMEiK0vBHq-MIa_EoIJojwqcVIODFI5sd7DPbKTVx206MKQs4hvjzeN5dRrAvw1MKqdmmmlmT1bgkJ5FEvRJ2DdVhQM0i2R9KXrQ6WS7r0fwlC5AqJQxOb9OhDVNCR2rsOrutrjEVrsda3ys88LHwOWEd7MA6GFY_f5tGR-q10XnsQDKZQnzy_hKHfZmRcTIwLcx47L2bZcRe3S5S4qd__vuJhfq1ex2ibyjxgEH-9am7Q8279994Zz2am0uwxUf1_P3xYX9ePGY2HmpBXmjJE4xWDW-GkJxFxMycmAZTIUxPxicfPlI29EBTvUKJMetYa2KuCGfn1LyX7NscTjy-UnFHk2Hf9NIonUosrWy0JxVvPaHhBM0Skmpq87KlUndZVSmfFo-r8WM_2jX62HahSymzOnBgxnaVmPnUxTRjYiM0cZM-kLrvZS6Sc5R_O_3unY-_-XpUZWQ_rimHWkpi3m2XMSp86XwpLEBP07Sw7lBxPbjm4uZ4PSg24jEvTIBeOeXFDJH04mVEPJrSG1NxRjOcExnO8QznZIZzKsN5KcN5OcM5neGMZThnMpyzGc54hnMuw5nIcCYlR153D299ccDs-OOLL__lf3VPqhuDHSaH-KI4Eo884v9Xkv-MSE66Qs9RDj14M5Ol4n__8xJptxEAAA};",
+      "parameters": [
+        [
+          "behavior",
+          "store_and_forward"
+        ],
+        [
+          "category",
+          "exe_results3to4"
+        ],
+        [
+          "memoryPercentage",
+          0.6000000238418579
+        ]
+      ]
+    },
+    {
+      "container": "c2",
+      "operator": "madgik.exareme.core.app.db.engine.executor.remote.operator.process.ExecuteSelect",
+      "name": "R_results3to4_2",
+      "queryString": "{H4sIAAAAAAAAAJ1YS2wcRRAtr-34m2TjQD4HhwUSkwRrV1GcDziJ408iVlriJDYcjCBu7_Ta48zPPT3JmkNEJD4HJE6AxAGJA0gccsgFgbghDhxyAokLJ5QzHJBAOYCAqu6Z6VmPYydeybPTtdXVVa9eV1f7zu_QGQo44TJr0b5e5k0muMvLdV_wMguCsrVQ5t6i7fHyuBVMTcxwh9fldMAFk74A_WkrQFcV-kMubOZcitwFLqrQJ33JnKoXRDLEH9VoOpI0rME2W8kl7K4tsxusEknbqbzEwqWXWTBagy5fK67ALWirQedKxMWqhGdr2stK7GWFvKyglxVroaI9w8kdcjXgEk5spKxDqqiQkmBmcdpoM8B4ChQT_SEwu8i_MvlXjv3r7Prlu-_3zP_YDoWL0Ov4zLrI6ji_Cj1ySfBwyXesZjB2XkHTf7Mbn0UyJqHHwUVtyd3jKrLOvE66oMO8xXLVk3yRi4H7n33-4PZ7pwvQVoXOG8yJeFNA0ehpyN-989Fg34e_vo_e6yjUIj1kttl82IIS-tDlyJHhcemPPNStxBLQSz-aE_D0BozRuTDs2FaD7rrvutyjnA_onJPrlRkpbG8Rs9anGDHLFhyOKk9maDEuBFut2SHldkdGC1MR86NP00WJJQxtlHil86rNb5KxgImQWzMrzhXNr7FHoIyaI1AjQNxC2_cqM1dqKff6w9hY1Wv4Eo6ua1BFRYy9Ukt1RzGjpQ0QVYoG0O4qFGxrDraFvpDcysBLkAwgJBaTbIGFfMoWsajbRVsIdqKid1U86BWRN-1dZkJb2I3oGAnhJaGYyYlKh2IZUQgk7Kws-RgfsxAr7voVCW29EvaGCpjS0d6G8N2Sob-A3WZfpQlu3v5p8JMf2KftRPSO0H6T6yVudtCTSDdkZk36DtnGDIQHX_Fc37IbNiWXDP2z89Cxr377oFggdnQ4KKGg9iHGw5sbMPL9E_DWvTceHFBm2pDQezIQGDUEgsw_pR6IhkLwAEGjHKdNfXCD1KaUNOntrMJOL3KnGwS_rVzEohgwKbnwJIxviadTyIjL2gQydSC2hmFErneJuTxJfKfU--iZTfcRbdsId5C2oec3g__wc0vA2OYnivaxbHwsZ3yM0YABzLyAHabaXUBksj8GEnbVESce2sy7FgjfiuoyzUGGPBvtLxWPSUAHFlqH3-DOHB4n3A2QRR5CFG-W7bjLp3jD9lRqlFCHDdkaL-HPyasXxmcvlGbHJ2oXDPtLh-eda76wuLjOV-eHcYBAyOQ9jIIgeacpniruargSMQ_poH_jTck9i1uBsOtcSSw7rPuRJ9VAsqb6FlxGwms4bDG1GEomo1AvtmQHWCn0fCohtkyHgte5HZgx6dpeKAXCmwpw25jJWH_mj6TIFxXyRQn92UCwVKzxXeIhmvouYXvLymq2iUHpJk6rQYKjGiQApWrknjJhYpOwozUWylmSAfUeZ0AiBQjGNACNm1KJo11zroI6MVXnQOJj9DiiVYZIeIvejkrocJm3urZKtESjJ1VIrkztkG3bWsiUObQP95ZKZuawGsXh6EEcjx6YTOhxApketSRGi5LM6BHioV9MToxdDVC8aJwkPTLwJ7PTDBv1JCFGQukzBhDw3iPrbeyzWyk16bGdaVPmsA0JZ3G_-4LhuQz7NFLTDd24ZqtxUXUimXpFfj1Xg126F8n_UAyS2dlyWUv6L1WAdCkRcGaLAa3pEtpb2q5zWzo1JuP5WOt7KIIQC58X18F2rINx9Qu36HRi3jhdwBNIkSnGpxAuSNifaxknIttBxuPZux4j9prjokX9zM9_PzFXW77XTueGVo8EFF6bvDvUuHv_9bfvJM1zETb56DN_MN3sw_S4uHZT07DaVDsYvTq8HkKqF6GeOdMNtqSwtTM-9fCWsm4amspVzqxpz1mlviLunVv6vey5LeHk4xuli5pK-7o3RxVUZmp5rT8t-TYdGnbQIqOpu7YgXyrNKasrZYke8-ljEP0aeWy_MKQWt9qxYcbjKtPz6dtpzkUrdnGdc6Dl0pe7Tc5w-e3UOx99_M3XI5qR_TinFFspUr-7EWN0-lr50jEH3Q3bwbrD6Xqw7OPieD3oradtXkyAHtXlpQIiPb2M0ENfEZa15EROcionOZmTnM5JXshJXsxJRnOSsznJmZzkXE4ylpOcz0nGc5KJnGRSSdR199DmFwdkxx9ffPmv_KtrQt8Y3Jgc9NXAlvj4I_6TJfsfiWynS3ael9CNNzNVKv4H5ERMf7wRAAA};",
+      "parameters": [
+        [
+          "behavior",
+          "store_and_forward"
+        ],
+        [
+          "category",
+          "exe_results3to4"
+        ],
+        [
+          "memoryPercentage",
+          0.6000000238418579
+        ]
+      ]
+    },
+    {
+      "container": "c0",
+      "operator": "madgik.exareme.core.app.db.engine.executor.remote.operator.data.TableUnionReplicator",
+      "name": "TR_results3to4_P_0",
+      "queryString": "{H4sIAAAAAAAAAJ1YPWwcRRSeO9_55-wkZyckpEg4ILGcEN2B7PyAkzj-i3LoiJPYQcII4vHt3HmT_fPsbHKmiIjET4FERZAokChAokiRBoHoEAVFKpBoqFBqKJBAKUDAezO7O3te55z4ivHO2zdv33vfN2_e-M7vJO9zctSmRtO8VmYtypnNynWXszL1vLKxXGZO03RYedLwZqbmmcXqYs5jnAqXE_XLZElPlQz4jJvUOh_Yy4xXSb9wBbWqjhcIH17K2VwgcFoj3aaUC7KzdpVep5VAmFblHPVXXqHeeI30uEpxldwkmRrJrwaMrwnybE15WQm9rKCXFfCyYixXlGewOCfWPCbI0U7KKqSKDCkKZgGWjbe8MKYujAsSM4j-ldG_cuhfvueX777fvfRjF8meJQXLpcZZWof1VdInVjjzV1zLaHkTZ6SZgRu9MBbRmCD98DawhD8q3DEZWz6tFX_Sok6zXHUEazI-dP-zzx_cev9ElmSqJH-dWgFrcVLUeirp7925va__o18_yBKi4pAf6cNoWq2HfRDFPZ1e9sdWMmCFk6c7UEWBoGnRXSO9dde2mYNgDymw0ePKvOCm0wS4-iUVFuiyxUDliQQfJjmnazXTR1C3J7QAg5AY_YonUizIcCfEpc6rJruBxjzKfWbMr1oXFbEmHoErcg0HDQ9Q9E3XqcxfrMWkG_BDY1Wn4QpyeEODMiqk6sVarDsOQJY6ZFQq6oT2VknWNBZJt-9ywYxEejElg5ASgwq6TH02Y_JQ1GuDLUh2pKK2Uzgp8MCZcy5QriwMQXa0BPMlSDGBiYRDkQsITQTZUVlxIT5qQK6Y7VYEyRQE2evLxJQOlxrctUtJ3nOyU2-pGOLWrZ_2ffID_bQLGZ7zzbeY-siNHI5Iu2G9atq10Dpg4B-47NiuYTZMhBcN_bPj4Atf_fZhMYv8yFkgwbD2QJaPbG5Ay_dOkbfvvflgvzSTAUrvTiRBq0Eq0Px-OYhww-3D5EjHcTcf6ABuTEoNcL5KdjiBPddAAEzpItRDjwrBuCPI5JaYOgOcuKBMAFeHQmsQRmA756nNIujzQu2kZzbdSbhxA9hDyoZa3_L-g99NTiY2P0yUj2XtYznhY5gNMgTIc7Jdl7lZyEzypSfIYB3yxHyTOlc87hpBXcQYJMjTaYfJeDQAOaiwFrvOrEU4SZjtAYscSFG4XbbBPp9hDdOR0EihChu2Qp8FkZmwZlSQP6cvzU4uzJYWJqdqs6X4RWlkybricoPxa2xt6QhMIBEievYDz4uecYkjq7qcrgbUATqod6wlmGMww-NmnUmJYfp1N3CEnAjakn85EwF3GhZtxhZ9QUXgq4-tmB7UCrUei4gp4ilndWZ6eo66puMLDumNBbBt9GKoQEuH4swXZeaLggwkA4Fisc53Aedn7Lsg29q-LFfrGKRu5LScRHmUkyhBsRq6J03o2ATZ3h4LYhYhIJ9DBARQANMYB6DyJlXCaNcdqESemZnozHwehxGlchCFN_HpkCA5mzpr66tEWzRqURnl61oGkeluY1Xi1UihVNImjshZGJeahIGpiYZEzaPcqVkbQkoUQaRmkBj1oMHRdlWmwo-GaKmZxiFaHUOt1SNktARx1AYg84VDG-3wU1upOfEJnuhYFqEj8Rdg47ucwhFNnlSZmmuo5jVZlouyKUkULvRruEYGVVuSflH0otXJulmLUJaVSNUUTk5uMaB1DUNXWwd2ekvHx3S4Hop-H0bgQwV0woLYBQUxLIP-Fp2OzGuns3AUSTKF-cn6y9BTpLrHqcC0gPFwCG_EiD363GhTP_nz37sWa1fvdeEBotQDTrKvT98dbty9_8Y7d6L2uUg2-eH5syfqdAqy04krfVwKnsNhdv2Wx-m5Fo4vg6sjG6VNdirYUye6xTZc2zvn4w9vOeu63alcYtSYc6w17DrC3rqtH0ye6oIce3yjeIOTXNjwSimDSiwtr_enjQS6f4MOmyc0VU_npQupPoNVHX0KBxoPr4FfY4_tF4TU5lYXNNRwmCU6QnVtTbnIQhc3OCWSrqavmfNMfDvz7u2Pv_l6TNF0ANaUQitF7IY7MUbB186X3CLpbZgWFCOG14erLnwcrg-FetwEhgTokz1gLMCdgA-jOKzIaK4pyVhKcjQlOZaSHE9JTqQkL6YkL6Uk4ynJyZTkVEpyOiWZSEnOpCSTKcmUlMjr8MHNrxXAjj---PJf8VfPlLpP2CE58E8TGubRR_zvS_JfFck-GO0cFmSXhO6yAw5cYp5l1lH3f3_Y5OXhEQAA};",
+      "parameters": [
+        [
+          "behavior",
+          "store_and_forward"
+        ],
+        [
+          "category",
+          "tab_results3to4"
+        ],
+        [
+          "memoryPercentage",
+          0.6000000238418579
+        ]
+      ]
+    }
+  ],
+  "pragma": [
+    {
+      "name": "materialized_reader",
+      "value": "madgik.exareme.core.app.db.engine.executor.remote.operator.data.MaterializedReader"
+    },
+    {
+      "name": "materialized_writer",
+      "value": "madgik.exareme.core.app.db.engine.executor.remote.operator.data.MaterializedWriter"
+    },
+    {
+      "name": "inter_container_mediator_from",
+      "value": "madgik.exareme.core.app.db.engine.executor.remote.operator.data.InterContainerMediatorFrom"
+    },
+    {
+      "name": "inter_container_mediator_to",
+      "value": "madgik.exareme.core.app.db.engine.executor.remote.operator.data.InterContainerMediatorTo"
+    }
+  ]
+}
+
