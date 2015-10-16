@@ -1,0 +1,115 @@
+{
+  "containers": [
+    {
+      "name": "c1",
+      "IP": "'host1'",
+      "port": "1099"
+    },
+    {
+      "name": "c2",
+      "IP": "'host2'",
+      "port": "1099"
+    }
+  ],
+  "operators": [
+    {
+      "name": "hello1",
+      "container": "c1",
+      "operator": "'madgik.adp.operatorLibrary.test.HelloWorld'"
+    },
+    {
+      "name": "hello2",
+      "container": "c1",
+      "operator": "'madgik.adp.operatorLibrary.test.HelloWorld'"
+    },
+    {
+      "name": "hello3",
+      "container": "c1",
+      "operator": "'madgik.adp.operatorLibrary.test.HelloWorld'"
+    },
+    {
+      "name": "merge1",
+      "container": "c1",
+      "operator": "'madgik.adp.operatorLibrary.test.Merge'"
+    },
+    {
+      "name": "merge2",
+      "container": "c1",
+      "operator": "'madgik.adp.operatorLibrary.test.Merge'"
+    }
+  ],
+  "buffers": [
+    {
+      "name": "hello1_out",
+      "container": "c1",
+      "QoS": "10"
+    },
+    {
+      "name": "hello2_out",
+      "container": "c1",
+      "QoS": "10"
+    },
+    {
+      "name": "hello3_out",
+      "container": "c1",
+      "QoS": "10"
+    },
+    {
+      "name": "merge1_out",
+      "container": "c1",
+      "QoS": "10"
+    },
+    {
+      "name": "merge2_out",
+      "container": "c1",
+      "QoS": "10"
+    }
+  ],
+  "links": [
+    {
+      "container": "c1",
+      "from": "hello1",
+      "to": "hello1_out"
+    },
+    {
+      "container": "c1",
+      "from": "hello2",
+      "to": "hello2_out"
+    },
+    {
+      "container": "c1",
+      "from": "hello3",
+      "to": "hello3_out"
+    },
+    {
+      "container": "c1",
+      "from": "merge1",
+      "to": "merge1_out"
+    },
+    {
+      "container": "c1",
+      "from": "merge2",
+      "to": "merge2_out"
+    },
+    {
+      "container": "c1",
+      "from": "hello1_out",
+      "to": "merge1"
+    },
+    {
+      "container": "c1",
+      "from": "hello2_out",
+      "to": "merge1"
+    },
+    {
+      "container": "c1",
+      "from": "merge1_out",
+      "to": "merge2"
+    },
+    {
+      "container": "c1",
+      "from": "hello3_out",
+      "to": "merge2"
+    }
+  ]
+}

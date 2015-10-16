@@ -1,0 +1,90 @@
+<assembly xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+          xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+    <id>default</id>
+    <formats>
+        <format>dir</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <includeSiteDirectory>false</includeSiteDirectory>
+
+    <moduleSets>
+        <moduleSet>
+            <useAllReactorProjects>true</useAllReactorProjects>
+            <includes>
+                <include>madgik:exareme-common</include>
+                <include>madgik:exareme-utils</include>
+                <include>madgik:exareme-worker</include>
+                <include>madgik:exareme-master</include>
+            </includes>
+            <binaries>
+                <outputDirectory>/lib/exareme</outputDirectory>
+                <unpack>false</unpack>
+                <dependencySets>
+                    <dependencySet>
+                        <useProjectArtifact>false</useProjectArtifact>
+                        <useTransitiveDependencies>true</useTransitiveDependencies>
+                        <outputDirectory>/lib/exareme/external</outputDirectory>
+                        <unpack>false</unpack>
+                        <excludes>
+                            <exclude>${project.groupId}:*</exclude>
+                        </excludes>
+                    </dependencySet>
+                </dependencySets>
+            </binaries>
+        </moduleSet>
+    </moduleSets>
+    <fileSets>
+        <fileSet>        <!--lib -->
+            <directory>${basedir}/../exareme-tools/madis/src/</directory>
+            <outputDirectory>lib/madis/src</outputDirectory>
+            <fileMode>0755</fileMode>
+            <includes>
+                <include>**</include>
+            </includes>
+        </fileSet>
+        <fileSet>        <!-- bin -->
+            <directory>${basedir}/../exareme-master/src/main/resources</directory>
+            <outputDirectory>bin</outputDirectory>
+            <fileMode>0755</fileMode>
+            <includes>
+                <include>exareme-admin.sh</include>
+            </includes>
+        </fileSet>
+        <fileSet>        <!-- etc -->
+            <directory>${basedir}/../exareme-master/src/main/resources</directory>
+            <outputDirectory>etc/exareme</outputDirectory>
+            <fileMode>0755</fileMode>
+            <includes>
+                <include>exareme-env.sh</include>
+            </includes>
+        </fileSet>
+
+        <fileSet>         <!--etc -->
+            <directory>${basedir}/../exareme-master/src/main/resources</directory>
+            <outputDirectory>etc/exareme/</outputDirectory>
+            <fileMode>0644</fileMode>
+            <includes>
+                <include>art.policy</include>
+                <include>master</include>
+                <include>workers</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${basedir}/../exareme-utils/src/main/resources</directory>
+            <outputDirectory>etc/exareme</outputDirectory>
+            <fileMode>0644</fileMode>
+            <includes>
+                <include>**</include>
+            </includes>
+        </fileSet>
+        <fileSet>        <!-- examples -->
+            <directory>${base}/../exareme-worker/src/main/scripts</directory>
+            <outputDirectory>examples</outputDirectory>
+            <fileMode>0644</fileMode>
+            <includes>
+                <include>**</include>
+            </includes>
+        </fileSet>
+    </fileSets>
+</assembly>
