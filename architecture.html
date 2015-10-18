@@ -40,10 +40,12 @@
         <p>The system architecture is shown in Figure 2. From a user’s point of view, the system is used as a
             traditional database system: create / drop tables or indexes, import external data, issue queries, and more.
             Queries read the input from several tables that are partitioned and process them, possibly in parallel. The
-            queries are expressed in ExaQL or ExaDFL and are transformed into data processing flows (dataflows)
+            queries are expressed in ExaDFL and are transformed into data processing flows (dataflows)
             represented as directed acyclic graphs (DAGs) that have arbitrary computations as nodes and producer-
-            consumer interactions as edges. Figure 3 shows a dataflow DAG with one input table with two partitions (In)
-            that performs processing The typical queries we target are complex data-intensive transformations that are
+            consumer interactions as edges.
+            <!--Figure 3 shows a dataflow DAG with one input table with two partitions (In)-->
+            <!--that performs processing.-->
+            The typical queries we target are complex data-intensive transformations that are
             expensive to execute: queries may run for several minutes or hours.
         </p>
 
@@ -84,7 +86,7 @@
 
         <h4>Optimization Engine</h4>
 
-        <p>The goal of the optimizer is to transform ZQL into the low-level distributed machine code of the system. The
+        <p>The goal of the optimizer is to transform exaDFL into the low-level distributed machine code of the system. The
             latter is used to express dependencies between the operators of the dataflow graph in the form of a directed
             acyclic graph (DAG) and is similar to the DAGMan language. In a cloud environment, the monetary cost of
             using the resources is as important as the completion time of the dataflows. The optimizer of Exareme finds
