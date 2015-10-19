@@ -18,6 +18,9 @@ import madgik.exareme.worker.art.security.DevelopmentContainerSecurityManager;
 import org.apache.log4j.Logger;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.rmi.RemoteException;
 
 /**
@@ -44,7 +47,12 @@ public class ExaremeMiniCluster implements ExaremeCluster {
         if (System.getSecurityManager() == null) {
             System.setSecurityManager(new DevelopmentContainerSecurityManager());
         }
-        String relMadisPath = System.getProperty("user.dir") + "//exareme-tools/madis/src/mterm.py";
+        Path madisPath =  Paths
+            .get(System.getProperty("user.dir") + "/../exareme-tools/madis/src/mterm.py");
+        if(!Files.exists(madisPath)){
+            madisPath = Paths.get(System.getProperty("user.dir") + "/exareme-tools/madis/src/mterm.py");
+        }
+        String relMadisPath = madisPath.toString();
         if (System.getenv("EXAREME_MADIS") != null) {
             log.info("**--" + System.getenv("EXAREME_MADIS"));
         } else if (new File(relMadisPath).exists()) {
