@@ -15,4 +15,3 @@ You'll find installation instructions on our [wiki page] (https://github.com/mad
 
 ## License
 This content is released under the MIT License. See the LICENSE file in the source distribution.
-...
