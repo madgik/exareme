@@ -154,7 +154,7 @@ public class PlanEventSchedulerElasticTree extends PlanEventScheduler {
 
     @Override
     public void terminated(ConcreteOperatorID operatorID, int exidCode, Serializable exitMessage,
-        Date time, PlanSessionID sessionID) throws RemoteException {
+        Date time, PlanSessionID sessionID, boolean terminateGroup) throws RemoteException {
         //    log.info("TERMINATED");
         lock.lock();
         try {

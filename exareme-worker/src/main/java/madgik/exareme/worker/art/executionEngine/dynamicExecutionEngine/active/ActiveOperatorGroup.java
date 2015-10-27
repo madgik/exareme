@@ -186,12 +186,12 @@ public class ActiveOperatorGroup {
         hasStarted = true;
     }
 
-    public void setTerminated(OperatorEntity entity) {
+    public void setTerminated(OperatorEntity entity, boolean force) {
         runningOperators.remove(entity.operatorName);
         terminatedOperators.put(entity.operatorName, entity);
         log.debug("Active GROUP: " + activeGroupId + " - running: " + runningOperators.size()
             + " - finished: " + terminatedOperators.size());
-        if (runningOperators.isEmpty()) {
+        if (force || runningOperators.isEmpty()) {
             hasTerminated = true;
         }
     }

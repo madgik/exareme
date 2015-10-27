@@ -40,7 +40,7 @@ public class ExecutionPlanImpl implements EditableExecutionPlan {
         new LinkedHashMap<String, SwitchLinkEntity>();
     private DirectedGraph<String, Edge<String>> operatorEntityGraph =
         new HashDirectedGraph<String, Edge<String>>();
-
+    private int dataTransferOperatorsCount;
     // Operator to state map
     private Map<String, Map<String, StateEntity>> opStateMap =
         new LinkedHashMap<String, Map<String, StateEntity>>();
@@ -451,6 +451,15 @@ public class ExecutionPlanImpl implements EditableExecutionPlan {
     @Override public PragmaEntity removePragma(String pragmaName) throws SemanticError {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    @Override public void setDataTransferOperatorsCount(int dataTransferOperatorsCount) {
+        this.dataTransferOperatorsCount = dataTransferOperatorsCount;
+    }
+
+    @Override public int getDataTransferOperatorsCount() {
+        return dataTransferOperatorsCount;
+    }
+
 
     @Override public int getStateCount() {
         throw new UnsupportedOperationException("Not supported yet.");

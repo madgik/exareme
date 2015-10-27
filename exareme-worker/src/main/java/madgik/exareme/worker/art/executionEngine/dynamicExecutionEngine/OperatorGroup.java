@@ -115,50 +115,23 @@ public class OperatorGroup {
                     OperatorEntity from = state.getPlan().getFromLinks(op).iterator().next();
                     for (OperatorEntity to : state.getPlan().getToLinks(op)) {
                         if (ops.containsKey(from.operatorName) == false) {
-                            log.debug("Get matBuff: " + from.operatorName + "_" + to.operatorName);
+                            log.trace("Get matBuff: " + from.operatorName + "_" + to.operatorName);
                             MaterializedBuffer matBuff = this.state
                                 .getMaterializedBuffer(from.operatorName + "_" + to.operatorName);
                             String fileName = matBuff.fileName;
-                            log.debug("FILENAME DT: " + fileName);
+                            log.trace("FILENAME DT: " + fileName);
                             //TODO(JV) make this right for more than one outputs
                             op.linksparams.get(to.operatorName)
                                 .add(new Parameter("Name", fileName));
                         }
 
                     }
-                    Iterable<OperatorEntity> toList = state.getPlan().getToLinks(op);
-                    //          for (OperatorEntity to : toList) {
-                    //            if (ops.containsKey(to.operatorName) == false) {
-                    //
-                    //              String fileName = op.operatorName.split("\\.")[0] + ".S-" + state.getPlanSessionID().getLongId();
-                    //              log.info("FILENAME DT: " + fileName);
-                    //              MaterializedBuffer matBuff = new MaterializedBuffer(
-                    //                op.operatorName, fileName, op.containerName);
-                    //              // Register the buffer pool session
-                    //              ActiveBufferPool bufferPool
-                    //                = new ActiveBufferPool(matBuff.fileName, matBuff, null, this);
-                    //
-                    //              this.state.addActiveObject(matBuff.fileName, bufferPool);
-                    //              this.state.addMaterializedBuffer(op.operatorName, matBuff);
-                    //              this.outputBufferPoolSessions.add(matBuff);
-                    //
-                    //            }
-
-                    //         }
                     continue;
                 }
                 Iterable<OperatorEntity> fromList = state.getPlan().getFromLinks(op);
                 for (OperatorEntity from : fromList) {
                     log.trace(from.operatorName + " -> " + op.operatorName);
                     if (ops.containsKey(from.operatorName) == false) {
-            /* Add a reader for every buffer */
-                        //for (BufferEntity buffer : state.getPlan().getBuffers(
-                        //  from.operatorName, op.operatorName)) {
-
-                        //     addContainer(from.containerName, from.container);
-                        //     addContainer(buffer.containerName, buffer.container);
-                        // MaterializedBuffer matBuff = this.state.getMaterializedBuffer(
-                        //    buffer.bufferName);
                         String fromName = from.operatorName;
                         if (from.type.equals(OperatorType.dataTransfer)) {
                             fromName =
@@ -172,7 +145,7 @@ public class OperatorGroup {
 
                         String fileName = matBuff.fileName;
                         log.trace("FILENAME:::: GET :::: " + from.operatorName);
-                        log.debug("FILENAME read " + fileName);
+                        log.trace("FILENAME read " + fileName);
                         LinkedList<Parameter> readParameters = new LinkedList<Parameter>();
                         readParameters.add(new Parameter("Name", fileName));
                         readParameters.add(new Parameter(OperatorEntity.MEMORY_PARAM,
@@ -259,7 +232,7 @@ public class OperatorGroup {
                                     this.outputBufferPoolSessions.add(matBuff);
 
                                     log.trace("FILENAME:::: ADD :::: " + op.operatorName);
-                                    log.debug("FILENAME write " + fileName);
+                                    log.trace("FILENAME write " + fileName);
                                     LinkedList<Parameter> writeParameters = new LinkedList<>();
                                     writeParameters.add(new Parameter("Name", fileName));
                                     writeParameters.add(new Parameter(OperatorEntity.MEMORY_PARAM,
@@ -349,7 +322,7 @@ public class OperatorGroup {
                             this.outputBufferPoolSessions.add(matBuff);
 
                             log.trace("FILENAME:::: ADD :::: " + op.operatorName);
-                            log.debug("FILENAME write " + fileName);
+                            log.trace("FILENAME write " + fileName);
                             LinkedList<Parameter> writeParameters = new LinkedList<>();
                             writeParameters.add(new Parameter("Name", fileName));
                             writeParameters.add(new Parameter(OperatorEntity.MEMORY_PARAM,
@@ -423,9 +396,9 @@ public class OperatorGroup {
         group.setRunning(entity);
     }
 
-    public ActiveOperatorGroup setTerminated(OperatorEntity entity) {
+    public ActiveOperatorGroup setTerminated(OperatorEntity entity, boolean force) {
         ActiveOperatorGroup group = opNameActiveGroupMap.get(entity.operatorName);
-        group.setTerminated(entity);
+        group.setTerminated(entity, force);
         if ((group.hasTerminated) && (group.hasError == false)) {
             log.trace("~~~~~~ GROUP TERMINATED: " + groupID + "." + group.activeGroupId);
             hasTerminated = true;

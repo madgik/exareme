@@ -156,7 +156,7 @@ public class DataTransferMgr implements DataTransferMgrInterface {
                 aoimp.getSessionManager().getSessionReportID().reportManagerProxy
                     .operatorSuccess(aoimp.getSessionManager().getOpID(), aoimp.getExitCode(),
                         aoimp.getExitMessage(), new Date(),
-                        aoimp.getSessionManager().getContainerID());
+                        aoimp.getSessionManager().getContainerID(), true);
                 aoimp.freeresources(aoimp.getSessionManager().getOpID());
                 transferIdToAoimpl.remove(DtOpId);
 

@@ -22,7 +22,8 @@ public interface PlanSessionReportManagerInterface {
         PlanSessionReportID sessionID) throws RemoteException;
 
     void operatorSuccess(ConcreteOperatorID operatorID, int exidCode, Serializable exitMessage,
-        Date time, ContainerID containerID, PlanSessionReportID sessionID) throws RemoteException;
+        Date time, ContainerID containerID, PlanSessionReportID sessionID, boolean terminateGroup)
+        throws RemoteException;
 
     void operatorError(ConcreteOperatorID operatorID, RemoteException exception, Date time,
         ContainerID containerID, PlanSessionReportID sessionID) throws RemoteException;
