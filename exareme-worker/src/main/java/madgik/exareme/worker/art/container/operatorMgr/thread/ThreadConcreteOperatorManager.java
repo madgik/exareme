@@ -20,6 +20,7 @@ import madgik.exareme.worker.art.container.event.closeSession.CloseSessionEvent;
 import madgik.exareme.worker.art.container.event.closeSession.CloseSessionEventHandler;
 import madgik.exareme.worker.art.container.event.closeSession.CloseSessionEventListener;
 import madgik.exareme.worker.art.container.jobQueue.JobQueueInterface;
+import madgik.exareme.worker.art.container.operatorGroupMgr.OperatorGroupManagerInterface;
 import madgik.exareme.worker.art.container.operatorMgr.ConcreteOperatorManagerInterface;
 import madgik.exareme.worker.art.container.operatorMgr.ConcreteOperatorManagerStatus;
 import madgik.exareme.worker.art.container.statsMgr.StatisticsManagerInterface;
@@ -52,12 +53,14 @@ public class ThreadConcreteOperatorManager implements ConcreteOperatorManagerInt
     private EventProcessor operatorsProcessor = null;
     private JobQueueInterface jobQueueInterface;
     private DataTransferMgrInterface dataTransferManagerDTP = null;
+    private OperatorGroupManagerInterface operatorGroupManager = null;
 
 
     public ThreadConcreteOperatorManager(ConcreteOperatorManagerStatus status,
         DiskManagerInterface diskManagerInterface, StatisticsManagerInterface statistics,
         ContainerID containerID, JobQueueInterface jobQueueInterface,
-        DataTransferMgrInterface dataTransferManagerDTP) {
+        DataTransferMgrInterface dataTransferManagerDTP,
+        OperatorGroupManagerInterface operatorGroupManager) {
         this.status = status;
         this.diskManagerInterface = diskManagerInterface;
         this.statistics = statistics;
@@ -69,6 +72,7 @@ public class ThreadConcreteOperatorManager implements ConcreteOperatorManagerInt
         this.operatorsProcessor.start();
         this.jobQueueInterface = jobQueueInterface;
         this.dataTransferManagerDTP = dataTransferManagerDTP;
+        this.operatorGroupManager = operatorGroupManager;
 
     }
 
@@ -107,7 +111,7 @@ public class ThreadConcreteOperatorManager implements ConcreteOperatorManagerInt
             executionThread = new OperatorExecutionThread(operator, op, jobQueueInterface, id);
 
             op.createSession(name, category, type, id, sessionReportID, containerSessionID,
-                sessionID, containerID, dataTransferManagerDTP);
+                sessionID, containerID, dataTransferManagerDTP, operatorGroupManager);
 
             op.getParameterManager().setParameters(parameters);
             op.getParameterManager().setOutputParameters(outParameters);

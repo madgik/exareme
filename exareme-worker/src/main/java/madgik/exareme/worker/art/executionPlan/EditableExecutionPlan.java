@@ -40,4 +40,8 @@ public interface EditableExecutionPlan extends ExecutionPlan {
     SwitchLinkEntity addSwitchConnect(SwitchLink sl) throws SemanticError;
 
     SwitchLinkEntity removeSwitchConnect(SwitchLink sl) throws SemanticError;
+
+    void setDataTransferOperatorsCount(int dataTransferOperatorsCount);
+
+    int getDataTransferOperatorsCount();
 }

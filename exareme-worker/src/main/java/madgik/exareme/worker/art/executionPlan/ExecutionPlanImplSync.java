@@ -104,6 +104,18 @@ public class ExecutionPlanImplSync implements EditableExecutionPlan {
         }
     }
 
+    @Override public void setDataTransferOperatorsCount(int dataTransferOperatorsCount) {
+        synchronized (plan) {
+            plan.setDataTransferOperatorsCount(dataTransferOperatorsCount);
+        }
+    }
+
+    @Override public int getDataTransferOperatorsCount() {
+        synchronized (plan) {
+            return plan.getDataTransferOperatorsCount();
+        }
+    }
+
     @Override public StartEntity createStartEntity(Start start) throws SemanticError {
         synchronized (plan) {
             return plan.createStartEntity(start);
