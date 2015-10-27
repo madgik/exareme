@@ -268,6 +268,7 @@ public class PlanEventScheduler {
      }
      }
      }*/
+        int dataTransferOperatorsCount = 0;
         for (OperatorEntity from : plan.iterateOperators()) {
             List<OperatorEntity> remoteOps = new ArrayList<>();
             for (OperatorEntity to : plan.getToLinks(from)) {
@@ -283,10 +284,12 @@ public class PlanEventScheduler {
             }
             if (!remoteOps.isEmpty()) {
                 addMediator(from, remoteOps, newPlan, dataTransfer.pragmaValue);
+                dataTransferOperatorsCount++;
             }
             remoteOps = null;
         }
-        //log.debug("Added " + icmCount + " container mediators.");
+        log.debug("Added " + dataTransferOperatorsCount + " data transfer operators.");
+        newPlan.setDataTransferOperatorsCount(dataTransferOperatorsCount);
         return newPlan;
     }
 
@@ -305,7 +308,7 @@ public class PlanEventScheduler {
             //      state.resourceManager.reset(); TODO(jv) comment or not?
             state.setPlan(newPlan);
             state.getStatistics().setTotalProcessingOperators(plan.getOperatorCount());
-            state.getStatistics().setTotalDataTransfer(plan.getOperatorLinkCount());
+            state.getStatistics().setTotalDataTransfer(newPlan.getDataTransferOperatorsCount());
             state.createSessionPlan();
             state.getStatistics().setStartTime(System.currentTimeMillis());
 
@@ -320,7 +323,7 @@ public class PlanEventScheduler {
         try {
             IndependentEvents jobs = new IndependentEvents(state);
             OperatorTerminatedEvent event =
-                new OperatorTerminatedEvent(null, -1, null, this, state);
+                new OperatorTerminatedEvent(null, -1, null, this, state, false);
             jobs.addEvent(event, OperatorGroupTerminatedEventHandler.instance,
                 OperatorTerminatedEventListener.instance);
             queueIndependentEvents(jobs, true);
@@ -532,12 +535,13 @@ public class PlanEventScheduler {
     }
 
     public void terminated(ConcreteOperatorID operatorID, int exidCode, Serializable exitMessage,
-        Date time, PlanSessionID sessionID) throws RemoteException {
+        Date time, PlanSessionID sessionID, boolean terminateGroup) throws RemoteException {
         lock.lock();
         try {
             IndependentEvents jobs = new IndependentEvents(state);
             OperatorTerminatedEvent event =
-                new OperatorTerminatedEvent(operatorID, exidCode, exitMessage, this, state);
+                new OperatorTerminatedEvent(operatorID, exidCode, exitMessage, this, state,
+                    terminateGroup);
 
             jobs.addEvent(event, OperatorGroupTerminatedEventHandler.instance,
                 OperatorTerminatedEventListener.instance);
@@ -550,12 +554,13 @@ public class PlanEventScheduler {
     }
 
     public void terminated(ConcreteOperatorID operatorID, int exidCode, Serializable exitMessage,
-        Date time) throws RemoteException {
+        Date time, boolean terminateGroup) throws RemoteException {
         lock.lock();
         try {
             IndependentEvents jobs = new IndependentEvents(state);
             OperatorTerminatedEvent event =
-                new OperatorTerminatedEvent(operatorID, exidCode, exitMessage, this, state);
+                new OperatorTerminatedEvent(operatorID, exidCode, exitMessage, this, state,
+                    terminateGroup);
 
             jobs.addEvent(event, OperatorGroupTerminatedEventHandler.instance,
                 OperatorTerminatedEventListener.instance);

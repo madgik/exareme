@@ -17,6 +17,9 @@ import madgik.exareme.worker.art.container.jobQueue.JobQueue;
 import madgik.exareme.worker.art.container.jobQueue.JobQueueInterface;
 import madgik.exareme.worker.art.container.netMgr.NetManagerInterface;
 import madgik.exareme.worker.art.container.netMgr.NetManagerInterfaceFactory;
+import madgik.exareme.worker.art.container.operatorGroupMgr.OperatorGroupManager;
+import madgik.exareme.worker.art.container.operatorGroupMgr.OperatorGroupManagerInterface;
+import madgik.exareme.worker.art.container.operatorGroupMgr.sync.SynchronizedOperatorGroupManager;
 import madgik.exareme.worker.art.container.operatorMgr.ConcreteOperatorManagerInterface;
 import madgik.exareme.worker.art.container.operatorMgr.sync.SynchronizedConcreteOperatorManager;
 import madgik.exareme.worker.art.container.operatorMgr.thread.ThreadConcreteOperatorManager;
@@ -79,12 +82,14 @@ public class ContainerFactory {
         DataTransferMgrInterface dataTransferManagerDTP =
             createDataTransferManagerDTPInterface(dtPort);
         DataTransferMgrLocator.setDataTransferMgr(dataTransferManagerDTP, dtPort);
+        OperatorGroupManagerInterface operatorGroupManager =
+            new SynchronizedOperatorGroupManager(new OperatorGroupManager());
 
         ConcreteOperatorManagerInterface concreteOperatorManagerInterface =
             new SynchronizedConcreteOperatorManager(
                 new ThreadConcreteOperatorManager(containerStatus.operatorStatus,
                     diskManagerInterface, statisticsManagerInterface, containerID,
-                    jobQueueInterface, dataTransferManagerDTP));
+                    jobQueueInterface, dataTransferManagerDTP, operatorGroupManager));
 
 
         //DataTransferManagerInterface dataTransferManagerInterface = new DataTransferManager ();

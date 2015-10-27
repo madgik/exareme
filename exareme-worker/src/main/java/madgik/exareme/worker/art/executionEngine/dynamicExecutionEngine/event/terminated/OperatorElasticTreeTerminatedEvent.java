@@ -19,7 +19,7 @@ public class OperatorElasticTreeTerminatedEvent extends OperatorTerminatedEvent 
     public OperatorElasticTreeTerminatedEvent(ConcreteOperatorID operatorID, int exidCode,
         Serializable exitMessage, PlanEventScheduler scheduler, PlanEventSchedulerState state,
         PlanEventSchedulerStateElasticTree elasticState) {
-        super(operatorID, exidCode, exitMessage, scheduler, state);
+        super(operatorID, exidCode, exitMessage, scheduler, state, false);
         this.elasticState = elasticState;
     }
 }

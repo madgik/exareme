@@ -56,10 +56,11 @@ public class RmiPlanSessionReportManager extends RmiRemoteObject<PlanSessionRepo
     }
 
     @Override public void operatorSuccess(ConcreteOperatorID operatorID, int exidCode,
-        Serializable exitMessage, Date time, ContainerID containerID, PlanSessionReportID sessionID)
-        throws RemoteException {
+        Serializable exitMessage, Date time, ContainerID containerID, PlanSessionReportID sessionID,
+        boolean terminateGroup) throws RemoteException {
         reportManagerInterface
-            .operatorSuccess(operatorID, exidCode, exitMessage, time, containerID, sessionID);
+            .operatorSuccess(operatorID, exidCode, exitMessage, time, containerID, sessionID,
+                terminateGroup);
     }
 
     @Override

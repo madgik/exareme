@@ -67,7 +67,7 @@ public class RepartitionTest {
 
             // Set terminated to this container
             ActiveOperator activeOperator = state.getActiveOperator(originalName);
-            activeOperator.operatorGroup.setTerminated(activeOperator.operatorEntity);
+            activeOperator.operatorGroup.setTerminated(activeOperator.operatorEntity, true);
         }
         solver.setTerminated(g);
     }

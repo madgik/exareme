@@ -27,7 +27,7 @@ public interface PlanSessionReportManagerProxy extends ObjectProxy<PlanSessionRe
         throws RemoteException;
 
     void operatorSuccess(ConcreteOperatorID opID, int exidCode, Serializable exitMessage, Date time,
-        ContainerID containerID) throws RemoteException;
+        ContainerID containerID, boolean terminateGroup) throws RemoteException;
 
     void operatorError(ConcreteOperatorID opID, RemoteException exception, Date time,
         ContainerID containerID) throws RemoteException;
