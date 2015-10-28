@@ -17,6 +17,7 @@ import madgik.exareme.worker.art.executionEngine.dynamicExecutionEngine.event.in
 import madgik.exareme.worker.art.executionPlan.ExecutionPlan;
 import madgik.exareme.worker.art.executionPlan.entity.OperatorEntity;
 import madgik.exareme.worker.art.executionPlan.entity.OperatorLinkEntity;
+import madgik.exareme.worker.art.executionPlan.parser.expression.Parameter;
 import madgik.exareme.worker.art.executionPlan.parser.expression.Start;
 import org.apache.log4j.Logger;
 
@@ -47,8 +48,14 @@ public class OperatorGroupTerminatedEventHandler
             log.trace("OperatorTerminated: " + event.operatorID.operatorName);
             state.getStatistics().incrOperatorCompleted();
             ActiveOperator activeOperator = state.getActiveOperator(event.operatorID);
-            if (activeOperator.operatorEntity.type == OperatorType.processing) {
-                state.getStatistics().incrProcessingOperatorsCompleted();
+            if (event.terminateGroup
+                || activeOperator.operatorEntity.type == OperatorType.processing) {
+                if (activeOperator.operatorEntity.type == OperatorType.dataTransfer) {
+                    state.getStatistics().incrDataTransferCompleted();
+                    log.trace("IncrDTC: " + activeOperator.operatorEntity.operatorName);
+                } else {
+                    state.getStatistics().incrProcessingOperatorsCompleted();
+                }
                 String opName = activeOperator.operatorEntity.operatorName.split("\\.")[0];
                 state.getStatistics().error.remove(opName);
                 state.getStatistics().running.remove(opName);
@@ -57,7 +64,8 @@ public class OperatorGroupTerminatedEventHandler
                 state.getStatistics().incrDataTransferCompleted();
             }
             OperatorGroup group = activeOperator.operatorGroup;
-            ActiveOperatorGroup activeGroup = group.setTerminated(activeOperator.operatorEntity);
+            ActiveOperatorGroup activeGroup =
+                group.setTerminated(activeOperator.operatorEntity, event.terminateGroup);
             activeOperator.exitCode = event.exidCode;
             activeOperator.exitMessage = event.exitMessage;
             activeOperator.exitDate = new Date();
@@ -128,6 +136,10 @@ public class OperatorGroupTerminatedEventHandler
                         .createContainerSession(state.getPlanSessionID()));
 
                 activeGroups.add(activeGroup);
+                log.debug(
+                    "GROUP: " + activeGroup.containerSessionID.getLongId() + " activeGroupId: "
+                        + activeGroup.activeGroupId + " OPS: " + activeGroup.planSession
+                        .getExecutionPlan().getOperatorCount());
             }
 
             IndependentEvents addContainer = new IndependentEvents(state);
@@ -153,6 +165,8 @@ public class OperatorGroupTerminatedEventHandler
                 }
                 // Schedule the operators
                 for (OperatorEntity createOp : plan.iterateOperators()) {
+                    createOp.paramList.add(
+                        new Parameter("OpsInGroup", Integer.toString(plan.getOperatorCount())));
                     ContainerJobsEvent e = ContainerJobsEventHandler
                         .getEvent(createOp.container.getName(), create, createMap, state);
                     state.eventScheduler.createOperator(createOp, e);

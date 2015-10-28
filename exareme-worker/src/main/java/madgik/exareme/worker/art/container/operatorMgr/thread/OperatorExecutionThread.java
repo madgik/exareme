@@ -71,10 +71,66 @@ public class OperatorExecutionThread extends Thread {
                     setTotalTime_ms(end - start,
                         ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime() / 1000000);
 
-                abstractOperator.getSessionManager().getSessionReportID().reportManagerProxy
-                    .operatorSuccess(abstractOperator.getSessionManager().getOpID(),
-                        abstractOperator.getExitCode(), abstractOperator.getExitMessage(),
-                        new Date(), abstractOperator.getSessionManager().getContainerID());
+                //                abstractOperator.getSessionManager().getSessionReportID().reportManagerProxy
+                //                    .operatorSuccess(abstractOperator.getSessionManager().getOpID(),
+                //                        abstractOperator.getExitCode(), abstractOperator.getExitMessage(),
+                //                        new Date(), abstractOperator.getSessionManager().getContainerID());
+
+                //log.trace("Will report operator success: " + abstractOperator.getSessionManager().getOpID().operatorName
+                //        + "\nGID: " +abstractOperator.getSessionManager().getContainerSessionID().getLongId()
+                //            + " OpsInGroup: "+abstractOperator.getParameterManager().getParameter("OpsInGroup").iterator().next().getValue());
+                abstractOperator.getOperatorGroupManager()
+                    .setTerminated(abstractOperator.getSessionManager().getSessionID(),
+                        abstractOperator.getSessionManager().getContainerSessionID(),
+                        abstractOperator.getSessionManager().getOpID().operatorName);
+                int operatorsInGroup = -1;
+                try {
+                    operatorsInGroup = Integer.parseInt(
+                        abstractOperator.getParameterManager().getParameter("OpsInGroup").iterator()
+                            .next().getValue());
+                } catch (Exception e) {  //Ignore exception and report operator terminated
+                    abstractOperator.getSessionManager().getSessionReportID().reportManagerProxy
+                        .operatorSuccess(abstractOperator.getSessionManager().getOpID(),
+                            abstractOperator.getExitCode(), abstractOperator.getExitMessage(),
+                            new Date(), abstractOperator.getSessionManager().getContainerID(),
+                            false);
+                }
+                if (operatorsInGroup != -1) {
+                    synchronized (abstractOperator.getOperatorGroupManager()) {
+                        if (abstractOperator.getOperatorGroupManager()
+                            .getNumberOfTerminatedOperators(
+                                abstractOperator.getSessionManager().getSessionID(),
+                                abstractOperator.getSessionManager().getContainerSessionID())
+                            == operatorsInGroup) {
+                            //This is the last in group operator
+                            // log.trace("Terminated operators map: " + abstractOperator.getOperatorGroupManager().toString());
+                            log.trace(
+                                "This is the last operator in group. OPName: " + abstractOperator
+                                    .getSessionManager().getOpID().operatorName + " GROUPID: "
+                                    + abstractOperator.getSessionManager().getContainerSessionID()
+                                    .getLongId());
+                            abstractOperator.getOperatorGroupManager()
+                                .clear(abstractOperator.getSessionManager().getSessionID(),
+                                    abstractOperator.getSessionManager().getContainerSessionID());
+
+                            abstractOperator.getSessionManager()
+                                .getSessionReportID().reportManagerProxy
+                                .operatorSuccess(abstractOperator.getSessionManager().getOpID(),
+                                    abstractOperator.getExitCode(),
+                                    abstractOperator.getExitMessage(), new Date(),
+                                    abstractOperator.getSessionManager().getContainerID(), true);
+
+                        } else {
+                            log.trace("This is NOT the last operator in group. OPName: "
+                                + abstractOperator.getSessionManager().getOpID().operatorName
+                                + " GROUPID: " + abstractOperator.getSessionManager()
+                                .getContainerSessionID().getLongId());
+                        }
+                    }
+                }
+
+                log.trace("Terminated operators map: " + abstractOperator.getOperatorGroupManager()
+                    .toString());
             }
         } catch (Exception exception) {
             if (shutdown == false) {
