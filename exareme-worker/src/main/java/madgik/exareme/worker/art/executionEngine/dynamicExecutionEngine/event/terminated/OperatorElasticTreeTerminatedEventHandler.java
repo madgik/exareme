@@ -66,7 +66,8 @@ public class OperatorElasticTreeTerminatedEventHandler
                 state.getStatistics().incrDataTransferCompleted();
             }
             OperatorGroup group = activeOperator.operatorGroup;
-            ActiveOperatorGroup activeGroup = group.setTerminated(activeOperator.operatorEntity);
+            ActiveOperatorGroup activeGroup =
+                group.setTerminated(activeOperator.operatorEntity, false);
             activeOperator.exitCode = event.exidCode;
             activeOperator.exitMessage = event.exitMessage;
             activeOperator.exitDate = new Date();

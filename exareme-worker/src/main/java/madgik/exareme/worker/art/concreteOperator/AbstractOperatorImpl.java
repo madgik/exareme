@@ -12,6 +12,7 @@ import madgik.exareme.worker.art.container.dataTrasferMgr.DataTransferMgrInterfa
 import madgik.exareme.worker.art.container.jobQueue.JobQueueInterface;
 import madgik.exareme.worker.art.container.monitor.OperatorStatus;
 import madgik.exareme.worker.art.container.monitor.StatusVariable;
+import madgik.exareme.worker.art.container.operatorGroupMgr.OperatorGroupManagerInterface;
 import madgik.exareme.worker.art.executionEngine.session.PlanSessionReportID;
 import org.apache.log4j.Logger;
 
@@ -51,6 +52,7 @@ public abstract class AbstractOperatorImpl {
     private DiskManager diskManager = null;
     private NetManager netManager = null;
     private ProcessManager processManager = null;
+    private OperatorGroupManagerInterface operatorGroupManager = null;
     private DataTransferMgrInterface dataTransferManagerDTP = null;
     private String opname;
 
@@ -58,7 +60,8 @@ public abstract class AbstractOperatorImpl {
     public void createSession(String operatorName, String category, OperatorType type,
         ConcreteOperatorID opID, PlanSessionReportID sessionReportID,
         ContainerSessionID containerSessionID, PlanSessionID sessionID, ContainerID containerID,
-        DataTransferMgrInterface dataTransferManagerDTP) throws Exception {
+        DataTransferMgrInterface dataTransferManagerDTP,
+        OperatorGroupManagerInterface operatorGroupManager) throws Exception {
         opname = operatorName;
         sessionManager =
             new SessionManager(operatorName, category, type, opID, containerSessionID, sessionID,
@@ -72,7 +75,7 @@ public abstract class AbstractOperatorImpl {
         netManager = new NetManager(sessionManager);
         processManager = new ProcessManager(sessionManager);
         this.dataTransferManagerDTP = dataTransferManagerDTP;
-
+        this.operatorGroupManager = operatorGroupManager;
     /* Create the default tasks */
         taskManager.createTask("Working");
     }
@@ -247,4 +250,8 @@ public abstract class AbstractOperatorImpl {
      * @throws Exception
      */
     public abstract void run() throws Exception;
+
+    public OperatorGroupManagerInterface getOperatorGroupManager() {
+        return operatorGroupManager;
+    }
 }
