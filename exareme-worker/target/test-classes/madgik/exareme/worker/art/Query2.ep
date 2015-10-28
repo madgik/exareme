@@ -1,0 +1,16 @@
+container c ('localhost',1099);
+operator art c('madgik.adp.operatorLibrary.builtin.Art', Ip = 'localhost', Port='1099', Output='output')
+{ {
+    container c ('localhost',1099);
+    operator hello c('madgik.adp.operatorLibrary.test.HelloWorld');
+    buffer output c('10');
+    connect c(hello, output);
+  \}
+};
+operator save c('madgik.adp.operatorLibrary.builtin.FileRsSave', Name='test');
+buffer art_out c('10');
+buffer output c('10');
+
+connect c(art, art_out);
+connect c(save, output);
+connect c(art_out, save);
