@@ -29,6 +29,8 @@ class StreamdataVT(vtbase.VT):
             else:
                 if (float(float(1)/float(ratio)) - int(float(1)/float(ratio))) != 0:
                     raise functions.OperatorError(__name__.rsplit('.')[-1], "1/Ratio must be a not decimal number ")
+        else:
+            ratio = 1
 
         if 'quantum' in dictargs:
             quantum=int(dictargs['quantum'])
@@ -49,8 +51,13 @@ class StreamdataVT(vtbase.VT):
         cur = envars['db'].cursor()
         q = cur.execute(query, parse=False)
 
+        schema = list(cur.getdescriptionsafe())
+        for x in range(len(schema)):
+            if str(schema[x][0]).lower() == 'timestamp':
+                schema[x] = ('timestamp1', 'text')
+
         try:
-            yield [('timestamp', 'text')] + list(cur.getdescriptionsafe())
+            yield [('timestamp', 'text')] + schema
         except StopIteration:
             try:
                 raise
@@ -61,21 +68,24 @@ class StreamdataVT(vtbase.VT):
                     pass
 
         if quantum is not None:
-            t = q.next()
-            ttime = t[0]
-            lines.append([t])
-            for t in q:
-                sec = int(t[0]/quantum) - int(ttime/quantum)
-                if sec == 0:
-                    lines[-1].append(t)
-                elif sec < 0:
-                    raise functions.OperatorError(__name__.rsplit('.')[-1], "Time not in order ")
-                else:
-                    for x in range(sec - 1):
-                        lines.append([])
-                    lines.append([t])
-
+            try:
+                t = q.next()
                 ttime = t[0]
+                lines.append([t])
+                for t in q:
+                    sec = int(t[0]/quantum) - int(ttime/quantum)
+                    if sec == 0:
+                        lines[-1].append(t)
+                    elif sec < 0:
+                        raise functions.OperatorError(__name__.rsplit('.')[-1], "Time not in order ")
+                    else:
+                        for x in range(sec - 1):
+                            lines.append([])
+                        lines.append([t])
+
+                    ttime = t[0]
+            except:
+                raise functions.OperatorError(__name__.rsplit('.')[-1], "The first column must be a long (timestamp in epoch time) ")
         else:
             if ratio < 1.000:
                 for t in q:
