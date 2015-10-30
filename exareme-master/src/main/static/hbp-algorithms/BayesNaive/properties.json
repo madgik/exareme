@@ -1,0 +1,14 @@
+{
+  "name" : "BayesNaive",
+  "desc" : "BayesNaive",
+  "type" : "multiple_local_global",
+  "parameters" : [
+    {"name" : "input_local_tbl", "desc" : "", "value" : "hospital"},
+    {"name" : "output_tbl", "desc" : "", "value" : ""},
+    {"name" : "classname", "desc" : "column value", "value" : "Parietal_Sup_R"},
+    {"name" : "random_rid", "desc" : "random column rid", "value" : "3cbrd1000082"},
+    {"name" : "random_colname", "desc" : "random column colname", "value" : "Parietal_Sup_R"},
+    {"name" : "random_val", "desc" : "randome column val", "value" : "0.012279"}
+  ]
+
+}

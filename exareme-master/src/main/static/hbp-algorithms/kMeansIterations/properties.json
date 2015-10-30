@@ -1,0 +1,10 @@
+{
+  "name" : "kMeans",
+  "desc" : "kMeans",
+  "parameters" : [
+    {"name" : "rid", "desc" : ""},
+    {"name" : "colname", "desc" : ""},
+    {"name" : "val", "desc" : ""},
+    {"name" : "input_local_tbl", "desc" : ""}
+  ]
+}

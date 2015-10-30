@@ -1,0 +1,5 @@
+{ "schema" : [ ["name", "text"], ["desc", "text"], ["host", "text"], ["port", "text"], ["status", "text"] ]}
+[ "Endpoint2", "", "192.168.0.3", "8089", "/tmp/hbp.db", "enabled"]
+[ "Endpoint3", "", "192.168.0.4", "8089", "/tmp/hbp.db", "enabled"]
+[ "Endpoint4", "", "192.168.0.5", "8089", "/tmp/hbp.db", "enabled"]
+[ "Endpoint5", "", "192.168.0.6", "8089", "/tmp/hbp.db", "enabled"]

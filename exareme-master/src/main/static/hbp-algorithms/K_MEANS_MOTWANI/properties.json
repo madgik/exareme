@@ -1,0 +1,12 @@
+{
+  "name" : "K_MEANS_MOTWANI",
+  "desc" : "K_MEANS_MOTWANI",
+  "type" : "local_global",
+  "parameters" : [
+    {"name" : "input_local_tbl", "desc" : "", "value" : ""},
+    {"name" : "output_tbl", "desc" : "", "value" : ""},
+    {"name" : "column1", "desc" : "column value 1", "value" : "Lingual_L"},
+    {"name" : "column2", "desc" : "column value 2", "value" : "Amygdala_L"},
+    {"name" : "k", "desc" : "#centers", "value" : "4"}
+  ]
+}

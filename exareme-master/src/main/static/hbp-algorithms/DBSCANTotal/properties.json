@@ -1,0 +1,13 @@
+{
+  "name" : "DBSCANTotal",
+  "desc" : "DBSCANTotal",
+  "type" : "multiple_local_global",
+  "parameters" : [
+    {"name" : "input_local_tbl", "desc" : "", "value" : ""},
+    {"name" : "output_tbl", "desc" : "", "value" : ""},
+    {"name" : "column1", "desc" : "column value 1", "value" : "Lingual_L"},
+    {"name" : "column2", "desc" : "column value 2", "value" : "Amygdala_L"},
+    {"name" : "eps",  "desc" : "neighborhood radius", "value" : "0.003"},
+    {"name" : "k",  "desc" : "number of objects in a neighborhood of an object", "value" : "10"}
+  ]
+}
