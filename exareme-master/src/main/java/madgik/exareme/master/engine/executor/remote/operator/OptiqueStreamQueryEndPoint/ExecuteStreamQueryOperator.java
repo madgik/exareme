@@ -1,9 +1,22 @@
 package madgik.exareme.master.engine.executor.remote.operator.OptiqueStreamQueryEndPoint;
 
+import java.util.List;
+
 import madgik.exareme.master.gateway.ExaremeGatewayUtils;
 import madgik.exareme.utils.association.SimplePair;
 import madgik.exareme.utils.http.HttpUtils;
 import madgik.exareme.worker.art.concreteOperator.AbstractNiNo;
+
+import java.io.IOException;
+import java.net.SocketTimeoutException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayDeque;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.http.*;
 import org.apache.http.config.SocketConfig;
 import org.apache.http.entity.EntityTemplate;
@@ -12,13 +25,6 @@ import org.apache.http.impl.bootstrap.ServerBootstrap;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.protocol.HttpRequestHandler;
 import org.apache.log4j.Logger;
-
-import java.io.IOException;
-import java.net.SocketTimeoutException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 public class ExecuteStreamQueryOperator extends AbstractNiNo {
     private static Logger log = Logger.getLogger(ExecuteStreamQueryOperator.class);
@@ -48,11 +54,11 @@ public class ExecuteStreamQueryOperator extends AbstractNiNo {
         //        server.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
 
         while (StreamQueryExecutorThread.State.DESTROY != queryExecutor.state()) {
-            Thread.sleep(5000);
+            Thread.sleep(1000);
         }
 
         log.info("Server Shotdown ...");
-        server.shutdown(1, TimeUnit.SECONDS);
+        server.shutdown(1, TimeUnit.MILLISECONDS);
 
         //        Runtime.getRuntime().addShutdownHook(new Thread() {
         //            @Override
