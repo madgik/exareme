@@ -26,7 +26,7 @@ public class Registry {
 
     private static final Logger log = Logger.getLogger(Registry.class);
     private static List<Registry> registryObjects = new ArrayList<>();
-    private Connection conn = null;
+    private Connection regConn = null;
     private String database = null;
 
     private Registry(String path) {
@@ -36,8 +36,8 @@ public class Registry {
         try {
             Class.forName("org.sqlite.JDBC");
             // create a database connection
-            conn = DriverManager.getConnection("jdbc:sqlite:" + database);
-            Statement stmt = conn.createStatement();
+            regConn = DriverManager.getConnection("jdbc:sqlite:" + database);
+            Statement stmt = regConn.createStatement();
 
             stmt.execute(
                 "create table if not exists sql(" + "table_name text, " + "sql_definition text, "
@@ -83,7 +83,7 @@ public class Registry {
     public List<String> getTableDefinitions() {
         List<String> sqlSchemaTables = new ArrayList<String>();
 
-        try (Statement statement = conn.createStatement()) {
+        try (Statement statement = regConn.createStatement()) {
             ResultSet rs = statement.executeQuery("SELECT * FROM sql;");
             while (rs.next()) {
 
@@ -101,15 +101,15 @@ public class Registry {
         log.info("PhysicalTable Insert Into Registry: " + gson.toJson(table));
 
         try (
-            PreparedStatement insertSqlStatemenet = conn
+            PreparedStatement insertSqlStatemenet = regConn
                 .prepareStatement("INSERT INTO sql(table_name, sql_definition) VALUES(?, ?)");
 
 
-            PreparedStatement insertPartitionStatemenet = conn.prepareStatement(
+            PreparedStatement insertPartitionStatemenet = regConn.prepareStatement(
                 "INSERT INTO partition(table_name, " + "location, " + "partition_column, "
                     + "partition_number) " + "VALUES(?, ?, ?, ?)");
 
-            PreparedStatement insertIndexStatemenet = conn.prepareStatement(
+            PreparedStatement insertIndexStatemenet = regConn.prepareStatement(
                 "INSERT INTO table_index(index_name, " + "table_name, " + "column_name, "
                     + "partition_number) " + "VALUES(?, ?, ?, ?)")
         ) {
@@ -164,9 +164,9 @@ public class Registry {
     public PhysicalTable removePhysicalTable(String name) {
         PhysicalTable returnPhysicalTable = getPhysicalTable(name);
         try (
-            Statement deleteIndexStatement = conn.createStatement();
-            Statement deletePartitionStatement = conn.createStatement();
-            Statement deleteSqlStatement = conn.createStatement()
+            Statement deleteIndexStatement = regConn.createStatement();
+            Statement deletePartitionStatement = regConn.createStatement();
+            Statement deleteSqlStatement = regConn.createStatement()
         ) {
             deleteIndexStatement
                 .execute("DELETE FROM table_index WHERE table_name = '" + name + "'");
@@ -186,7 +186,7 @@ public class Registry {
     public boolean containsPhysicalTable(String name) {
         boolean ret = false;
 
-        try (Statement statement = conn.createStatement()) {
+        try (Statement statement = regConn.createStatement()) {
             ResultSet rs = statement.executeQuery(
                 "SELECT table_name " + "FROM sql " + "WHERE table_name = '" + name + "';");
 
@@ -204,9 +204,9 @@ public class Registry {
         PhysicalTable returnPhysicalTable = null;
 
         try (
-            Statement getSqlStatement = conn.createStatement();
-            Statement getIndexStatement = conn.createStatement();
-            Statement getPartitionStatement = conn.createStatement()
+            Statement getSqlStatement = regConn.createStatement();
+            Statement getIndexStatement = regConn.createStatement();
+            Statement getPartitionStatement = regConn.createStatement()
         ) {
 
             ResultSet rs = getSqlStatement
@@ -264,7 +264,7 @@ public class Registry {
     public Collection<PhysicalTable> getPhysicalTables() {
         List<PhysicalTable> list = new ArrayList<PhysicalTable>();
 
-        try (Statement statement = conn.createStatement()) {
+        try (Statement statement = regConn.createStatement()) {
             ResultSet rs = statement.executeQuery("SELECT table_name FROM sql;");
 
             while (rs.next()) {
@@ -280,7 +280,7 @@ public class Registry {
 
     public void addIndex(Index idx) {
         try (
-            PreparedStatement insertIndexStatemenet = conn.prepareStatement(
+            PreparedStatement insertIndexStatemenet = regConn.prepareStatement(
                 "INSERT INTO table_index(index_name, " + "table_name, " + "column_name, "
                     + "partition_number) " + "VALUES(?, ?, ?, ?)")
         ) {
@@ -303,7 +303,7 @@ public class Registry {
     private boolean containesIndex(String name) {
         boolean ret = false;
 
-        try (Statement statement = conn.createStatement()) {
+        try (Statement statement = regConn.createStatement()) {
             ResultSet rs = statement.executeQuery(
                 "SELECT table_name " + "FROM table_index " + "WHERE index_name = '" + name + "';");
 
@@ -318,7 +318,7 @@ public class Registry {
 
     private Index getIndex(String name) {
         Index index = null;
-        try (Statement statement = conn.createStatement()) {
+        try (Statement statement = regConn.createStatement()) {
             ResultSet rs = statement.executeQuery(
                 "SELECT * FROM table_index " + "WHERE index_name = '" + name + "' "
                     + "GROUP BY table_name, " + "column_name, " + "index_name, "
@@ -349,6 +349,26 @@ public class Registry {
 
     public void setMappings(String mappings) {
         // throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public List<Object[]> getMetadata() {
+        List<Object[]> metatada = new ArrayList<>();
+        try (Statement statement = regConn.createStatement()) {
+            ResultSet rs = statement.executeQuery("SELECT table_name, sql_definition FROM sql;");
+
+            while (rs.next()) {
+                Object[] tuple = new Object[2];
+                tuple[0] = rs.getString("table_name");
+                tuple[1] = rs.getString("sql_definition");
+                metatada.add(tuple);
+            }
+
+            rs.close();
+        } catch (SQLException ex) {
+            log.error(ex.getMessage(), ex);
+        }
+
+        return metatada;
     }
 
 
