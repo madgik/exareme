@@ -22,8 +22,10 @@ import java.text.*;
 import java.text.ParseException;
 import java.util.*;
 import java.io.IOException;
+import java.rmi.RemoteException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import madgik.exareme.worker.art.registry.ArtRegistryLocator;
 
 /**
  * Query Handler.
@@ -37,7 +39,16 @@ public class HttpAsyncOptiqueHistoricalQueriesHandler
     private static final Logger log =
         Logger.getLogger(HttpAsyncOptiqueHistoricalQueriesHandler.class);
     private static final AdpDBManager manager = AdpDBManagerLocator.getDBManager();
-    private static final int numberOfMachines = 7;
+    private static int numberOfMachines;
+    
+    static {
+        try {
+            numberOfMachines = ArtRegistryLocator.getArtRegistryProxy().getContainers().length;
+            log.info("Number of machines: " + numberOfMachines);
+        } catch (RemoteException ex) {
+            log.error(ex.getMessage(), ex);
+        }
+    }
 
     public HttpAsyncOptiqueHistoricalQueriesHandler() {
     }
