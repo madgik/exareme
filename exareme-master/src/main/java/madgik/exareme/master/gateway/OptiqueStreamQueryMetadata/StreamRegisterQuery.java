@@ -10,10 +10,7 @@ import org.apache.log4j.Logger;
 
 import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TimeZone;
+import java.util.*;
 
 /*
  * @author Christoforos Svingos
@@ -131,8 +128,9 @@ public class StreamRegisterQuery {
     // TODO(XRS): Limited Ports
     public static synchronized int getUnusedPort(String ip) {
         boolean find = true;
+        Random rand = new Random();
         int port;
-        for (port = 60535; port > 10000; --port) {
+        for (port = (rand.nextInt(50534) + 10001); port > 10000; --port) {
             find = true;
             for (QueryInfo info : streamQueryMap.values()) {
                 if (info.ip.equals(ip) && info.port == port) {
