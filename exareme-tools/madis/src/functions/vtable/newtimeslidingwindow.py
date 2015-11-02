@@ -42,12 +42,36 @@ class NewTimeSlidingWindow(vtbase.VT):
         else:
             equivalence = dictargs['equivalence']
 
+        if 'parts' not in dictargs:
+            parts = 1                   #window slides every 1 minute by default
+        else:
+            parts = int(dictargs['parts'])
+            if parts < 2:
+                parts = 2
+
+            if 'minepochtime' not in dictargs:
+                raise functions.OperatorError(__name__.rsplit('.')[-1], "No minepochtime argument ")
+            else:
+                minwid = int(float(long(dictargs['minepochtime']))/float(frequency * granularity))
+
+            if 'maxepochtime' not in dictargs:
+                raise functions.OperatorError(__name__.rsplit('.')[-1], "No maxepochtime argument ")
+            else:
+                maxwid = int(float(long(dictargs['maxepochtime']))/float(frequency * granularity))
+
+            # modwid = math.ceil(float((maxwid - minwid) + 1) / float(parts))
+            modwid = float((maxwid - minwid) + 1) / float(parts)
+
+        # print 'maxwid', maxwid, 'minwid', minwid
         cur = envars['db'].cursor()
 
         c = cur.execute(query, parse=False)
 
         try:
-            yield [('wid', 'integer')] + [('abox', 'integer')] + list(cur.getdescriptionsafe())
+            if parts == 1:
+                yield [('wid', 'integer'), ('abox', 'integer')] + list(cur.getdescriptionsafe())
+            else:
+                yield [('part', 'integer'), ('wid', 'integer'), ('abox', 'integer')] + list(cur.getdescriptionsafe())
         except StopIteration:
             try:
                 raise
@@ -69,14 +93,17 @@ class NewTimeSlidingWindow(vtbase.VT):
         window = deque([[] for _ in xrange(windowaboxes)], windowaboxes)
 
         r = c.next()
-        wid = 0
+        # wid = 0
         abox = windowaboxes - 1
-        windowendtime = r[timecolumn]
-        # wid = int(float(r[timecolumn])/float(frequency * granularity))
-        # windowendtime = wid * (frequency*granularity)
+        # windowendtime = r[timecolumn]
+        wid = int(float(r[timecolumn])/float(frequency * granularity))
+        windowendtime = wid * (frequency*granularity)
         windowstartaboxtime = windowendtime - windowaboxes*granularity + 1
         window[abox].append(r)
-        yield (wid, abox,) + r
+        if parts == 1:
+            yield (wid, abox,) + r
+        else:
+            yield (math.ceil(float(wid - minwid) / float(modwid)), wid, abox,) + r
 
         tupletime = -1
         while True:
@@ -100,12 +127,15 @@ class NewTimeSlidingWindow(vtbase.VT):
 
                 windowstartaboxtime += numberofslidingwindows*frequency*granularity
                 windowendtime += numberofslidingwindows*frequency*granularity
-                wid += numberofslidingwindows*frequency
+                wid += numberofslidingwindows # *frequency # Maybe must uncomment
 
                 for i, l in enumerate(window):
                     for t in l:
                         if (windowendtime - winlen) <= t[timecolumn] <= windowendtime:
-                            yield (wid, i,) + t
+                            if parts == 1:
+                                yield (wid, i,) + t
+                            else:
+                                yield (int(float(wid - minwid) / float(modwid)), wid, i,) + t
 
             if tupletime < (windowendtime - winlen):
                 continue
@@ -113,7 +143,10 @@ class NewTimeSlidingWindow(vtbase.VT):
             abox = aboxfunc(tupletime, granularity, windowstartaboxtime)
             window[abox].append(r)
             if (windowendtime - winlen) <= r[timecolumn] <= windowendtime:
-                yield (wid, abox,) + r
+                if parts == 1:
+                    yield (wid, abox,) + r
+                else:
+                    yield (int(float(wid - minwid) / float(modwid)), wid, abox,) + r
 
 def GetFloorAbox(tupletime, granularity, windowstartaboxtime):
     return int(float(tupletime - (granularity - 1) - windowstartaboxtime) / float(granularity))
