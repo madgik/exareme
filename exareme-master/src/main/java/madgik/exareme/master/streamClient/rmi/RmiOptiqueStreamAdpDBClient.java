@@ -1,14 +1,14 @@
 /**
- * Copyright MaDgIK Group 2010 - 2015.
+ * Copyright MaDgIK Group 2010 - 2012.
  */
 package madgik.exareme.master.streamClient.rmi;
 
 import com.google.gson.Gson;
-import madgik.exareme.master.client.AdpDBClientProperties;
 import madgik.exareme.master.engine.AdpDBExecutor;
 import madgik.exareme.master.engine.AdpDBManager;
-import madgik.exareme.master.gateway.OptiqueStreamQueryMetadata.StreamRegisterQuery;
 import madgik.exareme.master.registry.Registry;
+import madgik.exareme.master.client.AdpDBClientProperties;
+import madgik.exareme.master.gateway.OptiqueStreamQueryMetadata.StreamRegisterQuery;
 import madgik.exareme.master.streamClient.AdpStreamDBClient;
 import madgik.exareme.worker.art.container.ContainerProxy;
 import madgik.exareme.worker.art.executionEngine.ExecutionEngineLocator;
@@ -69,9 +69,9 @@ public class RmiOptiqueStreamAdpDBClient implements AdpStreamDBClient {
                 StreamRegisterQuery.getInstance().getUnusedPort(containerIp));
 
         plan.addContainer(new Container("c" + containerNumber, //name
-            container[containerNumber].getEntityName().getName(), //IP
-            container[containerNumber].getEntityName().getPort(),
-            container[containerNumber].getEntityName().getDataTransferPort())); //[JV] TOC: port
+                container[containerNumber].getEntityName().getName(), //IP
+                container[containerNumber].getEntityName().getPort(),
+                container[containerNumber].getEntityName().getDataTransferPort())); //[JV] TOC: port
         String c = "c" + containerNumber;
         containers.add(c);
 
@@ -82,8 +82,8 @@ public class RmiOptiqueStreamAdpDBClient implements AdpStreamDBClient {
         parameters.add(new Parameter("database", "database"));
         Map<String, LinkedList<Parameter>> links = new HashMap<>();
         plan.addOperator(new Operator("sample1",
-            "madgik.exareme.master.engine.executor.remote.operator.OptiqueStreamQueryEndPoint.ExecuteStreamQueryOperator",
-            parameters, queryScript, String.format("c%1d", containerNumber), links));
+                "madgik.exareme.master.engine.executor.remote.operator.OptiqueStreamQueryEndPoint.ExecuteStreamQueryOperator",
+                parameters, queryScript, String.format("c%1d", containerNumber), links));
 
         try {
             Gson gson = new Gson();
