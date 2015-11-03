@@ -143,7 +143,7 @@ external_stream=True
 from vtiterable import SourceVT
 from lib.dsv import reader                
 import lib.gzip34 as gzip
-import urllib2
+import urllib
 import urlparse
 import functions
 from lib.iterutils import peekable
@@ -311,8 +311,8 @@ class FileCursor:
                         self.fileiter = open(filename, "rU", buffering=1000000)
             else:
                 pathname=urlparse.urlparse(filename)[2]
-                req=urllib2.Request(filename,None,extraurlheaders)
-                hreq=urllib2.urlopen(req)
+                # req=urllib.Request(filename,None,extraurlheaders)
+                hreq=urllib.urlopen(filename)
                 if [1 for x,y in hreq.headers.items() if x.lower() in ('content-encoding', 'content-type') and y.lower().find('gzip')!=-1]:
                     gzipcompressed=True
                 self.fileiter=hreq
@@ -336,8 +336,7 @@ class FileCursor:
         _, filenameExt = os.path.splitext(filename)
         filenameExt = filenameExt.lower()
 
-        if filenameExt == '.json' or filenameExt == '.js' or ('dialect' in rest and type(rest['dialect']) == str
-                                                              and rest['dialect'].lower() == 'json'):
+        if filenameExt == '.json' or filenameExt == '.js' or ('dialect' in rest and rest['dialect'].lower() == 'json'):
             self.fast = True
             firstline = self.fileiter.readline()
             try:
