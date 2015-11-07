@@ -103,15 +103,25 @@ public class AdpDBParser {
             // Do a simple check
             for (Select q : script.getSelectQueries()) {
                 if (q.getParsedSqlQuery().getInputDataPattern() == DataPattern.external) {
-                    log.debug("Skipping for queries with external pattern.");
-                    continue;
+                    if (q.getParsedSqlQuery().getUsingTBLs() == null
+                        || q.getParsedSqlQuery().getUsingTBLs().size() == 0) {
+                        log.debug("Skipping for queries with external pattern.");
+                        continue;
+                    }
                 }
                 if (q.getParsedSqlQuery().getInputDataPattern() == DataPattern.remote) {
-                    log.debug("Skipping for queries with remote pattern.");
-                    continue;
+                    if (q.getParsedSqlQuery().getUsingTBLs() == null
+                        || q.getParsedSqlQuery().getUsingTBLs().size() == 0) {
+                        log.debug("Skipping for queries with remote pattern.");
+                        continue;
+                    }
                 }
 
                 HashSet<String> inputTables = new HashSet<String>();
+                for (String tbl : q.getParsedSqlQuery().getUsingTBLs()) {
+                    inputTables.add(tbl);
+                }
+
                 for (PhysicalTable pTable : registry.getPhysicalTables()) {
                     // TODO Contains is not enough cause table may be a substring of another table.
                     if (q.getParsedSqlQuery().getSql().contains(pTable.getName())) {
