@@ -112,7 +112,7 @@ public class DataTransferMgr implements DataTransferMgrInterface {
         transferIdToRegIds.get(DtOpId).add(nextDtRegId);
         RegIDToFilename.put(nextDtRegId, filename);//cleanup when done
         RegIDToTableFile.put(nextDtRegId, tableFile);
-        log.debug("Add register " + DtOpId + " " + nextDtRegId + " " + filename);
+       log.trace("Add register " + DtOpId + " " + nextDtRegId + " " + filename);
 
         DataTransferClient.registerFileByID(Tip, nextDtRegId, filename, Fip, Fport, Tport, pid);
 
@@ -128,7 +128,7 @@ public class DataTransferMgr implements DataTransferMgrInterface {
     }
 
     @Override public void addSuccesfulTransfer(Integer DtRegId) throws Exception {
-        log.debug("addSuccesfulTransfer: " + DtRegId);
+        log.trace("addSuccesfulTransfer: " + DtRegId);
         if (RedIdToTransferId.containsKey(DtRegId)) {
             int DtOpId = RedIdToTransferId.get(DtRegId);
             RedIdToTransferId.remove(DtRegId);
@@ -152,7 +152,7 @@ public class DataTransferMgr implements DataTransferMgrInterface {
                     setTotalTime_ms(end - aoimp.start,
                         ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime() / 1000000);
 
-                log.debug("addSuccesfulTransfer done all");
+                log.trace("addSuccesfulTransfer done all");
                 aoimp.getSessionManager().getSessionReportID().reportManagerProxy
                     .operatorSuccess(aoimp.getSessionManager().getOpID(), aoimp.getExitCode(),
                         aoimp.getExitMessage(), new Date(),
@@ -183,16 +183,6 @@ public class DataTransferMgr implements DataTransferMgrInterface {
     }
 
     @Override public void restart() {
-        //    log.debug("DThttp11 restart start");
-        //    dataTransfer.stop();
-        //
-        //    dataTransfer = ContainerDataTransferGatewayFactory.createDataTransferServer("0.0.0.0");
-        //    try {
-        //      dataTransfer.start();
-        //    } catch (RemoteException ex) {
-        //      java.util.logging.Logger.getLogger(DataTransferMgr.class.getName()).log(Level.SEVERE, null, ex);
-        //    }
-        //    log.debug("DThttp11 restart end");
 
     }
 

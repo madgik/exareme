@@ -1,5 +1,6 @@
 ### Maven template
 target/
+registry/
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
@@ -19,6 +20,8 @@ nb-configuration.xml
 .nb-gradle/
 ### Java template
 *.class
+### Java template
+*.pyc
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
