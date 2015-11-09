@@ -119,11 +119,6 @@ public class RmiContainer extends RmiRemoteObject<ContainerProxy> implements Con
         log.debug("\t RmiNetManager");
         netManager = new RmiNetManager(this, netMngrIface, regName);
 
-        //    log.debug("\t DataTranfer ... ");
-        //    dataTransfer = ContainerDataTransferGatewayFactory.createDataTransferServer("0.0.0.0");
-        //    dataTransfer.start();
-        //    log.debug("\t DataTranferManager ... ");
-        //    dataTransferManagerDTP = new DataTransferMgr();
         log.debug("\t RmiConcreteOperatorManager...");
         concreteOperatorManager =
             new RmiConcreteOperatorManager(cOpMngrIface, regName, dataTransferManagerDTP);
@@ -277,17 +272,6 @@ public class RmiContainer extends RmiRemoteObject<ContainerProxy> implements Con
 
 
             } else if (job.getType() == ContainerJobType.distributedJobCreateDataflow) {
-                //        log.info("DThttp11 restarting "+dataTransferManagerDTP);
-                //        dataTransferManagerDTP.restart();
-                //        log.info("DThttp11 restarting inbetween");
-                //        result = new CreateDataflowJobResult();
-                //        results.addJobResult(result);
-
-                //        try {
-                ////          StreamUtil.clearAll();
-                //        } catch (IOException ex) {
-                //          java.util.logging.Logger.getLogger(RmiContainer.class.getName()).log(Level.SEVERE, null, ex);
-                //        }
                 result = new CreateDataflowJobResult();
                 results.addJobResult(result);
 
@@ -337,39 +321,11 @@ public class RmiContainer extends RmiRemoteObject<ContainerProxy> implements Con
         return results;
     }
 
-    private ContainerJobResult handleJob(ContainerJob job, ContainerSessionID contSessionID,
-        PlanSessionID sessionID) throws RemoteException {
-        // TODO(DSD): move to job queue ...//not used (keep?) QS
-        switch (job.getType()) {
-            case getStatistics: {
-                return statisticsManager.prepareJob(job, contSessionID, sessionID);
-            }
-            case createOperator:
-            case startOperator:
-            case stopOperator:
-            case destroyOperator: {
-                return concreteOperatorManager.prepareJob(job, contSessionID, sessionID);
-            }
-            case createBuffer:
-            case destroyBuffer: {
-                return bufferManager.prepareJob(job, contSessionID, sessionID);
-            }
-            case createReadAdaptor:
-            case createWriteAdaptor: {
-                return adaptorManager.prepareJob(job, contSessionID, sessionID);
-            }
-            case dataTransfer: {
-                //        return dataTransfer ... ;
-            }
-        }
-        throw new RemoteException("Job type not found: " + job.getType());
-    }
-
     @Override public void stopContainer() throws RemoteException {
         try {
             quantumClock.stopDeamon();
             registryUpdateDeamon.stopDeamon();
-            //      dataTransfer.stop();
+            dataTransferManagerDTP.stopDataTransferServer();
             ManagementUtil.unregisterMBean("Container");
             super.unregister();
             log.info("Container succesfully stopped!");
@@ -399,10 +355,9 @@ public class RmiContainer extends RmiRemoteObject<ContainerProxy> implements Con
     }
 
     @Override public void destroySessions(PlanSessionID sessionID) throws RemoteException {
-        // Thread.dumpStack();
         log.debug("Destroy all plan sessions ... ");
 
-        //    dataTransferManagerDTP.destroySessions(sessionID);
+       // dataTransferManagerDTP.destroySessions(sessionID);
         bufferManager.destroySessions(sessionID);
         adaptorManager.destroySessions(sessionID);
         concreteOperatorManager.destroySessions(sessionID);
@@ -425,7 +380,6 @@ public class RmiContainer extends RmiRemoteObject<ContainerProxy> implements Con
         netManager.destroyAllSessions();
 
         statisticsManager.destroyAllSessions();
-
         // TODO(DSD): clean resources
         jobQueueInterface.destroyAllSessions();
     }
