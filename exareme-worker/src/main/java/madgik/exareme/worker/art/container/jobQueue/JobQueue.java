@@ -153,7 +153,6 @@ public class JobQueue implements JobQueueInterface {
             case destroyBuffer:
             case createReadAdaptor:
             case createWriteAdaptor: {
-                log.debug("ADD:  " + job.getType().name());
                 abstactContainerJob =
                     new AbstractContainerJob(job, new ContainerJobResources(mem), contSessionID,
                         sessionID);
@@ -178,7 +177,6 @@ public class JobQueue implements JobQueueInterface {
                     jobMap.put(abstactContainerJob.getResources(), jobQueue);
                 }
             }
-            log.debug("Job Added " + job);
         }
         executor.JobAdded();
         return result;
@@ -206,7 +204,6 @@ public class JobQueue implements JobQueueInterface {
             case createReadAdaptor:
             case createWriteAdaptor:
             case createOperatorLink: {
-                log.debug("Prepare adaptor " + job.getType());
                 return adaptorManager.prepareJob(job, contSessionID, sessionID);
             }
         }
