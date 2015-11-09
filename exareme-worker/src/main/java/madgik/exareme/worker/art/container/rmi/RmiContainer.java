@@ -357,7 +357,6 @@ public class RmiContainer extends RmiRemoteObject<ContainerProxy> implements Con
     @Override public void destroySessions(PlanSessionID sessionID) throws RemoteException {
         log.debug("Destroy all plan sessions ... ");
 
-       // dataTransferManagerDTP.destroySessions(sessionID);
         bufferManager.destroySessions(sessionID);
         adaptorManager.destroySessions(sessionID);
         concreteOperatorManager.destroySessions(sessionID);
@@ -372,7 +371,6 @@ public class RmiContainer extends RmiRemoteObject<ContainerProxy> implements Con
     @Override public void destroyAllSessions() throws RemoteException {
         log.debug("Destroy all sessions ... ");
 
-        //    dataTransferManagerDTP.destroySessions(sessionID);
         bufferManager.destroyAllSessions();
         adaptorManager.destroyAllSessions();
         concreteOperatorManager.destroyAllSessions();
