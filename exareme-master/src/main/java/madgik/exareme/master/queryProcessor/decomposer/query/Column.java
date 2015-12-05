@@ -4,16 +4,22 @@
 package madgik.exareme.master.queryProcessor.decomposer.query;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+
+import com.google.common.hash.HashCode;
+import com.google.common.hash.Hashing;
 
 /**
  * @author heraldkllapi
  */
 public class Column implements Operand {
 
-    public String tableAlias = null;
-    public String columnName = null;
+    private String tableAlias = null;
+    private String columnName = null;
+    private String baseTable = null;
 
     public Column() {
         super();
@@ -23,8 +29,22 @@ public class Column implements Operand {
         this.tableAlias = alias;
         this.columnName = name;
     }
+    
+    public Column(String alias, String name, String base) {
+        this.tableAlias = alias;
+        this.columnName = name;
+        this.baseTable = base;
+    }
 
-    @Override public boolean equals(Object other) {
+    public String getBaseTable() {
+		return baseTable;
+	}
+
+	public void setBaseTable(String baseTable) {
+		this.baseTable = baseTable;
+	}
+
+	@Override public boolean equals(Object other) {
         if (other == null) {
             return false;
         }
@@ -40,18 +60,32 @@ public class Column implements Operand {
     }
 
     @Override public int hashCode() {
-        int hash = 7;
-        hash = 89 * hash + Objects.hashCode(this.tableAlias);
-        hash = 89 * hash + Objects.hashCode(this.columnName);
+       
+        int hash = 31;
+        String aliasUp=this.tableAlias.toUpperCase();
+        String nameUp=this.columnName.toUpperCase();
+        
+        int last=aliasUp.charAt(aliasUp.length()-1)+19;
+        last*=last;
+        hash = 31*hash+last;
+        hash = 89 * hash + aliasUp.hashCode();
+        hash = 89 * hash + nameUp.hashCode();
+        hash = 89 * hash +(new StringBuilder(aliasUp).reverse().toString()).hashCode();
+        hash = 89 * hash +(new StringBuilder(nameUp).reverse().toString()).hashCode();
         return hash;
     }
 
     @Override public String toString() {
+    	String table="";
+    	String base="";
         if (tableAlias != null) {
-            return tableAlias + "." + columnName;
-        } else {
-            return columnName;
+            table= tableAlias + ".";
         }
+        if (baseTable != null && table.startsWith("table")) {
+        	base= baseTable + "_";
+        }
+        
+        return table + base + columnName;
     }
 
     @Override public List<Column> getAllColumnRefs() {
@@ -65,6 +99,7 @@ public class Column implements Operand {
             .equals(oldCol.tableAlias)) {
             this.columnName = newCol.columnName;
             this.tableAlias = newCol.tableAlias;
+            this.baseTable = newCol.baseTable;
         }
     }
 
@@ -72,4 +107,28 @@ public class Column implements Operand {
         Column cloned = (Column) super.clone();
         return cloned;
     }
+    
+    public String getName(){
+    	return this.columnName;
+    }
+    public String getAlias(){
+    	return this.tableAlias;
+    }
+
+	public void setName(String string) {
+		this.columnName=string;
+	}
+
+	public void setAlias(String tablename) {
+		this.tableAlias=tablename;
+		
+	}
+
+	@Override
+	public HashCode getHashID() {
+		Set<HashCode> codes=new HashSet<HashCode>();
+		codes.add(Hashing.sha1().hashBytes(this.tableAlias.toUpperCase().getBytes()));
+		codes.add(Hashing.sha1().hashBytes(this.columnName.toUpperCase().getBytes()));
+		return Hashing.combineOrdered(codes);
+	}
 }

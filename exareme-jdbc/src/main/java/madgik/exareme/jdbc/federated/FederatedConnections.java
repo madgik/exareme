@@ -5,22 +5,28 @@
 package madgik.exareme.jdbc.federated;
 
 import java.sql.Connection;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
+ *
  * @author dimitris
  */
 public class FederatedConnections {
     private Map<Schema, Connection> fedCons;
 
     public FederatedConnections() {
-        this.fedCons = new HashMap<>();
+        this.fedCons=new HashMap<>();
     }
-
-    public List<String> getSchemasForDB(String dbID) {
-        List res = new ArrayList<>();
-        for (Schema s : fedCons.keySet()) {
-            if (s.getId().equals(dbID)) {
+    public List<String> getSchemasForDB(String dbID){
+        List res=new ArrayList<>();
+        for(Schema s:fedCons.keySet()){
+            if(s.getId().equals(dbID)){
                 res.add(s.getSchema());
             }
         }
@@ -43,10 +49,11 @@ public class FederatedConnections {
         return this.fedCons.values().iterator().next();
     }
 
+    
 
     public Set<Connection> getDistinctDBConnections() {
-        Set<Connection> res = new HashSet<>();
-        for (Connection c : this.fedCons.values()) {
+        Set<Connection> res=new HashSet<>();
+        for(Connection c:this.fedCons.values()){
             res.add(c);
         }
         return res;

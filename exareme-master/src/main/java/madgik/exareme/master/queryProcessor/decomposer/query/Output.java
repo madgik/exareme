@@ -6,6 +6,12 @@ package madgik.exareme.master.queryProcessor.decomposer.query;
 
 import static madgik.exareme.master.queryProcessor.decomposer.util.Util.operandsAreEqual;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import com.google.common.hash.HashCode;
+import com.google.common.hash.Hashing;
+
 
 /**
  * @author dimitris
@@ -29,7 +35,12 @@ public class Output {
     }
 
     @Override public String toString() {
-        return object.toString() + " as \"" + outputName + "\"";
+    	if(outputName.startsWith("\"")){
+        return object.toString() + " as " + outputName ;
+    	}
+    	else{
+    		 return object.toString() + " as \"" + outputName + "\"";
+    	}
     }
 
     public void setOutputName(String o) {
@@ -68,4 +79,12 @@ public class Output {
         Output cloned = new Output(this.outputName, this.object.clone());
         return cloned;
     }
+
+	public HashCode getHashID() {
+		Set<HashCode> codes=new HashSet<HashCode>();
+		codes.add(object.getHashID());
+		codes.add(Hashing.sha1().hashBytes(outputName.toUpperCase().getBytes()));
+
+		return Hashing.combineOrdered(codes);
+	}
 }

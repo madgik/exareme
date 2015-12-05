@@ -9,6 +9,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.hash.HashCode;
+import com.google.common.hash.Hashing;
+
 /**
  * @author dimitris
  */
@@ -111,5 +114,13 @@ public class Selection implements Operand {
         return cloned;
     }
 
+    @Override
+	public HashCode getHashID() {
+		Set<HashCode> codes=new HashSet<HashCode>();
+		for(Operand o:this.ops){
+			codes.add(o.getHashID());
+		}
+		return Hashing.combineUnordered(codes);
+	}
 
 }

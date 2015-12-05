@@ -7,16 +7,12 @@ package madgik.exareme.jdbc.federated;
 import java.util.Objects;
 
 /**
+ *
  * @author dimitris
  */
 public class Schema {
     private String schema;
     private String id;
-
-    public Schema(String dbID, String schemaName) {
-        id = dbID;
-        schema = schemaName;
-    }
 
     public String getSchema() {
         return schema;
@@ -26,14 +22,16 @@ public class Schema {
         return id;
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int hash = 5;
         hash = 37 * hash + Objects.hashCode(this.schema);
         hash = 37 * hash + Objects.hashCode(this.id);
         return hash;
     }
 
-    @Override public boolean equals(Object obj) {
+    @Override
+    public boolean equals(Object obj) {
         if (obj == null) {
             return false;
         }
@@ -50,5 +48,11 @@ public class Schema {
         return true;
     }
 
-
+    public Schema(String dbID, String schemaName) {
+        id=dbID;
+        schema=schemaName;
+    }
+    
+    
+    
 }

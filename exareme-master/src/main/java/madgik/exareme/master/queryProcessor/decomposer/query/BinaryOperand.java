@@ -5,7 +5,12 @@
 package madgik.exareme.master.queryProcessor.decomposer.query;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import com.google.common.hash.HashCode;
+import com.google.common.hash.Hashing;
 
 /**
  * @author dimitris
@@ -79,4 +84,13 @@ public class BinaryOperand implements Operand {
         cloned.setRightOp(rightOp.clone());
         return cloned;
     }
+
+	@Override
+	public HashCode getHashID() {
+		Set<HashCode> codes=new HashSet<HashCode>();
+		codes.add(this.leftOp.getHashID());
+		codes.add(this.rightOp.getHashID());
+		codes.add(Hashing.sha1().hashBytes(operator.getBytes()));
+		return Hashing.combineOrdered(codes);
+	}
 }

@@ -8,12 +8,18 @@ import madgik.exareme.master.queryProcessor.estimator.NodeSelectivityEstimator;
 
 import java.util.HashMap;
 
+import com.google.common.hash.HashCode;
+
 /**
  * @author dimitris
  */
-public class NodeHashValues extends HashMap<Integer, Node> {
+public class NodeHashValues extends HashMap<HashCode, Node> {
 
-    private NodeSelectivityEstimator nse;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -1463579163197580938L;
+	private NodeSelectivityEstimator nse;
 
     public void setSelectivityEstimator(NodeSelectivityEstimator nse) {
         this.nse = nse;
@@ -29,13 +35,14 @@ public class NodeHashValues extends HashMap<Integer, Node> {
     }
 
 
-    @Override public Node put(Integer key, Node value) {
+    @Override public Node put(HashCode key, Node value) {
         if (nse != null && value.getType() == Node.OR && value.getNodeInfo() == null) {
             nse.makeEstimationForNode(value);
         }
         return super
             .put(key, value); //To change body of generated methods, choose Tools | Templates.
     }
+
 
     
     

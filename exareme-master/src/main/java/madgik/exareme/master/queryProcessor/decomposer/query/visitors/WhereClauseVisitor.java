@@ -13,7 +13,6 @@ import org.apache.log4j.Logger;
  */
 public class WhereClauseVisitor extends AbstractVisitor {
 
-    private static final Logger log = Logger.getLogger(WhereClauseVisitor.class);
     private boolean hasVisitedJoin = false;
 
     public WhereClauseVisitor(SQLQuery query) {
@@ -30,9 +29,10 @@ public class WhereClauseVisitor extends AbstractVisitor {
             NotNode not = (NotNode) node;
             if (not.getOperand() instanceof IsNullNode) {
                 IsNullNode isNull = (IsNullNode) not.getOperand();
-                ColumnReference cr = (ColumnReference) isNull.getOperand();
+                Operand cr=QueryUtils.getOperandFromNode(isNull.getOperand());
+               // ColumnReference cr = (ColumnReference) isNull.getOperand();
                 UnaryWhereCondition unary = new UnaryWhereCondition(UnaryWhereCondition.IS_NULL,
-                    new Column(cr.getTableName(), cr.getColumnName()), true);
+                    cr, true);
                 query.getUnaryWhereConditions().add(unary);
             }
         } else if (node instanceof BinaryRelationalOperatorNode) {
@@ -52,8 +52,9 @@ public class WhereClauseVisitor extends AbstractVisitor {
 
         } else if (node instanceof LikeEscapeOperatorNode) {
             LikeEscapeOperatorNode like = (LikeEscapeOperatorNode) node;
-            Column c =
-                new Column(like.getReceiver().getTableName(), like.getReceiver().getColumnName());
+            Operand c=QueryUtils.getOperandFromNode(like.getReceiver());
+            //Column c =
+             //   new Column(like.getReceiver().getTableName(), like.getReceiver().getColumnName());
             CharConstantNode q = (CharConstantNode) like.getLeftOperand();
             String s = q.getString();
             //System.out.println("dddd");
@@ -69,6 +70,12 @@ public class WhereClauseVisitor extends AbstractVisitor {
         return FromSubquery.class.isInstance(node) || (node instanceof JoinNode && hasVisitedJoin)
             || (node instanceof OrNode);
     }
+
+   public void setVisitedJoin(boolean b){
+      this.hasVisitedJoin=b;
+    }
+
+
     /*  public boolean nestedJoins(Visitable node){
      if(!(node instanceof JoinNode))
      return false;

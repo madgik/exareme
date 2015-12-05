@@ -24,8 +24,8 @@ public class OrderByColumnVisitor extends AbstractVisitor {
             ColumnOrderBy column = new ColumnOrderBy();
 
             ColumnReference parserColumn = (ColumnReference) ((OrderByColumn) node).getExpression();
-            column.tableAlias = parserColumn.getTableName();
-            column.columnName = parserColumn.getColumnName();
+            column.setAlias(parserColumn.getTableName());
+            column.setName(parserColumn.getColumnName());
             column.isAsc = ((OrderByColumn) node).isAscending();
 
             query.getOrderBy().add(column);

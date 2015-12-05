@@ -5,7 +5,12 @@ package madgik.exareme.master.queryProcessor.decomposer.query;
 
 import madgik.exareme.master.queryProcessor.decomposer.federation.DBInfoReaderDB;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
+
+import com.google.common.hash.HashCode;
+import com.google.common.hash.Hashing;
 
 /**
  * @author heraldkllapi
@@ -15,6 +20,7 @@ public class Table {
     private Boolean hasDBIdRemoved;
     private String name;
     private String alias;
+    private HashCode hash=null;
 
     public Table() {
         hasDBIdRemoved = false;
@@ -30,7 +36,7 @@ public class Table {
 
     public boolean isFederated() {
         for (String id : DBInfoReaderDB.dbInfo.getAllDBIDs()) {
-            if (getName().startsWith(id + "_")) {
+            if (getName().toUpperCase().startsWith(id.toUpperCase() + "_")) {
                 return true;
             }
         }
@@ -52,7 +58,7 @@ public class Table {
 
     public String getDBName() {
         for (String id : DBInfoReaderDB.dbInfo.getAllDBIDs()) {
-            if (getName().startsWith(id + "_")) {
+            if (getName().toUpperCase().startsWith(id.toUpperCase() + "_")) {
                 return id;
             }
         }
@@ -70,7 +76,7 @@ public class Table {
 
     public void removeDBIdFromAlias() {
         for (String id : DBInfoReaderDB.dbInfo.getAllDBIDs()) {
-            if (getAlias().startsWith(id + "_")) {
+            if (getAlias().toUpperCase().startsWith(id.toUpperCase() + "_")) {
                 setAlias(getAlias().substring(id.length() + 1));
                 break;
             }
@@ -98,6 +104,21 @@ public class Table {
         hash = 89 * hash + Objects.hashCode(this.getName());
         return hash;
     }
+    
+    public int getHashId() {
+        int hash = 31;
+        String aliasUp=alias.toUpperCase();
+        String nameUp=name.toUpperCase();
+        
+        int last=aliasUp.charAt(aliasUp.length()-1)+19;
+        last*=last;
+        hash = 31*hash+last;
+        hash = 89 * hash + aliasUp.hashCode();
+        hash = 89 * hash + nameUp.hashCode();
+        hash = 89 * hash +(new StringBuilder(aliasUp).reverse().toString()).hashCode();
+        hash = 89 * hash +(new StringBuilder(nameUp).reverse().toString()).hashCode();
+        return hash;
+    }
 
     /**
      * @return the name
@@ -111,6 +132,7 @@ public class Table {
      */
     public void setName(String name) {
         this.name = name;
+        hash=null;
     }
 
     /**
@@ -125,6 +147,7 @@ public class Table {
      */
     public void setAlias(String alias) {
         this.alias = alias;
+        hash=null;
     }
 
     public boolean hasDBIdRemoved() {
@@ -134,4 +157,15 @@ public class Table {
     public void setDBIdRemoved() {
         this.hasDBIdRemoved = true;
     }
+
+	public HashCode getHashID() {
+		if(hash==null){
+		Set<HashCode> codes=new HashSet<HashCode>();
+		codes.add(Hashing.sha1().hashBytes(alias.toUpperCase().getBytes()));
+		codes.add(Hashing.sha1().hashBytes(name.toUpperCase().getBytes()));
+		hash= Hashing.combineOrdered(codes);
+		}
+		return hash;
+		
+	}
 }

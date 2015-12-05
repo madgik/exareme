@@ -46,6 +46,10 @@ public class MemoKey {
         }
         return true;
     }
+    
+    public Column getColumn(){
+    	return this.c;
+    }
 
     @Override public String toString() {
         return "MemoKey{" + "n=" + n.getObject().toString() + ", c=" + c + '}';
