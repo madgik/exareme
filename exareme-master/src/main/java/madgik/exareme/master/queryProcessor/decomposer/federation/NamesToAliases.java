@@ -74,6 +74,13 @@ public class NamesToAliases {
 		
 	}
 	
-	
+	public String getOriginalName(String alias){
+		for (String k:map.keySet()){
+			if(map.get(k).contains(alias)){
+				return k;
+			}
+		}
+		return null;
+	}
 	
 }

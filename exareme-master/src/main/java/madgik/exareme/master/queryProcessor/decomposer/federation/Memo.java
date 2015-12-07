@@ -50,12 +50,13 @@ public class Memo {
     public void setPlanUsed(MemoKey e) {
         MemoValue v =  getMemoValue(e);
         v.setUsed(true);
+        if(v.isMaterialised()){
+        	return;
+        }
         SinglePlan p = v.getPlan();
         for (int i = 0; i < p.noOfInputPlans(); i++) {
             MemoKey sp = p.getInputPlan(i);
-            //if(this.getMemoValue(sp).isMaterialised()){
-            //	continue;
-            //}
+            
             if(sp.getNode().getDescendantBaseTables().size()==1 && !this.getMemoValue(sp).isFederated()){
             	continue;            	
             }

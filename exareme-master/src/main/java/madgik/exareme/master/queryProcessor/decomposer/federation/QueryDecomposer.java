@@ -281,6 +281,7 @@ public class QueryDecomposer {
 		// Plan best = findBestPlan(root, cost, memo, new HashSet<Node>(), cel);
 		// System.out.println(best.getPath().toString());
 		SinlgePlanDFLGenerator dsql = new SinlgePlanDFLGenerator(root, noOfparts, memo, registry);
+		dsql.setN2a(n2a);
 		return (List<SQLQuery>) dsql.generate();
 		// return null;
 	}
@@ -2020,7 +2021,7 @@ public class QueryDecomposer {
                 table.setObject(new Table(t, alias));
                 Node tableInHashes = hashes.get(table.getHashId());
                 if (tableInHashes == null) {
-                    System.out.println("not found");
+                    //System.out.println("not found");
                 } else {
                     Node project;
                     Node orNode;
