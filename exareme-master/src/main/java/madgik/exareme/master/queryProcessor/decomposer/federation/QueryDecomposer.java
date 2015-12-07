@@ -200,7 +200,7 @@ public class QueryDecomposer {
 			for (int i = 0; i < res.size(); i++) {
 				SQLQuery s = res.get(i);
 				if (s.isFederated()) {
-					boolean addToregistry=s.getNoOfPartitions()==1 && DecomposerUtils.ADD_TO_REGISTRY;
+					boolean addToregistry=noOfparts==1 && DecomposerUtils.ADD_TO_REGISTRY;
 					DataImporter di=new DataImporter(s, this.db);
 					di.setAddToRegisrty(addToregistry);
 					es.execute(di);

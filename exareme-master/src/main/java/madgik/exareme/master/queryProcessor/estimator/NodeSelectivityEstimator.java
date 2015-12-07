@@ -21,7 +21,7 @@ public class NodeSelectivityEstimator implements SelectivityEstimator {
 	private static final int HASH_STRING_BASE = 256;
 
 	private Schema schema;
-	private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(SelectivityEstimator.class);
+	private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(NodeSelectivityEstimator.class);
 
 	public NodeSelectivityEstimator(String json) throws Exception {
 		BufferedReader br;

@@ -48,7 +48,7 @@ public class SinlgePlanDFLGenerator {
 					new HashMap<MemoKey, SQLQuery>());
 		} else if(DecomposerUtils.PUSH_PROCESSING){
 			combineOperatorsAndOutputQueriesPush(rootkey, qs,
-					new HashMap<MemoKey, SQLQuery>());
+					new HashMap<MemoKey, SQLQuery>(), false);
 		}
 		else{
 			combineOperatorsAndOutputQueries(rootkey, qs,
@@ -1034,12 +1034,17 @@ public class SinlgePlanDFLGenerator {
 	
 	
 	private void combineOperatorsAndOutputQueriesPush(MemoKey k,
-			ResultList tempResult, HashMap<MemoKey, SQLQuery> visited) {
-
+			ResultList tempResult, HashMap<MemoKey, SQLQuery> visited, boolean pushToEndpoint) {
+		
 		SQLQuery current = tempResult.getCurrent();
 		MemoValue v = memo.getMemoValue(k);
 		SinglePlan p = v.getPlan();
 		Node e = k.getNode();
+		boolean toPushChildrenToEndpoint=pushToEndpoint;
+		if(!pushToEndpoint && canPushToEndpoint(v, e)){
+			toPushChildrenToEndpoint=true;
+			v.setMaterialized(true);
+		}
 		
 		if (useCache && registry.containsKey(e.getHashId())
 				&& e.getHashId() != null) {
@@ -1124,7 +1129,7 @@ public class SinlgePlanDFLGenerator {
 			// current.getOutputs().addAll(prj.getOperands());
 
 			combineOperatorsAndOutputQueriesPush(p.getInputPlan(0), tempResult,
-					visited);
+					visited, toPushChildrenToEndpoint);
 			// visited.put(p.getInputPlan(j), q2);
 
 			if (op.getOpCode() == Node.PROJECT) {
@@ -1179,7 +1184,7 @@ public class SinlgePlanDFLGenerator {
 			for (int j = 0; j < op.getChildren().size(); j++) {
 
 				combineOperatorsAndOutputQueriesPush(p.getInputPlan(j), tempResult,
-						visited);
+						visited, toPushChildrenToEndpoint);
 				inputNames.add(tempResult.getLastTable().getAlias());
 				if (tempResult.getLastTable().getAlias() != current
 						.getTemporaryTableName()
@@ -1256,7 +1261,7 @@ public class SinlgePlanDFLGenerator {
 				// visited.put(op, current);
 				tempResult.setCurrent(u);
 				combineOperatorsAndOutputQueriesPush(p.getInputPlan(l), tempResult,
-						visited);
+						visited, toPushChildrenToEndpoint);
 				// visited.put(p.getInputPlan(l), u);
 				if (memo.getMemoValue(p.getInputPlan(l)).isMaterialised()) {
 					u = tempResult.get(tempResult.getLastTable().getAlias());
@@ -1327,7 +1332,7 @@ public class SinlgePlanDFLGenerator {
 			}
 		} else if (op.getOpCode() == Node.SELECT) {
 			combineOperatorsAndOutputQueriesPush(p.getInputPlan(0), tempResult,
-					visited);
+					visited, toPushChildrenToEndpoint);
 			String inputName = tempResult.getLastTable().getAlias();
 			Selection s = (Selection) op.getObject();
 			Iterator<Operand> it = s.getOperands().iterator();
@@ -1400,7 +1405,7 @@ public class SinlgePlanDFLGenerator {
 			current.setLimit(((Integer) op.getObject()).intValue());
 			current.setHashId(p.getInputPlan(0).getNode().getHashId());
 			combineOperatorsAndOutputQueriesPush(p.getInputPlan(0), tempResult,
-					visited);
+					visited, toPushChildrenToEndpoint);
 			if (current.getInputTables().isEmpty()) {
 				// limit of a query that exists in the cache
 				current.addInputTable(tempResult.getLastTable());
@@ -1413,13 +1418,13 @@ public class SinlgePlanDFLGenerator {
 			// nested is always materialized
 			current.setNested(true);
 			combineOperatorsAndOutputQueriesPush(p.getInputPlan(0), tempResult,
-					visited);
+					visited, toPushChildrenToEndpoint);
 
 		} else {
 			log.error("Unknown Operator in DAG");
 		}
 		current.setExistsInCache(false);
-		if (memo.getMemoValue(k).isMaterialised()) {
+		if (memo.getMemoValue(k).isMaterialised()&&!pushToEndpoint) {
 			tempResult.add(current);
 			tempResult.setLastTable(current);
 			current.setHashId(e.getHashId());
@@ -1433,6 +1438,43 @@ public class SinlgePlanDFLGenerator {
 			old.setPartition(current.getPartitionColumn());
 		}
 
+	}
+
+	private boolean canPushToEndpoint(MemoValue v, Node e) {
+		if(e.getDescendantBaseTables().isEmpty()){
+			return false;
+		}
+		String dbID=null;
+		for(String s:e.getDescendantBaseTables()){
+			Table tab=new Table(s,s);
+			String tableEndpoint=tab.getDBName();
+			if(tableEndpoint==null){
+				return false;
+			}
+			if(dbID==null){
+				dbID=tableEndpoint;
+			}
+			else{
+				if(!dbID.equals(tableEndpoint)){
+					return false;
+				}
+			}
+		}
+		
+		return doesNotContainMultiUsedInput((PartitionedMemoValue)v);
+	}
+
+	private boolean doesNotContainMultiUsedInput(PartitionedMemoValue v) {
+		for(int i=0;i<v.getPlan().noOfInputPlans();i++){
+			PartitionedMemoValue inputV=(PartitionedMemoValue) memo.getMemoValue(v.getPlan().getInputPlan(i));
+			if(inputV.isMultiUsed()){
+				return false;
+			}
+			if(!doesNotContainMultiUsedInput(inputV)){
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	

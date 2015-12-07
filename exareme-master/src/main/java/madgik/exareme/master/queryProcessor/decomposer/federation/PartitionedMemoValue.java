@@ -13,6 +13,7 @@ public class PartitionedMemoValue implements MemoValue {
     private boolean materialized;
     private PartitionCols dlvdPart;
     private boolean used;
+    private boolean multiUsed;
     private List<MemoKey> toMat;
 
     public PartitionedMemoValue(SinglePlan p, double repCost) {
@@ -47,6 +48,9 @@ public class PartitionedMemoValue implements MemoValue {
 
 	@Override
 	public void setUsed(boolean b) {
+		if(used && b){
+			this.multiUsed=true;
+		}
 		this.used=b;
 	}
 
@@ -67,5 +71,11 @@ public class PartitionedMemoValue implements MemoValue {
 	public void setToMat(List<MemoKey> toMaterialize) {
 		toMat=toMaterialize;
 	}
+
+	public boolean isMultiUsed() {
+		return multiUsed;
+	}
+	
+	
 
 }
