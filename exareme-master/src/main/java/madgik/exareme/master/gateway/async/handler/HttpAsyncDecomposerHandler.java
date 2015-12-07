@@ -454,8 +454,8 @@ public class HttpAsyncDecomposerHandler implements HttpAsyncRequestHandler<HttpR
 							} else {
 								HashMap<String, byte[]> hashIDMap = new HashMap<>();
 								for (SQLQuery q : subqueries) {
-
-									hashIDMap.put(q.getResultTableName(), q.getHashId().asBytes());
+									//when using cache
+									//hashIDMap.put(q.getResultTableName(), q.getHashId().asBytes());
 
 									String dSQL = q.toDistSQL();
 									decomposedQuery += dSQL + "\n\n";
