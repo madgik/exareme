@@ -1060,7 +1060,7 @@ public class SinlgePlanDFLGenerator {
 			return;
 		}
 		boolean toPushChildrenToEndpoint=pushToEndpoint;
-		if(!pushToEndpoint && canPushToEndpoint(v, e)){
+		if(!pushToEndpoint && canPushToEndpoint(v, e, visited)){
 			toPushChildrenToEndpoint=true;
 			v.setMaterialized(true);
 			SQLQuery q2 = new SQLQuery();
@@ -1462,7 +1462,7 @@ public class SinlgePlanDFLGenerator {
 
 	}
 
-	private boolean canPushToEndpoint(MemoValue v, Node e) {
+	private boolean canPushToEndpoint(MemoValue v, Node e, HashMap<MemoKey, SQLQuery> visited) {
 		if(e.getDescendantBaseTables().isEmpty()){
 			return false;
 		}
@@ -1485,16 +1485,16 @@ public class SinlgePlanDFLGenerator {
 		if(e.getDescendantBaseTables().size()==1){
 			return true;
 		}
-		return doesNotContainMultiUsedInput((PartitionedMemoValue)v);
+		return doesNotContainMultiUsedInput((PartitionedMemoValue)v, visited);
 	}
 
-	private boolean doesNotContainMultiUsedInput(PartitionedMemoValue v) {
+	private boolean doesNotContainMultiUsedInput(PartitionedMemoValue v, HashMap<MemoKey, SQLQuery> visited) {
 		for(int i=0;i<v.getPlan().noOfInputPlans();i++){
 			PartitionedMemoValue inputV=(PartitionedMemoValue) memo.getMemoValue(v.getPlan().getInputPlan(i));
-			if(inputV.isMultiUsed()){
+			if(inputV.isMultiUsed() || visited.containsKey(v.getPlan().getInputPlan(i))){
 				return false;
 			}
-			if(!doesNotContainMultiUsedInput(inputV)){
+			if(!doesNotContainMultiUsedInput(inputV, visited)){
 				return false;
 			}
 		}

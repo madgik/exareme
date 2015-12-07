@@ -49,10 +49,15 @@ public class Memo {
 
     public void setPlanUsed(MemoKey e) {
         MemoValue v =  getMemoValue(e);
-        v.setUsed(true);
         if(v.isMaterialised()){
+        	v.setUsed(true);
         	return;
         }
+        if(v.isUsed()){
+        	v.setMaterialized(true);
+        }
+        v.setUsed(true);
+        
         SinglePlan p = v.getPlan();
         for (int i = 0; i < p.noOfInputPlans(); i++) {
             MemoKey sp = p.getInputPlan(i);

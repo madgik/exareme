@@ -1564,9 +1564,9 @@ public class QueryDecomposer {
 			PartitionedMemoValue pmv = (PartitionedMemoValue) memo.getMemoValue(ec);
 			toMaterialize.addAll(pmv.getToMat());
 			partitionRecord.setLastPartitioned(pmv.getDlvdPart());
-			if(pmv.isUsed()){
-				pmv.setMaterialized(true);
-			}
+			//if(pmv.isUsed()){
+			//	pmv.setMaterialized(true);
+			//}
 		} else {
 			resultPlan = searchForBestPlanPruned(e, c, limit, repCost, partitionRecord, toMaterialize);
 		}
