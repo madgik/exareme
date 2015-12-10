@@ -328,7 +328,8 @@ public class Node {
 		if (o instanceof Table) {
 			Table t = (Table) o;
 			if (t.getAlias() == null) {
-				object = "Intermediate Result";
+				//object = "Intermediate Result";
+				object=t.getName();
 				if(this.parents.isEmpty()){
 					object="Result";
 				}

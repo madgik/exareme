@@ -95,8 +95,7 @@ public class HttpAsyncDecomposerHandler implements HttpAsyncRequestHandler<HttpR
 					if (query.startsWith("addFederatedEndpoint")) {
 
 						log.debug("Adding endpoint to : " + dbname + "endpoint.db ...");
-						//DBInfoWriterDB.write(query, dbname);
-						DBInfoWriterDB.write(query.replaceAll("openworks-brage", "openworksbrage"), dbname);
+						DBInfoWriterDB.write(query, dbname);
 						InputStreamEntity se = new InputStreamEntity(createOKResultStream(), -1,
 								ContentType.TEXT_PLAIN);
 						log.debug("Sending OK : " + se.toString());
@@ -372,8 +371,7 @@ public class HttpAsyncDecomposerHandler implements HttpAsyncRequestHandler<HttpR
 								}
 
 								DBInfoReaderDB.read(path);
-								String tablename = t[0].replaceAll("openworks-brage", "openworksbrage");
-								//String tablename = t[0];
+								String tablename = t[0];
 								Table tab = new Table(tablename, tablename);
 								String endpointID = tab.getDBName();
 								String localTblName = tablename.replace(endpointID + "_", "");
@@ -431,8 +429,7 @@ public class HttpAsyncDecomposerHandler implements HttpAsyncRequestHandler<HttpR
 						SQLQuery squery;
 						try {
 							log.debug("Parsing SQL Query ...");
-							squery = SQLQueryParser.parse(query.replaceAll("openworks-brage", "openworksbrage"));
-							//squery = SQLQueryParser.parse(query);
+							squery = SQLQueryParser.parse(query);
 							QueryDecomposer d = new QueryDecomposer(squery, path, workers, nse);
 							n2a=DBInfoReaderDB.readAliases(path);
 							d.setN2a(n2a);

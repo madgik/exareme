@@ -4,10 +4,13 @@
 package madgik.exareme.master.queryProcessor.decomposer.query;
 
 import madgik.exareme.master.queryProcessor.decomposer.federation.DBInfoReaderDB;
+import madgik.exareme.master.queryProcessor.decomposer.federation.SinlgePlanDFLGenerator;
 
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+
+import org.jfree.util.Log;
 
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
@@ -21,6 +24,8 @@ public class Table {
     private String name;
     private String alias;
     private HashCode hash=null;
+    private static final org.apache.log4j.Logger log = org.apache.log4j.Logger
+			.getLogger(Table.class);
 
     public Table() {
         hasDBIdRemoved = false;
@@ -57,6 +62,10 @@ public class Table {
     }
 
     public String getDBName() {
+    	if(name == null){
+    		log.debug("null table name:"+this.toString());
+    		return null;
+    	}
         for (String id : DBInfoReaderDB.dbInfo.getAllDBIDs()) {
             if (getName().toUpperCase().startsWith(id.toUpperCase() + "_")) {
                 return id;

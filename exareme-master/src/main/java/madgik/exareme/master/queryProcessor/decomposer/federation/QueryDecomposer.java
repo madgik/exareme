@@ -2327,4 +2327,8 @@ public class QueryDecomposer {
 	public void setN2a(NamesToAliases n2a) {
 		this.n2a = n2a;
 	}
+
+	public String getDotPrint() {
+		return root.dotPrint();
+	}
 }

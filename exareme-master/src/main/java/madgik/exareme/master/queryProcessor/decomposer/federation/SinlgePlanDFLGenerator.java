@@ -108,7 +108,7 @@ public class SinlgePlanDFLGenerator {
 		// remove not needed columns from nested subqueries
 		
 		if (DecomposerUtils.REMOVE_OUTPUTS) {
-			for (int i = 0; i < qs.size(); i++) {
+			for (int i = 0; i < qs.size()-1; i++) {
 				SQLQuery q = qs.get(i);
 				if (q.isNested() && qs.size() > 1) {
 					List<Column> outputs = new ArrayList<Column>();
@@ -1062,12 +1062,14 @@ public class SinlgePlanDFLGenerator {
 		boolean toPushChildrenToEndpoint=pushToEndpoint;
 		if(!pushToEndpoint && canPushToEndpoint(v, e, visited)){
 			toPushChildrenToEndpoint=true;
+			if(!(e.getFirstParent()!=null&&e.getFirstParent().getOpCode()==Node.NESTED)){
 			v.setMaterialized(true);
 			SQLQuery q2 = new SQLQuery();
 			q2.setHashId(e.getHashId());
 			tempResult.setCurrent(q2);
 			current = q2;
 			current.setMaterialised(true);
+			}
 			//visited.put(k, current);
 		}
 		
@@ -1310,6 +1312,7 @@ public class SinlgePlanDFLGenerator {
 					u.setTemporaryTableName(tableInCache);
 					// u.addInputTable(new Table(tableInCache, tableInCache));
 				}
+				u.setRepartition(null);
 				unions.add(u);
 				if (u.getPartition() != null) {
 					existsPartitioned = true;

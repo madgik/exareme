@@ -49,10 +49,11 @@ public class Memo {
 
     public void setPlanUsed(MemoKey e) {
         MemoValue v =  getMemoValue(e);
-        if(v.isMaterialised()){
-        	v.setUsed(true);
-        	return;
-        }
+      //  if(v.isMaterialised()){
+       // 	v.setUsed(true);
+     //   	//return;
+      //  }
+       // else 
         if(v.isUsed()){
         	v.setMaterialized(true);
         }
