@@ -45,7 +45,7 @@ public class Node {
 	private int type;
 	private int prunningCounter;
 	// private int parentCounter;
-	private int hashID;
+	//private int hashID;
 	private List<Node> children;
 	private List<Node> parents;
 	private Set<String> descendantBaseTables;
@@ -132,7 +132,7 @@ public class Node {
 	 */
 	public HashCode computeHashID() {
 
-		Set<HashCode> codes=new HashSet<HashCode>();
+		List<HashCode> codes=new ArrayList<HashCode>();
 		codes.add(Hashing.sha1().hashInt(opCode));
 		for (Node c : this.children) {
 			codes.add(c.getHashId());
@@ -744,6 +744,23 @@ public class Node {
 
 	public void addAllDescendantBaseTables(Set<String> aliases) {
 		this.descendantBaseTables.addAll(aliases);
+	}
+
+	public int count(int i) {
+		if(this.isMaterialised){
+			return 0;
+		}
+		else{
+			if(this.type==Node.OR){
+			i++;
+			}
+			this.isMaterialised=true;
+			for(Node c:this.children){
+				i+=c.count(0);
+			}
+		}
+		// TODO Auto-generated method stub
+		return i;
 	}
 
 }

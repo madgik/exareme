@@ -6,7 +6,9 @@ package madgik.exareme.master.queryProcessor.decomposer.query;
 import madgik.exareme.master.queryProcessor.decomposer.federation.DBInfoReaderDB;
 import madgik.exareme.master.queryProcessor.decomposer.federation.SinlgePlanDFLGenerator;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -169,7 +171,7 @@ public class Table {
 
 	public HashCode getHashID() {
 		if(hash==null){
-		Set<HashCode> codes=new HashSet<HashCode>();
+		List<HashCode> codes=new ArrayList<HashCode>();
 		codes.add(Hashing.sha1().hashBytes(alias.toUpperCase().getBytes()));
 		codes.add(Hashing.sha1().hashBytes(name.toUpperCase().getBytes()));
 		hash= Hashing.combineOrdered(codes);

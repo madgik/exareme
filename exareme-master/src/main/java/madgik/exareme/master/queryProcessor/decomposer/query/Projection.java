@@ -131,7 +131,7 @@ public class Projection implements Operand {
     
     @Override
 	public HashCode getHashID() {
-		Set<HashCode> codes=new HashSet<HashCode>();
+    	List<HashCode> codes=new ArrayList<HashCode>();
 		for(Output o:this.ops){
 			codes.add(o.getHashID());
 		}

@@ -4,6 +4,7 @@
  */
 package madgik.exareme.master.queryProcessor.decomposer.query;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -140,7 +141,7 @@ public class UnaryWhereCondition implements Operand {
 	@Override
 	public HashCode getHashID() {
 		if(hash==null){
-		Set<HashCode> codes=new HashSet<HashCode>();
+			List<HashCode> codes = new ArrayList<HashCode>();
 		codes.add(onColumn.getHashID());
 		codes.add(Hashing.sha1().hashInt(this.type));
 		codes.add(Hashing.sha1().hashBytes(o.toUpperCase().getBytes()));

@@ -4,6 +4,7 @@
  */
 package madgik.exareme.master.queryProcessor.decomposer.query;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -89,7 +90,7 @@ public class CastOperand implements Operand {
 
 	@Override
 	public HashCode getHashID() {
-		Set<HashCode> codes=new HashSet<HashCode>();
+		List<HashCode> codes=new ArrayList<HashCode>();
 		codes.add(this.castOp.getHashID());
 		codes.add(Hashing.sha1().hashBytes(castType.getBytes()));
 		return Hashing.combineOrdered(codes);

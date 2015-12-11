@@ -226,13 +226,14 @@ public class QueryDecomposer {
 
 	public List<SQLQuery> getPlan() {
 		//String dot0 = root.dotPrint();
-		
+		projectRefCols=false;
 		if (projectRefCols) {
 			createProjections(root);
 		}
 		//String a = root.dotPrint();
 		expandDAG(root);
 		//String a2 = root.dotPrint();
+		//int no=root.count(0);
 		if(this.initialQuery.getLimit()>-1){
 			Node limit = new Node(Node.AND, Node.LIMIT);
 			limit.setObject(new Integer(this.initialQuery.getLimit()));

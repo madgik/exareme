@@ -134,7 +134,7 @@ public class Function implements Operand {
 
 	@Override
 	public HashCode getHashID() {
-		Set<HashCode> codes=new HashSet<HashCode>();
+		List<HashCode> codes=new ArrayList<HashCode>();
 		for(Operand o:this.params){
 			codes.add(o.getHashID());
 		}

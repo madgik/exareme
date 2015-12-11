@@ -116,7 +116,7 @@ public class Selection implements Operand {
 
     @Override
 	public HashCode getHashID() {
-		Set<HashCode> codes=new HashSet<HashCode>();
+    	List<HashCode> codes=new ArrayList<HashCode>();
 		for(Operand o:this.ops){
 			codes.add(o.getHashID());
 		}

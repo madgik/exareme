@@ -126,7 +126,7 @@ public class Column implements Operand {
 
 	@Override
 	public HashCode getHashID() {
-		Set<HashCode> codes=new HashSet<HashCode>();
+		List<HashCode> codes=new ArrayList<HashCode>();
 		codes.add(Hashing.sha1().hashBytes(this.tableAlias.toUpperCase().getBytes()));
 		codes.add(Hashing.sha1().hashBytes(this.columnName.toUpperCase().getBytes()));
 		return Hashing.combineOrdered(codes);

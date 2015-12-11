@@ -197,7 +197,7 @@ public class NonUnaryWhereCondition implements Operand {
 	@Override
 	public HashCode getHashID() {
 		if(hash==null){
-		Set<HashCode> codes=new HashSet<HashCode>();
+		List<HashCode> codes=new ArrayList<HashCode>();
 		for(Operand o:this.ops){
 			codes.add(o.getHashID());
 		}

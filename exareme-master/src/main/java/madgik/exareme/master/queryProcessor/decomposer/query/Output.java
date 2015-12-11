@@ -6,7 +6,9 @@ package madgik.exareme.master.queryProcessor.decomposer.query;
 
 import static madgik.exareme.master.queryProcessor.decomposer.util.Util.operandsAreEqual;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.google.common.hash.HashCode;
@@ -81,7 +83,7 @@ public class Output {
     }
 
 	public HashCode getHashID() {
-		Set<HashCode> codes=new HashSet<HashCode>();
+		List<HashCode> codes=new ArrayList<HashCode>();
 		codes.add(object.getHashID());
 		codes.add(Hashing.sha1().hashBytes(outputName.toUpperCase().getBytes()));
 
