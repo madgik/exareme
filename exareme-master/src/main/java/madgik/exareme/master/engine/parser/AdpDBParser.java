@@ -73,8 +73,7 @@ public class AdpDBParser {
         return script;
     }
 
-    private void addQueries(Registry registry, QueryScript script, SQLScript sQLScript)
-        throws Exception {
+    private void addQueries(Registry registry, QueryScript script, SQLScript sQLScript) throws Exception {
         HashMap<String, Table> tables = new HashMap<String, Table>();
         log.debug("Adding queries ...");
         for (SQLSelect q : sQLScript.getQueries()) {
@@ -92,6 +91,7 @@ public class AdpDBParser {
             for (String column : q.getPartitionColumns()) {
                 outView.addPatternColumn(column);
             }
+
             Select query = new Select(id, q, outView);
             addRunOnParts(out.getName(), q, query);
             id++;
@@ -210,7 +210,7 @@ public class AdpDBParser {
                                 .getInputTables()) {
                                 sQLQueryInfo.addInputTable(tableName);
                             }
-                            imdb.execute(queryStatement);
+                            imdb.execute(queryStatement.replaceFirst("(?i)\\s+temp\\s+view\\s+", " temp table "));
                         } else if (queryStatement.startsWith("select")) {
                             for (String tableName : imdb.getQueryInfo(queryStatement)
                                 .getInputTables()) {
