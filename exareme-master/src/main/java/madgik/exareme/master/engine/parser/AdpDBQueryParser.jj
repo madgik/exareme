@@ -70,6 +70,7 @@ TOKEN [IGNORE_CASE] : {
 |	<TABLE: "table">
 |	<INDEX: "index">
 |   <TO: "to">
+|   <BROADCAST: "broadcast">
 |   <PARTITIONED: "partitioned">
 |   <ON: "on">
 |   <AS: "as">
@@ -362,13 +363,16 @@ SQLSelect parseQuery() : {
 } {
   	comments = parseComment()
   	[<USING> (<WHITE>)* tables=usingTables() (<WHITE>)*]
-  	<DISTRIBUTED> (<WHITE>)* [<AT> (<WHITE>)* partsDefn=parsePartsDefn() (<WHITE>)*]
-  	<CREATE> (<WHITE>)*
+  	(<DISTRIBUTED> (<WHITE>)* [<AT> (<WHITE>)* partsDefn=parsePartsDefn() (<WHITE>)*]
+  	<CREATE> (<WHITE>)* |
+  	<CREATE> (<WHITE>)* [<AT> (<WHITE>)* partsDefn=parsePartsDefn() (<WHITE>)*]
+    <DISTRIBUTED> (<WHITE>)*)
   	[(<TEMPORARY> | <TEMP>) (<WHITE>)* { isTemporary = true; }]
   	<TABLE> (<WHITE>)* tableName=<IDENTIFIER> (<WHITE>)*
   	[<TO> (<WHITE>)* (parts=<DIGIT> | parts=<NUMBER>) (<WHITE>)* { outputPattern = DataPattern.many; }
   		[<ON> (<WHITE>)* t=<IDENTIFIER> { q.addPartitionColumn(t.toString()); }
   			(LOOKAHEAD(2) (<WHITE>)* <COMMA> (<WHITE>)* t=<IDENTIFIER> { q.addPartitionColumn(t.toString()); })* (<WHITE>)*]]
+  	[<BROADCAST> (<WHITE>)* <TO> (<WHITE>)* (parts=<DIGIT> | parts=<NUMBER>) (<WHITE>)* { outputPattern = DataPattern.broadcast; }]
   	<AS> (<WHITE>)* [<DIRECT> (<WHITE>)* { inputPattern=DataPattern.direct_product; } |
   	                 <DIRECTSCRIPT> (<WHITE>)* { inputPattern=DataPattern.direct_product; isScript = true; } |
   				     <EXTERNAL> (<WHITE>)* { inputPattern=DataPattern.external; } |
