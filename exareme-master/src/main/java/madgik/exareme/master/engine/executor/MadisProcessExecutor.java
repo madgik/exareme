@@ -7,6 +7,7 @@ import madgik.exareme.common.app.engine.ExecutionStatistics;
 import madgik.exareme.common.app.engine.MadisExecutorResult;
 import madgik.exareme.common.consts.DBConstants;
 import madgik.exareme.common.schema.TableView;
+import madgik.exareme.common.schema.expression.DataPattern;
 import madgik.exareme.master.engine.executor.remote.operator.ExecuteQueryState;
 import madgik.exareme.utils.association.Pair;
 import madgik.exareme.utils.embedded.db.DBUtils;
@@ -79,6 +80,7 @@ public class MadisProcessExecutor {
             HashMap<String, ArrayList<String>> nonLocalTablePartLocations = new HashMap<>();
 
             String dbDir = state.getOperator().getQuery().getDatabaseDir();
+            Boolean broadcast = state.getOperator().getQuery().getOutputTable().getPattern() == DataPattern.broadcast;
             String absoluteDBDir = new File(dbDir).getAbsolutePath();
 
             // Append additional tables and views
@@ -237,15 +239,18 @@ public class MadisProcessExecutor {
 
                 madisMainDB = outputTable + DBConstants.DB_SEPERATOR + part + ".db";
             } else {
-                script.append("output split:" + outputParts + " '" + outputTable + ".db'");
-                script.append(" select hashmd5mod(");
-                // TODO(herald): change it to the following ...
-                //script.append(" select hashmodarchdep(");
-                for (String column : output.getPatternColumnNames()) {
-                    script.append(column + ", ");
+                if (broadcast) {
+                    script.append("output split:1 '" + outputTable + ".db' select 0, * from (" + query + ") as q;\n\n");
+                } else {
+                    script.append("output split:" + outputParts + " '" + outputTable + ".db'");
+//                    script.append(" select hashmd5mod(");
+                    // TODO(herald): change it to the following ...
+                    script.append(" select hashmodarchdep(");
+                    for (String column : output.getPatternColumnNames()) {
+                        script.append(column + ", ");
+                    }
+                    script.append(outputParts + "),* from (" + query + ") as q;\n\n");
                 }
-                script.append(outputParts + "),* from (" + query + ") as q;\n\n");
-
             }
             script.append("-- Cleanup \n");
             for (String input : nonLocalTableDatabases.keySet()) {
@@ -269,7 +274,9 @@ public class MadisProcessExecutor {
             log.debug("Simple Query: '" + simpleQuery + "'");
 
             String stats = "";
-            if (numInputDatabases == 1 && inputQuery.equals(simpleQuery)) {
+            if (numInputDatabases == 1 &&
+                (inputQuery.equals("select_*_from_" + outputTable) ||
+                 inputQuery.equals("select_from_" + outputTable))) {
                 log.debug("Optimized ... just use ln ...");
                 String input = state.getOperator().getInputTables().iterator().next();
                 if (nonLocalTablePartLocations.get(input) == null) {
@@ -295,8 +302,23 @@ public class MadisProcessExecutor {
             if (outputParts > 1) {
                 File f = null;
                 for (int part = 0; part < outputParts; ++part) {
-                    f = new File(
-                        directory.getAbsolutePath() + "/" + outputTable + "." + part + ".db");
+                    if (broadcast && part != 0) {
+                        File clonefile = new File(directory.getAbsolutePath() + "/" + outputTable + "." + part + ".db");
+//                        clonefile.createNewFile();
+                        Pair<String, String> stdOutErr = procManager.createAndRunProcess(
+                                directory,
+                                "ln",
+                                directory.getAbsolutePath() + "/" + outputTable + ".0.db",
+                                clonefile.getAbsolutePath()
+                        );
+
+                        if (stdOutErr.b.trim().isEmpty() == false) {
+                            throw new ServerException("Cannot execute ln: " + stdOutErr.b);
+                        }
+                        log.debug(stdOutErr.a);
+                    }
+
+                    f = new File(directory.getAbsolutePath() + "/" + outputTable + "." + part + ".db");
 
                     if (!f.exists()) {
                         throw new ServerException(
