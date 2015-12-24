@@ -19,4 +19,5 @@ public enum DataPattern {
     // Output
     same,
     many,
+    broadcast
 }
