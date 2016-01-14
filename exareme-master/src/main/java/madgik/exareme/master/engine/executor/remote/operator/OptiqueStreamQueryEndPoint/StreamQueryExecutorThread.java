@@ -13,9 +13,6 @@ import java.util.Date;
 public class StreamQueryExecutorThread extends Thread {
     public enum State {LOADING, RUN, DIE, DESTROY}
 
-
-    ;
-
     private ArrayDeque<SimplePair<Long, Deque<Object[]>>> buffers = null;
     private int bufferTimeInSec;
     private boolean stopGenerator = false;
@@ -33,8 +30,7 @@ public class StreamQueryExecutorThread extends Thread {
     private int timeColumn;
     ArrayList<String[]> schema;
 
-    private static String madisPath =
-        "/home/xrs/Code/LALA/exareme/exareme-tools/madis/src/mterm.py";
+    private static String madisPath = "";
     //    private static String madisPath =  PropertyFactory.getRestServerProperty().
     //            getString("madis.path");
 

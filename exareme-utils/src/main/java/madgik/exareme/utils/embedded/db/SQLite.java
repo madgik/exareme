@@ -1,5 +1,5 @@
 /**
- * Copyright MaDgIK Group 2010 - 2015.
+ * Copyright MaDgIK Group 2010 - 2012.
  */
 package madgik.exareme.utils.embedded.db;
 
@@ -14,18 +14,18 @@ import java.sql.SQLException;
  */
 public class SQLite {
 
-    private static Logger log = Logger.getLogger(SQLite.class);
+  private static Logger log = Logger.getLogger(SQLite.class);
 
-    private SQLite() {
-    }
+  private SQLite() {
+  }
 
-    public static Connection createConnection(String database) throws SQLException {
-        try {
-            Class.forName("org.sqlite.JDBC");
-        } catch (Exception e) {
-            throw new SQLException("SQLite driver not found", e);
-        }
-        Connection conn = DriverManager.getConnection("jdbc:sqlite:" + database);
-        return conn;
+  public static Connection createConnection(String database) throws SQLException {
+    try {
+      Class.forName("org.sqlite.JDBC");
+    } catch (Exception e) {
+      throw new SQLException("SQLite driver not found", e);
     }
+    Connection conn = DriverManager.getConnection("jdbc:sqlite:" + database);
+    return conn;
+  }
 }
