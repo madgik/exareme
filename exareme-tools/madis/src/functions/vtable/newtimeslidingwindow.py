@@ -31,11 +31,15 @@ class NewTimeSlidingWindow(vtbase.VT):
             frequency = 1                   #window slides every 1 minute by default
         else:
             frequency = int(dictargs['frequency'])
+        if frequency < 1:
+            frequency = 1
 
         if 'granularity' not in dictargs:
             granularity = 60                   #window slides every 1 minute by default
         else:
             granularity = int(dictargs['granularity'])
+        if granularity < 1:
+            granularity = 1
 
         if 'equivalence' not in dictargs:
             equivalence = "std"                   #window slides every 1 minute by default
@@ -71,7 +75,7 @@ class NewTimeSlidingWindow(vtbase.VT):
             if parts == 1:
                 yield [('wid', 'integer'), ('abox', 'integer')] + list(cur.getdescriptionsafe())
             else:
-                yield [('part', 'integer'), ('wid', 'integer'), ('abox', 'integer')] + list(cur.getdescriptionsafe())
+                yield [('part', 'int'), ('wid', 'integer'), ('abox', 'integer')] + list(cur.getdescriptionsafe())
         except StopIteration:
             try:
                 raise
@@ -93,21 +97,49 @@ class NewTimeSlidingWindow(vtbase.VT):
         window = deque([[] for _ in xrange(windowaboxes)], windowaboxes)
 
         r = c.next()
-        # wid = 0
-        abox = windowaboxes - 1
-        # windowendtime = r[timecolumn]
         wid = int(float(r[timecolumn])/float(frequency * granularity))
-        windowendtime = wid * (frequency*granularity)
+        windowendtime = (wid + 1) * (frequency*granularity)
         windowstartaboxtime = windowendtime - windowaboxes*granularity + 1
-        window[abox].append(r)
-        if parts == 1:
-            yield (wid, abox,) + r
-        else:
-            yield (math.ceil(float(wid - minwid) / float(modwid)), wid, abox,) + r
+        tupletime = long(r[timecolumn])
+        abox = aboxfunc(tupletime, granularity, windowstartaboxtime)
 
-        tupletime = -1
+        if tupletime >= (windowendtime - winlen):
+            window[abox].append(r)
+            if parts == 1:
+                yield (wid, abox,) + r
+            else:
+                yield (int(float(wid - minwid) / float(modwid)), wid, abox,) + r
+
         while True:
-            r = c.next()
+            try:
+                r = c.next()
+            except StopIteration:
+                emptywindow = False
+                while not emptywindow:
+                    numberofslidingwindows = 1
+                    numberofslides = numberofslidingwindows * frequency
+
+                    if numberofslides > windowaboxes:
+                        numberofslides = windowaboxes
+
+                    for _ in range(0, numberofslides):
+                        window.append([])
+
+                    windowstartaboxtime += numberofslidingwindows*frequency*granularity
+                    windowendtime += numberofslidingwindows*frequency*granularity
+                    wid += numberofslidingwindows # *frequency # Maybe must uncomment
+
+                    emptywindow = True
+                    for i, l in enumerate(window):
+                        for t in l:
+                            emptywindow = False
+                            if (windowendtime - winlen) <= t[timecolumn] <= windowendtime:
+                                if parts == 1:
+                                    yield (wid, i,) + t
+                                else:
+                                    yield (int(float(wid - minwid) / float(modwid)), wid, i,) + t
+
+                raise StopIteration
 
             if tupletime > long(r[timecolumn]):
                 raise functions.OperatorError(__name__.rsplit('.')[-1], "Rows are not in time order ")

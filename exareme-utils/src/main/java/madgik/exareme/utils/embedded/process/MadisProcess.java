@@ -1,5 +1,5 @@
 /**
- * Copyright MaDgIK Group 2010 - 2015.
+ * Copyright MaDgIK Group 2010 - 2013.
  */
 package madgik.exareme.utils.embedded.process;
 
@@ -56,11 +56,11 @@ public class MadisProcess {
         log.debug("Starting process ..." + dbFile + python + madisPath);
         ProcessBuilder pb;
         if (dbFile == null) {
-            //            pb = new ProcessBuilder("stdbuf", "-oL", "python", madisPath);
-            pb = new ProcessBuilder(python, madisPath);
+            pb = new ProcessBuilder("stdbuf", "-oL", "python", madisPath);
+//            pb = new ProcessBuilder(python, madisPath);
         } else {
-            //            pb = new ProcessBuilder("stdbuf", "-oL", "python", madisPath, dbFile);
-            pb = new ProcessBuilder(python, madisPath, dbFile);
+            pb = new ProcessBuilder("stdbuf", "-oL", "python", madisPath, dbFile);
+//            pb = new ProcessBuilder(python, madisPath, dbFile);
         }
         pb.directory(new File("."));
         proc = pb.start();
@@ -98,6 +98,8 @@ public class MadisProcess {
     public QueryResultStream execQuery(String query) throws IOException {
         query = query.trim();
         query += (query.substring(query.length() - 1).equals(";")) ? "" : ";";
+        query = query.replaceAll(";\\s", ";\n\n");
+
         if (activeQuery) {
             throw new IOException("Only one query can be active at any given time!");
         }
