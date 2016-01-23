@@ -1,7 +1,0 @@
-{
-  "algorithms" : [],
-  "endpoints" : [],
-  "parameters" : [
-    {"input_local_tbl" : "(postgres h:127.0.0.1 port:5432 u:postgres p:postgres.2015 db:chuv_mips select brain_feature_set_id as __rid, feature_name as __colname, cast(tissue1_volume as FLOAT) as __val from brain_feature)"}
-  ]
-}

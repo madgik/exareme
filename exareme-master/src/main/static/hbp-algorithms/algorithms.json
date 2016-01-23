@@ -1,9 +1,0 @@
-{ "schema" : [ ["name", "text"], ["vtype", "text"], ["status", "text"] ]}
-["BayesNaive",  "none", "enabled"]
-["COUNTPATIENTS", "piechart", "enabled"]
-["COVARIANCE_MATRIX",  "heatmap", "enabled"]
-["DBSCANTotal", "heatmap", "enabled"]
-["K_MEANS_MOTWANI", "clusterplot", "enabled"]
-["kMeansIterations", "none", "disabled"]
-["LINEAR_REGRESSION", "linechart", "enabled"]
-["STANDARD_DEVIATION", "none", "enabled"]

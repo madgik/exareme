@@ -1,3 +1,0 @@
-{ "schema" : [ ["name", "text"], ["desc", "text"], ["host", "text"], ["port", "text"], ["path", "text"], ["status", "text"] ]}
-[ "Endpoint1", "", "0.0.0.0", "8089", "/tmp/hb.0.db", "enabled"]
-[ "Endpoint2", "", "0.0.0.0", "8090", "/tmp/hb.1.db", "enabled"]
