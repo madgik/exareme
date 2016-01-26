@@ -28,6 +28,15 @@ public class DecomposerUtils {
 
     private static final Logger log = Logger.getLogger(DecomposerUtils.class);
     public static final int MAX_NUMBER_OF_UNIONS;
+	public static final int NO_OF_RECORDS;
+	public static final boolean USE_POSTGRES_COPY;
+	public static final boolean ADD_TO_REGISTRY ;
+	public static final boolean PUSH_DISTINCT;
+	
+	public static final boolean USE_GROUP_BY;
+	public static final boolean USE_ORDER_BY;
+	public static final boolean REMOVE_OUTPUTS;
+	public static final boolean PUSH_PROCESSING;
 
     static {
         GenericProperties properties = AdpProperties.getDecomposerProperties();
@@ -50,7 +59,17 @@ public class DecomposerUtils {
         FETCH_SIZE_MYSQL = properties.getInt("fetchSize.mysql");
         RANDOM_TABLENAME_GENERATION = properties.getBoolean("random.tablename.generation");
         MAX_NUMBER_OF_UNIONS = properties.getInt("max.number.of.unions");
-
+        NO_OF_RECORDS = properties.getInt("number.of.records");
+        USE_POSTGRES_COPY = properties.getBoolean("use.postgres.copy");
+        ADD_TO_REGISTRY = properties.getBoolean("add.to.registry");
+        PUSH_DISTINCT  = properties.getBoolean("push.distinct");
+        
+        USE_GROUP_BY=properties.getBoolean("use.group.by");
+        USE_ORDER_BY=properties.getBoolean("use.order.by");
+        
+        REMOVE_OUTPUTS=properties.getBoolean("remove.outputs");
+        PUSH_PROCESSING=properties.getBoolean("push.processing");
+        
         log.trace("Decomposer Properties Loaded.");
     }
 

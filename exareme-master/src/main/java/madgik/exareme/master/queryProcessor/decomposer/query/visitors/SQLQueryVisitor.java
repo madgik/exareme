@@ -13,7 +13,6 @@ import org.apache.log4j.Logger;
  */
 public class SQLQueryVisitor extends AbstractVisitor {
 
-    private static final Logger log = Logger.getLogger(SQLQueryVisitor.class);
     private boolean stop = false;
 
     public SQLQueryVisitor(SQLQuery query) {

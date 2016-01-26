@@ -26,10 +26,10 @@ public class ColumnOrderBy extends Column {
         if (!this.isAsc) {
             order = " DESC";
         }
-        if (tableAlias != null) {
-            return tableAlias + "." + columnName + order;
+        if (getAlias() != null) {
+            return getAlias() + "." + getName() + order;
         } else {
-            return columnName + order;
+            return getName() + order;
         }
     }
 }

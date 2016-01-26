@@ -6,6 +6,8 @@ package madgik.exareme.master.queryProcessor.decomposer.query;
 
 import java.util.List;
 
+import com.google.common.hash.HashCode;
+
 /**
  * @author dimitris
  */
@@ -19,4 +21,6 @@ public interface Operand extends Cloneable {
     public void changeColumn(Column oldCol, Column newCol);
 
     public Operand clone() throws CloneNotSupportedException;
+    
+    public HashCode getHashID();
 }

@@ -9,6 +9,7 @@ import madgik.exareme.master.queryProcessor.decomposer.dag.PartitionCols;
 import madgik.exareme.master.queryProcessor.decomposer.query.Column;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,10 +29,11 @@ public class Memo {
         return memo.containsKey(ec);
     }
 
-    public void put(Node e, SinglePlan resultPlan, Column c, double repCost, PartitionCols l) {
+    public void put(Node e, SinglePlan resultPlan, Column c, double repCost, PartitionCols l, List<MemoKey> toMaterialize) {
         MemoKey k = new MemoKey(e, c);
         PartitionedMemoValue v = new PartitionedMemoValue(resultPlan, repCost);
         v.setDlvdPart(l);
+        v.setToMat(toMaterialize);
         memo.put(k, v);
 
     }
@@ -46,11 +48,24 @@ public class Memo {
     }
 
     public void setPlanUsed(MemoKey e) {
-        CentralizedMemoValue v = (CentralizedMemoValue) getMemoValue(e);
+        MemoValue v =  getMemoValue(e);
+      //  if(v.isMaterialised()){
+       // 	v.setUsed(true);
+     //   	//return;
+      //  }
+       // else 
+        if(v.isUsed()){
+        	v.setMaterialized(true);
+        }
         v.setUsed(true);
+        
         SinglePlan p = v.getPlan();
         for (int i = 0; i < p.noOfInputPlans(); i++) {
             MemoKey sp = p.getInputPlan(i);
+            
+            if(sp.getNode().getDescendantBaseTables().size()==1 && !this.getMemoValue(sp).isFederated()){
+            	continue;            	
+            }
             setPlanUsed(sp);
 
         }

@@ -15,7 +15,6 @@ public class SQLQueryParser {
         DistSQLParser parser = new DistSQLParser();
         StatementNode node = parser.parseStatement(queryString);
         //node.treePrint();
-
         // Traverse the qury tree
         SQLQuery query = new SQLQuery();
         //query.readDBInfo();

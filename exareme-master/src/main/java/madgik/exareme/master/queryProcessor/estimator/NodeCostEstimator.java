@@ -108,8 +108,7 @@ public class NodeCostEstimator {
             return responseTime;
 
         } catch (Exception ex) {
-            log.debug("Cannot get cost for repartition op " + partitioningCol.columnName
-                + ". Assuming dummy cost");
+            log.debug("Cannot get cost for repartition op " + partitioningCol.getName() + ". Assuming dummy cost");
             return 1.5;
 
         }

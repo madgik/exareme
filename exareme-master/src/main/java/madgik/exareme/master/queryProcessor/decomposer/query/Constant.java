@@ -7,6 +7,9 @@ package madgik.exareme.master.queryProcessor.decomposer.query;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.hash.HashCode;
+import com.google.common.hash.Hashing;
+
 /**
  * @author dimitris
  */
@@ -77,5 +80,11 @@ public class Constant implements Operand {
     public boolean isArithmetic() {
         return isArithmetic;
     }
+
+	@Override
+	public HashCode getHashID() {
+		// TODO Auto-generated method stub
+		return Hashing.sha1().hashBytes(this.value.toString().toUpperCase().getBytes());
+	}
 
 }

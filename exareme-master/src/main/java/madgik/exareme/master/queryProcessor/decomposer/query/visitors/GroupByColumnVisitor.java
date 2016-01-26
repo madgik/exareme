@@ -23,11 +23,9 @@ public class GroupByColumnVisitor extends AbstractVisitor {
         if (node instanceof GroupByColumn) {
             Column column = new Column();
 
-            ColumnReference parserColumn =
-                (ColumnReference) ((GroupByColumn) node).getColumnExpression();
-            column.tableAlias = parserColumn.getTableName();
-            column.columnName = parserColumn.getColumnName();
-
+            ColumnReference parserColumn = (ColumnReference) ((GroupByColumn) node).getColumnExpression();
+            column.setAlias( parserColumn.getTableName());
+            column.setName(parserColumn.getColumnName());
             query.getGroupBy().add(column);
             return node;
         }
