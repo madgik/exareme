@@ -58,6 +58,7 @@ public class RmiAdpDBSelectOptimizer {
     // TODO(herald): find a better way to do this ... also use topology ...
     //  private final int TREE_REDUCTION_PER_LEVEL = 2;
     private static final int VIRTUAL_CPUS_PER_CONTAINER = 1;
+    private static int containerCounter = 0;
 
     public RmiAdpDBSelectOptimizer(AdpDBStatusManager statusManager, ArtManager manager) {
     }
@@ -422,15 +423,21 @@ public class RmiAdpDBSelectOptimizer {
         }
     }
 
-    private void applyInputPattern(Select query, ProcessQueryState queryState, InputData input,
+    private void applyInputPattern(
+        Select query,
+        ProcessQueryState queryState,
+        InputData input,
         StateData state) throws RemoteException {
+
         TableView outTableView = query.getOutputTable();
         List<Integer> runOnParts = query.getRunOnParts();
         DataPattern inputPattern = query.getParsedSqlQuery().getInputDataPattern();
         log.debug("Input pattern  : " + inputPattern);
+
         ArrayList<ConcreteOperator[]> inputs = new ArrayList<ConcreteOperator[]>();
         int outputPartitions = 1;
         log.debug("Apply input pattern ... ");
+
         switch (inputPattern) {
             case direct_product: {
                 int numOfPartitions = 1;
@@ -492,11 +499,13 @@ public class RmiAdpDBSelectOptimizer {
         }
         log.debug("Inputs : " + inputs.size());
         log.debug("Output partitions: " + outputPartitions);
+
         queryState.outputTable = new PhysicalTable(outTableView.getTable());
         queryState.outputs = new ConcreteOperator[outputPartitions];
         switch (inputPattern) {
             case direct_product:
             case external:
+            case remote:
             case virtual: {
                 for (int oPart = 0; oPart < outputPartitions; ++oPart) {
                     if (runOnParts.size() > 0) {
@@ -535,6 +544,22 @@ public class RmiAdpDBSelectOptimizer {
                         state.tableBindings
                             .add(new Pair<ConcreteOperator, Integer>(runQuery, localContainer));
                         state.containerTablePartCounts[localContainer]++;
+                    }
+                    if (inputPattern == DataPattern.remote) {
+                        log.debug("Bind virtual operators in simple round robin fashion.");
+                        if ( containerCounter == state.proxies.length){
+                            containerCounter = 0;
+                        }
+                        ContainerProxy containerProxy = state.proxies[containerCounter];
+                        Check.NotNull(
+                            containerProxy,
+                            "proxy not found: " + containerProxy.getEntityName().getIP());
+                        log.debug("proxy container is: "
+                            + containerProxy.getEntityName().getName());
+                        state.tableBindings
+                            .add(new Pair<ConcreteOperator, Integer>(runQuery, containerCounter));
+                        state.containerTablePartCounts[containerCounter]++;
+                        containerCounter++;
                     }
                     if (inputPattern == DataPattern.virtual) {
                         log.debug("Bind virtual operators to all machines.");
@@ -657,12 +682,17 @@ public class RmiAdpDBSelectOptimizer {
         }
     }
 
-    private void applyOutputPattern(Select query, ProcessQueryState queryState, InputData input,
+    private void applyOutputPattern(
+        Select query,
+        ProcessQueryState queryState,
+        InputData input,
         StateData state) throws RemoteException {
+
         TableView outTableView = query.getOutputTable();
         DataPattern outputPattern = query.getParsedSqlQuery().getOutputDataPattern();
         log.debug("Output pattern : " + outputPattern);
         log.debug("Apply output pattern ... ");
+
         int numOfOutPartitions = -1;
         switch (outputPattern) {
             case same: {

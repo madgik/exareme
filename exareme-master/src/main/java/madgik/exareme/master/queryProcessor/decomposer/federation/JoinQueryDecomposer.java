@@ -59,16 +59,14 @@ class JoinQueryDecomposer {
             for (Column c : o.getObject().getAllColumnRefs()) {
                 boolean exists = false;
                 for (Output o2 : outerJoin.getLeftJoinTable().getOutputs()) {
-                    if ((c.tableAlias + "_" + c.columnName).equals(o2.getOutputName())) {
-                        o.setObject(new Column(outerJoin.getLeftJoinTable().getResultTableName(),
-                            o2.getOutputName()));
+                    if ((c.getAlias() + "_" + c.getName()).equals(o2.getOutputName())) {
+                        o.setObject(new Column(outerJoin.getLeftJoinTable().getResultTableName(), o2.getOutputName()));
                         exists = true;
                     }
                 }
                 for (Output o2 : outerJoin.getRightJoinTable().getOutputs()) {
-                    if ((c.tableAlias + "_" + c.columnName).equals(o2.getOutputName())) {
-                        o.setObject(new Column(outerJoin.getRightJoinTable().getResultTableName(),
-                            o2.getOutputName()));
+                    if ((c.getAlias() + "_" + c.getName()).equals(o2.getOutputName())) {
+                        o.setObject(new Column(outerJoin.getRightJoinTable().getResultTableName(), o2.getOutputName()));
                         exists = true;
                     }
                 }
@@ -104,9 +102,9 @@ class JoinQueryDecomposer {
                 q.setMadisFunctionString(
                     DBInfoReaderDB.dbInfo.getDB(input.getDBName()).getMadisString());
                 for (Column c : allReferencedBaseColumns) {
-                    if (c.tableAlias.equals(input.getAlias())) {
-                        q.getOutputs().add(new Output(c.tableAlias + "_" + c.columnName,
-                            new Column(c.tableAlias, c.columnName)));
+
+                    if (c.getAlias().equals(input.getAlias())) {
+                        q.getOutputs().add(new Output(c.getAlias() + "_" + c.getName(), new Column(c.getAlias(), c.getName())));
                         c2t.putColumnInTable(c, q.getResultTableName());
                     }
                 }
@@ -116,7 +114,13 @@ class JoinQueryDecomposer {
         } else {
             if (q.getLeftJoinTable() == null) {
                 QueryDecomposer d = new QueryDecomposer(q, this.database, this.partNo, nse);
-                ArrayList<SQLQuery> subqueries = d.getSubqueries();
+                List<SQLQuery> subqueries=null;
+				try {
+					subqueries = d.getSubqueries();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
                 SQLQuery last = null;
                 for (SQLQuery sub : subqueries) {
                     if (!result.contains(sub)) {
@@ -164,15 +168,15 @@ class JoinQueryDecomposer {
 
             boolean exists = false;
             for (Output o2 : q.getLeftJoinTable().getOutputs()) {
-                if ((c.tableAlias).equals(o2.getOutputName().split("_")[0])) {
-                    if (!isFinalJoin && !q.getOutputs()
-                        .contains(new Output(o2.getOutputName(), c))) {
+
+                if ((c.getAlias()).equals(o2.getOutputName().split("_")[0])) {
+                    if (!isFinalJoin && !q.getOutputs().contains(new Output(o2.getOutputName(), c))) {
                         q.getOutputs().add(new Output(o2.getOutputName(), c));
                     }
-                    if ((c.tableAlias + "_" + c.columnName).equals(o2.getOutputName())) {
+                    if ((c.getAlias() + "_" + c.getName()).equals(o2.getOutputName())) {
                         // o.setObject(new Column(outerJoin.leftJoinTable.getResultTableName(), o2.getOutputName()));
-                        c.tableAlias = q.getLeftJoinTable().getResultTableName();
-                        c.columnName = o2.getOutputName();
+                        c.setAlias(q.getLeftJoinTable().getResultTableName());
+                        c.setName(o2.getOutputName());
                         exists = true;
                     }
 
@@ -181,15 +185,14 @@ class JoinQueryDecomposer {
                 }
             }
             for (Output o2 : q.getRightJoinTable().getOutputs()) {
-                if ((c.tableAlias).equals(o2.getOutputName().split("_")[0])) {
-                    if (!isFinalJoin && !q.getOutputs()
-                        .contains(new Output(o2.getOutputName(), c))) {
+                if ((c.getAlias()).equals(o2.getOutputName().split("_")[0])) {
+                    if (!isFinalJoin && !q.getOutputs().contains(new Output(o2.getOutputName(), c))) {
                         q.getOutputs().add(new Output(o2.getOutputName(), c));
                     }
-                    if ((c.tableAlias + "_" + c.columnName).equals(o2.getOutputName())) {
+                    if ((c.getAlias() + "_" + c.getName()).equals(o2.getOutputName())) {
                         // o.setObject(new Column(outerJoin.leftJoinTable.getResultTableName(), o2.getOutputName()));
-                        c.tableAlias = q.getRightJoinTable().getResultTableName();
-                        c.columnName = o2.getOutputName();
+                        c.setAlias(q.getRightJoinTable().getResultTableName());
+                        c.setName(o2.getOutputName());
                         exists = true;
                     }
 
@@ -231,21 +234,22 @@ class JoinQueryDecomposer {
         for (Column cout : q.getAllOutputColumns()) {
             //  for (Output o : q.getOutputs()) {
             //update c2t to track the output columns from q
-            //   if (o.getObject() instanceof Column) {
-            //   Column cout = (Column) o.getObject();
-            // boolean needed = false;
-            for (Column initial : this.allReferencedBaseColumns) {
-                if (cout.columnName.equals(initial.tableAlias + "_" + initial.columnName)) {
-                    //   needed = true;
-                    c2t.putColumnInTable(initial, q.getResultTableName());
-                    //break;
+         //   if (o.getObject() instanceof Column) {
+             //   Column cout = (Column) o.getObject();
+                // boolean needed = false;
+                for (Column initial : this.allReferencedBaseColumns) {
+                    if (cout.getName().equals(initial.getAlias() + "_" + initial.getName())) {
+                        //   needed = true;
+                        c2t.putColumnInTable(initial, q.getResultTableName());
+                        //break;
+                    }
                 }
             }
         }
         //   }
 
 
-    }
+    
 
     private SQLQuery getTemporarySubquery(String tablename) {
         for (SQLQuery q : this.result) {

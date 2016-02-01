@@ -15,7 +15,6 @@ import org.apache.log4j.Logger;
  */
 public class OrderByVisitor extends AbstractVisitor {
 
-    private static final Logger log = Logger.getLogger(OrderByVisitor.class);
 
     public OrderByVisitor(SQLQuery query) {
         super(query);

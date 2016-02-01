@@ -5,8 +5,13 @@
 package madgik.exareme.master.queryProcessor.decomposer.query;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+
+import com.google.common.hash.HashCode;
+import com.google.common.hash.Hashing;
 
 /**
  * @author dimitris
@@ -87,12 +92,14 @@ public class Projection implements Operand {
         int hash = 7;
         for (Output o : this.ops) {
             //Ignore table name if operand is column!!!!!!
-            if (o.getObject() instanceof Column) {
-                Column c = (Column) o.getObject();
-                hash = 31 * hash + Objects.hashCode(o.getOutputName()) + Objects
-                    .hashCode(c.columnName);
-            } else {
-                hash = 31 * hash + o.hashCode();
+
+            if(o.getObject() instanceof Column){
+                Column c=(Column) o.getObject();
+                hash=31 * hash + Objects.hashCode(o.getOutputName()) + Objects.hashCode(c.getName());
+
+            }
+            else{
+            	hash=31 * hash + Objects.hashCode(o.getOutputName()) + Objects.hashCode(o.getObject());
             }
         }
         return hash;
@@ -121,4 +128,19 @@ public class Projection implements Operand {
     public boolean isDistinct() {
         return this.distinct;
     }
+    
+    @Override
+	public HashCode getHashID() {
+    	List<HashCode> codes=new ArrayList<HashCode>();
+		for(Output o:this.ops){
+			codes.add(o.getHashID());
+		}
+		if(distinct){
+			codes.add(Hashing.sha1().hashBytes("true".getBytes()));
+		}
+		else{
+			codes.add(Hashing.sha1().hashBytes("false".getBytes()));
+		}
+		return Hashing.combineUnordered(codes);
+	}
 }

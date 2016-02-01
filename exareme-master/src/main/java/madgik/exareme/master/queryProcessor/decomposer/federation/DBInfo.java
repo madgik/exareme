@@ -19,35 +19,35 @@ public class DBInfo {
     }
 
     public void addDB(String db) {
-        dbs.put(db, new DB(db));
+        dbs.put(db.toUpperCase(), new DB(db.toUpperCase()));
     }
 
     public void setUserForDB(String db, String s) {
-        dbs.get(db).setUser(s);
+        dbs.get(db.toUpperCase()).setUser(s);
     }
 
     public void setPassForDB(String db, String s) {
-        dbs.get(db).setPass(s);
+        dbs.get(db.toUpperCase()).setPass(s);
     }
 
     public void setDriverForDB(String db, String s) {
-        dbs.get(db).setDriver(s);
+        dbs.get(db.toUpperCase()).setDriver(s);
     }
 
     public void setURLForDB(String db, String s) {
-        dbs.get(db).setURL(s);
+        dbs.get(db.toUpperCase()).setURL(s);
     }
 
     public void setMadisStringForDB(String db, String s) {
-        dbs.get(db).setMadisString(s);
+        dbs.get(db.toUpperCase()).setMadisString(s);
     }
 
     public boolean existsDB(String dbID) {
-        return dbs.containsKey(dbID);
+        return dbs.containsKey(dbID.toUpperCase());
     }
 
     public DB getDB(String dbID) {
-        return dbs.get(dbID);
+        return dbs.get(dbID.toUpperCase());
     }
 
     public DB getDBForMadis(String madis) {
@@ -64,6 +64,6 @@ public class DBInfo {
     }
 
     void setSchemaForDB(String db, String s) {
-        dbs.get(db).setSchema(s);
+        dbs.get(db.toUpperCase()).setSchema(s);
     }
 }

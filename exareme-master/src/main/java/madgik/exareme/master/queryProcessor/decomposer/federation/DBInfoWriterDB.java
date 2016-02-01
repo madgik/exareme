@@ -31,7 +31,6 @@ public class DBInfoWriterDB {
 
 
             DatabaseMetaData dbm = connection.getMetaData();
-            // check if "employee" table is there
             ResultSet tables = dbm.getTables(null, null, "endpoint", null);
             if (!tables.next()) {
                 statement.executeUpdate(
@@ -57,8 +56,7 @@ public class DBInfoWriterDB {
                 } else if (params[2].contains("OracleDriver")) {
                     host = params[1];
                     madisString = "oracle " + host + " u:" + params[3] + " p:" + params[4];
-                } // sql("select * from (postgres h:127.0.0.1 port:5432 u:root p:rootpw db:testdb select 5 as num, 'test' as text);")
-                //jdbc:postgresql://10.254.11.22:5432/wis1
+                } 
                 else if (params[2].contains("postgresql")) {
                     host = params[1].split(":")[2];
                     if (host.startsWith("//")) {
@@ -70,8 +68,8 @@ public class DBInfoWriterDB {
                     String port = "5432";
                     if (splitted.length == 1) {
                         String dbPort = params[1].split(":")[3];
-                        db = dbPort.split("/")[0];
-                        port = dbPort.split("/")[1];
+                        port = dbPort.split("/")[0];
+                        db = dbPort.split("/")[1];
 
                     } else {
                         db = splitted[1].split("\\?")[0];
@@ -89,6 +87,63 @@ public class DBInfoWriterDB {
                 statement.close();
 
             }
+
+        } catch (SQLException e) {
+            // if the error message is "out of memory", 
+            // it probably means no database file is found
+            log.error(e);
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                // connection close failed.
+                log.error(e);
+            }
+        }
+    }
+    
+    public static void writeAliases(NamesToAliases n2a, String directory) throws ClassNotFoundException {
+        Class.forName("org.sqlite.JDBC");
+        log.debug("Writing aliases");
+        Connection connection = null;
+        try {
+            // create a database connection
+            if (!directory.endsWith("/")) {
+                directory += "/";
+            }
+            connection = DriverManager.getConnection("jdbc:sqlite:" + directory + "endpoints.db");
+            Statement statement = connection.createStatement();
+            statement.setQueryTimeout(30);  // set timeout to 30 sec.
+
+
+
+            DatabaseMetaData dbm = connection.getMetaData();
+            // check if "employee" table is there
+            ResultSet tables = dbm.getTables(null, null, "aliases", null);
+            if (!tables.next()) {
+                statement.executeUpdate(
+                    "create table aliases (tablename string, aliases string)");
+            }
+
+
+           
+            for(String tablename:n2a.getTables()){
+            	statement.executeUpdate("DELETE FROM aliases WHERE tablename = '" +tablename + "';");
+            	String aliasesForTable="";
+            	String del="";
+            	for(String alias:n2a.getAllAliasesForBaseTable(tablename)){
+            		aliasesForTable+=del;
+            		aliasesForTable+=alias;
+            		del=" ";
+            	}
+            	statement.executeUpdate(
+                        "INSERT INTO aliases VALUES ('" + tablename + "','"  + aliasesForTable + "');");
+                    
+            }
+                
+                statement.close();
 
         } catch (SQLException e) {
             // if the error message is "out of memory", 

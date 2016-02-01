@@ -1,5 +1,5 @@
 /**
- * Copyright MaDgIK Group 2010 - 2015.
+ * Copyright MaDgIK Group 2010 - 2013.
  */
 package madgik.exareme.jdbc.federated;
 
@@ -10,27 +10,33 @@ package madgik.exareme.jdbc.federated;
  * @author dimitris
  */
 public class AdpRequest {
-    private String query;
-    private String type; //update, query, execute
-    private String db;
-    private String table;
+  private String query;
+  private String type; //update, query, execute
+  private String db;
+  private String table;
+  private String timeout;
 
-    public AdpRequest(String q, String t, String db) {
-        this.table = "--";
-        this.query = q;
-        this.type = t;
-        this.db = db;
-    }
+  public AdpRequest(String q, String t, String db, String to) {
+    this.table = "--";
+    this.query = q;
+    this.type = t;
+    this.db = db;
+    this.timeout = to;
+  }
 
-    public String getType() {
-        return this.type;
-    }
+  public String getType() {
+    return this.type;
+  }
 
-    public String getSQL() {
-        return this.query;
-    }
+  public String getSQL() {
+    return this.query;
+  }
 
-    public String getDb() {
-        return db;
-    }
+  public String getDb() {
+    return db;
+  }
+  
+  public String geTimeOut() {
+    return timeout;
+  }
 }

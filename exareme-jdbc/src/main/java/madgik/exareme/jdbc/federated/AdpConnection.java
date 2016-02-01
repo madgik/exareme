@@ -1,18 +1,39 @@
 /**
- * Copyright MaDgIK Group 2010 - 2015.
+ * Copyright MaDgIK Group 2010 - 2013.
  */
 package madgik.exareme.jdbc.federated;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.sql.*;
+import java.sql.Array;
+import java.sql.Blob;
+import java.sql.CallableStatement;
+import java.sql.Clob;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.DriverManager;
+import java.sql.NClob;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLClientInfoException;
+import java.sql.SQLException;
+import java.sql.SQLWarning;
+import java.sql.SQLXML;
+import java.sql.Savepoint;
+import java.sql.Statement;
+import java.sql.Struct;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ *
  * @author dimitris
  */
 public class AdpConnection implements Connection {
@@ -21,6 +42,7 @@ public class AdpConnection implements Connection {
     private AdpDatabaseMetaData metadata;
     private FederatedConnections federatedCons;
     private String dbPath;
+
 
     public AdpConnection(String urlString, Properties info) throws SQLException {
         this.dbPath = "";
@@ -34,8 +56,7 @@ public class AdpConnection implements Connection {
                 this.url = urlInitial;
                 //change dir to /query/
                 this.dbPath = url.getPath();
-                url = new URL(url.getProtocol() + "://" + url.getHost() + ":" + url.getPort()
-                    + "/decomposer/");
+                url = new URL(url.getProtocol() + "://" + url.getHost() + ":" + url.getPort() + "/decomposer/");
                 // this.url=""
             } else {
                 //we have feferated DBs
@@ -43,8 +64,7 @@ public class AdpConnection implements Connection {
                 this.url = new URL(splitted[0].substring(12));
                 //change dir to /query/
                 this.dbPath = url.getPath();
-                url = new URL(url.getProtocol() + "://" + url.getHost() + ":" + url.getPort()
-                    + "/decomposer/");
+                url = new URL(url.getProtocol() + "://" + url.getHost() + ":" + url.getPort() + "/decomposer/");
                 for (int i = 1; i < splitted.length; i++) {
                     String[] endpointData = splitted[i].split("-next-");
                     try {
@@ -52,14 +72,10 @@ public class AdpConnection implements Connection {
                     } catch (ClassNotFoundException ex) {
                         Logger.getLogger(AdpConnection.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    Connection conn = DriverManager
-                        .getConnection(endpointData[1], endpointData[3], endpointData[4]);
-                    federatedCons.putSchema(new Schema(endpointData[0], endpointData[5]), conn);
+                    Connection conn = DriverManager.getConnection(endpointData[1], endpointData[3], endpointData[4]);
+                    federatedCons.putSchema(new Schema(endpointData[0].replaceAll("-", ""), endpointData[5]), conn);
                     Statement st = this.createStatement();
-                    st.executeQuery(
-                        "addFederatedEndpoint(" + endpointData[0] + "," + endpointData[1] + ","
-                            + endpointData[2] + "," + endpointData[3] + "," + endpointData[4] + ","
-                            + endpointData[5] + ")");
+                    st.executeQuery("addFederatedEndpoint(" + endpointData[0].replaceAll("-", "") + "," + endpointData[1] + "," + endpointData[2] + "," + endpointData[3] + "," + endpointData[4] + "," + endpointData[5] + ")");
                     st.close();
 
                 }
@@ -70,7 +86,8 @@ public class AdpConnection implements Connection {
             //throw new SQLException(ex.getMessage());
             Logger.getLogger(AdpConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        
+                            
 
     }
 
@@ -78,251 +95,315 @@ public class AdpConnection implements Connection {
         return url;
     }
 
-    @Override public AdpStatement createStatement() throws SQLException {
+    @Override
+    public AdpStatement createStatement() throws SQLException {
         return new AdpStatement(this);
     }
 
-    @Override public PreparedStatement prepareStatement(String sql) throws SQLException {
+    @Override
+    public PreparedStatement prepareStatement(String sql) throws SQLException {
         return new AdpPreparedStatement(this, sql);
     }
 
-    @Override public CallableStatement prepareCall(String sql) throws SQLException {
+    @Override
+    public CallableStatement prepareCall(String sql) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public String nativeSQL(String sql) throws SQLException {
+    @Override
+    public String nativeSQL(String sql) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public boolean getAutoCommit() throws SQLException {
+    @Override
+    public void setAutoCommit(boolean autoCommit) throws SQLException {
+        Logger.getLogger(AdpConnection.class.getName()).log(Level.WARNING, "Trying to set autoCommit. Not Supported");
+        return;
+        //throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public boolean getAutoCommit() throws SQLException {
         return true;
     }
 
-    @Override public void setAutoCommit(boolean autoCommit) throws SQLException {
-        Logger.getLogger(AdpConnection.class.getName())
-            .log(Level.WARNING, "Trying to set autoCommit. Not Supported");
+    @Override
+    public void commit() throws SQLException {
+        Logger.getLogger(AdpConnection.class.getName()).log(Level.WARNING, "Trying to commit. Not Supported");
         return;
         //throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public void commit() throws SQLException {
-        Logger.getLogger(AdpConnection.class.getName())
-            .log(Level.WARNING, "Trying to commit. Not Supported");
-        return;
-        //throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override public void rollback() throws SQLException {
+    @Override
+    public void rollback() throws SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public void close() throws SQLException {
+    @Override
+    public void close() throws SQLException {
         this.metadata = null;
         this.url = null;
+        for(Connection c:federatedCons.getDistinctDBConnections()){
+            if(c!=null){
+                c.close();
+            }
+        }
+        //delete registrydb?
     }
 
-    @Override public boolean isClosed() throws SQLException {
+    @Override
+    public boolean isClosed() throws SQLException {
         return this.url == null;
     }
 
-    @Override public DatabaseMetaData getMetaData() throws SQLException {
+    @Override
+    public DatabaseMetaData getMetaData() throws SQLException {
         return metadata;
     }
 
-    @Override public boolean isReadOnly() throws SQLException {
+    @Override
+    public void setReadOnly(boolean readOnly) throws SQLException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public boolean isReadOnly() throws SQLException {
         return true;
     }
 
-    @Override public void setReadOnly(boolean readOnly) throws SQLException {
+    @Override
+    public void setCatalog(String catalog) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public String getCatalog() throws SQLException {
+    @Override
+    public String getCatalog() throws SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public void setCatalog(String catalog) throws SQLException {
+    @Override
+    public void setTransactionIsolation(int level) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public int getTransactionIsolation() throws SQLException {
+    @Override
+    public int getTransactionIsolation() throws SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public void setTransactionIsolation(int level) throws SQLException {
+    @Override
+    public SQLWarning getWarnings() throws SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public SQLWarning getWarnings() throws SQLException {
+    @Override
+    public void clearWarnings() throws SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public void clearWarnings() throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override public Statement createStatement(int resultSetType, int resultSetConcurrency)
-        throws SQLException {
+    @Override
+    public Statement createStatement(int resultSetType, int resultSetConcurrency)
+            throws SQLException {
         // return new AdpStatement(this);
         if (resultSetType != ResultSet.TYPE_FORWARD_ONLY) {
-            Logger.getLogger(AdpConnection.class.getName()).log(Level.WARNING,
-                "Trying to set Statement resultSetType to value different from ResultSet.TYPE_FORWARD_ONLY. Not supported.");
+            Logger.getLogger(AdpConnection.class.getName()).log(Level.WARNING, "Trying to set Statement resultSetType to value different from ResultSet.TYPE_FORWARD_ONLY. Not supported.");
             /*
              throw new UnsupportedOperationException("Resultset type: " + resultSetType
              + " not supported yet.");
-             */
-        }
+             */        }
         if (resultSetConcurrency != ResultSet.CONCUR_READ_ONLY) {
-            throw new UnsupportedOperationException(
-                "Concurrency type: " + resultSetConcurrency + " not supported yet.");
+            throw new UnsupportedOperationException("Concurrency type: "
+                    + resultSetConcurrency
+                    + " not supported yet.");
         }
         return new AdpStatement(this);
     }
 
-    @Override public PreparedStatement prepareStatement(String sql, int resultSetType,
-        int resultSetConcurrency) throws SQLException {
+    @Override
+    public PreparedStatement prepareStatement(String sql, int resultSetType,
+            int resultSetConcurrency) throws
+            SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency)
-        throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override public Map<String, Class<?>> getTypeMap() throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override public void setTypeMap(Map<String, Class<?>> map) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override public int getHoldability() throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override public void setHoldability(int holdability) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override public Savepoint setSavepoint() throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override public Savepoint setSavepoint(String name) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override public void rollback(Savepoint savepoint) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override public void releaseSavepoint(Savepoint savepoint) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override public Statement createStatement(int resultSetType, int resultSetConcurrency,
-        int resultSetHoldability) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override public PreparedStatement prepareStatement(String sql, int resultSetType,
-        int resultSetConcurrency, int resultSetHoldability) throws SQLException {
+    public CallableStatement prepareCall(String sql, int resultSetType,
+            int resultSetConcurrency) throws
+            SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency,
-        int resultSetHoldability) throws SQLException {
+    public Map<String, Class<?>> getTypeMap() throws SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public PreparedStatement prepareStatement(String sql, int autoGeneratedKeys)
-        throws SQLException {
+    @Override
+    public void setTypeMap(Map<String, Class<?>> map) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public PreparedStatement prepareStatement(String sql, int[] columnIndexes)
-        throws SQLException {
+    @Override
+    public void setHoldability(int holdability) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public PreparedStatement prepareStatement(String sql, String[] columnNames)
-        throws SQLException {
+    @Override
+    public int getHoldability() throws SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public Clob createClob() throws SQLException {
+    @Override
+    public Savepoint setSavepoint() throws SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public Blob createBlob() throws SQLException {
+    @Override
+    public Savepoint setSavepoint(String name) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public NClob createNClob() throws SQLException {
+    @Override
+    public void rollback(Savepoint savepoint) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public SQLXML createSQLXML() throws SQLException {
+    @Override
+    public void releaseSavepoint(Savepoint savepoint) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public boolean isValid(int timeout) throws SQLException {
+    @Override
+    public Statement createStatement(int resultSetType, int resultSetConcurrency,
+            int resultSetHoldability) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public void setClientInfo(String name, String value) throws SQLClientInfoException {
+    @Override
+    public PreparedStatement prepareStatement(String sql, int resultSetType,
+            int resultSetConcurrency,
+            int resultSetHoldability) throws
+            SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public String getClientInfo(String name) throws SQLException {
+    @Override
+    public CallableStatement prepareCall(String sql, int resultSetType,
+            int resultSetConcurrency,
+            int resultSetHoldability) throws
+            SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public Properties getClientInfo() throws SQLException {
+    @Override
+    public PreparedStatement prepareStatement(String sql, int autoGeneratedKeys)
+            throws SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public void setClientInfo(Properties properties) throws SQLClientInfoException {
+    @Override
+    public PreparedStatement prepareStatement(String sql, int[] columnIndexes)
+            throws SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public Array createArrayOf(String typeName, Object[] elements) throws SQLException {
+    @Override
+    public PreparedStatement prepareStatement(String sql, String[] columnNames)
+            throws SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public Struct createStruct(String typeName, Object[] attributes) throws SQLException {
+    @Override
+    public Clob createClob() throws SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public String getSchema() throws SQLException {
+    @Override
+    public Blob createBlob() throws SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public void setSchema(String schema) throws SQLException {
+    @Override
+    public NClob createNClob() throws SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public void abort(Executor executor) throws SQLException {
+    @Override
+    public SQLXML createSQLXML() throws SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public void setNetworkTimeout(Executor executor, int milliseconds)
-        throws SQLException {
+    @Override
+    public boolean isValid(int timeout) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public int getNetworkTimeout() throws SQLException {
+    @Override
+    public void setClientInfo(String name, String value) throws
+            SQLClientInfoException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public <T> T unwrap(Class<T> iface) throws SQLException {
+    @Override
+    public void setClientInfo(Properties properties) throws SQLClientInfoException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public boolean isWrapperFor(Class<?> iface) throws SQLException {
+    @Override
+    public String getClientInfo(String name) throws SQLException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Properties getClientInfo() throws SQLException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Array createArrayOf(String typeName, Object[] elements) throws
+            SQLException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Struct createStruct(String typeName, Object[] attributes) throws
+            SQLException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setSchema(String schema) throws SQLException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public String getSchema() throws SQLException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void abort(Executor executor) throws SQLException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setNetworkTimeout(Executor executor, int milliseconds) throws
+            SQLException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public int getNetworkTimeout() throws SQLException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public boolean isWrapperFor(Class<?> iface) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -333,4 +414,5 @@ public class AdpConnection implements Connection {
     public String getDbPath() {
         return dbPath;
     }
+    
 }
