@@ -20,15 +20,15 @@ public class ColumnsToTableNames<T> extends HashMap<String, T> {
     }
 
     public void putColumnInTable(Column c, T t) {
-        this.put(c.tableAlias + ":" + c.columnName, t);
+        this.put(c.getAlias() + ":" + c.getName(), t);
     }
 
     public T getTablenameForColumn(Column c) {
-        return this.get(c.tableAlias + ":" + c.columnName);
+        return this.get(c.getAlias() + ":" + c.getName());
     }
 
     public boolean containsColumn(Column c) {
-        return this.containsKey(c.tableAlias + ":" + c.columnName);
+        return this.containsKey(c.getAlias() + ":" + c.getName());
     }
 
     public List<Column> getAllColumns() {

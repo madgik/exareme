@@ -15,8 +15,6 @@ import org.apache.log4j.Logger;
  */
 public class ResultColumnsVisitor extends AbstractVisitor {
 
-    private static final Logger log = Logger.getLogger(ResultColumnsVisitor.class);
-
     public ResultColumnsVisitor(SQLQuery query) {
         super(query);
     }

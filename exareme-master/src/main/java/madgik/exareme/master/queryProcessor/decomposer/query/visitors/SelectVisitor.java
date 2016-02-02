@@ -15,8 +15,6 @@ import org.apache.log4j.Logger;
  */
 public class SelectVisitor extends AbstractVisitor {
 
-    private static final Logger log = Logger.getLogger(SelectVisitor.class);
-
     public SelectVisitor(SQLQuery query) {
         super(query);
     }
@@ -34,7 +32,8 @@ public class SelectVisitor extends AbstractVisitor {
             node.accept(fromVisitor);
             // Where conditions
             WhereClauseVisitor whereVisitor = new WhereClauseVisitor(query);
-            node.accept(whereVisitor);
+            whereVisitor.setVisitedJoin(true);
+	    node.accept(whereVisitor);
             // Group by
             GroupByListVisitor groupByVisitor = new GroupByListVisitor(query);
             node.accept(groupByVisitor);

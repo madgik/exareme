@@ -4,7 +4,13 @@
  */
 package madgik.exareme.master.queryProcessor.decomposer.query;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import com.google.common.hash.HashCode;
+import com.google.common.hash.Hashing;
 
 /**
  * @author dimitris
@@ -31,8 +37,11 @@ public class CastOperand implements Operand {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final CastOperand other = (CastOperand) obj;
-        return true;
+        CastOperand other = (CastOperand) obj;
+        if(other.getCastOp().equals(this.castOp)&&other.castType.equalsIgnoreCase(this.castType))
+        	return true;
+        else
+        	return false;
     }
 
     private String castType;
@@ -78,4 +87,12 @@ public class CastOperand implements Operand {
     private void setCastOp(Operand op) {
         this.castOp = op;
     }
+
+	@Override
+	public HashCode getHashID() {
+		List<HashCode> codes=new ArrayList<HashCode>();
+		codes.add(this.castOp.getHashID());
+		codes.add(Hashing.sha1().hashBytes(castType.getBytes()));
+		return Hashing.combineOrdered(codes);
+	}
 }

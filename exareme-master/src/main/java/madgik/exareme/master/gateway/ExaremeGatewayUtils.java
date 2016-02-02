@@ -4,8 +4,10 @@
 package madgik.exareme.master.gateway;
 
 import com.google.gson.Gson;
+
 import madgik.exareme.utils.properties.AdpProperties;
 import madgik.exareme.utils.properties.GenericProperties;
+
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -61,6 +63,7 @@ public class ExaremeGatewayUtils {
   public static final String CONTEXT_DB_CLIENT;
   public static final String CONTEXT_DB_CONNECTOR;
   private static final Logger log = Logger.getLogger(ExaremeGatewayUtils.class);
+  public static final String REQUEST_TIMEOUT;
 
   static {
     GenericProperties properties = AdpProperties.getGatewayProperties();
@@ -107,6 +110,8 @@ public class ExaremeGatewayUtils {
     RESPONSE_SCHEMA = properties.getString("gateway.response.schema");
     RESPONSE_TIME = properties.getString("gateway.response.time");
     RESPONSE_ERRORS = properties.getString("gateway.response.errors");
+    
+    REQUEST_TIMEOUT = properties.getString("gateway.request.timeout");
 
     log.trace("Gateway mode         :" + GW_MODE);
     log.trace("Listening port       :" + String.valueOf(GW_PORT));
