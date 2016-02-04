@@ -5,6 +5,7 @@
     <formats>
         <format>dir</format>
     </formats>
+
     <includeBaseDirectory>false</includeBaseDirectory>
     <includeSiteDirectory>false</includeSiteDirectory>
 
@@ -38,6 +39,14 @@
         <fileSet>        <!--lib -->
             <directory>${basedir}/../exareme-tools/madis/src/</directory>
             <outputDirectory>lib/madis/src</outputDirectory>
+            <fileMode>0755</fileMode>
+            <includes>
+                <include>**</include>
+            </includes>
+        </fileSet>
+        <fileSet>        <!--lib -->
+            <directory>${basedir}/../exareme-tools/algorithms/</directory>
+            <outputDirectory>lib/algorithms</outputDirectory>
             <fileMode>0755</fileMode>
             <includes>
                 <include>**</include>

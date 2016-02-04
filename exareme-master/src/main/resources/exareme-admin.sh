@@ -115,6 +115,10 @@ if [[ "true" == $EXAREME_ADMIN_LOCAL ]]; then   # run locally
                 done
             done
         )
+        if [ -n $EXAREME_CURRENT_IP ]; then
+            EXAREME_CURRENT_IP=$(hostname);
+        fi
+        echo "Current ip : $EXAREME_CURRENT_IP"
         EXAREME_ADMIN_JMX_PORT=10000
         EXAREME_ADMIN_CLASS_PATH="$EXAREME_HOME/lib/exareme/*:$EXAREME_HOME/lib/exareme/external/*"
         EXAREME_ADMIN_MASTER_CLASS="madgik.exareme.master.admin.StartMaster"

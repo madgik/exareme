@@ -15,6 +15,7 @@
 
     <modules>
         <module>madis</module>
+        <module>algorithms</module>
     </modules>
 
 </project>

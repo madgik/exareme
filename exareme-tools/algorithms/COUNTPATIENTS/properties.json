@@ -1,0 +1,12 @@
+{
+  "name" : "COUNTPATIENTS",
+  "desc" : "COUNTPATIENTS",
+  "type" : "local_global",
+  "status" : "enabled",
+  "vtype" : "piechart",
+  "parameters" : [
+    {"name" : "input_local_tbl", "desc" : "", "value" : ""},
+    {"name" : "output_tbl", "desc" : "", "value" : ""},
+    {"name" : "column1", "desc" : "column value 1", "value" : "APOE"}
+  ]
+}

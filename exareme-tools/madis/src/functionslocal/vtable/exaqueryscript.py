@@ -8,10 +8,11 @@
 
 """
 
-import functions
 import json
 import urllib
 import urllib2
+
+import functions
 
 registered = True
 external_query = True
@@ -68,7 +69,7 @@ class ExaQuery(functions.vtable.vtbase.VT):
         # get http response
         response = None
         try:
-            response = urllib2.urlopen(url=url, data=data, timeout=1500000000000000000000000)
+            response = urllib2.urlopen(url=url, data=data, timeout=150)
             # schema
             description = next(response)
             # print description

@@ -67,6 +67,7 @@ public class HttpAsyncExaremeGateway implements ExaremeGateway {
     registry.register(ExaremeGatewayUtils.GW_API_STREAMQUERY_INFO, new HttpAsyncStreamQueryInfoHandler());
     registry.register(ExaremeGatewayUtils.GW_API_HISTORICALSTREAMQUERY, new HttpAsyncOptiqueHistoricalQueriesHandler());
     registry.register(ExaremeGatewayUtils.GW_API_TABLESMETADATA, new HttpAsyncTablesMetadataHandler());
+    registry.register(ExaremeGatewayUtils.GW_API_MINING, new HttpAsyncMiningHandler());
 
 
     Class.forName("madgik.exareme.master.gateway.OptiqueStreamQueryMetadata.StreamRegisterQuery");

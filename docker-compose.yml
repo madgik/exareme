@@ -1,0 +1,17 @@
+master:
+  build: .
+  container_name: exareme_master
+  hostname: exareme_master
+  working_dir: /root/exareme
+  entrypoint: /bin/bash -c "./bin/exareme-admin.sh --start --local;tail -f ./var/log/exareme-master.log"
+  ports:
+    - "9090:9090"
+
+worker:
+  build: .
+  container_name: exareme_worker
+  hostname: exareme_worker
+  working_dir: /root/exareme
+  entrypoint: /bin/bash -c "sleep 5;./bin/exareme-admin.sh --start --local;tail -f ./var/log/exareme-worker.log"
+  links:
+    - master

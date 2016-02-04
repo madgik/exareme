@@ -1,5 +1,5 @@
 /**
- * Copyright MaDgIK Group 2010 - 2015.
+ * Copyright MaDgIK Group 2010 - 2013.
  */
 package madgik.exareme.master.connector;
 
@@ -27,6 +27,12 @@ import madgik.exareme.worker.art.executionEngine.statusMgr.PlanSessionStatusMana
 import madgik.exareme.worker.art.executionPlan.ExecutionPlan;
 import madgik.exareme.worker.art.executionPlan.ExecutionPlanParser;
 import madgik.exareme.worker.art.registry.ArtRegistryLocator;
+import org.apache.avro.Schema;
+import org.apache.avro.file.DataFileWriter;
+import org.apache.avro.generic.GenericData;
+import org.apache.avro.generic.GenericDatumWriter;
+import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.io.DatumWriter;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -41,12 +47,15 @@ import java.util.*;
 /**
  * @author heraldkllapi
  */
-public class AdpDBConnectorUtil {
+public class  AdpDBConnectorUtil {
 
     private static Logger log = Logger.getLogger(AdpDBConnectorUtil.class);
 
-    public static void readRemoteTablePart(Registry registry, PhysicalTable table, Partition p,
-        Map<String, Object> includeProps, OutputStream out) throws RemoteException {
+    public static void readRemoteTablePart(Registry registry,
+        PhysicalTable table,
+        Partition p,
+        Map<String, Object> includeProps,
+        OutputStream out) throws RemoteException {
         log.info("Remote Table Part: " + p.getTable() + "." + p.getpNum() + " ...");
         ExecutionEngineProxy engine = ExecutionEngineLocator.getExecutionEngineProxy();
         ContainerProxy[] containerProxies =
@@ -69,7 +78,8 @@ public class AdpDBConnectorUtil {
 
         ContainerProxy proxy = containerProxies[locations[0]];
         boolean sendHeader = p.getpNum() == 0;
-
+        boolean hasdataSerialization = (includeProps != null) && includeProps.containsKey("dataSerialization");
+        DataSerialization ds = !hasdataSerialization ? DataSerialization.ldjson : (DataSerialization) includeProps.get("dataSerialization");
         //        String artPlan = "container c('" + proxy.getEntityName().getName() + "', 1000); \n"
         //            + "operator op c('AdpDBNetReaderOperator', " + "database='" + registry.getDatabase()
         //            + "', " + "table='" + table.getName() + "', " + "part='" + p.getpNum() + "', "
@@ -88,8 +98,7 @@ public class AdpDBConnectorUtil {
             "    {\n" +
             "      \"name\": \"op\",\n" +
             "      \"container\": \"c\",\n" +
-            "      \"operator\": \"madgik.exareme.master.engine.executor.remote.operator.admin.AdpDBNetReaderOperator\",\n"
-            +
+            "      \"operator\": \"madgik.exareme.master.engine.executor.remote.operator.admin.AdpDBNetReaderOperator\",\n" +
             "       \"parameters\": [\n" +
             "        [\n" +
             "          \"database\",\n" +
@@ -106,6 +115,10 @@ public class AdpDBConnectorUtil {
             "        [\n" +
             "          \"sendHeader\",\n" +
             "          \"" + sendHeader + "\"\n" +
+            "        ],\n" +
+            "        [\n" +
+            "          \"dataSerialization\",\n" +
+            "          \"" + ds + "\"\n" +
             "        ],\n" +
             "        [\n" +
             "          \"ip\",\n" +
@@ -152,39 +165,74 @@ public class AdpDBConnectorUtil {
         session.close();
     }
 
-    public static void readLocalTablePart(String tabName, int part, String database,
-        Map<String, Object> alsoIncludeProps, OutputStream out) throws RemoteException {
+    public static void readLocalTablePart(String tabName,
+        int part,
+        String database,
+        Map<String, Object> alsoIncludeProps,
+        OutputStream out) throws RemoteException {
+        readLocalTablePart(tabName, part, database, alsoIncludeProps, DataSerialization.ldjson, out);
+    }
+
+    public static void readLocalTablePart(String tabName,
+        int part,
+        String database,
+        Map<String, Object> alsoIncludeProps,
+        DataSerialization ds,
+        OutputStream out) throws RemoteException {
         try {
-            log.info(
-                "Local Table Part: " + tabName + "." + part + " ..." + alsoIncludeProps == null);
+            log.info("Local Table Part: " + tabName + "." + part + " ..." + alsoIncludeProps == null);
             Gson g = new Gson();
             SQLDatabase db =
                 DBUtils.createEmbeddedSqliteDB(database + "/" + tabName + "." + part + ".db");
             ResultSet rs = db.executeAndGetResults("select * from " + tabName + ";");
             int cols = rs.getMetaData().getColumnCount();
+
             if (alsoIncludeProps != null) {
-                Map<String, Object> schema = new HashMap<String, Object>();
-                schema.putAll(alsoIncludeProps);
-                ArrayList<String[]> names = new ArrayList<String[]>();
-                schema.put("schema", names);
-                for (int c = 0; c < cols; ++c) {
-                    names.add(new String[] {rs.getMetaData().getColumnName(c + 1),
-                        rs.getMetaData().getColumnTypeName(c + 1)});
+                if ( ds.equals(DataSerialization.ldjson)) {
+                    Map<String, Object> schema = new HashMap<String, Object>();
+                    schema.putAll(alsoIncludeProps);
+                    ArrayList<String[]> names = new ArrayList<String[]>();
+                    schema.put("schema", names);
+                    for (int c = 0; c < cols; ++c) {
+                        names.add(new String[]{rs.getMetaData().getColumnName(c + 1),
+                            rs.getMetaData().getColumnTypeName(c + 1)});
+                    }
+                    out.write((g.toJson(schema) + "\n").getBytes());
                 }
-                out.write((g.toJson(schema) + "\n").getBytes());
             }
-            ArrayList<Object> row = new ArrayList<Object>();
-            while (rs.next()) {
-                for (int c = 0; c < cols; ++c) {
-                    row.add(rs.getObject(c + 1));
+            if ( ds.equals(DataSerialization.ldjson)) {
+                ArrayList<Object> row = new ArrayList<Object>();
+                while (rs.next()) {
+                    for (int c = 0; c < cols; ++c) {
+                        row.add(rs.getObject(c + 1));
+                    }
+                    out.write((g.toJson(row) + "\n").getBytes());
+                    row.clear();
                 }
-                out.write((g.toJson(row) + "\n").getBytes());
-                row.clear();
-            }
-            rs.close();
-            db.close();
+                rs.close();
+                db.close();
+            } else if (ds.equals(DataSerialization.avro)) {
+                Map<String, Object> row = new HashMap<String, Object>();
+                while (rs.next()) {
+                    for (int c = 0; c < cols; ++c) {
+                        row.put(rs.getMetaData().getColumnName(c + 1), rs.getObject(c + 1));
+                    }
+                    out.write((g.toJson(row) + "\n").getBytes());
+                    row.clear();
+                }
+                rs.close();
+                db.close();
+            } else throw new RemoteException("Unable to use " + ds + "serialization.");
         } catch (Exception e) {
             throw new RemoteException("Cannot get results", e);
         }
+    }
+    private static Schema.Type convertToAvroType(String type){
+        type = type.trim().toUpperCase();
+        if ("TEXT".equals(type)) return Schema.Type.STRING;
+        else if ("INTEGER".equals(type)) return Schema.Type.INT;
+        else if ("REAL".equals(type)) return Schema.Type.DOUBLE;
+        else if ("FLOAT".equals(type)) return Schema.Type.DOUBLE;
+        return Schema.Type.valueOf(type);
     }
 }

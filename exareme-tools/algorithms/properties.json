@@ -1,0 +1,10 @@
+{
+  "algorithms" : [],
+  "endpoints" : [
+    { "name" : "Endpoint1", "desc" : "", "host" : "0.0.0.0", "port" : "8089", "status" : "enabled"},
+    { "name" : "Endpoint2", "desc" : "", "host" : "0.0.0.0", "port" : "8090", "status" : "enabled"}
+  ],
+  "defaultDB" : "",
+  "input_local_tbl" : '(rawdb host:128.178.77.176 username:federation password:federation select distinct patient_id as __rid, variable_name as __colname, value as __val from exam_value where variable_name = "PTGENDER" or variable_name = "DX_bl" or variable_name = "AGE" or variable_name = "PTEDUCAT" or variable_name = "APOE4_bl" or variable_name = "CDRSB_bl" or variable_name = "MMSE_bl" or variable_name = "AV45_bl")'
+}
+
