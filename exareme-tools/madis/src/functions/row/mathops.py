@@ -187,8 +187,10 @@ def farith(*args):
             else:
                 try:
                     s.append(Fraction(*json.loads(i)))
-                except ValueError, e:
-                    raise functions.OperatorError('farith',"invalid expression found: '" + i +"'")
+                except Exception as e:
+                    # import traceback
+                    # traceback.print_exc()
+                    raise functions.OperatorError("Farith", "invalid expression found: %s" % str(i) )
 
     return simplify_fraction(s.pop())
 

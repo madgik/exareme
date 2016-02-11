@@ -23,6 +23,7 @@ except ImportError:
 
 __docformat__ = 'reStructuredText en'
 
+
 class modelformulae:
 
     # '+','*',':'
@@ -35,23 +36,26 @@ class modelformulae:
         self.colnames = []
         self.formula = None
         self.rid = None
-
-        # self.countrecords = 0
-        # self.result = None
-        # self.varcount = None
-
-    def initargs(self, args):
-        self.init = False
-        self.formula = args[3]
-        self.rid = args[0]
-        if not args:
-            raise functions.OperatorError("modelFormulae","No arguments")
+        self.all = True
 
     def step(self, *args):
         if self.init:
-            self.initargs(args)
-
-        self.datagroup[args[1]]= args[2];
+            self.init = False
+            if args[0] == 'all':
+                self.all = True
+                self.formula = args[4]
+                self.rid = args[1]
+            else:
+                self.all = False
+                self.formula = args[3]
+                self.rid = args[0]
+            if not args:
+                raise functions.OperatorError("modelFormulae","No arguments")
+        # print args
+        if self.all == True:
+            self.datagroup[args[2]]= args[3]
+        else:
+            self.datagroup[args[1]]= args[2]
 
 
     def final(self):
@@ -71,7 +75,7 @@ class modelformulae:
                             fpartsCorrectColumns[f].append(data)
 
                 fpartsB = list(itertools.product(*fpartsCorrectColumns)) # to dp
-                if len(fpartsB)>1:
+                if self.all==False and  len(fpartsB)>1:
                     fpartsB.pop(0)
 
                 fpartsAll =[]
@@ -102,7 +106,7 @@ class modelformulae:
                 for data in sorted(self.datagroup):
                     if formulaPart in data:
                         col.append(data)
-                if len(col)>1:
+                if self.all==False and len(col)>1:
                     col.pop(0)
                 for data in col:
                     yield self.rid,data,self.datagroup[data]

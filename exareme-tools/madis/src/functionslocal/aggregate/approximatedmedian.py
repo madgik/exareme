@@ -46,13 +46,13 @@ class approximatedmedian:
 
         currentsum = 0
         for i in xrange(0,self.n):
-            print i,self.totalnums / 2.0,self.nums[i],currentsum
+            # print i,self.totalnums / 2.0,self.nums[i],currentsum
             currentsum += self.nums[i]
             if currentsum >= (self.totalnums / 2.0):
                 break
 
         median = self.minvalues[i]+(currentsum-self.totalnums / 2.0) * (self.maxvalues[i]-self.minvalues[i]) / self.nums[i]
-        print (self.totalnums / 2.0), currentsum, currentsum -self.nums[i]
+        # print (self.totalnums / 2.0), currentsum, currentsum -self.nums[i]
         numsBeforeMedian = (self.totalnums / 2.0) - (currentsum - self.nums[i])
         numsAfterMedian = currentsum - (self.totalnums / 2.0)
         yield self.colname[0], median, i, numsBeforeMedian,numsAfterMedian

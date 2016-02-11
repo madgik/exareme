@@ -5,5 +5,6 @@ package madgik.exareme.master.connector;
  */
 public enum DataSerialization {
   ldjson,
-  avro
+  avro,
+  summary
 }

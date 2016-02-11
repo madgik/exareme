@@ -28,11 +28,6 @@ import madgik.exareme.worker.art.executionPlan.ExecutionPlan;
 import madgik.exareme.worker.art.executionPlan.ExecutionPlanParser;
 import madgik.exareme.worker.art.registry.ArtRegistryLocator;
 import org.apache.avro.Schema;
-import org.apache.avro.file.DataFileWriter;
-import org.apache.avro.generic.GenericData;
-import org.apache.avro.generic.GenericDatumWriter;
-import org.apache.avro.generic.GenericRecord;
-import org.apache.avro.io.DatumWriter;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -170,6 +165,7 @@ public class  AdpDBConnectorUtil {
         String database,
         Map<String, Object> alsoIncludeProps,
         OutputStream out) throws RemoteException {
+
         readLocalTablePart(tabName, part, database, alsoIncludeProps, DataSerialization.ldjson, out);
     }
 
@@ -222,11 +218,101 @@ public class  AdpDBConnectorUtil {
                 }
                 rs.close();
                 db.close();
+            } else  if(ds.equals(DataSerialization.summary)) {
+                //        type,         colname,    categories, header, value,
+                //        summarystats, APOE,       NA,         count,  1642
+                //        datastats2,   APOE,       0,          ADNI1,  694
+                //        datastats1,   APOE,       NA,         0,      930
+
+                Map<String,Object> summarystats = new HashMap<>();
+                summarystats.put("dataType", "SummaryStatistics");
+
+                List<String> d1header = new ArrayList<>();
+                List<String> d1value = new ArrayList<>();
+                Map<String, Object> d1data = new HashMap<>();
+                d1data.put("header", d1header);
+                d1data.put("shape", "vector");
+                d1data.put("value", d1value);
+                Map<String, Object> d1dataset = new HashMap<>();
+                d1dataset.put("data", d1data);
+                d1dataset.put("name", "Count values");
+                Map<String,Object> datastats1 = new HashMap<>();
+                datastats1.put("dataType", "DatasetStatistics");
+                datastats1.put("label", "Breakdown by value");
+                datastats1.put("dataset", d1dataset);
+
+
+                List<String> d2header = new ArrayList<>();
+                List<String> d2value = new ArrayList<>();
+                List<String> d2categories = new ArrayList<>();
+                Map<String, Object> d2data = new HashMap<>();
+                d2data.put("header", d2header);
+                d2data.put("shape", "vector");
+                d2data.put("value", d2value);
+                d2data.put("categories", d2categories);
+                Map<String, Object> d2dataset = new HashMap<>();
+                d2dataset.put("name", "Count values");
+                d2dataset.put("data", d2data);
+                Map<String,Object> datastats2 = new HashMap<>();
+                datastats2.put("dataType", "DatasetStatistics");
+                datastats2.put("label", "Count by provenance");
+                datastats2.put("dataset", d2dataset);
+
+                String sumcode = null, d1code = null, d2code = null;
+
+                while (rs.next()) {
+                    String type = (String) rs.getObject(1);
+                    switch (type) {
+                        case "SummaryStatistics" :
+                            if (sumcode == null) {
+                                sumcode = (String) rs.getObject(2);
+                                summarystats.put("code", sumcode);
+                            }
+                            //        summarystats, APOE,       NA,         count,  1642
+                            summarystats.put((String)rs.getObject(4), rs.getObject(5));
+                            break;
+                        case "DatasetStatistics1" :
+                            if (d1code == null) {
+                                d1code = (String) rs.getObject(2);
+                                datastats1.put("code", d1code);
+                            }
+                            //        datastats1,   APOE,       NA,         0,      930
+                            d1header.add(d1header.size(), (String) rs.getObject(4));
+                            d1value.add(d1value.size(), (String)rs.getObject(5));
+                            break;
+                        case "DatasetStatistics2" :
+                            if (d2code == null) {
+                                d2code = (String) rs.getObject(2);
+                                datastats2.put("code", d2code);
+                            }
+                            //        datastats2,   APOE,       0,          ADNI1,  694
+                            d2categories.add(d2categories.size(), (String)rs.getObject(3));
+                            d2header.add(d2header.size(), (String)rs.getObject(4));
+                            d2value.add(d2value.size(), (String)rs.getObject(5));
+                            break;
+                        default:
+                            try {
+                                rs.close();
+                                db.close();
+                            } catch (Exception e) {
+                              log.error("Unable to close db conn.");
+                            }
+                            throw new RuntimeException("wrong table schema for summary.");
+                    }
+                }
+                rs.close();
+                db.close();
+                List<Map<String,Object>> result = new ArrayList<Map<String, Object>>();
+                if ( sumcode != null ) result.add(summarystats);
+                if ( d1code != null ) result.add(datastats1);
+                if ( d2code != null ) result.add(datastats2);
+                out.write((g.toJson(result) + "\n").getBytes());
             } else throw new RemoteException("Unable to use " + ds + "serialization.");
         } catch (Exception e) {
             throw new RemoteException("Cannot get results", e);
         }
     }
+
     private static Schema.Type convertToAvroType(String type){
         type = type.trim().toUpperCase();
         if ("TEXT".equals(type)) return Schema.Type.STRING;

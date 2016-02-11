@@ -177,8 +177,9 @@ public class HttpAsyncMiningHandler implements HttpAsyncRequestHandler<HttpReque
                                 break;
                             }
                         }
+                        Boolean format = Boolean.valueOf(inputContent.get("format"));
 
-
+                        if (format) ds = DataSerialization.summary;
 
                         response.setEntity(new InputStreamEntity(dbClient.readTable("output_" + split[3], ds)));
                     } else response.setEntity(new NStringEntity(queryStatus.getError()));
@@ -196,8 +197,7 @@ public class HttpAsyncMiningHandler implements HttpAsyncRequestHandler<HttpReque
                         String algorithmName = split[3];
                         String qKey = "query_" + String.valueOf(System.currentTimeMillis());
                         try {
-                            //              String input_local_tbl = "(postgres h:127.0.0.1 port:5432 u:postgres p:postgres.2015 db:chuv_mips select brain_feature_set_id as __rid, feature_name as __colname, cast(tissue1_volume as FLOAT) as __val from brain_feature)";
-                            //              String input_local_tbl = "(postgres h:127.0.0.1 port:5432 u:postgres p:postgres.2015 db:chuv_mips select __rid, __colname, cast(__val as FLOAT) as __val from chuv_hospital)";
+
                             String input_local_tbl = composer.getDefaultInputLocalTBL();
 
                             String dfl = null;

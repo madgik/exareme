@@ -5,6 +5,7 @@ package madgik.exareme.master.engine.executor.remote.operator.admin;
 
 import madgik.exareme.common.art.entity.EntityName;
 import madgik.exareme.master.connector.AdpDBConnectorUtil;
+import madgik.exareme.master.connector.DataSerialization;
 import madgik.exareme.worker.art.concreteOperator.AbstractNiNo;
 import madgik.exareme.worker.art.container.netMgr.NetSession;
 import madgik.exareme.worker.art.container.netMgr.session.NetSessionSimple;
@@ -63,10 +64,15 @@ public class AdpDBNetReaderOperator extends AbstractNiNo {
                 Integer.parseInt(getParameterManager().getParameter("port").get(0).getValue());
             log.debug("--- port : " + port);
 
+            DataSerialization dataSerialization = DataSerialization
+                .valueOf(getParameterManager().getParameter("dataSerialization").get(0).getValue());
+            if (dataSerialization == null) dataSerialization = DataSerialization.ldjson;
+            log.debug("--- ds : " + dataSerialization);
+
             NetSession net = new NetSessionSimple();
             OutputStream out = net.openOutputStream(new EntityName(ip + "_" + port, ip, port));
 
-            AdpDBConnectorUtil.readLocalTablePart(tabName, part, database, alsoIncludeProps, out);
+            AdpDBConnectorUtil.readLocalTablePart(tabName, part, database, alsoIncludeProps, dataSerialization, out);
             out.close();
             log.debug("---- NetReader ----");
         } catch (Exception e) {
