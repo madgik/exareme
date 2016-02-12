@@ -11,6 +11,11 @@ import java.util.ArrayList;
 public class Algorithms {
 
     private String input_local_tbl;
+    private String host;
+    private String port;
+    private String username;
+    private String password;
+    private String query;
 
     public String getInput_local_tbl() {
         return input_local_tbl;

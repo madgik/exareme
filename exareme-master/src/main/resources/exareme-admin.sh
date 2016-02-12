@@ -115,7 +115,7 @@ if [[ "true" == $EXAREME_ADMIN_LOCAL ]]; then   # run locally
                 done
             done
         )
-        if [ -n $EXAREME_CURRENT_IP ]; then
+        if [ -z "$EXAREME_CURRENT_IP" ]; then
             EXAREME_CURRENT_IP=$(hostname);
         fi
         echo "Current ip : $EXAREME_CURRENT_IP"

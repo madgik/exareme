@@ -53,13 +53,13 @@ public class MadisProcess {
     }
 
     public void start() throws IOException {
-        log.debug("Starting process ..." + dbFile + python + madisPath);
+        log.debug("Starting process ... (" + dbFile + " "+ python + " " +madisPath);
         ProcessBuilder pb;
         if (dbFile == null) {
-            pb = new ProcessBuilder("stdbuf", "-oL", "python", madisPath);
+            pb = new ProcessBuilder("stdbuf", "-oL", python, madisPath);
 //            pb = new ProcessBuilder(python, madisPath);
         } else {
-            pb = new ProcessBuilder("stdbuf", "-oL", "python", madisPath, dbFile);
+            pb = new ProcessBuilder("stdbuf", "-oL", python, madisPath, dbFile);
 //            pb = new ProcessBuilder(python, madisPath, dbFile);
         }
         pb.directory(new File("."));

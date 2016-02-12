@@ -1,0 +1,11 @@
+{
+  "name"   : "WP_LIST_VARIABLES",
+  "desc"   : "",
+  "type"   : "local",
+  "status" : "disabled",
+  "vtype"  :  "none",
+  "parameters" : [
+    {"name" : "input_local_tbl", "desc" : "", "value" : ""},
+    {"name" : "output_tbl", "desc" : "", "value" : ""}
+  ]
+}

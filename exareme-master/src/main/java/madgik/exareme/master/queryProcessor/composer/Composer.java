@@ -48,7 +48,16 @@ public class Composer {
       return gson.toJson(algorithms.getAlgorithms(), Algorithms.Algorithm[].class);
   }
 
-  public String getDefaultInputLocalTBL(){
+  public String getDefaultInputLocalTBL(String filters){
+//    String inputlocaltbl = String.format("(rawdb"
+//      + " host:%s"
+//      + " port:%s"
+//      + " username:%s"
+//      + " password:%s"
+//      + " select distinct patient_id as __rid, variable_name as __colname, value as __val "
+//      + " from exam_value"
+//      + " %s"
+//      + " )");
     return algorithms.getInput_local_tbl();
   }
 
@@ -147,6 +156,22 @@ public class Composer {
     String outputGlobalTbl = parameters.get(ComposerConstants.outputGlobalTblKey);
     parameters.put(ComposerConstants.defaultDBKey, "/tmp/defaultDB.db");
     switch (algorithmProperties.getType()) {
+
+      case local:
+        parameters.remove(ComposerConstants.outputGlobalTblKey);
+
+        String lp = repoPath + algorithmProperties.getName() + "/local.template.sql";
+
+        // format local
+        dflScript.append("distributed create table " + outputGlobalTbl+" as external \n");
+        dflScript.append(String.format("select * from (\n    execnselect 'path:%s' ", workingDir));
+        for (String key : parameters.keySet()) {
+          dflScript.append(String.format("'%s:%s' ", key, parameters.get(key)));
+        }
+        dflScript.append(String.format("\n    select filetext('%s')\n",lp));
+        dflScript.append(");\n");
+        break;
+
       case local_global:
         parameters.remove(ComposerConstants.outputGlobalTblKey);
 

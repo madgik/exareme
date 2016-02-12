@@ -66,13 +66,18 @@ public class HttpAsyncMiningHandler implements HttpAsyncRequestHandler<HttpReque
         throws HttpException, IOException {
         HttpResponse response = httpExchange.getResponse();
         response.setHeader("Content-Type", String.valueOf(ContentType.APPLICATION_JSON));
-        handleInternal(request, response, context);
+        try {
+            handleInternal(request, response, context);
+        } catch (Exception e){
+            log.error(e);
+            throw new HttpException("Internal error\n", e);
+        }
         httpExchange.submitResponse(new BasicAsyncResponseProducer(response));
     }
 
     private void handleInternal(HttpRequest request,
         HttpResponse response,
-        HttpContext context) throws UnsupportedHttpVersionException, IOException {
+        HttpContext context) throws HttpException, IOException {
 
         log.debug("Validate method ...");
         RequestLine requestLine = request.getRequestLine();
@@ -156,32 +161,41 @@ public class HttpAsyncMiningHandler implements HttpAsyncRequestHandler<HttpReque
                     log.debug("Posting result ...");
                     String[] split = uri.split("/");
                     AdpDBClientQueryStatus queryStatus = queries.get(split[3]);
-                    if (queryStatus == null)
-                        response.setEntity(new NStringEntity(msg));
+                    if (queryStatus == null) response.setEntity(new NStringEntity(msg));
                     else if (queryStatus.hasFinished() == false && queryStatus.hasError() == false)
                         response.setEntity(new NStringEntity(msg));
 
                     if (queryStatus.hasError() == false) {
-                        log.debug(queryStatus.getExecutionTime());
-                        AdpDBClientProperties clientProperties = new AdpDBClientProperties("/tmp/demo/db/" + split[3], "", "", false, false, -1, 10);
-                        AdpDBClient dbClient = AdpDBClientFactory.createDBClient(manager, clientProperties);
-                        response.removeHeaders("Content-Type");
-                        response.addHeader("Content-Type","application/x-ldjson");
+                        try {
+                            log.debug(queryStatus.getExecutionTime());
+                            AdpDBClientProperties clientProperties =
+                                new AdpDBClientProperties("/tmp/demo/db/" + split[3], "", "", false,
+                                    false, -1, 10);
+                            AdpDBClient dbClient =
+                                AdpDBClientFactory.createDBClient(manager, clientProperties);
+                            response.removeHeaders("Content-Type");
+                            response.addHeader("Content-Type", "application/x-ldjson");
 
-                        DataSerialization ds = DataSerialization.ldjson;
-                        for (Header accept : request.getHeaders("Accept")) {
-                            if ( accept.getValue().equals("application/json")) {
-                                response.removeHeaders("Content-Type");
-                                response.addHeader("Content-Type","application/json");
-                                ds = DataSerialization.avro;
-                                break;
+                            DataSerialization ds = DataSerialization.ldjson;
+                            for (Header accept : request.getHeaders("Accept")) {
+                                if (accept.getValue().equals("application/json")) {
+                                    response.removeHeaders("Content-Type");
+                                    response.addHeader("Content-Type", "application/json");
+                                    ds = DataSerialization.avro;
+                                    break;
+                                }
                             }
+                            Boolean format = Boolean.valueOf(inputContent.get("format"));
+
+                            if (format)
+                                ds = DataSerialization.summary;
+                            // blocking reading TODO async like status
+                            // TODO check error handling output format
+                            response.setEntity(new InputStreamEntity(
+                                dbClient.readTable("output_" + split[3], ds)));
+                        }catch (Exception e){
+                            throw new IOException("Unable to format result.", e);
                         }
-                        Boolean format = Boolean.valueOf(inputContent.get("format"));
-
-                        if (format) ds = DataSerialization.summary;
-
-                        response.setEntity(new InputStreamEntity(dbClient.readTable("output_" + split[3], ds)));
                     } else response.setEntity(new NStringEntity(queryStatus.getError()));
                 } else {
                     String algorithmKey = substring.substring(1);
@@ -198,7 +212,7 @@ public class HttpAsyncMiningHandler implements HttpAsyncRequestHandler<HttpReque
                         String qKey = "query_" + String.valueOf(System.currentTimeMillis());
                         try {
 
-                            String input_local_tbl = composer.getDefaultInputLocalTBL();
+                            String input_local_tbl = composer.getDefaultInputLocalTBL("");
 
                             String dfl = null;
                             inputContent.put(ComposerConstants.inputLocalTblKey, input_local_tbl);

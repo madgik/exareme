@@ -156,8 +156,12 @@ public class  AdpDBConnectorUtil {
             } catch (Exception e) {
             }
         }
+        boolean error = sessionManager.hasError();
         sessionPlan.close();
         session.close();
+        if (error) {
+            throw new RemoteException("Conncector error.");
+        }
     }
 
     public static void readLocalTablePart(String tabName,
@@ -295,9 +299,11 @@ public class  AdpDBConnectorUtil {
                                 rs.close();
                                 db.close();
                             } catch (Exception e) {
-                              log.error("Unable to close db conn.");
+                                log.error("Unable to close db conn.");
+                            } finally {
+                                throw new RuntimeException("wrong table schema for summary.");
                             }
-                            throw new RuntimeException("wrong table schema for summary.");
+
                     }
                 }
                 rs.close();

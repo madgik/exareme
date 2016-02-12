@@ -1,0 +1,12 @@
+{
+  "name"   : "WP_VARIABLE_PROFILE",
+  "desc"   : "",
+  "type"   : "local_global",
+  "status" : "disabled",
+  "vtype"  :  "none",
+  "parameters" : [
+    {"name" : "input_local_tbl", "desc" : "", "value" : ""},
+    {"name" : "output_tbl", "desc" : "", "value" : ""},
+    {"name" : "variable",  "desc" : "", "value" : "APOE4_bl"}
+  ]
+}
