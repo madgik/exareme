@@ -57,6 +57,8 @@
                     <descriptors>
                         <descriptor>src/main/assemblies/default.xml</descriptor>
                     </descriptors>
+                    <finalName>${parent.artifactId}</finalName>
+                    <appendAssemblyId>false</appendAssemblyId>
                 </configuration>
                 <executions>
                     <execution>

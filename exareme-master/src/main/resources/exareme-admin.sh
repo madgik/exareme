@@ -7,9 +7,46 @@
 # set up environment
 ####################################################################################################
 #echo "Setting up environment..."
-[[ -z $EXAREME_HOME ]] && export EXAREME_HOME="$HOME"/exareme
-. $EXAREME_HOME/etc/exareme/exareme-env.sh
+# set up home dir
+if [ -z $EXAREME_HOME ]; then
+  if [ -d "$HOME/exareme" ]; then
+    EXAREME_HOME="$HOME/exareme";
+    export EXAREME_HOME="$HOME/exareme";
+  else
+    EXAREME_HOME="$HOME/exareme";
+    export EXAREME_HOME="$(pwd)";
+  fi
+fi
+echo "EXAREME HOME DIR : $EXAREME_HOME";
 
+# load env
+. $EXAREME_HOME/etc/exareme/exareme-env.sh  &> /dev/null
+
+# set up master with priority on conf file and then on env var or get the local ip.
+EXAREME_MASTER_FILE="$EXAREME_HOME/etc/exareme/master"
+if [[ -s "$EXAREME_MASTER_FILE" ]]; then
+  EXAREME_MASTER=$( < $EXAREME_MASTER_FILE);
+elif [ ! $EXAREME_MASTER ]; then
+    EXAREME_MASTER="$(hostname --ip-address)";
+fi
+echo "EXAREME MASTER HOST : $EXAREME_MASTER";
+
+# set up workers with priority on conf file and then on env var or assume none.
+EXAREME_WORKERS_FILE="$EXAREME_HOME/etc/exareme/workers"
+if [[ -e $EXAREME_WORKERS_FILE ]]; then
+  if [[ ! -s $EXAREME_WORKERS_FILE ]]; then
+    if [ ! $EXAREME_WORKERS ]; then
+        EXAREME_WORKERS=();
+    fi
+  else
+    EXAREME_WORKERS=$( < $EXAREME_WORKERS_FILE);
+  fi
+else
+  if [[ ! $EXAREME_WORKERS ]]; then
+    EXAREME_WORKERS=();
+  fi
+fi
+echo "EXAREME WORKERS : $( echo $EXAREME_WORKERS | wc -w )"
 ####################################################################################################
 # parse command line arguments
 ####################################################################################################
@@ -116,7 +153,7 @@ if [[ "true" == $EXAREME_ADMIN_LOCAL ]]; then   # run locally
             done
         )
         if [ -n $EXAREME_CURRENT_IP ]; then
-            EXAREME_CURRENT_IP=$(hostname);
+            EXAREME_CURRENT_IP=$(hostname --ip-address);
         fi
         EXAREME_ADMIN_JMX_PORT=10000
         EXAREME_ADMIN_CLASS_PATH="$EXAREME_HOME/lib/exareme/*:$EXAREME_HOME/lib/exareme/external/*"
@@ -132,20 +169,22 @@ if [[ "true" == $EXAREME_ADMIN_LOCAL ]]; then   # run locally
                             -Djava.security.egd=file:///dev/urandom "
 
         # determine master/worker
-        if [[ "$EXAREME_MASTER_IP" == "$EXAREME_CURRENT_IP" ]]; then
+        if [[ "$EXAREME_MASTER" == "$EXAREME_CURRENT_IP" ]]; then
             DESC="exareme-master"
             EXAREME_ADMIN_CLASS=$EXAREME_ADMIN_MASTER_CLASS
             EXAREME_ADMIN_CLASS_ARGS=""
         else
             DESC="exareme-worker"
             EXAREME_ADMIN_CLASS=$EXAREME_ADMIN_WORKER_CLASS
-            EXAREME_ADMIN_CLASS_ARGS="$EXAREME_MASTER_IP"
+            EXAREME_ADMIN_CLASS_ARGS="$EXAREME_MASTER"
         fi
 
         # execute
         mkdir -p $EXAREME_HOME/var/log $EXAREME_HOME/var/run
-        $EXAREME_JAVA -cp $EXAREME_ADMIN_CLASS_PATH $EXAREME_ADMIN_OPTS $EXAREME_ADMIN_CLASS\
-            $EXAREME_ADMIN_CLASS_ARGS > $EXAREME_HOME/var/log/$DESC.log 2>&1 & echo $! > $EXAREME_HOME/var/run/$DESC.pid
+        $EXAREME_JAVA -cp $EXAREME_ADMIN_CLASS_PATH \
+          $EXAREME_ADMIN_OPTS $EXAREME_ADMIN_CLASS  \
+          $EXAREME_ADMIN_CLASS_ARGS > $EXAREME_HOME/var/log/$DESC.log \
+          2>&1 & echo $! > $EXAREME_HOME/var/run/$DESC.pid
         echo "$DESC started."
     }
 

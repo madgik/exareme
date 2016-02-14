@@ -1,0 +1,7 @@
+master:
+  build: .
+  working_dir: /root/exareme/
+  entrypoint: /bin/bash -c "./bin/exareme-admin.sh --start --local;./bin/exareme-admin.sh --console"
+
+worker:
+  image: .
