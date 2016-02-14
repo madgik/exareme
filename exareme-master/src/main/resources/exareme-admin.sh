@@ -180,18 +180,18 @@ if [[ "true" == $EXAREME_ADMIN_LOCAL ]]; then   # run locally
         fi
 
         # execute
-        mkdir -p $EXAREME_HOME/var/log $EXAREME_HOME/var/run
+        mkdir -p /tmp/exareme/var/log /tmp/exareme/var/run
         $EXAREME_JAVA -cp $EXAREME_ADMIN_CLASS_PATH \
           $EXAREME_ADMIN_OPTS $EXAREME_ADMIN_CLASS  \
-          $EXAREME_ADMIN_CLASS_ARGS > $EXAREME_HOME/var/log/$DESC.log \
-          2>&1 & echo $! > $EXAREME_HOME/var/run/$DESC.pid
+          $EXAREME_ADMIN_CLASS_ARGS > /tmp/exareme/var/log/$DESC.log \
+          2>&1 & echo $! > /tmp/exareme/var/run/$DESC.pid
         echo "$DESC started."
     }
 
     function stop_exareme(){
-        if [ -f $EXAREME_HOME/var/run/*.pid ]; then
-            kill -9 $( cat $EXAREME_HOME/var/run/*.pid)
-            rm $EXAREME_HOME/var/run/*.pid
+        if [ -f /tmp/exareme/var/run/*.pid ]; then
+            kill -9 $( cat /tmp/exareme/var/run/*.pid)
+            rm /tmp/exareme/var/run/*.pid
             echo "Stopped."
         else
             echo "Already stopped, no action taken."
@@ -204,8 +204,8 @@ if [[ "true" == $EXAREME_ADMIN_LOCAL ]]; then   # run locally
     }
 
     function status_exareme(){
-        if [ -e $EXAREME_HOME/var/run/*.pid ]; then
-            ps -f --pid $(cat $EXAREME_HOME/var/run/*.pid) | sed 1d
+        if [ -e /tmp/exareme/var/run/*.pid ]; then
+            ps -f --pid $(cat /tmp/exareme/var/run/*.pid) | sed 1d
         else
             echo "Stopped."
         fi
