@@ -4,7 +4,6 @@ import urllib2
 
 import functions
 
-
 registered = True
 external_query = True
 

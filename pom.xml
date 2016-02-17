@@ -188,7 +188,6 @@
         <module>exareme-worker</module>
         <module>exareme-master</module>
         <module>exareme-distribution</module>
-
     </modules>
     <properties>
 
