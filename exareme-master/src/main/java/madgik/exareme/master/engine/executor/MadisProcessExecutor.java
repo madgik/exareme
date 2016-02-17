@@ -60,7 +60,7 @@ public class MadisProcessExecutor {
             script.append("PRAGMA journal_mode = OFF; \n");
             script.append("PRAGMA synchronous = OFF; \n");
             script.append("PRAGMA automatic_index = TRUE; \n");
-            script.append("PRAGMA locking_mode = EXCLUSIVE; \n");
+//            script.append("PRAGMA locking_mode = EXCLUSIVE; \n");
             script.append("PRAGMA auto_vacuum = NONE; \n");
             script.append("PRAGMA ignore_check_constraints = true; \n");
             script.append("PRAGMA cache_size = " + pages + "; \n");
@@ -181,9 +181,13 @@ public class MadisProcessExecutor {
             for (String input : nonLocalTableDatabases.keySet()) {
                 String loc = nonLocalTablePartLocations.get(input).get(0);
                 if (nonLocalTablePartLocations.get(input).size() == 1) {
-                    attachedDBs.append("attach database '" + loc + "' as " + input + "; \n");
-                    attachedDBs.append(".schema " + input + "." + input + "; \n");
+                    //          attachedDBs.append("attach database '" + loc + "' as " + input + "; \n");
+                    //          attachedDBs.append(".schema " + input + "." + input + "; \n");
+                    attachedDBs.append("attach database '" + loc + "' as " + input +  "_0; \n");
+                    attachedDBs.append(".schema " + input + "_0." + input + "; \n");
+                    attachedDBs.append("create table " + input + " as select 0 as __local_id, * from " + input +"_0." + input +";\n");
                     numInputDatabases++;
+
                 } else {
                     ArrayList<String> locations = nonLocalTablePartLocations.get(input);
                     for (int part = 0; part < locations.size(); ++part) {
@@ -192,12 +196,18 @@ public class MadisProcessExecutor {
                             "attach database '" + locations.get(part) + "' as " + dbName + "; \n");
                         if (part == 0) {
                             createTables.append(
-                                "create temp table " + input + " as select * from " + dbName + "."
-                                    + input + "; \n");
+                                "create  table " + input + " as select " + part
+                                    + " as __local_id, * from " + dbName + "." + input + "; \n");
+                            //                            createTables.append(
+//                                "create temp table " + input + " as select * from " + dbName + "."
+//                                    + input + "; \n");
                         } else {
                             createTables.append(
-                                "insert into " + input + " select * from " + dbName + "." + input
-                                    + "; \n");
+                                "insert into " + input + " select " + part
+                                    + " as __local_id, * from " + dbName + "." + input + "; \n");
+                            //                            createTables.append(
+//                                "insert into " + input + " select * from " + dbName + "." + input
+//                                    + "; \n");
                         }
                         createTables.append("detach database " + dbName + "; \n");
                     }

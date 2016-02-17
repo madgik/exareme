@@ -8,10 +8,11 @@
 
 """
 
-import functions
 import json
 import urllib
 import urllib2
+
+import functions
 
 registered = True
 external_query = True
