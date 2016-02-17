@@ -219,7 +219,7 @@ public class HttpAsyncMiningHandler implements HttpAsyncRequestHandler<HttpReque
                             inputContent.put(ComposerConstants.outputGlobalTblKey, "output_" + qKey);
                             inputContent.put(ComposerConstants.algorithmKey, algorithmName);
                             AlgorithmProperties algorithmProperties = AlgorithmProperties.createAlgorithmProperties(inputContent);
-                            dfl = composer.composeVirtual(algorithmProperties);
+                            dfl = composer.composeVirtual(qKey, algorithmProperties);
 
                             log.debug(dfl);
                             AdpDBClientProperties clientProperties = new AdpDBClientProperties("/tmp/demo/db/" + qKey, "", "", false, false, -1, 10);

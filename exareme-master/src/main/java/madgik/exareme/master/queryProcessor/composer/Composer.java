@@ -2,6 +2,7 @@ package madgik.exareme.master.queryProcessor.composer;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import madgik.exareme.master.engine.remoteQuery.impl.utility.Files;
 import madgik.exareme.utils.properties.AdpProperties;
 import org.apache.log4j.Logger;
 
@@ -144,7 +145,8 @@ public class Composer {
     return dflScript.toString();
   }
 
-  public String composeVirtual(AlgorithmProperties algorithmProperties) throws ComposerException {
+  public String composeVirtual(String qKey, AlgorithmProperties algorithmProperties)
+      throws Exception {
 
     StringBuilder dflScript = new StringBuilder();
 
@@ -154,7 +156,7 @@ public class Composer {
 
     String inputLocalTbl = parameters.get(ComposerConstants.inputLocalTblKey);
     String outputGlobalTbl = parameters.get(ComposerConstants.outputGlobalTblKey);
-    parameters.put(ComposerConstants.defaultDBKey, "/tmp/defaultDB.db");
+    parameters.put(ComposerConstants.defaultDBKey, "/tmp/exareme/" + qKey + "_defaultDB.db");
     switch (algorithmProperties.getType()) {
 
       case local:
