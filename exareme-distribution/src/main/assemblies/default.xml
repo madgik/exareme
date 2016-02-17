@@ -44,14 +44,6 @@
                 <include>**</include>
             </includes>
         </fileSet>
-        <fileSet>        <!--lib -->
-            <directory>${basedir}/../exareme-tools/algorithms/</directory>
-            <outputDirectory>lib/algorithms</outputDirectory>
-            <fileMode>0755</fileMode>
-            <includes>
-                <include>**</include>
-            </includes>
-        </fileSet>
         <fileSet>        <!-- bin -->
             <directory>${basedir}/../exareme-master/src/main/resources</directory>
             <outputDirectory>bin</outputDirectory>
@@ -88,7 +80,7 @@
             </includes>
         </fileSet>
         <fileSet>        <!-- examples -->
-            <directory>${base}/../exareme-worker/src/main/scripts</directory>
+            <directory>${base}/../exareme-master/src/main/scripts</directory>
             <outputDirectory>examples</outputDirectory>
             <fileMode>0644</fileMode>
             <includes>
