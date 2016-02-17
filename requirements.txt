@@ -1,3 +1,0 @@
-NumPy
-SciPy
-scikit-learn

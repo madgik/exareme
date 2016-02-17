@@ -1,30 +1,18 @@
 # Exareme
+Exareme is an auto-tuned, highly scalable, elastic system for processing arbitrary dataflows on top of IaaS clouds.
 
-## Docker Instructions
-* Install 
-    - [docker]  (https://docs.docker.com/engine/installation/), [docker-compose] (https://docs.docker.com/compose/install/)
-    - [git] (https://git-scm.com/book/en/v2/Getting-Started-Installing-Git), [maven] (https://maven.apache.org/install.html)
-* Clone and Build
-    ```
-    $ git clone <exareme-docker-branch-rul> 
-    $ cd exareme
-    $ mvn clean install -DskipTests
-    ``` 
-* Running 
-    ```
-    $ docker-compose up master worker
-    $ docker-compose run console
-    ```
-* Load Data
-    ```
-    mterm>
-    ```
-* Queries
-    ```
-    mterm>
-    ```
-* Stopping
-    ```
-    $ docker-compose stop
-    $ docker-compose rm 
-    ```
+## Branches
+* master: Compiled binary, ready to use.
+* dev: The branch we are currently working on.
+
+## Documentation
+
+You'll find exareme's detailed documentation on our [webpage] (http://madgik.github.io/exareme).
+
+## Installation
+
+You'll find installation instructions on our [wiki page] (https://github.com/madgik/exareme/wiki).
+
+## License
+This content is released under the MIT License. See the LICENSE file in the source distribution.
+...

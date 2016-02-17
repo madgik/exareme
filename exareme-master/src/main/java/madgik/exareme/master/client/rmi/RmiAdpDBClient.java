@@ -13,7 +13,6 @@ import madgik.exareme.master.client.AdpDBClientProperties;
 import madgik.exareme.master.client.AdpDBClientQueryStatus;
 import madgik.exareme.master.connector.AdpDBConnector;
 import madgik.exareme.master.connector.AdpDBConnectorFactory;
-import madgik.exareme.master.connector.DataSerialization;
 import madgik.exareme.master.engine.AdpDBExecutor;
 import madgik.exareme.master.engine.AdpDBManager;
 import madgik.exareme.master.engine.AdpDBOptimizer;
@@ -270,19 +269,11 @@ public class RmiAdpDBClient implements AdpDBClient {
         return ExportToDotty.exportToDotty(plan.getGraph());
     }
 
-    @Override
-    public InputStream readTable(String tableName) throws RemoteException {
-        return readTable(tableName, DataSerialization.ldjson);
-    }
-
-
-    @Override
-    public InputStream readTable(String tableName, DataSerialization ds) throws RemoteException {
+    @Override public InputStream readTable(String tableName) throws RemoteException {
         log.debug("readTable");
         HashMap<String, Object> additionalProps = new HashMap<String, Object>();
         additionalProps.put("time", -1);
         additionalProps.put("errors", new ArrayList<Object>());
-        additionalProps.put("dataSerialization", ds);
         AdpDBConnector adpDBConnector = AdpDBConnectorFactory.createAdpDBConnector();
         log.debug("new connector");
         return adpDBConnector.readTable(tableName, additionalProps, properties);

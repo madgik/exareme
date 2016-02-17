@@ -79,8 +79,8 @@
             </includes>
         </fileSet>
         <fileSet>        <!-- examples -->
-            <directory>${base}/../exareme-master/src/main/scripts</directory>
-            <outputDirectory>lib/</outputDirectory>
+            <directory>${base}/../exareme-worker/src/main/scripts</directory>
+            <outputDirectory>examples</outputDirectory>
             <fileMode>0644</fileMode>
             <includes>
                 <include>**</include>

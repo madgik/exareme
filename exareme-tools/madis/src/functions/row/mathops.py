@@ -1,7 +1,6 @@
-import random
-
+import setpath
 import functions
-
+import random
 # coding: utf-8
 import math
 import json
@@ -90,7 +89,7 @@ def sqroot(*args):
         ret=math.sqrt(args[0])
     except ValueError:
         return None
-
+    
     return ret
 
 sqroot.registered=True
@@ -187,10 +186,8 @@ def farith(*args):
             else:
                 try:
                     s.append(Fraction(*json.loads(i)))
-                except Exception as e:
-                    # import traceback
-                    # traceback.print_exc()
-                    raise functions.OperatorError("Farith", "invalid expression found: %s" % str(i) )
+                except ValueError, e:
+                    raise functions.OperatorError('farith',"invalid expression found: '" + i +"'")
 
     return simplify_fraction(s.pop())
 
@@ -249,6 +246,7 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
+    import setpath
     from functions import *
     testfunction()
     if __name__ == "__main__":

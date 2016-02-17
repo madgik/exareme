@@ -4,7 +4,6 @@
 package madgik.exareme.master.client;
 
 import madgik.exareme.common.app.engine.AdpDBQueryListener;
-import madgik.exareme.master.connector.DataSerialization;
 
 import java.io.InputStream;
 import java.rmi.RemoteException;
@@ -47,6 +46,5 @@ public interface AdpDBClient {
      * @throws RemoteException
      */
     InputStream readTable(String tableName) throws RemoteException;
-    InputStream readTable(String tableName, DataSerialization ds) throws RemoteException;
 
 }

@@ -36,7 +36,6 @@ public class ExaremeGatewayUtils {
   public static final String GW_API_STREAMQUERY;
   public static final String GW_API_HISTORICALSTREAMQUERY;
   public static final String GW_API_STREAMQUERY_INFO;
-  public static final String GW_API_MINING;
 
   // server
   public static final int GW_PORT;
@@ -93,7 +92,6 @@ public class ExaremeGatewayUtils {
     GW_API_STREAMQUERY_DELETE = properties.getString("gateway.api.streamquery.delete");
     GW_API_STREAMQUERY_INFO = properties.getString("gateway.api.streamquery.info");
     GW_API_TABLESMETADATA = properties.getString("gateway.api.tablesmetadata");
-    GW_API_MINING = properties.getString("gateway.api.mining");
 
     CONTEXT_DB_CLIENT = properties.getString("gateway.context.db.client");
     CONTEXT_DB_CONNECTOR = properties.getString("gateway.context.db.connector");
