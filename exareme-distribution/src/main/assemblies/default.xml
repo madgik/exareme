@@ -5,7 +5,6 @@
     <formats>
         <format>dir</format>
     </formats>
-
     <includeBaseDirectory>false</includeBaseDirectory>
     <includeSiteDirectory>false</includeSiteDirectory>
 
@@ -81,7 +80,7 @@
         </fileSet>
         <fileSet>        <!-- examples -->
             <directory>${base}/../exareme-master/src/main/scripts</directory>
-            <outputDirectory>examples</outputDirectory>
+            <outputDirectory>lib/</outputDirectory>
             <fileMode>0644</fileMode>
             <includes>
                 <include>**</include>

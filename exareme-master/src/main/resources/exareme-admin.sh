@@ -7,9 +7,46 @@
 # set up environment
 ####################################################################################################
 #echo "Setting up environment..."
-[[ -z $EXAREME_HOME ]] && export EXAREME_HOME="$HOME"/exareme
-. $EXAREME_HOME/etc/exareme/exareme-env.sh
+# set up home dir
+if [ -z $EXAREME_HOME ]; then
+  if [ -d "$HOME/exareme" ]; then
+    EXAREME_HOME="$HOME/exareme";
+    export EXAREME_HOME="$HOME/exareme";
+  else
+    EXAREME_HOME="$HOME/exareme";
+    export EXAREME_HOME="$(pwd)";
+  fi
+fi
+echo "EXAREME HOME DIR : $EXAREME_HOME";
 
+# load env
+. $EXAREME_HOME/etc/exareme/exareme-env.sh  &> /dev/null
+
+# set up master with priority on conf file and then on env var or get the local ip.
+EXAREME_MASTER_FILE="$EXAREME_HOME/etc/exareme/master"
+if [[ -s "$EXAREME_MASTER_FILE" ]]; then
+  EXAREME_MASTER=$( < $EXAREME_MASTER_FILE);
+elif [ ! $EXAREME_MASTER ]; then
+    EXAREME_MASTER="$(hostname --ip-address)";
+fi
+echo "EXAREME MASTER HOST : $EXAREME_MASTER";
+
+# set up workers with priority on conf file and then on env var or assume none.
+EXAREME_WORKERS_FILE="$EXAREME_HOME/etc/exareme/workers"
+if [[ -e $EXAREME_WORKERS_FILE ]]; then
+  if [[ ! -s $EXAREME_WORKERS_FILE ]]; then
+    if [ ! $EXAREME_WORKERS ]; then
+        EXAREME_WORKERS=();
+    fi
+  else
+    EXAREME_WORKERS=$( < $EXAREME_WORKERS_FILE);
+  fi
+else
+  if [[ ! $EXAREME_WORKERS ]]; then
+    EXAREME_WORKERS=();
+  fi
+fi
+echo "EXAREME WORKERS : $( echo $EXAREME_WORKERS | wc -w )"
 ####################################################################################################
 # parse command line arguments
 ####################################################################################################
@@ -115,10 +152,9 @@ if [[ "true" == $EXAREME_ADMIN_LOCAL ]]; then   # run locally
                 done
             done
         )
-        if [ -z "$EXAREME_CURRENT_IP" ]; then
-            EXAREME_CURRENT_IP=$(hostname);
+        if [ -n $EXAREME_CURRENT_IP ]; then
+            EXAREME_CURRENT_IP=$(hostname --ip-address);
         fi
-        echo "Current ip : $EXAREME_CURRENT_IP"
         EXAREME_ADMIN_JMX_PORT=10000
         EXAREME_ADMIN_CLASS_PATH="$EXAREME_HOME/lib/exareme/*:$EXAREME_HOME/lib/exareme/external/*"
         EXAREME_ADMIN_MASTER_CLASS="madgik.exareme.master.admin.StartMaster"
@@ -133,27 +169,29 @@ if [[ "true" == $EXAREME_ADMIN_LOCAL ]]; then   # run locally
                             -Djava.security.egd=file:///dev/urandom "
 
         # determine master/worker
-        if [[ "$EXAREME_MASTER_IP" == "$EXAREME_CURRENT_IP" ]]; then
+        if [[ "$EXAREME_MASTER" == "$EXAREME_CURRENT_IP" ]]; then
             DESC="exareme-master"
             EXAREME_ADMIN_CLASS=$EXAREME_ADMIN_MASTER_CLASS
             EXAREME_ADMIN_CLASS_ARGS=""
         else
             DESC="exareme-worker"
             EXAREME_ADMIN_CLASS=$EXAREME_ADMIN_WORKER_CLASS
-            EXAREME_ADMIN_CLASS_ARGS="$EXAREME_MASTER_IP"
+            EXAREME_ADMIN_CLASS_ARGS="$EXAREME_MASTER"
         fi
 
         # execute
-        mkdir -p $EXAREME_HOME/var/log $EXAREME_HOME/var/run
-        $EXAREME_JAVA -cp $EXAREME_ADMIN_CLASS_PATH $EXAREME_ADMIN_OPTS $EXAREME_ADMIN_CLASS\
-            $EXAREME_ADMIN_CLASS_ARGS > $EXAREME_HOME/var/log/$DESC.log 2>&1 & echo $! > $EXAREME_HOME/var/run/$DESC.pid
+        mkdir -p /tmp/exareme/var/log /tmp/exareme/var/run
+        $EXAREME_JAVA -cp $EXAREME_ADMIN_CLASS_PATH \
+          $EXAREME_ADMIN_OPTS $EXAREME_ADMIN_CLASS  \
+          $EXAREME_ADMIN_CLASS_ARGS > /tmp/exareme/var/log/$DESC.log \
+          2>&1 & echo $! > /tmp/exareme/var/run/$DESC.pid
         echo "$DESC started."
     }
 
     function stop_exareme(){
-        if [ -f $EXAREME_HOME/var/run/*.pid ]; then
-            kill -9 $( cat $EXAREME_HOME/var/run/*.pid)
-            rm $EXAREME_HOME/var/run/*.pid
+        if [ -f /tmp/exareme/var/run/*.pid ]; then
+            kill -9 $( cat /tmp/exareme/var/run/*.pid)
+            rm /tmp/exareme/var/run/*.pid
             echo "Stopped."
         else
             echo "Already stopped, no action taken."
@@ -166,8 +204,8 @@ if [[ "true" == $EXAREME_ADMIN_LOCAL ]]; then   # run locally
     }
 
     function status_exareme(){
-        if [ -e $EXAREME_HOME/var/run/*.pid ]; then
-            ps -f --pid $(cat $EXAREME_HOME/var/run/*.pid) | sed 1d
+        if [ -e /tmp/exareme/var/run/*.pid ]; then
+            ps -f --pid $(cat /tmp/exareme/var/run/*.pid) | sed 1d
         else
             echo "Stopped."
         fi

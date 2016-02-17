@@ -1,17 +1,27 @@
 master:
   build: .
-  container_name: exareme_master
-  hostname: exareme_master
-  working_dir: /root/exareme
-  entrypoint: /bin/bash -c "./bin/exareme-admin.sh --start --local;tail -f ./var/log/exareme-master.log"
+  hostname: master
+  volumes:
+    - ./exareme-distribution/target/exareme:/root/exareme:ro
   ports:
     - "9090:9090"
-
+  working_dir: /root/exareme/
+  entrypoint: /bin/bash -c './bin/exareme-admin.sh --start;tail -f /tmp/exareme/var/log/exareme-master.log;'
 worker:
   build: .
-  container_name: exareme_worker
-  hostname: exareme_worker
-  working_dir: /root/exareme
-  entrypoint: /bin/bash -c "sleep 3;./bin/exareme-admin.sh --start --local;tail -f ./var/log/exareme-worker.log"
+  volumes:
+    - ./exareme-distribution/target/exareme:/root/exareme:ro
+  working_dir: /root/exareme/
+  entrypoint: /bin/bash -c 'sleep 5;./bin/exareme-admin.sh --start;tail -f /tmp/exareme/var/log/exareme-worker.log;'
   links:
     - master
+  environment:
+    - EXAREME_MASTER=master
+console:
+  build: .
+  volumes:
+      - ./exareme-distribution/target/exareme:/root/exareme:ro
+  links:
+    - master
+  working_dir: /root/exareme/
+  entrypoint: ./bin/exareme-admin.sh --console
