@@ -2,6 +2,11 @@ package madgik.exareme.master.gateway.async.handler;
 
 import madgik.exareme.master.gateway.OptiqueStreamQueryMetadata.StreamRegisterQuery;
 import org.apache.http.*;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.entity.InputStreamEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.nio.entity.NStringEntity;
 import org.apache.http.nio.protocol.*;
@@ -77,10 +82,31 @@ public class HttpAsyncResultStreamQueryHandler implements HttpAsyncRequestHandle
             return;
         }
 
-        log.info("Redirect to URL: http://" + info.ip + ":" + info.port + target);
-        HttpResponse response =
-            new BasicHttpResponse(HttpVersion.HTTP_1_1, HttpStatus.SC_TEMPORARY_REDIRECT, "");
-        response.addHeader("Location", "http://" + info.ip + ":" + info.port + target);
-        httpExchange.submitResponse(new BasicAsyncResponseProducer(response));
+        // TODO: DIRTY! ADD PROXY
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        HttpGet httpGet = new HttpGet("http://" + info.ip + ":" + info.port + target);
+        CloseableHttpResponse response = null;
+        try {
+            response = httpclient.execute(httpGet);
+            HttpEntity entity = response.getEntity();
+
+            if (entity != null) {
+                httpResponse.setEntity(new InputStreamEntity(entity.getContent()));
+                httpExchange.submitResponse(new BasicAsyncResponseProducer(httpResponse));
+            }
+        } catch (IOException e) {
+            log.error(e);
+        } finally {
+            if (response != null) {
+                response.close();
+            }
+        }
+
+
+//        log.info("Redirect to URL: http://" + info.ip + ":" + info.port + target);
+//        HttpResponse response =
+//            new BasicHttpResponse(HttpVersion.HTTP_1_1, HttpStatus.SC_TEMPORARY_REDIRECT, "");
+//        response.addHeader("Location", "http://" + info.ip + ":" + info.port + target);
+//        httpExchange.submitResponse(new BasicAsyncResponseProducer(response));
     }
 }
