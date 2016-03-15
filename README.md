@@ -42,10 +42,12 @@
 * Configuration under ~/exareme/
 
     - Specify master/worker nodes 
+    
         ```
         echo $(hostname --ip-address) > etc/exareme/master
         echo "" > etc/exareme/workers
         ```
+        
     - Edit the etc/exareme/exareme-env.sh and specify java, python installation (if needed).   
     - Edit the etc/exareme/gateway.properties 
         + specify the mip-algorihtms path (e.g. 
