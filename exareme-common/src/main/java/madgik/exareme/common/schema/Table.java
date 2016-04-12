@@ -31,6 +31,10 @@ public class Table implements Serializable {
         return name;
     }
 
+    public void setName(String newName){
+        this.name = newName;
+    }
+
     public String getSqlDefinition() {
         return sqlDefinition;
     }

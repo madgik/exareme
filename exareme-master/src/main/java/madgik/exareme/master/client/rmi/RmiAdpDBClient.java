@@ -3,6 +3,8 @@
  */
 package madgik.exareme.master.client.rmi;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import madgik.exareme.common.app.engine.AdpDBQueryID;
 import madgik.exareme.common.app.engine.AdpDBQueryListener;
 import madgik.exareme.common.app.engine.AdpDBStatus;
@@ -17,6 +19,8 @@ import madgik.exareme.master.engine.AdpDBExecutor;
 import madgik.exareme.master.engine.AdpDBManager;
 import madgik.exareme.master.engine.AdpDBOptimizer;
 import madgik.exareme.master.engine.AdpDBQueryExecutionPlan;
+import madgik.exareme.master.engine.dflSegment.Segment;
+import madgik.exareme.master.engine.executor.remote.AdpDBArtJobMonitor;
 import madgik.exareme.master.engine.historicalData.AdpDBHistoricalQueryData;
 import madgik.exareme.master.engine.parser.AdpDBParser;
 import madgik.exareme.master.queryProcessor.graph.ConcreteOperator;
@@ -25,8 +29,13 @@ import madgik.exareme.master.queryProcessor.graph.Link;
 import madgik.exareme.master.registry.Registry;
 import madgik.exareme.worker.art.container.ContainerJobs;
 import madgik.exareme.worker.art.container.ContainerProxy;
-import madgik.exareme.worker.art.executionPlan.parser.expression.Operator;
-import madgik.exareme.worker.art.executionPlan.parser.expression.PlanExpression;
+import madgik.exareme.worker.art.executionEngine.ExecutionEngineLocator;
+import madgik.exareme.worker.art.executionEngine.ExecutionEngineProxy;
+import madgik.exareme.worker.art.executionEngine.session.ExecutionEngineSession;
+import madgik.exareme.worker.art.executionEngine.session.ExecutionEngineSessionPlan;
+import madgik.exareme.worker.art.executionPlan.EditableExecutionPlanImpl;
+import madgik.exareme.worker.art.executionPlan.parser.expression.*;
+import madgik.exareme.worker.art.executionPlan.parser.expression.Container;
 import madgik.exareme.worker.art.registry.ArtRegistryLocator;
 import org.apache.log4j.Logger;
 
@@ -299,6 +308,142 @@ public class RmiAdpDBClient implements AdpDBClient {
         AdpDBStatus status = executor.executeScript(plan, properties);
         return new RmiAdpDBClientQueryStatus(queryId, properties, plan, status);
     }
+
+    @Override public AdpDBClientQueryStatus query(String queryID, QueryScript script) throws RemoteException {
+        AdpDBQueryExecutionPlan plan;
+        AdpDBQueryID queryId = createNewQueryID();
+
+        // optimize
+        plan = optimizer.optimize(script, registry, null, null, queryId, properties,
+                true  /* schedule */, true  /* validate */);
+        log.trace("Optimized" + plan.toString());
+
+        // execute
+        AdpDBStatus status = executor.executeScript(plan, properties);
+        return new RmiAdpDBClientQueryStatus(queryId, properties, plan, status);
+
+    }
+
+    @Override public AdpDBClientQueryStatus iquery(String queryID, String queryScript) throws RemoteException {
+        EditableExecutionPlanImpl editablePlan = new EditableExecutionPlanImpl();
+        List<String> containers = new ArrayList<String>();
+        ContainerProxy container[] = ArtRegistryLocator.getArtRegistryProxy().getContainers();
+
+        editablePlan.addContainer(new madgik.exareme.worker.art.executionPlan.parser.expression.Container("c" + 0, //name
+                container[0].getEntityName().getName(), //IP
+                container[0].getEntityName().getPort(),
+                container[0].getEntityName().getDataTransferPort()));
+
+        String c = "c" + 0;
+        containers.add(c);
+        AdpDBClientQueryStatus queryStatus = null;
+
+
+        // parse
+        AdpDBQueryID queryId = createNewQueryID();
+        List<Segment> segments = parser.fullParse(queryScript, registry);
+
+
+        return query(queryID, segments);
+
+    }
+
+
+    @Override public AdpDBClientQueryStatus query(String queryID, List<Segment> segments) throws RemoteException {
+        EditableExecutionPlanImpl editablePlan = new EditableExecutionPlanImpl();
+        List<String> containers = new ArrayList<String>();
+        ContainerProxy container[] = ArtRegistryLocator.getArtRegistryProxy().getContainers();
+        AdpDBQueryID queryId = createNewQueryID();
+
+        editablePlan.addContainer(new Container("c" + 0, //name
+                container[0].getEntityName().getName(), //IP
+                container[0].getEntityName().getPort(),
+                container[0].getEntityName().getDataTransferPort()));
+
+        String c = "c" + 0;
+        containers.add(c);
+        AdpDBStatus status = null;
+        AdpDBQueryExecutionPlan plan = null;
+
+        for(Segment seg : segments) {
+            // if script segment then do the same procedure with the simple query
+            if (seg.getType().equals("script")){
+
+                // optimize
+                AdpDBHistoricalQueryData queryData = null;
+                plan = optimizer
+                        .optimize(seg.getQueryScript(), registry, null, queryData, queryId, properties,
+                                true  /* schedule */,
+                                true  /* validate */);
+                log.trace("Optimized.");
+
+                // execute
+                status = executor.executeScript(plan, properties);
+            }
+            // whereas on a loop segment you should prepare and emit a doWhile operator which will be responsible in
+            // executing its subSegments
+            else {
+                GsonBuilder gsonBuilder;
+                Gson gson;
+
+                gsonBuilder = new GsonBuilder();
+                //gsonBuilder.registerTypeAdapter(Segment.class, new SegmentSerialiser());
+                gsonBuilder.setPrettyPrinting();
+                gson = gsonBuilder.create();
+                LinkedList<Parameter> parameters = new LinkedList<>();
+                parameters.add(new Parameter("time", "1"));
+                parameters.add(new Parameter("memoryPercentage", "1"));
+                //TODO how to pass database
+                parameters.add(new Parameter("database", properties.getDatabase()));
+                //parameters.add(new Parameter("Segment", JsonBuilder.toJson(seg)));
+                parameters.add(new Parameter("whileScript", gson.toJson(seg.getQueryScript())));
+                parameters.add(new Parameter("SubSegments", gson.toJson(seg.getSubSegments())));
+
+
+                Map<String, LinkedList<Parameter>> links = new HashMap<>();
+                // plan.addOperator(new Operator())
+                editablePlan.addOperator(new Operator(
+                                "sample1",
+                                "madgik.exareme.master.engine.executor.remote.operator.control.DoWhile",
+                                parameters,
+                                null,
+                                String.format("c%1d",0),
+                                links
+                        )
+                );
+
+                Map<AdpDBQueryID, AdpDBArtJobMonitor> monitors = new HashMap<>();
+                try {
+                    gson = new Gson();
+                    log.info("PLAN: " + gson.toJson(editablePlan));
+
+                    ExecutionEngineProxy engineProxy = ExecutionEngineLocator.getExecutionEngineProxy();
+                    ExecutionEngineSession engineSession = engineProxy.createSession();
+                    final ExecutionEngineSessionPlan sessionPlan = engineSession.startSession();
+                    sessionPlan.submitPlan(editablePlan);
+
+                    log.info("Submitted.");
+                    while (sessionPlan.getPlanSessionStatusManagerProxy().hasFinished() == false
+                            && sessionPlan.getPlanSessionStatusManagerProxy().hasError() == false) {
+                        Thread.sleep(100);
+                    }
+                    log.info("Exited");
+                    if (sessionPlan.getPlanSessionStatusManagerProxy().hasError() == true) {
+                        log.error(sessionPlan.getPlanSessionStatusManagerProxy().getErrorList().get(0));
+                    }
+
+                } catch (Exception e) {
+                    log.error(e);
+                }
+
+            }
+        }
+
+        // TODO this keeps only the result of the last script segment
+        return new RmiAdpDBClientQueryStatus(queryId, properties, plan, status);
+
+    }
+
 
     @Override public AdpDBClientQueryStatus aquery(String queryID, String queryScript,
         AdpDBQueryListener listener) throws RemoteException {

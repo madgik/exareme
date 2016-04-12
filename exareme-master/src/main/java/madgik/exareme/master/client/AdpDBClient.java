@@ -4,9 +4,12 @@
 package madgik.exareme.master.client;
 
 import madgik.exareme.common.app.engine.AdpDBQueryListener;
+import madgik.exareme.common.schema.QueryScript;
+import madgik.exareme.master.engine.dflSegment.Segment;
 
 import java.io.InputStream;
 import java.rmi.RemoteException;
+import java.util.List;
 
 
 /**
@@ -29,6 +32,12 @@ public interface AdpDBClient {
      * @throws RemoteException
      */
     AdpDBClientQueryStatus query(String queryID, String queryScript) throws RemoteException;
+
+    AdpDBClientQueryStatus query(String queryID, QueryScript script) throws RemoteException;
+
+    AdpDBClientQueryStatus iquery(String queryID, String queryScript) throws RemoteException;
+
+    AdpDBClientQueryStatus query(String queryID, List<Segment> segments) throws RemoteException;
 
     /**
      * @param queryID

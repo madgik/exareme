@@ -63,27 +63,43 @@ public interface AdpDBQueryParserConstants {
   /** RegularExpression Id. */
   int SEMICOLON = 28;
   /** RegularExpression Id. */
-  int QUOTEDSTRING = 29;
+  int SCRIPT = 29;
   /** RegularExpression Id. */
-  int DQUOTEDSTRING = 30;
+  int DO = 30;
   /** RegularExpression Id. */
-  int BLOCK = 31;
+  int WHILE = 31;
   /** RegularExpression Id. */
-  int SBBLOCK = 32;
+  int DYNAMIC = 32;
   /** RegularExpression Id. */
-  int SQL_QUERY = 33;
+  int STATIC = 33;
   /** RegularExpression Id. */
-  int WHITE = 34;
+  int LBRACE = 34;
   /** RegularExpression Id. */
-  int DIGIT = 35;
+  int RBRACE = 35;
   /** RegularExpression Id. */
-  int NUMBER = 36;
+  int LPAREN = 36;
   /** RegularExpression Id. */
-  int IDENTIFIER = 37;
+  int RPAREN = 37;
   /** RegularExpression Id. */
-  int LETTER = 38;
+  int QUOTEDSTRING = 38;
   /** RegularExpression Id. */
-  int PART_LETTER = 39;
+  int DQUOTEDSTRING = 39;
+  /** RegularExpression Id. */
+  int SBBLOCK = 40;
+  /** RegularExpression Id. */
+  int SQL_QUERY = 41;
+  /** RegularExpression Id. */
+  int WHITE = 42;
+  /** RegularExpression Id. */
+  int DIGIT = 43;
+  /** RegularExpression Id. */
+  int NUMBER = 44;
+  /** RegularExpression Id. */
+  int IDENTIFIER = 45;
+  /** RegularExpression Id. */
+  int LETTER = 46;
+  /** RegularExpression Id. */
+  int PART_LETTER = 47;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -121,9 +137,17 @@ public interface AdpDBQueryParserConstants {
     "\",\"",
     "\"at\"",
     "\";\"",
+    "\"script\"",
+    "\"do\"",
+    "\"while\"",
+    "\"dynamic\"",
+    "\"static\"",
+    "\"{\"",
+    "\"}\"",
+    "\"(\"",
+    "\")\"",
     "<QUOTEDSTRING>",
     "<DQUOTEDSTRING>",
-    "<BLOCK>",
     "<SBBLOCK>",
     "<SQL_QUERY>",
     "<WHITE>",
@@ -132,8 +156,6 @@ public interface AdpDBQueryParserConstants {
     "<IDENTIFIER>",
     "<LETTER>",
     "<PART_LETTER>",
-    "\"(\"",
-    "\")\"",
     "\".\"",
   };
 

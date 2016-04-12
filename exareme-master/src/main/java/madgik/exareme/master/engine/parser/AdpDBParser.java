@@ -8,6 +8,7 @@ import madgik.exareme.common.app.engine.DMQuery;
 import madgik.exareme.common.schema.*;
 import madgik.exareme.common.schema.expression.*;
 import madgik.exareme.master.client.AdpDBClientProperties;
+import madgik.exareme.master.engine.dflSegment.Segment;
 import madgik.exareme.master.registry.Registry;
 import madgik.exareme.utils.embedded.db.*;
 import org.apache.log4j.Logger;
@@ -17,16 +18,14 @@ import java.rmi.RemoteException;
 import java.rmi.ServerException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * @author herald
  * @author Christoforos Svingos
+ * @author thomas
  */
 public class AdpDBParser {
     private static final String engine = System.getProperty("EXAREME_MADIS");
@@ -35,6 +34,8 @@ public class AdpDBParser {
 
     private int id = 0;
     private SQLScript sqlScript = null;
+    //private List<String> previousScriptDefinitions = null;
+
 
     public AdpDBParser(AdpDBClientProperties properties) {
         this.properties = properties;
@@ -73,14 +74,67 @@ public class AdpDBParser {
         return script;
     }
 
+    public List<Segment> fullParse(String queryScript, Registry registry)
+            throws RemoteException {
+
+        long start = System.currentTimeMillis();
+        List<Segment> segments;
+        //previousScriptDefinitions = new ArrayList<>();
+        // Parse distributed query script
+        sqlScript = null;
+        id = 0;
+        try {
+            ByteArrayInputStream stream = new ByteArrayInputStream(queryScript.getBytes());
+            AdpDBQueryParser parser = new AdpDBQueryParser(stream);
+            // parse given query into segments. A segment can be either a script or a do while script which can contain
+            // subgements.
+            segments = parser.parseAllSegments();
+        } catch (ParseException e) {
+            throw new ServerException("Cannot parse script", e);
+        }
+
+        initSegmentsQueryScripts(segments, properties.getDatabase(), registry);
+
+        long end = System.currentTimeMillis();
+        log.debug("Parsed in " + String.valueOf(end - start) + " ms");
+
+        return segments;
+
+    }
+
+
+    public void initSegmentsQueryScripts(List<Segment> segments, String database, Registry registry) throws SemanticException {
+        for( Segment seg : segments) {
+            QueryScript script = new QueryScript(database, registry.getMappings());
+
+            List<Segment> subsegments;
+            if ((subsegments = seg.getSubSegments()) != null)
+                initSegmentsQueryScripts(subsegments, properties.getDatabase(), registry);
+
+            sqlScript = seg.getSQLScript();
+
+            try {
+                addQueries(registry, script, sqlScript);
+                addDMQueries(registry, script, sqlScript);
+            } catch (Exception e) {
+                throw new SemanticException("Cannot validate script", e);
+            }
+
+            seg.setQueryScript(script);
+
+
+        }
+
+    }
+
     private void addQueries(Registry registry, QueryScript script, SQLScript sQLScript) throws Exception {
         HashMap<String, Table> tables = new HashMap<String, Table>();
         log.debug("Adding queries ...");
         for (SQLSelect q : sQLScript.getQueries()) {
-            if (tables.containsKey(q.getResultTable()) || registry
-                .containsPhysicalTable(q.getResultTable())) {
-                throw new SemanticException("Table already exists: " + q.getResultTable());
-            }
+//            if (tables.containsKey(q.getResultTable()) || registry
+//                .containsPhysicalTable(q.getResultTable())) {
+//                throw new SemanticException("Table already exists: " + q.getResultTable());
+//            }
             Table out = new Table(q.getResultTable());
             out.setTemp(q.isTemporary());
             tables.put(out.getName(), out);
@@ -171,7 +225,7 @@ public class AdpDBParser {
         for (Select q : script.getSelectQueries()) {
             if (registry.getPhysicalTable(q.getOutputTable().getName()) != null) {
                 throw new SemanticException(
-                    "Table exists: " + registry.getPhysicalTable(q.getOutputTable().getName()));
+                    "Table exists: " + q.getOutputTable().getName());
             }
             if (q.getParsedSqlQuery().getInputDataPattern() == DataPattern.external) {
                 log.debug("Skipping for queries with external pattern.");

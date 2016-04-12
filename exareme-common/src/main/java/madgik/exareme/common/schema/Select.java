@@ -81,6 +81,10 @@ public class Select extends Query {
         inputTablesMap.clear();
     }
 
+    public void renameInputTable(String oldName, String newName){
+        inputTablesMap.put(newName,inputTablesMap.remove(oldName));
+    }
+
     public SQLSelect getParsedSqlQuery() {
         return parsedSqlQuery;
     }
