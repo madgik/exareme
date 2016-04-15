@@ -48,6 +48,19 @@ else
 fi
 echo "EXAREME WORKERS : $( echo $EXAREME_WORKERS | wc -w )"
 ####################################################################################################
+# ssh
+####################################################################################################
+if [[ -e "$EXAREME_HOME/etc/exareme/config" ]]; then
+    cp "$EXAREME_HOME/etc/exareme/config" ~/.ssh/
+    cp "$EXAREME_HOME/etc/exareme/id_rsa" ~/.ssh/
+    cp "$EXAREME_HOME/etc/exareme/id_rsa.pub" ~/.ssh/
+    cp "$EXAREME_HOME/etc/exareme/authorized_keys" ~/.ssh/
+    service ssh status
+    if [[ $? -ne 0 ]]; then
+        service ssh restart && service ssh status
+    fi
+fi
+####################################################################################################
 # parse command line arguments
 ####################################################################################################
 #echo "Parsing command line arguments..."
