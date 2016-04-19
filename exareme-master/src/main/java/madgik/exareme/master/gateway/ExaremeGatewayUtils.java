@@ -154,6 +154,7 @@ public class ExaremeGatewayUtils {
     String[] parts = content.split("&");
     for (String p : parts) {
       int split = p.indexOf("=");
+      if (split == -1) return;
       String key = p.substring(0, split);
       String value = p.substring(split + 1, p.length());
       dict.put(key, normalize(value));

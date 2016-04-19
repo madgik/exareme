@@ -79,7 +79,7 @@ public class RmiAdpDBClientQueryStatus implements AdpDBClientQueryStatus {
     }
 
     @Override public String getError() throws RemoteException {
-        return status.getLastException().toString();
+        return status.getLastException() == null ? "exception-is-empty" :status.getLastException().toString();
     }
 
     @Override public String getExecutionTime() throws RemoteException {

@@ -6,11 +6,15 @@ import madgik.exareme.master.client.AdpDBClient;
 import madgik.exareme.master.client.AdpDBClientFactory;
 import madgik.exareme.master.client.AdpDBClientProperties;
 import madgik.exareme.master.client.AdpDBClientQueryStatus;
+import madgik.exareme.master.connector.AdpDBConnectorUtil;
 import madgik.exareme.master.connector.DataSerialization;
 import madgik.exareme.master.engine.AdpDBManager;
 import madgik.exareme.master.engine.AdpDBManagerLocator;
 import madgik.exareme.master.gateway.ExaremeGatewayUtils;
 import madgik.exareme.master.queryProcessor.composer.*;
+import madgik.exareme.master.registry.Registry;
+import org.apache.commons.httpclient.util.ExceptionUtil;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.http.*;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.InputStreamEntity;
@@ -21,6 +25,9 @@ import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -69,7 +76,7 @@ public class HttpAsyncMiningHandler implements HttpAsyncRequestHandler<HttpReque
         try {
             handleInternal(request, response, context);
         } catch (Exception e){
-            log.error(e);
+            log.debug(ExceptionUtils.getFullStackTrace(e));
             throw new HttpException("Internal error\n", e);
         }
         httpExchange.submitResponse(new BasicAsyncResponseProducer(response));
@@ -161,11 +168,13 @@ public class HttpAsyncMiningHandler implements HttpAsyncRequestHandler<HttpReque
                     log.debug("Posting result ...");
                     String[] split = uri.split("/");
                     AdpDBClientQueryStatus queryStatus = queries.get(split[3]);
-                    if (queryStatus == null) response.setEntity(new NStringEntity(msg));
-                    else if (queryStatus.hasFinished() == false && queryStatus.hasError() == false)
+                    if (queryStatus == null) {
                         response.setEntity(new NStringEntity(msg));
-
-                    if (queryStatus.hasError() == false) {
+                        log.warn("query status null!");
+                    } else if (queryStatus.hasFinished() == true && queryStatus.hasError() == true) {
+                        response.setEntity(new NStringEntity(msg));
+                        log.warn("query status finsish with error");
+                    } else if (queryStatus.hasFinished() == true && queryStatus.hasError() == false) {
                         try {
                             log.debug(queryStatus.getExecutionTime());
                             AdpDBClientProperties clientProperties =
@@ -191,12 +200,21 @@ public class HttpAsyncMiningHandler implements HttpAsyncRequestHandler<HttpReque
                                 ds = DataSerialization.summary;
                             // blocking reading TODO async like status
                             // TODO check error handling output format
-                            response.setEntity(new InputStreamEntity(
-                                dbClient.readTable("output_" + split[3], ds)));
+
+                           InputStream readTable = dbClient.readTable("output_" + split[3], ds);
+                           if (readTable == null) {
+                                log.error("Registry not updated yet.");
+                               response.setEntity(new NStringEntity(msg));
+                               return;
+                           }
+                            response.setEntity(new InputStreamEntity(readTable));
                         }catch (Exception e){
-                            throw new IOException("Unable to format result.", e);
+                            log.error("Unable to format result.", e);
+                            response.setEntity(new NStringEntity(msg));
                         }
-                    } else response.setEntity(new NStringEntity(queryStatus.getError()));
+                    } else {
+                        response.setEntity(new NStringEntity(queryStatus.getError()));
+                    }
                 } else {
                     String algorithmKey = substring.substring(1);
                     if (method.equals("GET")) {        // view
