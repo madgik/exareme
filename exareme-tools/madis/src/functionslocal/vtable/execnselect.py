@@ -122,8 +122,8 @@ class ExecNSelectVT(functions.vtable.vtbase.VT):
             tconnection.close()
             cursor.close()
         except Exception as ex:
-            # import traceback
-            # traceback.print_exc()
+            import traceback
+            traceback.print_exc()
             raise functions.OperatorError(__name__.rsplit('.')[-1], "Error in query no. %d - %s" % (counter, str(ex)))
 
         # restore env
