@@ -138,7 +138,6 @@ def simplify_fraction(f):
     >>> simplify_fraction(Fraction(55555555294967297,2))
     '[55555555294967297, 2]'
     """
-
     if f.denominator == 1 and f.numerator < 9223372036854775808:
         return f.numerator
     elif float(f) < 4294967296.0:
@@ -192,7 +191,8 @@ def farith(*args):
                     # traceback.print_exc()
                     raise functions.OperatorError("Farith", "invalid expression found: %s" % str(i) )
 
-    return simplify_fraction(s.pop())
+    #return simplify_fraction(s.pop())
+    return float(s.pop())
 
 farith.registered = True
 
