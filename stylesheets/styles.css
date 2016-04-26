@@ -1,5 +1,13 @@
 @import url(https://fonts.googleapis.com/css?family=Lato:300italic,700italic,300,700);
 
+#authors ul{
+  list-style: none;
+}
+
+#authors li{
+
+}
+
 body {
   padding:50px;
   font:14px/1.5 Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -9,7 +17,7 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
   color:#222;
-  margin:0 0 20px;
+  margin:0 0 5px;
 }
 
 p, ul, ol, table, pre, dl {
@@ -77,10 +85,15 @@ table {
   border-collapse:collapse;
 }
 
-th, td {
+th{
+  text-align:left;
+  padding:5px 0px;
+  /*border-bottom:0px solid #e5e5e5;*/
+}
+td{
   text-align:left;
   padding:5px 10px;
-  border-bottom:1px solid #e5e5e5;
+
 }
 
 dt {
