@@ -19,22 +19,23 @@ class StreamdataVT(vtbase.VT):
         query=dictargs['query']
 
         if 'ratio' in dictargs:
-            self.ratio=float(dictargs['ratio'])
-            if self.ratio >= 1:
-                self.ratio=int(self.ratio)
-            elif self.ratio <= 0:
-                self.ratio = 1
+            ratio=float(dictargs['ratio'])
+            if ratio > 100:
+                ratio=100
+            elif ratio >= 1:
+                ratio=int(ratio)
+            elif ratio <= 0:
+                ratio = 1
             else:
-                if (float(float(1)/float(self.ratio)) - int(float(1)/float(self.ratio))) != 0:
+                if (float(float(1)/float(ratio)) - int(float(1)/float(ratio))) != 0:
                     raise functions.OperatorError(__name__.rsplit('.')[-1], "1/Ratio must be a not decimal number ")
         else:
-            self.ratio = 1
+            ratio = 1
 
-        self.quantum = None
         if 'quantum' in dictargs:
-            self.quantum=int(dictargs['quantum'])
-            if self.quantum <= 0:
-                self.quantum = 1
+            quantum=int(dictargs['quantum'])
+            if quantum <= 0:
+                quantum = 1
 
         if 'output' in dictargs:
             if str(dictargs['output']).lower() == 'same':
@@ -42,9 +43,9 @@ class StreamdataVT(vtbase.VT):
 
         if 'starttimestamp' in dictargs:
             dt=iso8601.parse_date(dictargs['starttimestamp'])
-            nextproducetupletime=long(time.mktime(dt.utctimetuple()) - time.timezone)
+            nextproducetupletime=time.mktime(dt.utctimetuple()) - time.timezone
         else:
-            nextproducetupletime=long(time.time())
+            nextproducetupletime=time.time()
 
         lines = []
         cur = envars['db'].cursor()
@@ -66,76 +67,64 @@ class StreamdataVT(vtbase.VT):
                 except:
                     pass
 
-        if not output:
-            numoflines=sum(1 for x in self.getDataGen(q)) - 1
-            nextproducetuple = int(nextproducetupletime) % int(float(numoflines))
-
-        # For ever
-        simtuple = []
-        while True:
-            try:
-                q = cur.execute(query, parse=False)
-                dataGen = self.getDataGen(q)
-                for x in range(nextproducetuple):
-                    dataGen.next()
-
-                for secstuples in dataGen:
-                    try:
-                        time.sleep(float(int(nextproducetupletime)-float(time.time().real)))
-                    except IOError:
-                        pass
-
-                    # For every tuple in second
-                    for line in secstuples:
-                        simtuple[:] = [datetime.datetime.utcfromtimestamp(nextproducetupletime).strftime('%Y-%m-%dT%H:%M:%S+00:00')]
-                        for value in line:
-                            simtuple.append(value)
-
-                        yield simtuple
-
-                    nextproducetupletime += 1
-
-                nextproducetuple=0
-            except KeyboardInterrupt:
-                break
-
-    def getDataGen(self, q):
-        if self.quantum is not None:
+        if quantum is not None:
             try:
                 t = q.next()
                 ttime = t[0]
-                tuples = [t]
+                lines.append([t])
                 for t in q:
-                    sec = int(t[0]/self.quantum) - int(ttime/self.quantum)
+                    sec = int(t[0]/quantum) - int(ttime/quantum)
                     if sec == 0:
-                        tuples.append(t)
+                        lines[-1].append(t)
                     elif sec < 0:
                         raise functions.OperatorError(__name__.rsplit('.')[-1], "Time not in order ")
                     else:
-                        yield tuples
                         for x in range(sec - 1):
-                            yield []
-                        tuples = [t]
+                            lines.append([])
+                        lines.append([t])
 
                     ttime = t[0]
             except:
                 raise functions.OperatorError(__name__.rsplit('.')[-1], "The first column must be a long (timestamp in epoch time) ")
         else:
-            if self.ratio < 1.000:
+            if ratio < 1.000:
                 for t in q:
-                    for x in range(int(1.0/float(self.ratio)) - 1):
-                        yield []
-                    yield [t]
+                    for x in range(int(1.0/float(ratio)) - 1):
+                        lines.append([])
+                    lines.append([t])
             else:
                 try:
                     while True:
-                        tuples = []
-                        for x in range(int(self.ratio)):
-                            tuples.append(q.next())
-
-                        yield tuples
+                        lines.append([])
+                        for x in range(int(ratio)):
+                            lines[-1].append(q.next())
                 except StopIteration:
                     pass
+
+        numoflines=len(lines) - 1
+        if not output:
+            nextproducetuple = int(nextproducetupletime) % int(float(numoflines))
+
+        # For ever
+        simtuple = []
+        while True:
+            for secstuples in lines[nextproducetuple:]:
+                try:
+                    time.sleep(float(nextproducetupletime-(time.time())))
+                except IOError:
+                    pass
+
+                # For every tuple in second
+                for line in secstuples:
+                    simtuple[:] = [datetime.datetime.utcfromtimestamp(nextproducetupletime).strftime('%Y-%m-%dT%H:%M:%S+00:00')]
+                    for value in line:
+                        simtuple.append(value)
+
+                    yield simtuple
+
+                nextproducetupletime += 1
+
+            nextproducetuple=0
 
 def Source():
     return vtbase.VTGenerator(StreamdataVT)
