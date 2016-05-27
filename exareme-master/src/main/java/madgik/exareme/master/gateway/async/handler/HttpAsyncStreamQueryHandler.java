@@ -1,9 +1,14 @@
 package madgik.exareme.master.gateway.async.handler;
 
 import madgik.exareme.master.gateway.ExaremeGatewayUtils;
-import madgik.exareme.master.gateway.OptiqueStreamQueryMetadata.StreamRegisterQuery;
 import org.apache.http.*;
-import org.apache.http.message.BasicHttpResponse;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.InputStreamEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.nio.entity.NStringEntity;
 import org.apache.http.nio.protocol.*;
 import org.apache.http.protocol.HttpContext;
@@ -11,7 +16,9 @@ import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 public class HttpAsyncStreamQueryHandler implements HttpAsyncRequestHandler<HttpRequest> {
@@ -37,9 +44,6 @@ public class HttpAsyncStreamQueryHandler implements HttpAsyncRequestHandler<Http
             throw new UnsupportedHttpVersionException(method + "not supported.");
         }
 
-        String target = httpRequest.getRequestLine().getUri();
-        String queryId = target.substring(target.lastIndexOf('/') + 1);
-
         // parse content
         String content = "";
         if (httpRequest instanceof HttpEntityEnclosingRequest) {
@@ -51,25 +55,38 @@ public class HttpAsyncStreamQueryHandler implements HttpAsyncRequestHandler<Http
         HashMap<String, String> inputContent = new HashMap<String, String>();
         ExaremeGatewayUtils.getValues(content, inputContent);
 
-        String query = inputContent.get(ExaremeGatewayUtils.REQUEST_STREAMQUERY);
-        log.info("Query : " + query);
+        String query = inputContent.get("register_query");
+        String target = httpRequest.getRequestLine().getUri();
 
+        // TODO: DIRTY! ADD PROXY
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        List<NameValuePair> formparams = new ArrayList<>();
+        formparams.add(new BasicNameValuePair("register_query", query));
+        UrlEncodedFormEntity postEntity = new UrlEncodedFormEntity(formparams, Consts.UTF_8);
+        HttpPost httpPost = new HttpPost("http://127.0.0.1:9595" + target);
+        httpPost.setEntity(postEntity);
+
+        CloseableHttpResponse response = null;
         try {
-            StreamRegisterQuery registerQuery = StreamRegisterQuery.getInstance();
-            registerQuery.add(queryId, query);
-        } catch (Exception ex) {
-            log.error(ex);
-            HttpResponse response =
-                new BasicHttpResponse(HttpVersion.HTTP_1_1, HttpStatus.SC_INTERNAL_SERVER_ERROR,
-                    ex.getMessage());
-            HttpEntity entity = new NStringEntity(ex.getMessage());
+            response = httpclient.execute(httpPost);
 
-            response.setEntity(entity);
-            httpExchange.submitResponse(new BasicAsyncResponseProducer(response));
-            return;
+            if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+                httpResponse.setStatusCode(response.getStatusLine().getStatusCode());
+            }
+
+            HttpEntity entity = response.getEntity();
+            if (entity != null) {
+                httpResponse.setEntity(new InputStreamEntity(entity.getContent()));
+                httpExchange.submitResponse(new BasicAsyncResponseProducer(httpResponse));
+            }
+        } catch (IOException e) {
+            log.error(e);
+            response.setStatusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+            response.setEntity(new NStringEntity("ERROR"));
+        } finally {
+            if (response != null) {
+                response.close();
+            }
         }
-
-        HttpResponse response = new BasicHttpResponse(HttpVersion.HTTP_1_1, HttpStatus.SC_OK, "OK");
-        httpExchange.submitResponse(new BasicAsyncResponseProducer(response));
     }
 }

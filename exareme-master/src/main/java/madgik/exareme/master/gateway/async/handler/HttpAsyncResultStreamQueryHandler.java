@@ -1,22 +1,20 @@
 package madgik.exareme.master.gateway.async.handler;
 
-import madgik.exareme.master.gateway.OptiqueStreamQueryMetadata.StreamRegisterQuery;
+import org.apache.commons.io.IOUtils;
 import org.apache.http.*;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.entity.InputStreamEntity;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.nio.entity.NStringEntity;
 import org.apache.http.nio.protocol.*;
 import org.apache.http.protocol.HttpContext;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Locale;
-
-//import org.apache.commons.lang.StringEscapeUtils;
 
 
 public class HttpAsyncResultStreamQueryHandler implements HttpAsyncRequestHandler<HttpRequest> {
@@ -44,58 +42,31 @@ public class HttpAsyncResultStreamQueryHandler implements HttpAsyncRequestHandle
         }
 
         String target = httpRequest.getRequestLine().getUri();
-        String queryId = target.substring(target.lastIndexOf('/') + 1, target.lastIndexOf('?'));
-
-        log.info("Result Query : " + queryId);
-
-        StreamRegisterQuery.QueryInfo info = null;
-        try {
-            StreamRegisterQuery registerQuery = StreamRegisterQuery.getInstance();
-            info = registerQuery.get(queryId);
-
-            if (info == null) {
-                HttpResponse response =
-                    new BasicHttpResponse(HttpVersion.HTTP_1_1, HttpStatus.SC_NOT_FOUND, "OK");
-                HttpEntity entity = new NStringEntity("Stream " + queryId + " Not Found");
-
-                response.setEntity(entity);
-                httpExchange.submitResponse(new BasicAsyncResponseProducer(response));
-
-                return;
-            }
-
-        } catch (Exception ex) {
-            log.error(ex);
-            HttpResponse response =
-                new BasicHttpResponse(HttpVersion.HTTP_1_1, HttpStatus.SC_OK, "");
-            //            HttpEntity entity = new NStringEntity(
-            //                    String.format("{\"schema\":[[\"status\", \"null\"]]}\n[\"%s\"]\n",
-            //                    StringEscapeUtils.escapeJavaScript(ex.getMessage()))
-            //            );
-
-            HttpEntity entity = new NStringEntity(String
-                .format("{\"schema\":[[\"status\", \"null\"]]}\n[\"%s\"]\n", ex.getMessage()));
-
-            response.setEntity(entity);
-            httpExchange.submitResponse(new BasicAsyncResponseProducer(response));
-
-            return;
-        }
 
         // TODO: DIRTY! ADD PROXY
         CloseableHttpClient httpclient = HttpClients.createDefault();
-        HttpGet httpGet = new HttpGet("http://" + info.ip + ":" + info.port + target);
+        HttpGet httpGet = new HttpGet("http://127.0.0.1:9595" + target);
+        httpGet.addHeader("accept", (httpRequest.getFirstHeader("accept") == null) ? "" : httpRequest.getFirstHeader("accept").getValue());
+
         CloseableHttpResponse response = null;
         try {
             response = httpclient.execute(httpGet);
-            HttpEntity entity = response.getEntity();
 
+            if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+                httpResponse.setStatusCode(response.getStatusLine().getStatusCode());
+            }
+
+            HttpEntity entity = response.getEntity();
             if (entity != null) {
-                httpResponse.setEntity(new InputStreamEntity(entity.getContent()));
+                StringWriter writer = new StringWriter();
+                IOUtils.copy(entity.getContent(), writer, "UTF-8");
+                httpResponse.setEntity(new StringEntity(writer.toString()));
                 httpExchange.submitResponse(new BasicAsyncResponseProducer(httpResponse));
             }
         } catch (IOException e) {
             log.error(e);
+            httpResponse.setStatusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+            httpResponse.setEntity(new NStringEntity("ERROR"));
         } finally {
             if (response != null) {
                 response.close();
@@ -103,10 +74,10 @@ public class HttpAsyncResultStreamQueryHandler implements HttpAsyncRequestHandle
         }
 
 
-//        log.info("Redirect to URL: http://" + info.ip + ":" + info.port + target);
+//        log.info("Redirect to URL: http://127.0.0.1:9595" + target);
 //        HttpResponse response =
-//            new BasicHttpResponse(HttpVersion.HTTP_1_1, HttpStatus.SC_TEMPORARY_REDIRECT, "");
-//        response.addHeader("Location", "http://" + info.ip + ":" + info.port + target);
+//            new BasicHttpResponse(HttpVersion.HTTP_1_1, HttpStatus.SC_MOVED_PERMANENTLY, "");
+//        response.addHeader("Location", "http://127.0.0.1:9595" + target);
 //        httpExchange.submitResponse(new BasicAsyncResponseProducer(response));
     }
 }

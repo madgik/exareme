@@ -1,8 +1,11 @@
 package madgik.exareme.master.gateway.async.handler;
 
-import madgik.exareme.master.gateway.OptiqueStreamQueryMetadata.StreamRegisterQuery;
 import org.apache.http.*;
-import org.apache.http.message.BasicHttpResponse;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.entity.InputStreamEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.nio.entity.NStringEntity;
 import org.apache.http.nio.protocol.*;
 import org.apache.http.protocol.HttpContext;
@@ -35,45 +38,33 @@ public class HttpAsyncDeleteStreamQueryHandler implements HttpAsyncRequestHandle
         }
 
         String target = httpRequest.getRequestLine().getUri();
-        String queryId = target.substring(target.lastIndexOf('/') + 1);
 
-        log.info("Delete Query : " + queryId);
+        // TODO: DIRTY! ADD PROXY
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        HttpGet httpGet = new HttpGet("http://127.0.0.1:9595" + target);
+        httpGet.addHeader("accept", (httpRequest.getFirstHeader("accept") == null) ? "" : httpRequest.getFirstHeader("accept").getValue());
 
-        StreamRegisterQuery.QueryInfo info = null;
+        CloseableHttpResponse response = null;
         try {
-            StreamRegisterQuery registerQuery = StreamRegisterQuery.getInstance();
-            info = registerQuery.get(queryId);
+            response = httpclient.execute(httpGet);
 
-            if (info == null) {
-                HttpResponse response =
-                    new BasicHttpResponse(HttpVersion.HTTP_1_1, HttpStatus.SC_NOT_FOUND, "");
-                HttpEntity entity = new NStringEntity("Stream " + queryId + " Not Found");
-
-                response.setEntity(entity);
-                httpExchange.submitResponse(new BasicAsyncResponseProducer(response));
-
-                return;
+            if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+                httpResponse.setStatusCode(response.getStatusLine().getStatusCode());
             }
 
-            registerQuery.remove(queryId);
-        } catch (Exception ex) {
-            log.error(ex);
-            HttpResponse response =
-                new BasicHttpResponse(HttpVersion.HTTP_1_1, HttpStatus.SC_INTERNAL_SERVER_ERROR,
-                    ex.getMessage());
-            HttpEntity entity = new NStringEntity(ex.getMessage());
-
-            response.setEntity(entity);
-            httpExchange.submitResponse(new BasicAsyncResponseProducer(response));
-
-            return;
+            HttpEntity entity = response.getEntity();
+            if (entity != null) {
+                httpResponse.setEntity(new InputStreamEntity(entity.getContent()));
+                httpExchange.submitResponse(new BasicAsyncResponseProducer(httpResponse));
+            }
+        } catch (IOException e) {
+            log.error(e);
+            response.setStatusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+            response.setEntity(new NStringEntity("ERROR"));
+        } finally {
+            if (response != null) {
+                response.close();
+            }
         }
-
-
-        HttpResponse response =
-            new BasicHttpResponse(HttpVersion.HTTP_1_1, HttpStatus.SC_TEMPORARY_REDIRECT, "");
-        response.addHeader("Location", "http://" + info.ip + ":" + info.port + target);
-
-        httpExchange.submitResponse(new BasicAsyncResponseProducer(response));
     }
 }
