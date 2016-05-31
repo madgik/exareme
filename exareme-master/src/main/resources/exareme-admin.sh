@@ -196,8 +196,7 @@ if [[ "true" == $EXAREME_ADMIN_LOCAL ]]; then   # run locally
         mkdir -p /tmp/exareme/var/log /tmp/exareme/var/run
         $EXAREME_JAVA -cp $EXAREME_ADMIN_CLASS_PATH \
           $EXAREME_ADMIN_OPTS $EXAREME_ADMIN_CLASS  \
-          $EXAREME_ADMIN_CLASS_ARGS > /tmp/exareme/var/log/$DESC.log \
-          2>&1 & echo $! > /tmp/exareme/var/run/$DESC.pid
+          $EXAREME_ADMIN_CLASS_ARGS > /tmp/exareme/var/log/$DESC.log 2>&1 & echo $! > /tmp/exareme/var/run/$DESC.pid
         echo "$DESC started."
     }
 
@@ -268,7 +267,6 @@ else
 
 #    ssh -n $EXAREME_USER@$EXAREME_MASTER_IP """$CMD_RUN"""
     $CMD_RUN
-    sleep 1
 
     if [[ "true" != $EXAREME_ADMIN_SYNC ]]; then
         for EXAREME_NODE in $(cat $EXAREME_HOME/etc/exareme/workers); do

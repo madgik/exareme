@@ -1,0 +1,16 @@
+{
+  "algorithms"  : [],
+  "endpoints"   : [
+    { "host"    : "", "port"    : "", "status"  : "" },
+    { "host"    : "", "port"    : "", "status"  : "" }
+  ],
+  "local_engine_default" : {
+    "name"        : "rawdb",
+    "parameters"  : [
+      { "name" : "username", "desc" : "", "value":"" },
+      { "name": "password", "desc" : "", "value":"" }
+    ],
+    "query" : ""
+  }
+}
+

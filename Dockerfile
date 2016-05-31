@@ -17,3 +17,7 @@ RUN mkdir -p /usr/java/default && \
 
 ENV JAVA_HOME /usr/java/default/
 ENV PATH $PATH:$JAVA_HOME/bin
+
+ADD ./requirements.txt /requirements.txt
+RUN sudo apt-get install -y python-dev build-essential python-pip libblas-dev liblapack-dev libatlas-base-dev gfortran
+RUN sudo pip install -r requirements.txt

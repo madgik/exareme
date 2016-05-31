@@ -1,0 +1,9 @@
+{
+  "name"                : "WP_VARIABLE_PROFILE",
+  "desc"                : "",
+  "status"              : "enabled",
+  "flow_type"           : "local_global",
+  "parameters" : [
+    {"name" : "variable",  "desc" : "", "value" : "APOE4_bl"}
+  ]
+}
