@@ -94,11 +94,12 @@ public class AdpDBArtJobMonitor implements Runnable {
         } catch (Exception e) {
             statusManager.setError(status.getId(), e);
             log.error("Cannot monitor job!", e);
-        }
-
-        synchronized (listeners) {
-            for (AdpDBQueryListener l : listeners) {
-                l.terminated(queryID, status);
+        } finally {
+            log.debug("Terminate listeners ( " + listeners.size()+")...");
+            synchronized (listeners) {
+                for (AdpDBQueryListener l : listeners) {
+                    l.terminated(queryID, status);
+                }
             }
         }
     }

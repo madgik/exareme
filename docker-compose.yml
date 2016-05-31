@@ -11,7 +11,8 @@ services:
       - "9090:9090"
     working_dir: /root/exareme/
     entrypoint: /tmp/entrypoint.sh
-
+    links:
+      - rawdb
   worker:
     build: .
     volumes:
@@ -23,3 +24,9 @@ services:
       - EXAREME_MASTER=master
     links:
       - master
+  rawdb:
+    image: raw-sniffer
+    volumes:
+      - ./rawdb_datasets:/datasets:ro
+    ports:
+    - "54321:54321"

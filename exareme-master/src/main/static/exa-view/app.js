@@ -12,12 +12,14 @@ config(['$locationProvider', '$routeProvider', function($locationProvider, $rout
 
   $routeProvider.otherwise({redirectTo: '/view1'});
 }]).
-controller('ExaController', function($http){
+controller('ExaController', function($http, $scope){
   var exa = this;
   exa.properties ={};
+  exa.result = [];
+
   $http({
     method: 'GET',
-    url: '/someUrl'
+    url: '/mining/algorithms.json'
   }).then(function successCallback(response) {
     // this callback will be called asynchronously
     // when the response is available
@@ -29,4 +31,33 @@ controller('ExaController', function($http){
     // or server returns response with an error status.
     exa.properties = {};
   });
+
+  exa.query = function(index){
+
+    $http({
+        method: 'POST',
+        url: '/mining/query/' + $scope.exa.properties['algorithms'][index]['name'],
+        data: $scope.exa.properties['algorithms'][index]['parameters'],
+        transformResponse: function(data){
+            var response = [];
+            var split = data.split('\n');
+            for(var r in split){
+                if(split[r]) {
+                    response.push(JSON.parse(split[r]))
+                }
+            }
+            return response;
+        }
+    }).then(function successCallback(response) {
+      // this callback will be called asynchronously
+      // when the response is available
+      if(response.status == 200){
+            exa.result = response.data;
+        }
+    }, function errorCallback(response) {
+      // called asynchronously if an error occurs
+      // or server returns response with an error status.
+      exa.result = [];
+    });
+  };
 });

@@ -3,6 +3,7 @@ package madgik.exareme.master.client;
 import madgik.exareme.common.app.engine.AdpDBQueryID;
 import madgik.exareme.common.app.engine.AdpDBQueryListener;
 
+import java.io.InputStream;
 import java.rmi.RemoteException;
 
 /**
@@ -27,4 +28,6 @@ public interface AdpDBClientQueryStatus {
     void close() throws RemoteException;
 
     void registerListener(AdpDBQueryListener listener) throws RemoteException;
+
+    InputStream getResult() throws RemoteException;
 }

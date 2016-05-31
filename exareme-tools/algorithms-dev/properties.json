@@ -1,16 +1,17 @@
 {
   "algorithms"  : [],
   "endpoints"   : [
-    { "host"    : "", "port"    : "", "status"  : "" },
-    { "host"    : "", "port"    : "", "status"  : "" }
+    { "host"    : "rawdb", "port"    : "54321", "status"  : "" }
   ],
   "local_engine_default" : {
     "name"        : "rawdb",
     "parameters"  : [
-      { "name" : "username", "desc" : "", "value":"" },
-      { "name": "password", "desc" : "", "value":"" }
+      { "name" : "username", "desc" : "", "value":"federation" },
+      { "name" : "password", "desc" : "", "value":"federation" },
+      { "name" : "host"    , "desc" : "", "value":"rawdb"},
+      { "name" : "port" , "desc":"", "value":"54321"}
     ],
-    "query" : ""
+    "query" : "select distinct patient_id as __rid, variable_name as __colname, value as __val from exam_value"
   }
 }
 

@@ -10,6 +10,7 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Responsible to produce data flows (dfl)
@@ -69,9 +70,10 @@ public class Composer {
 
         HashMap<String, String> parameters = AlgorithmsProperties.AlgorithmProperties.toHashMap(algorithmProperties);
 
-        String inputLocalTbl = parameters.get(ComposerConstants.inputLocalTblKey);
+        String inputLocalTbl = algorithms.getLocal_engine_default().toUDF();
+        parameters.put(ComposerConstants.inputLocalTblKey, inputLocalTbl);
         String outputGlobalTbl = parameters.get(ComposerConstants.outputGlobalTblKey);
-        parameters.put(ComposerConstants.defaultDBKey, "/tmp/exareme/" + qKey + "_defaultDB.db");
+        parameters.put(ComposerConstants.defaultDBKey, "/tmp/demo/db/" + qKey + "_defaultDB.db");
         switch (algorithmProperties.getType()) {
 
             case local:

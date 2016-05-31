@@ -1,11 +1,14 @@
 package madgik.exareme.master.queryProcessor.composer;
 
 import com.google.gson.Gson;
+import madgik.exareme.worker.art.executionPlan.parser.expression.Parameter;
 import org.apache.commons.io.FileUtils;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Represent the mip-algorithms repository properties,
@@ -120,15 +123,43 @@ public class AlgorithmsProperties {
 
         public static AlgorithmProperties createAlgorithmProperties(
             HashMap<String, String> inputContent) throws IOException {
+
             String algorithm_name = inputContent.get(ComposerConstants.algorithmKey);
-            AlgorithmProperties newAlgorithmParameters = AlgorithmProperties.createAlgorithmProperties(
-                Composer.getInstance().getRepositoryPath() + algorithm_name + "/properties.json");
+            String path =  Composer.getInstance().getRepositoryPath() + algorithm_name + "/properties.json";
+
+            AlgorithmProperties newAlgorithmParameters =
+                AlgorithmProperties.createAlgorithmProperties(path);
+
             for (ParameterProperties algorithmParameter : newAlgorithmParameters.getParameters()) {
                 String value = inputContent.get(algorithmParameter.getName());
                 if (value != null) {
                     algorithmParameter.setValue(value);
+                    inputContent.remove(algorithmParameter.getName());
                 }
             }
+
+            if(!inputContent.isEmpty()) {
+
+                ArrayList<ParameterProperties> list = new ArrayList<>();
+                for (Map.Entry<String, String> entry : inputContent.entrySet()) {
+                    ParameterProperties properties = new ParameterProperties();
+                    properties.setName(entry.getKey());
+                    properties.setValue(entry.getValue());
+                    list.add(properties);
+                }
+                int n = newAlgorithmParameters.getParameters().length + list.size();
+                if ( n > 0) {
+                    ParameterProperties[] parameterProperties = new ParameterProperties[n];
+                    for (int i = 0; i < newAlgorithmParameters.getParameters().length; i++) {
+                        parameterProperties[i] = newAlgorithmParameters.getParameters()[i];
+                    }
+                    for(int i =0; i < list.size(); i ++){
+                        parameterProperties[newAlgorithmParameters.getParameters().length + i] = list.get(i);
+                    }
+                    newAlgorithmParameters.setParameters(parameterProperties);
+                }
+            }
+
             return newAlgorithmParameters;
         }
 
@@ -177,6 +208,23 @@ public class AlgorithmsProperties {
 
         public void setQuery(String query) {
             this.query = query;
+        }
+
+        public String toUDF(){
+            StringBuilder builder = new StringBuilder();
+            builder.append('(');
+            builder.append(name);
+            for (ParameterProperties parameter : parameters) {
+                builder.append(" ");
+                builder.append(parameter.name);
+                builder.append(':');
+                builder.append(parameter.value);
+                builder.append(" ");
+            }
+            builder.append(query);
+            builder.append(')');
+
+            return builder.toString();
         }
     }
 
