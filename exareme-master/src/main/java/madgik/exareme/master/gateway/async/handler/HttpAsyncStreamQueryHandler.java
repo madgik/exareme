@@ -55,7 +55,7 @@ public class HttpAsyncStreamQueryHandler implements HttpAsyncRequestHandler<Http
         HashMap<String, String> inputContent = new HashMap<String, String>();
         ExaremeGatewayUtils.getValues(content, inputContent);
 
-        String query = inputContent.get("register_query");
+        String query = inputContent.get("register_query").replaceAll("(?i)create\\s+stream", "create temp view");
         String target = httpRequest.getRequestLine().getUri();
 
         // TODO: DIRTY! ADD PROXY
