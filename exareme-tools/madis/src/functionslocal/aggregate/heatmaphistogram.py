@@ -24,7 +24,11 @@ class heatmaphistogram:
             self.colnames = [None]* 2
             self.curvalues = [None]* 2
             self.index = [None]* 2
-            self.noofargs = len(args)
+            # self.noofargs = len(args)
+            if args[5] == null:
+                self.flag = false
+            else:
+                self.flag = true
 
         try:
             # self.noofargs = len(args)
@@ -38,7 +42,7 @@ class heatmaphistogram:
                 # print self.step
             self.curvalues[0] = float(args[1])
 
-            if len(args) > 5:
+            if self.flag == true:
 
                 if self.n == 0:
                     self.colnames[1] = (args[5])
@@ -56,7 +60,7 @@ class heatmaphistogram:
             raise
 
         self.index[0] = int((self.curvalues[0] - self.minvalue) / self.step)
-        if len(args) > 5:
+        if self.flag == true:
             self.index[1] = self.distinctvalues.index(self.curvalues[1])
         else:
             self.index[1] = 0
@@ -72,7 +76,7 @@ class heatmaphistogram:
 
     def final(self):
 
-        if self.noofargs  > 5:
+        if self.flag == true:
             yield ('colname0','id0', 'minvalue0', 'maxvalue0',  'colname1', 'val', 'num')
         else:
             yield ('colname0','id0', 'minvalue0', 'maxvalue0','num')
