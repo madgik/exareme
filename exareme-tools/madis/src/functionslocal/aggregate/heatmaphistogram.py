@@ -74,6 +74,8 @@ class heatmaphistogram:
         # print self.heatmap
 
 
+
+
     def final(self):
 
         if self.flag == true:
