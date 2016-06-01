@@ -87,7 +87,7 @@ def sqroot(*args):
     """
 
     try:
-        ret=math.sqrt(args[0])
+        ret=math.sqrt(float(args[0]))
     except ValueError:
         return None
 

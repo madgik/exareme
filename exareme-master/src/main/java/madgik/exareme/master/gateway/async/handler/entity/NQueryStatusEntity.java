@@ -71,7 +71,7 @@ public class NQueryStatusEntity extends BasicHttpEntity implements HttpAsyncCont
 
     }
 
-    private static class QueryStatusListener implements AdpDBQueryListener {
+    public static class QueryStatusListener implements AdpDBQueryListener {
         private static final Logger log = Logger.getLogger(QueryStatusListener.class);
         private IOControl ioctl = null;
 

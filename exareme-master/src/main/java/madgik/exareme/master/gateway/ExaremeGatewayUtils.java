@@ -36,7 +36,9 @@ public class ExaremeGatewayUtils {
   public static final String GW_API_STREAMQUERY;
   public static final String GW_API_HISTORICALSTREAMQUERY;
   public static final String GW_API_STREAMQUERY_INFO;
-  public static final String GW_API_MINING;
+  public static final String GW_API_MINING_ALGORITHMS;
+  public static final String GW_API_MINING_QUERY;
+
 
   // server
   public static final int GW_PORT;
@@ -93,7 +95,9 @@ public class ExaremeGatewayUtils {
     GW_API_STREAMQUERY_DELETE = properties.getString("gateway.api.streamquery.delete");
     GW_API_STREAMQUERY_INFO = properties.getString("gateway.api.streamquery.info");
     GW_API_TABLESMETADATA = properties.getString("gateway.api.tablesmetadata");
-    GW_API_MINING = properties.getString("gateway.api.mining");
+    GW_API_MINING_ALGORITHMS = properties.getString("gateway.api.mining.algorithms");
+    GW_API_MINING_QUERY= properties.getString("gateway.api.mining.query");
+
 
     CONTEXT_DB_CLIENT = properties.getString("gateway.context.db.client");
     CONTEXT_DB_CONNECTOR = properties.getString("gateway.context.db.connector");
@@ -154,6 +158,7 @@ public class ExaremeGatewayUtils {
     String[] parts = content.split("&");
     for (String p : parts) {
       int split = p.indexOf("=");
+      if (split == -1) return;
       String key = p.substring(0, split);
       String value = p.substring(split + 1, p.length());
       dict.put(key, normalize(value));

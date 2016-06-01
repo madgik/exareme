@@ -1,16 +1,23 @@
 FROM ubuntu:14.04
-MAINTAINER "Alexandros Papadopoulos" alpap@di.uoa.gr
 
-WORKDIR /root/
-
-# add repositories
-RUN sudo apt-get -y install software-properties-common
-RUN sudo add-apt-repository -y ppa:webupd8team/java
+# update
 RUN sudo apt-get -y update
 
-# accept oracle license
-RUN echo debconf shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections
+# install
+RUN apt-get install -y curl python python-apsw openssh-server
 
-# install exareme dependencies
-RUN sudo apt-get -y install python python-apsw
-RUN sudo apt-get -y install oracle-java7-installer
+# ssh
+RUN ssh-keygen -q -N "" -t rsa -f /root/.ssh/id_rsa
+RUN cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys
+
+# java
+RUN mkdir -p /usr/java/default && \
+    curl -Ls 'http://download.oracle.com/otn-pub/java/jdk/7u51-b13/jdk-7u51-linux-x64.tar.gz' -H 'Cookie: oraclelicense=accept-securebackup-cookie' | \
+    tar --strip-components=1 -xz -C /usr/java/default/
+
+ENV JAVA_HOME /usr/java/default/
+ENV PATH $PATH:$JAVA_HOME/bin
+
+ADD ./requirements.txt /requirements.txt
+RUN sudo apt-get install -y python-dev build-essential python-pip libblas-dev liblapack-dev libatlas-base-dev gfortran
+RUN sudo pip install -r requirements.txt

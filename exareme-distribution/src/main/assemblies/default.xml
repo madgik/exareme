@@ -43,6 +43,26 @@
                 <include>**</include>
             </includes>
         </fileSet>
+        <fileSet>        <!--lib -->
+            <directory>${basedir}/../exareme-tools/algorithms-dev/</directory>
+            <outputDirectory>lib/algorithms-dev</outputDirectory>
+            <fileMode>0755</fileMode>
+            <includes>
+                <include>**</include>
+            </includes>
+            <excludes>
+                <exclude>*.xml</exclude>
+                <exclude>*.iml</exclude>
+            </excludes>
+        </fileSet>
+        <fileSet>        <!--static -->
+            <directory>${basedir}/../exareme-master/src/main/static/</directory>
+            <outputDirectory>static/</outputDirectory>
+            <fileMode>0644</fileMode>
+            <includes>
+                <include>**</include>
+            </includes>
+        </fileSet>
         <fileSet>        <!-- bin -->
             <directory>${basedir}/../exareme-master/src/main/resources</directory>
             <outputDirectory>bin</outputDirectory>

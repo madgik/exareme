@@ -1,55 +1,97 @@
 package madgik.exareme.master.gateway.async.handler;
 
+import madgik.exareme.utils.properties.AdpProperties;
 import org.apache.http.*;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.InputStreamEntity;
+import org.apache.http.nio.entity.NFileEntity;
+import org.apache.http.nio.entity.NStringEntity;
 import org.apache.http.nio.protocol.*;
 import org.apache.http.protocol.HttpContext;
+import org.apache.http.protocol.HttpCoreContext;
 import org.apache.http.util.EntityUtils;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.util.Locale;
 
 /**
- * @author alex
+ * @author alexpap
+ * @version 0.1
  */
 public class HttpAsyncFileHandler implements HttpAsyncRequestHandler<HttpRequest> {
-    @Override public HttpAsyncRequestConsumer<HttpRequest> processRequest(HttpRequest request,
-        HttpContext context) throws HttpException, IOException {
+
+    private static final Logger log = Logger.getLogger(HttpAsyncFileHandler.class);
+    private static final File docRoot;
+    static{
+        String staticPath = AdpProperties.getGatewayProperties().getString("static.path");
+        log.debug("Static Path : " + staticPath);
+        docRoot = new File(staticPath);
+    }
+
+    public HttpAsyncFileHandler() {
+        super();
+    }
+
+    public HttpAsyncRequestConsumer<HttpRequest> processRequest(
+        final HttpRequest request,
+        final HttpContext context) {
+        // Buffer request content in memory for simplicity
         return new BasicAsyncRequestConsumer();
     }
 
-    @Override
-    public void handle(HttpRequest httpRequest, HttpAsyncExchange httpExchange, HttpContext context)
-        throws HttpException, IOException {
-        HttpResponse httpResponse = httpExchange.getResponse();
-        System.out.println(""); // empty line before each request
-        System.out.println(httpRequest.getRequestLine());
-        System.out.println("-------- HEADERS --------");
-        for (Header header : httpRequest.getAllHeaders()) {
-            System.out.println(header.getName() + " : " + header.getValue());
-        }
-        System.out.println("--------");
-
-        HttpEntity entity = null;
-        if (httpRequest instanceof HttpEntityEnclosingRequest)
-            entity = ((HttpEntityEnclosingRequest) httpRequest).getEntity();
-
-        // For some reason, just putting the incoming entity into
-        // the response will not work. We have to buffer the message.
-        byte[] data;
-        if (entity == null) {
-            data = new byte[0];
-        } else {
-            data = EntityUtils.toByteArray(entity);
-        }
-
-        System.out.println(new String(data));
-        System.out.println("--------");
-
-        httpResponse.setEntity(
-            new InputStreamEntity(new FileInputStream(new File("src/test/resources/emp.json"))));
-        httpExchange.submitResponse(new BasicAsyncResponseProducer(httpResponse));
-
+    public void handle(
+        final HttpRequest request,
+        final HttpAsyncExchange httpexchange,
+        final HttpContext context) throws HttpException, IOException {
+        HttpResponse response = httpexchange.getResponse();
+        handleInternal(request, response, context);
+        httpexchange.submitResponse(new BasicAsyncResponseProducer(response));
     }
+
+    private void handleInternal(
+        final HttpRequest request,
+        final HttpResponse response,
+        final HttpContext context) throws HttpException, IOException {
+
+        String method = request.getRequestLine().getMethod().toUpperCase(Locale.ENGLISH);
+        if (!method.equals("GET") && !method.equals("HEAD") && !method.equals("POST")) {
+            throw new MethodNotSupportedException(method + " method not supported");
+        }
+
+        String target = request.getRequestLine().getUri();
+        final File file = new File(this.docRoot, URLDecoder.decode(target, "UTF-8"));
+        if (!file.exists()) {
+
+            response.setStatusCode(HttpStatus.SC_NOT_FOUND);
+            NStringEntity entity = new NStringEntity(
+                "<html><body><h1>File" + file.getPath() +
+                    " not found</h1></body></html>",
+                ContentType.create("text/html", "UTF-8"));
+            response.setEntity(entity);
+            System.out.println("File " + file.getPath() + " not found");
+
+        } else if (!file.canRead() || file.isDirectory()) {
+
+            response.setStatusCode(HttpStatus.SC_FORBIDDEN);
+            NStringEntity entity = new NStringEntity(
+                "<html><body><h1>Access denied</h1></body></html>",
+                ContentType.create("text/html", "UTF-8"));
+            response.setEntity(entity);
+            System.out.println("Cannot read file " + file.getPath());
+
+        } else {
+
+            HttpCoreContext coreContext = HttpCoreContext.adapt(context);
+            HttpConnection conn = coreContext.getConnection(HttpConnection.class);
+            response.setStatusCode(HttpStatus.SC_OK);
+            NFileEntity body = new NFileEntity(file, ContentType.create("text/html"));
+            response.setEntity(body);
+            System.out.println(conn + ": serving file " + file.getPath());
+        }
+    }
+
 }
