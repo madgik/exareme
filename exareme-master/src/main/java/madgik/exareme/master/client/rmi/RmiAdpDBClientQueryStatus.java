@@ -7,6 +7,8 @@ import madgik.exareme.common.schema.Index;
 import madgik.exareme.common.schema.PhysicalTable;
 import madgik.exareme.master.client.AdpDBClientProperties;
 import madgik.exareme.master.client.AdpDBClientQueryStatus;
+import madgik.exareme.master.connector.DataSerialization;
+import madgik.exareme.master.engine.AdpDBManagerLocator;
 import madgik.exareme.master.engine.AdpDBQueryExecutionPlan;
 import madgik.exareme.master.engine.parser.SemanticException;
 import madgik.exareme.master.registry.Registry;
@@ -14,6 +16,7 @@ import madgik.exareme.utils.chart.TimeFormat;
 import madgik.exareme.utils.chart.TimeUnit;
 import org.apache.log4j.Logger;
 
+import java.io.InputStream;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 
@@ -30,6 +33,7 @@ public class RmiAdpDBClientQueryStatus implements AdpDBClientQueryStatus {
     private String resultTableName;
     private TimeFormat timeF;
     private boolean finished;
+    private InputStream result;
 
     public RmiAdpDBClientQueryStatus(AdpDBQueryID queryId, AdpDBClientProperties properties,
         AdpDBQueryExecutionPlan plan, AdpDBStatus status) {
@@ -40,6 +44,7 @@ public class RmiAdpDBClientQueryStatus implements AdpDBClientQueryStatus {
         this.lastStatus = null;
         this.timeF = new TimeFormat(TimeUnit.min);
         this.finished = false;
+        result = null;
     }
 
     @Override public boolean hasFinished() throws RemoteException {
@@ -94,6 +99,15 @@ public class RmiAdpDBClientQueryStatus implements AdpDBClientQueryStatus {
 
     @Override public void registerListener(AdpDBQueryListener listener) throws RemoteException {
         status.registerListener(listener);
+    }
+
+    @Override public InputStream getResult() throws RemoteException {
+        if(result == null){
+
+            result = new RmiAdpDBClient(AdpDBManagerLocator.getDBManager(), properties)
+                .readTable(plan.getResultTables().get(0).getName());
+        }
+        return result;
     }
 
     private void updateRegistry() throws RemoteException {

@@ -6,16 +6,27 @@ services:
     hostname: master
     volumes:
       - ./exareme-distribution/target/exareme:/root/exareme:ro
+      - ./bootstrap.sh:/tmp/entrypoint.sh
     ports:
       - "9090:9090"
     working_dir: /root/exareme/
-    entrypoint: /bin/bash -c './bin/exareme-admin.sh --start --local;tail -f /tmp/exareme/var/log/exareme-master.log;'
-
+    entrypoint: /tmp/entrypoint.sh
+    links:
+      - rawdb
   worker:
     build: .
     volumes:
       - ./exareme-distribution/target/exareme:/root/exareme:ro
+      - ./bootstrap.sh:/tmp/entrypoint.sh
     working_dir: /root/exareme/
-    entrypoint: /bin/bash -c 'sleep 5;./bin/exareme-admin.sh --start  --local;tail -f /tmp/exareme/var/log/exareme-worker.log;'
+    entrypoint: /tmp/entrypoint.sh
     environment:
       - EXAREME_MASTER=master
+    links:
+      - master
+  rawdb:
+    image: raw-sniffer
+    volumes:
+      - ./rawdb_datasets:/datasets:ro
+    ports:
+    - "54321:54321"

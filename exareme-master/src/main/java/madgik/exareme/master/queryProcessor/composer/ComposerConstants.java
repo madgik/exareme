@@ -13,6 +13,4 @@ public class ComposerConstants {
   public static final String isTmpKey = "isTmp";
   public static final String algorithmIterKey = "algorithm_iter_key";
   public static final String defaultDBKey = "defaultDB";
-
-
 }
