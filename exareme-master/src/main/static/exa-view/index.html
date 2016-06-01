@@ -19,68 +19,59 @@
     <!--<li><a href="#!/view1">view1</a></li>-->
     <!--<li><a href="#!/view2">view2</a></li>-->
   <!--</ul>-->
-  <header>
-      <h2>MIP EXAREME Demo </h2>
-  </header>
-  <section ng-controller="ExaController as exa">
-      <div>
-        <h3>Endpoints</h3>
-        <table>
-          <thead>
-          <tr>
-            <th>Host</th>
-            <th>Port</th>
-            <th>Status</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr ng-repeat="endpoint in exa.properties.endpoints">
-            <td>{{endpoint.host}}</td>
-              <td>{{endpoint.port}}</td>
-              <td>{{endpoint.status}}</td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
-      <hr/>
+  <section>
+  <div ng-controller="ExaController as exaCtrl">
+      <table width="100%" border="0">
+      <tr><td colspan="2">
+          <h2>MIP EXAREME Demo </h2>
+      </td></tr>
+      <tr valign="top">
+      <td width="50%">
       <div>
         <h3>Algorithms</h3>
-        <ul>
-          <li ng-repeat="algorithm in exa.properties.algorithms track by $index">
-              <h4>{{ algorithm.name }}</h4>
+        <ul >
+          <li ng-repeat="algorithm in exaCtrl.algorithms | orderBy:name:true">
+              <h4>{{algorithm.name}}</h4>
               <p>{{algorithm.desc}}</p>
-              <form>
-                      <div ng-repeat="parameter in algorithm.parameters track by $index">
-                            {{parameter.name + ":"}}<br>
-                            <input type="text" ng-model="parameter.value">
-                      </div>
-                  <button ng-click="exa.query($index)">Submit</button>
-              </form>
+              <div>
+                  <form>
+                          <div ng-repeat="parameter in algorithm.parameters track by $index">
+                                {{parameter.name + ":"}}<br>
+                                <input type="text" ng-model="parameter.value">
+                          </div>
+                      <button type="button"
+                              ng-click="exaCtrl.submit(algorithm)">Submit</button>
+                  </form>
+              </div>
           </li>
         </ul>
       </div>
-      <hr/>
+      </td>
+      <td width="100%">
       <div>
           <h2>Result</h2>
           <table>
               <thead>
               <tr>
-                  <th ng-repeat="col in exa.result[0]['schema'] track by $index">
+                  <th ng-repeat="col in exaCtrl.result[0]['schema'] track by $index">
                       {{col[0] + " (" + col[1] + ")"}}
                   </th>
               </tr>
               </thead>
               <tbody>
-              <tr ng-repeat="row in exa.result track by $index" ng-if="$index > 0">
-                  <td ng-repeat="r in row">{{r}}</td>
+              <tr ng-repeat="row in exaCtrl.result track by $index" ng-if="$index > 0">
+                  <td ng-repeat="r in row track by $index">{{r}}</td>
               </tr>
               </tbody>
           </table>
       </div>
+      </td>
+      <td colspan="2"></td>
+      </tr>
+      </table>
+  </div>
   </section>
 
-  <footer>
-  </footer>
   <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
   <![endif]-->

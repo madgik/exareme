@@ -62,7 +62,7 @@ public class HttpAsyncMiningAlgorithmsHandler implements HttpAsyncRequestHandler
         }
 
         try {
-            response.setEntity(new NStringEntity(composer.getAlgorithmsProperties()));
+            response.setEntity(new NStringEntity(composer.getAlgorithms()));
         } catch (ComposerException e) {
             log.error(e);
             throw new HttpException("Internal error");

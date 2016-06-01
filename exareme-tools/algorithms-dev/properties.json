@@ -1,8 +1,6 @@
 {
   "algorithms"  : [],
-  "endpoints"   : [
-    { "host"    : "rawdb", "port"    : "54321", "status"  : "" }
-  ],
+  "endpoints"   : [],
   "local_engine_default" : {
     "name"        : "rawdb",
     "parameters"  : [

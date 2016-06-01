@@ -1,5 +1,6 @@
 package madgik.exareme.master.gateway.async.handler;
 
+import com.google.gson.Gson;
 import madgik.exareme.master.client.AdpDBClient;
 import madgik.exareme.master.client.AdpDBClientFactory;
 import madgik.exareme.master.client.AdpDBClientProperties;
@@ -23,8 +24,7 @@ import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * Mining  Handler
@@ -77,8 +77,10 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             content = EntityUtils.toString(entity);
         }
         HashMap<String, String> inputContent = new HashMap<String, String>();
+        List<Map> parameters = new ArrayList();
         if (content != null && !content.isEmpty()) {
-            ExaremeGatewayUtils.getValues(content, inputContent);
+//            ExaremeGatewayUtils.getValues(content, inputContent);
+            parameters = new Gson().fromJson(content, List.class);
         }
         if (!"POST".equals(method)) {
             throw new UnsupportedHttpVersionException(method + "not supported.");
@@ -87,8 +89,10 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
 
         String algorithm = uri.substring(uri.lastIndexOf('/')+1);
         log.debug("Posting " + algorithm + " ...\n");
-        for (String k : inputContent.keySet()) {
-            log.info(k + " = " + inputContent.get(k));
+        for (Map k : parameters) {
+
+            inputContent.put((String)k.get("name"), (String)k.get("value"));
+            log.debug((String)k.get("name") + " = " + (String)k.get("value"));
         }
         String qKey = "query_" + algorithm + "_" +String.valueOf(System.currentTimeMillis());
         try {

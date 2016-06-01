@@ -12,52 +12,43 @@ config(['$locationProvider', '$routeProvider', function($locationProvider, $rout
 
   $routeProvider.otherwise({redirectTo: '/view1'});
 }]).
-controller('ExaController', function($http, $scope){
-  var exa = this;
-  exa.properties ={};
-  exa.result = [];
-
-  $http({
-    method: 'GET',
-    url: '/mining/algorithms.json'
-  }).then(function successCallback(response) {
-    // this callback will be called asynchronously
-    // when the response is available
-    if(response.status == 200){
-      exa.properties = response.data;
-    }
-  }, function errorCallback(response) {
-    // called asynchronously if an error occurs
-    // or server returns response with an error status.
-    exa.properties = {};
-  });
-
-  exa.query = function(index){
+controller('ExaController', function($scope, $http){
+    var exa = this;
+    exa.algorithms = [];
+    exa.result = [];
 
     $http({
-        method: 'POST',
-        url: '/mining/query/' + $scope.exa.properties['algorithms'][index]['name'],
-        data: $scope.exa.properties['algorithms'][index]['parameters'],
-        transformResponse: function(data){
-            var response = [];
-            var split = data.split('\n');
-            for(var r in split){
-                if(split[r]) {
-                    response.push(JSON.parse(split[r]))
-                }
-            }
-            return response;
-        }
+        method: 'GET',
+        url: '/mining/algorithms.json'
     }).then(function successCallback(response) {
-      // this callback will be called asynchronously
-      // when the response is available
-      if(response.status == 200){
-            exa.result = response.data;
+        if (response.status == 200) {
+            exa.algorithms = response.data;
         }
     }, function errorCallback(response) {
-      // called asynchronously if an error occurs
-      // or server returns response with an error status.
-      exa.result = [];
+        exa.algorithms = [];
     });
-  };
+
+    exa.submit = function(algorithm){
+        $http({
+            method: 'POST',
+            url: '/mining/query/' + algorithm.name,
+            data: algorithm.parameters,
+            transformResponse: function(data){
+                var response = [];
+                var split = data.split('\n');
+                for(var r in split){
+                    if(split[r]) {
+                        response.push(JSON.parse(split[r]))
+                    }
+                }
+                return response;
+            }
+        }).then(function successCallback(response) {
+            if(response.status == 200){
+                exa.result = response.data;
+            }
+        }, function errorCallback(response) {
+            exa.result = [[]];
+        });
+    }
 });
