@@ -53,10 +53,16 @@ class RAWDB(functions.vtable.vtbase.VT):
                 r.add_header("Content-Type", "application/json")
                 response = urllib2.urlopen(r, timeout=150)
                 records = json.load(response)['output']
-                yield [(k,type(v).__name__) for k,v in records[0].iteritems()]
 
-                for r in records:
-                    yield r.values()
+                if type(records[0]) is dict:
+                    yield [(k,type(v).__name__) for k,v in records[0].iteritems()]
+                    for r in records:
+                        yield r.values()
+                else:
+                    yield [("C1", type(records[0]).__name__),]
+                    for r in records:
+                        yield [r]
+
 
             except (urllib2.URLError, urllib2.HTTPError) as e:
                 raise functions.OperatorError(__name__.rsplit('.')[-1], "%s." % e)

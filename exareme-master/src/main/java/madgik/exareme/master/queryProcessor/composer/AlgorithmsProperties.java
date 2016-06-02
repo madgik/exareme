@@ -226,6 +226,24 @@ public class AlgorithmsProperties {
 
             return builder.toString();
         }
+
+        public String toUDF(String query){
+            StringBuilder builder = new StringBuilder();
+            builder.append('(');
+            builder.append(name);
+            for (ParameterProperties parameter : parameters) {
+                builder.append(" ");
+                builder.append(parameter.name);
+                builder.append(':');
+                builder.append(parameter.value);
+                builder.append(" ");
+            }
+            if(query == null || query.isEmpty()) builder.append(this.query);
+            else builder.append(query);
+            builder.append(')');
+
+            return builder.toString();
+        }
     }
 
     public static class EndpointProperties {

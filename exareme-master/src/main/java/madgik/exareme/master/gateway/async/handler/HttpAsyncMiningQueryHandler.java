@@ -14,6 +14,7 @@ import madgik.exareme.master.queryProcessor.composer.AlgorithmsProperties;
 import madgik.exareme.master.queryProcessor.composer.Composer;
 import madgik.exareme.master.queryProcessor.composer.ComposerConstants;
 import madgik.exareme.master.queryProcessor.composer.ComposerException;
+import madgik.exareme.utils.encoding.Base64Util;
 import org.apache.http.*;
 import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.entity.ContentType;
@@ -86,13 +87,19 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             throw new UnsupportedHttpVersionException(method + "not supported.");
         }
 
-
+        String query = null;
         String algorithm = uri.substring(uri.lastIndexOf('/')+1);
         log.debug("Posting " + algorithm + " ...\n");
         for (Map k : parameters) {
-
-            inputContent.put((String)k.get("name"), (String)k.get("value"));
-            log.debug((String)k.get("name") + " = " + (String)k.get("value"));
+            String name = (String) k.get("name");
+            String value = (String) k.get("value");
+            if("local_pfa".equals(name)) {
+                Map map = new Gson().fromJson(value, Map.class);
+                query = (String) ((Map) ((Map)((Map) map.get("cells")).get("query")).get("init")).get("sql");
+                value = Base64Util.simpleEncodeBase64(value);
+            }
+            inputContent.put(name, value);
+            log.debug(name + " = " + value);
         }
         String qKey = "query_" + algorithm + "_" +String.valueOf(System.currentTimeMillis());
         try {
@@ -103,7 +110,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             AlgorithmsProperties.AlgorithmProperties algorithmProperties =
                 AlgorithmsProperties.AlgorithmProperties.createAlgorithmProperties(inputContent);
 
-            dfl = composer.composeVirtual(qKey, algorithmProperties);
+            dfl = composer.composeVirtual(qKey, algorithmProperties, query);
 
             log.debug(dfl);
             AdpDBClientProperties clientProperties =

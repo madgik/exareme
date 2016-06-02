@@ -7,6 +7,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -20,6 +21,10 @@ public class Base64Util {
     private Base64Util() {
     }
 
+    public static String simpleEncodeBase64(String str) throws IOException{
+        return Base64.encodeBase64URLSafeString(str.getBytes(Charset.forName("UTF-8")));
+    }
+
     public static String encodeBase64(Object object) throws IOException {
         ByteArrayOutputStream ostream = new ByteArrayOutputStream();
         OutputStream os = ostream;
@@ -29,7 +34,7 @@ public class Base64Util {
 
         p.writeObject(object);
         p.flush();
-        p.close(); // used to be ostream.close() !
+        p.close(); // used to be ostream.close()
         byte[] bytes = ostream.toByteArray();
 
         return Base64.encodeBase64URLSafeString(bytes);
@@ -48,4 +53,5 @@ public class Base64Util {
         istream.close();
         return (T) toReturn;
     }
+
 }
