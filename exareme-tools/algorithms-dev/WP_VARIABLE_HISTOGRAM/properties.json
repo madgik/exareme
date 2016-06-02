@@ -1,0 +1,10 @@
+{
+  "name"   : "WP_VARIABLE_HISTOGRAM",
+  "desc"   : "",
+  "type"   : "multiple_local_global",
+  "status" : "enabled",
+  "parameters" : [
+    {"name" : "column1", "desc" : "", "value" : "AGE"},
+    {"name" : "nobuckets", "desc" : "", "value" : "10"}
+  ]
+}

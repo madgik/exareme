@@ -24,9 +24,10 @@ services:
       - EXAREME_MASTER=master
     links:
       - master
+      - rawdb
   rawdb:
     image: raw-sniffer
     volumes:
       - ./rawdb_datasets:/datasets:ro
     ports:
-    - "54321:54321"
+      - "54321:54321"

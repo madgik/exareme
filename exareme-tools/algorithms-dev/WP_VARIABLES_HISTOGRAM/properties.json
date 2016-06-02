@@ -1,5 +1,5 @@
 {
-  "name"   : "WP_DATASETSTATISTICS",
+  "name"   : "WP_VARIABLES_HISTOGRAM",
   "desc"   : "",
   "type"   : "multiple_local_global",
   "status" : "enabled",

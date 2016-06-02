@@ -1,8 +1,6 @@
 requirevars 'input_global_tbl' 'column1' 'column2' 'nobuckets';
 -- attach database '%{defaultDB}' as defaultDB;
 
--- drop table if exists globalstatscolumn1;
--- create table defaultDB.globalstatscolumn1 as
 select  colname,
         minvalue,
         maxvalue,
@@ -17,8 +15,5 @@ from ( select colname,
        from %{input_global_tbl}
        where colname = '%{column1}'
 );
-
--- select *
--- from defaultDB.globalstatscolumn1;
 
 
