@@ -14,9 +14,7 @@ import org.apache.log4j.Logger;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Responsible to produce data flows (dfl)
@@ -27,10 +25,9 @@ import java.util.Map;
 public class Composer {
 
     private static final Logger log = Logger.getLogger(Composer.class);
-
+    private static String[] inputVariables = new String[]{"variable","column1", "column2", "groupings","covariables"};
     private Composer() {
     }
-
     private static final Composer instance = new Composer();
     private static String repoPath = null;
     private static AlgorithmsProperties algorithms = null;
@@ -79,8 +76,25 @@ public class Composer {
             repoPath + algorithmProperties.getName() + "/local.template.sql";
         String globalScriptPath =
             repoPath + algorithmProperties.getName() + "/global.template.sql";
-
-        String inputLocalTbl = algorithms.getLocal_engine_default().toUDF(query);
+        // get filters
+        List<String> variables = new ArrayList<>();
+        for (String inputVariable : inputVariables) {
+            if(parameters.containsKey(inputVariable)){
+                String s = parameters.get(inputVariable);
+                if("covariables".equals(inputVariable) || "groupings".equals(inputVariable)){
+                    for (String s1 : s.split(",")) {
+                        variables.add(s1);
+                    }
+                } else {
+                    variables.add(s);
+                }
+            }
+        }
+        String inputLocalTbl;
+        if(variables.isEmpty())
+             inputLocalTbl = algorithms.getLocal_engine_default().toUDF(query);
+        else
+            inputLocalTbl = algorithms.getLocal_engine_default().toUDF(variables);
         parameters.put(ComposerConstants.inputLocalTblKey, inputLocalTbl);
         String outputGlobalTbl = parameters.get(ComposerConstants.outputGlobalTblKey);
         parameters.put(ComposerConstants.defaultDBKey, "/tmp/demo/db/" + qKey + "_defaultDB.db");

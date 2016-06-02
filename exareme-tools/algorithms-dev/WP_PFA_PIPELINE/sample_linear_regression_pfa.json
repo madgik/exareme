@@ -1,0 +1,427 @@
+{
+  "name": "linear_regression",
+  "doc": "Univariate Linear Regression Model\n",
+  "metadata": {
+    "docker_image": "hbpmip/r-linear-regression:latest"
+  },
+  "input": {
+    "doc": "Input is the list of covariables and groups",
+    "name": "DependentVariables",
+    "type": "record",
+    "fields": [
+      {
+        "name": "feature_name",
+        "type": {
+          "type": "enum",
+          "name": "Enumfeature_name",
+          "symbols": [
+            "Hippocampus_L",
+            "Hippocampus_R"
+          ]
+        }
+      }
+    ]
+  },
+  "output": {
+    "doc": "Output is the estimate of the variable",
+    "type": "double"
+  },
+  "cells": {
+    "query": {
+      "type": {
+        "doc": "Definition of the query that has produced this model",
+        "name": "Query",
+        "type": "record",
+        "fields": [
+          {
+            "name": "variable",
+            "type": "string",
+            "doc": "Dependent variable"
+          },
+          {
+            "name": "covariables",
+            "doc": "List of explanatory variables",
+            "type": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "groups",
+            "doc": "The form ‘first:second’ indicates the set of terms obtained by taking the interactions of all terms in ‘first’\nwith all terms in ‘second’.\nThe specification ‘first*second’ indicates the _cross_ of ‘first’ and ‘second’.\nThis is the same as ‘first + second + first:second’\"\n",
+            "type": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "sql",
+            "type": "string",
+            "doc": "SQL query"
+          },
+          {
+            "name": "count",
+            "type": "int",
+            "doc": "Number of records selected by the query"
+          }
+        ]
+      },
+      "init": {
+        "variable": "tissue1_volume",
+        "covariables": [
+          "feature_name"
+        ],
+        "groups": [],
+          "sql": "select feature_name, tissue1_volume from brain_feature",
+        "count": 100
+      }
+    },
+    "model": {
+      "type": {
+        "doc": "List of coefficients of the model parameters, compatible with PFA function model.reg.linear",
+        "name": "LinearModel",
+        "type": "record",
+        "fields": [
+          {
+            "name": "const",
+            "type": "double",
+            "doc": "Constant of the linear regression model"
+          },
+          {
+            "name": "coeff",
+            "doc": "Coefficients of the linear regression model",
+            "type": {
+              "type": "array",
+              "items": {
+                "type": "double"
+              }
+            }
+          }
+        ]
+      },
+      "init": {
+        "const": 0.009194024,
+        "coeff": [
+          -0.000005856
+        ]
+      }
+    },
+    "anova": {
+      "type": {
+        "doc": "Result from Anova",
+        "type": "record",
+        "name": "Anova",
+        "fields": [
+          {
+            "name": "feature_name",
+            "type": {
+              "type": "record",
+              "name": "AnovaCoefficient",
+              "namespace": "anova",
+              "fields": [
+                {
+                  "name": "degree_freedom",
+                  "type": "int",
+                  "doc": "Degree of freedom"
+                },
+                {
+                  "name": "sum_sq",
+                  "type": "double",
+                  "doc": "Sum Sq"
+                },
+                {
+                  "name": "mean_sq",
+                  "type": "double",
+                  "doc": "Mean Sq"
+                },
+                {
+                  "name": "f_value",
+                  "type": "double",
+                  "doc": "f-value"
+                },
+                {
+                  "name": "p_value",
+                  "type": "double",
+                  "doc": "p-value"
+                }
+              ]
+            }
+          },
+          {
+            "name": "Residuals",
+            "type": {
+              "type": "record",
+              "name": "AnovaResiduals",
+              "namespace": "anova",
+              "fields": [
+                {
+                  "name": "degree_freedom",
+                  "type": "int",
+                  "doc": "Degree of freedom"
+                },
+                {
+                  "name": "sum_sq",
+                  "type": "double",
+                  "doc": "Sum Sq"
+                },
+                {
+                  "name": "mean_sq",
+                  "type": "double",
+                  "doc": "Mean Sq"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "init": {
+        "feature_name": {
+          "degree_freedom": 1,
+          "sum_sq": 8.57318399999798e-10,
+          "mean_sq": 8.57318399999798e-10,
+          "f_value": 0.00109700806634294,
+          "p_value": 0.973645372090369
+        },
+        "Residuals": {
+          "degree_freedom": 98,
+          "sum_sq": 0.0000765875892600001,
+          "mean_sq": 7.81506012857144e-7
+        }
+      }
+    },
+    "summary": {
+      "type": {
+        "doc": "R summary",
+        "name": "Summary",
+        "type": "record",
+        "fields": [
+          {
+            "name": "residuals",
+            "doc": "Statistical summary of the _weighted_ residuals, the usual residuals rescaled by the square root of the weights specified in the call to ‘lm’\n",
+            "type": {
+              "type": "record",
+              "name": "ResidualsSummary",
+              "namespace": "summary",
+              "fields": [
+                {
+                  "name": "min",
+                  "type": "double",
+                  "doc": "Minimum value"
+                },
+                {
+                  "name": "q1",
+                  "type": "double",
+                  "doc": "First quartile"
+                },
+                {
+                  "name": "median",
+                  "type": "double",
+                  "doc": "Median value"
+                },
+                {
+                  "name": "q3",
+                  "type": "double",
+                  "doc": "Third quartile"
+                },
+                {
+                  "name": "max",
+                  "type": "double",
+                  "doc": "Maximum value"
+                }
+              ]
+            }
+          },
+          {
+            "name": "coefficients",
+            "doc": "a p x 4 matrix with columns for the estimated coefficient, its standard error, t-statistic and corresponding (two-sided) p-value. Aliased coefficients are omitted\n",
+            "type": {
+              "type": "record",
+              "name": "CoefficientMatrix",
+              "namespace": "summary",
+              "fields": [
+                {
+                  "name": "_intercept_",
+                  "type": {
+                    "type": "record",
+                    "name": "Coefficient",
+                    "namespace": "summary",
+                    "fields": [
+                      {
+                        "name": "estimate",
+                        "type": "double",
+                        "doc": "Estimated coefficient"
+                      },
+                      {
+                        "name": "std_error",
+                        "type": "double",
+                        "doc": "Standard error"
+                      },
+                      {
+                        "name": "t_value",
+                        "type": "double",
+                        "doc": "t-statistic"
+                      },
+                      {
+                        "name": "p_value",
+                        "type": "double",
+                        "doc": "Corresponding (two-sided) p-value"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name": "feature_nameHippocampus_R",
+                  "type": "summary.Coefficient"
+                }
+              ]
+            }
+          },
+          {
+            "name": "aliased",
+            "doc": "named logical vector showing if the original coefficients are aliased",
+            "type": {
+              "type": "record",
+              "name": "Aliased",
+              "namespace": "summary",
+              "fields": [
+                {
+                  "name": "_intercept_",
+                  "type": "boolean"
+                },
+                {
+                  "name": "feature_nameHippocampus_R",
+                  "type": "boolean"
+                }
+              ]
+            }
+          },
+          {
+            "name": "sigma",
+            "doc": "the square root of the estimated variance of the random error     sigma^2 = 1/(n-p) Sum(w[i] R[i]^2),\nwhere R[i] is the i-th residual, ‘residuals[i]’\n",
+            "type": "double"
+          },
+          {
+            "name": "degrees_freedom",
+            "doc": "Degrees of freedom, a 3-vector (p, n-p, p*), the first being the number of non-aliased coefficients, the last being the total number of coefficients\n",
+            "type": {
+              "type": "array",
+              "items": {
+                "type": "double"
+              }
+            }
+          },
+          {
+            "name": "r_squared",
+            "doc": "R squared",
+            "type": "double"
+          },
+          {
+            "name": "adj_r_squared",
+            "doc": "Adjusted R squared",
+            "type": "double"
+          },
+          {
+            "name": "cov_unscaled",
+            "doc": "Matrix of covariance unscaled. Same columns as coefficients",
+            "type": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "double"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "init": {
+        "coefficients": {
+          "_intercept_": {
+            "estimate": 0.009194024,
+            "std_error": 0.000125020479350956,
+            "t_value": 73.5401435647245,
+            "p_value": 1.50505881578065e-87
+          },
+          "feature_nameHippocampus_R": {
+            "estimate": -0.00000585599999999931,
+            "std_error": 0.000176805657472508,
+            "t_value": -0.0331211120939944,
+            "p_value": 0.973645372090369
+          }
+        },
+        "residuals": {
+          "min": -0.00237342400000002,
+          "q1": -0.000623074,
+          "median": 0.000125426,
+          "q3": 0.000617707,
+          "max": 0.002268976
+        },
+        "aliased": {
+          "_intercept_": false,
+          "feature_nameHippocampus_R": false
+        },
+        "sigma": 0.000884028287362539,
+        "degrees_freedom": [
+          2,
+          98,
+          2
+        ],
+        "r_squared": 0.000011193834557313,
+        "adj_r_squared": -0.010192773575294,
+        "cov_unscaled": [
+          [
+            0.02,
+            -0.02
+          ],
+          [
+            -0.02,
+            0.04
+          ]
+        ]
+      }
+    }
+  },
+  "action": [
+    {
+      "let": {
+        "in": {
+          "a.flatten": {
+            "type": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "double"
+                }
+              }
+            },
+            "new": [
+              {
+                "a.tail": [
+                  {
+                    "cast.fanoutDouble": [
+                      "input.feature_name"
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "model.reg.linear": [
+        "in",
+        {
+          "cell": "model"
+        }
+      ]
+    }
+  ]
+}
