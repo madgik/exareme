@@ -93,6 +93,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         for (Map k : parameters) {
             String name = (String) k.get("name");
             String value = (String) k.get("value");
+            if(name == null || name.isEmpty() || value == null || value.isEmpty()) continue;
             if("local_pfa".equals(name)) {
                 Map map = new Gson().fromJson(value, Map.class);
                 query = (String) ((Map) ((Map)((Map) map.get("cells")).get("query")).get("init")).get("sql");
