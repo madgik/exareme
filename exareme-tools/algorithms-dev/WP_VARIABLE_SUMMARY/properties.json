@@ -1,0 +1,9 @@
+{
+  "name"           : "WP_VARIABLE_SUMMARY",
+  "desc"           : "",
+  "status"         : "enabled",
+  "type"           : "local_global",
+  "parameters" : [
+    {"name" : "variable",  "desc" : "", "value" : "APOE4_bl"}
+  ]
+}

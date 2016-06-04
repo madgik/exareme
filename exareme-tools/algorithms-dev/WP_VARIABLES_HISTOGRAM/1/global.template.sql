@@ -15,5 +15,3 @@ from ( select colname,
        from %{input_global_tbl}
        where colname = '%{column1}'
 );
-
-
