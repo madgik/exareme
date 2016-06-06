@@ -1,5 +1,11 @@
-requirevars 'defaultDB' 'input_global_tbl' 'y';
+requirevars 'defaultDB' 'input_global_tbl' 'variable';
 attach database '%{defaultDB}' as defaultDB;
+
+
+
+var 'y' from (select '%{variable}');
+
+
 
 --C2. (GLOBAL LAYER)
 drop table if exists gramian;
