@@ -270,11 +270,11 @@ public class RmiAdpDBClient implements AdpDBClient {
         return ExportToDotty.exportToDotty(plan.getGraph());
     }
 
+
     @Override
     public InputStream readTable(String tableName) throws RemoteException {
         return readTable(tableName, DataSerialization.ldjson);
     }
-
 
     @Override
     public InputStream readTable(String tableName, DataSerialization ds) throws RemoteException {
