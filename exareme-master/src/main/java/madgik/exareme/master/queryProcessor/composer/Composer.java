@@ -3,14 +3,18 @@ package madgik.exareme.master.queryProcessor.composer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import madgik.exareme.utils.properties.AdpProperties;
+import madgik.exareme.worker.art.container.ContainerProxy;
+import madgik.exareme.worker.art.executionEngine.ExecutionEngineLocator;
+import madgik.exareme.worker.art.executionEngine.ExecutionEngineProxy;
+import madgik.exareme.worker.art.registry.ArtRegistryLocator;
+import madgik.exareme.worker.art.registry.rmi.RmiArtRegistry;
+import madgik.exareme.worker.art.registry.rmi.RmiArtRegistryProxy;
 import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Responsible to produce data flows (dfl)
@@ -21,10 +25,9 @@ import java.util.Map;
 public class Composer {
 
     private static final Logger log = Logger.getLogger(Composer.class);
-
+    private static String[] inputVariables = new String[]{"variable","column1", "column2", "groupings","covariables"};
     private Composer() {
     }
-
     private static final Composer instance = new Composer();
     private static String repoPath = null;
     private static AlgorithmsProperties algorithms = null;
@@ -61,7 +64,7 @@ public class Composer {
         return gson.toJson(algorithms, AlgorithmsProperties.class);
     }
 
-    public String composeVirtual(String qKey, AlgorithmsProperties.AlgorithmProperties algorithmProperties)
+    public String composeVirtual(String qKey, AlgorithmsProperties.AlgorithmProperties algorithmProperties, String query)
         throws Exception {
 
         StringBuilder dflScript = new StringBuilder();
@@ -69,8 +72,29 @@ public class Composer {
         String workingDir = repoPath + algorithmProperties.getName();
 
         HashMap<String, String> parameters = AlgorithmsProperties.AlgorithmProperties.toHashMap(algorithmProperties);
-
-        String inputLocalTbl = algorithms.getLocal_engine_default().toUDF();
+        String localScriptPath =
+            repoPath + algorithmProperties.getName() + "/local.template.sql";
+        String globalScriptPath =
+            repoPath + algorithmProperties.getName() + "/global.template.sql";
+        // get filters
+        List<String> variables = new ArrayList<>();
+        for (String inputVariable : inputVariables) {
+            if(parameters.containsKey(inputVariable)){
+                String s = parameters.get(inputVariable);
+                if("covariables".equals(inputVariable) || "groupings".equals(inputVariable)){
+                    for (String s1 : s.split(",")) {
+                        variables.add(s1);
+                    }
+                } else {
+                    variables.add(s);
+                }
+            }
+        }
+        String inputLocalTbl;
+        if(variables.isEmpty())
+             inputLocalTbl = algorithms.getLocal_engine_default().toUDF(query);
+        else
+            inputLocalTbl = algorithms.getLocal_engine_default().toUDF(variables);
         parameters.put(ComposerConstants.inputLocalTblKey, inputLocalTbl);
         String outputGlobalTbl = parameters.get(ComposerConstants.outputGlobalTblKey);
         parameters.put(ComposerConstants.defaultDBKey, "/tmp/demo/db/" + qKey + "_defaultDB.db");
@@ -91,14 +115,40 @@ public class Composer {
                 dflScript.append(String.format("\n    select filetext('%s')\n", lp));
                 dflScript.append(");\n");
                 break;
+            case pipeline:
 
+                ExecutionEngineProxy engine = ExecutionEngineLocator.getExecutionEngineProxy();
+                ContainerProxy[] containerProxies =
+                    ArtRegistryLocator.getArtRegistryProxy().getContainers();
+
+                for(int i = 0; i < containerProxies.length; i++){
+
+                    if(i == 0 ){
+                        if(containerProxies.length > 1)
+                            dflScript.append(String.format(
+                                "distributed create temporary table output_local_tbl_%d as remote \n", i));
+                        else
+                            dflScript.append(String.format(
+                                "distributed create table output_local_tbl_%d as remote \n", i));
+                    } else if(i == (containerProxies.length - 1)){
+                        dflScript.append(String.format(
+                            "using output_local_tbl_%d distributed create table output_local_tbl_%d as remote \n", i-1, i));
+                    } else {
+                        dflScript.append(String.format(
+                            "using output_local_tbl_%d distributed create temporary table output_local_tbl_%d as remote \n", i-1, i));
+                    }
+                    dflScript.append(String
+                        .format("select * from (\n    execnselect 'path:%s' ", workingDir));
+                    for (String key : parameters.keySet()) {
+                        dflScript.append(String.format("'%s:%s' ", key, parameters.get(key)));
+                    }
+                    dflScript.append(
+                        String.format("\n    select filetext('%s')\n", localScriptPath));
+                    dflScript.append(");\n");
+                }
+                break;
             case local_global:
                 parameters.remove(ComposerConstants.outputGlobalTblKey);
-
-                String localScriptPath =
-                    repoPath + algorithmProperties.getName() + "/local.template.sql";
-                String globalScriptPath =
-                    repoPath + algorithmProperties.getName() + "/global.template.sql";
 
                 // format local
                 dflScript
@@ -160,9 +210,6 @@ public class Composer {
                     }
                     dflScript.append(composeLocalGlobal(parameters));
                 }
-                break;
-            case pipeline:
-
                 break;
             default:
                 throw new ComposerException("Unable to determinated algorithm type.");

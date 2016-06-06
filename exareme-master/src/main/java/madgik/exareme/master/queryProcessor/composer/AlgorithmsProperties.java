@@ -5,10 +5,7 @@ import madgik.exareme.worker.art.executionPlan.parser.expression.Parameter;
 import org.apache.commons.io.FileUtils;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Represent the mip-algorithms repository properties,
@@ -224,6 +221,48 @@ public class AlgorithmsProperties {
             builder.append(query);
             builder.append(')');
 
+            return builder.toString();
+        }
+
+        public String toUDF(String query){
+            StringBuilder builder = new StringBuilder();
+            builder.append('(');
+            builder.append(name);
+            for (ParameterProperties parameter : parameters) {
+                builder.append(" ");
+                builder.append(parameter.name);
+                builder.append(':');
+                builder.append(parameter.value);
+                builder.append(" ");
+            }
+            if(query == null || query.isEmpty()) builder.append(this.query);
+            else builder.append(query);
+            builder.append(')');
+
+            return builder.toString();
+        }
+        // TODO push filters efficiently
+        public String toUDF(List<String> variables){
+            StringBuilder builder = new StringBuilder();
+            builder.append('(');
+            builder.append(name);
+            for (ParameterProperties parameter : parameters) {
+                builder.append(" ");
+                builder.append(parameter.name);
+                builder.append(':');
+                builder.append(parameter.value);
+                builder.append(" ");
+            }
+            builder.append(query);
+            builder.append(" where ");
+            for (int i = 0; i < variables.size() - 1; i++) {
+                builder.append("variable_name = \"");
+                builder.append(variables.get(i));
+                builder.append("\" or ");
+            }
+            builder.append("variable_name = \"");
+            builder.append(variables.get(variables.size()-1));
+            builder.append("\")");
             return builder.toString();
         }
     }

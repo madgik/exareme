@@ -1,9 +1,8 @@
-
 requirevars 'defaultDB' 'input_local_tbl' 'variable';
 
 
 drop table if exists inputlocaltbl;
-create table inputlocaltbl as
+create temporary table inputlocaltbl as
 select __rid as rid, __colname as colname, tonumber(__val)  as val
 from %{input_local_tbl}
 where val <> 'NA' and val is not null and val <> "";

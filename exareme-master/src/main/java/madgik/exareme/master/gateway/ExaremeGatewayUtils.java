@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -141,7 +142,7 @@ public class ExaremeGatewayUtils {
       try {
         getValuesFromJDBC(content, dict);
       } catch (Exception e) {
-        getValuesFromWeb(content, dict);
+          getValuesFromWeb(content, dict);
       }
     }
   }
@@ -162,6 +163,13 @@ public class ExaremeGatewayUtils {
       String key = p.substring(0, split);
       String value = p.substring(split + 1, p.length());
       dict.put(key, normalize(value));
+    }
+  }
+  public static void getValuesFromJson(String content, Map<String, String> dict) throws UnsupportedEncodingException {
+    Gson g = new Gson();
+    List<Map> parameters = new Gson().fromJson(content, List.class);
+    for (Map parameter : parameters) {
+      dict.put((String)parameter.get("name"), (String)parameter.get("value"));
     }
   }
 

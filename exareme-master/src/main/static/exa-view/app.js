@@ -29,6 +29,7 @@ controller('ExaController', function($scope, $http){
     });
 
     exa.submit = function(algorithm){
+        exa.result = [[]];
         $http({
             method: 'POST',
             url: '/mining/query/' + algorithm.name,

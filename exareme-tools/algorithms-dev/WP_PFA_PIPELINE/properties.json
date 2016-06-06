@@ -1,0 +1,9 @@
+{
+  "name"   : "WP_PFA_PIPELINE",
+  "desc"   : "",
+  "type"   : "pipeline",
+  "status" : "enabled",
+  "parameters" : [
+    {"name" : "local_pfa", "desc" : "", "value" : ""}
+  ]
+}

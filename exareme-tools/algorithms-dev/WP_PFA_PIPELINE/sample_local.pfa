@@ -1,0 +1,22 @@
+{
+  "action" : { "+" : ["input", 10] },
+  "input"  : "double",
+  "output" : "double",
+  "cells"  : {
+    "query": {
+      "type": {
+        "doc": "Definition of the query that has produced this model",
+        "name": "Query",
+        "type": "record",
+        "fields": [ {
+          "name": "sql",
+          "type": "string",
+          "doc": "SQL query"
+          }]
+      },
+      "init": {
+        "sql": "select value as val from exam_value where variable_name = \"AGE\""
+      }
+    }
+  }
+}

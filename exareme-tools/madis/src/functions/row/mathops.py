@@ -138,7 +138,6 @@ def simplify_fraction(f):
     >>> simplify_fraction(Fraction(55555555294967297,2))
     '[55555555294967297, 2]'
     """
-
     if f.denominator == 1 and f.numerator < 9223372036854775808:
         return f.numerator
     elif float(f) < 4294967296.0:
@@ -168,6 +167,8 @@ def farith(*args):
 
     s = []
     for i in reversed(args):
+        if i is None:
+            continue
         if i in ('*', '/', '-', '+'):
             operand1 = s.pop()
             operand2 = s.pop()
@@ -188,12 +189,14 @@ def farith(*args):
                 try:
                     s.append(Fraction(*json.loads(i)))
                 except Exception as e:
-                    # import traceback
-                    # traceback.print_exc()
-                    raise functions.OperatorError("Farith", "invalid expression found: %s" % str(i) )
+                    import traceback
+                    traceback.print_exc()
+                    raise functions.OperatorError("Farith", "invalid expression found: %s" % str(i))
 
-    return simplify_fraction(s.pop())
-
+    if len(s) < 1:
+        raise functions.OperatorError("Farith", "No args")
+    #return simplify_fraction(s.pop())
+    return float(s.pop())
 farith.registered = True
 
 
