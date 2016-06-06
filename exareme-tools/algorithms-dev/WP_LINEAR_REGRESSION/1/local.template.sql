@@ -1,4 +1,4 @@
-requirevars 'defaultDB' 'input_local_tbl' 'variable' 'covariables' 'grouping';
+requirevars 'defaultDB' 'input_local_tbl' 'variable' 'covariables' 'groupings';
 attach database '%{defaultDB}' as defaultDB;
 
 --hidden var 'y' 'AV45';
@@ -8,7 +8,6 @@ attach database '%{defaultDB}' as defaultDB;
 --hidden var 'grouping' 'DX_bl,APOE4';
 --hidden var 'covariables' 'AGE,PTEDUCAT,PTGENDER';
 
-
 var 'y' from (select '%{variable}');
 
 var 'x' from
@@ -16,19 +15,20 @@ var 'x' from
 from (
 select group_concat(x1,'+') as x from (select strsplitv('%{covariables}','delimiter:,') as x1)
 union
-select group_concat(x2,'*') as x from (select strsplitv('%{grouping}','delimiter:,') as x2)));
-
---select %{x}, %{y};
-
+select group_concat(x2,'*') as x from (select strsplitv('%{groupings}','delimiter:,') as x2)));
 
 drop table if exists xvariables;
 create table xvariables as
 select strsplitv(regexpr("\+|\:|\*|\-","%{x}","+") ,'delimiter:+') as xname;
 
+
 create temp table localinputtbl1 as
 select __rid as rid, __colname as colname, tonumber(__val) as val
 from %{input_local_tbl}
-where __colname in (select xname from xvariables) or colname = "%{y}";
+--where __colname in (select xname from xvariables) or colname = "%{y}"
+order by rid, colname, val;
+
+
 
 drop table if exists localinputtbl;
 create table localinputtbl as
@@ -37,6 +37,7 @@ from localinputtbl1
 where rid not in (select distinct rid from localinputtbl1 where val="")
 --where val != ''
 order by rid, colname, val;
+
 
 
 --------------------------------------------------------------------------------------------

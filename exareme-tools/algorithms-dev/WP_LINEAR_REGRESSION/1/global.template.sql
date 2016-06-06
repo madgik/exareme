@@ -58,5 +58,6 @@ on attr2 = attr
 group by attr1;
 
 select * from defaultDB.coefficients;
--- select * from %{input_global_tbl};
+
+--select * from %{input_global_tbl};
 
