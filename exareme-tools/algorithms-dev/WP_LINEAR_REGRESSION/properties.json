@@ -4,8 +4,9 @@
   "type" : "multiple_local_global",
   "status" : "enabled",
   "parameters" : [
-    {"name" : "x", "desc" : "", "value" : "DX_bl*APOE4_bl+AGE+PTEDUCAT+PTGENDER"},
-    {"name" : "y", "desc" : "", "value" : "AV45_bl"},
+    {"name" : "grouping", "desc" : "", "value" : "DX_bl,APOE4_bl"},
+    {"name" : "covariables", "desc" : "", "value" : "AGE,PTEDUCAT,PTGENDER"},
+    {"name" : "variable", "desc" : "", "value" : "AV45_bl"},
     {"name" : "showtable", "desc": "", "value" : "TotalResults"},
     {"name" : "format", "desc":"", "value":"true"}
   ]

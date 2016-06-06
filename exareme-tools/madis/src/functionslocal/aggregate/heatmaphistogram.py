@@ -78,7 +78,6 @@ class heatmaphistogram:
             self.curvalues[0] = float(args[1])
 
             if self.flag == True:
-
                 if self.n == 0:
                     self.colnames[1] = (args[5])
                     self.distinctvalues = json.loads(args[7])
@@ -123,6 +122,7 @@ class heatmaphistogram:
                 result.append(self.minvalue + item[0] * self.step)
                 result.append(self.minvalue + (item[0] + 1) * self.step)
                 if self.flag == True:
+                    print self.colnames[1], self.distinctvalues[item[1]]
                     result.append(self.colnames[1])
                     result.append(self.distinctvalues[item[1]])
                 result.append(self.heatmap[item])
