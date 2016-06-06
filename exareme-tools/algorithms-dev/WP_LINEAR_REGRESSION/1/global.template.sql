@@ -14,6 +14,8 @@ select attr1,attr2, sum(val) as val
 from %{input_global_tbl}
 group by attr1,attr2;
 
+
+
 --------------------------------------------------------------------------------------------
 --D. COMPUTE b estimators (X'X)^-1 * X'y = b  (GLOBAL LAYER)
 
