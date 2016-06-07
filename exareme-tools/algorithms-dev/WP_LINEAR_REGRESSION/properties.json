@@ -1,0 +1,13 @@
+{
+  "name" : "WP_LINEAR_REGRESSION",
+  "desc" : "LinearRegression",
+  "type" : "multiple_local_global",
+  "status" : "enabled",
+  "parameters" : [
+    {"name" : "groupings", "desc" : "", "value" : "DX_bl,APOE4_bl"},
+    {"name" : "covariables", "desc" : "", "value" : "AGE,PTEDUCAT,PTGENDER"},
+    {"name" : "variable", "desc" : "", "value" : "AV45_bl"},
+    {"name" : "showtable", "desc": "", "value" : "TotalResults"},
+    {"name" : "format", "desc":"", "value":"true"}
+  ]
+}
