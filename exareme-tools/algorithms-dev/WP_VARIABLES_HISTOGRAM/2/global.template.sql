@@ -14,7 +14,7 @@ select jdict('code','%{column1}', 'dataType', "DatasetStatistic", 'dataset', myd
 from (
 select  jdict('data', mydata,"name", "Count %{column1} values" ) as mydataset
 from (  select jdict('categories',mycategories,'header',myheaders,'shape',"vector",'value',myvalues) as mydata
-        from ( select jgroup(val) as mycategories,jgroup((maxvalue0-minvalue0)/2.0) as myheaders,jgroup(total) as myvalues from histresult )
+        from ( select jgroup(val) as mycategories,jgroup((maxvalue0+minvalue0)/2.0) as myheaders,jgroup(total) as myvalues from histresult )
      ));
 
 
