@@ -60,7 +60,8 @@
               <!--</thead>-->
               <tbody>
               <tr ng-repeat="row in exaCtrl.result track by $index">  <!--ng-if="$index > 0">-->
-                  <td ng-repeat="r in row track by $index">{{r}}</td>
+                  <!--<td ng-repeat="r in row track by $index">{{r}}</td>-->
+                  <td>{{row}}</td>
               </tr>
               </tbody>
           </table>

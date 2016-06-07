@@ -8,6 +8,6 @@
     {"name" : "covariables", "desc" : "", "value" : "AGE,PTEDUCAT,PTGENDER"},
     {"name" : "variable", "desc" : "", "value" : "AV45_bl"},
     {"name" : "showtable", "desc": "", "value" : "TotalResults"},
-    {"name" : "format", "desc":"", "value":"true"}
+    {"name" : "format", "desc":"", "value":"True"}
   ]
 }
