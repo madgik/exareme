@@ -72,7 +72,6 @@ from (select jgroup(attr,estimate,stderror,tvalue,prvalue) as t1 from coefficien
      (select jgroup(fstatistic,degreesoffreedom,noofvariables) as t4 from F_Table);
 
 
-
 select * from %{showtable};
 
 

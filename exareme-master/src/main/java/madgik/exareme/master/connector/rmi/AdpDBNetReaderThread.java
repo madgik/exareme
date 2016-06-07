@@ -46,7 +46,12 @@ public class AdpDBNetReaderThread extends Thread {
                 out.write((g.toJson(alsoIncludeProps) + "\n").getBytes());
                 return;
             }
+
             Map<String, Object> includeProps = alsoIncludeProps;
+            if(alsoIncludeProps != null
+                && alsoIncludeProps.containsKey("skipSchema")
+                && alsoIncludeProps.get("skipSchema") == true) includeProps = null;
+
             for (Partition p : table.getPartitions()) {
                 log.debug("Reading : " + p.getTable() + "/" + p.getpNum());
                 AdpDBConnectorUtil.readRemoteTablePart(registry, table, p, includeProps, out);

@@ -5,6 +5,7 @@ import madgik.exareme.master.client.AdpDBClient;
 import madgik.exareme.master.client.AdpDBClientFactory;
 import madgik.exareme.master.client.AdpDBClientProperties;
 import madgik.exareme.master.client.AdpDBClientQueryStatus;
+import madgik.exareme.master.connector.DataSerialization;
 import madgik.exareme.master.engine.AdpDBManager;
 import madgik.exareme.master.engine.AdpDBManagerLocator;
 import madgik.exareme.master.gateway.ExaremeGatewayUtils;
@@ -89,6 +90,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
 
         String query = null;
         String algorithm = uri.substring(uri.lastIndexOf('/')+1);
+        boolean format = false;
         log.debug("Posting " + algorithm + " ...\n");
         for (Map k : parameters) {
             String name = (String) k.get("name");
@@ -98,6 +100,8 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 Map map = new Gson().fromJson(value, Map.class);
                 query = (String) ((Map) ((Map)((Map) map.get("cells")).get("query")).get("init")).get("sql");
                 value = Base64Util.simpleEncodeBase64(value);
+            } else if("format".equals(name)){
+                format = Boolean.parseBoolean(value);
             }
             inputContent.put(name, value);
             log.debug(name + " = " + value);
@@ -116,11 +120,12 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             log.debug(dfl);
             AdpDBClientProperties clientProperties =
                 new AdpDBClientProperties("/tmp/demo/db/" + qKey, "", "", false, false, -1, 10);
-
+            DataSerialization ds = DataSerialization.ldjson;
+            if(format) ds = DataSerialization.summary;
             AdpDBClient dbClient =
                 AdpDBClientFactory.createDBClient(manager, clientProperties);
             AdpDBClientQueryStatus queryStatus = dbClient.query(qKey, dfl);
-            BasicHttpEntity entity = new NQueryResultEntity(queryStatus);
+            BasicHttpEntity entity = new NQueryResultEntity(queryStatus, ds);
             response.setStatusCode(HttpStatus.SC_OK);
             response.setEntity(entity);
 

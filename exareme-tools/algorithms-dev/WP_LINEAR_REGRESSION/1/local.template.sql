@@ -1,25 +1,43 @@
-requirevars 'defaultDB' 'input_local_tbl' 'x' 'y';
+requirevars 'defaultDB' 'input_local_tbl' 'variable' 'covariables' 'groupings';
 attach database '%{defaultDB}' as defaultDB;
 
--- hidden var 'y' 'AV45';
--- hidden var 'x' 'DX_bl*APOE4+AGE+PTEDUCAT+PTGENDER';
+--hidden var 'y' 'AV45';
+--hidden var 'x' 'DX_bl*APOE4+AGE+PTEDUCAT+PTGENDER';
+
+
+--hidden var 'grouping' 'DX_bl,APOE4';
+--hidden var 'covariables' 'AGE,PTEDUCAT,PTGENDER';
+
+var 'y' from (select '%{variable}');
+
+var 'x' from
+(select group_concat(x,'+')
+from (
+select group_concat(x1,'+') as x from (select strsplitv('%{covariables}','delimiter:,') as x1)
+union
+select group_concat(x2,'*') as x from (select strsplitv('%{groupings}','delimiter:,') as x2)));
+
+drop table if exists xvariables;
+create table xvariables as
+select strsplitv(regexpr("\+|\:|\*|\-","%{x}","+") ,'delimiter:+') as xname;
+
 
 create temp table localinputtbl1 as
-select __rid as rid, __colname as colname, tonumber(__val) as val  from %{input_local_tbl};
+select __rid as rid, __colname as colname, tonumber(__val) as val
+from %{input_local_tbl}
+--where __colname in (select xname from xvariables) or colname = "%{y}"
+order by rid, colname, val;
+
+
 
 drop table if exists localinputtbl;
 create table localinputtbl as
 select rid, colname, val
 from localinputtbl1
--- where rid not in (select distinct rid from localinputtbl1 where val="")
-where val != ''
+where rid not in (select distinct rid from localinputtbl1 where val="")
+--where val != ''
 order by rid, colname, val;
 
-
-
-drop table if exists xvariables;
-create table xvariables as
-select strsplitv(regexpr("\+|\:|\*|\-","%{x}","+") ,'delimiter:+') as xname;
 
 
 --------------------------------------------------------------------------------------------
@@ -27,8 +45,8 @@ select strsplitv(regexpr("\+|\:|\*|\-","%{x}","+") ,'delimiter:+') as xname;
 
 drop table if exists input_local_tbl_LR;
 create table input_local_tbl_LR as
-select * from localinputtbl
-where colname in (select xname from xvariables) or colname = "%{y}";
+select * from localinputtbl;
+--where colname in (select xname from xvariables) or colname = "%{y}";
 
 -- A. Dummy code of categorical variables
 drop table if exists T;

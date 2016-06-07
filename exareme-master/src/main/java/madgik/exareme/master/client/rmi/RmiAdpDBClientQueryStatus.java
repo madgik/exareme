@@ -30,7 +30,6 @@ public class RmiAdpDBClientQueryStatus implements AdpDBClientQueryStatus {
     private AdpDBQueryExecutionPlan plan;
     private AdpDBStatus status;
     private String lastStatus;
-    private String resultTableName;
     private TimeFormat timeF;
     private boolean finished;
     private InputStream result;
@@ -40,7 +39,6 @@ public class RmiAdpDBClientQueryStatus implements AdpDBClientQueryStatus {
         this.properties = properties;
         this.plan = plan;
         this.status = status;
-        this.resultTableName = null;
         this.lastStatus = null;
         this.timeF = new TimeFormat(TimeUnit.min);
         this.finished = false;
@@ -102,10 +100,15 @@ public class RmiAdpDBClientQueryStatus implements AdpDBClientQueryStatus {
     }
 
     @Override public InputStream getResult() throws RemoteException {
+        return getResult(DataSerialization.ldjson);
+    }
+
+
+    @Override public InputStream getResult(DataSerialization ds) throws RemoteException {
         if(result == null){
 
             result = new RmiAdpDBClient(AdpDBManagerLocator.getDBManager(), properties)
-                .readTable(plan.getResultTables().get(0).getName());
+                .readTable(plan.getResultTables().get(0).getName(), ds);
         }
         return result;
     }
@@ -146,7 +149,6 @@ public class RmiAdpDBClientQueryStatus implements AdpDBClientQueryStatus {
                         throw new SemanticException(
                             "Table definition not found: " + resultTable.getName());
                     }
-                    resultTableName = resultTable.getName();
                     String sqlDef = resultTablesSQLDef.get(resultTable.getName());
                     resultTable.getTable().setSqlDefinition(sqlDef);
                 }

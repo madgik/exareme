@@ -5,6 +5,7 @@ import madgik.exareme.common.app.engine.AdpDBQueryListener;
 import madgik.exareme.common.app.engine.AdpDBStatus;
 import madgik.exareme.master.client.AdpDBClient;
 import madgik.exareme.master.client.AdpDBClientQueryStatus;
+import madgik.exareme.master.connector.DataSerialization;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.nio.ContentEncoder;
@@ -33,13 +34,15 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
     private final ByteBuffer buffer;
     private ReadableByteChannel channel;
     private NQueryStatusEntity.QueryStatusListener l;
+    private DataSerialization format;
 
-    public NQueryResultEntity(AdpDBClientQueryStatus status) {
+    public NQueryResultEntity(AdpDBClientQueryStatus status, DataSerialization ds) {
         super();
         queryStatus = status;
         buffer = ByteBuffer.allocate(4096);
         channel = null;
         l = null;
+        format = ds;
     }
 
     @Override public void produceContent(ContentEncoder encoder, IOControl ioctrl)
@@ -60,7 +63,7 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
 
             if (channel == null) {
 
-                channel = Channels.newChannel(queryStatus.getResult());
+                channel = Channels.newChannel(queryStatus.getResult(format));
             }
             channel.read(buffer);
             buffer.flip();
