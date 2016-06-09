@@ -66,7 +66,7 @@ class Cache:
         self.cursor = querycursor
         self.ordercaches = {}
         self.orderbys = []
-        self.maxlen = 1000
+        self.maxlen = 100
         self.stopiteration = False
         self.cachetotalwindownumber = 0
         self.tempcachelist = None
@@ -120,7 +120,8 @@ class Cache:
 
             self.cachetotalwindownumber += 1
 
-            self.lastvalue = self.tempcachelist[0]
+            if self.tempcachelist[0] is not None:
+                self.lastvalue = self.tempcachelist[0]
             self.tempcachelist = [currentrow[0], [currentrow]]
 
             return True
@@ -195,10 +196,12 @@ class Cache:
     #         return []
 
     def innerJoin(self, key, orderbys):
-        while self.tempcachelist is None or key > self.tempcachelist[0]:
+        while self.tempcachelist is None or key > self.lastvalue:
             self.nextValue()
 
-        if self.tempcachelist[0] == key:
+        if key is None:
+            yield [None] * len(self.cursor.getdescription())
+        elif self.tempcachelist[0] is not None and self.tempcachelist[0] == key:
             totalwindownumber = self.cachetotalwindownumber + 1
             tuplenumber = 0
             while True:

@@ -148,6 +148,7 @@ class NewTimeSlidingWindow(vtbase.VT):
 
             # slides the window
             while tupletime > windowendtime:
+                yield [None] * (len(list(cur.getdescriptionsafe())) + 2)
                 numberofslidingwindows = 1
                 numberofslides = numberofslidingwindows * frequency
 

@@ -1,6 +1,7 @@
 # coding: utf-8
 import functions
 import datetime
+import time
 from lib import iso8601
 from lib.dateutil import parser
 
@@ -221,6 +222,16 @@ def date2iso(*args):
     return date.isoformat()
 
 date2iso.registered=True
+
+def latency(*args):
+
+    t = int(args[0])
+    curtime = int(time.time())
+    
+    return curtime - t
+    
+
+latency.registered=True
 
 
 if not ('.' in __name__):
