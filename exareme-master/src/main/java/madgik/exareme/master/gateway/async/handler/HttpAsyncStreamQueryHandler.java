@@ -1,11 +1,13 @@
 package madgik.exareme.master.gateway.async.handler;
 
 import madgik.exareme.master.gateway.ExaremeGatewayUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.http.*;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.InputStreamEntity;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
@@ -16,6 +18,7 @@ import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -76,7 +79,9 @@ public class HttpAsyncStreamQueryHandler implements HttpAsyncRequestHandler<Http
 
             HttpEntity entity = response.getEntity();
             if (entity != null) {
-                httpResponse.setEntity(new InputStreamEntity(entity.getContent()));
+                StringWriter writer = new StringWriter();
+                IOUtils.copy(entity.getContent(), writer, "UTF-8");
+                httpResponse.setEntity(new StringEntity(writer.toString()));
                 httpExchange.submitResponse(new BasicAsyncResponseProducer(httpResponse));
             }
         } catch (IOException e) {
