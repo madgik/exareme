@@ -30,7 +30,7 @@ from (  select attr, estimate, stderror, estimate/stderror as tvalue
 		from defaultDB.coefficients, defaultDB.XTXinverted
 		where coefficients.attr1 = XTXinverted.attr1 and XTXinverted.attr1 = XTXinverted.attr2));
 
-drop table if exists defaultDB.coefficients;
+-- drop table if exists defaultDB.coefficients;
 alter table coefficients2 rename to coefficients;
 
 
@@ -63,19 +63,80 @@ from
 Rsquared_Table;
 
 
-drop table if exists TotalResults;
-create table TotalResults as
-select jdict('coefficients',t1,'residualsStatistics',t2,'Rsquared_Table',t3,'F_Table',t4)
-from (select jgroup(attr,estimate,stderror,tvalue,prvalue) as t1 from coefficients),
-     (select jgroup(e_min,Q1,e_median,Q3,e_max,residualstandarderror, degreesoffreedom) as t2 from residualsStatistics),
-     (select jgroup(rsquared,adjustedR) as t3 from Rsquared_Table),
-     (select jgroup(fstatistic,degreesoffreedom,noofvariables) as t4 from F_Table);
+-- drop table if exists TotalResults;
+-- create table TotalResults as
+-- select jdict('coefficients',t1,'residualsStatistics',t2,'Rsquared_Table',t3,'F_Table',t4)
+-- from (select jgroup(attr,estimate,stderror,tvalue,prvalue) as t1 from coefficients),
+--      (select jgroup(e_min,Q1,e_median,Q3,e_max,residualstandarderror, degreesoffreedom) as t2 from residualsStatistics),
+--      (select jgroup(rsquared,adjustedR) as t3 from Rsquared_Table),
+--      (select jgroup(fstatistic,degreesoffreedom,noofvariables) as t4 from F_Table);
 
+select
+  jdict(
+    'name', 'exareme_linear_regression',
+    'doc', 'Distributed Linear Regression',
+    'metadata', 'null',
+    'input', 'null',
+    'output', 'null',
+    'action','null',
+    'cells', cells
+  ) as pfa
+from
+  ( select
+      jdict(
+        'query', 'null',
+        'model', 'null',
+        'anova', 'null',
+        'summary', summary
+      ) as cells
+    from
+      ( select
+          jdict(
+            'type', 'null',
+            'init', summary_init
+          ) as summary
+        from
+          ( select
+              jdict(
+                'coefficients', coefficients_values,
+                'residuals', residuals_values,
+                'aliased', '{}',
+                'sigma', 0,
+                'degrees_freedom', '[]',
+                'r_squared', r_squared_value,
+                'adj_r_squared', adj_r_squared_value,
+                'cov_unscaled', '[]'
+              ) as summary_init
+            from
+              (  select jdictgroup(attr, attr_values) as coefficients_values
+                 from
+                   ( select
+                       attr,
+                       jdict(
+                       'estimate', estimate,
+                       'std_error', stderror,
+                       't_value', tvalue,
+                       'p_value', prvalue
+                       ) as attr_values
+                     from coefficients
+                   )
+              ),
+              (  select jdict(
+                   'min', e_min,
+                   'q1', Q1,
+                   'median', e_median,
+                   'q3', Q3,
+                   'max', e_max
+                   ) as residuals_values
+                  from residualsStatistics
+              ),
+              (select rsquared as r_squared_value from Rsquared_Table),
+              (select adjustedR as adj_r_squared_value from Rsquared_Table)
+          )
+      )
+  );
 
-select * from %{showtable};
-
-
---select * from coefficients;
+-- select * from coefficients;
 --select * from residualsStatistics;
 --select * from Rsquared_Table;
 --select * from F_Table;
