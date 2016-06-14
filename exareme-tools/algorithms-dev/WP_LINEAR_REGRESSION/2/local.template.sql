@@ -1,10 +1,7 @@
 requirevars 'defaultDB' 'input_local_tbl' 'variable' 'covariables' 'groupings';
 attach database '%{defaultDB}' as defaultDB;
 
-
-
 var 'y' from (select '%{variable}');
-
 
 var 'x' from
 (select group_concat(x,'+')
@@ -12,6 +9,33 @@ from (
 select group_concat(x2,'*') as x from (select strsplitv('%{groupings}','delimiter:,') as x2)
 union
 select group_concat(x1,'+') as x from (select strsplitv('%{covariables}','delimiter:,') as x1)));
+
+
+------------------------------------------------------------------------------------------------------------------------
+--
+--drop table if exists defaultDB.input_local_tbl_LR_Final_normalized;
+--create table defaultDB.input_local_tbl_LR_Final_normalized as
+--select rid,
+--        hosp.colname as colname,
+--       (val - avgvalue)/stdvalue  as val
+--from defaultDB.input_local_tbl_LR_Final as hosp,
+--     defaultDB.globalstatistics as attrib_stats
+--where hosp.colname = attrib_stats.colname and stdvalue!=0;
+--
+--
+--drop table if exists defaultDB.partialgramian2;
+--create table defaultDB.partialgramian2 as
+--select gramian(rid,colname, cast (val as real)) from
+--(select * from defaultDB.input_local_tbl_LR_Final_normalized order by rid, colname);
+
+---------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
 
 
 --E. Compute statistics For Estimators ( standardError ,  tvalue  , p value )

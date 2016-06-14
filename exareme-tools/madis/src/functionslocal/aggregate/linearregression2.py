@@ -56,10 +56,10 @@ class invertarray:
             self.j = self.j + 1
 
     def final(self):
-       # print "invert array"
-       # print self.arrayval
-       # print self.arrayattr
-
+        print "invert array"
+        print self.arrayval
+        print self.arrayattr
+        print "stop"
 
         ArrayInvert = inv(self.arrayval)
         yield ('attr1', 'attr2', 'val')
