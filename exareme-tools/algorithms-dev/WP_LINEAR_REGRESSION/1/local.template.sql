@@ -11,11 +11,11 @@ attach database '%{defaultDB}' as defaultDB;
 var 'y' from (select '%{variable}');
 
 var 'x' from
-(select group_concat(x,'+')
-from (
-select group_concat(x1,'+') as x from (select strsplitv('%{covariables}','delimiter:,') as x1)
-union
-select group_concat(x2,'*') as x from (select strsplitv('%{groupings}','delimiter:,') as x2)));
+( select group_concat(x,'+')
+  from ( select group_concat(x1,'+') as x from (select strsplitv('%{covariables}','delimiter:,') as x1)
+         union
+         select group_concat(x2,'*') as x from (select strsplitv('%{groupings}','delimiter:,') as x2)));
+
 
 drop table if exists xvariables;
 create table xvariables as
@@ -29,7 +29,6 @@ from %{input_local_tbl}
 order by rid, colname, val;
 
 
-
 drop table if exists localinputtbl;
 create table localinputtbl as
 select rid, colname, val
@@ -37,8 +36,6 @@ from localinputtbl1
 where rid not in (select distinct rid from localinputtbl1 where val="")
 --where val != ''
 order by rid, colname, val;
-
-
 
 --------------------------------------------------------------------------------------------
 -- Create input dataset for LR, that is input_local_tbl_LR_Final
@@ -78,12 +75,18 @@ insert into defaultDB.input_local_tbl_LR_Final
 select * from input_local_tbl_LR where colname = "%{y}";
 
 insert into defaultDB.input_local_tbl_LR_Final
-select distinct rid as rid,"intercept" as colname, 1.0 as val from input_local_tbl_LR;
+select distinct rid as rid,"(Intercept)" as colname, 1.0 as val from input_local_tbl_LR;
 
 drop table if exists T;
 drop table if exists input_local_tbl_LR;
 --------------------------------------------------------------------------------------------
 
+drop table if exists defaultDB.partialstatistics;
+create table defaultDB.partialstatistics as
+select colname, FSUM(val) as S1, count(val) as N from input_local_tbl_LR_Final
+group by colname;
+
+--------------------------------------------------------------------------------------------
 --C. Compute gramian (LOCAL LAYER)
 --drop table if exists partial_gramian;
 --create table partial_gramian as

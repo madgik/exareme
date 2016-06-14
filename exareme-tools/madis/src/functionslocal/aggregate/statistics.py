@@ -79,6 +79,7 @@ class gramian:
         for i in xrange(0,lvarcount):
             for j in xrange(i,lvarcount):
                 yield skeys[i], skeys[j], lres[l] + vals[i] * vals[j], lreccount
+
                 l += 1
 
 
