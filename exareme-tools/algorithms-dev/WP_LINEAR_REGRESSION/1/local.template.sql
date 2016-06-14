@@ -81,14 +81,8 @@ drop table if exists T;
 drop table if exists input_local_tbl_LR;
 --------------------------------------------------------------------------------------------
 
-drop table if exists defaultDB.partialstatistics;
-create table defaultDB.partialstatistics as
-select colname, FSUM(val) as S1, count(val) as N from input_local_tbl_LR_Final
+
+select colname, FSUM(val) as S1, count(val) as N from defaultDB.input_local_tbl_LR_Final
 group by colname;
 
---------------------------------------------------------------------------------------------
---C. Compute gramian (LOCAL LAYER)
---drop table if exists partial_gramian;
---create table partial_gramian as
-select gramian(rid,colname, cast (val as real)) from
-(select * from defaultDB.input_local_tbl_LR_Final order by rid, colname);
+
