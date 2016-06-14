@@ -1,19 +1,31 @@
 requirevars 'defaultDB' 'input_global_tbl' 'variable';
 attach database '%{defaultDB}' as defaultDB;
 
-
-
 var 'y' from (select '%{variable}');
 
+drop table if exists defaultDB.test;
+create table defaultDB.test as
+select * from %{input_global_tbl};
 
+---------------------------------------------------------------------------------------------------
 
+drop table if exists defaultDB.globalstatistics;
+create table defaultDB.globalstatistics as
+select  colname,
+        FARITH('/',S1A,NA) as avgvalue
+from ( select colname,
+              FSUM(S1) as S1A,
+              SUM(N) as NA
+        from defaultDB.partialstatistics
+        group by colname );
+
+-------------------------------------------------------------------------------------------------------
 --C2. (GLOBAL LAYER)
 drop table if exists gramian;
 create table gramian as
-select attr1,attr2, sum(val) as val
+select attr1,attr2, sum(val) as val, sum(reccount) as reccount
 from %{input_global_tbl}
 group by attr1,attr2;
-
 
 
 --------------------------------------------------------------------------------------------
@@ -23,13 +35,14 @@ group by attr1,attr2;
 drop table if exists XTX;
 create table XTX as
 select *
-from ( select attr1,attr2,val
+from ( select attr1, attr2, val
        from gramian
        where attr1 != "%{y}" and  attr2 != "%{y}"
        union all
        select attr2 as attr1,attr1 as attr2, val
        from gramian
-       where attr1 != "%{y}" and  attr2 != "%{y}" and attr1!=attr2)
+       where attr1 != "%{y}" and  attr2 != "%{y}" and attr1!=attr2
+     )
 order by attr1,attr2;
 
 --D2. Invert table (X'X)^-1
