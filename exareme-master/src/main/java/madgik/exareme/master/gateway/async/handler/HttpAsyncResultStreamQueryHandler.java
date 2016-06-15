@@ -56,6 +56,8 @@ public class HttpAsyncResultStreamQueryHandler implements HttpAsyncRequestHandle
                 httpResponse.setStatusCode(response.getStatusLine().getStatusCode());
             }
 
+            response.addHeader("Access-Control-Allow-Origin", "*");
+
             HttpEntity entity = response.getEntity();
             if (entity != null) {
                 StringWriter writer = new StringWriter();
