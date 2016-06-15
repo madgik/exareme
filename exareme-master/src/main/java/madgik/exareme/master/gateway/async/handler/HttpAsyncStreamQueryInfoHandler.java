@@ -53,7 +53,7 @@ public class HttpAsyncStreamQueryInfoHandler implements HttpAsyncRequestHandler<
                 httpResponse.setStatusCode(response.getStatusLine().getStatusCode());
             }
 
-            response.addHeader("Access-Control-Allow-Origin", "*");
+            httpResponse.addHeader("Access-Control-Allow-Origin", "*");
 
             HttpEntity entity = response.getEntity();
             if (entity != null) {
