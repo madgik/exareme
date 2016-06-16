@@ -1,9 +1,14 @@
 requirevars 'defaultDB' 'input_local_tbl' 'column1' 'nobuckets';
+attach database '%{defaultDB}' as defaultDB;
+
 
 create temporary table localinputtbl1 as
 select __rid as rid, __colname as colname, tonumber(__val) as val
 from %{input_local_tbl}
 where val <> 'NA' and val is not null and val <> ""; -- and typeof(val) != "text";
+
+--drop table if exists defaultDB.test;
+--create table defaultDB.test as select * from localinputtbl1;
 
 select colname,
        min(val) as minvalue,
@@ -13,7 +18,5 @@ select colname,
        count(val) as N
 from localinputtbl1
 where colname = '%{column1}';
-
-
 
 

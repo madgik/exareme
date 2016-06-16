@@ -5,8 +5,8 @@ attach database '%{defaultDB}' as defaultDB;
 --hidden var 'x' 'DX_bl*APOE4+AGE+PTEDUCAT+PTGENDER';
 
 
---hidden var 'grouping' 'DX_bl,APOE4';
---hidden var 'covariables' 'AGE,PTEDUCAT,PTGENDER';
+hidden var 'groupings' '';--'DX_bl,APOE4';
+hidden var 'covariables' 'AGE,PTEDUCAT,PTGENDER';
 
 var 'y' from (select '%{variable}');
 

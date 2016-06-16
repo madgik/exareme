@@ -10,3 +10,4 @@ from  ( select colname1, val1, %{nobuckets} as buckets1
         from (select __rid as rid1 ,__colname as colname1, __val as val1 from inputlocaltbl where __colname = '%{column1}')
       ),
       ( select minvalue as minval1, maxvalue as maxval1 from %{prv_output_global_tbl} );
+
