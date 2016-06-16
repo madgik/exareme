@@ -1,5 +1,8 @@
-requirevars 'defaultDB' 'input_local_tbl' 'variable' 'covariables' 'groupings';
+requirevars 'defaultDB' 'prv_output_global_tbl'  'input_local_tbl' 'variable' 'covariables' 'groupings';
 attach database '%{defaultDB}' as defaultDB;
+
+create table defaultDB.globalstatistics as
+select * from %{prv_output_global_tbl};
 
 --------------------------------------------------------------------------------------------
 --C. Compute gramian (LOCAL LAYER)
