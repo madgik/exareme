@@ -15,7 +15,7 @@ public class ExaremeGatewayStart {
     public static void main(String[] args) throws Exception {
         Logger.getRootLogger().setLevel(Level.ALL);
 
-        final ExaremeCluster cluster = ExaremeClusterFactory.createMiniCluster(1098, 8088, 0);
+        final ExaremeCluster cluster = ExaremeClusterFactory.createMiniCluster(1098, 8088, 1);
         cluster.start();
         final ExaremeGateway gateway =
             ExaremeGatewayFactory.createHttpServer(cluster.getDBManager());

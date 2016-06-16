@@ -1,34 +1,68 @@
-requirevars 'defaultDB' 'input_global_tbl' ;
+requirevars 'defaultDB' 'input_global_tbl' 'variable';
 attach database '%{defaultDB}' as defaultDB;
 
-drop table if exists defaultDB.residuals;
-create table defaultDB.residuals as
-select * from %{input_global_tbl};
+var 'y' from (select '%{variable}');
 
 
 
 
-
-----C2. (GLOBAL LAYER)
---drop table if exists gramian2;
---create table gramian2 as
---select attr1,attr2, sum(val) as val, sum(reccount) as reccount
---from  defaultDB.partialgramian2
---group by attr1,attr2;
---
---
---
--------------------------------------------------------------------------------------------
----- Compute covariance matrix
---drop table if exists defaultDB.CovarianceMatrix;
---create table defaultDB.CovarianceMatrix as
---select attr1,attr2, val/(reccount-1) as covval
---from (select * from gramian2);
---
---insert into defaultDB.CovarianceMatrix
---select attr2 ,attr1, val/(reccount-1) as covval
---from (select * from gramian2)
---where attr1 != attr2;
+-------------------------------------------------------------------------------------------------------
+--C2. (GLOBAL LAYER)
+drop table if exists gramian;
+create table gramian as
+select attr1,attr2, sum(val) as val, sum(reccount) as reccount
+from %{input_global_tbl}
+group by attr1,attr2;
 
 
-select 'ok';
+--------------------------------------------------------------------------------------------
+--D. COMPUTE b estimators (X'X)^-1 * X'y = b  (GLOBAL LAYER)
+
+--D1. Create X'X table
+drop table if exists XTX;
+create table XTX as
+select *
+from ( select attr1, attr2, val
+       from gramian
+       where attr1 != "%{y}" and  attr2 != "%{y}"
+       union all
+       select attr2 as attr1,attr1 as attr2, val
+       from gramian
+       where attr1 != "%{y}" and  attr2 != "%{y}" and attr1!=attr2
+     )
+order by attr1,attr2;
+
+--D2. Invert table (X'X)^-1
+drop table if exists defaultDB.XTXinverted;
+create table defaultDB.XTXinverted as
+select invertarray(attr1,attr2,val,sizeofarray)
+from ( select attr1,attr2,val, sizeofarray
+       from XTX,
+       ( select count(distinct attr1) as sizeofarray from XTX ));
+
+
+
+--D3. Create X'y table
+drop table if exists XTy;
+create table XTy as
+select *
+from (select attr2 as attr,val from gramian where attr1 = "%{y}" and attr1!=attr2
+      union all
+      select attr1 as attr, val from gramian where  attr2 = "%{y}" and attr1!=attr2)
+order by attr;
+
+--D4 COMPUTE b estimators (X'X)^-1 * X'y = b
+drop table if exists defaultDB.coefficients;
+create table defaultDB.coefficients as
+select  attr1, sum(XTXinverted.val*XTy.val) as estimate from
+XTXinverted
+join
+XTy
+on attr2 = attr
+group by attr1;
+
+
+
+select * from defaultDB.coefficients;
+
+--select * from %{input_global_tbl};
