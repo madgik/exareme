@@ -1,4 +1,6 @@
 requirevars  'defaultDB' 'input_global_tbl';
+attach database '%{defaultDB}' as defaultDB;
+
 
 create table histresult as
 select colname0, id0, minvalue0, maxvalue0, sum(num) as total
@@ -14,3 +16,4 @@ from ( select  jdict('data', mydata,"name", "Count %{column1} values" ) as mydat
 
 
 
+--select * from defaultDB.test;
