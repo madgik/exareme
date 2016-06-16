@@ -30,13 +30,14 @@ public class HttpAsyncDeleteStreamQueryHandler implements HttpAsyncRequestHandle
     @Override
     public void handle(HttpRequest httpRequest, HttpAsyncExchange httpExchange, HttpContext context)
         throws HttpException, IOException {
+
         HttpResponse httpResponse = httpExchange.getResponse();
 
         log.info("Validating request ..");
         String method = httpRequest.getRequestLine().getMethod().toUpperCase(Locale.ENGLISH);
 
-        if (!"DELETE".equals(method)) {
-            throw new UnsupportedHttpVersionException(method + "not supported.");
+        if (!"DELETE".equals(method) && !"GET".equals(method)) {
+            throw new UnsupportedHttpVersionException(method + " not supported.");
         }
 
         String target = httpRequest.getRequestLine().getUri();
@@ -44,10 +45,11 @@ public class HttpAsyncDeleteStreamQueryHandler implements HttpAsyncRequestHandle
         // TODO: DIRTY! ADD PROXY
         CloseableHttpClient httpclient = HttpClients.createDefault();
         HttpGet httpGet = new HttpGet("http://127.0.0.1:9595" + target);
-        httpGet.addHeader("accept", (httpRequest.getFirstHeader("accept") == null) ? "" : httpRequest.getFirstHeader("accept").getValue());
 
         CloseableHttpResponse response = null;
         try {
+
+            log.info("AAAAAAAAAAAAAAAAAAAA ..");
             response = httpclient.execute(httpGet);
 
             if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
