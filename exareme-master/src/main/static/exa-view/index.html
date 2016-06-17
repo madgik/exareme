@@ -59,9 +59,10 @@
               <!--</tr>-->
               <!--</thead>-->
               <tbody>
-              <tr ng-repeat="row in exaCtrl.result track by $index">  <!--ng-if="$index > 0">-->
+              <!--<tr ng-repeat="row in exaCtrl.result track by $index">  &lt;!&ndash;ng-if="$index > 0">&ndash;&gt;-->
                   <!--<td ng-repeat="r in row track by $index">{{r}}</td>-->
-                  <td>{{row}}</td>
+              <tr>
+              <td>{{exaCtrl.result}}</td>
               </tr>
               </tbody>
           </table>
