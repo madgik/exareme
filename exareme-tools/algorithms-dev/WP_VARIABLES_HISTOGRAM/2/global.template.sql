@@ -34,4 +34,3 @@ from (  select jdict('categories',mycategories,'header',myheaders,'shape',"vecto
 --
 --
 --
---select * from %{showtable};

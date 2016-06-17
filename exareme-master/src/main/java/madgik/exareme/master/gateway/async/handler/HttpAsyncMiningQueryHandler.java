@@ -121,7 +121,8 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             AdpDBClientProperties clientProperties =
                 new AdpDBClientProperties("/tmp/demo/db/" + qKey, "", "", false, false, -1, 10);
             DataSerialization ds = DataSerialization.ldjson;
-            if(format) ds = DataSerialization.summary;
+//            if(format) ds = DataSerialization.summary;
+            ds = DataSerialization.summary;
             AdpDBClient dbClient =
                 AdpDBClientFactory.createDBClient(manager, clientProperties);
             AdpDBClientQueryStatus queryStatus = dbClient.query(qKey, dfl);

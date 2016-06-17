@@ -5,7 +5,6 @@
   "status" : "enabled",
   "parameters" : [
     {"name" : "column1", "desc" : "", "value" : "AGE"},
-    {"name" : "nobuckets", "desc" : "", "value" : "10"},
-    {"name" : "format", "desc" : "", "value" : "True"}
+    {"name" : "nobuckets", "desc" : "", "value" : "10"}
   ]
 }

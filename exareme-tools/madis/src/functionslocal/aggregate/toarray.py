@@ -22,7 +22,7 @@ class convertcovariancetabletoarray:
             if  self.flag == True:
                 self.headers.append(str(args[1]))
 
-            self.mydata1D.append([args[0],args[1],args[2]])
+            self.mydata1D.append([args[0],args[1],float(args[2])])
             self.n += 1
 
         except (ValueError, TypeError):
@@ -36,7 +36,6 @@ class convertcovariancetabletoarray:
         for d in self.mydata1D:
             self.mydata2D[self.headers.index(d[0])][self.headers.index(d[1])] += d[2]
 
-        print "A"
         yield ('header','covvalues')
-        yield (str(self.headers),str(self.mydata2D))
+        yield (str(self.headers), str(self.mydata2D))
 

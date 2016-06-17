@@ -6,8 +6,6 @@
   "parameters" : [
     {"name" : "groupings", "desc" : "", "value" : "DX_bl,APOE4_bl"},
     {"name" : "covariables", "desc" : "", "value" : "AGE,PTEDUCAT,PTGENDER"},
-    {"name" : "variable", "desc" : "", "value" : "AV45_bl"},
-    {"name" : "showtable", "desc": "", "value" : "TotalResults"},
-    {"name" : "format", "desc":"", "value":"True"}
+    {"name" : "variable", "desc" : "", "value" : "AV45_bl"}
   ]
 }

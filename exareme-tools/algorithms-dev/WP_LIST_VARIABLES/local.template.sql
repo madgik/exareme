@@ -1,6 +1,12 @@
 requirevars 'input_local_tbl' ;
 
-select distinct __colname as variable, typeof(tonumber(__val)) as type
-from %{input_local_tbl}
-group by __colname;
+select jdictgroup('variables', variable) as variables
+from (
+  select jgroup(variable, t) as variable
+  from (
+    select distinct __colname as variable, typeof(tonumber(__val)) as t
+    from %{input_local_tbl}
+    group by __colname
+    )
+);
 
