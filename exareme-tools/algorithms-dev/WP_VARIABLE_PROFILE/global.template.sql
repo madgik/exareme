@@ -45,16 +45,20 @@ from ( select colname, val, SUM(N) as Ntotal
        group by val);
 
 insert into results
-select "DatasetStatistics2" as type, colname as code, val as categories, "0" as header, N as gval  -- TODO: anti gia 0 na balw id nosokomeiou (nomizw pws auto thelei) -->des APOE
+select "DatasetStatistics2" as type, colname as code, val as categories, __local_id as header, N as gval  -- TODO: anti gia 0 na balw id nosokomeiou (nomizw pws auto thelei) -->des APOE
 from (select * from  %{input_global_tbl} where val !='NA' and '%{categorical}'='True' and '%{valIsText}'='False');
 
 insert into results
-select "DatasetStatistics2" as type, colname as code, "NA" as categories, "0" as header, N as gval -- TODO: anti gia 0 na balw id nosokomeiou (nomizw pws auto thelei) -->des APOE
+select "DatasetStatistics2" as type, colname as code, "NA" as categories, __local_id as header, N as gval -- TODO: anti gia 0 na balw id nosokomeiou (nomizw pws auto thelei) -->des APOE
 from (select * from  %{input_global_tbl} where val =='NA' and '%{categorical}'='True' and '%{valIsText}'='False'); --NULL values
 
-select cast(type as text) as type,
-       cast(code as text) as code,
-       cast(categories as text) as categories,
-       cast(header as text) as header,
-       cast(gval as text) as val
-from results;
+select jdict('statistics', stats) as result
+from ( select jgroup(
+         cast(type as text),
+         cast(code as text),
+         cast(categories as text),
+         cast(header as text),
+         cast(gval as text)
+       ) as stats
+      from results
+);

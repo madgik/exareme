@@ -8,12 +8,17 @@ from  %{input_global_tbl}
 group by colname0, id0, minvalue0, maxvalue0;
 
 
-select jdict('code','%{column1}', 'dataType', "DatasetStatistic", 'dataset', mydataset,'label', "Histogram: %{column1}" )
+select
+  jdict(
+    'code','%{column1}',
+    'dataType', "DatasetStatistic",
+    'dataset', mydataset,
+    'label', "Histogram: %{column1}"
+    )
 from ( select  jdict('data', mydata,"name", "Count %{column1} values" ) as mydataset
        from (  select jdict('header',myheaders,'shape',"vector",'value',myvalues) as mydata
-               from ( select jgroup((maxvalue0+minvalue0)/2.0) as myheaders,jgroup(total) as myvalues from histresult )
-            ));
-
-
-
---select * from defaultDB.test;
+               from ( select jgroup((maxvalue0+minvalue0)/2.0) as myheaders,jgroup(total) as myvalues
+                      from histresult
+                )
+       )
+);

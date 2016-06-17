@@ -42,6 +42,7 @@ import java.util.Locale;
  *
  * @author alex
  * @since 0.1
+ * @deprecated
  */
 public class HttpAsyncMiningOldHandler implements HttpAsyncRequestHandler<HttpRequest> {
     private static final Logger log = Logger.getLogger(HttpAsyncMiningOldHandler.class);
@@ -162,10 +163,11 @@ public class HttpAsyncMiningOldHandler implements HttpAsyncRequestHandler<HttpRe
                                     break;
                                 }
                             }
-                            Boolean format = Boolean.valueOf(inputContent.get("format"));
-
-                            if (format)
-                                ds = DataSerialization.summary;
+//                            Boolean format = Boolean.valueOf(inputContent.get("format"));
+//
+//                            if (format)
+//                                ds = DataSerialization.summary;
+                            ds = DataSerialization.summary;
                             // blocking reading TODO async like status
                             // TODO check error handling output format
                             response.setEntity(new InputStreamEntity(

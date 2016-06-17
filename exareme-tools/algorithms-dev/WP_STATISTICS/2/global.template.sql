@@ -44,19 +44,17 @@ from ( select h.colname0 as colname0,
 )group by colname0;
 
 
-select m.colname0 as colname,
-
-       s.minvalue as minvalue,
-       s.maxvalue as maxvalue,
-
-       s.NA as N, --count
-       s.avgvalue as avgvalue,
-       s.stdvalue as stdvalue,
-
-       m.val as median,
-       Q1.val as Q1 ,
-       Q3.val as Q3
-
+select jdict(
+      'colname', m.colname0,
+       'min', s.minvalue,
+       'max', s.maxvalue,
+       'count', s.NA,
+       'avg', s.avgvalue,
+       'std', s.stdvalue,
+       'median', m.val,
+       'Q1', Q1.val,
+       'Q2', Q3.val
+       ) as result
 from medianapprox as m,Q1,Q3, defaultDB.globalstats as s
 where m.colname0 = Q1.colname0 and m.colname0 = Q3.colname0 and m.colname0 = s.colname;
 

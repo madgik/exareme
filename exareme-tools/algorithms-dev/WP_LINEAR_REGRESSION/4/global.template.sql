@@ -1,4 +1,4 @@
-requirevars 'defaultDB' 'input_global_tbl' 'showtable';
+requirevars 'defaultDB' 'input_global_tbl';
 attach database '%{defaultDB}' as defaultDB;
 
 
@@ -107,9 +107,10 @@ from
 
                               (  select adjustedR as adj_r_squared_value from Rsquared_Table),
 
-                              (  select jdict("headers", header,"values",covvalues) as covariancematrixvalues
+                              (  select jdict("headers", coheaders, "values", covvalues) as covariancematrixvalues
                                  from ( select convertcovariancetabletoarray(attr1,attr2,val)
-                                        from defaultDB.XTXinverted  )
+                                        from defaultDB.XTXinverted  ),
+                                      (select jgroup(attr) as coheaders from coefficients)
                               ),
                               ( select jdict( '0',  var('mycol') - var('myaliasedcolumns'), '1', var('myrow')- var('mycol'), '2' , var('mycol')) as degreesfreedomvalues )
                       )

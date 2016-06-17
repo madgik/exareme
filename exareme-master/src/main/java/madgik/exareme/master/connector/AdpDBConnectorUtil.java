@@ -28,12 +28,14 @@ import madgik.exareme.worker.art.executionPlan.ExecutionPlan;
 import madgik.exareme.worker.art.executionPlan.ExecutionPlanParser;
 import madgik.exareme.worker.art.registry.ArtRegistryLocator;
 import org.apache.avro.Schema;
+import org.apache.http.entity.ContentType;
 import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.rmi.RemoteException;
 import java.rmi.ServerException;
 import java.sql.ResultSet;
@@ -223,10 +225,10 @@ public class  AdpDBConnectorUtil {
                 rs.close();
                 db.close();
             } else  if(ds.equals(DataSerialization.summary)) { // only 1 row, 1 col
-                Object json = rs.getObject(1);
+                String json = (String) rs.getObject(1);
                 rs.close();
                 db.close();
-                out.write((new Gson().toJson(json) + "\n").getBytes());
+                out.write(g.toJson(g.fromJson(json, Map.class)).getBytes());
             } else throw new RemoteException("Unable to use " + ds + "serialization.");
         } catch (Exception e) {
             throw new RemoteException("Cannot get results", e);
