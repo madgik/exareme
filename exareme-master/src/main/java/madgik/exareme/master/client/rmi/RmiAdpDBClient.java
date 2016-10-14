@@ -26,6 +26,7 @@ import madgik.exareme.master.registry.Registry;
 import madgik.exareme.worker.art.container.ContainerJobs;
 import madgik.exareme.worker.art.container.ContainerProxy;
 import madgik.exareme.worker.art.executionPlan.parser.expression.Operator;
+import madgik.exareme.worker.art.executionPlan.parser.expression.OperatorLink;
 import madgik.exareme.worker.art.executionPlan.parser.expression.PlanExpression;
 import madgik.exareme.worker.art.registry.ArtRegistryLocator;
 import org.apache.log4j.Logger;
