@@ -181,27 +181,18 @@ public class RmiAdpDBClient implements AdpDBClient {
 
 
 
-        int count = 0;
-        for (ConcreteOperator op : plan.getGraph().getOperators()) {
-            if (plan.getGraph().getOutputLinks(op.opID).size() == 4) {
-                countrepart++;
+        int count=0;
+        for(OperatorLink ol: execPlan.getOperatorLinkList()){
+            if (count > 0) {
+                edges.append(",");
             }
-            for (Link link : plan.getGraph().getOutputLinks(op.opID)) {
 
-                // for(Link link :links){
-                if (count > 0) {
-                    edges.append(",");
-                }
-                String to = plan.getGraph().getOperator(link.to.opID).getName();
-                String from = plan.getGraph().getOperator(link.from.opID).getName();
-                ;
-                edges.append("\n{from: ").append(opidToOp.get(from)).append(", to: ")
-                    .append(opidToOp.get(to)).append("}");
-                count++;
-                //  }
+            edges.append("\n{from: ").append(opidToOp.get(ol.from)).append(", to: ").append(opidToOp.get(ol.to))
+                    .append("}");
+            count++;
 
-            }
         }
+
 
         nodes.append("]);\n");
         edges.append(" ]);\n");
