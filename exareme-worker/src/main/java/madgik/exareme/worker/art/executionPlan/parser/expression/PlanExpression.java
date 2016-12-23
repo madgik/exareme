@@ -11,14 +11,13 @@ import java.util.LinkedList;
  *
  * @since 1.0
  */
+
 public class PlanExpression implements Serializable {
 
     private static final long serialVersionUID = 1L;
     public final LinkedList<Pragma> pragmaList;
     public final LinkedList<Container> containersList;
     public final LinkedList<Operator> operatorList;
-    //  public final LinkedList<Buffer> bufferList;
-    //  public final LinkedList<BufferLink> bufferConnectList;
     public final LinkedList<Switch> switchList;
     public final LinkedList<OperatorLink> operatorConnectList;
     public final LinkedList<SwitchLink> switchConnectList;
@@ -29,9 +28,8 @@ public class PlanExpression implements Serializable {
         pragmaList = new LinkedList<Pragma>();
         containersList = new LinkedList<Container>();
         operatorList = new LinkedList<Operator>();
-        //    bufferList = new LinkedList<Buffer>();
-        //    bufferConnectList = new LinkedList<BufferLink>();
         operatorConnectList = new LinkedList<OperatorLink>();
+
         switchList = new LinkedList<Switch>();//oxi
         switchConnectList = new LinkedList<SwitchLink>();//oxi
         stateList = new LinkedList<State>();//oxi
@@ -49,14 +47,6 @@ public class PlanExpression implements Serializable {
     public void addOperator(Operator instantiate) {
         operatorList.add(instantiate);
     }
-
-    //  public void addBuffer(Buffer buffer) {
-    //    bufferList.add(buffer);
-    //  }
-
-    //  public void addBufferConnect(BufferLink connect) {
-    //    bufferConnectList.add(connect);
-    //  }
 
     public void addSwitch(Switch s) {
         switchList.add(s);
@@ -89,14 +79,6 @@ public class PlanExpression implements Serializable {
     public LinkedList<Operator> getOperatorList() {
         return operatorList;
     }
-
-    //  public LinkedList<Buffer> getBufferList() {
-    //    return bufferList;
-    //  }
-
-    //  public LinkedList<BufferLink> getBufferLinkList() {
-    //    return bufferConnectList;
-    //  }
 
     public LinkedList<OperatorLink> getOperatorLinkList() {
         return operatorConnectList;
