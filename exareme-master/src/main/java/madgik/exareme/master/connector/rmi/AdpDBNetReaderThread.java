@@ -50,7 +50,7 @@ public class AdpDBNetReaderThread extends Thread {
             Map<String, Object> includeProps = alsoIncludeProps;
             if(alsoIncludeProps != null
                 && alsoIncludeProps.containsKey("skipSchema")
-                && alsoIncludeProps.get("skipSchema") == true) includeProps = null;
+                && (Boolean)alsoIncludeProps.get("skipSchema") == true) includeProps = null;
 
             for (Partition p : table.getPartitions()) {
                 log.debug("Reading : " + p.getTable() + "/" + p.getpNum());
