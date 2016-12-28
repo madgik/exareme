@@ -21,7 +21,7 @@ services:
     working_dir: /root/exareme/
     entrypoint: /tmp/entrypoint.sh
     environment:
-      - EXAREME_MASTER=master
+      - ISMASTER=master
     links:
       - master
       - rawdb
