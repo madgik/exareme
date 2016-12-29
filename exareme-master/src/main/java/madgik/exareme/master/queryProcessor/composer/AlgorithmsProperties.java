@@ -1,11 +1,18 @@
 package madgik.exareme.master.queryProcessor.composer;
 
 import com.google.gson.Gson;
-import madgik.exareme.worker.art.executionPlan.parser.expression.Parameter;
+
 import org.apache.commons.io.FileUtils;
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Represent the mip-algorithms repository properties,
@@ -21,6 +28,12 @@ public class AlgorithmsProperties {
         private String value;
 
         public ParameterProperties() {
+        }
+
+        public ParameterProperties(ParameterProperties orig) {
+            name = orig.name;
+            desc = orig.desc;
+            value = orig.value;
         }
 
         public String getName() {
@@ -54,7 +67,8 @@ public class AlgorithmsProperties {
             local,                      // exec single node local
             pipeline,                   // exec local on each endpoint
             local_global,               // exec global over the union of local results
-            multiple_local_global       // exec sequentially multiple local_global
+            multiple_local_global,      // exec sequentially multiple local_global
+            iterative                   // exec iterative algorithm
         }
 
         public enum AlgorithmVisualizationType {
@@ -166,6 +180,25 @@ public class AlgorithmsProperties {
                 map.put(algorithmParameter.getName(), algorithmParameter.getValue());
             }
             return map;
+        }
+
+        /**
+         * Copies the <code>src</code> <code>ParameterProperties[]</code> entries to <code>dst</code>.
+         *
+         * @param src   The source array from which elements are copied.
+         * @param dst   The destination array to which elements are copied. <b>Its capacity must
+         *              be at least the same as <code>src</code>'s capacity. </b>
+         * @return True on success, false in case the dst's capacity doesn't abide by the
+         *              provided directions.
+         */
+        public static boolean copyParameterProperties(
+                ParameterProperties[] src, ParameterProperties[] dst) {
+            if (dst.length < src.length)
+                return false;
+            for (int i = 0; i < src.length; i++) {
+                dst[i] = new ParameterProperties(src[i]);
+            }
+            return true;
         }
     }
 
