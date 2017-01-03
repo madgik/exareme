@@ -57,8 +57,10 @@ public class NetUtil {
         String privIp = getPrivateIp();
         String pubIp = getPublicIp();
         if (privIp.equals("127.0.0.1") == false) {
+            log.debug("ret privip $$$ " + privIp);
             return privIp;
         } else {
+            log.debug("nret pubip $$$ " + pubIp);
             return pubIp;
         }
     }
