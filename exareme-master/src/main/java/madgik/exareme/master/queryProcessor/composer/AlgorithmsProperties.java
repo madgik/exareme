@@ -30,7 +30,7 @@ public class AlgorithmsProperties {
         public ParameterProperties() {
         }
 
-        public ParameterProperties(ParameterProperties orig) {
+        ParameterProperties(ParameterProperties orig) {
             name = orig.name;
             desc = orig.desc;
             value = orig.value;
