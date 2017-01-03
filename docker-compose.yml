@@ -1,6 +1,5 @@
 version: '2'
 
-services:
 #  master:
 #    build: .
 #    hostname: master
@@ -25,6 +24,7 @@ services:
 #    links:
 #      - master
 #      - rawdb
+services:
   exalocal:
     image: exatest
     links:
@@ -33,10 +33,19 @@ services:
       - MASTER_FLAG=master
     ports:
       - "9090:9090"
-
   rawdb:
+    hostname: rawdb
     image: raw-sniffer
     volumes:
       - ./rawdb_datasets:/datasets:ro
     ports:
       - "54321:54321"
+  #examaster:
+ #   image: exatest
+ #   environment:
+ #     - MASTER_FLAG=master
+ #   ports:
+ #     - "9090:9090"
+
+
+
