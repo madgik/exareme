@@ -49,6 +49,7 @@ public class NetUtil {
         List<String> aList = ManagementFactory.getRuntimeMXBean().getInputArguments();
         for (String a : aList) {
             if (a.startsWith("-Djava.rmi.server.hostname")) {
+                log.debug("netutil bef split $$$ " + a);
                 return a.split("=")[1].trim();
             }
         }
