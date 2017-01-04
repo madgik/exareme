@@ -8,10 +8,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import madgik.exareme.master.engine.iterations.IterationsException;
+import madgik.exareme.master.engine.iterations.exceptions.IterationsFatalException;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.master.queryProcessor.composer.AlgorithmsProperties;
 import madgik.exareme.master.queryProcessor.composer.Composer;
+import madgik.exareme.master.queryProcessor.composer.ComposerException;
 import madgik.exareme.utils.association.Pair;
 import madgik.exareme.utils.file.FileUtil;
 
@@ -27,20 +28,20 @@ class IterationsHandlerDFLUtils {
     /**
      * Generates the DFL scripts (for all iterative algorithm phases).
      *
-     * @param algorithmKey            The algorithm's unique key.
-     * @param composer                Composer instance used to generate DFL script for each phase.
-     * @param algorithmProperties     The properties of this algorithm.<br> See {@link
-     *                                AlgorithmsProperties.AlgorithmProperties}.
-     * @param iterativeAlgorithmState State of the iterative algorithm, only used for reading data.
-     * @return DFL scripts array (one for each phase)
-     * @throws Exception All exceptions that can be thrown from {@link Composer#composeVirtual(String,
-     *                   AlgorithmsProperties.AlgorithmProperties, String, IterativeAlgorithmState.IterativeAlgorithmPhasesModel)}
+     * @param algorithmKey            the algorithm's unique key
+     * @param composer                the Composer instance used to generate DFL script for each
+     *                                phase
+     * @param algorithmProperties     the properties of this algorithm
+     * @param iterativeAlgorithmState the state of iterative algorithm, only used for reading data
+     * @return the generated DFL scripts (one for each phase)
+     * @throws IterationsFatalException If {@link Composer#composeVirtual} fails.
+     * @see AlgorithmsProperties.AlgorithmProperties
      */
     static String[] prepareDFLScripts(
             String algorithmKey,
             Composer composer,
             AlgorithmsProperties.AlgorithmProperties algorithmProperties,
-            IterativeAlgorithmState iterativeAlgorithmState) throws Exception {
+            IterativeAlgorithmState iterativeAlgorithmState) {
 
         String[] dflScripts = new String[
                 IterativeAlgorithmState.IterativeAlgorithmPhasesModel.values().length];
@@ -90,8 +91,13 @@ class IterationsHandlerDFLUtils {
             if (phase.equals(IterativeAlgorithmState.IterativeAlgorithmPhasesModel.termination_condition))
                 algorithmProperties.setType(AlgorithmsProperties.AlgorithmProperties.AlgorithmType.iterative);
 
-            dflScripts[dflScriptIdx++] =
-                    composer.composeVirtual(algorithmKey, algorithmProperties, null, phase);
+            try {
+                dflScripts[dflScriptIdx++] =
+                        composer.composeVirtual(algorithmKey, algorithmProperties, null, phase);
+            } catch (ComposerException e) {
+                throw new IterationsFatalException("Composer failure to generate DFL script for phase: "
+                        + phase.name() + ".", e);
+            }
 
             // Restore algorithm type to multiple_local_global.
             if (phase.equals(
@@ -103,13 +109,13 @@ class IterationsHandlerDFLUtils {
     }
 
     /**
-     * Prepares the baseline of SQL updates to be applied on template.sql files.
+     * Prepares the baseline of SQL updates to be applied on {@code template.sql} files.
      * <p>
-     * Mainly prepares <code>requireVars</code> and <code>attach database</code>.
+     * Mainly prepares {@code requireVars} and {@code attach database}.
      *
      * @return The baseline of SQL Updates to be applied to all template.sql files.
      */
-    static ArrayList<Pair<String, IterationsHandlerDFLUtils.SQLUpdateLocation>> prepareBaselineSQLUpdates() {
+    private static ArrayList<Pair<String, IterationsHandlerDFLUtils.SQLUpdateLocation>> prepareBaselineSQLUpdates() {
         // Prepare requireVars for iterationsDB.
         String requireVarsIterationsDB =
                 IterationsHandlerDFLUtils.generateRequireVarsString(new String[]{IterationsHandlerConstants.iterationsDBName});
@@ -135,11 +141,13 @@ class IterationsHandlerDFLUtils {
      * creating table which holds iterations counter, a table that holds whether the iterations
      * should continue.
      *
-     * @param iterativeAlgorithmState The state object for the current iterative algorithm.
-     * @param phase                   The current iterative phase for which the updates are
+     * @param iterativeAlgorithmState the state object for the current iterative algorithm.
+     * @param phase                   the current iterative phase for which the updates are
      *                                applied.
-     * @param sqlTemplateFile         The SQL template file that is to be updated each time.
-     * @param sqlUpdates              The baseline of SQLUpdates that are to be applied.
+     * @param sqlTemplateFile         the SQL template file that is to be updated each time.
+     * @param sqlUpdates              the baseline of SQLUpdates that are to be applied.
+     * @throws UnsupportedOperationException If a phase ({@link IterativeAlgorithmState.IterativeAlgorithmPhasesModel})
+     *                                       is not supported.
      */
     private static void applyTemplateSQLUpdates(
             IterativeAlgorithmState iterativeAlgorithmState,
@@ -213,8 +221,8 @@ class IterationsHandlerDFLUtils {
                 break;
 
             default:
-                throw new IterationsException("Unsupported IterativeAlgorithmPhasesModel phase: \""
-                        + phase.name() + "\".");
+                throw new UnsupportedOperationException("Unsupported " +
+                        "IterativeAlgorithmPhasesModel phase: \"" + phase.name() + "\".");
         }
     }
 
@@ -228,67 +236,70 @@ class IterationsHandlerDFLUtils {
     }
 
     /**
-     * Updates a template SQL file defined by <code>templateFilename</code> with the given list of
-     * updates.
+     * Updates a template SQL file with the given list of updates.
      *
-     * <p> An update is defined as a Pair of MadisSQL valid content and a location for the update.
-     * Updates are packed into an ArrayList of aforementioned Pairs.
+     * <p> An update is defined as a Pair of MadisSQL valid content/query and a location site
+     * for the update (see {@link SQLUpdateLocation}. Updates are packed into an ArrayList of
+     * aforementioned Pairs.
      *
-     * @param templateFilename Filename of the template SQL script to be updated, i.e. <b>absolute
-     *                         path</b> + filename.
-     * @param sqlUpdates       List of updates to be applied.
-     * @throws IterationsException If it cannot read from or write to <code>templateFilename</code>.
+     * @param templateFilename the filename of the template SQL script to be updated, i.e. <b>
+     *                         absolute path</b> + filename
+     * @param sqlUpdates       the list of updates to be applied
+     * @throws IterationsFatalException If it failed to read original SQL template file or an
+     *                                  unsupported {@link SQLUpdateLocation} was used, or it failed
+     *                                  to write the update SQL template file.
      */
     private static void updateSQLTemplate(File templateFilename,
-                                          ArrayList<Pair<String, SQLUpdateLocation>> sqlUpdates)
-            throws IterationsException {
+                                          ArrayList<Pair<String, SQLUpdateLocation>> sqlUpdates) {
 
         // Read DFL into a String, apply the updates and then rewrite its content.
         String originalScriptLines;
         try {
             originalScriptLines = FileUtil.readFile(templateFilename);
         } catch (IOException e) {
-            throw new IterationsException("Failed to read original DLF script file.", e);
+            throw new IterationsFatalException("Failed to read original SQL template file.", e);
         }
 
         StringBuilder updatedScriptBuilder;
-        if (originalScriptLines != null) {
-            updatedScriptBuilder = new StringBuilder();
-            updatedScriptBuilder.append(originalScriptLines);
+        updatedScriptBuilder = new StringBuilder();
+        updatedScriptBuilder.append(originalScriptLines);
 
-            // Iterate through the updates and apply them one by one.
-            String update;
-            for (Pair<String, SQLUpdateLocation> p : sqlUpdates) {
-                update = p.getA() + "\n";
-                switch (p.getB()) {
-                    case prefix:
-                        updatedScriptBuilder.insert(0, update);
-                        break;
-                    case suffix:
-                        updatedScriptBuilder.append("\n").append(update);
-                        break;
-                    default:
-                        throw new IterationsException("Unsupported code site for DFL editing.");
-                }
+        // Iterate through the updates and apply them one by one.
+        String update;
+        for (Pair<String, SQLUpdateLocation> p : sqlUpdates) {
+            update = p.getA() + "\n";
+            switch (p.getB()) {
+                case prefix:
+                    updatedScriptBuilder.insert(0, update);
+                    break;
+                case suffix:
+                    updatedScriptBuilder.append("\n").append(update);
+                    break;
+                default:
+                    throw new UnsupportedOperationException(
+                            "Unsupported code site for DFL editing.");
             }
+        }
 
-            try {
-                FileUtil.writeFile(updatedScriptBuilder.toString(), templateFilename);
-            } catch (IOException e) {
-                throw new IterationsException("Failed to write updated DFL script file.", e);
-            }
+        try {
+            FileUtil.writeFile(updatedScriptBuilder.toString(), templateFilename);
+        } catch (IOException e) {
+            throw new IterationsFatalException("Failed to write updated SQL template file.", e);
         }
     }
 
     /**
      * Generates requireVars String needed for template SQL files.
      *
-     * @param variables The required variables
-     * @return Null if variables array is empty, a String otherwise.
+     * @param variables the required variables, not null or empty
+     * @return a String containing the "requireVars" statement.
+     * @throws IllegalArgumentException If variables is null or empty.
      */
     private static String generateRequireVarsString(String[] variables) {
+        if (variables == null)
+            throw new IllegalArgumentException("variables String[] cannot be null");
         if (variables.length == 0)
-            return null;
+            throw new IllegalArgumentException("variables String[] cannot be empty");
         StringBuilder requireVarsBuilder = new StringBuilder(IterationsHandlerConstants.requireVars);
         for (String var : variables) {
             if (var.isEmpty())
@@ -301,14 +312,16 @@ class IterationsHandlerDFLUtils {
 
 
     /**
-     * Finds the last global script in a <code>multiple_local_global</code> directory structure.
+     * Retrieves the last global script in a {@code multiple_local_global} directory structure.
      *
-     * @param algorithmPhasePath Expects the algorithm path with the AlgorithmPhase name <b>appended
-     *                           to it</b>.
-     * @return The last global script of the given <code>multiple_local_global</code> directory
-     * structure
+     * @param algorithmPhasePath the algorithm path with the AlgorithmPhase name <b>appended
+     *                           to it</b>, not null
+     * @return the last global script of the given {@code multiple_local_global} directory,
+     * or null if the {@code algorithmPhasePath} doesn't contain any directories.
      */
     private static File getLastGlobalFromMultipleLocalGlobal(File algorithmPhasePath) {
+        if (algorithmPhasePath == null)
+            throw new IterationsFatalException("algorithmPhasePath parameter cannot be null");
         File[] listFiles = new File(algorithmPhasePath.toString())
                 .listFiles(new FileFilter() {
                     @Override
@@ -318,11 +331,11 @@ class IterationsHandlerDFLUtils {
                 });
         if (listFiles != null) {
             Arrays.sort(listFiles);
-            File lastMultLocalGlobalDir = listFiles[listFiles.length - 1].getAbsoluteFile();
+            File lastMultipleLocalGlobalDir = listFiles[listFiles.length - 1].getAbsoluteFile();
             return new File(
-                    lastMultLocalGlobalDir,
+                    lastMultipleLocalGlobalDir,
                     IterationsHandlerConstants.globalTemplateSQLFilename);
         } else
-            throw new IterationsException("Failed to retrieve last global DFL script.");
+            return null;
     }
 }

@@ -11,15 +11,15 @@ import static madgik.exareme.master.queryProcessor.composer.ComposerConstants.mi
  *         Informatics and Telecommunications.
  */
 public class IterationsHandlerUtils {
-    private static final Logger log = Logger.getLogger(IterationsHandler.class);
+    private static final Logger log = Logger.getLogger(IterationsHandlerUtils.class);
 
     /**
      * Generates a unique algorithm key.
-     * <p>
-     * It provides a unique name with <b>granularity of a ms!</b>
      *
-     * @param algorithmProperties The algorithm's properties object.
-     * @return A unique algorithm key.
+     * <p> It provides a unique name with <b>granularity of a ms!</b>
+     *
+     * @param algorithmProperties the algorithm's properties object
+     * @return a unique algorithm key.
      */
     static String generateAlgorithmRequestKey(AlgorithmsProperties.AlgorithmProperties algorithmProperties) {
         return "request_" +
@@ -31,8 +31,8 @@ public class IterationsHandlerUtils {
     /**
      * Generates the iterationsDB absolute filename.
      *
-     * @param algorithmKey The algorithm key generated for the current iterative algorithm.
-     * @return The absolute filename of iterationsDB for this algorithm.
+     * @param algorithmKey the algorithm key generated for the current iterative algorithm
+     * @return the absolute filename of iterationsDB for this algorithm.
      */
     public static String generateIterationsDBName(String algorithmKey) {
         return mipAlgorithmsDemoWorkingDirectory
