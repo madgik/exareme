@@ -21,11 +21,8 @@ public class IterationsHandlerUtils {
      * @param algorithmProperties the algorithm's properties object
      * @return a unique algorithm key.
      */
-    static String generateAlgorithmRequestKey(AlgorithmsProperties.AlgorithmProperties algorithmProperties) {
-        return "request_" +
-                algorithmProperties.getName() +
-                "_" +
-                String.valueOf(System.currentTimeMillis());
+    static String generateAlgorithmKey(AlgorithmsProperties.AlgorithmProperties algorithmProperties) {
+        return algorithmProperties.getName() + "_" + String.valueOf(System.currentTimeMillis());
     }
 
     /**
