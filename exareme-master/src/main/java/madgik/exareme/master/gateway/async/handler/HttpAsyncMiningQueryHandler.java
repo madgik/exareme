@@ -1,6 +1,33 @@
 package madgik.exareme.master.gateway.async.handler;
 
 import com.google.gson.Gson;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.http.HttpException;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.RequestLine;
+import org.apache.http.UnsupportedHttpVersionException;
+import org.apache.http.entity.BasicHttpEntity;
+import org.apache.http.entity.ContentType;
+import org.apache.http.nio.protocol.BasicAsyncRequestConsumer;
+import org.apache.http.nio.protocol.BasicAsyncResponseProducer;
+import org.apache.http.nio.protocol.HttpAsyncExchange;
+import org.apache.http.nio.protocol.HttpAsyncRequestConsumer;
+import org.apache.http.nio.protocol.HttpAsyncRequestHandler;
+import org.apache.http.protocol.HttpContext;
+import org.apache.http.util.EntityUtils;
+import org.apache.log4j.Logger;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import madgik.exareme.master.client.AdpDBClient;
 import madgik.exareme.master.client.AdpDBClientFactory;
 import madgik.exareme.master.client.AdpDBClientProperties;
@@ -8,25 +35,14 @@ import madgik.exareme.master.client.AdpDBClientQueryStatus;
 import madgik.exareme.master.connector.DataSerialization;
 import madgik.exareme.master.engine.AdpDBManager;
 import madgik.exareme.master.engine.AdpDBManagerLocator;
-import madgik.exareme.master.gateway.ExaremeGatewayUtils;
+import madgik.exareme.master.engine.iterations.exceptions.IterationsFatalException;
+import madgik.exareme.master.engine.iterations.handler.IterationsHandler;
 import madgik.exareme.master.gateway.async.handler.entity.NQueryResultEntity;
-import madgik.exareme.master.gateway.async.handler.entity.NQueryStatusEntity;
 import madgik.exareme.master.queryProcessor.composer.AlgorithmsProperties;
 import madgik.exareme.master.queryProcessor.composer.Composer;
 import madgik.exareme.master.queryProcessor.composer.ComposerConstants;
 import madgik.exareme.master.queryProcessor.composer.ComposerException;
 import madgik.exareme.utils.encoding.Base64Util;
-import org.apache.http.*;
-import org.apache.http.entity.BasicHttpEntity;
-import org.apache.http.entity.ContentType;
-import org.apache.http.nio.entity.NStringEntity;
-import org.apache.http.nio.protocol.*;
-import org.apache.http.protocol.HttpContext;
-import org.apache.http.util.EntityUtils;
-import org.apache.log4j.Logger;
-
-import java.io.IOException;
-import java.util.*;
 
 /**
  * Mining  Handler
@@ -42,6 +58,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
 
     private static final AdpDBManager manager = AdpDBManagerLocator.getDBManager();
     private static final Composer composer = Composer.getInstance();
+    private static final IterationsHandler iterationsHandler = IterationsHandler.getInstance();
 
     public HttpAsyncMiningQueryHandler() {
     }
@@ -108,29 +125,41 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         }
         String qKey = "query_" + algorithm + "_" +String.valueOf(System.currentTimeMillis());
         try {
+            String dfl;
+            AdpDBClientQueryStatus queryStatus;
 
-            String dfl = null;
             inputContent.put(ComposerConstants.outputGlobalTblKey, "output_" + qKey);
             inputContent.put(ComposerConstants.algorithmKey, algorithm);
             AlgorithmsProperties.AlgorithmProperties algorithmProperties =
-                AlgorithmsProperties.AlgorithmProperties.createAlgorithmProperties(inputContent);
+                    AlgorithmsProperties.AlgorithmProperties.createAlgorithmProperties(inputContent);
 
-            dfl = composer.composeVirtual(qKey, algorithmProperties, query);
+            // Was initialized to "DataSerialization.ldjson", and that was followed with
+            // if(format) ds = DataSerialization.summary; but was commented-out.
+            DataSerialization ds = DataSerialization.summary;
 
-            log.debug(dfl);
-            AdpDBClientProperties clientProperties =
-                new AdpDBClientProperties("/tmp/demo/db/" + qKey, "", "", false, false, -1, 10);
-            DataSerialization ds = DataSerialization.ldjson;
-//            if(format) ds = DataSerialization.summary;
-            ds = DataSerialization.summary;
-            AdpDBClient dbClient =
-                AdpDBClientFactory.createDBClient(manager, clientProperties);
-            AdpDBClientQueryStatus queryStatus = dbClient.query(qKey, dfl);
+            // Bypass direct composer call in case of iterative algorithm.
+            if (algorithmProperties.getType() ==
+                    AlgorithmsProperties.AlgorithmProperties.AlgorithmType.iterative) {
+                String iterativeAlgorithmKey =
+                        iterationsHandler.handleNewIterativeAlgorithmRequest(algorithmProperties);
+                // WIP
+                return;
+            } else {
+                dfl = composer.composeVirtual(qKey, algorithmProperties, query, null);
+                log.debug(dfl);
+                AdpDBClientProperties clientProperties =
+                        new AdpDBClientProperties(
+                                "/tmp/demo/db/" + qKey, "", "",
+                                false, false, -1, 10);
+                AdpDBClient dbClient =
+                        AdpDBClientFactory.createDBClient(manager, clientProperties);
+                queryStatus = dbClient.query(qKey, dfl);
+            }
+
             BasicHttpEntity entity = new NQueryResultEntity(queryStatus, ds);
             response.setStatusCode(HttpStatus.SC_OK);
             response.setEntity(entity);
-
-        } catch (ComposerException e) {
+        } catch (ComposerException | IterationsFatalException e) {
             log.error(e);
         } catch (Exception e) {
             log.error(e);

@@ -2,19 +2,34 @@ package madgik.exareme.master.queryProcessor.composer;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import madgik.exareme.utils.properties.AdpProperties;
-import madgik.exareme.worker.art.container.ContainerProxy;
-import madgik.exareme.worker.art.executionEngine.ExecutionEngineLocator;
-import madgik.exareme.worker.art.executionEngine.ExecutionEngineProxy;
-import madgik.exareme.worker.art.registry.ArtRegistryLocator;
-import madgik.exareme.worker.art.registry.rmi.RmiArtRegistry;
-import madgik.exareme.worker.art.registry.rmi.RmiArtRegistryProxy;
+
 import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.util.*;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+
+import madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants;
+import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
+import madgik.exareme.utils.properties.AdpProperties;
+import madgik.exareme.worker.art.container.ContainerProxy;
+import madgik.exareme.worker.art.executionEngine.ExecutionEngineLocator;
+import madgik.exareme.worker.art.executionEngine.ExecutionEngineProxy;
+import madgik.exareme.worker.art.registry.ArtRegistryLocator;
+
+import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants.iterationsPropertyConditionQueryProvided;
+import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants.iterationsPropertyMaximumNumber;
+import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants.terminationConditionTemplateSQLFilename;
+import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerUtils.generateIterationsDBName;
+import static madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState.IterativeAlgorithmPhasesModel.finalize;
+import static madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState.IterativeAlgorithmPhasesModel.init;
+import static madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState.IterativeAlgorithmPhasesModel.step;
+import static madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState.IterativeAlgorithmPhasesModel.termination_condition;
 
 /**
  * Responsible to produce data flows (dfl)
@@ -64,13 +79,30 @@ public class Composer {
         return gson.toJson(algorithms, AlgorithmsProperties.class);
     }
 
-    public String composeVirtual(String qKey, AlgorithmsProperties.AlgorithmProperties algorithmProperties, String query)
-        throws Exception {
+    /**
+     * Composes the DFL script for the given algorithm properties and query.
+     *
+     * @param qKey                    The query key, or in general a key for the algorithm.
+     * @param algorithmProperties     The algorithm properties instance.
+     * @param iterativeAlgorithmPhase In the case of iterative algorithms, this is one value of
+     *                                {@link madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState.IterativeAlgorithmPhasesModel}
+     *                                <b>otherwise, it is null</b>
+     * @return The generated DFL script.
+     * @throws ComposerException If the algorithm type or the iterative algorithm phase isn't
+     *                           supported or finally, if this method could not retrieve
+     *                           ContainerProxies.
+     */
+    public String composeVirtual(String qKey,
+                                 AlgorithmsProperties.AlgorithmProperties algorithmProperties,
+                                 String query,
+                                 IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase
+                                 )
+        throws ComposerException {
 
         StringBuilder dflScript = new StringBuilder();
 
-        String workingDir = repoPath + algorithmProperties.getName();
-
+        String workingDir =
+                generateWorkingDirectoryString(algorithmProperties.getName(), iterativeAlgorithmPhase);
         HashMap<String, String> parameters = AlgorithmsProperties.AlgorithmProperties.toHashMap(algorithmProperties);
         String localScriptPath =
             repoPath + algorithmProperties.getName() + "/local.template.sql";
@@ -97,7 +129,29 @@ public class Composer {
             inputLocalTbl = algorithms.getLocal_engine_default().toUDF(variables);
         parameters.put(ComposerConstants.inputLocalTblKey, inputLocalTbl);
         String outputGlobalTbl = parameters.get(ComposerConstants.outputGlobalTblKey);
-        parameters.put(ComposerConstants.defaultDBKey, "/tmp/demo/db/" + qKey + "_defaultDB.db");
+
+        if (iterativeAlgorithmPhase != null) {
+            // Handle iterations specific logic, related to Composer
+            // 1. Create iterationsDB and defaultDB algorithm parameters.
+            // qKey is actually algorithm key in the case of iterative algorithms.
+            parameters.put(IterationsHandlerConstants.iterationsParameterIterDBKey,
+                    generateIterationsDBName(qKey));
+            parameters.put(ComposerConstants.defaultDBKey,
+                    ComposerConstants.mipAlgorithmsDemoWorkingDirectory + qKey + "/defaultDB.db");
+
+            // 2. Remove unneeded parameter
+            parameters.remove(iterationsPropertyConditionQueryProvided);
+
+            // 3. Remove max iterations for all iterative phases except for termination_condition.
+            if (!iterativeAlgorithmPhase.equals(
+                    IterativeAlgorithmState.IterativeAlgorithmPhasesModel.termination_condition))
+                parameters.remove(iterationsPropertyMaximumNumber);
+        }
+        else {
+            parameters.put(ComposerConstants.defaultDBKey,
+                    ComposerConstants.mipAlgorithmsDemoWorkingDirectory + qKey + "_defaultDB.db");
+        }
+
         switch (algorithmProperties.getType()) {
 
             case local:
@@ -118,8 +172,12 @@ public class Composer {
             case pipeline:
 
                 ExecutionEngineProxy engine = ExecutionEngineLocator.getExecutionEngineProxy();
-                ContainerProxy[] containerProxies =
-                    ArtRegistryLocator.getArtRegistryProxy().getContainers();
+                ContainerProxy[] containerProxies;
+                try {
+                    containerProxies = ArtRegistryLocator.getArtRegistryProxy().getContainers();
+                } catch (RemoteException e) {
+                    throw new ComposerException("Failed to retrieve containerProxies");
+                }
 
                 for(int i = 0; i < containerProxies.length; i++){
 
@@ -187,7 +245,6 @@ public class Composer {
 
                 break;
             case multiple_local_global:
-                //        throw new ComposerException("Not supported yet.");
                 File[] listFiles = new File(workingDir).listFiles(new FileFilter() {
                     @Override public boolean accept(File pathname) {
                         return pathname.isDirectory();
@@ -197,8 +254,18 @@ public class Composer {
                 for (int i = 0; i < listFiles.length; i++) {
 
                     parameters.put(ComposerConstants.inputLocalTblKey, inputLocalTbl);
-                    parameters.put(ComposerConstants.algorithmKey,
-                        algorithmProperties.getName() + "/" + listFiles[i].getName());
+
+                    // Algorithm key for iterative algorithms should contain the iterative algorithm's
+                    // phase
+                    if (iterativeAlgorithmPhase == null)
+                        parameters.put(ComposerConstants.algorithmKey,
+                            algorithmProperties.getName() + "/" + listFiles[i].getName());
+                    else
+                        parameters.put(ComposerConstants.algorithmKey,
+                                algorithmProperties.getName() + "/"
+                                        + iterativeAlgorithmPhase.name() + "/"
+                                        + listFiles[i].getName());
+
                     parameters.put(ComposerConstants.outputGlobalTblKey, outputGlobalTbl);
                     parameters.put(ComposerConstants.outputPrvGlobalTblKey, "output_global_tbl_"
                         .concat(String.valueOf(Integer.valueOf(listFiles[i].getName()) - 1)));
@@ -208,18 +275,47 @@ public class Composer {
                     } else {
                         parameters.put(ComposerConstants.isTmpKey, "true");
                     }
-                    dflScript.append(composeLocalGlobal(parameters));
+                    dflScript.append(composeLocalGlobal(parameters, iterativeAlgorithmPhase));
                 }
                 break;
+            case iterative:
+                // Handling special iterative case, such as termination_condition DFL.
+                if (iterativeAlgorithmPhase != null &&
+                        iterativeAlgorithmPhase.equals(termination_condition)) {
+
+                    // Remove outputGlobalTblKey since it's not needed as an execnselect parameter.
+                    parameters.remove(ComposerConstants.outputGlobalTblKey);
+
+                    // Specify algorithm key to contain the current iterative algorithm's phase.
+                    parameters.put(ComposerConstants.algorithmKey, algorithmProperties.getName() + "/"
+                                    + iterativeAlgorithmPhase.name());
+
+                    // Format termination condition script.
+                    dflScript.append("distributed create table ").append(outputGlobalTbl).append(" as external \n");
+                    dflScript.append(
+                            String.format("select * from (\n    execnselect 'path:%s' ", workingDir));
+                    for (String key : parameters.keySet()) {
+                        dflScript.append(String.format("'%s:%s' ", key, parameters.get(key)));
+                    }
+                    dflScript.append(String.format("\n    select filetext('%s')\n",
+                            workingDir + "/" + terminationConditionTemplateSQLFilename ));
+                    dflScript.append(");\n");
+                }
+                else
+                    throw new ComposerException("Unsupported iterative algorithm phase.");
+                break;
             default:
-                throw new ComposerException("Unable to determinated algorithm type.");
+                throw new ComposerException("Unable to determine algorithm type.");
         }
         return dflScript.toString();
 
     }
 
-    private static String composeLocalGlobal(HashMap<String, String> parameters)
+    private static String composeLocalGlobal(
+            HashMap<String, String> parameters,
+            IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase)
         throws ComposerException {
+
         StringBuilder dflScript = new StringBuilder();
 
         String algorithmKey = parameters.get(ComposerConstants.algorithmKey);
@@ -287,5 +383,52 @@ public class Composer {
         dflScript.append(");\n");
         parameters.remove("input_global_tbl");
         return dflScript.toString();
+    }
+
+
+    // Utils ------------------------------------------------------------------------------------
+
+    /**
+     * Generates the working directory string, depending on the algorithm key and in the case of
+     * iterative algorithms, its current phase.
+     *
+     * @param algorithmKey            the algorithm's key or query's key in case of non iterative
+     *                                algorithm
+     * @param iterativeAlgorithmPhase the iterative algorithm phase for which to generate working
+     *                                directory String<br> <b>In the case of non iterative
+     *                                algorithms this is null</b>.
+     * @return the working directory string
+     * @throws ComposerException In case of iterative algorithms, if an iterative phase is not
+     *                           supported.
+     * @see madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState.IterativeAlgorithmPhasesModel
+     */
+    private static String generateWorkingDirectoryString(
+            String algorithmKey,
+            IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase)
+            throws ComposerException {
+
+        String workingDir;
+        if (iterativeAlgorithmPhase == null)
+            workingDir = repoPath + algorithmKey;
+        else {
+            switch (iterativeAlgorithmPhase) {
+                case init:
+                    workingDir = repoPath + algorithmKey + "/" + init.name();
+                    break;
+                case step:
+                    workingDir = repoPath + algorithmKey + "/" + step.name();
+                    break;
+                case termination_condition:
+                    workingDir = repoPath + algorithmKey + "/" + termination_condition.name();
+                    break;
+                case finalize:
+                    workingDir = repoPath + algorithmKey + "/" + finalize.name();
+                    break;
+                default:
+                    throw new ComposerException("Unsupported iterative algorithm case.");
+            }
+        }
+
+        return workingDir;
     }
 }

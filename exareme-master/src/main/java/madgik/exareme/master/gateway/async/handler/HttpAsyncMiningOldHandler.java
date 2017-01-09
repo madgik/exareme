@@ -2,6 +2,31 @@ package madgik.exareme.master.gateway.async.handler;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.http.HttpException;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
+import org.apache.http.RequestLine;
+import org.apache.http.UnsupportedHttpVersionException;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.InputStreamEntity;
+import org.apache.http.nio.entity.NStringEntity;
+import org.apache.http.nio.protocol.BasicAsyncRequestConsumer;
+import org.apache.http.nio.protocol.BasicAsyncResponseProducer;
+import org.apache.http.nio.protocol.HttpAsyncExchange;
+import org.apache.http.nio.protocol.HttpAsyncRequestConsumer;
+import org.apache.http.nio.protocol.HttpAsyncRequestHandler;
+import org.apache.http.protocol.HttpContext;
+import org.apache.http.util.EntityUtils;
+import org.apache.log4j.Logger;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Locale;
+
 import madgik.exareme.master.client.AdpDBClient;
 import madgik.exareme.master.client.AdpDBClientFactory;
 import madgik.exareme.master.client.AdpDBClientProperties;
@@ -13,18 +38,7 @@ import madgik.exareme.master.gateway.ExaremeGatewayUtils;
 import madgik.exareme.master.queryProcessor.composer.AlgorithmsProperties;
 import madgik.exareme.master.queryProcessor.composer.Composer;
 import madgik.exareme.master.queryProcessor.composer.ComposerConstants;
-import org.apache.http.*;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.InputStreamEntity;
-import org.apache.http.nio.entity.NStringEntity;
-import org.apache.http.nio.protocol.*;
-import org.apache.http.protocol.HttpContext;
-import org.apache.http.util.EntityUtils;
-import org.apache.log4j.Logger;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Locale;
+import madgik.exareme.master.queryProcessor.composer.ComposerException;
 
 
 /**
@@ -199,7 +213,7 @@ public class HttpAsyncMiningOldHandler implements HttpAsyncRequestHandler<HttpRe
                             AlgorithmsProperties.AlgorithmProperties algorithmProperties =
                                 AlgorithmsProperties.AlgorithmProperties
                                     .createAlgorithmProperties(inputContent);
-                            dfl = composer.composeVirtual(qKey,algorithmProperties, null);
+                            dfl = composer.composeVirtual(qKey,algorithmProperties, null, null);
 
                             log.debug(dfl);
                             AdpDBClientProperties clientProperties =
@@ -228,8 +242,6 @@ public class HttpAsyncMiningOldHandler implements HttpAsyncRequestHandler<HttpRe
         }
     }
 
-    private class ComposerException extends Exception{
-    }
 }
 
 
