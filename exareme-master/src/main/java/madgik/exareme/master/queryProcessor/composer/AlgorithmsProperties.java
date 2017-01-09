@@ -132,6 +132,14 @@ public class AlgorithmsProperties {
             return gson.fromJson(FileUtils.readFileToString(propertyFile), AlgorithmProperties.class);
         }
 
+        public static AlgorithmProperties copyAlgorithmProperties(AlgorithmProperties src) {
+            AlgorithmProperties copyAlgorithmProperties = new AlgorithmProperties();
+            copyAlgorithmProperties.setName(src.getName());
+            copyAlgorithmProperties.setDesc(src.getDesc());
+            copyAlgorithmProperties.setParameters(copyParameterProperties(src.getParameters()));
+            return copyAlgorithmProperties;
+        }
+
         public static AlgorithmProperties createAlgorithmProperties(
             HashMap<String, String> inputContent) throws IOException {
 
@@ -183,25 +191,6 @@ public class AlgorithmsProperties {
         }
 
         /**
-         * Copies the {@code src} {@code ParameterProperties[]} entries to {@code dst}.
-         *
-         * @param src the source array from which elements are copied
-         * @param dst the destination array to which elements are copied <br> <b>Its capacity must
-         *            be at least the same as {@code src}'s capacity.</b>
-         * @return true on success, false in case the dst's capacity doesn't abide by aforementioned
-         * directions.
-         */
-        public static boolean copyParameterProperties(
-                ParameterProperties[] src, ParameterProperties[] dst) {
-            if (dst.length < src.length)
-                return false;
-            for (int i = 0; i < src.length; i++) {
-                dst[i] = new ParameterProperties(src[i]);
-            }
-            return true;
-        }
-
-        /**
          * Updates the given {@code ParameterProperty} of the {@code algorithmProperties} argument.
          *
          * @param algorithmProperties the algorithm properties whose parameter will be updated
@@ -220,6 +209,23 @@ public class AlgorithmsProperties {
                 }
             }
             return false;
+        }
+
+        /**
+         * Copies the {@code src} {@code ParameterProperties[]} entries to {@code dst}.
+         *
+         * @param src the source parameter properties, not null
+         * @return a copy of the {@code src} parameter properties
+         */
+        public static ParameterProperties[] copyParameterProperties(ParameterProperties[] src) {
+            if (src == null)
+                return null;
+
+            ParameterProperties[] copy = new ParameterProperties[src.length];
+            for (int i = 0; i < src.length; i++) {
+                copy[i] = new ParameterProperties(src[i]);
+            }
+            return copy;
         }
     }
 
