@@ -228,9 +228,9 @@ public class IterativeAlgorithmState {
     @Override
     public String toString() {
         String currentStateMsg = currentExecutionPhase == null ?
-                "Pre-Execution initialization" : "CurrentPhase: " + currentExecutionPhase.name();
+                "Pre-Execution" : "CurrentPhase: " + currentExecutionPhase.name();
         return "IterativeStateAlgorithm{\"" +
-                algorithmProperties.getName() + "} [" +
-                currentStateMsg;
+                algorithmProperties.getName() + "\"} [" +
+                currentStateMsg + "]";
     }
 }
