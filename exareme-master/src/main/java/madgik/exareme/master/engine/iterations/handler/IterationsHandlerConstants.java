@@ -27,6 +27,7 @@ public class IterationsHandlerConstants {
 
     // SQL Table names --------------------------------------------------------------------------
     // This are to be disclosed to algorithm developers, so as they can use them in their scripts.
+    static final String iterationsOutputTblPrefix = "output_query";
     private static final String iterationsCounterTbl = "iterations_counter_tbl";
     private static final String iterationsCounterColName = "iterations_counter";
     private static final String iterationsConditionCheckTbl = "iterations_condition_check_result_tbl";
@@ -35,7 +36,8 @@ public class IterationsHandlerConstants {
     // SQL Scripts / Snippets -------------------------------------------------------------------
     private static final String templateSQLSuffix = ".template.sql";
     static final String globalTemplateSQLFilename = "global" + templateSQLSuffix;
-    public static final String terminationConditionTemplateSQLFilename = iterationsRepoTerminationCond + templateSQLSuffix;
+    public static final String terminationConditionTemplateSQLFilename =
+            iterationsRepoTerminationCond + templateSQLSuffix;
 
     // Related to iterations control-plane at DFL level.
     static final String requireVars = "requirevars";
