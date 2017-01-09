@@ -183,13 +183,13 @@ public class AlgorithmsProperties {
         }
 
         /**
-         * Copies the <code>src</code> <code>ParameterProperties[]</code> entries to <code>dst</code>.
+         * Copies the {@code src} {@code ParameterProperties[]} entries to {@code dst}.
          *
-         * @param src   The source array from which elements are copied.
-         * @param dst   The destination array to which elements are copied. <b>Its capacity must
-         *              be at least the same as <code>src</code>'s capacity. </b>
-         * @return True on success, false in case the dst's capacity doesn't abide by the
-         *              provided directions.
+         * @param src the source array from which elements are copied
+         * @param dst the destination array to which elements are copied <br> <b>Its capacity must
+         *            be at least the same as {@code src}'s capacity.</b>
+         * @return true on success, false in case the dst's capacity doesn't abide by aforementioned
+         * directions.
          */
         public static boolean copyParameterProperties(
                 ParameterProperties[] src, ParameterProperties[] dst) {
@@ -199,6 +199,27 @@ public class AlgorithmsProperties {
                 dst[i] = new ParameterProperties(src[i]);
             }
             return true;
+        }
+
+        /**
+         * Updates the given {@code ParameterProperty} of the {@code algorithmProperties} argument.
+         *
+         * @param algorithmProperties the algorithm properties whose parameter will be updated
+         * @param propertyName        the name of the parameter property to be updated
+         * @param propertyValue       the updated value of the parameter property
+         * @return true on success, false if the given {@code propertyName} hasn't been found
+         */
+        public static boolean updateParameterProperty(AlgorithmProperties algorithmProperties,
+                                                      String propertyName,
+                                                      String propertyValue) {
+            for (ParameterProperties property :
+                    algorithmProperties.getParameters()) {
+                if (property.getName().equals(propertyName)) {
+                    property.setValue(propertyValue);
+                    return true;
+                }
+            }
+            return false;
         }
     }
 
