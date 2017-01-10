@@ -255,16 +255,25 @@ public class Composer {
 
                     parameters.put(ComposerConstants.inputLocalTblKey, inputLocalTbl);
 
-                    // Algorithm key for iterative algorithms should contain the iterative algorithm's
-                    // phase
+                    // Iterations support distinction
                     if (iterativeAlgorithmPhase == null)
                         parameters.put(ComposerConstants.algorithmKey,
                             algorithmProperties.getName() + "/" + listFiles[i].getName());
-                    else
+                    else {
                         parameters.put(ComposerConstants.algorithmKey,
                                 algorithmProperties.getName() + "/"
                                         + iterativeAlgorithmPhase.name() + "/"
                                         + listFiles[i].getName());
+                        /*
+                         * [Only for iterative algorithms]
+                         * Only use previousPhaseOutputTbl parameter (set in outputGlobalTblKey)
+                         * if it's the 1st step of a multiple_local_global (for step/finalize
+                         * phases).
+                         */
+                        if ((iterativeAlgorithmPhase.equals(step) ||
+                                iterativeAlgorithmPhase.equals(finalize)) && i == 1)
+                            parameters.remove(IterationsHandlerConstants.previousPhaseOutputTblVariableName);
+                    }
 
                     parameters.put(ComposerConstants.outputGlobalTblKey, outputGlobalTbl);
                     parameters.put(ComposerConstants.outputPrvGlobalTblKey, "output_global_tbl_"
