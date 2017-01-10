@@ -7,8 +7,13 @@ package madgik.exareme.master.engine.iterations.handler;
  *         Informatics and Telecommunications.
  */
 public class IterationsHandlerConstants {
+    // DFL Variables -------------------------------------------------------------------------
+    public static final String previousPhaseOutputTblVariableName = "previous_phase_output_tbl";
+    public static final String previousPhaseOutputTblPlaceholder =
+            "${" + previousPhaseOutputTblVariableName + "}";
     // Iterative algorithm parameters -----------------------------------------------------------
     static final String iterationsDBName = "iterationsDB";
+
     public static final String iterationsParameterIterDBKey = iterationsDBName;
     // Already defined in ComposerConstants => following same pattern.
     static final String iterationsParameterIterDBValueSuffix = iterationsDBName;
