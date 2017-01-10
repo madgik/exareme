@@ -12,17 +12,19 @@ import madgik.exareme.master.engine.iterations.exceptions.IterationsFatalExcepti
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.master.queryProcessor.composer.AlgorithmsProperties;
 import madgik.exareme.master.queryProcessor.composer.Composer;
+import madgik.exareme.master.queryProcessor.composer.ComposerConstants;
 import madgik.exareme.master.queryProcessor.composer.ComposerException;
 import madgik.exareme.utils.association.Pair;
 import madgik.exareme.utils.file.FileUtil;
 
 import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants.iterationsPropertyMaximumNumber;
+import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants.previousPhaseOutputTblPlaceholder;
 
 /**
  * @author Christos Aslanoglou <br> caslanoglou@di.uoa.gr <br> University of Athens / Department of
  *         Informatics and Telecommunications.
  */
-class IterationsHandlerDFLUtils {
+public class IterationsHandlerDFLUtils {
     private static final Logger log = Logger.getLogger(IterationsHandlerDFLUtils.class);
 
     /**
@@ -58,12 +60,44 @@ class IterationsHandlerDFLUtils {
                 IterationsHandlerDFLUtils.prepareBaselineSQLUpdates();
 
         // ------------------------------------------
+        // Create parameterProperties array with previousPhaseOutputTbl parameter needed for step
+        // and finalize iterative phases. This parameter's value is a "variable" in the format
+        // ${variable_name}, which will be replaced with StrSubstitutor, during each phase.
+        ArrayList<AlgorithmsProperties.ParameterProperties> parameterPropertiesArrayList =
+                new ArrayList<>(Arrays.asList(algorithmProperties.getParameters()));
+
+        AlgorithmsProperties.ParameterProperties previousPhaseOutputTblParameter =
+                new AlgorithmsProperties.ParameterProperties();
+        previousPhaseOutputTblParameter.setName(
+                IterationsHandlerConstants.previousPhaseOutputTblVariableName);
+        previousPhaseOutputTblParameter.setValue(previousPhaseOutputTblPlaceholder);
+
+        parameterPropertiesArrayList.add(previousPhaseOutputTblParameter);
+        AlgorithmsProperties.ParameterProperties[] parameterPropertiesInclPreviousPhaseOutputTbl =
+                parameterPropertiesArrayList.toArray(
+                        new AlgorithmsProperties.ParameterProperties[parameterPropertiesArrayList.size()]);
+
+        // ------------------------------------------
         // Iterating through each iterative phase and:
         //      1. Apply updates to SQL template files (related to iterations control plane).
         //      2. Generate DFL.
         int dflScriptIdx = 0;
         for (IterativeAlgorithmState.IterativeAlgorithmPhasesModel phase :
                 IterativeAlgorithmState.IterativeAlgorithmPhasesModel.values()) {
+
+            // Update the output tbl name for each phase, for having a consistent naming scheme
+            // for each iterative phase.
+            if (!AlgorithmsProperties.AlgorithmProperties.updateParameterProperty(
+                    algorithmProperties,
+                    ComposerConstants.outputGlobalTblKey,
+                    generateIterativePhaseOutputTblName(
+                            IterationsHandlerConstants.iterationsOutputTblPrefix,
+                            algorithmKey,
+                            phase)
+            )) {
+                throw new IterationsFatalException("Failed to set output table name for iterative " +
+                        "phase: " + phase.name() + " of algorithm: " + iterativeAlgorithmState.toString());
+            }
 
             // Each update is applied to the latest global template script of a multiple local
             // global structure.
@@ -84,7 +118,14 @@ class IterationsHandlerDFLUtils {
                     sqlTemplateFile, sqlUpdates);
 
             // 2. Generate DFL
-            // Passing as a query key, the algorithm key.
+
+            // Set algorithmProperties.Parameters to the ones containing previousPhaseOutputTbl
+            // parameter (required for execnselect of step/finalize phases)
+            AlgorithmsProperties.ParameterProperties parameterPropertiesBackup[] =
+                    algorithmProperties.getParameters();
+            if (phase.equals(IterativeAlgorithmState.IterativeAlgorithmPhasesModel.step) ||
+                    phase.equals(IterativeAlgorithmState.IterativeAlgorithmPhasesModel.finalize))
+                algorithmProperties.setParameters(parameterPropertiesInclPreviousPhaseOutputTbl);
 
             // Termination condition is a special case of "local", due to the different
             // template sql filename.
@@ -98,6 +139,12 @@ class IterationsHandlerDFLUtils {
                 throw new IterationsFatalException("Composer failure to generate DFL script for phase: "
                         + phase.name() + ".", e);
             }
+
+            // Restore algorithmProperties.Parameters backup (i.e. parameters *not* containing the
+            // previousPhaseOutputTbl parameter)
+            if (phase.equals(IterativeAlgorithmState.IterativeAlgorithmPhasesModel.step) ||
+                    phase.equals(IterativeAlgorithmState.IterativeAlgorithmPhasesModel.finalize))
+                algorithmProperties.setParameters(parameterPropertiesBackup);
 
             // Restore algorithm type to multiple_local_global.
             if (phase.equals(
@@ -338,4 +385,42 @@ class IterationsHandlerDFLUtils {
         } else
             return null;
     }
+
+    /**
+     * Generates the output table name of a given iterative phase.
+     * @param outputTblPrefix the prefix of the output table
+     * @param algorithmKey the iterative algorithm's key
+     * @param iterativePhase the iterative phase for which the table name is generated
+     */
+    private static String generateIterativePhaseOutputTblName(
+            String outputTblPrefix,
+            String algorithmKey,
+            IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativePhase) {
+        String iterativePhaseOutputTblName =
+                outputTblPrefix + "_" + algorithmKey + "_" + iterativePhase.name();
+        if (iterativePhase.equals(IterativeAlgorithmState.IterativeAlgorithmPhasesModel.step))
+            return "${" + iterativePhaseOutputTblName + "}";
+        else
+            return iterativePhaseOutputTblName;
+    }
+
+    // Public API -------------------------------------------------------------------------------
+    /**
+     * Generates the initPhase output table name of the current algorithm
+     */
+    public static String getInitPhaseOutputTblName(String algorithmKey) {
+        return generateIterativePhaseOutputTblName(
+                IterationsHandlerConstants.iterationsOutputTblPrefix,
+                algorithmKey,
+                IterativeAlgorithmState.IterativeAlgorithmPhasesModel.init);
+    }
+
+    /**
+     * Generates the stepPhaseOutputTbl variable name (for later substitution)
+     */
+    public static String getStepPhaseOutputTblVariableName(String algorithmKey) {
+        return IterationsHandlerConstants.iterationsOutputTblPrefix + "_" + algorithmKey + "_"
+                + IterativeAlgorithmState.IterativeAlgorithmPhasesModel.step.name();
+    }
+
 }
