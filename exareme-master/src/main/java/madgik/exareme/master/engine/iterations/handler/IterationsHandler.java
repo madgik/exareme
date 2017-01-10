@@ -7,7 +7,7 @@ import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.master.queryProcessor.composer.AlgorithmsProperties;
 import madgik.exareme.master.queryProcessor.composer.Composer;
 
-import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerUtils.generateAlgorithmRequestKey;
+import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerUtils.generateAlgorithmKey;
 
 /**
  * Handles iteration requests
@@ -52,7 +52,7 @@ public class IterationsHandler {
 
         // Generate algorithm key and a new IterativeAlgorithmState object
         // via the iterationsStateManager.
-        String algorithmKey = generateAlgorithmRequestKey(algorithmProperties);
+        String algorithmKey = generateAlgorithmKey(algorithmProperties);
         IterativeAlgorithmState iterativeAlgorithmState =
                 new IterativeAlgorithmState(algorithmKey, algorithmProperties);
         iterationsStateManager.submitIterativeAlgorithm(algorithmKey, iterativeAlgorithmState);
