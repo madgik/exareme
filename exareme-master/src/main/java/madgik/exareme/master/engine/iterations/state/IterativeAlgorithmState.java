@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
-import madgik.exareme.master.engine.iterations.exceptions.IterationsFatalException;
 import madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants;
 import madgik.exareme.master.engine.iterations.handler.IterationsHandlerDFLUtils;
 import madgik.exareme.master.engine.iterations.state.exceptions.IterationsStateFatalException;
@@ -98,6 +97,9 @@ public class IterativeAlgorithmState {
     /**
      * Ensures that iterative properties in {@code properties.json} file are provided and that
      * their values are correct.
+     * <p>IterationsStateFatalExceptions thrown from this method, don't need to specify the {@code
+     * algorithmKey} parameter since the {@code IterativeAlgorithmState} hasn't been submitted to
+     * the {@code IterationsStateManager}.
      */
     private void setUpPropertyFields() {
         // Ensure conditionQueryProvided is provided in properties.json, then ensure its value is
@@ -107,7 +109,7 @@ public class IterativeAlgorithmState {
         if (iterationsConditionQueryProvidedValue == null) {
             throw new IterationsStateFatalException("AlgorithmProperty \""
                     + iterationsPropertyConditionQueryProvided
-                    + "\": is required [accepting: \"true/false\"");
+                    + "\": is required [accepting: \"true/false\"", null);
         }
         if (iterationsConditionQueryProvidedValue.equals(String.valueOf(true)))
             conditionQueryProvided = true;
@@ -117,7 +119,7 @@ public class IterativeAlgorithmState {
             throw new IterationsStateFatalException("AlgorithmProperty \""
                     + iterationsPropertyConditionQueryProvided
                     + "\": Expected \"true/false\", found: "
-                    + iterationsConditionQueryProvidedValue);
+                    + iterationsConditionQueryProvidedValue, null);
 
         // Ensure maxIterationsNumber is provided in properties.json, them ensure its value is
         // true/false and finally, set the corresponding field.
@@ -126,7 +128,7 @@ public class IterativeAlgorithmState {
         if (iterationsMaxNumberVal  == null) {
             throw new IterationsStateFatalException("AlgorithmProperty \""
                     + iterationsPropertyMaximumNumber
-                    + "\": is required [accepting: \"long integer values\"");
+                    + "\": is required [accepting: \"long integer values\"", null);
         }
         if (!iterationsMaxNumberVal.isEmpty()) {
             try {
@@ -134,13 +136,13 @@ public class IterativeAlgorithmState {
             } catch (NumberFormatException e) {
                 throw new IterationsStateFatalException("IterativeAlgorithm property \""
                         + iterationsPropertyMaximumNumber
-                        + "\": NaN [only accepted: long integer values]");
+                        + "\": NaN [only accepted: long integer values]", null);
             }
         }
         else
             throw new IterationsStateFatalException("IterativeAlgorithm property \"" +
                     iterationsPropertyMaximumNumber
-                    + "\": cannot be empty [only accepted: long integer values]");
+                    + "\": cannot be empty [only accepted: long integer values]", null);
     }
 
     // Setters/Getters --------------------------------------------------------------------------
@@ -202,8 +204,9 @@ public class IterativeAlgorithmState {
                 dflScript = StrSubstitutor.replace(dflScripts[phase.ordinal()], dflVariablesMap);
                 break;
                 default:
-                    throw new IterationsFatalException("IterativePhase: \"" + phase.name()
-                            + "\" is not supported yet");
+                    releaseLock();
+                    throw new IterationsStateFatalException("IterativePhase: \"" + phase.name()
+                            + "\" is not supported yet", algorithmKey);
         }
         return dflScript;
     }

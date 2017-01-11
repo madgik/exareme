@@ -5,7 +5,7 @@ import org.apache.log4j.Logger;
 import java.util.concurrent.ConcurrentHashMap;
 
 import madgik.exareme.common.app.engine.AdpDBQueryID;
-import madgik.exareme.master.engine.iterations.exceptions.IterationsFatalException;
+import madgik.exareme.master.engine.iterations.state.exceptions.IterationsStateFatalException;
 
 /**
  * @author Christos Aslanoglou <br> caslanoglou@di.uoa.gr <br> University of Athens / Department of
@@ -53,9 +53,9 @@ public class IterationsStateManagerImpl implements IterationsStateManager {
 
         IterativeAlgorithmState dummyIterAlgorithmState = iterativeAlgorithmMapping.get(algorithmKey);
         if (dummyIterAlgorithmState != null)
-            throw new IterationsFatalException("An IterativeAlgorithmState entry ("
+            throw new IterationsStateFatalException("An IterativeAlgorithmState entry ("
                     + dummyIterAlgorithmState.toString() + ") tied to the " +
-                    "specified algorithmKey (\"" + algorithmKey + "\" already exists.");
+                    "specified algorithmKey (\"" + algorithmKey + "\" already exists.", null);
 
         iterativeAlgorithmMapping.put(algorithmKey, iterativeAlgorithmState);
     }
@@ -97,9 +97,9 @@ public class IterationsStateManagerImpl implements IterationsStateManager {
             msg += "cannot be null.";
             throw new IllegalArgumentException(msg);
         }
-        if (queryIdToAlgorithmKeyMapping.get(queryID) != null)
-            throw new IterationsFatalException("An algorithmKey (\"" + algorithmKey + "\") entry " +
-                    "tied to the specified queryID (\"" + queryID + "\") already exists.");
+        if (iterativeAlgorithmMapping.get(algorithmKey) == null)
+            throw new IterationsStateFatalException("An algorithmKey (\"" + algorithmKey + "\") entry " +
+                    "tied to the specified queryID (\"" + queryID + "\") already exists.", null);
 
         queryIdToAlgorithmKeyMapping.put(queryID, algorithmKey);
     }

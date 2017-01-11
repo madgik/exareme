@@ -55,15 +55,24 @@ public class IterationsHandler {
         String algorithmKey = generateAlgorithmKey(algorithmProperties);
         IterativeAlgorithmState iterativeAlgorithmState =
                 new IterativeAlgorithmState(algorithmKey, algorithmProperties);
-        iterationsStateManager.submitIterativeAlgorithm(algorithmKey, iterativeAlgorithmState);
         // --------------------------------------------------------------------------------------
         // Prepare DFL scripts
         iterativeAlgorithmState.setDflScripts(
                 IterationsHandlerDFLUtils.prepareDFLScripts(
                 algorithmKey, composer, algorithmProperties, iterativeAlgorithmState));
 
+        // Only after DFL initialization, submit to IterationsStateManager.
+        iterationsStateManager.submitIterativeAlgorithm(algorithmKey, iterativeAlgorithmState);
         // WIP -------
 
         return null;
+    }
+
+    /**
+     * Removes an {@link IterativeAlgorithmState} from {@link madgik.exareme.master.engine.iterations.state.IterationsStateManager}
+     * @param algorithmKey the algorithm's key (uniquely identifies an algorithm)
+     */
+    public void removeIterativeAlgorithmStateInstanceFromISM(String algorithmKey) {
+        iterationsStateManager.removeIterativeAlgorithm(algorithmKey);
     }
 }

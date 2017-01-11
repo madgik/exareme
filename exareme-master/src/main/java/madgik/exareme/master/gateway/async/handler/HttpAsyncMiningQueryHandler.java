@@ -159,7 +159,12 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             BasicHttpEntity entity = new NQueryResultEntity(queryStatus, ds);
             response.setStatusCode(HttpStatus.SC_OK);
             response.setEntity(entity);
-        } catch (ComposerException | IterationsFatalException e) {
+        } catch (ComposerException e) {
+            log.error(e);
+        } catch (IterationsFatalException e) {
+            if (e.getErroneousAlgorithmKey() != null)
+                iterationsHandler.removeIterativeAlgorithmStateInstanceFromISM(
+                        e.getErroneousAlgorithmKey());
             log.error(e);
         } catch (Exception e) {
             log.error(e);

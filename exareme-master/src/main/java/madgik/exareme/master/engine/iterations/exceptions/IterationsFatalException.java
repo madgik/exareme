@@ -7,6 +7,8 @@ package madgik.exareme.master.engine.iterations.exceptions;
  *         Informatics and Telecommunications.
  */
 public class IterationsFatalException extends RuntimeException {
+    protected String erroneousAlgorithmKey;
+
     /**
      * Constructs a {@code IterationsFatalException} with the given detail message.
      *
@@ -33,5 +35,9 @@ public class IterationsFatalException extends RuntimeException {
      */
     public IterationsFatalException(String message, Throwable cause) {
         super(message, cause);
+    }
+
+    public String getErroneousAlgorithmKey() {
+        return erroneousAlgorithmKey;
     }
 }
