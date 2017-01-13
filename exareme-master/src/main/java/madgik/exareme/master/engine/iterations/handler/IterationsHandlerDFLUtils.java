@@ -264,7 +264,7 @@ public class IterationsHandlerDFLUtils {
                 break;
 
             case finalize:
-                // Nothing to do here ...
+                IterationsHandlerDFLUtils.updateSQLTemplate(sqlTemplateFile, sqlUpdates);
                 break;
 
             default:
