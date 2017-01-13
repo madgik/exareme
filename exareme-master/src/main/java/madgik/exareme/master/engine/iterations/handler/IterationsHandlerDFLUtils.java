@@ -19,6 +19,7 @@ import madgik.exareme.utils.file.FileUtil;
 
 import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants.iterationsPropertyMaximumNumber;
 import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants.previousPhaseOutputTblPlaceholder;
+import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants.selectStr;
 
 /**
  * @author Christos Aslanoglou <br> caslanoglou@di.uoa.gr <br> University of Athens / Department of
@@ -320,7 +321,13 @@ public class IterationsHandlerDFLUtils {
                     updatedScriptBuilder.insert(0, update);
                     break;
                 case suffix:
-                    updatedScriptBuilder.append("\n").append(update);
+                    /*
+                    Based on the rule that each template.sql file must have an output, i.e. a select
+                    query, we can search for the last select occurrence and prepend our update there.
+                     */
+                    updatedScriptBuilder.insert(
+                            updatedScriptBuilder.lastIndexOf(selectStr) - 1,
+                            '\n' + update);
                     break;
                 default:
                     throw new UnsupportedOperationException(

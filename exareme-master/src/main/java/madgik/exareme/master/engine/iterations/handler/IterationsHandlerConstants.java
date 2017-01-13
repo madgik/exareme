@@ -43,6 +43,7 @@ public class IterationsHandlerConstants {
     static final String globalTemplateSQLFilename = "global" + templateSQLSuffix;
     public static final String terminationConditionTemplateSQLFilename =
             iterationsRepoTerminationCond + templateSQLSuffix;
+    public static final String selectStr = "select";
 
     // Related to iterations control-plane at DFL level.
     static final String requireVars = "requirevars";
