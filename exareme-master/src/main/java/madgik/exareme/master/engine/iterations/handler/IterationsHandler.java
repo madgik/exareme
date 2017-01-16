@@ -2,6 +2,7 @@ package madgik.exareme.master.engine.iterations.handler;
 
 import org.apache.log4j.Logger;
 
+import madgik.exareme.master.engine.AdpDBManagerLocator;
 import madgik.exareme.master.engine.iterations.state.IterationsStateManager;
 import madgik.exareme.master.engine.iterations.state.IterationsStateManagerImpl;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
@@ -55,7 +56,8 @@ public class IterationsHandler {
         // via the iterationsStateManager.
         String algorithmKey = generateAlgorithmKey(algorithmProperties);
         IterativeAlgorithmState iterativeAlgorithmState =
-                new IterativeAlgorithmState(algorithmKey, algorithmProperties);
+                new IterativeAlgorithmState(algorithmKey, algorithmProperties,
+                        AdpDBManagerLocator.getDBManager());
         // --------------------------------------------------------------------------------------
         // Prepare DFL scripts
         iterativeAlgorithmState.setDflScripts(

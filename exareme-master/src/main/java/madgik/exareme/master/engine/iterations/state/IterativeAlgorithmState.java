@@ -3,14 +3,20 @@ package madgik.exareme.master.engine.iterations.state;
 import org.apache.commons.lang3.text.StrSubstitutor;
 import org.apache.log4j.Logger;
 
+import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
+import madgik.exareme.master.client.AdpDBClient;
+import madgik.exareme.master.client.AdpDBClientFactory;
+import madgik.exareme.master.client.AdpDBClientProperties;
+import madgik.exareme.master.engine.AdpDBManager;
 import madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants;
 import madgik.exareme.master.engine.iterations.handler.IterationsHandlerDFLUtils;
 import madgik.exareme.master.engine.iterations.state.exceptions.IterationsStateFatalException;
 import madgik.exareme.master.queryProcessor.composer.AlgorithmsProperties;
+import madgik.exareme.master.queryProcessor.composer.ComposerConstants;
 
 import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants.iterationsPropertyConditionQueryProvided;
 import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants.iterationsPropertyMaximumNumber;
@@ -54,6 +60,8 @@ public class IterativeAlgorithmState {
     private Long maxIterationsNumber;
 
     // Iterations control-plane related fields [STATE] ------------------------------------------
+    // An AdpDBClient is required per iterative algorithm.
+    private AdpDBClient adpDBClient = null;
     // If this field's value is null, it signifies that the execution of the algorithm hasn't yet
     // started.
     private IterativeAlgorithmPhasesModel currentExecutionPhase;
@@ -72,9 +80,37 @@ public class IterativeAlgorithmState {
     private final ReentrantLock lock = new ReentrantLock();
 
     // Construction -----------------------------------------------------------------------------
-    public IterativeAlgorithmState(String algorithmKey,
-                            AlgorithmsProperties.AlgorithmProperties algorithmProperties) {
+
+    /**
+     * Initializes the IterativeAlgorithmState object for the given algorithm.
+     *
+     * <p> Firstly, initializes the AdpDBClient (one per IterativeAlgorithm), generates {@code
+     * algorithmProperties} Map and the DFL variables Map.
+     * The latter is a mapping from variables (think templateStrings) used in step and finalize
+     * iterative phases (i.e. {@code previousPhaseOutput} & {@code currentStepOutputTbl}) and
+     * signify the table names to be used as output and input (providing context between phases).
+     *
+     * @param algorithmKey the key uniquely identifying the algorithm
+     * @param algorithmProperties the algorithm properties of the algorithm
+     * @param manager the AdpDBManager of the system
+     * @throws IterationsStateFatalException if creation of the AdpDBClient fails with Remote
+     * Exception
+     */
+    public IterativeAlgorithmState(
+            String algorithmKey,
+            AlgorithmsProperties.AlgorithmProperties algorithmProperties,
+            AdpDBManager manager) {
+
         this.algorithmKey = algorithmKey;
+        String database = ComposerConstants.mipAlgorithmsDemoWorkingDirectory + algorithmKey;
+        try {
+            createAdpDBClient(manager, database);
+        } catch (RemoteException e) {
+            String errMsg = "Failed to initialize " + AdpDBClient.class.getSimpleName()
+                    + " for algorithm: " + algorithmKey;
+            log.error(errMsg);
+            throw new IterationsStateFatalException(errMsg, e, algorithmKey);
+        }
         this.algorithmProperties = algorithmProperties;
         algorithmPropertiesMap =
                 AlgorithmsProperties.AlgorithmProperties.toHashMap(algorithmProperties);
@@ -145,8 +181,23 @@ public class IterativeAlgorithmState {
                     + "\": cannot be empty [only accepted: long integer values]", null);
     }
 
-    // Setters/Getters --------------------------------------------------------------------------
-    // Pre-Execution phase fields ======================
+    // Pre-Execution phase ======================================================================
+
+    /**
+     * Initializes the {@link AdpDBClient} of the iterative algorithm.
+     *
+     * @param manager the manager needed for creating the client
+     * @param database the database string of the iterative algorithm
+     * @throws RemoteException if creation of AdpDBClient fails
+     */
+    private void createAdpDBClient(AdpDBManager manager, String database) throws RemoteException {
+        AdpDBClientProperties clientProperties =
+                new AdpDBClientProperties(database, "", "",
+                        false, false, -1, 10);
+        adpDBClient = AdpDBClientFactory.createDBClient(manager, clientProperties);
+    }
+
+    // Pre-Execution phase fields [Setters/Getters] ---------------------------------------------
     public String getAlgorithmKey() {
         return algorithmKey;
     }
@@ -163,30 +214,33 @@ public class IterativeAlgorithmState {
         this.dflScripts = dflScripts;
     }
 
-    // Execution phase fields ==========================
+    // Execution phase ==========================================================================
     // i.e. These methods must be called with the lock acquired.
 
     /**
      * Returns the DFL script of the given iterative phase.
      *
      * <p> For step and finalize phases it runs an strSubstitution for replacing the previous
-     * output phase placeholder accordingly.
+     * output phase placeholder accordingly.<br>
      * <b>Completes two tasks</b>:<br>
-     *     1. generates DFL for requested phase, <br>
+     *     1. generates DFL for requested phase,<br>
      *     2. sets the {@code latestPhaseOutputTblName} in the {@code dflVariablesMap}.
+
+     * <p><b>Must be called with the lock of this instance acquired.</b>
      */
     public String getDFLScript(IterativeAlgorithmPhasesModel phase) {
         ensureAcquiredLock();
         String dflScript;
-        // DFL for init and termination condition are already ("statically") generated, simply return
-        // For other phases, substitute variables and return generated String
+        // DFL for init & termination condition are already ("statically") generated.
+        // For other phases, substitute variables and return generated String.
         switch (phase) {
             case init:
                 dflScript = dflScripts[phase.ordinal()];
                 break;
             case step:
                 // Retrieve previousPhase outputTbl name & generate currentStep's outputTbl name
-                String previousPhaseOutputTbl = dflVariablesMap.get(previousPhaseOutputTblVariableName);
+                String previousPhaseOutputTbl =
+                        dflVariablesMap.get(previousPhaseOutputTblVariableName);
                 String currentStepOutputTblName = generateStepPhaseCurrentOutputTbl();
                 dflVariablesMap.put(IterationsHandlerConstants.previousPhaseOutputTblVariableName,
                         previousPhaseOutputTbl);
@@ -212,8 +266,30 @@ public class IterativeAlgorithmState {
     }
 
     /**
+     * Increments the iterations counter of this algorithm.
+     *
+     * <p><b>Must be called with the lock of this instance acquired.</b>
+     */
+    public void incrementIterationsNumber() {
+        ensureAcquiredLock();
+        this.currentIterationsNumber++;
+    }
+
+    // Execution phase [Getters/Setters] --------------------------------------------------------
+    /**
+     * Retrieves the already created {@link AdpDBClient} for a new query submission.
+     *
+     * <p><b>Must be called with the lock of this instance acquired.</b>
+     */
+    public AdpDBClient getAdpDBClient() {
+        ensureAcquiredLock();
+        return adpDBClient;
+    }
+
+    /**
      * Retrieves the current iterations number.
-     * <p>Must be called with the lock of this instance acquired.
+     *
+     * <p><b>Must be called with the lock of this instance acquired.</b>
      */
     public Long getCurrentIterationsNumber() {
         ensureAcquiredLock();
@@ -221,16 +297,9 @@ public class IterativeAlgorithmState {
     }
 
     /**
-     * Increments the iterations counter of this algorithm.
-     */
-    public void incrementIterationsNumber() {
-        ensureAcquiredLock();
-        this.currentIterationsNumber++;
-    }
-
-    /**
      * Retrieves the current iterative algorithm phase.
      * <p><b>Must be called with the lock of this instance acquired.</b>
+     *
      * @see IterativeAlgorithmPhasesModel
      */
     public IterativeAlgorithmPhasesModel getCurrentExecutionPhase() {
@@ -240,6 +309,7 @@ public class IterativeAlgorithmState {
 
     /**
      * Sets the iterative algorithm phase.
+     * <p><b>Must be called with the lock of this instance acquired.</b>
      *
      * @param currentExecutionPhase the value of the current iterative algorithm phase
      */
