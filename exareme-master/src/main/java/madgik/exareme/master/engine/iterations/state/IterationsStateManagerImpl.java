@@ -29,7 +29,7 @@ public class IterationsStateManagerImpl implements IterationsStateManager {
 
     private static IterationsStateManagerImpl instance = new IterationsStateManagerImpl();
 
-    public static IterationsStateManagerImpl getInstance() {
+    public static IterationsStateManager getInstance() {
         return instance;
     }
     // ------------------------------------------------------------------------------------------
