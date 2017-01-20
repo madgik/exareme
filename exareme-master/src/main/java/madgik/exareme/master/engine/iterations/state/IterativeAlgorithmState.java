@@ -63,6 +63,7 @@ public class IterativeAlgorithmState {
      * StrSubstitution.
      */
     final private String stepPhaseOutputTblVariableName;
+    final private String termConditionPhaseOutputTblVariableName;
     // Iterations control-plane related fields [properties.json] --------------------------------
     private Boolean conditionQueryProvided;
     private Long maxIterationsNumber;
@@ -136,7 +137,10 @@ public class IterativeAlgorithmState {
 
         // State related fields initialization
         currentExecutionPhase = null;
-        stepPhaseOutputTblVariableName = IterationsHandlerDFLUtils.getStepPhaseOutputTblVariableName(algorithmKey);
+        stepPhaseOutputTblVariableName =
+                IterationsHandlerDFLUtils.getStepPhaseOutputTblVariableName(algorithmKey);
+        termConditionPhaseOutputTblVariableName =
+                IterationsHandlerDFLUtils.getTermConditionPhaseOutputTblVariableName(algorithmKey);
 
         dflVariablesMap = new HashMap<>();
         // Initialize with init phase's output tbl name (it's always the first lookup)
@@ -144,6 +148,7 @@ public class IterativeAlgorithmState {
                 IterationsHandlerConstants.previousPhaseOutputTblVariableName,
                 IterationsHandlerDFLUtils.getInitPhaseOutputTblName(algorithmKey));
         dflVariablesMap.put(stepPhaseOutputTblVariableName, null);
+        dflVariablesMap.put(termConditionPhaseOutputTblVariableName, null);
     }
 
     // IterativeAlgorithmState - Set property fields --------------------------------------------
@@ -239,30 +244,32 @@ public class IterativeAlgorithmState {
      * Returns the DFL script of the given iterative phase.
      *
      * <p>
-     *     For step and finalize phases it runs an strSubstitution for replacing the previous output
-     * phase placeholder accordingly.<br>
-     *     <strong>Completes two tasks</strong>:<br>
-     *         <ol>
-     *             <li>generates DFL for requested phase</li>
-     *             <li>sets the {@code latestPhaseOutputTblName} in the {@code dflVariablesMap}</li>
-     *         </ol>
+     * For step, termination condition and finalize phases it runs an strSubstitution for
+     * replacing the previous output phase placeholder accordingly.<br>
+     * <strong>Completes two tasks</strong>:<br>
+     * <ol>
+     * <li>generates DFL for requested phase</li>
+     * <li>sets the {@code latestPhaseOutputTblName} in the {@code dflVariablesMap}</li>
+     * </ol>
      *
      * <p>
-     *     <strong>Restrictions</strong>
-     *     <ol>
-     *         <li>Must be called with the lock of this instance acquired.</li>
-     *         <li>Must be called *AFTER* having called {@link
-     *     IterativeAlgorithmState#incrementIterationsNumber()}.</li>
-     *     </ol>
+     * <strong>Restrictions</strong>
+     * <ol>
+     * <li>Must be called with the lock of this instance acquired.</li>
+     * <li>Must be called *AFTER* having called {@link
+     * IterativeAlgorithmState#incrementIterationsNumber()} <b>in case of step phase only</b>.
+     * </li>
+     * </ol>
      *
-     * @throws IterationsStateFatalException if previous and current iterations number match,
-     * which means that caller hasn't already increased the iterations current number (calling
-     * {@link IterativeAlgorithmState#incrementIterationsNumber()}.
+     * @throws IterationsStateFatalException if previous and current iterations number match, which
+     *                                       means that caller hasn't already increased the
+     *                                       iterations current number (calling {@link
+     *                                       IterativeAlgorithmState#incrementIterationsNumber()}.
      */
     public String getDFLScript(IterativeAlgorithmPhasesModel phase) {
         ensureAcquiredLock();
         String dflScript;
-        // DFL for init & termination condition are already ("statically") generated.
+        // DFL for init is already ("statically") generated.
         // For other phases, substitute variables and return generated String.
         switch (phase) {
             case init:
@@ -284,14 +291,20 @@ public class IterativeAlgorithmState {
                         currentStepOutputTblName);
                 break;
             case termination_condition:
-                return dflScripts[phase.ordinal()];
+                dflVariablesMap.put(
+                        termConditionPhaseOutputTblVariableName,
+                        generateTermCondPhaseCurrentOutputTbl());
+
+                dflScript = StrSubstitutor.replace(dflScripts[phase.ordinal()], dflVariablesMap);
+
+                break;
             case finalize:
                 dflScript = StrSubstitutor.replace(dflScripts[phase.ordinal()], dflVariablesMap);
                 break;
-                default:
-                    releaseLock();
-                    throw new IterationsStateFatalException("IterativePhase: \"" + phase.name()
-                            + "\" is not supported yet", algorithmKey);
+            default:
+                releaseLock();
+                throw new IterationsStateFatalException("IterativePhase: \"" + phase.name()
+                        + "\" is not supported yet", algorithmKey);
         }
         return dflScript;
     }
@@ -481,5 +494,14 @@ public class IterativeAlgorithmState {
                 previousIterationsNumber = currentIterationsNumber;
         }
         return stepPhaseOutputTblVariableName + "_" + currentIterationsNumber;
+    }
+
+    /**
+     * Generates the termination condition phase's current outputTbl name.
+     */
+    private String generateTermCondPhaseCurrentOutputTbl() {
+        // Reducing iterations number by 1, so as to have consistency between stepOutputTblName and
+        // terminationConditionOutputTblName (matching ending numbers).
+        return termConditionPhaseOutputTblVariableName + "_" + (currentIterationsNumber - 1);
     }
 }

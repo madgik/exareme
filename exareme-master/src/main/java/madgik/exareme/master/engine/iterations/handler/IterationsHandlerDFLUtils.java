@@ -405,7 +405,9 @@ public class IterationsHandlerDFLUtils {
             IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativePhase) {
         String iterativePhaseOutputTblName =
                 outputTblPrefix + "_" + algorithmKey + "_" + iterativePhase.name();
-        if (iterativePhase.equals(IterativeAlgorithmState.IterativeAlgorithmPhasesModel.step))
+        if (iterativePhase.equals(IterativeAlgorithmState.IterativeAlgorithmPhasesModel.step) ||
+                iterativePhase.equals(
+                        IterativeAlgorithmState.IterativeAlgorithmPhasesModel.termination_condition))
             return "${" + iterativePhaseOutputTblName + "}";
         else
             return iterativePhaseOutputTblName;
@@ -428,6 +430,14 @@ public class IterationsHandlerDFLUtils {
     public static String getStepPhaseOutputTblVariableName(String algorithmKey) {
         return IterationsHandlerConstants.iterationsOutputTblPrefix + "_" + algorithmKey + "_"
                 + IterativeAlgorithmState.IterativeAlgorithmPhasesModel.step.name();
+    }
+
+    /**
+     * Generates the terminationConditionOutputTbl variable name (for later substitution)
+     */
+    public static String getTermConditionPhaseOutputTblVariableName(String algorithmKey) {
+        return IterationsHandlerConstants.iterationsOutputTblPrefix + "_" + algorithmKey + "_"
+                + IterativeAlgorithmState.IterativeAlgorithmPhasesModel.termination_condition.name();
     }
 
 }
