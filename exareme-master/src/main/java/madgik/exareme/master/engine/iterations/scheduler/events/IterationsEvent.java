@@ -15,4 +15,8 @@ public abstract class IterationsEvent implements Event {
     public IterationsEvent(String algorithmKey) {
         this.algorithmKey = algorithmKey;
     }
+
+    public String getAlgorithmKey() {
+        return algorithmKey;
+    }
 }
