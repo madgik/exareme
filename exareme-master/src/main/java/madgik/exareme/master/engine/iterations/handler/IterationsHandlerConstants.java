@@ -9,14 +9,14 @@ package madgik.exareme.master.engine.iterations.handler;
 public class IterationsHandlerConstants {
     // DFL Variables -------------------------------------------------------------------------
     public static final String previousPhaseOutputTblVariableName = "previous_phase_output_tbl";
-    public static final String previousPhaseOutputTblPlaceholder =
+    static final String previousPhaseOutputTblPlaceholder =
             "${" + previousPhaseOutputTblVariableName + "}";
     // Iterative algorithm parameters -----------------------------------------------------------
     static final String iterationsDBName = "iterationsDB";
 
     public static final String iterationsParameterIterDBKey = iterationsDBName;
     // Already defined in ComposerConstants => following same pattern.
-    static final String iterationsParameterIterDBValueSuffix = iterationsDBName + ".db";
+    public static final String iterationsParameterIterDBValueSuffix = iterationsDBName + ".db";
 
     // Iterative algorithm properties -----------------------------------------------------------
     public static final String iterationsPropertyConditionQueryProvided = "iterations_condition_query_provided";
@@ -36,14 +36,14 @@ public class IterationsHandlerConstants {
     private static final String iterationsCounterTbl = "iterations_counter_tbl";
     private static final String iterationsCounterColName = "iterations_counter";
     private static final String iterationsConditionCheckTbl = "iterations_condition_check_result_tbl";
-    private static final String iterationsConditionCheckColName = "iterations_condition_check_result";
+    public static final String iterationsConditionCheckColName = "iterations_condition_check_result";
 
     // SQL Scripts / Snippets -------------------------------------------------------------------
     private static final String templateSQLSuffix = ".template.sql";
     static final String globalTemplateSQLFilename = "global" + templateSQLSuffix;
     public static final String terminationConditionTemplateSQLFilename =
             iterationsRepoTerminationCond + templateSQLSuffix;
-    public static final String selectStr = "select";
+    static final String selectStr = "select";
 
     // Related to iterations control-plane at DFL level.
     static final String requireVars = "requirevars";
@@ -111,4 +111,10 @@ public class IterationsHandlerConstants {
                     + "\t\tfrom " + iterationsDBName + "." + iterationsCounterTbl
                     + "\n\t), " + iterationsConditionCheckTbl
                     + "\n);";
+
+    /*
+        Query that retrieves the termination condition's value.
+     */
+    public static final String selectTerminationConditionValue =
+            "select " + iterationsConditionCheckColName + " from " + iterationsConditionCheckTbl + ";";
 }
