@@ -4,6 +4,11 @@ import org.apache.commons.lang3.text.StrSubstitutor;
 import org.apache.log4j.Logger;
 
 import java.rmi.RemoteException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
@@ -18,9 +23,11 @@ import madgik.exareme.master.engine.iterations.state.exceptions.IterationsStateF
 import madgik.exareme.master.queryProcessor.composer.AlgorithmsProperties;
 import madgik.exareme.master.queryProcessor.composer.ComposerConstants;
 
+import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants.iterationsConditionCheckColName;
 import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants.iterationsPropertyConditionQueryProvided;
 import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants.iterationsPropertyMaximumNumber;
 import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants.previousPhaseOutputTblVariableName;
+import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants.selectTerminationConditionValue;
 
 /**
  * @author Christos Aslanoglou <br> caslanoglou@di.uoa.gr <br> University of Athens / Department of
@@ -50,6 +57,7 @@ public class IterativeAlgorithmState {
     private AlgorithmsProperties.AlgorithmProperties algorithmProperties;
     private HashMap<String, String> algorithmPropertiesMap;
     private String[] dflScripts;
+    private final String iterationsDBPath;
     /**
      * Variable name and key of the {@code dflVariablesMap} to be used for DFL scripts variable
      * StrSubstitution.
@@ -62,10 +70,16 @@ public class IterativeAlgorithmState {
     // Iterations control-plane related fields [STATE] ------------------------------------------
     // An AdpDBClient is required per iterative algorithm.
     private AdpDBClient adpDBClient = null;
+
+    private Connection iterationsDBConnection = null;
+    private Statement iterationsDBSelectStatement = null;
+
     // If this field's value is null, it signifies that the execution of the algorithm hasn't yet
     // started.
     private IterativeAlgorithmPhasesModel currentExecutionPhase;
-    private Long currentIterationsNumber;
+    // Previous iterations number is required to check whether the caller of the "getter" of DFL
+    // scripts, has already incremented current iterations number.
+    private Long currentIterationsNumber, previousIterationsNumber;
     /**
      * Used in conjunction with StrSubstitutor to replace variables in DFL scripts.
      *
@@ -102,6 +116,10 @@ public class IterativeAlgorithmState {
             AdpDBManager manager) {
 
         this.algorithmKey = algorithmKey;
+        iterationsDBPath =
+                ComposerConstants.mipAlgorithmsDemoWorkingDirectory + algorithmKey + "/"
+                        + IterationsHandlerConstants.iterationsParameterIterDBValueSuffix;
+
         String database = ComposerConstants.mipAlgorithmsDemoWorkingDirectory + algorithmKey;
         try {
             createAdpDBClient(manager, database);
@@ -145,7 +163,7 @@ public class IterativeAlgorithmState {
         if (iterationsConditionQueryProvidedValue == null) {
             throw new IterationsStateFatalException("AlgorithmProperty \""
                     + iterationsPropertyConditionQueryProvided
-                    + "\": is required [accepting: \"true/false\"", null);
+                    + "\": is required [accepting: \"true/false\"]", null);
         }
         if (iterationsConditionQueryProvidedValue.equals(String.valueOf(true)))
             conditionQueryProvided = true;
@@ -164,7 +182,7 @@ public class IterativeAlgorithmState {
         if (iterationsMaxNumberVal  == null) {
             throw new IterationsStateFatalException("AlgorithmProperty \""
                     + iterationsPropertyMaximumNumber
-                    + "\": is required [accepting: \"long integer values\"", null);
+                    + "\": is required [accepting: \"long integer values\"]", null);
         }
         if (!iterationsMaxNumberVal.isEmpty()) {
             try {
@@ -220,13 +238,26 @@ public class IterativeAlgorithmState {
     /**
      * Returns the DFL script of the given iterative phase.
      *
-     * <p> For step and finalize phases it runs an strSubstitution for replacing the previous
-     * output phase placeholder accordingly.<br>
-     * <b>Completes two tasks</b>:<br>
-     *     1. generates DFL for requested phase,<br>
-     *     2. sets the {@code latestPhaseOutputTblName} in the {@code dflVariablesMap}.
-
-     * <p><b>Must be called with the lock of this instance acquired.</b>
+     * <p>
+     *     For step and finalize phases it runs an strSubstitution for replacing the previous output
+     * phase placeholder accordingly.<br>
+     *     <strong>Completes two tasks</strong>:<br>
+     *         <ol>
+     *             <li>generates DFL for requested phase</li>
+     *             <li>sets the {@code latestPhaseOutputTblName} in the {@code dflVariablesMap}</li>
+     *         </ol>
+     *
+     * <p>
+     *     <strong>Restrictions</strong>
+     *     <ol>
+     *         <li>Must be called with the lock of this instance acquired.</li>
+     *         <li>Must be called *AFTER* having called {@link
+     *     IterativeAlgorithmState#incrementIterationsNumber()}.</li>
+     *     </ol>
+     *
+     * @throws IterationsStateFatalException if previous and current iterations number match,
+     * which means that caller hasn't already increased the iterations current number (calling
+     * {@link IterativeAlgorithmState#incrementIterationsNumber()}.
      */
     public String getDFLScript(IterativeAlgorithmPhasesModel phase) {
         ensureAcquiredLock();
@@ -269,6 +300,7 @@ public class IterativeAlgorithmState {
      * Increments the iterations counter of this algorithm.
      *
      * <p><b>Must be called with the lock of this instance acquired.</b>
+     * Should be called after execution of a step phase.
      */
     public void incrementIterationsNumber() {
         ensureAcquiredLock();
@@ -297,6 +329,16 @@ public class IterativeAlgorithmState {
     }
 
     /**
+     * Retrieves the maximum iterations number.
+     *
+     * <p><b>Must be called with the lock of this instance acquired.</b>
+     */
+    public Long getMaxIterationsNumber() {
+        ensureAcquiredLock();
+        return maxIterationsNumber;
+    }
+
+    /**
      * Retrieves the current iterative algorithm phase.
      * <p><b>Must be called with the lock of this instance acquired.</b>
      *
@@ -316,6 +358,56 @@ public class IterativeAlgorithmState {
     public void setCurrentExecutionPhase(IterativeAlgorithmPhasesModel currentExecutionPhase) {
         ensureAcquiredLock();
         this.currentExecutionPhase = currentExecutionPhase;
+    }
+
+    /**
+     * Retrieves termination condition from iterationsDB of this algorithm.
+     * <p><b>Must be called with the lock of this instance acquired.</b>
+     *
+     * @return true if the iterative algorithm should continue, false otherwise
+     */
+    public boolean readTerminationConditionValue() {
+        ensureAcquiredLock();
+
+        try {
+            Class.forName("org.sqlite.JDBC");
+        } catch (ClassNotFoundException e) {
+            String errMsg = "Could not find sqlite.JDBC driver class.";
+            log.error(e);
+            throw new IterationsStateFatalException(errMsg, e, algorithmKey);
+        }
+
+        Statement stmt = null;
+        try (Connection conn =
+                     DriverManager.getConnection("jdbc:sqlite:" + iterationsDBPath)) {
+            stmt = conn.createStatement();
+            ResultSet resultSet = stmt.executeQuery(selectTerminationConditionValue);
+            if (!resultSet.isBeforeFirst()) {
+                String errMsg = "No data returned from iterationsDB condition check table for "
+                        + toString();
+                log.warn(errMsg);
+                throw new IterationsStateFatalException(errMsg, algorithmKey);
+            }
+            if (resultSet.next()) {
+                // Iterations control logic writes either 1 or 0 at the terminationConditionCheck
+                // column.
+                return resultSet.getInt(iterationsConditionCheckColName) == 1;
+            }
+        } catch (SQLException e) {
+            String errMsg = "Failed to query for termination condition value for " + toString();
+            log.error(errMsg);
+            throw new IterationsStateFatalException(errMsg, e, algorithmKey);
+        }
+        finally {
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    log.error("Failed to close iterationsDB select statement for: " + toString());
+                }
+            }
+        }
+        return false;
     }
 
     // Utilities --------------------------------------------------------------------------------
@@ -367,10 +459,27 @@ public class IterativeAlgorithmState {
     /**
      * Generates the step phase's current outputTbl name in the format
      * {@code stepPhaseOutputTblVariableName_currentIterationNumber}.
+     *
+     * @throws IterationsStateFatalException if previous and current iterations number match, which
+     *                                       means that caller hasn't already increased the
+     *                                       iterations current number (calling {@link
+     *                                       IterativeAlgorithmState#incrementIterationsNumber()}.
      */
     private String generateStepPhaseCurrentOutputTbl() {
-        if (currentIterationsNumber == null)
-            currentIterationsNumber = 1L;
+        if (currentIterationsNumber == null) {
+            currentIterationsNumber = 0L;
+            previousIterationsNumber = 0L;
+        }
+        else {
+            if (currentIterationsNumber.equals(previousIterationsNumber)) {
+                String errMsg = "Handler has called getter of DFL script, without having " +
+                        "increased the iterations number first.";
+                log.warn(errMsg);
+                throw new IterationsStateFatalException(errMsg, algorithmKey);
+            }
+            else
+                previousIterationsNumber = currentIterationsNumber;
+        }
         return stepPhaseOutputTblVariableName + "_" + currentIterationsNumber;
     }
 }
