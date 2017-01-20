@@ -16,7 +16,7 @@ import madgik.exareme.common.app.engine.AdpDBStatus;
  */
 public class IterationsDispatcher implements AdpDBQueryListener {
     private static final Logger log = Logger.getLogger(IterationsDispatcher.class);
-    private IterationsScheduler iterationsScheduler = IterationsScheduler.getInstance();
+    private IterationsScheduler iterationsScheduler;
 
     private IterationsDispatcher() {
     }
