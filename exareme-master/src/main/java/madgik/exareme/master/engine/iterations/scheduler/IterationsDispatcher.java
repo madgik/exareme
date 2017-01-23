@@ -40,4 +40,8 @@ public class IterationsDispatcher implements AdpDBQueryListener {
     public void terminated(AdpDBQueryID queryID, AdpDBStatus status) {
         iterationsScheduler.scheduleAlgorithmUpdate(queryID, status);
     }
+
+    public void submitAlgorithmTerminationEvent(String algorithmKey) {
+        iterationsScheduler.scheduleAlgorithmCompletion(algorithmKey);
+    }
 }

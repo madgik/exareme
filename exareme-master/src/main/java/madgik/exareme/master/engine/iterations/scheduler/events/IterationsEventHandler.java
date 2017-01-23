@@ -25,7 +25,7 @@ import madgik.exareme.utils.eventProcessor.EventHandler;
 public abstract class IterationsEventHandler<T extends IterationsEvent>
         implements EventHandler<T> {
     protected IterationsStateManager iterationsStateManager;
-    private IterationsDispatcher iterationsDispatcher;
+    protected IterationsDispatcher iterationsDispatcher;
 
     public IterationsEventHandler(IterationsStateManager manager,
                                   IterationsDispatcher dispatcher) {
