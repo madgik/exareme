@@ -72,9 +72,6 @@ public class IterativeAlgorithmState {
     // An AdpDBClient is required per iterative algorithm.
     private AdpDBClient adpDBClient = null;
 
-    private Connection iterationsDBConnection = null;
-    private Statement iterationsDBSelectStatement = null;
-
     // If this field's value is null, it signifies that the execution of the algorithm hasn't yet
     // started.
     private IterativeAlgorithmPhasesModel currentExecutionPhase;
