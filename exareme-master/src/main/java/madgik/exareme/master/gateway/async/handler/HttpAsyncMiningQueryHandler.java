@@ -37,6 +37,9 @@ import madgik.exareme.master.engine.AdpDBManager;
 import madgik.exareme.master.engine.AdpDBManagerLocator;
 import madgik.exareme.master.engine.iterations.exceptions.IterationsFatalException;
 import madgik.exareme.master.engine.iterations.handler.IterationsHandler;
+import madgik.exareme.master.engine.iterations.handler.NIterativeAlgorithmResultEntity;
+import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
+import madgik.exareme.master.gateway.ExaremeGatewayUtils;
 import madgik.exareme.master.gateway.async.handler.entity.NQueryResultEntity;
 import madgik.exareme.master.queryProcessor.composer.AlgorithmsProperties;
 import madgik.exareme.master.queryProcessor.composer.Composer;
@@ -154,11 +157,12 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 AdpDBClient dbClient =
                         AdpDBClientFactory.createDBClient(manager, clientProperties);
                 queryStatus = dbClient.query(qKey, dfl);
+                BasicHttpEntity entity = new NQueryResultEntity(queryStatus, ds,
+                        ExaremeGatewayUtils.RESPONSE_BUFFER_SIZE);
+                response.setStatusCode(HttpStatus.SC_OK);
+                response.setEntity(entity);
             }
 
-            BasicHttpEntity entity = new NQueryResultEntity(queryStatus, ds);
-            response.setStatusCode(HttpStatus.SC_OK);
-            response.setEntity(entity);
         } catch (ComposerException e) {
             log.error(e);
         } catch (IterationsFatalException e) {
@@ -168,7 +172,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             log.error(e);
         } catch (Exception e) {
             log.error(e);
-            throw new IOException("Unable to compose dfl.");
+            throw new IOException(e.getMessage(), e);
         }
     }
 }
