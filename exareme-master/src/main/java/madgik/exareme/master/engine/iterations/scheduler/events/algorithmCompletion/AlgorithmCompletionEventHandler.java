@@ -15,12 +15,12 @@ import madgik.exareme.utils.eventProcessor.EventProcessor;
  * @author Christos Aslanoglou <br> caslanoglou@di.uoa.gr <br> University of Athens / Department of
  *         Informatics and Telecommunications.
  */
-public class AlgorithmCompletionHandler extends IterationsEventHandler<AlgorithmCompletionEvent> {
+public class AlgorithmCompletionEventHandler extends IterationsEventHandler<AlgorithmCompletionEvent> {
     private static final Logger log = Logger.getLogger(NewAlgorithmEventHandler.class);
 
 
-    public AlgorithmCompletionHandler(IterationsStateManager manager,
-                                      IterationsDispatcher dispatcher) {
+    public AlgorithmCompletionEventHandler(IterationsStateManager manager,
+                                           IterationsDispatcher dispatcher) {
         super(manager, dispatcher);
     }
 
@@ -33,6 +33,9 @@ public class AlgorithmCompletionHandler extends IterationsEventHandler<Algorithm
                 log.debug("Lock was already acquired, exiting...");
                 return;
             }
+            // Clean up iterations state manager & signify completion.
+            iterationsStateManager.removeIterativeAlgorithm(ias.getAlgorithmKey());
+            ias.signifyAlgorithmCompletion();
             if (log.isDebugEnabled())
                 log.info("Iterative algorithm " + ias.getAlgorithmKey() + " terminated.");
         } finally {

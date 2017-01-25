@@ -73,7 +73,7 @@ public class IterationsScheduler {
                     + AlgorithmCompletionEvent.class.getSimpleName());
         iterationsSchedulerState.getEventProcessor().queue(
                 new AlgorithmCompletionEvent(algorithmKey),
-                iterationsSchedulerState.getAlgorithmCompletionHandler(),
+                iterationsSchedulerState.getAlgorithmCompletionEventHandler(),
                 null
         );
     }

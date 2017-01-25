@@ -1,6 +1,6 @@
 package madgik.exareme.master.engine.iterations.scheduler;
 
-import madgik.exareme.master.engine.iterations.scheduler.events.algorithmCompletion.AlgorithmCompletionHandler;
+import madgik.exareme.master.engine.iterations.scheduler.events.algorithmCompletion.AlgorithmCompletionEventHandler;
 import madgik.exareme.master.engine.iterations.scheduler.events.newAlgorithm.NewAlgorithmEventHandler;
 import madgik.exareme.master.engine.iterations.scheduler.events.newAlgorithm.NewAlgorithmEventListener;
 import madgik.exareme.master.engine.iterations.scheduler.events.phaseCompletion.PhaseCompletionEventHandler;
@@ -23,7 +23,7 @@ class IterationsSchedulerState {
     private NewAlgorithmEventListener newAlgorithmEventListener;
     private PhaseCompletionEventHandler phaseCompletionEventHandler;
     private PhaseCompletionEventListener phaseCompletionEventListener;
-    private AlgorithmCompletionHandler algorithmCompletionHandler;
+    private AlgorithmCompletionEventHandler algorithmCompletionEventHandler;
 
     IterationsSchedulerState(IterationsScheduler iterationsScheduler) {
         iterationsStateManager = IterationsStateManagerImpl.getInstance();
@@ -39,7 +39,7 @@ class IterationsSchedulerState {
                 iterationsStateManager, iterationsDispatcher);
         phaseCompletionEventHandler = new PhaseCompletionEventHandler(
                 iterationsStateManager, iterationsDispatcher);
-        algorithmCompletionHandler = new AlgorithmCompletionHandler(
+        algorithmCompletionEventHandler = new AlgorithmCompletionEventHandler(
                 iterationsStateManager, iterationsDispatcher);
     }
 
@@ -69,7 +69,7 @@ class IterationsSchedulerState {
         return phaseCompletionEventListener;
     }
 
-    AlgorithmCompletionHandler getAlgorithmCompletionHandler() {
-        return algorithmCompletionHandler;
+    AlgorithmCompletionEventHandler getAlgorithmCompletionEventHandler() {
+        return algorithmCompletionEventHandler;
     }
 }

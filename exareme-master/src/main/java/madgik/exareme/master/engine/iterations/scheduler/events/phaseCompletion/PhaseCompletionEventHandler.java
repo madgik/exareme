@@ -74,6 +74,7 @@ public class PhaseCompletionEventHandler extends IterationsEventHandler<PhaseCom
                         queryStatus = submitQueryAndUpdateExecutionPhase(ias, step);
                     } else {
                         queryStatus = submitQueryAndUpdateExecutionPhase(ias, finalize);
+                        ias.setAdpDBClientFinalizeQueryStatus(queryStatus);
                     }
                     break;
 
