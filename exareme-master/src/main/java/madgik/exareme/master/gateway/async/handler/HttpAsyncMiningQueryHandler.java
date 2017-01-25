@@ -143,10 +143,14 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             // Bypass direct composer call in case of iterative algorithm.
             if (algorithmProperties.getType() ==
                     AlgorithmsProperties.AlgorithmProperties.AlgorithmType.iterative) {
-                String iterativeAlgorithmKey =
+
+                final IterativeAlgorithmState iterativeAlgorithmState =
                         iterationsHandler.handleNewIterativeAlgorithmRequest(algorithmProperties);
-                // WIP
-                return;
+
+                BasicHttpEntity entity = new NIterativeAlgorithmResultEntity(
+                        iterativeAlgorithmState, ds, ExaremeGatewayUtils.RESPONSE_BUFFER_SIZE);
+                response.setStatusCode(HttpStatus.SC_OK);
+                response.setEntity(entity);
             } else {
                 dfl = composer.composeVirtual(qKey, algorithmProperties, query, null);
                 log.debug(dfl);

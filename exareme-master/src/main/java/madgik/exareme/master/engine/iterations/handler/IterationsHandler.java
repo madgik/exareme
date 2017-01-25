@@ -3,6 +3,7 @@ package madgik.exareme.master.engine.iterations.handler;
 import org.apache.log4j.Logger;
 
 import madgik.exareme.master.engine.AdpDBManagerLocator;
+import madgik.exareme.master.engine.iterations.scheduler.IterationsScheduler;
 import madgik.exareme.master.engine.iterations.state.IterationsStateManager;
 import madgik.exareme.master.engine.iterations.state.IterationsStateManagerImpl;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
@@ -36,6 +37,7 @@ public class IterationsHandler {
     // Instance fields --------------------------------------------------------------------------
     private Composer composer = Composer.getInstance();
     private IterationsStateManager iterationsStateManager = IterationsStateManagerImpl.getInstance();
+    private IterationsScheduler iterationsScheduler = IterationsScheduler.getInstance();
 
     // Instance methods -------------------------------------------------------------------------
     /**
@@ -45,11 +47,11 @@ public class IterationsHandler {
      * algorithm's key. This can be used for status querying.
      *
      * @param algorithmProperties the properties of this algorithm
-     * @return the iterative algorithm's key
+     * @return the iterative algorithm state
      *
      * @see AlgorithmsProperties.AlgorithmProperties
      */
-    public String handleNewIterativeAlgorithmRequest(
+    public IterativeAlgorithmState handleNewIterativeAlgorithmRequest(
             AlgorithmsProperties.AlgorithmProperties algorithmProperties){
 
         // Generate algorithm key and a new IterativeAlgorithmState object
@@ -66,13 +68,16 @@ public class IterationsHandler {
 
         // Only after DFL initialization, submit to IterationsStateManager.
         iterationsStateManager.submitIterativeAlgorithm(algorithmKey, iterativeAlgorithmState);
-        // WIP -------
 
-        return null;
+        // WIP -------
+        iterationsScheduler.scheduleNewAlgorithm(algorithmKey);
+
+        return iterativeAlgorithmState;
     }
 
     /**
-     * Removes an {@link IterativeAlgorithmState} from {@link madgik.exareme.master.engine.iterations.state.IterationsStateManager}
+     * Removes an {@link IterativeAlgorithmState} from
+     * {@link madgik.exareme.master.engine.iterations.state.IterationsStateManager}
      * @param algorithmKey the algorithm's key (uniquely identifies an algorithm)
      */
     public void removeIterativeAlgorithmStateInstanceFromISM(String algorithmKey) {
