@@ -1,6 +1,7 @@
 package madgik.exareme.master.engine.iterations.state;
 
 import org.apache.commons.lang3.text.StrSubstitutor;
+import org.apache.http.nio.IOControl;
 import org.apache.log4j.Logger;
 
 import java.rmi.RemoteException;
@@ -16,6 +17,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import madgik.exareme.master.client.AdpDBClient;
 import madgik.exareme.master.client.AdpDBClientFactory;
 import madgik.exareme.master.client.AdpDBClientProperties;
+import madgik.exareme.master.client.AdpDBClientQueryStatus;
 import madgik.exareme.master.engine.AdpDBManager;
 import madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants;
 import madgik.exareme.master.engine.iterations.handler.IterationsHandlerDFLUtils;
@@ -71,6 +73,12 @@ public class IterativeAlgorithmState {
     // Iterations control-plane related fields [STATE] ------------------------------------------
     // An AdpDBClient is required per iterative algorithm.
     private AdpDBClient adpDBClient = null;
+    // Required for notifying algorithm completion so as to initiate final result response.
+    private IOControl ioctrl;
+    // Set to null on pre-execution phase, false during execution phase, set to true on completion.
+    private Boolean algorithmCompleted;
+    // Query status of finalize phase, to be used for obtaining response data.
+    private AdpDBClientQueryStatus adpDBClientFinalizeQueryStatus;
 
     // If this field's value is null, it signifies that the execution of the algorithm hasn't yet
     // started.
@@ -133,6 +141,7 @@ public class IterativeAlgorithmState {
         setUpPropertyFields();
 
         // State related fields initialization
+        algorithmCompleted = null;
         currentExecutionPhase = null;
         stepPhaseOutputTblVariableName =
                 IterationsHandlerDFLUtils.getStepPhaseOutputTblVariableName(algorithmKey);
@@ -240,6 +249,8 @@ public class IterativeAlgorithmState {
     /**
      * Returns the DFL script of the given iterative phase.
      *
+     * <p> For init phase simply returns the generated DFL script, <b>but also sets
+     * {@code algorithmCompleted} boolean field to {@code false}.</b>
      * <p>
      * For step, termination condition and finalize phases it runs an strSubstitution for
      * replacing the previous output phase placeholder accordingly.<br>
@@ -271,6 +282,7 @@ public class IterativeAlgorithmState {
         switch (phase) {
             case init:
                 dflScript = dflScripts[phase.ordinal()];
+                algorithmCompleted = false;
                 break;
             case step:
                 // Retrieve previousPhase outputTbl name & generate currentStep's outputTbl name
@@ -420,6 +432,79 @@ public class IterativeAlgorithmState {
         return false;
     }
 
+    /**
+     * Sets ioctrl provided by NIO via an
+     * {@link org.apache.http.nio.entity.HttpAsyncContentProducer}, i.e.
+     * {@link madgik.exareme.master.engine.iterations.handler.NIterativeAlgorithmResultEntity}.
+     */
+    public void setIoctrl(IOControl ioctrl) {
+        ensureAcquiredLock();
+        this.ioctrl = ioctrl;
+    }
+
+    /**
+     * Signifies algorithm completion by setting {@code algorithmCompleted} field to {@code true}
+     * <b>and requesting event notifications to be triggered for generating algorithm's
+     * response</b>. <p><b>Must be called with the lock of this instance acquired.</b><br> Must
+     * solely be called after execution phase.
+     */
+    public void signifyAlgorithmCompletion() {
+        ensureAcquiredLock();
+        if (!currentExecutionPhase.equals(IterativeAlgorithmPhasesModel.finalize)) {
+            String errMsg = "Attempt to signify algorithm completion before "
+                    + IterativeAlgorithmPhasesModel.finalize + " phase.";
+            log.error(errMsg);
+            throw new IterationsStateFatalException(errMsg, algorithmKey);
+        }
+        algorithmCompleted = true;
+        ioctrl.requestOutput();
+    }
+
+    /**
+     * Retrieves {@code algorithmCompleted} field.
+     * <p><b>Must be called with the lock of this instance acquired.</b><br>
+     */
+    public Boolean getAlgorithmCompleted() {
+        ensureAcquiredLock();
+        return algorithmCompleted;
+    }
+
+    /**
+     * Retrieves query status of finalize phase.
+     * <p><b>Must be called with the lock of this instance acquired.</b><br>
+     * To be called after algorithm completion.
+     *
+     * @throws IterationsStateFatalException if called before algorithm completion.
+     */
+    public AdpDBClientQueryStatus getAdpDBClientFinalizeQueryStatus() {
+        ensureAcquiredLock();
+        if (algorithmCompleted != null && !algorithmCompleted) {
+            String errMsg = "Retrieval of query status of finalize phase before algorithm " +
+                    "completion.";
+            log.error(errMsg);
+            throw new IterationsStateFatalException(errMsg, algorithmKey);
+        }
+        return adpDBClientFinalizeQueryStatus;
+    }
+
+    /**
+     * Sets query status of finalize query.
+     * <p><b>Must be called with the lock of this instance acquired.</b><br>
+     * To be called after submission of finalize phase query.
+     *
+     * @throws IterationsStateFatalException if called before finalize phase execution.
+     */
+    public void setAdpDBClientFinalizeQueryStatus(AdpDBClientQueryStatus adpDBClientFinalizeQueryStatus) {
+        ensureAcquiredLock();
+        if (!currentExecutionPhase.equals(IterativeAlgorithmPhasesModel.finalize)) {
+            String errMsg = "Attempt to query status of finalize phase before finalize phase query "
+                    + "submission.";
+            log.error(errMsg);
+            throw new IterationsStateFatalException(errMsg, algorithmKey);
+        }
+        this.adpDBClientFinalizeQueryStatus = adpDBClientFinalizeQueryStatus;
+    }
+
     // Utilities --------------------------------------------------------------------------------
     /**
      * Tries to acquire the lock.
@@ -427,6 +512,13 @@ public class IterativeAlgorithmState {
      */
     public boolean tryLock() {
         return lock.tryLock();
+    }
+
+    /**
+     * Locks this instance.
+     */
+    public void lock() {
+        lock.lock();
     }
 
     /**
