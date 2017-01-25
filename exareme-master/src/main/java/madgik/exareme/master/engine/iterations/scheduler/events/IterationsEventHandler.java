@@ -68,7 +68,7 @@ public abstract class IterationsEventHandler<T extends IterationsEvent>
     protected void updateLog(Logger log, AdpDBClientQueryStatus clientQueryStatus,
                              IterativeAlgorithmState ias) {
         if (log.isDebugEnabled() && clientQueryStatus != null)
-            log.debug("Submitted [" + ias.getCurrentExecutionPhase() + "-phase] query ["
-                    + clientQueryStatus.getQueryID().getLongId() + "] for: " + ias.toString());
+            log.debug("Submitted [" + ias.getCurrentExecutionPhase() + "-phase] query for: "
+                    + ias.toString());
     }
 }
