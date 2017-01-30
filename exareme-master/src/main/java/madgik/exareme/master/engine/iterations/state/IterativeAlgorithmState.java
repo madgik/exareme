@@ -329,6 +329,56 @@ public class IterativeAlgorithmState {
         this.currentIterationsNumber++;
     }
 
+    /**
+     * Retrieves termination condition from iterationsDB of this algorithm.
+     * <p><b>Must be called with the lock of this instance acquired.</b>
+     *
+     * @return true if the iterative algorithm should continue, false otherwise
+     */
+    public boolean readTerminationConditionValue() {
+        ensureAcquiredLock();
+
+        try {
+            Class.forName("org.sqlite.JDBC");
+        } catch (ClassNotFoundException e) {
+            String errMsg = "Could not find sqlite.JDBC driver class.";
+            log.error(e);
+            throw new IterationsStateFatalException(errMsg, e, algorithmKey);
+        }
+
+        Statement stmt = null;
+        try (Connection conn =
+                     DriverManager.getConnection("jdbc:sqlite:" + iterationsDBPath)) {
+            stmt = conn.createStatement();
+            ResultSet resultSet = stmt.executeQuery(selectTerminationConditionValue);
+            if (!resultSet.isBeforeFirst()) {
+                String errMsg = "No data returned from iterationsDB condition check table for "
+                        + toString();
+                log.warn(errMsg);
+                throw new IterationsStateFatalException(errMsg, algorithmKey);
+            }
+            if (resultSet.next()) {
+                // Iterations control logic writes either 1 or 0 at the terminationConditionCheck
+                // column.
+                return resultSet.getInt(iterationsConditionCheckColName) == 1;
+            }
+        } catch (SQLException e) {
+            String errMsg = "Failed to query for termination condition value for " + toString();
+            log.error(errMsg);
+            throw new IterationsStateFatalException(errMsg, e, algorithmKey);
+        }
+        finally {
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    log.error("Failed to close iterationsDB select statement for: " + toString());
+                }
+            }
+        }
+        return false;
+    }
+
     // Execution phase [Getters/Setters] --------------------------------------------------------
     /**
      * Retrieves the already created {@link AdpDBClient} for a new query submission.
@@ -380,56 +430,6 @@ public class IterativeAlgorithmState {
     public void setCurrentExecutionPhase(IterativeAlgorithmPhasesModel currentExecutionPhase) {
         ensureAcquiredLock();
         this.currentExecutionPhase = currentExecutionPhase;
-    }
-
-    /**
-     * Retrieves termination condition from iterationsDB of this algorithm.
-     * <p><b>Must be called with the lock of this instance acquired.</b>
-     *
-     * @return true if the iterative algorithm should continue, false otherwise
-     */
-    public boolean readTerminationConditionValue() {
-        ensureAcquiredLock();
-
-        try {
-            Class.forName("org.sqlite.JDBC");
-        } catch (ClassNotFoundException e) {
-            String errMsg = "Could not find sqlite.JDBC driver class.";
-            log.error(e);
-            throw new IterationsStateFatalException(errMsg, e, algorithmKey);
-        }
-
-        Statement stmt = null;
-        try (Connection conn =
-                     DriverManager.getConnection("jdbc:sqlite:" + iterationsDBPath)) {
-            stmt = conn.createStatement();
-            ResultSet resultSet = stmt.executeQuery(selectTerminationConditionValue);
-            if (!resultSet.isBeforeFirst()) {
-                String errMsg = "No data returned from iterationsDB condition check table for "
-                        + toString();
-                log.warn(errMsg);
-                throw new IterationsStateFatalException(errMsg, algorithmKey);
-            }
-            if (resultSet.next()) {
-                // Iterations control logic writes either 1 or 0 at the terminationConditionCheck
-                // column.
-                return resultSet.getInt(iterationsConditionCheckColName) == 1;
-            }
-        } catch (SQLException e) {
-            String errMsg = "Failed to query for termination condition value for " + toString();
-            log.error(errMsg);
-            throw new IterationsStateFatalException(errMsg, e, algorithmKey);
-        }
-        finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    log.error("Failed to close iterationsDB select statement for: " + toString());
-                }
-            }
-        }
-        return false;
     }
 
     /**
