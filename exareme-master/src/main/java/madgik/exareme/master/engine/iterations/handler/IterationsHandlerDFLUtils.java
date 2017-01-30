@@ -22,11 +22,20 @@ import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerC
 import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants.selectStr;
 
 /**
+ * Object that is responsible for SQL template file updates (i.e. adding iterations control
+ * required SQL statements) and for generating DFL scripts and templates.
+ * <p>
+ * Templates are used for supporting context-sharing between different iterative algorithm phases
+ * such as init, step, etc. (e.g. having the output of the previous step phase piped to the next
+ * step phase as input).
+ *
  * @author Christos Aslanoglou <br> caslanoglou@di.uoa.gr <br> University of Athens / Department of
  *         Informatics and Telecommunications.
  */
 public class IterationsHandlerDFLUtils {
     private static final Logger log = Logger.getLogger(IterationsHandlerDFLUtils.class);
+
+    // DFL Generation ---------------------------------------------------------------------------
 
     /**
      * Generates the DFL scripts (for all iterative algorithm phases).
@@ -156,6 +165,8 @@ public class IterationsHandlerDFLUtils {
         return dflScripts;
     }
 
+    // SQL Template updates ---------------------------------------------------------------------
+
     /**
      * Prepares the baseline of SQL updates to be applied on {@code template.sql} files.
      * <p>
@@ -163,7 +174,8 @@ public class IterationsHandlerDFLUtils {
      *
      * @return The baseline of SQL Updates to be applied to all template.sql files.
      */
-    private static ArrayList<Pair<String, IterationsHandlerDFLUtils.SQLUpdateLocation>> prepareBaselineSQLUpdates() {
+    private static ArrayList<Pair<String, IterationsHandlerDFLUtils.SQLUpdateLocation>>
+    prepareBaselineSQLUpdates() {
         // Prepare requireVars for iterationsDB.
         String requireVarsIterationsDB =
                 IterationsHandlerDFLUtils.generateRequireVarsString(new String[]{IterationsHandlerConstants.iterationsDBName});
@@ -274,6 +286,8 @@ public class IterationsHandlerDFLUtils {
         }
     }
 
+    // SQL Template updates utilities -----------------------------------------------------------
+
     /**
      * For proper iterations DFL generation, some scripts need to be updated with specific prefix
      * or suffix.
@@ -354,6 +368,7 @@ public class IterationsHandlerDFLUtils {
             throw new IllegalArgumentException("variables String[] cannot be null");
         if (variables.length == 0)
             throw new IllegalArgumentException("variables String[] cannot be empty");
+
         StringBuilder requireVarsBuilder = new StringBuilder(IterationsHandlerConstants.requireVars);
         for (String var : variables) {
             if (var.isEmpty())
@@ -364,6 +379,7 @@ public class IterationsHandlerDFLUtils {
         return requireVarsBuilder.toString();
     }
 
+    // DFL generation related utilities ---------------------------------------------------------
 
     /**
      * Retrieves the last global script in a {@code multiple_local_global} directory structure.
@@ -376,6 +392,7 @@ public class IterationsHandlerDFLUtils {
     private static File getLastGlobalFromMultipleLocalGlobal(File algorithmPhasePath) {
         if (algorithmPhasePath == null)
             throw new IterationsFatalException("algorithmPhasePath parameter cannot be null");
+
         File[] listFiles = new File(algorithmPhasePath.toString())
                 .listFiles(new FileFilter() {
                     @Override
@@ -383,7 +400,12 @@ public class IterationsHandlerDFLUtils {
                         return pathname.isDirectory();
                     }
                 });
+
         if (listFiles != null) {
+            if (listFiles.length == 0)
+                throw new IterationsFatalException("Directory: ["
+                        + algorithmPhasePath.toString() + "] contains no files.");
+
             Arrays.sort(listFiles);
             File lastMultipleLocalGlobalDir = listFiles[listFiles.length - 1].getAbsoluteFile();
             return new File(
