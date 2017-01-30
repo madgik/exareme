@@ -4,7 +4,6 @@ import org.apache.commons.lang3.text.StrSubstitutor;
 import org.apache.http.nio.IOControl;
 import org.apache.log4j.Logger;
 
-import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -15,10 +14,7 @@ import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
 import madgik.exareme.master.client.AdpDBClient;
-import madgik.exareme.master.client.AdpDBClientFactory;
-import madgik.exareme.master.client.AdpDBClientProperties;
 import madgik.exareme.master.client.AdpDBClientQueryStatus;
-import madgik.exareme.master.engine.AdpDBManager;
 import madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants;
 import madgik.exareme.master.engine.iterations.handler.IterationsHandlerDFLUtils;
 import madgik.exareme.master.engine.iterations.state.exceptions.IterationsStateFatalException;
@@ -112,29 +108,20 @@ public class IterativeAlgorithmState {
      *
      * @param algorithmKey the key uniquely identifying the algorithm
      * @param algorithmProperties the algorithm properties of the algorithm
-     * @param manager the AdpDBManager of the system
+     * @param adpDBClient the AdpDBClient to be used for the current algorithm execution
      * @throws IterationsStateFatalException if creation of the AdpDBClient fails with Remote
      * Exception
      */
     public IterativeAlgorithmState(
             String algorithmKey,
             AlgorithmsProperties.AlgorithmProperties algorithmProperties,
-            AdpDBManager manager) {
+            AdpDBClient adpDBClient) {
 
         this.algorithmKey = algorithmKey;
         iterationsDBPath =
                 ComposerConstants.mipAlgorithmsDemoWorkingDirectory + algorithmKey + "/"
                         + IterationsHandlerConstants.iterationsParameterIterDBValueSuffix;
-
-        String database = ComposerConstants.mipAlgorithmsDemoWorkingDirectory + algorithmKey;
-        try {
-            createAdpDBClient(manager, database);
-        } catch (RemoteException e) {
-            String errMsg = "Failed to initialize " + AdpDBClient.class.getSimpleName()
-                    + " for algorithm: " + algorithmKey;
-            log.error(errMsg);
-            throw new IterationsStateFatalException(errMsg, e, algorithmKey);
-        }
+        this.adpDBClient = adpDBClient;
         this.algorithmProperties = algorithmProperties;
         algorithmPropertiesMap =
                 AlgorithmsProperties.AlgorithmProperties.toHashMap(algorithmProperties);
@@ -211,21 +198,6 @@ public class IterativeAlgorithmState {
     }
 
     // Pre-Execution phase ======================================================================
-
-    /**
-     * Initializes the {@link AdpDBClient} of the iterative algorithm.
-     *
-     * @param manager the manager needed for creating the client
-     * @param database the database string of the iterative algorithm
-     * @throws RemoteException if creation of AdpDBClient fails
-     */
-    private void createAdpDBClient(AdpDBManager manager, String database) throws RemoteException {
-        AdpDBClientProperties clientProperties =
-                new AdpDBClientProperties(database, "", "",
-                        false, false, -1, 10);
-        adpDBClient = AdpDBClientFactory.createDBClient(manager, clientProperties);
-    }
-
     // Pre-Execution phase fields [Setters/Getters] ---------------------------------------------
     public String getAlgorithmKey() {
         return algorithmKey;

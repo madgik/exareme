@@ -145,7 +145,8 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                     AlgorithmsProperties.AlgorithmProperties.AlgorithmType.iterative) {
 
                 final IterativeAlgorithmState iterativeAlgorithmState =
-                        iterationsHandler.handleNewIterativeAlgorithmRequest(algorithmProperties);
+                        iterationsHandler.handleNewIterativeAlgorithmRequest(
+                                manager, algorithmProperties);
 
                 BasicHttpEntity entity = new NIterativeAlgorithmResultEntity(
                         iterativeAlgorithmState, ds, ExaremeGatewayUtils.RESPONSE_BUFFER_SIZE);
