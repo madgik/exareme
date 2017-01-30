@@ -43,19 +43,21 @@ public class IterationsStateManagerImpl implements IterationsStateManager {
     @Override
     public void submitIterativeAlgorithm(String algorithmKey, IterativeAlgorithmState iterativeAlgorithmState) {
         if (algorithmKey == null || iterativeAlgorithmState == null) {
-            String msg = algorithmKey == null ? "algorithmKey " : "";
-            msg += iterativeAlgorithmState == null ?
-                    (!msg.isEmpty() ? " or iterativeAlgorithmState " : "iterativeAlgorithmState ")
+            String errMsg = algorithmKey == null ? "algorithmKey " : "";
+            errMsg += iterativeAlgorithmState == null ?
+                    (!errMsg.isEmpty() ? " or iterativeAlgorithmState " : "iterativeAlgorithmState ")
                     : "";
-            msg += "cannot be null.";
-            throw new IllegalArgumentException(msg);
+            errMsg += "cannot be null.";
+            throw new IllegalArgumentException(errMsg);
         }
 
         IterativeAlgorithmState dummyIterAlgorithmState = iterativeAlgorithmMapping.get(algorithmKey);
-        if (dummyIterAlgorithmState != null)
-            throw new IterationsStateFatalException("An IterativeAlgorithmState entry ("
+        if (dummyIterAlgorithmState != null) {
+            String errMsg = "An IterativeAlgorithmState entry ("
                     + dummyIterAlgorithmState.toString() + ") tied to the " +
-                    "specified algorithmKey (\"" + algorithmKey + "\" already exists.", null);
+                    "specified algorithmKey (\"" + algorithmKey + "\" already exists.";
+            throw new IterationsStateFatalException(errMsg, null);
+        }
 
         iterativeAlgorithmMapping.put(algorithmKey, iterativeAlgorithmState);
     }
@@ -66,7 +68,8 @@ public class IterationsStateManagerImpl implements IterationsStateManager {
     @Override
     public IterativeAlgorithmState removeIterativeAlgorithm(String algorithmKey) {
         if (algorithmKey == null)
-            throw new IllegalArgumentException("algorithmKey cannot be null.");
+            throw new IllegalArgumentException("Attempt to remove IterativeAlgorithm from " +
+                    this.getClass().getSimpleName() + ": algorithmKey cannot be null.");
 
         return iterativeAlgorithmMapping.remove(algorithmKey);
     }
@@ -77,7 +80,8 @@ public class IterationsStateManagerImpl implements IterationsStateManager {
     @Override
     public IterativeAlgorithmState getIterativeAlgorithm(String algorithmKey) {
         if (algorithmKey == null)
-            throw new IllegalArgumentException("algorithmKey cannot be null.");
+            throw new IllegalArgumentException("Attempt to retrieve IterativeAlgorithm from " +
+                    this.getClass().getSimpleName() + ": algorithmKey cannot be null.");
 
         return iterativeAlgorithmMapping.get(algorithmKey);
     }
@@ -110,7 +114,8 @@ public class IterationsStateManagerImpl implements IterationsStateManager {
     @Override
     public void removeQueryOfIterativeAlgorithm(AdpDBQueryID queryID) {
         if (queryID == null)
-            throw new IllegalArgumentException("queryID cannot be null.");
+            throw new IllegalArgumentException("Attempt to retrieve IterativeAlgorithm from " +
+                    this.getClass().getSimpleName() + ": queryID cannot be null.");
 
         queryIdToAlgorithmKeyMapping.remove(queryID);
     }
@@ -121,7 +126,8 @@ public class IterationsStateManagerImpl implements IterationsStateManager {
     @Override
     public IterativeAlgorithmState getIterativeAlgorithm(AdpDBQueryID queryID) {
         if (queryID == null)
-            throw new IllegalArgumentException("queryID cannot be null.");
+            throw new IllegalArgumentException("Attempt to retrieve IterativeAlgorithm from " +
+                    this.getClass().getSimpleName() + ": queryID cannot be null.");
 
         String algorithmKey = queryIdToAlgorithmKeyMapping.get(queryID);
         if (algorithmKey == null)
