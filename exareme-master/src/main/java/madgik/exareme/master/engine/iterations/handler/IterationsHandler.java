@@ -70,6 +70,8 @@ public class IterationsHandler {
         String algorithmKey = generateAlgorithmKey(algorithmProperties);
 
         String database = ComposerConstants.mipAlgorithmsDemoWorkingDirectory + algorithmKey;
+        // -----------------------------------------
+        // Create AdpDBClient of iterative algorithm state (used for submitting all queries)
         AdpDBClient adpDBClient;
         try {
             AdpDBClientProperties clientProperties =
@@ -82,18 +84,29 @@ public class IterationsHandler {
             log.error(errMsg);
             throw new IterationsFatalException(errMsg, e);
         }
+        if (log.isDebugEnabled())
+            log.debug("Created " + AdpDBClient.class.getSimpleName() + " for iterative algorithm: "
+                    + algorithmKey + ".");
 
         IterativeAlgorithmState iterativeAlgorithmState =
                 new IterativeAlgorithmState(algorithmKey, algorithmProperties, adpDBClient);
-        // --------------------------------------------------------------------------------------
+        if (log.isDebugEnabled())
+            log.debug("Created " + IterativeAlgorithmState.class.getSimpleName() + " for: "
+                    + iterativeAlgorithmState.toString() + ".");
+        // -----------------------------------------
         // Prepare DFL scripts
         iterativeAlgorithmState.setDflScripts(
                 IterationsHandlerDFLUtils.prepareDFLScripts(
                 algorithmKey, composer, algorithmProperties, iterativeAlgorithmState));
+        if (log.isDebugEnabled())
+            log.debug("Generated DFL scripts for: " + iterativeAlgorithmState.toString());
 
+        // -----------------------------------------
         // Only after DFL initialization, submit to IterationsStateManager and schedule it
         iterationsStateManager.submitIterativeAlgorithm(algorithmKey, iterativeAlgorithmState);
         iterationsScheduler.scheduleNewAlgorithm(algorithmKey);
+
+        log.info(iterativeAlgorithmState.toString() + " was submitted.");
 
         return iterativeAlgorithmState;
     }
@@ -104,6 +117,8 @@ public class IterationsHandler {
      * @param algorithmKey the algorithm's key (uniquely identifies an algorithm)
      */
     public void removeIterativeAlgorithmStateInstanceFromISM(String algorithmKey) {
+        log.info("Removing " + IterativeAlgorithmState.class.getSimpleName() + " from "
+                + IterationsStateManager.class.getSimpleName());
         iterationsStateManager.removeIterativeAlgorithm(algorithmKey);
     }
 }
