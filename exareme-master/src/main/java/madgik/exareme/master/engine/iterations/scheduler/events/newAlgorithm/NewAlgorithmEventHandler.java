@@ -4,12 +4,13 @@ import org.apache.log4j.Logger;
 
 import java.rmi.RemoteException;
 
+import madgik.exareme.common.app.engine.AdpDBQueryID;
 import madgik.exareme.master.client.AdpDBClientQueryStatus;
 import madgik.exareme.master.engine.iterations.scheduler.IterationsDispatcher;
 import madgik.exareme.master.engine.iterations.scheduler.events.IterationsEventHandler;
-import madgik.exareme.master.engine.iterations.scheduler.exceptions.IterationsSchedulerFatalException;
 import madgik.exareme.master.engine.iterations.state.IterationsStateManager;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
+import madgik.exareme.master.engine.iterations.state.exceptions.IterationsStateFatalException;
 import madgik.exareme.utils.eventProcessor.EventProcessor;
 
 import static madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState.IterativeAlgorithmPhasesModel.init;
@@ -38,8 +39,7 @@ public class NewAlgorithmEventHandler extends IterationsEventHandler<NewAlgorith
      * This is done to ensure consistency in the case which the initialization query finishes even
      * before this handler exits.)
      *
-     * @throws IterationsSchedulerFatalException if submission of the query and registering of the
-     *                                           listener fails with RemoteException
+     * @throws RemoteException if submission of the query and registering of the listener fails
      * @see IterativeAlgorithmState
      * @see madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState.IterativeAlgorithmPhasesModel#init
      */
@@ -47,13 +47,24 @@ public class NewAlgorithmEventHandler extends IterationsEventHandler<NewAlgorith
     public void handle(NewAlgorithmEvent event, EventProcessor proc) throws RemoteException {
         IterativeAlgorithmState ias =
                 iterationsStateManager.getIterativeAlgorithm(event.getAlgorithmKey());
+        if (ias == null) {
+            // In this type of event, it is an error if the iterative algorithm state doesn't reside
+            // in IterationsStateManager.
+            // This should never happen, it is simply an assertion for programming error.
+            log.error(IterativeAlgorithmState.class.getSimpleName() + " for algorithmKey: ["
+                    + event.getAlgorithmKey() + "] doesn't exist in "
+                    + IterationsStateManager.class.getSimpleName());
+            return;
+        }
+
+        AdpDBClientQueryStatus queryStatus = null;
         try {
             if (!ias.tryLock()) {
-                log.debug("Lock was already acquired, exiting...");
+                log.debug("Lock was already acquired for " + ias.toString() + ", exiting...");
                 return;
             }
 
-            AdpDBClientQueryStatus queryStatus = submitQueryAndUpdateExecutionPhase(ias, init);
+            queryStatus = submitQueryAndUpdateExecutionPhase(ias, init);
 
             iterationsStateManager.submitQueryForIterativeAlgorithm(ias.getAlgorithmKey(),
                     queryStatus.getQueryID());
@@ -62,11 +73,13 @@ public class NewAlgorithmEventHandler extends IterationsEventHandler<NewAlgorith
 
             updateLog(log, queryStatus, ias);
 
-        } catch (RemoteException e) {
-            String errMsg = "Failed to register listener for init phase of algorithm \""
-                    + ias.toString() + "\"";
-            log.error(errMsg, e);
-            throw new IterationsSchedulerFatalException(errMsg, ias.getAlgorithmKey());
+        } catch (RemoteException | IterationsStateFatalException e) {
+            String errMsg = ias.toString() + ": initiation failed";
+            AdpDBQueryID queryID = queryStatus != null ? queryStatus.getQueryID() : null;
+            cleanupOnFailure(ias.getAlgorithmKey(), queryID, log, errMsg);
+            if (e instanceof RemoteException) {
+                throw e;
+            }
         } finally {
             ias.releaseLock();
         }

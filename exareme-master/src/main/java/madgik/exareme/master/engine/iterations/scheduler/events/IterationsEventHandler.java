@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 
 import java.rmi.RemoteException;
 
+import madgik.exareme.common.app.engine.AdpDBQueryID;
 import madgik.exareme.master.client.AdpDBClientQueryStatus;
 import madgik.exareme.master.engine.iterations.scheduler.IterationsDispatcher;
 import madgik.exareme.master.engine.iterations.state.IterationsStateManager;
@@ -70,5 +71,35 @@ public abstract class IterationsEventHandler<T extends IterationsEvent>
         if (log.isDebugEnabled() && clientQueryStatus != null)
             log.debug("Submitted [" + ias.getCurrentExecutionPhase() + "-phase] query for: "
                     + ias.toString());
+    }
+
+    /**
+     * Wrapper for logging an error, cleaning-up {@link IterationsStateManager} <b>and signifying
+     * an error to initiate erroneous response to client.</b>
+     *
+     * @param algorithmKey the key of the algorithm for which an error occurred, can be null in the
+     *                     case where an {@link IterativeAlgorithmState} was already removed from
+     *                     {@link IterationsStateManager}
+     * @param queryID      the query ID of the query that was recently submitted (to be removed from
+     *                     {@link IterationsStateManager}), can be null if the error occurred before
+     *                     successful query submission
+     * @param log          the log of the concrete event handler class
+     * @param errMsg       the error message to be logged in the ERROR channel of the logger
+     */
+    protected void cleanupOnFailure(String algorithmKey, AdpDBQueryID queryID,
+                                    Logger log, String errMsg) {
+        if (errMsg != null)
+            log.error(errMsg);
+
+        if (algorithmKey != null) {
+            IterativeAlgorithmState ias =
+                    iterationsStateManager.getIterativeAlgorithm(algorithmKey);
+            // Signify an error has occurred, so as to handle response to client.
+            ias.signifyAlgorithmCompletion();
+            iterationsStateManager.removeIterativeAlgorithm(algorithmKey);
+        }
+
+        if (queryID != null)
+            iterationsStateManager.removeQueryOfIterativeAlgorithm(queryID);
     }
 }

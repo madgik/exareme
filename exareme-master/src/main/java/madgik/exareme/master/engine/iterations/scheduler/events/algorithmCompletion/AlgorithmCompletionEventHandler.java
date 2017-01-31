@@ -2,8 +2,6 @@ package madgik.exareme.master.engine.iterations.scheduler.events.algorithmComple
 
 import org.apache.log4j.Logger;
 
-import java.rmi.RemoteException;
-
 import madgik.exareme.master.engine.iterations.scheduler.IterationsDispatcher;
 import madgik.exareme.master.engine.iterations.scheduler.events.IterationsEventHandler;
 import madgik.exareme.master.engine.iterations.scheduler.events.newAlgorithm.NewAlgorithmEventHandler;
@@ -24,10 +22,24 @@ public class AlgorithmCompletionEventHandler extends IterationsEventHandler<Algo
         super(manager, dispatcher);
     }
 
+    /**
+     * Cleans-up {@link IterationsStateManager} from {@link IterativeAlgorithmState} and signifies
+     * algorithm completion.
+     */
     @Override
-    public void handle(AlgorithmCompletionEvent event, EventProcessor proc) throws RemoteException {
+    public void handle(AlgorithmCompletionEvent event, EventProcessor proc) {
         IterativeAlgorithmState ias =
                 iterationsStateManager.getIterativeAlgorithm(event.getAlgorithmKey());
+        if (ias == null) {
+            // In this type of event, it is an error if the iterative algorithm state doesn't reside
+            // in IterationsStateManager.
+            // This should never happen, it is simply an assertion for programming error.
+            log.error(IterativeAlgorithmState.class.getSimpleName() + " for algorithmKey: ["
+                    + event.getAlgorithmKey() + "] doesn't exist in "
+                    + IterationsStateManager.class.getSimpleName());
+            return;
+        }
+
         try {
             if (!ias.tryLock()) {
                 log.debug("Lock was already acquired, exiting...");
@@ -36,8 +48,7 @@ public class AlgorithmCompletionEventHandler extends IterationsEventHandler<Algo
             // Clean up iterations state manager & signify completion.
             iterationsStateManager.removeIterativeAlgorithm(ias.getAlgorithmKey());
             ias.signifyAlgorithmCompletion();
-            if (log.isDebugEnabled())
-                log.info("Iterative algorithm " + ias.getAlgorithmKey() + " terminated.");
+            log.info(ias.getAlgorithmKey() + " terminated.");
         } finally {
             ias.releaseLock();
         }
