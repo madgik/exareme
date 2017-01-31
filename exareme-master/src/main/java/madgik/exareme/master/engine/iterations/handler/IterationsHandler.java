@@ -104,6 +104,15 @@ public class IterationsHandler {
         // -----------------------------------------
         // Only after DFL initialization, submit to IterationsStateManager and schedule it
         iterationsStateManager.submitIterativeAlgorithm(algorithmKey, iterativeAlgorithmState);
+
+        /*
+         Lock the instance so that IOCtrl is set, and thus NewAlgorithmEventHandler doesn't
+         run (it would acquire the lock first). This is to cover a case in which the algorithm
+         execution crashes during submission of the init-phase query and the IOCtrl hasn't been
+         already set, and thus error-response to the client wasn't forwarded.
+         */
+        iterativeAlgorithmState.lock();
+
         iterationsScheduler.scheduleNewAlgorithm(algorithmKey);
 
         log.info(iterativeAlgorithmState.toString() + " was submitted.");

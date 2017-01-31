@@ -53,7 +53,6 @@ public class NIterativeAlgorithmResultEntity extends BasicHttpEntity
             // Registering IOCtrl to Iterative Algorithm State so as to be notified for
             // algorithm completion event.
             try {
-                iterativeAlgorithmState.lock();
                 iterativeAlgorithmState.setIoctrl(ioctrl);
                 ioctrl.suspendOutput();
                 haveRegisteredIOCtrl = true;

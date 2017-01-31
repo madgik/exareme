@@ -45,6 +45,9 @@ public class NewAlgorithmEventHandler extends IterationsEventHandler<NewAlgorith
      */
     @Override
     public void handle(NewAlgorithmEvent event, EventProcessor proc) throws RemoteException {
+        if (log.isDebugEnabled())
+            log.debug("Received new algorithm request [" + event.getAlgorithmKey() + "].");
+
         IterativeAlgorithmState ias =
                 iterationsStateManager.getIterativeAlgorithm(event.getAlgorithmKey());
         if (ias == null) {
@@ -59,10 +62,16 @@ public class NewAlgorithmEventHandler extends IterationsEventHandler<NewAlgorith
 
         AdpDBClientQueryStatus queryStatus = null;
         try {
-            if (!ias.tryLock()) {
-                log.debug("Lock was already acquired for " + ias.toString() + ", exiting...");
-                return;
-            }
+            /*
+             Here we need a blocking lock acquirement (instead of tryLock), since the
+             IterativeAlgorithmState of a new algorithm is already locked and will be unlocked
+             when its IOCtrl (for notifying for either algorithm completion or algorithm error)
+             has been set.
+             Thus, the IterativeAlgorithmState is locked by IterationsHandler and unlocked
+             by NIterativeAlgorithmResultEntity#produceContent after IOCtrl has been set.
+             This is required in the case where init-phase query submission fails.
+             */
+            ias.lock();
 
             queryStatus = submitQueryAndUpdateExecutionPhase(ias, init);
 
@@ -78,6 +87,8 @@ public class NewAlgorithmEventHandler extends IterationsEventHandler<NewAlgorith
             AdpDBQueryID queryID = queryStatus != null ? queryStatus.getQueryID() : null;
             cleanupOnFailure(ias.getAlgorithmKey(), queryID, log, errMsg);
             if (e instanceof RemoteException) {
+                // In case of RemoteException we need to throw it so that EventHandlerRunnable
+                // catches it.
                 throw e;
             }
         } finally {
