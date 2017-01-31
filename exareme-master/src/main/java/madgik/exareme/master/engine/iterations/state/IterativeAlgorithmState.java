@@ -73,6 +73,8 @@ public class IterativeAlgorithmState {
     private IOControl ioctrl;
     // Set to null on pre-execution phase, false during execution phase, set to true on completion.
     private Boolean algorithmCompleted;
+    // Set to true to signify necessity for error response.
+    private Boolean algorithmHasError;
     // Query status of finalize phase, to be used for obtaining response data.
     private AdpDBClientQueryStatus adpDBClientFinalizeQueryStatus;
 
@@ -129,6 +131,7 @@ public class IterativeAlgorithmState {
 
         // State related fields initialization
         algorithmCompleted = null;
+        algorithmHasError = false;
         currentExecutionPhase = null;
         stepPhaseOutputTblVariableName =
                 IterationsHandlerDFLUtils.getStepPhaseOutputTblVariableName(algorithmKey);
@@ -416,9 +419,9 @@ public class IterativeAlgorithmState {
 
     /**
      * Signifies algorithm completion by setting {@code algorithmCompleted} field to {@code true}
-     * <b>and requesting event notifications to be triggered for generating algorithm's
-     * response</b>. <p><b>Must be called with the lock of this instance acquired.</b><br> Must
-     * solely be called after execution phase.
+     * <b>and triggering notification on {@code IOCtrl} for generating algorithm's response</b>.
+     * <p><b>Must be called with the lock of this instance acquired.</b><br>
+     * Must solely be called after execution phase.
      */
     public void signifyAlgorithmCompletion() {
         ensureAcquiredLock();
@@ -433,12 +436,34 @@ public class IterativeAlgorithmState {
     }
 
     /**
+     * Signifies algorithm's execution error by setting {@code algorithmHasError} field to {@code
+     * true} <b>and triggering notification on {@code IOCtrl} for generating algorithm's erroneous
+     * response</b>.
+     * <p><b>Must be called with the lock of this instance acquired.</b><br>
+     */
+    public void signifyAlgorithmError() {
+        ensureAcquiredLock();
+        algorithmCompleted = false;
+        algorithmHasError = true;
+        ioctrl.requestOutput();
+    }
+
+    /**
      * Retrieves {@code algorithmCompleted} field.
      * <p><b>Must be called with the lock of this instance acquired.</b><br>
      */
     public Boolean getAlgorithmCompleted() {
         ensureAcquiredLock();
         return algorithmCompleted;
+    }
+
+    /**
+     * Retrieves {@code algorithmHasError} field.
+     * <p><b>Must be called with the lock of this instance acquired.</b><br>
+     */
+    public Boolean getAlgorithmHasError() {
+        ensureAcquiredLock();
+        return algorithmHasError;
     }
 
     /**
