@@ -53,9 +53,6 @@ public class IterationsScheduler {
      * @param status  the currently completed query's status
      */
     synchronized void scheduleAlgorithmUpdate(AdpDBQueryID queryID, AdpDBStatus status) {
-        if (log.isDebugEnabled())
-            log.debug("Query [" + queryID.getQueryID() + "] terminated, scheduling a phase " +
-                    "completion event");
         iterationsSchedulerState.getEventProcessor().queue(
                 new PhaseCompletionEvent(queryID, status),
                 iterationsSchedulerState.getPhaseCompletionEventHandler(),

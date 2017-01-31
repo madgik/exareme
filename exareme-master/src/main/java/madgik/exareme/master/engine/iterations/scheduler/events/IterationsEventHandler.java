@@ -95,7 +95,7 @@ public abstract class IterationsEventHandler<T extends IterationsEvent>
             IterativeAlgorithmState ias =
                     iterationsStateManager.getIterativeAlgorithm(algorithmKey);
             // Signify an error has occurred, so as to handle response to client.
-            ias.signifyAlgorithmCompletion();
+            ias.signifyAlgorithmError();
             iterationsStateManager.removeIterativeAlgorithm(algorithmKey);
         }
 
