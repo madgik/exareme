@@ -27,7 +27,7 @@ public class IterationsStateManagerImpl implements IterationsStateManager {
         queryIdToAlgorithmKeyMapping = new ConcurrentHashMap<>();
     }
 
-    private static IterationsStateManagerImpl instance = new IterationsStateManagerImpl();
+    private static IterationsStateManager instance = new IterationsStateManagerImpl();
 
     public static IterationsStateManager getInstance() {
         return instance;
