@@ -6,10 +6,12 @@ import org.apache.http.nio.IOControl;
 import org.apache.http.nio.entity.HttpAsyncContentProducer;
 import org.apache.log4j.Logger;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.charset.StandardCharsets;
 
 import madgik.exareme.master.client.AdpDBClientQueryStatus;
 import madgik.exareme.master.connector.DataSerialization;
@@ -67,10 +69,27 @@ public class NIterativeAlgorithmResultEntity extends BasicHttpEntity
                 // errors.
                 iterativeAlgorithmState.lock();
                 if (!iterativeAlgorithmState.getAlgorithmCompleted()) {
-                    String errMsg = "Attempt to produce response while " +
-                            iterativeAlgorithmState.toString()
-                            + " is still running.";
-                    log.error(errMsg);
+                    if (!iterativeAlgorithmState.getAlgorithmHasError()) {
+                        // Should never happen.
+                        String errMsg = "Attempt to produce response while " +
+                                iterativeAlgorithmState.toString()
+                                + " is still running.";
+                        log.error(errMsg);
+                    }
+                    else {
+                        // Algorithm execution failed, notify the client.
+                        // Overwrite channel with an InputStream containing error information.
+                        // Beware...
+                        String errMsg = generateErrorMessage(iterativeAlgorithmState.getAlgorithmKey());
+                        channel = Channels.newChannel(
+                                new ByteArrayInputStream(errMsg.getBytes(StandardCharsets.UTF_8)));
+                        channel.read(buffer);
+                        buffer.flip();
+                        encoder.write(buffer);
+                        this.buffer.hasRemaining();
+                        this.buffer.compact();
+                        encoder.complete();
+                    }
                 }
                 else {
                     // Iterative algorithm is complete, read response table and write it to the
@@ -91,7 +110,6 @@ public class NIterativeAlgorithmResultEntity extends BasicHttpEntity
                         this.buffer.compact();
                         if (i < 1 && !buffering) {
                             encoder.complete();
-                            close();
                         }
                     }
                     else {
@@ -102,14 +120,28 @@ public class NIterativeAlgorithmResultEntity extends BasicHttpEntity
                 }
             }
             finally {
-                iterativeAlgorithmState.releaseLock();
+                if (iterativeAlgorithmState != null)
+                    iterativeAlgorithmState.releaseLock();
             }
         }
     }
 
     @Override
     public void close() throws IOException {
-        finalizeQueryStatus.close();
+        if (finalizeQueryStatus != null) {
+            // Case in which algorithm execution failed
+            finalizeQueryStatus.close();
+            finalizeQueryStatus = null;
+        }
         iterativeAlgorithmState = null;
+    }
+
+    /**
+     * Generates a JSON response that contains the error and a description.
+     * @param algorithmKey the algorithm key of the algorithm that failed
+     */
+    private static String generateErrorMessage(String algorithmKey) {
+        return "{\"error\":\"Something went wrong with the execution of algorithm: ["
+                + algorithmKey + "]. Please inform your system administrator to consult the logs.\"}";
     }
 }
