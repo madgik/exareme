@@ -1,3 +1,5 @@
 before_install:
   - sudo apt-get install -y python-apsw
+  - sudo pip install requests NumPy SciPy scikit-learn titus
+
 language: java
