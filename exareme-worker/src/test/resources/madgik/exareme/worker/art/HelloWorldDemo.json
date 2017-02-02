@@ -3,12 +3,14 @@
     {
       "name": "c1",
       "IP": "'host1'",
-      "port": "1099"
+      "port": "1099",
+      "data_transfer_port": 8088
     },
     {
       "name": "c2",
       "IP": "'host2'",
-      "port": "1099"
+      "port": "1099",
+      "data_transfer_port": 8088
     }
   ],
   "operators": [
