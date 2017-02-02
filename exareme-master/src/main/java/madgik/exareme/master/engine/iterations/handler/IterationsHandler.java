@@ -69,7 +69,7 @@ public class IterationsHandler {
         // IterativeAlgorithmState
         String algorithmKey = generateAlgorithmKey(algorithmProperties);
 
-        String database = ComposerConstants.mipAlgorithmsDemoWorkingDirectory + algorithmKey;
+        String database = ComposerConstants.demoDbWorkingDirectory + algorithmKey;
         // -----------------------------------------
         // Create AdpDBClient of iterative algorithm state (used for submitting all queries)
         AdpDBClient adpDBClient;

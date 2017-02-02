@@ -161,7 +161,9 @@ public class HttpAsyncMiningOldHandler implements HttpAsyncRequestHandler<HttpRe
                         try {
                             log.debug(queryStatus.getExecutionTime());
                             AdpDBClientProperties clientProperties =
-                                new AdpDBClientProperties("/tmp/demo/db/" + split[4], "", "", false,
+                                new AdpDBClientProperties(
+                                        ComposerConstants.demoDbWorkingDirectory + split[4],
+                                        "", "", false,
                                     false, -1, 10);
                             AdpDBClient dbClient =
                                 AdpDBClientFactory.createDBClient(manager, clientProperties);
@@ -217,7 +219,9 @@ public class HttpAsyncMiningOldHandler implements HttpAsyncRequestHandler<HttpRe
 
                             log.debug(dfl);
                             AdpDBClientProperties clientProperties =
-                                new AdpDBClientProperties("/tmp/demo/db/" + qKey, "", "", false,
+                                new AdpDBClientProperties(
+                                        ComposerConstants.demoDbWorkingDirectory + qKey,
+                                        "", "", false,
                                     false, -1, 10);
                             AdpDBClient dbClient =
                                 AdpDBClientFactory.createDBClient(manager, clientProperties);

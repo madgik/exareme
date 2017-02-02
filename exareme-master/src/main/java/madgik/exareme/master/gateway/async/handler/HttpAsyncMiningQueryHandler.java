@@ -157,8 +157,9 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 log.debug(dfl);
                 AdpDBClientProperties clientProperties =
                         new AdpDBClientProperties(
-                                "/tmp/demo/db/" + qKey, "", "",
-                                false, false, -1, 10);
+                                ComposerConstants.demoDbWorkingDirectory + qKey,
+                                "", "", false, false,
+                                -1, 10);
                 AdpDBClient dbClient =
                         AdpDBClientFactory.createDBClient(manager, clientProperties);
                 queryStatus = dbClient.query(qKey, dfl);

@@ -121,7 +121,7 @@ public class IterativeAlgorithmState {
 
         this.algorithmKey = algorithmKey;
         iterationsDBPath =
-                ComposerConstants.mipAlgorithmsDemoWorkingDirectory + algorithmKey + "/"
+                ComposerConstants.demoDbWorkingDirectory + algorithmKey + "/"
                         + IterationsHandlerConstants.iterationsParameterIterDBValueSuffix;
         this.adpDBClient = adpDBClient;
         this.algorithmProperties = algorithmProperties;

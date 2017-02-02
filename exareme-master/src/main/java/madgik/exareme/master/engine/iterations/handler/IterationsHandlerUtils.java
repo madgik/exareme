@@ -4,7 +4,7 @@ import org.apache.log4j.Logger;
 
 import madgik.exareme.master.queryProcessor.composer.AlgorithmsProperties;
 
-import static madgik.exareme.master.queryProcessor.composer.ComposerConstants.mipAlgorithmsDemoWorkingDirectory;
+import static madgik.exareme.master.queryProcessor.composer.ComposerConstants.demoDbWorkingDirectory;
 
 /**
  * @author Christos Aslanoglou <br> caslanoglou@di.uoa.gr <br> University of Athens / Department of
@@ -32,7 +32,7 @@ public class IterationsHandlerUtils {
      * @return the absolute filename of iterationsDB for this algorithm.
      */
     public static String generateIterationsDBName(String algorithmKey) {
-        return mipAlgorithmsDemoWorkingDirectory
+        return demoDbWorkingDirectory
                 + algorithmKey + "/"
                 + IterationsHandlerConstants.iterationsParameterIterDBValueSuffix;
     }

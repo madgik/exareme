@@ -137,7 +137,7 @@ public class Composer {
             parameters.put(IterationsHandlerConstants.iterationsParameterIterDBKey,
                     generateIterationsDBName(qKey));
             parameters.put(ComposerConstants.defaultDBKey,
-                    ComposerConstants.mipAlgorithmsDemoWorkingDirectory + qKey + "/defaultDB.db");
+                    ComposerConstants.demoDbWorkingDirectory + qKey + "/defaultDB.db");
 
             // 2. Remove unneeded parameter
             parameters.remove(iterationsPropertyConditionQueryProvided);
@@ -149,7 +149,7 @@ public class Composer {
         }
         else {
             parameters.put(ComposerConstants.defaultDBKey,
-                    ComposerConstants.mipAlgorithmsDemoWorkingDirectory + qKey + "_defaultDB.db");
+                    ComposerConstants.demoDbWorkingDirectory + qKey + "_defaultDB.db");
         }
 
         switch (algorithmProperties.getType()) {

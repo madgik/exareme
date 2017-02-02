@@ -1,15 +1,17 @@
 package madgik.exareme.master.app.cluster;
 
-import madgik.exareme.master.client.AdpDBClient;
-import madgik.exareme.master.client.AdpDBClientProperties;
-import madgik.exareme.master.client.AdpDBClientQueryStatus;
-import madgik.exareme.utils.file.FileUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.junit.Test;
 
 import java.io.File;
+
+import madgik.exareme.master.client.AdpDBClient;
+import madgik.exareme.master.client.AdpDBClientProperties;
+import madgik.exareme.master.client.AdpDBClientQueryStatus;
+import madgik.exareme.master.queryProcessor.composer.ComposerConstants;
+import madgik.exareme.utils.file.FileUtil;
 
 /**
  * @author alex
@@ -28,7 +30,8 @@ public class ExaremeClusterTest {
         log.info("Cluster started.");
         log.info("IsUp : " + cluster.isUp());
 
-        AdpDBClientProperties clientProperties = new AdpDBClientProperties("/tmp/demo-db");
+        AdpDBClientProperties clientProperties = new AdpDBClientProperties(
+                ComposerConstants.demoDbWorkingDirectory);
         AdpDBClient dbClient = cluster.getExaremeClusterClient(clientProperties);
         log.info("Client created");
 
