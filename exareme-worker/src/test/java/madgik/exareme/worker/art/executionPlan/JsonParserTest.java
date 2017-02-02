@@ -68,7 +68,9 @@ public class JsonParserTest {
     PlanExpression expressionEP = parser.parse();*/
 
     /*read and proccess .json file*/
-        String planJson = FileUtil.readFile(new File(filename + ".json"));
+        String planJson = FileUtil.readFile(new File(JsonParserTest.class.getClassLoader()
+                        .getResource("madgik/exareme/worker/art/HelloWorldDemo.json").getFile()));
+        //String planJson = FileUtil.readFile(new File(filename + ".json"));
         System.out.println(planJson);
 
         final GsonBuilder gsonBuilder = new GsonBuilder();

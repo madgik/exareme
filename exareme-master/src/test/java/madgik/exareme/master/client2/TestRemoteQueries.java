@@ -1,7 +1,10 @@
-package madgik.exareme.master.client;
+package madgik.exareme.master.client2;
 
 import madgik.exareme.master.app.cluster.ExaremeCluster;
 import madgik.exareme.master.app.cluster.ExaremeClusterFactory;
+import madgik.exareme.master.client.AdpDBClient;
+import madgik.exareme.master.client.AdpDBClientProperties;
+import madgik.exareme.master.client.AdpDBClientQueryStatus;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Level;
@@ -28,7 +31,7 @@ public class TestRemoteQueries {
         Logger.getRootLogger().setLevel(Level.DEBUG);
         log.debug("---- SETUP ----");
 
-        dbPathName = "/tmp/db/client-test-" + String.valueOf(System.currentTimeMillis());
+        dbPathName = "/tmp/db/client-test2-" + String.valueOf(System.currentTimeMillis());
         new File(dbPathName).mkdirs();
         log.debug("Database created.");
 
@@ -74,7 +77,7 @@ public class TestRemoteQueries {
         AdpDBClientQueryStatus queryStatus =
             client.query("load_", remoteQueryScript);
         while (queryStatus.hasFinished() == false && queryStatus.hasError() == false) {
-            Thread.sleep(10 * 1000);
+            Thread.sleep(2 * 1000);
         }
         if (queryStatus.hasError()) {
             log.error("Exception occured..." + queryStatus.getError());
@@ -86,57 +89,59 @@ public class TestRemoteQueries {
         log.info(IOUtils.toString(inputStream, Charset.defaultCharset()));
 
         miniCluster.stop(true);
+        Thread.sleep(12*1000);
+//        miniCluster.stop(true);
         log.debug("Mini cluster stopped.");
         log.debug("---- TEST ----");
         log.debug("---- TEST ----");
     }
-
-    @Test public void testPipelineRemoteQueries() throws Exception {
-        log.debug("---- TEST ----");
-
-        String remoteQueryScript =
-            "distributed create temporary table demo1 as remote \n"
-            + "select count(C1) as counter  \n"
-            + "from range(10);\n"
-            + "using demo1 distributed create temporary table demo2 as remote \n"
-            + "select ( count(C1) + (select * from demo1) ) as counter \n"
-            + "from range(10);\n"
-            + "using demo2 distributed create table results as remote \n"
-            + "select (count(C1) + (select * from demo2)) as counter\n"
-            + "from range(10);\n";
-
-        log.info(remoteQueryScript);
-
-        ExaremeCluster miniCluster = ExaremeClusterFactory.createMiniCluster(9090, 8090, 3);
-        miniCluster.start();
-        log.debug("Mini cluster started.");
-
-        AdpDBClientProperties properties =
-            new AdpDBClientProperties(dbPathName, "", "", false, false, -1, 10);
-        AdpDBClient client = miniCluster.getExaremeClusterClient(properties);
-
-//        String explain = dbClient.explain(remoteQueryScript, "json");
-//        log.info(explain);
-
-        AdpDBClientQueryStatus queryStatus =
-            client.query("load_", remoteQueryScript);
-        while (queryStatus.hasFinished() == false && queryStatus.hasError() == false) {
-            Thread.sleep(10 * 1000);
-        }
-        if (queryStatus.hasError()) {
-            log.error("Exception occured..." + queryStatus.getError());
-        }
-        Assert.assertTrue(queryStatus != null);
-        Assert.assertFalse(queryStatus.hasError());
-
-        InputStream inputStream = client.readTable("results");
-        log.info(IOUtils.toString(inputStream, Charset.defaultCharset()));
-
-        miniCluster.stop(true);
-        log.debug("Mini cluster stopped.");
-        log.debug("---- TEST ----");
-
-    }
+//TODO jctests
+//    @Test public void testPipelineRemoteQueries() throws Exception {
+//        log.debug("---- TEST ----");
+//
+//        String remoteQueryScript =
+//            "distributed create temporary table demo1 as remote \n"
+//            + "select count(C1) as counter  \n"
+//            + "from range(10);\n"
+//            + "using demo1 distributed create temporary table demo2 as remote \n"
+//            + "select ( count(C1) + (select * from demo1) ) as counter \n"
+//            + "from range(10);\n"
+//            + "using demo2 distributed create table results as remote \n"
+//            + "select (count(C1) + (select * from demo2)) as counter\n"
+//            + "from range(10);\n";
+//
+//        log.info(remoteQueryScript);
+//
+//        ExaremeCluster miniCluster = ExaremeClusterFactory.createMiniCluster(9090, 8090, 3);
+//        miniCluster.start();
+//        log.debug("Mini cluster started.");
+//
+//        AdpDBClientProperties properties =
+//            new AdpDBClientProperties(dbPathName, "", "", false, false, -1, 10);
+//        AdpDBClient client = miniCluster.getExaremeClusterClient(properties);
+//
+////        String explain = dbClient.explain(remoteQueryScript, "json");
+////        log.info(explain);
+//
+//        AdpDBClientQueryStatus queryStatus =
+//            client.query("load_", remoteQueryScript);
+//        while (queryStatus.hasFinished() == false && queryStatus.hasError() == false) {
+//            Thread.sleep(10 * 1000);
+//        }
+//        if (queryStatus.hasError()) {
+//            log.error("Exception occured..." + queryStatus.getError());
+//        }
+//        Assert.assertTrue(queryStatus != null);
+//        Assert.assertFalse(queryStatus.hasError());
+//
+//        InputStream inputStream = client.readTable("results");
+//        log.info(IOUtils.toString(inputStream, Charset.defaultCharset()));
+//
+//        miniCluster.stop(true);
+//        log.debug("Mini cluster stopped.");
+//        log.debug("---- TEST ----");
+//
+//    }
 
     @After public void tearDown() throws Exception {
         log.debug("---- CLEAN ----");
