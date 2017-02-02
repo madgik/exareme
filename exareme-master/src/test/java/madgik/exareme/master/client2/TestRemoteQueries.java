@@ -77,7 +77,7 @@ public class TestRemoteQueries {
         AdpDBClientQueryStatus queryStatus =
             client.query("load_", remoteQueryScript);
         while (queryStatus.hasFinished() == false && queryStatus.hasError() == false) {
-            Thread.sleep(10 * 1000);
+            Thread.sleep(2 * 1000);
         }
         if (queryStatus.hasError()) {
             log.error("Exception occured..." + queryStatus.getError());
@@ -89,7 +89,8 @@ public class TestRemoteQueries {
         log.info(IOUtils.toString(inputStream, Charset.defaultCharset()));
 
         miniCluster.stop(true);
-        Thread.sleep(15000);
+        Thread.sleep(12*1000);
+//        miniCluster.stop(true);
         log.debug("Mini cluster stopped.");
         log.debug("---- TEST ----");
         log.debug("---- TEST ----");
