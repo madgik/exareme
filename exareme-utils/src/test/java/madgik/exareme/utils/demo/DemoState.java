@@ -1,7 +1,7 @@
 /**
  * Copyright MaDgIK Group 2010 - 2015.
  */
-package madgik.exareme.utils.sa.demo;
+package madgik.exareme.utils.demo;
 
 import madgik.exareme.utils.simulatedAnnealing.State;
 

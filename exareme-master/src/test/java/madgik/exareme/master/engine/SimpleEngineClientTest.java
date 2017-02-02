@@ -81,8 +81,14 @@ public class SimpleEngineClientTest {
         } catch (Exception e) {
             log.error(e);
         }
-
         miniCluster.stop(false);
+
+        Thread.sleep(10 * 1000);
+
+        miniCluster.stop(true);
+
+        Thread.sleep(10 * 1000);
+
         log.info("Mini Cluster stopped.");
         log.info("------- TEST --------");
     }

@@ -72,7 +72,7 @@ public class TestAdpDBClient {
         }
         log.debug("Scripts successfully formatted.");
 
-        this.dbPathName = "/tmp/db/client-test-" + String.valueOf(System.currentTimeMillis());
+        this.dbPathName = "/tmp/db/client-test5-" + String.valueOf(System.currentTimeMillis());
         new File(dbPathName).mkdirs();
         log.debug("Database created.");
 
@@ -110,7 +110,20 @@ public class TestAdpDBClient {
             log.error("Unable shutdown executor.", e);
         }
 
+
+        log.debug("Mini cluster stopped1.");
+
+
+        miniCluster.stop(false);
+        log.debug("Mini cluster stopped2.");
+
+        Thread.sleep(10*1000);
+        log.debug("Mini cluster stopped3.");
+
         miniCluster.stop(true);
+        log.debug("Mini cluster stopped4.");
+
+        Thread.sleep(15*1000);
         log.debug("Mini cluster stopped.");
 
         log.debug("---- TEST ----");
