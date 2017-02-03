@@ -17,7 +17,7 @@
 ## Single node installation
 
 * Package dependencies :
-    - jre 1.7, Python 2.7, [APSW 3.11] (https://rogerbinns.github.io/apsw/download.html)
+    - jre 1.7, Python 2.7, [APSW 3.11] (https://rogerbinns.github.io/apsw/download.html), apsw, see requirements.txt too
 
 * Download mip-algorithms
     ```
