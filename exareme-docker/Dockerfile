@@ -2,7 +2,7 @@ FROM ubuntu:16.04
 MAINTAINER Yannis Chronis <i.chronis@di.uoa.gr>
 
 # update
-RUN sudo apt-get -y update
+RUN  apt-get -y update
 
 # install
 RUN apt-get install -y git maven curl python python-apsw openssh-server
@@ -27,9 +27,13 @@ RUN git clone -b mip https://github.com/madgik/exareme.git /root/exareme-src
 WORKDIR /root/exareme-src
 RUN mvn clean install
 RUN mv /root/exareme-src/exareme-distribution/target/exareme* /root/exareme
+RUN rm /root/exareme/etc/exareme/gateway.properties
+ADD gateway.properties /root/exareme/etc/exareme/
+
 
 RUN  git clone https://github.com/madgik/mip-algorithms.git /root/mip-algorithms
-
+RUN rm /root/mip-alogirthms/properties.json
+ADD properties.json /root/mip-alogirthms/
 
 EXPOSE 9090
 WORKDIR /root/exareme
