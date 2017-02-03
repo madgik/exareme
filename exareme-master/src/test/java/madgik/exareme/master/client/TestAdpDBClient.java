@@ -17,7 +17,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-//TODO jctests to error sto query den skaei to test
 
 
 /**
@@ -38,7 +37,7 @@ public class TestAdpDBClient {
     private int registryPort = 1099;
     private int dtPort = 8088;
     private int nclients = 1;
-    private int nworkers = 1;
+    private int nworkers = 0; //should not change
     private String dbPathName;
     private String[] load_script;
     private String[] index_script;
@@ -55,7 +54,7 @@ public class TestAdpDBClient {
         Logger.getRootLogger().setLevel(Level.DEBUG);
         //        Thread.sleep(1000*20);
         log.debug("---- SETUP ----");
-        log.debug(TestAdpDBClient.class.getResource("load_emp_template.sql") == null);
+//        log.debug(TestAdpDBClient.class.getResource("load_emp_template.sql") == null);
         // load & format scripts
         File loadFile =
             new File(TestAdpDBClient.class.getResource("load_emp_template.sql").getFile());
@@ -160,12 +159,11 @@ public class TestAdpDBClient {
                 while (queryStatus.hasFinished() == false && queryStatus.hasError() == false) {
                     Thread.sleep(1000 * 2);
                 }
-                if (queryStatus.hasError()) {
+                if (queryStatus.hasError() || queryStatus==null) {
                     log.error("Exception occured..." + queryStatus.getError());
                     problem = true;
                 }
-                Assert.assertTrue(queryStatus != null);
-                Assert.assertFalse(queryStatus.hasError());
+
 
 
                 log.info("Client " + id + " finished.");
