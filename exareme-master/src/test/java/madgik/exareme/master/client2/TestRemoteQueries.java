@@ -26,6 +26,8 @@ import java.nio.charset.Charset;
 public class TestRemoteQueries {
     private static final Logger log = Logger.getLogger(TestRemoteQueries.class);
     private static String dbPathName;
+    private Boolean problem = false;
+
 
     @Before public void setUp() throws Exception {
         Logger.getRootLogger().setLevel(Level.DEBUG);
@@ -88,14 +90,14 @@ public class TestRemoteQueries {
         InputStream inputStream = client.readTable("results");
         log.info(IOUtils.toString(inputStream, Charset.defaultCharset()));
 
+//        miniCluster.stop(ture);
         miniCluster.stop(true);
         Thread.sleep(12*1000);
-//        miniCluster.stop(true);
         log.debug("Mini cluster stopped.");
         log.debug("---- TEST ----");
         log.debug("---- TEST ----");
     }
-//TODO jctests
+
 //    @Test public void testPipelineRemoteQueries() throws Exception {
 //        log.debug("---- TEST ----");
 //

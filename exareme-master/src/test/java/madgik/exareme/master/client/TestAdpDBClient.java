@@ -121,13 +121,14 @@ public class TestAdpDBClient {
         log.debug("Mini cluster stopped1.");
 
 
-        miniCluster.stop(true);
+        miniCluster.stop(false);
         log.debug("Mini cluster stopped2.");
 
-        Thread.sleep(10*1000);
+        Thread.sleep(12*1000);
         log.debug("Mini cluster stopped3.");
 
         miniCluster.stop(true);
+        Thread.sleep(5*1000);
         log.debug("Mini cluster stopped4.");
 
         log.debug("Mini cluster stopped.");
@@ -137,7 +138,7 @@ public class TestAdpDBClient {
 
     @After public void tearDown() throws Exception {
         log.debug("---- CLEAN ----");
-        //        FileUtils.deleteDirectory(new File(dbPathName));
+                FileUtils.deleteDirectory(new File(dbPathName));
         log.debug("---- CLEAN ----");
         //        Thread.sleep(1000 * 20);
 
