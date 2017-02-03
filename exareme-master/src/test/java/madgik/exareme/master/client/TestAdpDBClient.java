@@ -17,7 +17,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-//TODO jctests to error sto query den skaei to test
 
 
 /**
@@ -38,11 +37,13 @@ public class TestAdpDBClient {
     private int registryPort = 1099;
     private int dtPort = 8088;
     private int nclients = 1;
-    private int nworkers = 1;
+    private int nworkers = 0; //should not change
     private String dbPathName;
     private String[] load_script;
     private String[] index_script;
     private String[] query_script;
+    private Boolean problem = false;
+
 
     public TestAdpDBClient() {
 
@@ -53,7 +54,7 @@ public class TestAdpDBClient {
         Logger.getRootLogger().setLevel(Level.DEBUG);
         //        Thread.sleep(1000*20);
         log.debug("---- SETUP ----");
-        log.debug(TestAdpDBClient.class.getResource("load_emp_template.sql") == null);
+//        log.debug(TestAdpDBClient.class.getResource("load_emp_template.sql") == null);
         // load & format scripts
         File loadFile =
             new File(TestAdpDBClient.class.getResource("load_emp_template.sql").getFile());
@@ -106,6 +107,7 @@ public class TestAdpDBClient {
         log.debug("Clients created.(" + nclients + ")");
 
         executorService.shutdown();
+
         log.debug("Executor service shutdown.");
 
         try {
@@ -114,17 +116,19 @@ public class TestAdpDBClient {
             log.error("Unable shutdown executor.", e);
         }
 
+        Assert.assertFalse(problem);
 
         log.debug("Mini cluster stopped1.");
 
 
-        miniCluster.stop(true);
+        miniCluster.stop(false);
         log.debug("Mini cluster stopped2.");
 
-        Thread.sleep(10*1000);
+        Thread.sleep(12*1000);
         log.debug("Mini cluster stopped3.");
 
         miniCluster.stop(true);
+        Thread.sleep(5*1000);
         log.debug("Mini cluster stopped4.");
 
         log.debug("Mini cluster stopped.");
@@ -134,7 +138,7 @@ public class TestAdpDBClient {
 
     @After public void tearDown() throws Exception {
         log.debug("---- CLEAN ----");
-        //        FileUtils.deleteDirectory(new File(dbPathName));
+                FileUtils.deleteDirectory(new File(dbPathName));
         log.debug("---- CLEAN ----");
         //        Thread.sleep(1000 * 20);
 
@@ -156,12 +160,12 @@ public class TestAdpDBClient {
                 while (queryStatus.hasFinished() == false && queryStatus.hasError() == false) {
                     Thread.sleep(1000 * 2);
                 }
-                if (queryStatus.hasError()) {
+                if (queryStatus.hasError() || queryStatus==null) {
                     log.error("Exception occured..." + queryStatus.getError());
+                    problem = true;
                 }
-                Assert.assertTrue(queryStatus != null);
-                Assert.assertFalse(queryStatus.hasError());
-                System.out.println("FALALAL");
+
+
 
                 log.info("Client " + id + " finished.");
             } catch (RemoteException e) {
