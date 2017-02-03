@@ -43,6 +43,8 @@ public class TestAdpDBClient {
     private String[] load_script;
     private String[] index_script;
     private String[] query_script;
+    private Boolean problem = false;
+
 
     public TestAdpDBClient() {
 
@@ -106,6 +108,7 @@ public class TestAdpDBClient {
         log.debug("Clients created.(" + nclients + ")");
 
         executorService.shutdown();
+
         log.debug("Executor service shutdown.");
 
         try {
@@ -114,6 +117,7 @@ public class TestAdpDBClient {
             log.error("Unable shutdown executor.", e);
         }
 
+        Assert.assertFalse(problem);
 
         log.debug("Mini cluster stopped1.");
 
@@ -158,10 +162,11 @@ public class TestAdpDBClient {
                 }
                 if (queryStatus.hasError()) {
                     log.error("Exception occured..." + queryStatus.getError());
+                    problem = true;
                 }
                 Assert.assertTrue(queryStatus != null);
                 Assert.assertFalse(queryStatus.hasError());
-                System.out.println("FALALAL");
+
 
                 log.info("Client " + id + " finished.");
             } catch (RemoteException e) {
