@@ -15,9 +15,10 @@ public class JsonPlanTest {
         String jsonArtPlan = "{\n" +
             "  \"containers\": [\n" +
             "    {\n" +
-            "      \"name\": \"c\",\n" +
+            "      \"name\": \"c1\",\n" +
             "      \"IP\":" + "\"192.129\"" + ",\n" +
-            "      \"port\": \"1000\"\n" +
+            "      \"port\": \"1000\",\n" +
+            "       \"data_transfer_port\": 8088\n" +
             "    }],\n" +
             "  \"operators\": [\n" +
             "    {\n" +
@@ -38,7 +39,7 @@ public class JsonPlanTest {
         try {
             ExecutionPlanParser parser = new ExecutionPlanParser();
             plan = parser.parse(jsonArtPlan.toString());
-            System.out.println("Plan: " + plan.getContainer("c1").getIP());
+            //System.out.println("Plan: " + plan.getContainer("c1").getIP());
 
         } catch (SemanticError semanticError) {
             System.err.print("Error creating plan" + semanticError);

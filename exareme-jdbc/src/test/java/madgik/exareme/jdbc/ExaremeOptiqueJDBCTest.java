@@ -1,4 +1,4 @@
-//package madgik.exareme.jdbc.federated;
+//package madgik.exareme.jdbc;
 //
 //import org.apache.log4j.Level;
 //import org.apache.log4j.Logger;
@@ -7,8 +7,12 @@
 //
 //import java.sql.*;
 //
-//public class FederatedJDBCTest {
-//    private static final Logger log = Logger.getLogger(FederatedJDBCTest.class);
+///**
+// * @author alex
+// * out of date
+// */
+//public class ExaremeOptiqueJDBCTest {
+//    private static final Logger log = Logger.getLogger(ExaremeOptiqueJDBCTest.class);
 //
 //    public static void printResultset(ResultSet rs) throws SQLException {
 //        log.info("Columns: " + rs.getMetaData().getColumnCount());
@@ -42,24 +46,17 @@
 //        // Load the driver
 //        Class.forName("madgik.exareme.jdbc.federated.AdpDriver");
 //
-//        String conString =
-//            "jdbc:fedadp:http://127.0.0.1:9090/tmp/-fedDB-npd-next-jdbc:mysql://10.240.0.10:3306/npd-next-com.mysql.jdbc.Driver-next-benchmark-next-gray769watt724!@#-next-npd";
+//        String database = "jdbc:fedadp:http://10.254.11.23:9090/home/adp/database/demo/";
+//        Connection conn = DriverManager.getConnection(database);
+//        log.info("Connections created.");
 //
-//        Connection conn = DriverManager.getConnection(conString, "adp", "adp");
-//
-//
-//        String q1 = "select * from npd_wellbore_core";
-//        String q2 = "SELECT \n" +
-//            "  QVIEW5.`wlbTotalCoreLength`  AS `year`\n" +
-//            " FROM \n" +
-//            "npd_wellbore_core QVIEW5,\n" +
-//            "npd_wellbore_shallow_all QVIEW6 \n" +
-//            "WHERE \n" +
-//            "(QVIEW5.`wlbNpdidWellbore` = QVIEW6.`wlbNpdidWellbore`)";
+//        String tablename = "wellbore";
+//        //        String q="select * from "+tablename;
+//        String q = "select * from demo  ";
 //        Statement st = conn.createStatement();
 //        log.info("Statement created.");
 //
-//        ResultSet rs = st.executeQuery(q1);
+//        ResultSet rs = st.executeQuery(q);
 //        log.info("Query executed.");
 //        printResultset(rs);
 //        rs.close();
@@ -67,5 +64,4 @@
 //        log.info("--------- TEST -------------");
 //
 //    }
-//
 //}
