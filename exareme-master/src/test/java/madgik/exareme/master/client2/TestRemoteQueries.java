@@ -92,7 +92,7 @@ public class TestRemoteQueries {
 
 //        miniCluster.stop(ture);
         miniCluster.stop(true);
-        Thread.sleep(12*1000);
+        Thread.sleep(15*1000);
         log.debug("Mini cluster stopped.");
         log.debug("---- TEST ----");
         log.debug("---- TEST ----");
