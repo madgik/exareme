@@ -1,5 +1,7 @@
 package madgik.exareme.master.engine.iterations.handler;
 
+import madgik.exareme.utils.properties.AdpProperties;
+
 /**
  * Contains iterations handler related constants.
  *
@@ -7,6 +9,10 @@ package madgik.exareme.master.engine.iterations.handler;
  *         Informatics and Telecommunications.
  */
 public class IterationsHandlerConstants {
+    private static final String algorithmsGenerationDir = "algorithms-generation";
+    static final String demoAlgorithmsWorkingDirectory =
+            AdpProperties.getGatewayProperties().getString("demo.directory")
+                    + algorithmsGenerationDir;
     // DFL Variables -------------------------------------------------------------------------
     public static final String previousPhaseOutputTblVariableName = "previous_phase_output_tbl";
     static final String previousPhaseOutputTblPlaceholder =
