@@ -401,7 +401,7 @@ public class Composer {
      * Generates the working directory string, depending on the algorithm key and in the case of
      * iterative algorithms, its current phase.
      *
-     * @param algorithmKey            the algorithm's key or query's key in case of non iterative
+     * @param algorithmName           the algorithm's name or query's key in case of non iterative
      *                                algorithm
      * @param iterativeAlgorithmPhase the iterative algorithm phase for which to generate working
      *                                directory String<br> <b>In the case of non iterative
@@ -411,27 +411,27 @@ public class Composer {
      *                           supported.
      * @see madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState.IterativeAlgorithmPhasesModel
      */
-    private static String generateWorkingDirectoryString(
-            String algorithmKey,
+    public static String generateWorkingDirectoryString(
+            String algorithmName,
             IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase)
             throws ComposerException {
 
         String workingDir;
         if (iterativeAlgorithmPhase == null)
-            workingDir = repoPath + algorithmKey;
+            workingDir = repoPath + algorithmName;
         else {
             switch (iterativeAlgorithmPhase) {
                 case init:
-                    workingDir = repoPath + algorithmKey + "/" + init.name();
+                    workingDir = repoPath + algorithmName + "/" + init.name();
                     break;
                 case step:
-                    workingDir = repoPath + algorithmKey + "/" + step.name();
+                    workingDir = repoPath + algorithmName + "/" + step.name();
                     break;
                 case termination_condition:
-                    workingDir = repoPath + algorithmKey + "/" + termination_condition.name();
+                    workingDir = repoPath + algorithmName + "/" + termination_condition.name();
                     break;
                 case finalize:
-                    workingDir = repoPath + algorithmKey + "/" + finalize.name();
+                    workingDir = repoPath + algorithmName + "/" + finalize.name();
                     break;
                 default:
                     throw new ComposerException("Unsupported iterative algorithm case.");
