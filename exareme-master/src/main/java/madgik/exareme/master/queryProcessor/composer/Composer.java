@@ -53,7 +53,7 @@ public class Composer {
 
     static {
         try {
-            repoPath = AdpProperties.getGatewayProperties().getString("composer.repository.path");
+            repoPath = AdpProperties.getGatewayProperties().getString("demo.repository.path");
             log.trace(repoPath);
             algorithms = AlgorithmsProperties.createAlgorithms(repoPath);
         } catch (IOException e) {
@@ -453,10 +453,10 @@ public class Composer {
         File dflScriptOutputFile;
         if (iterativePhase != null)
             dflScriptOutputFile = new File(algorithmDemoDirectoryName + "/"
-                    + iterativePhase.name() + ComposerConstants.PersistedDFLScriptsFileExtension);
+                    + iterativePhase.name() + ComposerConstants.DFL_SCRIPT_FILE_EXTENSION);
         else
             dflScriptOutputFile = new File(algorithmDemoDirectoryName
-                    + ComposerConstants.PersistedDFLScriptsFileExtension);
+                    + ComposerConstants.DFL_SCRIPT_FILE_EXTENSION);
 
         try {
             dflScriptOutputFile.getParentFile().mkdirs();
