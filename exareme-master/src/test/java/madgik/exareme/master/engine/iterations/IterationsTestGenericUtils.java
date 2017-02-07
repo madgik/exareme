@@ -8,6 +8,7 @@ import java.util.HashMap;
 
 import madgik.exareme.common.consts.HBPConstants;
 import madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants;
+import madgik.exareme.master.queryProcessor.composer.Composer;
 import madgik.exareme.master.queryProcessor.composer.ComposerConstants;
 
 /**
@@ -58,6 +59,18 @@ public class IterationsTestGenericUtils {
         File algorithmsDevDirectory = new File(ALGORITHMS_DEV_DIRECTORY);
         setFinalStatic(
                 HBPConstants.class.getDeclaredField("DEMO_ALGORITHMS_WORKING_DIRECTORY"),
+                algorithmsDevDirectory.getCanonicalPath());
+    }
+
+    /**
+     * Sets the algorithms repository path of Composer module to be the one in src/test/resources
+     * @throws IOException if getCanonicalPath fails
+     */
+    public static void overwriteComposerModuleRepositoryPath()
+            throws Exception {
+        File algorithmsDevDirectory = new File(ALGORITHMS_DEV_DIRECTORY);
+        setFinalStatic(
+                Composer.class.getDeclaredField("repoPath"),
                 algorithmsDevDirectory.getCanonicalPath() + "/");
     }
 

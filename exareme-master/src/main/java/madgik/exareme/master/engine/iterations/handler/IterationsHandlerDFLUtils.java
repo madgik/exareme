@@ -41,10 +41,11 @@ public class IterationsHandlerDFLUtils {
     private static final Logger log = Logger.getLogger(IterationsHandlerDFLUtils.class);
 
     // DFL Generation ---------------------------------------------------------------------------
-
     /**
      * Generates the DFL scripts (for all iterative algorithm phases).
      *
+     * @param demoCurrentAlgorithmDir the algorithm's current execution directory, obtained by
+     *                                firstly running {@link IterationsHandlerDFLUtils#copyAlgorithmTemplatesToDemoDirectory}
      * @param algorithmKey            the algorithm's unique key
      * @param composer                the Composer instance used to generate DFL script for each
      *                                phase
@@ -55,15 +56,11 @@ public class IterationsHandlerDFLUtils {
      * @see AlgorithmsProperties.AlgorithmProperties
      */
     static String[] prepareDFLScripts(
+            String demoCurrentAlgorithmDir,
             String algorithmKey,
             Composer composer,
             AlgorithmsProperties.AlgorithmProperties algorithmProperties,
             IterativeAlgorithmState iterativeAlgorithmState) {
-
-        // Copy algorithm's template files under demo directory, so that these are edited per
-        // algorithm's execution.
-        String demoCurrentAlgorithmDir =
-                copyAlgorithmTemplatesToDemoDirectory(algorithmProperties.getName(), algorithmKey);
 
         String[] dflScripts = new String[
                 IterativeAlgorithmState.IterativeAlgorithmPhasesModel.values().length];
@@ -129,6 +126,10 @@ public class IterationsHandlerDFLUtils {
                 sqlTemplateFile = new File(demoCurrentAlgorithmDir  + "/"
                         + termination_condition
                         + "/" + terminationConditionTemplateSQLFilename);
+                if (!sqlTemplateFile.exists()) {
+                    throw new IterationsFatalException("[" + algorithmKey + "] "
+                            + termination_condition.name() + " doesn't exist.");
+                }
             }
 
             // 1. Apply updates to SQL template files
@@ -172,17 +173,6 @@ public class IterationsHandlerDFLUtils {
                     termination_condition))
                 algorithmProperties.setType(
                         AlgorithmsProperties.AlgorithmProperties.AlgorithmType.multiple_local_global);
-        }
-
-        try {
-            for (IterativeAlgorithmState.IterativeAlgorithmPhasesModel phase :
-                    IterativeAlgorithmState.IterativeAlgorithmPhasesModel.values()) {
-
-                Composer.persistDFLScriptToAlgorithmsDemoDirectory(
-                        demoCurrentAlgorithmDir, dflScripts[phase.ordinal()], phase);
-            }
-        } catch (ComposerException e) {
-            log.error("Failed to persist DFL scripts for algorithm [" + algorithmKey + "]");
         }
 
         return dflScripts;
@@ -493,8 +483,8 @@ public class IterationsHandlerDFLUtils {
      *                                  name, or if it fails to copy algorithm's template structure
      *                                  to demo directory.
      */
-    private static String copyAlgorithmTemplatesToDemoDirectory(String algorithmName,
-                                                              String algorithmKey) {
+    public static String copyAlgorithmTemplatesToDemoDirectory(String algorithmName,
+                                                               String algorithmKey) {
         String algorithmRepoPath;
         try {
             algorithmRepoPath = Composer.generateWorkingDirectoryString(

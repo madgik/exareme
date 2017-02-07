@@ -16,7 +16,9 @@ import madgik.exareme.master.engine.iterations.state.IterationsStateManagerImpl;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.master.queryProcessor.composer.AlgorithmsProperties;
 import madgik.exareme.master.queryProcessor.composer.Composer;
+import madgik.exareme.master.queryProcessor.composer.ComposerException;
 
+import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerDFLUtils.copyAlgorithmTemplatesToDemoDirectory;
 import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerUtils.generateAlgorithmKey;
 
 /**
@@ -94,10 +96,31 @@ public class IterationsHandler {
             log.debug("Created " + IterativeAlgorithmState.class.getSimpleName() + " for: "
                     + iterativeAlgorithmState.toString() + ".");
         // -----------------------------------------
-        // Prepare DFL scripts
-        iterativeAlgorithmState.setDflScripts(
-                IterationsHandlerDFLUtils.prepareDFLScripts(
-                        algorithmKey, composer, algorithmProperties, iterativeAlgorithmState));
+        // Copy template files to algorithm's demo directory, prepare DFL scripts and then persist
+        // them, as well.
+
+        // Copying algorithm's template files under demo directory, so that these are edited per
+        // algorithm's execution.
+        String demoCurrentAlgorithmDir =
+                copyAlgorithmTemplatesToDemoDirectory(algorithmProperties.getName(), algorithmKey);
+
+        String dflScripts[] = IterationsHandlerDFLUtils.prepareDFLScripts(
+                demoCurrentAlgorithmDir, algorithmKey, composer, algorithmProperties,
+                iterativeAlgorithmState);
+
+        try {
+            for (IterativeAlgorithmState.IterativeAlgorithmPhasesModel phase :
+                    IterativeAlgorithmState.IterativeAlgorithmPhasesModel.values()) {
+
+                Composer.persistDFLScriptToAlgorithmsDemoDirectory(
+                        demoCurrentAlgorithmDir, dflScripts[phase.ordinal()], phase);
+            }
+        } catch (ComposerException e) {
+            log.error("Failed to persist DFL scripts for algorithm [" + algorithmKey + "]");
+        }
+
+        iterativeAlgorithmState.setDflScripts(dflScripts);
+
         if (log.isDebugEnabled())
             log.debug("Generated DFL scripts for: " + iterativeAlgorithmState.toString());
 
