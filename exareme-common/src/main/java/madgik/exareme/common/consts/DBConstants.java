@@ -10,4 +10,5 @@ public class DBConstants {
 
     public static String DB_SEPERATOR = ".";
     public static String DB_SUBPART_SEPERATOR = "_";
+    public static String DB_FILE_EXTENSION = ".db";
 }

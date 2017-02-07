@@ -1,5 +1,7 @@
 package madgik.exareme.master.engine.iterations.handler;
 
+import madgik.exareme.common.consts.DBConstants;
+
 /**
  * Contains iterations handler related constants.
  *
@@ -16,7 +18,8 @@ public class IterationsHandlerConstants {
 
     public static final String iterationsParameterIterDBKey = iterationsDBName;
     // Already defined in ComposerConstants => following same pattern.
-    public static final String iterationsParameterIterDBValueSuffix = iterationsDBName + ".db";
+    public static final String iterationsParameterIterDBValueSuffix = iterationsDBName
+            + DBConstants.DB_FILE_EXTENSION;
 
     // Iterative algorithm properties -----------------------------------------------------------
     public static final String iterationsPropertyConditionQueryProvided = "iterations_condition_query_provided";
