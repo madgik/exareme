@@ -8,12 +8,14 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
 import java.util.HashMap;
 
+import madgik.exareme.common.consts.HBPConstants;
 import madgik.exareme.master.client.AdpDBClient;
 import madgik.exareme.master.client.AdpDBClientFactory;
 import madgik.exareme.master.client.AdpDBClientProperties;
@@ -22,7 +24,6 @@ import madgik.exareme.master.engine.AdpDBManagerLocator;
 import madgik.exareme.master.engine.iterations.IterationsTestGenericUtils;
 import madgik.exareme.master.engine.iterations.state.exceptions.IterationsStateFatalException;
 import madgik.exareme.master.queryProcessor.composer.AlgorithmsProperties;
-import madgik.exareme.master.queryProcessor.composer.ComposerConstants;
 
 import static org.powermock.api.mockito.PowerMockito.when;
 
@@ -33,6 +34,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
  *         Informatics and Telecommunications.
  */
 @RunWith(PowerMockRunner.class)
+@PowerMockIgnore("javax.management.*")
 @PrepareForTest(AlgorithmsProperties.AlgorithmProperties.class)
 public class IterativeAlgorithmStateTest {
     private static final String algorithmName = "SAMPLE_ITERATIVE";
@@ -47,7 +49,7 @@ public class IterativeAlgorithmStateTest {
     public static void setUp() throws Exception {
         AdpDBManager adpDBManager = AdpDBManagerLocator.getDBManager();
 
-        String database = ComposerConstants.demoDbWorkingDirectory + algorithmName;
+        String database = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmName;
         AdpDBClientProperties clientProperties =
                 new AdpDBClientProperties(database, "", "",
                         false, false, -1, 10);

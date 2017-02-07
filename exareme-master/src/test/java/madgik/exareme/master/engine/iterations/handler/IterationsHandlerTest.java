@@ -10,7 +10,6 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
-import java.io.IOException;
 import java.util.Map;
 
 import madgik.exareme.master.engine.AdpDBManagerLocator;
@@ -31,19 +30,21 @@ import madgik.exareme.master.queryProcessor.composer.AlgorithmsProperties;
 public class IterationsHandlerTest {
     private static final Logger log = Logger.getLogger(IterationsHandlerTest.class);
 
-    private static final String algorithmName = "DUMMY_ITERATIVE";
+    private static final String algorithmName = "SAMPLE_ITERATIVE";
     private AlgorithmsProperties.AlgorithmProperties algorithmProperties;
     private IterationsHandler handler;
     private IterationsStateManager stateManager;
 
 
-    @Before public void SetUp() throws IOException {
+    @Before public void SetUp() throws Exception {
         handler = IterationsHandler.getInstance();
         stateManager = IterationsStateManagerImpl.getInstance();
 
         algorithmProperties = AlgorithmsProperties.AlgorithmProperties.createAlgorithmProperties(
             IterationsTestGenericUtils.prepareParameterProperties(
-                    algorithmName, "false", "2"));
+                    algorithmName, "true", "2"));
+
+        IterationsTestGenericUtils.overwriteHBPConstantsRepositoryPath();
     }
 
     // Functional tests -------------------------------------------------------------------------
