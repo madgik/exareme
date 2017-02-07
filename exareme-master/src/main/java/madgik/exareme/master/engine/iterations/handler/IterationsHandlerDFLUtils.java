@@ -268,6 +268,27 @@ public class IterationsHandlerDFLUtils {
                 break;
 
             case termination_condition:
+                // Ensure consistency among properties and template. That is, if
+                // ConditionQueryProvided has been set to true, then there must be an `update` query
+                // in the termination condition template file.
+                String originalScriptLines;
+                try {
+                    originalScriptLines = FileUtil.readFile(sqlTemplateFile);
+                } catch (IOException e) {
+                    throw new IterationsFatalException(
+                            "Failed to read original SQL template file.", e);
+                }
+                if (iterativeAlgorithmState.getConditionQueryProvided() &&
+                        !originalScriptLines.contains("update"))
+                    throw new IterationsFatalException(
+                            "ConditionQueryProvided is set to true " +
+                                    "in properties file, but no condition query has been provided.");
+                else if (!iterativeAlgorithmState.getConditionQueryProvided() &&
+                        originalScriptLines.contains("update"))
+                    throw new IterationsFatalException(
+                            "ConditionQueryProvided is set to false " +
+                                    "in properties file, but a condition query has been provided.");
+
                 // Prepare requireVars String for termination condition template SQL.
                 String requiredVarsTermCondition = IterationsHandlerDFLUtils.generateRequireVarsString(
                         new String[]{
