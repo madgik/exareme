@@ -6,7 +6,6 @@ import org.apache.log4j.Logger;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -175,7 +174,16 @@ public class IterationsHandlerDFLUtils {
                         AlgorithmsProperties.AlgorithmProperties.AlgorithmType.multiple_local_global);
         }
 
-        persistDFLScriptsToAlgorithmsDemoDirectory(demoCurrentAlgorithmDir, dflScripts);
+        try {
+            for (IterativeAlgorithmState.IterativeAlgorithmPhasesModel phase :
+                    IterativeAlgorithmState.IterativeAlgorithmPhasesModel.values()) {
+
+                Composer.persistDFLScriptToAlgorithmsDemoDirectory(
+                        demoCurrentAlgorithmDir, dflScripts[phase.ordinal()], phase);
+            }
+        } catch (ComposerException e) {
+            log.error("Failed to persist DFL scripts for algorithm [" + algorithmKey + "]");
+        }
 
         return dflScripts;
     }
@@ -487,34 +495,6 @@ public class IterationsHandlerDFLUtils {
                     + algorithmDemoDestinationDirectory + "].", e);
         }
         return algorithmDemoDestinationDirectory;
-    }
-
-    /**
-     * Persists DFL Scripts on disk, at demo algorithm's directory - for an algorithm's particular
-     * execution.
-     *
-     * @param algorithmDemoDirectoryName the algorithm's demo execution directory
-     * @param dflScripts                 the algorithm's particular execution DFL scripts
-     * @throws IterationsFatalException if writing a DFLScript fails.
-     */
-    private static void persistDFLScriptsToAlgorithmsDemoDirectory(String algorithmDemoDirectoryName,
-                                                                   String[] dflScripts) {
-        for (IterativeAlgorithmState.IterativeAlgorithmPhasesModel phase :
-                IterativeAlgorithmState.IterativeAlgorithmPhasesModel.values()) {
-
-            try {
-                File dflScriptOutputFile =
-                        new File(algorithmDemoDirectoryName + "/" + phase.name() + ".dfl");
-
-                Files.createFile(dflScriptOutputFile.toPath());
-                dflScriptOutputFile.createNewFile();
-                FileUtil.writeFile(dflScripts[phase.ordinal()], dflScriptOutputFile);
-
-            } catch (IOException e) {
-                throw new IterationsFatalException("Failed to write DFL scripts [phase: "
-                        + phase.name() + "] to path [" + algorithmDemoDirectoryName + "].");
-            }
-        }
     }
 
 

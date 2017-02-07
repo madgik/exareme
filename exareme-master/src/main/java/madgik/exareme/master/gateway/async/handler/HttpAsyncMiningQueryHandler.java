@@ -156,6 +156,14 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             } else {
                 dfl = composer.composeVirtual(qKey, algorithmProperties, query, null);
                 log.debug(dfl);
+                try {
+                    Composer.persistDFLScriptToAlgorithmsDemoDirectory(
+                            HBPConstants.DEMO_ALGORITHMS_WORKING_DIRECTORY + "/" + qKey
+                                    + "/" + qKey,
+                            dfl, null);
+                } catch (ComposerException e) {
+                    // Ignoring error if failed to persist DFL Scripts - it's not something fatal.
+                }
                 AdpDBClientProperties clientProperties =
                         new AdpDBClientProperties(
                                 HBPConstants.DEMO_DB_WORKING_DIRECTORY + qKey,

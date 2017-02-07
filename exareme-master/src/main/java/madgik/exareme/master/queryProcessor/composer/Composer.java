@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,6 +18,7 @@ import java.util.List;
 import madgik.exareme.common.consts.HBPConstants;
 import madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
+import madgik.exareme.utils.file.FileUtil;
 import madgik.exareme.utils.properties.AdpProperties;
 import madgik.exareme.worker.art.container.ContainerProxy;
 import madgik.exareme.worker.art.executionEngine.ExecutionEngineLocator;
@@ -435,7 +437,37 @@ public class Composer {
     }
 
 
-    // Utils ------------------------------------------------------------------------------------
+    // Utilities --------------------------------------------------------------------------------
+    /**
+     * Persists DFL Script on disk, at demo algorithm's directory - for an algorithm's particular
+     * execution.
+     *
+     * @param algorithmDemoDirectoryName the algorithm's demo execution directory
+     * @param dflScript                  the algorithm's particular execution DFL scripts
+     * @throws ComposerException if writing a DFLScript fails.
+     */
+    public static void persistDFLScriptToAlgorithmsDemoDirectory(
+            String algorithmDemoDirectoryName, String dflScript,
+            IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativePhase)
+            throws ComposerException {
+        File dflScriptOutputFile;
+        if (iterativePhase != null)
+            dflScriptOutputFile = new File(algorithmDemoDirectoryName + "/"
+                    + iterativePhase.name() + ComposerConstants.PersistedDFLScriptsFileExtension);
+        else
+            dflScriptOutputFile = new File(algorithmDemoDirectoryName
+                    + ComposerConstants.PersistedDFLScriptsFileExtension);
+
+        try {
+            dflScriptOutputFile.getParentFile().mkdirs();
+            Files.createFile(dflScriptOutputFile.toPath());
+            dflScriptOutputFile.createNewFile();
+            FileUtil.writeFile(dflScript, dflScriptOutputFile);
+        } catch (IOException e) {
+            throw new ComposerException("Failed to persist DFL Script ["
+                    + dflScriptOutputFile.getName() + "].");
+        }
+    }
 
     /**
      * Generates the working directory string, depending on the algorithm name and in the case of
