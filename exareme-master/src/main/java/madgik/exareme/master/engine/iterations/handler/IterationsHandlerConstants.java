@@ -61,7 +61,7 @@ public class IterationsHandlerConstants {
      */
     static final String createIterationsCounterTbl =
             "drop table if exists " + iterationsDBName + "." + iterationsCounterTbl + ";\n" +
-                    "create table " + iterationsDBName + "." + iterationsCounterTbl + " as \n" +
+                    "create table " + iterationsDBName + "." + iterationsCounterTbl + " as\n" +
                     "  select 0 as " + iterationsCounterColName + " from range(1);";
 
     /*
@@ -72,7 +72,7 @@ public class IterationsHandlerConstants {
     */
     static final String createIterationsConditionTbl =
             "drop table if exists " + iterationsDBName + "." + iterationsConditionCheckTbl + ";\n" +
-                    "create table " + iterationsDBName + "." + iterationsConditionCheckTbl + " as \n" +
+                    "create table " + iterationsDBName + "." + iterationsConditionCheckTbl + " as\n" +
                     "  select 1 as " + iterationsConditionCheckColName + " from range(1);\n";
 
     /*
