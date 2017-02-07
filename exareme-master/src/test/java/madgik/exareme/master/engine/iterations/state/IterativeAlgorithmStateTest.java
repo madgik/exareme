@@ -35,7 +35,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(AlgorithmsProperties.AlgorithmProperties.class)
 public class IterativeAlgorithmStateTest {
-    private static final String algorithmName = "DUMMY_ITERATIVE";
+    private static final String algorithmName = "SAMPLE_ITERATIVE";
     private static AdpDBClient adpDBClient;
 
     @Rule
@@ -47,7 +47,7 @@ public class IterativeAlgorithmStateTest {
     public static void setUp() throws Exception {
         AdpDBManager adpDBManager = AdpDBManagerLocator.getDBManager();
 
-        String database = ComposerConstants.mipAlgorithmsDemoWorkingDirectory + algorithmName;
+        String database = ComposerConstants.demoDbWorkingDirectory + algorithmName;
         AdpDBClientProperties clientProperties =
                 new AdpDBClientProperties(database, "", "",
                         false, false, -1, 10);
