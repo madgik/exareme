@@ -7,10 +7,10 @@ import org.junit.Test;
 
 import java.io.File;
 
+import madgik.exareme.common.consts.HBPConstants;
 import madgik.exareme.master.client.AdpDBClient;
 import madgik.exareme.master.client.AdpDBClientProperties;
 import madgik.exareme.master.client.AdpDBClientQueryStatus;
-import madgik.exareme.master.queryProcessor.composer.ComposerConstants;
 import madgik.exareme.utils.file.FileUtil;
 
 /**
@@ -31,7 +31,7 @@ public class ExaremeClusterTest {
         log.info("IsUp : " + cluster.isUp());
 
         AdpDBClientProperties clientProperties = new AdpDBClientProperties(
-                ComposerConstants.demoDbWorkingDirectory);
+                HBPConstants.DEMO_DB_WORKING_DIRECTORY);
         AdpDBClient dbClient = cluster.getExaremeClusterClient(clientProperties);
         log.info("Client created");
 

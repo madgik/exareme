@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Locale;
 
+import madgik.exareme.common.consts.HBPConstants;
 import madgik.exareme.master.client.AdpDBClient;
 import madgik.exareme.master.client.AdpDBClientFactory;
 import madgik.exareme.master.client.AdpDBClientProperties;
@@ -162,7 +163,7 @@ public class HttpAsyncMiningOldHandler implements HttpAsyncRequestHandler<HttpRe
                             log.debug(queryStatus.getExecutionTime());
                             AdpDBClientProperties clientProperties =
                                 new AdpDBClientProperties(
-                                        ComposerConstants.demoDbWorkingDirectory + split[4],
+                                        HBPConstants.DEMO_DB_WORKING_DIRECTORY + split[4],
                                         "", "", false,
                                     false, -1, 10);
                             AdpDBClient dbClient =
@@ -220,7 +221,7 @@ public class HttpAsyncMiningOldHandler implements HttpAsyncRequestHandler<HttpRe
                             log.debug(dfl);
                             AdpDBClientProperties clientProperties =
                                 new AdpDBClientProperties(
-                                        ComposerConstants.demoDbWorkingDirectory + qKey,
+                                        HBPConstants.DEMO_DB_WORKING_DIRECTORY + qKey,
                                         "", "", false,
                                     false, -1, 10);
                             AdpDBClient dbClient =

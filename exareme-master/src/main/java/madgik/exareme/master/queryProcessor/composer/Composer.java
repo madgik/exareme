@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import madgik.exareme.common.consts.HBPConstants;
 import madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.utils.properties.AdpProperties;
@@ -165,7 +166,7 @@ public class Composer {
             parameters.put(IterationsHandlerConstants.iterationsParameterIterDBKey,
                     generateIterationsDBName(qKey));
             parameters.put(ComposerConstants.defaultDBKey,
-                    ComposerConstants.demoDbWorkingDirectory + qKey + "/defaultDB.db");
+                    HBPConstants.DEMO_DB_WORKING_DIRECTORY + qKey + "/defaultDB.db");
 
             // 2. Remove unneeded parameter
             parameters.remove(iterationsPropertyConditionQueryProvided);
@@ -177,7 +178,7 @@ public class Composer {
         }
         else {
             parameters.put(ComposerConstants.defaultDBKey,
-                    ComposerConstants.demoDbWorkingDirectory + qKey + "_defaultDB.db");
+                    HBPConstants.DEMO_DB_WORKING_DIRECTORY + qKey + "_defaultDB.db");
         }
 
         switch (algorithmProperties.getType()) {

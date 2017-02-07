@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 
 import java.rmi.RemoteException;
 
+import madgik.exareme.common.consts.HBPConstants;
 import madgik.exareme.master.client.AdpDBClient;
 import madgik.exareme.master.client.AdpDBClientFactory;
 import madgik.exareme.master.client.AdpDBClientProperties;
@@ -15,7 +16,6 @@ import madgik.exareme.master.engine.iterations.state.IterationsStateManagerImpl;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.master.queryProcessor.composer.AlgorithmsProperties;
 import madgik.exareme.master.queryProcessor.composer.Composer;
-import madgik.exareme.master.queryProcessor.composer.ComposerConstants;
 
 import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerUtils.generateAlgorithmKey;
 
@@ -69,7 +69,7 @@ public class IterationsHandler {
         // IterativeAlgorithmState
         String algorithmKey = generateAlgorithmKey(algorithmProperties);
 
-        String database = ComposerConstants.demoDbWorkingDirectory + algorithmKey;
+        String database = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey;
         // -----------------------------------------
         // Create AdpDBClient of iterative algorithm state (used for submitting all queries)
         AdpDBClient adpDBClient;

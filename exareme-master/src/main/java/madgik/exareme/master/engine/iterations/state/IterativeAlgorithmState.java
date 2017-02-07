@@ -13,13 +13,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
+import madgik.exareme.common.consts.HBPConstants;
 import madgik.exareme.master.client.AdpDBClient;
 import madgik.exareme.master.client.AdpDBClientQueryStatus;
 import madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants;
 import madgik.exareme.master.engine.iterations.handler.IterationsHandlerDFLUtils;
 import madgik.exareme.master.engine.iterations.state.exceptions.IterationsStateFatalException;
 import madgik.exareme.master.queryProcessor.composer.AlgorithmsProperties;
-import madgik.exareme.master.queryProcessor.composer.ComposerConstants;
 
 import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants.iterationsConditionCheckColName;
 import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants.iterationsPropertyConditionQueryProvided;
@@ -121,7 +121,7 @@ public class IterativeAlgorithmState {
 
         this.algorithmKey = algorithmKey;
         iterationsDBPath =
-                ComposerConstants.demoDbWorkingDirectory + algorithmKey + "/"
+                HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey + "/"
                         + IterationsHandlerConstants.iterationsParameterIterDBValueSuffix;
         this.adpDBClient = adpDBClient;
         this.algorithmProperties = algorithmProperties;

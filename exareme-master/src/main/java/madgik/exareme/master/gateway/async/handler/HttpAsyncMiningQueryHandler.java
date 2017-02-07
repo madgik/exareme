@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import madgik.exareme.common.consts.HBPConstants;
 import madgik.exareme.master.client.AdpDBClient;
 import madgik.exareme.master.client.AdpDBClientFactory;
 import madgik.exareme.master.client.AdpDBClientProperties;
@@ -157,7 +158,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 log.debug(dfl);
                 AdpDBClientProperties clientProperties =
                         new AdpDBClientProperties(
-                                ComposerConstants.demoDbWorkingDirectory + qKey,
+                                HBPConstants.DEMO_DB_WORKING_DIRECTORY + qKey,
                                 "", "", false, false,
                                 -1, 10);
                 AdpDBClient dbClient =

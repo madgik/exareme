@@ -20,7 +20,7 @@ import madgik.exareme.master.queryProcessor.composer.ComposerException;
 import madgik.exareme.utils.association.Pair;
 import madgik.exareme.utils.file.FileUtil;
 
-import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants.demoAlgorithmsWorkingDirectory;
+import static madgik.exareme.common.consts.HBPConstants.DEMO_ALGORITHMS_WORKING_DIRECTORY;
 import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants.iterationsPropertyMaximumNumber;
 import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants.previousPhaseOutputTblPlaceholder;
 import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants.selectStr;
@@ -476,7 +476,7 @@ public class IterationsHandlerDFLUtils {
         }
 
         String algorithmDemoDestinationDirectory =
-                demoAlgorithmsWorkingDirectory + "/" + algorithmKey;
+                DEMO_ALGORITHMS_WORKING_DIRECTORY + "/" + algorithmKey;
 
         try {
             FileUtils.copyDirectory(new File(algorithmRepoPath),

@@ -2,9 +2,8 @@ package madgik.exareme.master.engine.iterations.handler;
 
 import org.apache.log4j.Logger;
 
+import madgik.exareme.common.consts.HBPConstants;
 import madgik.exareme.master.queryProcessor.composer.AlgorithmsProperties;
-
-import static madgik.exareme.master.queryProcessor.composer.ComposerConstants.demoDbWorkingDirectory;
 
 /**
  * @author Christos Aslanoglou <br> caslanoglou@di.uoa.gr <br> University of Athens / Department of
@@ -32,7 +31,7 @@ public class IterationsHandlerUtils {
      * @return the absolute filename of iterationsDB for this algorithm.
      */
     public static String generateIterationsDBName(String algorithmKey) {
-        return demoDbWorkingDirectory
+        return HBPConstants.DEMO_DB_WORKING_DIRECTORY
                 + algorithmKey + "/"
                 + IterationsHandlerConstants.iterationsParameterIterDBValueSuffix;
     }
