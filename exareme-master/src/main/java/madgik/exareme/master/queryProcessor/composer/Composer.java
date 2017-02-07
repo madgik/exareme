@@ -82,12 +82,12 @@ public class Composer {
     /**
      * Composes the DFL script for the given algorithm properties and query.
      *
-     * @param qKey                    The query key, or in general a key for the algorithm.
-     * @param algorithmProperties     The algorithm properties instance.
-     * @param iterativeAlgorithmPhase In the case of iterative algorithms, this is one value of
+     * @param qKey                    the query key, or in general a key for the algorithm
+     * @param algorithmProperties     the algorithm properties instance
+     * @param iterativeAlgorithmPhase in the case of iterative algorithms, this is one value of
      *                                {@link madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState.IterativeAlgorithmPhasesModel}
      *                                <b>otherwise, it is null</b>
-     * @return The generated DFL script.
+     * @return the generated DFL script
      * @throws ComposerException If the algorithm type or the iterative algorithm phase isn't
      *                           supported or finally, if this method could not retrieve
      *                           ContainerProxies.
@@ -96,14 +96,42 @@ public class Composer {
                                  AlgorithmsProperties.AlgorithmProperties algorithmProperties,
                                  String query,
                                  IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase
+    ) throws ComposerException {
+        return composeVirtual(null, qKey, algorithmProperties, query, iterativeAlgorithmPhase);
+    }
+
+    /**
+     * Composes the DFL script for the given algorithm properties and query.
+     *
+     * @param repositoryPath          the algorithm's repository path
+     * @param qKey                    the query key, or in general a key for the algorithm
+     * @param algorithmProperties     the algorithm properties instance
+     * @param iterativeAlgorithmPhase in the case of iterative algorithms, this is one value of
+     *                                {@link madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState.IterativeAlgorithmPhasesModel}
+     *                                <b>otherwise, it is null</b>
+     * @return the generated DFL script
+     * @throws ComposerException If the algorithm type or the iterative algorithm phase isn't
+     *                           supported or finally, if this method could not retrieve
+     *                           ContainerProxies.
+     */
+    public String composeVirtual(String repositoryPath, String qKey,
+                                 AlgorithmsProperties.AlgorithmProperties algorithmProperties,
+                                 String query,
+                                 IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase
                                  )
         throws ComposerException {
 
         StringBuilder dflScript = new StringBuilder();
 
-        String workingDir =
-                generateWorkingDirectoryString(algorithmProperties.getName(), iterativeAlgorithmPhase);
-        HashMap<String, String> parameters = AlgorithmsProperties.AlgorithmProperties.toHashMap(algorithmProperties);
+        String workingDir;
+        if (iterativeAlgorithmPhase == null)
+            workingDir = generateWorkingDirectoryString(repositoryPath, algorithmProperties.getName(),
+                        null);
+        else
+            workingDir = generateWorkingDirectoryString(repositoryPath, qKey, iterativeAlgorithmPhase);
+
+        HashMap<String, String> parameters =
+                AlgorithmsProperties.AlgorithmProperties.toHashMap(algorithmProperties);
         String localScriptPath =
             repoPath + algorithmProperties.getName() + "/local.template.sql";
         String globalScriptPath =
@@ -256,14 +284,21 @@ public class Composer {
                     parameters.put(ComposerConstants.inputLocalTblKey, inputLocalTbl);
 
                     // Iterations support distinction
-                    if (iterativeAlgorithmPhase == null)
+                    if (iterativeAlgorithmPhase == null) {
                         parameters.put(ComposerConstants.algorithmKey,
                             algorithmProperties.getName() + "/" + listFiles[i].getName());
+                    }
                     else {
+                        /*
+                         * qKey here is actually the algorithm's key, which is the one we want to
+                         * use. This is due to the requirement for persisting algorithm template
+                         * and DFL scripts in demo-algorithm's directory, for a **particular**
+                         * algorithm execution.
+                         */
                         parameters.put(ComposerConstants.algorithmKey,
-                                algorithmProperties.getName() + "/"
-                                        + iterativeAlgorithmPhase.name() + "/"
-                                        + listFiles[i].getName());
+                                "/" + qKey
+                                        + "/" + iterativeAlgorithmPhase.name()
+                                        + "/" + listFiles[i].getName());
                         /*
                          * [Only for iterative algorithms]
                          * Only use previousPhaseOutputTbl parameter (set in outputGlobalTblKey)
@@ -284,7 +319,8 @@ public class Composer {
                     } else {
                         parameters.put(ComposerConstants.isTmpKey, "true");
                     }
-                    dflScript.append(composeLocalGlobal(parameters, iterativeAlgorithmPhase));
+                    dflScript.append(composeLocalGlobal(repositoryPath, parameters,
+                            iterativeAlgorithmPhase));
                 }
                 break;
             case iterative:
@@ -321,6 +357,7 @@ public class Composer {
     }
 
     private static String composeLocalGlobal(
+            String repositoryPath,
             HashMap<String, String> parameters,
             IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase)
         throws ComposerException {
@@ -337,7 +374,9 @@ public class Composer {
         int algorithmIter = Integer.valueOf(algorithmIterstr);
         parameters.remove(ComposerConstants.outputGlobalTblKey);
 
-        String workingDir = repoPath + algorithmKey;
+        if (repositoryPath == null)
+            repositoryPath = Composer.repoPath;
+        String workingDir = repositoryPath + algorithmKey;
 
         String localScriptPath = workingDir + "/local.template.sql";
         String globalScriptPath = workingDir + "/global.template.sql";
@@ -398,46 +437,51 @@ public class Composer {
     // Utils ------------------------------------------------------------------------------------
 
     /**
-     * Generates the working directory string, depending on the algorithm key and in the case of
+     * Generates the working directory string, depending on the algorithm name and in the case of
      * iterative algorithms, its current phase.
      *
+     * @param repositoryPath          the algorithm's repository path, if it's null, then the
+     *                                default (Composer's) repository path is used
      * @param algorithmName           the algorithm's name or query's key in case of non iterative
-     *                                algorithm
+     *                                algorithm, can be null
      * @param iterativeAlgorithmPhase the iterative algorithm phase for which to generate working
      *                                directory String<br> <b>In the case of non iterative
-     *                                algorithms this is null</b>.
+     *                                algorithms this is null</b>
      * @return the working directory string
      * @throws ComposerException In case of iterative algorithms, if an iterative phase is not
      *                           supported.
      * @see madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState.IterativeAlgorithmPhasesModel
      */
     public static String generateWorkingDirectoryString(
+            String repositoryPath,
             String algorithmName,
             IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase)
             throws ComposerException {
 
+        if (repositoryPath == null)
+            repositoryPath = Composer.repoPath;
+
         String workingDir;
         if (iterativeAlgorithmPhase == null)
-            workingDir = repoPath + algorithmName;
+            workingDir = repositoryPath + algorithmName;
         else {
             switch (iterativeAlgorithmPhase) {
                 case init:
-                    workingDir = repoPath + algorithmName + "/" + init.name();
+                    workingDir = repositoryPath + "/" +  algorithmName + "/" + init.name();
                     break;
                 case step:
-                    workingDir = repoPath + algorithmName + "/" + step.name();
+                    workingDir = repositoryPath + "/" + algorithmName + "/" + step.name();
                     break;
                 case termination_condition:
-                    workingDir = repoPath + algorithmName + "/" + termination_condition.name();
+                    workingDir = repositoryPath + "/" + algorithmName + "/" + termination_condition.name();
                     break;
                 case finalize:
-                    workingDir = repoPath + algorithmName + "/" + finalize.name();
+                    workingDir = repositoryPath + "/" + algorithmName + "/" + finalize.name();
                     break;
                 default:
                     throw new ComposerException("Unsupported iterative algorithm case.");
             }
         }
-
         return workingDir;
     }
 }

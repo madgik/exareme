@@ -97,7 +97,7 @@ public class IterationsHandler {
         // Prepare DFL scripts
         iterativeAlgorithmState.setDflScripts(
                 IterationsHandlerDFLUtils.prepareDFLScripts(
-                algorithmKey, composer, algorithmProperties, iterativeAlgorithmState));
+                        algorithmKey, composer, algorithmProperties, iterativeAlgorithmState));
         if (log.isDebugEnabled())
             log.debug("Generated DFL scripts for: " + iterativeAlgorithmState.toString());
 
