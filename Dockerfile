@@ -30,6 +30,13 @@ RUN sudo pip install -r requirements.txt
 
 ADD ./exareme-distribution/target/exareme /root/exareme
 WORKDIR /root/exareme
+
+RUN sed -i '/composer.repository.path=/c\composer.repository.path=/root/exareme/lib/algorithms-dev/' etc/exareme/gateway.properties
+RUN sed -i '/static.path/c\static.path=/root/exareme/static/' etc/exareme/gateway.properties
+
+RUN cat etc/exareme/gateway.properties
+
+
 ADD bootstrap.sh /root/exareme/bootstrap.sh
 
 ENTRYPOINT /bin/bash bootstrap.sh
