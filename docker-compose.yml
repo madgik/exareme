@@ -26,11 +26,15 @@ version: '2'
 #      - rawdb
 services:
   exalocal:
-    image: exatest
+    image: hbpmip/exaremelocal
     links:
       - rawdb
     environment:
       - MASTER_FLAG=master
+      - RAWUSERNAME="federation"
+      - RAWPASSWORD="federation"
+      - RAWHOST="rawdb"
+      - RAWPORT="54321"
     ports:
       - "9090:9090"
   rawdb:
@@ -40,6 +44,8 @@ services:
       - ./rawdb_datasets:/datasets:ro
     ports:
       - "54321:54321"
+      - "5555:5555"
+
 #  examaster:
 #    image: exatest
 #    links:
