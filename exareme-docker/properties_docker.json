@@ -1,0 +1,15 @@
+{
+  "algorithms"  : [],
+  "endpoints"   : [],
+  "local_engine_default" : {
+    "name"        : "rawdb",
+    "parameters"  : [
+      { "name" : "username", "desc" : "", "value":"<raw_username>" },
+      { "name" : "password", "desc" : "", "value":"<raw_password>" },
+      { "name" : "host"    , "desc" : "", "value":"<raw_host>"},
+      { "name" : "port" , "desc":"", "value":"<raw_port>"}
+    ],
+    "query" : "select distinct patient_id as __rid, variable_name as __colname, value as __val from exam_value"
+  }
+}
+

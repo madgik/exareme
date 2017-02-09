@@ -1,26 +1,37 @@
 #!/usr/bin/env bash
 
+#RAWUSERNAME="federation"
+#RAWPASSWORD="federation"
+#RAWHOST="rawdb"
+#RAWPORT="54321"
+
+if [ -z ${RAWUSERNAME} ]; then echo "RAWUSERNAME is unset"; exit;  fi
+if [ -z ${RAWPASSWORD} ]; then echo "RAWPASSWORD is unset";exit;  fi
+if [ -z ${RAWHOST} ]; then echo "RAWHOST is unset"; exit;  fi
+if [ -z ${RAWPORT} ]; then echo "RAWPORT is unset";exit;  fi
+
+
 echo `(hostname --ip-address)` > /root/exareme/etc/exareme/master
 echo "" > /root/exareme/etc/exareme/workers
 
-#rm /root/exareme/etc/exareme/gateway.properties
+sed -i "/<raw_username>/c`echo $RAWUSERNAME`" /root/mip-algorithms/properties.json
+sed -i "/<raw_password>/c`echo $RAWPASSWORD`" /root/mip-algorithms/properties.json
+sed -i "/<raw_host>/c`echo $RAWHOST`" /root/mip-algorithms/properties.json
+sed -i "/<raw_port>/c`echo $RAWPORT`" /root/mip-algorithms/properties.json
 
-#mv /root/exareme/etc/exareme/gateway_docker.properties /root/exareme/etc/exareme/gateway.properties
 
-#rm /root/exareme/lib/algorithms-dev/properties.json
-
-#mv /root/exareme/lib/algorithms-dev/properties_docker.json /root/exareme/lib/algorithms-dev/properties.json
 
 mkdir -p  /tmp/demo/db/
 
+/bin/sh
 
-./bin/exareme-admin.sh --start --local
-
-if [[ -e "/tmp/exareme/var/log/exareme-*.log" ]]; then
-
-    tail -f /tmp/exareme/var/log/exareme-*.log
-else
-    sleep 2;
-    tail -f /tmp/exareme/var/log/exareme-*.log
-fi
-
+#./bin/exareme-admin.sh --start --local
+#
+#if [[ -e "/tmp/exareme/var/log/exareme-*.log" ]]; then
+#
+#    tail -f /tmp/exareme/var/log/exareme-*.log
+#else
+#    sleep 2;
+#    tail -f /tmp/exareme/var/log/exareme-*.log
+#fi
+#

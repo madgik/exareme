@@ -27,15 +27,18 @@ RUN git clone -b mip https://github.com/johnchronis/exareme.git /root/exareme-sr
 WORKDIR /root/exareme-src
 RUN mvn clean install
 RUN mv /root/exareme-src/exareme-distribution/target/exareme* /root/exareme
-#RUN rm /root/exareme/etc/exareme/gateway.properties
-#ADD gateway.properties /root/exareme/etc/exareme/
 
-
+#uncomment to
 #RUN  git clone https://github.com/madgik/mip-algorithms.git /root/mip-algorithms
 #RUN rm /root/mip-algorithms/properties.json
 #ADD properties.json /root/mip-algorithms/
 
-ADD ../exareme-tools/algorithms-dev /root/mip-algorithms
+RUN cp -R /root/exareme/lib/algorithms-dev /root/mip-algorithms
+
+RUN sed -i '/"username"/c\{ "name" : "username", "desc" : "", "value":"<raw_username>" },' /root/mip-algorithms/properties.json
+RUN sed -i '/"password"/c\{ "name" : "username", "desc" : "", "value":"<raw_password>" },' /root/mip-algorithms/properties.json
+RUN sed -i '/"host"/c\{ "name" : "username", "desc" : "", "value":"<raw_host>" },' /root/mip-algorithms/properties.json
+RUN sed -i '/"port"/c\{ "name" : "username", "desc" : "", "value":"<raw_port>" },' /root/mip-algorithms/properties.json
 
 WORKDIR /root/exareme
 
