@@ -1,33 +1,67 @@
 version: '2'
 
+#  master:
+#    build: .
+#    hostname: master
+#    volumes:
+#      - ./exareme-distribution/target/exareme:/root/exareme:ro
+#      - ./bootstrap.sh:/tmp/entrypoint.sh
+#    ports:
+#      - "9090:9090"
+#    working_dir: /root/exareme/
+#    entrypoint: /tmp/entrypoint.sh
+#    links:
+#      - rawdb
+#  worker:
+#    build: .
+#    volumes:
+#      - ./exareme-distribution/target/exareme:/root/exareme:ro
+#      - ./bootstrap.sh:/tmp/entrypoint.sh
+#    working_dir: /root/exareme/
+#    entrypoint: /tmp/entrypoint.sh
+#    environment:
+#      - ISMASTER=master
+#    links:
+#      - master
+#      - rawdb
 services:
-  master:
-    build: .
-    hostname: master
-    volumes:
-      - ./exareme-distribution/target/exareme:/root/exareme:ro
-      - ./bootstrap.sh:/tmp/entrypoint.sh
+  exalocal:
+    image: exatest
+    links:
+      - rawdb
+    environment:
+      - MASTER_FLAG=master
     ports:
       - "9090:9090"
-    working_dir: /root/exareme/
-    entrypoint: /tmp/entrypoint.sh
-    links:
-      - rawdb
-  worker:
-    build: .
-    volumes:
-      - ./exareme-distribution/target/exareme:/root/exareme:ro
-      - ./bootstrap.sh:/tmp/entrypoint.sh
-    working_dir: /root/exareme/
-    entrypoint: /tmp/entrypoint.sh
-    environment:
-      - EXAREME_MASTER=master
-    links:
-      - master
-      - rawdb
   rawdb:
+    hostname: rawdb
     image: raw-sniffer
     volumes:
       - ./rawdb_datasets:/datasets:ro
     ports:
       - "54321:54321"
+#  examaster:
+#    image: exatest
+#    links:
+#      - exaworker
+#    environment:
+#      - MASTER_FLAG=master
+#    ports:
+#      - "9090:9090"
+#      - "1099:1099"
+#      - "1098:1098"
+#      - "8088:8088"
+#  exaworker:
+#    image: exatest
+#    environment:
+#      - MASTER_IP=
+#    ports:
+#      - "9090:9090"
+#      - "1099:1099"
+#      - "1098:1098"
+#      - "8088:8088"
+#
+#
+#
+#
+#

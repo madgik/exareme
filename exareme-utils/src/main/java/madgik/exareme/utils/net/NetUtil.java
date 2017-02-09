@@ -49,6 +49,7 @@ public class NetUtil {
         List<String> aList = ManagementFactory.getRuntimeMXBean().getInputArguments();
         for (String a : aList) {
             if (a.startsWith("-Djava.rmi.server.hostname")) {
+                log.debug("netutil bef split $$$ " + a);
                 return a.split("=")[1].trim();
             }
         }
@@ -56,8 +57,10 @@ public class NetUtil {
         String privIp = getPrivateIp();
         String pubIp = getPublicIp();
         if (privIp.equals("127.0.0.1") == false) {
+            log.debug("ret privip $$$ " + privIp);
             return privIp;
         } else {
+            log.debug("nret pubip $$$ " + pubIp);
             return pubIp;
         }
     }
