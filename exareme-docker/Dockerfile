@@ -42,8 +42,8 @@ RUN sed -i '/"port"/c\{ "name" : "username", "desc" : "", "value":"<raw_port>" }
 
 WORKDIR /root/exareme
 
-RUN sed -i '/composer.repository.path=/c\composer.repository.path=/root/mip-algorithms/' /home/exareme/etc/exareme/gateway.properties
-RUN sed -i '/static.path/c\static.path=/root/exareme/static/' /home/exareme/etc/exareme/gateway.properties
+RUN sed -i '/composer.repository.path=/c\composer.repository.path=/root/mip-algorithms/' /root/exareme/etc/exareme/gateway.properties
+RUN sed -i '/static.path/c\static.path=/root/exareme/static/' /root/exareme/etc/exareme/gateway.properties
 
 
 EXPOSE 9090

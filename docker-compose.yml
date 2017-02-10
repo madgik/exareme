@@ -31,10 +31,10 @@ services:
       - rawdb
     environment:
       - MASTER_FLAG=master
-      - RAWUSERNAME="federation"
-      - RAWPASSWORD="federation"
-      - RAWHOST="rawdb"
-      - RAWPORT="54321"
+      - RAWUSERNAME=federation
+      - RAWPASSWORD=federation
+      - RAWHOST=rawdb
+      - RAWPORT=54321
     ports:
       - "9090:9090"
   rawdb:
