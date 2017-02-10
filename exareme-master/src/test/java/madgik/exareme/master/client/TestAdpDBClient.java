@@ -18,6 +18,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 
+
 /**
  * Testing multiple clients on Pseudo-distributed cluster :
  * + Initialize cluster ( registrPort, nworkers)
@@ -36,21 +37,24 @@ public class TestAdpDBClient {
     private int registryPort = 1099;
     private int dtPort = 8088;
     private int nclients = 1;
-    private int nworkers = 3;
+    private int nworkers = 0; //should not change
     private String dbPathName;
     private String[] load_script;
     private String[] index_script;
     private String[] query_script;
+    private Boolean problem = false;
+
 
     public TestAdpDBClient() {
 
     }
 
     @Before public void setUp() throws Exception {
+
         Logger.getRootLogger().setLevel(Level.DEBUG);
         //        Thread.sleep(1000*20);
         log.debug("---- SETUP ----");
-        log.debug(TestAdpDBClient.class.getResource("load_emp_template.sql") == null);
+//        log.debug(TestAdpDBClient.class.getResource("load_emp_template.sql") == null);
         // load & format scripts
         File loadFile =
             new File(TestAdpDBClient.class.getResource("load_emp_template.sql").getFile());
@@ -60,7 +64,7 @@ public class TestAdpDBClient {
 
         for (int i = 0; i < nclients; i++) {
             this.load_script[i] = String
-                .format(FileUtils.readFileToString(loadFile), "emp_" + String.valueOf(i),
+                .format(FileUtils.readFileToString(loadFile), "emp_"+String.valueOf(i),
                     String.valueOf(nworkers + 1),
                     loadFile.getParentFile().getAbsolutePath() + "/emp.tsv");
             this.index_script[i] = String.format(FileUtils.readFileToString(new File(
@@ -72,9 +76,10 @@ public class TestAdpDBClient {
         }
         log.debug("Scripts successfully formatted.");
 
-        this.dbPathName = "/tmp/db/client-test-" + String.valueOf(System.currentTimeMillis());
+
+        this.dbPathName = "/tmp/db/client-test"+System.currentTimeMillis()+"-" + String.valueOf(System.currentTimeMillis());
         new File(dbPathName).mkdirs();
-        log.debug("Database created.");
+        log.debug("Database created. "+dbPathName);
 
         log.debug("---- SETUP ----");
     }
@@ -102,6 +107,7 @@ public class TestAdpDBClient {
         log.debug("Clients created.(" + nclients + ")");
 
         executorService.shutdown();
+
         log.debug("Executor service shutdown.");
 
         try {
@@ -110,7 +116,21 @@ public class TestAdpDBClient {
             log.error("Unable shutdown executor.", e);
         }
 
+        Assert.assertFalse(problem);
+
+        log.debug("Mini cluster stopped1.");
+
+
+        miniCluster.stop(false);
+        log.debug("Mini cluster stopped2.");
+
+        Thread.sleep(12*1000);
+        log.debug("Mini cluster stopped3.");
+
         miniCluster.stop(true);
+        Thread.sleep(5*1000);
+        log.debug("Mini cluster stopped4.");
+
         log.debug("Mini cluster stopped.");
 
         log.debug("---- TEST ----");
@@ -118,7 +138,7 @@ public class TestAdpDBClient {
 
     @After public void tearDown() throws Exception {
         log.debug("---- CLEAN ----");
-        //        FileUtils.deleteDirectory(new File(dbPathName));
+                FileUtils.deleteDirectory(new File(dbPathName));
         log.debug("---- CLEAN ----");
         //        Thread.sleep(1000 * 20);
 
@@ -138,42 +158,24 @@ public class TestAdpDBClient {
                 AdpDBClientQueryStatus queryStatus =
                     client.query("load_" + String.valueOf(id), load_script[id]);
                 while (queryStatus.hasFinished() == false && queryStatus.hasError() == false) {
-                    Thread.sleep(10 * 1000);
+                    Thread.sleep(1000 * 2);
                 }
-                if (queryStatus.hasError()) {
+                if (queryStatus.hasError() || queryStatus==null) {
                     log.error("Exception occured..." + queryStatus.getError());
+                    problem = true;
                 }
-                Assert.assertTrue(queryStatus != null);
-                Assert.assertFalse(queryStatus.hasError());
 
-                //                queryStatus = client.query("index_" + String.valueOf(id), index_script[id]);
-                //                if (queryStatus.hasError()) {
-                //                    log.error("Exception occured..." + queryStatus.getError());
-                //                }
-                //                Assert.assertTrue(queryStatus != null);
-                //                Assert.assertFalse(queryStatus.hasError());
-                //
-                //                log.debug("Explain query script...");
-                //                String explain = client.explain(query_script[id]);
-                //                log.debug("Query plan :\n" + explain);
-                //                Assert.assertNotNull(explain);
-                //
-                //                queryStatus = client.query("query_" + String.valueOf(id), query_script[id]);
-                //                if (queryStatus.hasError() ) {
-                //                    log.error("Exception occured..." + queryStatus.getError());
-                //                }
-                //                Assert.assertTrue(queryStatus != null);
-                //                Assert.assertFalse(queryStatus.hasError());
-                //
-                //                InputStream inputStream = client.readTable("emp_20000_" + String.valueOf(id));
-                //                log.info(IOUtils.toString(inputStream, Charset.defaultCharset()));
+
+
                 log.info("Client " + id + " finished.");
             } catch (RemoteException e) {
                 log.error("Error occurred ( " + String.valueOf(id) + ")!", e);
+
             } catch (IOException e) {
                 log.error("Error occurred while reading results", e);
-            } catch (InterruptedException e) {
-                log.error(e);
+
+            } catch (Exception e) {
+                log.error("Error");
             }
         }
     }
