@@ -1,29 +1,5 @@
 version: '2'
 
-#  master:
-#    build: .
-#    hostname: master
-#    volumes:
-#      - ./exareme-distribution/target/exareme:/root/exareme:ro
-#      - ./bootstrap.sh:/tmp/entrypoint.sh
-#    ports:
-#      - "9090:9090"
-#    working_dir: /root/exareme/
-#    entrypoint: /tmp/entrypoint.sh
-#    links:
-#      - rawdb
-#  worker:
-#    build: .
-#    volumes:
-#      - ./exareme-distribution/target/exareme:/root/exareme:ro
-#      - ./bootstrap.sh:/tmp/entrypoint.sh
-#    working_dir: /root/exareme/
-#    entrypoint: /tmp/entrypoint.sh
-#    environment:
-#      - ISMASTER=master
-#    links:
-#      - master
-#      - rawdb
 services:
   exalocal:
     image:  hbpmip/exaremelocal
@@ -37,11 +13,12 @@ services:
       - RAWPORT=54321
     ports:
       - "9090:9090"
+
   rawdb:
     hostname: rawdb
-    image: hbpmip/postgresraw
+    image: raw-sniffer
     volumes:
-      - ./rawdb_datasets:/datasets:ro
+      - ../rawdb_datasets:/datasets:ro
     ports:
       - "54321:54321"
       - "5555:5555"
@@ -68,6 +45,27 @@ services:
 #      - "8088:8088"
 #
 #
-#
-#
-#
+#  master:
+#    build: .
+#    hostname: master
+#    volumes:
+#      - ./exareme-distribution/target/exareme:/root/exareme:ro
+#      - ./bootstrap.sh:/tmp/entrypoint.sh
+#    ports:
+#      - "9090:9090"
+#    working_dir: /root/exareme/
+#    entrypoint: /tmp/entrypoint.sh
+#    links:
+#      - rawdb
+#  worker:
+#    build: .
+#    volumes:
+#      - ./exareme-distribution/target/exareme:/root/exareme:ro
+#      - ./bootstrap.sh:/tmp/entrypoint.sh
+#    working_dir: /root/exareme/
+#    entrypoint: /tmp/entrypoint.sh
+#    environment:
+#      - ISMASTER=master
+#    links:
+#      - master
+#      - rawdb
