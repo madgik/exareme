@@ -70,15 +70,15 @@ class Client extends Thread {
     @Override public void run() {
         try {
             long start = System.currentTimeMillis();
-            System.out.println(Thread.currentThread().getId() + ": " +
-                Calendar.getInstance().get(Calendar.MINUTE) + ":" +
-                Calendar.getInstance().get(Calendar.SECOND) + " Fetching: " + file);
+//            System.out.println(Thread.currentThread().getId() + ": " +
+//                Calendar.getInstance().get(Calendar.MINUTE) + ":" +
+//                Calendar.getInstance().get(Calendar.SECOND) + " Fetching: " + file);
             cache.fetch(file);
             long end = System.currentTimeMillis();
-            System.out.println(Thread.currentThread().getId() + ": " +
-                Calendar.getInstance().get(Calendar.MINUTE) + ":" +
-                Calendar.getInstance().get(Calendar.SECOND) + " Done: " + file +
-                " in " + (end - start));
+//            System.out.println(Thread.currentThread().getId() + ": " +
+//                Calendar.getInstance().get(Calendar.MINUTE) + ":" +
+//                Calendar.getInstance().get(Calendar.SECOND) + " Done: " + file +
+//                " in " + (end - start));
         } catch (Exception e) {
             e.printStackTrace();
         }
