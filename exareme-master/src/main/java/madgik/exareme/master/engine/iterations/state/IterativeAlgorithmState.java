@@ -16,16 +16,16 @@ import java.util.concurrent.locks.ReentrantLock;
 import madgik.exareme.common.consts.HBPConstants;
 import madgik.exareme.master.client.AdpDBClient;
 import madgik.exareme.master.client.AdpDBClientQueryStatus;
-import madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants;
+import madgik.exareme.master.engine.iterations.handler.IterationsConstants;
 import madgik.exareme.master.engine.iterations.handler.IterationsHandlerDFLUtils;
 import madgik.exareme.master.engine.iterations.state.exceptions.IterationsStateFatalException;
 import madgik.exareme.master.queryProcessor.composer.AlgorithmsProperties;
 
-import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants.iterationsConditionCheckColName;
-import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants.iterationsPropertyConditionQueryProvided;
-import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants.iterationsPropertyMaximumNumber;
-import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants.previousPhaseOutputTblVariableName;
-import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants.selectTerminationConditionValue;
+import static madgik.exareme.master.engine.iterations.handler.IterationsConstants.iterationsConditionCheckColName;
+import static madgik.exareme.master.engine.iterations.handler.IterationsConstants.iterationsPropertyConditionQueryProvided;
+import static madgik.exareme.master.engine.iterations.handler.IterationsConstants.iterationsPropertyMaximumNumber;
+import static madgik.exareme.master.engine.iterations.handler.IterationsConstants.previousPhaseOutputTblVariableName;
+import static madgik.exareme.master.engine.iterations.handler.IterationsConstants.selectTerminationConditionValue;
 
 /**
  * @author Christos Aslanoglou <br> caslanoglou@di.uoa.gr <br> University of Athens / Department of
@@ -88,7 +88,7 @@ public class IterativeAlgorithmState {
      * Used in conjunction with StrSubstitutor to replace variables in DFL scripts.
      *
      * <p> Mapping contains: <br>
-     *  1. {@code IterationsHandlerConstants.previousPhaseOutputTblVariableName -> latestPhaseOutputTblName}<br>
+     *  1. {@code IterationsConstants.previousPhaseOutputTblVariableName -> latestPhaseOutputTblName}<br>
      *  2. {@code stepPhaseOutputTblVariableName -> currentStepPhaseOutputTblName}<br>
      */
     private Map<String, String> dflVariablesMap;
@@ -122,7 +122,7 @@ public class IterativeAlgorithmState {
         this.algorithmKey = algorithmKey;
         iterationsDBPath =
                 HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey + "/"
-                        + IterationsHandlerConstants.iterationsParameterIterDBValueSuffix;
+                        + IterationsConstants.iterationsParameterIterDBValueSuffix;
         this.adpDBClient = adpDBClient;
         this.algorithmProperties = algorithmProperties;
         algorithmPropertiesMap =
@@ -141,7 +141,7 @@ public class IterativeAlgorithmState {
         dflVariablesMap = new HashMap<>();
         // Initialize with init phase's output tbl name (it's always the first lookup)
         dflVariablesMap.put(
-                IterationsHandlerConstants.previousPhaseOutputTblVariableName,
+                IterationsConstants.previousPhaseOutputTblVariableName,
                 IterationsHandlerDFLUtils.getInitPhaseOutputTblName(algorithmKey));
         dflVariablesMap.put(stepPhaseOutputTblVariableName, null);
         dflVariablesMap.put(termConditionPhaseOutputTblVariableName, null);
@@ -264,14 +264,14 @@ public class IterativeAlgorithmState {
                 String previousPhaseOutputTbl =
                         dflVariablesMap.get(previousPhaseOutputTblVariableName);
                 String currentStepOutputTblName = generateStepPhaseCurrentOutputTbl();
-                dflVariablesMap.put(IterationsHandlerConstants.previousPhaseOutputTblVariableName,
+                dflVariablesMap.put(IterationsConstants.previousPhaseOutputTblVariableName,
                         previousPhaseOutputTbl);
                 dflVariablesMap.put(stepPhaseOutputTblVariableName, currentStepOutputTblName);
 
                 dflScript = StrSubstitutor.replace(dflScripts[phase.ordinal()], dflVariablesMap);
 
                 // Update previousPhaseOutputTbl name with currentStep's output tbl name
-                dflVariablesMap.put(IterationsHandlerConstants.previousPhaseOutputTblVariableName,
+                dflVariablesMap.put(IterationsConstants.previousPhaseOutputTblVariableName,
                         currentStepOutputTblName);
                 break;
             case termination_condition:

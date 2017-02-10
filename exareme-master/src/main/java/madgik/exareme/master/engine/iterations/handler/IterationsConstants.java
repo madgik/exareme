@@ -3,12 +3,12 @@ package madgik.exareme.master.engine.iterations.handler;
 import madgik.exareme.common.consts.DBConstants;
 
 /**
- * Contains iterations handler related constants.
+ * Contains iterations related constants.
  *
  * @author Christos Aslanoglou <br> caslanoglou@di.uoa.gr <br> University of Athens / Department of
  *         Informatics and Telecommunications.
  */
-public class IterationsHandlerConstants {
+public class IterationsConstants {
     // DFL Variables -------------------------------------------------------------------------
     public static final String previousPhaseOutputTblVariableName = "previous_phase_output_tbl";
     static final String previousPhaseOutputTblPlaceholder =

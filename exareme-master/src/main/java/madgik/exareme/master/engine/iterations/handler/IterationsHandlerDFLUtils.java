@@ -20,10 +20,10 @@ import madgik.exareme.utils.association.Pair;
 import madgik.exareme.utils.file.FileUtil;
 
 import static madgik.exareme.common.consts.HBPConstants.DEMO_ALGORITHMS_WORKING_DIRECTORY;
-import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants.iterationsPropertyMaximumNumber;
-import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants.previousPhaseOutputTblPlaceholder;
-import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants.selectStr;
-import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants.terminationConditionTemplateSQLFilename;
+import static madgik.exareme.master.engine.iterations.handler.IterationsConstants.iterationsPropertyMaximumNumber;
+import static madgik.exareme.master.engine.iterations.handler.IterationsConstants.previousPhaseOutputTblPlaceholder;
+import static madgik.exareme.master.engine.iterations.handler.IterationsConstants.selectStr;
+import static madgik.exareme.master.engine.iterations.handler.IterationsConstants.terminationConditionTemplateSQLFilename;
 import static madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState.IterativeAlgorithmPhasesModel.termination_condition;
 
 /**
@@ -86,7 +86,7 @@ public class IterationsHandlerDFLUtils {
         AlgorithmsProperties.ParameterProperties previousPhaseOutputTblParameter =
                 new AlgorithmsProperties.ParameterProperties();
         previousPhaseOutputTblParameter.setName(
-                IterationsHandlerConstants.previousPhaseOutputTblVariableName);
+                IterationsConstants.previousPhaseOutputTblVariableName);
         previousPhaseOutputTblParameter.setValue(previousPhaseOutputTblPlaceholder);
 
         parameterPropertiesArrayList.add(previousPhaseOutputTblParameter);
@@ -108,7 +108,7 @@ public class IterationsHandlerDFLUtils {
                     algorithmProperties,
                     ComposerConstants.outputGlobalTblKey,
                     generateIterativePhaseOutputTblName(
-                            IterationsHandlerConstants.iterationsOutputTblPrefix,
+                            IterationsConstants.iterationsOutputTblPrefix,
                             algorithmKey,
                             phase)
             )) {
@@ -192,7 +192,7 @@ public class IterationsHandlerDFLUtils {
         // Prepare requireVars for iterationsDB.
         String requireVarsIterationsDB =
                 IterationsHandlerDFLUtils.generateRequireVarsString(
-                        new String[]{IterationsHandlerConstants.iterationsDBName});
+                        new String[]{IterationsConstants.iterationsDBName});
 
         Pair<String, IterationsHandlerDFLUtils.SQLUpdateLocation> requireVarsIterationsDBUpdate =
                 new Pair<>(requireVarsIterationsDB, IterationsHandlerDFLUtils.SQLUpdateLocation.prefix);
@@ -202,7 +202,7 @@ public class IterationsHandlerDFLUtils {
         // Updates should be gathered in reverse order, since for prefix, they are applied iteratively
         // prepending each time to the current SQL template.
         sqlUpdates.add(new Pair<>(
-                IterationsHandlerConstants.attachIterationsDB,
+                IterationsConstants.attachIterationsDB,
                 IterationsHandlerDFLUtils.SQLUpdateLocation.prefix));
         sqlUpdates.add(requireVarsIterationsDBUpdate);
 
@@ -235,10 +235,10 @@ public class IterationsHandlerDFLUtils {
         switch (phase) {
             case init:
                 sqlUpdates.add(new Pair<>(
-                        IterationsHandlerConstants.createIterationsCounterTbl,
+                        IterationsConstants.createIterationsCounterTbl,
                         IterationsHandlerDFLUtils.SQLUpdateLocation.suffix));
                 sqlUpdates.add(new Pair<>(
-                        IterationsHandlerConstants.createIterationsConditionTbl,
+                        IterationsConstants.createIterationsConditionTbl,
                         IterationsHandlerDFLUtils.SQLUpdateLocation.suffix));
 
                 IterationsHandlerDFLUtils.updateSQLTemplate(sqlTemplateFile, sqlUpdates);
@@ -249,7 +249,7 @@ public class IterationsHandlerDFLUtils {
 
             case step:
                 sqlUpdates.add(new Pair<>(
-                        IterationsHandlerConstants.incrementIterationsCounter,
+                        IterationsConstants.incrementIterationsCounter,
                         IterationsHandlerDFLUtils.SQLUpdateLocation.suffix));
 
                 IterationsHandlerDFLUtils.updateSQLTemplate(sqlTemplateFile, sqlUpdates);
@@ -282,7 +282,7 @@ public class IterationsHandlerDFLUtils {
                 // Prepare requireVars String for termination condition template SQL.
                 String requiredVarsTermCondition = IterationsHandlerDFLUtils.generateRequireVarsString(
                         new String[]{
-                                IterationsHandlerConstants.iterationsDBName,
+                                IterationsConstants.iterationsDBName,
                                 iterationsPropertyMaximumNumber
                         }
                 );
@@ -298,9 +298,9 @@ public class IterationsHandlerDFLUtils {
                 // condition query has been provided.
                 String conditionQuery;
                 if (!iterativeAlgorithmState.getConditionQueryProvided())
-                    conditionQuery = IterationsHandlerConstants.checkMaxIterationsCondition;
+                    conditionQuery = IterationsConstants.checkMaxIterationsCondition;
                 else
-                    conditionQuery = IterationsHandlerConstants.checkBothConditionTypes;
+                    conditionQuery = IterationsConstants.checkBothConditionTypes;
                 sqlUpdates.add(new Pair<>(
                         conditionQuery,
                         IterationsHandlerDFLUtils.SQLUpdateLocation.suffix
@@ -405,7 +405,7 @@ public class IterationsHandlerDFLUtils {
         if (variables.length == 0)
             throw new IllegalArgumentException("variables String[] cannot be empty");
 
-        StringBuilder requireVarsBuilder = new StringBuilder(IterationsHandlerConstants.requireVars);
+        StringBuilder requireVarsBuilder = new StringBuilder(IterationsConstants.requireVars);
         for (String var : variables) {
             if (var.isEmpty())
                 continue;
@@ -446,7 +446,7 @@ public class IterationsHandlerDFLUtils {
             File lastMultipleLocalGlobalDir = listFiles[listFiles.length - 1].getAbsoluteFile();
             return new File(
                     lastMultipleLocalGlobalDir,
-                    IterationsHandlerConstants.globalTemplateSQLFilename);
+                    IterationsConstants.globalTemplateSQLFilename);
         } else
             return null;
     }
@@ -515,7 +515,7 @@ public class IterationsHandlerDFLUtils {
      */
     public static String getInitPhaseOutputTblName(String algorithmKey) {
         return generateIterativePhaseOutputTblName(
-                IterationsHandlerConstants.iterationsOutputTblPrefix,
+                IterationsConstants.iterationsOutputTblPrefix,
                 algorithmKey,
                 IterativeAlgorithmState.IterativeAlgorithmPhasesModel.init);
     }
@@ -524,7 +524,7 @@ public class IterationsHandlerDFLUtils {
      * Generates the stepPhaseOutputTbl variable name (for later substitution)
      */
     public static String getStepPhaseOutputTblVariableName(String algorithmKey) {
-        return IterationsHandlerConstants.iterationsOutputTblPrefix + "_" + algorithmKey + "_"
+        return IterationsConstants.iterationsOutputTblPrefix + "_" + algorithmKey + "_"
                 + IterativeAlgorithmState.IterativeAlgorithmPhasesModel.step.name();
     }
 
@@ -532,7 +532,7 @@ public class IterationsHandlerDFLUtils {
      * Generates the terminationConditionOutputTbl variable name (for later substitution)
      */
     public static String getTermConditionPhaseOutputTblVariableName(String algorithmKey) {
-        return IterationsHandlerConstants.iterationsOutputTblPrefix + "_" + algorithmKey + "_"
+        return IterationsConstants.iterationsOutputTblPrefix + "_" + algorithmKey + "_"
                 + termination_condition.name();
     }
 

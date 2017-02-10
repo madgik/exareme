@@ -33,6 +33,6 @@ public class IterationsHandlerUtils {
     public static String generateIterationsDBName(String algorithmKey) {
         return HBPConstants.DEMO_DB_WORKING_DIRECTORY
                 + algorithmKey + "/"
-                + IterationsHandlerConstants.iterationsParameterIterDBValueSuffix;
+                + IterationsConstants.iterationsParameterIterDBValueSuffix;
     }
 }

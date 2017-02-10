@@ -7,7 +7,7 @@ import java.lang.reflect.Modifier;
 import java.util.HashMap;
 
 import madgik.exareme.common.consts.HBPConstants;
-import madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants;
+import madgik.exareme.master.engine.iterations.handler.IterationsConstants;
 import madgik.exareme.master.queryProcessor.composer.Composer;
 import madgik.exareme.master.queryProcessor.composer.ComposerConstants;
 import madgik.exareme.utils.properties.AdpProperties;
@@ -40,11 +40,11 @@ public class IterationsTestGenericUtils {
         HashMap<String, String> inputContent = new HashMap<String, String>();
         if (iterationsPropertyConditionQueryProvided != null)
             inputContent.put(
-                    IterationsHandlerConstants.iterationsPropertyConditionQueryProvided,
+                    IterationsConstants.iterationsPropertyConditionQueryProvided,
                     iterationsPropertyConditionQueryProvided);
         if (iterationsMaximumNumber != null)
             inputContent.put(
-                    IterationsHandlerConstants.iterationsPropertyMaximumNumber,
+                    IterationsConstants.iterationsPropertyMaximumNumber,
                     iterationsMaximumNumber);
         inputContent.put(ComposerConstants.algorithmKey, algorithmName);
         inputContent.put(ComposerConstants.outputGlobalTblKey, "output");

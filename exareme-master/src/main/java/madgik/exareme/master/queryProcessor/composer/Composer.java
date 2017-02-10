@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import madgik.exareme.common.consts.HBPConstants;
-import madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants;
+import madgik.exareme.master.engine.iterations.handler.IterationsConstants;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.utils.file.FileUtil;
 import madgik.exareme.utils.properties.AdpProperties;
@@ -25,9 +25,9 @@ import madgik.exareme.worker.art.executionEngine.ExecutionEngineLocator;
 import madgik.exareme.worker.art.executionEngine.ExecutionEngineProxy;
 import madgik.exareme.worker.art.registry.ArtRegistryLocator;
 
-import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants.iterationsPropertyConditionQueryProvided;
-import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants.iterationsPropertyMaximumNumber;
-import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants.terminationConditionTemplateSQLFilename;
+import static madgik.exareme.master.engine.iterations.handler.IterationsConstants.iterationsPropertyConditionQueryProvided;
+import static madgik.exareme.master.engine.iterations.handler.IterationsConstants.iterationsPropertyMaximumNumber;
+import static madgik.exareme.master.engine.iterations.handler.IterationsConstants.terminationConditionTemplateSQLFilename;
 import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerUtils.generateIterationsDBName;
 import static madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState.IterativeAlgorithmPhasesModel.finalize;
 import static madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState.IterativeAlgorithmPhasesModel.init;
@@ -165,7 +165,7 @@ public class Composer {
             // Handle iterations specific logic, related to Composer
             // 1. Create iterationsDB and defaultDB algorithm parameters.
             // qKey is actually algorithm key in the case of iterative algorithms.
-            parameters.put(IterationsHandlerConstants.iterationsParameterIterDBKey,
+            parameters.put(IterationsConstants.iterationsParameterIterDBKey,
                     generateIterationsDBName(qKey));
             parameters.put(ComposerConstants.defaultDBKey,
                     HBPConstants.DEMO_DB_WORKING_DIRECTORY + qKey + "/defaultDB.db");
@@ -310,7 +310,7 @@ public class Composer {
                          */
                         if ((iterativeAlgorithmPhase.equals(step) ||
                                 iterativeAlgorithmPhase.equals(finalize)) && i == 1)
-                            parameters.remove(IterationsHandlerConstants.previousPhaseOutputTblVariableName);
+                            parameters.remove(IterationsConstants.previousPhaseOutputTblVariableName);
                     }
 
                     parameters.put(ComposerConstants.outputGlobalTblKey, outputGlobalTbl);
