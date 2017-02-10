@@ -2,6 +2,7 @@ package madgik.exareme.master.gateway.async.handler;
 
 import com.google.gson.Gson;
 
+import org.apache.http.HeaderIterator;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpException;
@@ -48,6 +49,8 @@ import madgik.exareme.master.queryProcessor.composer.ComposerConstants;
 import madgik.exareme.master.queryProcessor.composer.ComposerException;
 import madgik.exareme.utils.encoding.Base64Util;
 
+import static madgik.exareme.master.gateway.GatewayConstants.COOKIE_ALGORITHM_EXECUTION_ID;
+
 /**
  * Mining  Handler
  *
@@ -60,6 +63,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
     private static final String msg =
         "{ " + "\"schema\":[[\"error\",\"text\"]], " + "\"errors\":[[null]] " + "}\n";
 
+    private static final String SET_COOKIE_HEADER_NAME = "Set-Cookie";
     private static final AdpDBManager manager = AdpDBManagerLocator.getDBManager();
     private static final Composer composer = Composer.getInstance();
     private static final IterationsHandler iterationsHandler = IterationsHandler.getInstance();
@@ -79,6 +83,33 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
 
         HttpResponse response = httpExchange.getResponse();
         response.setHeader("Content-Type", String.valueOf(ContentType.APPLICATION_JSON));
+
+        // When under testing the Set-Cookie header has been used with the "algorithm execution id"
+        // parameter for differentiating between concurrent executions of algorithms.
+        if (request.containsHeader(SET_COOKIE_HEADER_NAME)) {
+            HeaderIterator it = request.headerIterator(SET_COOKIE_HEADER_NAME);
+
+            // Parse "algorithm execution id" cookie
+            StringBuilder echoCookieContent = new StringBuilder();
+            while (it.hasNext()) {
+                echoCookieContent.append(it.next());
+            }
+
+            String cookieContentStr = echoCookieContent.toString();
+            if (!cookieContentStr.isEmpty() &&
+                    cookieContentStr.contains(COOKIE_ALGORITHM_EXECUTION_ID)) {
+
+                String algorithmExecIdStr =
+                        cookieContentStr.substring(
+                                cookieContentStr.indexOf(" "),
+                                cookieContentStr.length())
+                                .split("=")[1];
+
+                response.addHeader(
+                        SET_COOKIE_HEADER_NAME,
+                        COOKIE_ALGORITHM_EXECUTION_ID + "=" + algorithmExecIdStr);
+            }
+        }
         handleInternal(request, response, context);
         httpExchange.submitResponse(new BasicAsyncResponseProducer(response));
     }
