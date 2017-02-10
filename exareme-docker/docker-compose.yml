@@ -16,12 +16,12 @@ services:
 
   rawdb:
     hostname: rawdb
-    image: sambuc/hbp-raw-sniffer
+    image: raw-sniffer
     volumes:
       - ./rawdb_datasets:/datasets:ro
     ports:
-      - "80:80"
-#      - "5555:5555"
+      - "54321:54321"
+      - "5555:5555"
 
 #  examaster:
 #    image: exatest
