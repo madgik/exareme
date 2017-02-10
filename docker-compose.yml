@@ -26,7 +26,7 @@ version: '2'
 #      - rawdb
 services:
   exalocal:
-    image: hbpmip/exaremelocal
+    image:  hbpmip/exaremelocal
     links:
       - rawdb
     environment:
