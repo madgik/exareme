@@ -1,4 +1,4 @@
-package madgik.exareme.master.engine.iterations.helper;
+package madgik.exareme.master;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.http.HeaderIterator;

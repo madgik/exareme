@@ -17,7 +17,7 @@ import java.util.concurrent.ExecutionException;
 
 import madgik.exareme.master.app.cluster.ExaremeCluster;
 import madgik.exareme.master.app.cluster.ExaremeClusterFactory;
-import madgik.exareme.master.engine.iterations.helper.AlgorithmTestExecutionHelper;
+import madgik.exareme.master.AlgorithmTestExecutionHelper;
 import madgik.exareme.master.gateway.ExaremeGateway;
 import madgik.exareme.master.gateway.ExaremeGatewayFactory;
 
