@@ -196,10 +196,6 @@ if [[ "true" == $EXAREME_ADMIN_LOCAL ]]; then   # run locally
             DESC="exareme-master"
             EXAREME_ADMIN_CLASS=$EXAREME_ADMIN_MASTER_CLASS
             EXAREME_ADMIN_CLASS_ARGS=""
-        else
-            DESC="exareme-worker"
-            EXAREME_ADMIN_CLASS=$EXAREME_ADMIN_WORKER_CLASS
-            EXAREME_ADMIN_CLASS_ARGS="$EXAREME_MASTER"
         fi
 
 
