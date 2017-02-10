@@ -43,6 +43,14 @@
                 <include>**</include>
             </includes>
         </fileSet>
+        <fileSet>        <!--lib -->
+            <directory>${basedir}/../exareme-tools/stream-tools/</directory>
+            <outputDirectory>lib/stream-tools/</outputDirectory>
+            <fileMode>0755</fileMode>
+            <includes>
+                <include>**</include>
+            </includes>
+        </fileSet>
         <fileSet>        <!-- bin -->
             <directory>${basedir}/../exareme-master/src/main/resources</directory>
             <outputDirectory>bin</outputDirectory>

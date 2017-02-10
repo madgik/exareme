@@ -129,25 +129,34 @@ if [[ "true" == $EXAREME_ADMIN_LOCAL ]]; then   # run locally
                             -Djava.security.egd=file:///dev/urandom "
 
         # determine master/worker
+        mkdir -p $EXAREME_HOME/var/log $EXAREME_HOME/var/run
         if [[ "$EXAREME_MASTER_IP" == "$EXAREME_CURRENT_IP" ]]; then
             DESC="exareme-master"
+            STREAMDESC="stream-master"
             EXAREME_ADMIN_CLASS=$EXAREME_ADMIN_MASTER_CLASS
             EXAREME_ADMIN_CLASS_ARGS=""
+            EXAREME_STREAM_TOOL="$EXAREME_HOME/lib/stream-tools/optiquemaster --port 9595 --madis $EXAREME_HOME/lib/madis/src/mterm.py"
+            $EXAREME_STREAM_TOOL > $EXAREME_HOME/var/log/$STREAMDESC.log 2>&1 & echo $! > $EXAREME_HOME/var/run/$STREAMDESC.pid
+            sleep 1
+            STREAMDESC="stream-worker"
+            EXAREME_STREAM_TOOL="$EXAREME_HOME/lib/stream-tools/worker --port 8010 --enginePort 8001 --engineip $EXAREME_MASTER_IP"
         else
             DESC="exareme-worker"
+            STREAMDESC="stream-worker"
             EXAREME_ADMIN_CLASS=$EXAREME_ADMIN_WORKER_CLASS
             EXAREME_ADMIN_CLASS_ARGS="$EXAREME_MASTER_IP"
+            EXAREME_STREAM_TOOL="$EXAREME_HOME/lib/stream-tools/worker --port 8010 --enginePort 8001 --engineip $EXAREME_MASTER_IP"
         fi
 
         # execute
-        mkdir -p $EXAREME_HOME/var/log $EXAREME_HOME/var/run
         $EXAREME_JAVA -cp $EXAREME_ADMIN_CLASS_PATH $EXAREME_ADMIN_OPTS $EXAREME_ADMIN_CLASS\
             $EXAREME_ADMIN_CLASS_ARGS > $EXAREME_HOME/var/log/$DESC.log 2>&1 & echo $! > $EXAREME_HOME/var/run/$DESC.pid
+        $EXAREME_STREAM_TOOL > $EXAREME_HOME/var/log/$STREAMDESC.log 2>&1 & echo $! > $EXAREME_HOME/var/run/$STREAMDESC.pid
         echo "$DESC started."
     }
 
     function stop_exareme(){
-        if [ -f $EXAREME_HOME/var/run/*.pid ]; then
+        if [ "$(ls -A $EXAREME_HOME/var/run/*.pid)" ]; then
             kill -9 $( cat $EXAREME_HOME/var/run/*.pid)
             rm $EXAREME_HOME/var/run/*.pid
             echo "Stopped."

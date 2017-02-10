@@ -196,7 +196,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <file.encoding>UTF-8</file.encoding>
         <javaVersion>1.7</javaVersion>
-    </properties><wo></wo>
+    </properties>
     <!-- Build Settings -->
     <build>
         <pluginManagement>
