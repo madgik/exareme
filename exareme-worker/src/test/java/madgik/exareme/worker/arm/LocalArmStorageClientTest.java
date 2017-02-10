@@ -22,6 +22,8 @@ public class LocalArmStorageClientTest {
         fileWriter.flush();
         fileWriter.close();
 
+        File file = new File("/tmp/exaclient-db/test/" + testFile.getName());
+        file.delete();
         log.info("File " + testFile.getAbsolutePath() + " created.");
         storageClient.connect();
         storageClient
