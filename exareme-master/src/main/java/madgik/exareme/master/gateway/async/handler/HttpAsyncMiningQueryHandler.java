@@ -1,6 +1,35 @@
 package madgik.exareme.master.gateway.async.handler;
 
 import com.google.gson.Gson;
+
+import org.apache.http.HeaderIterator;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.http.HttpException;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.RequestLine;
+import org.apache.http.UnsupportedHttpVersionException;
+import org.apache.http.entity.BasicHttpEntity;
+import org.apache.http.entity.ContentType;
+import org.apache.http.nio.protocol.BasicAsyncRequestConsumer;
+import org.apache.http.nio.protocol.BasicAsyncResponseProducer;
+import org.apache.http.nio.protocol.HttpAsyncExchange;
+import org.apache.http.nio.protocol.HttpAsyncRequestConsumer;
+import org.apache.http.nio.protocol.HttpAsyncRequestHandler;
+import org.apache.http.protocol.HttpContext;
+import org.apache.http.util.EntityUtils;
+import org.apache.log4j.Logger;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import madgik.exareme.common.consts.HBPConstants;
 import madgik.exareme.master.client.AdpDBClient;
 import madgik.exareme.master.client.AdpDBClientFactory;
 import madgik.exareme.master.client.AdpDBClientProperties;
@@ -8,25 +37,19 @@ import madgik.exareme.master.client.AdpDBClientQueryStatus;
 import madgik.exareme.master.connector.DataSerialization;
 import madgik.exareme.master.engine.AdpDBManager;
 import madgik.exareme.master.engine.AdpDBManagerLocator;
+import madgik.exareme.master.engine.iterations.exceptions.IterationsFatalException;
+import madgik.exareme.master.engine.iterations.handler.IterationsHandler;
+import madgik.exareme.master.engine.iterations.handler.NIterativeAlgorithmResultEntity;
+import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.master.gateway.ExaremeGatewayUtils;
 import madgik.exareme.master.gateway.async.handler.entity.NQueryResultEntity;
-import madgik.exareme.master.gateway.async.handler.entity.NQueryStatusEntity;
 import madgik.exareme.master.queryProcessor.composer.AlgorithmsProperties;
 import madgik.exareme.master.queryProcessor.composer.Composer;
 import madgik.exareme.master.queryProcessor.composer.ComposerConstants;
 import madgik.exareme.master.queryProcessor.composer.ComposerException;
 import madgik.exareme.utils.encoding.Base64Util;
-import org.apache.http.*;
-import org.apache.http.entity.BasicHttpEntity;
-import org.apache.http.entity.ContentType;
-import org.apache.http.nio.entity.NStringEntity;
-import org.apache.http.nio.protocol.*;
-import org.apache.http.protocol.HttpContext;
-import org.apache.http.util.EntityUtils;
-import org.apache.log4j.Logger;
 
-import java.io.IOException;
-import java.util.*;
+import static madgik.exareme.master.gateway.GatewayConstants.COOKIE_ALGORITHM_EXECUTION_ID;
 
 /**
  * Mining  Handler
@@ -40,8 +63,10 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
     private static final String msg =
         "{ " + "\"schema\":[[\"error\",\"text\"]], " + "\"errors\":[[null]] " + "}\n";
 
+    private static final String SET_COOKIE_HEADER_NAME = "Set-Cookie";
     private static final AdpDBManager manager = AdpDBManagerLocator.getDBManager();
     private static final Composer composer = Composer.getInstance();
+    private static final IterationsHandler iterationsHandler = IterationsHandler.getInstance();
 
     public HttpAsyncMiningQueryHandler() {
     }
@@ -58,6 +83,33 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
 
         HttpResponse response = httpExchange.getResponse();
         response.setHeader("Content-Type", String.valueOf(ContentType.APPLICATION_JSON));
+
+        // When under testing the Set-Cookie header has been used with the "algorithm execution id"
+        // parameter for differentiating between concurrent executions of algorithms.
+        if (request.containsHeader(SET_COOKIE_HEADER_NAME)) {
+            HeaderIterator it = request.headerIterator(SET_COOKIE_HEADER_NAME);
+
+            // Parse "algorithm execution id" cookie
+            StringBuilder echoCookieContent = new StringBuilder();
+            while (it.hasNext()) {
+                echoCookieContent.append(it.next());
+            }
+
+            String cookieContentStr = echoCookieContent.toString();
+            if (!cookieContentStr.isEmpty() &&
+                    cookieContentStr.contains(COOKIE_ALGORITHM_EXECUTION_ID)) {
+
+                String algorithmExecIdStr =
+                        cookieContentStr.substring(
+                                cookieContentStr.indexOf(" "),
+                                cookieContentStr.length())
+                                .split("=")[1];
+
+                response.addHeader(
+                        SET_COOKIE_HEADER_NAME,
+                        COOKIE_ALGORITHM_EXECUTION_ID + "=" + algorithmExecIdStr);
+            }
+        }
         handleInternal(request, response, context);
         httpExchange.submitResponse(new BasicAsyncResponseProducer(response));
     }
@@ -108,33 +160,65 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         }
         String qKey = "query_" + algorithm + "_" +String.valueOf(System.currentTimeMillis());
         try {
+            String dfl;
+            AdpDBClientQueryStatus queryStatus;
 
-            String dfl = null;
             inputContent.put(ComposerConstants.outputGlobalTblKey, "output_" + qKey);
             inputContent.put(ComposerConstants.algorithmKey, algorithm);
             AlgorithmsProperties.AlgorithmProperties algorithmProperties =
-                AlgorithmsProperties.AlgorithmProperties.createAlgorithmProperties(inputContent);
+                    AlgorithmsProperties.AlgorithmProperties.createAlgorithmProperties(inputContent);
 
-            dfl = composer.composeVirtual(qKey, algorithmProperties, query);
+            // Was initialized to "DataSerialization.ldjson", and that was followed with
+            // if(format) ds = DataSerialization.summary; but was commented-out.
+            DataSerialization ds = DataSerialization.summary;
 
-            log.debug(dfl);
-            AdpDBClientProperties clientProperties =
-                new AdpDBClientProperties("/tmp/demo/db/" + qKey, "", "", false, false, -1, 10);
-            DataSerialization ds = DataSerialization.ldjson;
-//            if(format) ds = DataSerialization.summary;
-            ds = DataSerialization.summary;
-            AdpDBClient dbClient =
-                AdpDBClientFactory.createDBClient(manager, clientProperties);
-            AdpDBClientQueryStatus queryStatus = dbClient.query(qKey, dfl);
-            BasicHttpEntity entity = new NQueryResultEntity(queryStatus, ds);
-            response.setStatusCode(HttpStatus.SC_OK);
-            response.setEntity(entity);
+            // Bypass direct composer call in case of iterative algorithm.
+            if (algorithmProperties.getType() ==
+                    AlgorithmsProperties.AlgorithmProperties.AlgorithmType.iterative) {
+
+                final IterativeAlgorithmState iterativeAlgorithmState =
+                        iterationsHandler.handleNewIterativeAlgorithmRequest(
+                                manager, algorithmProperties);
+
+                BasicHttpEntity entity = new NIterativeAlgorithmResultEntity(
+                        iterativeAlgorithmState, ds, ExaremeGatewayUtils.RESPONSE_BUFFER_SIZE);
+                response.setStatusCode(HttpStatus.SC_OK);
+                response.setEntity(entity);
+            } else {
+                dfl = composer.composeVirtual(qKey, algorithmProperties, query, null);
+                log.debug(dfl);
+                try {
+                    Composer.persistDFLScriptToAlgorithmsDemoDirectory(
+                            HBPConstants.DEMO_ALGORITHMS_WORKING_DIRECTORY + "/" + qKey
+                                    + "/" + qKey,
+                            dfl, null);
+                } catch (ComposerException e) {
+                    // Ignoring error if failed to persist DFL Scripts - it's not something fatal.
+                }
+                AdpDBClientProperties clientProperties =
+                        new AdpDBClientProperties(
+                                HBPConstants.DEMO_DB_WORKING_DIRECTORY + qKey,
+                                "", "", false, false,
+                                -1, 10);
+                AdpDBClient dbClient =
+                        AdpDBClientFactory.createDBClient(manager, clientProperties);
+                queryStatus = dbClient.query(qKey, dfl);
+                BasicHttpEntity entity = new NQueryResultEntity(queryStatus, ds,
+                        ExaremeGatewayUtils.RESPONSE_BUFFER_SIZE);
+                response.setStatusCode(HttpStatus.SC_OK);
+                response.setEntity(entity);
+            }
 
         } catch (ComposerException e) {
             log.error(e);
+        } catch (IterationsFatalException e) {
+            if (e.getErroneousAlgorithmKey() != null)
+                iterationsHandler.removeIterativeAlgorithmStateInstanceFromISM(
+                        e.getErroneousAlgorithmKey());
+            log.error(e);
         } catch (Exception e) {
             log.error(e);
-            throw new IOException("Unable to compose dfl.");
+            throw new IOException(e.getMessage(), e);
         }
     }
 }

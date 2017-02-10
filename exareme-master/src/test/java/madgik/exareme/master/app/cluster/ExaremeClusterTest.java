@@ -1,15 +1,17 @@
 //package madgik.exareme.master.app.cluster;
 //
-//import madgik.exareme.master.client.AdpDBClient;
-//import madgik.exareme.master.client.AdpDBClientProperties;
-//import madgik.exareme.master.client.AdpDBClientQueryStatus;
-//import madgik.exareme.utils.file.FileUtil;
 //import org.apache.commons.io.FileUtils;
 //import org.apache.log4j.Level;
 //import org.apache.log4j.Logger;
 //import org.junit.Test;
-//TODO jctests
+//
 //import java.io.File;
+//
+//import madgik.exareme.common.consts.HBPConstants;
+//import madgik.exareme.master.client.AdpDBClient;
+//import madgik.exareme.master.client.AdpDBClientProperties;
+//import madgik.exareme.master.client.AdpDBClientQueryStatus;
+//import madgik.exareme.utils.file.FileUtil;
 //
 ///**
 // * @author alex
@@ -28,7 +30,8 @@
 //        log.info("Cluster started.");
 //        log.info("IsUp : " + cluster.isUp());
 //
-//        AdpDBClientProperties clientProperties = new AdpDBClientProperties("/tmp/demo-db");
+//        AdpDBClientProperties clientProperties = new AdpDBClientProperties(
+//                HBPConstants.DEMO_DB_WORKING_DIRECTORY);
 //        AdpDBClient dbClient = cluster.getExaremeClusterClient(clientProperties);
 //        log.info("Client created");
 //
@@ -48,10 +51,7 @@
 //        log.info("Query successfully executed.");
 //
 //        log.info(FileUtil.consume(dbClient.readTable(tableName)));
-//        cluster.stop(false);
-//        Thread.sleep(10*1000);
 //        cluster.stop(true);
-//        Thread.sleep(10*1000);
 //        log.info("Cluster stopped.");
 //
 //    }
