@@ -1,4 +1,4 @@
-//package madgik.exareme.master.app.cluster;
+package madgik.exareme.master.app.cluster;//package madgik.exareme.master.app.cluster;
 //
 //import madgik.exareme.master.client.AdpDBClient;
 //import madgik.exareme.master.client.AdpDBClientProperties;

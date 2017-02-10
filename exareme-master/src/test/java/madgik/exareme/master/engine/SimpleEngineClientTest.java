@@ -1,4 +1,4 @@
-//package madgik.exareme.master.engine;
+package madgik.exareme.master.engine;//package madgik.exareme.master.engine;
 //
 //import madgik.exareme.master.app.cluster.ExaremeCluster;
 //import madgik.exareme.master.app.cluster.ExaremeClusterFactory;

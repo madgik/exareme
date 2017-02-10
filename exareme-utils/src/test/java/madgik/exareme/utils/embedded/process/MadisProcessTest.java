@@ -1,4 +1,4 @@
-//package madgik.exareme.utils.embedded.process;
+package madgik.exareme.utils.embedded.process;//package madgik.exareme.utils.embedded.process;
 //
 //import org.apache.log4j.BasicConfigurator;
 //import org.apache.log4j.Level;

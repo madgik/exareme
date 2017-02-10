@@ -1,0 +1,9 @@
+container c ('',1099);
+container _ ('',1099);
+operator file c('madgik.exareme.worker.operatorLibrary.test.CSVFileReader', path='./UnsortedFile.csv');
+operator map _('madgik.exareme.worker.operatorLibrary.test.RoundRobin');
+buffer file_out c('10');
+buffer map_out _('10');
+connect c(file, file_out);
+connect _(file_out, map);
+connect _(map, map_out);

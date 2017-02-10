@@ -1,4 +1,4 @@
-//package madgik.exareme.master.engine;
+package madgik.exareme.master.engine;//package madgik.exareme.master.engine;
 //
 //import junit.framework.Assert;
 //import madgik.exareme.master.app.cluster.ExaremeCluster;

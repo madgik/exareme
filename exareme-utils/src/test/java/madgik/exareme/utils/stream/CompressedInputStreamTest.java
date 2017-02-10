@@ -1,4 +1,4 @@
-///**
+package madgik.exareme.utils.stream;///**
 // * Copyright MaDgIK Group 2010 - 2015.
 // */
 //package madgik.exareme.db.util.stream;

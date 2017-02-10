@@ -1,4 +1,4 @@
-//package madgik.exareme.master.app.usecase;
+package madgik.exareme.master.app.usecase;//package madgik.exareme.master.app.usecase;
 //
 //import madgik.exareme.master.client.AdpDBClient;
 //import madgik.exareme.master.client.AdpDBClientProperties;

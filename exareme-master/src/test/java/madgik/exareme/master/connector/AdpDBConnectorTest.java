@@ -1,4 +1,4 @@
-//package madgik.exareme.master.connector;
+package madgik.exareme.master.connector;//package madgik.exareme.master.connector;
 //
 //import madgik.exareme.common.schema.PhysicalTable;
 //import madgik.exareme.common.schema.Table;

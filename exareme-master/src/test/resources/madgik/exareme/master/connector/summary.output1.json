@@ -1,0 +1,70 @@
+[
+  {
+    "dataType": "SummaryStatistics",
+    "code": "APOE4",
+    "count": 1642,
+    "min": 0,
+    "max": 2,
+    "average": 0.510353228,
+    "std": 0.648592906
+  },
+  {
+    "code": "APOE",
+    "dataType": "DatasetStatistics",
+    "dataset": {
+      "data": {
+        "header": [
+          "0",
+          "1",
+          "2"
+        ],
+        "shape": "vector",
+        "value": [
+          930,
+          541,
+          124
+        ]
+      },
+      "name": "Count APOE values"
+    },
+    "label": "Breakdown by value"
+  },
+  {
+    "code": "APOE",
+    "dataType": "DatasetStatistics",
+    "dataset": {
+      "data": {
+        "categories": [
+          "0",
+          "0",
+          "1",
+          "1",
+          "2",
+          "2",
+          "NA"
+        ],
+        "header": [
+          "ADNI1",
+          "ADNI2",
+          "ADNI1",
+          "ADNI2",
+          "ADNI1",
+          "ADNI2",
+          "ADNI2"
+        ],
+        "shape": "vector",
+        "value": [
+          694,
+          287,
+          408,
+          112,
+          101,
+          14,
+          3
+        ]
+      },
+      "name": "Count APOE values"
+    },
+    "label": "Count by provenance"
+  }
+]
