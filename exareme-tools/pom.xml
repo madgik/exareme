@@ -15,6 +15,7 @@
 
     <modules>
         <module>madis</module>
+        <module>stream-tools</module>
     </modules>
 
 </project>
