@@ -49,6 +49,12 @@ public class IterationsFunctionalTests {
     @BeforeClass
     public static void setUp() throws Exception {
         Logger.getRootLogger().setLevel(Level.ALL);
+        // These overwrites must happen before initializing any of the below iteration related
+        // fields (since they statically get an instance of Composer and thus force its
+        // initialization, which we want to avoid until having done the overwrites below).
+        IterationsTestGenericUtils.overwriteHBPConstantsDEMO_ALGOR_WORKDIR();
+        IterationsTestGenericUtils.overwriteDemoRepositoryPathGatewayProperty();
+
         final ExaremeCluster cluster = ExaremeClusterFactory.createMiniCluster(1098, 8088, 0);
         cluster.start();
         final ExaremeGateway gateway =
@@ -65,8 +71,6 @@ public class IterationsFunctionalTests {
             }
         });
         log.info("Mini cluster & gateway started.");
-        IterationsTestGenericUtils.overwriteHBPConstantsRepositoryPath();
-        IterationsTestGenericUtils.overwriteComposerModuleRepositoryPath();
     }
 
     @Before

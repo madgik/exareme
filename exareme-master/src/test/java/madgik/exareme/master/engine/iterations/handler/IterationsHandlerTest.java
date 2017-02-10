@@ -41,6 +41,12 @@ public class IterationsHandlerTest {
 
 
     @Before public void SetUp() throws Exception {
+        // These overwrites must happen before initializing any of the below iteration related
+        // fields (since they statically get an instance of Composer and thus force its
+        // initialization, which we want to avoid until having done the overwrites below).
+        IterationsTestGenericUtils.overwriteHBPConstantsDEMO_ALGOR_WORKDIR();
+        IterationsTestGenericUtils.overwriteDemoRepositoryPathGatewayProperty();
+
         handler = IterationsHandler.getInstance();
         stateManager = IterationsStateManagerImpl.getInstance();
 
@@ -48,7 +54,6 @@ public class IterationsHandlerTest {
             IterationsTestGenericUtils.prepareParameterProperties(
                     algorithmName, "true", "2"));
 
-        IterationsTestGenericUtils.overwriteHBPConstantsRepositoryPath();
     }
 
     // Functional tests -------------------------------------------------------------------------

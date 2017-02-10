@@ -2,7 +2,7 @@ package madgik.exareme.master.engine.iterations.handler;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
@@ -49,11 +49,16 @@ public class IterationsHandlerDFLUtilsTest {
 
     private static String algorithmName;
     private AlgorithmsProperties.AlgorithmProperties algorithmProperties;
-    private final Composer composer = Composer.getInstance();
+    private static Composer composer;
 
-    @Before public void SetUp() throws Exception {
-        IterationsTestGenericUtils.overwriteHBPConstantsRepositoryPath();
-        IterationsTestGenericUtils.overwriteComposerModuleRepositoryPath();
+    @BeforeClass
+    public static void SetUp() throws Exception {
+        // These overwrites must happen before initializing any of the below iteration related
+        // fields (since they statically get an instance of Composer and thus force its
+        // initialization, which we want to avoid until having done the overwrites below).
+        IterationsTestGenericUtils.overwriteHBPConstantsDEMO_ALGOR_WORKDIR();
+        IterationsTestGenericUtils.overwriteDemoRepositoryPathGatewayProperty();
+        composer = Composer.getInstance();
     }
 
     /**

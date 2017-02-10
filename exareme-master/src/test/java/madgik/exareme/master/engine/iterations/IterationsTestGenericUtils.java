@@ -10,6 +10,8 @@ import madgik.exareme.common.consts.HBPConstants;
 import madgik.exareme.master.engine.iterations.handler.IterationsHandlerConstants;
 import madgik.exareme.master.queryProcessor.composer.Composer;
 import madgik.exareme.master.queryProcessor.composer.ComposerConstants;
+import madgik.exareme.utils.properties.AdpProperties;
+import madgik.exareme.utils.properties.MutableProperties;
 
 /**
  * Wrapper class which encloses common methods among tests
@@ -50,12 +52,13 @@ public class IterationsTestGenericUtils {
     }
 
     /**
-     * Sets the algorithms repository path of HBPConstants to be the one in src/test/resources
+     * Sets the demo-algorithms working directory path of HBPConstants to ALGORITHMS_DEV_DIRECTORY.
+     *
      * @throws IOException if getCanonicalPath fails
      */
-    public static void overwriteHBPConstantsRepositoryPath()
+    public static void overwriteHBPConstantsDEMO_ALGOR_WORKDIR()
             throws Exception {
-        // Update HBP.repositoryPath field
+        // Update HBP.demo algorithms working directory field
         File algorithmsDevDirectory = new File(ALGORITHMS_DEV_DIRECTORY);
         setFinalStatic(
                 HBPConstants.class.getDeclaredField("DEMO_ALGORITHMS_WORKING_DIRECTORY"),
@@ -63,21 +66,32 @@ public class IterationsTestGenericUtils {
     }
 
     /**
-     * Sets the algorithms repository path of Composer module to be the one in src/test/resources
-     * @throws IOException if getCanonicalPath fails
+     * Sets the algorithms repository path of gateway properties to ALGORITHMS_DEV_DIRECTORY and
+     * then initializes composer.
+     *
+     * @throws IOException if getCanonicalPath fails TODO Should be changed when testing with actual
+     *                     remote repository is integrated.
      */
-    public static void overwriteComposerModuleRepositoryPath()
+    public static void overwriteDemoRepositoryPathGatewayProperty()
             throws Exception {
+        // Overwriting demo repository path property.
+        // GatewayProperties is a MutableProperties object actually (see AdpProperties static
+        // initialization block).
+        final MutableProperties gatewayProperties =
+                (MutableProperties) AdpProperties.getGatewayProperties();
         File algorithmsDevDirectory = new File(ALGORITHMS_DEV_DIRECTORY);
-        setFinalStatic(
-                Composer.class.getDeclaredField("repoPath"),
+        gatewayProperties.setStringProperty("demo.repository.path",
                 algorithmsDevDirectory.getCanonicalPath() + "/");
+
+        // Initialization of Composer must occur AFTER our overwriting of the demo repo. path prop.
+        Composer.getInstance();
     }
 
     /**
      * Sets a final static field - <b>use with caution</b>
+     *
      * @see <a href="http://stackoverflow.com/questions/30703149/mock-private-static-final-field-\
-     using-mockito-or-jmockit">StackOverflow related answer</a>
+     * using-mockito-or-jmockit">StackOverflow related answer</a>
      */
     private static void setFinalStatic(Field field, Object newValue) throws Exception {
         field.setAccessible(true);
