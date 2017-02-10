@@ -6,4 +6,4 @@ docker run -i -t --rm \
 -e RAWPASSWORD="federation" \
 -e RAWHOST="rawdb" \
 -e RAWPORT="54321" \
--p 9090:9090  --name exaremelocal hbpmip/exaremelocal
+-p 9090:9090  --name exaremelocal exaremelocal

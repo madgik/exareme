@@ -7,6 +7,8 @@ RUN  apt-get -y update
 # install
 RUN apt-get install -y git maven curl python python-apsw openssh-server
 RUN apt-get install -y net-tools
+RUN sudo apt-get -y install nano
+
 # ssh
 RUN ssh-keygen -q -N "" -t rsa -f /root/.ssh/id_rsa
 RUN cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys
@@ -19,7 +21,7 @@ RUN mkdir -p /usr/java/default && \
 ENV JAVA_HOME /usr/java/default/
 ENV PATH $PATH:$JAVA_HOME/bin
 
-ADD ./requirements.txt /requirements.txt
+ADD ../requirements.txt /requirements.txt
 RUN  apt-get install -y python-dev build-essential python-pip libblas-dev liblapack-dev libatlas-base-dev gfortran
 RUN  pip install -r requirements.txt
 
@@ -28,7 +30,10 @@ WORKDIR /root/exareme-src
 RUN mvn clean install
 RUN mv /root/exareme-src/exareme-distribution/target/exareme* /root/exareme
 
-#uncomment to
+#uncomment to use the local code of exareme -- (mvn install first)
+#ADD ./exareme-distribution/target/exareme /root/exareme
+
+#uncomment to use the algorithms from the repo
 #RUN  git clone https://github.com/madgik/mip-algorithms.git /root/mip-algorithms
 #RUN rm /root/mip-algorithms/properties.json
 #ADD properties.json /root/mip-algorithms/

@@ -39,7 +39,7 @@ services:
       - "9090:9090"
   rawdb:
     hostname: rawdb
-    image: raw-sniffer
+    image: hbpmip/postgresraw
     volumes:
       - ./rawdb_datasets:/datasets:ro
     ports:
