@@ -34,7 +34,7 @@ networks:
 services:
 
   exalocal:
-    image:  hbpmip/exaremelocal
+    image:  exaremelocal
     networks:
       - "net-local"
     links:
@@ -43,17 +43,30 @@ services:
       - MASTER_FLAG=master
       - RAWUSERNAME=federation
       - RAWPASSWORD=federation
-      - RAWHOST=raw-ui
-      - RAWPORT=5555
-      - RAWENDPOINT=query-start
+      - RAWHOST=rawdb
+      - RAWPORT=54321
+      - RAWENDPOINT=query
     ports:
       - "9090:9090"
 
+
+  rawdb:
+    hostname: rawdb
+    image: raw-sniffer
+    volumes:
+      - ../datasets:/datasets:ro
+    networks:
+     - "net-local"   
+    ports:
+     - "54321:54321"
+     #- "5555:5555"
+    expose:
+     - "54321"
   RawEngine:
     image: "hbpmip/postgresraw"
     container_name: "raw-engine"
     restart: unless-stopped
-    hostname: rawdb
+   
     networks:
      - "net-local"
     expose:
