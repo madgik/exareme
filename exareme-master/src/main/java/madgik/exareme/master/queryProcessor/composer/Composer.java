@@ -95,6 +95,8 @@ public class Composer {
              inputLocalTbl = algorithms.getLocal_engine_default().toUDF(query);
         else
             inputLocalTbl = algorithms.getLocal_engine_default().toUDF(variables);
+
+        log.info("lcltble : "+inputLocalTbl);
         parameters.put(ComposerConstants.inputLocalTblKey, inputLocalTbl);
         String outputGlobalTbl = parameters.get(ComposerConstants.outputGlobalTblKey);
         parameters.put(ComposerConstants.defaultDBKey, "/tmp/demo/db/" + qKey + "_defaultDB.db");

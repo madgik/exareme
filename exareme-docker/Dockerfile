@@ -44,6 +44,8 @@ RUN sed -i '/"username"/c\{ "name" : "username", "desc" : "", "value":"<raw_user
 RUN sed -i '/"password"/c\{ "name" : "username", "desc" : "", "value":"<raw_password>" },' /root/mip-algorithms/properties.json
 RUN sed -i '/"host"/c\{ "name" : "username", "desc" : "", "value":"<raw_host>" },' /root/mip-algorithms/properties.json
 RUN sed -i '/"port"/c\{ "name" : "username", "desc" : "", "value":"<raw_port>" },' /root/mip-algorithms/properties.json
+RUN sed -i '/"api"/c\{ "name" : "endpoint", "desc" : "", "value":"<raw_endpoint>" },' /root/mip-algorithms/properties.json
+
 
 WORKDIR /root/exareme
 

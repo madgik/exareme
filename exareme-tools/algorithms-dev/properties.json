@@ -7,7 +7,8 @@
       { "name" : "username", "desc" : "", "value":"federation" },
       { "name" : "password", "desc" : "", "value":"federation" },
       { "name" : "host"    , "desc" : "", "value":"0.0.0.0"},
-      { "name" : "port" , "desc":"", "value":"54321"}
+      { "name" : "port" , "desc":"", "value":"54321"},
+      { "name" : "api:", "desc":"", "value":"query-start"}
     ],
     "query" : "select distinct patient_id as __rid, variable_name as __colname, value as __val from exam_value"
   }

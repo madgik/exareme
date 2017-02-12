@@ -2,8 +2,9 @@
 
 #RAWUSERNAME="federation"
 #RAWPASSWORD="federation"
-#RAWHOST="rawdb"
-#RAWPORT="54321"
+#RAWHOST="raw-ui"
+#RAWPORT="5555"
+#RAWENDPOINT="query-start"
 
 if [ -z ${RAWUSERNAME} ]; then echo "RAWUSERNAME is unset"; exit;  fi
 if [ -z ${RAWPASSWORD} ]; then echo "RAWPASSWORD is unset";exit;  fi
@@ -18,6 +19,8 @@ sed -i "/<raw_username>/c{ \"name\" : \"username\", \"desc\" : \"\", \"value\":\
 sed -i "/<raw_password>/c{ \"name\" : \"password\", \"desc\" : \"\", \"value\":\"`echo $RAWPASSWORD`\" }," /root/mip-algorithms/properties.json
 sed -i "/<raw_host>/c{ \"name\" : \"host\", \"desc\" : \"\", \"value\":\"`echo $RAWHOST`\" }," /root/mip-algorithms/properties.json
 sed -i "/<raw_port>/c{ \"name\" : \"port\", \"desc\" : \"\", \"value\":\"`echo $RAWPORT`\" }" /root/mip-algorithms/properties.json
+sed -i "/<raw_endpoint>/c{ \"name\" : \"api\", \"desc\" : \"\", \"value\":\"`echo $RAWENDPOINT`\" }" /root/mip-algorithms/properties.json
+
 
 
 mkdir -p  /tmp/demo/db/
