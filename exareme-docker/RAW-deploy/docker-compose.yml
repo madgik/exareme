@@ -45,6 +45,7 @@ services:
       - RAWPASSWORD=federation
       - RAWHOST=raw-ui
       - RAWPORT=5555
+      - RAWENDPOINT=query-start
     ports:
       - "9090:9090"
 

@@ -52,7 +52,7 @@ class RAWDB(functions.vtable.vtbase.VT):
                 r.add_header("Authorization", "Basic %s" % base64string)
                 r.add_header("Content-Type", "application/json")
                 response = urllib2.urlopen(r, timeout=150)
-                records = json.load(response)['output']
+                records = json.load(response)['data']
 
                 if type(records[0]) is dict:
                     yield [(k,type(v).__name__) for k,v in records[0].iteritems()]
