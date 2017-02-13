@@ -32,13 +32,13 @@ networks:
     driver: bridge
 
 services:
-
   exalocal:
     image:  exaremelocal
     networks:
       - "net-local"
     links:
       - RawEngine
+      - rawdb
     environment:
       - MASTER_FLAG=master
       - RAWUSERNAME=federation
@@ -46,10 +46,9 @@ services:
       - RAWHOST=rawdb
       - RAWPORT=54321
       - RAWENDPOINT=query
+      - RAWRESULTS=notall
     ports:
       - "9090:9090"
-
-
   rawdb:
     hostname: rawdb
     image: raw-sniffer
@@ -66,7 +65,6 @@ services:
     image: "hbpmip/postgresraw"
     container_name: "raw-engine"
     restart: unless-stopped
-   
     networks:
      - "net-local"
     expose:
