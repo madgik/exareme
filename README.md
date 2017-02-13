@@ -1,4 +1,4 @@
-# Exareme
+# Exareme   https://travis-ci.org/madgik/exareme.svg?branch=mip
 
 
 ##  Building Exareme
