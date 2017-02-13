@@ -25,7 +25,7 @@ ADD requirements.txt /requirements.txt
 RUN apt-get install -y python-dev build-essential python-pip libblas-dev liblapack-dev libatlas-base-dev gfortran
 RUN pip install -r requirements.txt
 
-RUN git clone -b mip https://github.com/johnchronis/exareme.git /root/exareme-src #redww
+RUN git clone -b mip https://github.com/johnchronis/exareme.git /root/exareme-src #redww3e
 WORKDIR /root/exareme-src
 RUN mvn clean install
 RUN mv /root/exareme-src/exareme-distribution/target/exareme* /root/exareme
@@ -54,6 +54,8 @@ RUN sed -i '/static.path/c\static.path=/root/exareme/static/' /root/exareme/etc/
 
 
 EXPOSE 9090
+
+RUN export TERM=xterm
 
 ADD bootstrap.sh /root/exareme/bootstrap.sh
 ADD rawreq.sh /root/exareme/rawreq.sh
