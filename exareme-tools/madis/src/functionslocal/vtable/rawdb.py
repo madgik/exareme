@@ -43,7 +43,7 @@ class RAWDB(functions.vtable.vtbase.VT):
         if (self.resultsPerPage == "all"):
             # set http request
             url="http://{0}:{1}/{2}".format(self.host, self.port, self.api)
-            data =  json.dumps({ 'query' : self.query.encode("utf-8")})
+            data =  json.dumps({ 'query' : self.query.encode("utf-8").replace('"',"'")})
             base64string = base64.encodestring('%s:%s' % (self.username, self.password)).replace('\n', '')
 
             # get http response

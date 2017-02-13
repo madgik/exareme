@@ -256,16 +256,17 @@ public class AlgorithmsProperties {
             builder.append(query);
             builder.append(" where ");
             for (int i = 0; i < variables.size() - 1; i++) {
-                builder.append("variable_name = \'");
+                builder.append("variable_name = \"");
                 builder.append(variables.get(i));
-                builder.append("\' or ");
+                builder.append("\" or ");
             }
-            builder.append("variable_name = \'");
+            builder.append("variable_name = \"");
             builder.append(variables.get(variables.size()-1));
-            builder.append("\')");
+            builder.append("\")");
             return builder.toString();
         }
     }
+
 
     public static class EndpointProperties {
 
