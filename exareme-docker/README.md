@@ -1,15 +1,19 @@
 **Instructions for using the Exareme local Docker**
 -
 
-- build.sh: build the exaremelocal images (the same as hbpmip/exaremelocal)
-- start.sh: start the an exaremelocal container
-- docker-compose.yml: containes rules to start and link the exaremelocal and raw-sniffer images
+1) Execute startall.sh ( it set ups the enviroment and executes the RAW-deploy/docker-compose.yml)
+2) Use the ip:9090/exa-view/index.html web page to send queries to Exareme and view the results.
 
-Notes:
-- to change the information (credentials, address) that exareme uses to connect to raw you need to change either the start.sh or the docker-compose.yml
-
-
-**Testing**
+**Important files**
 -
 
-Use the ip:9090/exa-view/index.html web page to send queries to Exareme and view the results.
+- datasets: add your csv here to be loaded into RAW
+- exalocal/build.sh: build the latest exaremelocal image (the same as hbpmip/exaremelocal)
+- exalocal/start.sh: starts an exaremelocal container
+- exalocal/docker-compose.yml: used only for testing
+
+- RAW-deploy/docker-compose.yml: use by executing ./start unsecured up, this will start exareme in local mode and raw
+
+
+Notes:
+- to change the information (credentials, address) that exareme uses to connect to raw you need to change either the start.sh or the docker-compose.yml 

@@ -33,7 +33,7 @@ networks:
 
 services:
   exalocal:
-    image:  exaremelocal
+    image:  hbpmip/exaremelocal
     networks:
       - "net-local"
 #    links:
