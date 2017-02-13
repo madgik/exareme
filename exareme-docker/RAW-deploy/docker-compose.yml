@@ -49,18 +49,18 @@ services:
       - RAWRESULTS=all
     ports:
       - "9090:9090"
-  rawdb:
-    hostname: rawdb
-    image: raw-sniffer
-    volumes:
-      - ../datasets:/datasets:ro
-    networks:
-     - "net-local"
-    ports:
-     - "54321:54321"
-     #- "5555:5555"
-    expose:
-     - "54321"
+#  rawdb:
+#    hostname: rawdb
+#    image: raw-sniffer
+#    volumes:
+#      - ../datasets:/datasets:ro
+#    networks:
+#     - "net-local"
+#    ports:
+#     - "54321:54321"
+#     #- "5555:5555"
+#    expose:
+#     - "54321"
   RawEngine:
     image: "hbpmip/postgresraw"
     container_name: "raw-engine"
