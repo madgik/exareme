@@ -36,8 +36,8 @@
 * Extract Exareme tarball
  
     ```
-    mdkir ~/exareme
-    tar xf exareme.tar.gz -C ~/~exareme
+    mkdir ~/exareme
+    tar xf ~/exareme.tar.gz -C ~/exareme
     cd ~/exareme
     ```
     
