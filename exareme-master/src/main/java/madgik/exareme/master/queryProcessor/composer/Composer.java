@@ -381,7 +381,24 @@ public class Composer {
             repositoryPath = Composer.repoPath;
         String workingDir = repositoryPath + algorithmKey;
 
-        String localScriptPath = workingDir + "/local.template.sql";
+        // All local.template.sql scripts are to be retrieved from the algorithms repository
+        // directory, since they are not modified (even in iterative algorithms).
+        String localScriptsWorkingDir;
+        if (iterativeAlgorithmPhase != null) {
+            // In iterative algorithms, algorithmKey is comprised of algorithmName + the time the
+            // request was received in ms. In a DFL's local execnselect we need to refer to
+            // unmodified local.template.sql file. Thus, avoiding a file transfer of the scripts from
+            // master to worker containers. Hence, its path must be generated using the algorithm
+            // name solely.
+            String algorithmName = algorithmKey.substring(1, algorithmKey.lastIndexOf('_'));
+            String restOfAlgorithmKey = "/" + iterativeAlgorithmPhase.name()
+                    + algorithmKey.substring(algorithmKey.lastIndexOf("/"), algorithmKey.length());
+            localScriptsWorkingDir = repoPath + algorithmName + restOfAlgorithmKey;
+        }
+        else
+            localScriptsWorkingDir = repoPath + algorithmKey;
+
+        String localScriptPath = localScriptsWorkingDir + "/local.template.sql";
         String globalScriptPath = workingDir + "/global.template.sql";
 
         // format local
@@ -392,7 +409,8 @@ public class Composer {
         dflScript.append(String
             .format("distributed create temporary table output_local_tbl_%d as virtual \n",
                 algorithmIter));
-        dflScript.append(String.format("select * from (\n    execnselect 'path:%s' ", workingDir));
+        dflScript.append(String.format("select * from (\n    execnselect 'path:%s' ",
+                localScriptsWorkingDir));
         for (String key : parameters.keySet()) {
             dflScript.append(String.format("'%s:%s' ", key, parameters.get(key)));
         }
