@@ -112,6 +112,12 @@ public class PhaseCompletionEventHandler extends IterationsEventHandler<PhaseCom
                         errMsg = "Failed to read termination condition value for "
                                 + ias.toString() + ".";
                         boolean shouldContinue = ias.readTerminationConditionValue();
+                        String terminationConditionOutput =
+                                ias.readTerminationConditionScriptOutput();
+                        if (log.isDebugEnabled())
+                            log.debug(ias.toString() + ": termination_condition["
+                                    + (ias.getCurrentIterationsNumber() - 1) + "] output: "
+                                    + "\n" + terminationConditionOutput);
                         if (shouldContinue &&
                                 (ias.getCurrentIterationsNumber() < ias.getMaxIterationsNumber())) {
                             errMsg = "Failed to submit [step-phase] query of "

@@ -35,10 +35,10 @@ public class IterationsConstants {
 
     // SQL Table names --------------------------------------------------------------------------
     // This are to be disclosed to algorithm developers, so as they can use them in their scripts.
-    static final String iterationsOutputTblPrefix = "output_query";
+    public static final String iterationsOutputTblPrefix = "output_query";
     private static final String iterationsCounterTbl = "iterations_counter_tbl";
     private static final String iterationsCounterColName = "iterations_counter";
-    private static final String iterationsConditionCheckTbl = "iterations_condition_check_result_tbl";
+    public static final String iterationsConditionCheckTbl = "iterations_condition_check_result_tbl";
     public static final String iterationsConditionCheckColName = "iterations_condition_check_result";
 
     // SQL Scripts / Snippets -------------------------------------------------------------------
@@ -115,9 +115,11 @@ public class IterationsConstants {
                     + "\n\t), " + iterationsConditionCheckTbl
                     + "\n);";
 
-    /*
-        Query that retrieves the termination condition's value.
-     */
+    // Query that retrieves the termination condition's value.
     public static final String selectTerminationConditionValue =
             "select " + iterationsConditionCheckColName + " from " + iterationsConditionCheckTbl + ";";
+
+    // Query that retrieves all the output of a given termination condition output.
+    public static final String selectAllFromTerminationConditionOutput =
+            "select * from ${" + iterationsConditionCheckTbl + "};";
 }

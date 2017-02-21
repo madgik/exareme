@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
+import madgik.exareme.common.consts.DBConstants;
 import madgik.exareme.common.consts.HBPConstants;
 import madgik.exareme.master.client.AdpDBClient;
 import madgik.exareme.master.client.AdpDBClientQueryStatus;
@@ -25,6 +26,7 @@ import static madgik.exareme.master.engine.iterations.handler.IterationsConstant
 import static madgik.exareme.master.engine.iterations.handler.IterationsConstants.iterationsPropertyConditionQueryProvided;
 import static madgik.exareme.master.engine.iterations.handler.IterationsConstants.iterationsPropertyMaximumNumber;
 import static madgik.exareme.master.engine.iterations.handler.IterationsConstants.previousPhaseOutputTblVariableName;
+import static madgik.exareme.master.engine.iterations.handler.IterationsConstants.selectAllFromTerminationConditionOutput;
 import static madgik.exareme.master.engine.iterations.handler.IterationsConstants.selectTerminationConditionValue;
 
 /**
@@ -352,6 +354,85 @@ public class IterativeAlgorithmState {
             }
         }
         return false;
+    }
+
+    /**
+     * Retrieves output of just-executed termination condition script.
+     * <p><b>Must be called with the lock of this instance acquired.</b>
+     *
+     * @return the concatenated result of all rows and columns
+     */
+    public String readTerminationConditionScriptOutput() {
+        ensureAcquiredLock();
+        StringBuilder tableContents = new StringBuilder();
+        try {
+            Class.forName("org.sqlite.JDBC");
+        } catch (ClassNotFoundException e) {
+            String errMsg = "Could not find sqlite.JDBC driver class.";
+            log.error(e);
+            throw new IterationsStateFatalException(errMsg, e, algorithmKey);
+        }
+
+        /*
+        Create path of termination_condition table for the latest step.
+        Notes:
+        1.  Although the naming format for the termination condition table uses the iterations
+            number at its end, when it's parsed by Madis and is "converted" to a database file the
+            iterations number is changed to float format (e.g. "0.0", "1.0").
+        2.  Using the previousIterationsNumber since we want to read what has been already executed.
+         */
+        String terminationConditionTblName =
+                IterationsConstants.iterationsOutputTblPrefix
+                        + "_" +  algorithmKey.toLowerCase()
+                        + "_" + IterativeAlgorithmPhasesModel.termination_condition.name()
+                        + "_" + previousIterationsNumber;
+        String currentTermConditionDbPath = HBPConstants.DEMO_DB_WORKING_DIRECTORY
+                + algorithmKey + "/"
+                + terminationConditionTblName + ".0" + DBConstants.DB_FILE_EXTENSION;
+
+        Statement stmt = null;
+        try (Connection conn =
+                     DriverManager.getConnection("jdbc:sqlite:" + currentTermConditionDbPath)) {
+            stmt = conn.createStatement();
+
+            dflVariablesMap.put(
+                    IterationsConstants.iterationsConditionCheckTbl,
+                    terminationConditionTblName);
+            String selectAllFromTerminationCondOutput = StrSubstitutor.replace(
+                    selectAllFromTerminationConditionOutput,
+                    dflVariablesMap);
+            dflVariablesMap.remove(IterationsConstants.iterationsConditionCheckTbl);
+
+            ResultSet resultSet = stmt.executeQuery(selectAllFromTerminationCondOutput);
+            if (!resultSet.isBeforeFirst()) {
+                String errMsg = "No data returned from termination condition of "
+                        + toString();
+                log.warn(errMsg);
+                throw new IterationsStateFatalException(errMsg, algorithmKey);
+            }
+            int columnCount = resultSet.getMetaData().getColumnCount();
+            while (resultSet.next()) {
+                for (int i = 0; i < columnCount; i++) {
+                    tableContents.append(resultSet.getString(i + 1));
+                    if (++i < columnCount) tableContents.append(", ");
+                }
+                tableContents.append("\n");
+            }
+            return tableContents.toString();
+        } catch (SQLException e) {
+            String errMsg = "Failed to query for termination condition value for " + toString();
+            log.error(errMsg);
+            throw new IterationsStateFatalException(errMsg, e, algorithmKey);
+        }
+        finally {
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    log.error("Failed to close iterationsDB select statement for: " + toString());
+                }
+            }
+        }
     }
 
     // Execution phase [Getters/Setters] --------------------------------------------------------
