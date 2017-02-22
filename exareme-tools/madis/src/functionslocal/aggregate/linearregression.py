@@ -93,11 +93,8 @@ class modelformulae:
                                 colname = colname + ":" + fparts[p]
                                 if colval == None:
                                     colval = self.datagroup[fparts[p]]
-                                elif self.datagroup[fparts[p]] == None:
-                                    colval = 1
                                 else:
                                     colval = colval * self.datagroup[fparts[p]]
-                                    # //TODO ELENI CHECK
                         if '*' in formulaPart and colname[1:] not in fpartsAll:
                             yield self.rid,colname[1:],colval
                             fpartsAll.append(colname[1:])

@@ -1,7 +1,7 @@
 **Instructions for using the Exareme local Docker**
 -
 
-1) Execute startall.sh ( it set ups the enviroment and executes the RAW-deploy/docker-compose.yml)
+1) Execute startall.sh ( set ups the enviroment and executes the RAW-deploy/docker-compose.yml)
 2) Use the ip:9090/exa-view/index.html web page to send queries to Exareme and view the results.
 
 **Important files**

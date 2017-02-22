@@ -11,6 +11,8 @@ services:
       - RAWPASSWORD=federation
       - RAWHOST=rawdb
       - RAWPORT=54321
+      - RAWENDPOINT=query
+      - RAWRESULTS=all
     ports:
       - "9090:9090"
 

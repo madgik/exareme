@@ -196,10 +196,6 @@ if [[ "true" == $EXAREME_ADMIN_LOCAL ]]; then   # run locally
             DESC="exareme-master"
             EXAREME_ADMIN_CLASS=$EXAREME_ADMIN_MASTER_CLASS
             EXAREME_ADMIN_CLASS_ARGS=""
-        else
-            DESC="exareme-worker"
-            EXAREME_ADMIN_CLASS=$EXAREME_ADMIN_WORKER_CLASS
-            EXAREME_ADMIN_CLASS_ARGS="$EXAREME_MASTER"
         fi
 
 
@@ -281,7 +277,7 @@ else
 
     if [[ "true" != $EXAREME_ADMIN_SYNC ]]; then
         for EXAREME_NODE in $(cat $EXAREME_HOME/etc/exareme/workers); do
-            ssh -n $EXAREME_USER@$EXAREME_NODE """$CMD_RUN""" &
+            ssh -n $EXAREME_USER@$EXAREME_NODE """mkdir -p /tmp/demo/db;$CMD_RUN""" &
         done
         # Wait for all parallel jobs to finish
         for job in `jobs -p`; do
@@ -289,7 +285,7 @@ else
         done
     else
         for EXAREME_NODE in $(cat $EXAREME_HOME/etc/exareme/workers); do
-            ssh -n $EXAREME_USER@$EXAREME_NODE """$CMD_RUN"""
+            ssh -n $EXAREME_USER@$EXAREME_NODE """mkdir -p /tmp/demo/db;$CMD_RUN"""
         done
     fi
 fi

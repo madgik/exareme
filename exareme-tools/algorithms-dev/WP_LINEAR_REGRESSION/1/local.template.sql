@@ -22,12 +22,51 @@ create table xvariables as
 select strsplitv(regexpr("\+|\:|\*|\-","%{x}","+") ,'delimiter:+') as xname;
 
 
-create temp table localinputtbl1 as
+
+create temp table locinptbl as
 select __rid as rid, __colname as colname, tonumber(__val) as val
-from %{input_local_tbl}
---where __colname in (select xname from xvariables) or colname = "%{y}"
+from %{input_local_tbl};
+
+
+create temp table localinputtbl1 as
+select * from ( select rid, colname,  val
+                from locinptbl
+                where  colname in (select xname from xvariables) or colname = "%{y}")
+where rid not in(select distinct rid from locinptbl where val is null)
 order by rid, colname, val;
 
+--
+--
+-- select * from ( select __rid as rid, __colname as colname, tonumber(__val) as val
+--                 from %{input_local_tbl}
+--                 where  __colname in (select xname from xvariables) or colname = "%{y}" )
+-- where rid not in (select distinct __rid as rid
+--                   from %{input_local_tbl}
+--                   where  __colname in (select xname from xvariables) or colname = "%{y}"
+--                   and __val is null )
+-- order by rid, colname, val;
+--
+
+
+
+--
+-- select * from ( select patient_id , variable_name , value
+--                 from exam_value
+--                 where  variable_name='DX_bl' or variable_name='APOE4_bl'
+--                 or variable_name='AGE'
+--                 or variable_name='PTEDUCAT'
+--                 or variable_name='PTGENDER'
+--                 or variable_name='AV45_bl') as inner1
+-- where patient_id not in(select distinct patient_id from ( select patient_id , variable_name , value
+--                 from exam_value
+--                 where  variable_name='DX_bl' or variable_name='APOE4_bl'
+--                 or variable_name='AGE'
+--                 or variable_name='PTEDUCAT'
+--                 or variable_name='PTGENDER'
+--                 or variable_name='AV45_bl') as c where value is null )
+-- order by patient_id, variable_name, value;
+--
+--
 
 drop table if exists localinputtbl;
 create table localinputtbl as
