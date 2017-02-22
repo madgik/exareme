@@ -5,9 +5,6 @@ package madgik.exareme.master.gateway;
 
 import com.google.gson.Gson;
 
-import madgik.exareme.utils.properties.AdpProperties;
-import madgik.exareme.utils.properties.GenericProperties;
-
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -15,6 +12,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.List;
 import java.util.Map;
+
+import madgik.exareme.utils.properties.AdpProperties;
+import madgik.exareme.utils.properties.GenericProperties;
 
 /**
  * @author heraldkllapi
@@ -68,6 +68,8 @@ public class ExaremeGatewayUtils {
   public static final String CONTEXT_DB_CONNECTOR;
   private static final Logger log = Logger.getLogger(ExaremeGatewayUtils.class);
   public static final String REQUEST_TIMEOUT;
+  public static final int RESPONSE_BUFFER_SIZE;
+
 
   static {
     GenericProperties properties = AdpProperties.getGatewayProperties();
@@ -119,6 +121,8 @@ public class ExaremeGatewayUtils {
     RESPONSE_ERRORS = properties.getString("gateway.response.errors");
     
     REQUEST_TIMEOUT = properties.getString("gateway.request.timeout");
+
+    RESPONSE_BUFFER_SIZE = properties.getInt("gateway.async.buffer.size");
 
     log.trace("Gateway mode         :" + GW_MODE);
     log.trace("Listening port       :" + String.valueOf(GW_PORT));

@@ -1,0 +1,22 @@
+{
+  "name"   : "SAMPLE_ITERATIVE",
+  "desc"   : "",
+  "type"   : "iterative",
+  "status" : "disabled",
+  "parameters" : [
+    {
+      "name" : "iterations_max_number",
+      "desc" : "Maximum number of iterations the algorithm will perform.",
+      "value" : "6"
+    },
+    {
+      "name" : "iterations_condition_query_provided",
+      "desc" : "Defines if a termination query is provided, or otherwise iterations_count will be solely used.",
+      "value" : "true"},
+    {
+      "name" : "iter_condition_var_1",
+      "desc": "Variable 1 - use for condition check",
+      "value": "foobar"
+    }
+  ]
+}

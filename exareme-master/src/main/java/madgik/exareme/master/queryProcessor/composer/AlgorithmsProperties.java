@@ -1,11 +1,18 @@
 package madgik.exareme.master.queryProcessor.composer;
 
 import com.google.gson.Gson;
-import madgik.exareme.worker.art.executionPlan.parser.expression.Parameter;
+
 import org.apache.commons.io.FileUtils;
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Represent the mip-algorithms repository properties,
@@ -21,6 +28,12 @@ public class AlgorithmsProperties {
         private String value;
 
         public ParameterProperties() {
+        }
+
+        ParameterProperties(ParameterProperties orig) {
+            name = orig.name;
+            desc = orig.desc;
+            value = orig.value;
         }
 
         public String getName() {
@@ -54,7 +67,8 @@ public class AlgorithmsProperties {
             local,                      // exec single node local
             pipeline,                   // exec local on each endpoint
             local_global,               // exec global over the union of local results
-            multiple_local_global       // exec sequentially multiple local_global
+            multiple_local_global,      // exec sequentially multiple local_global
+            iterative                   // exec iterative algorithm
         }
 
         public enum AlgorithmVisualizationType {
@@ -118,6 +132,14 @@ public class AlgorithmsProperties {
             return gson.fromJson(FileUtils.readFileToString(propertyFile), AlgorithmProperties.class);
         }
 
+        public static AlgorithmProperties copyAlgorithmProperties(AlgorithmProperties src) {
+            AlgorithmProperties copyAlgorithmProperties = new AlgorithmProperties();
+            copyAlgorithmProperties.setName(src.getName());
+            copyAlgorithmProperties.setDesc(src.getDesc());
+            copyAlgorithmProperties.setParameters(copyParameterProperties(src.getParameters()));
+            return copyAlgorithmProperties;
+        }
+
         public static AlgorithmProperties createAlgorithmProperties(
             HashMap<String, String> inputContent) throws IOException {
 
@@ -166,6 +188,44 @@ public class AlgorithmsProperties {
                 map.put(algorithmParameter.getName(), algorithmParameter.getValue());
             }
             return map;
+        }
+
+        /**
+         * Updates the given {@code ParameterProperty} of the {@code algorithmProperties} argument.
+         *
+         * @param algorithmProperties the algorithm properties whose parameter will be updated
+         * @param propertyName        the name of the parameter property to be updated
+         * @param propertyValue       the updated value of the parameter property
+         * @return true on success, false if the given {@code propertyName} hasn't been found
+         */
+        public static boolean updateParameterProperty(AlgorithmProperties algorithmProperties,
+                                                      String propertyName,
+                                                      String propertyValue) {
+            for (ParameterProperties property :
+                    algorithmProperties.getParameters()) {
+                if (property.getName().equals(propertyName)) {
+                    property.setValue(propertyValue);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /**
+         * Copies the {@code src} {@code ParameterProperties[]} entries to {@code dst}.
+         *
+         * @param src the source parameter properties, not null
+         * @return a copy of the {@code src} parameter properties
+         */
+        public static ParameterProperties[] copyParameterProperties(ParameterProperties[] src) {
+            if (src == null)
+                return null;
+
+            ParameterProperties[] copy = new ParameterProperties[src.length];
+            for (int i = 0; i < src.length; i++) {
+                copy[i] = new ParameterProperties(src[i]);
+            }
+            return copy;
         }
     }
 

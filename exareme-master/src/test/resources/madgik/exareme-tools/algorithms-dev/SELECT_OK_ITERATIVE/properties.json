@@ -1,0 +1,17 @@
+{
+  "name"   : "SELECT_OK_ITERATIVE",
+  "desc"   : "",
+  "type"   : "iterative",
+  "status" : "disabled",
+  "parameters" : [
+    {
+      "name" : "iterations_max_number",
+      "desc" : "Maximum number of iterations the algorithm will perform.",
+      "value" : "3"
+    },
+    {
+      "name" : "iterations_condition_query_provided",
+      "desc" : "Defines if a termination query is provided, or otherwise iterations_count will be solely used.",
+      "value" : "false"}
+  ]
+}
