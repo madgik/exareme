@@ -25,7 +25,7 @@ ADD requirements.txt /requirements.txt
 RUN apt-get install -y python-dev build-essential python-pip libblas-dev liblapack-dev libatlas-base-dev gfortran
 RUN pip install -r requirements.txt
 
-RUN git clone -b mip https://github.com/johnchronis/exareme.git /root/exareme-src #444a2
+RUN git clone -b mip https://github.com/madgik/exareme.git /root/exareme-src #444a2
 WORKDIR /root/exareme-src
 RUN mvn clean install
 RUN mv /root/exareme-src/exareme-distribution/target/exareme* /root/exareme
@@ -44,8 +44,9 @@ RUN sed -i '/"username"/c\{ "name" : "username", "desc" : "", "value":"<raw_user
 RUN sed -i '/"password"/c\{ "name" : "username", "desc" : "", "value":"<raw_password>" },' /root/mip-algorithms/properties.json
 RUN sed -i '/"host"/c\{ "name" : "username", "desc" : "", "value":"<raw_host>" },' /root/mip-algorithms/properties.json
 RUN sed -i '/"port"/c\{ "name" : "username", "desc" : "", "value":"<raw_port>" },' /root/mip-algorithms/properties.json
-RUN sed -i '/"api"/c\{ "name" : "endpoint", "desc" : "", "value":"<raw_endpoint>" }' /root/mip-algorithms/properties.json
-RUN sed -i '/"resultsPerPage"/c\{ "name" : "resultsPerPage", "desc" : "", "value":"<raw_resultsperpage>" }' /root/mip-algorithms/properties.json
+RUN sed -i '/"api"/c\{ "name" : "endpoint", "desc" : "", "value":"<raw_endpoint>" },' /root/mip-algorithms/properties.json
+RUN sed -i '/"resultsPerPage"/c\{ "name" : "resultsPerPage", "desc" : "", "value":"<raw_resultsperpage>" },' /root/mip-algorithms/properties.json
+RUN sed -i '/"datakey"/c\{ "name" : "resultsPerPage", "desc" : "", "value":"<raw_datakey>" }' /root/mip-algorithms/properties.json
 
 WORKDIR /root/exareme
 

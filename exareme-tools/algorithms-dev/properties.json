@@ -9,7 +9,8 @@
       { "name" : "host"    , "desc" : "", "value":"0.0.0.0"},
       { "name" : "port" , "desc":"", "value":"5555"},
       { "name" : "api", "desc":"", "value":"query-start"},
-      { "name" : "resultsPerPage", "desc":"", "value":"all"}
+      { "name" : "resultsPerPage", "desc":"", "value":"all"},
+      { "name" : "datakey", "desc":"", "value":"all"}
     ],
     "query" : "select distinct patient_id as __rid, variable_name as __colname, value as __val from exam_value"
   }
