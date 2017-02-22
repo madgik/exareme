@@ -1,0 +1,14 @@
+{
+  "name" : "K_MEANS",
+  "desc" : "K_MEANS",
+  "type" : "iterative",
+  "status" : "enabled",
+  "vtype" : "clusterplot",
+  "parameters" : [
+    {"name" : "iterations_max_number", "desc" : "", "value" : "200"},
+    {"name" : "iterations_condition_query_provided", "desc" : "", "value" : "true"},
+    {"name" : "columns", "desc" : "columns value", "value" : "APOE4_bl+AGE+PTEDUCAT"},
+    {"name" : "k", "desc" : "#centers", "value" : "4"},
+    {"name" : "e", "desc" : "#error_value", "value" : "0.01"}
+    ]
+}
