@@ -9,10 +9,11 @@ external_query = True
 
 # default properties
 default_dict = {
-    'host': 'localhost',
-    'port' : '54321',
+    'host': '0.0.0.0',
+    'port' : '5555',
     'api': 'query',
     'resultsPerPage' : 'all',   # if #results provided then uses pagination
+    'datakey':'data',
     'username' : None,          # required
     'password' : None,          # required
     'query' : None              # required
@@ -52,7 +53,7 @@ class RAWDB(functions.vtable.vtbase.VT):
                 r.add_header("Authorization", "Basic %s" % base64string)
                 r.add_header("Content-Type", "application/json")
                 response = urllib2.urlopen(r, timeout=150)
-                records = json.load(response)['data']
+                records = json.load(response)[self.datakey]
 
                 if type(records[0]) is dict:
                     yield [(k,type(v).__name__) for k,v in records[0].iteritems()]
@@ -79,7 +80,7 @@ class RAWDB(functions.vtable.vtbase.VT):
                 r.add_header("Content-Type", "application/json")
                 response = urllib2.urlopen(r, timeout=150)
                 jsonresponse = json.load(response)
-                records = jsonresponse['data']
+                records = jsonresponse[self.datakey]
                 yield [(k,type(v).__name__) for k,v in records[0].iteritems()]
 
                 for r in records:
