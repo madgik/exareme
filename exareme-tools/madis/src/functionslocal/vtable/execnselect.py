@@ -12,7 +12,7 @@ and returns the results of the last target query.
 ***Notice also that forwards the connecntions to the target environment.
 """
 
-import os, sys, re, apsw
+import os, sys, re, apsw, traceback
 import functions
 
 comment_line = re.compile(r'/\*.*?\*/(.*)$')
@@ -122,9 +122,9 @@ class ExecNSelectVT(functions.vtable.vtbase.VT):
             tconnection.close()
             cursor.close()
         except Exception as ex:
-            # import traceback
-            # traceback.print_exc()
-            raise functions.OperatorError(__name__.rsplit('.')[-1], "Error in query no. %d - %s" % (counter, str(ex)))
+            import traceback
+            traceback.print_exc()
+            raise functions.OperatorError(__name__.rsplit('.')[-1], "Error in query no. %d - %s " % (counter, str(ex)))
 
         # restore env
         functions.variables = oldvars

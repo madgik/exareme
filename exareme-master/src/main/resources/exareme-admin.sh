@@ -277,7 +277,7 @@ else
 
     if [[ "true" != $EXAREME_ADMIN_SYNC ]]; then
         for EXAREME_NODE in $(cat $EXAREME_HOME/etc/exareme/workers); do
-            ssh -n $EXAREME_USER@$EXAREME_NODE """$CMD_RUN""" &
+            ssh -n $EXAREME_USER@$EXAREME_NODE """mkdir -p /tmp/demo/db;$CMD_RUN""" &
         done
         # Wait for all parallel jobs to finish
         for job in `jobs -p`; do
@@ -285,7 +285,7 @@ else
         done
     else
         for EXAREME_NODE in $(cat $EXAREME_HOME/etc/exareme/workers); do
-            ssh -n $EXAREME_USER@$EXAREME_NODE """$CMD_RUN"""
+            ssh -n $EXAREME_USER@$EXAREME_NODE """mkdir -p /tmp/demo/db;$CMD_RUN"""
         done
     fi
 fi

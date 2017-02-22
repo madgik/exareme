@@ -1,0 +1,73 @@
+version: '2'
+
+services:
+  exalocal:
+    image:  hbpmip/exaremelocal
+    links:
+      - rawdb
+    environment:
+      - MASTER_FLAG=master
+      - RAWUSERNAME=federation
+      - RAWPASSWORD=federation
+      - RAWHOST=rawdb
+      - RAWPORT=54321
+      - RAWENDPOINT=query
+      - RAWRESULTS=all
+    ports:
+      - "9090:9090"
+
+  rawdb:
+    hostname: rawdb
+    image: raw-sniffer
+    volumes:
+      - ../datasets:/datasets:ro
+    ports:
+      - "54321:54321"
+#      - "5555:5555"
+
+#  examaster:
+#    image: exatest
+#    links:
+#      - exaworker
+#    environment:
+#      - MASTER_FLAG=master
+#    ports:
+#      - "9090:9090"
+#      - "1099:1099"
+#      - "1098:1098"
+#      - "8088:8088"
+#  exaworker:
+#    image: exatest
+#    environment:
+#      - MASTER_IP=
+#    ports:
+#      - "9090:9090"
+#      - "1099:1099"
+#      - "1098:1098"
+#      - "8088:8088"
+#
+#
+#  master:
+#    build: .
+#    hostname: master
+#    volumes:
+#      - ./exareme-distribution/target/exareme:/root/exareme:ro
+#      - ./bootstrap.sh:/tmp/entrypoint.sh
+#    ports:
+#      - "9090:9090"
+#    working_dir: /root/exareme/
+#    entrypoint: /tmp/entrypoint.sh
+#    links:
+#      - rawdb
+#  worker:
+#    build: .
+#    volumes:
+#      - ./exareme-distribution/target/exareme:/root/exareme:ro
+#      - ./bootstrap.sh:/tmp/entrypoint.sh
+#    working_dir: /root/exareme/
+#    entrypoint: /tmp/entrypoint.sh
+#    environment:
+#      - ISMASTER=master
+#    links:
+#      - master
+#      - rawdb

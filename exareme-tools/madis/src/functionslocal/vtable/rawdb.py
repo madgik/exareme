@@ -43,7 +43,7 @@ class RAWDB(functions.vtable.vtbase.VT):
         if (self.resultsPerPage == "all"):
             # set http request
             url="http://{0}:{1}/{2}".format(self.host, self.port, self.api)
-            data =  json.dumps({ 'query' : self.query.encode("utf-8")})
+            data =  json.dumps({ 'query' : self.query.encode("utf-8").replace('"',"'")})
             base64string = base64.encodestring('%s:%s' % (self.username, self.password)).replace('\n', '')
 
             # get http response
@@ -52,7 +52,7 @@ class RAWDB(functions.vtable.vtbase.VT):
                 r.add_header("Authorization", "Basic %s" % base64string)
                 r.add_header("Content-Type", "application/json")
                 response = urllib2.urlopen(r, timeout=150)
-                records = json.load(response)['output']
+                records = json.load(response)['data']
 
                 if type(records[0]) is dict:
                     yield [(k,type(v).__name__) for k,v in records[0].iteritems()]

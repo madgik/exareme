@@ -327,6 +327,7 @@ public class AlgorithmsProperties {
         }
     }
 
+
     public static class EndpointProperties {
 
         private String name;

@@ -1,3 +1,7 @@
+./exareme-docker/raw-sniffer
+./exareme-docker/datasets/*
+
+
 ### Maven template
 target/
 registry/
