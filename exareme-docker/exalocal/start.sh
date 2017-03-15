@@ -8,6 +8,6 @@ docker run -i -t --rm \
 -e RAWHOST="raw-ui" \
 -e RAWPORT="5555" \
 -e RAWENDPOINT="query-start" \
--e RAWRESULTS="all"
+-e RAWRESULTS="all" \
+-e RAWDATAKEY="output" \ 
 -p 9090:9090  --name exaremelocal exaremelocal
-
