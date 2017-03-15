@@ -5,14 +5,15 @@ services:
     image:  hbpmip/exaremelocal
     links:
       - rawdb
-    environment:
+   environment:
       - MASTER_FLAG=master
       - RAWUSERNAME=federation
       - RAWPASSWORD=federation
-      - RAWHOST=rawdb
-      - RAWPORT=54321
+      - RAWHOST=raw-ui
+      - RAWPORT=5555
       - RAWENDPOINT=query
       - RAWRESULTS=all
+      - RAWDATAKEY=output #query used with output, query-start with data
     ports:
       - "9090:9090"
 
