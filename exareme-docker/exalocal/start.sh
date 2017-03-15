@@ -9,5 +9,5 @@ docker run -i -t --rm \
 -e RAWPORT="5555" \
 -e RAWENDPOINT="query-start" \
 -e RAWRESULTS="all" \
--e RAWDATAKEY="output" \ 
+-e RAWDATAKEY="output" \
 -p 9090:9090  --name exaremelocal exaremelocal
