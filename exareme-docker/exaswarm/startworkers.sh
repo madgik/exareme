@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
+. ./config.sh
 
-
-docker service create -t --network=my-net-at \
+docker service create -t --network=$EXA_OVERLAY_NETWORK \
 --name exareme-worker \
---replicas 3 \
+--replicas $EXA_WORKERS \
+-e CONSULURL=$EXA_CONSUL_URL \
 -e MASTER_FLAG='' \
 -e RAWUSERNAME="federation" \
 -e RAWPASSWORD="federation" \
@@ -12,5 +13,4 @@ docker service create -t --network=my-net-at \
 -e RAWENDPOINT="query-start" \
 -e RAWRESULTS="all" \
 -e RAWDATAKEY="output" \
--e CONSULURL="83.212.100.72:8500" \
-  exaremeswarm
+ $EXA_IMAGE

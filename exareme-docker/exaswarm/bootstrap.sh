@@ -20,6 +20,7 @@ if [ -z ${CONSULURL} ]; then echo "CONSULURL is unset"; exit; fi
 #echo "172.17.0.2" > /root/exareme/etc/exareme/master
 
 EXAREME_WORKERS_PATH="available_workers"
+EXAREME_ACTIVE_WORKERS_PATH="active_workers"
 
 sed -i "/<raw_username>/c{ \"name\" : \"username\", \"desc\" : \"\", \"value\":\"`echo $RAWUSERNAME`\" }," /root/mip-algorithms/properties.json
 sed -i "/<raw_password>/c{ \"name\" : \"password\", \"desc\" : \"\", \"value\":\"`echo $RAWPASSWORD`\" }," /root/mip-algorithms/properties.json
@@ -54,10 +55,12 @@ else #this is the master
     #curl -X DELETE  $CONSULURL/v1/kv/$EXAREME_WORKERS_PATH/?recurse
     for i in `cat etc/exareme/workers` ; do 
 	    ssh -oStrictHostKeyChecking=no $i date
+        curl -X PUT -d @- $CONSULURL/v1/kv/$EXAREME_ACTIVE_WORKERS_PATH/$(curl -s $CONSULURL/v1/kv/$EXAREME_WORKERS_PATH/$i?raw) <<< $i
 	    curl -X DELETE $CONSULURL/v1/kv/$EXAREME_WORKERS_PATH/$i
     done
     ./bin/exareme-admin.sh --update
     ./bin/exareme-admin.sh --start
+
 fi
 
 tail -f /tmp/exareme/var/log/exareme-*.log
