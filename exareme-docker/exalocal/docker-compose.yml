@@ -5,7 +5,7 @@ services:
     image:  hbpmip/exaremelocal
     links:
       - rawdb
-    environment:
+   environment:
       - MASTER_FLAG=master
       - RAWUSERNAME=federation
       - RAWPASSWORD=federation
