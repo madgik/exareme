@@ -13,6 +13,7 @@ RUN apt-get -y install nano
 ADD ssh-keys/id_rsa /root/.ssh/id_rsa
 ADD ssh-keys/id_rsa.pub /root/.ssh/id_rsa.pub
 ADD ssh-keys/id_rsa.pub /root/.ssh/authorized_keys
+RUN chmod 600 /root/.ssh/id_rsa
 ENV USER=root
 
 

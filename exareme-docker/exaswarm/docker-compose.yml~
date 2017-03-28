@@ -2,7 +2,7 @@ version: '2'
 
 services:
   examaster:
-    image: vagsai/exaremedist:v1
+    image:  exaremeswarm
 #    links:
 #      - rawdb
     environment:
@@ -20,7 +20,9 @@ services:
       - "9090:9090"
 
   exaworker1:
-    image:  vagsai/exaremedist:v1
+    image:  exaremeswarm
+#    links:
+#      - rawdb
     environment:
       - CONSULURL=83.212.100.72:8500
       - RAWUSERNAME=federation
@@ -29,19 +31,8 @@ services:
       - RAWPORT=5555
       - RAWENDPOINT=query
       - RAWRESULTS=all
-      - RAWDATAKEY=output #query used with output, query-start with data
-
-  exaworker2:
-    image:  vagsai/exaremedist:v1
-    environment:
-      - CONSULURL=83.212.100.72:8500
-      - RAWUSERNAME=federation
-      - RAWPASSWORD=federation
-      - RAWHOST=raw-ui
-      - RAWPORT=5555
-      - RAWENDPOINT=query
-      - RAWRESULTS=all
-      - RAWDATAKEY=output #query used with output, query-start with data     
+      - RAWDATAKEY=output #query used with output, query-start with data 
+    
 
  # rawdb:
   #  hostname: rawdb

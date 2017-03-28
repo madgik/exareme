@@ -1,2 +1,3 @@
 #!/bin/bash
-docker build  -t exaremeswarm .
+. ./config.sh
+docker build  -t $EXA_IMAGE .

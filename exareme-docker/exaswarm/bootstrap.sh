@@ -37,6 +37,7 @@ mkdir -p  /tmp/demo/db/
 service ssh restart 
 
 if [[ "$MASTER_FLAG" != "master" ]]; then #this is a worker
+    sleep 2
     MY_OLIP=$(/sbin/ifconfig $1 | grep "inet " | awk -F: '{print $2}' | awk '{print $1;}' | head -n 1)
     curl -X PUT -d @- $CONSULURL/v1/kv/$EXAREME_WORKERS_PATH/$MY_OLIP <<< $(hostname)
     while [[ ! -f "/tmp/exareme/var/log/exareme-*.log" ]]; do
@@ -59,6 +60,7 @@ else #this is the master
 	    curl -X DELETE $CONSULURL/v1/kv/$EXAREME_WORKERS_PATH/$i
     done
     ./bin/exareme-admin.sh --update
+    sleep 3
     ./bin/exareme-admin.sh --start
 
 fi
