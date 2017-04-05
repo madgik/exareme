@@ -35,10 +35,7 @@ RUN mv /root/exareme-src/exareme-distribution/target/exareme* /root/exareme
 #ADD ./exareme-distribution/target/exareme /root/exareme #aa
 
 
-         RUN  git clone https://github.com/madgik/mip-algorithms.git /root/mip-algorithms  #dd 
-           WORKDIR /root/mip-algorithms         
-             RUN git reset --hard 0b3d36712a30332a62ff2fc182792cb66261db45 
-          
+MIPALGORITHMSCONFIGURATION
 
 
 RUN sed -i '/"username"/c\{ "name" : "username", "desc" : "", "value":"<raw_username>" },' /root/mip-algorithms/properties.json

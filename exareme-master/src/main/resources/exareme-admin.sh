@@ -27,7 +27,7 @@ EXAREME_MASTER_FILE="$EXAREME_HOME/etc/exareme/master"
 if [[ -s "$EXAREME_MASTER_FILE" ]]; then
   EXAREME_MASTER=$( < $EXAREME_MASTER_FILE);
 elif [ ! $EXAREME_MASTER ]; then
-    EXAREME_MASTER="$(hostname --ip-address)";
+    EXAREME_MASTER=`/sbin/ifconfig $1 | grep "inet " | awk -F: '{print $2}' | awk '{print $1;}' | head -n 1`;
 fi
 echo "EXAREME MASTER HOST : $EXAREME_MASTER";
 
@@ -166,7 +166,7 @@ if [[ "true" == $EXAREME_ADMIN_LOCAL ]]; then   # run locally
             done
         )
         if [ -n $EXAREME_CURRENT_IP ]; then
-            EXAREME_CURRENT_IP=$(hostname --ip-address);
+            EXAREME_CURRENT_IP=`/sbin/ifconfig $1 | grep "inet " | awk -F: '{print $2}' | awk '{print $1;}' | head -n 1`;
         fi
         EXAREME_ADMIN_JMX_PORT=10000
         EXAREME_ADMIN_CLASS_PATH="$EXAREME_HOME/lib/exareme/*:$EXAREME_HOME/lib/exareme/external/*"
@@ -200,6 +200,12 @@ if [[ "true" == $EXAREME_ADMIN_LOCAL ]]; then   # run locally
 
 
         # execute
+        echo "BB"
+        echo $EXAREME_ADMIN_CLASS_PATH
+        echo $EXAREME_JAVA
+        echo $EXAREME_ADMIN_CLASS
+        echo $EXAREME_ADMIN_CLASS_ARGS
+        echo "CC"
         mkdir -p /tmp/exareme/var/log /tmp/exareme/var/run
         $EXAREME_JAVA -cp $EXAREME_ADMIN_CLASS_PATH \
           $EXAREME_ADMIN_OPTS $EXAREME_ADMIN_CLASS  \
