@@ -280,7 +280,8 @@ else
 
 #    ssh -n $EXAREME_USER@$EXAREME_MASTER_IP """$CMD_RUN"""
     $CMD_RUN
-
+    sleep 3
+    
     if [[ "true" != $EXAREME_ADMIN_SYNC ]]; then
         for EXAREME_NODE in $(cat $EXAREME_HOME/etc/exareme/workers); do
             ssh -n $EXAREME_USER@$EXAREME_NODE """mkdir -p /tmp/demo/db;$CMD_RUN""" &
