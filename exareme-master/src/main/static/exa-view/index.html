@@ -62,7 +62,7 @@
               <!--<tr ng-repeat="row in exaCtrl.result track by $index">  &lt;!&ndash;ng-if="$index > 0">&ndash;&gt;-->
                   <!--<td ng-repeat="r in row track by $index">{{r}}</td>-->
               <tr>
-              <td>{{exaCtrl.result}}</td>
+              <td><pre>{{exaCtrl.result | json}}</pre></td>
               </tr>
               </tbody>
           </table>
