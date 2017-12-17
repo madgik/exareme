@@ -238,7 +238,7 @@ if [[ "true" == $EXAREME_ADMIN_LOCAL ]]; then   # run locally
 
     function install_exareme(){     # only workers
         for EXAREME_NODE in $(cat $EXAREME_HOME/etc/exareme/workers); do 
-            rsync -aqvzhe ssh --delete  --exclude="var/*" $EXAREME_HOME/ $EXAREME_USER@$EXAREME_NODE:$EXAREME_HOME/ &
+            rsync -aqvzhe ssh --delete  --exclude="var/*" --exclude="../mip-algorithms/properties.json" --exclude="etc/exareme/name" $EXAREME_HOME/ $EXAREME_USER@$EXAREME_NODE:$EXAREME_HOME/ &
         done
 
         # Wait for all parallel jobs to finish
@@ -249,7 +249,7 @@ if [[ "true" == $EXAREME_ADMIN_LOCAL ]]; then   # run locally
 
     function update_exareme(){      # only workers
         for EXAREME_NODE in $(cat $EXAREME_HOME/etc/exareme/workers); do
-            rsync -avqzhe ssh --delete  --exclude="var/*" $EXAREME_HOME/ $EXAREME_USER@$EXAREME_NODE:$EXAREME_HOME/ &
+            rsync -avqzhe ssh --delete  --exclude="var/*" --exclude="../mip-algorithms/properties.json"  --exclude="etc/exareme/name" $EXAREME_HOME/ $EXAREME_USER@$EXAREME_NODE:$EXAREME_HOME/ &
         done
 
         # Wait for all parallel jobs to finish
