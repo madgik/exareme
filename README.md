@@ -1,4 +1,4 @@
-# Exareme ![Alt text](https://travis-ci.org/madgik/exareme.svg?branch=mip)
+# Exareme [![Build Status](https://travis-ci.org/madgik/exareme.svg?branch=dev)](https://travis-ci.org/madgik/exareme)
 
 Exareme is an auto-tuned, highly scalable, elastic system for processing arbitrary dataflows on top of IaaS clouds.
 
