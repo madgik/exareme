@@ -1,0 +1,8 @@
+{
+  "name" : "PIPELINE_EXAMPLE",
+  "desc" : "PIPELINE_EXAMPLE",
+  "type" : "pipeline",
+  "status" : "disabled",
+  "vtype" : "none",
+  "parameters" : []
+}

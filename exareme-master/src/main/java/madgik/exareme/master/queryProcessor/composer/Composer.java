@@ -137,6 +137,8 @@ public class Composer {
                 AlgorithmsProperties.AlgorithmProperties.toHashMap(algorithmProperties);
         String localScriptPath =
             repoPath + algorithmProperties.getName() + "/local.template.sql";
+        String localUpdateScriptPath =
+                repoPath + algorithmProperties.getName() + "/localupdate.template.sql";
         String globalScriptPath =
             repoPath + algorithmProperties.getName() + "/global.template.sql";
         // get filters
@@ -216,6 +218,7 @@ public class Composer {
                 dflScript.append(");\n");
                 break;
             case pipeline:
+                parameters.remove(ComposerConstants.inputLocalTblKey);
 
                 ExecutionEngineProxy engine = ExecutionEngineLocator.getExecutionEngineProxy();
                 ContainerProxy[] containerProxies;
@@ -246,8 +249,15 @@ public class Composer {
                     for (String key : parameters.keySet()) {
                         dflScript.append(String.format("'%s:%s' ", key, parameters.get(key)));
                     }
-                    dflScript.append(
-                        String.format("\n    select filetext('%s')\n", localScriptPath));
+
+                    if (i == 0 ) {
+                        dflScript.append(
+                                String.format("\n    select filetext('%s')\n", localScriptPath));
+                    }else {
+                        dflScript.append(String.format("'prv_output_local_tbl:(output_local_tbl_%d)' ", i-1));
+                        dflScript.append(
+                                String.format("\n    select filetext('%s')\n", localUpdateScriptPath));
+                    }
                     dflScript.append(");\n");
                 }
                 break;
