@@ -286,7 +286,7 @@ public class AlgorithmsProperties {
 
         public String toUDF(String query){
             StringBuilder builder = new StringBuilder();
-            builder.append('(');
+            builder.append("(select distinct rid as __rid, colname as __colname ,val as __val from(");
             builder.append(name);
             for (ParameterProperties parameter : parameters) {
                 builder.append(" ");
@@ -297,14 +297,14 @@ public class AlgorithmsProperties {
             }
             if(query == null || query.isEmpty()) builder.append(this.query);
             else builder.append(query);
-            builder.append(')');
+            builder.append("))");
 
             return builder.toString();
         }
         // TODO push filters efficiently
         public String toUDF(List<String> variables){
             StringBuilder builder = new StringBuilder();
-            builder.append('(');
+            builder.append("(select distinct rid as __rid, colname as __colname ,val as __val from(");
             builder.append(name);
             for (ParameterProperties parameter : parameters) {
                 builder.append(" ");
@@ -314,13 +314,13 @@ public class AlgorithmsProperties {
                 builder.append(" ");
             }
             builder.append(query);
-            builder.append(" where ");
+            builder.append(") where ");
             for (int i = 0; i < variables.size() - 1; i++) {
-                builder.append("variable_name = \"");
+                builder.append("colname = \"");
                 builder.append(variables.get(i));
                 builder.append("\" or ");
             }
-            builder.append("variable_name = \"");
+            builder.append("colname = \"");
             builder.append(variables.get(variables.size()-1));
             builder.append("\")");
             return builder.toString();
