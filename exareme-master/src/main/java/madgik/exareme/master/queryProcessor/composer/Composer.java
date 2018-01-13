@@ -231,15 +231,8 @@ public class Composer {
                 for(int i = 0; i < containerProxies.length; i++){
 
                     if(i == 0 ){
-                        //if(containerProxies.length > 1)
                             dflScript.append(String.format(
                                 "distributed create temporary table output_local_tbl_%d as remote \n", i));
-                       // else
-                        //    dflScript.append(String.format(
-                        //        "distributed create table output_local_tbl_%d as remote \n", i));
-                   // } else if(i == (containerProxies.length - 1)){
-                  //      dflScript.append(String.format(
-                   //         "using output_local_tbl_%d distributed create table output_local_tbl_%d as remote \n", i-1, i));
                     } else {
                         dflScript.append(String.format(
                             "using output_local_tbl_%d distributed create temporary table output_local_tbl_%d as remote \n",
