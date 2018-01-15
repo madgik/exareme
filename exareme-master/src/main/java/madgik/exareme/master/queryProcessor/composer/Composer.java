@@ -231,18 +231,12 @@ public class Composer {
                 for(int i = 0; i < containerProxies.length; i++){
 
                     if(i == 0 ){
-                        if(containerProxies.length > 1)
                             dflScript.append(String.format(
                                 "distributed create temporary table output_local_tbl_%d as remote \n", i));
-                        else
-                            dflScript.append(String.format(
-                                "distributed create table output_local_tbl_%d as remote \n", i));
-                    } else if(i == (containerProxies.length - 1)){
-                        dflScript.append(String.format(
-                            "using output_local_tbl_%d distributed create table output_local_tbl_%d as remote \n", i-1, i));
                     } else {
                         dflScript.append(String.format(
-                            "using output_local_tbl_%d distributed create temporary table output_local_tbl_%d as remote \n", i-1, i));
+                            "using output_local_tbl_%d distributed create temporary table output_local_tbl_%d as remote \n",
+                                i-1, i));
                     }
                     dflScript.append(String
                         .format("select * from (\n    execnselect 'path:%s' ", workingDir));
@@ -260,6 +254,21 @@ public class Composer {
                     }
                     dflScript.append(");\n");
                 }
+
+                dflScript.append(String.format("using output_local_tbl_%d distributed create table %s as ",
+                        (containerProxies.length-1), outputGlobalTbl));
+                dflScript.append(String
+                        .format("select * from (\n    execnselect 'path:%s' ", workingDir));
+                for (String key : parameters.keySet()) {
+                    dflScript.append(String.format("'%s:%s' ", key, parameters.get(key)));
+                }
+
+                dflScript.append(String.format("'prv_output_local_tbl:(output_local_tbl_%d)' ",
+                                containerProxies.length-1));
+                dflScript.append( String.format("\n    select filetext('%s')\n", globalScriptPath));
+                dflScript.append(");\n");
+
+
                 break;
             case local_global:
                 parameters.remove(ComposerConstants.outputGlobalTblKey);
