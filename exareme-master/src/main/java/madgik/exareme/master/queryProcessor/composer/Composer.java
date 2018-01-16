@@ -185,7 +185,7 @@ public class Composer {
             parameters.put(IterationsConstants.iterationsParameterIterDBKey,
                     generateIterationsDBName(qKey));
             parameters.put(ComposerConstants.defaultDBKey,
-                    HBPConstants.DEMO_DB_WORKING_DIRECTORY + qKey + "_defaultDB.db");
+                    HBPConstants.DEMO_DB_WORKING_DIRECTORY + qKey + "/defaultDB.db");
 
             // 2. Remove unneeded parameter
             parameters.remove(iterationsPropertyConditionQueryProvided);
@@ -197,7 +197,7 @@ public class Composer {
         }
         else {
             parameters.put(ComposerConstants.defaultDBKey,
-                    HBPConstants.DEMO_DB_WORKING_DIRECTORY + qKey + "/defaultDB.db");
+                    HBPConstants.DEMO_DB_WORKING_DIRECTORY + qKey + "_defaultDB.db");
         }
 
         switch (algorithmProperties.getType()) {
