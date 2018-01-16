@@ -83,6 +83,13 @@ public class HttpAsyncFileHandler implements HttpAsyncRequestHandler<HttpRequest
             response.setEntity(entity);
             System.out.println("Cannot read file " + file.getPath());
 
+        } else if (file.getPath().endsWith(".ser")) {
+            HttpCoreContext coreContext = HttpCoreContext.adapt(context);
+            HttpConnection conn = coreContext.getConnection(HttpConnection.class);
+            response.setStatusCode(HttpStatus.SC_OK);
+            NFileEntity body = new NFileEntity(file, ContentType.create("application/octet-stream"));
+            response.setEntity(body);
+            System.out.println(conn + ": serving binary file " + file.getPath());
         } else {
 
             HttpCoreContext coreContext = HttpCoreContext.adapt(context);

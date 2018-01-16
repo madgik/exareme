@@ -218,7 +218,6 @@ public class Composer {
                 dflScript.append(");\n");
                 break;
             case pipeline:
-                parameters.remove(ComposerConstants.inputLocalTblKey);
 
                 ExecutionEngineProxy engine = ExecutionEngineLocator.getExecutionEngineProxy();
                 ContainerProxy[] containerProxies;
@@ -255,7 +254,7 @@ public class Composer {
                     dflScript.append(");\n");
                 }
 
-                dflScript.append(String.format("using output_local_tbl_%d distributed create table %s as ",
+                dflScript.append(String.format("using output_local_tbl_%d distributed create table %s as external ",
                         (containerProxies.length-1), outputGlobalTbl));
                 dflScript.append(String
                         .format("select * from (\n    execnselect 'path:%s' ", workingDir));
