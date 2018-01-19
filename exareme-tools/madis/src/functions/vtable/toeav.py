@@ -57,10 +57,11 @@ class toEAV(vtbase.VT):
 
         yield [('rid',), ('colname',), ('val',)]
         lr = len(schema)
+        rid = 0
         while True:
             l = c.next()
-            rid = l[0]
-            for i in xrange(1, lr):
+            rid += 1
+            for i in xrange(0, lr):
                 yield (rid, schema[i], l[i])
 
 def Source():
