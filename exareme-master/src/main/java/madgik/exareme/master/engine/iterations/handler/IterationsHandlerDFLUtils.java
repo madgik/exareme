@@ -157,6 +157,7 @@ public class IterationsHandlerDFLUtils {
                                 Paths.get(demoCurrentAlgorithmDir).getParent().toString(),
                                 algorithmKey,
                                 algorithmProperties, null, phase);
+                log.info("dfl: " + dflScripts[dflScriptIdx-1]);
             } catch (ComposerException e) {
                 throw new IterationsFatalException("Composer failure to generate DFL script for phase: "
                         + phase.name() + ".", e);
