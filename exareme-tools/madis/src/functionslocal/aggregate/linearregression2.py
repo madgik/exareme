@@ -56,16 +56,17 @@ class invertarray:
             self.j = self.j + 1
 
     def final(self):
-        print "invert array"
-        print self.arrayval
-        print self.arrayattr
-        print "stop"
-
-        ArrayInvert = inv(self.arrayval)
+        #print "invert array"
+        #print self.arrayval
+        #print self.arrayattr
+        #print "stop"
         yield ('attr1', 'attr2', 'val')
-        for i in range(0,self.size):
-            for j in range(0,self.size):
-                yield self.arrayattr[i], self.arrayattr[j], ArrayInvert[i,j]
+        if self.arrayval.any:
+            ArrayInvert = inv(self.arrayval)
+
+            for i in range(0,self.size):
+                for j in range(0,self.size):
+                    yield self.arrayattr[i], self.arrayattr[j], ArrayInvert[i,j]
 
 
 if not ('.' in __name__):

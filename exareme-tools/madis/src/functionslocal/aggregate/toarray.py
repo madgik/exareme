@@ -29,13 +29,14 @@ class convertcovariancetabletoarray:
             raise
 
     def final(self):
-
-        noofvariables = int(math.sqrt(self.n))
-        self.mydata2D = [[0 for i in xrange(0, noofvariables)] for x in xrange(0,noofvariables)]
-
-        for d in self.mydata1D:
-            self.mydata2D[self.headers.index(d[0])][self.headers.index(d[1])] += d[2]
-
         yield ('header','covvalues')
-        yield (str(self.headers), str(self.mydata2D))
+        if bool(self.mydata1D):
+            noofvariables = int(math.sqrt(self.n))
+            self.mydata2D = [[0 for i in xrange(0, noofvariables)] for x in xrange(0,noofvariables)]
+
+            for d in self.mydata1D:
+                self.mydata2D[self.headers.index(d[0])][self.headers.index(d[1])] += d[2]
+
+
+            yield (str(self.headers), str(self.mydata2D))
 
