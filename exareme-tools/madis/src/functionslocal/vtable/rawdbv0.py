@@ -19,6 +19,7 @@ default_dict = {
     'query' : None              # required
 }
 
+
 class RAWDB(functions.vtable.vtbase.VT):
 
     def VTiter(self, *parsedArgs, **envars):
