@@ -446,7 +446,7 @@ public class Composer {
 
         if (algorithmIter > 1 ){
             dflScript.append(String.format("using output_global_tbl_%d\n", algorithmIter - 1));
-        } else if (iterativeAlgorithmPhase.equals(init)){
+        } else if (iterativeAlgorithmPhase!=null && iterativeAlgorithmPhase.equals(init)){
             dflScript.append("using createPathTempTable\n");
         }
 
