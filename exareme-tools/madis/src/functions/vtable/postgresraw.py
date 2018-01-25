@@ -15,7 +15,7 @@ Examples:
 import setpath
 import vtbase
 import functions
-import psycopg2
+
 import json
 from types import NoneType
 
@@ -82,9 +82,9 @@ class PostgresRaw(vtbase.VT):
         user = str(dictargs.get('username', dictargs.get('u', '')))
         passwd = str(dictargs.get('password', dictargs.get('p', '')))
         db = str(dictargs.get('db', ''))
-	query=query.replace('%','%%')
+        query=query.replace('%','%%')
 
-        
+        import psycopg2
         try:
             conn = psycopg2.connect(user=user, host=host, port=port, database=db, password=passwd)
 
