@@ -175,6 +175,7 @@ public class Composer {
             inputLocalTbl = algorithms.getLocal_engine_default().toUDF(variables);
 
         log.info("lcltble : "+inputLocalTbl);
+        log.info("algorithm type: " + algorithmProperties.getType().name());
         parameters.put(ComposerConstants.inputLocalTblKey, inputLocalTbl);
         String outputGlobalTbl = parameters.get(ComposerConstants.outputGlobalTblKey);
 
@@ -344,6 +345,14 @@ public class Composer {
                         if ((iterativeAlgorithmPhase.equals(step) ||
                                 iterativeAlgorithmPhase.equals(finalize)) && i == 1)
                             parameters.remove(IterationsConstants.previousPhaseOutputTblVariableName);
+
+                        //Create database directory
+                        if (iterativeAlgorithmPhase.equals(init)){
+                            dflScript.append(String.format("distributed create temporary table createPathTempTable as virtual\n" +
+                                    "select execprogram(null, 'mkdir', '-p', '%s') as C1;\n\n",
+                                    HBPConstants.DEMO_DB_WORKING_DIRECTORY + qKey ));
+                        }
+
                     }
 
                     parameters.put(ComposerConstants.outputGlobalTblKey, outputGlobalTbl);
@@ -434,9 +443,11 @@ public class Composer {
         String localScriptPath = localScriptsWorkingDir + "/local.template.sql";
         String globalScriptPath = workingDir + "/global.template.sql";
 
-        // format local
-        if (algorithmIter > 1) {
+
+        if (algorithmIter > 1 ){
             dflScript.append(String.format("using output_global_tbl_%d\n", algorithmIter - 1));
+        } else if (iterativeAlgorithmPhase!=null && iterativeAlgorithmPhase.equals(init)){
+            dflScript.append("using createPathTempTable\n");
         }
 
         dflScript.append(String
