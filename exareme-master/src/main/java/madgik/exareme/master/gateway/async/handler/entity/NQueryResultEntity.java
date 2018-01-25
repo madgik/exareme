@@ -71,9 +71,37 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
                 close();
             }
         } else {
-            encoder.write(ByteBuffer.wrap(queryStatus.getError().getBytes()));
-            encoder.complete();
-            close();
+            if (queryStatus.getError().toString().contains("\n" +
+                    "Operator VARIABLE:"))
+            {
+                String result = "{\"Error\":\"Please provide a variable that exists.\"}";
+                encoder.write(ByteBuffer.wrap(result.getBytes()));
+                encoder.complete();
+                close();
+            }
+            else if(queryStatus.getError().toString().contains("\n" +
+                    "Operator DATASET:"))
+                {
+                    String result = "{\"Error\":\"Please provide a dataset that exists.\"}";
+                    encoder.write(ByteBuffer.wrap(result.getBytes()));
+                    encoder.complete();
+                    close();
+                }
+            else if(queryStatus.getError().toString().contains("\n" +
+                    "Operator NULLTABLE:"))
+            {
+                String result = "{\"Error\":\"The input you provided gives an empty table. Please check your input.\"}";
+                encoder.write(ByteBuffer.wrap(result.getBytes()));
+                encoder.complete();
+                close();
+            }
+            else {
+                String result = "{\"Error\":\"Something went wrong.Please inform your system administrator " +
+                        "to consult the logs.\"}";
+                encoder.write(ByteBuffer.wrap(result.getBytes()));
+                encoder.complete();
+                close();
+            }
         }
     }
 

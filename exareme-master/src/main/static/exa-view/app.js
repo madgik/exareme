@@ -49,7 +49,7 @@ controller('ExaController', function($scope, $http){
                 exa.result = response.data;
             }
         }, function errorCallback(response) {
-            exa.result = {};
+            exa.result = response;
         });
     }
 });

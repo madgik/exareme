@@ -3,13 +3,19 @@ import setpath
 import functions
 import os
 
-def datasets(*args):
+def vars(*args):
+    """
+    *args is what the query: "var 'valExists' from select case when (select exists (select colname from
+    tempinputlocaltbl1 where colname='%{variable}'))=0 then 0 else 1 end;" returns
+    """
+
     if args[0] == "0":
-        raise functions.OperatorError("DATASET","Dataset does not exist")
+        raise functions.OperatorError("VARIABLE","Variable does not exist")
     else:
         return 1
+vars.registered=True
 
-datasets.registered=True
+
 
 if not ('.' in __name__):
     """
