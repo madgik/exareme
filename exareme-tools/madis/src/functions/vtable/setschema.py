@@ -122,14 +122,17 @@ class SetSchema(vtbase.VT):
             ret =[]
             for i,val in enumerate(row):
                 e=val
-                if sqlitecoltype[i] in ("INTEGER", "REAL", "NUMERIC"):
+                if sqlitecoltype[i] in ( "REAL", "NUMERIC"):
                     try:
-                        e=int(val)
+                        e=float(val)
                     except ValueError:
-                        try:
-                            e=float(val)
-                        except ValueError:
-                            e=val
+			if sqlitecoltype[i] in ( "INTEGER",):
+                           try:
+                            	e=int(val)
+                           except ValueError:
+                                e=val
+                        else: 
+                           e=val
                 ret+=[e]
             yield ret
 
