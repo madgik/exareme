@@ -24,20 +24,21 @@ except ImportError:
 __docformat__ = 'reStructuredText en'
 
 
+
 class invertarray:
 
     registered = True
 
     def __init__(self):
         self.init = True
-        self.sizeofarray = None
+        self.size = 0
         self.arrayval = None
         self.arrayattr = []
         self.i =None
         self.j =None
 
     def step(self, *args):
-        print args
+
         if self.init:
             self.init = False
             self.size= args[3]
@@ -56,14 +57,12 @@ class invertarray:
             self.j = self.j + 1
 
     def final(self):
-        #print "invert array"
-        #print self.arrayval
-        #print self.arrayattr
-        #print "stop"
+        print "invert array"
+        print self.size
+        print self.arrayattr
         yield ('attr1', 'attr2', 'val')
-        if self.arrayval.any:
+        if self.size >0 :
             ArrayInvert = inv(self.arrayval)
-
             for i in range(0,self.size):
                 for j in range(0,self.size):
                     yield self.arrayattr[i], self.arrayattr[j], ArrayInvert[i,j]

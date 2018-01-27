@@ -77,6 +77,7 @@ class modelformulae:
                                 fpartsCorrectColumns[f].append(data)
 
                     fpartsB = list(itertools.product(*fpartsCorrectColumns)) # to dp
+                    fpartsB.sort()
                     if self.all==False and  len(fpartsB)>1:
                         fpartsB.pop(0)
 
