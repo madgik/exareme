@@ -12,7 +12,7 @@ import java.util.Set;
  * Created by Vaggelis  on 3/6/2015.
  */
 public class PeriodicContainersStatusCheck {
-    private static int sleepTime_s = 10;
+    private static int sleepTime_s = 2;
     private static Logger log = Logger.getLogger(PeriodicContainersStatusCheck.class);
     Set<EntityName> containersToCheck;
     PlanEventScheduler planEventScheduler;
@@ -39,7 +39,7 @@ public class PeriodicContainersStatusCheck {
     private class PeriodicCheck extends Thread {
         public void run() {
             int i = 10;
-            while (i > 0) {
+            while (!planEventScheduler.getState().isTerminated()) {
                 i--;
                 Set<EntityName> faultyContainers = new HashSet<>();
                 for (EntityName containerName : containersToCheck) {
@@ -52,6 +52,7 @@ public class PeriodicContainersStatusCheck {
                         log.error("Container connection error: " + e);
                         faultyContainers.add(containerName);
                     }
+                    faultyContainers.add(containerName);
 
                 }
                 if (!faultyContainers.isEmpty()) {
@@ -69,6 +70,7 @@ public class PeriodicContainersStatusCheck {
                 }
 
             }
+            log.trace("Plan terminated");
         }
     }
 }
