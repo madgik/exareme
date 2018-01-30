@@ -43,7 +43,7 @@ import static madgik.exareme.master.engine.iterations.state.IterativeAlgorithmSt
 public class Composer {
 
     private static final Logger log = Logger.getLogger(Composer.class);
-    private static String[] inputVariables = new String[]{"variable","column1", "column2", "groupings","covariables","dataset","x","y"};
+    private static String[] inputVariables = new String[]{"variable","column1","columns", "column2", "groupings","covariables","dataset","x","y"};
     private Composer() {
     }
     private static final Composer instance = new Composer();
@@ -161,6 +161,11 @@ public class Composer {
                 }
                 else if("y".equals(inputVariable)){
                     variables.add(s);
+                }
+                else if("columns".equals(inputVariable)){
+                    for (String s1 : s.split(",")) {
+                        variables.add(s1);
+                    }
                 }
                 else{
                     //if (!"dataset".equals(inputVariable))
