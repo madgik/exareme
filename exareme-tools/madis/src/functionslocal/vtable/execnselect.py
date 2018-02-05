@@ -12,7 +12,7 @@ and returns the results of the last target query.
 ***Notice also that forwards the connecntions to the target environment.
 """
 
-import os, sys, re, apsw, traceback
+import os, sys, re, apsw
 import functions
 
 comment_line = re.compile(r'/\*.*?\*/(.*)$')
@@ -53,6 +53,8 @@ class ExecNSelectVT(functions.vtable.vtbase.VT):
 
         # default  parsing
         largs, dictargs = self.full_parse(parsedArgs)
+        #print largs
+        #print dictargs
 
         # get default connection
         connection = envars['db']
@@ -64,6 +66,7 @@ class ExecNSelectVT(functions.vtable.vtbase.VT):
         # get query
         if 'query' not in dictargs:
             raise functions.OperatorError(__name__.rsplit('.')[-1],"No query argument.")
+            #print "error 1"
         else :
             query = dictargs['query']
 
@@ -84,6 +87,7 @@ class ExecNSelectVT(functions.vtable.vtbase.VT):
                 setattr(newvars, key, getattr(functions.variables, key))
             else :
                 raise functions.OperatorError(__name__.rsplit('.')[-1], "Variable %s doesn't exist" % (key,))
+                #print "error 2"
         for key, value in dictargs.items():
             setattr(newvars, key, value)
         functions.variables = newvars
@@ -111,25 +115,42 @@ class ExecNSelectVT(functions.vtable.vtbase.VT):
                         list(tcursor.execute(tqlast))
                         counter+=1
                     tqlast = tquery
-            # print "tqlast", tqlast
-            tresults = tcursor.execute(tqlast)
-            counter+=1
-            yield tcursor.getdescriptionsafe()
-            for tresult in tresults:
-                yield tresult
-
+            #print "tqlast", len(tqlast)
+            if len(tqlast) > 0:
+                tresults = tcursor.execute(tqlast)
+                counter+=1
+            
+                #print 'lala3'
+                try:
+                    yield tcursor.getdescriptionsafe()
+                except apsw.ExecutionCompleteError:
+                    try:
+                        raise
+                    finally:
+                        try:
+                            tcursor.close()
+                            tconnection.close()
+                            cursor.close()
+                        except:
+                            pass
+                else:
+                    for tresult in tresults:
+                        yield tresult
+            else:
+                yield ('c1',)
             tcursor.close()
             tconnection.close()
             cursor.close()
         except Exception as ex:
             import traceback
             traceback.print_exc()
-            raise functions.OperatorError(__name__.rsplit('.')[-1], "Error in query no. %d - %s " % (counter, str(ex)))
-
+            raise functions.OperatorError(__name__.rsplit('.')[-1], "Error in query no. %d - %s" % (counter, str(ex)))
+            #print "error 3"
         # restore env
         functions.variables = oldvars
         if newpath:
             os.chdir(path)
+         
 
 def Source():
     return functions.vtable.vtbase.VTGenerator(ExecNSelectVT)
