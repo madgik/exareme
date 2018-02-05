@@ -44,7 +44,7 @@ public class ContainersErrorEventHandler implements ExecEngineEventHandler<Conta
                     state.getPlanSession().getPlanSessionStatus().getExceptions().add(
                             new RemoteException("Containers: " + event.faultyContainers + " not responding"));
                     log.error("Containers: " + event.faultyContainers + " not responding");
-                    throw new RemoteException();
+
                 } else {
 //                    log.debug("Removing container: " + containerProxy.getEntityName());
 //                    event.faultyContainers.add(containerProxy.getEntityName());
