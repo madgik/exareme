@@ -16,6 +16,7 @@ controller('ExaController', function($scope, $http){
     var exa = this;
     exa.algorithms = [];
     exa.result = [];
+    exa.name = '';
 
     $http({
         method: 'GET',
@@ -30,25 +31,28 @@ controller('ExaController', function($scope, $http){
 
     exa.submit = function(algorithm){
         exa.result = {};
+        Highcharts.chart('container', exa.result).destroy();
         $http({
             method: 'POST',
             url: '/mining/query/' + algorithm.name,
             data: algorithm.parameters
-            //transformResponse: function(data){
-            //    var response = [];
-            //    var split = data.split('\n');
-            //    for(var r in split){
-            //        if(split[r]) {
-            //            response.push(JSON.parse(split[r]))
-            //        }
-            //    }
-            //    return response;
-            //}
         }).then(function successCallback(response) {
             if(response.status == 200){
-                exa.result = response.data;
-            }
+                exa.name = algorithm.name;
+                if(exa.name == 'K_MEANS'){
+                   var result;
+                   result = "foo="+response.data.res;
+                   exa.result = response.data.res;
+                   var foo;
+                   var re = eval(result);
+                   Highcharts.chart('container', re);
+                }
+                else{
+                 exa.result = response.data;
+                }
+}
         }, function errorCallback(response) {
+            //result = response.data;
             exa.result = response;
         });
     }

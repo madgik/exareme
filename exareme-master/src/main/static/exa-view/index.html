@@ -2,7 +2,8 @@
 <!--[if lt IE 7]>      <html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html lang="en" ng-app="myApp" class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html lang="en" ng-app="myApp" class="no-js"> <!--<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en" ng-app="myApp" class="no-js" xmlns="http://www.w3.org/1999/html"> <!--<![endif]-->
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -12,8 +13,16 @@
   <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/normalize.css">
   <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/main.css">
   <link rel="stylesheet" href="app.css">
-  <script src="bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
-  <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-route/angular-route.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script language="JavaScript" type="text/javascript" src="/js/jquery-1.2.6.min.js"></script>
+    <script src="bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/highcharts-more.js"></script>
+    <script src="https://code.highcharts.com/highcharts-3d.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
 </head>
 <body>
   <!--<ul class="menu">-->
@@ -50,35 +59,6 @@
       </td>
       <td width="100%">
       <div>
-      <div id="container" style="width:90%;">
-      <script type="text/javascript">
-       
- var myChart = Highcharts.chart('container', {
-        chart: {
-            type: 'bar'
-        },
-        title: {
-            text: 'Example highchart Visualization'
-        },
-        xAxis: {
-            categories: ['Apples', 'Bananas', 'Oranges']
-        },
-        yAxis: {
-            title: {
-                text: 'Fruit eaten'
-            }
-        },
-        series: [{
-            name: 'Jane',
-            data: [1, 0, 4]
-        }, {
-            name: 'John',
-            data: [5, 7, 3]
-        }]
-    });
-
-</script>
-</div>
           <h2>Result</h2>
           <table>
               <!--<thead>-->
@@ -89,11 +69,12 @@
               <!--</tr>-->
               <!--</thead>-->
               <tbody>
-              <!--<tr ng-repeat="row in exaCtrl.result track by $index">  &lt;!&ndash;ng-if="$index > 0">&ndash;&gt;-->
-                  <!--<td ng-repeat="r in row track by $index">{{r}}</td>-->
-              <tr>
-              <td><pre>{{exaCtrl.result | json}}</pre></td>
-              </tr>
+                  <!--<tr ng-repeat="row in exaCtrl.result track by $index">  &lt;!&ndash;ng-if="$index > 0">&ndash;&gt;-->
+                      <!--<td ng-repeat="r in row track by $index">{{r}}</td>-->
+                  <div id="container" style="width:90%;" ></div>
+                  <tr>
+                      <td><pre>{{exaCtrl.result | json }}</pre></td>
+                  </tr>
               </tbody>
           </table>
       </div>
@@ -115,8 +96,6 @@
   <!-- In production use:
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
   -->
-  <script src="bower_components/angular/angular.js"></script>
-  <script src="bower_components/angular-route/angular-route.js"></script>
   <script src="app.js"></script>
   <script src="view1/view1.js"></script>
   <script src="view2/view2.js"></script>
