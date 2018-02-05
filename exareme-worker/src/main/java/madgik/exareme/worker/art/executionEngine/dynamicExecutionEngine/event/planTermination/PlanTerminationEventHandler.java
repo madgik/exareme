@@ -8,6 +8,7 @@ import madgik.exareme.worker.art.container.ContainerProxy;
 import madgik.exareme.worker.art.executionEngine.dynamicExecutionEngine.PlanEventSchedulerState;
 import madgik.exareme.worker.art.executionEngine.dynamicExecutionEngine.PlanTerminationListener;
 import madgik.exareme.worker.art.executionEngine.dynamicExecutionEngine.event.ExecEngineEventHandler;
+import madgik.exareme.worker.art.executionPlan.entity.OperatorEntity;
 import org.apache.log4j.Logger;
 
 import java.rmi.RemoteException;
@@ -56,8 +57,10 @@ public class PlanTerminationEventHandler implements ExecEngineEventHandler<PlanT
             state.setTerminated(true);
             state.getPlanSession().getPlanSessionStatus().setFinished(new Date());
         }
-    /* Clean */
-        // TODO: ...
+        /* Clean */
+        for (OperatorEntity coe : state.groupDependencySolver().getOperatorsWithActiveResources()) {
+            state.resourceManager.getAvailableResources(coe.container).releaseMemory(coe);
+        }
         state.resourceManager.printUsage("Plan Terminated, Active: ");
 
     }

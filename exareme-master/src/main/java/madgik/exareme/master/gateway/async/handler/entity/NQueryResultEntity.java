@@ -71,6 +71,7 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
                 close();
             }
         } else {
+            log.trace("|"+queryStatus.getError().toString()+"|");
             if (queryStatus.getError().toString().contains("\n" +
                     "Operator VARIABLE:"))
             {
@@ -95,7 +96,12 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
                 encoder.complete();
                 close();
             }
-            else {
+            else if(queryStatus.getError().toString().matches("java.rmi.RemoteException: Containers:.*not responding")) {
+                String result = "{\"Error\":\"One or more containers are not responding. Please inform your system administrator\"}";
+                encoder.write(ByteBuffer.wrap(result.getBytes()));
+                encoder.complete();
+                close();
+            } else{
                 String result = "{\"Error\":\"Something went wrong.Please inform your system administrator " +
                         "to consult the logs.\"}";
                 encoder.write(ByteBuffer.wrap(result.getBytes()));

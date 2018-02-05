@@ -311,7 +311,7 @@ public class PlanEventScheduler {
             state.getStatistics().setTotalDataTransfer(newPlan.getDataTransferOperatorsCount());
             state.createSessionPlan();
             state.getStatistics().setStartTime(System.currentTimeMillis());
-
+            state.addAllContainerCheck();
             continueExecutionEvent(state.getSessionID());
         } finally {
             lock.unlock();
