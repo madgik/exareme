@@ -43,7 +43,7 @@ public class PeriodicContainersStatusCheck {
                 i--;
                 Set<EntityName> faultyContainers = new HashSet<>();
                 for (EntityName containerName : containersToCheck) {
-                    log.trace("Checking container: " + containerName);
+                    log.debug("Checking container: " + containerName);
                     try {
                         ContainerProxy containerProxy = planEventScheduler.getState().registryProxy
                             .lookupContainer(containerName);
@@ -52,7 +52,6 @@ public class PeriodicContainersStatusCheck {
                         log.error("Container connection error: " + e);
                         faultyContainers.add(containerName);
                     }
-                    faultyContainers.add(containerName);
 
                 }
                 if (!faultyContainers.isEmpty()) {

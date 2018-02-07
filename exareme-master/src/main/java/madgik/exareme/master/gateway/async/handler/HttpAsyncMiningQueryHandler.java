@@ -256,7 +256,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                     entity.setContentLength(contentBytes.length);
                     entity.setContentEncoding(Charsets.UTF_8.name());
                     entity.setChunked(false);
-                    response.setStatusCode(HttpStatus.SC_OK);
+                    response.setStatusCode(HttpStatus.SC_METHOD_FAILURE);
                     response.setEntity(entity);
                     return false;
                 }

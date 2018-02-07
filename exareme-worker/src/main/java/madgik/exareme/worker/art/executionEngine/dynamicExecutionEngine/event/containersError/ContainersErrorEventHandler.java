@@ -30,17 +30,15 @@ public class ContainersErrorEventHandler implements ExecEngineEventHandler<Conta
     @Override public void preProcess(ContainersErrorEvent event, PlanEventSchedulerState state)
         throws RemoteException {
         for (EntityName containerName : event.containers) {
-            ContainerProxy containerProxy = state.registryProxy.lookupContainer(containerName);
             try {
-                log.trace(
+                ContainerProxy containerProxy = state.registryProxy.lookupContainer(containerName);
+                log.debug(
                     "Container status: " + (containerProxy.connect().execJobs(new ContainerJobs())
                         != null));
             } catch (Exception e) {
                 log.error(e);
-
                 if (AdpProperties.getArtProps().getString("art.container.errorBehavior").equals("returnError")){
-                    event.faultyContainers.add(state.registryProxy.lookupContainer(
-                            event.containers.iterator().next()).getEntityName());
+                    event.faultyContainers.add(containerName);
                     state.getPlanSession().getPlanSessionStatus().getExceptions().add(
                             new RemoteException("Containers: " + event.faultyContainers + " not responding"));
                     log.error("Containers: " + event.faultyContainers + " not responding");
