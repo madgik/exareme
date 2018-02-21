@@ -101,6 +101,13 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();
+            }
+            else if(queryStatus.getError().toString().contains("\n" +
+                    "Operator TYPE:")){
+                String result = "{\"Error\":\"Each variable's type must be Real,Integer or Float.\"}";
+                encoder.write(ByteBuffer.wrap(result.getBytes()));
+                encoder.complete();
+                close();
             } else{
                 String result = "{\"Error\":\"Something went wrong.Please inform your system administrator " +
                         "to consult the logs.\"}";

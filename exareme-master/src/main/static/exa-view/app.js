@@ -39,15 +39,20 @@ controller('ExaController', function($scope, $http){
         }).then(function successCallback(response) {
             if(response.status == 200){
                 exa.name = algorithm.name;
-                if(exa.name == 'K_MEANS'){
-                   var result;
-                   result = "foo="+response.data.res;
-                   exa.result = response.data.res;
-                   var foo;
-                   var re = eval(result);
-                   Highcharts.chart('container', re);
+                if(exa.name == 'K_MEANS'){      //visual output
+                    if (response.data.Error){
+                        exa.result = response.data
+                    }
+                    else{
+                       var result;
+                       result = "foo="+response.data.res;
+                       exa.result = response.data.res;
+                       var foo;
+                       var re = eval(result);
+                       Highcharts.chart('container', re);
+                       }
                 }
-                else{
+                else{                       //json output
                  exa.result = response.data;
                 }
 }
