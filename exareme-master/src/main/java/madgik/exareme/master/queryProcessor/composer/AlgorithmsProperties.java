@@ -288,17 +288,8 @@ public class AlgorithmsProperties {
             StringBuilder builder = new StringBuilder();
             builder.append("(select distinct rid as __rid, colname as __colname ,val as __val from(");
             builder.append(name);
-            for (ParameterProperties parameter : parameters) {
-                builder.append(" ");
-                builder.append(parameter.name);
-                builder.append(':');
-                builder.append(parameter.value);
-                builder.append(" ");
-            }
-            if(query == null || query.isEmpty()) builder.append(this.query);
-            else builder.append(query);
+            builder.append(" ");
             builder.append("))");
-
             return builder.toString();
         }
         // TODO push filters efficiently
@@ -306,23 +297,14 @@ public class AlgorithmsProperties {
             StringBuilder builder = new StringBuilder();
             builder.append("(select distinct rid as __rid, colname as __colname ,val as __val from(");
             builder.append(name);
-            for (ParameterProperties parameter : parameters) {
-                builder.append(" ");
-                builder.append(parameter.name);
-                builder.append(':');
-                builder.append(parameter.value);
-                builder.append(" ");
-            }
-            builder.append(query);
-            builder.append(") where ");
+            builder.append(" ");
+
             for (int i = 0; i < variables.size() - 1; i++) {
-                builder.append("colname = \"");
                 builder.append(variables.get(i));
-                builder.append("\" or ");
+                builder.append(",");
             }
-            builder.append("colname = \"");
             builder.append(variables.get(variables.size()-1));
-            builder.append("\")");
+            builder.append("))");
             return builder.toString();
         }
     }

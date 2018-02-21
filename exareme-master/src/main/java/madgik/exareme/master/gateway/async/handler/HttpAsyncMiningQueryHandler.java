@@ -28,7 +28,6 @@ import org.apache.log4j.Logger;
 
 import java.io.*;
 import java.util.*;
-
 import madgik.exareme.common.consts.HBPConstants;
 import madgik.exareme.master.client.AdpDBClient;
 import madgik.exareme.master.client.AdpDBClientFactory;
@@ -151,6 +150,9 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             String name = (String) k.get("name");
             String value = (String) k.get("value");
             if(name == null || name.isEmpty() || value == null || value.isEmpty()) continue;
+            log.debug(name + " = " + value);
+            value = value.replaceAll("[^A-Za-z0-9,_*+]", "");
+            value = value.replaceAll("\\s+", "");
             if("local_pfa".equals(name)) {
                 Map map = new Gson().fromJson(value, Map.class);
                 query = (String) ((Map) ((Map)((Map) map.get("cells")).get("query")).get("init")).get("sql");

@@ -12,10 +12,10 @@ Examples:
 
 """
 
-import setpath
+import src.functions.setpath
 import vtbase
 import functions
-
+import re
 import json
 from types import NoneType
 
@@ -23,74 +23,79 @@ registered = True
 external_query = True
 
 class PostgresRaw(vtbase.VT):
-    def VTiter(self, *parsedArgs,**envars):
+    def VTiter(self, *parsedArgs, **envars):
         # DBAPI.warn = lambda x,stacklevel:x
 
         typetrans = {
             16: 'INT',
             17: 'INT',
-            19: 'TEXT', # name type
+            19: 'TEXT',  # name type
             20: 'INT',
             21: 'INT',
             23: 'INT',
-            25: 'TEXT', # TEXT type
-            26: 'INT', # oid type
-            142: 'TEXT', # XML
-            194: 'TEXT', # "string representing an internal node tree"
+            25: 'TEXT',  # TEXT type
+            26: 'INT',  # oid type
+            142: 'TEXT',  # XML
+            194: 'TEXT',  # "string representing an internal node tree"
             700: 'REAL',
             701: 'REAL',
             705: 'TEXT',
-            829: 'TEXT', # MACADDR type
-            1000: 'INT', # BOOL[]
-            1003: 'TEXT', # NAME[]
-            1005: 'INT', # INT2[]
-            1007: 'INT', # INT4[]
-            1009: 'TEXT', # TEXT[]
-            1014: 'TEXT', # CHAR[]
-            1015: 'TEXT', # VARCHAR[]
-            1016: 'INT', # INT8[]
-            1021: 'REAL', # FLOAT4[]
-            1022: 'REAL', # FLOAT8[]
-            1042: 'TEXT', # CHAR type
-            1043: 'TEXT', # VARCHAR type
+            829: 'TEXT',  # MACADDR type
+            1000: 'INT',  # BOOL[]
+            1003: 'TEXT',  # NAME[]
+            1005: 'INT',  # INT2[]
+            1007: 'INT',  # INT4[]
+            1009: 'TEXT',  # TEXT[]
+            1014: 'TEXT',  # CHAR[]
+            1015: 'TEXT',  # VARCHAR[]
+            1016: 'INT',  # INT8[]
+            1021: 'REAL',  # FLOAT4[]
+            1022: 'REAL',  # FLOAT8[]
+            1042: 'TEXT',  # CHAR type
+            1043: 'TEXT',  # VARCHAR type
             1082: 'TEXT',
             1083: 'TEXT',
             1114: 'TEXT',
-            1184: 'TEXT', # timestamp w/ tz
+            1184: 'TEXT',  # timestamp w/ tz
             1186: '',
-            1231: '', # NUMERIC[]
-            1263: 'TEXT', # cstring[]
+            1231: '',  # NUMERIC[]
+            1263: 'TEXT',  # cstring[]
             1700: '',
-            2275: 'TEXT', # cstring
+            2275: 'TEXT',  # cstring
         }
 
         largs, dictargs = self.full_parse(parsedArgs)
 
-        #if 'query' not in dictargs:
+        # if 'query' not in dictargs:
         #   raise functions.OperatorError(__name__.rsplit('.')[-1],"No query argument ")
-
-        query=dictargs['query']
-        
-	# get site properties
+        try:
+            largs = dictargs['query']
+        except KeyError:
+            largs = None
+        # get site properties
         data = json.load(open("/root/mip-algorithms/properties.json"))
         for d in data["local_engine_default"]["parameters"]:
             dictargs[d["name"]] = d["value"]
-        query = data["local_engine_default"]["query"]
 
+        query = data["local_engine_default"]["query"]
         host = str(dictargs.get('host', dictargs.get('h', '127.0.0.1')))
         port = int(dictargs.get('port', 5432))
         user = str(dictargs.get('username', dictargs.get('u', '')))
         passwd = str(dictargs.get('password', dictargs.get('p', '')))
         db = str(dictargs.get('db', ''))
-        query=query.replace('%','%%')
 
         import psycopg2
         try:
             conn = psycopg2.connect(user=user, host=host, port=port, database=db, password=passwd)
 
             cur = conn.cursor()
-            cur.execute(query)
-
+            if largs is None:
+                query = query.replace('%', '%%')
+                cur.execute(query)
+            else:
+                larg = tuple([largs.split(",")[i].strip() for i in xrange(len(largs.split(",")))])
+                query = query.replace('%', '%%') + " where colname in %s"
+                cur.execute(query,(larg,))
             yield [(c[0], typetrans.get(c[1], '')) for c in cur.description]
 
             for i in cur:
@@ -99,6 +104,7 @@ class PostgresRaw(vtbase.VT):
             cur.close()
         except Exception, e:
             raise functions.OperatorError(__name__.rsplit('.')[-1], ' '.join(str(t) for t in e))
+
 
 def Source():
     return vtbase.VTGenerator(PostgresRaw)
@@ -110,11 +116,13 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
+    import src.functions.setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()
