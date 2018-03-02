@@ -61,7 +61,7 @@ public class AdpDBArtJobMonitor implements Runnable {
 
             while (sessionManager.hasFinished() == false && sessionManager.hasError() == false) {
 
-                Thread.sleep(1000 * statsUpdateSecs);
+                Thread.sleep(100 * statsUpdateSecs);
                 boolean updateProgressStatistics = updateProgressStatistics();
                 sessionManager = sessionPlan.getPlanSessionStatusManagerProxy();
                 statsManager = sessionPlan.getPlanSessionStatisticsManagerProxy();
