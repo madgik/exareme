@@ -1,21 +1,5 @@
-import setpath
-import functions
-import math
-import numpy as np
-from numpy.linalg import inv
-from lib import iso8601
-import lib.jopts as jopts
-import re
-import datetime
-import json
-from fractions import Fraction
-import lib.jopts as jopts
-from array import *
-
-import itertools
-class kmeansresultsviewer:
+class kmeansresultsviewervis:
     # input clid,colname,val,noofpoints, noofvariables,noofclusters,columns
-    import itertools
     registered = True #Value to define db operator
 
     def __init__(self):
@@ -44,9 +28,9 @@ class kmeansresultsviewer:
 
     def final(self):
         import itertools
-        print self.clusterids
+        #print self.clusterids
         # print self.mydata
-        print "variablenames" , self.variablenames
+        #print "variablenames" , self.variablenames
         # print tuple(itertools.chain.from_iterable((tuple(itertools.chain.from_iterable([(self.variablenames[i],) for i in xrange(self.noofvariables)])),['noofpoints'])))
         yield ('highchartresult',)
 
@@ -169,7 +153,6 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
     testfunction()
     if __name__ == "__main__":

@@ -1,10 +1,6 @@
-import setpath
-import functions
-import random
 # coding: utf-8
-import math
 import json
-from fractions import Fraction
+
 
 def dummycode(*args):
 
@@ -56,7 +52,6 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
     testfunction()
     if __name__ == "__main__":

@@ -1,24 +1,9 @@
-import setpath
-import functions
-import math
-import numpy as np
-from numpy.linalg import inv
-from lib import iso8601
-import lib.jopts as jopts
-import re
-import datetime
-import json
-from fractions import Fraction
-import lib.jopts as jopts
-from array import *
-
-import itertools
-
 class linearregressionresultsviewer:
 
     registered = True #Value to define db operator
 
     def __init__(self):
+
         self.n = 0
         self.mydata = dict()
         self.variablenames = []
@@ -80,7 +65,6 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
     testfunction()
     if __name__ == "__main__":
