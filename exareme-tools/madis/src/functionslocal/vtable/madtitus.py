@@ -47,14 +47,11 @@ Examples::
     20.0
 
 """
+
+registered=True
 import functions
 from functions.vtable import vtbase
 import base64
-import json
-import titus.genpy
-
-registered=True
-
 def decode_base64(data):
     """Decode base64, padding being optional.
 
@@ -70,6 +67,9 @@ def decode_base64(data):
 class madtitus(vtbase.VT):
 
     def VTiter(self, *parsedArgs, **envars):
+
+        import json
+        import titus.genpy
 
         largs, dictargs = self.full_parse(parsedArgs)
         query = ""

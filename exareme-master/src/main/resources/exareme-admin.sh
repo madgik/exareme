@@ -150,7 +150,7 @@ fi
 # execute
 ####################################################################################################
 if [[ "true" == $EXAREME_ADMIN_LOCAL ]]; then   # run locally
-#    echo "Running in local mode..."
+   # echo "Running in local mode..."
 
     function start_exareme(){ # starts exareme daemon
         # set env
@@ -246,7 +246,6 @@ if [[ "true" == $EXAREME_ADMIN_LOCAL ]]; then   # run locally
             wait $job
         done
     }
-:wq
 
     function update_exareme(){      # only workers
         for EXAREME_NODE in $(cat $EXAREME_HOME/etc/exareme/workers); do

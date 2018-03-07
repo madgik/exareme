@@ -23,15 +23,15 @@ Examples:
 """
 from functions.vtable import vtbase
 
-import json
-import titus.genpy
+#import json
+
 
 registered=True
 
 class demopfavt(vtbase.VT):
 
     def VTiter(self, *parsedArgs, **envars):
-
+        import titus.genpy
         largs, dictargs = self.full_parse(parsedArgs)
 
         if 'query' not in dictargs:

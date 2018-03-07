@@ -1,7 +1,5 @@
 # coding: utf-8
-import setpath
 import functions
-import os
 
 def vars(*args):
     """
@@ -16,6 +14,17 @@ def vars(*args):
 vars.registered=True
 
 
+def filter(*args):
+    """
+    *args is what the query: "var 'valExists' from select case when (select exists (select colname from
+    tempinputlocaltbl1 where colname='%{variable}'))=0 then 0 else 1 end;" returns
+    """
+
+    if args[0] == "0":
+        raise functions.OperatorError("FILTER","Privacy issues")
+    else:
+        return 1
+filter.registered=True
 
 if not ('.' in __name__):
     """
