@@ -65,7 +65,10 @@ class heatmaphistogrampoc:
                 #print self.step, self.minvalue, self.maxvalue
                 if self.flag == True:
                     self.colnames[1] = (args[5])
-                    self.distinctvalues = json.loads(args[7])
+                    try:
+                        self.distinctvalues = json.loads(args[7])
+                    except ValueError:
+                        self.distinctvalues = (args[7])
                     for i in xrange(self.nobuckets):
                         for j in xrange(len(self.distinctvalues)):
                             self.index[0]=i
