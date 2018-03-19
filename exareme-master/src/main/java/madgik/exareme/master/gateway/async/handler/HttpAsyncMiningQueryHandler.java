@@ -177,6 +177,10 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             // if(format) ds = DataSerialization.summary; but was commented-out.
             DataSerialization ds = DataSerialization.summary;
 
+            if (algorithmProperties.getResponseContentType()!=null){
+                response.setHeader("Content-Type", algorithmProperties.getResponseContentType());
+            }
+
             // Bypass direct composer call in case of iterative algorithm.
             if (algorithmProperties.getType() ==
                     AlgorithmsProperties.AlgorithmProperties.AlgorithmType.iterative) {

@@ -86,6 +86,7 @@ public class AlgorithmsProperties {
         private String name;
         private String desc;
         private AlgorithmType type;
+        private String responseContentType;
         private ParameterProperties[] parameters;
 
         public AlgorithmProperties() {
@@ -115,6 +116,12 @@ public class AlgorithmsProperties {
             this.type = type;
         }
 
+        public String getResponseContentType() {return responseContentType;}
+
+        public void setResponseContentType(String returnContentType) {
+            this.responseContentType = returnContentType;
+        }
+
         public ParameterProperties[] getParameters() {
             return parameters;
         }
@@ -136,6 +143,7 @@ public class AlgorithmsProperties {
             AlgorithmProperties copyAlgorithmProperties = new AlgorithmProperties();
             copyAlgorithmProperties.setName(src.getName());
             copyAlgorithmProperties.setDesc(src.getDesc());
+            copyAlgorithmProperties.setResponseContentType(src.getResponseContentType());
             copyAlgorithmProperties.setParameters(copyParameterProperties(src.getParameters()));
             return copyAlgorithmProperties;
         }
