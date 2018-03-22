@@ -74,7 +74,12 @@ class kmeansresultsviewervis:
                            "\"title\": { \"text\": \"Cluster Centers Computed by K-means\"}," \
                            "\"plotOptions\": { \"scatter\": { \"width\": 20, \"height\": 20, \"depth\": 20} }," \
                            "\"xAxis\": {\"gridLineWidth\": 1 , \"title\": {\"text\": \"x: " + str(myvariables[0]) + "\",\"align\": \"middle\"}}," \
-                                                                                                                    "\"data\": ["
+                                                                                                                    "\"yAxis\": {\"gridLineWidth\": 1 , \"title\": {\"text\": \"y: " + str(myvariables[1]) + "\",\"align\": \"middle\"}}," \
+                                                                                                                                                                                                             "\"zAxis\": {\"gridLineWidth\": 1 , \"title\": {\"text\": \"z: " + str(myvariables[2]) + "\",\"align\": \"middle\"}}," \
+                                                                                                                                                                                                                                                                                                      "\"legend\": { \"enabled\": false }," \
+                                                                                                                                                                                                                                                                                                      "\"series\": [{" \
+                                                                                                                                                                                                                                                                                                      "\"colorByPoint\": true," \
+                                                                                                                                                                                                                                                                                                      "\"data\": ["
                 id=0
                 for i in self.clusterids:
                     row = []
