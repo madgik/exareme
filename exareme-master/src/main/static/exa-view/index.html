@@ -61,19 +61,10 @@
       <div>
           <h2>Result</h2>
           <table>
-              <!--<thead>-->
-              <!--<tr>-->
-                  <!--<th ng-repeat="col in exaCtrl.result[0]['schema'] track by $index">-->
-                      <!--{{col[0] + " (" + col[1] + ")"}}-->
-                  <!--</th>-->
-              <!--</tr>-->
-              <!--</thead>-->
               <tbody>
-                  <!--<tr ng-repeat="row in exaCtrl.result track by $index">  &lt;!&ndash;ng-if="$index > 0">&ndash;&gt;-->
-                      <!--<td ng-repeat="r in row track by $index">{{r}}</td>-->
                   <div id="container" style="width:90%;" ></div>
                   <tr>
-                      <td><pre>{{exaCtrl.result | json }}</pre></td>
+                      <pre>{{exaCtrl.result | json }}</pre>
                   </tr>
               </tbody>
           </table>

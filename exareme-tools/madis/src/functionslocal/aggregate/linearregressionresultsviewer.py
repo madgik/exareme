@@ -3,7 +3,6 @@ class linearregressionresultsviewer:
     registered = True #Value to define db operator
 
     def __init__(self):
-
         self.n = 0
         self.mydata = dict()
         self.variablenames = []
@@ -11,11 +10,11 @@ class linearregressionresultsviewer:
     def step(self, *args):
         # if self.n == 0:
         #     print args, len(args)
-            # self.noofvariables = args[4]
-            # self.noofclusters = args[5]
+        # self.noofvariables = args[4]
+        # self.noofclusters = args[5]
         try:
             self.variablenames.append(str(args[0]))
-            self.mydata[(args[0])] =float(args[1]),float(args[2]),float(args[3]),float(args[4])
+            self.mydata[(args[0])] = float(args[1]),float(args[2]),float(args[3]),float(args[4])
             self.n += 1
             # if self.n <= self.noofvariables :
             #     self.variablenames.append(str(args[1]))
@@ -25,39 +24,29 @@ class linearregressionresultsviewer:
     def final(self):
         yield ('linearregressionresult',)
 
-        myresult='''
-        resources: [
-        {
-            name: 'linear-regression',
-            profile: 'tabular-data-resource',
-            data: [
-            ['variable', 'coefficient', 'standard_error', 't-value', 'p-value'],
-            '''
+        myresult="{\"resources\": [{\"name\": \"linear-regression\", \"profile\": \"tabular-data-resource\", \
+                   \"data\": [[\"variable\", \"estimate\", \"standard_error\", \"t-value\", \"p-value\"],"
 
         for i in xrange(len(self.variablenames)):
-            row=[]
+            myresult += "[\"" + str(self.variablenames[i]) + "\","
+            # row=[]
+            # row.append(self.variablenames[i])
             for j in xrange(4):
-                row.append(self.mydata[(self.variablenames[i])][j])
-            myresult+= str(row)
+                myresult += "\"" + str(self.mydata[(self.variablenames[i])][j]) + "\""
+                if j < 3:
+                    myresult+=","
+                    # row.append(self.mydata[(self.variablenames[i])][j])
+            # myresult+= str(row)
             if i< len(self.variablenames)-1:
-                myresult+=''','''
+                myresult+="],"
 
-        myresult+='''
-            ],
-                schema:  {
-                    fields: [
-                        {name: 'variable', type: 'string'},
-                        {name: 'coefficient', type: 'number'},
-                        {name: 'standard_error', type: 'number'},
-                        {name: 't-value', type: 'number'},
-                        {name: 'p-value', type: 'string'}
-                    ]
-                }
-            }
-        ]'''
-
+        myresult+="]],\"schema\":  { \"fields\": [{\"name\": \"variable\", \"type\": \"string\"}, \
+                  {\"name\": \"estimate\", \"type\": \"number\"},{\"name\": \"standard_error\", \"type\": \"number\"}, \
+                  {\"name\": \"t-value\", \"type\": \"number\"}, {\"name\": \"p-value\", \"type\": \"string\"}] } }]}"
 
         yield (myresult,)
+
+
 
 if not ('.' in __name__):
     """
