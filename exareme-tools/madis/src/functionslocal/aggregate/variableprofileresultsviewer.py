@@ -11,7 +11,7 @@ class variableprofileresultsviewer:
         self.mydataSummaryStatistics = dict()
         self.mydataDatasetStatistics1 = dict()
         self.mydataDatasetStatistics2 = dict()
-        self.variablenames = []
+        #self.variablename = []
         #self.init = False
 
     def step(self, *args):
@@ -40,38 +40,67 @@ class variableprofileresultsviewer:
                     d[str(args[2])]= int(args[4])
                     self.mydataDatasetStatistics2[str(args[3])] = d
                 self.n3 += 1
-                print self.mydataDatasetStatistics2
         except (ValueError, TypeError):
             raise
 
     def final(self):
         yield ('result',)
         print self.n1, self.n2, self.n3
-        myresult = "'data': { 'schema': {'field': [\
-        {'name': 'index','type': 'string' },\
-        {'name': 'count','type': 'object'},\
-        {'name': 'mean','type': 'number'},\
-        {'name': 'std','type': 'number'},\
-        {'name': 'min','type': 'number'},\
-        { 'name': 'max','type': 'number' } ] },\
-        'data': [ "
+        myresult = "{\"data\": { \"schema\": {\"field\": [\
+        {\"name\": \"index\",\"type\": \"string\" },\
+        {\"name\": \"count\",\"type\": \"object\"},\
+        {\"name\": \"average\",\"type\": \"number\"},\
+        {\"name\": \"std\",\"type\": \"number\"},\
+        {\"name\": \"min\",\"type\": \"number\"},\
+        {\"name\": \"max\",\"type\": \"number\" } ] },\
+        \"data\": [ "
+
         if self.n1 > 0:
-            myresult+= str(self.mydataSummaryStatistics)
+            first = True
+            myresult+= "{ \"index\": \""+ self.variablename +"\""
+            for x in self.mydataSummaryStatistics:
+                myresult+= ", \""+ str(x) +"\" :\""+ str(self.mydataSummaryStatistics[x])+"\""
+            myresult+="}"
             if self.n2 > 0  or self.n3 > 0:
                 myresult+=","
+            else:
+                myresult += " ]}}"
         if self.n2 > 0:
-            myresult+=" {'count':" + str(self.mydataDatasetStatistics1) + "} "
+            first = True
+            myresult+= "{\"count\": { "
+            for x in self.mydataDatasetStatistics1:
+                if first == True:
+                    myresult+= "\""+ str(x) +"\" :\""+ str(self.mydataDatasetStatistics1[x])+"\""
+                else:
+                    myresult+= ", \""+ str(x) +"\" :\""+ str(self.mydataDatasetStatistics1[x])+"\""
+                first = False
+            myresult+="}}"
             if self.n3 > 0:
                 myresult +=","
+            else:
+                myresult += " ]}}"
         if self.n3 > 0:
-            myresult+=" {'count':" + str(self.mydataDatasetStatistics2) +"}"
-        myresult += " ]}"
-
-        print myresult
-        print "SummaryStatistics", str(self.mydataSummaryStatistics)
-        print "DatasetStatistics1", self.mydataDatasetStatistics1
-        print "DatasetStatistics2", self.mydataDatasetStatistics2
+            first1 = True
+            myresult+= "{\"count\": { "
+            for x in self.mydataDatasetStatistics2:
+                if first1 == True:
+                    myresult+= "\""+ str(x) +"\" : {"
+                else:
+                    myresult+= ",\""+ str(x) +"\" : { "
+                first1 = False
+                first3 = True
+                for y in self.mydataDatasetStatistics2[x]:
+                    if first3 is True:
+                        myresult+= "\""+ str(y) +"\" :\""+ str(self.mydataDatasetStatistics2[x][y])+"\""
+                    if first3 is False:
+                        myresult+= ", \""+ str(y) +"\" :\""+ str(self.mydataDatasetStatistics2[x][y])+"\""
+                    first3 = False
+                myresult+="}"
+            myresult+="}}]}}"
         yield (myresult,)
+
+
+
 
 
 if not ('.' in __name__):

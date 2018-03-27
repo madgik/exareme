@@ -93,20 +93,22 @@ class kmeansresultsviewerjson:
 
             elif self.noofvariables > 3:
                 myvariables = tuple(itertools.chain.from_iterable([(self.variablenames[i],) for i in xrange(self.noofvariables)]))
-                myresult= "{\"resources\": [{ \"name\": \"Cluster Centers Computed by K-means\",\"profile\": \"tabular-data-resource\",\"data\": [ ['cluster id',"
+                myresult= "{\"resources\": [{ \"name\": \"Cluster Centers Computed by K-means\",\"profile\": \"tabular-data-resource\",\"data\": [ [\"cluster id\","
                 for i in xrange(len(self.variablenames)):
-                    myresult += "'" + str(myvariables[i]) +"',"
-                myresult +="'cluster size'],"
+                    myresult += "\"" + str(myvariables[i]) +"\","
+                myresult +="\"cluster size\"],"
 
                 id = 0
                 for i in self.clusterids:
-                    row = [i]
+                    myresult += "[\"" + str(i) +"\""
                     for j in xrange(self.noofvariables):
-                        row.append(self.mydata[(i,self.variablenames[j])][0])
-                    row.append(self.mydata[(i,self.variablenames[self.noofvariables-1])][1])
-                    myresult+=str(row)
+                        myresult += ", \"" + str(self.mydata[(i,self.variablenames[j])][0]) + "\""
+                    myresult += ", \"" + str(self.mydata[(i,self.variablenames[self.noofvariables-1])][1]) + "\"]"
+                    #row.append(self.mydata[(i,self.variablenames[j])][0])
+                    #row.append(self.mydata[(i,self.variablenames[self.noofvariables-1])][1])
+                    #myresult+=str(row)
                     if id< self.noofclusters-1:
-                        myresult+=','
+                        myresult+=","
                     id+=1
                 myresult+="], \"schema\":  { \"fields\": [{\"name\": \"cluster id\", \"type\": \"number\"},"
                 #print myresult
@@ -123,6 +125,7 @@ class kmeansresultsviewerjson:
                         "\"yAxis\": {\"startOnTick\": false,\"endOnTick\": false}," \
                         "\"data\": []}"
             yield (myresult,)
+
 
 if not ('.' in __name__):
     """

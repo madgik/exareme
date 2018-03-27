@@ -1,8 +1,9 @@
 __docformat__ = 'reStructuredText en'
 
 class histogramresultsviewer:
-# input colname0 id0 minvalue0 maxvalue0 colname1 id1 val total
+    # input colname0 id0 minvalue0 maxvalue0 colname1 id1 val total
 
+    import itertools
     registered = True #Value to define db operator
 
     def __init__(self):
@@ -29,26 +30,27 @@ class histogramresultsviewer:
 
     def final(self):
         yield ('highchartresult',)
+        print self.n
         if self.n > 0:
             if self.column2name != 'None':
-                myresult =  "\"chart\": { \"type\": \"column\"},\
-                                 \"title\": { \"text\": \"Histogram\"},\
-                                 \"subtitle\": {\"text\": \" " + self.column1name + " - " + self.column2name + " \"}, \
-                                 \"xAxis\": { \"categories\": ["
+                myresult =  "{\"chart\": { \"type\": \"column\"},\
+                             \"title\": { \"text\": \"Histogram\"},\
+                             \"subtitle\": {\"text\": \" " + self.column1name + " - " + self.column2name + " \"}, \
+                             \"xAxis\": { \"categories\": ["
                 for i in xrange(len(self.buckets)):
-                    myresult += "'" + self.buckets[i] +"'"
+                    myresult += "\"" + self.buckets[i] +"\""
                     if i< len(self.buckets)-1:
                         myresult +=","
 
                 myresult += " ],\"crosshair\": true},\
-                                    \"yAxis\": { \"min\": 0, \"title\": { \"text\": \"Number of Participants\" } },\
-                                     \"tooltip\": { \"headerFormat\": \"<span style='font-size:10px'>{point.key}</span><table>\",\
-                                               \"pointFormat\": \"<tr><td style='color:{series.color};padding:0'>{series.name}: </td><td style='padding:0'><b>{point.y:.0f} </b></td></tr>\",\
-                                               \"footerFormat\":'</table>',\
-                                               \"shared\": true,\
-                                               \"useHTML\": true},\
-                                    \"plotOptions\": { \"column\": { \"pointPadding\": 0.2, \"borderWidth\": 0 }}, \
-                                    \"series\": [ "
+                                \"yAxis\": { \"min\": 0, \"title\": { \"text\": \"Number of Participants\" } },\
+                                 \"tooltip\": { \"headerFormat\": \"<span style='font-size:10px'>{point.key}</span><table>\",\
+                                           \"pointFormat\": \"<tr><td style='color:{series.color};padding:0'>{series.name}: </td><td style='padding:0'><b>{point.y:.0f} </b></td></tr>\",\
+                                           \"footerFormat\":\"</table>\",\
+                                           \"shared\": true,\
+                                           \"useHTML\": true},\
+                                \"plotOptions\": { \"column\": { \"pointPadding\": 0.2, \"borderWidth\": 0 }}, \
+                                \"series\": [ "
                 for i in xrange(len(self.column2names)):
                     myresult += "{ \"name\": \" "+ self.column2names[i]+" \", \"data\": ["
                     for j in xrange(len(self.buckets)):
@@ -58,35 +60,50 @@ class histogramresultsviewer:
                     myresult += "]}"
                     if i<len(self.column2names)-1:
                         myresult+=","
-                myresult+="]"
+                myresult+="]}"
             else:
-                myresult =  "\"chart\": { \"type\": \"column\"},\
-                                 \"title\": { \"text\": \"Histogram\"},\
-                                 \"subtitle\": {\"text\": \" " + self.column1name + " \"}, \
-                                 \"xAxis\": { \"categories\": ["
+                myresult =  "{\"chart\": { \"type\": \"column\"},\
+                             \"title\": { \"text\": \"Histogram\"},\
+                             \"subtitle\": {\"text\": \" " + self.column1name + " \"}, \
+                             \"xAxis\": { \"categories\": ["
                 for i in xrange(len(self.buckets)):
-                    myresult += "'" + self.buckets[i] +"'"
+                    myresult += "\"" + self.buckets[i] +"\""
                     if i< len(self.buckets)-1:
                         myresult +=","
 
                 myresult += " ],\"crosshair\": true},\
-                                    \"yAxis\": { \"min\": 0, \"title\": { \"text\": \"Number of Participants\" } },\
-                                    \"tooltip\": { \"headerFormat\": \"<span style='font-size:10px'>{point.key}</span><table>\",\
-                                               \"pointFormat\": \"<tr><td style='color:{series.color};padding:0'>{series.name}: </td><td style='padding:0'><b>{point.y:.0f} </b></td></tr>\",\
-                                               \"footerFormat\":'</table>',\
-                                               \"shared\": true,\
-                                               \"useHTML\": true},\
-                                    \"plotOptions\": { \"column\": { \"pointPadding\": 0.2, \"borderWidth\": 0 }}, \
-                                    \"series\": [ "
+                                \"yAxis\": { \"min\": 0, \"title\": { \"text\": \"Number of Participants\" } },\
+                                \"tooltip\": { \"headerFormat\": \"<span style='font-size:10px'>{point.key}</span><table>\",\
+                                           \"pointFormat\": \"<tr><td style='color:{series.color};padding:0'>{series.name}: </td><td style='padding:0'><b>{point.y:.0f} </b></td></tr>\",\
+                                           \"footerFormat\":\"</table>\",\
+                                           \"shared\": true,\
+                                           \"useHTML\": true},\
+                                \"plotOptions\": { \"column\": { \"pointPadding\": 0.2, \"borderWidth\": 0 }}, \
+                                \"series\": [ "
 
                 myresult += "{ \"name\": \" "+ self.column1name +" \" , \"data\": ["
                 for j in xrange(len(self.buckets)):
                     myresult +=  str(self.myhist[j])
                     if j<len(self.buckets)-1:
                         myresult+=","
-                myresult += "]}]"
+                myresult += "]}]}"
+        else:
 
-            yield (myresult,)
+            myresult =  "{\"chart\": { \"type\": \"column\"},\
+                             \"title\": { \"text\": \"Histogram\"},\
+                              \"xAxis\": { \"categories\": [],\"crosshair\": true},\
+                                \"yAxis\": { \"min\": 0, \"title\": { \"text\": \"Number of Participants\" } },\
+                                 \"tooltip\": { \"headerFormat\": \"<span style='font-size:10px'>{point.key}</span><table>\",\
+                                           \"pointFormat\": \"<tr><td style='color:{series.color};padding:0'>{series.name}: </td><td style='padding:0'><b>{point.y:.0f} </b></td></tr>\",\
+                                           \"footerFormat\":\"</table>\",\
+                                           \"shared\": true,\
+                                           \"useHTML\": true},\
+                                \"plotOptions\": { \"column\": { \"pointPadding\": 0.2, \"borderWidth\": 0 }}, \
+                                \"series\": []}"
+
+
+
+        yield (myresult,)
 
 if not ('.' in __name__):
     """
