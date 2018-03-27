@@ -44,7 +44,8 @@ public class Composer {
 
     private static final Logger log = Logger.getLogger(Composer.class);
     private static String[] inputVariables = new String[]{
-            "filter","variable","column1","columns", "column2", "groupings","covariables","dataset","x","y"};
+            "filter","variable","column1","columns", "column2", "groupings","covariables","dataset",
+            "x","y", "descriptive_attributes", "target_attributes"};
     private Composer() {
     }
     private static final Composer instance = new Composer();
@@ -164,6 +165,16 @@ public class Composer {
                     variables.add(s);
                 }
                 else if("columns".equals(inputVariable)){
+                    for (String s1 : s.split(",")) {
+                        variables.add(s1);
+                    }
+                }
+                else if("target_attributes".equals(inputVariable)){
+                    for (String s1 : s.split(",")) {
+                        variables.add(s1);
+                    }
+                }
+                else if("descriptive_attributes".equals(inputVariable)){
                     for (String s1 : s.split(",")) {
                         variables.add(s1);
                     }
