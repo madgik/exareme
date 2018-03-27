@@ -62,13 +62,13 @@ public class ExecUtilsTest {
 
     @Test
     public void runQueryOnTableHttp() throws RemoteException {
-        String query = "select * from range(10);";
-        String HTTPresult = ExecUtils.runQueryOnTable(new StringBuilder(query),  MadisDB, new File("/"),
-                IP, Port);
-
-        String embededResult = ExecUtils.runQueryOnTable(new StringBuilder(query), MadisDB, new File("/tmp/"),
-               new ProcessManager());
-        log.info("Embeded: "+ embededResult);
-        log.info("HTTP: " + HTTPresult);
+//        String query = "select * from range(10);";
+//        String HTTPresult = ExecUtils.runQueryOnTable(new StringBuilder(query),  MadisDB, new File("/"),
+//                IP, Port);
+//
+//        String embededResult = ExecUtils.runQueryOnTable(new StringBuilder(query), MadisDB, new File("/tmp/"),
+//               new ProcessManager());
+//        log.info("Embeded: "+ embededResult);
+//        log.info("HTTP: " + HTTPresult);
     }
 }
