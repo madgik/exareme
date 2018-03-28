@@ -68,13 +68,13 @@ public class HttpAsyncFileHandler implements HttpAsyncRequestHandler<HttpRequest
 
             response.setStatusCode(HttpStatus.SC_NOT_FOUND);
             NStringEntity entity = new NStringEntity(
-                "<html><body><h1>File" + file.getPath() +
+                "<html><body><h1>File" +
                     " not found</h1></body></html>",
                 ContentType.create("text/html", "UTF-8"));
             response.setEntity(entity);
             System.out.println("File " + file.getPath() + " not found");
 
-        } else if (!file.canRead() || file.isDirectory()) {
+        } else if (!file.canRead() || file.isDirectory() || !file.getCanonicalPath().startsWith(this.docRoot.getCanonicalPath())) {
 
             response.setStatusCode(HttpStatus.SC_FORBIDDEN);
             NStringEntity entity = new NStringEntity(
