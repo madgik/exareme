@@ -1,13 +1,19 @@
 # coding: utf-8
+import setpath
 import functions
+import os
 
-def cov_group(*args):
+
+
+def vartype(*args):
     if args[0] == "0":
-        raise functions.OperatorError("COVGROUP","covgroup does not exist")
+        raise functions.OperatorError("TYPE","Provide type Integer,Float or Real")
     else:
         return 1
 
-cov_group.registered=True
+vartype.registered=True
+
+
 
 if not ('.' in __name__):
     """

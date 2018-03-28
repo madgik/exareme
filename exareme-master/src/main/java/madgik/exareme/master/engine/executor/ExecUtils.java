@@ -3,15 +3,28 @@
  */
 package madgik.exareme.master.engine.executor;
 
+import com.google.gson.JsonObject;
 import madgik.exareme.utils.association.Pair;
 import madgik.exareme.utils.file.InputStreamConsumerThread;
 import madgik.exareme.utils.properties.AdpProperties;
 import madgik.exareme.worker.art.concreteOperator.manager.ProcessManager;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
 import java.io.File;
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.ServerException;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author heraldkllapi
@@ -69,6 +82,56 @@ public class ExecUtils {
             String output = stdout.getOutput();
             log.debug(output);
             return output;
+        } catch (Exception e) {
+            throw new ServerException("Cannot run query", e);
+        }
+    }
+
+    public static String runQueryOnTable(StringBuilder query, String madisMainDB, File directory,
+                                         String Port) throws RemoteException {
+        return runQueryOnTable(query, madisMainDB, directory, "localhost", Port);
+
+    }
+
+    public static String runQueryOnTable(StringBuilder query, String madisMainDB, File directory,
+                                          String IP, String Port) throws RemoteException {
+        log.debug("Process Directory: " + directory.getAbsolutePath());
+        try {
+            JsonObject requestBody = new JsonObject();
+            requestBody.addProperty("path", directory.getAbsolutePath()+"/"+madisMainDB);
+            requestBody.addProperty("query", query.toString());
+            String result = "";
+            CloseableHttpClient httpclient = HttpClients.createDefault();
+            List<BasicNameValuePair> params = new LinkedList<>();
+            params.add(new BasicNameValuePair("Content-Type","application/json"));
+
+            HttpPost httpPost = null;
+            try {
+                httpPost = new HttpPost("http://" + IP + ":" + Port+"/runsql");
+                httpPost.setHeader(new BasicHeader("Content-Type","application/json"));
+
+
+                httpPost.setEntity(new StringEntity(requestBody.toString()));
+                CloseableHttpResponse response = null;
+                try {
+                    response = httpclient.execute(httpPost);
+                    if (response.getStatusLine().getStatusCode() != 200) {
+                        throw new ServerException(
+                                "Cannot run query", new Exception(EntityUtils.toString(response.getEntity())));
+                    } else {
+                        result= EntityUtils.toString(response.getEntity());
+                    }
+                }  finally {
+                    response.close();
+                }
+            }  finally {
+                httpPost.releaseConnection();
+                httpclient.close();
+
+            }
+
+            log.debug(result);
+            return result;
         } catch (Exception e) {
             throw new ServerException("Cannot run query", e);
         }

@@ -2,6 +2,10 @@ package madgik.exareme.master.gateway.async.handler;
 
 import com.google.gson.Gson;
 
+import madgik.exareme.utils.properties.AdpProperties;
+import madgik.exareme.worker.art.container.ContainerProxy;
+import madgik.exareme.worker.art.registry.ArtRegistryLocator;
+import org.apache.commons.io.Charsets;
 import org.apache.http.HeaderIterator;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
@@ -22,13 +26,8 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
+import java.io.*;
+import java.util.*;
 import madgik.exareme.common.consts.HBPConstants;
 import madgik.exareme.master.client.AdpDBClient;
 import madgik.exareme.master.client.AdpDBClientFactory;
@@ -117,6 +116,9 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
     private void handleInternal(HttpRequest request, HttpResponse response, HttpContext context)
         throws HttpException, IOException {
 
+        log.debug("Checking workers...");
+        if (!allWorkersRunning(response)) return;
+
         log.debug("Validate method ...");
         RequestLine requestLine = request.getRequestLine();
         String uri = requestLine.getUri();
@@ -148,6 +150,9 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             String name = (String) k.get("name");
             String value = (String) k.get("value");
             if(name == null || name.isEmpty() || value == null || value.isEmpty()) continue;
+            log.debug(name + " = " + value);
+            value = value.replaceAll("[^A-Za-z0-9,_*+]", "");
+            value = value.replaceAll("\\s+", "");
             if("local_pfa".equals(name)) {
                 Map map = new Gson().fromJson(value, Map.class);
                 query = (String) ((Map) ((Map)((Map) map.get("cells")).get("query")).get("init")).get("sql");
@@ -171,6 +176,10 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             // Was initialized to "DataSerialization.ldjson", and that was followed with
             // if(format) ds = DataSerialization.summary; but was commented-out.
             DataSerialization ds = DataSerialization.summary;
+
+            if (algorithmProperties.getResponseContentType()!=null){
+                response.setHeader("Content-Type", algorithmProperties.getResponseContentType());
+            }
 
             // Bypass direct composer call in case of iterative algorithm.
             if (algorithmProperties.getType() ==
@@ -220,6 +229,49 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             log.error(e);
             throw new IOException(e.getMessage(), e);
         }
+    }
+
+    private boolean allWorkersRunning(HttpResponse response) throws IOException {
+        BasicHttpEntity entity = new BasicHttpEntity();
+
+        String workersPath = AdpProperties.getGatewayProperties().getString("workers.path");
+        log.debug("Workers Path : " + workersPath);
+        try (BufferedReader br = new BufferedReader(new FileReader(workersPath))) {
+            String containerIP;
+            while ((containerIP = br.readLine()) != null) {
+                log.debug("Will check container with IP: " + containerIP);
+                boolean containerResponded = false;
+                for (ContainerProxy containerProxy : ArtRegistryLocator.getArtRegistryProxy().getContainers()) {
+                    if (containerProxy.getEntityName().getIP().equals(containerIP))
+                        try {
+                            ContainerProxy tmpContainerProxy = ArtRegistryLocator.getArtRegistryProxy()
+                                    .lookupContainer(containerProxy.getEntityName());
+                            containerResponded = true;
+                            break;
+                        } catch (Exception e) {
+                            log.error("Container connection error: " + e);
+                        }
+                }
+                log.debug("Container responded: " + containerResponded);
+                if (!containerResponded){
+                    String result = "{\"Error\":\"Container with IP "+containerIP+" is not responding. Please inform your system administrator\"}";
+
+                    byte[] contentBytes = result.getBytes(Charsets.UTF_8.name());
+
+                    entity.setContent(new ByteArrayInputStream(contentBytes));
+                    entity.setContentLength(contentBytes.length);
+                    entity.setContentEncoding(Charsets.UTF_8.name());
+                    entity.setChunked(false);
+                    response.setStatusCode(HttpStatus.SC_METHOD_FAILURE);
+                    response.setEntity(entity);
+                    return false;
+                }
+
+            }
+        } catch (FileNotFoundException e){
+            log.warn("Workers file not found at: " + workersPath +". Will continue without checking that all containers are running");
+        }
+        return true;
     }
 }
 

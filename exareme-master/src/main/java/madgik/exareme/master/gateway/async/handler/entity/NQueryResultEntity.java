@@ -101,7 +101,35 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();
-            } else{
+            }
+            else if(queryStatus.getError().toString().contains("\n" +
+                    "Operator TYPE:")){
+                String result = "{\"Error\":\"Each variable's type must be Real,Integer or Float.\"}";
+                encoder.write(ByteBuffer.wrap(result.getBytes()));
+                encoder.complete();
+                close();
+            }
+            else if(queryStatus.getError().toString().contains("\n" +
+                    "Operator FILTER:")){
+                String result = "{\"Error\":\"Privacy issues.\"}";
+                encoder.write(ByteBuffer.wrap(result.getBytes()));
+                encoder.complete();
+                close();
+            }
+            else if(queryStatus.getError().toString().contains("\n" +
+                    "Operator MINIMUMREC:")){
+                String result = "{\"Error\":\"Privacy issues.Less than 10 patients.\"}";
+                encoder.write(ByteBuffer.wrap(result.getBytes()));
+                encoder.complete();
+                close();
+            }
+            else if(queryStatus.getError().toString().contains("\n" +
+                    "Operator LARGEBUCKET:")){
+                String result = "{\"Error\":\"Bucket size too big.\"}";
+                encoder.write(ByteBuffer.wrap(result.getBytes()));
+                encoder.complete();
+                close();
+            }else{
                 String result = "{\"Error\":\"Something went wrong.Please inform your system administrator " +
                         "to consult the logs.\"}";
                 encoder.write(ByteBuffer.wrap(result.getBytes()));

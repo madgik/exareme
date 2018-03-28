@@ -27,7 +27,7 @@ EXAREME_MASTER_FILE="$EXAREME_HOME/etc/exareme/master"
 if [[ -s "$EXAREME_MASTER_FILE" ]]; then
   EXAREME_MASTER=$( < $EXAREME_MASTER_FILE);
 elif [ ! $EXAREME_MASTER ]; then
-    EXAREME_MASTER=`/sbin/ifconfig $1 | grep "inet " | awk -F: '{print $2}' | awk '{print $1;}' | head -n 1`;
+    EXAREME_MASTER=`/sbin/ifconfig $1 | grep "inet " | awk -F: '{print $2}'  | grep '10.20' | awk '{print $1;}' | head -n 1`;	#TODO 10.20 always?
 fi
 echo "EXAREME MASTER HOST : $EXAREME_MASTER";
 
@@ -150,12 +150,12 @@ fi
 # execute
 ####################################################################################################
 if [[ "true" == $EXAREME_ADMIN_LOCAL ]]; then   # run locally
-#    echo "Running in local mode..."
+   # echo "Running in local mode..."
 
     function start_exareme(){ # starts exareme daemon
         # set env
-        EXAREME_CURRENT_IP=$(
-            ALL_IPS=$(/sbin/ifconfig $1 | grep "inet " | awk -F: '{print $2}' | awk '{print $1}')
+        EXAREME_CURRENT_IP=$(		
+            ALL_IPS=$(/sbin/ifconfig $1 | grep "inet " | awk -F: '{print $2}' | grep '10.20' | awk '{print $1}')
             for CURRENT_NODE_IP in $ALL_IPS; do
                 for NODE_IP in $(cat $EXAREME_HOME/etc/exareme/master) $(cat $EXAREME_HOME/etc/exareme/workers); do
                     if [[ X$NODE_IP == X$CURRENT_NODE_IP ]]; then
@@ -166,7 +166,7 @@ if [[ "true" == $EXAREME_ADMIN_LOCAL ]]; then   # run locally
             done
         )
         if [ -n $EXAREME_CURRENT_IP ]; then
-            EXAREME_CURRENT_IP=`/sbin/ifconfig $1 | grep "inet " | awk -F: '{print $2}' | awk '{print $1;}' | head -n 1`;
+            EXAREME_CURRENT_IP=`/sbin/ifconfig $1 | grep "inet " | awk -F: '{print $2}'  | grep '10.20' | awk '{print $1;}' | head -n 1`;
         fi
         EXAREME_ADMIN_JMX_PORT=10000
         EXAREME_ADMIN_CLASS_PATH="$EXAREME_HOME/lib/exareme/*:$EXAREME_HOME/lib/exareme/external/*"
@@ -284,7 +284,7 @@ else
     
     if [[ "true" != $EXAREME_ADMIN_SYNC ]]; then
         for EXAREME_NODE in $(cat $EXAREME_HOME/etc/exareme/workers); do
-            ssh -n $EXAREME_USER@$EXAREME_NODE """mkdir -p /tmp/demo/db;$CMD_RUN""" &
+            ssh -n $EXAREME_USER@$EXAREME_NODE """mkdir -p /tmp/demo/db;source /etc/profile;$CMD_RUN""" &
         done
         # Wait for all parallel jobs to finish
         for job in `jobs -p`; do
@@ -292,7 +292,7 @@ else
         done
     else
         for EXAREME_NODE in $(cat $EXAREME_HOME/etc/exareme/workers); do
-            ssh -n $EXAREME_USER@$EXAREME_NODE """mkdir -p /tmp/demo/db;$CMD_RUN"""
+            ssh -n $EXAREME_USER@$EXAREME_NODE """mkdir -p /tmp/demo/db;source /etc/profile;$CMD_RUN"""
         done
     fi
 fi

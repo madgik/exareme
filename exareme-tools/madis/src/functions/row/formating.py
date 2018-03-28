@@ -1,11 +1,12 @@
-import setpath
-import re
-import datetime
+#import datetime
 import StringIO
-from lib.dsv import writer, reader
-from lib import argsparse
+import datetime
+
 import functions
 import lib.inoutparsing as csvargs
+from lib import argsparse
+from lib.dsv import writer, reader
+
 
 def strsplit(*args): ###splits the first arguments
     """
@@ -322,7 +323,6 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
     testfunction()
     if __name__ == "__main__":

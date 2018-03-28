@@ -4,6 +4,7 @@
 package madgik.exareme.master.connector;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import madgik.exareme.common.art.entity.EntityName;
 import madgik.exareme.common.schema.Partition;
 import madgik.exareme.common.schema.PhysicalTable;
@@ -142,7 +143,7 @@ public class  AdpDBConnectorUtil {
         PlanSessionStatusManagerProxy sessionManager =
             sessionPlan.getPlanSessionStatusManagerProxy();
         int waifForMs =
-            1000 * AdpDBProperties.getAdpDBProps().getInt("db.client.statisticsUpdate_sec");
+            100 * AdpDBProperties.getAdpDBProps().getInt("db.client.statisticsUpdate_sec");
         try {
             NetSession net = new NetSessionSimple();
             InputStream inputStream = net.openInputStream(socketBuffer);
@@ -225,10 +226,16 @@ public class  AdpDBConnectorUtil {
                 rs.close();
                 db.close();
             } else  if(ds.equals(DataSerialization.summary)) { // only 1 row, 1 col
-                String json = (String) rs.getObject(1);
+                String result = (String) rs.getObject(1);
                 rs.close();
                 db.close();
-                out.write(g.toJson(g.fromJson(json, Map.class)).getBytes());
+                try{
+                    String json = g.toJson(g.fromJson(result, Map.class));
+                    out.write(json.getBytes());
+                }catch (JsonSyntaxException e){
+                    log.info("Result is not JSON");
+                    out.write(result.getBytes("UTF-8"));
+                }
             } else throw new RemoteException("Unable to use " + ds + "serialization.");
         } catch (Exception e) {
             throw new RemoteException("Cannot get results", e);

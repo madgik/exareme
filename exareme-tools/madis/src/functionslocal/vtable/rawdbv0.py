@@ -1,6 +1,4 @@
-import json
-import urllib2
-import base64
+
 
 import functions
 
@@ -23,7 +21,9 @@ default_dict = {
 class RAWDB(functions.vtable.vtbase.VT):
 
     def VTiter(self, *parsedArgs, **envars):
-
+        import json
+        import urllib2
+        import base64
         # get site properties
         site_list, site_dict = self.full_parse(parsedArgs)
 

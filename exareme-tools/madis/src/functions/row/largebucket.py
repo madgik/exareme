@@ -1,13 +1,18 @@
-# coding: utf-8
+import setpath
 import functions
+import os
 
-def cov_group(*args):
+
+
+def largebucket(*args):
     if args[0] == "0":
-        raise functions.OperatorError("COVGROUP","covgroup does not exist")
+        raise functions.OperatorError("LARGEBUCKET","Bucket size too big.")
     else:
         return 1
 
-cov_group.registered=True
+largebucket.registered=True
+
+
 
 if not ('.' in __name__):
     """

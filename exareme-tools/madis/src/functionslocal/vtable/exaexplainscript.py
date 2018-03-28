@@ -8,14 +8,12 @@
 
 """
 
-import functions
-import urllib
-import urllib2
+
 
 registered = True
 external_query = True
 
-
+import functions
 default_dict = {
     'host': 'localhost',
     'port' : '9090',
@@ -30,6 +28,8 @@ class ExaExplain(functions.vtable.vtbase.VT):
 
     def VTiter(self, *parsedArgs, **envars):
 
+        import urllib
+        import urllib2
         # get site properties
         site_list, site_dict = self.full_parse(parsedArgs)
 
