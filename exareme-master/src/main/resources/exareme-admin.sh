@@ -39,7 +39,8 @@ if [[ -e $EXAREME_WORKERS_FILE ]]; then
         EXAREME_WORKERS=();
     fi
   else
-    EXAREME_WORKERS=$( < $EXAREME_WORKERS_FILE);
+    EXAREME_WORKERS=$( awk '{print $1}' $EXAREME_WORKERS_FILE)
+    #EXAREME_WORKERS=$( < $EXAREME_WORKERS_FILE);
   fi
 else
   if [[ ! $EXAREME_WORKERS ]]; then
@@ -237,7 +238,7 @@ if [[ "true" == $EXAREME_ADMIN_LOCAL ]]; then   # run locally
     }
 
     function install_exareme(){     # only workers
-        for EXAREME_NODE in $(cat $EXAREME_HOME/etc/exareme/workers); do 
+        for EXAREME_NODE in $( awk '{print $1}' $EXAREME_HOME/etc/exareme/workers); do # cat $EXAREME_HOME/etc/exareme/workers
             rsync -aqvzhe ssh --delete  --exclude="var/*" --exclude="../mip-algorithms/properties.json" --exclude="etc/exareme/name" $EXAREME_HOME/ $EXAREME_USER@$EXAREME_NODE:$EXAREME_HOME/ &
         done
 
@@ -248,7 +249,7 @@ if [[ "true" == $EXAREME_ADMIN_LOCAL ]]; then   # run locally
     }
 
     function update_exareme(){      # only workers
-        for EXAREME_NODE in $(cat $EXAREME_HOME/etc/exareme/workers); do
+        for EXAREME_NODE in $(awk '{print $1}' $EXAREME_HOME/etc/exareme/workers); do
             rsync -avqzhe ssh --delete  --exclude="var/*" --exclude="../mip-algorithms/properties.json"  --exclude="etc/exareme/name" $EXAREME_HOME/ $EXAREME_USER@$EXAREME_NODE:$EXAREME_HOME/ &
         done
 
@@ -259,7 +260,7 @@ if [[ "true" == $EXAREME_ADMIN_LOCAL ]]; then   # run locally
     }
 
     function uninstall_exareme(){   # only workers
-        for EXAREME_NODE in $(cat $EXAREME_HOME/etc/exareme/workers); do
+        for EXAREME_NODE in $(awk '{print $1}' $EXAREME_HOME/etc/exareme/workers); do
             ssh -n $EXAREME_USER@$EXAREME_NODE """rm -rf $EXAREME_HOME""" &
         done
 
@@ -283,7 +284,7 @@ else
     sleep 3
     
     if [[ "true" != $EXAREME_ADMIN_SYNC ]]; then
-        for EXAREME_NODE in $(cat $EXAREME_HOME/etc/exareme/workers); do
+        for EXAREME_NODE in $(awk '{print $1}' $EXAREME_HOME/etc/exareme/workers); do
             ssh -n $EXAREME_USER@$EXAREME_NODE """mkdir -p /tmp/demo/db;source /etc/profile;$CMD_RUN""" &
         done
         # Wait for all parallel jobs to finish
@@ -291,7 +292,7 @@ else
             wait $job
         done
     else
-        for EXAREME_NODE in $(cat $EXAREME_HOME/etc/exareme/workers); do
+        for EXAREME_NODE in $(awk '{print $1}' $EXAREME_HOME/etc/exareme/workers); do
             ssh -n $EXAREME_USER@$EXAREME_NODE """mkdir -p /tmp/demo/db;source /etc/profile;$CMD_RUN"""
         done
     fi

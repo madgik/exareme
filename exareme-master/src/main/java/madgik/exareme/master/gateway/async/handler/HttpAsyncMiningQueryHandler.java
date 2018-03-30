@@ -151,7 +151,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             String value = (String) k.get("value");
             if(name == null || name.isEmpty() || value == null || value.isEmpty()) continue;
             log.debug(name + " = " + value);
-            value = value.replaceAll("[^A-Za-z0-9,_*+]", "");
+            value = value.replaceAll("[^A-Za-z0-9,_*+><=&|()]", "");
             value = value.replaceAll("\\s+", "");
             if("local_pfa".equals(name)) {
                 Map map = new Gson().fromJson(value, Map.class);
@@ -237,9 +237,13 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         String workersPath = AdpProperties.getGatewayProperties().getString("workers.path");
         log.debug("Workers Path : " + workersPath);
         try (BufferedReader br = new BufferedReader(new FileReader(workersPath))) {
-            String containerIP;
-            while ((containerIP = br.readLine()) != null) {
-                log.debug("Will check container with IP: " + containerIP);
+            String containerIP,containerNAME,line;
+            String[] container;
+            while ((line = br.readLine()) != null) {
+                container = line.split(" ");
+                containerIP = container[0];
+                containerNAME = container[1];
+                log.debug("Will check container with IP: "+containerIP+ " and NAME: "+containerNAME);
                 boolean containerResponded = false;
                 for (ContainerProxy containerProxy : ArtRegistryLocator.getArtRegistryProxy().getContainers()) {
                     if (containerProxy.getEntityName().getIP().equals(containerIP))
@@ -254,7 +258,8 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 }
                 log.debug("Container responded: " + containerResponded);
                 if (!containerResponded){
-                    String result = "{\"Error\":\"Container with IP "+containerIP+" is not responding. Please inform your system administrator\"}";
+                    String result = "{\"Error\":\"Container with IP "+containerIP+" and NAME "+containerNAME+" is not responding. Please inform your system administrator\"}";
+
 
                     byte[] contentBytes = result.getBytes(Charsets.UTF_8.name());
 
