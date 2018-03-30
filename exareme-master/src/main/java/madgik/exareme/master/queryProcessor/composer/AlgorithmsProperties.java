@@ -308,8 +308,14 @@ public class AlgorithmsProperties {
             builder.append(" ");
 
             for (int i = 0; i < variables.size() - 1; i++) {
-                builder.append(variables.get(i));
-                builder.append(",");
+                if(variables.get(i).contains("filter:")){
+                    builder.append(variables.get(i));
+                    builder.append(" ");
+                }
+                else{
+                    builder.append(variables.get(i));
+                    builder.append(",");
+                }
             }
             builder.append(variables.get(variables.size()-1));
             builder.append("))");

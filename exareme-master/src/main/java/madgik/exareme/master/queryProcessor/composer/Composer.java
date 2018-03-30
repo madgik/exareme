@@ -180,7 +180,11 @@ public class Composer {
                     }
                 }
                 else if("filter".equals(inputVariable)){
-                    variables.add(s);
+                    if (!s.isEmpty()){
+                        String filter = " filter:";
+                        variables.add(filter+s);
+                        //variables.add(s);
+                    }
                 }
                 else{
                     //if (!"dataset".equals(inputVariable))
