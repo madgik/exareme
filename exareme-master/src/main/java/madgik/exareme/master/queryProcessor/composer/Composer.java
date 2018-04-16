@@ -192,6 +192,7 @@ public class Composer {
                 }
             }
         }
+
         String inputLocalTbl;
         if(variables.isEmpty())
              inputLocalTbl = algorithms.getLocal_engine_default().toUDF(query);

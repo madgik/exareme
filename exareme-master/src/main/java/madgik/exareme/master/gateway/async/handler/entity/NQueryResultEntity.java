@@ -129,7 +129,22 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();
-            }else{
+            }
+            else if(queryStatus.getError().toString().contains("\n" +
+                    "Operator EMPTYFIELD:")){
+                String result = "{\"Error\":\"Fields should not be empty. Please provide a name.\"}";
+                encoder.write(ByteBuffer.wrap(result.getBytes()));
+                encoder.complete();
+                close();
+            }
+            else if(queryStatus.getError().toString().contains("\n" +
+                    "Operator EMPTYSET:")){
+                String result = "{\"Error\":\"Dataset should not be empty. Please provide one or more dataset(s).\"}";
+                encoder.write(ByteBuffer.wrap(result.getBytes()));
+                encoder.complete();
+                close();
+            }
+            else{
                 String result = "{\"Error\":\"Something went wrong.Please inform your system administrator " +
                         "to consult the logs.\"}";
                 encoder.write(ByteBuffer.wrap(result.getBytes()));

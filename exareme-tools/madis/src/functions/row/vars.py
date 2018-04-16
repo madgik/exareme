@@ -8,23 +8,35 @@ def vars(*args):
     """
 
     if args[0] == "0":
-        raise functions.OperatorError("VARIABLE","Variable does not exist")
+        raise functions.OperatorError("VARIABLE","")
     else:
         return 1
 vars.registered=True
 
 
-def filter(*args):
+def emptyfield(*args):
     """
     *args is what the query: "var 'valExists' from select case when (select exists (select colname from
     tempinputlocaltbl1 where colname='%{variable}'))=0 then 0 else 1 end;" returns
     """
 
     if args[0] == "0":
-        raise functions.OperatorError("FILTER","Privacy issues")
+        raise functions.OperatorError("EMPTYFIELD","")
     else:
         return 1
-filter.registered=True
+emptyfield.registered=True
+
+def emptyset(*args):
+    """
+    *args is what the query: "var 'valExists' from select case when (select exists (select colname from
+    tempinputlocaltbl1 where colname='%{variable}'))=0 then 0 else 1 end;" returns
+    """
+
+    if args[0] == "0":
+        raise functions.OperatorError("EMPTYSET","")
+    else:
+        return 1
+emptyset.registered=True
 
 if not ('.' in __name__):
     """

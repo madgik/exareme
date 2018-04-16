@@ -47,7 +47,7 @@ else
     EXAREME_WORKERS=();
   fi
 fi
-echo "EXAREME WORKERS : $( echo $EXAREME_WORKERS | wc -w )"
+#echo "EXAREME WORKERS : $( echo $EXAREME_WORKERS | wc -w )"
 ####################################################################################################
 # ssh
 ####################################################################################################
@@ -210,7 +210,7 @@ if [[ "true" == $EXAREME_ADMIN_LOCAL ]]; then   # run locally
         mkdir -p /tmp/exareme/var/log /tmp/exareme/var/run
         $EXAREME_JAVA -cp $EXAREME_ADMIN_CLASS_PATH \
           $EXAREME_ADMIN_OPTS $EXAREME_ADMIN_CLASS  \
-          $EXAREME_ADMIN_CLASS_ARGS > /tmp/exareme/var/log/$DESC.log 2>&1 & echo $! > /tmp/exareme/var/run/$DESC.pid
+          $EXAREME_ADMIN_CLASS_ARGS > /tmp/exareme/var/log/$DESC.log 2>&1 & echo $! > /tmp/exareme/var/run/$DESC.pid    #-cp requires class path specification
         echo "$DESC started."
     }
 
