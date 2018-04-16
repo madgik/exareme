@@ -61,6 +61,8 @@
                     <!--$('#selectlist option[value=0]').remove();
                     {{x.NodeName + " - " + d | limitTo: d.length + x.NodeName.length +2}}-->
                   </select>
+                  <!-- integer  -->
+                  <input type="number" ng-switch-when="integer" ng-model="parameter.value"/>
                   <!-- variable  -->
                   <p id="selectlist" style="padding: 0;margin: 0;" ng-switch-when="variable" ng-switch on="parameter.number">
                     <select ng-switch-when="0-n" size="10" ng-model="parameter.value" multiple>
@@ -80,6 +82,7 @@
                       <option ng-repeat="x in exaCtrl.variables | validType: parameter.vartype | orderBy : x.name" value='{{x[0]}}'>{{x[0]+" [" + x[1] +"]"}}</option>
                     </select>
                   </p>
+                  <!-- default  -->
                   <input ng-switch-default type="text" ng-model="parameter.value"/>
                 </div>
               </div>

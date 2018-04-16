@@ -60,7 +60,7 @@ controller('ExaController', function($scope, $http){
     // Function to convert a string to an array
     // (WP_LIST_DATASET output will give a list of datasets if more than one, but a string otherwise...)
     exa.string2array = function(string) {
-      if (Array.isArray ( string )){
+      if (Array.isArray ( array ) || typeof array === 'number'){
         return string;
       }
       else {
@@ -94,235 +94,7 @@ controller('ExaController', function($scope, $http){
                 exa.algorithms.push(alg);
               }
             }*/
-            exa.algorithms = [
-              {
-                "name": "WP_LINEAR_REGRESSION",
-                "desc": "",
-                "type": "multiple_local_global",
-                "parameters": [
-                  {
-                    "name": "x",
-                    "desc": "",
-                    "type": "variable",
-                    "number": "",
-                    "vartype": ["integer","real"],
-                    "value": "adnicategory*apoe4+subjectage+minimentalstate+gender"
-                  },
-                  {
-                    "name": "y",
-                    "desc": "",
-                    "type": "variable",
-                    "number": "",
-                    "vartype": ["integer","real"],
-                    "value": "av45"
-                  },
-                  {
-                    "name": "dataset",
-                    "desc": "",
-                    "type": "dataset",
-                    "number": "1-n",
-                    "value": ""
-                  },
-                  {
-                    "name": "filter",
-                    "desc": "",
-                    "type": "filter",
-                    "value": ""
-                  }
-                ]
-              },
-              {
-                "name": "PIPELINE_ISOUP_MODEL_TREE_SERIALIZER",
-                "desc": "PIPELINE_ISOUP_MODEL_TREE_SERIALIZER",
-                "type": "pipeline",
-                "responseContentType": "application/visjs+javascript",
-                "parameters": [
-                  {
-                    "name": "target_attributes",
-                    "desc": "",
-                    "type": "variable",
-                    "number": "1-n",
-                    "vartype": ["integer","real"],
-                    "value": "apoe4"
-                  },
-                  {
-                    "name": "descriptive_attributes",
-                    "desc": "",
-                    "type": "variable",
-                    "number": "1-n",
-                    "vartype": ["integer","real"],
-                    "value": "subjectageyears,av45"
-                  }
-                ]
-              },
-              {
-                "name": "WP_LIST_DATASET",
-                "desc": "",
-                "type": "local_global",
-                "parameters": []
-              },
-              {
-                "name": "WP_VARIABLE_PROFILE",
-                "desc": "",
-                "type": "local_global",
-                "parameters": [
-                  {
-                    "name": "variable",
-                    "desc": "",
-                    "type": "variable",
-                    "number": "",
-                    "vartype": ["integer","real","text"],
-                    "value": "apoe4"
-                  },
-                  {
-                    "name": "dataset",
-                    "desc": "",
-                    "type": "dataset",
-                    "number": "1-n",
-                    "value": []
-                  },
-                  {
-                    "name": "filter",
-                    "desc": "",
-                    "type": "filter",
-                    "value": ""
-                  }
-                ]
-              },
-              {
-                "name": "WP_VARIABLE_SUMMARY",
-                "desc": "",
-                "type": "local_global",
-                "parameters": [
-                  {
-                    "name": "variable",
-                    "desc": "",
-                    "type": "variable",
-                    "number": "",
-                    "vartype": ["integer","real","text"],
-                    "value": "apoe4"
-                  },
-                  {
-                    "name": "dataset",
-                    "desc": "",
-                    "type": "dataset",
-                    "number": "1-n",
-                    "value": []
-                  },
-                  {
-                    "name": "filter",
-                    "desc": "",
-                    "type": "filter",
-                    "value": ""
-                  }
-                ]
-              },
-              {
-                "name": "K_MEANS",
-                "desc": "JSON",
-                "type": "multiple_local_global",
-                "parameters": [
-                  {
-                    "name": "columns",
-                    "desc": "columns value",
-                    "type": "variable",
-                    "number": "1-n",
-                    "vartype": ["integer","real"],
-                    "value": "apoe4,subjectageyears"
-                  },
-                  {
-                    "name": "k",
-                    "desc": "#centers",
-                    "type": "integer",
-                    "value": "4"
-                  },
-                  {
-                    "name": "dataset",
-                    "desc": "",
-                    "type": "dataset",
-                    "number": "1-n",
-                    "value": []
-                  },
-                  {
-                    "name": "filter",
-                    "desc": "",
-                    "type": "filter",
-                    "value": ""
-                  }
-                ]
-              },
-              {
-                "name": "PIPELINE_ISOUP_REGRESSION_TREE_SERIALIZER",
-                "desc": "PIPELINE_ISOUP_REGRESSION_TREE_SERIALIZER",
-                "type": "pipeline",
-                "responseContentType": "application/visjs+javascript",
-                "parameters": [
-                  {
-                    "name": "target_attributes",
-                    "desc": "",
-                    "type": "variable",
-                    "number": "1-n",
-                    "value": "apoe4"
-                  },
-                  {
-                    "name": "descriptive_attributes",
-                    "desc": "",
-                    "type": "variable",
-                    "number": "1-n",
-                    "value": "subjectageyears,av45"
-                  }
-                ]
-              },
-              {
-                "name": "WP_LIST_VARIABLES",
-                "desc": "",
-                "type": "local",
-                "parameters": []
-              },
-              {
-                "name": "WP_VARIABLES_HISTOGRAM",
-                "desc": "",
-                "type": "multiple_local_global",
-                "parameters": [
-                  {
-                    "name": "column1",
-                    "desc": "Column1 must be Real, Float or Integer",
-                    "type": "variable",
-                    "number": "1-1",
-                    "vartype": ["integer","real"],
-                    "value": "subjectageyears"
-                  },
-                  {
-                    "name": "column2",
-                    "desc": "Column2 must be Text or Null",
-                    "type": "variable",
-                    "number": "0-1",
-                    "vartype": ["text"],
-                    "value": ""
-                  },
-                  {
-                    "name": "nobuckets",
-                    "desc": "",
-                    "type": "integer",
-                    "value": "4"
-                  },
-                  {
-                    "name": "dataset",
-                    "desc": "",
-                    "type": "dataset",
-                    "number": "1-n",
-                    "value": []
-                  },
-                  {
-                    "name": "filter",
-                    "desc": "",
-                    "type": "filter",
-                    "value": ""
-                  }
-                ]
-              }
-              
-            ];
+            exa.algorithms = exa.allAlgos;
 
             exa.selectedAlgo = {
               "name": "DEMO",
@@ -360,11 +132,9 @@ controller('ExaController', function($scope, $http){
     });
 
     exa.submit = function(algorithm){
-        exa.algorithmParams = algorithm.parameters
+        exa.algorithmParams = JSON.parse(JSON.stringify(algorithm.parameters));
         for (var key in exa.algorithmParams) {
-          if (exa.algorithmParams[key].name == 'dataset'){
-            exa.algorithmParams[key].value = exa.array2string(exa.algorithmParams[key].value);
-          }
+          exa.algorithmParams[key].value = exa.array2string(exa.algorithmParams[key].value);
         }
         exa.result = {"status": "Processing..."};
         Highcharts.chart('container', exa.result).destroy();
@@ -423,4 +193,234 @@ controller('ExaController', function($scope, $http){
             exa.result = response;
         });
     }
+
+    exa.allAlgos = [
+      {
+        "name": "WP_LINEAR_REGRESSION",
+        "desc": "",
+        "type": "multiple_local_global",
+        "parameters": [
+          {
+            "name": "x",
+            "desc": "",
+            "type": "variable",
+            "number": "1-1",
+            "vartype": ["integer","real"],
+            "value": "adnicategory*apoe4+subjectage+minimentalstate+gender"
+          },
+          {
+            "name": "y",
+            "desc": "",
+            "type": "variable",
+            "number": "1-1",
+            "vartype": ["integer","real"],
+            "value": "av45"
+          },
+          {
+            "name": "dataset",
+            "desc": "",
+            "type": "dataset",
+            "number": "1-n",
+            "value": ""
+          },
+          {
+            "name": "filter",
+            "desc": "",
+            "type": "filter",
+            "value": ""
+          }
+        ]
+      },
+      {
+        "name": "PIPELINE_ISOUP_MODEL_TREE_SERIALIZER",
+        "desc": "PIPELINE_ISOUP_MODEL_TREE_SERIALIZER",
+        "type": "pipeline",
+        "responseContentType": "application/visjs+javascript",
+        "parameters": [
+          {
+            "name": "target_attributes",
+            "desc": "",
+            "type": "variable",
+            "number": "1-n",
+            "vartype": ["integer","real"],
+            "value": "apoe4"
+          },
+          {
+            "name": "descriptive_attributes",
+            "desc": "",
+            "type": "variable",
+            "number": "1-n",
+            "vartype": ["integer","real"],
+            "value": "subjectageyears,av45"
+          }
+        ]
+      },
+      {
+        "name": "WP_LIST_DATASET",
+        "desc": "",
+        "type": "local_global",
+        "parameters": []
+      },
+      {
+        "name": "WP_VARIABLE_PROFILE",
+        "desc": "",
+        "type": "local_global",
+        "parameters": [
+          {
+            "name": "variable",
+            "desc": "",
+            "type": "variable",
+            "number": "1-1",
+            "vartype": ["integer","real","text"],
+            "value": "apoe4"
+          },
+          {
+            "name": "dataset",
+            "desc": "",
+            "type": "dataset",
+            "number": "1-n",
+            "value": []
+          },
+          {
+            "name": "filter",
+            "desc": "",
+            "type": "filter",
+            "value": ""
+          }
+        ]
+      },
+      {
+        "name": "WP_VARIABLE_SUMMARY",
+        "desc": "",
+        "type": "local_global",
+        "parameters": [
+          {
+            "name": "variable",
+            "desc": "",
+            "type": "variable",
+            "number": "1-1",
+            "vartype": ["integer","real","text"],
+            "value": "apoe4"
+          },
+          {
+            "name": "dataset",
+            "desc": "",
+            "type": "dataset",
+            "number": "1-n",
+            "value": []
+          },
+          {
+            "name": "filter",
+            "desc": "",
+            "type": "filter",
+            "value": ""
+          }
+        ]
+      },
+      {
+        "name": "K_MEANS",
+        "desc": "JSON",
+        "type": "multiple_local_global",
+        "parameters": [
+          {
+            "name": "columns",
+            "desc": "columns value",
+            "type": "variable",
+            "number": "1-n",
+            "vartype": ["integer","real"],
+            "value": "apoe4,subjectageyears"
+          },
+          {
+            "name": "k",
+            "desc": "#centers",
+            "type": "integer",
+            "value": "4"
+          },
+          {
+            "name": "dataset",
+            "desc": "",
+            "type": "dataset",
+            "number": "1-n",
+            "value": []
+          },
+          {
+            "name": "filter",
+            "desc": "",
+            "type": "filter",
+            "value": ""
+          }
+        ]
+      },
+      {
+        "name": "PIPELINE_ISOUP_REGRESSION_TREE_SERIALIZER",
+        "desc": "PIPELINE_ISOUP_REGRESSION_TREE_SERIALIZER",
+        "type": "pipeline",
+        "responseContentType": "application/visjs+javascript",
+        "parameters": [
+          {
+            "name": "target_attributes",
+            "desc": "",
+            "type": "variable",
+            "number": "1-n",
+            "value": "apoe4"
+          },
+          {
+            "name": "descriptive_attributes",
+            "desc": "",
+            "type": "variable",
+            "number": "1-n",
+            "value": "subjectageyears,av45"
+          }
+        ]
+      },
+      {
+        "name": "WP_LIST_VARIABLES",
+        "desc": "",
+        "type": "local",
+        "parameters": []
+      },
+      {
+        "name": "WP_VARIABLES_HISTOGRAM",
+        "desc": "",
+        "type": "multiple_local_global",
+        "parameters": [
+          {
+            "name": "column1",
+            "desc": "Column1 must be Real, Float or Integer",
+            "type": "variable",
+            "number": "1-1",
+            "vartype": ["integer","real"],
+            "value": "subjectageyears"
+          },
+          {
+            "name": "column2",
+            "desc": "Column2 must be Text or Null",
+            "type": "variable",
+            "number": "0-1",
+            "vartype": ["text"],
+            "value": ""
+          },
+          {
+            "name": "nobuckets",
+            "desc": "",
+            "type": "integer",
+            "value": "4"
+          },
+          {
+            "name": "dataset",
+            "desc": "",
+            "type": "dataset",
+            "number": "1-n",
+            "value": []
+          },
+          {
+            "name": "filter",
+            "desc": "",
+            "type": "filter",
+            "value": ""
+          }
+        ]
+      }
+
+    ];
 });
