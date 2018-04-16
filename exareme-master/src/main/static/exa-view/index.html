@@ -13,68 +13,108 @@
   <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/normalize.css">
   <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/main.css">
   <link rel="stylesheet" href="app.css">
-    <script src="bower_components/angular/angular.js"></script>
-    <script src="bower_components/angular-route/angular-route.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script language="JavaScript" type="text/javascript" src="/js/jquery-1.2.6.min.js"></script>
-    <script src="bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-    <script src="https://code.highcharts.com/highcharts.js"></script>
-    <script src="https://code.highcharts.com/highcharts-more.js"></script>
-    <script src="https://code.highcharts.com/highcharts-3d.js"></script>
-    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+  <script src="bower_components/angular/angular.js"></script>
+  <script src="bower_components/angular-route/angular-route.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script language="JavaScript" type="text/javascript" src="/js/jquery-1.2.6.min.js"></script>
+  <script src="bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="https://code.highcharts.com/highcharts-more.js"></script>
+  <script src="https://code.highcharts.com/highcharts-3d.js"></script>
+  <script src="https://code.highcharts.com/modules/exporting.js"></script>
 </head>
 <body>
   <!--<ul class="menu">-->
-    <!--<li><a href="#!/view1">view1</a></li>-->
-    <!--<li><a href="#!/view2">view2</a></li>-->
-  <!--</ul>-->
+  <!--<li><a href="#!/view1">view1</a></li>-->
+  <!--<li><a href="#!/view2">view2</a></li>-->
+  <!--</ul><br>-->
   <section>
-  <div ng-controller="ExaController as exaCtrl">
+    <div ng-controller="ExaController as exaCtrl">
       <table width="100%" border="0">
-      <tr><td colspan="2">
-          <h2>MIP EXAREME Demo </h2>
-      </td></tr>
-      <tr valign="top">
-      <td width="40%">
-      <div>
-        <h3>Algorithms</h3>
-        <ul >
-          <li ng-repeat="algorithm in exaCtrl.algorithms | orderBy:name:true">
-              <h4>{{algorithm.name}}</h4>
-              <p>{{algorithm.desc}}</p>
-              <div>
-                  <form>
-                          <div ng-repeat="parameter in algorithm.parameters track by $index">
-                                {{parameter.name + ":"}}<br>
-                                <input type="text" ng-model="parameter.value">
-                          </div>
-                      <button type="button"
-                              ng-click="exaCtrl.submit(algorithm)">Submit</button>
-                  </form>
+        <tr><td colspan="2">
+          <h2>Federation Demo </h2>
+        </td></tr>
+        <tr valign="top">
+          <td width="40%">
+            <div style="margin: 10pt;">
+              <button type="button" ng-click="exaCtrl.getVariables()">Get available variables</button><br>
+              <button type="button" ng-click="exaCtrl.getDatasets()">Get available datasets</button>
+            </div>
+
+            <div>
+              <select ng-model="exaCtrl.selectedAlgo" ng-options="x.name for x in exaCtrl.algorithms track by x.name"
+              ng-change=exaCtrl.toggleSubmitButton()>
+            </select>
+          </div>
+
+
+          <div>
+            <form>
+              <!-- For each parameter, switch on parameter name -->
+              <div ng-repeat="parameter in exaCtrl.selectedAlgo.parameters track by $index" ng-switch on="parameter.type">
+                <div style="margin: 10pt;">{{parameter.name + ":"}}<br>
+                  <!-- dataset  -->
+                  <select id="selectlist" ng-switch-when="dataset" ng-model="parameter.value" multiple>
+                    <option value="" disabled hide ng-repeat-start="x in exaCtrl.datasets">{{"* " + x.NodeName +" *"}}</option>
+                    <option ng-repeat-end ng-repeat="d in x.Datasets" ng-value="d">{{d}}</option>
+                    <!--$('#selectlist option[value=0]').remove();
+                    {{x.NodeName + " - " + d | limitTo: d.length + x.NodeName.length +2}}-->
+                  </select>
+                  <!-- variable  -->
+                  <p id="selectlist" style="padding: 0;margin: 0;" ng-switch-when="variable" ng-switch on="parameter.number">
+                    <select ng-switch-when="0-n" size="10" ng-model="parameter.value" multiple>
+                      <option value="">---None---</option>
+                      <option ng-repeat="x in exaCtrl.variables | validType: parameter.vartype | orderBy : x.name" value='{{x[0]}}'>{{x[0]+" [" + x[1] +"]"}}</option>
+                    </select>
+                    <select ng-switch-when="0-1" size="10" ng-model="parameter.value">
+                      <option value="">---None---</option>
+                      <option ng-repeat="x in exaCtrl.variables | validType: parameter.vartype | orderBy : x.name" value='{{x[0]}}'>{{x[0]+" [" + x[1] +"]"}}</option>
+                    </select>
+                    <select ng-switch-when="1-n" size="10" ng-model="parameter.value" multiple>
+                      <option value="" disabled>---Please choose---</option>
+                      <option ng-repeat="x in exaCtrl.variables | validType: parameter.vartype | orderBy : x.name" value='{{x[0]}}'>{{x[0]+" [" + x[1] +"]"}}</option>
+                    </select>
+                    <select ng-switch-default size="10" ng-model="parameter.value">
+                      <option value="" disabled>---Please choose---</option>
+                      <option ng-repeat="x in exaCtrl.variables | validType: parameter.vartype | orderBy : x.name" value='{{x[0]}}'>{{x[0]+" [" + x[1] +"]"}}</option>
+                    </select>
+                  </p>
+                  <input ng-switch-default type="text" ng-model="parameter.value"/>
+                </div>
               </div>
-          </li>
-        </ul>
-      </div>
+              <div ng-show=exaCtrl.showSubmit>
+                <button type="button" ng-click="exaCtrl.submit(exaCtrl.selectedAlgo)">Submit</button>
+              </div>
+            </form>
+          </div>
+
+          <div ng-show=exaCtrl.showVariables>
+            <h3>Variables</h3>
+            <div ng-repeat="parameter in exaCtrl.variables track by $index">
+              {{parameter[0] + " [" + parameter[1] + "]"}}<br>
+            </div>
+          </div>
+        </div>
       </td>
       <td width="100%">
-      <div>
+        <div>
           <h2>Result</h2>
           <table>
-              <tbody>
-                  <div id="container" style="width:90%;" ></div>
-                  <tr>
-                      <pre>{{exaCtrl.result | json }}</pre>
-                  </tr>
-              </tbody>
+            <tbody>
+              <div id="container" style="width:90%;" ></div>
+              <tr>
+                <pre>{{exaCtrl.result | json }}</pre>
+              </tr>
+            </tbody>
           </table>
-      </div>
+        </div>
       </td>
       <td colspan="2"></td>
-      </tr>
-      </table>
-  </div>
-  </section>
+    </tr>
+  </table>
+</div>
+</section>
 
   <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
