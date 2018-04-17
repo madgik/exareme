@@ -6,15 +6,8 @@ import madgik.exareme.utils.properties.AdpProperties;
 import madgik.exareme.worker.art.container.ContainerProxy;
 import madgik.exareme.worker.art.registry.ArtRegistryLocator;
 import org.apache.commons.io.Charsets;
-import org.apache.http.HeaderIterator;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpEntityEnclosingRequest;
-import org.apache.http.HttpException;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.RequestLine;
-import org.apache.http.UnsupportedHttpVersionException;
+import org.apache.http.*;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.nio.protocol.BasicAsyncRequestConsumer;
@@ -144,6 +137,11 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
 
         String query = null;
         String algorithm = uri.substring(uri.lastIndexOf('/')+1);
+
+
+        int numberOfContainers = ArtRegistryLocator.getArtRegistryProxy().getContainers().length;
+        log.debug("Containers: " + numberOfContainers);
+
         boolean format = false;
         log.debug("Posting " + algorithm + " ...\n");
         for (Map k : parameters) {
@@ -194,7 +192,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 response.setStatusCode(HttpStatus.SC_OK);
                 response.setEntity(entity);
             } else {
-                dfl = composer.composeVirtual(qKey, algorithmProperties, query, null);
+                dfl = composer.composeVirtual(qKey, algorithmProperties, query, null, numberOfContainers);
                 log.debug(dfl);
                 try {
                     Composer.persistDFLScriptToAlgorithmsDemoDirectory(
@@ -209,6 +207,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                                 HBPConstants.DEMO_DB_WORKING_DIRECTORY + qKey,
                                 "", "", false, false,
                                 -1, 10);
+                clientProperties.setContainerProxies(Arrays.copyOf(ArtRegistryLocator.getArtRegistryProxy().getContainers(), 2));
                 AdpDBClient dbClient =
                         AdpDBClientFactory.createDBClient(manager, clientProperties);
                 queryStatus = dbClient.query(qKey, dfl);

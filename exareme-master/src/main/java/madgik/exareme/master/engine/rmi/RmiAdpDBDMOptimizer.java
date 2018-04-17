@@ -46,7 +46,8 @@ public class RmiAdpDBDMOptimizer {
         log.debug("Creating state ...");
         StateData state = new StateData();
         log.debug("Getting containers ... ");
-        state.proxies = ArtRegistryLocator.getArtRegistryProxy().getContainers();
+        state.proxies = props.getContainerProxies() != null ? props.getContainerProxies() :
+                ArtRegistryLocator.getArtRegistryProxy().getContainers();
         ArrayList<ContainerResources> containers =
             new ArrayList<ContainerResources>(state.proxies.length);
         for (int i = 0; i < state.proxies.length; ++i) {

@@ -3,6 +3,7 @@ package madgik.exareme.master.queryProcessor.composer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import madgik.exareme.worker.art.registry.ArtRegistryLocator;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -20,10 +21,6 @@ import madgik.exareme.master.engine.iterations.handler.IterationsConstants;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.utils.file.FileUtil;
 import madgik.exareme.utils.properties.AdpProperties;
-import madgik.exareme.worker.art.container.ContainerProxy;
-import madgik.exareme.worker.art.executionEngine.ExecutionEngineLocator;
-import madgik.exareme.worker.art.executionEngine.ExecutionEngineProxy;
-import madgik.exareme.worker.art.registry.ArtRegistryLocator;
 
 import static madgik.exareme.master.engine.iterations.handler.IterationsConstants.iterationsPropertyConditionQueryProvided;
 import static madgik.exareme.master.engine.iterations.handler.IterationsConstants.iterationsPropertyMaximumNumber;
@@ -101,8 +98,35 @@ public class Composer {
                                  AlgorithmsProperties.AlgorithmProperties algorithmProperties,
                                  String query,
                                  IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase
+    ) throws ComposerException{
+        try {
+            return composeVirtual(null, qKey, algorithmProperties, query, iterativeAlgorithmPhase,
+                    ArtRegistryLocator.getArtRegistryProxy().getContainers().length);
+        } catch (RemoteException e) {
+            throw new ComposerException(e.getMessage());
+        }
+    }
+
+    public String composeVirtual(String repositoryPath, String qKey,
+                                 AlgorithmsProperties.AlgorithmProperties algorithmProperties,
+                                 String query,
+                                 IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase
+    ) throws ComposerException{
+        try {
+            return composeVirtual(repositoryPath, qKey, algorithmProperties, query, iterativeAlgorithmPhase,
+                    ArtRegistryLocator.getArtRegistryProxy().getContainers().length);
+        } catch (RemoteException e) {
+            throw new ComposerException(e.getMessage());
+        }
+    }
+
+    public String composeVirtual(String qKey,
+                                 AlgorithmsProperties.AlgorithmProperties algorithmProperties,
+                                 String query,
+                                 IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase,
+                                 int numberOfWorkers
     ) throws ComposerException {
-        return composeVirtual(null, qKey, algorithmProperties, query, iterativeAlgorithmPhase);
+        return composeVirtual(null, qKey, algorithmProperties, query, iterativeAlgorithmPhase, numberOfWorkers);
     }
 
     /**
@@ -122,7 +146,8 @@ public class Composer {
     public String composeVirtual(String repositoryPath, String qKey,
                                  AlgorithmsProperties.AlgorithmProperties algorithmProperties,
                                  String query,
-                                 IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase
+                                 IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase,
+                                 int numberOfWorkers
                                  )
         throws ComposerException {
 
@@ -245,15 +270,7 @@ public class Composer {
                 break;
             case pipeline:
 
-                ExecutionEngineProxy engine = ExecutionEngineLocator.getExecutionEngineProxy();
-                ContainerProxy[] containerProxies;
-                try {
-                    containerProxies = ArtRegistryLocator.getArtRegistryProxy().getContainers();
-                } catch (RemoteException e) {
-                    throw new ComposerException("Failed to retrieve containerProxies");
-                }
-
-                for(int i = 0; i < containerProxies.length; i++){
+                for(int i = 0; i < numberOfWorkers; i++){
 
                     if(i == 0 ){
                             dflScript.append(String.format(
@@ -281,7 +298,7 @@ public class Composer {
                 }
 
                 dflScript.append(String.format("using output_local_tbl_%d distributed create table %s as external ",
-                        (containerProxies.length-1), outputGlobalTbl));
+                        (numberOfWorkers-1), outputGlobalTbl));
                 dflScript.append(String
                         .format("select * from (\n    execnselect 'path:%s' ", workingDir));
                 for (String key : parameters.keySet()) {
@@ -289,7 +306,7 @@ public class Composer {
                 }
 
                 dflScript.append(String.format("'prv_output_local_tbl:(output_local_tbl_%d)' ",
-                                containerProxies.length-1));
+                        numberOfWorkers-1));
                 dflScript.append( String.format("\n    select filetext('%s')\n", globalScriptPath));
                 dflScript.append(");\n");
 
