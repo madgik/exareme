@@ -101,7 +101,7 @@ public class Composer {
     ) throws ComposerException{
         try {
             return composeVirtual(null, qKey, algorithmProperties, query, iterativeAlgorithmPhase,
-                    ArtRegistryLocator.getArtRegistryProxy().getContainers().length);
+                    ArtRegistryLocator.getArtRegistryProxy() == null? 0 :ArtRegistryLocator.getArtRegistryProxy().getContainers().length);
         } catch (RemoteException e) {
             throw new ComposerException(e.getMessage());
         }
@@ -114,7 +114,7 @@ public class Composer {
     ) throws ComposerException{
         try {
             return composeVirtual(repositoryPath, qKey, algorithmProperties, query, iterativeAlgorithmPhase,
-                    ArtRegistryLocator.getArtRegistryProxy().getContainers().length);
+                    ArtRegistryLocator.getArtRegistryProxy() == null? 0 : ArtRegistryLocator.getArtRegistryProxy().getContainers().length);
         } catch (RemoteException e) {
             throw new ComposerException(e.getMessage());
         }
