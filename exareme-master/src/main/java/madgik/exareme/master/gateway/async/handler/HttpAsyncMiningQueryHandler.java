@@ -2,6 +2,7 @@ package madgik.exareme.master.gateway.async.handler;
 
 import com.google.gson.Gson;
 
+import madgik.exareme.utils.net.NetUtil;
 import madgik.exareme.utils.properties.AdpProperties;
 import madgik.exareme.worker.art.container.ContainerProxy;
 import madgik.exareme.worker.art.registry.ArtRegistryLocator;
@@ -24,6 +25,7 @@ import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
 import java.io.*;
+import java.rmi.RemoteException;
 import java.rmi.ServerException;
 import java.util.*;
 import madgik.exareme.common.consts.HBPConstants;
@@ -139,13 +141,10 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         if (!"POST".equals(method)) {
             throw new UnsupportedHttpVersionException(method + "not supported.");
         }
-
         String query = null;
         String algorithm = uri.substring(uri.lastIndexOf('/')+1);
 
 
-        int numberOfContainers = ArtRegistryLocator.getArtRegistryProxy().getContainers().length;
-        log.debug("Containers: " + numberOfContainers);
 
         boolean format = false;
         log.debug("Posting " + algorithm + " ...\n");
@@ -170,7 +169,10 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             log.debug(name + " = " + value);
         }
 
-        ContainerProxy[] usedContainerProxies = getUsedContainers(usedDatasets);
+        ContainerProxy[] usedContainerProxies = getUsedContainers(usedDatasets, response);
+        if (usedContainerProxies==null) return;
+        int numberOfContainers = usedContainerProxies.length;
+        log.debug("Containers: " + numberOfContainers);
 
         String qKey = "query_" + algorithm + "_" +String.valueOf(System.currentTimeMillis());
 
@@ -219,7 +221,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                                 HBPConstants.DEMO_DB_WORKING_DIRECTORY + qKey,
                                 "", "", false, false,
                                 -1, 10);
-                clientProperties.setContainerProxies(Arrays.copyOf(ArtRegistryLocator.getArtRegistryProxy().getContainers(), 2));
+                clientProperties.setContainerProxies(usedContainerProxies);
                 AdpDBClient dbClient =
                         AdpDBClientFactory.createDBClient(manager, clientProperties);
                 queryStatus = dbClient.query(qKey, dfl);
@@ -270,8 +272,6 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 log.debug("Container responded: " + containerResponded);
                 if (!containerResponded){
                     String result = "{\"Error\":\"Container with IP "+containerIP+" and NAME "+containerNAME+" is not responding. Please inform your system administrator\"}";
-
-
                     byte[] contentBytes = result.getBytes(Charsets.UTF_8.name());
 
                     entity.setContent(new ByteArrayInputStream(contentBytes));
@@ -290,47 +290,70 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         return true;
     }
 
-    private ContainerProxy[] getUsedContainers(String[] usedDatasets) throws IOException {
-        //if datasets are not defined run to all datasets
-        if (usedDatasets == null || usedDatasets.length==0){
+    //Return null if dataset not found
+    private ContainerProxy[] getUsedContainers(String[] usedDatasets, HttpResponse response) throws RemoteException {
+        try {
+            //if datasets are not defined run to all datasets
+            if (usedDatasets == null || usedDatasets.length == 0) {
+                return ArtRegistryLocator.getArtRegistryProxy().getContainers();
+            }
+
+            //Generate dataset -> List<node IP> hashmap
+            HashMap<String, List<String>> datasetToNodes = new HashMap<>();
+            //Find nodes with datasets defined at consul
+            String nodesKeys = searchConsul("datasets/?keys");
+            log.debug(nodesKeys);
+            Gson gson = new Gson();
+            String[] nodesKeysArray = gson.fromJson(nodesKeys, String[].class);
+            //For every node (with dataset...)
+            for (String nodeKey : nodesKeysArray) {
+                log.debug(searchConsul(nodeKey + "?raw"));
+                String[] nodeDatasets = gson.fromJson(searchConsul(nodeKey + "?raw"), String[].class);
+                String nodeName = nodeKey.replace("datasets/", "");
+                //For every dataset of this node, add to hashmap
+                for (String nodeDataset : nodeDatasets) {
+                    if (!datasetToNodes.containsKey(nodeDataset)) {
+                        datasetToNodes.put(nodeDataset, new ArrayList<String>());
+                    }
+                    datasetToNodes.get(nodeDataset).add(getNodeIP(nodeName));
+                }
+            }
+
+            //Find IPs of used containers
+            Set<String> usedContainersIPs = new HashSet<>();
+            usedContainersIPs.add(NetUtil.getIPv4()); //Always use master!
+            for (String dataset : usedDatasets) {
+                if (!datasetToNodes.containsKey(dataset)){
+                    log.debug("Dataset " + dataset + " not found!");
+                    String result = "{\"Error\":\"Dataset "+dataset+" not found!\"}";
+                    byte[] contentBytes = result.getBytes(Charsets.UTF_8.name());
+                    BasicHttpEntity entity = new BasicHttpEntity();
+                    entity.setContent(new ByteArrayInputStream(contentBytes));
+                    entity.setContentLength(contentBytes.length);
+                    entity.setContentEncoding(Charsets.UTF_8.name());
+                    entity.setChunked(false);
+                    response.setStatusCode(HttpStatus.SC_METHOD_FAILURE);
+                    response.setEntity(entity);
+                    return null;
+                }
+                usedContainersIPs.addAll(datasetToNodes.get(dataset));
+            }
+
+            //Find container proxy of used containers (from IPs)
+            List<ContainerProxy> usedContainerProxies = new ArrayList<>();
+            for (ContainerProxy containerProxy : ArtRegistryLocator.getArtRegistryProxy().getContainers()) {
+                if (usedContainersIPs.contains(containerProxy.getEntityName().getIP())) {
+                    usedContainerProxies.add(containerProxy);
+                }
+            }
+
+            log.debug("Used containers: " + usedContainerProxies);
+
+            return usedContainerProxies.toArray(new ContainerProxy[usedContainerProxies.size()]);
+        } catch (IOException e) {
+            log.error("Exception while contacting consul, running with all containers. " + e.getMessage() );
             return ArtRegistryLocator.getArtRegistryProxy().getContainers();
         }
-
-        HashMap<String, List<String>> datasetToNodes = new HashMap<>();
-        String nodesKeys = searchConsul("datasets/?keys");
-        Gson gson = new Gson();
-        String[] nodesKeysArray = gson.fromJson(nodesKeys, String[].class);
-        log.debug(nodesKeys);
-
-        for (String nodeKey : nodesKeysArray){
-            log.debug(searchConsul(nodeKey+"?raw"));
-            String[] nodeDatasets = gson.fromJson(searchConsul(nodeKey+"?raw"), String[].class);
-            String nodeName = nodeKey.replace("datasets/","");
-            for (String nodeDataset : nodeDatasets){
-                if (!datasetToNodes.containsKey(nodeDataset)){
-                    datasetToNodes.put(nodeDataset, new ArrayList<String>());
-                }
-                datasetToNodes.get(nodeDataset).add(getNodeIP(nodeName));
-            }
-        }
-
-        //Find IPs of used containers
-        Set<String> usedContainersIPs = new HashSet<>();
-        for (String dataset : usedDatasets){
-            usedContainersIPs.addAll(datasetToNodes.get(dataset));
-        }
-
-        //Find container proxy of used containers
-        List<ContainerProxy> usedContainerProxies = new ArrayList<>();
-        for (ContainerProxy containerProxy : ArtRegistryLocator.getArtRegistryProxy().getContainers()){
-            if (usedContainersIPs.contains(containerProxy.getEntityName().getIP())){
-                usedContainerProxies.add(containerProxy);
-            }
-        }
-
-        log.debug("Used containers: " + usedContainerProxies);
-
-        return usedContainerProxies.toArray(new ContainerProxy[usedContainerProxies.size()]);
     }
 
     private String getNodeIP(String name) throws IOException {
@@ -348,18 +371,21 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
     private String searchConsul(String query) throws IOException {
         String result;
         CloseableHttpClient httpclient = HttpClients.createDefault();
-        String consulURL = "http://prozac.madgik.di.uoa.gr:8500";
+        String consulURL = System.getenv("CONSULURL");
+        if (consulURL == null ) throw new IOException("Consul url not set");
+        if (!consulURL.startsWith("http://")){
+            consulURL= "http://" + consulURL;
+        }
 
         HttpGet httpGet = null;
         try {
             httpGet = new HttpGet(consulURL + "/v1/kv/" + query);
             log.debug("Running: " + httpGet.getURI());
-
             CloseableHttpResponse response = null;
             try {
                 response = httpclient.execute(httpGet);
                 if (response.getStatusLine().getStatusCode() != 200) {
-                    throw new ServerException("Cannot run query", new Exception(EntityUtils.toString(response.getEntity())));
+                    throw new ServerException("Cannot contact consul", new Exception(EntityUtils.toString(response.getEntity())));
                 } else {
                     result = EntityUtils.toString(response.getEntity());
                 }
@@ -369,7 +395,6 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         } finally {
             httpGet.releaseConnection();
             httpclient.close();
-
         }
         return result;
     }

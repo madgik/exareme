@@ -548,7 +548,7 @@ public class RmiAdpDBSelectOptimizer {
                     }
                     if (inputPattern == DataPattern.remote) {
                         log.debug("Bind virtual operators in simple round robin fashion.");
-                        if ( containerCounter == state.proxies.length){
+                        if ( containerCounter >= state.proxies.length){
                             containerCounter = 0;
                         }
                         ContainerProxy containerProxy = state.proxies[containerCounter];
