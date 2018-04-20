@@ -150,7 +150,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             String value = (String) k.get("value");
             if(name == null || name.isEmpty() || value == null || value.isEmpty()) continue;
             log.debug(name + " = " + value);
-            value = value.replaceAll("[^A-Za-z0-9,_*+><=&|()]", "");
+            value = value.replaceAll("[^A-Za-z0-9,._*+><=&|()]", "");
             value = value.replaceAll("\\s+", "");
             if("local_pfa".equals(name)) {
                 Map map = new Gson().fromJson(value, Map.class);

@@ -116,30 +116,65 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
                 encoder.complete();
                 close();
             }
-            else if(queryStatus.getError().toString().contains("\n" +
+            else if(queryStatus.getError().toString().contains("\n" +   //YES
                     "Operator MINIMUMREC:")){
                 String result = "{\"Error\":\"Privacy issues.Less than 10 patients.\"}";
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();
             }
-            else if(queryStatus.getError().toString().contains("\n" +
+            else if(queryStatus.getError().toString().contains("\n" +       //YES
                     "Operator LARGEBUCKET:")){
                 String result = "{\"Error\":\"Bucket size too big.\"}";
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();
             }
-            else if(queryStatus.getError().toString().contains("\n" +
+            else if(queryStatus.getError().toString().contains("\n" +       //YES
                     "Operator EMPTYFIELD:")){
                 String result = "{\"Error\":\"Fields should not be empty. Please provide a name.\"}";
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();
             }
-            else if(queryStatus.getError().toString().contains("\n" +
+            else if(queryStatus.getError().toString().contains("\n" +        //YES
                     "Operator EMPTYSET:")){
                 String result = "{\"Error\":\"Dataset should not be empty. Please provide one or more dataset(s).\"}";
+                encoder.write(ByteBuffer.wrap(result.getBytes()));
+                encoder.complete();
+                close();
+            }
+            else if(queryStatus.getError().toString().contains("\n" +       //YES
+                    "Operator TYPEBUCKET:")){
+                String result = "{\"Error\":\"Bucket field should be type: Integer.\"}";
+                encoder.write(ByteBuffer.wrap(result.getBytes()));
+                encoder.complete();
+                close();
+            }
+            else if(queryStatus.getError().toString().contains("\n" +       //YES
+                    "Operator TYPEY:")){
+                String result = "{\"Error\":\"Dependent variable should not be type text. Please provide type: Real,Integer or Float.\"}";
+                encoder.write(ByteBuffer.wrap(result.getBytes()));
+                encoder.complete();
+                close();
+            }
+            else if(queryStatus.getError().toString().contains("\n" +       //YES
+                    "Operator TYPEHISTOGRAM:")){
+                String result = "{\"Error\":\"First variable should be type: Real,Integer or Float. Second variable should be empty or type: Text.\"}";
+                encoder.write(ByteBuffer.wrap(result.getBytes()));
+                encoder.complete();
+                close();
+            }
+            else if(queryStatus.getError().toString().contains("\n" +       //YES
+                    "Operator TYPECOLUMNS:")){
+                String result = "{\"Error\":\"Column's type should not be Text. Please provide type: Real,Integer and(or) Float.\"}";
+                encoder.write(ByteBuffer.wrap(result.getBytes()));
+                encoder.complete();
+                close();
+            }
+            else if(queryStatus.getError().toString().contains("\n" +   //YES
+                    "Operator TYPEK:")){
+                String result = "{\"Error\":\"K should be type: Integer.\"}";
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();

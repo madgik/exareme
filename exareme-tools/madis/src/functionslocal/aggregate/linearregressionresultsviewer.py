@@ -25,8 +25,9 @@ class linearregressionresultsviewer:
         yield ('linearregressionresult',)
 
         myresult="{\"resources\": [{\"name\": \"linear-regression\", \"profile\": \"tabular-data-resource\", \
-                   \"data\": [[\"variable\", \"estimate\", \"standard_error\", \"t-value\", \"p-value\"],"
-
+                   \"data\": [[\"variable\", \"estimate\", \"standard_error\", \"t-value\", \"p-value\"]"
+        if len(self.variablenames) != 0:
+            myresult+=","
         for i in xrange(len(self.variablenames)):
             myresult += "[\"" + str(self.variablenames[i]) + "\","
             # row=[]
@@ -40,7 +41,10 @@ class linearregressionresultsviewer:
             if i< len(self.variablenames)-1:
                 myresult+="],"
 
-        myresult+="]],\"schema\":  { \"fields\": [{\"name\": \"variable\", \"type\": \"string\"}, \
+        if len(self.variablenames) != 0:
+             myresult+="]"
+
+        myresult+="],\"schema\":  { \"fields\": [{\"name\": \"variable\", \"type\": \"string\"}, \
                   {\"name\": \"estimate\", \"type\": \"number\"},{\"name\": \"standard_error\", \"type\": \"number\"}, \
                   {\"name\": \"t-value\", \"type\": \"number\"}, {\"name\": \"p-value\", \"type\": \"string\"}] } }]}"
 
