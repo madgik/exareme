@@ -14,7 +14,7 @@ class linearregressionresultsviewer:
         # self.noofclusters = args[5]
         try:
             self.variablenames.append(str(args[0]))
-            self.mydata[(args[0])] = float(args[1]),float(args[2]),float(args[3]),float(args[4])
+            self.mydata[(args[0])] = str(args[1]),str(args[2]),str(args[3]),str(args[4])
             self.n += 1
             # if self.n <= self.noofvariables :
             #     self.variablenames.append(str(args[1]))
