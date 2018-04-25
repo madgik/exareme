@@ -7,47 +7,84 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>ExaView Demo</title>
+  <title>MIP Federation Infrastructure demo</title>
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/normalize.css">
-  <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/main.css">
-  <link rel="stylesheet" href="app.css">
-  <script src="bower_components/angular/angular.js"></script>
-  <script src="bower_components/angular-route/angular-route.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-  <script language="JavaScript" type="text/javascript" src="/js/jquery-1.2.6.min.js"></script>
-  <script src="bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
+<!--  <link type="text/css" rel="stylesheet" href="./bower_components/html5-boilerplate/src/css/main.css">
+  <link type="text/css" rel="stylesheet" href="app.css">
+-->  <script src="./bower_components/angular/angular.js"></script>
+  <script src="./bower_components/angular-route/angular-route.js"></script>
+  <script src="./bower_components/html5-boilerplate/src/js/vendor/modernizr-2.8.3.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
   <script src="https://code.highcharts.com/highcharts.js"></script>
   <script src="https://code.highcharts.com/highcharts-more.js"></script>
   <script src="https://code.highcharts.com/highcharts-3d.js"></script>
   <script src="https://code.highcharts.com/modules/exporting.js"></script>
+<style>
+/* LSC: FOR NOW HERE, AS THE CONTENT-TYPE IS NOT CORRECTLY SET. */
+/* app css stylesheet */
+section, html, body, div.ng-scope {
+       height: 100%;
+       font-family: "Arial";
+       vertical-align: top;
+}
+h1 {
+       font-size: 2em;
+}
+h2 {
+       font-size: 1em;
+}
+pre {
+       padding: 1em;
+       border: 1px solid darkgrey;
+       background-color: #EEE;
+}
+input, textarea, keygen, select, button {
+       width: 100%;
+}
+#exa-navbar {
+       width: 20em;
+       min-width: 20em;
+       padding: 1em;
+}
+#exa-navbar > div {
+       margin: 0em;
+       padding: 1em;
+       border: 1px solid darkgrey;
+}
+#exa-results > div {
+       margin: 0em;
+       padding: 1em;
+}
+#selectlist {
+       height: 10em;
+}
+</style>
+<style>
+/* LSC: FOR NOW HERE, AS THE CONTENT-TYPE IS NOT CORRECTLY SET. */
+/* Bower main.css */
+html{color:#222;font-size:1em;line-height:1.4}::selection{background:#b3d4fc;text-shadow:none}hr{display:block;height:1px;border:0;border-top:1px solid #ccc;margin:1em 0;padding:0}audio,canvas,iframe,img,svg,video{vertical-align:middle}fieldset{border:0;margin:0;padding:0}textarea{resize:vertical}.browserupgrade{margin:.2em 0;background:#ccc;color:#000;padding:.2em 0}.hidden{display:none!important}.visuallyhidden{border:0;clip:rect(0 0 0 0);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px}.visuallyhidden.focusable:active,.visuallyhidden.focusable:focus{clip:auto;height:auto;margin:0;overflow:visible;position:static;width:auto}.invisible{visibility:hidden}.clearfix:after,.clearfix:before{content:" ";display:table}.clearfix:after{clear:both}@media print{blockquote,img,pre,tr{page-break-inside:avoid}*,:after,:before,:first-letter,:first-line{background:0 0!important;color:#000!important;box-shadow:none!important;text-shadow:none!important}a,a:visited{text-decoration:underline}a[href]:after{content:" (" attr(href) ")"}abbr[title]:after{content:" (" attr(title) ")"}a[href^="#"]:after,a[href^="javascript:"]:after{content:""}blockquote,pre{border:1px solid #999}thead{display:table-header-group}img{max-width:100%!important}h2,h3,p{orphans:3;widows:3}h2,h3{page-break-after:avoid}}
+</style>
 </head>
 <body>
-  <!--<ul class="menu">-->
-  <!--<li><a href="#!/view1">view1</a></li>-->
-  <!--<li><a href="#!/view2">view2</a></li>-->
-  <!--</ul><br>-->
   <section>
     <div ng-controller="ExaController as exaCtrl">
+      <h1>MIP Federation Infrastructure demo</h1>
       <table width="100%" border="0">
-        <tr><td colspan="2">
-          <h2>Federation Demo </h2>
-        </td></tr>
         <tr valign="top">
-          <td width="40%">
-            <div style="margin: 10pt;">
+          <td id="exa-navbar">
+            <h2>Data Selection:</h2>
+            <div>
               <button type="button" ng-click="exaCtrl.getVariables()">Get available variables</button><br>
               <button type="button" ng-click="exaCtrl.getDatasets()">Get available datasets</button>
             </div>
 
+            <h2>Algorithm Selection:</h2>
             <div>
               <select ng-model="exaCtrl.selectedAlgo" ng-options="x.name for x in exaCtrl.algorithms track by x.name"
               ng-change=exaCtrl.toggleSubmitButton()>
             </select>
           </div>
-
 
           <div>
             <form>
@@ -98,38 +135,23 @@
               {{parameter[0] + " [" + parameter[1] + "]"}}<br>
             </div>
           </div>
-        </div>
-      </td>
-      <td width="100%">
-        <div>
-          <h2>Result</h2>
-          <table>
-            <tbody>
-              <div id="container" style="width:90%;" ></div>
-              <tr>
-                <pre>{{exaCtrl.result | json }}</pre>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </td>
-      <td colspan="2"></td>
-    </tr>
-  </table>
-</div>
-</section>
+        </td>
+        <td id="exa-results">
+          <div>
+            <h2>Results:</h2>
+            <div id="container" style="width:90%;" ></div>
+            <pre>{{exaCtrl.result | json }}</pre>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+  </section>
 
   <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
   <![endif]-->
 
-  <!--<div ng-view></div>-->
-
-  <!--<div>Angular seed app: v<span app-version></span></div>-->
-
-  <!-- In production use:
-  <script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
-  -->
   <script src="app.js"></script>
   <script src="view1/view1.js"></script>
   <script src="view2/view2.js"></script>

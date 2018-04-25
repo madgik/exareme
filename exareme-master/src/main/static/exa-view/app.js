@@ -93,8 +93,22 @@ controller('ExaController', function($scope, $http){
                 }
                 exa.algorithms.push(alg);
               }
-            }*/
+            }
+            */
             exa.algorithms = exa.allAlgos;
+/*
+            exa.algorithms = [];
+
+            for (var key in exa.allAlgos) {
+              if (response.data[key].name != "WP_LIST_DATASET" && response.data[key].name != "WP_LIST_VARIABLES"){
+                var alg = response.data[key];
+                for (var param in alg.parameters) {
+                  alg.parameters[param].value="";
+                }
+                exa.algorithms.push(alg);
+              }
+            }
+            */
 
             exa.selectedAlgo = {
               "name": "DEMO",
@@ -153,7 +167,7 @@ controller('ExaController', function($scope, $http){
                          var result = response.data;
                          if(typeof result.chart !== 'undefined' ){  //every chart is a visual output 2D or 3D
                             Highcharts.chart('container', result);
-                            exa.result ="";
+			    delete exa.result;
                          }
                          else{                                  //everything else f.e. 4 variables, gives tabular data
                           exa.result = response.data;
@@ -168,7 +182,7 @@ controller('ExaController', function($scope, $http){
                     else{
                         exa.result = response.data;
                         Highcharts.chart('container',  exa.result);
-                        exa.result ="";
+			delete exa.result;
                     }
                 }
                 // End only for demo web page
