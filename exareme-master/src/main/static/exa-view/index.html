@@ -118,6 +118,16 @@ html{color:#222;font-size:1em;line-height:1.4}::selection{background:#b3d4fc;tex
                         <option ng-repeat="x in exaCtrl.variables | validType: parameter.vartype | orderBy : x.name" value='{{x[0]}}'>{{x[0]+" [" + x[1] +"]"}}</option>
                       </select>
                     </p>
+                    <!-- formula  -->
+                    <p id="selectlist" style="padding: 0;margin: 0;" ng-switch-when="formula">
+                      <select ng-show=exaCtrl.showVar size="10" ng-model="parameter.value">
+                        <option value="" disabled>---Please choose---</option>
+                        <option ng-repeat="x in exaCtrl.variables | validType: parameter.vartype" value='{{x[0]}}'>{{x[0]+" [" + x[1] +"]"}}</option>
+                      </select>
+                      <input ng-show=exaCtrl.showFormula  type="text" ng-model="parameter.value"/><br>
+                      <button ng-show=exaCtrl.showVar type="button" ng-click="exaCtrl.toggleFormulaButton()">Formula</button>
+                      <button ng-show=exaCtrl.showFormula type="button" ng-click="exaCtrl.toggleFormulaButton()">Variable</button>
+                    </p>
                     <!-- default  -->
                     <input ng-switch-default type="text" ng-model="parameter.value"/>
                   </div>

@@ -32,9 +32,23 @@ controller('ExaController', function($scope, $http){
   exa.datasets = '';
   exa.variables = '';
   exa.showSubmit = false;
+	exa.showFormula = false;
+	exa.showVar = true;
+	exa.showJson = true;
 
   exa.toggleSubmitButton = function() {
     exa.showSubmit = true;
+  }
+
+  exa.toggleFormulaButton = function() {
+    if (exa.showFormula) {
+      exa.showFormula = false;
+      exa.showVar = true;
+    }
+    else {
+      exa.showFormula = true;
+      exa.showVar = false;
+    }
   }
 
   // Function to convert list of datasets from array to string
@@ -210,7 +224,7 @@ controller('ExaController', function($scope, $http){
         {
           "name": "x",
           "desc": "",
-          "type": "variable",
+          "type": "formula",
           "number": "1-1",
           "vartype": ["integer","real"],
           "value": "adnicategory*apoe4+subjectage+minimentalstate+gender"
