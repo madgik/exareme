@@ -82,74 +82,74 @@ html{color:#222;font-size:1em;line-height:1.4}::selection{background:#b3d4fc;tex
             <h2>Algorithm Selection:</h2>
             <div>
               <select ng-model="exaCtrl.selectedAlgo" ng-options="x.name for x in exaCtrl.algorithms track by x.name"
-              ng-change=exaCtrl.toggleSubmitButton()>
-            </select>
-          </div>
-
-          <div>
-            <form>
-              <!-- For each parameter, switch on parameter name -->
-              <div ng-repeat="parameter in exaCtrl.selectedAlgo.parameters track by $index" ng-switch on="parameter.type">
-                <div style="margin: 10pt;">{{parameter.name + ":"}}<br>
-                  <!-- dataset  -->
-                  <select id="selectlist" ng-switch-when="dataset" ng-model="parameter.value" multiple>
-                    <option value="" disabled hide ng-repeat-start="x in exaCtrl.datasets">{{"* " + x.NodeName +" *"}}</option>
-                    <option ng-repeat-end ng-repeat="d in x.Datasets" ng-value="d">{{d}}</option>
-                    <!--$('#selectlist option[value=0]').remove();
-                    {{x.NodeName + " - " + d | limitTo: d.length + x.NodeName.length +2}}-->
-                  </select>
-                  <!-- integer  -->
-                  <input type="number" ng-switch-when="integer" ng-model="parameter.value"/>
-                  <!-- variable  -->
-                  <p id="selectlist" style="padding: 0;margin: 0;" ng-switch-when="variable" ng-switch on="parameter.number">
-                    <select ng-switch-when="0-n" size="10" ng-model="parameter.value" multiple>
-                      <option value="">---None---</option>
-                      <option ng-repeat="x in exaCtrl.variables | validType: parameter.vartype | orderBy : x.name" value='{{x[0]}}'>{{x[0]+" [" + x[1] +"]"}}</option>
-                    </select>
-                    <select ng-switch-when="0-1" size="10" ng-model="parameter.value">
-                      <option value="">---None---</option>
-                      <option ng-repeat="x in exaCtrl.variables | validType: parameter.vartype | orderBy : x.name" value='{{x[0]}}'>{{x[0]+" [" + x[1] +"]"}}</option>
-                    </select>
-                    <select ng-switch-when="1-n" size="10" ng-model="parameter.value" multiple>
-                      <option value="" disabled>---Please choose---</option>
-                      <option ng-repeat="x in exaCtrl.variables | validType: parameter.vartype | orderBy : x.name" value='{{x[0]}}'>{{x[0]+" [" + x[1] +"]"}}</option>
-                    </select>
-                    <select ng-switch-default size="10" ng-model="parameter.value">
-                      <option value="" disabled>---Please choose---</option>
-                      <option ng-repeat="x in exaCtrl.variables | validType: parameter.vartype | orderBy : x.name" value='{{x[0]}}'>{{x[0]+" [" + x[1] +"]"}}</option>
-                    </select>
-                  </p>
-                  <!-- default  -->
-                  <input ng-switch-default type="text" ng-model="parameter.value"/>
-                </div>
-              </div>
-              <div ng-show=exaCtrl.showSubmit>
-                <button type="button" ng-click="exaCtrl.submit(exaCtrl.selectedAlgo)">Submit</button>
-              </div>
-            </form>
-          </div>
-
-          <div ng-show=exaCtrl.showVariables>
-            <h3>Variables</h3>
-            <div ng-repeat="parameter in exaCtrl.variables track by $index">
-              {{parameter[0] + " [" + parameter[1] + "]"}}<br>
+                ng-change=exaCtrl.toggleSubmitButton()>
+              </select>
             </div>
-          </div>
-        </td>
-        <td id="exa-results">
-          <div>
-            <h2>Results:</h2>
-            <div id="container" style="width:90%;" ></div>
-            <pre>{{exaCtrl.result | json }}</pre>
-          </div>
-        </td>
-      </tr>
-    </table>
-  </div>
+
+            <div>
+              <form>
+                <!-- For each parameter, switch on parameter name -->
+                <div ng-repeat="parameter in exaCtrl.selectedAlgo.parameters track by $index" ng-switch on="parameter.type">
+                  <div style="margin: 10pt;">{{parameter.name + ":"}}<br>
+                    <!-- dataset  -->
+                    <select id="selectlist" ng-switch-when="dataset" ng-model="parameter.value" multiple>
+                      <option value="" disabled hide ng-repeat-start="x in exaCtrl.datasets">{{"* " + x.NodeName +" *"}}</option>
+                      <option ng-repeat-end ng-repeat="d in x.Datasets" ng-value="d">{{d}}</option>
+                      <!--$('#selectlist option[value=0]').remove();
+                      {{x.NodeName + " - " + d | limitTo: d.length + x.NodeName.length +2}}-->
+                    </select>
+                    <!-- integer  -->
+                    <input type="number" ng-switch-when="integer" ng-model="parameter.value"/>
+                    <!-- variable  -->
+                    <p id="selectlist" style="padding: 0;margin: 0;" ng-switch-when="variable" ng-switch on="parameter.number">
+                      <select ng-switch-when="0-n" size="10" ng-model="parameter.value" multiple>
+                        <option value="">---None---</option>
+                        <option ng-repeat="x in exaCtrl.variables | validType: parameter.vartype | orderBy : x.name" value='{{x[0]}}'>{{x[0]+" [" + x[1] +"]"}}</option>
+                      </select>
+                      <select ng-switch-when="0-1" size="10" ng-model="parameter.value">
+                        <option value="">---None---</option>
+                        <option ng-repeat="x in exaCtrl.variables | validType: parameter.vartype | orderBy : x.name" value='{{x[0]}}'>{{x[0]+" [" + x[1] +"]"}}</option>
+                      </select>
+                      <select ng-switch-when="1-n" size="10" ng-model="parameter.value" multiple>
+                        <option value="" disabled>---Please choose---</option>
+                        <option ng-repeat="x in exaCtrl.variables | validType: parameter.vartype | orderBy : x.name" value='{{x[0]}}'>{{x[0]+" [" + x[1] +"]"}}</option>
+                      </select>
+                      <select ng-switch-default size="10" ng-model="parameter.value">
+                        <option value="" disabled>---Please choose---</option>
+                        <option ng-repeat="x in exaCtrl.variables | validType: parameter.vartype | orderBy : x.name" value='{{x[0]}}'>{{x[0]+" [" + x[1] +"]"}}</option>
+                      </select>
+                    </p>
+                    <!-- default  -->
+                    <input ng-switch-default type="text" ng-model="parameter.value"/>
+                  </div>
+                </div>
+                <div ng-show=exaCtrl.showSubmit>
+                  <button type="button" ng-click="exaCtrl.submit(exaCtrl.selectedAlgo)">Submit</button>
+                </div>
+              </form>
+            </div>
+
+            <div ng-show=exaCtrl.showVariables>
+              <h3>Variables</h3>
+              <div ng-repeat="parameter in exaCtrl.variables track by $index">
+                {{parameter[0] + " [" + parameter[1] + "]"}}<br>
+              </div>
+            </div>
+          </td>
+          <td id="exa-results">
+            <div>
+              <h2>Results:</h2>
+              <div id="container" style="width:90%;" ></div>
+              <pre>{{exaCtrl.result | json }}</pre>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
   </section>
 
   <!--[if lt IE 7]>
-      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+  <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
   <![endif]-->
 
   <script src="app.js"></script>

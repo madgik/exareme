@@ -1,3 +1,4 @@
+*.DS_Store
 ./exareme-docker/raw-sniffer
 ./exareme-docker/datasets/*
 
