@@ -9,28 +9,19 @@ angular.module('myApp', [
 ]).
 config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
   $locationProvider.hashPrefix('!');
-
   $routeProvider.otherwise({redirectTo: '/view1'});
 }]).
 filter('validType', function() {
   return function(variables, validVarType){
     if(validVarType == undefined){return variables;}
     var result = [];
-    //var count = 0;
-    //alert ("validType filter: " + validVarType + " " + variables);
     for(var i = 0; i < variables.length; i++) {
-      /*if (count < 5){
-      alert (variables[i][0] + " " + variables[i][1] + ", pos=" + validVarType.indexOf(variables[i][1]));
-      count = count + 1;
-    }*/
-    if (validVarType.indexOf(variables[i][1]) > -1) {
-      //if (count < 5){ alert (variables[i][0]);}
-      result.push(variables[i]);
+      if (validVarType.indexOf(variables[i][1]) > -1) {
+        result.push(variables[i]);
+      }
     }
+    return result;
   }
-  //alert( result);
-  return result;
-}
 }).
 controller('ExaController', function($scope, $http){
   var exa = this;
@@ -77,6 +68,8 @@ controller('ExaController', function($scope, $http){
     var algorithm = {"name": "WP_LIST_VARIABLES","desc": "","type": "local","parameters": []};
     exa.submit(algorithm);
   }
+
+  exa.getVariables();
 
   $http({
     method: 'GET',
@@ -185,6 +178,11 @@ controller('ExaController', function($scope, $http){
           }
         }
         // End only for demo web page
+        else if(exa.name == 'WP_LIST_VARIABLES'){
+          // Update the variables variable used to display the available variables in the Demo test page.
+          exa.variables = exa.result.variables;
+          // Do not display the result through exa.result
+        }
         else{                       //json output
           exa.result = response.data;
         }
@@ -195,10 +193,6 @@ controller('ExaController', function($scope, $http){
           for (var key in exa.datasets) {
             exa.datasets[key].Datasets = exa.string2array(exa.datasets[key].Datasets);
           }
-        }
-        else if(exa.name == 'WP_LIST_VARIABLES'){
-          // Update the variables variable used to display the available variables in the Demo test page.
-          exa.variables = exa.result.variables;
         }
       }
     }, function errorCallback(response) {

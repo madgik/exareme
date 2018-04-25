@@ -73,10 +73,9 @@ html{color:#222;font-size:1em;line-height:1.4}::selection{background:#b3d4fc;tex
       <table width="100%" border="0">
         <tr valign="top">
           <td id="exa-navbar">
-            <h2>Data Selection:</h2>
+            <!--h2>Data Selection:</h2-->
             <div>
-              <button type="button" ng-click="exaCtrl.getVariables()">Get available variables</button><br>
-              <button type="button" ng-click="exaCtrl.getDatasets()">Get available datasets</button>
+              <button type="button" ng-click="exaCtrl.getDatasets()">Data directory</button>
             </div>
 
             <h2>Algorithm Selection:</h2>
@@ -90,7 +89,7 @@ html{color:#222;font-size:1em;line-height:1.4}::selection{background:#b3d4fc;tex
               <form>
                 <!-- For each parameter, switch on parameter name -->
                 <div ng-repeat="parameter in exaCtrl.selectedAlgo.parameters track by $index" ng-switch on="parameter.type">
-                  <div style="margin: 10pt;">{{parameter.name + ":"}}<br>
+                  <div style="margin: 10pt;">{{parameter.name}}<br>
                     <!-- dataset  -->
                     <select id="selectlist" ng-switch-when="dataset" ng-model="parameter.value" multiple>
                       <option value="" disabled hide ng-repeat-start="x in exaCtrl.datasets">{{"* " + x.NodeName +" *"}}</option>
