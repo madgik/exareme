@@ -34,7 +34,7 @@ controller('ExaController', function($scope, $http){
   exa.showSubmit = false;
 	exa.showFormula = false;
 	exa.showVar = true;
-	exa.showJson = true;
+	exa.showJson = false;
 
   exa.toggleSubmitButton = function() {
     exa.showSubmit = true;
@@ -51,21 +51,20 @@ controller('ExaController', function($scope, $http){
     }
   }
 
-  // Function to convert list of datasets from array to string
-  // (Used to transform the "dataset" input variable of algorithms from an array to Exareme's expected input, i.e., a string)
-  exa.array2string = function(array) {
-    if (Array.isArray ( array )){
-      return array.toString();
+  // Function to convert parameters in the form  of list of datasets or numeric values to string
+  exa.object2string = function(object) {
+    if (Array.isArray ( object ) || typeof object === 'number'){
+      return object.toString();
     }
     else {
-      return array;
+      return object;
     }
   };
 
   // Function to convert a string to an array
   // (WP_LIST_DATASET output will give a list of datasets if more than one, but a string otherwise...)
   exa.string2array = function(string) {
-    if (Array.isArray ( array ) || typeof array === 'number'){
+    if (Array.isArray ( string )){
       return string;
     }
     else {
@@ -82,8 +81,6 @@ controller('ExaController', function($scope, $http){
     var algorithm = {"name": "WP_LIST_VARIABLES","desc": "","type": "local","parameters": []};
     exa.submit(algorithm);
   }
-
-  exa.getVariables();
 
   $http({
     method: 'GET',
@@ -104,18 +101,6 @@ controller('ExaController', function($scope, $http){
       */
       exa.algorithms = exa.allAlgos;
 
-      /*
-      for (var key in exa.allAlgos) {
-        if (response.data[key].name != "WP_LIST_DATASET" && response.data[key].name != "WP_LIST_VARIABLES"){
-          var alg = response.data[key];
-          for (var param in alg.parameters) {
-            alg.parameters[param].value="";
-          }
-          exa.algorithms.push(alg);
-        }
-      }
-      */
-
       exa.selectedAlgo = {
         "name": "DEMO",
         "desc": "",
@@ -126,7 +111,7 @@ controller('ExaController', function($scope, $http){
             "desc": "",
             "type": "variable",
             "number": "",
-            "vartype": ["text"],
+            "vartype": ["integer","real","text"],
             "value": ""
           },
           {
@@ -154,15 +139,18 @@ controller('ExaController', function($scope, $http){
   exa.submit = function(algorithm){
     exa.algorithmParams = JSON.parse(JSON.stringify(algorithm.parameters));
     for (var key in exa.algorithmParams) {
-      exa.algorithmParams[key].value = exa.array2string(exa.algorithmParams[key].value);
+      exa.algorithmParams[key].value = exa.object2string(exa.algorithmParams[key].value);
     }
-    exa.result = {"status": "Processing..."};
+    if(algorithm.name !== 'WP_LIST_VARIABLES'){
+      exa.result = {"status": "Processing..."};
+    }
     Highcharts.chart('container', exa.result).destroy();
     $http({
       method: 'POST',
       url: '/mining/query/' + algorithm.name,
       data: exa.algorithmParams
     }).then(function successCallback(response) {
+      exa.showJson = true;
       if(response.status == 200){
         exa.name = algorithm.name;
         if(exa.name == 'K_MEANS'){      //visual output of K_MEANS
@@ -173,7 +161,7 @@ controller('ExaController', function($scope, $http){
             var result = response.data;
             if(typeof result.chart !== 'undefined' ){  //every chart is a visual output 2D or 3D
               Highcharts.chart('container', result);
-              delete exa.result;
+              exa.showJson = false;
             }
             else{                                  //everything else f.e. 4 variables, gives tabular data
               exa.result = response.data;
@@ -188,13 +176,14 @@ controller('ExaController', function($scope, $http){
           else{
             exa.result = response.data;
             Highcharts.chart('container',  exa.result);
-            delete exa.result;
+            exa.showJson = false;
           }
         }
         // End only for demo web page
         else if(exa.name == 'WP_LIST_VARIABLES'){
           // Update the variables variable used to display the available variables in the Demo test page.
-          exa.variables = exa.result.variables;
+          exa.variables = response.data.variables;
+          exa.showJson = false;
           // Do not display the result through exa.result
         }
         else{                       //json output
@@ -214,6 +203,8 @@ controller('ExaController', function($scope, $http){
       exa.result = response;
     });
   }
+
+  exa.getVariables();
 
   exa.allAlgos = [
     {
@@ -275,13 +266,13 @@ controller('ExaController', function($scope, $http){
           "value": "subjectageyears,av45"
         }
       ]
-    },
+    },/*
     {
       "name": "WP_LIST_DATASET",
       "desc": "",
       "type": "local_global",
       "parameters": []
-    },
+    },*/
     {
       "name": "WP_VARIABLE_PROFILE",
       "desc": "",
@@ -393,13 +384,13 @@ controller('ExaController', function($scope, $http){
           "value": "subjectageyears,av45"
         }
       ]
-    },
+    },/*
     {
       "name": "WP_LIST_VARIABLES",
       "desc": "",
       "type": "local",
       "parameters": []
-    },
+    },*/
     {
       "name": "WP_VARIABLES_HISTOGRAM",
       "desc": "",

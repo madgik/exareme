@@ -74,11 +74,9 @@ html{color:#222;font-size:1em;line-height:1.4}::selection{background:#b3d4fc;tex
         <tr valign="top">
           <td id="exa-navbar">
             <!--h2>Data Selection:</h2-->
-            <div>
-              <button type="button" ng-click="exaCtrl.getDatasets()">Data directory</button>
-            </div>
+            <button type="button" ng-click="exaCtrl.getDatasets()">Data directory</button>
 
-            <h2>Algorithm Selection:</h2>
+            <h2>Algorithm:</h2>
             <div>
               <select ng-model="exaCtrl.selectedAlgo" ng-options="x.name for x in exaCtrl.algorithms track by x.name"
                 ng-change=exaCtrl.toggleSubmitButton()>
@@ -149,7 +147,7 @@ html{color:#222;font-size:1em;line-height:1.4}::selection{background:#b3d4fc;tex
             <div>
               <h2>Results:</h2>
               <div id="container" style="width:90%;" ></div>
-              <pre>{{exaCtrl.result | json }}</pre>
+              <pre ng-show=exaCtrl.showJson style='overflow: auto; max-height:70vh'>{{exaCtrl.result | json }}</pre>
             </div>
           </td>
         </tr>
