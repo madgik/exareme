@@ -32,9 +32,10 @@ controller('ExaController', function($scope, $http){
   exa.datasets = '';
   exa.variables = '';
   exa.showSubmit = false;
-	exa.showFormula = false;
-	exa.showVar = true;
-	exa.showJson = false;
+  exa.showFormula = false;
+  exa.showVar = true;
+  exa.showJson = false;
+  exa.showHighChart = false;
 
   exa.toggleSubmitButton = function() {
     exa.showSubmit = true;
@@ -145,6 +146,7 @@ controller('ExaController', function($scope, $http){
       exa.result = {"status": "Processing..."};
     }
     Highcharts.chart('container', exa.result).destroy();
+    exa.showHighChart = false;
     $http({
       method: 'POST',
       url: '/mining/query/' + algorithm.name,
@@ -161,6 +163,7 @@ controller('ExaController', function($scope, $http){
             var result = response.data;
             if(typeof result.chart !== 'undefined' ){  //every chart is a visual output 2D or 3D
               Highcharts.chart('container', result);
+              exa.showHighChart = true;
               exa.showJson = false;
             }
             else{                                  //everything else f.e. 4 variables, gives tabular data
@@ -176,6 +179,7 @@ controller('ExaController', function($scope, $http){
           else{
             exa.result = response.data;
             Highcharts.chart('container',  exa.result);
+            exa.showHighChart = true;
             exa.showJson = false;
           }
         }
