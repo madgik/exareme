@@ -46,15 +46,49 @@ controller('ExaController', function($scope, $http){
                     else{
                          var result = response.data;
                          if(typeof result.chart !== 'undefined' ){  //every chart is a visual output 2D or 3D
-                            Highcharts.chart('container', result);
+                            var chart = new Highcharts.chart('container', result);
+                            // Add mouse and touch events for rotation in 3D scatter plot
+                            (function (H) {
+                                function dragStart(eStart) {
+                                    eStart = chart.pointer.normalize(eStart);
+
+                                    var posX = eStart.chartX,
+                                        posY = eStart.chartY,
+                                        alpha = chart.options.chart.options3d.alpha,
+                                        beta = chart.options.chart.options3d.beta,
+                                        sensitivity = 5; // lower is more sensitive
+
+                                    function drag(e) {
+                                        // Get e.chartX and e.chartY
+                                        e = chart.pointer.normalize(e);
+
+                                        chart.update({
+                                            chart: {
+                                                options3d: {
+                                                    alpha: alpha + (e.chartY - posY) / sensitivity,
+                                                    beta: beta + (posX - e.chartX) / sensitivity
+                                                }
+                                            }
+                                        }, undefined, undefined, false);
+                                    }
+
+                                    chart.unbindDragMouse = H.addEvent(document, 'mousemove', drag);
+                                    chart.unbindDragTouch = H.addEvent(document, 'touchmove', drag);
+
+                                    H.addEvent(document, 'mouseup', chart.unbindDragMouse);
+                                    H.addEvent(document, 'touchend', chart.unbindDragTouch);
+                                }
+                                H.addEvent(chart.container, 'mousedown', dragStart);
+                                H.addEvent(chart.container, 'touchstart', dragStart);
+                            }(Highcharts));
                             exa.result ="";
                          }
-                         else{                                  //everything else f.e. 4 variables, gives tabular data
+                         else{                                  //everything else f.e. 4 variables, give tabular data
                           exa.result = response.data;
                          }
                     }
                  }
-                /*
+
                 else if(exa.name == 'WP_VARIABLES_HISTOGRAM') {  //WP_VARIABLES_HISTOGRAM visual output
                     if (response.data.Error){
                         exa.result = response.data
@@ -65,8 +99,8 @@ controller('ExaController', function($scope, $http){
                         exa.result ="";
                     }
                 }
-                */
-                else{                       //json output
+                
+                else{                                           //json output
                  exa.result = response.data;
                 }
 }
