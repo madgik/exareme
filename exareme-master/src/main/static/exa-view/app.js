@@ -69,7 +69,7 @@ controller('ExaController', function($scope, $http){
       exa.showProgress = false;
       exa.showHighChart = false;
     }
-  } 
+  }
 
   // Function to convert parameters in the form  of list of datasets or numeric values to string
   exa.object2string = function(object) {
@@ -235,7 +235,7 @@ controller('ExaController', function($scope, $http){
       "parameters": [
         {
           "name": "x",
-          "desc": "",
+          "desc": "The right part of the linear predictor function, that contains the indepedent variables in an equation supporting the symbols +, :, * , R notation. The independent variables are variables of the input dataset and they should be Real, Float, Integer or text. It cannot be empty.",
           "type": "formula",
           "number": "1-1",
           "vartype": ["integer","real"],
@@ -243,7 +243,7 @@ controller('ExaController', function($scope, $http){
         },
         {
           "name": "y",
-          "desc": "",
+          "desc": "The left part of the linear predictor function, that contains the dependent variable. The dependent variable is a variable of the input dataset and it should be Real, Float or Integer. It cannot be empty.",
           "type": "variable",
           "number": "1-1",
           "vartype": ["integer","real"],
@@ -251,14 +251,14 @@ controller('ExaController', function($scope, $http){
         },
         {
           "name": "dataset",
-          "desc": "",
+          "desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty.",
           "type": "dataset",
           "number": "1-n",
           "value": ""
         },
         {
           "name": "filter",
-          "desc": "",
+          "desc": "It contains a filtering operation.It can be empty.",
           "type": "filter",
           "value": ""
         }
@@ -285,6 +285,19 @@ controller('ExaController', function($scope, $http){
           "number": "1-n",
           "vartype": ["integer","real"],
           "value": "subjectageyears,av45"
+        },
+        {
+          "name": "dataset",
+          "desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty.",
+          "type": "dataset",
+          "number": "1-n",
+          "value": []
+        },
+        {
+          "name": "filter",
+          "desc": "It contains a filtering operation.It can be empty.",
+          "type": "filter",
+          "value": ""
         }
       ]
     },/*
@@ -301,7 +314,7 @@ controller('ExaController', function($scope, $http){
       "parameters": [
         {
           "name": "variable",
-          "desc": "",
+          "desc": " It is a variable of the input dataset.The variable should be Real, Float, Integer, Text or null. It cannot be empty.",
           "type": "variable",
           "number": "1-1",
           "vartype": ["integer","real","text"],
@@ -309,14 +322,14 @@ controller('ExaController', function($scope, $http){
         },
         {
           "name": "dataset",
-          "desc": "",
+          "desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty.",
           "type": "dataset",
           "number": "1-n",
           "value": []
         },
         {
           "name": "filter",
-          "desc": "",
+          "desc": "It contains a filtering operation.It can be empty.",
           "type": "filter",
           "value": ""
         }
@@ -357,7 +370,7 @@ controller('ExaController', function($scope, $http){
       "parameters": [
         {
           "name": "columns",
-          "desc": "columns value",
+          "desc": "It contains two or more variables of the input dataset. They should be Real, Float, Integer. It cannot be empty.",
           "type": "variable",
           "number": "1-n",
           "vartype": ["integer","real"],
@@ -365,20 +378,20 @@ controller('ExaController', function($scope, $http){
         },
         {
           "name": "k",
-          "desc": "#centers",
+          "desc": "It is the number of the clusters. It should be integer.",
           "type": "integer",
           "value": "4"
         },
         {
           "name": "dataset",
-          "desc": "",
+          "desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty. ",
           "type": "dataset",
           "number": "1-n",
           "value": []
         },
         {
           "name": "filter",
-          "desc": "",
+          "desc":"It contains a filtering operation. It can be empty.",
           "type": "filter",
           "value": ""
         }
@@ -403,6 +416,19 @@ controller('ExaController', function($scope, $http){
           "type": "variable",
           "number": "1-n",
           "value": "subjectageyears,av45"
+        },
+        {
+          "name": "dataset",
+          "desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty.",
+          "type": "dataset",
+          "number": "1-n",
+          "value": []
+        },
+        {
+          "name": "filter",
+          "desc": "It contains a filtering operation.It can be empty.",
+          "type": "filter",
+          "value": ""
         }
       ]
     },/*
@@ -419,7 +445,7 @@ controller('ExaController', function($scope, $http){
       "parameters": [
         {
           "name": "column1",
-          "desc": "Column1 must be Real, Float or Integer",
+          "desc": "It is a variable of the input dataset. The variable should be Real, Float, Integer or null. It cannot be empty.",
           "type": "variable",
           "number": "1-1",
           "vartype": ["integer","real"],
@@ -427,7 +453,7 @@ controller('ExaController', function($scope, $http){
         },
         {
           "name": "column2",
-          "desc": "Column2 must be Text or Null",
+          "desc": "It is a variable of the input dataset. The variable should be text. It can also be empty.",
           "type": "variable",
           "number": "0-1",
           "vartype": ["text"],
@@ -435,20 +461,20 @@ controller('ExaController', function($scope, $http){
         },
         {
           "name": "nobuckets",
-          "desc": "",
+          "desc": "It is a parameter of the algorithm. It should be integer. It cannot be empty. ",
           "type": "integer",
           "value": "4"
         },
         {
           "name": "dataset",
-          "desc": "",
+          "desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty.",
           "type": "dataset",
           "number": "1-n",
           "value": []
         },
         {
           "name": "filter",
-          "desc": "",
+          "desc": "It contains a filtering operation.It can be empty.",
           "type": "filter",
           "value": ""
         }
