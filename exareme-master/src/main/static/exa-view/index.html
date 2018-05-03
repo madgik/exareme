@@ -53,8 +53,8 @@ input, textarea, keygen, select, button {
 }
 #exa-navbar > div {
        position: fixed;
-       top: 183px;
-       bottom: 1em;
+       top: 182px;
+       bottom: 20px;
        margin: 0em;
        padding: 1em;
        width: 18em;
@@ -70,13 +70,31 @@ input, textarea, keygen, select, button {
        padding: 1em;
        padding-top: 2.4em;
 }
-#exa-results > div, #exa-results > pre {
-       padding: 1em;
+#exa-results > div {
 }
 #exa-results > pre {
-       margin-bottom: 1em;
-       height: 100%;
+       position: fixed;
+       top: 14em;
+       left: 29.5em;
+       bottom: 20px;
+       right: 1.3em;
+       padding: 1em;
        overflow-y: scroll; 
+}
+#progressGear {
+       position: fixed;
+       top: 14em;
+       left: 29.5em;
+       bottom: 20px;
+       right: 1.3em;
+       padding: 1em;
+       vertical-align: middle;
+       text-align: center;
+}
+#progressGear img {
+       position: relative;
+       top: 50px;
+       left: -50px;
 }
 #container {
        width: 90%;
@@ -177,6 +195,7 @@ html{color:#222;font-size:1em;line-height:1.4}::selection{background:#b3d4fc;tex
 
     <div id="exa-results">
       <h2>Results:</h2>
+      <div ng-show=exaCtrl.showProgress id="progressGear"><img src="loading-gear-3-2.gif" alt="Progress..." title="Progress..." /></div>
       <div ng-show=exaCtrl.showHighChart id="container"></div>
       <pre ng-show=exaCtrl.showJson>{{exaCtrl.result | json }}</pre>
     </div>

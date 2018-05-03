@@ -35,6 +35,7 @@ controller('ExaController', function($scope, $http){
   exa.showFormula = false;
   exa.showVar = true;
   exa.showJson = false;
+  exa.showProgress = false;
   exa.showHighChart = false;
 
   exa.toggleSubmitButton = function() {
@@ -51,6 +52,24 @@ controller('ExaController', function($scope, $http){
       exa.showVar = false;
     }
   }
+
+  exa.showResult = function(what) {
+    if (what === 'PROGRESS') {
+      exa.showJson = false;
+      exa.showProgress = true;
+      exa.showHighChart = false;
+    }
+    if (what === 'CHART') {
+      exa.showJson = false;
+      exa.showProgress = false;
+      exa.showHighChart = true;
+    }
+    if (what === 'JSON') {
+      exa.showJson = true;
+      exa.showProgress = false;
+      exa.showHighChart = false;
+    }
+  } 
 
   // Function to convert parameters in the form  of list of datasets or numeric values to string
   exa.object2string = function(object) {
@@ -146,13 +165,13 @@ controller('ExaController', function($scope, $http){
       exa.result = {"status": "Processing..."};
     }
     Highcharts.chart('container', exa.result).destroy();
-    exa.showHighChart = false;
+    exa.showResult('PROGRESS');
     $http({
       method: 'POST',
       url: '/mining/query/' + algorithm.name,
       data: exa.algorithmParams
     }).then(function successCallback(response) {
-      exa.showJson = true;
+      exa.showResult('JSON');
       if(response.status == 200){
         exa.name = algorithm.name;
         if(exa.name == 'K_MEANS'){      //visual output of K_MEANS
@@ -163,8 +182,7 @@ controller('ExaController', function($scope, $http){
             var result = response.data;
             if(typeof result.chart !== 'undefined' ){  //every chart is a visual output 2D or 3D
               Highcharts.chart('container', result);
-              exa.showHighChart = true;
-              exa.showJson = false;
+              exa.showResult('CHART');
             }
             else{                                  //everything else f.e. 4 variables, gives tabular data
               exa.result = response.data;
@@ -179,16 +197,15 @@ controller('ExaController', function($scope, $http){
           else{
             exa.result = response.data;
             Highcharts.chart('container',  exa.result);
-            exa.showHighChart = true;
-            exa.showJson = false;
+            exa.showResult('CHART');
           }
         }
         // End only for demo web page
         else if(exa.name == 'WP_LIST_VARIABLES'){
           // Update the variables variable used to display the available variables in the Demo test page.
           exa.variables = response.data.variables;
-          exa.showJson = false;
           // Do not display the result through exa.result
+          exa.showJson = false;
         }
         else{                       //json output
           exa.result = response.data;
@@ -315,7 +332,7 @@ controller('ExaController', function($scope, $http){
           "desc": "",
           "type": "variable",
           "number": "1-1",
-          "vartype": ["integer","real","text"],
+          "vartype": ["integer","real"],
           "value": "apoe4"
         },
         {
