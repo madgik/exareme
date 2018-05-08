@@ -3,6 +3,7 @@ package madgik.exareme.master.gateway.async.handler;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import madgik.exareme.worker.art.registry.ArtRegistryLocator;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
@@ -216,7 +217,7 @@ public class HttpAsyncMiningOldHandler implements HttpAsyncRequestHandler<HttpRe
                             AlgorithmsProperties.AlgorithmProperties algorithmProperties =
                                 AlgorithmsProperties.AlgorithmProperties
                                     .createAlgorithmProperties(inputContent);
-                            dfl = composer.composeVirtual(qKey,algorithmProperties, null, null);
+                            dfl = composer.composeVirtual(qKey,algorithmProperties, null, null, ArtRegistryLocator.getArtRegistryProxy().getContainers().length);
 
                             log.debug(dfl);
                             AdpDBClientProperties clientProperties =

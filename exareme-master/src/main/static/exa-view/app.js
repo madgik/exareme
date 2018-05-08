@@ -242,7 +242,6 @@ controller('ExaController', function($scope, $http){
             }
           }
         }
-        // Only for demo web page ?
         else if(exa.name == 'WP_VARIABLES_HISTOGRAM') {  //WP_VARIABLES_HISTOGRAM visual output
           if (response.data.Error){
             exa.result = response.data
@@ -253,7 +252,6 @@ controller('ExaController', function($scope, $http){
             exa.showResult('CHART');
           }
         }
-        // End only for demo web page
         else if(exa.name == 'WP_LIST_VARIABLES'){
           // Update the variables variable used to display the available variables in the Demo test page.
           exa.variables = response.data.variables;

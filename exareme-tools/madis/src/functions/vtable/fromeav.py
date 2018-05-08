@@ -67,7 +67,11 @@ class fromEAV(vtbase.VT):
         schema = [('rid',), ('row_id',)]
         schema_order = {}
 
-        l = prev_l = c.next()
+        try:
+            l = prev_l = c.next()
+        except:
+            yield [("c1",)]
+            return
         rid = 0
         record = [rid, l[0]]
         while l[0] == prev_l[0]:

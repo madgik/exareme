@@ -3,7 +3,7 @@ package madgik.exareme.master.queryProcessor.composer;
 import com.google.gson.Gson;
 
 import org.apache.commons.io.FileUtils;
-
+import org.apache.log4j.Logger;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
@@ -20,6 +20,7 @@ import java.util.Map;
  * @author alexpap
  */
 public class AlgorithmsProperties {
+    private static final Logger log = Logger.getLogger(Composer.class);
 
     public static class ParameterProperties {
 
@@ -156,15 +157,30 @@ public class AlgorithmsProperties {
 
             AlgorithmProperties newAlgorithmParameters =
                 AlgorithmProperties.createAlgorithmProperties(path);
-
+            //for(String s: inputContent.keySet()){
+            //    String key = s;
+            //    String val = inputContent.get(s);
+                //log.info("Before "+key+"="+val);
+            //}
             for (ParameterProperties algorithmParameter : newAlgorithmParameters.getParameters()) {
+
                 String value = inputContent.get(algorithmParameter.getName());
                 if (value != null) {
+                    //log.info("value= "+value);
+                    algorithmParameter.setValue(value);
+                    inputContent.remove(algorithmParameter.getName());
+               }
+               else{
+                    value = "";
                     algorithmParameter.setValue(value);
                     inputContent.remove(algorithmParameter.getName());
                 }
             }
-
+            //for(String s: inputContent.keySet()){
+            //    String key = s;
+            //    String val = inputContent.get(s);
+                //log.info("After "+key+"="+val);
+            //}
             if(!inputContent.isEmpty()) {
 
                 ArrayList<ParameterProperties> list = new ArrayList<>();

@@ -72,7 +72,8 @@ public class RmiAdpDBSelectOptimizer {
         log.debug("Creating states ...");
         StateData sketchState = new StateData();
         log.debug("Getting containers ... ");
-        sketchState.proxies = ArtRegistryLocator.getArtRegistryProxy().getContainers();
+        sketchState.proxies = props.getContainerProxies() != null ? props.getContainerProxies() :
+                ArtRegistryLocator.getArtRegistryProxy().getContainers();
         log.debug("Creating proxies and virtual containers (if needed) ...");
         createProxies(sketchInput, sketchState, props);
         if (props.isTreeEnabled()) {
@@ -547,7 +548,7 @@ public class RmiAdpDBSelectOptimizer {
                     }
                     if (inputPattern == DataPattern.remote) {
                         log.debug("Bind virtual operators in simple round robin fashion.");
-                        if ( containerCounter == state.proxies.length){
+                        if ( containerCounter >= state.proxies.length){
                             containerCounter = 0;
                         }
                         ContainerProxy containerProxy = state.proxies[containerCounter];

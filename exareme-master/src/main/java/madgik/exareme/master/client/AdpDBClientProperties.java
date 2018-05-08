@@ -4,6 +4,7 @@
 package madgik.exareme.master.client;
 
 import madgik.exareme.common.app.engine.scheduler.elasticTree.client.SLA;
+import madgik.exareme.worker.art.container.ContainerProxy;
 
 import java.io.Serializable;
 
@@ -25,6 +26,7 @@ public class AdpDBClientProperties implements Serializable {
     private boolean validate;
 
     private int maxNumberOfContainers;
+    private ContainerProxy[] containerProxies = null;
     private int statisticsUpdateSEC;
 
     private SLA sla;
@@ -92,5 +94,9 @@ public class AdpDBClientProperties implements Serializable {
     public SLA getSLA() {
         return this.sla;
     }
+
+    public ContainerProxy[] getContainerProxies() { return containerProxies; }
+
+    public void setContainerProxies(ContainerProxy[] containerProxies) { this.containerProxies = containerProxies; }
 
 }

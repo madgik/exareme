@@ -14,7 +14,7 @@ class linearregressionresultsviewer:
         # self.noofclusters = args[5]
         try:
             self.variablenames.append(str(args[0]))
-            self.mydata[(args[0])] = float(args[1]),float(args[2]),float(args[3]),float(args[4])
+            self.mydata[(args[0])] = str(args[1]),str(args[2]),str(args[3]),str(args[4])
             self.n += 1
             # if self.n <= self.noofvariables :
             #     self.variablenames.append(str(args[1]))
@@ -25,8 +25,9 @@ class linearregressionresultsviewer:
         yield ('linearregressionresult',)
 
         myresult="{\"resources\": [{\"name\": \"linear-regression\", \"profile\": \"tabular-data-resource\", \
-                   \"data\": [[\"variable\", \"estimate\", \"standard_error\", \"t-value\", \"p-value\"],"
-
+                   \"data\": [[\"variable\", \"estimate\", \"standard_error\", \"t-value\", \"p-value\"]"
+        if len(self.variablenames) != 0:
+            myresult+=","
         for i in xrange(len(self.variablenames)):
             myresult += "[\"" + str(self.variablenames[i]) + "\","
             # row=[]
@@ -40,7 +41,10 @@ class linearregressionresultsviewer:
             if i< len(self.variablenames)-1:
                 myresult+="],"
 
-        myresult+="]],\"schema\":  { \"fields\": [{\"name\": \"variable\", \"type\": \"string\"}, \
+        if len(self.variablenames) != 0:
+             myresult+="]"
+
+        myresult+="],\"schema\":  { \"fields\": [{\"name\": \"variable\", \"type\": \"string\"}, \
                   {\"name\": \"estimate\", \"type\": \"number\"},{\"name\": \"standard_error\", \"type\": \"number\"}, \
                   {\"name\": \"t-value\", \"type\": \"number\"}, {\"name\": \"p-value\", \"type\": \"string\"}] } }]}"
 
