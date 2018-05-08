@@ -37,6 +37,7 @@ controller('ExaController', function($scope, $http){
   exa.showJson = false;
   exa.showProgress = false;
   exa.showHighChart = false;
+  exa.showJS = false;
 
   exa.toggleSubmitButton = function() {
     exa.showSubmit = true;
@@ -58,16 +59,25 @@ controller('ExaController', function($scope, $http){
       exa.showJson = false;
       exa.showProgress = true;
       exa.showHighChart = false;
+      exa.showJS = false;
     }
     if (what === 'CHART') {
       exa.showJson = false;
       exa.showProgress = false;
       exa.showHighChart = true;
+      exa.showJS = false;
     }
     if (what === 'JSON') {
       exa.showJson = true;
       exa.showProgress = false;
       exa.showHighChart = false;
+      exa.showJS = false;
+    }
+    if (what === 'JS') {
+      exa.showJson = false;
+      exa.showProgress = false;
+      exa.showHighChart = false;
+      exa.showJS = true;
     }
   }
 
@@ -156,6 +166,15 @@ controller('ExaController', function($scope, $http){
     exa.algorithms = [];
   });
 
+  function IsJsonString(str) {
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return true;
+  }
+
   exa.submit = function(algorithm){
     exa.algorithmParams = JSON.parse(JSON.stringify(algorithm.parameters));
     for (var key in exa.algorithmParams) {
@@ -240,6 +259,16 @@ controller('ExaController', function($scope, $http){
           exa.variables = response.data.variables;
           // Do not display the result through exa.result
           exa.showJson = false;
+        }
+        else if (exa.name.indexOf('PIPELINE_ISOUP_') >= 0){
+          if (response.data.Error){
+            exa.result = response.data
+          }
+          else{
+            exa.result = response.data;
+            eval(exa.result);
+            exa.showResult('JS');
+          }
         }
         else{                       //json output
           exa.result = response.data;

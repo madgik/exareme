@@ -20,13 +20,14 @@
   <script src="https://code.highcharts.com/highcharts-more.js"></script>
   <script src="https://code.highcharts.com/highcharts-3d.js"></script>
   <script src="https://code.highcharts.com/modules/exporting.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
 <style>
 /* LSC: FOR NOW HERE, AS THE CONTENT-TYPE IS NOT CORRECTLY SET. */
 /* app css stylesheet */
 section, html, body {
        font-family: "Arial";
        vertical-align: top;
-       overflow: hidden; 
+       overflow: hidden;
 }
 h1 {
        font-size: 2em;
@@ -35,7 +36,7 @@ h2 {
        font-size: 1em;
 }
 pre {
-       margin: 0em; 
+       margin: 0em;
        padding: 1em;
        background-color: ghostwhite;
        border: 1px solid silver;
@@ -79,7 +80,7 @@ input, textarea, keygen, select, button {
        bottom: 20px;
        right: 1.3em;
        padding: 1em;
-       overflow-y: scroll; 
+       overflow-y: scroll;
 }
 #progressGear {
        position: fixed;
@@ -198,6 +199,7 @@ html{color:#222;font-size:1em;line-height:1.4}::selection{background:#b3d4fc;tex
       <div ng-show=exaCtrl.showProgress id="progressGear"><img src="loading-gear-3-2.gif" alt="Progress..." title="Progress..." /></div>
       <div ng-show=exaCtrl.showHighChart id="container"></div>
       <pre ng-show=exaCtrl.showJson>{{exaCtrl.result | json }}</pre>
+      <div ng-show=exaCtrl.showJS id="visualization"></div>
     </div>
   </div>
 
