@@ -81,6 +81,11 @@ controller('ExaController', function($scope, $http){
     }
   }
 
+  exa.clearVisualizationDiv = function()
+  {
+    document.getElementById("visualization").innerHTML = "";
+  }
+
   // Function to convert parameters in the form  of list of datasets or numeric values to string
   exa.object2string = function(object) {
     if (Array.isArray ( object ) || typeof object === 'number'){
@@ -166,15 +171,6 @@ controller('ExaController', function($scope, $http){
     exa.algorithms = [];
   });
 
-  function IsJsonString(str) {
-    try {
-        JSON.parse(str);
-    } catch (e) {
-        return false;
-    }
-    return true;
-  }
-
   exa.submit = function(algorithm){
     exa.algorithmParams = JSON.parse(JSON.stringify(algorithm.parameters));
     for (var key in exa.algorithmParams) {
@@ -190,6 +186,7 @@ controller('ExaController', function($scope, $http){
       url: '/mining/query/' + algorithm.name,
       data: exa.algorithmParams
     }).then(function successCallback(response) {
+      exa.clearVisualizationDiv();
       exa.showResult('JSON');
       if(response.status == 200){
         exa.name = algorithm.name;
@@ -263,6 +260,7 @@ controller('ExaController', function($scope, $http){
             exa.result = response.data
           }
           else{
+            var network = null;
             exa.result = response.data;
             eval(exa.result);
             exa.showResult('JS');
@@ -469,6 +467,7 @@ controller('ExaController', function($scope, $http){
           "desc": "",
           "type": "variable",
           "number": "1-n",
+          "vartype": ["integer","real"],
           "value": "apoe4"
         },
         {
@@ -476,6 +475,7 @@ controller('ExaController', function($scope, $http){
           "desc": "",
           "type": "variable",
           "number": "1-n",
+          "vartype": ["integer","real"],
           "value": "subjectageyears,av45"
         },
         {
