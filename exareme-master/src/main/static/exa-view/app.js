@@ -54,36 +54,35 @@ controller('ExaController', function($scope, $http){
     }
   }
 
+  exa.clearVisualizationDiv = function()
+  {
+    document.getElementById("visualization").innerHTML = "";
+  }
+
   exa.showResult = function(what) {
     if (what === 'PROGRESS') {
+      exa.clearVisualizationDiv();
       exa.showJson = false;
       exa.showProgress = true;
       exa.showHighChart = false;
-      exa.showJS = false;
     }
     if (what === 'CHART') {
+      exa.clearVisualizationDiv();
       exa.showJson = false;
       exa.showProgress = false;
       exa.showHighChart = true;
-      exa.showJS = false;
     }
     if (what === 'JSON') {
+      exa.clearVisualizationDiv();
       exa.showJson = true;
       exa.showProgress = false;
       exa.showHighChart = false;
-      exa.showJS = false;
     }
     if (what === 'JS') {
       exa.showJson = false;
       exa.showProgress = false;
       exa.showHighChart = false;
-      exa.showJS = true;
     }
-  }
-
-  exa.clearVisualizationDiv = function()
-  {
-    document.getElementById("visualization").innerHTML = "";
   }
 
   // Function to convert parameters in the form  of list of datasets or numeric values to string
@@ -186,7 +185,6 @@ controller('ExaController', function($scope, $http){
       url: '/mining/query/' + algorithm.name,
       data: exa.algorithmParams
     }).then(function successCallback(response) {
-      exa.clearVisualizationDiv();
       exa.showResult('JSON');
       if(response.status == 200){
         exa.name = algorithm.name;
@@ -260,7 +258,7 @@ controller('ExaController', function($scope, $http){
             exa.result = response.data
           }
           else{
-            var network = null;
+            var network = '';
             exa.result = response.data;
             eval(exa.result);
             exa.showResult('JS');

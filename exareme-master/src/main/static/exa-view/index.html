@@ -71,33 +71,26 @@ input, textarea, keygen, select, button {
        padding: 1em;
        padding-top: 2.4em;
 }
-#exa-results > div {
-}
-#exa-results > pre {
+#exa-results-pre,
+#visualization,
+#progressGear {
        position: fixed;
-       top: 14em;
-       left: 29.5em;
+       top: 10.3em;
+       left: 23em;
        bottom: 20px;
        right: 1.3em;
        padding: 1em;
-       overflow-y: scroll;
+       padding-bottom: 0;
 }
-#visualization{
-       position: fixed;
-       top: 14em;
-       left: 29.5em;
-       bottom: 20px;
-       right: 1.3em;
-       padding: 1em;
+#exa-results-pre > pre {
+       position: absolute;
+       top: 1em;
+       left: 1em;
+       bottom: 1em;
+       right: 1em;
        overflow-y: scroll;
 }
 #progressGear {
-       position: fixed;
-       top: 14em;
-       left: 29.5em;
-       bottom: 20px;
-       right: 1.3em;
-       padding: 1em;
        vertical-align: middle;
        text-align: center;
 }
@@ -105,9 +98,6 @@ input, textarea, keygen, select, button {
        position: relative;
        top: 50px;
        left: -50px;
-}
-#container {
-       width: 90%;
 }
 
 .selectlist {
@@ -205,10 +195,12 @@ html{color:#222;font-size:1em;line-height:1.4}::selection{background:#b3d4fc;tex
 
     <div id="exa-results">
       <h2>Results:</h2>
+      <div id="visualization"></div>
       <div ng-show=exaCtrl.showProgress id="progressGear"><img src="loading-gear-3-2.gif" alt="Progress..." title="Progress..." /></div>
       <div ng-show=exaCtrl.showHighChart id="container"></div>
-      <pre ng-show=exaCtrl.showJson>{{exaCtrl.result | json }}</pre>
-      <div id="visualization"></div>
+      <div ng-show=exaCtrl.showJson id="exa-results-pre">
+        <pre>{{exaCtrl.result | json }}</pre>
+      </div>
     </div>
   </div>
 
