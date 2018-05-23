@@ -81,20 +81,31 @@ class arff_writer(vtbase.VT):
         cur = envars['db'].cursor()
         c = cur.execute(query)
 
-        first_row = c.next()
         schema = cur.getdescriptionsafe()
+        raw = []
+        try:
+            first_row = c.next()
+            raw.append(first_row)
+        except:
+            f = open('input.arff', 'w')
+            f.write("@RELATION hour-weka.filters.unsupervised.attribute.Remove-R1-2\n\n")
+            for j in schema:
+                f.write("@ATTRIBUTE %s NUMERIC\n" % (j[0],))
+            f.write("\n@DATA\n")
+            yield (('result',),)
+            yield (1,)
+            return
+            
 
         updated_schema = []
-        for i,val in enumerate(first_row):
-            t = (schema[i][0],"STRING")
-            if is_number(val):
-                t = (schema[i][0],"NUMERIC")
+
+        for i in range(len(schema)):
+            t = (schema[i][0],"NUMERIC")
             updated_schema.append(t)
 
         data[u'attributes'] = updated_schema
 
-        raw = []
-        raw.append(first_row)
+
         for row in c:
             raw.append(row)
 
@@ -105,6 +116,7 @@ class arff_writer(vtbase.VT):
 
         f = open('input.arff','w')
         f.write(arff.dumps(data))
+
 
         yield(('result',),)
         yield (1,)
