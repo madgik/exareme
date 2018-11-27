@@ -8,11 +8,11 @@ Exareme is an auto-tuned, highly scalable, elastic system for processing arbitra
 
 ## Documentation
 
-You'll find exareme's detailed documentation on our [webpage] (http://madgik.github.io/exareme).
+You'll find exareme's detailed documentation on our [webpage](http://madgik.github.io/exareme).
 
 ## Installation
 
-You'll find installation instructions on our [wiki page] (https://github.com/madgik/exareme/wiki).
+You'll find installation instructions on our [wiki page](https://github.com/madgik/exareme/wiki).
 
 ## License
 This content is released under the MIT License. See the LICENSE file in the source distribution.
