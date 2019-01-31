@@ -10,6 +10,8 @@ Examples:
     -----------
     5   | test
 
+You have to be careful about print in udf postgres* (postgresraw, postgresrawfilters etc) because the output of set-local-datasets.sh
+may be messed up with the output of print
 """
 
 import src.functions.setpath

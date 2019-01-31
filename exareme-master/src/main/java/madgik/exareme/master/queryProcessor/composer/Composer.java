@@ -42,7 +42,7 @@ public class Composer {
     private static final Logger log = Logger.getLogger(Composer.class);
     private static String[] inputVariables = new String[]{
             "filter","variable","column1","columns", "column2", "groupings","covariables","dataset",
-            "x","y", "descriptive_attributes", "target_attributes"};
+            "x","y", "descriptive_attributes", "target_attributes","classname","kfold","testdataset"};
     private Composer() {
     }
     private static final Composer instance = new Composer();
@@ -207,9 +207,21 @@ public class Composer {
                 else if("filter".equals(inputVariable)){
                     if (!s.isEmpty()){
                         String filter = " filter:";
-                        variables.add(filter+s);
-                        //variables.add(s);
+                        String filterVar = new Filter().getFilter(s);
+                        variables.add(filter+filterVar);
                     }
+                }
+                else if("centers".equals(inputVariable)){
+                    variables.add(s);
+                }
+                else if("classname".equals(inputVariable)){
+                    variables.add(s);
+                }
+                else if("kfold".equals(inputVariable)){
+                    variables.add(s);
+                }
+                else if("testdataset".equals(inputVariable)){
+                    variables.add(s);
                 }
                 else{
                     //if (!"dataset".equals(inputVariable))
@@ -227,16 +239,16 @@ public class Composer {
         log.info("lcltble : "+inputLocalTbl);
         log.info("algorithm type: " + algorithmProperties.getType().name());
         parameters.put(ComposerConstants.inputLocalTblKey, inputLocalTbl);
-        String outputGlobalTbl = parameters.get(ComposerConstants.outputGlobalTblKey);
+        String outputGlobalTbl = parameters.get(ComposerConstants.outputGlobalTblKey);      //output_tbl
 
-        if (iterativeAlgorithmPhase != null) {
+        if (iterativeAlgorithmPhase != null) {                                              //For iterative
             // Handle iterations specific logic, related to Composer
             // 1. Create iterationsDB and defaultDB algorithm parameters.
             // qKey is actually algorithm key in the case of iterative algorithms.
             parameters.put(IterationsConstants.iterationsParameterIterDBKey,
-                    generateIterationsDBName(qKey));
+                    generateIterationsDBName(qKey));                                         //iterationDB
             parameters.put(ComposerConstants.defaultDBKey,
-                    HBPConstants.DEMO_DB_WORKING_DIRECTORY + qKey + "/defaultDB.db");
+                    HBPConstants.DEMO_DB_WORKING_DIRECTORY + qKey + "/defaultDB.db");       //defaultDB
 
             // 2. Remove unneeded parameter
             parameters.remove(iterationsPropertyConditionQueryProvided);
@@ -389,7 +401,7 @@ public class Composer {
                             parameters.remove(IterationsConstants.previousPhaseOutputTblVariableName);
 
                         //Create database directory
-                        if (iterativeAlgorithmPhase.equals(init)){
+                        if (iterativeAlgorithmPhase.equals(init) && !listFiles[i].getName().equals("2") ){
                             dflScript.append(String.format("distributed create temporary table createPathTempTable as virtual\n" +
                                     "select execprogram(null, 'mkdir', '-p', '%s') as C1;\n\n",
                                     HBPConstants.DEMO_DB_WORKING_DIRECTORY + qKey ));

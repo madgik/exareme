@@ -13,6 +13,8 @@
   <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/normalize.css">
   <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/main.css">
   <link rel="stylesheet" href="app.css">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css" rel="stylesheet" type="text/css">
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-route/angular-route.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
@@ -58,17 +60,18 @@
       </div>
       </td>
       <td width="100%">
-      <div>
+         <div>
           <h2>Result</h2>
           <table>
               <tbody>
-                  <div id="container" style="width:90%;" ></div>
+                  <!-- <div id="container" style="width:90%;" ></div> -->
+                  <div id="visualization" style="width:90%;"></div>
                   <tr>
                       <pre>{{exaCtrl.result | json }}</pre>
                   </tr>
               </tbody>
           </table>
-      </div>
+        </div>
       </td>
       <td colspan="2"></td>
       </tr>

@@ -31,7 +31,7 @@ controller('ExaController', function($scope, $http){
 
     exa.submit = function(algorithm){
         exa.result = {};
-        Highcharts.chart('container', exa.result).destroy();
+        Highcharts.chart('visualization', exa.result).destroy();
         $http({
             method: 'POST',
             url: '/mining/query/' + algorithm.name,
@@ -39,14 +39,14 @@ controller('ExaController', function($scope, $http){
         }).then(function successCallback(response) {
             if(response.status == 200){
                 exa.name = algorithm.name;
-                if(exa.name == 'K_MEANS_VISUAL'){      //visual output of K_MEANS
+                /*if(exa.name == 'KMEANSnew'){      //visual output of K_MEANS
                     if (response.data.Error){
                         exa.result = response.data
                     }
                     else{
                          var result = response.data;
                          if(typeof result.chart !== 'undefined' ){  //every chart is a visual output 2D or 3D
-                            var chart = new Highcharts.chart('container', result);
+                            var chart = new Highcharts.chart('visualization', result);
                             // Add mouse and touch events for rotation in 3D scatter plot
                             (function (H) {
                                 function dragStart(eStart) {
@@ -78,8 +78,8 @@ controller('ExaController', function($scope, $http){
                                     H.addEvent(document, 'mouseup', chart.unbindDragMouse);
                                     H.addEvent(document, 'touchend', chart.unbindDragTouch);
                                 }
-                                H.addEvent(chart.container, 'mousedown', dragStart);
-                                H.addEvent(chart.container, 'touchstart', dragStart);
+                                H.addEvent(chart.visualization, 'mousedown', dragStart);
+                                H.addEvent(chart.visualization, 'touchstart', dragStart);
                             }(Highcharts));
                             exa.result ="";
                          }
@@ -88,21 +88,33 @@ controller('ExaController', function($scope, $http){
                          }
                     }
                  }
+                //WP_VARIABLES_HISTOGRAM visual output
 
-                else if(exa.name == 'WP_VARIABLES_HISTOGRAM') {  //WP_VARIABLES_HISTOGRAM visual output
+                else if(exa.name == 'WP_VARIABLES_HISTOGRAM') {
                     if (response.data.Error){
                         exa.result = response.data
                     }
                     else{
                         exa.result = response.data;
-                        Highcharts.chart('container',  exa.result);
+                        Highcharts.chart('visualization',  exa.result);
                         exa.result ="";
                     }
                 }
-                
-                else{                                           //json output
-                 exa.result = response.data;
+                //JSI's visual output
+                else if (exa.name == 'PIPELINE_ISOUP_REGRESSION_TREE_SERIALIZER' || exa.name == 'PIPELINE_ISOUP_MODEL_TREE_SERIALIZER'){
+                    if (response.data.Error){
+                        exa.result = response.data
+                    }
+                    else{
+                        var result = response.data;
+                        exa.result ="";
+                        eval(result);
+                    }
                 }
+
+                else{              // */                        //json output
+                 exa.result = response.data;
+                //}
 }
         }, function errorCallback(response) {
             //result = response.data;

@@ -2,6 +2,7 @@ package madgik.exareme.master.gateway.async.handler;
 
 import com.google.gson.Gson;
 
+import jdk.nashorn.internal.parser.JSONParser;
 import madgik.exareme.utils.net.NetUtil;
 import madgik.exareme.utils.properties.AdpProperties;
 import madgik.exareme.worker.art.container.ContainerProxy;
@@ -46,6 +47,7 @@ import madgik.exareme.master.queryProcessor.composer.Composer;
 import madgik.exareme.master.queryProcessor.composer.ComposerConstants;
 import madgik.exareme.master.queryProcessor.composer.ComposerException;
 import madgik.exareme.utils.encoding.Base64Util;
+import org.codehaus.jettison.json.JSONObject;
 
 import static madgik.exareme.master.gateway.GatewayConstants.COOKIE_ALGORITHM_EXECUTION_ID;
 
@@ -150,7 +152,11 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             String value = (String) k.get("value");
             if(name == null || name.isEmpty() || value == null || value.isEmpty()) continue;
             log.debug(name + " = " + value);
-            value = value.replaceAll("[^A-Za-z0-9,._*+><=&|()]", "");
+            if (name.equals("filter")){
+                value = value.replaceAll("[^A-Za-z0-9,._*+><=&|(){}:\"\\[\\]]", "");
+            }
+            else
+                value = value.replaceAll("[^A-Za-z0-9,._*+():\\-{}\\\"]", "");    // ><=&| we no more need those for filtering
             value = value.replaceAll("\\s+", "");
             if("local_pfa".equals(name)) {
                 Map map = new Gson().fromJson(value, Map.class);
