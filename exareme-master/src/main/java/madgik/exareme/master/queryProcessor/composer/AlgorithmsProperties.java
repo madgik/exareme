@@ -430,7 +430,7 @@ public class AlgorithmsProperties {
         for (File file : repoFile.listFiles(new FileFilter() {
             @Override
             public boolean accept(File pathname) {
-                return pathname.isDirectory() && !pathname.getName().startsWith(".") ? true : false;
+                return pathname.isDirectory() && !pathname.getName().startsWith(".") && !pathname.getName().contains("unit_tests") ? true : false;
             }
         })) {
             AlgorithmProperties algorithm =
