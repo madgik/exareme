@@ -2,7 +2,7 @@
 
 """
 import setpath
-import vtbase
+from functions.vtable import vtbase
 import functions
 
 from rpy2.robjects.packages import importr
