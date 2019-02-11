@@ -42,7 +42,7 @@ public class Composer {
     private static final Logger log = Logger.getLogger(Composer.class);
     private static String[] inputVariables = new String[]{
             "filter","variable","column1","columns", "column2", "groupings","covariables","dataset",
-            "x","y", "descriptive_attributes", "target_attributes","classname","kfold","testdataset"};
+            "x","y", "descriptive_attributes", "target_attributes","classname","kfold","testdataset","DBIdentifier"};
     private Composer() {
     }
     private static final Composer instance = new Composer();
@@ -168,12 +168,18 @@ public class Composer {
                 repoPath + algorithmProperties.getName() + "/localupdate.template.sql";
         String globalScriptPath =
             repoPath + algorithmProperties.getName() + "/global.template.sql";
-        // get filters
+        
+        // TODO - Refactor maybe?
+        // Get Variables
         List<String> variables = new ArrayList<>();
+        String defaultDBIdentifier = qKey;
         for (String inputVariable : inputVariables) {
             if(parameters.containsKey(inputVariable)){
                 String s = parameters.get(inputVariable);
-                if("covariables".equals(inputVariable) || "groupings".equals(inputVariable)){
+                
+                if("DBIdentifier".equals(inputVariable)) {
+                	defaultDBIdentifier = s;
+                }else if("covariables".equals(inputVariable) || "groupings".equals(inputVariable)){
                     for (String s1 : s.split(",")) {
                         variables.add(s1);
                     }
@@ -235,20 +241,17 @@ public class Composer {
              inputLocalTbl = algorithms.getLocal_engine_default().toUDF(query);
         else
             inputLocalTbl = algorithms.getLocal_engine_default().toUDF(variables);
-
-        log.info("lcltble : "+inputLocalTbl);
-        log.info("algorithm type: " + algorithmProperties.getType().name());
         parameters.put(ComposerConstants.inputLocalTblKey, inputLocalTbl);
-        String outputGlobalTbl = parameters.get(ComposerConstants.outputGlobalTblKey);      //output_tbl
+
+        String outputGlobalTbl = "output_" + qKey;	 								      //output_tbl
+        parameters.put(ComposerConstants.outputGlobalTblKey, outputGlobalTbl);
 
         if (iterativeAlgorithmPhase != null) {                                              //For iterative
             // Handle iterations specific logic, related to Composer
-            // 1. Create iterationsDB and defaultDB algorithm parameters.
+            // 1. Create iterationsDB algorithm parameter.
             // qKey is actually algorithm key in the case of iterative algorithms.
             parameters.put(IterationsConstants.iterationsParameterIterDBKey,
                     generateIterationsDBName(qKey));                                         //iterationDB
-            parameters.put(ComposerConstants.defaultDBKey,
-                    HBPConstants.DEMO_DB_WORKING_DIRECTORY + qKey + "/defaultDB.db");       //defaultDB
 
             // 2. Remove unneeded parameter
             parameters.remove(iterationsPropertyConditionQueryProvided);
@@ -258,10 +261,10 @@ public class Composer {
                     IterativeAlgorithmState.IterativeAlgorithmPhasesModel.termination_condition))
                 parameters.remove(iterationsPropertyMaximumNumber);
         }
-        else {
-            parameters.put(ComposerConstants.defaultDBKey,
-                    HBPConstants.DEMO_DB_WORKING_DIRECTORY + qKey + "_defaultDB.db");
-        }
+        
+        if (defaultDBIdentifier != null && !defaultDBIdentifier.isEmpty()) 
+        	parameters.put(ComposerConstants.defaultDBKey,
+                HBPConstants.DEMO_DB_WORKING_DIRECTORY + defaultDBIdentifier + "_defaultDB.db");       //defaultDB
 
         switch (algorithmProperties.getType()) {
 

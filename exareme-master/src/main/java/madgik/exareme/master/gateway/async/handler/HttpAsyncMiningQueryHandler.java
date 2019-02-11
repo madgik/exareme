@@ -168,6 +168,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 usedDatasets = value.split(",");
             }
             inputContent.put(name, value);
+            log.debug("Parameters in the json: ");
             log.debug(name + " = " + value);
         }
 
@@ -195,7 +196,6 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             String dfl;
             AdpDBClientQueryStatus queryStatus;
 
-            inputContent.put(ComposerConstants.outputGlobalTblKey, "output_" + qKey);
             inputContent.put(ComposerConstants.algorithmKey, algorithm);
             AlgorithmsProperties.AlgorithmProperties algorithmProperties =
                     AlgorithmsProperties.AlgorithmProperties.createAlgorithmProperties(inputContent);
