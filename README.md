@@ -18,7 +18,7 @@
 
 * Package dependencies :
 
-    - jre 1.7, Python 2.7, git, [APSW 3.11] (https://rogerbinns.github.io/apsw/download.html)
+    - jre 1.7, Python 2.7, git, [APSW 3.11](https://rogerbinns.github.io/apsw/download.html)
     - requests, NumPy, SciPy, scikit-learn, titus (can be installed through pip, also listed in requirements.txt) 
 
 * Download mip-algorithms
