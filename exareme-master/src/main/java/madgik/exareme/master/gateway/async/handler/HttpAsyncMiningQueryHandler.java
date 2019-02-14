@@ -197,6 +197,8 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             AdpDBClientQueryStatus queryStatus;
 
             inputContent.put(ComposerConstants.algorithmKey, algorithm);
+            if (inputContent.get(ComposerConstants.dbIdentifierKey) == null)
+                inputContent.put(ComposerConstants.dbIdentifierKey, qKey);
             AlgorithmsProperties.AlgorithmProperties algorithmProperties =
                     AlgorithmsProperties.AlgorithmProperties.createAlgorithmProperties(inputContent);
 
@@ -245,6 +247,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 response.setStatusCode(HttpStatus.SC_OK);
                 response.setEntity(entity);
             }
+            
 
         } catch (ComposerException e) {
             log.error(e);

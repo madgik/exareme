@@ -42,7 +42,7 @@ public class Composer {
     private static final Logger log = Logger.getLogger(Composer.class);
     private static String[] inputVariables = new String[]{
             "filter","variable","column1","columns", "column2", "groupings","covariables","dataset",
-            "x","y", "descriptive_attributes", "target_attributes","classname","kfold","testdataset","DBIdentifier"};
+            "x","y", "descriptive_attributes", "target_attributes","classname","kfold","testdataset"};
     private Composer() {
     }
     private static final Composer instance = new Composer();
@@ -172,14 +172,11 @@ public class Composer {
         // TODO - Refactor maybe?
         // Get Variables
         List<String> variables = new ArrayList<>();
-        String defaultDBIdentifier = qKey;
         for (String inputVariable : inputVariables) {
             if(parameters.containsKey(inputVariable)){
                 String s = parameters.get(inputVariable);
                 
-                if("DBIdentifier".equals(inputVariable)) {
-                	defaultDBIdentifier = s;
-                }else if("covariables".equals(inputVariable) || "groupings".equals(inputVariable)){
+                if("covariables".equals(inputVariable) || "groupings".equals(inputVariable)){
                     for (String s1 : s.split(",")) {
                         variables.add(s1);
                     }
@@ -261,10 +258,10 @@ public class Composer {
                     IterativeAlgorithmState.IterativeAlgorithmPhasesModel.termination_condition))
                 parameters.remove(iterationsPropertyMaximumNumber);
         }
-        
-        if (defaultDBIdentifier != null && !defaultDBIdentifier.isEmpty()) 
-        	parameters.put(ComposerConstants.defaultDBKey,
-                HBPConstants.DEMO_DB_WORKING_DIRECTORY + defaultDBIdentifier + "_defaultDB.db");       //defaultDB
+    
+        String dbIdentifier = parameters.get(ComposerConstants.dbIdentifierKey);
+    	parameters.put(ComposerConstants.defaultDBKey,
+            HBPConstants.DEMO_DB_WORKING_DIRECTORY + dbIdentifier + "_defaultDB.db");       //defaultDB
 
         switch (algorithmProperties.getType()) {
 
