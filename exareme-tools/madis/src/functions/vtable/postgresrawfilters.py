@@ -14,7 +14,7 @@ You have to be careful about print in udf postgres* (postgresraw, postgresrawfil
 may be messed up with the output of print
 """
 
-import src.functions.setpath
+import setpath
 import vtbase
 import functions
 import re

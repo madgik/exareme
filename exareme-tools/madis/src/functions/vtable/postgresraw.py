@@ -12,7 +12,7 @@ Examples:
 
 """
 
-import src.functions.setpath
+import setpath
 import vtbase
 import functions
 import re
