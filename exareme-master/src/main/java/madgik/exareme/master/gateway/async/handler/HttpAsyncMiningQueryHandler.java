@@ -142,11 +142,11 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         String query = null;
         String algorithm = uri.substring(uri.lastIndexOf('/')+1);
 
-
-
         boolean format = false;
         log.debug("Posting " + algorithm + " ...\n");
         String[] usedDatasets = null;
+        
+        log.debug("All of the parameters: " + parameters);
         for (Map k : parameters) {
             String name = (String) k.get("name");
             String value = (String) k.get("value");
@@ -156,7 +156,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 value = value.replaceAll("[^A-Za-z0-9,._*+><=&|(){}:\"\\[\\]]", "");
             }
             else
-                value = value.replaceAll("[^A-Za-z0-9,._*+():\\-{}\\\"]", "");    // ><=&| we no more need those for filtering
+                value = value.replaceAll("[^A-Za-z0-9,._*+():\\-{}\\\"\\[\\]]", "");    // ><=&| we no more need those for filtering
             value = value.replaceAll("\\s+", "");
             if("local_pfa".equals(name)) {
                 Map map = new Gson().fromJson(value, Map.class);
