@@ -34,9 +34,8 @@ class sklearnkfold(functions.vtable.vtbase.VT):
                 self.data.append(r[0])
             else:
                 self.data.append(str(r[0]))
+        yield [('rid',), ('idofset',)]
 
-        if self.n_splits > len(self.data):
-            raise functions.OperatorError(__name__.rsplit('.')[-1]," Cannot have number of splits greater than the number of samples")
 
         # print "data", self.data
         X = np.array(self.data)
@@ -46,29 +45,17 @@ class sklearnkfold(functions.vtable.vtbase.VT):
         kf.get_n_splits(X)
         # print"KF", kf
 
-        for train_index, test_index in kf.split(X):
-            print("TRAIN:", train_index ,"TEST:", test_index)
+        try:
+            for train_index, test_index in kf.split(X):
+                # print("TRAIN:", train_index ,"TEST:", test_index)
+                j = 0
+                for train_index, test_index  in kf.split(X):
+                    for k in test_index:
+                        yield (self.data[k],j)
+                    j += 1
+        except:
+                yield(-1,"Cannot have number of splits greater than the number of samples")
 
-        yield [('rid',), ('idofset',)]
-
-        # try:
-        #
-        # except StopIteration:
-        #     try:
-        #         raise
-        #     finally:
-        #         try:
-        #             c.close()
-        #         except:
-        #             pass
-        j = 0
-        for train_index, test_index  in kf.split(X):
-            for k in test_index:
-                yield (self.data[k],j)
-                # yield self.data[k],j
-            # print( "TEST:", test_index,j)
-                # yield  list(r), j
-            j += 1
 
 
 
