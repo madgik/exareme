@@ -16,6 +16,6 @@ public class ComposerConstants {
   public static final String isTmpKey = "isTmp";
   public static final String algorithmIterKey = "algorithm_iter_key";
   public static final String defaultDBKey = "defaultDB";
-  public static final String dbIdentifierKey = "DBIdentifier";
+  public static final String dbIdentifierKey = "dbIdentifier";
   public static final String DFL_SCRIPT_FILE_EXTENSION = ".dfl";
 }
