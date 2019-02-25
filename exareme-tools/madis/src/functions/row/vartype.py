@@ -52,6 +52,14 @@ def vartypek(*args):
         return 1
 
 vartypek.registered=True
+
+def varclassnametype(*args):
+    if args[0] == "0":
+        raise functions.OperatorError("TYPECLASSNAME","Provide correct classname")
+    else:
+        return 1
+varclassnametype.registered=True
+
 if not ('.' in __name__):
     """
     This is needed to be able to test the function, put it at the end of every
