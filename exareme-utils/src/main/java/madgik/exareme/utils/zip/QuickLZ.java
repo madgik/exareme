@@ -109,8 +109,8 @@ public final class QuickLZ {
                 } else {
                     int old_src = src;
                     int remaining = ((source.length - UNCOMPRESSED_END - src + 1 - 1) > 255 ?
-                        255 :
-                        (source.length - UNCOMPRESSED_END - src + 1 - 1));
+                            255 :
+                            (source.length - UNCOMPRESSED_END - src + 1 - 1));
 
                     src += 4;
                     if (source[o + src - old_src] == source[src]) {
@@ -118,7 +118,7 @@ public final class QuickLZ {
                         if (source[o + src - old_src] == source[src]) {
                             src++;
                             while (source[o + (src - old_src)] == source[src]
-                                && (src - old_src) < remaining) {
+                                    && (src - old_src) < remaining) {
                                 src++;
                             }
                         }
@@ -276,14 +276,14 @@ public final class QuickLZ {
                 dst += matchlen;
 
                 fetch = (int) fastread(destination, last_hashed + 1,
-                    3); // destination[last_hashed + 1] | (destination[last_hashed + 2] << 8) | (destination[last_hashed + 3] << 16);
+                        3); // destination[last_hashed + 1] | (destination[last_hashed + 2] << 8) | (destination[last_hashed + 3] << 16);
                 while (last_hashed < dst - matchlen) {
                     last_hashed++;
                     hash = ((fetch >>> 12) ^ fetch) & (HASH_VALUES - 1);
                     hashtable[hash] = last_hashed;
                     hash_counter[hash] = 1;
                     fetch =
-                        fetch >>> 8 & 0xffff | (((int) destination[last_hashed + 3]) & 0xff) << 16;
+                            fetch >>> 8 & 0xffff | (((int) destination[last_hashed + 3]) & 0xff) << 16;
                 }
                 last_hashed = dst - 1;
                 fetch = (int) fastread(source, src, 3);

@@ -24,20 +24,20 @@ Examples::
     Lila  | b       | 74
     Lila  | c       | 1
 """
-import setpath
-import vtbase
 import functions
-import gc
+
+import vtbase
 
 ### Classic stream iterator
-registered=True
-       
+registered = True
+
+
 class toEAV(vtbase.VT):
-    def VTiter(self, *parsedArgs,**envars):
+    def VTiter(self, *parsedArgs, **envars):
         largs, dictargs = self.full_parse(parsedArgs)
 
         if 'query' not in dictargs:
-            raise functions.OperatorError(__name__.rsplit('.')[-1],"No query argument ")
+            raise functions.OperatorError(__name__.rsplit('.')[-1], "No query argument ")
         query = dictargs['query']
 
         cur = envars['db'].cursor()
@@ -64,8 +64,10 @@ class toEAV(vtbase.VT):
             for i in xrange(0, lr):
                 yield (rid, schema[i], l[i])
 
+
 def Source():
     return vtbase.VTGenerator(toEAV)
+
 
 if not ('.' in __name__):
     """
@@ -73,13 +75,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()
-
-

@@ -35,8 +35,8 @@ public class InputData implements Serializable {
     }
 
     public InputData(QueryScript script, Registry.Schema schema, Statistics stats,
-        AdpDBHistoricalQueryData queryData, AdpDBQueryID queryID, int maxNumberOfContainers,
-        boolean schedule, boolean validate) {
+                     AdpDBHistoricalQueryData queryData, AdpDBQueryID queryID, int maxNumberOfContainers,
+                     boolean schedule, boolean validate) {
         this.script = script;
         this.schema = schema;
         this.stats = stats;

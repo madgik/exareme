@@ -2,32 +2,6 @@ package madgik.exareme.master.gateway.async.handler;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
-import madgik.exareme.worker.art.registry.ArtRegistryLocator;
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpEntityEnclosingRequest;
-import org.apache.http.HttpException;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
-import org.apache.http.RequestLine;
-import org.apache.http.UnsupportedHttpVersionException;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.InputStreamEntity;
-import org.apache.http.nio.entity.NStringEntity;
-import org.apache.http.nio.protocol.BasicAsyncRequestConsumer;
-import org.apache.http.nio.protocol.BasicAsyncResponseProducer;
-import org.apache.http.nio.protocol.HttpAsyncExchange;
-import org.apache.http.nio.protocol.HttpAsyncRequestConsumer;
-import org.apache.http.nio.protocol.HttpAsyncRequestHandler;
-import org.apache.http.protocol.HttpContext;
-import org.apache.http.util.EntityUtils;
-import org.apache.log4j.Logger;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Locale;
-
 import madgik.exareme.common.consts.HBPConstants;
 import madgik.exareme.master.client.AdpDBClient;
 import madgik.exareme.master.client.AdpDBClientFactory;
@@ -41,19 +15,32 @@ import madgik.exareme.master.queryProcessor.composer.AlgorithmsProperties;
 import madgik.exareme.master.queryProcessor.composer.Composer;
 import madgik.exareme.master.queryProcessor.composer.ComposerConstants;
 import madgik.exareme.master.queryProcessor.composer.ComposerException;
+import madgik.exareme.worker.art.registry.ArtRegistryLocator;
+import org.apache.http.*;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.InputStreamEntity;
+import org.apache.http.nio.entity.NStringEntity;
+import org.apache.http.nio.protocol.*;
+import org.apache.http.protocol.HttpContext;
+import org.apache.http.util.EntityUtils;
+import org.apache.log4j.Logger;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Locale;
 
 
 /**
  * Mining  Handler.
- *
+ * <p>
  * GET  /v1/mining/algorithms                        - list algorithms
- *
+ * <p>
  * GET  /v1/mining/endpoints                         - list endpoints
- *
+ * <p>
  * POST /v1/mining/query/<query-key>                 - add new query
  * POST /v1/mining/query/<query-key>/status          - get query status.
  * POST /v1/mining/query/<query-key>/result          - get query result.
- *
+ * <p>
  * Supports exa-view.
  *
  * @author alex
@@ -63,7 +50,7 @@ import madgik.exareme.master.queryProcessor.composer.ComposerException;
 public class HttpAsyncMiningOldHandler implements HttpAsyncRequestHandler<HttpRequest> {
     private static final Logger log = Logger.getLogger(HttpAsyncMiningOldHandler.class);
     private static final String msg =
-        "{ " + "\"schema\":[[\"error\",\"null\"]], " + "\"errors\":[[null]] " + "}\n" + "[\"Not supported.\" ]\n";
+            "{ " + "\"schema\":[[\"error\",\"null\"]], " + "\"errors\":[[null]] " + "}\n" + "[\"Not supported.\" ]\n";
 
     private static final AdpDBManager manager = AdpDBManagerLocator.getDBManager();
     private static final Composer composer = Composer.getInstance();
@@ -72,14 +59,15 @@ public class HttpAsyncMiningOldHandler implements HttpAsyncRequestHandler<HttpRe
     public HttpAsyncMiningOldHandler() {
     }
 
-    @Override public HttpAsyncRequestConsumer<HttpRequest> processRequest(HttpRequest request,
-        HttpContext context) throws HttpException, IOException {
+    @Override
+    public HttpAsyncRequestConsumer<HttpRequest> processRequest(HttpRequest request,
+                                                                HttpContext context) throws HttpException, IOException {
         return new BasicAsyncRequestConsumer();
     }
 
     @Override
     public void handle(HttpRequest request, HttpAsyncExchange httpExchange, HttpContext context)
-        throws HttpException, IOException {
+            throws HttpException, IOException {
         HttpResponse response = httpExchange.getResponse();
         response.setHeader("Content-Type", String.valueOf(ContentType.APPLICATION_JSON));
         try {
@@ -92,8 +80,8 @@ public class HttpAsyncMiningOldHandler implements HttpAsyncRequestHandler<HttpRe
     }
 
     private void handleInternal(HttpRequest request, HttpResponse response, HttpContext context)
-        throws HttpException, IOException,
-        madgik.exareme.master.queryProcessor.composer.ComposerException {
+            throws HttpException, IOException,
+            madgik.exareme.master.queryProcessor.composer.ComposerException {
 
         log.debug("Validate method ...");
         RequestLine requestLine = request.getRequestLine();
@@ -147,7 +135,7 @@ public class HttpAsyncMiningOldHandler implements HttpAsyncRequestHandler<HttpRe
                         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
                         response.setEntity(new NStringEntity(gson.toJson(
-                            new AlgorithmResult(null, status.substring(start + 2, end - 1)))));
+                                new AlgorithmResult(null, status.substring(start + 2, end - 1)))));
                         log.info(status.substring(start + 2, end - 1));
                     }
                 } else if (substring.matches("(.*)/result")) { //result
@@ -163,12 +151,12 @@ public class HttpAsyncMiningOldHandler implements HttpAsyncRequestHandler<HttpRe
                         try {
                             log.debug(queryStatus.getExecutionTime());
                             AdpDBClientProperties clientProperties =
-                                new AdpDBClientProperties(
-                                        HBPConstants.DEMO_DB_WORKING_DIRECTORY + split[4],
-                                        "", "", false,
-                                    false, -1, 10);
+                                    new AdpDBClientProperties(
+                                            HBPConstants.DEMO_DB_WORKING_DIRECTORY + split[4],
+                                            "", "", false,
+                                            false, -1, 10);
                             AdpDBClient dbClient =
-                                AdpDBClientFactory.createDBClient(manager, clientProperties);
+                                    AdpDBClientFactory.createDBClient(manager, clientProperties);
                             response.removeHeaders("Content-Type");
                             response.addHeader("Content-Type", "application/x-ldjson");
 
@@ -189,7 +177,7 @@ public class HttpAsyncMiningOldHandler implements HttpAsyncRequestHandler<HttpRe
                             // blocking reading TODO async like status
                             // TODO check error handling output format
                             response.setEntity(new InputStreamEntity(
-                                dbClient.readTable("output_" + split[4], ds)));
+                                    dbClient.readTable("output_" + split[4], ds)));
                         } catch (Exception e) {
                             throw new IOException("Unable to format result.", e);
                         }
@@ -215,18 +203,18 @@ public class HttpAsyncMiningOldHandler implements HttpAsyncRequestHandler<HttpRe
 
                             inputContent.put(ComposerConstants.algorithmKey, algorithmName);
                             AlgorithmsProperties.AlgorithmProperties algorithmProperties =
-                                AlgorithmsProperties.AlgorithmProperties
-                                    .createAlgorithmProperties(inputContent);
-                            dfl = composer.composeVirtual(qKey,algorithmProperties, null, null, ArtRegistryLocator.getArtRegistryProxy().getContainers().length);
+                                    AlgorithmsProperties.AlgorithmProperties
+                                            .createAlgorithmProperties(inputContent);
+                            dfl = composer.composeVirtual(qKey, algorithmProperties, null, null, ArtRegistryLocator.getArtRegistryProxy().getContainers().length);
 
                             log.debug(dfl);
                             AdpDBClientProperties clientProperties =
-                                new AdpDBClientProperties(
-                                        HBPConstants.DEMO_DB_WORKING_DIRECTORY + qKey,
-                                        "", "", false,
-                                    false, -1, 10);
+                                    new AdpDBClientProperties(
+                                            HBPConstants.DEMO_DB_WORKING_DIRECTORY + qKey,
+                                            "", "", false,
+                                            false, -1, 10);
                             AdpDBClient dbClient =
-                                AdpDBClientFactory.createDBClient(manager, clientProperties);
+                                    AdpDBClientFactory.createDBClient(manager, clientProperties);
                             AdpDBClientQueryStatus queryStatus = dbClient.query(qKey, dfl);
                             queries.put(qKey, queryStatus);
                             r = queryStatus.getStatus();
@@ -239,7 +227,7 @@ public class HttpAsyncMiningOldHandler implements HttpAsyncRequestHandler<HttpRe
                         }
                         Gson gson = new GsonBuilder().setPrettyPrinting().create();
                         response.setEntity(new NStringEntity(
-                            gson.toJson(new AlgorithmResult(qKey), AlgorithmResult.class)));
+                                gson.toJson(new AlgorithmResult(qKey), AlgorithmResult.class)));
                     }
                 }
             }
@@ -252,35 +240,36 @@ public class HttpAsyncMiningOldHandler implements HttpAsyncRequestHandler<HttpRe
 
 
 class AlgorithmResult {
-        private String queryKey;
-        private String status;
+    private String queryKey;
+    private String status;
 
-        public AlgorithmResult(String queryKey, String status) {
-            this.queryKey = queryKey;
-            this.status = status;
-        }
-
-        public AlgorithmResult(String queryKey) {
-            this.queryKey = queryKey;
-        }
-
-        public AlgorithmResult() {
-        }
-
-        public String getQueryKey() {
-            return queryKey;
-        }
-
-        public void setQueryKey(String queryKey) {
-            this.queryKey = queryKey;
-        }
-
-        public String getStatus() {
-            return status;
-        }
-        public void setStatus(String status) {
-            this.status = status;
-        }
+    public AlgorithmResult(String queryKey, String status) {
+        this.queryKey = queryKey;
+        this.status = status;
     }
+
+    public AlgorithmResult(String queryKey) {
+        this.queryKey = queryKey;
+    }
+
+    public AlgorithmResult() {
+    }
+
+    public String getQueryKey() {
+        return queryKey;
+    }
+
+    public void setQueryKey(String queryKey) {
+        this.queryKey = queryKey;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+}
 
 

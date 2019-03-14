@@ -18,7 +18,8 @@ public class PlanPath {
      * bcast:-2
      */
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "PlanPath{" + "choices=" + choices + '}';
     }
 

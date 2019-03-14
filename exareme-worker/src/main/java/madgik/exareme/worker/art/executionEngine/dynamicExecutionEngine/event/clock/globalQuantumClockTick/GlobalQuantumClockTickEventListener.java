@@ -14,16 +14,17 @@ import java.rmi.RemoteException;
  * @author herald
  */
 public class GlobalQuantumClockTickEventListener
-    implements EventListener<GlobalQuantumClockTickEvent> {
+        implements EventListener<GlobalQuantumClockTickEvent> {
     public static final GlobalQuantumClockTickEventListener instance =
-        new GlobalQuantumClockTickEventListener();
+            new GlobalQuantumClockTickEventListener();
     private static final long serialVersionUID = 1L;
 
     public GlobalQuantumClockTickEventListener() {
     }
 
-    @Override public void processed(GlobalQuantumClockTickEvent event, RemoteException exception,
-        EventProcessor processor) {
+    @Override
+    public void processed(GlobalQuantumClockTickEvent event, RemoteException exception,
+                          EventProcessor processor) {
         if (exception != null) {
             LogUtils.logException("Global Quantum Clock", exception);
             PlanEventScheduler.engineInternalException(event, exception);

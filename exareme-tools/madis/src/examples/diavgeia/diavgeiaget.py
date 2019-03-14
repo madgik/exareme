@@ -25,96 +25,99 @@ Examples:
     Operator OAIGET: <urlopen error [Errno -2] Name or service not known>
 
 """
-from functions.vtable import vtbase
 import functions
 import time
+from functions.vtable import vtbase
 
-registered=True
-external_stream=True
+registered = True
+external_stream = True
+
 
 class diavgeiaget(vtbase.VT):
     def VTiter(self, *parsedArgs, **envars):
-        
+
         def buildURL(baseurl, opts):
-            return '?'.join([ baseurl, '&'.join([x+'='+unicode(y) for x,y in opts if y!=None]) ])
+            return '?'.join([baseurl, '&'.join([x + '=' + unicode(y) for x, y in opts if y != None])])
 
         import urllib2
         import re
 
-        opts= self.full_parse(parsedArgs)[1]
+        opts = self.full_parse(parsedArgs)[1]
 
         yield ('c1', 'text')
 
         if 'datefrom' not in opts:
-            opts['datefrom']='01-01-1000'
+            opts['datefrom'] = '01-01-1000'
         if 'output' not in opts:
-            opts['output']='full'
+            opts['output'] = 'full'
         if 'order' not in opts:
-            opts['order']='asc'
+            opts['order'] = 'asc'
         if 'http' not in opts:
-            opts['http']='//opendata.diavgeia.gov.gr/api/decisions'
+            opts['http'] = '//opendata.diavgeia.gov.gr/api/decisions'
 
-        baseurl='http:'+opts['http']
+        baseurl = 'http:' + opts['http']
 
-        findcount=re.compile(r"""<count>[^\d]*?(\d+)[^\d]*?</count>""", re.DOTALL| re.UNICODE)
-        findtotal=re.compile(r"""<total>[^\d]*?(\d+)[^\d]*?</total>""", re.DOTALL| re.UNICODE)
-        findfrom=re.compile(r"""<from>[^\d]*?(\d+)[^\d]*?</from>""", re.DOTALL| re.UNICODE)
+        findcount = re.compile(r"""<count>[^\d]*?(\d+)[^\d]*?</count>""", re.DOTALL | re.UNICODE)
+        findtotal = re.compile(r"""<total>[^\d]*?(\d+)[^\d]*?</total>""", re.DOTALL | re.UNICODE)
+        findfrom = re.compile(r"""<from>[^\d]*?(\d+)[^\d]*?</from>""", re.DOTALL | re.UNICODE)
 
-        count=total=fromv=lastfromv=None
-        firsttime=True
+        count = total = fromv = lastfromv = None
+        firsttime = True
 
-        del(opts['http'])
-        opts=list(opts.iteritems())
-        url=buildURL(baseurl, opts)
+        del (opts['http'])
+        opts = list(opts.iteritems())
+        url = buildURL(baseurl, opts)
 
         def buildopener():
             o = urllib2.build_opener()
             o.addheaders = [
-             ('Accept', '*/*'),
-             ('Connection', 'Keep-Alive'),
-             ('Content-type', 'text/xml')
+                ('Accept', '*/*'),
+                ('Connection', 'Keep-Alive'),
+                ('Content-type', 'text/xml')
             ]
             return o
 
-        opener=buildopener()
+        opener = buildopener()
 
-        errorcount=0
+        errorcount = 0
         while True:
             try:
-                for i in opener.open( url, timeout=1200 ):
-                    if count==None:
-                        t=findcount.search(i)
+                for i in opener.open(url, timeout=1200):
+                    if count == None:
+                        t = findcount.search(i)
                         if t:
-                            count=int(t.groups()[0])
-                    if total==None:
-                        t=findtotal.search(i)
+                            count = int(t.groups()[0])
+                    if total == None:
+                        t = findtotal.search(i)
                         if t:
-                            errorcount=0
-                            total=int(t.groups()[0])
-                    if fromv==None:
-                        t=findfrom.search(i)
+                            errorcount = 0
+                            total = int(t.groups()[0])
+                    if fromv == None:
+                        t = findfrom.search(i)
                         if t:
-                            errorcount=0
-                            fromv=int(t.groups()[0])
+                            errorcount = 0
+                            fromv = int(t.groups()[0])
                     yield (unicode(i.rstrip("\n"), 'utf-8'),)
-                if count==None or total==None or fromv==None:
+                if count == None or total == None or fromv == None:
                     break
-                fromv=fromv+count
-                if fromv>total:
+                fromv = fromv + count
+                if fromv > total:
                     break
-                url=buildURL(baseurl, opts+[('from', fromv)])
-                lastfromv=fromv
-                count=total=fromv=None
-                firsttime=False
-            except Exception,e:
-                if errorcount<10 and not firsttime:
-                    time.sleep(2**errorcount)
-                    errorcount+=1
+                url = buildURL(baseurl, opts + [('from', fromv)])
+                lastfromv = fromv
+                count = total = fromv = None
+                firsttime = False
+            except Exception, e:
+                if errorcount < 10 and not firsttime:
+                    time.sleep(2 ** errorcount)
+                    errorcount += 1
                 else:
-                    if lastfromv==None:
+                    if lastfromv == None:
                         raise functions.OperatorError(__name__.rsplit('.')[-1], e)
                     else:
-                        raise functions.OperatorError(__name__.rsplit('.')[-1], str(e)+'\n'+'To continue, use the following "from" parameter:\n'+str(lastfromv))
+                        raise functions.OperatorError(__name__.rsplit('.')[-1], str(
+                            e) + '\n' + 'To continue, use the following "from" parameter:\n' + str(lastfromv))
+
 
 def Source():
     return vtbase.VTGenerator(diavgeiaget)
@@ -126,12 +129,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
-        doctest.testmod()
 
+        doctest.testmod()

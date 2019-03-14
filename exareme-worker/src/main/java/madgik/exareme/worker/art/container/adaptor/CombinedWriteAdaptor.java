@@ -12,7 +12,7 @@ public class CombinedWriteAdaptor {
     public WriteSocketStreamAdaptor writeStreamAdaptor2 = null;
 
     public CombinedWriteAdaptor(WriteRmiStreamAdaptor writeStreamAdaptor,
-        WriteSocketStreamAdaptor writeStreamAdaptor2) {
+                                WriteSocketStreamAdaptor writeStreamAdaptor2) {
         this.writeStreamAdaptor = writeStreamAdaptor;
         this.writeStreamAdaptor2 = writeStreamAdaptor2;
     }

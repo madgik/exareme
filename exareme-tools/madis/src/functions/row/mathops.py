@@ -1,14 +1,12 @@
-import random
-
 import functions
-
+import json
 # coding: utf-8
 import math
-import json
+import random
 from fractions import Fraction
 
-def randomrange(*args):
 
+def randomrange(*args):
     """
     .. function:: randomrange(start, end, step) -> int
 
@@ -32,16 +30,17 @@ def randomrange(*args):
         s = 1
         if len(args) >= 3:
             s = args[2]
-        ret=random.randrange(args[0], args[1], s)
+        ret = random.randrange(args[0], args[1], s)
     except ValueError:
         return None
 
     return ret
 
-randomrange.registered=True
+
+randomrange.registered = True
+
 
 def gaussdistribution(*args):
-
     """
     .. function:: gaussdistribution(mean, sigma) -> float
 
@@ -58,17 +57,17 @@ def gaussdistribution(*args):
     """
 
     try:
-        ret=random.gauss(args[0],args[1])
+        ret = random.gauss(args[0], args[1])
     except ValueError:
         return None
 
     return ret
 
-gaussdistribution.registered=True
+
+gaussdistribution.registered = True
 
 
 def sqroot(*args):
-
     """
     .. function:: sqroot(int) -> int
 
@@ -87,17 +86,17 @@ def sqroot(*args):
     """
 
     try:
-        ret=math.sqrt(float(args[0]))
+        ret = math.sqrt(float(args[0]))
     except ValueError:
         return None
 
     return ret
 
-sqroot.registered=True
+
+sqroot.registered = True
 
 
 def safediv(*args):
-
     """
     .. function:: safediv(int, int, int) -> int
 
@@ -113,10 +112,11 @@ def safediv(*args):
 
     """
 
-    if args[2]==0:
+    if args[2] == 0:
         return args[0]
     else:
-        return (args[1]/args[2])
+        return (args[1] / args[2])
+
 
 safediv.registered = True
 
@@ -195,13 +195,14 @@ def farith(*args):
 
     if len(s) < 1:
         raise functions.OperatorError("Farith", "No args")
-    #return simplify_fraction(s.pop())
+    # return simplify_fraction(s.pop())
     return float(s.pop())
+
+
 farith.registered = True
 
 
 def tonumber(*args):
-
     """
     .. function:: tonumber(variable) -> int or float
 
@@ -244,6 +245,7 @@ def tonumber(*args):
 
     return ret
 
+
 tonumber.registered = True
 
 if not ('.' in __name__):
@@ -253,9 +255,11 @@ if not ('.' in __name__):
     """
     import sys
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

@@ -11,7 +11,7 @@ import java.rmi.RemoteException;
  * @author Herald Kllapi<br>
  * @author Dimitris Paparas<br>
  * @author Eva Sitaridi<br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public interface ExecutionEngineManagementMBean {
@@ -19,7 +19,7 @@ public interface ExecutionEngineManagementMBean {
     int getActiveExecutionPlans() throws RemoteException;
 
     String runPerformanceDataflow(int times, int parallelDataflows, String daxFilePath)
-        throws RemoteException;
+            throws RemoteException;
 
     int getTotalExecutedPlans() throws RemoteException;
 

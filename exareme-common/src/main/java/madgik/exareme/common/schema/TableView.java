@@ -66,7 +66,8 @@ public class TableView implements Serializable {
         this.numOfPartitions = numOfPartitions;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "Partitions: " + numOfPartitions;
     }
 }

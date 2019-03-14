@@ -19,19 +19,21 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author herald
  */
 public class DynamicStatisticsManager extends EventSchedulerManipulator
-    implements PlanSessionStatisticsManagerInterface {
+        implements PlanSessionStatisticsManagerInterface {
     private ReentrantLock lock = null;
 
     public DynamicStatisticsManager() {
         this.lock = new ReentrantLock();
     }
 
-    @Override public ConcreteOperatorStatistics getOperatorStatistics(OperatorEntity operatorEntity,
-        PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public ConcreteOperatorStatistics getOperatorStatistics(OperatorEntity operatorEntity,
+                                                            PlanSessionID sessionID) throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public ElasticTreeStatistics getElasticTreeStatistics() throws RemoteException {
+    @Override
+    public ElasticTreeStatistics getElasticTreeStatistics() throws RemoteException {
         lock.lock();
         try {
             return getElasticTreeScheduler().getStatistics();
@@ -42,12 +44,13 @@ public class DynamicStatisticsManager extends EventSchedulerManipulator
 
     @Override
     public BufferStatistics getBufferStatistics(BufferEntity bufferEntity, PlanSessionID sessionID)
-        throws RemoteException {
+            throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public PlanSessionStatistics getStatistics(PlanSessionID sessionID)
-        throws RemoteException {
+    @Override
+    public PlanSessionStatistics getStatistics(PlanSessionID sessionID)
+            throws RemoteException {
         lock.lock();
         try {
             PlanEventScheduler eventScheduler = getSchedulerWithId(sessionID);
@@ -57,8 +60,9 @@ public class DynamicStatisticsManager extends EventSchedulerManipulator
         }
     }
 
-    @Override public PlanSessionProgressStats getProgress(PlanSessionID sessionID)
-        throws RemoteException {
+    @Override
+    public PlanSessionProgressStats getProgress(PlanSessionID sessionID)
+            throws RemoteException {
         lock.lock();
         try {
             PlanEventScheduler eventScheduler = getSchedulerWithId(sessionID);

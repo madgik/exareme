@@ -1,7 +1,6 @@
 package madgik.exareme.master.queryProcessor.decomposer.util;
 
 
-
 import java.util.Objects;
 
 /**
@@ -42,14 +41,16 @@ public class Pair<T, U> {
         this.var2 = var2;
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int hash = 7;
         hash = 83 * hash + Objects.hashCode(this.var1);
         hash = 83 * hash + Objects.hashCode(this.var2);
         return hash;
     }
 
-    @Override public boolean equals(Object obj) {
+    @Override
+    public boolean equals(Object obj) {
         if (obj == null) {
             return false;
         }
@@ -66,10 +67,10 @@ public class Pair<T, U> {
         return true;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "Pair{" + "var1=" + var1 + ", var2=" + var2 + '}';
     }
-
 
 
 }

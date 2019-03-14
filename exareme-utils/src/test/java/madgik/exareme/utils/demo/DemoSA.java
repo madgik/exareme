@@ -20,12 +20,14 @@ class DemoSA extends SimulatedAnnealing {
         super(maxSteps, stepsNotImprovedTermination, temperature);
     }
 
-    @Override public State getInitial() throws RemoteException {
+    @Override
+    public State getInitial() throws RemoteException {
         return new DemoState();
     }
 
-    @Override public Pair<Transformation, Transformation> getNeighbor(State state, Random rand)
-        throws RemoteException {
+    @Override
+    public Pair<Transformation, Transformation> getNeighbor(State state, Random rand)
+            throws RemoteException {
         int from = rand.nextInt(100);
         int to = rand.nextInt(100);
         Transformation t1 = new DemoTransformation(from, to);

@@ -19,41 +19,47 @@ public class SynchronizedDiskManager implements DiskManagerInterface {
         this.diskManager = diskManager;
     }
 
-    @Override public DiskSession getGlobalSession(PlanSessionID planSessionID)
-        throws RemoteException {
+    @Override
+    public DiskSession getGlobalSession(PlanSessionID planSessionID)
+            throws RemoteException {
         synchronized (diskManager) {
             return diskManager.getGlobalSession(planSessionID);
         }
     }
 
-    @Override public DiskSession getContainerSession(ContainerSessionID containerSessionID,
-        PlanSessionID planSessionID) throws RemoteException {
+    @Override
+    public DiskSession getContainerSession(ContainerSessionID containerSessionID,
+                                           PlanSessionID planSessionID) throws RemoteException {
         synchronized (diskManager) {
             return diskManager.getContainerSession(containerSessionID, planSessionID);
         }
     }
 
-    @Override public DiskSession getOperatorSession(ConcreteOperatorID opID,
-        ContainerSessionID containerSessionID, PlanSessionID planSessionID) throws RemoteException {
+    @Override
+    public DiskSession getOperatorSession(ConcreteOperatorID opID,
+                                          ContainerSessionID containerSessionID, PlanSessionID planSessionID) throws RemoteException {
         synchronized (diskManager) {
             return diskManager.getOperatorSession(opID, containerSessionID, planSessionID);
         }
     }
 
-    @Override public void destroyContainerSession(ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void destroyContainerSession(ContainerSessionID containerSessionID,
+                                        PlanSessionID sessionID) throws RemoteException {
         synchronized (diskManager) {
             diskManager.destroyContainerSession(containerSessionID, sessionID);
         }
     }
 
-    @Override public void destroySessions(PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void destroySessions(PlanSessionID sessionID) throws RemoteException {
         synchronized (diskManager) {
             diskManager.destroySessions(sessionID);
         }
     }
 
-    @Override public void destroyAllSessions() throws RemoteException {
+    @Override
+    public void destroyAllSessions() throws RemoteException {
         synchronized (diskManager) {
             diskManager.destroyAllSessions();
         }

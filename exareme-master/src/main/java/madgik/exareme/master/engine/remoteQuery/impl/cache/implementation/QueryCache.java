@@ -9,7 +9,7 @@ import madgik.exareme.master.engine.remoteQuery.impl.cache.implementation.federa
 
 /**
  * @author Christos Mallios <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  */
 public interface QueryCache extends Cache {
 

@@ -19,10 +19,10 @@ import java.rmi.RemoteException;
  */
 public interface PlanSessionStatisticsManagerInterface {
     ConcreteOperatorStatistics getOperatorStatistics(OperatorEntity operatorEntity,
-        PlanSessionID sessionID) throws RemoteException;
+                                                     PlanSessionID sessionID) throws RemoteException;
 
     BufferStatistics getBufferStatistics(BufferEntity bufferEntity, PlanSessionID sessionID)
-        throws RemoteException;
+            throws RemoteException;
 
     PlanSessionStatistics getStatistics(PlanSessionID sessionID) throws RemoteException;
 

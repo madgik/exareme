@@ -11,7 +11,8 @@ import madgik.exareme.worker.art.container.ContainerJobType;
  */
 public class StartOperatorJobResult extends ContainerJobResult {
 
-    @Override public ContainerJobType getType() {
+    @Override
+    public ContainerJobType getType() {
         return ContainerJobType.startOperator;
     }
 

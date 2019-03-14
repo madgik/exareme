@@ -14,7 +14,7 @@ public class HttpResponses {
 
         if (message != null) {
             StringEntity entity =
-                new StringEntity(message, ContentType.create("text/plain", "UTF-8"));
+                    new StringEntity(message, ContentType.create("text/plain", "UTF-8"));
             response.setEntity(entity);
         }
     }
@@ -24,7 +24,7 @@ public class HttpResponses {
 
         if (message != null) {
             StringEntity entity =
-                new StringEntity(message, ContentType.create("text/plain", "UTF-8"));
+                    new StringEntity(message, ContentType.create("text/plain", "UTF-8"));
             response.setEntity(entity);
         }
     }
@@ -34,7 +34,7 @@ public class HttpResponses {
 
         if (message != null) {
             StringEntity entity =
-                new StringEntity(message, ContentType.create("text/plain", "UTF-8"));
+                    new StringEntity(message, ContentType.create("text/plain", "UTF-8"));
             response.setEntity(entity);
         }
     }
@@ -44,7 +44,7 @@ public class HttpResponses {
 
         if (message != null) {
             StringEntity entity =
-                new StringEntity(message, ContentType.create("text/plain", "UTF-8"));
+                    new StringEntity(message, ContentType.create("text/plain", "UTF-8"));
             response.setEntity(entity);
         }
     }
@@ -55,7 +55,7 @@ public class HttpResponses {
 
         if (message != null) {
             StringEntity entity =
-                new StringEntity(message, ContentType.create("text/plain", "UTF-8"));
+                    new StringEntity(message, ContentType.create("text/plain", "UTF-8"));
             response.setEntity(entity);
         }
     }
@@ -65,7 +65,7 @@ public class HttpResponses {
 
         if (message != null) {
             StringEntity entity =
-                new StringEntity(message, ContentType.create("application/json", "UTF-8"));
+                    new StringEntity(message, ContentType.create("application/json", "UTF-8"));
             response.setEntity(entity);
         }
     }
@@ -75,7 +75,7 @@ public class HttpResponses {
 
         if (message != null) {
             StringEntity entity =
-                new StringEntity(message, ContentType.create("text/plain", "UTF-8"));
+                    new StringEntity(message, ContentType.create("text/plain", "UTF-8"));
             response.setEntity(entity);
         }
     }

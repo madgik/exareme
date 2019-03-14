@@ -26,7 +26,7 @@ public class RelInfo {
 
     /*constructor*/
     public RelInfo(String relName, Map<String, AttrInfo> attrIndex, double numberOfTuples,
-        int tupleLength, int numberOfPartitions, Set<String> hashAttr) {
+                   int tupleLength, int numberOfPartitions, Set<String> hashAttr) {
 
         this.relName = relName;
         this.attrIndex = attrIndex;
@@ -100,18 +100,18 @@ public class RelInfo {
     }
 
 
-
     public double totalRelSize() {
         return this.numberOfTuples * this.tupleLength;
     }
 
 
     /*standard methods*/
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "Relation{" + "relName=" + relName + ", attrIndex=" + attrIndex +
-            ", numberOfTuples=" + numberOfTuples + ", tupleLength=" +
-            tupleLength + ", numberOfPartitions=" + numberOfPartitions + ", hashAttr=" + hashAttr
-            + '}';
+                ", numberOfTuples=" + numberOfTuples + ", tupleLength=" +
+                tupleLength + ", numberOfPartitions=" + numberOfPartitions + ", hashAttr=" + hashAttr
+                + '}';
     }
 
     /*interface methods*/
@@ -152,16 +152,16 @@ public class RelInfo {
                 if (h.getBucketIndex().isEmpty()) {
                     for (AttrInfo attr2 : this.attrIndex.values()) {
                         attr2.getHistogram().getBucketIndex()
-                            .clear();//////////////////change to default histogram
+                                .clear();//////////////////change to default histogram
                     }
                     break;
                 } else {
                     for (Map.Entry<Double, Bucket> entry : attr.getHistogram().
-                        getBucketIndex().entrySet()) {
+                            getBucketIndex().entrySet()) {
                         if (!entry.getValue().equals(Bucket.FINAL_HISTOGRAM_BUCKET))
                             entry.getValue().setFrequency(
-                                entry.getValue().getFrequency() + percentage * entry.getValue()
-                                    .getFrequency());
+                                    entry.getValue().getFrequency() + percentage * entry.getValue()
+                                            .getFrequency());
                     }
                 }
             }

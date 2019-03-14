@@ -23,12 +23,12 @@ public class Replace {
 
         jsonstring = jsonstring.replaceAll("\"condition\":", "");
         jsonstring = jsonstring.replaceAll(",\"rules\":", "");
-        jsonstring = jsonstring.replaceAll(",\"valid\":true","");
+        jsonstring = jsonstring.replaceAll(",\"valid\":true", "");
 
-        jsonstring = jsonstring.replaceAll("\"OR\"","|");
-        jsonstring = jsonstring.replaceAll("\"AND\"","&");
+        jsonstring = jsonstring.replaceAll("\"OR\"", "|");
+        jsonstring = jsonstring.replaceAll("\"AND\"", "&");
         //       jsonstring = jsonstring.replaceAll("\"","");
-        jsonstring = jsonstring.replaceAll(",","");
+        jsonstring = jsonstring.replaceAll(",", "");
 
         return jsonstring;
     }

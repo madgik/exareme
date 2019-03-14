@@ -16,8 +16,8 @@ import java.util.UUID;
  * @author herald
  */
 public class RmiComputeSessionStatisticsManager
-    extends RmiRemoteObject<ComputeSessionStatisticsManagerProxy>
-    implements ComputeSessionStatisticsManager {
+        extends RmiRemoteObject<ComputeSessionStatisticsManagerProxy>
+        implements ComputeSessionStatisticsManager {
 
     private EntityName regEntityName = null;
 

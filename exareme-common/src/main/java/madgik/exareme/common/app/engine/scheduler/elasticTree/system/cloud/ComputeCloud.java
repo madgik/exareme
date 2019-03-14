@@ -89,7 +89,7 @@ public class ComputeCloud {
             }
         }
         return totalContainerSteps * finProps.timeQuantumCost *
-            GlobalTime.getCurrentSec() / runTime.quantum__SEC;
+                GlobalTime.getCurrentSec() / runTime.quantum__SEC;
     }
 
     public int getNumContainers() {
@@ -148,7 +148,7 @@ public class ComputeCloud {
     }
 
     public void getLoadInLastWindow(long container, double window, double wallTime_sec,
-        double[] cpuDataLoad) {
+                                    double[] cpuDataLoad) {
         synchronized (lock) {
             Container c = Check.NotNull(allContainers.get(container));
             c.getLoadInLastWindow(window, wallTime_sec, cpuDataLoad);
@@ -156,7 +156,7 @@ public class ComputeCloud {
     }
 
     public void addContainerLoadDelta(long container, double cpuLoad_sec, double dataLoad_MB,
-        double wallTime_sec) {
+                                      double wallTime_sec) {
         synchronized (lock) {
             Container c = Check.NotNull(allContainers.get(container));
             c.addLoadDelta(cpuLoad_sec, dataLoad_MB, wallTime_sec);

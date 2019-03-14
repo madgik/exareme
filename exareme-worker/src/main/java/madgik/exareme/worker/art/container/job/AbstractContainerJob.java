@@ -20,7 +20,7 @@ public class AbstractContainerJob {
     PlanSessionID sessionID;
 
     public AbstractContainerJob(ContainerJob job, ContainerJobResources resources,
-        ContainerSessionID contSessionID, PlanSessionID sessionID) {
+                                ContainerSessionID contSessionID, PlanSessionID sessionID) {
         this.job = job;
         this.resources = resources;
         this.contSessionID = contSessionID;

@@ -9,8 +9,8 @@ import java.rmi.RemoteException;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class ArtManagerFactory {
@@ -24,9 +24,9 @@ public class ArtManagerFactory {
     }
 
     public static ArtManager createRmiArtManager(ArtManagerProperties managerProperties)
-        throws RemoteException {
+            throws RemoteException {
         return new RmiArtManager(managerProperties.getContainerName(),
-            managerProperties.getContainerID(), managerProperties.getLocalRegistryPort(),
-            managerProperties.getDataTransferPort());
+                managerProperties.getContainerID(), managerProperties.getLocalRegistryPort(),
+                managerProperties.getDataTransferPort());
     }
 }

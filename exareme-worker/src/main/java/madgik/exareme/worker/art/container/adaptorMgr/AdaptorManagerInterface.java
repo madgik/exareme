@@ -17,30 +17,30 @@ import java.util.List;
  * @author Herald Kllapi<br>
  * @author Dimitris Paparas<br>
  * @author Eva Sitaridi<br>
- *         {herald,paparas,evas}
+ * {herald,paparas,evas}
  * @di.uoa.gr<br> University of Athens / Department of Informatics and
  * Telecommunications.
  * @since 1.0
  */
 public interface AdaptorManagerInterface {
     AdaptorID addReadAdaptor(CombinedReadAdaptor adaptor, ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException;
+                             PlanSessionID sessionID) throws RemoteException;
 
     AdaptorID addWriteAdaptor(CombinedWriteAdaptor adaptor, ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException;
+                              PlanSessionID sessionID) throws RemoteException;
 
     CombinedReadAdaptor getReadAdaptor(AdaptorID adaptorID, ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException;
+                                       PlanSessionID sessionID) throws RemoteException;
 
     CombinedWriteAdaptor getWriteAdaptor(AdaptorID adaptorID, ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException;
+                                         PlanSessionID sessionID) throws RemoteException;
 
     Triple<Long, List<CombinedReadAdaptor>, List<CombinedWriteAdaptor>> destroyContainerSession(
-        ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException;
+            ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException;
 
     Triple<Long, List<CombinedReadAdaptor>, List<CombinedWriteAdaptor>> destroySessions(
-        PlanSessionID sessionID) throws RemoteException;
+            PlanSessionID sessionID) throws RemoteException;
 
     Triple<Long, List<CombinedReadAdaptor>, List<CombinedWriteAdaptor>> destroyAllSessions()
-        throws RemoteException;
+            throws RemoteException;
 }

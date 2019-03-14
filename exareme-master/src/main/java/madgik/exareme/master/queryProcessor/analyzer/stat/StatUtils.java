@@ -44,7 +44,7 @@ public class StatUtils {
                 // Math.pow((double)HASH_STRING_BASE, (double)i));
 
                 hashStringVal += (double) ((int) hashChars[i]) * Math
-                    .pow((double) HASH_STRING_BASE, (double) (HASH_STRING_CHARS - i));
+                        .pow((double) HASH_STRING_BASE, (double) (HASH_STRING_CHARS - i));
 
             }
 
@@ -62,7 +62,7 @@ public class StatUtils {
                 // Math.pow((double)HASH_STRING_BASE, (double)i));
 
                 hashStringVal += (double) ((int) hashChars[i]) * Math
-                    .pow((double) HASH_STRING_BASE, (double) (HASH_STRING_CHARS - i));
+                        .pow((double) HASH_STRING_BASE, (double) (HASH_STRING_CHARS - i));
 
             }
 
@@ -74,9 +74,9 @@ public class StatUtils {
 
     public static boolean isTextType(int columnType) {
         if (columnType == Types.CHAR || columnType == Types.DATE || columnType == Types.LONGNVARCHAR
-            || columnType == Types.NCHAR || columnType == Types.NVARCHAR || columnType == Types.TIME
-            || columnType == Types.TIMESTAMP || columnType == Types.VARCHAR
-            || columnType == Types.OTHER)
+                || columnType == Types.NCHAR || columnType == Types.NVARCHAR || columnType == Types.TIME
+                || columnType == Types.TIMESTAMP || columnType == Types.VARCHAR
+                || columnType == Types.OTHER)
 
             return true;
         else
@@ -85,11 +85,11 @@ public class StatUtils {
 
     public static boolean isCompatibleType(int columnType) {
         if (columnType == Types.BOOLEAN || columnType == Types.CHAR || columnType == Types.DATE
-            || columnType == Types.DECIMAL || columnType == Types.DOUBLE
-            || columnType == Types.FLOAT || columnType == Types.INTEGER
-            || columnType == Types.NUMERIC || columnType == Types.TIME
-            || columnType == Types.TIMESTAMP || columnType == Types.TINYINT
-            || columnType == Types.VARCHAR)
+                || columnType == Types.DECIMAL || columnType == Types.DOUBLE
+                || columnType == Types.FLOAT || columnType == Types.INTEGER
+                || columnType == Types.NUMERIC || columnType == Types.TIME
+                || columnType == Types.TIMESTAMP || columnType == Types.TINYINT
+                || columnType == Types.VARCHAR)
             return true;
         else
             return false;

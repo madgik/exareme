@@ -30,7 +30,8 @@ public class ConsitentHashDataPartitionLayout implements DataPartitionLayout {
         this.contIdxs = new ArrayList<>();
     }
 
-    @Override public void initializeWithContainers(List<Long> containers) {
+    @Override
+    public void initializeWithContainers(List<Long> containers) {
         double partsPerContainer = (double) numParts * replication / containers.size();
         int part = 0;
         double remaining = 0.0;
@@ -42,7 +43,8 @@ public class ConsitentHashDataPartitionLayout implements DataPartitionLayout {
         }
     }
 
-    @Override public void addContainers(List<Long> containers) {
+    @Override
+    public void addContainers(List<Long> containers) {
         contIdxs.ensureCapacity(contIdxs.size() + containers.size());
         for (long c : containers) {
             int maxDiff = 0;
@@ -70,7 +72,8 @@ public class ConsitentHashDataPartitionLayout implements DataPartitionLayout {
         rebalanceIfNeeded();
     }
 
-    @Override public void removeContainers(List<Long> containers) {
+    @Override
+    public void removeContainers(List<Long> containers) {
         for (long c : containers) {
             for (int i = 0; i < contIdxs.size(); ++i) {
                 ContainerIndex contIdx = contIdxs.get(i);
@@ -84,7 +87,8 @@ public class ConsitentHashDataPartitionLayout implements DataPartitionLayout {
         rebalanceIfNeeded();
     }
 
-    @Override public long getContainer(int part) {
+    @Override
+    public long getContainer(int part) {
         int randPart = part * replication + rand.nextInt(replication);
         int idx = Collections.binarySearch(contIdxs, new ContainerIndex(-1, randPart), comparator);
         if (idx < 0) {
@@ -111,22 +115,26 @@ public class ConsitentHashDataPartitionLayout implements DataPartitionLayout {
     //    rebalanceIfNeeded();
     //  }
 
-    @Override public int getNumContainers() {
+    @Override
+    public int getNumContainers() {
         return contIdxs.size();
     }
 
-    @Override public int getReplication() {
+    @Override
+    public int getReplication() {
         return replication;
     }
 
-    @Override public int getNumParts() {
+    @Override
+    public int getNumParts() {
         return numParts;
     }
 
-    @Override public void getPartContainers(int part, Set<Long> containers) {
+    @Override
+    public void getPartContainers(int part, Set<Long> containers) {
         int partStart = part * replication;
         int idx = Collections
-            .binarySearch(contIdxs, new ContainerIndex(-1, part * replication), comparator);
+                .binarySearch(contIdxs, new ContainerIndex(-1, part * replication), comparator);
         if (idx < 0) {
             idx = -idx - 1;
         }
@@ -143,7 +151,8 @@ public class ConsitentHashDataPartitionLayout implements DataPartitionLayout {
         }
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < contIdxs.size(); ++i) {
             ContainerIndex before = contIdxs.get(i);
@@ -253,14 +262,16 @@ public class ConsitentHashDataPartitionLayout implements DataPartitionLayout {
             this.index = index;
         }
 
-        @Override public String toString() {
+        @Override
+        public String toString() {
             return "" + index;
         }
     }
 
 
     class ContainerIndexComparator implements Comparator<ContainerIndex>, Serializable {
-        @Override public int compare(ContainerIndex o1, ContainerIndex o2) {
+        @Override
+        public int compare(ContainerIndex o1, ContainerIndex o2) {
             return Integer.compare(o1.index, o2.index);
         }
     }

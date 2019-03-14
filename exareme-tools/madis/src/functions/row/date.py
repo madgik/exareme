@@ -1,11 +1,10 @@
 # coding: utf-8
-import functions
 import datetime
 from lib import iso8601
 from lib.dateutil import parser
 
-def cleantimezone(*args):
 
+def cleantimezone(*args):
     """
     .. function:: cleantimezone(date) -> date
 
@@ -32,21 +31,21 @@ def cleantimezone(*args):
     2009-01-01 01:03:13
     """
 
-    d = args[0].replace('T',' ')
+    d = args[0].replace('T', ' ')
     tindex = d.find('+')
     mindex = d.rfind('-')
-    if tindex<>-1:
+    if tindex <> -1:
         return d[0:tindex]
-    elif mindex <>-1 and mindex>13:
+    elif mindex <> -1 and mindex > 13:
         return d[0:mindex]
     else:
         return d;
 
-cleantimezone.registered=True
+
+cleantimezone.registered = True
 
 
 def activityindex(*args):
-
     """
     .. function:: activityIndex(date, c1, c2) -> int
 
@@ -70,29 +69,30 @@ def activityindex(*args):
     """
     now = datetime.datetime.now()
     now = iso8601.parse_date(now.strftime("%Y-%m-%d %H:%M:%S"))
-    d = args[0].replace('T',' ')
-    dt = iso8601.parse_date(args[0].replace('Z',''))  
-    diff=now-dt
+    d = args[0].replace('T', ' ')
+    dt = iso8601.parse_date(args[0].replace('Z', ''))
+    diff = now - dt
 
-    if (diff.days)<30:
-                    return 5
-    elif (diff.days)<3*30:
-                    return 4
-    elif (diff.days)<6*30:
-                    return 3
-    elif (diff.days)<12*30:
-                    return 2
-    elif (diff.days)<24*30:
-                    return 1
-    elif (diff.days)>=24*30:
-                    return 0
+    if (diff.days) < 30:
+        return 5
+    elif (diff.days) < 3 * 30:
+        return 4
+    elif (diff.days) < 6 * 30:
+        return 3
+    elif (diff.days) < 12 * 30:
+        return 2
+    elif (diff.days) < 24 * 30:
+        return 1
+    elif (diff.days) >= 24 * 30:
+        return 0
     else:
         return -1;
 
-activityindex.registered=True
+
+activityindex.registered = True
+
 
 def sectohuman(*args):
-
     """
     .. function:: sectohuman(sec) -> human readable format
 
@@ -117,35 +117,36 @@ def sectohuman(*args):
     11 days 13 hours 46 min 40 sec
     """
 
-    secs=int(args[0])
-    h=''
-    days=secs/86400
+    secs = int(args[0])
+    h = ''
+    days = secs / 86400
     if days > 0:
-        h+=str(days)+' day'
+        h += str(days) + ' day'
         if days > 1:
-            h+='s'
-        h+=' '
-        secs=secs % 86400
-    hours=secs/3600
+            h += 's'
+        h += ' '
+        secs = secs % 86400
+    hours = secs / 3600
     if hours > 0:
-        h+=str(hours)+' hour'
+        h += str(hours) + ' hour'
         if hours > 1:
-            h+='s'
-        h+=' '
-        secs=secs % 3600
-    mins=secs/60
+            h += 's'
+        h += ' '
+        secs = secs % 3600
+    mins = secs / 60
     if mins > 0:
-        h+=str(mins)+' min '
-        secs=secs % 60
+        h += str(mins) + ' min '
+        secs = secs % 60
     if secs > 0:
-        h+=str(secs)+' sec'
+        h += str(secs) + ' sec'
 
     return h
 
-sectohuman.registered=True
+
+sectohuman.registered = True
+
 
 def datestrf2isoweek(*args):
-
     """
     .. function:: dateisoweek2week52(sec) -> isoweek
 
@@ -173,20 +174,20 @@ def datestrf2isoweek(*args):
     2009W53
     """
 
-    year=int(args[0][0:4])
-    week=args[0][-2:]
+    year = int(args[0][0:4])
+    week = args[0][-2:]
 
-    if week=='00':
-        year-=1
-        week='53'
+    if week == '00':
+        year -= 1
+        week = '53'
 
-    return str(year)+'W'+week
+    return str(year) + 'W' + week
 
-datestrf2isoweek.registered=True
+
+datestrf2isoweek.registered = True
 
 
 def date2iso(*args):
-
     """
     .. function:: date2iso(sec) -> ISO Datetime
 
@@ -220,8 +221,8 @@ def date2iso(*args):
 
     return date.isoformat()
 
-date2iso.registered=True
 
+date2iso.registered = True
 
 if not ('.' in __name__):
     """
@@ -229,11 +230,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

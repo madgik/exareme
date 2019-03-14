@@ -4,11 +4,11 @@
  */
 package madgik.exareme.master.queryProcessor.decomposer.query;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author dimitris
@@ -33,17 +33,20 @@ public class Constant implements Operand {
         this.isArithmetic = false;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return value.toString();
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int hash = 7;
         hash = 29 * hash + (this.value != null ? this.value.hashCode() : 0);
         return hash;
     }
 
-    @Override public boolean equals(Object obj) {
+    @Override
+    public boolean equals(Object obj) {
         if (obj == null) {
             return false;
         }
@@ -61,14 +64,17 @@ public class Constant implements Operand {
         this.value = v;
     }
 
-    @Override public List<Column> getAllColumnRefs() {
+    @Override
+    public List<Column> getAllColumnRefs() {
         return new ArrayList<Column>();
     }
 
-    @Override public void changeColumn(Column oldCol, Column newCol) {
+    @Override
+    public void changeColumn(Column oldCol, Column newCol) {
     }
 
-    @Override public Constant clone() throws CloneNotSupportedException {
+    @Override
+    public Constant clone() throws CloneNotSupportedException {
         Constant cloned = (Constant) super.clone();
         return cloned;
     }
@@ -81,10 +87,10 @@ public class Constant implements Operand {
         return isArithmetic;
     }
 
-	@Override
-	public HashCode getHashID() {
-		// TODO Auto-generated method stub
-		return Hashing.sha1().hashBytes(this.value.toString().toUpperCase().getBytes());
-	}
+    @Override
+    public HashCode getHashID() {
+        // TODO Auto-generated method stub
+        return Hashing.sha1().hashBytes(this.value.toString().toUpperCase().getBytes());
+    }
 
 }

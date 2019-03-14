@@ -1,15 +1,15 @@
 # coding: utf-8
-import setpath
 import functions
-import os
+
 
 def datasets(*args):
     if args[0] == "0":
-        raise functions.OperatorError("DATASET","Dataset does not exist")
+        raise functions.OperatorError("DATASET", "Dataset does not exist")
     else:
         return 1
 
-datasets.registered=True
+
+datasets.registered = True
 
 if not ('.' in __name__):
     """
@@ -17,11 +17,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

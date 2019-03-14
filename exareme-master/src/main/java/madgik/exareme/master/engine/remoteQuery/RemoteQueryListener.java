@@ -7,7 +7,7 @@ import madgik.exareme.master.engine.remoteQuery.impl.cache.CachedDataInfo;
 
 /**
  * @author Christos Mallios <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  */
 public interface RemoteQueryListener {
 

@@ -1,33 +1,6 @@
 package madgik.exareme.master.gateway.async.handler;
 
 import com.google.gson.Gson;
-
-import jdk.nashorn.internal.parser.JSONParser;
-import madgik.exareme.utils.net.NetUtil;
-import madgik.exareme.utils.properties.AdpProperties;
-import madgik.exareme.worker.art.container.ContainerProxy;
-import madgik.exareme.worker.art.registry.ArtRegistryLocator;
-import org.apache.commons.io.Charsets;
-import org.apache.http.*;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.entity.BasicHttpEntity;
-import org.apache.http.entity.ContentType;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.nio.protocol.BasicAsyncRequestConsumer;
-import org.apache.http.nio.protocol.BasicAsyncResponseProducer;
-import org.apache.http.nio.protocol.HttpAsyncExchange;
-import org.apache.http.nio.protocol.HttpAsyncRequestConsumer;
-import org.apache.http.nio.protocol.HttpAsyncRequestHandler;
-import org.apache.http.protocol.HttpContext;
-import org.apache.http.util.EntityUtils;
-import org.apache.log4j.Logger;
-
-import java.io.*;
-import java.rmi.RemoteException;
-import java.rmi.ServerException;
-import java.util.*;
 import madgik.exareme.common.consts.HBPConstants;
 import madgik.exareme.master.client.AdpDBClient;
 import madgik.exareme.master.client.AdpDBClientFactory;
@@ -47,7 +20,27 @@ import madgik.exareme.master.queryProcessor.composer.Composer;
 import madgik.exareme.master.queryProcessor.composer.ComposerConstants;
 import madgik.exareme.master.queryProcessor.composer.ComposerException;
 import madgik.exareme.utils.encoding.Base64Util;
-import org.codehaus.jettison.json.JSONObject;
+import madgik.exareme.utils.net.NetUtil;
+import madgik.exareme.utils.properties.AdpProperties;
+import madgik.exareme.worker.art.container.ContainerProxy;
+import madgik.exareme.worker.art.registry.ArtRegistryLocator;
+import org.apache.commons.io.Charsets;
+import org.apache.http.*;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.entity.BasicHttpEntity;
+import org.apache.http.entity.ContentType;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.nio.protocol.*;
+import org.apache.http.protocol.HttpContext;
+import org.apache.http.util.EntityUtils;
+import org.apache.log4j.Logger;
+
+import java.io.*;
+import java.rmi.RemoteException;
+import java.rmi.ServerException;
+import java.util.*;
 
 import static madgik.exareme.master.gateway.GatewayConstants.COOKIE_ALGORITHM_EXECUTION_ID;
 
@@ -61,7 +54,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
 
     private static final Logger log = Logger.getLogger(HttpAsyncMiningQueryHandler.class);
     private static final String msg =
-        "{ " + "\"schema\":[[\"error\",\"text\"]], " + "\"errors\":[[null]] " + "}\n";
+            "{ " + "\"schema\":[[\"error\",\"text\"]], " + "\"errors\":[[null]] " + "}\n";
 
     private static final String SET_COOKIE_HEADER_NAME = "Set-Cookie";
     private static final AdpDBManager manager = AdpDBManagerLocator.getDBManager();
@@ -71,15 +64,16 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
     public HttpAsyncMiningQueryHandler() {
     }
 
-    @Override public HttpAsyncRequestConsumer<HttpRequest> processRequest(HttpRequest request,
-        HttpContext context) throws HttpException, IOException {
+    @Override
+    public HttpAsyncRequestConsumer<HttpRequest> processRequest(HttpRequest request,
+                                                                HttpContext context) throws HttpException, IOException {
 
         return new BasicAsyncRequestConsumer();
     }
 
     @Override
     public void handle(HttpRequest request, HttpAsyncExchange httpExchange, HttpContext context)
-        throws HttpException, IOException {
+            throws HttpException, IOException {
 
         HttpResponse response = httpExchange.getResponse();
         response.setHeader("Content-Type", String.valueOf(ContentType.APPLICATION_JSON));
@@ -115,7 +109,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
     }
 
     private void handleInternal(HttpRequest request, HttpResponse response, HttpContext context)
-        throws HttpException, IOException {
+            throws HttpException, IOException {
 
         log.debug("Validate method ...");
         RequestLine requestLine = request.getRequestLine();
@@ -140,31 +134,30 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             throw new UnsupportedHttpVersionException(method + "not supported.");
         }
         String query = null;
-        String algorithm = uri.substring(uri.lastIndexOf('/')+1);
+        String algorithm = uri.substring(uri.lastIndexOf('/') + 1);
 
         boolean format = false;
         log.debug("Posting " + algorithm + " ...\n");
         String[] usedDatasets = null;
-        
+
         log.debug("All of the parameters: " + parameters);
         for (Map k : parameters) {
             String name = (String) k.get("name");
             String value = (String) k.get("value");
-            if(name == null || name.isEmpty() || value == null || value.isEmpty()) continue;
+            if (name == null || name.isEmpty() || value == null || value.isEmpty()) continue;
             log.debug(name + " = " + value);
-            if (name.equals("filter")){
+            if (name.equals("filter")) {
                 value = value.replaceAll("[^A-Za-z0-9,._*+><=&|(){}:\"\\[\\]]", "");
-            }
-            else
+            } else
                 value = value.replaceAll("[^A-Za-z0-9,._*+():\\-{}\\\"\\[\\]]", "");    // ><=&| we no more need those for filtering
             value = value.replaceAll("\\s+", "");
-            if("local_pfa".equals(name)) {
+            if ("local_pfa".equals(name)) {
                 Map map = new Gson().fromJson(value, Map.class);
-                query = (String) ((Map) ((Map)((Map) map.get("cells")).get("query")).get("init")).get("sql");
+                query = (String) ((Map) ((Map) ((Map) map.get("cells")).get("query")).get("init")).get("sql");
                 value = Base64Util.simpleEncodeBase64(value);
-            } else if("format".equals(name)){
+            } else if ("format".equals(name)) {
                 format = Boolean.parseBoolean(value);
-            } else if ("dataset".equals(name)){
+            } else if ("dataset".equals(name)) {
                 usedDatasets = value.split(",");
             }
             inputContent.put(name, value);
@@ -173,7 +166,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         }
 
         Set<String> usedContainersIPs = getUsedContainers(usedDatasets, response);
-        if (usedContainersIPs==null) return;
+        if (usedContainersIPs == null) return;
         ContainerProxy[] usedContainerProxies;
         log.debug("Checking workers...");
         if (!allWorkersRunning(response, usedContainersIPs)) return;
@@ -190,7 +183,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         int numberOfContainers = usedContainerProxies.length;
         log.debug("Containers: " + numberOfContainers);
         log.debug("Containers: " + new Gson().toJson(usedContainersIPs));
-        String qKey = "query_" + algorithm + "_" +String.valueOf(System.currentTimeMillis());
+        String qKey = "query_" + algorithm + "_" + String.valueOf(System.currentTimeMillis());
 
         try {
             String dfl;
@@ -206,7 +199,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             // if(format) ds = DataSerialization.summary; but was commented-out.
             DataSerialization ds = DataSerialization.summary;
 
-            if (algorithmProperties.getResponseContentType()!=null){
+            if (algorithmProperties.getResponseContentType() != null) {
                 response.setHeader("Content-Type", algorithmProperties.getResponseContentType());
             }
 
@@ -247,7 +240,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 response.setStatusCode(HttpStatus.SC_OK);
                 response.setEntity(entity);
             }
-            
+
 
         } catch (ComposerException e) {
             log.error(e);
@@ -268,15 +261,15 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         String workersPath = AdpProperties.getGatewayProperties().getString("workers.path");
         log.debug("Workers Path : " + workersPath);
         try (BufferedReader br = new BufferedReader(new FileReader(workersPath))) {
-            String containerIP,containerNAME,line;
+            String containerIP, containerNAME, line;
             String[] container;
             while ((line = br.readLine()) != null) {
                 container = line.split(" ");
                 containerIP = container[0];
                 containerNAME = container[1];
 
-                log.debug("Will check container with IP: "+containerIP+ " and NAME: "+containerNAME);
-                if (usedIPs!=null && !usedIPs.contains(containerIP)){
+                log.debug("Will check container with IP: " + containerIP + " and NAME: " + containerNAME);
+                if (usedIPs != null && !usedIPs.contains(containerIP)) {
                     log.debug("Container not used, skipping");
                     continue;
                 }
@@ -293,8 +286,8 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                         }
                 }
                 log.debug("Container responded: " + containerResponded);
-                if (!containerResponded){
-                    String result = "{\"Error\":\"Container with IP "+containerIP+" and NAME "+containerNAME+" is not responding. Please inform your system administrator\"}";
+                if (!containerResponded) {
+                    String result = "{\"Error\":\"Container with IP " + containerIP + " and NAME " + containerNAME + " is not responding. Please inform your system administrator\"}";
                     byte[] contentBytes = result.getBytes(Charsets.UTF_8.name());
 
                     entity.setContent(new ByteArrayInputStream(contentBytes));
@@ -307,8 +300,8 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 }
 
             }
-        } catch (FileNotFoundException e){
-            log.warn("Workers file not found at: " + workersPath +". Will continue without checking that all containers are running");
+        } catch (FileNotFoundException e) {
+            log.warn("Workers file not found at: " + workersPath + ". Will continue without checking that all containers are running");
         }
         return true;
     }
@@ -347,7 +340,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             usedContainersIPs.add(NetUtil.getIPv4()); //Always use master!
             List<String> notFoundDatasets = new ArrayList<>();
             for (String dataset : usedDatasets) {
-                if (!datasetToNodes.containsKey(dataset)){
+                if (!datasetToNodes.containsKey(dataset)) {
                     notFoundDatasets.add(dataset);
                 } else {
                     usedContainersIPs.addAll(datasetToNodes.get(dataset));
@@ -361,7 +354,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             return usedContainersIPs;
 
         } catch (IOException e) {
-            log.error("Exception while contacting consul, running with all containers. " + e.getMessage() );
+            log.error("Exception while contacting consul, running with all containers. " + e.getMessage());
             return allContainersIPs();
         }
     }
@@ -373,7 +366,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             notFound.append(", ");
         }
         String notFoundSring = notFound.toString();
-        notFoundSring = notFoundSring.substring(0, notFoundSring.length()-2);
+        notFoundSring = notFoundSring.substring(0, notFoundSring.length() - 2);
         log.debug("Dataset(s) " + notFoundSring + " not found!");
         String result = "{\"Error\":\"Dataset(s) " + notFoundSring + " not found!\"}";
         byte[] contentBytes = result.getBytes(Charsets.UTF_8.name());
@@ -388,7 +381,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
 
     private Set<String> allContainersIPs() throws RemoteException {
         Set<String> allIPs = new HashSet<>();
-        for (ContainerProxy containerProxy : ArtRegistryLocator.getArtRegistryProxy().getContainers()){
+        for (ContainerProxy containerProxy : ArtRegistryLocator.getArtRegistryProxy().getContainers()) {
             allIPs.add(containerProxy.getEntityName().getIP());
         }
         return allIPs;
@@ -400,7 +393,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         } catch (IOException e) { //Worker not found
             try {
                 return searchConsul("master/" + name + "?raw");
-            } catch (IOException em){
+            } catch (IOException em) {
                 throw new IOException("Worker with name " + name + " not found");
             }
         }
@@ -410,9 +403,9 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         String result;
         CloseableHttpClient httpclient = HttpClients.createDefault();
         String consulURL = System.getenv("CONSULURL");
-        if (consulURL == null ) throw new IOException("Consul url not set");
-        if (!consulURL.startsWith("http://")){
-            consulURL= "http://" + consulURL;
+        if (consulURL == null) throw new IOException("Consul url not set");
+        if (!consulURL.startsWith("http://")) {
+            consulURL = "http://" + consulURL;
         }
 
         HttpGet httpGet = null;

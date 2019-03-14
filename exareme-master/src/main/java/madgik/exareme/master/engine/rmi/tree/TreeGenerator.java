@@ -15,32 +15,32 @@ import java.util.*;
 public class TreeGenerator {
     // todo: fix me!
     public List<TreeConcreteQueryGraph> generateSupportedTreeQueryGraphs(
-        ContainerTopology containerTopology, String adpQuery) {
+            ContainerTopology containerTopology, String adpQuery) {
 
         List<TreeConcreteQueryGraph> treeQueryGraphs = new ArrayList<TreeConcreteQueryGraph>();
         List<TreeQueryGraphFingerprint> allTreeFingerprints =
-            this.generateDecliningFingerprints(containerTopology);
+                this.generateDecliningFingerprints(containerTopology);
 
         for (int i = allTreeFingerprints.size() - 1; i >= 0; i--) {
             TreeQueryGraphFingerprint fingerprint = allTreeFingerprints.get(i);
             if (this.fingerprintIsSupportedByTopology(fingerprint, containerTopology)) {
                 treeQueryGraphs.add(
-                    this.generateTreeQueryGraphFromFingerprint(containerTopology, fingerprint));
+                        this.generateTreeQueryGraphFromFingerprint(containerTopology, fingerprint));
             }
         }
         return treeQueryGraphs;
     }
 
     private List<TreeQueryGraphFingerprint> generateDecliningFingerprints(
-        ContainerTopology containerTopology) {
+            ContainerTopology containerTopology) {
         List<TreeQueryGraphFingerprint> fingerprints = new ArrayList<TreeQueryGraphFingerprint>();
         int leaves =
-            containerTopology.getContainersAtLevel(TreeContainerTopology.LEAF_LEVEL).size();
+                containerTopology.getContainersAtLevel(TreeContainerTopology.LEAF_LEVEL).size();
         List<Integer> widestFingerprint = new ArrayList<Integer>();
         widestFingerprint.add(leaves);
         for (int i = 1; i < containerTopology.getRootLevel(); i++) {
             if (containerTopology.getContainersAtLevel(i).size() > widestFingerprint.get(i - 1)) {
-        /* Greedy reduction :) */
+                /* Greedy reduction :) */
                 widestFingerprint.add(widestFingerprint.get(i - 1));
             } else {
                 widestFingerprint.add(containerTopology.getContainersAtLevel(i).size());
@@ -70,14 +70,14 @@ public class TreeGenerator {
     }
 
     private boolean fingerprintIsSupportedByTopology(TreeQueryGraphFingerprint fingerprint,
-        ContainerTopology containerTopology) {
+                                                     ContainerTopology containerTopology) {
 
         Stack<MappingState> states = new Stack<MappingState>();
 
-    /* First state are all the leaves */
+        /* First state are all the leaves */
         MappingState firstState = new MappingState(new HashSet<Integer>(containerTopology.
-            getContainersAtLevel(TreeContainerTopology.LEAF_LEVEL)),
-            TreeContainerTopology.LEAF_LEVEL);
+                getContainersAtLevel(TreeContainerTopology.LEAF_LEVEL)),
+                TreeContainerTopology.LEAF_LEVEL);
         states.push(firstState);
 
         while (states.peek().getLevel() != containerTopology.getRootLevel()) {
@@ -109,11 +109,11 @@ public class TreeGenerator {
                 }
 
                 if (combinations.size() < state.getLevelNodes().size()) {
-          /* This link combination cannot be valid, skip it! */
+                    /* This link combination cannot be valid, skip it! */
                     continue;
                 }
 
-        /* Check if links connect with all nodes of previous level, once */
+                /* Check if links connect with all nodes of previous level, once */
                 HashMap<Integer, Boolean> parents = new HashMap<Integer, Boolean>();
                 HashMap<Integer, Boolean> nodeConnected = new HashMap<Integer, Boolean>();
 
@@ -121,7 +121,7 @@ public class TreeGenerator {
 
                 for (Pair<Integer, Integer> link : combinations) {
                     if (nodeConnected.get(link.getA()) != null) {
-            /* Level node is connected more than once, not a valid tree */
+                        /* Level node is connected more than once, not a valid tree */
                         validTree = false;
                         break;
                     } else {
@@ -134,7 +134,7 @@ public class TreeGenerator {
                 }
 
                 if (validTree && nodeConnected.keySet().size() == state.getLevelNodes().size()
-                    && parents.keySet().size() == fingerprint.getSignature().get(level + 1)) {
+                        && parents.keySet().size() == fingerprint.getSignature().get(level + 1)) {
 
                     MappingState newState = new MappingState(parents.keySet(), level + 1);
                     newState.addLinks(state.getLinks());
@@ -159,12 +159,12 @@ public class TreeGenerator {
     }
 
     private TreeConcreteQueryGraph generateTreeQueryGraphFromFingerprint(ContainerTopology topology,
-        TreeQueryGraphFingerprint fingerprint) {
+                                                                         TreeQueryGraphFingerprint fingerprint) {
         TreeConcreteQueryGraph graph = new TreeConcreteQueryGraph();
 
         HashMap<Integer, List<Integer>> links = new HashMap<Integer, List<Integer>>();
         HashMap<Integer, ConcreteOperator> idToOperatorMap =
-            new HashMap<Integer, ConcreteOperator>();
+                new HashMap<Integer, ConcreteOperator>();
 
         for (Integer node : fingerprint.getNodes()) {
             //todo
@@ -173,7 +173,7 @@ public class TreeGenerator {
             double runTime = 30.0;
 
             ConcreteOperator operator = new ConcreteOperator(node.toString(), runTime, cpuUtil, mem,
-                OperatorBehavior.store_and_forward);
+                    OperatorBehavior.store_and_forward);
 
             graph.addOperator(operator, topology.getContainerLevel(node));
             idToOperatorMap.put(node, operator);
@@ -202,7 +202,7 @@ public class TreeGenerator {
             }
         }
 
-    /* Name the operators */
+        /* Name the operators */
         for (ConcreteOperator operator : graph.getOperators()) {
             if (graph.getLevelOf(operator.opID) == graph.getRootLevel()) {
                 operator.operatorName = "root";

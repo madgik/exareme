@@ -23,7 +23,7 @@ public class QuerySuccessEventListener implements EventListener<QuerySuccessEven
     }
 
     public void processed(QuerySuccessEvent event, RemoteException exception,
-        EventProcessor processor) {
+                          EventProcessor processor) {
         if (exception != null) {
             exception.printStackTrace();
         }

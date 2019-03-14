@@ -18,11 +18,11 @@ import java.util.Date;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class RmiPlanSessionReportManagerProxy extends RmiObjectProxy<PlanSessionReportManager>
-    implements PlanSessionReportManagerProxy {
+        implements PlanSessionReportManagerProxy {
 
     private static final long serialVersionUID = 1L;
     private static final Logger log = Logger.getLogger(RmiPlanSessionReportManagerProxy.class);
@@ -32,19 +32,22 @@ public class RmiPlanSessionReportManagerProxy extends RmiObjectProxy<PlanSession
         super(regEntryName, regEntityName);
     }
 
-    @Override public void planStart(Date time, ContainerID containerID) throws RemoteException {
+    @Override
+    public void planStart(Date time, ContainerID containerID) throws RemoteException {
         super.getRemoteObject().planStart(time, containerID, internalSessionID);
     }
 
-    @Override public void planInstantiationException(RemoteException exception, Date time,
-        ContainerID containerID) throws RemoteException {
+    @Override
+    public void planInstantiationException(RemoteException exception, Date time,
+                                           ContainerID containerID) throws RemoteException {
         super.getRemoteObject()
-            .planInstantiationException(exception, time, containerID, internalSessionID);
+                .planInstantiationException(exception, time, containerID, internalSessionID);
     }
 
-    @Override public void operatorSuccess(ConcreteOperatorID operatorID, int exidCode,
-        Serializable exitMessage, Date time, ContainerID containerID, boolean terminateGroup)
-        throws RemoteException {
+    @Override
+    public void operatorSuccess(ConcreteOperatorID operatorID, int exidCode,
+                                Serializable exitMessage, Date time, ContainerID containerID, boolean terminateGroup)
+            throws RemoteException {
         //    System.out.println("OperatorSuccess: " + operatorID.operatorName + " " + " " + exidCode);
         //    System.out.println("RPSMP before get");
         log.debug("Reporting operatorSuccess: " + operatorID.operatorName);
@@ -56,7 +59,7 @@ public class RmiPlanSessionReportManagerProxy extends RmiObjectProxy<PlanSession
                 max_retries--;
                 PlanSessionReportManager rmo = super.getRemoteObject();
                 rmo.operatorSuccess(operatorID, exidCode, exitMessage, time, containerID,
-                    internalSessionID, terminateGroup);
+                        internalSessionID, terminateGroup);
                 success = true;
                 log.debug("Successfully reported, operatorSuccess: " + operatorID.operatorName);
                 //      System.out.println("RPSMP after success");
@@ -71,8 +74,8 @@ public class RmiPlanSessionReportManagerProxy extends RmiObjectProxy<PlanSession
 
     @Override
     public void operatorError(ConcreteOperatorID operatorID, RemoteException exception, Date time,
-        ContainerID containerID) throws RemoteException {
+                              ContainerID containerID) throws RemoteException {
         super.getRemoteObject()
-            .operatorError(operatorID, exception, time, containerID, internalSessionID);
+                .operatorError(operatorID, exception, time, containerID, internalSessionID);
     }
 }

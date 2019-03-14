@@ -9,9 +9,9 @@ import java.io.Serializable;
  * @author Herald Kllapi<br>
  * @author Dimitris Paparas<br>
  * @author Eva Sitaridi<br>
- *         {herald,paparas,evas}@di.uoa.gr<br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * {herald,paparas,evas}@di.uoa.gr<br>
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class ContainerSessionID implements Comparable<ContainerSessionID>, Serializable {
@@ -22,11 +22,13 @@ public class ContainerSessionID implements Comparable<ContainerSessionID>, Seria
         this.id = id;
     }
 
-    @Override public int compareTo(ContainerSessionID sessionID) {
+    @Override
+    public int compareTo(ContainerSessionID sessionID) {
         return (int) (id - sessionID.id);
     }
 
-    @Override public boolean equals(Object object) {
+    @Override
+    public boolean equals(Object object) {
         if (object instanceof ContainerSessionID) {
             ContainerSessionID sessionID = (ContainerSessionID) object;
             return (id == sessionID.id);
@@ -35,7 +37,8 @@ public class ContainerSessionID implements Comparable<ContainerSessionID>, Seria
         }
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int hash = 3;
         hash = 13 * hash + (int) (this.id ^ (this.id >>> 32));
         return hash;

@@ -19,7 +19,8 @@ import java.util.Map;
 public class DBAdminWorker extends AbstractMiMo {
     private static final Logger log = Logger.getLogger(DBAdminWorker.class);
 
-    @Override public void run() throws Exception {
+    @Override
+    public void run() throws Exception {
         try {
             log.debug("---- DBAdminWorker ----");
             for (Parameter parameter : getParameterManager().getParameters()) {
@@ -29,7 +30,7 @@ public class DBAdminWorker extends AbstractMiMo {
 
             Map<String, Object> alsoIncludeProps = null;
             boolean sendHeader = Boolean
-                .parseBoolean(getParameterManager().getParameter("sendHeader").get(0).getValue());
+                    .parseBoolean(getParameterManager().getParameter("sendHeader").get(0).getValue());
             if (sendHeader == false) {
                 alsoIncludeProps = null;
             } else {
@@ -47,14 +48,14 @@ public class DBAdminWorker extends AbstractMiMo {
             log.debug("---- tableName : " + tabName);
 
             int part =
-                Integer.parseInt(getParameterManager().getParameter("part").get(0).getValue());
+                    Integer.parseInt(getParameterManager().getParameter("part").get(0).getValue());
             log.debug("---- part : " + part);
 
             String ip = getParameterManager().getParameter("ip").get(0).getValue();
             log.debug("---- ip : " + ip);
 
             int port =
-                Integer.parseInt(getParameterManager().getParameter("port").get(0).getValue());
+                    Integer.parseInt(getParameterManager().getParameter("port").get(0).getValue());
             log.debug("--- port : " + port);
 
             NetSession net = new NetSessionSimple();

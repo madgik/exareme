@@ -26,8 +26,8 @@ import java.util.HashMap;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class SimpleBufferManager implements BufferManagerInterface {
@@ -41,11 +41,11 @@ public class SimpleBufferManager implements BufferManagerInterface {
     private long allocated = 0L;
 
     public SimpleBufferManager(BufferManagerStatus bufferStatus,
-        StatisticsManagerInterface statistics) {
+                               StatisticsManagerInterface statistics) {
         this.status = bufferStatus;
         this.statistics = statistics;
         this.pipePoolSize =
-            AdpProperties.getArtProps().getLong("art.container.pipePoolSize_mb") * Metrics.MB;
+                AdpProperties.getArtProps().getLong("art.container.pipePoolSize_mb") * Metrics.MB;
 
         this.maxCapacity = pipePoolSize;
         this.allocated = 0;
@@ -65,15 +65,16 @@ public class SimpleBufferManager implements BufferManagerInterface {
         return session;
     }
 
-    @Override public BufferID createBuffer(String bufferName, BufferQoS quality,
-        ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public BufferID createBuffer(String bufferName, BufferQoS quality,
+                                 ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
         int size = quality.getSizeMB() * Metrics.MB;
         if (allocated + size > maxCapacity) {
             //throw new AccessException("Not enough memory");
         }
         BMSession session = getSession(sessionID);
         BufferID id = session.getContainerSession(containerSessionID).
-            createBuffer(bufferName, quality);
+                createBuffer(bufferName, quality);
         allocated += size;
         this.status.getPipeSizeMeasurement().changeActiveValue(size);
         this.status.getPipeCountMeasurement().changeActiveValue(1);
@@ -82,7 +83,7 @@ public class SimpleBufferManager implements BufferManagerInterface {
 
     @Override
     public CombinedBuffer getLocalBuffer(BufferID id, ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException {
+                                         PlanSessionID sessionID) throws RemoteException {
         BMSession session = getSession(sessionID);
         BMContainerSession cSession = session.getContainerSession(containerSessionID);
         CombinedBuffer buffer = cSession.getLocalBuffer(id);
@@ -90,15 +91,16 @@ public class SimpleBufferManager implements BufferManagerInterface {
     }
 
     public StreamBuffer getLocalStreamBuffer(BufferID id, ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException {
+                                             PlanSessionID sessionID) throws RemoteException {
         BMSession session = getSession(sessionID);
         BMContainerSession cSession = session.getContainerSession(containerSessionID);
         CombinedBuffer buffer = cSession.getLocalBuffer(id);
         return buffer.stream;
     }
 
-    @Override public void destroyBuffer(BufferID id, ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void destroyBuffer(BufferID id, ContainerSessionID containerSessionID,
+                              PlanSessionID sessionID) throws RemoteException {
         BMSession session = getSession(sessionID);
         BMContainerSession cSession = session.getContainerSession(containerSessionID);
         long size = cSession.destroyBuffer(id);
@@ -107,8 +109,9 @@ public class SimpleBufferManager implements BufferManagerInterface {
         this.status.getPipeCountMeasurement().changeActiveValue(-1);
     }
 
-    @Override public void destroyContainerSession(ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void destroyContainerSession(ContainerSessionID containerSessionID,
+                                        PlanSessionID sessionID) throws RemoteException {
         BMSession session = getSession(sessionID);
         if (session != null) {
             BMContainerSession cSession = session.getContainerSession(containerSessionID);
@@ -119,7 +122,8 @@ public class SimpleBufferManager implements BufferManagerInterface {
         }
     }
 
-    @Override public void destroySessions(PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void destroySessions(PlanSessionID sessionID) throws RemoteException {
         BMSession session = getSession(sessionID);
         if (session != null) {
             session.destroyAllSessions();
@@ -127,7 +131,8 @@ public class SimpleBufferManager implements BufferManagerInterface {
         }
     }
 
-    @Override public void destroyAllSessions() throws RemoteException {
+    @Override
+    public void destroyAllSessions() throws RemoteException {
         for (BMSession session : sessionMap.values()) {
             session.destroyAllSessions();
         }

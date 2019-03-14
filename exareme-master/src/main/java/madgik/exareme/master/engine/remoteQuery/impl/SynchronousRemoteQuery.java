@@ -18,28 +18,28 @@ import java.util.logging.Logger;
 
 /**
  * @author Christos Mallios <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  */
 public final class SynchronousRemoteQuery implements RemoteQuery {
 
     private final RemoteQuery asynchronousRemoteQuery;
 
     public SynchronousRemoteQuery(File metadataPath, File storagePath, File cachePath,
-        CacheAlgorithm algorithm) throws Exception {
+                                  CacheAlgorithm algorithm) throws Exception {
         asynchronousRemoteQuery =
-            new AsynchronousRemoteQuery(metadataPath, storagePath, cachePath, algorithm);
+                new AsynchronousRemoteQuery(metadataPath, storagePath, cachePath, algorithm);
     }
 
     public SynchronousRemoteQuery(File metadataPath, File storagePath, File cachePath,
-        CacheAlgorithm algorithm, int storageSize) throws Exception {
+                                  CacheAlgorithm algorithm, int storageSize) throws Exception {
         asynchronousRemoteQuery =
-            new AsynchronousRemoteQuery(metadataPath, storagePath, cachePath, algorithm,
-                storageSize);
+                new AsynchronousRemoteQuery(metadataPath, storagePath, cachePath, algorithm,
+                        storageSize);
     }
 
     @Override
     public void schedule(ServerInfo server, String query, final RemoteQueryListener listener,
-        ProcessManager procManager, String table) throws RemoteException, IOException {
+                         ProcessManager procManager, String table) throws RemoteException, IOException {
 
         final Object wake = new Object();
 
@@ -50,7 +50,8 @@ public final class SynchronousRemoteQuery implements RemoteQuery {
             public boolean finish = false;
             CachedDataInfo results;
 
-            @Override public void finished(CachedDataInfo file, String error) {
+            @Override
+            public void finished(CachedDataInfo file, String error) {
 
                 if (listener != null) {
                     listener.finished(file, error);
@@ -64,14 +65,16 @@ public final class SynchronousRemoteQuery implements RemoteQuery {
                 }
             }
 
-            @Override public boolean isFinished() {
+            @Override
+            public boolean isFinished() {
 
                 synchronized (lock) {
                     return finish;
                 }
             }
 
-            @Override public CachedDataInfo getResults() {
+            @Override
+            public CachedDataInfo getResults() {
                 return results;
             }
 
@@ -84,7 +87,7 @@ public final class SynchronousRemoteQuery implements RemoteQuery {
                     wake.wait();
                 } catch (InterruptedException ex) {
                     Logger.getLogger(SynchronousRemoteQuery.class.getName()).
-                        log(Level.SEVERE, null, ex);
+                            log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -92,8 +95,8 @@ public final class SynchronousRemoteQuery implements RemoteQuery {
 
     @Override
     public void schedule(ServerInfo server, String query, final RemoteQueryListener listener,
-        ProcessManager procManager, String table, double staleLimit)
-        throws RemoteException, IOException {
+                         ProcessManager procManager, String table, double staleLimit)
+            throws RemoteException, IOException {
 
         final Object wake = new Object();
 
@@ -104,7 +107,8 @@ public final class SynchronousRemoteQuery implements RemoteQuery {
             public boolean finish = false;
             CachedDataInfo results;
 
-            @Override public void finished(CachedDataInfo file, String error) {
+            @Override
+            public void finished(CachedDataInfo file, String error) {
                 listener.finished(file, error);
                 results = file;
                 synchronized (lock) {
@@ -115,20 +119,22 @@ public final class SynchronousRemoteQuery implements RemoteQuery {
                 }
             }
 
-            @Override public boolean isFinished() {
+            @Override
+            public boolean isFinished() {
 
                 synchronized (lock) {
                     return finish;
                 }
             }
 
-            @Override public CachedDataInfo getResults() {
+            @Override
+            public CachedDataInfo getResults() {
                 return results;
             }
 
         };
         asynchronousRemoteQuery
-            .schedule(server, query, synchronizedListener, procManager, table, staleLimit);
+                .schedule(server, query, synchronizedListener, procManager, table, staleLimit);
 
         synchronized (wake) {
             while (!synchronizedListener.isFinished()) {
@@ -136,27 +142,31 @@ public final class SynchronousRemoteQuery implements RemoteQuery {
                     wake.wait();
                 } catch (InterruptedException ex) {
                     Logger.getLogger(SynchronousRemoteQuery.class.getName()).
-                        log(Level.SEVERE, null, ex);
+                            log(Level.SEVERE, null, ex);
                 }
             }
         }
     }
 
-    @Override public void finished(String query, CachedDataInfo info) throws RemoteException {
+    @Override
+    public void finished(String query, CachedDataInfo info) throws RemoteException {
 
         asynchronousRemoteQuery.finished(query, info);
     }
 
-    @Override public void close() {
+    @Override
+    public void close() {
 
         asynchronousRemoteQuery.close();
     }
 
-    @Override public void printData() {
+    @Override
+    public void printData() {
         asynchronousRemoteQuery.printData();
     }
 
-    @Override public void setReplacementAlgorithm(CacheAlgorithm algorithm, int storageSize) {
+    @Override
+    public void setReplacementAlgorithm(CacheAlgorithm algorithm, int storageSize) {
 
         asynchronousRemoteQuery.setReplacementAlgorithm(algorithm, storageSize);
     }

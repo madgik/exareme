@@ -34,7 +34,8 @@ public class MyThread implements Runnable {
         return randomNum != 0;
     }
 
-    @Override public void run() {
+    @Override
+    public void run() {
         ArrayList<String> containers;
         ArrayList<String> released = new ArrayList();
         int i;

@@ -5,30 +5,10 @@ package madgik.exareme.jdbc.federated;
 
 import com.google.gson.Gson;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.ObjectOutputStream;
-import java.io.Reader;
+import java.io.*;
 import java.math.BigDecimal;
 import java.net.URL;
-import java.sql.Array;
-import java.sql.Blob;
-import java.sql.Clob;
-import java.sql.Date;
-import java.sql.NClob;
-import java.sql.Ref;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.RowId;
-import java.sql.SQLException;
-import java.sql.SQLWarning;
-import java.sql.SQLXML;
-import java.sql.Statement;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -37,7 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
  * @author dimitris
  */
 public class AdpResultSet implements ResultSet {
@@ -67,7 +46,7 @@ public class AdpResultSet implements ResultSet {
             throw new SQLException(errors.toString());
         }
         this.rsMetadata = new AdpResultSetMetaData(this, firstRow.get("schema"));
-        closeStOnClose=false;
+        closeStOnClose = false;
     }
 
     @Override
@@ -92,8 +71,8 @@ public class AdpResultSet implements ResultSet {
                 StringBuilder exaremeException = new StringBuilder(line);
                 while (true) {
                     try {
-                        String l=input.readLine();
-                        if(l==null){
+                        String l = input.readLine();
+                        if (l == null) {
                             break;
                         }
                         exaremeException.append("\n");
@@ -113,8 +92,9 @@ public class AdpResultSet implements ResultSet {
     public void close() throws SQLException {
         try {
             input.close();
-            if(closeStOnClose){
-                this.statement.close();;
+            if (closeStOnClose) {
+                this.statement.close();
+                ;
             }
         } catch (IOException ex) {
             throw new SQLException("Could not close connection.");
@@ -755,7 +735,7 @@ public class AdpResultSet implements ResultSet {
 
     @Override
     public void updateCharacterStream(String columnLabel, Reader reader,
-            int length) throws SQLException {
+                                      int length) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -1063,7 +1043,7 @@ public class AdpResultSet implements ResultSet {
 
     @Override
     public void updateNCharacterStream(String columnLabel, Reader reader,
-            long length) throws SQLException {
+                                       long length) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -1099,7 +1079,7 @@ public class AdpResultSet implements ResultSet {
 
     @Override
     public void updateCharacterStream(String columnLabel, Reader reader,
-            long length) throws SQLException {
+                                      long length) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -1111,7 +1091,7 @@ public class AdpResultSet implements ResultSet {
 
     @Override
     public void updateBlob(String columnLabel, InputStream inputStream,
-            long length) throws SQLException {
+                           long length) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -1242,5 +1222,5 @@ public class AdpResultSet implements ResultSet {
     public void setCloseStOnClose(boolean closeStOnClose) {
         this.closeStOnClose = closeStOnClose;
     }
-    
+
 }

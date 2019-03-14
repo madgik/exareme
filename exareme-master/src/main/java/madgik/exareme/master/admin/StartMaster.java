@@ -41,7 +41,7 @@ public class StartMaster {
         Logger.getRootLogger().setLevel(Level.toLevel(logLevel));
 
         manager = ArtManagerFactory.createRmiArtManager(
-            new ArtManagerProperties(NetUtil.getIPv4(), registryPort, dataTransferPort));
+                new ArtManagerProperties(NetUtil.getIPv4(), registryPort, dataTransferPort));
         log.debug("Runtime manager created!");
 
         manager.getRegistryManager().startArtRegistry();

@@ -16,8 +16,9 @@ public class CloseSessionEventHandler implements EventHandler<CloseSessionEvent>
     public static CloseSessionEventHandler instance = new CloseSessionEventHandler();
     private static Logger log = Logger.getLogger(CloseSessionEventHandler.class);
 
-    @Override public void handle(CloseSessionEvent event, EventProcessor proc)
-        throws RemoteException {
+    @Override
+    public void handle(CloseSessionEvent event, EventProcessor proc)
+            throws RemoteException {
         if (event.cSID != null) {
             log.debug("Destroying container session : " + event.sID.getLongId());
 

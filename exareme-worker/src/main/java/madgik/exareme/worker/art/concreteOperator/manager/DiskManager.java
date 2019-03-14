@@ -32,11 +32,11 @@ public class DiskManager {
         globalDMSession = diskManager.getGlobalSession(sessionManager.getSessionID());
 
         containerDMSession = diskManager.getContainerSession(sessionManager.getContainerSessionID(),
-            sessionManager.getSessionID());
+                sessionManager.getSessionID());
 
         operatorDMSession = diskManager
-            .getOperatorSession(sessionManager.getOpID(), sessionManager.getContainerSessionID(),
-                sessionManager.getSessionID());
+                .getOperatorSession(sessionManager.getOpID(), sessionManager.getContainerSessionID(),
+                        sessionManager.getSessionID());
     }
 
     public DiskSession getGlobalSession() {

@@ -17,14 +17,15 @@ public class HttpAsyncDeleteStreamQueryHandler implements HttpAsyncRequestHandle
     public HttpAsyncDeleteStreamQueryHandler() {
     }
 
-    @Override public HttpAsyncRequestConsumer<HttpRequest> processRequest(HttpRequest request,
-        HttpContext context) throws HttpException, IOException {
+    @Override
+    public HttpAsyncRequestConsumer<HttpRequest> processRequest(HttpRequest request,
+                                                                HttpContext context) throws HttpException, IOException {
         return new BasicAsyncRequestConsumer();
     }
 
     @Override
     public void handle(HttpRequest httpRequest, HttpAsyncExchange httpExchange, HttpContext context)
-        throws HttpException, IOException {
+            throws HttpException, IOException {
         HttpResponse httpResponse = httpExchange.getResponse();
 
         log.info("Validating request ..");
@@ -46,7 +47,7 @@ public class HttpAsyncDeleteStreamQueryHandler implements HttpAsyncRequestHandle
 
             if (info == null) {
                 HttpResponse response =
-                    new BasicHttpResponse(HttpVersion.HTTP_1_1, HttpStatus.SC_NOT_FOUND, "");
+                        new BasicHttpResponse(HttpVersion.HTTP_1_1, HttpStatus.SC_NOT_FOUND, "");
                 HttpEntity entity = new NStringEntity("Stream " + queryId + " Not Found");
 
                 response.setEntity(entity);
@@ -59,8 +60,8 @@ public class HttpAsyncDeleteStreamQueryHandler implements HttpAsyncRequestHandle
         } catch (Exception ex) {
             log.error(ex);
             HttpResponse response =
-                new BasicHttpResponse(HttpVersion.HTTP_1_1, HttpStatus.SC_INTERNAL_SERVER_ERROR,
-                    ex.getMessage());
+                    new BasicHttpResponse(HttpVersion.HTTP_1_1, HttpStatus.SC_INTERNAL_SERVER_ERROR,
+                            ex.getMessage());
             HttpEntity entity = new NStringEntity(ex.getMessage());
 
             response.setEntity(entity);
@@ -71,7 +72,7 @@ public class HttpAsyncDeleteStreamQueryHandler implements HttpAsyncRequestHandle
 
 
         HttpResponse response =
-            new BasicHttpResponse(HttpVersion.HTTP_1_1, HttpStatus.SC_TEMPORARY_REDIRECT, "");
+                new BasicHttpResponse(HttpVersion.HTTP_1_1, HttpStatus.SC_TEMPORARY_REDIRECT, "");
         response.addHeader("Location", "http://" + info.ip + ":" + info.port + target);
 
         httpExchange.submitResponse(new BasicAsyncResponseProducer(response));

@@ -17,13 +17,13 @@ import java.util.ArrayList;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class RmiComputeSessionContainerManagerProxy
-    extends RmiObjectProxy<ComputeSessionContainerManager>
-    implements ComputeSessionContainerManagerProxy {
+        extends RmiObjectProxy<ComputeSessionContainerManager>
+        implements ComputeSessionContainerManagerProxy {
 
     public ArmComputeSessionID sessionID = null;
 
@@ -31,34 +31,41 @@ public class RmiComputeSessionContainerManagerProxy
         super(regEntryName, regEntityName);
     }
 
-    @Override public ActiveContainer[] getContainers(int numOfContainers) throws RemoteException {
+    @Override
+    public ActiveContainer[] getContainers(int numOfContainers) throws RemoteException {
         return super.getRemoteObject().getContainers(numOfContainers, sessionID);
     }
 
-    @Override public ActiveContainer[] tryGetContainers(int numOfContainers)
-        throws RemoteException {
+    @Override
+    public ActiveContainer[] tryGetContainers(int numOfContainers)
+            throws RemoteException {
         return super.getRemoteObject().tryGetContainers(numOfContainers, sessionID);
     }
 
-    @Override public ActiveContainer[] getAtMostContainers(int numOfContainers)
-        throws RemoteException {
+    @Override
+    public ActiveContainer[] getAtMostContainers(int numOfContainers)
+            throws RemoteException {
         return super.getRemoteObject().getAtMostContainers(numOfContainers, sessionID);
     }
 
-    @Override public void stopContainer(ActiveContainer container) throws RemoteException {
+    @Override
+    public void stopContainer(ActiveContainer container) throws RemoteException {
         super.getRemoteObject().stopContainer(container, sessionID);
     }
 
-    @Override public void closeSession() throws RemoteException {
+    @Override
+    public void closeSession() throws RemoteException {
         super.getRemoteObject().closeSession(sessionID);
     }
 
-    @Override public ArrayList<Pair<PatternElement, ActiveContainer>> getAtMostContainers()
-        throws RemoteException {
+    @Override
+    public ArrayList<Pair<PatternElement, ActiveContainer>> getAtMostContainers()
+            throws RemoteException {
         return super.getRemoteObject().getAtMostContainers(sessionID);
     }
 
-    @Override public void setPattern(ArrayList<PatternElement> pattern) throws RemoteException {
+    @Override
+    public void setPattern(ArrayList<PatternElement> pattern) throws RemoteException {
         super.getRemoteObject().setPattern(pattern, sessionID);
     }
 }

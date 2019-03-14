@@ -29,7 +29,8 @@ public class Comments implements Serializable {
         return lines;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return sb.toString();
     }
 }

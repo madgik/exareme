@@ -8,7 +8,6 @@ import com.foundationdb.sql.parser.FromSubquery;
 import com.foundationdb.sql.parser.ResultColumnList;
 import com.foundationdb.sql.parser.Visitable;
 import madgik.exareme.master.queryProcessor.decomposer.query.SQLQuery;
-import org.apache.log4j.Logger;
 
 /**
  * @author heraldkllapi
@@ -19,7 +18,8 @@ public class ResultColumnsVisitor extends AbstractVisitor {
         super(query);
     }
 
-    @Override public Visitable visit(Visitable node) throws StandardException {
+    @Override
+    public Visitable visit(Visitable node) throws StandardException {
         if (node instanceof ResultColumnList) {
             ResultColumnVisitor columnVisitor = new ResultColumnVisitor(query);
             node.accept(columnVisitor);
@@ -28,7 +28,8 @@ public class ResultColumnsVisitor extends AbstractVisitor {
         return node;
     }
 
-    @Override public boolean skipChildren(Visitable node) {
+    @Override
+    public boolean skipChildren(Visitable node) {
         return FromSubquery.class.isInstance(node);
     }
 }

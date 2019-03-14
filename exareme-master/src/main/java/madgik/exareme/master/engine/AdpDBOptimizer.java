@@ -21,6 +21,6 @@ public interface AdpDBOptimizer {
 
     /* Optimize the script given the schema using the client properties. */
     AdpDBQueryExecutionPlan optimize(QueryScript script, Registry registry, Statistics stats,
-        AdpDBHistoricalQueryData queryData, AdpDBQueryID queryID, AdpDBClientProperties props,
-        boolean schedule, boolean validate) throws RemoteException;
+                                     AdpDBHistoricalQueryData queryData, AdpDBQueryID queryID, AdpDBClientProperties props,
+                                     boolean schedule, boolean validate) throws RemoteException;
 }

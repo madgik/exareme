@@ -8,7 +8,7 @@ import java.util.NoSuchElementException;
 
 /**
  * @author Christos Mallios <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  */
 public class DoublyLinkedListIterator<E> implements ListIterator {
 
@@ -28,11 +28,13 @@ public class DoublyLinkedListIterator<E> implements ListIterator {
         currentNodePosition = 0;
     }
 
-    @Override public boolean hasNext() {
+    @Override
+    public boolean hasNext() {
         return (nextIndex != null);
     }
 
-    @Override public Node<E> next() {
+    @Override
+    public Node<E> next() {
 
         if (!hasNext()) {
             throw new NoSuchElementException();
@@ -50,11 +52,13 @@ public class DoublyLinkedListIterator<E> implements ListIterator {
         return lastAccessed;
     }
 
-    @Override public boolean hasPrevious() {
+    @Override
+    public boolean hasPrevious() {
         return (previousIndex != null);
     }
 
-    @Override public Node<E> previous() {
+    @Override
+    public Node<E> previous() {
 
         if (!hasPrevious()) {
             throw new NoSuchElementException();
@@ -75,23 +79,28 @@ public class DoublyLinkedListIterator<E> implements ListIterator {
         return lastAccessed;
     }
 
-    @Override public int nextIndex() {
+    @Override
+    public int nextIndex() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public int previousIndex() {
+    @Override
+    public int previousIndex() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public void remove() {
+    @Override
+    public void remove() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public void set(Object e) {
+    @Override
+    public void set(Object e) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public void add(Object e) {
+    @Override
+    public void add(Object e) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

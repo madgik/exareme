@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-#*****************************************************************************
+# *****************************************************************************
 #       Copyright (C) 2003-2006 Gary Bishop.
 #       Copyright (C) 2006  Jorgen Stenarson. <jorgen.stenarson@bostream.nu>
 #
 #  Distributed under the terms of the BSD License.  The full license is in
 #  the file COPYING, distributed as part of this software.
-#*****************************************************************************
+# *****************************************************************************
 '''Cursor control and color for the Windows console.
 
 This was modeled after the C extension of the same name by Fredrik Lundh. 
@@ -13,12 +13,11 @@ This was modeled after the C extension of the same name by Fredrik Lundh.
 
 # primitive debug printing that won't interfere with the screen
 
-import sys
-import traceback
 import re
-from pyreadline.logger import log,log_sock
-from pyreadline.unicode_helper import ensure_unicode,ensure_str
-import pyreadline.unicode_helper as unicode_helper
+import traceback
+from pyreadline.logger import log, log_sock
+from pyreadline.unicode_helper import ensure_unicode, ensure_str
+
 try:
     from ctypes import *
     from _ctypes import call_function
@@ -27,7 +26,7 @@ except ImportError:
 
 # my code
 from pyreadline.keysyms import make_KeyPress
-from pyreadline.console.ansi import AnsiState,AnsiWriter
+from pyreadline.console.ansi import AnsiState, AnsiWriter
 
 # some constants we need
 STD_INPUT_HANDLE = -10
@@ -50,16 +49,19 @@ VK_MENU = 0x12
 GENERIC_READ = int(0x80000000L)
 GENERIC_WRITE = 0x40000000
 
+
 # Windows structures we'll need later
 class COORD(Structure):
     _fields_ = [("X", c_short),
                 ("Y", c_short)]
+
 
 class SMALL_RECT(Structure):
     _fields_ = [("Left", c_short),
                 ("Top", c_short),
                 ("Right", c_short),
                 ("Bottom", c_short)]
+
 
 class CONSOLE_SCREEN_BUFFER_INFO(Structure):
     _fields_ = [("dwSize", COORD),
@@ -68,13 +70,16 @@ class CONSOLE_SCREEN_BUFFER_INFO(Structure):
                 ("srWindow", SMALL_RECT),
                 ("dwMaximumWindowSize", COORD)]
 
+
 class CHAR_UNION(Union):
     _fields_ = [("UnicodeChar", c_wchar),
                 ("AsciiChar", c_char)]
 
+
 class CHAR_INFO(Structure):
     _fields_ = [("Char", CHAR_UNION),
                 ("Attributes", c_short)]
+
 
 class KEY_EVENT_RECORD(Structure):
     _fields_ = [("bKeyDown", c_byte),
@@ -86,20 +91,25 @@ class KEY_EVENT_RECORD(Structure):
                 ("uChar", CHAR_UNION),
                 ("dwControlKeyState", c_int)]
 
+
 class MOUSE_EVENT_RECORD(Structure):
     _fields_ = [("dwMousePosition", COORD),
                 ("dwButtonState", c_int),
                 ("dwControlKeyState", c_int),
                 ("dwEventFlags", c_int)]
 
+
 class WINDOW_BUFFER_SIZE_RECORD(Structure):
     _fields_ = [("dwSize", COORD)]
+
 
 class MENU_EVENT_RECORD(Structure):
     _fields_ = [("dwCommandId", c_uint)]
 
+
 class FOCUS_EVENT_RECORD(Structure):
     _fields_ = [("bSetFocus", c_byte)]
+
 
 class INPUT_UNION(Union):
     _fields_ = [("KeyEvent", KEY_EVENT_RECORD),
@@ -108,9 +118,11 @@ class INPUT_UNION(Union):
                 ("MenuEvent", MENU_EVENT_RECORD),
                 ("FocusEvent", FOCUS_EVENT_RECORD)]
 
+
 class INPUT_RECORD(Structure):
     _fields_ = [("EventType", c_short),
                 ("Event", INPUT_UNION)]
+
 
 class CONSOLE_CURSOR_INFO(Structure):
     _fields_ = [("dwSize", c_int),
@@ -145,14 +157,15 @@ funcs = [
     'SetConsoleWindowInfo',
     'WriteConsoleW',
     'WriteConsoleOutputCharacterW',
-    ]
+]
 
 # I don't want events for these keys, they are just a bother for my application
-key_modifiers = { VK_SHIFT:1,
-                  VK_CONTROL:1,
-                  VK_MENU:1, # alt key
-                  0x5b:1, # windows key
+key_modifiers = {VK_SHIFT: 1,
+                 VK_CONTROL: 1,
+                 VK_MENU: 1,  # alt key
+                 0x5b: 1,  # windows key
                  }
+
 
 class Console(object):
     '''Console driver for Windows.
@@ -165,14 +178,14 @@ class Console(object):
         newbuffer=1 will allocate a new buffer so the old content will be restored
         on exit.
         '''
-        #Do I need the following line? It causes a console to be created whenever
-        #readline is imported into a pythonw application which seems wrong. Things
-        #seem to work without it...
-        #self.AllocConsole()
+        # Do I need the following line? It causes a console to be created whenever
+        # readline is imported into a pythonw application which seems wrong. Things
+        # seem to work without it...
+        # self.AllocConsole()
 
         if newbuffer:
             self.hout = self.CreateConsoleScreenBuffer(GENERIC_READ | GENERIC_WRITE,
-                                                                                                 0, None, 1, None)
+                                                       0, None, 1, None)
             self.SetConsoleActiveScreenBuffer(self.hout)
         else:
             self.hout = self.GetStdHandle(STD_OUTPUT_HANDLE)
@@ -184,19 +197,19 @@ class Console(object):
         info = CONSOLE_SCREEN_BUFFER_INFO()
         self.GetConsoleScreenBufferInfo(self.hout, byref(info))
         self.attr = info.wAttributes
-        self.saveattr = info.wAttributes # remember the initial colors
+        self.saveattr = info.wAttributes  # remember the initial colors
 
-        self.defaultstate=AnsiState()
-        self.defaultstate.winattr=info.wAttributes
-        self.ansiwriter=AnsiWriter(self.defaultstate)
-#        self.ansiwriter.defaultstate.bold=False
-        
+        self.defaultstate = AnsiState()
+        self.defaultstate.winattr = info.wAttributes
+        self.ansiwriter = AnsiWriter(self.defaultstate)
+        #        self.ansiwriter.defaultstate.bold=False
+
         background = self.attr & 0xf0
         for escape in self.escape_to_color:
             if self.escape_to_color[escape] is not None:
                 self.escape_to_color[escape] |= background
         log('initial attr=%x' % self.attr)
-        self.softspace = 0 # this is for using it as a file-like object
+        self.softspace = 0  # this is for using it as a file-like object
         self.serial = 0
 
         self.pythondll = CDLL('python%s%s' % (sys.version[0], sys.version[2]))
@@ -214,9 +227,9 @@ class Console(object):
         info = CONSOLE_SCREEN_BUFFER_INFO()
         self.GetConsoleScreenBufferInfo(self.hout, byref(info))
         rect = info.srWindow
-        top = rect.Top 
-        bot = rect.Bottom 
-        return top,bot
+        top = rect.Top
+        bot = rect.Bottom
+        return top, bot
 
     def fixcoord(self, x, y):
         '''Return a long with x and y packed inside, also handle negative x and y.'''
@@ -242,29 +255,29 @@ class Console(object):
 
     def home(self):
         '''Move to home.'''
-        self.pos(0,0)
+        self.pos(0, 0)
 
-# Map ANSI color escape sequences into Windows Console Attributes
+    # Map ANSI color escape sequences into Windows Console Attributes
 
     terminal_escape = re.compile('(\001?\033\\[[0-9;]+m\002?)')
     escape_parts = re.compile('\001?\033\\[([0-9;]+)m\002?')
-    escape_to_color = { '0;30': 0x0,             #black
-                        '0;31': 0x4,             #red
-                        '0;32': 0x2,             #green
-                        '0;33': 0x4+0x2,         #brown?
-                        '0;34': 0x1,             #blue
-                        '0;35': 0x1+0x4,         #purple
-                        '0;36': 0x2+0x4,         #cyan
-                        '0;37': 0x1+0x2+0x4,     #grey
-                        '1;30': 0x1+0x2+0x4,     #dark gray
-                        '1;31': 0x4+0x8,         #red
-                        '1;32': 0x2+0x8,         #light green
-                        '1;33': 0x4+0x2+0x8,     #yellow
-                        '1;34': 0x1+0x8,         #light blue
-                        '1;35': 0x1+0x4+0x8,     #light purple
-                        '1;36': 0x1+0x2+0x8,     #light cyan
-                        '1;37': 0x1+0x2+0x4+0x8, #white
-                        '0': None,
+    escape_to_color = {'0;30': 0x0,  # black
+                       '0;31': 0x4,  # red
+                       '0;32': 0x2,  # green
+                       '0;33': 0x4 + 0x2,  # brown?
+                       '0;34': 0x1,  # blue
+                       '0;35': 0x1 + 0x4,  # purple
+                       '0;36': 0x2 + 0x4,  # cyan
+                       '0;37': 0x1 + 0x2 + 0x4,  # grey
+                       '1;30': 0x1 + 0x2 + 0x4,  # dark gray
+                       '1;31': 0x4 + 0x8,  # red
+                       '1;32': 0x2 + 0x8,  # light green
+                       '1;33': 0x4 + 0x2 + 0x8,  # yellow
+                       '1;34': 0x1 + 0x8,  # light blue
+                       '1;35': 0x1 + 0x4 + 0x8,  # light purple
+                       '1;36': 0x1 + 0x2 + 0x8,  # light cyan
+                       '1;37': 0x1 + 0x2 + 0x4 + 0x8,  # white
+                       '0': None,
                        }
 
     # This pattern should match all characters that change the cursor position differently
@@ -287,43 +300,43 @@ class Console(object):
         '''
         x, y = self.pos()
         w, h = self.size()
-        scroll = 0 # the result
+        scroll = 0  # the result
         # split the string into ordinary characters and funny characters
         chunks = self.motion_char_re.split(text)
         for chunk in chunks:
-            log('C:'+chunk)
+            log('C:' + chunk)
             n = self.write_color(chunk, attr)
-            if len(chunk) == 1: # the funny characters will be alone
-                if chunk[0] == '\n': # newline
+            if len(chunk) == 1:  # the funny characters will be alone
+                if chunk[0] == '\n':  # newline
                     x = 0
                     y += 1
-                elif chunk[0] == '\r': # carriage return
+                elif chunk[0] == '\r':  # carriage return
                     x = 0
-                elif chunk[0] == '\t': # tab
-                    x = 8*(int(x/8)+1)
-                    if x > w: # newline
+                elif chunk[0] == '\t':  # tab
+                    x = 8 * (int(x / 8) + 1)
+                    if x > w:  # newline
                         x -= w
                         y += 1
-                elif chunk[0] == '\007': # bell
+                elif chunk[0] == '\007':  # bell
                     pass
                 elif chunk[0] == '\010':
                     x -= 1
                     if x < 0:
-                        y -= 1 # backed up 1 line
-                else: # ordinary character
+                        y -= 1  # backed up 1 line
+                else:  # ordinary character
                     x += 1
-                if x == w: # wrap
+                if x == w:  # wrap
                     x = 0
                     y += 1
-                if y == h: # scroll
+                if y == h:  # scroll
                     scroll += 1
                     y = h - 1
-            else: # chunk of ordinary characters
+            else:  # chunk of ordinary characters
                 x += n
-                l = int(x / w) # lines we advanced
-                x = x % w # new x value
+                l = int(x / w)  # lines we advanced
+                x = x % w  # new x value
                 y += l
-                if y >= h: # scroll
+                if y >= h:  # scroll
                     scroll += y - h + 1
                     y = h - 1
         return scroll
@@ -337,7 +350,7 @@ class Console(object):
         chunks = self.terminal_escape.split(text)
         log('chunks=%s' % repr(chunks))
         junk = c_int(0)
-        n = 0 # count the characters we actually write, omitting the escapes
+        n = 0  # count the characters we actually write, omitting the escapes
         for chunk in chunks:
             m = self.escape_parts.match(chunk)
             if m:
@@ -348,24 +361,23 @@ class Console(object):
             if attr is None:
                 attr = self.attr
             self.SetConsoleTextAttribute(self.hout, attr)
-            #self.WriteConsoleW(self.hout, ensure_str(chunk), len(chunk), byref(junk), None)
+            # self.WriteConsoleW(self.hout, ensure_str(chunk), len(chunk), byref(junk), None)
         return n
 
     def write_color(self, text, attr=None):
         text = ensure_unicode(text)
-        n,res= self.ansiwriter.write_color(text,attr)
+        n, res = self.ansiwriter.write_color(text, attr)
         junk = c_int(0)
-        for attr,chunk in res:
+        for attr, chunk in res:
             log(unicode(attr))
             log(unicode(chunk))
             self.SetConsoleTextAttribute(self.hout, attr.winattr)
             self.WriteConsoleW(self.hout, chunk, len(chunk), byref(junk), None)
         return n
 
-
     def write_plain(self, text, attr=None):
         '''write text at current cursor position.'''
-        log('write("%s", %s)' %(text,attr))
+        log('write("%s", %s)' % (text, attr))
         if attr is None:
             attr = self.attr
         n = c_int(0)
@@ -378,7 +390,7 @@ class Console(object):
         log('write("%s")' % text)
         return self.write_color(text)
 
-    #write = write_scrolling
+    # write = write_scrolling
 
     def isatty(self):
         return True
@@ -416,12 +428,12 @@ class Console(object):
         self.FillConsoleOutputAttribute(self.hout, attr, n, pos, byref(n))
 
     def clear_to_end_of_window(self):
-        top,bot=self._get_top_bot()
-        pos=self.pos()
-        w,h=self.size()
-        self.rectangle( (pos[0],pos[1],w,pos[1]+1))
-        if pos[1]<bot:
-            self.rectangle((0,pos[1]+1,w,bot+1))
+        top, bot = self._get_top_bot()
+        pos = self.pos()
+        w, h = self.size()
+        self.rectangle((pos[0], pos[1], w, pos[1] + 1))
+        if pos[1] < bot:
+            self.rectangle((0, pos[1] + 1, w, bot + 1))
 
     def rectangle(self, rect, attr=None, fill=' '):
         '''Fill Rectangle.'''
@@ -431,8 +443,8 @@ class Console(object):
             attr = self.attr
         for y in range(y0, y1):
             pos = self.fixcoord(x0, y)
-            self.FillConsoleOutputAttribute(self.hout, attr, x1-x0, pos, byref(n))
-            self.FillConsoleOutputCharacterW(self.hout, ord(fill[0]), x1-x0, pos, byref(n))
+            self.FillConsoleOutputAttribute(self.hout, attr, x1 - x0, pos, byref(n))
+            self.FillConsoleOutputCharacterW(self.hout, ord(fill[0]), x1 - x0, pos, byref(n))
 
     def scroll(self, rect, dx, dy, attr=None, fill=' '):
         '''Scroll a rectangle.'''
@@ -440,14 +452,14 @@ class Console(object):
             attr = self.attr
 
         x0, y0, x1, y1 = rect
-        source = SMALL_RECT(x0, y0, x1-1, y1-1)
-        dest = self.fixcoord(x0+dx, y0+dy)
+        source = SMALL_RECT(x0, y0, x1 - 1, y1 - 1)
+        dest = self.fixcoord(x0 + dx, y0 + dy)
         style = CHAR_INFO()
         style.Char.AsciiChar = fill[0]
         style.Attributes = attr
 
         return self.ScrollConsoleScreenBufferW(self.hout, byref(source), byref(source),
-                                                                                     dest, byref(style))
+                                               dest, byref(style))
 
     def scroll_window(self, lines):
         '''Scroll the window by the indicated number of lines.'''
@@ -458,7 +470,7 @@ class Console(object):
         top = rect.Top + lines
         bot = rect.Bottom + lines
         h = bot - top
-        maxbot = info.dwSize.Y-1
+        maxbot = info.dwSize.Y - 1
         if top < 0:
             top = 0
             bot = h
@@ -471,8 +483,8 @@ class Console(object):
         nrect.Bottom = bot
         nrect.Left = rect.Left
         nrect.Right = rect.Right
-        log('sn: top=%d bot=%d' % (top,bot))
-        r=self.SetConsoleWindowInfo(self.hout, True, byref(nrect))
+        log('sn: top=%d bot=%d' % (top, bot))
+        r = self.SetConsoleWindowInfo(self.hout, True, byref(nrect))
         log('r=%d' % r)
 
     def get(self):
@@ -487,7 +499,7 @@ class Console(object):
             status = self.ReadConsoleInputW(self.hin, byref(Cevent), 1, byref(count))
             if status and count.value == 1:
                 e = event(self, Cevent)
-                log_sock(ensure_unicode(e.keyinfo),"keypress")
+                log_sock(ensure_unicode(e.keyinfo), "keypress")
                 return e
 
     def getkeypress(self):
@@ -502,10 +514,10 @@ class Console(object):
                     self.scroll_window(-12)
                 else:
                     return e
-            elif e.type == 'KeyRelease' and e.keyinfo==(True, False, False, 83):
-                log("getKeypress:%s,%s,%s"%(e.keyinfo,e.keycode,e.type))
+            elif e.type == 'KeyRelease' and e.keyinfo == (True, False, False, 83):
+                log("getKeypress:%s,%s,%s" % (e.keyinfo, e.keycode, e.type))
                 return e
-                
+
     def getchar(self):
         '''Get next character from queue.'''
 
@@ -513,7 +525,7 @@ class Console(object):
         count = c_int(0)
         while 1:
             status = self.ReadConsoleInputW(self.hin, byref(Cevent), 1, byref(count))
-            if (status and count.value==1 and Cevent.EventType == 1 and
+            if (status and count.value == 1 and Cevent.EventType == 1 and
                     Cevent.Event.KeyEvent.bKeyDown):
                 sym = keysym(Cevent.Event.KeyEvent.wVirtualKeyCode)
                 if len(sym) == 0:
@@ -547,10 +559,10 @@ class Console(object):
         if width is not None and height is not None:
             wmin = info.srWindow.Right - info.srWindow.Left + 1
             hmin = info.srWindow.Bottom - info.srWindow.Top + 1
-            #print wmin, hmin
+            # print wmin, hmin
             width = max(width, wmin)
             height = max(height, hmin)
-            #print width, height
+            # print width, height
             self.SetConsoleScreenBufferSize(self.hout, self.fixcoord(width, height))
         else:
             return (info.dwSize.X, info.dwSize.Y)
@@ -573,11 +585,12 @@ class Console(object):
         self.serial += 1
         return self.serial
 
+
 # add the functions from the dll to the class
 for func in funcs:
     setattr(Console, func, getattr(windll.kernel32, func))
-windll.kernel32.SetConsoleTitleW.argtypes=[c_wchar_p]
-windll.kernel32.GetConsoleTitleW.argtypes=[c_wchar_p,c_short]
+windll.kernel32.SetConsoleTitleW.argtypes = [c_wchar_p]
+windll.kernel32.GetConsoleTitleW.argtypes = [c_wchar_p, c_short]
 
 from event import Event
 
@@ -586,6 +599,7 @@ VkKeyScan = windll.user32.VkKeyScanA
 
 class event(Event):
     '''Represent events from the console.'''
+
     def __init__(self, console, input):
         '''Initialize an event from the Windows input structure.'''
         self.type = '??'
@@ -597,9 +611,9 @@ class event(Event):
         self.char = ''
         self.keycode = 0
         self.keysym = '??'
-        self.keyinfo = None # a tuple with (control, meta, shift, keycode) for dispatch
+        self.keyinfo = None  # a tuple with (control, meta, shift, keycode) for dispatch
         self.width = None
-        
+
         if input.EventType == KEY_EVENT:
             if input.Event.KeyEvent.bKeyDown:
                 self.type = "KeyPress"
@@ -608,7 +622,7 @@ class event(Event):
             self.char = input.Event.KeyEvent.uChar.UnicodeChar
             self.keycode = input.Event.KeyEvent.wVirtualKeyCode
             self.state = input.Event.KeyEvent.dwControlKeyState
-            self.keyinfo=make_KeyPress(self.char,self.state,self.keycode)
+            self.keyinfo = make_KeyPress(self.char, self.state, self.keycode)
 
         elif input.EventType == MOUSE_EVENT:
             if input.Event.MouseEvent.dwEventFlags & MOUSE_MOVED:
@@ -631,16 +645,18 @@ class event(Event):
             self.type = "Menu"
             self.state = input.Event.MenuEvent.dwCommandId
 
+
 def getconsole(buffer=1):
-        """Get a console handle.
+    """Get a console handle.
 
-        If buffer is non-zero, a new console buffer is allocated and
-        installed.  Otherwise, this returns a handle to the current
-        console buffer"""
+    If buffer is non-zero, a new console buffer is allocated and
+    installed.  Otherwise, this returns a handle to the current
+    console buffer"""
 
-        c = Console(buffer)
+    c = Console(buffer)
 
-        return c
+    return c
+
 
 # The following code uses ctypes to allow a Python callable to
 # substitute for GNU readline within the Python interpreter. Calling
@@ -661,8 +677,9 @@ def getconsole(buffer=1):
 HOOKFUNC22 = CFUNCTYPE(c_char_p, c_char_p)
 HOOKFUNC23 = CFUNCTYPE(c_char_p, c_void_p, c_void_p, c_char_p)
 
-readline_hook = None # the python hook goes here
+readline_hook = None  # the python hook goes here
 readline_ref = None  # this holds a reference to the c-callable to keep it alive
+
 
 def hook_wrapper_23(stdin, stdout, prompt):
     '''Wrap a Python readline so it behaves like GNU readline.'''
@@ -679,14 +696,15 @@ def hook_wrapper_23(stdin, stdout, prompt):
         # It returns an empty string on EOF
         res = ''
     except:
-        print >>sys.stderr, 'Readline internal error'
+        print >> sys.stderr, 'Readline internal error'
         traceback.print_exc()
         res = '\n'
     # we have to make a copy because the caller expects to free the result
     n = len(res)
-    p = Console.PyMem_Malloc(n+1)
-    cdll.msvcrt.strncpy(p, res, n+1)
+    p = Console.PyMem_Malloc(n + 1)
+    cdll.msvcrt.strncpy(p, res, n + 1)
     return p
+
 
 def hook_wrapper(prompt):
     '''Wrap a Python readline so it behaves like GNU readline.'''
@@ -703,12 +721,13 @@ def hook_wrapper(prompt):
         # It returns an empty string on EOF
         res = ''
     except:
-        print >>sys.stderr, 'Readline internal error'
+        print >> sys.stderr, 'Readline internal error'
         traceback.print_exc()
         res = '\n'
     # we have to make a copy because the caller expects to free the result
     p = cdll.msvcrt._strdup(res)
     return p
+
 
 def install_readline(hook):
     '''Set up things for the interpreter to call our function like GNU readline.'''
@@ -717,7 +736,7 @@ def install_readline(hook):
     readline_hook = hook
     # get the address of PyOS_ReadlineFunctionPointer so we can update it
     PyOS_RFP = c_int.from_address(Console.GetProcAddress(sys.dllhandle,
-                                                 "PyOS_ReadlineFunctionPointer"))
+                                                         "PyOS_ReadlineFunctionPointer"))
     # save a reference to the generated C-callable so it doesn't go away
     if sys.version < '2.3':
         readline_ref = HOOKFUNC22(hook_wrapper)
@@ -728,22 +747,24 @@ def install_readline(hook):
     # write the function address into PyOS_ReadlineFunctionPointer
     PyOS_RFP.value = func_start
 
-if __name__ == '__main__':
-    import time, sys
 
-    
+if __name__ == '__main__':
+    import sys
+
+
     def p(char):
         return chr(VkKeyScan(ord(char)) & 0xff)
+
 
     c = Console(0)
     sys.stdout = c
     sys.stderr = c
     c.page()
-    print p("d"),p("D")
+    print p("d"), p("D")
     c.pos(5, 10)
     c.write('hi there')
     print 'some printed output'
     for i in range(10):
-        q=c.getkeypress()
+        q = c.getkeypress()
         print q
     del c

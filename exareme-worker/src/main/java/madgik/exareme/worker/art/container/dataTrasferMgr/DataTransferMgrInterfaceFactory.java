@@ -10,13 +10,13 @@ import java.rmi.RemoteException;
 /**
  * @author John Chronis <br>
  * @author Vaggelis Nikolopoulos <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class DataTransferMgrInterfaceFactory {
 
     public static DataTransferMgrInterface createDataTransferManagerDTPInterface(int port)
-        throws RemoteException {
+            throws RemoteException {
         return new SynchronizedDataTransferMgr(new DataTransferMgr(port));
     }
 

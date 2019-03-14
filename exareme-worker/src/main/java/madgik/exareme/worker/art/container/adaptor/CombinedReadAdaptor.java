@@ -12,7 +12,7 @@ public class CombinedReadAdaptor {
     public ReadSocketStreamAdaptor readSocketStreamAdaptor = null;
 
     public CombinedReadAdaptor(ReadRmiStreamAdaptor readStreamAdaptor,
-        ReadSocketStreamAdaptor readStreamAdaptor2) {
+                               ReadSocketStreamAdaptor readStreamAdaptor2) {
         this.readStreamAdaptor = readStreamAdaptor;
         this.readSocketStreamAdaptor = readStreamAdaptor2;
     }

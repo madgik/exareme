@@ -31,47 +31,54 @@ public class RmiStatisticsManager implements StatisticsManager {
     private EntityName regEntityName = null;
 
     public RmiStatisticsManager(StatisticsManagerInterface managerInterface,
-        EntityName regEntityName) throws RemoteException {
+                                EntityName regEntityName) throws RemoteException {
         this.managerInterface = managerInterface;
         this.regEntityName = regEntityName;
     }
 
-    @Override public ContainerSessionStatistics getStatistics(ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public ContainerSessionStatistics getStatistics(ContainerSessionID containerSessionID,
+                                                    PlanSessionID sessionID) throws RemoteException {
         return managerInterface.getStatistics(containerSessionID, sessionID);
     }
 
-    @Override public void destroyContainerSession(ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void destroyContainerSession(ContainerSessionID containerSessionID,
+                                        PlanSessionID sessionID) throws RemoteException {
         managerInterface.destroyContainerSession(containerSessionID, sessionID);
     }
 
-    @Override public void destroySessions(PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void destroySessions(PlanSessionID sessionID) throws RemoteException {
         managerInterface.destroySessions(sessionID);
     }
 
-    @Override public void destroyAllSessions() throws RemoteException {
+    @Override
+    public void destroyAllSessions() throws RemoteException {
         managerInterface.destroyAllSessions();
     }
 
-    @Override public void stopManager() throws RemoteException {
+    @Override
+    public void stopManager() throws RemoteException {
     }
 
-    @Override public void execJob(ContainerJob job, ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void execJob(ContainerJob job, ContainerSessionID containerSessionID,
+                        PlanSessionID sessionID) throws RemoteException {
 
     }
 
-    @Override public boolean hasExec(ContainerJob job) {
+    @Override
+    public boolean hasExec(ContainerJob job) {
         return false;
     }
 
     @Override
     public ContainerJobResult prepareJob(ContainerJob job, ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException {
+                                         PlanSessionID sessionID) throws RemoteException {
         Check.True(job.getType() == ContainerJobType.getStatistics, null);
         return new GetStatisticsJobResult(
-            managerInterface.getStatistics(containerSessionID, sessionID));
+                managerInterface.getStatistics(containerSessionID, sessionID));
     }
 
 }

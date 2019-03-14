@@ -17,24 +17,26 @@ import java.rmi.ServerException;
  * @author herald
  */
 public class RmiWriteStreamAdaptor extends RmiRemoteObject<WriteRmiStreamAdaptorProxy>
-    implements WriteRmiStreamAdaptor {
+        implements WriteRmiStreamAdaptor {
 
     private StreamBuffer buffer = null;
     private EntityName regEntityName = null;
 
     public RmiWriteStreamAdaptor(String name, StreamBuffer buffer, EntityName regEntityName)
-        throws RemoteException {
+            throws RemoteException {
         super(name);
         this.buffer = buffer;
         this.regEntityName = regEntityName;
     }
 
-    @Override public WriteRmiStreamAdaptorProxy createProxy() throws RemoteException {
+    @Override
+    public WriteRmiStreamAdaptorProxy createProxy() throws RemoteException {
         super.register();
         return new RmiWriteStreamAdaptorProxy(super.getRegEntryName(), regEntityName);
     }
 
-    @Override public void write(byte[] bytes) throws RemoteException {
+    @Override
+    public void write(byte[] bytes) throws RemoteException {
         try {
             buffer.write(bytes, 0, bytes.length);
         } catch (IOException e) {
@@ -42,7 +44,8 @@ public class RmiWriteStreamAdaptor extends RmiRemoteObject<WriteRmiStreamAdaptor
         }
     }
 
-    @Override public void write(byte[] bytes, int offset, int length) throws RemoteException {
+    @Override
+    public void write(byte[] bytes, int offset, int length) throws RemoteException {
         try {
             buffer.write(bytes, offset, length);
         } catch (IOException e) {
@@ -50,7 +53,8 @@ public class RmiWriteStreamAdaptor extends RmiRemoteObject<WriteRmiStreamAdaptor
         }
     }
 
-    @Override public void close() throws RemoteException {
+    @Override
+    public void close() throws RemoteException {
         try {
             buffer.closeWriter();
             super.unregister();

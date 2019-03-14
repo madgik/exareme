@@ -35,11 +35,11 @@ public class RmiArtRegistryProxy extends RmiObjectProxy<ArtRegistry> implements 
         super(regEntryName, regEntityName);
 
         caching =
-            AdpProperties.getArtProps().getBoolean("art.registry.rmi.RmiArtRegistryProxy.caching");
+                AdpProperties.getArtProps().getBoolean("art.registry.rmi.RmiArtRegistryProxy.caching");
 
         if (caching) {
             cacheSize = AdpProperties.getArtProps()
-                .getInt("art.registry.rmi.RmiArtRegistryProxy.cacheSize");
+                    .getInt("art.registry.rmi.RmiArtRegistryProxy.cacheSize");
 
             cache = new ArtRegistryProxyCache(cacheSize);
         }
@@ -78,7 +78,7 @@ public class RmiArtRegistryProxy extends RmiObjectProxy<ArtRegistry> implements 
     public ContainerProxy[] getContainers() throws RemoteException {
 
         ContainerProxy containers[] = super.getRemoteObject().
-            list(Registerable.Type.container).toArray(new ContainerProxy[] {});
+                list(Registerable.Type.container).toArray(new ContainerProxy[]{});
 
         if (caching) {
             for (ContainerProxy c : containers) {
@@ -110,7 +110,7 @@ public class RmiArtRegistryProxy extends RmiObjectProxy<ArtRegistry> implements 
     }
 
     public void registerExecutionEngine(ExecutionEngineProxy executionEngineProxy)
-        throws RemoteException {
+            throws RemoteException {
         ArtRegistry reg = super.getRemoteObject();
 
         reg.registerEntry(executionEngineProxy);
@@ -143,7 +143,7 @@ public class RmiArtRegistryProxy extends RmiObjectProxy<ArtRegistry> implements 
 
     public ExecutionEngineProxy[] getExecutionEngines() throws RemoteException {
         ExecutionEngineProxy executionEngines[] = super.getRemoteObject().
-            list(Registerable.Type.executionEngine).toArray(new ExecutionEngineProxy[] {});
+                list(Registerable.Type.executionEngine).toArray(new ExecutionEngineProxy[]{});
 
         if (caching) {
             for (ExecutionEngineProxy eep : executionEngines) {
@@ -165,7 +165,7 @@ public class RmiArtRegistryProxy extends RmiObjectProxy<ArtRegistry> implements 
     }
 
     public void registerComputeMediator(ArmComputeProxy resourceMediatorProxy)
-        throws RemoteException {
+            throws RemoteException {
         ArtRegistry reg = super.getRemoteObject();
 
         reg.registerEntry(resourceMediatorProxy);
@@ -197,7 +197,7 @@ public class RmiArtRegistryProxy extends RmiObjectProxy<ArtRegistry> implements 
 
     public ArmComputeProxy[] getComputeMediators() throws RemoteException {
         ArmComputeProxy mediatorProxies[] = super.getRemoteObject().
-            list(Registerable.Type.computeMediator).toArray(new ArmComputeProxy[] {});
+                list(Registerable.Type.computeMediator).toArray(new ArmComputeProxy[]{});
 
         if (caching) {
             for (ArmComputeProxy eep : mediatorProxies) {

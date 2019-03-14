@@ -17,10 +17,11 @@ public class ExecuteSelect extends AbstractMiMo {
 
     private static Logger log = Logger.getLogger(ExecuteSelect.class);
 
-    @Override public void run() throws Exception {
+    @Override
+    public void run() throws Exception {
         log.trace("Parse DB Operator ...");
         AdpDBSelectOperator dbOp =
-            Base64Util.decodeBase64(super.getParameterManager().getQueryString());
+                Base64Util.decodeBase64(super.getParameterManager().getQueryString());
 
         String operatorName = super.getSessionManager().getOperatorName();
         log.debug("Operator Name : " + operatorName);
@@ -28,7 +29,7 @@ public class ExecuteSelect extends AbstractMiMo {
 
         log.trace("Create state ...");
         ExecuteQueryState state =
-            new ExecuteQueryState(dbOp, getDiskManager(), getProcessManager(), false);
+                new ExecuteQueryState(dbOp, getDiskManager(), getProcessManager(), false);
 
         log.debug("Read inputs ...");
         state.readInputs(super.getAdaptorManager());
@@ -54,7 +55,7 @@ public class ExecuteSelect extends AbstractMiMo {
             }
         } else {
             log.debug("Skip saving tables (" + dbOp.getQuery().getOutputTable().getTable().getName()
-                + ") ... ");
+                    + ") ... ");
         }
         log.info(state.toString());
         exit(0, state.getExitMessage());

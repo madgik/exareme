@@ -32,11 +32,11 @@ public class StartWorker {
         Logger.getRootLogger().setLevel(Level.toLevel(logLevel));
 
         manager = ArtManagerFactory.createRmiArtManager(
-            new ArtManagerProperties(NetUtil.getIPv4(), registryPort, dataTransferPort));
+                new ArtManagerProperties(NetUtil.getIPv4(), registryPort, dataTransferPort));
         log.debug("Manager created!");
 
         manager.getRegistryManager().connectToRegistry(
-            new EntityName("ArtRegistry", masterRegistryIP, registryPort, dataTransferPort));
+                new EntityName("ArtRegistry", masterRegistryIP, registryPort, dataTransferPort));
         log.debug("Connected to registry!");
 
         manager.getContainerManager().startContainer();

@@ -23,7 +23,8 @@ public class BufferID implements Serializable {
         this.id = id;
     }
 
-    @Override public boolean equals(Object object) {
+    @Override
+    public boolean equals(Object object) {
         if (object instanceof BufferID) {
             BufferID buffId = (BufferID) object;
             return (id == buffId.id);
@@ -32,7 +33,8 @@ public class BufferID implements Serializable {
         }
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int hash = 5;
         hash = 89 * hash + (int) (this.id ^ (this.id >>> 32));
         return hash;

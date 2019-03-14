@@ -33,7 +33,7 @@ public class RmiArtRegistry extends RmiRemoteObject<ArtRegistryProxy> implements
     private EntityName regEntityName = null;
 
     public RmiArtRegistry(RegistryResourceStorage registryResourceStorage, EntityName regEntityName)
-        throws Exception {
+            throws Exception {
 
         super(BEAN_NAME);
         this.regEntityName = regEntityName;
@@ -43,7 +43,7 @@ public class RmiArtRegistry extends RmiRemoteObject<ArtRegistryProxy> implements
 
         RegistryManagment artRegistryManagment = new RegistryManagment(this);
         madgik.exareme.utils.managementBean.ManagementUtil
-            .registerMBean(artRegistryManagment, BEAN_NAME);
+                .registerMBean(artRegistryManagment, BEAN_NAME);
     }
 
     public ArtRegistryProxy createProxy() throws RemoteException {
@@ -72,7 +72,7 @@ public class RmiArtRegistry extends RmiRemoteObject<ArtRegistryProxy> implements
                     throw new NoSuchObjectException("Object expired.");
                 } else if (eap instanceof NotifyOnExpirationActionPolicy) {
                     throw new UnsupportedOperationException(
-                        "Notification of expiration not supported yet.");
+                            "Notification of expiration not supported yet.");
                 }
             }
 

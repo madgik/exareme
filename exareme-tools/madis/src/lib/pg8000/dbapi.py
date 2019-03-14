@@ -30,13 +30,13 @@
 __author__ = "Mathieu Fenniak"
 
 import datetime
+import threading
 import time
+from warnings import warn
+
 import interface
 import types
-import threading
 from errors import *
-
-from warnings import warn
 
 ##
 # The DBAPI level supported.  Currently 2.0.  This property is part of the
@@ -57,7 +57,8 @@ threadsafety = 3
 # Unlike the DBAPI specification, this value is not constant.  It can be
 # changed to any standard paramstyle value (ie. qmark, numeric, named, format,
 # and pyformat).
-paramstyle = 'format' # paramstyle can be changed to any DB-API paramstyle
+paramstyle = 'format'  # paramstyle can be changed to any DB-API paramstyle
+
 
 def convert_paramstyle(src_style, query, args):
     # I don't see any way to avoid scanning the query string char by char,
@@ -170,7 +171,8 @@ def convert_paramstyle(src_style, query, args):
                                     mapping_to_idx[name] = idx
                                 output_query += "$" + str(idx)
                             else:
-                                raise QueryParameterParseError("format not specified or not supported (only %(...)s supported)")
+                                raise QueryParameterParseError(
+                                    "format not specified or not supported (only %(...)s supported)")
                     elif query[i] == "%":
                         output_query += "%"
                     elif query[i] == "s":
@@ -194,7 +196,7 @@ def convert_paramstyle(src_style, query, args):
                     i += 1
                 else:
                     state = 0
-            elif src_style in ("pyformat","format") and c == "%":
+            elif src_style in ("pyformat", "format") and c == "%":
                 # hm... we're only going to support an escaped percent sign
                 if i < len(query):
                     if query[i] == "%":
@@ -207,7 +209,7 @@ def convert_paramstyle(src_style, query, args):
             i += 1
             if c == '"':
                 state = 0
-            elif src_style in ("pyformat","format") and c == "%":
+            elif src_style in ("pyformat", "format") and c == "%":
                 # hm... we're only going to support an escaped percent sign
                 if i < len(query):
                     if query[i] == "%":
@@ -225,7 +227,7 @@ def convert_paramstyle(src_style, query, args):
                     i += 1
             elif c == "'":
                 state = 0
-            elif src_style in ("pyformat","format") and c == "%":
+            elif src_style in ("pyformat", "format") and c == "%":
                 # hm... we're only going to support an escaped percent sign
                 if i < len(query):
                     if query[i] == "%":
@@ -236,12 +238,15 @@ def convert_paramstyle(src_style, query, args):
 
     return output_query, tuple(output_args)
 
+
 def require_open_cursor(fn):
     def _fn(self, *args, **kwargs):
         if self.cursor == None:
             raise CursorClosedError()
         return fn(self, *args, **kwargs)
+
     return _fn
+
 
 ##
 # The class of object returned by the {@link #ConnectionWrapper.cursor cursor method}.
@@ -342,7 +347,7 @@ class CursorWrapper(object):
             if null is not None:
                 query += " NULL '%s'" % (null,)
         self.copy_execute(fileobj, query)
-    
+
     @require_open_cursor
     def copy_execute(self, fileobj, query):
         try:
@@ -352,7 +357,8 @@ class CursorWrapper(object):
             raise
         except:
             # any error will rollback the transaction to-date
-            import traceback; traceback.print_exc()
+            import traceback;
+            traceback.print_exc()
             self._connection.rollback()
             raise
 
@@ -440,17 +446,20 @@ class CursorWrapper(object):
     @require_open_cursor
     def fileno(self):
         return self.cursor.fileno()
-    
+
     @require_open_cursor
     def isready(self):
         return self.cursor.isready()
+
 
 def require_open_connection(fn):
     def _fn(self, *args, **kwargs):
         if self.conn == None:
             raise ConnectionClosedError()
         return fn(self, *args, **kwargs)
+
     return _fn
+
 
 ##
 # The class of object returned by the {@link #connect connect method}.
@@ -473,7 +482,7 @@ class ConnectionWrapper(object):
     @property
     def in_transaction(self):
         if self.conn:
-             return self.conn.in_transaction
+            return self.conn.in_transaction
         return False
 
     def __init__(self, **kwargs):
@@ -492,7 +501,7 @@ class ConnectionWrapper(object):
 
     def get_autocommit(self):
         return self.conn.autocommit
-    
+
     autocommit = property(get_autocommit, set_autocommit)
 
     @require_open_connection
@@ -501,7 +510,7 @@ class ConnectionWrapper(object):
 
     def _notificationReceived(self, notice):
         try:
-        # psycopg2 compatible notification interface
+            # psycopg2 compatible notification interface
             self.notifies_lock.acquire()
             self.notifies.append((notice.backend_pid, notice.condition))
         finally:
@@ -565,8 +574,7 @@ class ConnectionWrapper(object):
     def server_version(self):
         return self.conn.server_version()
 
-
-    def xid(self,format_id, global_transaction_id, branch_qualifier):
+    def xid(self, format_id, global_transaction_id, branch_qualifier):
         """Create a Transaction IDs (only global_transaction_id is used in pg)
         format_id and branch_qualifier are not used in postgres
         global_transaction_id may be any string identifier supported by postgres
@@ -574,20 +582,20 @@ class ConnectionWrapper(object):
         return (format_id, global_transaction_id, branch_qualifier)
 
     @require_open_connection
-    def tpc_begin(self,xid):
+    def tpc_begin(self, xid):
         "Begin a two-phase transaction"
         # set auto-commit mode to begin a TPC transaction
         self.autocommit = False
         # (actually in postgres at this point it is a normal one)
         if self.conn.in_transaction:
-            warn("tpc_begin() should be called outside a transaction block", 
+            warn("tpc_begin() should be called outside a transaction block",
                  stacklevel=3)
         self.conn.begin()
         # store actual TPC transaction id
         self.__tpc_xid = xid
         self.__tpc_prepared = False
 
-    @require_open_connection    
+    @require_open_connection
     def tpc_prepare(self):
         "Prepare a two-phase transaction"
         if not self.__tpc_xid:
@@ -601,7 +609,7 @@ class ConnectionWrapper(object):
             self.__tpc_prepared = True
         finally:
             curs.close()
-    
+
     @require_open_connection
     def tpc_commit(self, xid=None):
         "Commit a prepared two-phase transaction"
@@ -650,7 +658,7 @@ class ConnectionWrapper(object):
             previous_autocommit_mode = self.autocommit
             if not xid:
                 # use current tpc transaction
-                tpc_xid = self.__tpc_xid 
+                tpc_xid = self.__tpc_xid
             else:
                 # use a recovered tpc transaction
                 tpc_xid = xid
@@ -675,7 +683,7 @@ class ConnectionWrapper(object):
                     self.conn.rollback()
                 finally:
                     # return to previous auto-commit mode
-                    self.autocommit = previous_autocommit_mode                  
+                    self.autocommit = previous_autocommit_mode
         finally:
             # transaction is done, clear xid
             self.__tpc_xid = None
@@ -683,7 +691,7 @@ class ConnectionWrapper(object):
     @require_open_connection
     def tpc_recover(self):
         "Returns a list of pending transaction IDs"
-        previous_autocommit_mode = self.autocommit 
+        previous_autocommit_mode = self.autocommit
         if not self.conn.in_transaction and not self.autocommit:
             self.autocommit = True
         elif not self.autocommit:
@@ -694,7 +702,7 @@ class ConnectionWrapper(object):
         try:
             # query system view that stores open (prepared) TPC transactions 
             curs.execute("SELECT gid FROM pg_prepared_xacts;");
-            xids.extend([self.xid(0,row[0],'') for row in curs])
+            xids.extend([self.xid(0, row[0], '') for row in curs])
         finally:
             curs.close()
             # return to previous auto-commit mode
@@ -742,31 +750,39 @@ class ConnectionWrapper(object):
 # @return An instance of {@link #ConnectionWrapper ConnectionWrapper}.
 def connect(user, host=None, unix_sock=None, port=5432, database=None, password=None, socket_timeout=60, ssl=False):
     return ConnectionWrapper(user=user, host=host,
-            unix_sock=unix_sock, port=port, database=database,
-            password=password, socket_timeout=socket_timeout, ssl=ssl)
+                             unix_sock=unix_sock, port=port, database=database,
+                             password=password, socket_timeout=socket_timeout, ssl=ssl)
+
 
 def Date(year, month, day):
     return datetime.date(year, month, day)
 
+
 def Time(hour, minute, second):
     return datetime.time(hour, minute, second)
+
 
 def Timestamp(year, month, day, hour, minute, second):
     return datetime.datetime(year, month, day, hour, minute, second)
 
+
 def DateFromTicks(ticks):
     return Date(*time.localtime(ticks)[:3])
+
 
 def TimeFromTicks(ticks):
     return Time(*time.localtime(ticks)[3:6])
 
+
 def TimestampFromTicks(ticks):
     return Timestamp(*time.localtime(ticks)[:6])
+
 
 ##
 # Construct an object holding binary data.
 def Binary(value):
     return types.Bytea(value)
+
 
 # I have no idea what this would be used for by a client app.  Should it be
 # TEXT, VARCHAR, CHAR?  It will only compare against row_description's
@@ -785,5 +801,3 @@ DATETIME = 1114
 
 # oid type_oid
 ROWID = 26
-
-

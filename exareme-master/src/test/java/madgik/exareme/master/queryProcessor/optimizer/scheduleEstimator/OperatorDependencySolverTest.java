@@ -20,7 +20,8 @@ public class OperatorDependencySolverTest {
     public OperatorDependencySolverTest() {
     }
 
-    @Test public void testDependencySolver() {
+    @Test
+    public void testDependencySolver() {
         ConcreteQueryGraph graph = GraphGenerator.createLatticeGraph(3, 3, 0);
         Assert.assertNotNull(graph);
         assertEquals(5, graph.getNumOfOperators());

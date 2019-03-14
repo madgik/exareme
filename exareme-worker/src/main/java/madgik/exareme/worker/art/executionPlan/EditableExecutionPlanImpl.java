@@ -8,7 +8,8 @@ package madgik.exareme.worker.art.executionPlan;
  */
 public class EditableExecutionPlanImpl extends ExecutionPlanImpl implements EditableExecutionPlan {
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return super.toString();
     }
 

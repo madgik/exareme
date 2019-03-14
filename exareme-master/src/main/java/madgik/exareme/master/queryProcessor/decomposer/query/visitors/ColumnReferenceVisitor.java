@@ -21,7 +21,8 @@ public class ColumnReferenceVisitor implements Visitor {
         super();
     }
 
-    @Override public Visitable visit(Visitable node) throws StandardException {
+    @Override
+    public Visitable visit(Visitable node) throws StandardException {
         if (node instanceof ColumnReference) {
             ColumnReference cr = (ColumnReference) node;
             tablename = cr.getTableName();
@@ -30,15 +31,18 @@ public class ColumnReferenceVisitor implements Visitor {
         return node;
     }
 
-    @Override public boolean skipChildren(Visitable node) {
+    @Override
+    public boolean skipChildren(Visitable node) {
         return false;
     }
 
-    @Override public boolean visitChildrenFirst(Visitable vstbl) {
+    @Override
+    public boolean visitChildrenFirst(Visitable vstbl) {
         return false;
     }
 
-    @Override public boolean stopTraversal() {
+    @Override
+    public boolean stopTraversal() {
         return false;
     }
 

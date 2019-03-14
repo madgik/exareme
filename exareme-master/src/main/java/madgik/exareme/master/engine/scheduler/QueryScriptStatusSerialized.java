@@ -25,26 +25,30 @@ public class QueryScriptStatusSerialized extends QueryScriptStatus implements Se
     }
 
     public QueryScriptStatusSerialized(AdpDBQueryID queryID, QueryScript queryScript,
-        QueryScriptState state, AdpDBStatus status) {
+                                       QueryScriptState state, AdpDBStatus status) {
         super(queryID);
         this.queryScript = queryScript;
         this.state = state;
         this.status = status;
     }
 
-    @Override public QueryScript getQueryScript() {
+    @Override
+    public QueryScript getQueryScript() {
         return queryScript;
     }
 
-    @Override public QueryScriptState getState() {
+    @Override
+    public QueryScriptState getState() {
         return state;
     }
 
-    @Override public AdpDBStatus getStatus() {
+    @Override
+    public AdpDBStatus getStatus() {
         return status;
     }
 
-    @Override public QueryScriptStatus createSerializableStatus() throws RemoteException {
+    @Override
+    public QueryScriptStatus createSerializableStatus() throws RemoteException {
         return this;
     }
 }

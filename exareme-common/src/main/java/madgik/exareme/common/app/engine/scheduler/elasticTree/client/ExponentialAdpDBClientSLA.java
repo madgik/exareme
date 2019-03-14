@@ -25,11 +25,13 @@ public class ExponentialAdpDBClientSLA implements AdpDBClientSLA {
         return gamma;
     }
 
-    @Override public double getBudget(double time) {
+    @Override
+    public double getBudget(double time) {
         return alpha * Math.pow(Math.E, -time / gamma);
     }
 
-    @Override public int getId() {
+    @Override
+    public int getId() {
         return id;
     }
 }

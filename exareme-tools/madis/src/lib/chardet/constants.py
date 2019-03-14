@@ -39,6 +39,7 @@ eItsMe = 2
 SHORTCUT_THRESHOLD = 0.95
 
 import __builtin__
+
 if not hasattr(__builtin__, 'False'):
     False = 0
     True = 1

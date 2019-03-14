@@ -24,8 +24,8 @@ import java.util.*;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class AdaptorManager {
@@ -34,9 +34,9 @@ public class AdaptorManager {
     private List<CombinedWriteAdaptorProxy> outputList = new ArrayList<CombinedWriteAdaptorProxy>();
     private List<CombinedReadAdaptorProxy> inputList = new ArrayList<CombinedReadAdaptorProxy>();
     private Map<String, CombinedWriteAdaptorProxy> outputMap =
-        new HashMap<String, CombinedWriteAdaptorProxy>();
+            new HashMap<String, CombinedWriteAdaptorProxy>();
     private Map<String, CombinedReadAdaptorProxy> inputMap =
-        new HashMap<String, CombinedReadAdaptorProxy>();
+            new HashMap<String, CombinedReadAdaptorProxy>();
     private Map<String, List<String>> inputParamMap = new HashMap<String, List<String>>();
     private Map<String, List<String>> outputParamMap = new HashMap<String, List<String>>();
     private HashMap<String, Parameters> inputParameters = new HashMap<String, Parameters>();
@@ -66,10 +66,10 @@ public class AdaptorManager {
     }
 
     public void addWriteAdaptor(CombinedWriteAdaptorProxy output, String adaptorName,
-        String portName, Parameters params, boolean remote) throws RemoteException {
+                                String portName, Parameters params, boolean remote) throws RemoteException {
         output.writeSocketStreamAdaptorProxy.setNetSession(new NetSessionSimple());
         AdaptorStatistics stats = sessionManager.getSessionStatistics()
-            .createAdaptorStatistics(adaptorName, sessionManager.getOperatorName(), portName);
+                .createAdaptorStatistics(adaptorName, sessionManager.getOperatorName(), portName);
         if (remote) {
             stats.setRemote();
         } else {
@@ -77,11 +77,11 @@ public class AdaptorManager {
         }
         // Create monitors for the adaptors
         output.writeRmiStreamAdaptorProxy =
-            new WriteRmiStreamAdaptorProxyMonitor(output.writeRmiStreamAdaptorProxy, stats,
-                sessionManager.getOperatorStatistics());
+                new WriteRmiStreamAdaptorProxyMonitor(output.writeRmiStreamAdaptorProxy, stats,
+                        sessionManager.getOperatorStatistics());
         output.writeSocketStreamAdaptorProxy =
-            new WriteSocketStreamAdaptorProxyMonitor(output.writeSocketStreamAdaptorProxy, stats,
-                sessionManager.getOperatorStatistics());
+                new WriteSocketStreamAdaptorProxyMonitor(output.writeSocketStreamAdaptorProxy, stats,
+                        sessionManager.getOperatorStatistics());
         this.outputList.add(output);
         this.outputMap.put(portName, output);
         this.closedOutputs.add(false);
@@ -100,21 +100,21 @@ public class AdaptorManager {
     }
 
     public void addReadAdaptor(CombinedReadAdaptorProxy input, String adaptorName, String portName,
-        Parameters params, boolean remote) throws RemoteException {
+                               Parameters params, boolean remote) throws RemoteException {
         input.readSocketStreamAdaptorProxy.setNetSession(new NetSessionSimple());
         AdaptorStatistics stats = sessionManager.getSessionStatistics()
-            .createAdaptorStatistics(adaptorName, portName, sessionManager.getOperatorName());
+                .createAdaptorStatistics(adaptorName, portName, sessionManager.getOperatorName());
         if (remote) {
             stats.setRemote();
         } else {
             stats.setLocal();
         }
         input.readRmiStreamAdaptorProxy =
-            new ReadRmiStreamAdaptorProxyMonitor(input.readRmiStreamAdaptorProxy, stats,
-                sessionManager.getOperatorStatistics());
+                new ReadRmiStreamAdaptorProxyMonitor(input.readRmiStreamAdaptorProxy, stats,
+                        sessionManager.getOperatorStatistics());
         input.readSocketStreamAdaptorProxy =
-            new ReadSocketStreamAdaptorProxyMonitor(input.readSocketStreamAdaptorProxy, stats,
-                sessionManager.getOperatorStatistics());
+                new ReadSocketStreamAdaptorProxyMonitor(input.readSocketStreamAdaptorProxy, stats,
+                        sessionManager.getOperatorStatistics());
         this.inputList.add(input);
         this.inputMap.put(portName, input);
         this.closedInputs.add(false);

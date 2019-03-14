@@ -26,7 +26,8 @@ final public class WeightedEdge<V, T> extends AbstractEdge<V> {
      *
      * @param e
      */
-    @Override public boolean equals(Object e) {
+    @Override
+    public boolean equals(Object e) {
         if (!(e instanceof WeightedEdge)) {
             return false;
         }
@@ -34,7 +35,8 @@ final public class WeightedEdge<V, T> extends AbstractEdge<V> {
         return super.equals(e) && ((WeightedEdge) e).getWeight().equals(this.weight);
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int hash = 5;
         hash = 89 * hash + super.hashCode();
         hash = 89 * hash + (this.weight != null ? this.weight.hashCode() : 0);

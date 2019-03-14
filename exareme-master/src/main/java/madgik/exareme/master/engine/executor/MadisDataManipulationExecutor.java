@@ -25,7 +25,7 @@ public class MadisDataManipulationExecutor {
     private ProcessManager procManager = null;
 
     public MadisDataManipulationExecutor(File directory, int page_size_B, int memory_MB,
-        ProcessManager procManager) {
+                                         ProcessManager procManager) {
         this.directory = directory;
         this.page_size_B = page_size_B;
         this.memory_MB = memory_MB;
@@ -53,11 +53,11 @@ public class MadisDataManipulationExecutor {
             int part = dmOperator.getPart();
 
             String databaseDir =
-                new File(dmOperator.getDMQuery().getDatabaseDir()).getAbsolutePath();
+                    new File(dmOperator.getDMQuery().getDatabaseDir()).getAbsolutePath();
             String tableName = dmOperator.getDMQuery().getTable();
             String tableLocation = databaseDir + "/" + tableName + "." + part + ".db";
             String tempTableLocation =
-                directory.getAbsoluteFile() + "/" + tableName + "." + part + ".db";
+                    directory.getAbsoluteFile() + "/" + tableName + "." + part + ".db";
             if (!dmOperator.getType().equals(AdpDBOperatorType.dropTable)) {
                 ExecUtils.copyPartition(tableLocation, tempTableLocation, directory, procManager);
             }
@@ -77,14 +77,14 @@ public class MadisDataManipulationExecutor {
             try {
                 if (dmOperator.getType().equals(AdpDBOperatorType.dropTable)) {
                     Pair<String, String> stdOutErr =
-                        procManager.createAndRunProcess(directory, "rm", tableLocation);
+                            procManager.createAndRunProcess(directory, "rm", tableLocation);
                     if (stdOutErr.b.trim().isEmpty() == false) {
                         throw new ServerException("Cannot execute rm: " + stdOutErr.b);
                     }
                     log.debug(stdOutErr.a);
                 } else {
                     Pair<String, String> stdOutErr = procManager
-                        .createAndRunProcess(directory, "mv", tempTableLocation, tableLocation);
+                            .createAndRunProcess(directory, "mv", tempTableLocation, tableLocation);
                     if (stdOutErr.b.trim().isEmpty() == false) {
                         throw new ServerException("Cannot execute mv: " + stdOutErr.b);
                     }

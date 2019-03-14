@@ -55,7 +55,7 @@ public class EventProcessor {
             StopEventHandler eventHandler = new StopEventHandler(semaphore);
             StopEventListener eventListener = new StopEventListener();
             queue(new StopEvent(), eventHandler, eventListener);
-      /* Wait for termination */
+            /* Wait for termination */
             try {
                 semaphore.acquire();
             } catch (Exception e) {

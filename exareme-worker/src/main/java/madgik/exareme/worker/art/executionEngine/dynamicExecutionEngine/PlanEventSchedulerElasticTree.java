@@ -47,8 +47,8 @@ public class PlanEventSchedulerElasticTree extends PlanEventScheduler {
     private PlanEventSchedulerStateElasticTree elasticState;
 
     public PlanEventSchedulerElasticTree(EventProcessor eventProcessor,
-        DynamicPlanManager planManager, PlanSessionResourceManager resourceManager,
-        ArtRegistryProxy registryProxy) {
+                                         DynamicPlanManager planManager, PlanSessionResourceManager resourceManager,
+                                         ArtRegistryProxy registryProxy) {
         super(eventProcessor, planManager, resourceManager, registryProxy);
 
 
@@ -72,7 +72,8 @@ public class PlanEventSchedulerElasticTree extends PlanEventScheduler {
         }
     }
 
-    @Override public PlanEventSchedulerState getState(PlanSessionID sessionID) {
+    @Override
+    public PlanEventSchedulerState getState(PlanSessionID sessionID) {
         try {
             lock.lock();
             createElasticTreeIfNotExists();
@@ -95,15 +96,15 @@ public class PlanEventSchedulerElasticTree extends PlanEventScheduler {
     }
 
     public void execute(ExecutionPlan plan, SLA sla, PlanSessionID planSessionID,
-        PlanSessionReportID reportID) throws RemoteException {
+                        PlanSessionReportID reportID) throws RemoteException {
         log.info("EXECUTE");
         try {
             lock.lock();
             createElasticTreeIfNotExists();
             log.debug("EXECTUTING: " + plan.toString());
             PlanEventSchedulerState state =
-                new PlanEventSchedulerState(planSessionID, reportID, sla, eventProc, planManager,
-                    registryProxy, resourceMngr, this);
+                    new PlanEventSchedulerState(planSessionID, reportID, sla, eventProc, planManager,
+                            registryProxy, resourceMngr, this);
             elasticState.addState(planSessionID, state);
 
             EditableExecutionPlan newPlan = preprocessPlan(plan);
@@ -115,7 +116,7 @@ public class PlanEventSchedulerElasticTree extends PlanEventScheduler {
             elasticState.dataflowQueued(planSessionID);
 
             if (elasticState.getRunningDataflows()
-                < SystemConstants.SETTINGS.MAX_CONCURENT_QUERIES) {
+                    < SystemConstants.SETTINGS.MAX_CONCURENT_QUERIES) {
                 continueExecutionEvent(planSessionID);
             } else {
                 if (SystemConstants.SETTINGS.FAIL_QUEUED_QUERIES) {
@@ -130,7 +131,8 @@ public class PlanEventSchedulerElasticTree extends PlanEventScheduler {
         }
     }
 
-    @Override public boolean continueExecutionEvent(PlanSessionID sessionID) {
+    @Override
+    public boolean continueExecutionEvent(PlanSessionID sessionID) {
         //    log.info("CONTINUE");
         lock.lock();
         try {
@@ -140,9 +142,9 @@ public class PlanEventSchedulerElasticTree extends PlanEventScheduler {
             }
             IndependentEvents jobs = new IndependentEvents(state);
             OperatorElasticTreeTerminatedEvent event =
-                new OperatorElasticTreeTerminatedEvent(null, -1, null, this, state, elasticState);
+                    new OperatorElasticTreeTerminatedEvent(null, -1, null, this, state, elasticState);
             jobs.addEvent(event, OperatorElasticTreeTerminatedEventHandler.instance,
-                OperatorTerminatedEventListener.instance);
+                    OperatorTerminatedEventListener.instance);
             queueIndependentEvents(jobs, true);
             elasticState.dataflowStarted(sessionID);
             return true;
@@ -154,18 +156,18 @@ public class PlanEventSchedulerElasticTree extends PlanEventScheduler {
 
     @Override
     public void terminated(ConcreteOperatorID operatorID, int exidCode, Serializable exitMessage,
-        Date time, PlanSessionID sessionID, boolean terminateGroup) throws RemoteException {
+                           Date time, PlanSessionID sessionID, boolean terminateGroup) throws RemoteException {
         //    log.info("TERMINATED");
         lock.lock();
         try {
             PlanEventSchedulerState state = elasticState.getState(sessionID);
             IndependentEvents jobs = new IndependentEvents(state);
             OperatorElasticTreeTerminatedEvent event =
-                new OperatorElasticTreeTerminatedEvent(operatorID, exidCode, exitMessage, this,
-                    state, elasticState);
+                    new OperatorElasticTreeTerminatedEvent(operatorID, exidCode, exitMessage, this,
+                            state, elasticState);
 
             jobs.addEvent(event, OperatorElasticTreeTerminatedEventHandler.instance,
-                OperatorTerminatedEventListener.instance);
+                    OperatorTerminatedEventListener.instance);
 
             queueIndependentEvents(jobs, true);
         } finally {
@@ -175,23 +177,24 @@ public class PlanEventSchedulerElasticTree extends PlanEventScheduler {
 
     @Override
     public void exception(ConcreteOperatorID operatorID, RemoteException exception, Date time,
-        PlanSessionID sessionID) throws RemoteException {
+                          PlanSessionID sessionID) throws RemoteException {
         //    log.info("EXCEPTION");
         lock.lock();
         try {
             PlanEventSchedulerState state = elasticState.getState(sessionID);
             IndependentEvents jobs = new IndependentEvents(state);
             OperatorExceptionEvent event =
-                new OperatorExceptionEvent(operatorID, exception, time, state);
+                    new OperatorExceptionEvent(operatorID, exception, time, state);
             jobs.addEvent(event, OperatorExceptionEventHandler.instance,
-                OperatorExceptionEventListener.instance);
+                    OperatorExceptionEventListener.instance);
             queueIndependentEvents(jobs, false);
         } finally {
             lock.unlock();
         }
     }
 
-    @Override public void destroyPlanWithError(PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void destroyPlanWithError(PlanSessionID sessionID) throws RemoteException {
         lock.lock();
         try {
             PlanEventSchedulerState state = elasticState.getState(sessionID);

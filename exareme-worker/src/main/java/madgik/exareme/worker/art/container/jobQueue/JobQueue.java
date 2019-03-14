@@ -52,9 +52,10 @@ public class JobQueue implements JobQueueInterface {
         this.jobMap = new TreeMap<>();
     }
 
-    @Override public void setManagers(StatisticsManager statisticsManager,
-        ConcreteOperatorManager concreteOperatorManager, BufferManager bufferManager,
-        AdaptorManager adaptorManager, DataTransferMgrInterface dataTransferManagerDTP) {
+    @Override
+    public void setManagers(StatisticsManager statisticsManager,
+                            ConcreteOperatorManager concreteOperatorManager, BufferManager bufferManager,
+                            AdaptorManager adaptorManager, DataTransferMgrInterface dataTransferManagerDTP) {
         this.statisticsManager = statisticsManager;
         this.concreteOperatorManager = concreteOperatorManager;
         this.bufferManager = bufferManager;
@@ -63,8 +64,9 @@ public class JobQueue implements JobQueueInterface {
     }
 
     // TODO(DSD) den ta exoyn kanei destroy oi managers ??
-    @Override public void destroyContainerSession(ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void destroyContainerSession(ContainerSessionID containerSessionID,
+                                        PlanSessionID sessionID) throws RemoteException {
 
         synchronized (jobMap) {
             for (Entry<Resources, Queue<AbstractContainerJob>> entry : jobMap.entrySet()) {
@@ -80,7 +82,8 @@ public class JobQueue implements JobQueueInterface {
         }
     }
 
-    @Override public void destroySessions(PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void destroySessions(PlanSessionID sessionID) throws RemoteException {
 
         synchronized (jobMap) {
             for (Entry<Resources, Queue<AbstractContainerJob>> entry : jobMap.entrySet()) {
@@ -97,7 +100,8 @@ public class JobQueue implements JobQueueInterface {
         }
     }
 
-    @Override public void destroyAllSessions() throws RemoteException {
+    @Override
+    public void destroyAllSessions() throws RemoteException {
         synchronized (jobMap) {
             jobMap.clear();
         }
@@ -114,8 +118,8 @@ public class JobQueue implements JobQueueInterface {
                 ret.add(entry.getValue().peek());
                 if (entry.getValue().peek().getResources().hasResources()) {
                     availableResources.allocateResources(entry.getValue().
-                            peek().getResources(),
-                        ((StartOperatorJob) entry.getValue().peek().getJob()).opID);
+                                    peek().getResources(),
+                            ((StartOperatorJob) entry.getValue().peek().getJob()).opID);
                 }
                 entry.getValue().poll();
                 if (entry.getValue().isEmpty()) {
@@ -128,21 +132,22 @@ public class JobQueue implements JobQueueInterface {
         return ret;
     }
 
-    @Override public ContainerJobResult addJob(ContainerJob job,//TODO(jv) clean
-        ContainerSessionID contSessionID, PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public ContainerJobResult addJob(ContainerJob job,//TODO(jv) clean
+                                     ContainerSessionID contSessionID, PlanSessionID sessionID) throws RemoteException {
         AbstractContainerJob abstactContainerJob = null;
         double mem = 0.0;
         switch (job.getType()) {
             case dataTransferRegister: {
                 abstactContainerJob =
-                    new AbstractContainerJob(job, new ContainerJobResources(mem), contSessionID,
-                        sessionID);
+                        new AbstractContainerJob(job, new ContainerJobResources(mem), contSessionID,
+                                sessionID);
                 break;
             }
             case stopOperator: {
                 abstactContainerJob =
-                    new AbstractContainerJob(job, new ContainerJobResources(mem), contSessionID,
-                        sessionID);
+                        new AbstractContainerJob(job, new ContainerJobResources(mem), contSessionID,
+                                sessionID);
                 break;
             }
             case createOperator:
@@ -154,14 +159,14 @@ public class JobQueue implements JobQueueInterface {
             case createReadAdaptor:
             case createWriteAdaptor: {
                 abstactContainerJob =
-                    new AbstractContainerJob(job, new ContainerJobResources(mem), contSessionID,
-                        sessionID);
+                        new AbstractContainerJob(job, new ContainerJobResources(mem), contSessionID,
+                                sessionID);
                 break;
             }
             case startOperator: {
                 abstactContainerJob =
-                    new AbstractContainerJob(job, new ContainerJobResources(mem), contSessionID,
-                        sessionID);
+                        new AbstractContainerJob(job, new ContainerJobResources(mem), contSessionID,
+                                sessionID);
                 break;
             }
         }
@@ -170,7 +175,7 @@ public class JobQueue implements JobQueueInterface {
             synchronized (jobMap) {
                 if (jobMap.containsKey(abstactContainerJob.getResources())) {
                     jobMap.get(abstactContainerJob.getResources()).
-                        add(abstactContainerJob);
+                            add(abstactContainerJob);
                 } else {
                     Queue<AbstractContainerJob> jobQueue = new LinkedList<AbstractContainerJob>();
                     jobQueue.add(abstactContainerJob);
@@ -183,7 +188,7 @@ public class JobQueue implements JobQueueInterface {
     }
 
     private ContainerJobResult prepareJob(ContainerJob job, ContainerSessionID contSessionID,
-        PlanSessionID sessionID) throws RemoteException {
+                                          PlanSessionID sessionID) throws RemoteException {
         switch (job.getType()) {
             case dataTransferRegister: {
                 return concreteOperatorManager.prepareJob(job, contSessionID, sessionID);
@@ -241,11 +246,13 @@ public class JobQueue implements JobQueueInterface {
         return ret;
     }
 
-    @Override public void setExecutor(Executor executor) {
+    @Override
+    public void setExecutor(Executor executor) {
         this.executor = executor;
     }
 
-    @Override public void freeResources(ConcreteOperatorID opID) {
+    @Override
+    public void freeResources(ConcreteOperatorID opID) {
         executor.freeResources(opID);
         executor.JobFinish();
     }

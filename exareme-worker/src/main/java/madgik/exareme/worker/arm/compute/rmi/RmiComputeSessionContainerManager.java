@@ -21,20 +21,20 @@ import java.util.UUID;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class RmiComputeSessionContainerManager
-    extends RmiRemoteObject<ComputeSessionContainerManagerProxy>
-    implements ComputeSessionContainerManager {
+        extends RmiRemoteObject<ComputeSessionContainerManagerProxy>
+        implements ComputeSessionContainerManager {
 
     private ContainerManagerInterface containerManagerInterface = null;
     private EntityName regEntityName = null;
     private ArtRegistryProxy registryProxy = null;
 
     public RmiComputeSessionContainerManager(ContainerManagerInterface containerManagerInterface,
-        EntityName regEntityName, ArtRegistryProxy registryProxy) throws RemoteException {
+                                             EntityName regEntityName, ArtRegistryProxy registryProxy) throws RemoteException {
         super(NetUtil.getIPv4() + "_planSessionManager_" + UUID.randomUUID().toString());
 
         this.containerManagerInterface = containerManagerInterface;
@@ -44,49 +44,54 @@ public class RmiComputeSessionContainerManager
         super.register();
     }
 
-    @Override public ComputeSessionContainerManagerProxy createProxy() throws RemoteException {
+    @Override
+    public ComputeSessionContainerManagerProxy createProxy() throws RemoteException {
         return new RmiComputeSessionContainerManagerProxy(super.getRegEntryName(), regEntityName);
     }
 
     @Override
     public ActiveContainer[] getContainers(int numOfContainers, ArmComputeSessionID sessionID)
-        throws RemoteException {
+            throws RemoteException {
         return containerManagerInterface.getContainers(numOfContainers, sessionID);
     }
 
     @Override
     public ActiveContainer[] tryGetContainers(int numOfContainers, ArmComputeSessionID sessionID)
-        throws RemoteException {
+            throws RemoteException {
         return containerManagerInterface.tryGetContainers(numOfContainers, sessionID);
     }
 
     @Override
     public ActiveContainer[] getAtMostContainers(int numOfContainers, ArmComputeSessionID sessionID)
-        throws RemoteException {
+            throws RemoteException {
         return containerManagerInterface.getAtMostContainers(numOfContainers, sessionID);
     }
 
-    @Override public void stopContainer(ActiveContainer container, ArmComputeSessionID sessionID)
-        throws RemoteException {
+    @Override
+    public void stopContainer(ActiveContainer container, ArmComputeSessionID sessionID)
+            throws RemoteException {
         containerManagerInterface.stopContainer(container, sessionID);
     }
 
-    @Override public void closeSession(ArmComputeSessionID sessionID) throws RemoteException {
+    @Override
+    public void closeSession(ArmComputeSessionID sessionID) throws RemoteException {
         containerManagerInterface.closeSession(sessionID);
     }
 
-    @Override public void stopManager() throws RemoteException {
+    @Override
+    public void stopManager() throws RemoteException {
         super.unregister();
     }
 
-    @Override public ArrayList<Pair<PatternElement, ActiveContainer>> getAtMostContainers(
-        ArmComputeSessionID sessionID) throws RemoteException {
+    @Override
+    public ArrayList<Pair<PatternElement, ActiveContainer>> getAtMostContainers(
+            ArmComputeSessionID sessionID) throws RemoteException {
         return containerManagerInterface.getAtMostContainers(sessionID);
     }
 
     @Override
     public void setPattern(ArrayList<PatternElement> pattern, ArmComputeSessionID sessionID)
-        throws RemoteException {
+            throws RemoteException {
         containerManagerInterface.setPattern(pattern, sessionID);
     }
 }

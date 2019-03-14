@@ -18,16 +18,16 @@ public class MaxDiffConstructionAlgorithm implements ConstructionAlgorithm {
     private static final long serialVersionUID = 1L;
 
     public LinkedList<Bucket> createHistogram(ArrayList<Pair<?, Double>> data, int bucketNum,
-        PartitionRule partitionRule) throws RemoteException {
+                                              PartitionRule partitionRule) throws RemoteException {
 
         PriorityQueue<Pair<Double, Integer>> diffQueue =
-            new PriorityQueue<Pair<Double, Integer>>(bucketNum,
-                new Comparator<Pair<Double, Integer>>() {
+                new PriorityQueue<Pair<Double, Integer>>(bucketNum,
+                        new Comparator<Pair<Double, Integer>>() {
 
-                    public int compare(Pair<Double, Integer> o1, Pair<Double, Integer> o2) {
-                        return o1.a.compareTo(o2.a);
-                    }
-                });
+                            public int compare(Pair<Double, Integer> o1, Pair<Double, Integer> o2) {
+                                return o1.a.compareTo(o2.a);
+                            }
+                        });
 
         for (int i = 0; i < data.size() - 1; i++) {
             Pair<?, Double> d1 = data.get(i);
@@ -35,7 +35,7 @@ public class MaxDiffConstructionAlgorithm implements ConstructionAlgorithm {
 
             diffQueue.offer(new Pair<Double, Integer>(d2.b - d1.b, i + 1));
 
-      /* Remove the first */
+            /* Remove the first */
             if (i >= bucketNum - 1) {
                 diffQueue.poll();
             }
@@ -47,9 +47,9 @@ public class MaxDiffConstructionAlgorithm implements ConstructionAlgorithm {
 
         LinkedList<Bucket> bucketList = new LinkedList<Bucket>();
 
-    /* Sort the buckets */
+        /* Sort the buckets */
         ArrayList<Pair<Double, Integer>> thresholdArray =
-            new ArrayList<Pair<Double, Integer>>(diffQueue);
+                new ArrayList<Pair<Double, Integer>>(diffQueue);
         Collections.sort(thresholdArray, new Comparator<Pair<Double, Integer>>() {
 
             public int compare(Pair<Double, Integer> o1, Pair<Double, Integer> o2) {

@@ -16,7 +16,7 @@ public class ActiveBuffer extends ActiveObject {
     public String fileName = null;
 
     public ActiveBuffer(String bufferName, ContainerSessionID containerSessionID,
-        OperatorGroup operatorGroup) {
+                        OperatorGroup operatorGroup) {
         super(ObjectType.Buffer, bufferName, containerSessionID, operatorGroup);
     }
 }

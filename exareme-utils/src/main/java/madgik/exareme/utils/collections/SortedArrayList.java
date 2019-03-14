@@ -23,7 +23,8 @@ public class SortedArrayList<T> extends ArrayList<T> {
         sorted = false;
     }
 
-    @Override public boolean add(T e) {
+    @Override
+    public boolean add(T e) {
         boolean v = super.add(e);
         if (v) {
             sorted = false;
@@ -32,12 +33,14 @@ public class SortedArrayList<T> extends ArrayList<T> {
         return v;
     }
 
-    @Override public void add(int index, T element) {
+    @Override
+    public void add(int index, T element) {
         super.add(index, element);
         sorted = false;
     }
 
-    @Override public boolean addAll(Collection<? extends T> c) {
+    @Override
+    public boolean addAll(Collection<? extends T> c) {
         boolean v = super.addAll(c);
         if (v) {
             sorted = false;
@@ -46,7 +49,8 @@ public class SortedArrayList<T> extends ArrayList<T> {
         return v;
     }
 
-    @Override public boolean addAll(int index, Collection<? extends T> c) {
+    @Override
+    public boolean addAll(int index, Collection<? extends T> c) {
         boolean v = super.addAll(index, c);
         if (v) {
             sorted = false;

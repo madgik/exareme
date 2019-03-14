@@ -22,14 +22,15 @@ public class HttpAsyncTablesMetadataHandler implements HttpAsyncRequestHandler<H
     public HttpAsyncTablesMetadataHandler() {
     }
 
-    @Override public HttpAsyncRequestConsumer<HttpRequest> processRequest(HttpRequest request,
-        HttpContext context) throws HttpException, IOException {
+    @Override
+    public HttpAsyncRequestConsumer<HttpRequest> processRequest(HttpRequest request,
+                                                                HttpContext context) throws HttpException, IOException {
         return new BasicAsyncRequestConsumer();
     }
 
     @Override
     public void handle(HttpRequest httpRequest, HttpAsyncExchange httpExchange, HttpContext context)
-        throws HttpException, IOException {
+            throws HttpException, IOException {
         HttpResponse httpResponse = httpExchange.getResponse();
 
         log.info("Validating request ..");
@@ -63,8 +64,8 @@ public class HttpAsyncTablesMetadataHandler implements HttpAsyncRequestHandler<H
         } catch (Exception ex) {
             log.error(ex);
             HttpResponse response =
-                new BasicHttpResponse(HttpVersion.HTTP_1_1, HttpStatus.SC_INTERNAL_SERVER_ERROR,
-                    ex.getMessage());
+                    new BasicHttpResponse(HttpVersion.HTTP_1_1, HttpStatus.SC_INTERNAL_SERVER_ERROR,
+                            ex.getMessage());
 
             httpExchange.submitResponse(new BasicAsyncResponseProducer(response));
             return;

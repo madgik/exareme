@@ -23,8 +23,9 @@ public class RmiAdpDBConnector implements AdpDBConnector {
     private static final Logger log = Logger.getLogger(RmiAdpDBConnector.class);
     private static ExecutorService pool = Executors.newFixedThreadPool(100);
 
-    @Override public InputStream readTable(String tableName, Map<String, Object> alsoIncludeProps,
-        AdpDBClientProperties props) throws RemoteException {
+    @Override
+    public InputStream readTable(String tableName, Map<String, Object> alsoIncludeProps,
+                                 AdpDBClientProperties props) throws RemoteException {
         try {
             PipedOutputStream out = new PipedOutputStream();
             pool.submit(new AdpDBNetReaderThread(tableName, alsoIncludeProps, props, out));

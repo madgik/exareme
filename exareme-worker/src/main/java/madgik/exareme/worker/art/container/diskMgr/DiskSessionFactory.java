@@ -15,7 +15,7 @@ public class DiskSessionFactory {
     }
 
     public static DiskSession createInMemorySession(DiskSessionQoS qoS, String sessionName,
-        ContainerSessionID containerSessionID, PlanSessionID planSessionID) {
+                                                    ContainerSessionID containerSessionID, PlanSessionID planSessionID) {
         return null;
     }
 }

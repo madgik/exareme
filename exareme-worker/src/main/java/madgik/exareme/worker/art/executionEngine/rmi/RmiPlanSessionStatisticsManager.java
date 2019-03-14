@@ -25,15 +25,15 @@ import java.util.UUID;
  * @author herald
  */
 public class RmiPlanSessionStatisticsManager
-    extends RmiRemoteObject<PlanSessionStatisticsManagerProxy>
-    implements PlanSessionStatisticsManager {
+        extends RmiRemoteObject<PlanSessionStatisticsManagerProxy>
+        implements PlanSessionStatisticsManager {
 
     private PlanSessionStatisticsManagerInterface statisticsManagerInterface = null;
     private EntityName regEntityName = null;
 
     public RmiPlanSessionStatisticsManager(
-        PlanSessionStatisticsManagerInterface statisticsManagerInterface, EntityName regEntityName)
-        throws RemoteException {
+            PlanSessionStatisticsManagerInterface statisticsManagerInterface, EntityName regEntityName)
+            throws RemoteException {
         super(NetUtil.getIPv4() + "_planSessionStatisticsManager_" + UUID.randomUUID().toString());
 
         this.statisticsManagerInterface = statisticsManagerInterface;
@@ -42,36 +42,42 @@ public class RmiPlanSessionStatisticsManager
         super.register();
     }
 
-    @Override public PlanSessionStatisticsManagerProxy createProxy() throws RemoteException {
+    @Override
+    public PlanSessionStatisticsManagerProxy createProxy() throws RemoteException {
         return new RmiPlanSessionStatisticsManagerProxy(super.getRegEntryName(), regEntityName);
     }
 
-    @Override public ConcreteOperatorStatistics getOperatorStatistics(OperatorEntity operatorEntity,
-        PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public ConcreteOperatorStatistics getOperatorStatistics(OperatorEntity operatorEntity,
+                                                            PlanSessionID sessionID) throws RemoteException {
         return statisticsManagerInterface.getOperatorStatistics(operatorEntity, sessionID);
     }
 
-    @Override public ElasticTreeStatistics getElasticTreeStatistics() throws RemoteException {
+    @Override
+    public ElasticTreeStatistics getElasticTreeStatistics() throws RemoteException {
         return statisticsManagerInterface.getElasticTreeStatistics();
     }
 
     @Override
     public BufferStatistics getBufferStatistics(BufferEntity bufferEntity, PlanSessionID sessionID)
-        throws RemoteException {
+            throws RemoteException {
         return statisticsManagerInterface.getBufferStatistics(bufferEntity, sessionID);
     }
 
-    @Override public PlanSessionStatistics getStatistics(PlanSessionID sessionID)
-        throws RemoteException {
+    @Override
+    public PlanSessionStatistics getStatistics(PlanSessionID sessionID)
+            throws RemoteException {
         return statisticsManagerInterface.getStatistics(sessionID);
     }
 
-    @Override public void stopManager() throws RemoteException {
+    @Override
+    public void stopManager() throws RemoteException {
         super.unregister();
     }
 
-    @Override public PlanSessionProgressStats getProgress(PlanSessionID sessionID)
-        throws RemoteException {
+    @Override
+    public PlanSessionProgressStats getProgress(PlanSessionID sessionID)
+            throws RemoteException {
         return statisticsManagerInterface.getProgress(sessionID);
     }
 }

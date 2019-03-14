@@ -16,7 +16,7 @@ public class PlanSessionProgressStats implements Serializable {
     private final int errors;
 
     public PlanSessionProgressStats(int totalProc, int procCompleted, int totalData,
-        int dataCompleted, int errors) {
+                                    int dataCompleted, int errors) {
         this.totalProc = totalProc;
         this.procCompleted = procCompleted;
         this.totalData = totalData;

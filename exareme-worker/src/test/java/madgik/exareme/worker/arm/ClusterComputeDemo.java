@@ -41,7 +41,7 @@ public class ClusterComputeDemo {
             ArmComputeSession computeSession = computeProxy.createSession();
 
             ComputeSessionContainerManagerProxy containerManagerProxy =
-                computeSession.getComputeSessionContainerManagerProxy();
+                    computeSession.getComputeSessionContainerManagerProxy();
 
             ActiveContainer ac[] = containerManagerProxy.getContainers(5);
             for (ActiveContainer a : ac) {

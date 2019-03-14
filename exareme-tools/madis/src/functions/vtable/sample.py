@@ -34,25 +34,25 @@ Examples::
     >>> sql("sample size:0 select * from table1")
 
 """
-import setpath
-import vtbase
 import functions
 
+import vtbase
+
 registered = True
-       
+
+
 class SampleVT(vtbase.VT):
-    def VTiter(self, *parsedArgs,**envars):
+    def VTiter(self, *parsedArgs, **envars):
         largs, dictargs = self.full_parse(parsedArgs)
 
         if 'query' not in dictargs:
-            raise functions.OperatorError(__name__.rsplit('.')[-1],"No query argument ")
-        query=dictargs['query']
+            raise functions.OperatorError(__name__.rsplit('.')[-1], "No query argument ")
+        query = dictargs['query']
 
         samplesize = 1
 
         if len(largs) > 0:
             samplesize = int(largs[0])
-
 
         if 'size' in dictargs:
             samplesize = int(dictargs['size'])
@@ -60,10 +60,10 @@ class SampleVT(vtbase.VT):
         try:
             samplesize = int(samplesize)
         except ValueError:
-            raise functions.OperatorError(__name__.rsplit('.')[-1],"Sample size should be integer")
+            raise functions.OperatorError(__name__.rsplit('.')[-1], "Sample size should be integer")
 
         cur = envars['db'].cursor()
-        c = cur.execute(query, parse = False)
+        c = cur.execute(query, parse=False)
 
         try:
             yield list(cur.getdescriptionsafe())
@@ -89,8 +89,10 @@ class SampleVT(vtbase.VT):
         for r in samplelist:
             yield r
 
+
 def Source():
     return vtbase.VTGenerator(SampleVT)
+
 
 if not ('.' in __name__):
     """
@@ -98,13 +100,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()
-
-

@@ -7,7 +7,7 @@ package madgik.exareme.master.engine.remoteQuery.impl.cache;
 
 /**
  * @author Christos Mallios <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  */
 public class QueryRequests {
 
@@ -26,7 +26,7 @@ public class QueryRequests {
     }
 
     public QueryRequests(int numberOfRequests, int numberOfLastVersionRequests,
-        int numberOfTotalRequests, int queryResponseTime, int numberOfVersions) {
+                         int numberOfTotalRequests, int queryResponseTime, int numberOfVersions) {
 
         this.numberOfRequests = numberOfRequests;
         this.numberOfLastVersionRequests = numberOfLastVersionRequests;

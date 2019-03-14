@@ -9,7 +9,7 @@ import java.util.Map;
 public class CentralizedMemo {
 
     private final Map<MemoKey, CentralizedMemoValue> memo =
-        new HashMap<MemoKey, CentralizedMemoValue>();
+            new HashMap<MemoKey, CentralizedMemoValue>();
 
     public CentralizedMemo() {
     }
@@ -41,7 +41,6 @@ public class CentralizedMemo {
         memo.put(k, v);
 
     }
-
 
 
 }

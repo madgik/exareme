@@ -15,8 +15,8 @@ import java.lang.management.ManagementFactory;
  * The implementation if the bean that manages an operator.
  *
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class ConcreteOperatorManagement implements OperatorInstanceManagementMBean {

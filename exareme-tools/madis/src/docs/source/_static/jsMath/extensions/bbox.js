@@ -137,11 +137,9 @@ jsMath.Package(jsMath.Parser, {
             for (var i in parts) {
                 if (parts[i].match(/^\s*([-+]?(\.\d+|\d+(\.\d*)?))(pt|em|ex|mu|px)\s*$/)) {
                     pad = this.ParseDimen(parts[i], '', 0, 1)
-                }
-                else if (parts[i].match(/:/)) {
+                } else if (parts[i].match(/:/)) {
                     style = parts[i]
-                }
-                else {
+                } else {
                     color = parts[i]
                 }
             }

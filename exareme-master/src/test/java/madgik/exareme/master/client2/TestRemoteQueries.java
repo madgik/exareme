@@ -21,6 +21,7 @@ import java.nio.charset.Charset;
 
 /**
  * Testing 2 remote queries use cases (import, pipeline).
+ *
  * @author alex
  */
 public class TestRemoteQueries {
@@ -29,7 +30,8 @@ public class TestRemoteQueries {
     private Boolean problem = false;
 
 
-    @Before public void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         Logger.getRootLogger().setLevel(Level.DEBUG);
         log.debug("---- SETUP ----");
 
@@ -40,28 +42,29 @@ public class TestRemoteQueries {
         log.debug("---- SETUP ----");
     }
 
-    @Test public void testImportRemoteQueries() throws Exception {
+    @Test
+    public void testImportRemoteQueries() throws Exception {
         log.debug("---- TEST ----");
         String remoteQueryScript =
-            "distributed create temporary table demo1 to 8 on key as remote \n"
-                + "select t1.C1 as key\n"
-                + "from range(40) t1;\n"
-            + "distributed create temporary table demo2 to 8 on key as remote \n"
-                + "select t1.C1 as key, t2.C1 as value\n"
-                + "from range(40) t1, range(10) t2;\n"
-            + "distributed create temporary table demo3 to 1 as direct \n"
-                + "select value, count(*) as partial_count\n"
-                + "from (\n"
-                    + "select d2.value as value\n"
-                    + "from demo1 d1, demo2 d2\n"
-                    + "where d1.key = d2.key\n"
-                + ")\n"
-                + "group by value;\n"
-            + "distributed create table results as tree\n"
-                + "select value, sum(partial_count) as count\n"
-                + "from demo3\n"
-                + "group by value\n"
-                + "order by count desc;\n";
+                "distributed create temporary table demo1 to 8 on key as remote \n"
+                        + "select t1.C1 as key\n"
+                        + "from range(40) t1;\n"
+                        + "distributed create temporary table demo2 to 8 on key as remote \n"
+                        + "select t1.C1 as key, t2.C1 as value\n"
+                        + "from range(40) t1, range(10) t2;\n"
+                        + "distributed create temporary table demo3 to 1 as direct \n"
+                        + "select value, count(*) as partial_count\n"
+                        + "from (\n"
+                        + "select d2.value as value\n"
+                        + "from demo1 d1, demo2 d2\n"
+                        + "where d1.key = d2.key\n"
+                        + ")\n"
+                        + "group by value;\n"
+                        + "distributed create table results as tree\n"
+                        + "select value, sum(partial_count) as count\n"
+                        + "from demo3\n"
+                        + "group by value\n"
+                        + "order by count desc;\n";
 
         log.info(remoteQueryScript);
 
@@ -70,14 +73,14 @@ public class TestRemoteQueries {
         log.debug("Mini cluster started.");
 
         AdpDBClientProperties properties =
-            new AdpDBClientProperties(dbPathName, "", "", false, false, -1, 10);
+                new AdpDBClientProperties(dbPathName, "", "", false, false, -1, 10);
         AdpDBClient client = miniCluster.getExaremeClusterClient(properties);
 
         //        String explain = dbClient.explain(remoteQueryScript, "json");
         //        log.info(explain);
 
         AdpDBClientQueryStatus queryStatus =
-            client.query("load_", remoteQueryScript);
+                client.query("load_", remoteQueryScript);
         while (queryStatus.hasFinished() == false && queryStatus.hasError() == false) {
             Thread.sleep(2 * 1000);
         }
@@ -92,7 +95,7 @@ public class TestRemoteQueries {
 
 //        miniCluster.stop(ture);
         miniCluster.stop(true);
-        Thread.sleep(15*1000);
+        Thread.sleep(15 * 1000);
         log.debug("Mini cluster stopped.");
         log.debug("---- TEST ----");
         log.debug("---- TEST ----");
@@ -145,7 +148,8 @@ public class TestRemoteQueries {
 //
 //    }
 
-    @After public void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         log.debug("---- CLEAN ----");
         FileUtils.deleteDirectory(new File(dbPathName));
         log.debug("---- CLEAN ----");

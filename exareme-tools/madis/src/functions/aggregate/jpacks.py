@@ -1,9 +1,7 @@
 __docformat__ = 'reStructuredText en'
 
-import setpath
-import lib.jopts as jopts
 import json
-from collections import OrderedDict
+import lib.jopts as jopts
 
 try:
     from collections import OrderedDict
@@ -59,7 +57,7 @@ class jgroup:
     [{"a":[1,2],"b":1},{"a":[3,4],"b":1},{"a":[5,6],"b":2},{"a":[7,8],"b":2}]
     """
 
-    registered = True #Value to define db operator
+    registered = True  # Value to define db operator
 
     def __init__(self):
         self.outgroup = []
@@ -117,7 +115,7 @@ class jdictgroup:
     {"[1,2]":1,"[3,4]":1,"[5,6]":2,"[7,8]":2}
     """
 
-    registered = True #Value to define db operator
+    registered = True  # Value to define db operator
 
     def __init__(self):
         self.outgroup = OrderedDict()
@@ -158,7 +156,7 @@ class jgroupunion:
 
     """
 
-    registered = True #Value to define db operator
+    registered = True  # Value to define db operator
 
     def __init__(self):
         self.outgroup = OrderedDict()
@@ -197,7 +195,7 @@ class jgroupintersection:
 
     """
 
-    registered = True #Value to define db operator
+    registered = True  # Value to define db operator
 
     def __init__(self):
         self.outgroup = None
@@ -238,7 +236,7 @@ class jdictgroupunion:
 
     """
 
-    registered = True #Value to define db operator
+    registered = True  # Value to define db operator
 
     def __init__(self):
         self.outgroup = OrderedDict()
@@ -283,7 +281,7 @@ class jgroupunionkeys:
     []
     """
 
-    registered = True #Value to define db operator
+    registered = True  # Value to define db operator
 
     def __init__(self):
         self.outgroup = OrderedDict()
@@ -321,7 +319,7 @@ class jgroupuniquelimit:
 
     """
 
-    registered = True #Value to define db operator
+    registered = True  # Value to define db operator
 
     def __init__(self):
         self.gset = set()
@@ -344,7 +342,6 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
 
     testfunction()

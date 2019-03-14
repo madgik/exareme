@@ -21,23 +21,27 @@ public class StreamFactory {
     }
 
     public static OutputStream createOutputStream(final WriteRmiStreamAdaptor buf)
-        throws IOException {
+            throws IOException {
         OutputStream out = new OutputStream() {
 
-            @Override public synchronized void write(int b) throws IOException {
-                buf.write(new byte[] {(byte) (b & 0xFF)}, 0, 1);
+            @Override
+            public synchronized void write(int b) throws IOException {
+                buf.write(new byte[]{(byte) (b & 0xFF)}, 0, 1);
             }
 
-            @Override public synchronized void write(byte[] b) throws IOException {
+            @Override
+            public synchronized void write(byte[] b) throws IOException {
                 buf.write(b, 0, b.length);
             }
 
-            @Override public synchronized void write(byte[] bytes, int off, int len)
-                throws IOException {
+            @Override
+            public synchronized void write(byte[] bytes, int off, int len)
+                    throws IOException {
                 buf.write(bytes, off, len);
             }
 
-            @Override public void close() throws IOException {
+            @Override
+            public void close() throws IOException {
                 super.close();
                 buf.close();
             }
@@ -54,20 +58,24 @@ public class StreamFactory {
     public static OutputStream createOutputStream(final StreamBuffer buf) throws IOException {
         OutputStream out = new OutputStream() {
 
-            @Override public synchronized void write(int b) throws IOException {
-                buf.write(new byte[] {(byte) (b & 0xFF)}, 0, 1);
+            @Override
+            public synchronized void write(int b) throws IOException {
+                buf.write(new byte[]{(byte) (b & 0xFF)}, 0, 1);
             }
 
-            @Override public synchronized void write(byte[] b) throws IOException {
+            @Override
+            public synchronized void write(byte[] b) throws IOException {
                 buf.write(b, 0, b.length);
             }
 
-            @Override public synchronized void write(byte[] bytes, int off, int len)
-                throws IOException {
+            @Override
+            public synchronized void write(byte[] bytes, int off, int len)
+                    throws IOException {
                 buf.write(bytes, off, len);
             }
 
-            @Override public void close() throws IOException {
+            @Override
+            public void close() throws IOException {
                 super.close();
                 buf.closeWriter();
             }
@@ -84,7 +92,8 @@ public class StreamFactory {
     public static InputStream createInputStream(final ReadRmiStreamAdaptor buf) throws IOException {
         InputStream in = new InputStream() {
 
-            @Override public synchronized int read() throws IOException {
+            @Override
+            public synchronized int read() throws IOException {
                 byte[] b = new byte[1];
                 int bytes = this.read(b, 0, b.length);
 
@@ -95,12 +104,14 @@ public class StreamFactory {
                 return ((int) b[0] & 0xFF);
             }
 
-            @Override public synchronized int read(byte[] b) throws IOException {
+            @Override
+            public synchronized int read(byte[] b) throws IOException {
                 return this.read(b, 0, b.length);
             }
 
-            @Override public synchronized int read(byte[] bytes, int off, int len)
-                throws IOException {
+            @Override
+            public synchronized int read(byte[] bytes, int off, int len)
+                    throws IOException {
                 try {
                     byte[] ret = buf.read(len);
                     if (ret == null) {
@@ -116,7 +127,8 @@ public class StreamFactory {
                 }
             }
 
-            @Override public void close() throws IOException {
+            @Override
+            public void close() throws IOException {
                 super.close();
                 buf.close();
             }
@@ -132,7 +144,8 @@ public class StreamFactory {
     public static InputStream createInputStream(final StreamBuffer buf) throws IOException {
         InputStream in = new InputStream() {
 
-            @Override public synchronized int read() throws IOException {
+            @Override
+            public synchronized int read() throws IOException {
                 byte[] b = new byte[1];
                 int bytes = this.read(b, 0, b.length);
 
@@ -143,12 +156,14 @@ public class StreamFactory {
                 return ((int) b[0] & 0xFF);
             }
 
-            @Override public synchronized int read(byte[] b) throws IOException {
+            @Override
+            public synchronized int read(byte[] b) throws IOException {
                 return this.read(b, 0, b.length);
             }
 
-            @Override public synchronized int read(byte[] bytes, int off, int len)
-                throws IOException {
+            @Override
+            public synchronized int read(byte[] bytes, int off, int len)
+                    throws IOException {
 
                 try {
                     return buf.read(bytes, off, len);
@@ -158,7 +173,8 @@ public class StreamFactory {
                 }
             }
 
-            @Override public void close() throws IOException {
+            @Override
+            public void close() throws IOException {
                 super.close();
                 buf.closeReader();
             }

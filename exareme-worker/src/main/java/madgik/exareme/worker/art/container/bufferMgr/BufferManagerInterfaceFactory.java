@@ -18,7 +18,7 @@ public class BufferManagerInterfaceFactory {
     }
 
     public static BufferManagerInterface createBufferManagerInterface(BufferManagerStatus status,
-        StatisticsManagerInterface statistics) throws RemoteException {
+                                                                      StatisticsManagerInterface statistics) throws RemoteException {
         return new SynchronizedBufferManager(new SimpleBufferManager(status, statistics));
     }
 }

@@ -11,11 +11,11 @@ import madgik.exareme.worker.art.remote.RmiObjectProxy;
 
 /**
  * @author Herald Kllapi <br> University of Athens / Department of Informatics
- *         and Telecommunications.
+ * and Telecommunications.
  * @since 1.0
  */
 public class RmiComputeSessionReportManagerProxy extends RmiObjectProxy<ComputeSessionReportManager>
-    implements ComputeSessionReportManagerProxy {
+        implements ComputeSessionReportManagerProxy {
     public ArmComputeSessionID sessionID = null;
 
     public RmiComputeSessionReportManagerProxy(String regEntryName, EntityName regEntityName) {

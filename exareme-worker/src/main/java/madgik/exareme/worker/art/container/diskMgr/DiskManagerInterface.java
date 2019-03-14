@@ -18,8 +18,8 @@ public interface DiskManagerInterface extends SessionBased {
     DiskSession getGlobalSession(PlanSessionID planSessionID) throws RemoteException;
 
     DiskSession getContainerSession(ContainerSessionID containerSessionID,
-        PlanSessionID planSessionID) throws RemoteException;
+                                    PlanSessionID planSessionID) throws RemoteException;
 
     DiskSession getOperatorSession(ConcreteOperatorID opID, ContainerSessionID containerSessionID,
-        PlanSessionID planSessionID) throws RemoteException;
+                                   PlanSessionID planSessionID) throws RemoteException;
 }

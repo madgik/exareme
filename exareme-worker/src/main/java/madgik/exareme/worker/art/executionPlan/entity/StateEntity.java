@@ -26,7 +26,7 @@ public class StateEntity implements Comparable<StateEntity>, Serializable {
     public List<URL> locations = null;
 
     public StateEntity(String stateName, String state, LinkedList<Parameter> paramList,
-        String queryString, List<URL> locations, String containerName, EntityName container) {
+                       String queryString, List<URL> locations, String containerName, EntityName container) {
         this.containerName = containerName;
         this.container = container;
         this.stateName = stateName;
@@ -55,18 +55,21 @@ public class StateEntity implements Comparable<StateEntity>, Serializable {
         return entity.stateName.compareTo(stateName);
     }
 
-    @Override public boolean equals(Object entityObj) {
+    @Override
+    public boolean equals(Object entityObj) {
         StateEntity entity = (StateEntity) entityObj;
         return entity.stateName.equals(stateName);
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int hash = 5;
         hash = 43 * hash + (this.stateName != null ? this.stateName.hashCode() : 0);
         return hash;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return stateName + "(" + containerName + ")";
     }
 }

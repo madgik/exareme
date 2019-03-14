@@ -17,35 +17,41 @@ public class SynchronizedBuffer implements StreamBuffer {
         this.buffer = buffer;
     }
 
-    @Override public void write(byte[] bytes, int offset, int length) throws IOException {
+    @Override
+    public void write(byte[] bytes, int offset, int length) throws IOException {
         synchronized (writeLock) {
             buffer.write(bytes, offset, length);
         }
     }
 
-    @Override public int read(byte[] bytes, int offset, int length) throws IOException {
+    @Override
+    public int read(byte[] bytes, int offset, int length) throws IOException {
         synchronized (readLock) {
             return buffer.read(bytes, offset, length);
         }
     }
 
-    @Override public void closeReader() throws IOException {
+    @Override
+    public void closeReader() throws IOException {
         synchronized (readLock) {
             buffer.closeReader();
         }
     }
 
-    @Override public void closeWriter() throws IOException {
+    @Override
+    public void closeWriter() throws IOException {
         synchronized (writeLock) {
             buffer.closeWriter();
         }
     }
 
-    @Override public int getSize() throws IOException {
+    @Override
+    public int getSize() throws IOException {
         return buffer.getSize();
     }
 
-    @Override public void clear() {
+    @Override
+    public void clear() {
         buffer.clear();
     }
 }

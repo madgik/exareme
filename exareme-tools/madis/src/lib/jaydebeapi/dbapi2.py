@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 # Copyright 2010, 2011, 2012, 2013 Bastian Bowe
 #
@@ -21,9 +21,9 @@ import datetime
 import exceptions
 import glob
 import os
-import time
 import re
 import sys
+import time
 from types import NoneType
 
 _jdbc_connect = None
@@ -31,6 +31,7 @@ _jdbc_connect = None
 _java_array_byte = None
 
 _java_BigDecimal = None
+
 
 def _jdbc_connect_jython(jclassname, jars, libs, *args):
     if _converters is None:
@@ -65,6 +66,7 @@ def _jdbc_connect_jython(jclassname, jars, libs, *args):
     from java.sql import DriverManager
     return DriverManager.getConnection(*args)
 
+
 def _jython_set_classpath(jars):
     '''
     import a jar at runtime (needed for JDBC [Class.forName])
@@ -80,9 +82,11 @@ def _jython_set_classpath(jars):
     urls = [File(i).toURL() for i in jars]
     m.invoke(ClassLoader.getSystemClassLoader(), urls)
 
+
 def _prepare_jython():
     global _jdbc_connect
     _jdbc_connect = _jdbc_connect_jython
+
 
 def _jdbc_connect_jpype(jclassname, jars, libs, *driver_args):
     global _java_BigDecimal
@@ -125,6 +129,7 @@ def _jdbc_connect_jpype(jclassname, jars, libs, *driver_args):
     jpype.JClass(jclassname)
     return jpype.java.sql.DriverManager.getConnection(*driver_args)
 
+
 def _get_classpath():
     """Extract CLASSPATH from system environment as JPype doesn't seem
     to respect that variable.
@@ -138,15 +143,18 @@ def _get_classpath():
         expanded_cp.extend(_jar_glob(i))
     return expanded_cp
 
+
 def _jar_glob(item):
     if item.endswith('*'):
         return glob.glob('%s.[jJ][aA][rR]' % item)
     else:
         return [item]
 
+
 def _prepare_jpype():
     global _jdbc_connect
     _jdbc_connect = _jdbc_connect_jpype
+
 
 if sys.platform.lower().startswith('java'):
     _prepare_jython()
@@ -157,10 +165,12 @@ apilevel = '2.0'
 threadsafety = 1
 paramstyle = 'qmark'
 
+
 class DBAPITypeObject(object):
-    def __init__(self,*values):
+    def __init__(self, *values):
         self.values = values
-    def __cmp__(self,other):
+
+    def __cmp__(self, other):
         if other in self.values:
             return 0
         if other < self.values:
@@ -168,70 +178,86 @@ class DBAPITypeObject(object):
         else:
             return -1
 
+
 STRING = DBAPITypeObject("CHARACTER", "CHAR", "VARCHAR",
-                          "CHARACTER VARYING", "CHAR VARYING", "STRING",)
+                         "CHARACTER VARYING", "CHAR VARYING", "STRING", )
 
 TEXT = DBAPITypeObject("CLOB", "CHARACTER LARGE OBJECT",
-                       "CHAR LARGE OBJECT",  "XML",)
+                       "CHAR LARGE OBJECT", "XML", )
 
-BINARY = DBAPITypeObject("BLOB", "BINARY LARGE OBJECT",)
+BINARY = DBAPITypeObject("BLOB", "BINARY LARGE OBJECT", )
 
-NUMBER = DBAPITypeObject("INTEGER", "INT", "SMALLINT", "BIGINT",)
+NUMBER = DBAPITypeObject("INTEGER", "INT", "SMALLINT", "BIGINT", )
 
 FLOAT = DBAPITypeObject("FLOAT", "REAL", "DOUBLE", "DECFLOAT")
 
-DECIMAL = DBAPITypeObject("DECIMAL", "DEC", "NUMERIC", "NUM",)
+DECIMAL = DBAPITypeObject("DECIMAL", "DEC", "NUMERIC", "NUM", )
 
-DATE = DBAPITypeObject("DATE",)
+DATE = DBAPITypeObject("DATE", )
 
-TIME = DBAPITypeObject("TIME",)
+TIME = DBAPITypeObject("TIME", )
 
-DATETIME = DBAPITypeObject("TIMESTAMP",)
+DATETIME = DBAPITypeObject("TIMESTAMP", )
 
 ROWID = DBAPITypeObject(())
+
 
 # DB-API 2.0 Module Interface Exceptions
 class Error(exceptions.StandardError):
     pass
 
+
 class Warning(exceptions.StandardError):
     pass
+
 
 class InterfaceError(Error):
     pass
 
+
 class DatabaseError(Error):
     pass
+
 
 class InternalError(DatabaseError):
     pass
 
+
 class OperationalError(DatabaseError):
     pass
+
 
 class ProgrammingError(DatabaseError):
     pass
 
+
 class IntegrityError(DatabaseError):
     pass
+
 
 class DataError(DatabaseError):
     pass
 
+
 class NotSupportedError(DatabaseError):
     pass
+
 
 # DB-API 2.0 Type Objects and Constructors
 
 def _java_sql_blob(data):
     return _java_array_byte(data)
 
+
 Binary = _java_sql_blob
+
 
 def _str_func(func):
     def to_str(*parms):
         return str(func(*parms))
+
     return to_str
+
 
 Date = _str_func(datetime.date)
 
@@ -239,14 +265,18 @@ Time = _str_func(datetime.time)
 
 Timestamp = _str_func(datetime.datetime)
 
+
 def DateFromTicks(ticks):
     return apply(Date, time.localtime(ticks)[:3])
+
 
 def TimeFromTicks(ticks):
     return apply(Time, time.localtime(ticks)[3:6])
 
+
 def TimestampFromTicks(ticks):
     return apply(Timestamp, time.localtime(ticks)[:6])
+
 
 # DB-API 2.0 Module Interface connect constructor
 def connect(jclassname, driver_args, jars=None, libs=None):
@@ -264,23 +294,23 @@ def connect(jclassname, driver_args, jars=None, libs=None):
           library by the JDBC driver
     """
     if isinstance(driver_args, basestring):
-        driver_args = [ driver_args ]
+        driver_args = [driver_args]
     if jars:
         if isinstance(jars, basestring):
-            jars = [ jars ]
+            jars = [jars]
     else:
         jars = []
     if libs:
         if isinstance(libs, basestring):
-            libs = [ libs ]
+            libs = [libs]
     else:
         libs = []
     jconn = _jdbc_connect(jclassname, jars, libs, *driver_args)
     return Connection(jconn, _converters)
 
+
 # DB-API 2.0 Connection Object
 class Connection(object):
-
     jconn = None
 
     def __init__(self, jconn, converters):
@@ -299,9 +329,9 @@ class Connection(object):
     def cursor(self):
         return Cursor(self, self._converters)
 
+
 # DB-API 2.0 Cursor Object
 class Cursor(object):
-
     rowcount = -1
     _meta = None
     _prep = None
@@ -326,21 +356,21 @@ class Cursor(object):
             self._coltypes = [None]
             for col in range(1, count + 1):
                 size = m.getColumnDisplaySize(col)
-                col_desc = ( m.getColumnName(col),
-                             m.getColumnTypeName(col),
-                             size,
-                             size,
-                             m.getPrecision(col),
-                             m.getScale(col),
-                             m.isNullable(col),
-                             )
+                col_desc = (m.getColumnName(col),
+                            m.getColumnTypeName(col),
+                            size,
+                            size,
+                            m.getPrecision(col),
+                            m.getScale(col),
+                            m.isNullable(col),
+                            )
                 self._description.append(col_desc)
                 self._coltypes.append(m.getColumnType(col))
             self._coltypes = tuple(self._coltypes)
             self._row = [None] * count
             return self._description
 
-#   optional callproc(self, procname, *parameters) unsupported
+    #   optional callproc(self, procname, *parameters) unsupported
 
     def close(self):
         self._close_last()
@@ -397,7 +427,7 @@ class Cursor(object):
 
     def fetchone(self):
         global _java_BigDecimal
-        #raise if not rs
+        # raise if not rs
         if self._next():
             lgetObject = self._getObject
             lconverters = self._converters
@@ -454,6 +484,7 @@ class Cursor(object):
     def setoutputsize(self, size, column=None):
         pass
 
+
 def _to_datetime(java_val):
     d = datetime.datetime.strptime(str(java_val)[:19], "%Y-%m-%d %H:%M:%S")
     if not isinstance(java_val, basestring):
@@ -461,18 +492,23 @@ def _to_datetime(java_val):
     return str(d)
     # return str(java_val)
 
+
 def _to_date(java_val):
     d = datetime.datetime.strptime(str(java_val)[:10], "%Y-%m-%d")
     return d.strftime("%Y-%m-%d")
     # return str(java_val)
 
+
 def _java_to_py(java_method):
     def to_py(java_val):
         return getattr(java_val, java_method)()
+
     return to_py
+
 
 _to_double = lambda x: getattr(x, 'doubleValue', lambda: x)()
 _to_int = lambda x: getattr(x, 'intValue')()
+
 
 def _init_converters(types_map):
     """Prepares the converters for conversion of java types to python
@@ -484,6 +520,7 @@ def _init_converters(types_map):
     for i in _DEFAULT_CONVERTERS:
         const_val = types_map[i]
         _converters[const_val] = _DEFAULT_CONVERTERS[i]
+
 
 # Mapping from java.sql.Types field to converter method
 _converters = None

@@ -42,31 +42,31 @@ Examples::
 
 """
 
-import setpath
-import vtbase
 import functions
-import gc
 from collections import deque
 
+import vtbase
+
 ### Classic stream iterator
-registered=True
-       
+registered = True
+
+
 class SlidingWindow(vtbase.VT):
-    def VTiter(self, *parsedArgs,**envars):
+    def VTiter(self, *parsedArgs, **envars):
         largs, dictargs = self.full_parse(parsedArgs)
 
         if 'query' not in dictargs:
-            raise functions.OperatorError(__name__.rsplit('.')[-1],"No query argument ")
-        query=dictargs['query']
+            raise functions.OperatorError(__name__.rsplit('.')[-1], "No query argument ")
+        query = dictargs['query']
 
         if 'window' not in dictargs:
-            raise functions.OperatorError(__name__.rsplit('.')[-1],"No window argument ")
+            raise functions.OperatorError(__name__.rsplit('.')[-1], "No window argument ")
 
-        cur=envars['db'].cursor()
-        c=cur.execute(query, parse = False)
+        cur = envars['db'].cursor()
+        c = cur.execute(query, parse=False)
 
         try:
-            yield [('wid','integer')] + list(cur.getdescriptionsafe())
+            yield [('wid', 'integer')] + list(cur.getdescriptionsafe())
         except StopIteration:
             try:
                 raise
@@ -76,16 +76,18 @@ class SlidingWindow(vtbase.VT):
                 except:
                     pass
 
-        wid=0
-        window=deque([], int(dictargs['window']))
+        wid = 0
+        window = deque([], int(dictargs['window']))
         while True:
             window.append(c.next())
             for r in window:
                 yield (wid,) + r
-            wid+=1
+            wid += 1
+
 
 def Source():
     return vtbase.VTGenerator(SlidingWindow)
+
 
 if not ('.' in __name__):
     """
@@ -93,11 +95,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

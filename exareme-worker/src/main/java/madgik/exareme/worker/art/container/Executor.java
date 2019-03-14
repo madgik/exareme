@@ -49,8 +49,8 @@ public class Executor extends Thread {
     }
 
     public void setManagers(StatisticsManager statisticsManager,
-        ConcreteOperatorManager concreteOperatorManager, BufferManager bufferManager,
-        AdaptorManager adaptorManager, DataTransferMgrInterface dataTransferManagerDTP) {
+                            ConcreteOperatorManager concreteOperatorManager, BufferManager bufferManager,
+                            AdaptorManager adaptorManager, DataTransferMgrInterface dataTransferManagerDTP) {
         this.statisticsManager = statisticsManager;
         this.concreteOperatorManager = concreteOperatorManager;
         this.bufferManager = bufferManager;
@@ -58,14 +58,15 @@ public class Executor extends Thread {
         this.dataTransferManagerDTP = dataTransferManagerDTP;
     }
 
-    @Override public void run() {
+    @Override
+    public void run() {
         ArrayList<AbstractContainerJob> jobs = null;
         while (!stop) {
             try {
                 sem.acquire();
             } catch (InterruptedException ex) {
                 java.util.logging.Logger.getLogger(Executor.class.getName()).
-                    log(Level.SEVERE, null, ex);
+                        log(Level.SEVERE, null, ex);
             }
             jobs = jobQueue.getNextJob(resources);
             if (jobs != null) {
@@ -77,7 +78,7 @@ public class Executor extends Thread {
                         handleJob(job.getJob(), job.contSessionID(), job.sessionID());
                     } catch (RemoteException ex) {
                         java.util.logging.Logger.getLogger(Executor.class.getName()).
-                            log(Level.SEVERE, null, ex);
+                                log(Level.SEVERE, null, ex);
                     }
 
                 }
@@ -103,7 +104,7 @@ public class Executor extends Thread {
     }
 
     private void handleJob(ContainerJob job, ContainerSessionID contSessionID,
-        PlanSessionID sessionID) throws RemoteException {
+                           PlanSessionID sessionID) throws RemoteException {
 
         switch (job.getType()) {
             case getStatistics: {

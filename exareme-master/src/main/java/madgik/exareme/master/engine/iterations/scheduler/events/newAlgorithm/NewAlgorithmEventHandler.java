@@ -1,9 +1,5 @@
 package madgik.exareme.master.engine.iterations.scheduler.events.newAlgorithm;
 
-import org.apache.log4j.Logger;
-
-import java.rmi.RemoteException;
-
 import madgik.exareme.common.app.engine.AdpDBQueryID;
 import madgik.exareme.master.client.AdpDBClientQueryStatus;
 import madgik.exareme.master.engine.iterations.scheduler.IterationsDispatcher;
@@ -12,13 +8,16 @@ import madgik.exareme.master.engine.iterations.state.IterationsStateManager;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.master.engine.iterations.state.exceptions.IterationsStateFatalException;
 import madgik.exareme.utils.eventProcessor.EventProcessor;
+import org.apache.log4j.Logger;
+
+import java.rmi.RemoteException;
 
 import static madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState.IterativeAlgorithmPhasesModel.init;
 
 
 /**
  * @author Christos Aslanoglou <br> caslanoglou@di.uoa.gr <br> University of Athens / Department of
- *         Informatics and Telecommunications.
+ * Informatics and Telecommunications.
  */
 public class NewAlgorithmEventHandler extends IterationsEventHandler<NewAlgorithmEvent> {
     private static final Logger log = Logger.getLogger(NewAlgorithmEventHandler.class);
@@ -34,7 +33,7 @@ public class NewAlgorithmEventHandler extends IterationsEventHandler<NewAlgorith
      * <p>
      * Retrieves the related {@code IterativeAlgorithmState}, submits the initialization phase DFL
      * query and updates the {@code currentExecutionPhase} to {@code init}.
-     *
+     * <p>
      * Each handler locks the IterativeAlgorithmState in order to process it and submit the query.
      * This is done to ensure consistency in the case which the initialization query finishes even
      * before this handler exits.)

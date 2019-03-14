@@ -31,25 +31,26 @@ import java.util.LinkedList;
  * @author herald
  */
 public class OperatorGroupTerminatedEventHandler
-    implements ExecEngineEventHandler<OperatorTerminatedEvent> {
+        implements ExecEngineEventHandler<OperatorTerminatedEvent> {
 
     private static final long serialVersionUID = 1L;
     public static final OperatorGroupTerminatedEventHandler instance =
-        new OperatorGroupTerminatedEventHandler();
+            new OperatorGroupTerminatedEventHandler();
     private static final Logger log = Logger.getLogger(OperatorGroupTerminatedEventHandler.class);
 
     public OperatorGroupTerminatedEventHandler() {
     }
 
-    @Override public void preProcess(OperatorTerminatedEvent event, PlanEventSchedulerState state)
-        throws RemoteException {
+    @Override
+    public void preProcess(OperatorTerminatedEvent event, PlanEventSchedulerState state)
+            throws RemoteException {
         // Set terminated
         if (event.operatorID != null) {
             log.trace("OperatorTerminated: " + event.operatorID.operatorName);
             state.getStatistics().incrOperatorCompleted();
             ActiveOperator activeOperator = state.getActiveOperator(event.operatorID);
             if (event.terminateGroup
-                || activeOperator.operatorEntity.type == OperatorType.processing) {
+                    || activeOperator.operatorEntity.type == OperatorType.processing) {
                 if (activeOperator.operatorEntity.type == OperatorType.dataTransfer) {
                     state.getStatistics().incrDataTransferCompleted();
                     log.trace("IncrDTC: " + activeOperator.operatorEntity.operatorName);
@@ -65,7 +66,7 @@ public class OperatorGroupTerminatedEventHandler
             }
             OperatorGroup group = activeOperator.operatorGroup;
             ActiveOperatorGroup activeGroup =
-                group.setTerminated(activeOperator.operatorEntity, event.terminateGroup);
+                    group.setTerminated(activeOperator.operatorEntity, event.terminateGroup);
             activeOperator.exitCode = event.exidCode;
             activeOperator.exitMessage = event.exitMessage;
             activeOperator.exitDate = new Date();
@@ -80,9 +81,9 @@ public class OperatorGroupTerminatedEventHandler
             }
             // Check if the plan has terminated
             log.debug("Terminated: " + state.getTerminatedOperatorCount() + " Expecting: " + state
-                .getStatistics().totalProcessingOperators());
+                    .getStatistics().totalProcessingOperators());
             if (state.getTerminatedOperatorCount() == state.getStatistics()
-                .totalProcessingOperators()) {
+                    .totalProcessingOperators()) {
 
                 IndependentEvents termJobs = new IndependentEvents(state);
                 state.eventScheduler.planTerminated(termJobs);
@@ -115,11 +116,11 @@ public class OperatorGroupTerminatedEventHandler
             state.eventScheduler.lock.lock();
             // Get the activated groups of operators
             HashMap<Long, OperatorGroup> groupMap =
-                state.groupDependencySolver().getActivatedGroups();
+                    state.groupDependencySolver().getActivatedGroups();
             if (groupMap == null && event.operatorID == null && !state.isTerminated()) {
                 log.trace("Not enough resources to start plan.");
                 state.getPlanSession().getPlanSessionStatus().planInstantiationException(
-                    new NotEnoughResourcesException("Cannot execute query"), new Date());
+                        new NotEnoughResourcesException("Cannot execute query"), new Date());
                 state.eventScheduler.destroyPlanWithError(state.getPlanSessionID());
             } else if (groupMap == null) {
                 groupMap = new LinkedHashMap<Long, OperatorGroup>();
@@ -132,27 +133,27 @@ public class OperatorGroupTerminatedEventHandler
                 group.createPartialPlan();
 
                 ActiveOperatorGroup activeGroup = group.createNewActiveGroup(
-                    state.eventScheduler.getPlanManager()
-                        .createContainerSession(state.getPlanSessionID()));
+                        state.eventScheduler.getPlanManager()
+                                .createContainerSession(state.getPlanSessionID()));
 
                 activeGroups.add(activeGroup);
                 log.debug(
-                    "GROUP: " + activeGroup.containerSessionID.getLongId() + " activeGroupId: "
-                        + activeGroup.activeGroupId + " OPS: " + activeGroup.planSession
-                        .getExecutionPlan().getOperatorCount());
+                        "GROUP: " + activeGroup.containerSessionID.getLongId() + " activeGroupId: "
+                                + activeGroup.activeGroupId + " OPS: " + activeGroup.planSession
+                                .getExecutionPlan().getOperatorCount());
             }
 
             IndependentEvents addContainer = new IndependentEvents(state);
 
             HashMap<String, ContainerJobsEvent> createMap =
-                new HashMap<String, ContainerJobsEvent>();
+                    new HashMap<String, ContainerJobsEvent>();
             IndependentEvents create = new IndependentEvents(state);
 
             HashMap<String, ContainerJobsEvent> linkMap = new HashMap<String, ContainerJobsEvent>();
             IndependentEvents links = new IndependentEvents(state);
 
             HashMap<String, ContainerJobsEvent> startMap =
-                new HashMap<String, ContainerJobsEvent>();
+                    new HashMap<String, ContainerJobsEvent>();
             IndependentEvents start = new IndependentEvents(state);
 
             for (ActiveOperatorGroup activeGroup : activeGroups) {
@@ -160,30 +161,30 @@ public class OperatorGroupTerminatedEventHandler
                 // Add the containers
                 for (String containerName : plan.iterateContainers()) {
                     state.eventScheduler
-                        .addContainer(containerName, plan.getContainer(containerName),
-                            addContainer);
+                            .addContainer(containerName, plan.getContainer(containerName),
+                                    addContainer);
                 }
                 // Schedule the operators
                 for (OperatorEntity createOp : plan.iterateOperators()) {
                     createOp.paramList.add(
-                        new Parameter("OpsInGroup", Integer.toString(plan.getOperatorCount())));
+                            new Parameter("OpsInGroup", Integer.toString(plan.getOperatorCount())));
                     ContainerJobsEvent e = ContainerJobsEventHandler
-                        .getEvent(createOp.container.getName(), create, createMap, state);
+                            .getEvent(createOp.container.getName(), create, createMap, state);
                     state.eventScheduler.createOperator(createOp, e);
                 }
 
                 for (OperatorLinkEntity link : plan.iterateOperatorLinks()) {
                     ContainerJobsEvent e = ContainerJobsEventHandler
-                        .getEvent(link.container.getName(), links, linkMap, state);
+                            .getEvent(link.container.getName(), links, linkMap, state);
                     state.eventScheduler.createLink(link, e);
                 }
 
                 // Schedule the start of the operators
                 for (OperatorEntity createOp : plan.iterateOperators()) {
                     ContainerJobsEvent e = ContainerJobsEventHandler
-                        .getEvent(createOp.container.getName(), start, startMap, state);
+                            .getEvent(createOp.container.getName(), start, startMap, state);
                     state.eventScheduler
-                        .start(new Start(createOp.operatorName, createOp.containerName), e);
+                            .start(new Start(createOp.operatorName, createOp.containerName), e);
                 }
 
             }
@@ -198,19 +199,20 @@ public class OperatorGroupTerminatedEventHandler
         }
     }
 
-    @Override public void handle(OperatorTerminatedEvent event, EventProcessor proc)
-        throws RemoteException {
+    @Override
+    public void handle(OperatorTerminatedEvent event, EventProcessor proc)
+            throws RemoteException {
     }
 
-    @Override public void postProcess(OperatorTerminatedEvent event, PlanEventSchedulerState state)
-        throws RemoteException {
+    @Override
+    public void postProcess(OperatorTerminatedEvent event, PlanEventSchedulerState state)
+            throws RemoteException {
         state.getStatistics().incrControlMessagesCountBy(event.messageCount);
     }
 
 
-
     private void queueIndependentEvents(IndependentEvents jobs, boolean b) {
         throw new UnsupportedOperationException(
-            "Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                "Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

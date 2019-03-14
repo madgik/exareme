@@ -28,7 +28,7 @@ public class AdpDBHistoricalDataManager {
             this.historyDataFile = new File(dataFolder, "history.data");
             try {
                 ObjectInputStream inStream =
-                    new ObjectInputStream(new FileInputStream(historyDataFile));
+                        new ObjectInputStream(new FileInputStream(historyDataFile));
                 queryDataMap = (HashMap<String, AdpDBHistoricalQueryData>) inStream.readObject();
                 inStream.close();
                 log.debug("Loaded " + queryDataMap.size() + " historical queries ...");
@@ -42,7 +42,7 @@ public class AdpDBHistoricalDataManager {
     }
 
     public void addQueryData(String queryId, AdpDBHistoricalQueryData queryData)
-        throws RemoteException {
+            throws RemoteException {
         AdpDBHistoricalQueryData data = queryDataMap.get(queryId.toString());
         if (data != null) {
             data.combineWith(queryData);
@@ -59,7 +59,7 @@ public class AdpDBHistoricalDataManager {
         try {
             dataFolder.mkdirs();
             ObjectOutputStream outStream =
-                new ObjectOutputStream(new FileOutputStream(historyDataFile));
+                    new ObjectOutputStream(new FileOutputStream(historyDataFile));
             outStream.writeObject(queryDataMap);
             outStream.close();
         } catch (Exception e) {

@@ -19,7 +19,8 @@ public class OrderByColumnVisitor extends AbstractVisitor {
         super(query);
     }
 
-    @Override public Visitable visit(Visitable node) throws StandardException {
+    @Override
+    public Visitable visit(Visitable node) throws StandardException {
         if (node instanceof OrderByColumn) {
             ColumnOrderBy column = new ColumnOrderBy();
 

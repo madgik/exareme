@@ -50,7 +50,7 @@ public class HTMLPlanSessionStatisticsFormat {
     }
 
     public void format(SchedulingResult schedulingResult, PlanSessionStatistics stats,
-        Map<String, String> categoryToolMap, File folder, int numberOfBuckets) throws Exception {
+                       Map<String, String> categoryToolMap, File folder, int numberOfBuckets) throws Exception {
         long totalTime = 0;
         long totalProcessingTime = 0;
         long totalSystemTime = 0;
@@ -145,24 +145,24 @@ public class HTMLPlanSessionStatisticsFormat {
 
             { // aaData
                 List<String[]> aaData = new ArrayList<String[]>();
-                aaData.add(new String[] {"Total",
-                    timeF.format(schedulingResult.time_ms + stats.endTime() - stats.startTime())});
+                aaData.add(new String[]{"Total",
+                        timeF.format(schedulingResult.time_ms + stats.endTime() - stats.startTime())});
 
-                aaData.add(new String[] {"Optimization", timeF.format(schedulingResult.time_ms)});
-                aaData.add(new String[] {"Total Optimization",
-                    timeF.format(schedulingResult.total_time_ms)});
+                aaData.add(new String[]{"Optimization", timeF.format(schedulingResult.time_ms)});
+                aaData.add(new String[]{"Total Optimization",
+                        timeF.format(schedulingResult.total_time_ms)});
 
                 aaData.add(
-                    new String[] {"Execution", timeF.format(stats.endTime() - stats.startTime())});
-                aaData.add(new String[] {"Total Execution", timeF.format(totalProcessingTime)});
+                        new String[]{"Execution", timeF.format(stats.endTime() - stats.startTime())});
+                aaData.add(new String[]{"Total Execution", timeF.format(totalProcessingTime)});
 
-                aaData.add(new String[] {"Execution (CPU)", timeF.format(totalCpuUserTime)});
-                aaData.add(new String[] {"System", timeF.format(totalSystemTime)});
-                aaData.add(new String[] {"System (CPU)", timeF.format(totalCpuSystemTime)});
+                aaData.add(new String[]{"Execution (CPU)", timeF.format(totalCpuUserTime)});
+                aaData.add(new String[]{"System", timeF.format(totalSystemTime)});
+                aaData.add(new String[]{"System (CPU)", timeF.format(totalCpuSystemTime)});
 
                 double speedup =
-                    (double) totalProcessingTime / (stats.endTime() - stats.startTime());
-                aaData.add(new String[] {"Speedup", decimalF.format(speedup)});
+                        (double) totalProcessingTime / (stats.endTime() - stats.startTime());
+                aaData.add(new String[]{"Speedup", decimalF.format(speedup)});
 
                 timeData.put("aaData", aaData);
             }
@@ -174,7 +174,7 @@ public class HTMLPlanSessionStatisticsFormat {
         {
             ArrayList<Double> time = new ArrayList<Double>();
             time.add((double) (schedulingResult.time_ms + stats.endTime() - stats.startTime())
-                / Metrics.MiliSec);
+                    / Metrics.MiliSec);
             time.add((double) totalProcessingTime / Metrics.MiliSec);
 
             List<List<Double>> timeChart = new ArrayList<List<Double>>();
@@ -226,9 +226,9 @@ public class HTMLPlanSessionStatisticsFormat {
 
             { // aaData
                 List<String[]> aaData = new ArrayList<String[]>();
-                aaData.add(new String[] {"Operators", stats.operatorCompleted() + ""});
-                aaData.add(new String[] {"Buffers", stats.buffersCreated() + ""});
-                aaData.add(new String[] {"Links", stats.linksCreated() + ""});
+                aaData.add(new String[]{"Operators", stats.operatorCompleted() + ""});
+                aaData.add(new String[]{"Buffers", stats.buffersCreated() + ""});
+                aaData.add(new String[]{"Links", stats.linksCreated() + ""});
 
                 dataflowData.put("aaData", aaData);
             }
@@ -265,10 +265,10 @@ public class HTMLPlanSessionStatisticsFormat {
             }
             { // aaData
                 List<String[]> aaData = new ArrayList<String[]>();
-                aaData.add(new String[] {"Pipes", dataF.format(pipeData) + ""});
-                aaData.add(new String[] {"Pool Data", dataF.format(bufferPoolData) + ""});
-                aaData.add(new String[] {"Local Data", dataF.format(localData) + ""});
-                aaData.add(new String[] {"Net Data", dataF.format(networkData) + ""});
+                aaData.add(new String[]{"Pipes", dataF.format(pipeData) + ""});
+                aaData.add(new String[]{"Pool Data", dataF.format(bufferPoolData) + ""});
+                aaData.add(new String[]{"Local Data", dataF.format(localData) + ""});
+                aaData.add(new String[]{"Net Data", dataF.format(networkData) + ""});
 
                 dataData.put("aaData", aaData);
             }
@@ -336,10 +336,10 @@ public class HTMLPlanSessionStatisticsFormat {
                     }
 
                     aaData.add(catStats.getStats(catID + 1, findType(catStats.category), tooltip,
-                        numberOfBuckets));
+                            numberOfBuckets));
                 }
                 aaData.add(uncategorized
-                    .getStats(uncategorizedID, CategoryType.exec, null, numberOfBuckets));
+                        .getStats(uncategorizedID, CategoryType.exec, null, numberOfBuckets));
 
                 categoriesData.put("aaData", aaData);
             }
@@ -350,15 +350,15 @@ public class HTMLPlanSessionStatisticsFormat {
                 List time = new LinkedList();
                 for (int catID = 0; catID < categories.size(); catID++) {
                     OpCategoryStats catStats = categoryStats.get(categories.get(catID));
-                    time.add(new Object[] {catStats.time.getMean() / Metrics.MiliSec,
-                        catStats.category});
+                    time.add(new Object[]{catStats.time.getMean() / Metrics.MiliSec,
+                            catStats.category});
                 }
 
                 double timeMean = 0.0;
                 if (uncategorized.time.getN() != 0) {
                     timeMean = uncategorized.time.getMean();
                 }
-                time.add(new Object[] {timeMean / Metrics.MiliSec, uncategorized.category});
+                time.add(new Object[]{timeMean / Metrics.MiliSec, uncategorized.category});
 
                 List categoriesTimeChart = new LinkedList();
                 categoriesTimeChart.add(time);
@@ -376,8 +376,8 @@ public class HTMLPlanSessionStatisticsFormat {
                     double inputMean = catStats.input.getMean() / Metrics.MB;
                     double outputMean = catStats.output.getMean() / Metrics.MB;
 
-                    input.add(new Object[] {inputMean / meanTime, catStats.category});
-                    output.add(new Object[] {outputMean / meanTime, catStats.category});
+                    input.add(new Object[]{inputMean / meanTime, catStats.category});
+                    output.add(new Object[]{outputMean / meanTime, catStats.category});
                 }
 
                 double inputMeanThroughtput = 0.0;
@@ -387,18 +387,18 @@ public class HTMLPlanSessionStatisticsFormat {
                     double meanTime = uncategorized.time.getMean() / Metrics.MiliSec;
                     inputMeanThroughtput = (uncategorized.input.getMean() / Metrics.MB) / meanTime;
                     outputMeanThroughtput =
-                        (uncategorized.output.getMean() / Metrics.MB) / meanTime;
+                            (uncategorized.output.getMean() / Metrics.MB) / meanTime;
                 }
 
-                input.add(new Object[] {inputMeanThroughtput, uncategorized.category});
-                output.add(new Object[] {outputMeanThroughtput, uncategorized.category});
+                input.add(new Object[]{inputMeanThroughtput, uncategorized.category});
+                output.add(new Object[]{outputMeanThroughtput, uncategorized.category});
 
                 List categoriesThroughputChart = new LinkedList();
                 categoriesThroughputChart.add(input);
                 categoriesThroughputChart.add(output);
 
                 data.append("categoriesThroughputChart = " + gson.toJson(categoriesThroughputChart)
-                    + ";\n");
+                        + ";\n");
             }
 
             { // categoriesDataChart
@@ -409,9 +409,9 @@ public class HTMLPlanSessionStatisticsFormat {
                     OpCategoryStats catStats = categoryStats.get(categories.get(catID));
 
                     input.add(
-                        new Object[] {catStats.input.getMean() / Metrics.MB, catStats.category});
+                            new Object[]{catStats.input.getMean() / Metrics.MB, catStats.category});
                     output.add(
-                        new Object[] {catStats.output.getMean() / Metrics.MB, catStats.category});
+                            new Object[]{catStats.output.getMean() / Metrics.MB, catStats.category});
                 }
 
                 double inputMean = 0.0;
@@ -421,8 +421,8 @@ public class HTMLPlanSessionStatisticsFormat {
                     outputMean = uncategorized.output.getMean() / Metrics.MB;
                 }
 
-                input.add(new Object[] {inputMean, uncategorized.category});
-                output.add(new Object[] {outputMean, uncategorized.category});
+                input.add(new Object[]{inputMean, uncategorized.category});
+                output.add(new Object[]{outputMean, uncategorized.category});
 
                 List categoriesDataChart = new LinkedList();
                 categoriesDataChart.add(input);
@@ -444,13 +444,13 @@ public class HTMLPlanSessionStatisticsFormat {
                     OpCategoryStats catStats = categoryStats.get(categories.get(catID));
                     double offsetDur = (catStats.start.getMin() - minTime) / Metrics.MiliSec;
                     double dur =
-                        (catStats.end.getMax() - catStats.start.getMin()) / Metrics.MiliSec;
+                            (catStats.end.getMax() - catStats.start.getMin()) / Metrics.MiliSec;
 
-                    offset.add(new Object[] {offsetDur, catID + 1});
+                    offset.add(new Object[]{offsetDur, catID + 1});
                     CategoryType type = findType(catStats.category);
 
                     set(catID + 1, dur, type.ordinal(), execDuration, inDuration, outDuration,
-                        fromDuration, toDuration);
+                            fromDuration, toDuration);
                 }
 
                 double offsetDur = 0.0;
@@ -459,13 +459,13 @@ public class HTMLPlanSessionStatisticsFormat {
                 if (uncategorized.start.getN() != 0) {
                     offsetDur = (uncategorized.start.getMin() - minTime) / Metrics.MiliSec;
                     exeDur = (uncategorized.end.getMax() - uncategorized.start.getMin())
-                        / Metrics.MiliSec;
+                            / Metrics.MiliSec;
                 }
 
-                offset.add(new Object[] {offsetDur, uncategorizedID});
+                offset.add(new Object[]{offsetDur, uncategorizedID});
 
                 set(uncategorizedID, exeDur, 0, execDuration, inDuration, outDuration, fromDuration,
-                    toDuration);
+                        toDuration);
 
                 List categoriesGanttChart = new LinkedList();
                 categoriesGanttChart.add(offset);
@@ -513,10 +513,10 @@ public class HTMLPlanSessionStatisticsFormat {
                 }
 
                 data.append(
-                    "categoriesExecQueriesCount = " + gson.toJson(categoriesExec.size()) + ";\n");
+                        "categoriesExecQueriesCount = " + gson.toJson(categoriesExec.size()) + ";\n");
                 data.append("categoriesExec = " + gson.toJson(categoriesExec) + ";\n");
                 data.append(
-                    "categoriesExecBuckets = " + gson.toJson(categoriesExecBuckets) + ";\n");
+                        "categoriesExecBuckets = " + gson.toJson(categoriesExecBuckets) + ";\n");
             }
 
             { // categoriesResourceUtilization
@@ -549,13 +549,13 @@ public class HTMLPlanSessionStatisticsFormat {
                     }
                 }
                 data.append(
-                    "categoriesResourceUtilization = " + gson.toJson(categoriesResourceUtilization)
-                        + ";\n");
+                        "categoriesResourceUtilization = " + gson.toJson(categoriesResourceUtilization)
+                                + ";\n");
                 data.append(
-                    "categoriesMaxResourceUtilization = " + gson.toJson(containerMaskMap.size())
-                        + ";\n");
+                        "categoriesMaxResourceUtilization = " + gson.toJson(containerMaskMap.size())
+                                + ";\n");
                 data.append("categoriesResourceUtilizationBuckets = " + gson
-                    .toJson(numOfResourceUtilBuckets) + ";\n");
+                        .toJson(numOfResourceUtilBuckets) + ";\n");
             }
         }
 
@@ -568,7 +568,7 @@ public class HTMLPlanSessionStatisticsFormat {
 
         // Write library.
         ZipUtil
-            .extract(this.getClass().getResource("plotLibs.zip"), folder.getAbsolutePath() + "/");
+                .extract(this.getClass().getResource("plotLibs.zip"), folder.getAbsolutePath() + "/");
     }
 
     private Map<String, String> makeColumn(String name, boolean alignRight) {
@@ -607,9 +607,9 @@ public class HTMLPlanSessionStatisticsFormat {
     private void set(int id, double duration, int list, List... lists) {
         for (int i = 0; i < lists.length; ++i) {
             if (i == list) {
-                lists[i].add(new Object[] {duration, id});
+                lists[i].add(new Object[]{duration, id});
             } else {
-                lists[i].add(new Object[] {0, id});
+                lists[i].add(new Object[]{0, id});
             }
         }
     }
@@ -694,7 +694,7 @@ public class HTMLPlanSessionStatisticsFormat {
         }
 
         String[] getStats(int catID, CategoryType type, String tooltip, int numberOfBuckets)
-            throws Exception {
+                throws Exception {
             long offset = minTime;
             if (start.getN() == 0) {
                 offset = 0;
@@ -723,27 +723,27 @@ public class HTMLPlanSessionStatisticsFormat {
             String categoryString = category;
             if (tooltip != null) {
                 categoryString = "<u class='tooltip'>" + category + "<span> <code>" + tooltip
-                    + "</code> </span></u>";
+                        + "</code> </span></u>";
             }
 
-            return new String[] {catID + "", type.toString() + "/", categoryString,
-                time.getN() + "", meanStart, "[" + minStart + "-" + maxStart + "]",
-                "<span class=\"inlinebar_" + type + "\">" + startHistogramCSV + "</span>", meanTime,
-                "[" + minTime + "-" + maxTime + "]",
-                "<span class=\"inlinebar_" + type + "\">" + timeHistogramCSV + "</span>", meanIn,
-                "[" + minIn + "-" + maxIn + "]",
-                "<span class=\"inlinebar_" + type + "\">" + inputHistogramCSV + "</span>", meanOut,
-                "[" + minOut + "-" + maxOut + "]",
-                "<span class=\"inlinebar_" + type + "\">" + outputHistogramCSV + "</span>"};
+            return new String[]{catID + "", type.toString() + "/", categoryString,
+                    time.getN() + "", meanStart, "[" + minStart + "-" + maxStart + "]",
+                    "<span class=\"inlinebar_" + type + "\">" + startHistogramCSV + "</span>", meanTime,
+                    "[" + minTime + "-" + maxTime + "]",
+                    "<span class=\"inlinebar_" + type + "\">" + timeHistogramCSV + "</span>", meanIn,
+                    "[" + minIn + "-" + maxIn + "]",
+                    "<span class=\"inlinebar_" + type + "\">" + inputHistogramCSV + "</span>", meanOut,
+                    "[" + minOut + "-" + maxOut + "]",
+                    "<span class=\"inlinebar_" + type + "\">" + outputHistogramCSV + "</span>"};
         }
 
         private String builHistogram(DescriptiveStatistics stats, int numberOfBuckets)
-            throws Exception {
+                throws Exception {
             Histogram histogram = new Histogram(
-                new PartitionRule(PartitionClass.serial, PartitionConstraint.equi_width));
+                    new PartitionRule(PartitionClass.serial, PartitionConstraint.equi_width));
 
             ArrayList<Pair<?, Double>> timeData =
-                new ArrayList<Pair<?, Double>>((int) stats.getN());
+                    new ArrayList<Pair<?, Double>>((int) stats.getN());
             int i = 0;
             for (double v : stats.getSortedValues()) {
                 timeData.add(new Pair<Integer, Double>(i, v));
@@ -751,7 +751,7 @@ public class HTMLPlanSessionStatisticsFormat {
             }
 
             LinkedList<Bucket> timeBucketList =
-                histogram.createHistogram(timeData, numberOfBuckets);
+                    histogram.createHistogram(timeData, numberOfBuckets);
             StringBuilder sb = new StringBuilder();
             for (int bNum = 0; bNum < numberOfBuckets; bNum++) {
                 Bucket bucket = timeBucketList.get(bNum);

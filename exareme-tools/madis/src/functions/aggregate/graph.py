@@ -1,12 +1,12 @@
 __docformat__ = 'reStructuredText en'
 
-import setpath
-import json
-from hashlib import md5
-from binascii import b2a_base64
-import math
 import collections
 import functions
+import json
+import math
+from binascii import b2a_base64
+from hashlib import md5
+
 
 class graphpowerhash:
     """
@@ -192,117 +192,118 @@ class graphpowerhash:
 
     """
 
-    registered=True
+    registered = True
 
     def __init__(self):
-        self.nodes={}
-        self.steps=None
+        self.nodes = {}
+        self.steps = None
 
     def step(self, *args):
-        directed=True
-        argslen=len(args)
-        largs=args
+        directed = True
+        argslen = len(args)
+        largs = args
 
-        if largs[0]!=None:
-            self.steps=largs[0]
+        if largs[0] != None:
+            self.steps = largs[0]
 
-        if largs[1]==None:
-            directed=False
-            largs=list(largs)
-            del(largs[1])
-            argslen-=1
+        if largs[1] == None:
+            directed = False
+            largs = list(largs)
+            del (largs[1])
+            argslen -= 1
 
         if directed:
-            if argslen>4:
-                edgedetailslr='1'+chr(30)+str(largs[4])
-                edgedetailsrl='0'+chr(30)+str(largs[4])
+            if argslen > 4:
+                edgedetailslr = '1' + chr(30) + str(largs[4])
+                edgedetailsrl = '0' + chr(30) + str(largs[4])
             else:
-                edgedetailslr='1'
-                edgedetailsrl='0'
+                edgedetailslr = '1'
+                edgedetailsrl = '0'
         else:
-            if argslen>4:
-                edgedetailslr='1'+ chr(30)+str(largs[4])
-                edgedetailsrl=edgedetailslr
+            if argslen > 4:
+                edgedetailslr = '1' + chr(30) + str(largs[4])
+                edgedetailsrl = edgedetailslr
             else:
-                edgedetailslr='1'
-                edgedetailsrl=edgedetailslr
+                edgedetailslr = '1'
+                edgedetailsrl = edgedetailslr
 
         if largs[1] not in self.nodes:
-            if argslen>3:
-                self.nodes[largs[1]]=[ [( largs[2],edgedetailslr )] , str(largs[3])]
+            if argslen > 3:
+                self.nodes[largs[1]] = [[(largs[2], edgedetailslr)], str(largs[3])]
             else:
-                self.nodes[largs[1]]=[ [( largs[2],edgedetailslr )] , '']
+                self.nodes[largs[1]] = [[(largs[2], edgedetailslr)], '']
         else:
-            self.nodes[largs[1]][0].append( ( largs[2],edgedetailslr ) )
+            self.nodes[largs[1]][0].append((largs[2], edgedetailslr))
 
-
-        if largs[2]!=None:
+        if largs[2] != None:
             if largs[2] not in self.nodes:
-                if argslen>5:
-                    self.nodes[largs[2]]=[ [(largs[1],edgedetailsrl )], str(largs[5])]
+                if argslen > 5:
+                    self.nodes[largs[2]] = [[(largs[1], edgedetailsrl)], str(largs[5])]
                 else:
-                    self.nodes[largs[2]]=[ [(largs[1],edgedetailsrl )] , '']
+                    self.nodes[largs[2]] = [[(largs[1], edgedetailsrl)], '']
             else:
-                self.nodes[largs[2]][0].append( ( largs[1],edgedetailsrl ) )
+                self.nodes[largs[2]][0].append((largs[1], edgedetailsrl))
 
     def final(self):
-        ncount=len(self.nodes)
+        ncount = len(self.nodes)
 
-        for n,v in self.nodes.iteritems():
-            v[1]=str(len(v[0]))+chr(31)+v[1]
+        for n, v in self.nodes.iteritems():
+            v[1] = str(len(v[0])) + chr(31) + v[1]
 
-        if ncount==1:
-            self.steps=1
+        if ncount == 1:
+            self.steps = 1
 
-        if self.steps==None:
+        if self.steps == None:
             # Calculate approximate worse case diameter
-            degreeseq=set()
-            mindegree=ncount
-            maxdegree=0
-            invdegree=0.0
+            degreeseq = set()
+            mindegree = ncount
+            maxdegree = 0
+            invdegree = 0.0
 
-            for n,v in self.nodes.iteritems():
-                ndegree=len(v[0])
-                mindegree=min(mindegree, ndegree)
-                maxdegree=max(maxdegree, ndegree)
+            for n, v in self.nodes.iteritems():
+                ndegree = len(v[0])
+                mindegree = min(mindegree, ndegree)
+                maxdegree = max(maxdegree, ndegree)
                 degreeseq.add(ndegree)
-                invdegree+=1.0/ndegree
+                invdegree += 1.0 / ndegree
 
-            self.steps=int(min(
-            # Obvious upper bounds
-            ncount-max(2, maxdegree) + 2,
-            # P. Dankelmann "Diameter and inverse degree"
-            (3*invdegree+3)*math.log(ncount)/math.log(math.log(ncount)) if ncount>16 else ncount,
-            # Simon Mukwembi "A note on diameter and the degree sequence of a graph"
-            1+3*(ncount - len(degreeseq)+1)/float((mindegree+1)), ncount - len(degreeseq)+2))/2
+            self.steps = int(min(
+                # Obvious upper bounds
+                ncount - max(2, maxdegree) + 2,
+                # P. Dankelmann "Diameter and inverse degree"
+                (3 * invdegree + 3) * math.log(ncount) / math.log(math.log(ncount)) if ncount > 16 else ncount,
+                # Simon Mukwembi "A note on diameter and the degree sequence of a graph"
+                1 + 3 * (ncount - len(degreeseq) + 1) / float((mindegree + 1)), ncount - len(degreeseq) + 2)) / 2
 
-        if self.steps<0:
-            self.steps=ncount/abs(self.steps)
+        if self.steps < 0:
+            self.steps = ncount / abs(self.steps)
 
-        nhashes={}
+        nhashes = {}
 
-        for n,v in self.nodes.iteritems():
-            nhashes[n]=md5(str(v[1]+chr(30))).digest()
+        for n, v in self.nodes.iteritems():
+            nhashes[n] = md5(str(v[1] + chr(30))).digest()
 
-        if ncount>1:
+        if ncount > 1:
             for s in xrange(self.steps):
-                nhashes1={}
-                nhashcount={}
+                nhashes1 = {}
+                nhashcount = {}
                 for n, v in self.nodes.iteritems():
-                    nhash=md5(v[1]+chr(30)+chr(30).join(sorted([nhashes[x]+chr(29)+y for x,y in v[0]]))).digest()
-                    nhashes1[n]=nhash
+                    nhash = md5(
+                        v[1] + chr(30) + chr(30).join(sorted([nhashes[x] + chr(29) + y for x, y in v[0]]))).digest()
+                    nhashes1[n] = nhash
                     if nhash in nhashcount:
-                        nhashcount[nhash]+=1
+                        nhashcount[nhash] += 1
                     else:
-                        nhashcount[nhash]=1
-                nhashes=nhashes1
+                        nhashcount[nhash] = 1
+                nhashes = nhashes1
 
-#                TODO Find new upper bound of diameter via calculating Spanning Tree starting from distincthash
-#                if len(nhashcount)>0:
-#                    distincthash=min([x for x,y in nhashcount.iteritems() if y==1])
+        #                TODO Find new upper bound of diameter via calculating Spanning Tree starting from distincthash
+        #                if len(nhashcount)>0:
+        #                    distincthash=min([x for x,y in nhashcount.iteritems() if y==1])
 
+        return json.dumps([b2a_base64(x)[0:-3] for x in sorted(nhashes.values())], separators=(',', ':'),
+                          ensure_ascii=False)
 
-        return json.dumps([b2a_base64(x)[0:-3] for x in sorted(nhashes.values())], separators=(',',':'), ensure_ascii=False)
 
 class graphtodot:
     """
@@ -374,86 +375,86 @@ class graphtodot:
 
     """
 
-    registered=True
+    registered = True
 
     def __init__(self):
-        self.nodes={}
-        self.steps=None
-        self.graphname=None
-        self.directed=True
+        self.nodes = {}
+        self.steps = None
+        self.graphname = None
+        self.directed = True
 
     def step(self, *args):
-        directed=True
-        argslen=len(args)
-        largs=args
+        directed = True
+        argslen = len(args)
+        largs = args
 
-        if largs[0]!=None:
-            self.graphname=largs[0]
+        if largs[0] != None:
+            self.graphname = largs[0]
 
-        if largs[1]==None:
-            self.directed=False
-            largs=list(largs)
-            del(largs[1])
-            argslen-=1
+        if largs[1] == None:
+            self.directed = False
+            largs = list(largs)
+            del (largs[1])
+            argslen -= 1
 
-        if argslen>4:
-            edgedetailslr=unicode(largs[4])
+        if argslen > 4:
+            edgedetailslr = unicode(largs[4])
         else:
-            edgedetailslr=None
+            edgedetailslr = None
 
         if largs[1] not in self.nodes:
-            if argslen>3:
-                self.nodes[largs[1]]=[ [( largs[2],edgedetailslr )] , largs[3]]
+            if argslen > 3:
+                self.nodes[largs[1]] = [[(largs[2], edgedetailslr)], largs[3]]
             else:
-                self.nodes[largs[1]]=[ [( largs[2],edgedetailslr )] , None]
+                self.nodes[largs[1]] = [[(largs[2], edgedetailslr)], None]
         else:
-            self.nodes[largs[1]][0].append( ( largs[2],edgedetailslr ) )
+            self.nodes[largs[1]][0].append((largs[2], edgedetailslr))
 
-
-        if largs[2]!=None:
+        if largs[2] != None:
             if largs[2] not in self.nodes:
-                if argslen>5:
-                    self.nodes[largs[2]]=[ [], largs[5]]
+                if argslen > 5:
+                    self.nodes[largs[2]] = [[], largs[5]]
                 else:
-                    self.nodes[largs[2]]=[ [] , None]
+                    self.nodes[largs[2]] = [[], None]
 
     def final(self):
-        if self.graphname==None:
-            self.graphname=''
+        if self.graphname == None:
+            self.graphname = ''
 
         if type(self.graphname) in (int, float):
-            self.graphname=u'g'+unicode(self.graphname)
+            self.graphname = u'g' + unicode(self.graphname)
         else:
-            self.graphname=unicode(self.graphname)
-        
-        dot=u''
+            self.graphname = unicode(self.graphname)
+
+        dot = u''
         if self.directed:
-            dot=u'di'
+            dot = u'di'
 
-        if self.graphname==None:
-            self.graphname='""'
+        if self.graphname == None:
+            self.graphname = '""'
 
-        dot+=u'graph '+self.graphname+u' {\n'
+        dot += u'graph ' + self.graphname + u' {\n'
 
-        digraph=False
-        
-        for n,v in self.nodes.iteritems():
-            if v[1]!=None:
-                dot+=json.dumps(unicode(n))+' [label="'+unicode(v[1]).replace('"',"'")+'"];\n'
+        digraph = False
+
+        for n, v in self.nodes.iteritems():
+            if v[1] != None:
+                dot += json.dumps(unicode(n)) + ' [label="' + unicode(v[1]).replace('"', "'") + '"];\n'
             for e in v[0]:
-                dot+=json.dumps(unicode(n)) + ' '
+                dot += json.dumps(unicode(n)) + ' '
                 if self.directed:
-                    dot+='-> '
+                    dot += '-> '
                 else:
-                    dot+='-- '
+                    dot += '-- '
                 dot += json.dumps(unicode(e[0]))
-                if e[1]!=None:
-                    dot+=u' [label="'+unicode(e[1]).replace('"',"'")+'"]'
-                dot+=u';\n'
+                if e[1] != None:
+                    dot += u' [label="' + unicode(e[1]).replace('"', "'") + '"]'
+                dot += u';\n'
 
-        dot+='}'
+        dot += '}'
 
         return dot
+
 
 class graphtotgf:
     """
@@ -505,54 +506,54 @@ class graphtotgf:
 
     """
 
-    registered=True
+    registered = True
 
     def __init__(self):
-        self.nodes={}
-        self.steps=None
-        self.directed=True
+        self.nodes = {}
+        self.steps = None
+        self.directed = True
 
     def step(self, *args):
-        argslen=len(args)
-        largs=args
+        argslen = len(args)
+        largs = args
 
-        if argslen>3:
-            edgedetailslr=unicode(largs[3])
+        if argslen > 3:
+            edgedetailslr = unicode(largs[3])
         else:
-            edgedetailslr=None
+            edgedetailslr = None
 
         if largs[0] not in self.nodes:
-            if argslen>2:
-                self.nodes[largs[0]]=[ [( largs[1],edgedetailslr )] , largs[2]]
+            if argslen > 2:
+                self.nodes[largs[0]] = [[(largs[1], edgedetailslr)], largs[2]]
             else:
-                self.nodes[largs[0]]=[ [( largs[1],edgedetailslr )] , None]
+                self.nodes[largs[0]] = [[(largs[1], edgedetailslr)], None]
         else:
-            self.nodes[largs[0]][0].append( ( largs[1],edgedetailslr ) )
+            self.nodes[largs[0]][0].append((largs[1], edgedetailslr))
 
-
-        if largs[1]!=None:
+        if largs[1] != None:
             if largs[1] not in self.nodes:
-                if argslen>4:
-                    self.nodes[largs[1]]=[ [], largs[4]]
+                if argslen > 4:
+                    self.nodes[largs[1]] = [[], largs[4]]
                 else:
-                    self.nodes[largs[1]]=[ [] , None]
+                    self.nodes[largs[1]] = [[], None]
 
     def final(self):
-        tgf=''
+        tgf = ''
 
         def clearname(n):
-            return unicode(n).replace(' ','_').replace('"',"'")
+            return unicode(n).replace(' ', '_').replace('"', "'")
 
-        for n,v in self.nodes.iteritems():
-            tgf+=clearname(n) + ' ' + (clearname(v[1]) if v[1]!=None else '') +'\n'
+        for n, v in self.nodes.iteritems():
+            tgf += clearname(n) + ' ' + (clearname(v[1]) if v[1] != None else '') + '\n'
 
-        tgf+='#\n'
-           
-        for n,v in self.nodes.iteritems():
+        tgf += '#\n'
+
+        for n, v in self.nodes.iteritems():
             for e in v[0]:
-                tgf+=clearname(n)+ ' ' + clearname(e[0])+ ' '+ (clearname(e[1]) if e[1]!=None else '') + '\n'
+                tgf += clearname(n) + ' ' + clearname(e[0]) + ' ' + (clearname(e[1]) if e[1] != None else '') + '\n'
 
         return tgf
+
 
 class graphcliques:
     """
@@ -584,13 +585,13 @@ class graphcliques:
 
     """
 
-    registered=True
+    registered = True
 
     def __init__(self):
         self.G = collections.defaultdict(set)
 
     def step(self, *args):
-        if len(args)!=2:
+        if len(args) != 2:
             raise functions.OperatorError('graphcliques', 'Two parameters should be provided')
 
         self.G[args[0]].add(args[1])
@@ -619,17 +620,19 @@ class graphcliques:
                 yield cid, n
             cid += 1
 
+
 if not ('.' in __name__):
     """
     This is needed to be able to test the function, put it at the end of every
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

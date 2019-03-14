@@ -12,7 +12,7 @@ import java.rmi.RemoteException;
  * @author herald
  */
 public interface WriteRmiStreamAdaptorProxy
-    extends ObjectProxy<WriteRmiStreamAdaptor>, AdaptorProxy {
+        extends ObjectProxy<WriteRmiStreamAdaptor>, AdaptorProxy {
 
     OutputStream getOutputStream() throws RemoteException;
 

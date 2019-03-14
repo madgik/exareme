@@ -23,9 +23,9 @@ public class ArtRegistryLocator {
     private static EntityName localRmiRegistryEntityName = null;
 
     public static void setLocalRmiRegistry(Registry rmiRegistry,
-        EntityName localRmiRegistryEntityName) {
+                                           EntityName localRmiRegistryEntityName) {
         log.debug("Local RMI Registry : " + localRmiRegistryEntityName.getName() + " / "
-            + localRmiRegistryEntityName.getIP() + "/ " + localRmiRegistryEntityName.getPort());
+                + localRmiRegistryEntityName.getIP() + "/ " + localRmiRegistryEntityName.getPort());
 
         ArtRegistryLocator.localRmiRegistry = rmiRegistry;
         ArtRegistryLocator.localRmiRegistryEntityName = localRmiRegistryEntityName;

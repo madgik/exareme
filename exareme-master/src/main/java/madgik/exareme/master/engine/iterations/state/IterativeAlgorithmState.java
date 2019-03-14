@@ -1,18 +1,5 @@
 package madgik.exareme.master.engine.iterations.state;
 
-import org.apache.commons.lang3.text.StrSubstitutor;
-import org.apache.http.nio.IOControl;
-import org.apache.log4j.Logger;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.locks.ReentrantLock;
-
 import madgik.exareme.common.consts.DBConstants;
 import madgik.exareme.common.consts.HBPConstants;
 import madgik.exareme.master.client.AdpDBClient;
@@ -21,22 +8,26 @@ import madgik.exareme.master.engine.iterations.handler.IterationsConstants;
 import madgik.exareme.master.engine.iterations.handler.IterationsHandlerDFLUtils;
 import madgik.exareme.master.engine.iterations.state.exceptions.IterationsStateFatalException;
 import madgik.exareme.master.queryProcessor.composer.AlgorithmsProperties;
+import org.apache.commons.lang3.text.StrSubstitutor;
+import org.apache.http.nio.IOControl;
+import org.apache.log4j.Logger;
 
-import static madgik.exareme.master.engine.iterations.handler.IterationsConstants.iterationsConditionCheckColName;
-import static madgik.exareme.master.engine.iterations.handler.IterationsConstants.iterationsPropertyConditionQueryProvided;
-import static madgik.exareme.master.engine.iterations.handler.IterationsConstants.iterationsPropertyMaximumNumber;
-import static madgik.exareme.master.engine.iterations.handler.IterationsConstants.previousPhaseOutputTblVariableName;
-import static madgik.exareme.master.engine.iterations.handler.IterationsConstants.selectAllFromTerminationConditionOutput;
-import static madgik.exareme.master.engine.iterations.handler.IterationsConstants.selectTerminationConditionValue;
+import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.locks.ReentrantLock;
+
+import static madgik.exareme.master.engine.iterations.handler.IterationsConstants.*;
 
 /**
  * @author Christos Aslanoglou <br> caslanoglou@di.uoa.gr <br> University of Athens / Department of
- *         Informatics and Telecommunications.
+ * Informatics and Telecommunications.
  */
 public class IterativeAlgorithmState {
     private static final Logger log = Logger.getLogger(IterativeAlgorithmState.class);
 
     // Generic fields ---------------------------------------------------------------------------
+
     /**
      * Models the iterative algorithm phases/directory structure (in algorithms-dev repository).
      * <p>
@@ -90,8 +81,8 @@ public class IterativeAlgorithmState {
      * Used in conjunction with StrSubstitutor to replace variables in DFL scripts.
      *
      * <p> Mapping contains: <br>
-     *  1. {@code IterationsConstants.previousPhaseOutputTblVariableName -> latestPhaseOutputTblName}<br>
-     *  2. {@code stepPhaseOutputTblVariableName -> currentStepPhaseOutputTblName}<br>
+     * 1. {@code IterationsConstants.previousPhaseOutputTblVariableName -> latestPhaseOutputTblName}<br>
+     * 2. {@code stepPhaseOutputTblVariableName -> currentStepPhaseOutputTblName}<br>
      */
     private Map<String, String> dflVariablesMap;
 
@@ -110,11 +101,11 @@ public class IterativeAlgorithmState {
      * iterative phases (i.e. {@code previousPhaseOutput} & {@code currentStepOutputTbl}) and
      * signify the table names to be used as output and input (providing context between phases).
      *
-     * @param algorithmKey the key uniquely identifying the algorithm
+     * @param algorithmKey        the key uniquely identifying the algorithm
      * @param algorithmProperties the algorithm properties of the algorithm
-     * @param adpDBClient the AdpDBClient to be used for the current algorithm execution
+     * @param adpDBClient         the AdpDBClient to be used for the current algorithm execution
      * @throws IterationsStateFatalException if creation of the AdpDBClient fails with Remote
-     * Exception
+     *                                       Exception
      */
     public IterativeAlgorithmState(
             String algorithmKey,
@@ -182,7 +173,7 @@ public class IterativeAlgorithmState {
         // true/false and finally, set the corresponding field.
         final String iterationsMaxNumberVal =
                 algorithmPropertiesMap.get(iterationsPropertyMaximumNumber);
-        if (iterationsMaxNumberVal  == null) {
+        if (iterationsMaxNumberVal == null) {
             throw new IterationsStateFatalException("AlgorithmProperty \""
                     + iterationsPropertyMaximumNumber
                     + "\": is required [accepting: \"long integer values\"]", null);
@@ -195,8 +186,7 @@ public class IterativeAlgorithmState {
                         + iterationsPropertyMaximumNumber
                         + "\": NaN [only accepted: long integer values]", null);
             }
-        }
-        else
+        } else
             throw new IterationsStateFatalException("IterativeAlgorithm property \"" +
                     iterationsPropertyMaximumNumber
                     + "\": cannot be empty [only accepted: long integer values]", null);
@@ -343,8 +333,7 @@ public class IterativeAlgorithmState {
             String errMsg = "Failed to query for termination condition value for " + toString();
             log.error(errMsg);
             throw new IterationsStateFatalException(errMsg, e, algorithmKey);
-        }
-        finally {
+        } finally {
             if (stmt != null) {
                 try {
                     stmt.close();
@@ -383,7 +372,7 @@ public class IterativeAlgorithmState {
          */
         String terminationConditionTblName =
                 IterationsConstants.iterationsOutputTblPrefix
-                        + "_" +  algorithmKey.toLowerCase()
+                        + "_" + algorithmKey.toLowerCase()
                         + "_" + IterativeAlgorithmPhasesModel.termination_condition.name()
                         + "_" + previousIterationsNumber;
         String currentTermConditionDbPath = HBPConstants.DEMO_DB_WORKING_DIRECTORY
@@ -423,8 +412,7 @@ public class IterativeAlgorithmState {
             String errMsg = "Failed to query for termination condition value for " + toString();
             log.error(errMsg);
             throw new IterationsStateFatalException(errMsg, e, algorithmKey);
-        }
-        finally {
+        } finally {
             if (stmt != null) {
                 try {
                     stmt.close();
@@ -436,6 +424,7 @@ public class IterativeAlgorithmState {
     }
 
     // Execution phase [Getters/Setters] --------------------------------------------------------
+
     /**
      * Retrieves the already created {@link AdpDBClient} for a new query submission.
      *
@@ -584,8 +573,10 @@ public class IterativeAlgorithmState {
     }
 
     // Utilities --------------------------------------------------------------------------------
+
     /**
      * Tries to acquire the lock.
+     *
      * @return True if lock is successfully acquired, false otherwise
      */
     public boolean tryLock() {
@@ -649,15 +640,13 @@ public class IterativeAlgorithmState {
         if (currentIterationsNumber == null) {
             currentIterationsNumber = 0L;
             previousIterationsNumber = 0L;
-        }
-        else {
+        } else {
             if (currentIterationsNumber.equals(previousIterationsNumber)) {
                 String errMsg = "Handler has called getter of DFL script, without having " +
                         "increased the iterations number first.";
                 log.warn(errMsg);
                 throw new IterationsStateFatalException(errMsg, algorithmKey);
-            }
-            else
+            } else
                 previousIterationsNumber = currentIterationsNumber;
         }
         return stepPhaseOutputTblVariableName + "_" + currentIterationsNumber;

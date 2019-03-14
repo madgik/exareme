@@ -28,7 +28,7 @@ public class GlobalQuantumClockTickEvent extends ExecEngineEvent {
     }
 
     public GlobalQuantumClockTickEvent(long timeToTick_ms, long quantumCount,
-        PlanEventSchedulerState state) {
+                                       PlanEventSchedulerState state) {
         super(state);
         this.timeToTick_ms = timeToTick_ms;
         this.quantumCount = quantumCount;

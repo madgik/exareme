@@ -1,11 +1,12 @@
-import vtbase
-import time
 import datetime
-from lib import iso8601
 import functions
-import math
-from random import randint
-registered=True
+import time
+from lib import iso8601
+
+import vtbase
+
+registered = True
+
 
 class StreamdataVT(vtbase.VT):
     def VTiter(self, *parsedArgs, **envars):
@@ -16,23 +17,23 @@ class StreamdataVT(vtbase.VT):
 
         if 'query' not in dictargs:
             raise functions.OperatorError(__name__.rsplit('.')[-1], "No query argument ")
-        query=dictargs['query']
+        query = dictargs['query']
 
         if 'ratio' in dictargs:
-            self.ratio=float(dictargs['ratio'])
+            self.ratio = float(dictargs['ratio'])
             if self.ratio >= 1:
-                self.ratio=int(self.ratio)
+                self.ratio = int(self.ratio)
             elif self.ratio <= 0:
                 self.ratio = 1
             else:
-                if (float(float(1)/float(self.ratio)) - int(float(1)/float(self.ratio))) != 0:
+                if (float(float(1) / float(self.ratio)) - int(float(1) / float(self.ratio))) != 0:
                     raise functions.OperatorError(__name__.rsplit('.')[-1], "1/Ratio must be a not decimal number ")
         else:
             self.ratio = 1
 
         self.quantum = None
         if 'quantum' in dictargs:
-            self.quantum=int(dictargs['quantum'])
+            self.quantum = int(dictargs['quantum'])
             if self.quantum <= 0:
                 self.quantum = 1
 
@@ -41,10 +42,10 @@ class StreamdataVT(vtbase.VT):
                 output = True
 
         if 'starttimestamp' in dictargs:
-            dt=iso8601.parse_date(dictargs['starttimestamp'])
-            nextproducetupletime=long(time.mktime(dt.utctimetuple()) - time.timezone)
+            dt = iso8601.parse_date(dictargs['starttimestamp'])
+            nextproducetupletime = long(time.mktime(dt.utctimetuple()) - time.timezone)
         else:
-            nextproducetupletime=long(time.time())
+            nextproducetupletime = long(time.time())
 
         lines = []
         cur = envars['db'].cursor()
@@ -67,7 +68,7 @@ class StreamdataVT(vtbase.VT):
                     pass
 
         if not output:
-            numoflines=sum(1 for x in self.getDataGen(q)) - 1
+            numoflines = sum(1 for x in self.getDataGen(q)) - 1
             nextproducetuple = int(nextproducetupletime) % int(float(numoflines))
 
         # For ever
@@ -81,13 +82,14 @@ class StreamdataVT(vtbase.VT):
 
                 for secstuples in dataGen:
                     try:
-                        time.sleep(float(int(nextproducetupletime)-float(time.time().real)))
+                        time.sleep(float(int(nextproducetupletime) - float(time.time().real)))
                     except IOError:
                         pass
 
                     # For every tuple in second
                     for line in secstuples:
-                        simtuple[:] = [datetime.datetime.utcfromtimestamp(nextproducetupletime).strftime('%Y-%m-%dT%H:%M:%S+00:00')]
+                        simtuple[:] = [datetime.datetime.utcfromtimestamp(nextproducetupletime).strftime(
+                            '%Y-%m-%dT%H:%M:%S+00:00')]
                         for value in line:
                             simtuple.append(value)
 
@@ -95,7 +97,7 @@ class StreamdataVT(vtbase.VT):
 
                     nextproducetupletime += 1
 
-                nextproducetuple=0
+                nextproducetuple = 0
             except KeyboardInterrupt:
                 break
 
@@ -106,7 +108,7 @@ class StreamdataVT(vtbase.VT):
                 ttime = t[0]
                 tuples = [t]
                 for t in q:
-                    sec = int(t[0]/self.quantum) - int(ttime/self.quantum)
+                    sec = int(t[0] / self.quantum) - int(ttime / self.quantum)
                     if sec == 0:
                         tuples.append(t)
                     elif sec < 0:
@@ -119,11 +121,12 @@ class StreamdataVT(vtbase.VT):
 
                     ttime = t[0]
             except:
-                raise functions.OperatorError(__name__.rsplit('.')[-1], "The first column must be a long (timestamp in epoch time) ")
+                raise functions.OperatorError(__name__.rsplit('.')[-1],
+                                              "The first column must be a long (timestamp in epoch time) ")
         else:
             if self.ratio < 1.000:
                 for t in q:
-                    for x in range(int(1.0/float(self.ratio)) - 1):
+                    for x in range(int(1.0 / float(self.ratio)) - 1):
                         yield []
                     yield [t]
             else:
@@ -137,8 +140,10 @@ class StreamdataVT(vtbase.VT):
                 except StopIteration:
                     pass
 
+
 def Source():
     return vtbase.VTGenerator(StreamdataVT)
+
 
 if not ('.' in __name__):
     """
@@ -146,11 +151,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

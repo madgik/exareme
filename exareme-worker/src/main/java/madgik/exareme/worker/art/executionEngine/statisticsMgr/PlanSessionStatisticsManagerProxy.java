@@ -19,13 +19,13 @@ import java.rmi.RemoteException;
  * @author herald
  */
 public interface PlanSessionStatisticsManagerProxy
-    extends ObjectProxy<PlanSessionStatisticsManager> {
+        extends ObjectProxy<PlanSessionStatisticsManager> {
 
     ConcreteOperatorStatistics getOperatorStatistics(OperatorEntity operatorEntity)
-        throws RemoteException;
+            throws RemoteException;
 
     BufferStatistics getBufferStatistics(BufferEntity bufferEntity, PlanSessionID sessionID)
-        throws RemoteException;
+            throws RemoteException;
 
     PlanSessionStatistics getStatistics() throws RemoteException;
 

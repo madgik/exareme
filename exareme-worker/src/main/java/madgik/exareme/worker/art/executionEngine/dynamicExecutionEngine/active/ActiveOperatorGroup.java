@@ -58,49 +58,49 @@ public class ActiveOperatorGroup {
     public HashMap<String, LinkedList<Exception>> exceptionMap = new HashMap<>(4);
 
     public ActiveOperatorGroup(long activeGroupId, OperatorGroup group,
-        ContainerSessionID containerSessionID) throws SemanticError {
+                               ContainerSessionID containerSessionID) throws SemanticError {
         this.activeGroupId = activeGroupId;
         this.containerSessionID = containerSessionID;
         this.group = group;
-    /* Create active plan */
+        /* Create active plan */
         EditableExecutionPlan activePlan = ExecutionPlanFactory.createEditableExecutionPlan();
-    /* Create the plan session */
+        /* Create the plan session */
         planSession = new PlanSession(activePlan, null, null);
         String id = "." + group.groupID + "." + activeGroupId;
         ExecutionPlan partialPlan = group.partialPlan;
-    /* Add the containers */
+        /* Add the containers */
         for (OperatorEntity co : partialPlan.iterateOperators()) {
             String containerName = co.containerName + id;
             if (activePlan.isDefined(containerName) == false) {
                 activePlan.addContainer(
-                    new Container(containerName, co.container.getName(), co.container.getPort(),
-                        co.container.getDataTransferPort()));
+                        new Container(containerName, co.container.getName(), co.container.getPort(),
+                                co.container.getDataTransferPort()));
                 // Register the container
                 ActiveContainer activeContainer =
-                    new ActiveContainer(containerName, containerSessionID, group);
+                        new ActiveContainer(containerName, containerSessionID, group);
                 this.group.objectNameActiveGroupMap.put(containerName, this);
                 this.activeToRealContainerNameMap.put(containerName, co.containerName);
                 this.realToActiveContainerNameMap.put(co.containerName, containerName);
                 this.group.state.addActiveObject(containerName, activeContainer);
             }
         }
-    /* Add the operators */
+        /* Add the operators */
         for (OperatorEntity co : partialPlan.iterateOperators()) {
             String containerName = realToActiveContainerNameMap.get(co.containerName);
             OperatorEntity newCo = activePlan.addOperator(
-                new Operator(co.operatorName + id, co.operator, co.paramList, co.queryString,
-                    containerName, co.linksparams, co.locations));
+                    new Operator(co.operatorName + id, co.operator, co.paramList, co.queryString,
+                            containerName, co.linksparams, co.locations));
             this.operatorMap.put(newCo.operatorName, newCo);
             this.group.opNameActiveGroupMap.put(newCo.operatorName, this);
             this.group.objectNameActiveGroupMap.put(newCo.operatorName, this);
             this.activeToRealOperatorNameMap.put(newCo.operatorName, co.operatorName);
             this.realToActiveOperatorNameMap.put(co.operatorName, newCo.operatorName);
-      /* Register the operator to the schedule state */
+            /* Register the operator to the schedule state */
             ActiveOperator acOp = new ActiveOperator(newCo, containerSessionID, group);
             acOp.isActive = true;
             this.group.state.addActiveObject(newCo.operatorName, acOp);
         }
-    /* Add the buffers */
+        /* Add the buffers */
     /*for (BufferEntity buffer : partialPlan.iterateBuffers()) {
       String containerName = realToActiveContainerNameMap.get(buffer.containerName);
       BufferEntity newBuffer = activePlan.addBuffer(new Buffer(
@@ -116,7 +116,7 @@ public class ActiveOperatorGroup {
       /* Register the active buffer *//*
       this.group.state.addActiveObject(newBuffer.bufferName, acBuff);
     }*/
-    /* Add the links */
+        /* Add the links */
     /*for (BufferLinkEntity connect : partialPlan.iterateBufferLinks()) {
       String containerName = realToActiveContainerNameMap.get(connect.containerName);
       String operatorName = realToActiveOperatorNameMap.get(connect.operatorEntity.operatorName);
@@ -141,11 +141,11 @@ public class ActiveOperatorGroup {
         for (OperatorLinkEntity opLink : partialPlan.iterateOperatorLinks()) {
             String containerName = realToActiveContainerNameMap.get(opLink.containerName);
             String fromOperatorName =
-                realToActiveOperatorNameMap.get(opLink.fromOperator.operatorName);
+                    realToActiveOperatorNameMap.get(opLink.fromOperator.operatorName);
             String toOperatorName = realToActiveOperatorNameMap.get(opLink.toOperator.operatorName);
             activePlan.addOperatorLink(
-                new OperatorLink(fromOperatorName, toOperatorName, containerName,
-                    opLink.paramList));
+                    new OperatorLink(fromOperatorName, toOperatorName, containerName,
+                            opLink.paramList));
             activePlan.getOperator(fromOperatorName).addLinkParam(toOperatorName, opLink.paramList);
         }
 
@@ -154,28 +154,28 @@ public class ActiveOperatorGroup {
         for (MaterializedBuffer inBufferPool : group.inputBufferPoolSessions) {
             String containerName = realToActiveContainerNameMap.get(inBufferPool.containerName);
             ActiveBufferPool bufferPool =
-                this.group.state.getActiveBufferPool(inBufferPool.fileName);
+                    this.group.state.getActiveBufferPool(inBufferPool.fileName);
             String bufferPoolSessionName = bufferPool.objectName + id;
             MaterializedBuffer newBuffer =
-                new MaterializedBuffer(bufferPool.buffer.bufferName, bufferPool.buffer.fileName,
-                    containerName);
+                    new MaterializedBuffer(bufferPool.buffer.bufferName, bufferPool.buffer.fileName,
+                            containerName);
             ActiveBufferPool activeBuffer =
-                new ActiveBufferPool(bufferPoolSessionName, newBuffer, containerSessionID, group);
-      /* Register the active buffer */
+                    new ActiveBufferPool(bufferPoolSessionName, newBuffer, containerSessionID, group);
+            /* Register the active buffer */
             this.group.objectNameActiveGroupMap.put(activeBuffer.objectName, this);
             this.group.state.addActiveObject(activeBuffer.objectName, activeBuffer);
         }
         for (MaterializedBuffer outBufferPool : group.outputBufferPoolSessions) {
             String containerName = realToActiveContainerNameMap.get(outBufferPool.containerName);
             ActiveBufferPool bufferPool =
-                this.group.state.getActiveBufferPool(outBufferPool.fileName);
+                    this.group.state.getActiveBufferPool(outBufferPool.fileName);
             String bufferPoolSessionName = bufferPool.objectName + id;
             MaterializedBuffer newBuffer =
-                new MaterializedBuffer(bufferPool.buffer.bufferName, bufferPool.buffer.fileName,
-                    containerName);
+                    new MaterializedBuffer(bufferPool.buffer.bufferName, bufferPool.buffer.fileName,
+                            containerName);
             ActiveBufferPool activeBuffer =
-                new ActiveBufferPool(bufferPoolSessionName, newBuffer, containerSessionID, group);
-      /* Register the active buffer */
+                    new ActiveBufferPool(bufferPoolSessionName, newBuffer, containerSessionID, group);
+            /* Register the active buffer */
             this.group.objectNameActiveGroupMap.put(activeBuffer.objectName, this);
             this.group.state.addActiveObject(activeBuffer.objectName, activeBuffer);
         }
@@ -190,7 +190,7 @@ public class ActiveOperatorGroup {
         runningOperators.remove(entity.operatorName);
         terminatedOperators.put(entity.operatorName, entity);
         log.debug("Active GROUP: " + activeGroupId + " - running: " + runningOperators.size()
-            + " - finished: " + terminatedOperators.size());
+                + " - finished: " + terminatedOperators.size());
         if (force || runningOperators.isEmpty()) {
             hasTerminated = true;
         }

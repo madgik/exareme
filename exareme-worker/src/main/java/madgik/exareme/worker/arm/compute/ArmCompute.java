@@ -10,23 +10,23 @@ import java.rmi.RemoteException;
 
 /**
  * @author Herald Kllapi <br>
- *         herald@di.uoa.gr / University of Athens
+ * herald@di.uoa.gr / University of Athens
  * @since 1.0
  */
 public interface ArmCompute extends RemoteObject<ArmComputeProxy> {
     ArmComputeSessionID createNewSession() throws RemoteException;
 
     ComputeSessionContainerManagerProxy getComputeSessionContainerManagerProxy(
-        ArmComputeSessionID sessionID) throws RemoteException;
+            ArmComputeSessionID sessionID) throws RemoteException;
 
     ComputeSessionReportManagerProxy getComputeSessionReportManagerProxy(
-        ArmComputeSessionID sessionID) throws RemoteException;
+            ArmComputeSessionID sessionID) throws RemoteException;
 
     ComputeSessionStatisticsManagerProxy getComputeSessionStatisticsManagerProxy(
-        ArmComputeSessionID sessionID) throws RemoteException;
+            ArmComputeSessionID sessionID) throws RemoteException;
 
     ComputeSessionStatusManagerProxy getComputeSessionStatusManagerProxy(
-        ArmComputeSessionID sessionID) throws RemoteException;
+            ArmComputeSessionID sessionID) throws RemoteException;
 
     void closeSession(ArmComputeSessionID sessionID) throws RemoteException;
 

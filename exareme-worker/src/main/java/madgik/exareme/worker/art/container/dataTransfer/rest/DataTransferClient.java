@@ -31,7 +31,7 @@ import java.util.List;
 /**
  * @author John Chronis <br>
  * @author Vaggelis Nikolopoulos <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class DataTransferClient {
@@ -40,10 +40,10 @@ public class DataTransferClient {
 
 
     public static void registerFileByID(String receiverIP, int fid, String filename, String IP,
-        String FromPort, String ToPort, PlanSessionID pid) throws IOException {
+                                        String FromPort, String ToPort, PlanSessionID pid) throws IOException {
         log.debug(
-            "Register File: " + filename + " to :" + receiverIP + ":" + ToPort + " with FileID:"
-                + fid + " From:" + IP + ":" + ToPort);
+                "Register File: " + filename + " to :" + receiverIP + ":" + ToPort + " with FileID:"
+                        + fid + " From:" + IP + ":" + ToPort);
         CloseableHttpClient httpclient = HttpClients.createDefault();
         List<BasicNameValuePair> params = new LinkedList<>();
         params.add(new BasicNameValuePair(DataTransferConstants.FILE_ID, String.valueOf(fid)));
@@ -51,7 +51,7 @@ public class DataTransferClient {
         params.add(new BasicNameValuePair(DataTransferConstants.WORKER_IP, IP));
         params.add(new BasicNameValuePair(DataTransferConstants.WORKER_PORT, FromPort));
         params.add(new BasicNameValuePair(DataTransferConstants.PLANSESSIONID,
-            String.valueOf(pid.getLongId())));
+                String.valueOf(pid.getLongId())));
         params.add(new BasicNameValuePair(DataTransferConstants.MODE, "register"));
         HttpPost httpPost = null;
         try {
@@ -65,14 +65,14 @@ public class DataTransferClient {
 
                 if (response.getStatusLine().getStatusCode() != 200) {
                     throw new ClientProtocolException(
-                        "Something went wrong with the registration of file");
+                            "Something went wrong with the registration of file");
                 } else {
                     log.debug("File Registered: " + filename);
                 }
             } catch (IOException e) {
                 log.error(
-                    "Error occurred while registering file by id (" + receiverIP + ":" + FromPort
-                        + "):", e);
+                        "Error occurred while registering file by id (" + receiverIP + ":" + FromPort
+                                + "):", e);
                 throw e;
             } finally {
                 if (response != null)
@@ -92,10 +92,10 @@ public class DataTransferClient {
     }
 
     public static void requestByID(String receiverIP, int fid, String filename, String port,
-        String pid, DiskManagerInterface diskManagerInterface) {
+                                   String pid, DiskManagerInterface diskManagerInterface) {
         log.debug(
-            "Request File: " + filename + " From: " + receiverIP + ":" + port + "  with FileID:"
-                + fid);
+                "Request File: " + filename + " From: " + receiverIP + ":" + port + "  with FileID:"
+                        + fid);
         CloseableHttpClient httpclient = HttpClients.createDefault();
         boolean error = false;
         List<BasicNameValuePair> params = new LinkedList<>();
@@ -119,7 +119,7 @@ public class DataTransferClient {
                 File filedata = disksession.requestAccessRandomFile("InputFile");
                 //TODO JV
                 ObjectOutputStream sessionFileStream =
-                    new ObjectOutputStream(disksession.openOutputStream(filepath, false));
+                        new ObjectOutputStream(disksession.openOutputStream(filepath, false));
 
                 sessionFileStream.writeObject(filedata.getAbsolutePath());
                 sessionFileStream.close();
@@ -127,7 +127,7 @@ public class DataTransferClient {
                 //read from contenct to filedata and done :)
                 if (entity != null) {
                     FileOutputStream fileOutputStream =
-                        new FileOutputStream(filedata.getAbsolutePath());
+                            new FileOutputStream(filedata.getAbsolutePath());
                     try {
                         IOUtils.copy(entity.getContent(), fileOutputStream);
                         //EntityUtils.consumeQuietly(entity);
@@ -168,9 +168,9 @@ public class DataTransferClient {
     }
 
     public static void datatranferCompletedByID(String receiverIP, int fid, String filename,
-        String port, String pid) {
+                                                String port, String pid) {
         log.debug("File transfer completed: " + filename + " (FileID" + fid + ")" + " inform: "
-            + receiverIP + ":" + port);
+                + receiverIP + ":" + port);
         CloseableHttpClient httpclient = HttpClients.createDefault();
 
         List<BasicNameValuePair> params = new LinkedList<>();
@@ -191,11 +191,11 @@ public class DataTransferClient {
                 response = httpclient.execute(httpPost);
                 if (response.getStatusLine().getStatusCode() != 200) {
                     throw new ClientProtocolException(
-                        "Something went wrong with the registration of file");
+                            "Something went wrong with the registration of file");
                 } else {
                     log.debug(
-                        "File transfer completed: " + filename + ", " + receiverIP + ":" + port
-                            + " informed");
+                            "File transfer completed: " + filename + ", " + receiverIP + ":" + port
+                                    + " informed");
                 }
             } catch (IOException e) {
                 log.error(e);

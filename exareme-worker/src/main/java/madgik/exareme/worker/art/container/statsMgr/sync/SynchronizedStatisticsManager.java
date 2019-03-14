@@ -23,14 +23,14 @@ public class SynchronizedStatisticsManager implements StatisticsManagerInterface
     }
 
     public ContainerSessionStatistics getStatistics(ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException {
+                                                    PlanSessionID sessionID) throws RemoteException {
         synchronized (lock) {
             return manager.getStatistics(containerSessionID, sessionID);
         }
     }
 
     public void destroyContainerSession(ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException {
+                                        PlanSessionID sessionID) throws RemoteException {
         synchronized (lock) {
             manager.destroyContainerSession(containerSessionID, sessionID);
         }

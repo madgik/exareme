@@ -8,32 +8,33 @@
 # the order the languages are given to the class: if a given language is found
 # under the best five matches, it is prefered over the top match.
 
-#This program is distributed under Gnu General Public License 
-#(cf. the file COPYING in distribution). Alternatively, you can use
-#the program under the conditions of the Artistic License (as Perl).
+# This program is distributed under Gnu General Public License
+# (cf. the file COPYING in distribution). Alternatively, you can use
+# the program under the conditions of the Artistic License (as Perl).
 
-#This program is free software; you can redistribute it and/or modify
-#it under the terms of the GNU General Public License as published by
-#the Free Software Foundation; either version 2 of the License, or
-#(at your option) any later version.
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
-#This program is distributed in the hope that it will be useful,
-#but WITHOUT ANY WARRANTY; without even the implied warranty of
-#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#GNU General Public License for more details.
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 
-#You should have received a copy of the GNU General Public License
-#along with this program; if not, write to the Free Software
-#Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-import re
 import os
+import re
 
 nb_ngrams = 400
 lm_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'LM')
 
+
 class _NGram:
-    def __init__ (self, arg={}):
+    def __init__(self, arg={}):
         t = type(arg)
         if t == type(""):
             self.addText(arg)
@@ -43,9 +44,9 @@ class _NGram:
             self.normalise()
         else:
             self.ngrams = dict()
-        self.ngramsset=set(self.ngrams)
+        self.ngramsset = set(self.ngrams)
 
-    def addText (self, text):
+    def addText(self, text):
         ngrams = dict()
 
         text = text.replace('\n', ' ')
@@ -65,13 +66,13 @@ class _NGram:
         self.ngrams = ngrams
         return self
 
-    def sorted (self):
+    def sorted(self):
         sorted = [(self.ngrams[k], k) for k in self.ngrams]
         sorted.sort(reverse=True)
         sorted = sorted[:nb_ngrams]
         return sorted
 
-    def normalise (self):
+    def normalise(self):
         count = 0
         ngrams = dict()
         for v, k in self.sorted():
@@ -81,25 +82,26 @@ class _NGram:
         self.ngrams = ngrams
         return self
 
-    def addValues (self, key, value):
+    def addValues(self, key, value):
         self.ngrams[key] = value
         return self
 
-    def compare (self, ngram):
+    def compare(self, ngram):
         d = 0
         ngrams = ngram.ngrams
-        ngram_intersection=self.ngramsset & ngram.ngramsset
+        ngram_intersection = self.ngramsset & ngram.ngramsset
         for k in ngram_intersection:
             d += abs(ngrams[k] - self.ngrams[k])
-        d+=(len(self.ngrams)-len(ngram_intersection))*nb_ngrams
+        d += (len(self.ngrams) - len(ngram_intersection)) * nb_ngrams
         return d
 
 
 import os
 import glob
 
+
 class NGram:
-    def __init__ (self, folder=lm_path, ext='.lm', language_order=[]):
+    def __init__(self, folder=lm_path, ext='.lm', language_order=[]):
         self.language_order = language_order
         self.ngrams = dict()
         folder = os.path.join(folder, '*' + ext)
@@ -131,7 +133,7 @@ class NGram:
         if not count:
             raise ValueError("no language files found")
 
-    def classify (self, text):
+    def classify(self, text):
         ngram = _NGram(text)
 
         langs = self.ngrams.keys()
@@ -149,8 +151,9 @@ class NGram:
     def getLanguages(self):
         return self.ngrams.keys()
 
+
 class Generate:
-    def __init__ (self, folder, ext='.txt'):
+    def __init__(self, folder, ext='.txt'):
         self.ngrams = dict()
         folder = os.path.join(folder, '*' + ext)
         size = len(ext)
@@ -169,7 +172,7 @@ class Generate:
             n.normalise()
             self.ngrams[lang] = n
 
-    def save (self, folder, ext='.lm'):
+    def save(self, folder, ext='.lm'):
         for lang in self.ngrams.keys():
             fname = os.path.join(folder, lang + ext)
             file = open(fname, 'w')
@@ -177,12 +180,13 @@ class Generate:
                 file.write("%s\t %d\n" % (k, v))
             file.close()
 
+
 if __name__ == '__main__':
     import sys
 
     # Should you want to generate your own .lm files
-    #conf = Generate('/tmp')
-    #conf.save('/tmp')
+    # conf = Generate('/tmp')
+    # conf.save('/tmp')
 
     text = sys.stdin.readline()
 

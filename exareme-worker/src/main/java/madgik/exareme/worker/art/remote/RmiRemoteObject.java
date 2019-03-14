@@ -25,7 +25,8 @@ public abstract class RmiRemoteObject<T> implements RemoteObject<T> {
         this.regEntryName = regEntryName;
     }
 
-    @Override public String getRegEntryName() {
+    @Override
+    public String getRegEntryName() {
         return regEntryName;
     }
 
@@ -38,10 +39,10 @@ public abstract class RmiRemoteObject<T> implements RemoteObject<T> {
             }
 
             log.trace(
-                "Registered in " + ArtRegistryLocator.getLocalRmiRegistryEntityName().getIP() + ":"
-                    + ArtRegistryLocator.getLocalRmiRegistryEntityName().getPort() + " / "
-                    + ArtRegistryLocator.getLocalRmiRegistryEntityName().getDataTransferPort()
-                    + " / " + regEntryName);
+                    "Registered in " + ArtRegistryLocator.getLocalRmiRegistryEntityName().getIP() + ":"
+                            + ArtRegistryLocator.getLocalRmiRegistryEntityName().getPort() + " / "
+                            + ArtRegistryLocator.getLocalRmiRegistryEntityName().getDataTransferPort()
+                            + " / " + regEntryName);
             isRegistered = true;
         }
     }
@@ -55,9 +56,9 @@ public abstract class RmiRemoteObject<T> implements RemoteObject<T> {
             }
 
             log.trace(
-                "Unregistered from " + ArtRegistryLocator.getLocalRmiRegistryEntityName().getIP()
-                    + ":" + ArtRegistryLocator.getLocalRmiRegistryEntityName().getPort() + " / "
-                    + regEntryName);
+                    "Unregistered from " + ArtRegistryLocator.getLocalRmiRegistryEntityName().getIP()
+                            + ":" + ArtRegistryLocator.getLocalRmiRegistryEntityName().getPort() + " / "
+                            + regEntryName);
             isRegistered = true;
         }
     }

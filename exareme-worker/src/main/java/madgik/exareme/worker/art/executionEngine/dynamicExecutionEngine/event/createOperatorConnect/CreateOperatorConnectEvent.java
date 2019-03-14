@@ -33,7 +33,7 @@ public class CreateOperatorConnectEvent extends ExecEngineEvent {
     }
 
     public CreateOperatorConnectEvent(OperatorLinkEntity linkEntity,
-        PlanEventSchedulerState state) {
+                                      PlanEventSchedulerState state) {
         super(state);
         this.connectEntity = linkEntity;
     }

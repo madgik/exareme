@@ -15,9 +15,9 @@ import java.util.List;
  * @author Herald Kllapi<br>
  * @author Dimitris Paparas<br>
  * @author Eva Sitaridi<br>
- *         {herald,paparas,evas}@di.uoa.gr<br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * {herald,paparas,evas}@di.uoa.gr<br>
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public interface PlanSessionStatusManager extends RemoteObject<PlanSessionStatusManagerProxy> {
@@ -31,7 +31,7 @@ public interface PlanSessionStatusManager extends RemoteObject<PlanSessionStatus
     ActiveExecutionPlan getActiveExecutionPlan(PlanSessionID sessionID) throws RemoteException;
 
     ConcreteOperatorStatus getOperatorStatus(String operatorName, PlanSessionID sessionID)
-        throws RemoteException;
+            throws RemoteException;
 
     void stopManager() throws RemoteException;
 }

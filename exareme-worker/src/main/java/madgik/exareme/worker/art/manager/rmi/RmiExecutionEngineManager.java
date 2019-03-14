@@ -17,8 +17,8 @@ import java.rmi.RemoteException;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class RmiExecutionEngineManager implements ExecutionEngineManager {
@@ -30,15 +30,18 @@ public class RmiExecutionEngineManager implements ExecutionEngineManager {
         RmiExecutionEngineManager.artManager = artManager;
     }
 
-    @Override public boolean isOnline() {
+    @Override
+    public boolean isOnline() {
         return (engine != null);
     }
 
-    @Override public ExecutionEngine getExecutionEngine() {
+    @Override
+    public ExecutionEngine getExecutionEngine() {
         return engine;
     }
 
-    @Override public void startExecutionEngine() throws RemoteException {
+    @Override
+    public void startExecutionEngine() throws RemoteException {
         if (artManager.getRegistryManager().isOnline()) {
             String engineType = AdpProperties.getArtProps().getString("art.scheduler.mode");
             if (engineType == null) {
@@ -46,7 +49,7 @@ public class RmiExecutionEngineManager implements ExecutionEngineManager {
             }
             if (engineType.equalsIgnoreCase("centralized")) {
                 engine = ExecutionEngineFactory.createRmiDynamicExecutionEngine(
-                    ArtRegistryLocator.getLocalRmiRegistryEntityName());
+                        ArtRegistryLocator.getLocalRmiRegistryEntityName());
             } else {
                 throw new RemoteException("Mode not supported: " + engineType);
             }
@@ -60,15 +63,17 @@ public class RmiExecutionEngineManager implements ExecutionEngineManager {
         }
     }
 
-    @Override public void connectToExecutionEngine(EntityName epr) throws RemoteException {
+    @Override
+    public void connectToExecutionEngine(EntityName epr) throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public void connectToExecutionEngine() throws RemoteException {
+    @Override
+    public void connectToExecutionEngine() throws RemoteException {
         if (artManager.getRegistryManager().isOnline()) {
             try {
                 ExecutionEngineProxy engineProxy =
-                    ArtRegistryLocator.getArtRegistryProxy().getExecutionEngines()[0];
+                        ArtRegistryLocator.getArtRegistryProxy().getExecutionEngines()[0];
 
                 engine = engineProxy.connect();
                 ExecutionEngineLocator.setExecutionEngine(engine.createProxy());
@@ -81,11 +86,13 @@ public class RmiExecutionEngineManager implements ExecutionEngineManager {
         }
     }
 
-    @Override public void stopExecutionEngine() throws RemoteException {
+    @Override
+    public void stopExecutionEngine() throws RemoteException {
         stopExecutionEngine(false);
     }
 
-    @Override public void stopExecutionEngine(boolean force) throws RemoteException {
+    @Override
+    public void stopExecutionEngine(boolean force) throws RemoteException {
         if (isLocalExecutionEngine) {
             engine.stopExecutionEngine(force);
         }

@@ -21,7 +21,7 @@ public class Base64Util {
     private Base64Util() {
     }
 
-    public static String simpleEncodeBase64(String str) throws IOException{
+    public static String simpleEncodeBase64(String str) throws IOException {
         return Base64.encodeBase64URLSafeString(str.getBytes(Charset.forName("UTF-8")));
     }
 

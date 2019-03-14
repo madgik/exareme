@@ -24,7 +24,7 @@ public class CreateOperatorConnectEventHandler {
     //    implements ExecEngineEventHandler<CreateBufferConnectEvent> {
 
     public static final CreateOperatorConnectEventHandler instance =
-        new CreateOperatorConnectEventHandler();
+            new CreateOperatorConnectEventHandler();
     private static final long serialVersionUID = 1L;
 
     public CreateOperatorConnectEventHandler() {
@@ -32,7 +32,7 @@ public class CreateOperatorConnectEventHandler {
 
     //  @Override
     public void preProcess(CreateOperatorConnectEvent event, PlanEventSchedulerState state)
-        throws RemoteException {
+            throws RemoteException {
         String toObjectName, fromObjectName;
 
         if (event.connect != null) {
@@ -46,51 +46,51 @@ public class CreateOperatorConnectEventHandler {
 
         ActiveObject toActiveObject = state.getActiveObject(toObjectName);
         event.activeGroup = toActiveObject.operatorGroup.objectNameActiveGroupMap.
-            get(toActiveObject.objectName);
+                get(toActiveObject.objectName);
         if (event.connectEntity == null) {
             event.connectEntity = event.activeGroup.planSession.getExecutionPlan().
-                addOperatorLink(event.connect);//TODO(jv) ? why
+                    addOperatorLink(event.connect);//TODO(jv) ? why
         }
         ActiveOperator toActiveOperator = state.
-            getActiveOperator(event.connectEntity.toOperator.operatorName);
+                getActiveOperator(event.connectEntity.toOperator.operatorName);
         ContainerSessionID toContainerSessionID = toActiveOperator.containerSessionID;
         event.session =
-            state.getContainerSession(event.connectEntity.containerName, toContainerSessionID);
+                state.getContainerSession(event.connectEntity.containerName, toContainerSessionID);
         event.jobs = new ContainerJobs();
         ConcreteOperatorID toOperatorID =
-            event.activeGroup.planSession.getOperatorIdMap().get(event.connectEntity.toOperator);
+                event.activeGroup.planSession.getOperatorIdMap().get(event.connectEntity.toOperator);
 
         ActiveObject fromActiveObject = state.getActiveObject(toObjectName);
         event.activeGroup = fromActiveObject.operatorGroup.objectNameActiveGroupMap.
-            get(fromActiveObject.objectName);
+                get(fromActiveObject.objectName);
         if (event.connectEntity == null) {
             event.connectEntity = event.activeGroup.planSession.getExecutionPlan().
-                addOperatorLink(event.connect);//TODO(jv) ? why
+                    addOperatorLink(event.connect);//TODO(jv) ? why
         }
         event.jobs = new ContainerJobs();
         ConcreteOperatorID fromOperatorID =
-            event.activeGroup.planSession.getOperatorIdMap().get(event.connectEntity.fromOperator);
+                event.activeGroup.planSession.getOperatorIdMap().get(event.connectEntity.fromOperator);
         AdaptorType adtp = AdaptorType.LOCAL_ADAPTOR;
         if (!event.connectEntity.fromOperator.container
-            .equals(event.connectEntity.toOperator.container)) {
+                .equals(event.connectEntity.toOperator.container)) {
             adtp = AdaptorType.REMOTE_ADAPTOR;
         }
 
         BufferID bufferID =
-            event.activeGroup.planSession.getBufferIdMap().get(event.connectEntity.fromOperator)
-                .get(event.connectEntity.toOperator.operatorName).getB();
+                event.activeGroup.planSession.getBufferIdMap().get(event.connectEntity.fromOperator)
+                        .get(event.connectEntity.toOperator.operatorName).getB();
         String bufferName =
-            event.activeGroup.planSession.getBufferIdMap().get(event.connectEntity.fromOperator)
-                .get(event.connectEntity.toOperator.operatorName).getA();
+                event.activeGroup.planSession.getBufferIdMap().get(event.connectEntity.fromOperator)
+                        .get(event.connectEntity.toOperator.operatorName).getA();
 
         String IpProducer = event.connectEntity.fromOperator.container.getIP().split("_")[0];
         String IpConsumer = event.connectEntity.toOperator.container.getIP().split("_")[0];
 
 
         event.jobs.addJob(
-            new CreateOperatorLinkJob(fromOperatorID, toOperatorID, event.connectEntity.paramList,
-                adtp, bufferID, bufferName, IpProducer, IpConsumer,
-                fromActiveObject.containerSessionID));
+                new CreateOperatorLinkJob(fromOperatorID, toOperatorID, event.connectEntity.paramList,
+                        adtp, bufferID, bufferName, IpProducer, IpConsumer,
+                        fromActiveObject.containerSessionID));
     }
 
     //  @Override
@@ -101,11 +101,11 @@ public class CreateOperatorConnectEventHandler {
     //  }
     //  @Override
     public void postProcess(CreateOperatorConnectEvent event, PlanEventSchedulerState state)
-        throws RemoteException {
+            throws RemoteException {
         AdaptorID adaptorId =
-            ((CreateAdaptorJobResult) event.results.getJobResults().get(0)).adaptorId;
+                ((CreateAdaptorJobResult) event.results.getJobResults().get(0)).adaptorId;
         event.activeGroup.planSession.getAdaptorIdMap()
-            .put(event.connectEntity, adaptorId);//TODO(jv) fix
+                .put(event.connectEntity, adaptorId);//TODO(jv) fix
 
         state.getStatistics().incrLinksCreated();
         state.getStatistics().incrControlMessagesCountBy(event.messageCount);

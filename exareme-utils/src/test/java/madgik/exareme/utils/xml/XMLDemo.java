@@ -27,7 +27,7 @@ public class XMLDemo {
         XMLFileStreamParser parser = new XMLFileStreamParser("");
 
         Iterator<XMLDocument> iterator = parser.parseFile("/home/herald/work/datasets/dblp.xml",
-            "/home/herald/work/datasets/dblp_bht.dtd", "<dblp>", "</dblp>");
+                "/home/herald/work/datasets/dblp_bht.dtd", "<dblp>", "</dblp>");
 
         Exporter exporter = new Exporter("/tmp/dblp/", 100000);
 
@@ -107,7 +107,7 @@ class Exporter {
             Triple<Integer, Integer, BufferedWriter> out = outMap.get(nodeName);
             if (out == null) {
                 out = new Triple<Integer, Integer, BufferedWriter>(0, 0,
-                    new BufferedWriter(new FileWriter(new File(root, nodeName + "." + 0))));
+                        new BufferedWriter(new FileWriter(new File(root, nodeName + "." + 0))));
                 outMap.put(nodeName, out);
             }
 
@@ -117,8 +117,8 @@ class Exporter {
                     try {
                         Node attr = attrList.item(a);
                         out.c.write(
-                            attr.getNodeName() + "=" + attr.getTextContent().replaceAll("\t", " ")
-                                + "\t");
+                                attr.getNodeName() + "=" + attr.getTextContent().replaceAll("\t", " ")
+                                        + "\t");
                     } catch (Exception e) {
                     }
                 }
@@ -130,8 +130,8 @@ class Exporter {
                     try {
                         Node attr = attrs.item(a);
                         out.c.write(
-                            attr.getNodeName() + "=" + attr.getTextContent().replaceAll("\t", " ")
-                                + "\t");
+                                attr.getNodeName() + "=" + attr.getTextContent().replaceAll("\t", " ")
+                                        + "\t");
                     } catch (Exception e) {
                     }
                 }

@@ -5,7 +5,7 @@ package madgik.exareme.master.engine.remoteQuery.impl.cache;
 
 /**
  * @author Christos Mallios <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  */
 public class CacheInfo {
 

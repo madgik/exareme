@@ -15,7 +15,8 @@ public abstract class DirectedGraphTest extends GraphTest {
 
     abstract protected DirectedGraph<Integer, Edge<Integer>> newGraph();
 
-    @Override protected DirectedGraph<Integer, Edge<Integer>> generateGraph() {
+    @Override
+    protected DirectedGraph<Integer, Edge<Integer>> generateGraph() {
         return (DirectedGraph<Integer, Edge<Integer>>) super.generateGraph();
     }
 

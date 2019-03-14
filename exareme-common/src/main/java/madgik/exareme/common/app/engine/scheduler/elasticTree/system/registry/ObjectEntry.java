@@ -15,11 +15,13 @@ public class ObjectEntry implements Entry {
         this.size_MB = size_MB;
     }
 
-    @Override public String getId() {
+    @Override
+    public String getId() {
         return id;
     }
 
-    @Override public double getSize_MB() {
+    @Override
+    public double getSize_MB() {
         return size_MB;
     }
 }

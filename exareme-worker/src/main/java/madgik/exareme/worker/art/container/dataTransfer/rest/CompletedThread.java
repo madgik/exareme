@@ -10,13 +10,13 @@ import madgik.exareme.worker.art.container.diskMgr.DiskManagerInterface;
 /**
  * @author John Chronis <br>
  * @author Vaggelis Nikolopoulos <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class CompletedThread extends Thread {
 
     private static final org.apache.log4j.Logger log =
-        org.apache.log4j.Logger.getLogger(CompletedThread.class);
+            org.apache.log4j.Logger.getLogger(CompletedThread.class);
     String receiverIP;
     Integer fid;
     String fileName;
@@ -32,7 +32,8 @@ public class CompletedThread extends Thread {
         this.pid = pid;
     }
 
-    @Override public void run() {
+    @Override
+    public void run() {
         try {
             DataTransferClient.datatranferCompletedByID(receiverIP, fid, fileName, port, pid);
         } catch (Exception ex) {

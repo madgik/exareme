@@ -6,7 +6,6 @@ package madgik.exareme.master.queryProcessor.decomposer.query.visitors;
 import com.foundationdb.sql.StandardException;
 import com.foundationdb.sql.parser.*;
 import madgik.exareme.master.queryProcessor.decomposer.query.SQLQuery;
-import org.apache.log4j.Logger;
 
 /**
  * @author heraldkllapi
@@ -19,7 +18,8 @@ public class SQLQueryVisitor extends AbstractVisitor {
         super(query);
     }
 
-    @Override public Visitable visit(Visitable node) throws StandardException {
+    @Override
+    public Visitable visit(Visitable node) throws StandardException {
 
 
         if (node instanceof JoinNode) {
@@ -40,7 +40,7 @@ public class SQLQueryVisitor extends AbstractVisitor {
             CursorNode cNode = (CursorNode) node;
             if (cNode.getFetchFirstClause() != null) {
                 query.setLimit(
-                    (int) (Integer) ((ConstantNode) cNode.getFetchFirstClause()).getValue());
+                        (int) (Integer) ((ConstantNode) cNode.getFetchFirstClause()).getValue());
             }
             if (cNode.getResultSetNode() instanceof UnionNode) {
                 //top node is a union
@@ -99,18 +99,19 @@ public class SQLQueryVisitor extends AbstractVisitor {
         }
 
 
-
         // Limit
         //    if ().getFetchFirstClause()
         return node;
     }
 
-    @Override public boolean skipChildren(Visitable node) {
+    @Override
+    public boolean skipChildren(Visitable node) {
         return FromSubquery.class.isInstance(node) || (node instanceof JoinNode
-            && query.getJoinType() != null);
+                && query.getJoinType() != null);
     }
 
-    @Override public boolean stopTraversal() {
+    @Override
+    public boolean stopTraversal() {
         return stop;
     }
 
@@ -180,7 +181,6 @@ public class SQLQueryVisitor extends AbstractVisitor {
                 jNode.getLeftResultSet().accept(v);
                 //leftSubquery.setSelectAll(true);
             } else if (jNode.getLeftResultSet() instanceof FromBaseTable) {
-
 
 
                 FromBaseTableVisitor v = new FromBaseTableVisitor(leftSubquery);

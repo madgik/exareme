@@ -1,5 +1,5 @@
 /* Copyright MaDgIK Group 2010 - 2015.
-        */
+ */
 package madgik.exareme.common.schema;
 
 import madgik.exareme.common.app.engine.DMQuery;
@@ -94,7 +94,8 @@ public class QueryScript implements Serializable {
         return Collections.unmodifiableList(dmQueries);
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         StringBuilder sb = new StringBuilder();
         for (Select s : selectQueries) {
             sb.append(s.getParsedSqlQuery().getSql());

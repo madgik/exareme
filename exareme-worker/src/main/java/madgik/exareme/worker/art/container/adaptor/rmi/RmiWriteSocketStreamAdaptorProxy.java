@@ -18,7 +18,7 @@ import java.rmi.RemoteException;
  * @author herald
  */
 public class RmiWriteSocketStreamAdaptorProxy extends RmiObjectProxy<WriteSocketStreamAdaptor>
-    implements WriteSocketStreamAdaptorProxy {
+        implements WriteSocketStreamAdaptorProxy {
     private static final long serialVersionUID = 1L;
 
     private NetSession session = null;
@@ -26,16 +26,18 @@ public class RmiWriteSocketStreamAdaptorProxy extends RmiObjectProxy<WriteSocket
     private SocketBuffer socket = null;
 
     public RmiWriteSocketStreamAdaptorProxy(String regEntryName, SocketBuffer socket,
-        EntityName regEntityName) throws RemoteException {
+                                            EntityName regEntityName) throws RemoteException {
         super(regEntryName, regEntityName);
         this.socket = socket;
     }
 
-    @Override public void setNetSession(NetSession session) throws RemoteException {
+    @Override
+    public void setNetSession(NetSession session) throws RemoteException {
         this.session = session;
     }
 
-    @Override public OutputStream getOutputStream() throws RemoteException {
+    @Override
+    public OutputStream getOutputStream() throws RemoteException {
         try {
             output = session.openOutputStream(socket);
         } catch (Exception e) {
@@ -44,7 +46,8 @@ public class RmiWriteSocketStreamAdaptorProxy extends RmiObjectProxy<WriteSocket
         return output;
     }
 
-    @Override public void close() throws RemoteException {
+    @Override
+    public void close() throws RemoteException {
         try {
             if (output != null) {
                 this.output.close();

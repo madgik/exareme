@@ -6,7 +6,7 @@ package madgik.exareme.worker.art.executionPlan;
 /**
  * @author John Chronis <br>
  * @author Vaggelis Nikolopoulos <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class PlanExpressionConstants {

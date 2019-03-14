@@ -1,16 +1,15 @@
 # coding: utf-8
-import urllib
-import re
-from htmlentitydefs import name2codepoint
-import urlparse
-import os
-import mimetypes
-import xml.sax.saxutils
-import operator
 import json
+import mimetypes
+import os
+import re
+import urllib
+import urlparse
+import xml.sax.saxutils
+from htmlentitydefs import name2codepoint
+
 
 def urlsplit(*args):
-
     """
     .. function:: urlsplit(text1, [text2,...]) -> multiset
 
@@ -41,33 +40,34 @@ def urlsplit(*args):
 
     yield ('scheme', 'netloc', 'path', 'filename', 'type', 'subtype', 'params', 'query', 'fragment')
 
-    url=''.join(args)
-    u=urlparse.urlparse(''.join(args))
-    pf=os.path.split(u[2])
+    url = ''.join(args)
+    u = urlparse.urlparse(''.join(args))
+    pf = os.path.split(u[2])
 
-    if len(pf)==2:
-        path, filename=pf
+    if len(pf) == 2:
+        path, filename = pf
     else:
-        path, filename=pf[0], ''
+        path, filename = pf[0], ''
 
-    if len(path)>0 and path[-1]!='/':
-        path+='/'
+    if len(path) > 0 and path[-1] != '/':
+        path += '/'
 
-    m=mimetypes.guess_type(url)
-    if m[0]!=None:
-        m1, m2=m[0].split('/')
+    m = mimetypes.guess_type(url)
+    if m[0] != None:
+        m1, m2 = m[0].split('/')
     else:
-        m1, m2=(os.path.splitext(filename)[1], '')
-        if len(m1)>0 and m1[0]=='.':
-            m1=m1[1:]
+        m1, m2 = (os.path.splitext(filename)[1], '')
+        if len(m1) > 0 and m1[0] == '.':
+            m1 = m1[1:]
 
     yield [u[0], u[1], path, filename, m1, m2, u[3], u[4], u[5]]
 
-urlsplit.registered=True
-urlsplit.multiset=True
+
+urlsplit.registered = True
+urlsplit.multiset = True
+
 
 def urllocation(*args):
-
     """
     .. function:: urllocation(str) -> str
 
@@ -86,11 +86,13 @@ def urllocation(*args):
     http://www.test.com/search.csv
     """
 
-    u=urlparse.urlparse(''.join(args))
+    u = urlparse.urlparse(''.join(args))
 
-    return u[0]+u'://'+''.join(u[1:3])
+    return u[0] + u'://' + ''.join(u[1:3])
 
-urllocation.registered=True
+
+urllocation.registered = True
+
 
 def urlquery2jdict(*args):
     """
@@ -113,20 +115,23 @@ def urlquery2jdict(*args):
     {"lang":"test","ver":"en"}
     """
 
-    url=args[0]
-    if url.startswith('http://') or url[0:1]=='/':
-        url=urlparse.urlparse(url)[4]
-    u=urlparse.parse_qs(url, True)
+    url = args[0]
+    if url.startswith('http://') or url[0:1] == '/':
+        url = urlparse.urlparse(url)[4]
+    u = urlparse.parse_qs(url, True)
 
-    for x,y in u.iteritems():
-        if len(y)==1:
-            u[x]=y[0]
+    for x, y in u.iteritems():
+        if len(y) == 1:
+            u[x] = y[0]
 
-    return json.dumps(u, separators=(',',':'), ensure_ascii=False)
+    return json.dumps(u, separators=(',', ':'), ensure_ascii=False)
 
-urlquery2jdict.registered=True
+
+urlquery2jdict.registered = True
 
 EntityPattern = re.compile('&(?:#(\d+)|(?:#x([\da-fA-F]+))|([a-zA-Z]+));')
+
+
 def htmlunescape(s):
     def unescape(match):
         code = match.group(1)
@@ -143,6 +148,7 @@ def htmlunescape(s):
         return match.group(0)
 
     return EntityPattern.sub(unescape, s)
+
 
 def htmldecode(*args):
     """
@@ -161,13 +167,15 @@ def htmldecode(*args):
     -----
     None
     """
-    if len(args)>1:
-        raise functions.OperatorError("htmldecode","operator takes only one argument")
-    if args[0]==None:
+    if len(args) > 1:
+        raise functions.OperatorError("htmldecode", "operator takes only one argument")
+    if args[0] == None:
         return None
     return htmlunescape(args[0])
 
-htmldecode.registered=True
+
+htmldecode.registered = True
+
 
 def htmlencode(*args):
     """
@@ -186,19 +194,26 @@ def htmlencode(*args):
     -----
     None
     """
-    if len(args)>1:
-        raise functions.OperatorError("htmldecode","operator takes only one argument")
-    if args[0]==None:
+    if len(args) > 1:
+        raise functions.OperatorError("htmldecode", "operator takes only one argument")
+    if args[0] == None:
         return None
 
     return xml.sax.saxutils.escape(u''.join(args[0]), {'"': "&quot;"})
 
-htmlencode.registered=True
+
+htmlencode.registered = True
 
 tags = re.compile(r'<([^>]*?)>', re.UNICODE)
-tagNL = re.compile(r'(?:\s|^)(?:br|/p|/div|/head|/table|/tr|ul|/ul|/title|/tfoot|/thead|/span|/ol|/h1|/h2|/h3|/h4|/h5|/h6|/caption)(?:\s|$)', re.UNICODE)
-tagSPACE = re.compile(r'(?:\s|^)(?:/\w+|wbr|p|div|head|table|tr|title|thead|tfoot|source|span|q|pre|ol|link|i|h1|h2|h3|h4|h5|h6|em|code|caption|a|figure|figcaption)(?:\s|$)', re.UNICODE)
+tagNL = re.compile(
+    r'(?:\s|^)(?:br|/p|/div|/head|/table|/tr|ul|/ul|/title|/tfoot|/thead|/span|/ol|/h1|/h2|/h3|/h4|/h5|/h6|/caption)(?:\s|$)',
+    re.UNICODE)
+tagSPACE = re.compile(
+    r'(?:\s|^)(?:/\w+|wbr|p|div|head|table|tr|title|thead|tfoot|source|span|q|pre|ol|link|i|h1|h2|h3|h4|h5|h6|em|code|caption|a|figure|figcaption)(?:\s|$)',
+    re.UNICODE)
 tagUnderscore = re.compile(r'(?:\s|^)(?:sup|sub)(?:\s|$)', re.UNICODE)
+
+
 def htmlstriptags(*args):
     """
     .. function:: htmlstriptags(str, default_tag_conversion)
@@ -250,7 +265,9 @@ def htmlstriptags(*args):
 
     return tags.sub(tagdecode, text)
 
-htmlstriptags.registered=True
+
+htmlstriptags.registered = True
+
 
 def urldecode(*args):
     """
@@ -271,13 +288,15 @@ def urldecode(*args):
     -----
     None
     """
-    if len(args)>1:
-        raise functions.OperatorError("urldecode","operator takes only one argument")
-    if args[0]!=None:
+    if len(args) > 1:
+        raise functions.OperatorError("urldecode", "operator takes only one argument")
+    if args[0] != None:
         return unicode(urllib.unquote_plus(args[0]))
     return None
 
-urldecode.registered=True
+
+urldecode.registered = True
+
 
 def urlencode(*args):
     """
@@ -293,16 +312,17 @@ def urlencode(*args):
     where%2C+collid%3Dcolid
 
     """
-    if len(args)>1:
-        raise functions.OperatorError("urlencode","operator takes only one argument")
-    if args[0]!=None:
+    if len(args) > 1:
+        raise functions.OperatorError("urlencode", "operator takes only one argument")
+    if args[0] != None:
         return urllib.quote_plus(unicode(args[0]))
     return None
 
-urlencode.registered=True
 
+urlencode.registered = True
 
-addwbr=re.compile(r'([./-])([^./\-\d\s])', re.DOTALL| re.UNICODE)
+addwbr = re.compile(r'([./-])([^./\-\d\s])', re.DOTALL | re.UNICODE)
+
 
 def htmladdbreaks(*args):
     """
@@ -318,14 +338,16 @@ def htmladdbreaks(*args):
     very-<wbr>long/<wbr>string
     """
 
-    if args[0]==None:
+    if args[0] == None:
         return None
 
-    out=u''.join([unicode(x) for x in args])
+    out = u''.join([unicode(x) for x in args])
 
     return addwbr.sub(r'\1<wbr>\2', out)
 
-htmladdbreaks.registered=True
+
+htmladdbreaks.registered = True
+
 
 def htmllink(*args):
     """
@@ -351,23 +373,25 @@ def htmllink(*args):
     <a href="http://somewhere.org">go somewhere</a>
 
     """
+
     def addhttp(u):
-        if u.find('://')==-1:
-            return u'http://'+unicode(u)
+        if u.find('://') == -1:
+            return u'http://' + unicode(u)
         return unicode(u)
 
-    if len(args)>2:
-        raise functions.OperatorError("url","operator a maximum of two arguments")
+    if len(args) > 2:
+        raise functions.OperatorError("url", "operator a maximum of two arguments")
 
-    if len(args)==2:    
-        if args[1]!=None:
-            return '<a href="'+addhttp(args[0])+'">'+unicode(args[1])+'</a>'
+    if len(args) == 2:
+        if args[1] != None:
+            return '<a href="' + addhttp(args[0]) + '">' + unicode(args[1]) + '</a>'
 
-    if args[0]==None:
+    if args[0] == None:
         return None
-    return '<a href="'+addhttp(args[0])+'">'+htmladdbreaks(htmlencode(unicode(args[0])))+'</a>'
+    return '<a href="' + addhttp(args[0]) + '">' + htmladdbreaks(htmlencode(unicode(args[0]))) + '</a>'
 
-htmllink.registered=True
+
+htmllink.registered = True
 
 if not ('.' in __name__):
     """
@@ -375,11 +399,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

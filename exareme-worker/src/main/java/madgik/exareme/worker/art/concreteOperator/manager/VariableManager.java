@@ -9,8 +9,8 @@ import madgik.exareme.worker.art.container.monitor.StatusVariable;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class VariableManager {

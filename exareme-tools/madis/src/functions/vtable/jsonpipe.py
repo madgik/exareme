@@ -34,31 +34,32 @@ Examples::
     wc: nonexistingfile: No such file or directory
 """
 
-
 import functions
-import vtbase
 import itertools
 import json
 import subprocess
 
+import vtbase
+
 registered = True
 external_stream = True
 
+
 class JSONPipeVT(vtbase.VT):
-    def VTiter(self, *parsedArgs,**envars):
+    def VTiter(self, *parsedArgs, **envars):
         largs, dictargs = self.full_parse(parsedArgs)
 
         command = None
-        
+
         if len(largs) > 0:
             command = largs[-1]
-        
+
         if 'query' in dictargs:
             command = dictargs['query']
 
         if command is None:
-            raise functions.OperatorError(__name__.rsplit('.')[-1],"No command argument found")
-        
+            raise functions.OperatorError(__name__.rsplit('.')[-1], "No command argument found")
+
         child = subprocess.Popen(command, shell=True, bufsize=1, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         jsondecode = json.JSONDecoder().scan_once
@@ -77,8 +78,8 @@ class JSONPipeVT(vtbase.VT):
         schemalinetype = type(schemaline)
 
         if schemalinetype == list:
-            for i in xrange(1, len(schemaline)+1):
-                namelist.append( ['C'+str(i), 'text'] )
+            for i in xrange(1, len(schemaline) + 1):
+                namelist.append(['C' + str(i), 'text'])
             pipeiter = itertools.chain([firstline], self.fileiter)
         elif schemalinetype == dict:
             namelist += schemaline['schema']
@@ -97,10 +98,13 @@ class JSONPipeVT(vtbase.VT):
         output, error = child.communicate()
 
         if child.returncode != 0:
-            raise functions.OperatorError(__name__.rsplit('.')[-1], "Command '%s' failed to execute because:\n%s" %(command,error.rstrip('\n\t ')))
+            raise functions.OperatorError(__name__.rsplit('.')[-1], "Command '%s' failed to execute because:\n%s" % (
+            command, error.rstrip('\n\t ')))
+
 
 def Source():
     return vtbase.VTGenerator(JSONPipeVT)
+
 
 if not ('.' in __name__):
     """
@@ -108,11 +112,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

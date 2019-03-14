@@ -10,8 +10,8 @@ import java.util.Random;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class RandomTimeIntervalPolicy implements RetryTimeIntervalPolicy {
@@ -22,7 +22,8 @@ public class RandomTimeIntervalPolicy implements RetryTimeIntervalPolicy {
         this.interval_ms = interval_ms;
     }
 
-    @Override public long getTime(int retries) throws RemoteException {
+    @Override
+    public long getTime(int retries) throws RemoteException {
         return interval_ms + rand.nextInt(2000);
     }
 }

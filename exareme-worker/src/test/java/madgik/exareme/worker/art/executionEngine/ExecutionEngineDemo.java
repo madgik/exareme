@@ -45,7 +45,7 @@ public class ExecutionEngineDemo {
 
         ArtManager manager = ArtManagerFactory.createRmiArtManager();
         manager.getRegistryManager()
-            .connectToRegistry(new EntityName("ArtRegistry", "83.212.98.175", 1098));
+                .connectToRegistry(new EntityName("ArtRegistry", "83.212.98.175", 1098));
 
         System.exit(0);
 
@@ -81,7 +81,8 @@ public class ExecutionEngineDemo {
         for (int i = 0; i < totalThreads; i++) {
             new Thread() {
 
-                @Override public void run() {
+                @Override
+                public void run() {
                     try {
 
                         sem.acquire();
@@ -92,17 +93,17 @@ public class ExecutionEngineDemo {
                         sessionPlan.submitPlan(plan);
 
                         PlanSessionStatusManagerProxy managerProxy =
-                            sessionPlan.getPlanSessionStatusManagerProxy();
+                                sessionPlan.getPlanSessionStatusManagerProxy();
 
                         while (sessionPlan.getPlanSessionStatusManagerProxy().hasFinished() == false
-                            || sessionPlan.getPlanSessionStatusManagerProxy().hasError()) {
+                                || sessionPlan.getPlanSessionStatusManagerProxy().hasError()) {
                             Thread.sleep(100);
                         }
 
                         if (managerProxy.hasError()) {
                             //      log.debug("Finished - Errors");
                             sessionPlan.getPlanSessionStatusManagerProxy().getErrorList().get(0)
-                                .printStackTrace();
+                                    .printStackTrace();
                             sessionPlan.close();
 
                             sem.release();

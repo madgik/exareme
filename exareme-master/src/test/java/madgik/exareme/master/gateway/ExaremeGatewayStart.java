@@ -18,12 +18,13 @@ public class ExaremeGatewayStart {
         final ExaremeCluster cluster = ExaremeClusterFactory.createMiniCluster(1098, 8088, 2);
         cluster.start();
         final ExaremeGateway gateway =
-            ExaremeGatewayFactory.createHttpServer(cluster.getDBManager());
+                ExaremeGatewayFactory.createHttpServer(cluster.getDBManager());
 
         gateway.start();
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override public void run() {
+            @Override
+            public void run() {
                 gateway.stop();
                 try {
                     cluster.stop(true);

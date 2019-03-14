@@ -36,9 +36,9 @@ services:
     image:  hbpmip/exaremelocal
     networks:
       - "net-local"
-#    links:
-#      - RawUI
-#      - rawdb
+    #    links:
+    #      - RawUI
+    #      - rawdb
     environment:
       - MASTER_FLAG=master
       - RAWUSERNAME=federation
@@ -49,53 +49,53 @@ services:
       - RAWRESULTS=all
     ports:
       - "9090:9090"
-#  rawdb:
-#    hostname: rawdb
-#    image: raw-sniffer
-#    volumes:
-#      - ../datasets:/datasets:ro
-#    networks:
-#     - "net-local"
-#    ports:
-#     - "54321:54321"
-#     #- "5555:5555"
-#    expose:
-#     - "54321"
+  #  rawdb:
+  #    hostname: rawdb
+  #    image: raw-sniffer
+  #    volumes:
+  #      - ../datasets:/datasets:ro
+  #    networks:
+  #     - "net-local"
+  #    ports:
+  #     - "54321:54321"
+  #     #- "5555:5555"
+  #    expose:
+  #     - "54321"
   RawEngine:
     image: "hbpmip/postgresraw"
     container_name: "raw-engine"
     restart: unless-stopped
     networks:
-     - "net-local"
+      - "net-local"
     expose:
-     - "5432"
+      - "5432"
     volumes:
-     - "${raw_data_root}:/datasets:ro"
-     - "${pg_data_root}:/data:rw"
+      - "${raw_data_root}:/datasets:ro"
+      - "${pg_data_root}:/data:rw"
     environment:
-     - POSTGRES_PORT
-     - POSTGRES_USER
-     - POSTGRES_PASSWORD
-     - POSTGRES_DB=mip
+      - POSTGRES_PORT
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB=mip
 
   RawUI:
     image: "hbpmip/postgresraw-ui"
     container_name: "raw-ui"
     restart: unless-stopped
     networks:
-     - "net-local"
+      - "net-local"
     expose:
-     - "5555"
+      - "5555"
     ports:
-     - "5555:5555"
+      - "5555:5555"
     volumes:
-     - "${raw_data_root}:/datasets:ro"
-     - "${pg_data_root}:/data:rw"
+      - "${raw_data_root}:/datasets:ro"
+      - "${pg_data_root}:/data:rw"
     links:
-     - "RawEngine:raw-engine"
+      - "RawEngine:raw-engine"
     environment:
-     - POSTGRES_HOST=raw-engine
-     - POSTGRES_PORT
-     - POSTGRES_USER
-     - POSTGRES_PASSWORD
-     - POSTGRES_DB=mip
+      - POSTGRES_HOST=raw-engine
+      - POSTGRES_PORT
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB=mip

@@ -17,7 +17,8 @@ public class DestroyBufferJob implements ContainerJob {
         this.bufferID = bufferID;
     }
 
-    @Override public ContainerJobType getType() {
+    @Override
+    public ContainerJobType getType() {
         return ContainerJobType.destroyBuffer;
     }
 }

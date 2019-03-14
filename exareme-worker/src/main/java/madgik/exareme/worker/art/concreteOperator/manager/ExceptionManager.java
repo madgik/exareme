@@ -11,8 +11,8 @@ import java.util.Date;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class ExceptionManager {
@@ -27,8 +27,8 @@ public class ExceptionManager {
         try {
             log.debug(msg);
             sessionManager.getSessionReportID().reportManagerProxy
-                .operatorError(sessionManager.getOpID(), new ServerException(msg), new Date(),
-                    sessionManager.getContainerID());
+                    .operatorError(sessionManager.getOpID(), new ServerException(msg), new Date(),
+                            sessionManager.getContainerID());
         } catch (RemoteException e) {
             log.error(e.getMessage());
         }
@@ -38,8 +38,8 @@ public class ExceptionManager {
         try {
             log.debug(msg);
             sessionManager.getSessionReportID().reportManagerProxy
-                .operatorError(sessionManager.getOpID(), new ServerException(msg, ex), new Date(),
-                    sessionManager.getContainerID());
+                    .operatorError(sessionManager.getOpID(), new ServerException(msg, ex), new Date(),
+                            sessionManager.getContainerID());
         } catch (RemoteException e) {
             log.error(e.getMessage());
         }

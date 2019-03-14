@@ -25,8 +25,8 @@
 # 02110-1301  USA
 ######################### END LICENSE BLOCK #########################
 
-from charsetprober import CharSetProber
 import constants
+from charsetprober import CharSetProber
 
 # This prober doesn't actually recognize a language or a charset.
 # It is a helper prober for the use of the Hebrew model probers
@@ -148,6 +148,7 @@ MIN_MODEL_DISTANCE = 0.01
 VISUAL_HEBREW_NAME = "ISO-8859-8"
 LOGICAL_HEBREW_NAME = "windows-1255"
 
+
 class HebrewProber(CharSetProber):
     def __init__(self):
         CharSetProber.__init__(self)
@@ -164,7 +165,7 @@ class HebrewProber(CharSetProber):
         self._mPrev = ' '
         self._mBeforePrev = ' '
         # These probers are owned by the group prober.
-        
+
     def set_model_probers(self, logicalProber, visualProber):
         self._mLogicalProber = logicalProber
         self._mVisualProber = visualProber
@@ -184,7 +185,7 @@ class HebrewProber(CharSetProber):
         # these letters as Non-Final letters outweighs the damage since these words 
         # are quite rare.
         return c in [NORMAL_KAF, NORMAL_MEM, NORMAL_NUN, NORMAL_PE]
-    
+
     def feed(self, aBuf):
         # Final letter analysis for logical-visual decision.
         # Look for evidence that the received buffer is either logical Hebrew or 
@@ -215,7 +216,7 @@ class HebrewProber(CharSetProber):
             return constants.eNotMe
 
         aBuf = self.filter_high_bit_only(aBuf)
-        
+
         for cur in aBuf:
             if cur == ' ':
                 # We stand on a space - a word just ended
@@ -264,6 +265,6 @@ class HebrewProber(CharSetProber):
     def get_state(self):
         # Remain active as long as any of the model probers are active.
         if (self._mLogicalProber.get_state() == constants.eNotMe) and \
-           (self._mVisualProber.get_state() == constants.eNotMe):
+                (self._mVisualProber.get_state() == constants.eNotMe):
             return constants.eNotMe
         return constants.eDetecting

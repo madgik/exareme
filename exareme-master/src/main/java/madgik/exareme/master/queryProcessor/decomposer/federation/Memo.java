@@ -39,7 +39,7 @@ public class Memo {
     }
 
     public void put(Node e, SinglePlan resultPlan, Column c, double repCost, boolean b,
-        PartitionCols l) {
+                    PartitionCols l) {
         MemoKey k = new MemoKey(e, c);
         PartitionedMemoValue v = new PartitionedMemoValue(resultPlan, repCost);
         v.setMaterialized(b);
@@ -48,23 +48,23 @@ public class Memo {
     }
 
     public void setPlanUsed(MemoKey e) {
-        MemoValue v =  getMemoValue(e);
-      //  if(v.isMaterialised()){
-       // 	v.setUsed(true);
-     //   	//return;
-      //  }
-       // else 
-        if(v.isUsed()){
-        	v.setMaterialized(true);
+        MemoValue v = getMemoValue(e);
+        //  if(v.isMaterialised()){
+        // 	v.setUsed(true);
+        //   	//return;
+        //  }
+        // else
+        if (v.isUsed()) {
+            v.setMaterialized(true);
         }
         v.setUsed(true);
-        
+
         SinglePlan p = v.getPlan();
         for (int i = 0; i < p.noOfInputPlans(); i++) {
             MemoKey sp = p.getInputPlan(i);
-            
-            if(sp.getNode().getDescendantBaseTables().size()==1 && !this.getMemoValue(sp).isFederated()){
-            	continue;            	
+
+            if (sp.getNode().getDescendantBaseTables().size() == 1 && !this.getMemoValue(sp).isFederated()) {
+                continue;
             }
             setPlanUsed(sp);
 
@@ -81,7 +81,7 @@ public class Memo {
     }
 
     public void put(Node e, SinglePlan resultPlan, boolean materialized, boolean used,
-        boolean federated) {
+                    boolean federated) {
         MemoKey k = new MemoKey(e, null);
         CentralizedMemoValue v = new CentralizedMemoValue(resultPlan);
         v.setFederated(federated);
@@ -89,7 +89,6 @@ public class Memo {
         memo.put(k, v);
 
     }
-
 
 
 }

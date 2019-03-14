@@ -26,14 +26,15 @@ public class AdpDBNetReaderThread extends Thread {
     private Logger log = Logger.getLogger(AdpDBNetReaderThread.class);
 
     public AdpDBNetReaderThread(String tabName, Map<String, Object> alsoIncludeProps,
-        AdpDBClientProperties props, PipedOutputStream out) {
+                                AdpDBClientProperties props, PipedOutputStream out) {
         this.tabName = tabName;
         this.alsoIncludeProps = alsoIncludeProps;
         this.props = props;
         this.out = out;
     }
 
-    @Override public void run() {
+    @Override
+    public void run() {
         try {
             log.info("table " + tabName);
             Registry registry = Registry.getInstance(props.getDatabase());
@@ -48,9 +49,9 @@ public class AdpDBNetReaderThread extends Thread {
             }
 
             Map<String, Object> includeProps = alsoIncludeProps;
-            if(alsoIncludeProps != null
-                && alsoIncludeProps.containsKey("skipSchema")
-                && (Boolean)alsoIncludeProps.get("skipSchema") == true) includeProps = null;
+            if (alsoIncludeProps != null
+                    && alsoIncludeProps.containsKey("skipSchema")
+                    && (Boolean) alsoIncludeProps.get("skipSchema") == true) includeProps = null;
 
             for (Partition p : table.getPartitions()) {
                 log.debug("Reading : " + p.getTable() + "/" + p.getpNum());

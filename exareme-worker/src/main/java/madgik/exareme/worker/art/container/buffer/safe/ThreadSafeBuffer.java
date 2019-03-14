@@ -20,7 +20,8 @@ public class ThreadSafeBuffer implements StreamBuffer {
         this.buffer = buffer;
     }
 
-    @Override public void write(byte[] bytes, int offset, int length) throws IOException {
+    @Override
+    public void write(byte[] bytes, int offset, int length) throws IOException {
         if (writerThreadID < 0) {
             writerThreadID = Thread.currentThread().getId();
             writerThreadName = Thread.currentThread().getName();
@@ -28,14 +29,15 @@ public class ThreadSafeBuffer implements StreamBuffer {
 
         if (writerThreadID != Thread.currentThread().getId()) {
             throw new IOException(
-                "Pipe violation: " + writerThreadID + " != " + Thread.currentThread().getId() + ""
-                    + " / " + writerThreadName + " != " + Thread.currentThread().getName());
+                    "Pipe violation: " + writerThreadID + " != " + Thread.currentThread().getId() + ""
+                            + " / " + writerThreadName + " != " + Thread.currentThread().getName());
         }
 
         buffer.write(bytes, offset, length);
     }
 
-    @Override public int read(byte[] bytes, int offset, int length) throws IOException {
+    @Override
+    public int read(byte[] bytes, int offset, int length) throws IOException {
         if (readerThreadID < 0) {
             readerThreadID = Thread.currentThread().getId();
             readerThreadName = Thread.currentThread().getName();
@@ -43,14 +45,15 @@ public class ThreadSafeBuffer implements StreamBuffer {
 
         if (readerThreadID != Thread.currentThread().getId()) {
             throw new IOException(
-                "Pipe violation: " + readerThreadID + " != " + Thread.currentThread().getId() + ""
-                    + " / " + readerThreadName + " != " + Thread.currentThread().getName());
+                    "Pipe violation: " + readerThreadID + " != " + Thread.currentThread().getId() + ""
+                            + " / " + readerThreadName + " != " + Thread.currentThread().getName());
         }
 
         return buffer.read(bytes, offset, length);
     }
 
-    @Override public void closeReader() throws IOException {
+    @Override
+    public void closeReader() throws IOException {
         if (readerThreadID < 0) {
             readerThreadID = Thread.currentThread().getId();
             readerThreadName = Thread.currentThread().getName();
@@ -58,14 +61,15 @@ public class ThreadSafeBuffer implements StreamBuffer {
 
         if (readerThreadID != Thread.currentThread().getId()) {
             throw new IOException(
-                "Pipe violation: " + readerThreadID + " != " + Thread.currentThread().getId() + ""
-                    + " / " + readerThreadName + " != " + Thread.currentThread().getName());
+                    "Pipe violation: " + readerThreadID + " != " + Thread.currentThread().getId() + ""
+                            + " / " + readerThreadName + " != " + Thread.currentThread().getName());
         }
 
         buffer.closeReader();
     }
 
-    @Override public void closeWriter() throws IOException {
+    @Override
+    public void closeWriter() throws IOException {
         if (writerThreadID < 0) {
             writerThreadID = Thread.currentThread().getId();
             writerThreadName = Thread.currentThread().getName();
@@ -73,18 +77,20 @@ public class ThreadSafeBuffer implements StreamBuffer {
 
         if (writerThreadID != Thread.currentThread().getId()) {
             throw new IOException(
-                "Pipe violation: " + writerThreadID + " != " + Thread.currentThread().getId() + ""
-                    + " / " + writerThreadName + " != " + Thread.currentThread().getName());
+                    "Pipe violation: " + writerThreadID + " != " + Thread.currentThread().getId() + ""
+                            + " / " + writerThreadName + " != " + Thread.currentThread().getName());
         }
 
         buffer.closeWriter();
     }
 
-    @Override public int getSize() throws IOException {
+    @Override
+    public int getSize() throws IOException {
         return buffer.getSize();
     }
 
-    @Override public void clear() {
+    @Override
+    public void clear() {
         buffer.clear();
     }
 }

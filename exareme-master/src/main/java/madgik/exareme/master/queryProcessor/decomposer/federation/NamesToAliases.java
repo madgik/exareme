@@ -4,12 +4,7 @@
  */
 package madgik.exareme.master.queryProcessor.decomposer.federation;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author dimitris
@@ -53,34 +48,34 @@ public class NamesToAliases {
     private String generateNextGlobalAlias() {
         return "alias" + this.counter++;
     }
-    
+
     public Set<String> getTables() {
-    	return map.keySet();
+        return map.keySet();
     }
 
-	public void addTable(String t, String[] aliases) {
-		//for(String a:aliases){
-			this.map.put(t,  new ArrayList<String>(Arrays.asList(aliases)));
-		//}
-	}
+    public void addTable(String t, String[] aliases) {
+        //for(String a:aliases){
+        this.map.put(t, new ArrayList<String>(Arrays.asList(aliases)));
+        //}
+    }
 
-	@Override
-	public String toString() {
-		return "NamesToAliases [map=" + map + ", counter=" + counter + "]";
-	}
+    @Override
+    public String toString() {
+        return "NamesToAliases [map=" + map + ", counter=" + counter + "]";
+    }
 
-	public void setCounter(int c) {
-		this.counter=c;
-		
-	}
-	
-	public String getOriginalName(String alias){
-		for (String k:map.keySet()){
-			if(map.get(k).contains(alias)){
-				return k;
-			}
-		}
-		return null;
-	}
-	
+    public void setCounter(int c) {
+        this.counter = c;
+
+    }
+
+    public String getOriginalName(String alias) {
+        for (String k : map.keySet()) {
+            if (map.get(k).contains(alias)) {
+                return k;
+            }
+        }
+        return null;
+    }
+
 }

@@ -26,28 +26,29 @@
 ######################### END LICENSE BLOCK #########################
 
 import constants
-from euctwfreq import EUCTWCharToFreqOrder, EUCTW_TABLE_SIZE, EUCTW_TYPICAL_DISTRIBUTION_RATIO
-from euckrfreq import EUCKRCharToFreqOrder, EUCKR_TABLE_SIZE, EUCKR_TYPICAL_DISTRIBUTION_RATIO
-from gb2312freq import GB2312CharToFreqOrder, GB2312_TABLE_SIZE, GB2312_TYPICAL_DISTRIBUTION_RATIO
 from big5freq import Big5CharToFreqOrder, BIG5_TABLE_SIZE, BIG5_TYPICAL_DISTRIBUTION_RATIO
+from euckrfreq import EUCKRCharToFreqOrder, EUCKR_TABLE_SIZE, EUCKR_TYPICAL_DISTRIBUTION_RATIO
+from euctwfreq import EUCTWCharToFreqOrder, EUCTW_TABLE_SIZE, EUCTW_TYPICAL_DISTRIBUTION_RATIO
+from gb2312freq import GB2312CharToFreqOrder, GB2312_TABLE_SIZE, GB2312_TYPICAL_DISTRIBUTION_RATIO
 from jisfreq import JISCharToFreqOrder, JIS_TABLE_SIZE, JIS_TYPICAL_DISTRIBUTION_RATIO
 
 ENOUGH_DATA_THRESHOLD = 1024
 SURE_YES = 0.99
 SURE_NO = 0.01
 
+
 class CharDistributionAnalysis:
     def __init__(self):
-        self._mCharToFreqOrder = None # Mapping table to get frequency order from char order (get from GetOrder())
-        self._mTableSize = None # Size of above table
-        self._mTypicalDistributionRatio = None # This is a constant value which varies from language to language, used in calculating confidence.  See http://www.mozilla.org/projects/intl/UniversalCharsetDetection.html for further detail.
+        self._mCharToFreqOrder = None  # Mapping table to get frequency order from char order (get from GetOrder())
+        self._mTableSize = None  # Size of above table
+        self._mTypicalDistributionRatio = None  # This is a constant value which varies from language to language, used in calculating confidence.  See http://www.mozilla.org/projects/intl/UniversalCharsetDetection.html for further detail.
         self.reset()
-        
+
     def reset(self):
         """reset analyser, clear any state"""
-        self._mDone = constants.False # If this flag is set to constants.True, detection is done and conclusion has been made
-        self._mTotalChars = 0 # Total characters encountered
-        self._mFreqChars = 0 # The number of characters whose frequency order is less than 512
+        self._mDone = constants.False  # If this flag is set to constants.True, detection is done and conclusion has been made
+        self._mTotalChars = 0  # Total characters encountered
+        self._mFreqChars = 0  # The number of characters whose frequency order is less than 512
 
     def feed(self, aStr, aCharLen):
         """feed a character with known length"""
@@ -87,7 +88,8 @@ class CharDistributionAnalysis:
         # convert this encoding string to a number, here called order.
         # This allows multiple encodings of a language to share one frequency table.
         return -1
-    
+
+
 class EUCTWDistributionAnalysis(CharDistributionAnalysis):
     def __init__(self):
         CharDistributionAnalysis.__init__(self)
@@ -104,6 +106,7 @@ class EUCTWDistributionAnalysis(CharDistributionAnalysis):
             return 94 * (ord(aStr[0]) - 0xC4) + ord(aStr[1]) - 0xA1
         else:
             return -1
+
 
 class EUCKRDistributionAnalysis(CharDistributionAnalysis):
     def __init__(self):
@@ -122,6 +125,7 @@ class EUCKRDistributionAnalysis(CharDistributionAnalysis):
         else:
             return -1;
 
+
 class GB2312DistributionAnalysis(CharDistributionAnalysis):
     def __init__(self):
         CharDistributionAnalysis.__init__(self)
@@ -138,6 +142,7 @@ class GB2312DistributionAnalysis(CharDistributionAnalysis):
             return 94 * (ord(aStr[0]) - 0xB0) + ord(aStr[1]) - 0xA1
         else:
             return -1;
+
 
 class Big5DistributionAnalysis(CharDistributionAnalysis):
     def __init__(self):
@@ -159,6 +164,7 @@ class Big5DistributionAnalysis(CharDistributionAnalysis):
         else:
             return -1
 
+
 class SJISDistributionAnalysis(CharDistributionAnalysis):
     def __init__(self):
         CharDistributionAnalysis.__init__(self)
@@ -179,8 +185,9 @@ class SJISDistributionAnalysis(CharDistributionAnalysis):
             return -1;
         order = order + ord(aStr[1]) - 0x40
         if aStr[1] > '\x7F':
-            order =- 1
+            order = - 1
         return order
+
 
 class EUCJPDistributionAnalysis(CharDistributionAnalysis):
     def __init__(self):

@@ -1,9 +1,5 @@
 package madgik.exareme.master.engine.iterations.handler;
 
-import org.apache.log4j.Logger;
-
-import java.rmi.RemoteException;
-
 import madgik.exareme.common.consts.HBPConstants;
 import madgik.exareme.master.client.AdpDBClient;
 import madgik.exareme.master.client.AdpDBClientFactory;
@@ -17,6 +13,9 @@ import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.master.queryProcessor.composer.AlgorithmsProperties;
 import madgik.exareme.master.queryProcessor.composer.Composer;
 import madgik.exareme.master.queryProcessor.composer.ComposerException;
+import org.apache.log4j.Logger;
+
+import java.rmi.RemoteException;
 
 import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerDFLUtils.copyAlgorithmTemplatesToDemoDirectory;
 import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerUtils.generateAlgorithmKey;
@@ -28,7 +27,7 @@ import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerU
  * already running one.
  *
  * @author Christos Aslanoglou <br> caslanoglou@di.uoa.gr <br> University of Athens / Department of
- *         Informatics and Telecommunications.
+ * Informatics and Telecommunications.
  */
 public class IterationsHandler {
     private static final Logger log = Logger.getLogger(IterationsHandler.class);
@@ -65,7 +64,7 @@ public class IterationsHandler {
      */
     public IterativeAlgorithmState handleNewIterativeAlgorithmRequest(
             AdpDBManager adpDBManager,
-            AlgorithmsProperties.AlgorithmProperties algorithmProperties){
+            AlgorithmsProperties.AlgorithmProperties algorithmProperties) {
 
         // Generate algorithm key, the adpDBClient for this algorithm and a new
         // IterativeAlgorithmState
@@ -146,6 +145,7 @@ public class IterationsHandler {
     /**
      * Removes an {@link IterativeAlgorithmState} from
      * {@link madgik.exareme.master.engine.iterations.state.IterationsStateManager}
+     *
      * @param algorithmKey the algorithm's key (uniquely identifies an algorithm)
      */
     public void removeIterativeAlgorithmStateInstanceFromISM(String algorithmKey) {

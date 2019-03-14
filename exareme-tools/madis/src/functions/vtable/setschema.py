@@ -55,30 +55,34 @@ With setschema functions preference column is casted as float.
     agr  | a0086 | 634130.0 | agr
 
 """
-from lib.sqlitetypes import typestoSqliteTypes
-import vtbase
 import functions
-from lib.pyparsing import Word, alphas, alphanums, Optional, Group, delimitedList, quotedString , ParseBaseException
+from lib.pyparsing import Word, alphas, alphanums, Optional, Group, delimitedList, quotedString, ParseBaseException
+from lib.sqlitetypes import typestoSqliteTypes
 
-registered=True
+import vtbase
 
-ident = Word(alphas+"_",alphanums+"_")
+registered = True
+
+ident = Word(alphas + "_", alphanums + "_")
 columnname = ident | quotedString
 columndecl = Group(columnname + Optional(ident))
 listItem = columndecl
 
+
 def parsesplit(s):
     global listItem
-    return delimitedList(listItem).parseString(s,parseAll=True).asList()
+    return delimitedList(listItem).parseString(s, parseAll=True).asList()
+
 
 def checkexceptionisfromempty(e):
-    e=str(e).lower()
+    e = str(e).lower()
     if 'no' in e and 'such' in e and 'table' in e and 'vt_' in e:
         return True
     return False
 
+
 class SetSchema(vtbase.VT):
-    def VTiter(self, *parsedArgs,**envars):
+    def VTiter(self, *parsedArgs, **envars):
         """
         Works only with one argument splited with ,,,,
         """
@@ -88,56 +92,58 @@ class SetSchema(vtbase.VT):
         names = []
         types = []
 
-        if len(largs)<1:
-            raise functions.OperatorError(__name__.rsplit('.')[-1]," Schema argument was not provided")
+        if len(largs) < 1:
+            raise functions.OperatorError(__name__.rsplit('.')[-1], " Schema argument was not provided")
         try:
-            schema=parsesplit(largs[0])
+            schema = parsesplit(largs[0])
         except ParseBaseException:
-            raise functions.OperatorError(__name__.rsplit('.')[-1]," Error in schema definition: %s" %(largs[0]))
+            raise functions.OperatorError(__name__.rsplit('.')[-1], " Error in schema definition: %s" % (largs[0]))
         for el in schema:
             names.append(el[0])
-            if len(el)>1:
+            if len(el) > 1:
                 types.append(el[1])
             else:
                 types.append('')
 
         query = dictargs['query']
-        c=envars['db'].cursor()
+        c = envars['db'].cursor()
 
         ### Find names and types
-        execit=c.execute(query)
-        qtypes=[str(v[1]) for v in c.getdescriptionsafe()]
+        execit = c.execute(query)
+        qtypes = [str(v[1]) for v in c.getdescriptionsafe()]
 
         for i in xrange(len(types)):
-            if types[i]=='' and i<len(qtypes) and qtypes[i]!='':
-                types[i]=qtypes[i]
+            if types[i] == '' and i < len(qtypes) and qtypes[i] != '':
+                types[i] = qtypes[i]
 
-        yield [(i,j) for i,j in zip(names,types)]
+        yield [(i, j) for i, j in zip(names, types)]
 
-        sqlitecoltype=[typestoSqliteTypes(type) for type in types]
+        sqlitecoltype = [typestoSqliteTypes(type) for type in types]
 
         namelen = len(names)
         for row in execit:
             row = row[:namelen] + (None,) * (namelen - len(row))
-            ret =[]
-            for i,val in enumerate(row):
-                e=val
-                if sqlitecoltype[i] in ( "REAL", "NUMERIC"):
+            ret = []
+            for i, val in enumerate(row):
+                e = val
+                if sqlitecoltype[i] in ("REAL", "NUMERIC"):
                     try:
-                        e=float(val)
+                        e = float(val)
                     except ValueError:
-			if sqlitecoltype[i] in ( "INTEGER",):
-                           try:
-                            	e=int(val)
-                           except ValueError:
-                                e=val
-                        else: 
-                           e=val
-                ret+=[e]
+                        if sqlitecoltype[i] in ("INTEGER",):
+                            try:
+                                e = int(val)
+                            except ValueError:
+                                e = val
+                        else:
+                            e = val
+                ret += [e]
             yield ret
+
 
 def Source():
     return vtbase.VTGenerator(SetSchema)
+
 
 if not ('.' in __name__):
     """
@@ -145,14 +151,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()
-
-
-

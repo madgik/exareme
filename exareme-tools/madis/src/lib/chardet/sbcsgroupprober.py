@@ -26,16 +26,18 @@
 # 02110-1301  USA
 ######################### END LICENSE BLOCK #########################
 
-import constants, sys
+import constants
 from charsetgroupprober import CharSetGroupProber
-from sbcharsetprober import SingleByteCharSetProber
-from langcyrillicmodel import Win1251CyrillicModel, Koi8rModel, Latin5CyrillicModel, MacCyrillicModel, Ibm866Model, Ibm855Model
-from langgreekmodel import Latin7GreekModel, Win1253GreekModel
+from hebrewprober import HebrewProber
 from langbulgarianmodel import Latin5BulgarianModel, Win1251BulgarianModel
+from langcyrillicmodel import Win1251CyrillicModel, Koi8rModel, Latin5CyrillicModel, MacCyrillicModel, Ibm866Model, \
+    Ibm855Model
+from langgreekmodel import Latin7GreekModel, Win1253GreekModel
+from langhebrewmodel import Win1255HebrewModel
 from langhungarianmodel import Latin2HungarianModel, Win1250HungarianModel
 from langthaimodel import TIS620ThaiModel
-from langhebrewmodel import Win1255HebrewModel
-from hebrewprober import HebrewProber
+from sbcharsetprober import SingleByteCharSetProber
+
 
 class SBCSGroupProber(CharSetGroupProber):
     def __init__(self):
@@ -54,7 +56,7 @@ class SBCSGroupProber(CharSetGroupProber):
             SingleByteCharSetProber(Latin2HungarianModel),
             SingleByteCharSetProber(Win1250HungarianModel),
             SingleByteCharSetProber(TIS620ThaiModel),
-            ]
+        ]
         hebrewProber = HebrewProber()
         logicalHebrewProber = SingleByteCharSetProber(Win1255HebrewModel, constants.False, hebrewProber)
         visualHebrewProber = SingleByteCharSetProber(Win1255HebrewModel, constants.True, hebrewProber)

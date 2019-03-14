@@ -14,7 +14,7 @@ public class DiskManagerInterfaceFactory {
     }
 
     public static DiskManagerInterface createSimpleDiskManager(DiskManagerStatus status,
-        StatisticsManagerInterface statistics) {
+                                                               StatisticsManagerInterface statistics) {
         SimpleDiskManager simpleDiskManager = new SimpleDiskManager(status, statistics);
         SynchronizedDiskManager wrapper = new SynchronizedDiskManager(simpleDiskManager);
         simpleDiskManager.setWrapper(wrapper);

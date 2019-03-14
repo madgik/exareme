@@ -20,8 +20,9 @@ public class AddContainerEventListener implements EventListener<AddContainerEven
     public AddContainerEventListener() {
     }
 
-    @Override public void processed(AddContainerEvent event, RemoteException exception,
-        EventProcessor processor) {
+    @Override
+    public void processed(AddContainerEvent event, RemoteException exception,
+                          EventProcessor processor) {
         if (exception != null) {
             LogUtils.logException("AddContainer", exception);
             PlanEventScheduler.engineInternalException(event, exception);

@@ -1,5 +1,8 @@
 package madgik.exareme.master.engine.iterations.handler;
 
+import madgik.exareme.master.client.AdpDBClientQueryStatus;
+import madgik.exareme.master.connector.DataSerialization;
+import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.nio.ContentEncoder;
 import org.apache.http.nio.IOControl;
@@ -13,13 +16,9 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.StandardCharsets;
 
-import madgik.exareme.master.client.AdpDBClientQueryStatus;
-import madgik.exareme.master.connector.DataSerialization;
-import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
-
 /**
  * @author Christos Aslanoglou <br> caslanoglou@di.uoa.gr <br> University of Athens / Department of
- *         Informatics and Telecommunications.
+ * Informatics and Telecommunications.
  */
 public class NIterativeAlgorithmResultEntity extends BasicHttpEntity
         implements HttpAsyncContentProducer {
@@ -56,12 +55,10 @@ public class NIterativeAlgorithmResultEntity extends BasicHttpEntity
                 iterativeAlgorithmState.setIoctrl(ioctrl);
                 ioctrl.suspendOutput();
                 haveRegisteredIOCtrl = true;
-            }
-            finally {
+            } finally {
                 iterativeAlgorithmState.releaseLock();
             }
-        }
-        else {
+        } else {
             try {
                 // This method will be called after calling ioctrl.requestOutput() from
                 // AlgorithmCompletionEventHandler. Thus, the check below is simply for programming
@@ -74,8 +71,7 @@ public class NIterativeAlgorithmResultEntity extends BasicHttpEntity
                                 iterativeAlgorithmState.toString()
                                 + " is still running.";
                         log.error(errMsg);
-                    }
-                    else {
+                    } else {
                         // Algorithm execution failed, notify the client.
                         // Overwrite channel with an InputStream containing error information.
                         // Beware...
@@ -89,8 +85,7 @@ public class NIterativeAlgorithmResultEntity extends BasicHttpEntity
                         this.buffer.compact();
                         encoder.complete();
                     }
-                }
-                else {
+                } else {
                     // Iterative algorithm is complete, read response table and write it to the
                     // communication channel, if no errors, otherwise write query errors.
                     finalizeQueryStatus = iterativeAlgorithmState.getAdpDBClientFinalizeQueryStatus();
@@ -110,15 +105,13 @@ public class NIterativeAlgorithmResultEntity extends BasicHttpEntity
                         if (i < 1 && !buffering) {
                             encoder.complete();
                         }
-                    }
-                    else {
+                    } else {
                         encoder.write(ByteBuffer.wrap(
                                 finalizeQueryStatus.getError().getBytes()));
                         encoder.complete();
                     }
                 }
-            }
-            finally {
+            } finally {
                 if (iterativeAlgorithmState != null)
                     iterativeAlgorithmState.releaseLock();
             }
@@ -137,6 +130,7 @@ public class NIterativeAlgorithmResultEntity extends BasicHttpEntity
 
     /**
      * Generates a JSON response that contains the error and a description.
+     *
      * @param algorithmKey the algorithm key of the algorithm that failed
      */
     private static String generateErrorMessage(String algorithmKey) {

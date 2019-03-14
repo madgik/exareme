@@ -16,11 +16,11 @@ public interface MemoValue {
 
     public boolean isMaterialised();
 
-	public void setUsed(boolean b);
+    public void setUsed(boolean b);
 
-	public boolean isUsed();
-	
-	public boolean isFederated();
+    public boolean isUsed();
+
+    public boolean isFederated();
 
 }
 

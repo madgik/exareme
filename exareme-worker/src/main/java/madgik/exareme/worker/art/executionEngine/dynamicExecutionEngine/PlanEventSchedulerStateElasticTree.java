@@ -59,7 +59,7 @@ public class PlanEventSchedulerStateElasticTree {
         }
         log.info("ALL CONTAINERS: " + containers.size());
         dataLayout =
-            new ConsitentHashDataPartitionLayout(128  /* numParts */, 5  /* replication */);
+                new ConsitentHashDataPartitionLayout(128  /* numParts */, 5  /* replication */);
         // Set max num to a large number of debug when running in one container
         int maxNumContainers = 1000;
         if (allContainers.length > 1) {
@@ -71,17 +71,17 @@ public class PlanEventSchedulerStateElasticTree {
         DatabaseGenerator dgBen = new TpchDatabaseGenerator(32, 128);
         if (resourceSchedulingAlgorithm.equalsIgnoreCase("dynamic")) {
             resourceScheduler = new NonLinearOptLoadBalanceTreeResourceScheduler(
-                TreeConstants.SETTINGS.STATIC_CONTAINERS_MEDIUM, dgBen.generateDatabase(), topology,
-                dataLayout);
+                    TreeConstants.SETTINGS.STATIC_CONTAINERS_MEDIUM, dgBen.generateDatabase(), topology,
+                    dataLayout);
         } else if (resourceSchedulingAlgorithm.equalsIgnoreCase("static_small")) {
             resourceScheduler = new StaticLoadBalanceTreeResourceScheduler(
-                TreeConstants.SETTINGS.STATIC_CONTAINERS_SMALL, topology);
+                    TreeConstants.SETTINGS.STATIC_CONTAINERS_SMALL, topology);
         } else if (resourceSchedulingAlgorithm.equalsIgnoreCase("static_medium")) {
             resourceScheduler = new StaticLoadBalanceTreeResourceScheduler(
-                TreeConstants.SETTINGS.STATIC_CONTAINERS_MEDIUM, topology);
+                    TreeConstants.SETTINGS.STATIC_CONTAINERS_MEDIUM, topology);
         } else if (resourceSchedulingAlgorithm.equalsIgnoreCase("static_large")) {
             resourceScheduler = new StaticLoadBalanceTreeResourceScheduler(
-                TreeConstants.SETTINGS.STATIC_CONTAINERS_LARGE, topology);
+                    TreeConstants.SETTINGS.STATIC_CONTAINERS_LARGE, topology);
         } else {
             throw new RuntimeException("Scheduler not known: " + resourceSchedulingAlgorithm);
         }
@@ -159,13 +159,13 @@ public class PlanEventSchedulerStateElasticTree {
     }
 
     public void scheduleOperator(PlanSessionID sId, String operatorName, EntityName realCont,
-        int level) {
+                                 int level) {
         // Add the default "predicted overhead" of the operator
         long container = computeCloud.getContainerId(realCont);
         computeCloud
-            .addContainerLoadDelta(container, TreeConstants.SETTINGS.OPERATOR_DEFAULT_TIME_SEC,
-                TreeConstants.SETTINGS.OPERATOR_DEFAULT_DATA_MB,
-                System.currentTimeMillis() / Metrics.MiliSec);
+                .addContainerLoadDelta(container, TreeConstants.SETTINGS.OPERATOR_DEFAULT_TIME_SEC,
+                        TreeConstants.SETTINGS.OPERATOR_DEFAULT_DATA_MB,
+                        System.currentTimeMillis() / Metrics.MiliSec);
         scheduledOps[level]++;
     }
 
@@ -179,8 +179,8 @@ public class PlanEventSchedulerStateElasticTree {
         double cpuDataVar[] = new double[2];
         for (int level = 0; level < TreeConstants.SETTINGS.MAX_TREE_HEIGHT; ++level) {
             topology
-                .getLoadInLastWindowAtLevel(level, window, GlobalTime.getCurrentSec(), cpuDataLoad,
-                    cpuDataVar);
+                    .getLoadInLastWindowAtLevel(level, window, GlobalTime.getCurrentSec(), cpuDataLoad,
+                            cpuDataVar);
             stats.containersPerLevel[level] = topology.getContainersAtLevel(level);
             stats.cpuLoadPerLevel[level] = cpuDataLoad[0];
             stats.dataLoadPerLevel[level] = cpuDataLoad[1];
@@ -200,15 +200,15 @@ public class PlanEventSchedulerStateElasticTree {
     }
 
     public void operatorFinished(PlanSessionID sId, String operatorName, EntityName realCont,
-        ExecuteQueryExitMessage message) {
+                                 ExecuteQueryExitMessage message) {
         log.info("UPDATING STATISTICS: " + operatorName + " | " +
-            message.execStats.execTime_ms + " | " +
-            message.execStats.outputSize_MB);
+                message.execStats.execTime_ms + " | " +
+                message.execStats.outputSize_MB);
 
         double time = message.execStats.execTime_ms / Metrics.MiliSec
-            - TreeConstants.SETTINGS.OPERATOR_DEFAULT_TIME_SEC;
+                - TreeConstants.SETTINGS.OPERATOR_DEFAULT_TIME_SEC;
         double data =
-            message.execStats.outputSize_MB - TreeConstants.SETTINGS.OPERATOR_DEFAULT_DATA_MB;
+                message.execStats.outputSize_MB - TreeConstants.SETTINGS.OPERATOR_DEFAULT_DATA_MB;
         long container = computeCloud.getContainerId(realCont);
         computeCloud.addContainerLoadDelta(container, time, data, GlobalTime.getCurrentSec());
     }
@@ -224,8 +224,8 @@ public class PlanEventSchedulerStateElasticTree {
     public void dataflowFinished(PlanSessionID sId, boolean error) {
         ErrorMsg msg = (error) ? ErrorMsg.FAIL : ErrorMsg.SUCCESS;
         systemState.addFinishedDataflow(
-            new FinishedDataflow(states.get(sId).getRunningDataflow(), GlobalTime.getCurrentSec(),
-                msg));
+                new FinishedDataflow(states.get(sId).getRunningDataflow(), GlobalTime.getCurrentSec(),
+                        msg));
     }
 
     public void reorganizeResources() throws RemoteException {

@@ -16,7 +16,7 @@ import java.util.zip.DeflaterOutputStream;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class ZipDemo {
@@ -33,7 +33,7 @@ public class ZipDemo {
         OutputStream os = ostream;
 
         DeflaterOutputStream zos =
-            new DeflaterOutputStream(new BufferedOutputStream(os), new Deflater(2), ioBufferSize);
+                new DeflaterOutputStream(new BufferedOutputStream(os), new Deflater(2), ioBufferSize);
 
         long start = System.nanoTime();
         for (int i = 0; i < times; i++) {

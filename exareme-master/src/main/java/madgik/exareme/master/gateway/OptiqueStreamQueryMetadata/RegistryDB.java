@@ -33,8 +33,8 @@ public class RegistryDB {
 
             stmt = c.createStatement();
             String sql = "CREATE TABLE IF NOT EXISTS register_query " +
-                "(name TEXT PRIMARY KEY NOT NULL, " +
-                " query TEXT NOT NULL)";
+                    "(name TEXT PRIMARY KEY NOT NULL, " +
+                    " query TEXT NOT NULL)";
             stmt.executeUpdate(sql);
             stmt.close();
             c.close();

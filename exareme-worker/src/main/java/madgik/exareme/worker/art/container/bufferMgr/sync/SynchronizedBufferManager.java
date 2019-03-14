@@ -24,22 +24,25 @@ public class SynchronizedBufferManager implements BufferManagerInterface {
         this.bufferManager = bufferManager;
     }
 
-    @Override public BufferID createBuffer(String bufferName, BufferQoS quality,
-        ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public BufferID createBuffer(String bufferName, BufferQoS quality,
+                                 ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
         synchronized (lock) {
             return bufferManager.createBuffer(bufferName, quality, containerSessionID, sessionID);
         }
     }
 
-    @Override public void destroyBuffer(BufferID id, ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void destroyBuffer(BufferID id, ContainerSessionID containerSessionID,
+                              PlanSessionID sessionID) throws RemoteException {
         synchronized (lock) {
             bufferManager.destroyBuffer(id, containerSessionID, sessionID);
         }
     }
 
-    @Override public void destroyContainerSession(ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void destroyContainerSession(ContainerSessionID containerSessionID,
+                                        PlanSessionID sessionID) throws RemoteException {
         synchronized (lock) {
             bufferManager.destroyContainerSession(containerSessionID, sessionID);
         }
@@ -47,19 +50,21 @@ public class SynchronizedBufferManager implements BufferManagerInterface {
 
     @Override
     public CombinedBuffer getLocalBuffer(BufferID id, ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException {
+                                         PlanSessionID sessionID) throws RemoteException {
         synchronized (lock) {
             return bufferManager.getLocalBuffer(id, containerSessionID, sessionID);
         }
     }
 
-    @Override public void destroySessions(PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void destroySessions(PlanSessionID sessionID) throws RemoteException {
         synchronized (lock) {
             bufferManager.destroySessions(sessionID);
         }
     }
 
-    @Override public void destroyAllSessions() throws RemoteException {
+    @Override
+    public void destroyAllSessions() throws RemoteException {
         synchronized (lock) {
             bufferManager.destroyAllSessions();
         }

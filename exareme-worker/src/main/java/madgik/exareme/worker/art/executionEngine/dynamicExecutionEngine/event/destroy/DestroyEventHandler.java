@@ -30,11 +30,12 @@ public class DestroyEventHandler implements ExecEngineEventHandler<DestroyEvent>
     public DestroyEventHandler() {
     }
 
-    @Override public void preProcess(DestroyEvent event, PlanEventSchedulerState state)
-        throws RemoteException {
+    @Override
+    public void preProcess(DestroyEvent event, PlanEventSchedulerState state)
+            throws RemoteException {
         try {
             String objectName =
-                (event.destroy != null) ? event.destroy.objectName : event.destroyEntity.objectName;
+                    (event.destroy != null) ? event.destroy.objectName : event.destroyEntity.objectName;
 
             ActiveObject activeObject = state.getActiveObject(objectName);
             OperatorGroup group = activeObject.operatorGroup;
@@ -44,17 +45,17 @@ public class DestroyEventHandler implements ExecEngineEventHandler<DestroyEvent>
             DestroyEntity destroyEntity = event.destroyEntity;
             if (destroyEntity == null) {
                 destroyEntity = activeGroup.planSession.getExecutionPlan().
-                    createDestroyEntity(event.destroy);
+                        createDestroyEntity(event.destroy);
             }
             ContainerSessionID containerSessionID = activeGroup.containerSessionID;
             event.session =
-                state.getContainerSession(destroyEntity.containerName, containerSessionID);
+                    state.getContainerSession(destroyEntity.containerName, containerSessionID);
 
             ObjectType type = activeGroup.planSession.getExecutionPlan().getType(objectName);
             switch (type) {
                 case Operator: {
                     ConcreteOperatorID operatorID = activeGroup.planSession.
-                        getOperatorIdMap().get(destroyEntity.operatorEntity);
+                            getOperatorIdMap().get(destroyEntity.operatorEntity);
                     event.jobs = new ContainerJobs();
                     event.jobs.addJob(new DestroyOperatorJob(operatorID));
 
@@ -79,13 +80,15 @@ public class DestroyEventHandler implements ExecEngineEventHandler<DestroyEvent>
         }
     }
 
-    @Override public void handle(DestroyEvent event, EventProcessor proc) throws RemoteException {
+    @Override
+    public void handle(DestroyEvent event, EventProcessor proc) throws RemoteException {
         event.session.execJobs(event.jobs);
         event.messageCount = 1;
     }
 
-    @Override public void postProcess(DestroyEvent event, PlanEventSchedulerState state)
-        throws RemoteException {
+    @Override
+    public void postProcess(DestroyEvent event, PlanEventSchedulerState state)
+            throws RemoteException {
         state.getStatistics().incrControlMessagesCountBy(event.messageCount);
     }
 }

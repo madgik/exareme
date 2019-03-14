@@ -23,10 +23,11 @@ Examples:
 """
 from functions.vtable import vtbase
 
-#import json
+# import json
 
 
-registered=True
+registered = True
+
 
 class demopfavt(vtbase.VT):
 
@@ -55,8 +56,10 @@ class demopfavt(vtbase.VT):
         except Exception, e:
             raise functions.OperatorError(__name__.rsplit('.')[-1], e)
 
+
 def Source():
     return vtbase.VTGenerator(demopfavt)
+
 
 if not ('.' in __name__):
     """
@@ -66,9 +69,11 @@ if not ('.' in __name__):
     import sys
     import functions.vtable.setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

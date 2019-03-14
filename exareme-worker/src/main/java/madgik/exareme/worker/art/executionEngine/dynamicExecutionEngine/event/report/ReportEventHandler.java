@@ -19,18 +19,21 @@ public class ReportEventHandler implements ExecEngineEventHandler<ReportEvent> {
     public ReportEventHandler() {
     }
 
-    @Override public void preProcess(ReportEvent event, PlanEventSchedulerState state)
-        throws RemoteException {
+    @Override
+    public void preProcess(ReportEvent event, PlanEventSchedulerState state)
+            throws RemoteException {
         state.addOperatorExitMessage(event.operatorID, event.exidCode);
         System.out.println("ReportEventpreProcess  " + state);
     }
 
-    @Override public void handle(ReportEvent event, EventProcessor proc) throws RemoteException {
+    @Override
+    public void handle(ReportEvent event, EventProcessor proc) throws RemoteException {
         //System.out.println("CCCCCCCCCCCCCCCC");
     }
 
-    @Override public void postProcess(ReportEvent event, PlanEventSchedulerState state)
-        throws RemoteException {
+    @Override
+    public void postProcess(ReportEvent event, PlanEventSchedulerState state)
+            throws RemoteException {
         //System.out.println("DDDDDDDDDDDDDDDDDD");
     }
 }

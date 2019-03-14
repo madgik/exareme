@@ -32,11 +32,11 @@ public interface JobQueueInterface extends SessionBased {
     ArrayList<AbstractContainerJob> getNextJob(ContainerResources resources);
 
     ContainerJobResult addJob(ContainerJob job, ContainerSessionID contSessionID,
-        PlanSessionID sessionID) throws RemoteException;
+                              PlanSessionID sessionID) throws RemoteException;
 
     void setManagers(StatisticsManager statisticsManager,
-        ConcreteOperatorManager concreteOperatorManager, BufferManager bufferManager,
-        AdaptorManager adaptorManager, DataTransferMgrInterface dataTransferManagerDTP);
+                     ConcreteOperatorManager concreteOperatorManager, BufferManager bufferManager,
+                     AdaptorManager adaptorManager, DataTransferMgrInterface dataTransferManagerDTP);
 
     void freeResources(ConcreteOperatorID opID);
 

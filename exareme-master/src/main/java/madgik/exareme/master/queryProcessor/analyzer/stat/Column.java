@@ -31,7 +31,7 @@ public class Column {
     private Map<String, Double> hashStringMap = null;
 
     public Column(String columnName, int columnType, int columnSize, int numberOfDiffValues,
-        String minValue, String maxValue, Map<String, Integer> diffValFreqMap) {
+                  String minValue, String maxValue, Map<String, Integer> diffValFreqMap) {
         this.columnName = columnName;
         this.columnType = columnType;
         this.columnLength = columnSize;
@@ -54,7 +54,7 @@ public class Column {
                 } else {
                     int f = tempDiffFreqMap.get(e.getValue().toString());
                     tempDiffFreqMap
-                        .put(e.getValue().toString(), f + diffValFreqMap.get(e.getKey()));
+                            .put(e.getValue().toString(), f + diffValFreqMap.get(e.getKey()));
                 }
             }
 
@@ -105,11 +105,12 @@ public class Column {
 
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "Column{" + "columnName=" + columnName + ", columnType=" + columnType
-            + ", columnSize=" + columnLength + ", numberOfDiffValues=" + numberOfDiffValues
-            + ", minValue=" + minValue + ", maxValue=" + maxValue + ", diffValFreqMap="
-            + diffValFreqMap + '}';
+                + ", columnSize=" + columnLength + ", numberOfDiffValues=" + numberOfDiffValues
+                + ", minValue=" + minValue + ", maxValue=" + maxValue + ", diffValFreqMap="
+                + diffValFreqMap + '}';
     }
 
     public double getMinDouble() {

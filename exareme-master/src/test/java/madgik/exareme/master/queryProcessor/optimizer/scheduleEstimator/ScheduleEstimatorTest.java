@@ -23,7 +23,8 @@ public class ScheduleEstimatorTest {
     public ScheduleEstimatorTest() {
     }
 
-    @Test public void testOneContainer() {
+    @Test
+    public void testOneContainer() {
         ConcreteQueryGraph graph = GraphGenerator.createLatticeGraph(3, 3, 0);
         Assert.assertNotNull(graph);
         assertEquals(5, graph.getNumOfOperators());
@@ -47,13 +48,14 @@ public class ScheduleEstimatorTest {
         }
         ScheduleStatistics stats = estimator.getScheduleStatistics();
         double time = 5.0 + // CPU time
-            6.0;  // Disk time
+                6.0;  // Disk time
         assertEquals(time, stats.getTimeInQuanta(), 0.01);
         // TIme and money should be the same in one container.
         assertEquals(time, stats.getMoneyInQuanta(), 0.01);
     }
 
-    @Test public void testAllDiffContainers() {
+    @Test
+    public void testAllDiffContainers() {
         ConcreteQueryGraph graph = GraphGenerator.createLatticeGraph(3, 3, 0);
         Assert.assertNotNull(graph);
         assertEquals(5, graph.getNumOfOperators());
@@ -80,11 +82,11 @@ public class ScheduleEstimatorTest {
         }
         ScheduleStatistics stats = estimator.getScheduleStatistics();
         double time = 5 + // The first operator has 1 CPU, 1 disk, and 3 network
-            3 + // Each of the next (3) has 1 CPU, 1 disk and 1 network
-            3; // The last one has 1 cpu, 1 disk, and 1 network
+                3 + // Each of the next (3) has 1 CPU, 1 disk and 1 network
+                3; // The last one has 1 cpu, 1 disk, and 1 network
         double money = 3 + 2 * 3 + // 1 cpu + 2 disk + 2 * 3 network
-            (3 + 2) * 3 + // 1 cpu + 2 disk (for 3 ops)
-            3; // same as op 1 but no network
+                (3 + 2) * 3 + // 1 cpu + 2 disk (for 3 ops)
+                3; // same as op 1 but no network
         assertEquals(time, stats.getTimeInQuanta(), 0.01);
         assertEquals(money, stats.getMoneyInQuanta(), 0.01);
     }

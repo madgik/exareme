@@ -20,6 +20,6 @@ public class NetUtilTest extends TestCase {
         Assert.assertEquals(1, NetUtil.getIPLongRepresentation("0.0.0.1"));
         Assert.assertEquals(1 * ipPart(4), NetUtil.getIPLongRepresentation("1.0.0.0"));
         Assert.assertEquals(127 * ipPart(4) + 1 * ipPart(1),
-            NetUtil.getIPLongRepresentation("127.0.0.1"));
+                NetUtil.getIPLongRepresentation("127.0.0.1"));
     }
 }

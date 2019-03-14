@@ -1,7 +1,7 @@
 # coding: utf-8
 
-import setpath
 import functions
+
 
 def ifthenelse(*args):
     """
@@ -27,17 +27,18 @@ def ifthenelse(*args):
     ------
     yes
     """
-    if len(args)<2:
-        raise functions.OperatorError("ifthenelse","operator needs at least two inputs")
+    if len(args) < 2:
+        raise functions.OperatorError("ifthenelse", "operator needs at least two inputs")
 
     if args[0]:
         return args[1]
     else:
-        if len(args)>2:
+        if len(args) > 2:
             return args[2]
         return None
 
-ifthenelse.registered=True
+
+ifthenelse.registered = True
 
 if not ('.' in __name__):
     """
@@ -45,11 +46,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

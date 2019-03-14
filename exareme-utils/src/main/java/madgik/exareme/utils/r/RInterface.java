@@ -19,7 +19,7 @@ public class RInterface {
     private static final Logger log = Logger.getLogger(RInterface.class);
 
     public static double optimize(String function, double[] initialVals, double[] minValues,
-        double[] maxValues, double[] variables) throws RemoteException {
+                                  double[] maxValues, double[] variables) throws RemoteException {
         StringBuilder program = new StringBuilder();
         program.append(function);
         if (initialVals == null) {
@@ -27,7 +27,7 @@ public class RInterface {
         }
 
         program.append("result <- optim(" + vec(initialVals) + ", " +
-            "f, method=\"L-BFGS-B\", control=list(fnscale=-1)");
+                "f, method=\"L-BFGS-B\", control=list(fnscale=-1)");
         if (minValues != null) {
             program.append(", lower=" + vec(minValues));
         }

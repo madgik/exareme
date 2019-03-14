@@ -27,7 +27,7 @@ public class ActiveOperator extends ActiveObject {
     public Date exitDate = null;
 
     public ActiveOperator(OperatorEntity operatorEntity, ContainerSessionID containerSessionID,
-        OperatorGroup operatorGroup) {
+                          OperatorGroup operatorGroup) {
         super(ObjectType.Operator, operatorEntity.operatorName, containerSessionID, operatorGroup);
         this.operatorEntity = operatorEntity;
     }

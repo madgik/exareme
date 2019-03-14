@@ -14,16 +14,17 @@ import java.rmi.RemoteException;
  * @author herald
  */
 public class ContainerQuantumClockTickEventListener
-    implements EventListener<ContainerQuantumClockTickEvent> {
+        implements EventListener<ContainerQuantumClockTickEvent> {
     public static final ContainerQuantumClockTickEventListener instance =
-        new ContainerQuantumClockTickEventListener();
+            new ContainerQuantumClockTickEventListener();
     private static final long serialVersionUID = 1L;
 
     public ContainerQuantumClockTickEventListener() {
     }
 
-    @Override public void processed(ContainerQuantumClockTickEvent event, RemoteException exception,
-        EventProcessor processor) {
+    @Override
+    public void processed(ContainerQuantumClockTickEvent event, RemoteException exception,
+                          EventProcessor processor) {
         if (exception != null) {
             LogUtils.logException("Container Quantum Clock", exception);
             PlanEventScheduler.engineInternalException(event, exception);

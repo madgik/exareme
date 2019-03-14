@@ -7,7 +7,6 @@ package madgik.exareme.jdbc.federated;
 import java.util.Objects;
 
 /**
- *
  * @author dimitris
  */
 public class Schema {
@@ -49,10 +48,9 @@ public class Schema {
     }
 
     public Schema(String dbID, String schemaName) {
-        id=dbID;
-        schema=schemaName;
+        id = dbID;
+        schema = schemaName;
     }
-    
-    
-    
+
+
 }

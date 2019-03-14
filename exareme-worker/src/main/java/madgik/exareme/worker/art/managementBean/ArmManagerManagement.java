@@ -14,11 +14,11 @@ import java.rmi.RemoteException;
 
 /**
  * @author Herald Kllapi <br> University of Athens / Department of Informatics
- *         and Telecommunications.
+ * and Telecommunications.
  * @since 1.0
  */
 public class ArmManagerManagement
-    implements madgik.exareme.worker.art.managementBean.ArmManagerManagementMBean {
+        implements madgik.exareme.worker.art.managementBean.ArmManagerManagementMBean {
     private ArmManager manager = null;
     private ArmComputeManager armCompute = null;
     private ArmStorageManager armStorage = null;
@@ -29,27 +29,33 @@ public class ArmManagerManagement
         //    this.armStorage = manager.getStorageManager();
     }
 
-    @Override public boolean isComputeOnline() throws RemoteException {
+    @Override
+    public boolean isComputeOnline() throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public String startCompute() throws RemoteException {
+    @Override
+    public String startCompute() throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public String connectToCompute() throws RemoteException {
+    @Override
+    public String connectToCompute() throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public boolean isStorageOnline() throws RemoteException {
+    @Override
+    public boolean isStorageOnline() throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public String startStorage() throws RemoteException {
+    @Override
+    public String startStorage() throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public String connectToStorage() throws RemoteException {
+    @Override
+    public String connectToStorage() throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

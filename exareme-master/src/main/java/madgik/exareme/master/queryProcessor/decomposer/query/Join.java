@@ -15,12 +15,14 @@ public class Join {
     public String rightTableAlias = null;
     public String rightColumnName = null;
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return leftTableAlias + "." + leftColumnName + " = " + rightTableAlias + "."
-            + rightColumnName;
+                + rightColumnName;
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int hash = 3;
         hash = 47 * hash + Objects.hashCode(this.leftTableAlias);
         hash = 47 * hash + Objects.hashCode(this.leftColumnName);
@@ -29,7 +31,8 @@ public class Join {
         return hash;
     }
 
-    @Override public boolean equals(Object obj) {
+    @Override
+    public boolean equals(Object obj) {
         if (obj == null) {
             return false;
         }

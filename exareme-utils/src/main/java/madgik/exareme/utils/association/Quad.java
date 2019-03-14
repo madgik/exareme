@@ -26,7 +26,8 @@ public class Quad<A, B, C, D> implements Serializable {
 
     public static <A, B, C extends Comparable<C>, D> Comparator<Quad<A, B, C, D>> getCComparator() {
         return new Comparator<Quad<A, B, C, D>>() {
-            @Override public int compare(Quad<A, B, C, D> o1, Quad<A, B, C, D> o2) {
+            @Override
+            public int compare(Quad<A, B, C, D> o1, Quad<A, B, C, D> o2) {
                 return o1.c.compareTo(o2.c);
             }
         };
@@ -34,7 +35,8 @@ public class Quad<A, B, C, D> implements Serializable {
 
     public static <A, B, C extends Comparable<C>, D> Comparator<Quad<A, B, C, D>> getCComparatorDesc() {
         return new Comparator<Quad<A, B, C, D>>() {
-            @Override public int compare(Quad<A, B, C, D> o1, Quad<A, B, C, D> o2) {
+            @Override
+            public int compare(Quad<A, B, C, D> o1, Quad<A, B, C, D> o2) {
                 return o2.c.compareTo(o1.c);
             }
         };

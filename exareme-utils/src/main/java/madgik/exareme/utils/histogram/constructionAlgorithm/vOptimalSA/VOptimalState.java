@@ -33,7 +33,7 @@ public class VOptimalState implements State {
             prev = t;
         }
 
-	/* last bucket */
+        /* last bucket */
         DescriptiveStatistics stats = new DescriptiveStatistics();
         int max = data.size();
         for (int i = prev; i < max; i++) {
@@ -44,7 +44,8 @@ public class VOptimalState implements State {
         return cost;
     }
 
-    @Override public State clone() {
+    @Override
+    public State clone() {
         int[] newThresholds = new int[thresholds.length];
         System.arraycopy(thresholds, 0, newThresholds, 0, newThresholds.length);
 

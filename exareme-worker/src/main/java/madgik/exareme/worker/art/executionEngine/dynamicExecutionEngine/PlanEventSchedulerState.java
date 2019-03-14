@@ -61,7 +61,7 @@ public class PlanEventSchedulerState {
     // Operator id to object. This is used by the report manager
     private Map<ConcreteOperatorID, ActiveOperator> operatorIDToActiveObjectMap = null;
     private HashMap<String, HashMap<ContainerSessionID, ContainerSession>> containerToSessionIDMap =
-        null;
+            null;
     private HashMap<ContainerSessionID, LinkedList<ContainerSession>> sessionMap;
     /*
      * Name to active object map. Everything that can be
@@ -80,9 +80,9 @@ public class PlanEventSchedulerState {
 
     // TODO(DS): this is the global state
     public PlanEventSchedulerState(PlanSessionID sessionID, PlanSessionReportID reportID, SLA sla,
-        EventProcessor eventProcessor, DynamicPlanManager planManager,
-        ArtRegistryProxy registryProxy, PlanSessionResourceManager resourceManager,
-        PlanEventScheduler eventScheduler) {
+                                   EventProcessor eventProcessor, DynamicPlanManager planManager,
+                                   ArtRegistryProxy registryProxy, PlanSessionResourceManager resourceManager,
+                                   PlanEventScheduler eventScheduler) {
         this.sessionID = sessionID;
         this.reportID = reportID;
         this.eventProcessor = eventProcessor;
@@ -96,13 +96,13 @@ public class PlanEventSchedulerState {
         this.retryPolicy = RetryPolicyFactory.getDefaultPolicy();
         this.containerProxyMap = Collections.synchronizedMap(new HashMap<String, ContainerProxy>());
         this.operatorIDToActiveObjectMap =
-            Collections.synchronizedMap(new HashMap<ConcreteOperatorID, ActiveOperator>());
+                Collections.synchronizedMap(new HashMap<ConcreteOperatorID, ActiveOperator>());
         this.terminationListeners =
-            Collections.synchronizedList(new LinkedList<PlanTerminationListener>());
+                Collections.synchronizedList(new LinkedList<PlanTerminationListener>());
         this.nameToActiveObjectMap = new HashMap<String, ActiveObject>();
         this.nameToMaterializedObjMap = new HashMap<String, MaterializedObject>();
         this.containerToSessionIDMap =
-            new HashMap<String, HashMap<ContainerSessionID, ContainerSession>>();
+                new HashMap<String, HashMap<ContainerSessionID, ContainerSession>>();
         this.sessionMap = new HashMap<ContainerSessionID, LinkedList<ContainerSession>>();
         this.groupDependencySolver = new OperatorGroupDependencySolver(this);
         // this.operatorExitMessage = new HashMap<ConcreteOperatorID, String>();
@@ -138,7 +138,7 @@ public class PlanEventSchedulerState {
     }
 
     public void addContainerSession(String name, ContainerSessionID contSID,
-        ContainerSession session) {
+                                    ContainerSession session) {
         HashMap<ContainerSessionID, ContainerSession> sessions = containerToSessionIDMap.get(name);
         if (sessions == null) {
             sessions = new HashMap<ContainerSessionID, ContainerSession>();
@@ -210,9 +210,9 @@ public class PlanEventSchedulerState {
 
     public PlanSessionProgressStats getProgress() {
         return new PlanSessionProgressStats((int) statistics.totalProcessingOperators(),
-            (int) statistics.processingOperatorsCompleted(),
-            (int) statistics.getTotalDataTransfer(), (int) statistics.getDataTransferCompleted(),
-            (int) statistics.operatorsError);
+                (int) statistics.processingOperatorsCompleted(),
+                (int) statistics.getTotalDataTransfer(), (int) statistics.getDataTransferCompleted(),
+                (int) statistics.operatorsError);
     }
 
     public void addException(Exception e) {

@@ -11,7 +11,8 @@ import com.foundationdb.sql.parser.SQLParser;
  */
 public class DistSQLParser extends SQLParser {
 
-    @Override public IdentifierCase getIdentifierCase() {
+    @Override
+    public IdentifierCase getIdentifierCase() {
         return IdentifierCase.PRESERVE;
     }
 }

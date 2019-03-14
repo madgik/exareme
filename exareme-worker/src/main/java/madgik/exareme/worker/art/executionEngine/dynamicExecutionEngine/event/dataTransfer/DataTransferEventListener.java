@@ -20,8 +20,9 @@ public class DataTransferEventListener implements EventListener<DataTransferEven
     public DataTransferEventListener() {
     }
 
-    @Override public void processed(DataTransferEvent event, RemoteException exception,
-        EventProcessor processor) {
+    @Override
+    public void processed(DataTransferEvent event, RemoteException exception,
+                          EventProcessor processor) {
         if (exception != null) {
             LogUtils.logException("DataTransfer", exception);
             PlanEventScheduler.engineInternalException(event, exception);

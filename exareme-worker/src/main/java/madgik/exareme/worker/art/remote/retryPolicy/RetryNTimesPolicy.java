@@ -9,8 +9,8 @@ import java.rmi.RemoteException;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class RetryNTimesPolicy implements RetryTimesPolicy {
@@ -22,7 +22,8 @@ public class RetryNTimesPolicy implements RetryTimesPolicy {
         this.times = times;
     }
 
-    @Override public boolean retry(Exception exception, int tries) throws RemoteException {
+    @Override
+    public boolean retry(Exception exception, int tries) throws RemoteException {
         return this.times < tries;
     }
 }

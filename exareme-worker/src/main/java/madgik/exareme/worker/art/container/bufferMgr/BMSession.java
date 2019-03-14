@@ -16,17 +16,17 @@ import java.util.HashMap;
  */
 public class BMSession implements Serializable {
     private static final org.apache.log4j.Logger log =
-        org.apache.log4j.Logger.getLogger(BMSession.class);
+            org.apache.log4j.Logger.getLogger(BMSession.class);
 
     private static final long serialVersionUID = 1L;
     private HashMap<ContainerSessionID, BMContainerSession> containerSessionMap =
-        new HashMap<ContainerSessionID, BMContainerSession>();
+            new HashMap<ContainerSessionID, BMContainerSession>();
     private StatisticsManagerInterface statistics = null;
     private PlanSessionID sessionID = null;
     private BufferManagerInterface manager = null;
 
     public BMSession(PlanSessionID sessionID, StatisticsManagerInterface statistics,
-        BufferManagerInterface manager) {
+                     BufferManagerInterface manager) {
         this.statistics = statistics;
         this.sessionID = sessionID;
         this.manager = manager;

@@ -7,8 +7,8 @@ import java.io.Serializable;
 
 /**
  * @author Dimitris Paparas<br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class RegisterPolicy implements Serializable {
@@ -17,7 +17,7 @@ public class RegisterPolicy implements Serializable {
     ExpirationPolicy expirationPolicy;
 
     public RegisterPolicy(ExpirationPolicy expirationPolicy,
-        ExpirationActionPolicy expirationActionPolicy) {
+                          ExpirationActionPolicy expirationActionPolicy) {
 
         this.expirationActionPolicy = expirationActionPolicy;
         this.expirationPolicy = expirationPolicy;

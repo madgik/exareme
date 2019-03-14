@@ -1,8 +1,8 @@
-import setpath
 import Queue
 import functions
 
 __docformat__ = 'reStructuredText en'
+
 
 class imax:
     """
@@ -41,67 +41,70 @@ class imax:
 
 
     """
-    registered=True
+    registered = True
 
     def __init__(self):
-        self.topn=None
-        self.size=None
-        self.strtype=False
-        self.anytype=True
-        self.lessval=None
-        self.stepsnum=0
-        self.valarg=None
+        self.topn = None
+        self.size = None
+        self.strtype = False
+        self.anytype = True
+        self.lessval = None
+        self.stepsnum = 0
+        self.valarg = None
 
     def step(self, *args):
         if not args:
-            raise functions.OperatorError("imax","No arguments")
-        if len(args)<2:
-            raise functions.OperatorError("imax","Wrong number of arguments")
+            raise functions.OperatorError("imax", "No arguments")
+        if len(args) < 2:
+            raise functions.OperatorError("imax", "Wrong number of arguments")
         if not self.size:
             try:
-                self.size=int(args[0])
-                self.topn=Queue.PriorityQueue(self.size)
+                self.size = int(args[0])
+                self.topn = Queue.PriorityQueue(self.size)
             except ValueError:
-                raise functions.OperatorError("imax","Wrong type in first argument")
+                raise functions.OperatorError("imax", "Wrong type in first argument")
 
-        curval=args[1]
+        curval = args[1]
         if not self.topn.full():
             self.topn.put_nowait(curval)
         else:
-            curless=self.topn.get()
-            self.topn.put_nowait(max(curval,curless))
-        self.stepsnum+=1
-
+            curless = self.topn.get()
+            self.topn.put_nowait(max(curval, curless))
+        self.stepsnum += 1
 
     def final(self):
         if not self.size:
             return
-        if self.stepsnum<self.size:
-                return None
+        if self.stepsnum < self.size:
+            return None
         return self.topn.get()
 
+
 class q2list:
-    def __init__(self,queue):
-        self.q=queue
+    def __init__(self, queue):
+        self.q = queue
+
     def __iter__(self):
         return self
+
     def next(self):
         if self.q.empty():
             raise StopIteration
-        a=self.q.get_nowait()
+        a = self.q.get_nowait()
         self.q.put_nowait(a)
         return a
 
 
 def typed(arg):
     try:
-        arg=int(arg)
+        arg = int(arg)
     except ValueError:
         try:
-            arg=float(arg)
+            arg = float(arg)
         except ValueError:
             pass
     return
+
 
 class minrow:
     """
@@ -136,27 +139,26 @@ class minrow:
     None
     
     """
-    registered=True
-
+    registered = True
 
     def __init__(self):
-        self.minv=None
-        
+        self.minv = None
+
     def step(self, *args):
         if not args:
-            raise functions.OperatorError("minrow","No arguments")
-        if len(args)!=2:
-            raise functions.OperatorError("minrow","Wrong number of arguments")
+            raise functions.OperatorError("minrow", "No arguments")
+        if len(args) != 2:
+            raise functions.OperatorError("minrow", "Wrong number of arguments")
         if not self.minv:
-            self.minv=(args[0],args[1])
-        elif args[0]<self.minv[0]:
-            self.minv=(args[0],args[1])
-
+            self.minv = (args[0], args[1])
+        elif args[0] < self.minv[0]:
+            self.minv = (args[0], args[1])
 
     def final(self):
         if not self.minv:
             return None
         return self.minv[1]
+
 
 class maxrow:
     """
@@ -185,29 +187,28 @@ class maxrow:
     --
     18
     """
-    registered=True
-
+    registered = True
 
     def __init__(self):
-        self.maxv=None
-        self.first=True
+        self.maxv = None
+        self.first = True
 
     def step(self, *args):
         if self.first:
             if not args:
-                raise functions.OperatorError("maxrow","No arguments")
-            if len(args)!=2:
-                raise functions.OperatorError("maxrow","Wrong number of arguments")
-            self.maxv=(args[0],args[1])
-            self.first=False
+                raise functions.OperatorError("maxrow", "No arguments")
+            if len(args) != 2:
+                raise functions.OperatorError("maxrow", "Wrong number of arguments")
+            self.maxv = (args[0], args[1])
+            self.first = False
             return
-        self.maxv=max(self.maxv,args)
-
+        self.maxv = max(self.maxv, args)
 
     def final(self):
         if not self.maxv:
             return None
         return self.maxv[1]
+
 
 class groupdiff:
     """
@@ -253,36 +254,36 @@ class groupdiff:
     f  | 3  | 1
     g  | 3  | 1
     """
-    registered=True
+    registered = True
 
     def __init__(self):
-        self.first=True
-        self.data=[]
-        self.prevcomp=None
-        self.size=0
-        self.repeat=1
+        self.first = True
+        self.data = []
+        self.prevcomp = None
+        self.size = 0
+        self.repeat = 1
 
     def step(self, *args):
         if self.first:
             if not args:
-                raise functions.OperatorError("groupdiff","No arguments")
-            self.prevcomp=args[0]
+                raise functions.OperatorError("groupdiff", "No arguments")
+            self.prevcomp = args[0]
             self.data.append(list(args))
-            self.first=False
-            self.size=len(args)
+            self.first = False
+            self.size = len(args)
             return
 
-        if args[0]!=self.prevcomp:
-            self.prevcomp=args[0]
+        if args[0] != self.prevcomp:
+            self.prevcomp = args[0]
             self.data[-1].append(self.repeat)
             self.data.append(list(args))
-            self.repeat=1
+            self.repeat = 1
         else:
-            self.repeat+=1
+            self.repeat += 1
 
     def final(self):
         self.data[-1].append(self.repeat)
-        yield tuple(["compid"]+["C"+str(i) for i in xrange(1,self.size)]+["repetition"])
+        yield tuple(["compid"] + ["C" + str(i) for i in xrange(1, self.size)] + ["repetition"])
         for i in self.data:
             yield i
 
@@ -331,49 +332,47 @@ class ontop:
     top1
     -
     """
-    registered=True
-    multiset=True
-
+    registered = True
+    multiset = True
 
     def __init__(self):
-        self.topn=None
-        self.size=None
-        self.lessval=None
-        self.stepsnum=0
+        self.topn = None
+        self.size = None
+        self.lessval = None
+        self.stepsnum = 0
         self.argnum = 1
 
     def step(self, *args):
         if not args:
-            raise functions.OperatorError("ontop","No arguments")
-        if len(args)<3:
-            raise functions.OperatorError("ontop","Wrong number of arguments")
+            raise functions.OperatorError("ontop", "No arguments")
+        if len(args) < 3:
+            raise functions.OperatorError("ontop", "Wrong number of arguments")
         if not self.size:
             try:
-                self.size=int(args[0])
-                self.topn=Queue.PriorityQueue(self.size)
-                self.argnum = len(args)-2
+                self.size = int(args[0])
+                self.topn = Queue.PriorityQueue(self.size)
+                self.argnum = len(args) - 2
             except ValueError:
-                raise functions.OperatorError("ontop","Wrong type in first argument")
+                raise functions.OperatorError("ontop", "Wrong type in first argument")
 
-        inparg=args[1]
-        outarg=args[2:]
+        inparg = args[1]
+        outarg = args[2:]
 
         if not self.topn.full():
-            self.topn.put_nowait((inparg,outarg))       
+            self.topn.put_nowait((inparg, outarg))
         else:
-            inparg_old , outarg_old=self.topn.get_nowait()     
-            self.topn.put_nowait(max((inparg,outarg),(inparg_old ,outarg_old)))
+            inparg_old, outarg_old = self.topn.get_nowait()
+            self.topn.put_nowait(max((inparg, outarg), (inparg_old, outarg_old)))
 
-        self.stepsnum+=1
-
+        self.stepsnum += 1
 
     def final(self):
-        output=[]
+        output = []
         if self.topn:
             while not self.topn.empty():
-                output+=[self.topn.get_nowait()[1]]
+                output += [self.topn.get_nowait()[1]]
 
-        yield tuple(["top"+str(i+1) for i in xrange(self.argnum)])
+        yield tuple(["top" + str(i + 1) for i in xrange(self.argnum)])
 
         for el in reversed(output):
             yield el
@@ -385,12 +384,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()
-        

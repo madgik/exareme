@@ -32,7 +32,7 @@ public class CreateOperatorEventHandler {
 
     //  @Override
     public void preProcess(CreateOperatorEvent event, PlanEventSchedulerState state)
-        throws RemoteException {
+            throws RemoteException {
         String operatorName;
         if (event.operator != null) {
             operatorName = event.operator.operatorName;
@@ -41,12 +41,12 @@ public class CreateOperatorEventHandler {
         }
         event.activeOperator = state.getActiveOperator(operatorName);
         event.activeGroup = event.activeOperator.operatorGroup.objectNameActiveGroupMap
-            .get(event.activeOperator.objectName);
+                .get(event.activeOperator.objectName);
 
         OperatorEntity operatorEntity = event.operatorEntity;
         if (operatorEntity == null) {
             operatorEntity =
-                event.activeGroup.planSession.getExecutionPlan().addOperator(event.operator);
+                    event.activeGroup.planSession.getExecutionPlan().addOperator(event.operator);
         }
         Parameters params = new Parameters();
         for (madgik.exareme.worker.art.executionPlan.parser.expression.Parameter param : operatorEntity.paramList) {
@@ -55,15 +55,15 @@ public class CreateOperatorEventHandler {
 
 
         OperatorImplementationEntity implEntity =
-            new OperatorImplementationEntity(operatorEntity.operator, operatorEntity.locations);
+                new OperatorImplementationEntity(operatorEntity.operator, operatorEntity.locations);
 
         ContainerSessionID containerSessionID = event.activeOperator.containerSessionID;
         event.session = state.getContainerSession(operatorEntity.containerName, containerSessionID);
         event.jobs = new ContainerJobs();
         event.jobs.addJob(
-            new CreateOperatorJob(operatorEntity.operatorName, operatorEntity.category,
-                operatorEntity.type, implEntity, params, operatorEntity.linksparams,
-                operatorEntity.queryString, state.getPlanSessionReportID(), containerSessionID));
+                new CreateOperatorJob(operatorEntity.operatorName, operatorEntity.category,
+                        operatorEntity.type, implEntity, params, operatorEntity.linksparams,
+                        operatorEntity.queryString, state.getPlanSessionReportID(), containerSessionID));
 
     }
 
@@ -75,9 +75,9 @@ public class CreateOperatorEventHandler {
     //  }
     //  @Override
     public void postProcess(CreateOperatorEvent event, PlanEventSchedulerState state)
-        throws RemoteException {
+            throws RemoteException {
         ConcreteOperatorID opID =
-            ((CreateOperatorJobResult) event.results.getJobResults().get(0)).opID;
+                ((CreateOperatorJobResult) event.results.getJobResults().get(0)).opID;
         event.activeGroup.planSession.getOperatorIdMap().put(event.operatorEntity, opID);
         event.activeGroup.planSession.getOperatorIdEntityMap().put(opID, event.operatorEntity);
         state.addActiveOperator(opID, event.activeOperator);
@@ -88,10 +88,10 @@ public class CreateOperatorEventHandler {
         state.getStatistics().incrControlMessagesCountBy(event.messageCount);
 
         CreateBufferJobResult bjr =
-            ((CreateOperatorJobResult) event.results.getJobResults().get(0)).bufferJobResult;
+                ((CreateOperatorJobResult) event.results.getJobResults().get(0)).bufferJobResult;
         if (bjr != null) {
             event.activeGroup.planSession.getBufferIdMap()
-                .put(event.operatorEntity, bjr.operatorIDToBufferId);
+                    .put(event.operatorEntity, bjr.operatorIDToBufferId);
             state.getStatistics().incrBuffersCreated();
             state.getStatistics().incrControlMessagesCountBy(event.messageCount);
         }

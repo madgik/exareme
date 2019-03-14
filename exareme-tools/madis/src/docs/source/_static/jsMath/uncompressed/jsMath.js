@@ -461,9 +461,9 @@ if (!window.jsMath || !window.jsMath.loaded) {
             },
             Insert: function (dst, src) {
                 for (var id in src) {
-                    if (dst[id] && typeof(src[id]) == 'object'
-                        && (typeof(dst[id]) == 'object'
-                        || typeof(dst[id]) == 'function')) {
+                    if (dst[id] && typeof (src[id]) == 'object'
+                        && (typeof (dst[id]) == 'object'
+                            || typeof (dst[id]) == 'function')) {
                         this.Insert(dst[id], src[id]);
                     } else {
                         dst[id] = src[id];
@@ -714,10 +714,9 @@ if (!window.jsMath || !window.jsMath.loaded) {
              *  file-loading mechanism.  'code' can be a string or a function.
              */
             Synchronize: function (code, data) {
-                if (typeof(code) != 'string') {
+                if (typeof (code) != 'string') {
                     jsMath.Script.Push(null, code, data)
-                }
-                else {
+                } else {
                     jsMath.Script.Push(jsMath.window, 'eval', code)
                 }
             },
@@ -795,11 +794,9 @@ if (!window.jsMath || !window.jsMath.loaded) {
                 this.cancelTimer = setTimeout('jsMath.Script.cancelLoad()', this.cancelTimeout);
                 if (this.mustPost) {
                     iframe.src = jsMath.Post.startLoad(url, iframe)
-                }
-                else if (url.match(/\.js$/)) {
+                } else if (url.match(/\.js$/)) {
                     iframe.src = jsMath.root + "jsMath-loader.html"
-                }
-                else {
+                } else {
                     iframe.src = this.url
                 }
             },
@@ -887,7 +884,7 @@ if (!window.jsMath || !window.jsMath.loaded) {
                     var d = data[k];
                     var n = d.length;
                     for (var i = 0; i < n; i++) {
-                        if (typeof(d[i]) == 'number') {
+                        if (typeof (d[i]) == 'number') {
                             d[i] = d[d[i]]
                         }
                     }
@@ -1016,8 +1013,7 @@ if (!window.jsMath || !window.jsMath.loaded) {
                     }
                     if (jsMath.Browser.textNodeBug) {
                         this.message.innerHTML = text
-                    }
-                    else {
+                    } else {
                         this.text.nodeValue = text
                     }
                     this.message.style.visibility = 'visible';
@@ -1112,8 +1108,7 @@ if (!window.jsMath || !window.jsMath.loaded) {
                 }
                 if (!parent.hasChildNodes) {
                     parent.appendChild(div)
-                }
-                else {
+                } else {
                     parent.insertBefore(div, parent.firstChild)
                 }
                 return div;
@@ -1281,12 +1276,11 @@ if (!window.jsMath || !window.jsMath.loaded) {
                 var WH = jsMath.EmBoxFor('<span class="' + name + '">' + font[65].c + '</span>');
                 font.hd = WH.h;
                 font.d = jsMath.EmBoxFor('<span class="' + name + '">' + font[65].c +
-                        jsMath.HTML.Rule(1, font.hd) + '</span>').h - font.hd;
+                    jsMath.HTML.Rule(1, font.hd) + '</span>').h - font.hd;
                 font.h = font.hd - font.d;
                 if (name == 'cmmi10') {
                     font.skewchar = 0177
-                }
-                else if (name == 'cmsy10') {
+                } else if (name == 'cmsy10') {
                     font.skewchar = 060
                 }
             },
@@ -1313,7 +1307,7 @@ if (!window.jsMath || !window.jsMath.loaded) {
                     jsMath.TeXparams[j] = {}
                 }
                 for (i in jsMath.TeX) {
-                    if (typeof(jsMath.TeX[i]) != 'object') {
+                    if (typeof (jsMath.TeX[i]) != 'object') {
                         for (j = 0; j < jsMath.sizes.length; j++) {
                             jsMath.TeXparams[j][i] = jsMath.sizes[j] * jsMath.TeX[i] / 100;
                         }
@@ -1531,10 +1525,10 @@ if (!window.jsMath || !window.jsMath.loaded) {
                 this.block += ';overflow:hidden';
                 var h = jsMath.BBoxFor('x').h;
                 this.mozInlineBlockBug = jsMath.BBoxFor(
-                        '<span style="' + this.block + ';height:' + h + 'px;width:1px"></span>x' +
-                        '<span style="' + this.block + ';height:' + h + 'px;width:1px;vertical-align:-' + h + 'px"></span>').h > 2 * h;
+                    '<span style="' + this.block + ';height:' + h + 'px;width:1px"></span>x' +
+                    '<span style="' + this.block + ';height:' + h + 'px;width:1px;vertical-align:-' + h + 'px"></span>').h > 2 * h;
                 this.widthAddsBorder = jsMath.BBoxFor('<span style="' + this.block +
-                        ';overflow:hidden;height:1px;width:10px;border-left:10px solid"></span>').w > 10;
+                    ';overflow:hidden;height:1px;width:10px;border-left:10px solid"></span>').w > 10;
                 this.msieBorderBug =
                     jsMath.BBoxFor('<span style="' + this.block + ';height:' + h + 'px;width:1px"></span>x').h !=
                     jsMath.BBoxFor('<span style="' + this.block + ';height:' + h + 'px;width:1px;border-left:1px solid"></span>x').h;
@@ -1832,18 +1826,18 @@ if (!window.jsMath || !window.jsMath.loaded) {
 
             // the HTML for the missing font message
             message: '<b>No jsMath TeX fonts found</b> -- using image fonts instead.<br/>\n'
-            + 'These may be slow and might not print well.<br/>\n'
-            + 'Use the jsMath control panel to get additional information.',
+                + 'These may be slow and might not print well.<br/>\n'
+                + 'Use the jsMath control panel to get additional information.',
 
             extra_message: 'Extra TeX fonts not found: <b><span id="jsMath_ExtraFonts"></span></b><br/>'
-            + 'Using image fonts instead.  This may be slow and might not print well.<br/>\n'
-            + 'Use the jsMath control panel to get additional information.',
+                + 'Using image fonts instead.  This may be slow and might not print well.<br/>\n'
+                + 'Use the jsMath control panel to get additional information.',
 
             print_message: 'To print higher-resolution math symbols, click the<br/>\n'
-            + '<b>Hi-Res Fonts for Printing</b> button on the jsMath control panel.<br/>\n',
+                + '<b>Hi-Res Fonts for Printing</b> button on the jsMath control panel.<br/>\n',
 
             alpha_message: 'If the math symbols print as black boxes, turn off <b>image alpha channels</b><br/>\n'
-            + 'using the <B>Options</B> pane of the jsMath control panel.<br/>\n',
+                + 'using the <B>Options</B> pane of the jsMath control panel.<br/>\n',
 
             /*
              *  Look to see if a font is found.
@@ -1897,7 +1891,7 @@ if (!window.jsMath || !window.jsMath.loaded) {
                 if (!jsMath.nofonts) return;
                 if (jsMath.browser != 'Mozilla' ||
                     (jsMath.platform == "mac" &&
-                    (!jsMath.Browser.VersionAtLeast(1.5) || jsMath.Browser.VersionAtLeast(3.0))) ||
+                        (!jsMath.Browser.VersionAtLeast(1.5) || jsMath.Browser.VersionAtLeast(3.0))) ||
                     (jsMath.platform != "mac" && !jsMath.Browser.VersionAtLeast(3.0))) {
                     wh = jsMath.BBoxFor('<span style="font-family: CMEX10, serif">' + jsMath.TeX.cmex10[1].c + '</span>');
                     jsMath.nofonts = ((wh.w * 3 > wh.h || wh.h == 0) && !this.Test1('cmr10'));
@@ -1932,8 +1926,7 @@ if (!window.jsMath || !window.jsMath.loaded) {
                             jsMath.Controls.SetCookie(0);
                             if (jsMath.window.NoFontMessage) {
                                 jsMath.window.NoFontMessage()
-                            }
-                            else {
+                            } else {
                                 this.Message(this.message)
                             }
                         }
@@ -1956,7 +1949,7 @@ if (!window.jsMath || !window.jsMath.loaded) {
                 if (!cookie.print && cookie.printwarn) {
                     this.PrintMessage(
                         (jsMath.Browser.alphaPrintBug && jsMath.Controls.cookie.alpha) ?
-                        this.print_message + this.alpha_message : this.print_message);
+                            this.print_message + this.alpha_message : this.print_message);
                 }
                 if (jsMath.Browser.waitForImages) {
                     jsMath.Script.Push(jsMath.Script, "WaitForImage", jsMath.blank);
@@ -2020,7 +2013,7 @@ if (!window.jsMath || !window.jsMath.loaded) {
              *  Register an extra font so jsMath knows about it
              */
             Register: function (data, force) {
-                if (typeof(data) == 'string') {
+                if (typeof (data) == 'string') {
                     data = {name: data}
                 }
                 if (!jsMath.Setup.inited && !force) {
@@ -2156,8 +2149,7 @@ if (!window.jsMath || !window.jsMath.loaded) {
                 this.panel = jsMath.Setup.DIV("panel", {display: 'none'}, jsMath.fixedDiv);
                 if (!jsMath.Browser.msieButtonBug) {
                     this.Button()
-                }
-                else {
+                } else {
                     setTimeout("jsMath.Controls.Button()", 500)
                 }
             },
@@ -2169,8 +2161,7 @@ if (!window.jsMath || !window.jsMath.loaded) {
                 jsMath.Translate.Cancel();
                 if (this.loaded) {
                     this.Main()
-                }
-                else {
+                } else {
                     jsMath.Script.delayedLoad(jsMath.root + "jsMath-controls.html")
                 }
             },
@@ -2314,8 +2305,7 @@ if (!window.jsMath || !window.jsMath.loaded) {
                 jsMath.Global.ClearCache();
                 if (url) {
                     jsMath.window.location.replace(url)
-                }
-                else {
+                } else {
                     jsMath.window.location.reload()
                 }
             }
@@ -3782,8 +3772,7 @@ if (!window.jsMath || !window.jsMath.loaded) {
                             for (c in jsMath.TeX[font]) {
                                 jsMath.TeX[font][c].img = {}
                             }
-                        }
-                        else {
+                        } else {
                             jsMath.TeX[font][c].img = {}
                         }
                     }
@@ -4153,8 +4142,7 @@ if (!window.jsMath || !window.jsMath.loaded) {
                 }
                 if (a == null || a == 1) {
                     box.h = .9 * TeX.M_height
-                }
-                else {
+                } else {
                     box.h = 1.1 * TeX.x_height + TeX.scale * a
                 }
                 return box;
@@ -4184,8 +4172,7 @@ if (!window.jsMath || !window.jsMath.loaded) {
                     if (c.img) {
                         box.bh = c.img.bh;
                         box.bd = c.img.bd
-                    }
-                    else {
+                    } else {
                         box.bh = scale * jsMath.h;
                         box.bd = scale * jsMath.d
                     }
@@ -4669,8 +4656,7 @@ if (!window.jsMath || !window.jsMath.loaded) {
                         }
                         if (j >= W.length) {
                             W[j] = row[j].w
-                        }
-                        else if (row[j].w > W[j]) {
+                        } else if (row[j].w > W[j]) {
                             W[j] = row[j].w
                         }
                         if (row[j].bh > bh) {
@@ -4813,8 +4799,7 @@ if (!window.jsMath || !window.jsMath.loaded) {
                         }
                         if (j >= W.length) {
                             W[j] = row[j].w
-                        }
-                        else if (row[j].w > W[j]) {
+                        } else if (row[j].w > W[j]) {
                             W[j] = row[j].w
                         }
                     }
@@ -5314,8 +5299,7 @@ if (!window.jsMath || !window.jsMath.loaded) {
                     if (mitem.type == 'choice') {
                         this.mlist = this.Atomize.choice(this.style, mitem, i, this.mlist);
                         i--
-                    }
-                    else if (this.Atomize[mitem.type]) {
+                    } else if (this.Atomize[mitem.type]) {
                         var f = this.Atomize[mitem.type]; // Opera needs separate name
                         f(this.style, this.size, mitem, prev, this, i);
                     }
@@ -5351,7 +5335,7 @@ if (!window.jsMath || !window.jsMath.loaded) {
                 var a = jsMath.Typeset.TeX(style, size).axis_height;
                 var delta = Math.max(h - a, d + a);
                 var H = Math.max(Math.floor(TeX.integer * delta / 500) * TeX.delimiterfactor,
-                        TeX.integer * (2 * delta - TeX.delimitershortfall)) / TeX.integer;
+                    TeX.integer * (2 * delta - TeX.delimitershortfall)) / TeX.integer;
                 var left = this.mlist[0];
                 var right = this.mlist[this.mlist.length - 1];
                 left.nuc = jsMath.Box.Delimiter(H, left.left, style);
@@ -5405,8 +5389,7 @@ if (!window.jsMath || !window.jsMath.loaded) {
                 if (mitem.h) {
                     box.Remeasured();
                     box.html = jsMath.HTML.Spacer(box.w)
-                }
-                else {
+                } else {
                     box.html = '', box.w = box.Mw = box.mw = 0;
                 }
                 if (!mitem.v) {
@@ -5749,8 +5732,7 @@ if (!window.jsMath || !window.jsMath.loaded) {
                 } else {
                     if (jsMath.Browser.msieIntegralBug && mitem.sub && C && C.ic) {
                         mitem.nuc = jsMath.Box.SetList([box, jsMath.Box.Space(-C.ic * TeX.scale)], style, size)
-                    }
-                    else if (box.y) {
+                    } else if (box.y) {
                         mitem.nuc = jsMath.Box.SetList([box], style, size)
                     }
                     jsMath.mList.prototype.Atomize.SupSub(style, size, mitem);
@@ -5765,8 +5747,8 @@ if (!window.jsMath || !window.jsMath.loaded) {
                     var nitem = mList.mlist[i + 1];
                     if (nitem && nitem.atom && nitem.type &&
                         (nitem.type == 'ord' || nitem.type == 'op' || nitem.type == 'bin' ||
-                        nitem.type == 'rel' || nitem.type == 'open' ||
-                        nitem.type == 'close' || nitem.type == 'punct')) {
+                            nitem.type == 'rel' || nitem.type == 'open' ||
+                            nitem.type == 'close' || nitem.type == 'punct')) {
                         if (nitem.nuc.type == 'TeX' && nitem.nuc.font == mitem.nuc.font) {
                             mitem.textsymbol = 1;
                             var krn = jsMath.TeX[mitem.nuc.font][mitem.nuc.c].krn;
@@ -5791,8 +5773,7 @@ if (!window.jsMath || !window.jsMath.loaded) {
                 var t = 0;
                 if (mitem.thickness != null) {
                     t = mitem.thickness
-                }
-                else if (mitem.from.match(/over/)) {
+                } else if (mitem.from.match(/over/)) {
                     t = TeX.default_rule_thickness
                 }
                 var isD = (style.charAt(0) == 'D');
@@ -5922,11 +5903,9 @@ if (!window.jsMath || !window.jsMath.loaded) {
                 sup = jsMath.Box.SetList([sup, jsMath.mItem.Space(TeX.scriptspace)], style, size);
                 if (style == 'D') {
                     p = TeX.sup1
-                }
-                else if (style.charAt(style.length - 1) == "'") {
+                } else if (style.charAt(style.length - 1) == "'") {
                     p = TeX.sup3
-                }
-                else {
+                } else {
                     p = TeX.sup2
                 }
                 u = Math.max(u, p, sup.d + jsMath.Typeset.TeX(Cu, size).x_height / 4);
@@ -6033,8 +6012,7 @@ if (!window.jsMath || !window.jsMath.loaded) {
             StyleSize: function (style, size) {
                 if (style == "S" || style == "S'") {
                     size = Math.max(0, size - 2)
-                }
-                else if (style == "SS" || style == "SS'") {
+                } else if (style == "SS" || style == "SS'") {
                     size = Math.max(0, size - 4)
                 }
                 return size;
@@ -6046,8 +6024,7 @@ if (!window.jsMath || !window.jsMath.loaded) {
             TeX: function (style, size) {
                 if (style == "S" || style == "S'") {
                     size = Math.max(0, size - 2)
-                }
-                else if (style == "SS" || style == "SS'") {
+                } else if (style == "SS" || style == "SS'") {
                     size = Math.max(0, size - 4)
                 }
                 return jsMath.TeXparams[size];
@@ -6060,8 +6037,7 @@ if (!window.jsMath || !window.jsMath.loaded) {
             AddStyle: function (style, size, html) {
                 if (style == "S" || style == "S'") {
                     size = Math.max(0, size - 2)
-                }
-                else if (style == "SS" || style == "SS'") {
+                } else if (style == "SS" || style == "SS'") {
                     size = Math.max(0, size - 4)
                 }
                 if (size != 4) {
@@ -6190,14 +6166,12 @@ if (!window.jsMath || !window.jsMath.loaded) {
                             break;
 
                         case 'space':
-                            if (typeof(mitem.w) == 'object') {
+                            if (typeof (mitem.w) == 'object') {
                                 if (this.style.charAt(1) == 'S') {
                                     mitem.w = .5 * mitem.w[0] / 18
-                                }
-                                else if (this.style.charAt(0) == 'S') {
+                                } else if (this.style.charAt(0) == 'S') {
                                     mitem.w = .7 * mitem.w[0] / 18
-                                }
-                                else {
+                                } else {
                                     mitem.w = mitem.w[0] / 18
                                 }
                             }
@@ -7019,7 +6993,7 @@ if (!window.jsMath || !window.jsMath.loaded) {
              *  Trim spaces from a string
              */
             trimSpaces: function (text) {
-                if (typeof(text) != 'string') {
+                if (typeof (text) != 'string') {
                     return text
                 }
                 return text.replace(/^\s+|\s+$/g, '');
@@ -7092,11 +7066,9 @@ if (!window.jsMath || !window.jsMath.loaded) {
                     c = this.string.charAt(this.i++);
                     if (c == this.cmd) {
                         this.i++
-                    }
-                    else if (c == this.open) {
+                    } else if (c == this.open) {
                         pcount++
-                    }
-                    else if (c == this.close) {
+                    } else if (c == this.close) {
                         if (pcount == 0) {
                             this.Error("Extra close brace");
                             return null
@@ -7220,14 +7192,11 @@ if (!window.jsMath || !window.jsMath.loaded) {
                 var d = match[1] - 0;
                 if (match[4] == 'px') {
                     d /= jsMath.em
-                }
-                else if (match[4] == 'pt') {
+                } else if (match[4] == 'pt') {
                     d /= 10
-                }
-                else if (match[4] == 'ex') {
+                } else if (match[4] == 'ex') {
                     d *= jsMath.TeX.x_height
-                }
-                else if (match[4] == 'mu') {
+                } else if (match[4] == 'mu') {
                     if (nomu) {
                         d = d / 18
                     } else {
@@ -7259,8 +7228,7 @@ if (!window.jsMath || !window.jsMath.loaded) {
                     c = this.string.charAt(this.i++);
                     if (c == '{') {
                         pcount++
-                    }
-                    else if (c == '}') {
+                    } else if (c == '}') {
                         if (pcount == 0) {
                             this.Error("Extra close brace while looking for ']'");
                             return null
@@ -7291,8 +7259,7 @@ if (!window.jsMath || !window.jsMath.loaded) {
                     var c = this.string.charAt(this.i++);
                     if (c == '{') {
                         pcount++
-                    }
-                    else if (c == '}') {
+                    } else if (c == '}') {
                         if (pcount == 0) {
                             this.Error("Extra close brace while looking for " + this.cmd + token);
                             return null
@@ -7304,8 +7271,7 @@ if (!window.jsMath || !window.jsMath.loaded) {
                         if (this.string.slice(this.i, this.i + 5) == "begin") {
                             pcount++;
                             this.i += 4
-                        }
-                        else if (this.string.slice(this.i, this.i + 3) == "end") {
+                        } else if (this.string.slice(this.i, this.i + 3) == "end") {
                             if (pcount > 0) {
                                 pcount--;
                                 this.i += 2
@@ -7568,8 +7534,7 @@ if (!window.jsMath || !window.jsMath.loaded) {
                     var open = this.mlist.Get(this.mlist.data.openI);
                     if (open.left) {
                         this.Error("Missing " + this.cmd + "right")
-                    }
-                    else {
+                    } else {
                         this.Error("Missing close brace")
                     }
                 }
@@ -7680,7 +7645,7 @@ if (!window.jsMath || !window.jsMath.loaded) {
                     return
                 }
                 var cmd = this.environments[env];
-                if (typeof(cmd) == "string") {
+                if (typeof (cmd) == "string") {
                     cmd = [cmd]
                 }
                 this[cmd[0]](env, cmd.slice(1));
@@ -7867,8 +7832,7 @@ if (!window.jsMath || !window.jsMath.loaded) {
                     c = string.charAt(i++);
                     if (c == this.cmd) {
                         text += c + string.charAt(i++)
-                    }
-                    else if (c == '#') {
+                    } else if (c == '#') {
                         c = string.charAt(i++);
                         if (c == "#") {
                             text += c
@@ -8026,7 +7990,7 @@ if (!window.jsMath || !window.jsMath.loaded) {
                 if (this.error) return;
                 if (this.macros[cmd]) {
                     var macro = this.macros[cmd];
-                    if (typeof(macro) == "string") {
+                    if (typeof (macro) == "string") {
                         macro = [macro]
                     }
                     this[macro[0]](cmd, macro.slice(1));
@@ -8057,8 +8021,7 @@ if (!window.jsMath || !window.jsMath.loaded) {
                 var open = this.mlist.Get(this.mlist.data.openI);
                 if (!open || open.left == null) {
                     this.mlist.Close()
-                }
-                else {
+                } else {
                     this.Error("Extra close brace or missing " + this.cmd + "right");
                     return
                 }
@@ -8082,8 +8045,7 @@ if (!window.jsMath || !window.jsMath.loaded) {
                 var open = this.mlist.Get(this.mlist.data.openI);
                 if (open && open.left != null) {
                     this.mlist.Close(right)
-                }
-                else {
+                } else {
                     this.Error("Extra open brace or missing " + this.cmd + "left");
                 }
             },
@@ -8132,8 +8094,7 @@ if (!window.jsMath || !window.jsMath.loaded) {
                 if (base.sup) {
                     if (base.sup.isPrime) {
                         base = this.mlist.Add(jsMath.mItem.Atom('ord', {type: null}))
-                    }
-                    else {
+                    } else {
                         this.Error("Double exponent: use braces to clarify");
                         return
                     }
@@ -8170,17 +8131,13 @@ if (!window.jsMath || !window.jsMath.loaded) {
                     c = this.string.charAt(this.i++);
                     if (this.mathchar[c]) {
                         this.HandleMathCode(c, this.mathchar[c])
-                    }
-                    else if (this.special[c]) {
+                    } else if (this.special[c]) {
                         this[this.special[c]](c)
-                    }
-                    else if (this.letter.test(c)) {
+                    } else if (this.letter.test(c)) {
                         this.HandleVariable(c)
-                    }
-                    else if (this.number.test(c)) {
+                    } else if (this.number.test(c)) {
                         this.HandleNumber(c)
-                    }
-                    else {
+                    } else {
                         this.HandleOther(c)
                     }
                 }
@@ -8188,8 +8145,7 @@ if (!window.jsMath || !window.jsMath.loaded) {
                     var open = this.mlist.Get(this.mlist.data.openI);
                     if (open.left) {
                         this.Error("Missing " + this.cmd + "right")
-                    }
-                    else {
+                    } else {
                         this.Error("Missing close brace")
                     }
                 }
@@ -8641,7 +8597,7 @@ if (!window.jsMath || !window.jsMath.loaded) {
                 if (!obj) {
                     obj = jsMath.document
                 }
-                if (typeof(obj) == 'string') {
+                if (typeof (obj) == 'string') {
                     obj = jsMath.document.getElementById(obj)
                 }
                 if (!obj.getElementsByTagName) return null;
@@ -8650,8 +8606,7 @@ if (!window.jsMath || !window.jsMath.loaded) {
                     if (math[k].className && math[k].className.match(/(^| )math( |$)/)) {
                         if (jsMath.Browser.renameOK && obj.getElementsByName) {
                             math[k].setAttribute('name', '_jsMath_')
-                        }
-                        else {
+                        } else {
                             element[element.length] = math[k]
                         }
                     }
@@ -8661,8 +8616,7 @@ if (!window.jsMath || !window.jsMath.loaded) {
                     if (math[k].className && math[k].className.match(/(^| )math( |$)/)) {
                         if (jsMath.Browser.renameOK && obj.getElementsByName) {
                             math[k].setAttribute('name', '_jsMath_')
-                        }
-                        else {
+                        } else {
                             element[element.length] = math[k]
                         }
                     }
@@ -8699,7 +8653,7 @@ if (!window.jsMath || !window.jsMath.loaded) {
                 jsMath.Message.UnBlank();
                 if (jsMath.Browser.safariImgBug &&
                     (jsMath.Controls.cookie.font == 'symbol' ||
-                    jsMath.Controls.cookie.font == 'image')) {
+                        jsMath.Controls.cookie.font == 'image')) {
                     //
                     //  For Safari, the images don't always finish
                     //  updating, so nudge the window to cause a

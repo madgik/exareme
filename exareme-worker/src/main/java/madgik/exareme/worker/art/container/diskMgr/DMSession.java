@@ -24,19 +24,19 @@ public class DMSession {
 
     private static final Logger log = Logger.getLogger(DMSession.class);
     private HashMap<ContainerSessionID, DMContainerSession> containerSessionMap =
-        new HashMap<ContainerSessionID, DMContainerSession>();
+            new HashMap<ContainerSessionID, DMContainerSession>();
     private DiskManagerInterface diskManager = null;
     private PlanSessionID sessionID = null;
     private File rootFile = null;
     private DiskSession globalSession = null;
 
     public DMSession(PlanSessionID sessionID, DiskManagerInterface diskManager)
-        throws RemoteException {
+            throws RemoteException {
         this.sessionID = sessionID;
         this.diskManager = diskManager;
 
         String operatorRootFileName = AdpProperties.getArtProps()
-            .getString("art.container.diskRoot", "art.container.operatorRoot");
+                .getString("art.container.diskRoot", "art.container.operatorRoot");
 
         log.debug("Creating root session");
         rootFile = new File(operatorRootFileName + "/S_" + sessionID.getLongId() + "/");
@@ -52,19 +52,19 @@ public class DMSession {
     }
 
     public DiskSession getContainerSession(ContainerSessionID containerSessionID)
-        throws RemoteException {
+            throws RemoteException {
         DMContainerSession cSession = getOrCreateContainerSession(containerSessionID);
         return cSession.getGlobalSession();
     }
 
     public DiskSession getOperatorSession(ConcreteOperatorID opID,
-        ContainerSessionID containerSessionID) throws RemoteException {
+                                          ContainerSessionID containerSessionID) throws RemoteException {
         DMContainerSession cSession = getOrCreateContainerSession(containerSessionID);
         return cSession.getOperatorSession(opID);
     }
 
     private DMContainerSession getOrCreateContainerSession(ContainerSessionID containerSessionID)
-        throws RemoteException {
+            throws RemoteException {
         DMContainerSession cSession = containerSessionMap.get(containerSessionID);
         if (cSession == null) {
             cSession = new DMContainerSession(rootFile, containerSessionID, sessionID);
@@ -82,7 +82,7 @@ public class DMSession {
 
     public void destroyAllSessions() throws RemoteException {
         List<ContainerSessionID> ids =
-            new LinkedList<ContainerSessionID>(containerSessionMap.keySet());
+                new LinkedList<ContainerSessionID>(containerSessionMap.keySet());
         for (ContainerSessionID containerSessionID : ids) {
             destroyContainerSession(containerSessionID);
         }

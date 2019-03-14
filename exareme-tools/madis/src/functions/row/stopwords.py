@@ -1,12 +1,9 @@
 # coding: utf-8
 
-import re
-import setpath
 from lib.stopwordlist import stopwords
 
 
 def filterstopwords(*args):
-
     """
     .. function:: filterstopwords(str) -> str
 
@@ -26,16 +23,16 @@ def filterstopwords(*args):
     """
 
     if len(args) == 1:
-        return ' '.join([k for k in args[0].split(' ') if k!='' and k[0].lower()+k[1:] not in stopwords])
+        return ' '.join([k for k in args[0].split(' ') if k != '' and k[0].lower() + k[1:] not in stopwords])
 
-    out=[]
+    out = []
     for i in args:
-        out.append(' '.join([k for k in i.split(' ') if k!='' and k[0].lower()+k[1:] not in stopwords]))
+        out.append(' '.join([k for k in i.split(' ') if k != '' and k[0].lower() + k[1:] not in stopwords]))
 
     return ' '.join(out)
 
-filterstopwords.registered=True
 
+filterstopwords.registered = True
 
 if not ('.' in __name__):
     """
@@ -43,11 +40,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

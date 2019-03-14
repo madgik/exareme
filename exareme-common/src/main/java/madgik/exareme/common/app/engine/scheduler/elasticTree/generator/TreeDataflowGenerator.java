@@ -29,7 +29,8 @@ public class TreeDataflowGenerator implements DataflowGenerator {
         this.queryString = FileUtil.readFile(query);
     }
 
-    @Override public TreeQuery getNextDataflow() throws Exception {
+    @Override
+    public TreeQuery getNextDataflow() throws Exception {
         // Wait for the query to arive
         long waitTime = gen.next() * Metrics.MiliSec;
         Thread.sleep(waitTime);

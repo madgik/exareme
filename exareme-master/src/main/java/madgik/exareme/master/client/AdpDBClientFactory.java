@@ -14,7 +14,7 @@ import java.rmi.RemoteException;
 public class AdpDBClientFactory {
 
     public static AdpDBClient createDBClient(AdpDBManager manager, AdpDBClientProperties properties)
-        throws RemoteException {
+            throws RemoteException {
         return new RmiAdpDBClient(manager, properties);
     }
 

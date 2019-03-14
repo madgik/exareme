@@ -20,25 +20,25 @@ public interface ContainerManagerInterface {
     void stopManager() throws RemoteException;
 
     ActiveContainer[] getContainers(int number_of_containers, ArmComputeSessionID sessionID)
-        throws RemoteException;
+            throws RemoteException;
 
     ActiveContainer[] getContainers(int number_of_containers, ArmComputeSessionID sessionID,
-        long duration_time) throws RemoteException;
+                                    long duration_time) throws RemoteException;
 
     ActiveContainer[] getAtMostContainers(int number_of_containers, ArmComputeSessionID sessionID)
-        throws RemoteException;
+            throws RemoteException;
 
     ActiveContainer[] tryGetContainers(int number_of_containers, ArmComputeSessionID sessionID)
-        throws RemoteException;
+            throws RemoteException;
 
     void releaseContainers(ActiveContainer[] containers, ArmComputeSessionID sessionID)
-        throws RemoteException;
+            throws RemoteException;
 
     void closeSession(ArmComputeSessionID sessionID) throws RemoteException;
 
     ContainerManagerStatus getStatus() throws RemoteException;
 
     void stopContainer(ActiveContainer container, ArmComputeSessionID sessionID)
-        throws RemoteException;
+            throws RemoteException;
 
 }

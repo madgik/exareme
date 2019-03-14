@@ -24,7 +24,6 @@
  */
 
 
-
 /********************************************************************
  *
  *  The BaKoMa fonts have a different encoding, so change the characters

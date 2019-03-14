@@ -38,7 +38,7 @@ public class ClusterArmComputeInterface extends PriorityList implements Containe
     private TreeMap<Integer, LinkedList<ArmComputeSessionID>> onusIndex;
     private HashMap<ArmComputeSessionID, Integer> patternOnus;
     private HashMap<ArmComputeSessionID, Pair<ArrayList<PatternElement>, ActiveContainer[]>>
-        sessionPattern;
+            sessionPattern;
     private HashMap<ArmComputeSessionID, ArrayList<Integer>> matchingRelativeNames;
     private HashMap<ArmComputeSessionID, String> sessionStartTime;
     private HashMap<ArmComputeSessionID, LinkedList<ActiveContainer>> reservedContainers;
@@ -47,7 +47,7 @@ public class ClusterArmComputeInterface extends PriorityList implements Containe
 
 
     public ClusterArmComputeInterface(int usages, ArrayList<ActiveContainer> container_list)
-        throws RemoteException {
+            throws RemoteException {
 
         super();
 
@@ -65,7 +65,7 @@ public class ClusterArmComputeInterface extends PriorityList implements Containe
         onusIndex = new TreeMap<Integer, LinkedList<ArmComputeSessionID>>(new ReverseComparator());
         patternOnus = new HashMap<ArmComputeSessionID, Integer>();
         sessionPattern =
-            new HashMap<ArmComputeSessionID, Pair<ArrayList<PatternElement>, ActiveContainer[]>>();
+                new HashMap<ArmComputeSessionID, Pair<ArrayList<PatternElement>, ActiveContainer[]>>();
         matchingRelativeNames = new HashMap<ArmComputeSessionID, ArrayList<Integer>>();
         sessionStartTime = new HashMap<ArmComputeSessionID, String>();
         reservedContainers = new HashMap<ArmComputeSessionID, LinkedList<ActiveContainer>>();
@@ -105,7 +105,7 @@ public class ClusterArmComputeInterface extends PriorityList implements Containe
 
     @Override
     public void setPattern(ArrayList<PatternElement> pattern, ArmComputeSessionID sessionID)
-        throws RemoteException {
+            throws RemoteException {
 
         int i, autoincreament;
         Pair<ArrayList<PatternElement>, ActiveContainer[]> pair;
@@ -144,7 +144,7 @@ public class ClusterArmComputeInterface extends PriorityList implements Containe
 
                 //matching a new relative name
                 if ((element.relative_name != -1)
-                    && originalRelativeName.contains(element.relative_name) == false) {
+                        && originalRelativeName.contains(element.relative_name) == false) {
                     originalRelativeName.add(element.relative_name);
                     autoincreament++;
                 }
@@ -157,7 +157,7 @@ public class ClusterArmComputeInterface extends PriorityList implements Containe
                 element = pattern.get(i);
                 if (start_time_tree.containsKey(element.relative_start_time) == false) {
                     start_time_tree.
-                        put(element.relative_start_time, new LinkedList<Integer>());
+                            put(element.relative_start_time, new LinkedList<Integer>());
                 }
                 start_time_tree.get(element.relative_start_time).add(i);
             }
@@ -170,18 +170,18 @@ public class ClusterArmComputeInterface extends PriorityList implements Containe
                 sorted_positions = (LinkedList<Integer>) map.getValue();
 
                 duration_tree =
-                    new TreeMap<Double, LinkedList<Integer>>(new ReverseDoubleComparator());
+                        new TreeMap<Double, LinkedList<Integer>>(new ReverseDoubleComparator());
 
                 for (i = 0; i < sorted_positions.size(); i++) {
 
                     if (duration_tree.containsKey(pattern.get(sorted_positions.get(i)).duration)
-                        == false) {
+                            == false) {
 
                         duration_tree.put(pattern.get(sorted_positions.get(i)).duration,
-                            new LinkedList<Integer>());
+                                new LinkedList<Integer>());
                     }
                     duration_tree.get(pattern.get(sorted_positions.get(i)).duration).
-                        add(sorted_positions.get(i));
+                            add(sorted_positions.get(i));
                 }
                 duration_set = duration_tree.entrySet();
                 duration_it = duration_set.iterator();
@@ -219,8 +219,9 @@ public class ClusterArmComputeInterface extends PriorityList implements Containe
         }
     }
 
-    @Override public ArrayList<Pair<PatternElement, ActiveContainer>> getAtMostContainers(
-        ArmComputeSessionID sessionID) throws RemoteException {
+    @Override
+    public ArrayList<Pair<PatternElement, ActiveContainer>> getAtMostContainers(
+            ArmComputeSessionID sessionID) throws RemoteException {
 
         int max_number_of_containers;
         boolean first_entry = true;
@@ -253,7 +254,7 @@ public class ClusterArmComputeInterface extends PriorityList implements Containe
         synchronized (update_indexes) {
 
             while ((number_of_available_containers == 0) || (checkPriority(sessionID, onusIndex)
-                == false)) {
+                    == false)) {
                 try {
                     update_indexes.wait();
                 } catch (InterruptedException ex) {
@@ -284,7 +285,8 @@ public class ClusterArmComputeInterface extends PriorityList implements Containe
         return containers_array;
     }
 
-    @Override public void closeSession(ArmComputeSessionID sessionID) throws RemoteException {
+    @Override
+    public void closeSession(ArmComputeSessionID sessionID) throws RemoteException {
 
         int i;
         ActiveContainer container;
@@ -318,8 +320,9 @@ public class ClusterArmComputeInterface extends PriorityList implements Containe
         }
     }
 
-    @Override public void stopContainer(ActiveContainer container, ArmComputeSessionID sessionID)
-        throws RemoteException {
+    @Override
+    public void stopContainer(ActiveContainer container, ArmComputeSessionID sessionID)
+            throws RemoteException {
 
         synchronized (update_indexes) {
             activeSes.add(sessionID);
@@ -346,7 +349,7 @@ public class ClusterArmComputeInterface extends PriorityList implements Containe
             System.out.println("System report!!!");
             System.out.println("There are " + number_of_active_sessions + " sessions active");
             System.out
-                .println("There are " + number_of_available_containers + " available containers");
+                    .println("There are " + number_of_available_containers + " available containers");
             System.out.println("There are " + number_of_inactive_sessions + " inactive sessions");
             System.out.println("System report is done!!!\n");
             return number_of_active_sessions;
@@ -355,7 +358,7 @@ public class ClusterArmComputeInterface extends PriorityList implements Containe
 
     //function which dismiss a container
     private void releaseContainer(ActiveContainer container, ArmComputeSessionID sessionID)
-        throws RemoteException {
+            throws RemoteException {
 
         int usage = 0;
         Set set;
@@ -394,7 +397,7 @@ public class ClusterArmComputeInterface extends PriorityList implements Containe
 
     //function which returns containers for a Session
     private ArrayList<Pair<PatternElement, ActiveContainer>> obtainContainers(
-        ArmComputeSessionID sessionID, int max_number_of_containers) throws RemoteException {
+            ArmComputeSessionID sessionID, int max_number_of_containers) throws RemoteException {
 
         int counter, usages = 0, i, j, current_onus, key_value, position;
         int relativeName, matchedName = -1;
@@ -402,7 +405,7 @@ public class ClusterArmComputeInterface extends PriorityList implements Containe
         ActiveContainer restrictedContainer = null;
         LinkedList<ActiveContainer> container_list;
         ArrayList<Pair<PatternElement, ActiveContainer>> array =
-            new ArrayList<Pair<PatternElement, ActiveContainer>>();
+                new ArrayList<Pair<PatternElement, ActiveContainer>>();
         Pair<PatternElement, ActiveContainer> pair;
         PatternElement element;
 
@@ -616,7 +619,7 @@ public class ClusterArmComputeInterface extends PriorityList implements Containe
 
     //function which calculates the onus of a session
     private int calculateOnus(double duration, String startTime, boolean initialization)
-        throws RemoteException {
+            throws RemoteException {
 
         String current_time;
         int difference;
@@ -645,7 +648,7 @@ public class ClusterArmComputeInterface extends PriorityList implements Containe
 
     //function which calculates the difference of two time-dates in seconds
     private int calculateHourDifference(String previous_start_time, String current_time)
-        throws RemoteException {
+            throws RemoteException {
 
         long difference;
 
@@ -697,40 +700,44 @@ public class ClusterArmComputeInterface extends PriorityList implements Containe
         }
     }
 
-    @Override public final void startManager() throws RemoteException {
+    @Override
+    public final void startManager() throws RemoteException {
 
 
     }
 
-    @Override public void stopManager() throws RemoteException {
+    @Override
+    public void stopManager() throws RemoteException {
         // TODO(mallios): clean up resources here.
     }
 
     @Override
     public ActiveContainer[] getContainers(int numOfContainers, ArmComputeSessionID sessionID)
-        throws RemoteException {
+            throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public ActiveContainer[] tryGetContainers(int numOfContainers, ArmComputeSessionID sessionID)
-        throws RemoteException {
+            throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public ActiveContainer[] getAtMostContainers(int numOfContainers, ArmComputeSessionID sessionID)
-        throws RemoteException {
+            throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public ContainerManagerStatus getStatus() throws RemoteException {
+    @Override
+    public ContainerManagerStatus getStatus() throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     //Comparator which sort integer in descending order
     class ReverseComparator implements Comparator {
-        @Override public int compare(Object firstObject, Object secondObject) {
+        @Override
+        public int compare(Object firstObject, Object secondObject) {
             Integer first = (Integer) firstObject;
             Integer second = (Integer) secondObject;
             return second.compareTo(first);
@@ -740,7 +747,8 @@ public class ClusterArmComputeInterface extends PriorityList implements Containe
 
     //Comparator for double descending order
     class ReverseDoubleComparator implements Comparator {
-        @Override public int compare(Object firstObject, Object secondObject) {
+        @Override
+        public int compare(Object firstObject, Object secondObject) {
             Double first = (Double) firstObject;
             Double second = (Double) secondObject;
             return second.compareTo(first);

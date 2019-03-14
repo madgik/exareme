@@ -20,7 +20,8 @@ import java.util.*;
  */
 public class PrimitiveHistogram implements HistogramBuilder {
 
-    @Override public Schema build(Map<String, Table> dbStats) {
+    @Override
+    public Schema build(Map<String, Table> dbStats) {
         // System.out.println("=======================>" +
         // dbStats.get("lineitem").getColumnMap().get("l_partkey").getNumberOfDiffValues());
         // System.out.println("\n\n\n\n");
@@ -63,23 +64,23 @@ public class PrimitiveHistogram implements HistogramBuilder {
                 Bucket b = new Bucket(((double) count) / (double) nodv, (double) nodv);
 
                 bucketIndex
-                    .put(Double.parseDouble(dbStats.get(t).getColumnMap().get(c).getMinValue()), b);
+                        .put(Double.parseDouble(dbStats.get(t).getColumnMap().get(c).getMinValue()), b);
                 bucketIndex.put(Math.nextAfter(
-                    Double.parseDouble(dbStats.get(t).getColumnMap().get(c).getMaxValue()),
-                    Double.MAX_VALUE), Bucket.FINAL_HISTOGRAM_BUCKET);
+                        Double.parseDouble(dbStats.get(t).getColumnMap().get(c).getMaxValue()),
+                        Double.MAX_VALUE), Bucket.FINAL_HISTOGRAM_BUCKET);
 
                 Histogram h = new Histogram(bucketIndex);
 
                 AttrInfo a = new AttrInfo(dbStats.get(t).getColumnMap().get(c).getColumnName(), h,
-                    dbStats.get(t).getColumnMap().get(c).getColumnLength());
+                        dbStats.get(t).getColumnMap().get(c).getColumnLength());
 
                 attrIndex.put(a.getAttrName(), a);
             }
             Set<String> ha = new HashSet<String>();
             ha.add(dbStats.get(t).getPrimaryKey());
             RelInfo r = new RelInfo(dbStats.get(t).getTableName(), attrIndex,
-                dbStats.get(t).getNumberOfTuples(), dbStats.get(t).getToupleSize(),
-                RelInfo.DEFAULT_NUM_PARTITIONS, ha);
+                    dbStats.get(t).getNumberOfTuples(), dbStats.get(t).getToupleSize(),
+                    RelInfo.DEFAULT_NUM_PARTITIONS, ha);
 
             relMap.put(r.getRelName(), r);
         }

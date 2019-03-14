@@ -18,13 +18,14 @@ public class InterContainerMediatorTo extends AbstractSiSo {
 
     private static Logger log = Logger.getLogger(InterContainerMediatorTo.class);
 
-    @Override public void run() throws Exception {
+    @Override
+    public void run() throws Exception {
 
         //        String sessionName = super.getParameterManager().getParameter("Name").get(0).getValue();
 
         InputStream in = super.getAdaptorManager().getReadStreamAdaptor(0).getInputStream();
         File tableFile =
-            super.getDiskManager().getGlobalSession().requestAccessRandomFile("InputFile");
+                super.getDiskManager().getGlobalSession().requestAccessRandomFile("InputFile");
 
         log.debug("Reading file from input stream to file '" + tableFile.getAbsolutePath() + "'");
         FileUtil.readFromStream(in, tableFile);
@@ -32,7 +33,7 @@ public class InterContainerMediatorTo extends AbstractSiSo {
         log.debug("File read!");
 
         ObjectOutputStream outStream = new ObjectOutputStream(
-            super.getAdaptorManager().getWriteStreamAdaptor(0).getOutputStream());
+                super.getAdaptorManager().getWriteStreamAdaptor(0).getOutputStream());
 
         log.debug("Writing file name ... ");
         outStream.writeObject(tableFile.getAbsolutePath());

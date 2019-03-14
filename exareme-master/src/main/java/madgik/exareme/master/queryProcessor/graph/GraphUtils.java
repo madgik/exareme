@@ -35,8 +35,8 @@ public class GraphUtils {
         // Add operators
         for (ConcreteOperator co : graph.getOperators()) {
             ConcreteOperator newCo =
-                new ConcreteOperator(co.operatorName, co.runTime_SEC, co.cpuUtilization,
-                    co.memory_MB, co.behavior);
+                    new ConcreteOperator(co.operatorName, co.runTime_SEC, co.cpuUtilization,
+                            co.memory_MB, co.behavior);
             oldIdNewIdMap.put(co.opID, newCo);
             // Local files
             for (LocalFileData in : co.inputFileDataArray) {
@@ -51,8 +51,8 @@ public class GraphUtils {
         for (Link link : graph.getLinks()) {
             LinkData linkData = new LinkData(link.data);
             Link newLink =
-                new Link(oldIdNewIdMap.get(link.from.opID), oldIdNewIdMap.get(link.to.opID),
-                    linkData);
+                    new Link(oldIdNewIdMap.get(link.from.opID), oldIdNewIdMap.get(link.to.opID),
+                            linkData);
             linkData.updateLinks(newLink);
             newLink.from.addOutputData(linkData);
             newLink.to.addInputData(linkData);
@@ -62,7 +62,7 @@ public class GraphUtils {
     }
 
     public static ConcreteQueryGraph combineGraphs(List<ConcreteQueryGraph> queryGraphs,
-        List<Map<Integer, Integer>> opIdToCombinedIdMap) {
+                                                   List<Map<Integer, Integer>> opIdToCombinedIdMap) {
         ConcreteQueryGraph combined = new ConcreteQueryGraph();
         for (ConcreteQueryGraph graph : queryGraphs) {
             Map<Integer, Integer> idToCombId = new HashMap<Integer, Integer>();
@@ -83,7 +83,7 @@ public class GraphUtils {
                 data.setToOpID(newTo);
 
                 Link newL =
-                    new Link(combined.getOperator(newFrom), combined.getOperator(newTo), data);
+                        new Link(combined.getOperator(newFrom), combined.getOperator(newTo), data);
                 combined.addLink(newL);
             }
             if (opIdToCombinedIdMap != null) {
@@ -99,7 +99,7 @@ public class GraphUtils {
     }
 
     public static ConcreteQueryGraph combineAndConnectGraphs(List<ConcreteQueryGraph> queryGraphs,
-        List<Map<Integer, Integer>> opIdToCombinedIdMap) {
+                                                             List<Map<Integer, Integer>> opIdToCombinedIdMap) {
         ConcreteQueryGraph combined = GraphUtils.combineGraphs(queryGraphs, opIdToCombinedIdMap);
         for (int g = 1; g < queryGraphs.size(); ++g) {
             ArrayList<ConcreteOperator> fromGraphProd = new ArrayList<ConcreteOperator>();
@@ -129,7 +129,7 @@ public class GraphUtils {
                 for (int t = 0; t < toGraphCons.size(); ++t) {
                     ConcreteOperator to = toGraphCons.get(t);
                     LinkData data = new LinkData("MR_" + from.getName() + ":" + to.getName(),
-                        from.outputDataArray.get(0).size_MB / toGraphCons.size());
+                            from.outputDataArray.get(0).size_MB / toGraphCons.size());
                     Link link = new Link(from, to, data);
                     data.updateLinks(link);
                     combined.addLink(link);

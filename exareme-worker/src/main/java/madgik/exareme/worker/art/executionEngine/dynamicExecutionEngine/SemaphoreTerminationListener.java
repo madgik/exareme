@@ -18,7 +18,8 @@ public class SemaphoreTerminationListener implements PlanTerminationListener {
         this.wait = wait;
     }
 
-    @Override public void terminated(PlanSessionID sessionID) {
+    @Override
+    public void terminated(PlanSessionID sessionID) {
         this.wait.release();
     }
 }

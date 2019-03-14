@@ -11,10 +11,10 @@ import madgik.exareme.master.gateway.visualizers.html.HTMLPlanSessionStatisticsF
 public class ConsoleFactory {
 
     private static ConsolePlanSessionStatisticsFormat statsFormat =
-        new ConsolePlanSessionStatisticsFormat();
+            new ConsolePlanSessionStatisticsFormat();
 
     private static HTMLPlanSessionStatisticsFormat htmlStatsFormat =
-        new HTMLPlanSessionStatisticsFormat();
+            new HTMLPlanSessionStatisticsFormat();
 
     private ConsoleFactory() {
     }

@@ -29,7 +29,8 @@ public class OptimizeEventHandler implements EventHandler<OptimizeEvent> {
         this.state = schedulerState;
     }
 
-    @Override public void handle(OptimizeEvent event, EventProcessor proc) throws RemoteException {
+    @Override
+    public void handle(OptimizeEvent event, EventProcessor proc) throws RemoteException {
         try {
             QueryScript script = event.queryScript;
             if (script == null) {
@@ -37,16 +38,16 @@ public class OptimizeEventHandler implements EventHandler<OptimizeEvent> {
                 state.setState(QueryScriptState.initializing);
                 AdpDBParser parser = new AdpDBParser(event.schema.getDatabase());
                 script = parser.parse(event.queryScriptString,
-                    Registry.getInstance(event.schema.getDatabase()));
+                        Registry.getInstance(event.schema.getDatabase()));
             }
 
             log.debug("Optimize query: " + event.queryID.getQueryID());
             state.setState(QueryScriptState.optimizing);
             AdpDBOptimizer optimizer = state.manager.getAdpDBOptimizer();
             AdpDBQueryExecutionPlan execPlan = optimizer
-                .optimize(script, Registry.getInstance(event.schema.getDatabase()), event.stats,
-                    event.queryData, event.queryID, null, true  /* schedule */,
-                    true  /* validate */);
+                    .optimize(script, Registry.getInstance(event.schema.getDatabase()), event.stats,
+                            event.queryData, event.queryID, null, true  /* schedule */,
+                            true  /* validate */);
             state.setExecPlan(execPlan);
             log.debug("Schedule the query for execution: " + event.queryID.getQueryID());
             state.queryScheduler.schedule(execPlan);

@@ -22,14 +22,15 @@ public class BufferLink implements Serializable {
     public LinkedList<Parameter> paramList;
 
     public BufferLink(String from, String to, String containerName,
-        LinkedList<Parameter> paramList) {
+                      LinkedList<Parameter> paramList) {
         this.from = from;
         this.to = to;
         this.containerName = containerName;
         this.paramList = paramList;
     }
 
-    @Override public boolean equals(Object obj) {
+    @Override
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -40,12 +41,12 @@ public class BufferLink implements Serializable {
         BufferLink guest = (BufferLink) obj;
         //check strings
         if (!(from.equals(guest.from) && to.equals(guest.to) && containerName
-            .equals(guest.containerName))) {
+                .equals(guest.containerName))) {
             return false;
         }
         //check lists
         if ((paramList != null && guest.paramList == null) || (paramList == null
-            && guest.paramList != null)) {
+                && guest.paramList != null)) {
             return false;
         }
 
@@ -62,7 +63,8 @@ public class BufferLink implements Serializable {
         return true;
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int hash = 7;
         hash = 97 * hash + Objects.hashCode(this.containerName);
         hash = 97 * hash + Objects.hashCode(this.from);

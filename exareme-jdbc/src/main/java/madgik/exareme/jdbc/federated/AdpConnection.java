@@ -5,35 +5,14 @@ package madgik.exareme.jdbc.federated;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.sql.Array;
-import java.sql.Blob;
-import java.sql.CallableStatement;
-import java.sql.Clob;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
-import java.sql.NClob;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLClientInfoException;
-import java.sql.SQLException;
-import java.sql.SQLWarning;
-import java.sql.SQLXML;
-import java.sql.Savepoint;
-import java.sql.Statement;
-import java.sql.Struct;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.sql.*;
 import java.util.Map;
 import java.util.Properties;
-import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
  * @author dimitris
  */
 public class AdpConnection implements Connection {
@@ -86,8 +65,7 @@ public class AdpConnection implements Connection {
             //throw new SQLException(ex.getMessage());
             Logger.getLogger(AdpConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-                            
+
 
     }
 
@@ -143,8 +121,8 @@ public class AdpConnection implements Connection {
     public void close() throws SQLException {
         this.metadata = null;
         this.url = null;
-        for(Connection c:federatedCons.getDistinctDBConnections()){
-            if(c!=null){
+        for (Connection c : federatedCons.getDistinctDBConnections()) {
+            if (c != null) {
                 c.close();
             }
         }
@@ -210,7 +188,8 @@ public class AdpConnection implements Connection {
             /*
              throw new UnsupportedOperationException("Resultset type: " + resultSetType
              + " not supported yet.");
-             */        }
+             */
+        }
         if (resultSetConcurrency != ResultSet.CONCUR_READ_ONLY) {
             throw new UnsupportedOperationException("Concurrency type: "
                     + resultSetConcurrency
@@ -221,14 +200,14 @@ public class AdpConnection implements Connection {
 
     @Override
     public PreparedStatement prepareStatement(String sql, int resultSetType,
-            int resultSetConcurrency) throws
+                                              int resultSetConcurrency) throws
             SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public CallableStatement prepareCall(String sql, int resultSetType,
-            int resultSetConcurrency) throws
+                                         int resultSetConcurrency) throws
             SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -275,22 +254,22 @@ public class AdpConnection implements Connection {
 
     @Override
     public Statement createStatement(int resultSetType, int resultSetConcurrency,
-            int resultSetHoldability) throws SQLException {
+                                     int resultSetHoldability) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public PreparedStatement prepareStatement(String sql, int resultSetType,
-            int resultSetConcurrency,
-            int resultSetHoldability) throws
+                                              int resultSetConcurrency,
+                                              int resultSetHoldability) throws
             SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public CallableStatement prepareCall(String sql, int resultSetType,
-            int resultSetConcurrency,
-            int resultSetHoldability) throws
+                                         int resultSetConcurrency,
+                                         int resultSetHoldability) throws
             SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -414,5 +393,5 @@ public class AdpConnection implements Connection {
     public String getDbPath() {
         return dbPath;
     }
-    
+
 }

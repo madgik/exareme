@@ -45,7 +45,7 @@ public class SimpleAdpClient {
         for (int i = 0; i < 200; ++i) {
             Thread.sleep(10);
             threadPool.submit(
-                new SimpleClientJob(compute, 7  /* numContainers */, 1  /* keepFor_ms */, 1  /* release_ms */));
+                    new SimpleClientJob(compute, 7  /* numContainers */, 1  /* keepFor_ms */, 1  /* release_ms */));
         }
         threadPool.shutdown();
         threadPool.awaitTermination(100000, TimeUnit.DAYS);

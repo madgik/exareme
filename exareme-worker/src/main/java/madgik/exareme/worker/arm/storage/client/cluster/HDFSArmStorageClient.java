@@ -32,7 +32,7 @@ public class HDFSArmStorageClient implements ArmStorageClient {
 
 
     public HDFSArmStorageClient(String armStorageURI, long blocksize, int replication,
-        int buffersize) {
+                                int buffersize) {
         this.fs = null;
         this.armStorageURI = armStorageURI;
         this.blocksize = blocksize;
@@ -44,7 +44,8 @@ public class HDFSArmStorageClient implements ArmStorageClient {
     /**
      * @throws ArmStorageClientException
      */
-    @Override public void connect() throws ArmStorageClientException {
+    @Override
+    public void connect() throws ArmStorageClientException {
 
         if (this.fs != null)
             this.disconnect();
@@ -53,7 +54,7 @@ public class HDFSArmStorageClient implements ArmStorageClient {
         try {
             URI uri = URI.create(armStorageURI);
             this.fs = (DistributedFileSystem) FileSystem
-                .newInstance(uri, configuration, uri.getUserInfo());
+                    .newInstance(uri, configuration, uri.getUserInfo());
         } catch (IOException ex) {
             throw new ArmStorageClientException("Connect failure : ", ex);
         } catch (InterruptedException ex) {
@@ -62,7 +63,7 @@ public class HDFSArmStorageClient implements ArmStorageClient {
     }
 
     private void put(String src, String dest, int buffersize, short replication, long blocksize)
-        throws ArmStorageClientException {
+            throws ArmStorageClientException {
 
     }
 
@@ -71,7 +72,8 @@ public class HDFSArmStorageClient implements ArmStorageClient {
      * @param dest
      * @throws ArmStorageClientException
      */
-    @Override public void put(String src, String dest) throws ArmStorageClientException {
+    @Override
+    public void put(String src, String dest) throws ArmStorageClientException {
 
         // connected ?
         if (this.fs == null)
@@ -103,8 +105,8 @@ public class HDFSArmStorageClient implements ArmStorageClient {
 
             //long blocksize = ArmStorageClientUtils.roundFileLength(srcFile.length());
             long currentBlockSize = blocksize == -1 ?
-                ArmStorageClientUtils.roundFileLength(srcFile.length()) :
-                blocksize;
+                    ArmStorageClientUtils.roundFileLength(srcFile.length()) :
+                    blocksize;
             out = this.fs.create(destPath, true, buffersize, (short) replication, currentBlockSize);
             IOUtils.copyBytes(in, out, buffersize);
 
@@ -121,7 +123,8 @@ public class HDFSArmStorageClient implements ArmStorageClient {
      * @param dest
      * @throws ArmStorageClientException
      */
-    @Override public void fetch(String src, String dest) throws ArmStorageClientException {
+    @Override
+    public void fetch(String src, String dest) throws ArmStorageClientException {
 
         // connected ?
         if (this.fs == null)

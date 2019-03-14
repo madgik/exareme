@@ -18,7 +18,7 @@ public class BufferPoolSessionEntity implements Serializable {
     public final EntityName container;
 
     public BufferPoolSessionEntity(String bufferPoolSessionName, String containerName,
-        EntityName container) {
+                                   EntityName container) {
         this.bufferPoolSessionName = bufferPoolSessionName;
         this.containerName = containerName;
         this.container = container;

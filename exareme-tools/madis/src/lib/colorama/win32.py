@@ -1,4 +1,3 @@
-
 # from winbase.h
 STDOUT = -11
 STDERR = -12
@@ -23,6 +22,7 @@ else:
     DWORD = c_uint32
     TCHAR = c_char
 
+
     class COORD(Structure):
         """struct in wincon.h"""
         _fields_ = [
@@ -30,7 +30,8 @@ else:
             ('Y', SHORT),
         ]
 
-    class  SMALL_RECT(Structure):
+
+    class SMALL_RECT(Structure):
         """struct in wincon.h."""
         _fields_ = [
             ("Left", SHORT),
@@ -38,6 +39,7 @@ else:
             ("Right", SHORT),
             ("Bottom", SHORT),
         ]
+
 
     class CONSOLE_SCREEN_BUFFER_INFO(Structure):
         """struct in wincon.h."""
@@ -48,6 +50,7 @@ else:
             ("srWindow", SMALL_RECT),
             ("dwMaximumWindowSize", COORD),
         ]
+
         def __str__(self):
             return '(%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d)' % (
                 self.dwSize.Y, self.dwSize.X
@@ -56,6 +59,7 @@ else:
                 , self.srWindow.Top, self.srWindow.Left, self.srWindow.Bottom, self.srWindow.Right
                 , self.dwMaximumWindowSize.Y, self.dwMaximumWindowSize.X
             )
+
 
     def GetConsoleScreenBufferInfo(stream_id=STDOUT):
         handle = handles[stream_id]
@@ -87,6 +91,7 @@ else:
         handle = handles[stream_id]
         return windll.kernel32.SetConsoleCursorPosition(handle, adjusted_position)
 
+
     def FillConsoleOutputCharacter(stream_id, char, length, start):
         handle = handles[stream_id]
         char = TCHAR(char)
@@ -97,6 +102,7 @@ else:
             handle, char, length, start, byref(num_written))
         return num_written.value
 
+
     def FillConsoleOutputAttribute(stream_id, attr, length, start):
         ''' FillConsoleOutputAttribute( hConsole, csbi.wAttributes, dwConSize, coordScreen, &cCharsWritten )'''
         handle = handles[stream_id]
@@ -106,4 +112,3 @@ else:
         # Note that this is hard-coded for ANSI (vs wide) bytes.
         return windll.kernel32.FillConsoleOutputAttribute(
             handle, attribute, length, start, byref(num_written))
-

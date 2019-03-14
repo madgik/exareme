@@ -14,18 +14,17 @@ You have to be careful about print in udf postgres* (postgresraw, postgresrawfil
 may be messed up with the output of print
 """
 
-import setpath
-import vtbase
 import functions
-import re
 import json
 from types import NoneType
+
+import vtbase
 
 registered = True
 external_query = True
 
-class PostgresRawFilters(vtbase.VT):
 
+class PostgresRawFilters(vtbase.VT):
 
     def VTiter(self, *parsedArgs, **envars):
         # DBAPI.warn = lambda x,stacklevel:x
@@ -76,24 +75,21 @@ class PostgresRawFilters(vtbase.VT):
         except KeyError:
             largs = None
 
-
         try:
-            myfilter =dictargs['filter']
+            myfilter = dictargs['filter']
             filterforquery = myfilter
-            myfilter =  myfilter.replace('&','(')
-            myfilter =  myfilter.replace('|','(')
-            myfilter =  myfilter.replace(')','(')
-            myfilter =  myfilter.split('(')
+            myfilter = myfilter.replace('&', '(')
+            myfilter = myfilter.replace('|', '(')
+            myfilter = myfilter.replace(')', '(')
+            myfilter = myfilter.split('(')
 
         except KeyError:
             myfilter = None
             filterforquery = myfilter
 
-
-
         # get site properties
         data = json.load(open("/root/mip-algorithms/properties.json"))
-        #data = json.load(open("home/sofiakar/Desktop/sofia/Exareme-Docker/files/root/properties.json"))
+        # data = json.load(open("home/sofiakar/Desktop/sofia/Exareme-Docker/files/root/properties.json"))
         for d in data["local_engine_default"]["parameters"]:
             dictargs[d["name"]] = d["value"]
 
@@ -103,14 +99,14 @@ class PostgresRawFilters(vtbase.VT):
         user = str(dictargs.get('username', dictargs.get('u', '')))
         passwd = str(dictargs.get('password', dictargs.get('p', '')))
         db = str(dictargs.get('db', ''))
-        mytable= query.split("from")[1]
+        mytable = query.split("from")[1]
 
         import psycopg2
         try:
             conn = psycopg2.connect(user=user, host=host, port=port, database=db, password=passwd)
 
             cur = conn.cursor()
-            larg =()
+            larg = ()
             if largs is None:
                 query = query.replace('%', '%%')
                 if myfilter is not None:
@@ -124,7 +120,7 @@ class PostgresRawFilters(vtbase.VT):
             mylist = []
             mylist.append(larg)
             if myfilter is not None:
-                conditions  =  ['<=','>=','<','=','>']
+                conditions = ['<=', '>=', '<', '=', '>']
                 n = 0
                 if ";" not in filterforquery:
                     for myitem in myfilter:
@@ -135,28 +131,28 @@ class PostgresRawFilters(vtbase.VT):
                                 colname = myitem.split(mycondition)[0]
                                 val = myitem.split(mycondition)[1]
                                 n += 1
-                                newitem= "rid in (select rid from " + mytable + " where colname=%s and " #val" + mycondition + "%s) "  #,colname, val
-                                val=val.encode("utf8")
+                                newitem = "rid in (select rid from " + mytable + " where colname=%s and "  # val" + mycondition + "%s) "  #,colname, val
+                                val = val.encode("utf8")
                                 if is_number(val):
-                                    newitem+= "val::numeric" + mycondition + "%s) "
+                                    newitem += "val::numeric" + mycondition + "%s) "
                                 else:
-                                    newitem+= "val" + mycondition + "%s) "
+                                    newitem += "val" + mycondition + "%s) "
                                 mylist.append(colname)
                                 mylist.append(val)
-                                split =True
-                                filterforquery = filterforquery.replace(myitem,newitem)
+                                split = True
+                                filterforquery = filterforquery.replace(myitem, newitem)
 
-                if n>0:
-                    filterforquery = filterforquery.replace("&"," and ")
-                    filterforquery = filterforquery.replace("|"," or ")
-                    query += filterforquery +  " );"
+                if n > 0:
+                    filterforquery = filterforquery.replace("&", " and ")
+                    filterforquery = filterforquery.replace("|", " or ")
+                    query += filterforquery + " );"
                 else:
                     query += ";"
 
-            if  len(mylist) == 0:
+            if len(mylist) == 0:
                 cur.execute(query)
             else:
-                cur.execute(query,mylist)
+                cur.execute(query, mylist)
 
             yield [(c[0], typetrans.get(c[1], '')) for c in cur.description]
 
@@ -188,13 +184,13 @@ def is_number(s):
 
     return False
 
+
 if not ('.' in __name__):
     """
     This is needed to be able to test the function, put it at the end of every
     new function you create
     """
     import sys
-    import src.functions.setpath
     from functions import *
 
     testfunction()

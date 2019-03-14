@@ -1,6 +1,7 @@
 import functions
 import operator
 
+
 class partialsort:
     """
 
@@ -29,29 +30,28 @@ class partialsort:
     as | 23
 
     """
-    registered=True
+    registered = True
 
     def __init__(self):
-        self.topn=[]
-        self.lessval=None
-        self.stepsnum=0
-        self.sortnum =  None
+        self.topn = []
+        self.lessval = None
+        self.stepsnum = 0
+        self.sortnum = None
 
     def step(self, *args):
-        if len(args)<2:
-            raise functions.OperatorError("partialsort","Wrong number of arguments")
+        if len(args) < 2:
+            raise functions.OperatorError("partialsort", "Wrong number of arguments")
         if not self.sortnum:
             self.sortnum = tuple(i for i in xrange(args[0]))
         self.topn.append(args[1:])
-        self.stepsnum+=1
+        self.stepsnum += 1
         pass
 
     def final(self):
-        yield tuple('c'+str(i) for i in xrange(1,len(self.topn[0])+1))
+        yield tuple('c' + str(i) for i in xrange(1, len(self.topn[0]) + 1))
         self.topn.sort(key=operator.itemgetter(*self.sortnum))
         for el in self.topn:
             yield el
-
 
 
 if not ('.' in __name__):
@@ -60,12 +60,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
-        doctest.testmod()
 
+        doctest.testmod()

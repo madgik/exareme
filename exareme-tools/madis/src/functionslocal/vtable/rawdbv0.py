@@ -1,5 +1,3 @@
-
-
 import functions
 
 registered = True
@@ -8,13 +6,13 @@ external_query = True
 # default properties
 default_dict = {
     'host': '0.0.0.0',
-    'port' : '5555',
+    'port': '5555',
     'api': 'query',
-    'resultsPerPage' : 'all',   # if #results provided then uses pagination
-    'datakey':'data',
-    'username' : None,          # required
-    'password' : None,          # required
-    'query' : None              # required
+    'resultsPerPage': 'all',  # if #results provided then uses pagination
+    'datakey': 'data',
+    'username': None,  # required
+    'password': None,  # required
+    'query': None  # required
 }
 
 
@@ -44,18 +42,18 @@ class RAWDB(functions.vtable.vtbase.VT):
         print self.datakey
         if (self.resultsPerPage == "all"):
             # set http request
-            url="http://{0}:{1}/{2}".format(self.host, self.port, self.api)
-            data =  json.dumps({ 'query' : self.query.encode("utf-8").replace('"',"'")})
+            url = "http://{0}:{1}/{2}".format(self.host, self.port, self.api)
+            data = json.dumps({'query': self.query.encode("utf-8").replace('"', "'")})
             base64string = base64.encodestring('%s:%s' % (self.username, self.password)).replace('\n', '')
 
             # get http response
             try:
-                r = urllib2.Request(url=url,data=data)
+                r = urllib2.Request(url=url, data=data)
                 r.add_header("Authorization", "Basic %s" % base64string)
                 r.add_header("Content-Type", "application/json")
                 response = urllib2.urlopen(r, timeout=150)
                 records = json.load(response)[self.datakey]
-                #print records
+                # print records
                 file1 = open("testfile.txt", "w")
                 for item in records:
                     file1.write("%s\n" % item)
@@ -63,12 +61,12 @@ class RAWDB(functions.vtable.vtbase.VT):
                 print type(records[0])
                 if type(records[0]) == dict:
                     print "dict"
-                    yield [(k,type(v).__name__) for k,v in records[0].iteritems()]
+                    yield [(k, type(v).__name__) for k, v in records[0].iteritems()]
                     for r in records:
                         yield r.values()
                 else:
                     print "elsedict"
-                    yield [("C1", type(records[0]).__name__),]
+                    yield [("C1", type(records[0]).__name__), ]
                     for r in records:
                         yield [r]
 
@@ -78,30 +76,30 @@ class RAWDB(functions.vtable.vtbase.VT):
         else:
             # set http request
             print "elseresultsPerPage"
-            url="http://{0}:{1}/{2}".format(self.host, self.port, "query-start")
-            data =  json.dumps({ 'query' : self.query.encode("utf-8"), 'resultsPerPage' : self.resultsPerPage})
+            url = "http://{0}:{1}/{2}".format(self.host, self.port, "query-start")
+            data = json.dumps({'query': self.query.encode("utf-8"), 'resultsPerPage': self.resultsPerPage})
             base64string = base64.encodestring('%s:%s' % (self.username, self.password)).replace('\n', '')
 
             # get http response
             try:
                 print "tryREsultsPerPage"
-                r = urllib2.Request(url=url,data=data)
+                r = urllib2.Request(url=url, data=data)
                 r.add_header("Authorization", "Basic %s" % base64string)
                 r.add_header("Content-Type", "application/json")
                 response = urllib2.urlopen(r, timeout=150)
                 jsonresponse = json.load(response)
                 records = jsonresponse[self.datakey]
-                yield [(k,type(v).__name__) for k,v in records[0].iteritems()]
+                yield [(k, type(v).__name__) for k, v in records[0].iteritems()]
 
                 for r in records:
                     yield r.values()
 
                 while (jsonresponse['hasMore']):
                     token = jsonresponse['token']
-                    url="http://{0}:{1}/{2}".format(self.host, self.port, "query-next")
-                    data =  json.dumps({ 'token' : token})
+                    url = "http://{0}:{1}/{2}".format(self.host, self.port, "query-next")
+                    data = json.dumps({'token': token})
 
-                    r = urllib2.Request(url=url,data=data)
+                    r = urllib2.Request(url=url, data=data)
                     r.add_header("Authorization", "Basic %s" % base64string)
                     r.add_header("Content-Type", "application/json")
                     response = urllib2.urlopen(r, timeout=150)
@@ -112,6 +110,7 @@ class RAWDB(functions.vtable.vtbase.VT):
 
             except (urllib2.URLError, urllib2.HTTPError) as e:
                 raise functions.OperatorError(__name__.rsplit('.')[-1], "%s." % e)
+
 
 def Source():
     return functions.vtable.vtbase.VTGenerator(RAWDB)

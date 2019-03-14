@@ -26,7 +26,8 @@ public class AdpDBNetReaderOperator extends AbstractNiNo {
     public AdpDBNetReaderOperator() {
     }
 
-    @Override public void run() throws Exception {
+    @Override
+    public void run() throws Exception {
 
         log.debug("---- NetReader ----");
         for (Parameter parameter : getParameterManager().getParameters()) {
@@ -36,7 +37,7 @@ public class AdpDBNetReaderOperator extends AbstractNiNo {
 
         Map<String, Object> alsoIncludeProps = null;
         boolean sendHeader = Boolean
-            .parseBoolean(getParameterManager().getParameter("sendHeader").get(0).getValue());
+                .parseBoolean(getParameterManager().getParameter("sendHeader").get(0).getValue());
         if (sendHeader == false) {
             alsoIncludeProps = null;
         } else {
@@ -54,18 +55,18 @@ public class AdpDBNetReaderOperator extends AbstractNiNo {
         log.debug("---- tableName : " + tabName);
 
         int part =
-            Integer.parseInt(getParameterManager().getParameter("part").get(0).getValue());
+                Integer.parseInt(getParameterManager().getParameter("part").get(0).getValue());
         log.debug("---- part : " + part);
 
         String ip = getParameterManager().getParameter("ip").get(0).getValue();
         log.debug("---- ip : " + ip);
 
         int port =
-            Integer.parseInt(getParameterManager().getParameter("port").get(0).getValue());
+                Integer.parseInt(getParameterManager().getParameter("port").get(0).getValue());
         log.debug("--- port : " + port);
 
         DataSerialization dataSerialization = DataSerialization
-            .valueOf(getParameterManager().getParameter("dataSerialization").get(0).getValue());
+                .valueOf(getParameterManager().getParameter("dataSerialization").get(0).getValue());
         if (dataSerialization == null) dataSerialization = DataSerialization.ldjson;
         log.debug("--- ds : " + dataSerialization);
 
@@ -73,11 +74,11 @@ public class AdpDBNetReaderOperator extends AbstractNiNo {
         OutputStream out = net.openOutputStream(new EntityName(ip + "_" + port, ip, port));
         try {
             AdpDBConnectorUtil
-                .readLocalTablePart(tabName, part, database, alsoIncludeProps, dataSerialization,
-                    out);
+                    .readLocalTablePart(tabName, part, database, alsoIncludeProps, dataSerialization,
+                            out);
         } catch (Exception e) {
-            throw new RuntimeException("",e);
-        }finally {
+            throw new RuntimeException("", e);
+        } finally {
             if (out != null) out.close();
         }
 

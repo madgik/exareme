@@ -42,7 +42,8 @@ public class OperatorImplementationEntity implements Accessible {
         return locations;
     }
 
-    @Override public EntityName getEntityName() {
+    @Override
+    public EntityName getEntityName() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

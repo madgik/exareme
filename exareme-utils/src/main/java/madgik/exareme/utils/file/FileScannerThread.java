@@ -19,7 +19,8 @@ public class FileScannerThread extends Thread {
         this.file = file;
     }
 
-    @Override public void run() {
+    @Override
+    public void run() {
         try {
             lines = FileUtil.realFileLines(file);
         } catch (Exception e) {

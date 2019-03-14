@@ -30,7 +30,7 @@ public class ConcreteOperatorStatistics implements Serializable {
     private Serializable exitMessage = null;
 
     public ConcreteOperatorStatistics(String operatorName, String operatorCategory,
-        OperatorType operatorType) {
+                                      OperatorType operatorType) {
         this.operatorName = operatorName;
         this.operatorCategory = operatorCategory;
         this.operatorType = operatorType;

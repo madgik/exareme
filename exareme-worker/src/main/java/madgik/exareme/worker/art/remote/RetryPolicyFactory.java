@@ -11,8 +11,8 @@ import madgik.exareme.worker.art.remote.retryPolicy.RetryNTimesPolicy;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class RetryPolicyFactory {
@@ -23,13 +23,13 @@ public class RetryPolicyFactory {
     static {
         int retryTimes = AdpProperties.getArtProps().getInt("art.rmi.retryTimes");
         int retryPeriod_ms = (int) (AdpProperties.getArtProps().getFloat("art.rmi.retryPeriod_sec")
-            * (float) Metrics.MiliSec);
+                * (float) Metrics.MiliSec);
 
         defaultRetryPolicy = new RetryPolicy(new RetryNTimesPolicy(retryTimes),
-            new ConstantTimeIntervalPolicy(retryPeriod_ms));
+                new ConstantTimeIntervalPolicy(retryPeriod_ms));
 
         socketRetryPolicy = new RetryPolicy(new RetryNTimesPolicy(retryTimes),
-            new RandomTimeIntervalPolicy(retryPeriod_ms));
+                new RandomTimeIntervalPolicy(retryPeriod_ms));
     }
 
     private RetryPolicyFactory() {
