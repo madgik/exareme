@@ -9,8 +9,8 @@ import java.io.Serializable;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class DestroyEntity implements Serializable {
@@ -33,31 +33,31 @@ public class DestroyEntity implements Serializable {
     }
 
     public DestroyEntity(String objectName, OperatorEntity operatorEntity, String containerName,
-        EntityName container) {
+                         EntityName container) {
         this(objectName, containerName, container);
         this.operatorEntity = operatorEntity;
     }
 
     public DestroyEntity(String objectName, BufferEntity bufferEntity, String containerName,
-        EntityName container) {
+                         EntityName container) {
         this(objectName, containerName, container);
         this.bufferEntity = bufferEntity;
     }
 
     public DestroyEntity(String objectName, StateEntity stateEntity, String containerName,
-        EntityName container) {
+                         EntityName container) {
         this(objectName, containerName, container);
         this.stateEntity = stateEntity;
     }
 
     public DestroyEntity(String objectName, BufferLinkEntity connectEntity, String containerName,
-        EntityName container) {
+                         EntityName container) {
         this(objectName, containerName, container);
         this.connectEntity = connectEntity;
     }
 
     public DestroyEntity(String objectName, StateLinkEntity linkEntity, String containerName,
-        EntityName container) {
+                         EntityName container) {
         this(objectName, containerName, container);
         this.linkEntity = linkEntity;
     }

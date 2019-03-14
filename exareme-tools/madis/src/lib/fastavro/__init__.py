@@ -18,7 +18,6 @@ The only onterface function is iter_avro, example usage::
 __all__ = ['iter_avro', 'reader']
 __version__ = '0.7.9'
 
-
 try:
     from . import _reader
     from . import _writer

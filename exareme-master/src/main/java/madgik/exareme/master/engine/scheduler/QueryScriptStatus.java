@@ -51,6 +51,6 @@ public class QueryScriptStatus {
 
     public QueryScriptStatus createSerializableStatus() throws RemoteException {
         return new QueryScriptStatusSerialized(queryID, getQueryScript(), getState(),
-            getStatus().createSerializableStatus());
+                getStatus().createSerializableStatus());
     }
 }

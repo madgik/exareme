@@ -182,16 +182,14 @@ jsMath.Package(jsMath.Parser, {
             if (num.w > den.w) {
                 if (lr == 'l') {
                     den.html += jsMath.HTML.Spacer(num.w - den.w)
-                }
-                else {
+                } else {
                     den.html = jsMath.HTML.Spacer(num.w - den.w) + den.html
                 }
                 den.w = num.w;
             } else if (num.w < den.w) {
                 if (lr == 'l') {
                     num.html += jsMath.HTML.Spacer(den.w - num.w)
-                }
-                else {
+                } else {
                     num.html = jsMath.HTML.Spacer(den.w - num.w) + num.html
                 }
                 num.w = den.w;

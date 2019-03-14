@@ -14,20 +14,21 @@ import java.io.ObjectOutputStream;
  */
 public class MaterializedReader extends AbstractNiSo {
 
-    @Override public void run() throws Exception {
+    @Override
+    public void run() throws Exception {
         String sessionName = super.getParameterManager().getParameter("Name").get(0).getValue();
 
         // Read the name of the file and the random file.
         File sessionFile = super.getDiskManager().getGlobalSession().requestAccess(sessionName);
         ObjectInputStream sessionFileStream = new ObjectInputStream(
-            super.getDiskManager().getGlobalSession().openInputStream(sessionFile));
+                super.getDiskManager().getGlobalSession().openInputStream(sessionFile));
 
         String tableFile = (String) sessionFileStream.readObject();
 
         sessionFileStream.close();
 
         ObjectOutputStream outStream = new ObjectOutputStream(
-            super.getAdaptorManager().getWriteStreamAdaptor(0).getOutputStream());
+                super.getAdaptorManager().getWriteStreamAdaptor(0).getOutputStream());
 
         outStream.writeObject(tableFile);
         outStream.close();

@@ -59,7 +59,6 @@ public class Plan {
     }
 
 
-
     // boolean isPtnedOn(Column c) {
     //    return this.partitionRecord.getClassForColumn(this.repartitions.get(this.repartitions.size()-1)).contains(c);
     // }

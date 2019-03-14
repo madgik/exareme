@@ -19,12 +19,13 @@ public class GroupByColumnVisitor extends AbstractVisitor {
         super(query);
     }
 
-    @Override public Visitable visit(Visitable node) throws StandardException {
+    @Override
+    public Visitable visit(Visitable node) throws StandardException {
         if (node instanceof GroupByColumn) {
             Column column = new Column();
 
             ColumnReference parserColumn = (ColumnReference) ((GroupByColumn) node).getColumnExpression();
-            column.setAlias( parserColumn.getTableName());
+            column.setAlias(parserColumn.getTableName());
             column.setName(parserColumn.getColumnName());
             query.getGroupBy().add(column);
             return node;

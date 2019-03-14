@@ -15,7 +15,7 @@ import java.util.Date;
  * @author Herald Kllapi<br>
  * @author Dimitris Paparas<br>
  * @author Eva Sitaridi<br>
- *         {herald,paparas,evas}
+ * {herald,paparas,evas}
  * @di.uoa.gr<br> University of Athens / Department of Informatics and
  * Telecommunications.
  * @since 1.0
@@ -24,11 +24,11 @@ public interface PlanSessionReportManagerProxy extends ObjectProxy<PlanSessionRe
     void planStart(Date time, ContainerID containerID) throws RemoteException;
 
     void planInstantiationException(RemoteException exception, Date time, ContainerID containerID)
-        throws RemoteException;
+            throws RemoteException;
 
     void operatorSuccess(ConcreteOperatorID opID, int exidCode, Serializable exitMessage, Date time,
-        ContainerID containerID, boolean terminateGroup) throws RemoteException;
+                         ContainerID containerID, boolean terminateGroup) throws RemoteException;
 
     void operatorError(ConcreteOperatorID opID, RemoteException exception, Date time,
-        ContainerID containerID) throws RemoteException;
+                       ContainerID containerID) throws RemoteException;
 }

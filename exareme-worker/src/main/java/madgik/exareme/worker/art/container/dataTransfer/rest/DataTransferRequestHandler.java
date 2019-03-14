@@ -27,7 +27,7 @@ import java.util.concurrent.ExecutorService;
 /**
  * @author John Chronis <br>
  * @author Vaggelis Nikolopoulos <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class DataTransferRequestHandler implements HttpRequestHandler {
@@ -41,12 +41,14 @@ public class DataTransferRequestHandler implements HttpRequestHandler {
         this.port = port;
     }
 
-    @Override protected Object clone() throws CloneNotSupportedException {
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
         return super.clone(); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override public void handle(final HttpRequest request, final HttpResponse response,
-        final HttpContext context) throws HttpException, IOException {
+    @Override
+    public void handle(final HttpRequest request, final HttpResponse response,
+                       final HttpContext context) throws HttpException, IOException {
         String method = request.getRequestLine().getMethod().toUpperCase(Locale.ENGLISH);
         if (!method.equals("GET") && !method.equals("POST")) {
             throw new MethodNotSupportedException("Not supported:" + method);
@@ -75,7 +77,7 @@ public class DataTransferRequestHandler implements HttpRequestHandler {
                 }
 
                 List<NameValuePair> params =
-                    URLEncodedUtils.parse(new String(data), Charset.forName("UTF-8"));
+                        URLEncodedUtils.parse(new String(data), Charset.forName("UTF-8"));
                 fileName = params.get(1).getValue();
                 fid = Integer.parseInt(params.get(0).getValue());
                 workerIP = params.get(2).getValue();
@@ -91,14 +93,14 @@ public class DataTransferRequestHandler implements HttpRequestHandler {
             if (mode.equals("register")) {
 
                 DTThreadPool.submit(new RequestFileThread(workerIP, fid, fileName, workerPort, pid,
-                    diskManagerInterface));
+                        diskManagerInterface));
 
                 log.debug("Registered file by " + workerIP + "file: " + fileName);
             } else if (mode.equals("completed")) {
                 log.debug("Completed file transfer with id " + fid);
                 try {
                     DataTransferMgrLocator.getDataTransferManager(this.port)
-                        .addSuccesfulTransfer(fid);
+                            .addSuccesfulTransfer(fid);
                 } catch (Exception ex) {
                     log.error(ex);
                 }
@@ -116,9 +118,9 @@ public class DataTransferRequestHandler implements HttpRequestHandler {
                 String fileName = params.get(0).getValue();//fid
                 //retrieve filename from datamanagerDTP
                 String filepath = DataTransferMgrLocator.getDataTransferManager(this.port)
-                    .getFileNamefromRegID(Integer.parseInt(fileName));
+                        .getFileNamefromRegID(Integer.parseInt(fileName));
                 String tableFile = DataTransferMgrLocator.getDataTransferManager(this.port)
-                    .getTableFilefromRegID(Integer.parseInt(fileName));
+                        .getTableFilefromRegID(Integer.parseInt(fileName));
                 log.debug("Get handler " + filepath);
                 File tf = new File(tableFile);
 

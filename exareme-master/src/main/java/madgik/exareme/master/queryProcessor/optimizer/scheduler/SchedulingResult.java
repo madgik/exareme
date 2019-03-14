@@ -28,7 +28,7 @@ public class SchedulingResult implements Serializable, Comparable<SchedulingResu
     public long total_time_ms = -1;
 
     public SchedulingResult(int containerNum, RunTimeParameters runTimeParameters,
-        FinancialProperties financialProperties, Exception exception, ScheduleEstimator ps) {
+                            FinancialProperties financialProperties, Exception exception, ScheduleEstimator ps) {
         this.containerNum = containerNum;
         this.runTimeParameters = runTimeParameters;
         this.financialProperties = financialProperties;
@@ -46,11 +46,13 @@ public class SchedulingResult implements Serializable, Comparable<SchedulingResu
         return statistics;
     }
 
-    @Override public int compareTo(SchedulingResult o) {
+    @Override
+    public int compareTo(SchedulingResult o) {
         return Double.compare(statistics.getTimeInQuanta(), o.statistics.getTimeInQuanta());
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "(" + statistics.getTimeInQuanta() + "," + statistics.getMoneyInQuanta() + ")";
     }
 }

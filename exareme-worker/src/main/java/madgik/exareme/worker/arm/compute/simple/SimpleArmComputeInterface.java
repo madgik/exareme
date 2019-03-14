@@ -20,57 +20,63 @@ import java.util.ArrayList;
 public class SimpleArmComputeInterface implements ContainerManagerInterface {
 
     public SimpleArmComputeInterface(EntityName regEntityName,
-        ContainerManagerStatus managerStatus) {
+                                     ContainerManagerStatus managerStatus) {
 
     }
 
-    @Override public void startManager() throws RemoteException {
+    @Override
+    public void startManager() throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public void stopManager() throws RemoteException {
+    @Override
+    public void stopManager() throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public ActiveContainer[] getContainers(int numOfContainers, ArmComputeSessionID sessionID)
-        throws RemoteException {
+            throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public ActiveContainer[] tryGetContainers(int numOfContainers, ArmComputeSessionID sessionID)
-        throws RemoteException {
+            throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public ActiveContainer[] getAtMostContainers(int numOfContainers, ArmComputeSessionID sessionID)
-        throws RemoteException {
+            throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public void stopContainer(ActiveContainer container, ArmComputeSessionID sessionID)
-        throws RemoteException {
+    @Override
+    public void stopContainer(ActiveContainer container, ArmComputeSessionID sessionID)
+            throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public void closeSession(ArmComputeSessionID sessionID) throws RemoteException {
+    @Override
+    public void closeSession(ArmComputeSessionID sessionID) throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public ContainerManagerStatus getStatus() throws RemoteException {
+    @Override
+    public ContainerManagerStatus getStatus() throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public void setPattern(ArrayList<PatternElement> pattern, ArmComputeSessionID sessionID)
-        throws RemoteException {
+            throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public ArrayList<Pair<PatternElement, ActiveContainer>> getAtMostContainers(
-        ArmComputeSessionID sessionID) throws RemoteException {
+    @Override
+    public ArrayList<Pair<PatternElement, ActiveContainer>> getAtMostContainers(
+            ArmComputeSessionID sessionID) throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

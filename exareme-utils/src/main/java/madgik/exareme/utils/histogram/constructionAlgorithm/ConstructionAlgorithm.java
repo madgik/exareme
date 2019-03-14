@@ -24,5 +24,5 @@ import java.util.LinkedList;
 public interface ConstructionAlgorithm extends Serializable {
 
     LinkedList<Bucket> createHistogram(ArrayList<Pair<?, Double>> data, int bucketNum,
-        PartitionRule partitionRule) throws RemoteException;
+                                       PartitionRule partitionRule) throws RemoteException;
 }

@@ -29,7 +29,8 @@ public class Container implements Serializable {
         return dataTransferPort;
     }
 
-    @Override public boolean equals(Object obj) {
+    @Override
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -41,7 +42,8 @@ public class Container implements Serializable {
         return name.equals(guest.name) && ip.equals(guest.ip) && port == guest.port;
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int hash = 7;
         hash = 89 * hash + Objects.hashCode(this.name);
         hash = 89 * hash + Objects.hashCode(this.ip);

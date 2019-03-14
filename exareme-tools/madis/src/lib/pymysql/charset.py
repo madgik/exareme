@@ -1,14 +1,16 @@
 MBLENGTH = {
-        8:1,
-        33:3,
-        88:2,
-        91:2
-        }
+    8: 1,
+    33: 3,
+    88: 2,
+    91: 2
+}
+
 
 class Charset:
     def __init__(self, id, name, collation, is_default):
         self.id, self.name, self.collation = id, name, collation
         self.is_default = is_default == 'Yes'
+
 
 class Charsets:
     def __init__(self):
@@ -24,6 +26,7 @@ class Charsets:
         for c in self._by_id.values():
             if c.name == name and c.is_default:
                 return c
+
 
 _charsets = Charsets()
 """
@@ -236,9 +239,10 @@ _charsets.add(Charset(241, 'utf8mb4', 'utf8mb4_esperanto_ci', ''))
 _charsets.add(Charset(242, 'utf8mb4', 'utf8mb4_hungarian_ci', ''))
 _charsets.add(Charset(243, 'utf8mb4', 'utf8mb4_sinhala_ci', ''))
 
+
 def charset_by_name(name):
     return _charsets.by_name(name)
 
+
 def charset_by_id(id):
     return _charsets.by_id(id)
-

@@ -1,4 +1,5 @@
 import sys
+
 if sys.platform == "win32":
     import codecs
     from ctypes import WINFUNCTYPE, windll, POINTER, byref, c_int
@@ -6,12 +7,14 @@ if sys.platform == "win32":
 
     original_stderr = sys.stderr
 
+
     # If any exception occurs in this code, we'll probably try to print it on stderr,
     # which makes for frustrating debugging if stderr is directed to our wrapper.
     # So be paranoid about catching errors and reporting them to original_stderr,
     # so that we can at least see them.
     def _complain(message):
-        print >>original_stderr, isinstance(message, str) and message or repr(message)
+        print >> original_stderr, isinstance(message, str) and message or repr(message)
+
 
     # Work around <http://bugs.python.org/issue6058>.
     codecs.register(lambda name: name == 'cp65001' and codecs.lookup('utf-8') or None)
@@ -34,19 +37,21 @@ if sys.platform == "win32":
 
         GetStdHandle = WINFUNCTYPE(HANDLE, DWORD)(("GetStdHandle", windll.kernel32))
         STD_OUTPUT_HANDLE = DWORD(-11)
-        STD_ERROR_HANDLE  = DWORD(-12)
+        STD_ERROR_HANDLE = DWORD(-12)
         GetFileType = WINFUNCTYPE(DWORD, DWORD)(("GetFileType", windll.kernel32))
-        FILE_TYPE_CHAR   = 0x0002
+        FILE_TYPE_CHAR = 0x0002
         FILE_TYPE_REMOTE = 0x8000
         GetConsoleMode = WINFUNCTYPE(BOOL, HANDLE, POINTER(DWORD)) \
-                             (("GetConsoleMode", windll.kernel32))
+            (("GetConsoleMode", windll.kernel32))
         INVALID_HANDLE_VALUE = DWORD(-1).value
+
 
         def not_a_console(handle):
             if handle == INVALID_HANDLE_VALUE or handle is None:
                 return True
             return ((GetFileType(handle) & ~FILE_TYPE_REMOTE) != FILE_TYPE_CHAR
                     or GetConsoleMode(handle, byref(DWORD())) == 0)
+
 
         old_stdout_fileno = None
         old_stderr_fileno = None
@@ -77,6 +82,7 @@ if sys.platform == "win32":
             WriteConsoleW = WINFUNCTYPE(BOOL, HANDLE, LPWSTR, DWORD, POINTER(DWORD), \
                                         LPVOID)(("WriteConsoleW", windll.kernel32))
 
+
             class UnicodeOutput:
                 def __init__(self, hConsole, stream, fileno, name):
                     self._hConsole = hConsole
@@ -91,11 +97,14 @@ if sys.platform == "win32":
 
                 def isatty(self):
                     return False
+
                 def close(self):
                     # don't really close the handle, that would only cause problems
                     self.closed = True
+
                 def fileno(self):
                     return self._fileno
+
                 def flush(self):
                     if self._hConsole is None:
                         try:
@@ -141,6 +150,7 @@ if sys.platform == "win32":
                         _complain("%s.writelines: %r" % (self.name, e))
                         raise
 
+
             if real_stdout:
                 sys.stdout = UnicodeOutput(hStdout, None, STDOUT_FILENO,
                                            '<Unicode console stdout>')
@@ -157,13 +167,12 @@ if sys.platform == "win32":
     except Exception, e:
         _complain("exception %r while fixing up sys.stdout and sys.stderr" % (e,))
 
-
     # While we're at it, let's unmangle the command-line arguments:
 
     # This works around <http://bugs.python.org/issue2128>.
     GetCommandLineW = WINFUNCTYPE(LPWSTR)(("GetCommandLineW", windll.kernel32))
     CommandLineToArgvW = WINFUNCTYPE(POINTER(LPWSTR), LPCWSTR, POINTER(c_int)) \
-                            (("CommandLineToArgvW", windll.shell32))
+        (("CommandLineToArgvW", windll.shell32))
 
     argc = c_int(0)
     argv_unicode = CommandLineToArgvW(GetCommandLineW(), byref(argc))

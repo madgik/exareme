@@ -14,9 +14,9 @@ import madgik.exareme.worker.art.container.adaptor.WriteAdaptorWrapper;
  * @author Herald Kllapi<br>
  * @author Dimitris Paparas<br>
  * @author Eva Sitaridi<br>
- *         {herald,paparas,evas}@di.uoa.gr<br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * {herald,paparas,evas}@di.uoa.gr<br>
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public abstract class AbstractSiMo extends AbstractSiSo {
@@ -56,7 +56,8 @@ public abstract class AbstractSiMo extends AbstractSiSo {
         super.getAdaptorManager().closeOutput(out);
     }
 
-    @Override protected AdaptorManager createAdaptorManager() {
+    @Override
+    protected AdaptorManager createAdaptorManager() {
         return new AdaptorManager(-1, 1, this.getSessionManager());
     }
 }

@@ -38,7 +38,8 @@ public class LocalArmStorageClient implements ArmStorageClient {
      * @param dest
      * @throws ArmStorageClientException
      */
-    @Override public void put(String src, String dest) throws ArmStorageClientException {
+    @Override
+    public void put(String src, String dest) throws ArmStorageClientException {
 
         // validate parameters
         if (src == null || src.isEmpty())
@@ -76,7 +77,8 @@ public class LocalArmStorageClient implements ArmStorageClient {
      * @param dest
      * @throws ArmStorageClientException
      */
-    @Override public void fetch(String src, String dest) throws ArmStorageClientException {
+    @Override
+    public void fetch(String src, String dest) throws ArmStorageClientException {
         put(dest, src);
     }
 

@@ -1,11 +1,11 @@
 # coding: utf-8
 
-import setpath
 import functions
 from string import Template
 
+
 class myTemplate(Template):
-    delimiter=r'%'
+    delimiter = r'%'
     pattern = r"""
     %(delim)s(?:
       (?P<escaped>%(delim)s) |   # Escape sequence of two delimiters
@@ -13,17 +13,17 @@ class myTemplate(Template):
       {(?P<braced>%(id)s)}   |   # delimiter and a braced identifier
       (?P<invalid>)              # Other ill-formed delimiter exprs
     )
-    """%{'delim' : delimiter, 'id': Template.idpattern }
+    """ % {'delim': delimiter, 'id': Template.idpattern}
 
 
 def query(*args):
     return args[0] + ';'
 
+
 query.registered = True
 
 
 def pyeval(*args):
-
     """
     .. function:: pyeval(expression)
 
@@ -64,16 +64,18 @@ def pyeval(*args):
     lala
     """
 
-    if len(args)==0:
+    if len(args) == 0:
         return
-    
-    r=''
+
+    r = ''
     for i in args:
-        r=r+str(eval(i, functions.variables.__dict__, functions.rowfuncs.__dict__))
+        r = r + str(eval(i, functions.variables.__dict__, functions.rowfuncs.__dict__))
 
     return r
 
-pyeval.registered=True
+
+pyeval.registered = True
+
 
 def pyfun(*args):
     """
@@ -97,35 +99,37 @@ def pyfun(*args):
     Operator PYFUN: math.log10: math domain error
     """
 
-    if len(args)==0:
+    if len(args) == 0:
         return
 
-    fsplit=args[0].split('.')
+    fsplit = args[0].split('.')
     try:
-        f=__import__(fsplit[0])
+        f = __import__(fsplit[0])
         for i in fsplit[1:]:
-            f=f.__dict__[i]
+            f = f.__dict__[i]
     except KeyboardInterrupt:
         raise
     except:
         try:
-            f=__import__('libexternal'+'.'+fsplit[0])
+            f = __import__('libexternal' + '.' + fsplit[0])
             for i in fsplit:
-                f=f.__dict__[i]
+                f = f.__dict__[i]
         except:
-            raise functions.OperatorError("pyfun","didn't find function: "+args[0])
+            raise functions.OperatorError("pyfun", "didn't find function: " + args[0])
 
     try:
-        res=f(*args[1:])
+        res = f(*args[1:])
     except Exception, e:
-        raise functions.OperatorError("pyfun",args[0]+": "+functions.mstr(e))
+        raise functions.OperatorError("pyfun", args[0] + ": " + functions.mstr(e))
 
-    if res is None or type(res) in (int,float, str, unicode):
+    if res is None or type(res) in (int, float, str, unicode):
         return res
-    else:    
+    else:
         return repr(f(*args[1:]))
 
-pyfun.registered=True
+
+pyfun.registered = True
+
 
 def pyfunerrtonul(*args):
     """
@@ -144,33 +148,35 @@ def pyfunerrtonul(*args):
     None
     """
 
-    if len(args)==0:
+    if len(args) == 0:
         return
 
-    fsplit=args[0].split('.')
+    fsplit = args[0].split('.')
     try:
-        f=__import__(fsplit[0])
+        f = __import__(fsplit[0])
         for i in fsplit[1:]:
-            f=f.__dict__[i]
+            f = f.__dict__[i]
     except:
         try:
-            f=__import__('libexternal'+'.'+fsplit[0])
+            f = __import__('libexternal' + '.' + fsplit[0])
             for i in fsplit:
-                f=f.__dict__[i]
+                f = f.__dict__[i]
         except:
-            raise functions.OperatorError("pyfunerrtonul","didn't find function: "+args[0])
+            raise functions.OperatorError("pyfunerrtonul", "didn't find function: " + args[0])
 
     try:
-        res=f(*args[1:])
+        res = f(*args[1:])
     except Exception, e:
         return None
 
-    if res is None or type(res) in (int,float, str, unicode):
+    if res is None or type(res) in (int, float, str, unicode):
         return res
     else:
         return repr(f(*args[1:]))
 
-pyfunerrtonul.registered=True
+
+pyfunerrtonul.registered = True
+
 
 def subst(*args):
     """
@@ -199,22 +205,23 @@ def subst(*args):
     Variable testvalue1 %{testvar1} has value %s
 
     """
-    if len(args)==0:
+    if len(args) == 0:
         return
 
-    str=myTemplate(args[0]).safe_substitute(functions.variables.__dict__)
-    
-    if len(args)==1:
+    str = myTemplate(args[0]).safe_substitute(functions.variables.__dict__)
+
+    if len(args) == 1:
         return str
 
     try:
-        str=str%args[1:]
+        str = str % args[1:]
     except:
         pass
 
     return str
 
-subst.registered=True
+
+subst.registered = True
 
 if not ('.' in __name__):
     """
@@ -222,11 +229,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

@@ -18,7 +18,8 @@ public class ClusterArmStorageClientTest {
     private static final Logger log = Logger.getLogger(ClusterArmStorageClientTest.class);
     private static Configuration configuration = null;
 
-    @Before public void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         Logger.getRootLogger().setLevel(Level.INFO);
         log.info("----- SETUP -----");
         configuration = new Configuration();
@@ -26,7 +27,8 @@ public class ClusterArmStorageClientTest {
     }
 
 
-    @Test public void testArmStorageClient() throws Exception {
+    @Test
+    public void testArmStorageClient() throws Exception {
         log.info("----- TEST -----");
         MiniDFSCluster.Builder dfsClusterBuilder = new MiniDFSCluster.Builder(configuration);
         dfsClusterBuilder.numDataNodes(2);
@@ -50,7 +52,8 @@ public class ClusterArmStorageClientTest {
         log.info("----- TEST -----");
     }
 
-    @After public void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
 
         log.info("----- CLEAN -----");
 

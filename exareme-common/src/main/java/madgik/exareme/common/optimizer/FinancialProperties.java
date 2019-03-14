@@ -7,8 +7,8 @@ import java.io.Serializable;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class FinancialProperties implements Serializable {

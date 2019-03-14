@@ -12,11 +12,11 @@ import java.util.Map;
 public class StateEntityGraph {
     // Operator to state map
     private Map<String, Map<String, StateEntity>> opStateMap =
-        new HashMap<String, Map<String, StateEntity>>();
+            new HashMap<String, Map<String, StateEntity>>();
 
     // State to operator map
     private Map<String, Map<String, OperatorEntity>> stateOpMap =
-        new HashMap<String, Map<String, OperatorEntity>>();
+            new HashMap<String, Map<String, OperatorEntity>>();
 
     public StateEntityGraph() {
 

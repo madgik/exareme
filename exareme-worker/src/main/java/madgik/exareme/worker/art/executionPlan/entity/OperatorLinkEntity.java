@@ -24,8 +24,8 @@ public class OperatorLinkEntity implements Serializable {
     public OperatorEntity toOperator;
 
     public OperatorLinkEntity(OperatorEntity fromOperator, OperatorEntity toOperator,
-        ConnectType type, String containerName, EntityName container,
-        LinkedList<Parameter> paramList) {
+                              ConnectType type, String containerName, EntityName container,
+                              LinkedList<Parameter> paramList) {
         this.containerName = containerName;
         this.container = container;
         this.type = type;
@@ -34,10 +34,11 @@ public class OperatorLinkEntity implements Serializable {
         this.paramList = paramList;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "OperatorLinkEntity{" + "type=" + type + ", containerName=" + containerName
-            + ", container=" + container + ", paramList=" + paramList + ", fromOperator="
-            + fromOperator + ", toOperator=" + toOperator + '}';
+                + ", container=" + container + ", paramList=" + paramList + ", fromOperator="
+                + fromOperator + ", toOperator=" + toOperator + '}';
     }
 
     public enum ConnectType {

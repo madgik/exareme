@@ -146,8 +146,7 @@ jsMath.Package(jsMath.Parser, {
         var leader = jsMath.Box.Leaders(box.w, this.leaders[data[0]]);
         if (data[2]) {
             leader.y = -leader.h - box.d + (data[3] || 0)
-        }
-        else {
+        } else {
             leader.y = box.h + Math.max(0, leader.d) + (data[3] || 0)
         }
         box.x = -(leader.w + box.w) / 2;

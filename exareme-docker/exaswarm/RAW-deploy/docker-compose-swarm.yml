@@ -60,55 +60,55 @@ services:
     container_name: "${swarm_node}-raw-engine"
     restart: unless-stopped
     networks:
-     - "net-local"
+      - "net-local"
     expose:
-     - "5432"
+      - "5432"
     environment:
-     - "constraint:node==${swarm_node}"
+      - "constraint:node==${swarm_node}"
     volumes:
-     - "${raw_data_root}:/datasets:ro"
-     - "${pg_data_root}:/data:rw"
+      - "${raw_data_root}:/datasets:ro"
+      - "${pg_data_root}:/data:rw"
     environment:
-     - POSTGRES_PORT
-     - POSTGRES_USER
-     - POSTGRES_PASSWORD
-     - POSTGRES_DB=mip
+      - POSTGRES_PORT
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB=mip
 
   SWARMNODE-RawUI:
     image: "hbpmip/postgresraw-ui"
     container_name: "${swarm_node}-raw-ui"
     restart: unless-stopped
     networks:
-     - "net-local"
+      - "net-local"
     environment:
-     - "constraint:node==${swarm_node}"
+      - "constraint:node==${swarm_node}"
     expose:
-     - "5555"
+      - "5555"
     volumes:
-     - "${raw_data_root}:/datasets:ro"
-     - "${pg_data_root}:/data:rw"
+      - "${raw_data_root}:/datasets:ro"
+      - "${pg_data_root}:/data:rw"
     links:
-     - "SWARMNODE-RawEngine:raw-engine"
+      - "SWARMNODE-RawEngine:raw-engine"
     environment:
-     - POSTGRES_HOST=raw-engine
-     - POSTGRES_PORT
-     - POSTGRES_USER
-     - POSTGRES_PASSWORD
-     - POSTGRES_DB=mip
+      - POSTGRES_HOST=raw-engine
+      - POSTGRES_PORT
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB=mip
 
   SWARMNODE-RawAdmin:
     image: "library/nginx:alpine"
     container_name: "${swarm_node}-raw-admin"
     restart: unless-stopped
     networks:
-     - "net-local"
+      - "net-local"
     environment:
-     - "constraint:node==${swarm_node}"
+      - "constraint:node==${swarm_node}"
     ports:
-     - "80:80"
+      - "80:80"
     volumes:
-     - "${raw_admin_htpasswd}:/etc/nginx/.htpasswd:ro"
-     - "${raw_admin_conf}:/etc/nginx/nginx.conf:ro"
-     - "${raw_admin_log}:/var/log/nginx:rw"
+      - "${raw_admin_htpasswd}:/etc/nginx/.htpasswd:ro"
+      - "${raw_admin_conf}:/etc/nginx/nginx.conf:ro"
+      - "${raw_admin_log}:/var/log/nginx:rw"
     links:
-     - "SWARMNODE-RawUI:raw-ui"
+      - "SWARMNODE-RawUI:raw-ui"

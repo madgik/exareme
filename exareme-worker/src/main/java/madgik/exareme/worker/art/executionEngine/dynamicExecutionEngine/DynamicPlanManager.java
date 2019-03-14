@@ -47,11 +47,11 @@ public class DynamicPlanManager implements PlanSessionManagerInterface {
     private ArtRegistryProxy registryProxy = null;
     private ExecutionEngine executionEngine = null;
     private long forceSessionStopAfter_sec =
-        AdpProperties.getArtProps().getLong("art.executionEngine.forceSessionStopAfter_sec");
+            AdpProperties.getArtProps().getLong("art.executionEngine.forceSessionStopAfter_sec");
 
     public DynamicPlanManager(ArtRegistryProxy registryProxy, DynamicReportManager reportManager,
-        DynamicStatusManager statusManager, PlanSessionResourceManager resourceManager,
-        DynamicClockTickManager clockTickManager, DynamicStatisticsManager statisticsManager) {
+                              DynamicStatusManager statusManager, PlanSessionResourceManager resourceManager,
+                              DynamicClockTickManager clockTickManager, DynamicStatisticsManager statisticsManager) {
         this.eventProcessor = new EventProcessor(1);
         this.eventProcessor.start();
         this.schedulerMap = new HashMap<PlanSessionID, PlanEventScheduler>(16);
@@ -68,29 +68,31 @@ public class DynamicPlanManager implements PlanSessionManagerInterface {
         this.executionEngine = executionEngine;
     }
 
-    @Override public void createGlobalScheduler() throws RemoteException {
+    @Override
+    public void createGlobalScheduler() throws RemoteException {
         PlanSessionID sessionID = new PlanSessionID(sessionCount);
         PlanSessionReportID reportID = new PlanSessionReportID(sessionCount);
         reportID.reportManagerProxy = executionEngine.getPlanSessionReportManagerProxy(reportID);
         sessionCount++;
 
         PlanEventScheduler eventScheduler =
-            new PlanEventScheduler(sessionID, reportID, eventProcessor, this, resourceManager,
-                registryProxy);
+                new PlanEventScheduler(sessionID, reportID, eventProcessor, this, resourceManager,
+                        registryProxy);
 
         schedulerMap.put(sessionID, eventScheduler);
         clockTickManager.setGlobalScheduler(eventScheduler);
     }
 
-    @Override public PlanSessionID createNewSession() throws RemoteException {
+    @Override
+    public PlanSessionID createNewSession() throws RemoteException {
         PlanSessionID sessionID = new PlanSessionID(sessionCount);
         PlanSessionReportID reportID = new PlanSessionReportID(sessionCount);
         reportID.reportManagerProxy = executionEngine.getPlanSessionReportManagerProxy(reportID);
         sessionCount++;
 
         PlanEventScheduler eventScheduler =
-            new PlanEventScheduler(sessionID, reportID, eventProcessor, this, resourceManager,
-                registryProxy);
+                new PlanEventScheduler(sessionID, reportID, eventProcessor, this, resourceManager,
+                        registryProxy);
 
         schedulerMap.put(sessionID, eventScheduler);
         reportManager.registerScheduler(sessionID, reportID, eventScheduler);
@@ -100,8 +102,9 @@ public class DynamicPlanManager implements PlanSessionManagerInterface {
         return sessionID;
     }
 
-    @Override public ContainerSessionID createContainerSession(PlanSessionID planSessionID)
-        throws RemoteException {
+    @Override
+    public ContainerSessionID createContainerSession(PlanSessionID planSessionID)
+            throws RemoteException {
         ContainerSessionID containerSessionID = new ContainerSessionID(containerSessionCount);
         containerSessionCount++;
         LinkedList<ContainerSessionID> containerSessionIDs = containerSessionMap.get(planSessionID);
@@ -113,7 +116,8 @@ public class DynamicPlanManager implements PlanSessionManagerInterface {
         return containerSessionID;
     }
 
-    @Override public void destroySession(PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void destroySession(PlanSessionID sessionID) throws RemoteException {
         try {
             PlanEventScheduler eventScheduler = schedulerMap.get(sessionID);
             IndependentEvents jobs = new IndependentEvents(eventScheduler.getState());
@@ -122,10 +126,10 @@ public class DynamicPlanManager implements PlanSessionManagerInterface {
             Semaphore sem = new Semaphore(0);
             if (eventScheduler.getState().isTerminated() == false) {
                 eventScheduler.getState()
-                    .registerTerminationListener(new SemaphoreTerminationListener(sem));
+                        .registerTerminationListener(new SemaphoreTerminationListener(sem));
 
                 log.debug(
-                    "Waiting '" + forceSessionStopAfter_sec + "' seconds for session to stop ...");
+                        "Waiting '" + forceSessionStopAfter_sec + "' seconds for session to stop ...");
                 boolean stopped = sem.tryAcquire(forceSessionStopAfter_sec, TimeUnit.SECONDS);
                 if (stopped == false) {
                     log.warn("Force stop!");
@@ -143,14 +147,16 @@ public class DynamicPlanManager implements PlanSessionManagerInterface {
         }
     }
 
-    @Override public void execute(ExecutionPlan plan, PlanSessionID sessionID)
-        throws RemoteException {
+    @Override
+    public void execute(ExecutionPlan plan, PlanSessionID sessionID)
+            throws RemoteException {
         PlanEventScheduler eventScheduler = this.schedulerMap.get(sessionID);
         log.debug("Exec: " + sessionID.getLongId());
         eventScheduler.execute(plan);
     }
 
-    @Override public void destroyAllSessions() throws RemoteException {
+    @Override
+    public void destroyAllSessions() throws RemoteException {
         log.debug("Destroy all sessions ...");
         LinkedList<PlanSessionID> session = new LinkedList<PlanSessionID>(schedulerMap.keySet());
         for (PlanSessionID id : session) {
@@ -158,15 +164,18 @@ public class DynamicPlanManager implements PlanSessionManagerInterface {
         }
     }
 
-    @Override public void stopManager() throws RemoteException {
+    @Override
+    public void stopManager() throws RemoteException {
         stopManager(false);
     }
 
-    @Override public void stopManager(boolean force) throws RemoteException {
+    @Override
+    public void stopManager(boolean force) throws RemoteException {
         this.eventProcessor.stop(force);
     }
 
-    @Override public PlanSessionID createNewSessionElasticTree() throws RemoteException {
+    @Override
+    public PlanSessionID createNewSessionElasticTree() throws RemoteException {
         PlanSessionID sessionID = new PlanSessionID(sessionCount);
         PlanSessionReportID reportID = new PlanSessionReportID(sessionCount);
         reportID.reportManagerProxy = executionEngine.getPlanSessionReportManagerProxy(reportID);
@@ -181,8 +190,9 @@ public class DynamicPlanManager implements PlanSessionManagerInterface {
         return sessionID;
     }
 
-    @Override public void executeElasticTree(ExecutionPlan plan, SLA sla, PlanSessionID sessionID)
-        throws RemoteException {
+    @Override
+    public void executeElasticTree(ExecutionPlan plan, SLA sla, PlanSessionID sessionID)
+            throws RemoteException {
         log.debug("Exec Elastic Tree: " + sessionID.getLongId());
         elasticTreeScheduler.execute(plan, sla, sessionID, elasticTreeSessions.get(sessionID));
     }

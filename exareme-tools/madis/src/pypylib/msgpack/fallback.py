@@ -1,30 +1,36 @@
 """Fallback pure Python implementation of msgpack"""
 
-import sys
 import array
 import struct
+import sys
 
 if sys.version_info[0] == 3:
     PY3 = True
     int_types = int
     Unicode = str
     xrange = range
+
+
     def dict_iteritems(d):
         return d.items()
 else:
     PY3 = False
     int_types = (int, long)
     Unicode = unicode
+
+
     def dict_iteritems(d):
         return d.iteritems()
-
 
 if hasattr(sys, 'pypy_version_info'):
     # cStringIO is slow on PyPy, StringIO is faster.  However: PyPy's own
     # StringBuilder is fastest.
     from __pypy__ import newlist_hint
     from __pypy__.builders import StringBuilder
+
     USING_STRINGBUILDER = True
+
+
     class StringIO(object):
         def __init__(self, s=b''):
             if s:
@@ -32,13 +38,16 @@ if hasattr(sys, 'pypy_version_info'):
                 self.builder.append(s)
             else:
                 self.builder = StringBuilder()
+
         def write(self, s):
             self.builder.append(s)
+
         def getvalue(self):
             return self.builder.build()
 else:
     USING_STRINGBUILDER = False
     from io import BytesIO as StringIO
+
     newlist_hint = lambda size: []
 
 from msgpack.exceptions import (
@@ -50,18 +59,17 @@ from msgpack.exceptions import (
 
 from msgpack import ExtType
 
+EX_SKIP = 0
+EX_CONSTRUCT = 1
+EX_READ_ARRAY_HEADER = 2
+EX_READ_MAP_HEADER = 3
 
-EX_SKIP                 = 0
-EX_CONSTRUCT            = 1
-EX_READ_ARRAY_HEADER    = 2
-EX_READ_MAP_HEADER      = 3
-
-TYPE_IMMEDIATE          = 0
-TYPE_ARRAY              = 1
-TYPE_MAP                = 2
-TYPE_RAW                = 3
-TYPE_BIN                = 4
-TYPE_EXT                = 5
+TYPE_IMMEDIATE = 0
+TYPE_ARRAY = 1
+TYPE_MAP = 2
+TYPE_RAW = 3
+TYPE_BIN = 4
+TYPE_EXT = 5
 
 DEFAULT_RECURSE_LIMIT = 511
 
@@ -171,7 +179,7 @@ class Unpacker(object):
         # Instead, it is done sloppily.  To make sure we raise BufferFull at
         # the correct moments, we have to keep track of how sloppy we were.
         self._fb_sloppiness = 0
-        self._max_buffer_size = max_buffer_size or 2**31-1
+        self._max_buffer_size = max_buffer_size or 2 ** 31 - 1
         if read_size > self._max_buffer_size:
             raise ValueError("read_size must be smaller than max_buffer_size")
         self._read_size = read_size or min(self._max_buffer_size, 4096)
@@ -202,7 +210,7 @@ class Unpacker(object):
             next_bytes = bytes(next_bytes)
         assert self._fb_feeding
         if (self._fb_buf_n + len(next_bytes) - self._fb_sloppiness
-                        > self._max_buffer_size):
+                > self._max_buffer_size):
             raise BufferFull
         self._fb_buf_n += len(next_bytes)
         self._fb_buffers.append(next_bytes)
@@ -211,7 +219,7 @@ class Unpacker(object):
         """ Gets rid of some of the used parts of the buffer. """
         if self._fb_buf_i:
             for i in xrange(self._fb_buf_i):
-                self._fb_buf_n -=  len(self._fb_buffers[i])
+                self._fb_buf_n -= len(self._fb_buffers[i])
             self._fb_buffers = self._fb_buffers[self._fb_buf_i:]
             self._fb_buf_i = 0
         if self._fb_buffers:
@@ -223,7 +231,7 @@ class Unpacker(object):
         """ Gets rid of the used parts of the buffer. """
         if self._fb_buf_i:
             for i in xrange(self._fb_buf_i):
-                self._fb_buf_n -=  len(self._fb_buffers[i])
+                self._fb_buf_n -= len(self._fb_buffers[i])
             self._fb_buffers = self._fb_buffers[self._fb_buf_i:]
             self._fb_buf_i = 0
         if self._fb_buffers:
@@ -305,7 +313,7 @@ class Unpacker(object):
         obj = None
         c = self._fb_read(1, write_bytes)
         b = ord(c)
-        if   b & 0b10000000 == 0:
+        if b & 0b10000000 == 0:
             obj = b
         elif b & 0b11100000 == 0b11100000:
             obj = struct.unpack("b", c)[0]
@@ -478,6 +486,7 @@ class Unpacker(object):
         except OutOfData:
             self._fb_consume()
             raise StopIteration
+
     __next__ = next
 
     def skip(self, write_bytes=None):
@@ -528,6 +537,7 @@ class Packer(object):
         Use bin type introduced in msgpack spec 2.0 for bytes.
         It also enable str8 type for unicode.
     """
+
     def __init__(self, default=None, encoding='utf-8', unicode_errors='strict',
                  use_single_float=False, autoreset=True, use_bin_type=False):
         self._use_float = use_single_float
@@ -667,7 +677,7 @@ class Packer(object):
         return ret
 
     def pack_array_header(self, n):
-        if n >= 2**32:
+        if n >= 2 ** 32:
             raise ValueError
         self._fb_pack_array_header(n)
         ret = self._buffer.getvalue()
@@ -678,7 +688,7 @@ class Packer(object):
         return ret
 
     def pack_map_header(self, n):
-        if n >= 2**32:
+        if n >= 2 ** 32:
             raise ValueError
         self._fb_pack_map_header(n)
         ret = self._buffer.getvalue()

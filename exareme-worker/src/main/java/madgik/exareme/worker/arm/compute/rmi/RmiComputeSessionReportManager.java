@@ -14,13 +14,13 @@ import java.util.UUID;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class RmiComputeSessionReportManager
-    extends RmiRemoteObject<ComputeSessionReportManagerProxy>
-    implements ComputeSessionReportManager {
+        extends RmiRemoteObject<ComputeSessionReportManagerProxy>
+        implements ComputeSessionReportManager {
 
     private EntityName regEntityName = null;
 

@@ -100,10 +100,11 @@ public class PlanExpression implements Serializable {
         return stateLinkList;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "PlanExpression{\n" + "pragmaList=" + pragmaList + ", \ncontainersList="
-            + containersList + ", \noperatorList=" + operatorList + ", \nswitchList=" + switchList
-            + ", \noperatorConnectList=" + operatorConnectList;
+                + containersList + ", \noperatorList=" + operatorList + ", \nswitchList=" + switchList
+                + ", \noperatorConnectList=" + operatorConnectList;
     }
 
 }

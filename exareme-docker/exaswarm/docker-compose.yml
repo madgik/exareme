@@ -3,8 +3,8 @@ version: '2'
 services:
   examaster:
     image: vagsai/exaremedist:v1
-#    links:
-#      - rawdb
+    #    links:
+    #      - rawdb
     environment:
       - MASTER_FLAG=master
       - CONSULURL=83.212.100.72:8500
@@ -43,13 +43,13 @@ services:
       - RAWRESULTS=all
       - RAWDATAKEY=output #query used with output, query-start with data     
 
- # rawdb:
+  # rawdb:
   #  hostname: rawdb
- #   image: raw-sniffer
+  #   image: raw-sniffer
   #  volumes:
- #     - ../datasets:/datasets:ro
+  #     - ../datasets:/datasets:ro
   #  ports:
- #     - "54321:54321"
+  #     - "54321:54321"
 #      - "5555:5555"
 
 #  examaster:

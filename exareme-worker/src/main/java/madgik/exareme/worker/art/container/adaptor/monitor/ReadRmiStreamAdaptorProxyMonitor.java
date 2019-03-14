@@ -24,33 +24,38 @@ public class ReadRmiStreamAdaptorProxyMonitor implements ReadRmiStreamAdaptorPro
     private InputStreamMonitor streamMonitor = null;
 
     public ReadRmiStreamAdaptorProxyMonitor(ReadRmiStreamAdaptorProxy proxy,
-        AdaptorStatistics adaptorStatistics, ConcreteOperatorStatistics statistics) {
+                                            AdaptorStatistics adaptorStatistics, ConcreteOperatorStatistics statistics) {
         this.proxy = proxy;
         this.adaptorStatistics = adaptorStatistics;
         this.statistics = statistics;
     }
 
-    @Override public InputStream getInputStream() throws RemoteException {
+    @Override
+    public InputStream getInputStream() throws RemoteException {
         if (streamMonitor == null) {
             streamMonitor =
-                new InputStreamMonitor(proxy.getInputStream(), adaptorStatistics, statistics);
+                    new InputStreamMonitor(proxy.getInputStream(), adaptorStatistics, statistics);
         }
         return streamMonitor;
     }
 
-    @Override public void close() throws RemoteException {
+    @Override
+    public void close() throws RemoteException {
         proxy.close();
     }
 
-    @Override public ReadRmiStreamAdaptor connect() throws RemoteException {
+    @Override
+    public ReadRmiStreamAdaptor connect() throws RemoteException {
         return proxy.connect();
     }
 
-    @Override public ReadRmiStreamAdaptor getRemoteObject() throws RemoteException {
+    @Override
+    public ReadRmiStreamAdaptor getRemoteObject() throws RemoteException {
         return proxy.getRemoteObject();
     }
 
-    @Override public RetryPolicy getRetryPolicy() throws RemoteException {
+    @Override
+    public RetryPolicy getRetryPolicy() throws RemoteException {
         return proxy.getRetryPolicy();
     }
 }

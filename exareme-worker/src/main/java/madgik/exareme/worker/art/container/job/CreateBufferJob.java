@@ -20,7 +20,8 @@ public class CreateBufferJob implements ContainerJob {
         this.quality = quality;
     }
 
-    @Override public ContainerJobType getType() {
+    @Override
+    public ContainerJobType getType() {
         return ContainerJobType.createBuffer;
     }
 }

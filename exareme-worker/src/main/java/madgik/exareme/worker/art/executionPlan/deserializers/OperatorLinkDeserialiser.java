@@ -19,7 +19,7 @@ public class OperatorLinkDeserialiser implements JsonDeserializer<OperatorLink> 
 
     @Override
     public OperatorLink deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
-        throws JsonParseException {
+            throws JsonParseException {
         final JsonObject jsonObject = je.getAsJsonObject();
 
         String containerName = null;
@@ -32,13 +32,13 @@ public class OperatorLinkDeserialiser implements JsonDeserializer<OperatorLink> 
 
         if (jsonObject.has(PlanExpressionConstants.PARAMETERS)) {
             JsonArray parameters =
-                jsonObject.get(PlanExpressionConstants.PARAMETERS).getAsJsonArray();
+                    jsonObject.get(PlanExpressionConstants.PARAMETERS).getAsJsonArray();
             paramList = new LinkedList<>();
             JsonArray param;
             for (JsonElement jee : parameters) {
                 param = jee.getAsJsonArray();
                 paramList
-                    .add(new Parameter(param.get(0).getAsString(), param.get(1).getAsString()));
+                        .add(new Parameter(param.get(0).getAsString(), param.get(1).getAsString()));
             }
         }
 

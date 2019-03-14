@@ -12,7 +12,7 @@ import java.rmi.RemoteException;
  * @since 1.0
  */
 public interface ComputeSessionStatusManager
-    extends RemoteObject<ComputeSessionStatusManagerProxy> {
+        extends RemoteObject<ComputeSessionStatusManagerProxy> {
 
     void stopManager() throws RemoteException;
 }

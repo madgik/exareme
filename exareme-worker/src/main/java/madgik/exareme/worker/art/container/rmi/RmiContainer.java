@@ -83,18 +83,18 @@ public class RmiContainer extends RmiRemoteObject<ContainerProxy> implements Con
     private DataTransferGateway dataTransfer = null;
     private static final Logger log = Logger.getLogger(RmiContainer.class);
     private HashMap<ConcreteOperatorID, HashMap<String, Pair<String, BufferID>>>
-        operatorIDToBufferID;
+            operatorIDToBufferID;
     private HashSet<String> dataMatOps;
     private HashMap<String, CreateOperatorJob> idToDtOperator;
     private String containerName;
 
     public RmiContainer(String containerName, ConcreteOperatorManagerInterface cOpMngrIface,
-        BufferManagerInterface bMngrIface, DiskManagerInterface diskMngrIface,
-        NetManagerInterface netMngrIface, AdaptorManagerInterface adptrMngrIface,
-        StatisticsManagerInterface statsMngrIface, JobQueueInterface jobQueueInterface,
-        Executor executor, ContainerResources resources, EntityName regName,
-        ContainerStatus containerStatus, DataTransferMgrInterface dataTransferManagerDTP,
-        ContainerID containerID) throws RemoteException {
+                        BufferManagerInterface bMngrIface, DiskManagerInterface diskMngrIface,
+                        NetManagerInterface netMngrIface, AdaptorManagerInterface adptrMngrIface,
+                        StatisticsManagerInterface statsMngrIface, JobQueueInterface jobQueueInterface,
+                        Executor executor, ContainerResources resources, EntityName regName,
+                        ContainerStatus containerStatus, DataTransferMgrInterface dataTransferManagerDTP,
+                        ContainerID containerID) throws RemoteException {
         super(NetUtil.getIPv4() + "_container_" + containerName);
 
         this.ip = NetUtil.getIPv4();
@@ -121,14 +121,14 @@ public class RmiContainer extends RmiRemoteObject<ContainerProxy> implements Con
 
         log.debug("\t RmiConcreteOperatorManager...");
         concreteOperatorManager =
-            new RmiConcreteOperatorManager(cOpMngrIface, regName, dataTransferManagerDTP);
+                new RmiConcreteOperatorManager(cOpMngrIface, regName, dataTransferManagerDTP);
 
         log.debug("\t RmiStatisticsManager...");
         statisticsManager = new RmiStatisticsManager(statsMngrIface, regName);
 
         quantumClock = new ContainerQuantumClock(containerID,
-            AdpProperties.getCloudProps().getLong("cloud.warnTime") * 1000,
-            AdpProperties.getCloudProps().getLong("cloud.quantum") * 1000);
+                AdpProperties.getCloudProps().getLong("cloud.warnTime") * 1000,
+                AdpProperties.getCloudProps().getLong("cloud.quantum") * 1000);
         quantumClock.startDeamon();
 
         log.debug("Registering MBean...");
@@ -137,53 +137,56 @@ public class RmiContainer extends RmiRemoteObject<ContainerProxy> implements Con
 
         log.debug("Create update deamon ...");
         long lifeTime =
-            AdpProperties.getArtProps().getLong("art.container.rmi.RmiContainer.lifetime");
+                AdpProperties.getArtProps().getLong("art.container.rmi.RmiContainer.lifetime");
 
         registryUpdateDeamon =
-            RegistryUpdateDeamonFactory.createDeamon(this.createProxy(), (long) (0.75 * lifeTime));
+                RegistryUpdateDeamonFactory.createDeamon(this.createProxy(), (long) (0.75 * lifeTime));
         registryUpdateDeamon.startDeamon();
 
         //TODO(DSH): check
         executor
-            .setManagers(statisticsManager, concreteOperatorManager, bufferManager, adaptorManager,
-                dataTransferManagerDTP);
+                .setManagers(statisticsManager, concreteOperatorManager, bufferManager, adaptorManager,
+                        dataTransferManagerDTP);
         jobQueueInterface
-            .setManagers(statisticsManager, concreteOperatorManager, bufferManager, adaptorManager,
-                dataTransferManagerDTP);
+                .setManagers(statisticsManager, concreteOperatorManager, bufferManager, adaptorManager,
+                        dataTransferManagerDTP);
 
         executor.start();
     }
 
-    @Override public ContainerStatus getStatus() throws RemoteException {
+    @Override
+    public ContainerStatus getStatus() throws RemoteException {
         return containerStatus;
     }
 
-    @Override public final ContainerProxy createProxy() throws RemoteException {
+    @Override
+    public final ContainerProxy createProxy() throws RemoteException {
         super.register();
         return new RmiContainerProxy(ip, super.getRegEntryName(), regEntityName);
     }
 
-    @Override public ContainerJobResults execJobs(ContainerJobs jobs) throws RemoteException {
+    @Override
+    public ContainerJobResults execJobs(ContainerJobs jobs) throws RemoteException {
         ContainerJobResults results = new ContainerJobResults();
         ContainerJobResult result = null;
         for (ContainerJob job : jobs.getJobs()) {
             log.debug("Executing Job: " + job.getType().name() + " " + job.toString());
             if (job.getType()
-                == ContainerJobType.createOperator) { // create buffer and link//////////////////create OP
+                    == ContainerJobType.createOperator) { // create buffer and link//////////////////create OP
                 if (((CreateOperatorJob) job).type
-                    == OperatorType.dataTransfer) {//////////////////////////////////////////DataTransfer
+                        == OperatorType.dataTransfer) {//////////////////////////////////////////DataTransfer
                     log.debug("Data transfer op: " + ((CreateOperatorJob) job).operatorName);
                     log.debug("DataTransferParams: " + ((CreateOperatorJob) job).parameters
-                        .listParameterNames());
+                            .listParameterNames());
                     log.debug(
-                        "DataTransferParamsList: " + ((CreateOperatorJob) job).linkMapParameters);
+                            "DataTransferParamsList: " + ((CreateOperatorJob) job).linkMapParameters);
                     result = jobQueueInterface
-                        .addJob(job, ((CreateOperatorJob) job).contSessionID, jobs.sessionID);
+                            .addJob(job, ((CreateOperatorJob) job).contSessionID, jobs.sessionID);
                     results.addJobResult(result);
                     continue;
                 }
                 result = jobQueueInterface
-                    .addJob(job, ((CreateOperatorJob) job).contSessionID, jobs.sessionID);
+                        .addJob(job, ((CreateOperatorJob) job).contSessionID, jobs.sessionID);
                 log.debug("Create Operator: " + ((CreateOperatorJob) job).operatorName);
                 HashMap<String, Pair<String, BufferID>> operatorIDToBufferIDInner = null;
                 Boolean isRead = null;
@@ -197,13 +200,13 @@ public class RmiContainer extends RmiRemoteObject<ContainerProxy> implements Con
                                 isRead = false;
                             } else {
                                 throw new RemoteException(
-                                    "DataMaterialization operator is neither Read nor Write!");
+                                        "DataMaterialization operator is neither Read nor Write!");
                             }
                         }
                     }
                     if (isRead == null) {
                         throw new RemoteException(
-                            "DataMaterialization operator is neither Read nor Write!");
+                                "DataMaterialization operator is neither Read nor Write!");
                     }
                     if (!isRead) {
                         dataMatOps.add(((CreateOperatorJob) job).operatorName);
@@ -213,7 +216,7 @@ public class RmiContainer extends RmiRemoteObject<ContainerProxy> implements Con
                 if (((CreateOperatorJob) job).type != OperatorType.dataMaterialization || isRead) {
                     //for all operators except dataMaterialization writers
                     for (Map.Entry<String, LinkedList<Parameter>> entry : ((CreateOperatorJob) job).linkMapParameters
-                        .entrySet()) {
+                            .entrySet()) {
                         //for all output links
                         String part = null;
                         for (Parameter p : entry.getValue()) {//TODO(JV) fix perf
@@ -227,8 +230,8 @@ public class RmiContainer extends RmiRemoteObject<ContainerProxy> implements Con
 
                         //Create Buffer
                         String bufferName =
-                            ((CreateOperatorJob) job).operatorName + "_B_" + entry.getKey() + "_P_"
-                                + part;
+                                ((CreateOperatorJob) job).operatorName + "_B_" + entry.getKey() + "_P_"
+                                        + part;
                         log.debug("Creating buffer: " + bufferName);
                         BufferQoS qos = new BufferQoS();
                         int qos_num = 1; //TODO(JV): check this
@@ -237,38 +240,37 @@ public class RmiContainer extends RmiRemoteObject<ContainerProxy> implements Con
 
                         ContainerJob createBuffer = new CreateBufferJob(bufferName, qos);
                         ((CreateOperatorJobResult) result).SetBufferJobResult(
-                            (CreateBufferJobResult) jobQueueInterface
-                                .addJob(createBuffer, ((CreateOperatorJob) job).contSessionID,
-                                    jobs.sessionID));
+                                (CreateBufferJobResult) jobQueueInterface
+                                        .addJob(createBuffer, ((CreateOperatorJob) job).contSessionID,
+                                                jobs.sessionID));
                         if (operatorIDToBufferIDInner == null) {
                             operatorIDToBufferIDInner = new HashMap<>();
                         }
                         operatorIDToBufferIDInner.put(entry.getKey(), new Pair(bufferName,
-                            ((CreateOperatorJobResult) result).bufferJobResult.bufferId));
+                                ((CreateOperatorJobResult) result).bufferJobResult.bufferId));
 
                         log.debug("Creating WriteAdaptor...");
                         ContainerJob createAdapter =
-                            new CreateWriteAdaptorJob(((CreateOperatorJobResult) result).opID,
-                                ((CreateOperatorJobResult) result).bufferJobResult.bufferId,
-                                bufferName, //portName == bufferName (????)
-                                convert(entry.getValue()), AdaptorType.LOCAL_ADAPTOR);
+                                new CreateWriteAdaptorJob(((CreateOperatorJobResult) result).opID,
+                                        ((CreateOperatorJobResult) result).bufferJobResult.bufferId,
+                                        bufferName, //portName == bufferName (????)
+                                        convert(entry.getValue()), AdaptorType.LOCAL_ADAPTOR);
                         jobQueueInterface
-                            .addJob(createAdapter, ((CreateOperatorJob) job).contSessionID,
-                                jobs.sessionID);
+                                .addJob(createAdapter, ((CreateOperatorJob) job).contSessionID,
+                                        jobs.sessionID);
                     }
 
                     if (((CreateOperatorJob) job).linkMapParameters.size() > 0) {
                         ((CreateOperatorJobResult) result).bufferJobResult
-                            .setOp(((CreateOperatorJob) job).operatorName);
+                                .setOp(((CreateOperatorJob) job).operatorName);
                         operatorIDToBufferID.put(((CreateOperatorJobResult) result).opID,
-                            operatorIDToBufferIDInner);
+                                operatorIDToBufferIDInner);
                         ((CreateOperatorJobResult) result).bufferJobResult
-                            .setOpToBuffer(operatorIDToBufferIDInner);
+                                .setOpToBuffer(operatorIDToBufferIDInner);
                         operatorIDToBufferIDInner = null;
                     }
                 }
                 results.addJobResult(result);
-
 
 
             } else if (job.getType() == ContainerJobType.distributedJobCreateDataflow) {
@@ -284,7 +286,7 @@ public class RmiContainer extends RmiRemoteObject<ContainerProxy> implements Con
                     Parameters params = new Parameters();
                     for (Parameter p : createLinkJob.paramList) {
                         params.addParameter(
-                            new madgik.exareme.worker.art.parameter.Parameter(p.name, p.value));
+                                new madgik.exareme.worker.art.parameter.Parameter(p.name, p.value));
                     }
                     String part = null;
                     for (Parameter p : createLinkJob.paramList) {
@@ -296,13 +298,13 @@ public class RmiContainer extends RmiRemoteObject<ContainerProxy> implements Con
                         throw new RemoteException("part parameter in Link is null");
                     }
                     log.trace("Create read link from buffer: " + createLinkJob.bufferName
-                        + " to operator " + createLinkJob.toConcreteOperatorID.operatorName);
+                            + " to operator " + createLinkJob.toConcreteOperatorID.operatorName);
                     ContainerJob createReadLink = new CreateReadAdaptorJob(createLinkJob.bufferID,
-                        createLinkJob.toConcreteOperatorID, createLinkJob.bufferName, params,
-                        createLinkJob.adaptorType);
+                            createLinkJob.toConcreteOperatorID, createLinkJob.bufferName, params,
+                            createLinkJob.adaptorType);
                     result = jobQueueInterface
-                        .addJob(createReadLink, ((CreateOperatorLinkJob) job).contSessionID,
-                            jobs.sessionID);
+                            .addJob(createReadLink, ((CreateOperatorLinkJob) job).contSessionID,
+                                    jobs.sessionID);
                     results.addJobResult(result);
                 } else {
                     result = new CreateReadAdaptorJobResult(null, null);
@@ -321,7 +323,8 @@ public class RmiContainer extends RmiRemoteObject<ContainerProxy> implements Con
         return results;
     }
 
-    @Override public void stopContainer() throws RemoteException {
+    @Override
+    public void stopContainer() throws RemoteException {
         try {
             quantumClock.stopDeamon();
             registryUpdateDeamon.stopDeamon();
@@ -339,7 +342,7 @@ public class RmiContainer extends RmiRemoteObject<ContainerProxy> implements Con
 
     @Override
     public void destroyContainerSession(ContainerSessionID contSessionID, PlanSessionID sessionID)
-        throws RemoteException {
+            throws RemoteException {
         log.debug("Destroy all container sessions ... ");
 
         bufferManager.destroyContainerSession(contSessionID, sessionID);
@@ -354,7 +357,8 @@ public class RmiContainer extends RmiRemoteObject<ContainerProxy> implements Con
         jobQueueInterface.destroyContainerSession(contSessionID, sessionID);
     }
 
-    @Override public void destroySessions(PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void destroySessions(PlanSessionID sessionID) throws RemoteException {
         log.debug("Destroy all plan sessions ... ");
 
         concreteOperatorManager.destroySessions(sessionID);
@@ -369,7 +373,8 @@ public class RmiContainer extends RmiRemoteObject<ContainerProxy> implements Con
         jobQueueInterface.destroySessions(sessionID);
     }
 
-    @Override public void destroyAllSessions() throws RemoteException {
+    @Override
+    public void destroyAllSessions() throws RemoteException {
         log.debug("Destroy all sessions ... ");
 
         bufferManager.destroyAllSessions();

@@ -1,7 +1,15 @@
 package madgik.exareme.master.engine.iterations.state;
 
 import junit.framework.Assert;
-
+import madgik.exareme.common.consts.HBPConstants;
+import madgik.exareme.master.client.AdpDBClient;
+import madgik.exareme.master.client.AdpDBClientFactory;
+import madgik.exareme.master.client.AdpDBClientProperties;
+import madgik.exareme.master.engine.AdpDBManager;
+import madgik.exareme.master.engine.AdpDBManagerLocator;
+import madgik.exareme.master.engine.iterations.IterationsTestGenericUtils;
+import madgik.exareme.master.engine.iterations.state.exceptions.IterationsStateFatalException;
+import madgik.exareme.master.queryProcessor.composer.AlgorithmsProperties;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -15,23 +23,13 @@ import org.powermock.reflect.Whitebox;
 
 import java.util.HashMap;
 
-import madgik.exareme.common.consts.HBPConstants;
-import madgik.exareme.master.client.AdpDBClient;
-import madgik.exareme.master.client.AdpDBClientFactory;
-import madgik.exareme.master.client.AdpDBClientProperties;
-import madgik.exareme.master.engine.AdpDBManager;
-import madgik.exareme.master.engine.AdpDBManagerLocator;
-import madgik.exareme.master.engine.iterations.IterationsTestGenericUtils;
-import madgik.exareme.master.engine.iterations.state.exceptions.IterationsStateFatalException;
-import madgik.exareme.master.queryProcessor.composer.AlgorithmsProperties;
-
 import static org.powermock.api.mockito.PowerMockito.when;
 
 /**
  * IterativeAlgorithmState tests
  *
  * @author Christos Aslanoglou <br> caslanoglou@di.uoa.gr <br> University of Athens / Department of
- *         Informatics and Telecommunications.
+ * Informatics and Telecommunications.
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore("javax.management.*")

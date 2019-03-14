@@ -24,7 +24,7 @@ public class Operator implements Serializable {
     public final Map<String, LinkedList<Parameter>> linksparams;
 
     public Operator(String operatorName, String operator, LinkedList<Parameter> paramList,
-        String queryString, String containerName, Map<String, LinkedList<Parameter>> linksparams) {
+                    String queryString, String containerName, Map<String, LinkedList<Parameter>> linksparams) {
         this.operatorName = operatorName;
         this.containerName = containerName;
         this.operator = operator;
@@ -39,8 +39,8 @@ public class Operator implements Serializable {
     }
 
     public Operator(String operatorName, String operator, LinkedList<Parameter> paramList,
-        String queryString, String containerName, Map<String, LinkedList<Parameter>> linksparams,
-        List<URL> locations) {
+                    String queryString, String containerName, Map<String, LinkedList<Parameter>> linksparams,
+                    List<URL> locations) {
         this.operatorName = operatorName;
         this.containerName = containerName;
         this.operator = operator;
@@ -59,7 +59,8 @@ public class Operator implements Serializable {
         this.linksparams.put(toOperator, params);
     }
 
-    @Override public boolean equals(Object obj) {
+    @Override
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -71,7 +72,7 @@ public class Operator implements Serializable {
         //check strings
 
         if ((queryString != null && guest.queryString == null) || (queryString == null
-            && guest.queryString != null)) {
+                && guest.queryString != null)) {
             return false;
         } else if (queryString != null) {
             if (!queryString.equals(guest.queryString)) {
@@ -80,13 +81,13 @@ public class Operator implements Serializable {
         }
 
         if (!(operatorName.equals(guest.operatorName) && operator.equals(guest.operator)
-            && containerName.equals(guest.containerName))) {
+                && containerName.equals(guest.containerName))) {
             return false;
 
         }
         //check lists
         if ((paramList != null && guest.paramList == null) || (paramList == null
-            && guest.paramList != null)) {
+                && guest.paramList != null)) {
             return false;
         }
 
@@ -102,7 +103,7 @@ public class Operator implements Serializable {
         }
 
         if ((locations != null && guest.locations == null) || (locations == null
-            && guest.locations != null)) {
+                && guest.locations != null)) {
             return false;
         }
 
@@ -119,7 +120,8 @@ public class Operator implements Serializable {
         return true;
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int hash = 5;
         hash = 41 * hash + Objects.hashCode(this.operatorName);
         hash = 41 * hash + Objects.hashCode(this.operator);
@@ -130,10 +132,11 @@ public class Operator implements Serializable {
         return hash;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "Operator{" + "\noperatorName=" + operatorName + ", \noperator=" + operator
-            + ", \nparamList=" + paramList + ", \ncontainerName=" + containerName
-            + ", \nlinksparams=" + linksparams + '}';
+                + ", \nparamList=" + paramList + ", \ncontainerName=" + containerName
+                + ", \nlinksparams=" + linksparams + '}';
     }
 
 }

@@ -31,7 +31,8 @@ public class SimpleCyclicStreamByteBuffer implements StreamBuffer {
 
     }
 
-    @Override public void clear() {
+    @Override
+    public void clear() {
     }
 
     public void write(byte[] bytes, int offset, int length) throws IOException {

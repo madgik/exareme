@@ -17,7 +17,7 @@ public class CloseContainerSessionEvent extends ExecEngineEvent {
     public int messageCount = 0;
 
     public CloseContainerSessionEvent(ContainerSessionID containerSessionID,
-        PlanEventSchedulerState state) {
+                                      PlanEventSchedulerState state) {
         super(state);
         this.containerSessionID = containerSessionID;
     }

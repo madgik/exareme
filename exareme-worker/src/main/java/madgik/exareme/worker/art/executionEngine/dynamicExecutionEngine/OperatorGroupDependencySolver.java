@@ -32,7 +32,7 @@ public class OperatorGroupDependencySolver {
     }
 
     private boolean canBeProcessed(OperatorEntity coe,
-        LinkedHashMap<String, OperatorGroup> readyOperatorGroupMap) {
+                                   LinkedHashMap<String, OperatorGroup> readyOperatorGroupMap) {
         ActiveOperator activeOperator = state.getActiveOperator(coe.operatorName);
         if (activeOperator != null) {
             return false;
@@ -46,11 +46,11 @@ public class OperatorGroupDependencySolver {
     }
 
     private void addOperatorToGroup(OperatorEntity op, OperatorGroup group,
-        LinkedHashMap<String, OperatorGroup> readyOperatorGroupMap) {
-    /* Add the operator to the new group */
+                                    LinkedHashMap<String, OperatorGroup> readyOperatorGroupMap) {
+        /* Add the operator to the new group */
         group.operatorMap.put(op.operatorName, op);
         readyOperatorGroupMap.put(op.operatorName, group);
-    /* Create and register active operator */
+        /* Create and register active operator */
         ActiveOperator operator = new ActiveOperator(op, null, group);
         operator.isActive = true;
         state.addActiveObject(op.operatorName, operator);
@@ -59,8 +59,8 @@ public class OperatorGroupDependencySolver {
     public LinkedHashMap<Long, OperatorGroup> getActivatedGroups() throws SemanticError {
         LinkedHashMap<Long, OperatorGroup> readyGroups = new LinkedHashMap<Long, OperatorGroup>();
         LinkedHashMap<String, OperatorGroup> readyOperatorGroupMap =
-            new LinkedHashMap<String, OperatorGroup>();
-    /* Add groups that need to be rescheduled */
+                new LinkedHashMap<String, OperatorGroup>();
+        /* Add groups that need to be rescheduled */
         boolean notEnoughRes = false;
         for (OperatorGroup g : groupsToReschedule) {
             readyGroups.put(g.groupID, g);
@@ -123,7 +123,7 @@ public class OperatorGroupDependencySolver {
         while (!fixedPoint) {
             fixedPoint = true;
             for (OperatorEntity coe : state.getPlan()
-                .iterateOperators()) {/////////////////////////////////////////////////////
+                    .iterateOperators()) {/////////////////////////////////////////////////////
                 // Do not process here the data transfer operators
                 if (coe.type == OperatorType.dataTransfer) {
                     continue;
@@ -142,23 +142,23 @@ public class OperatorGroupDependencySolver {
                         fromGroup = fromActiveOperator.operatorGroup;
                     }
                     if (coe.behavior == OperatorBehavior.store_and_forward) {
-            /* The input must come from terminated groups */
+                        /* The input must come from terminated groups */
                         if (fromGroup == null
-                            || fromGroup.hasTerminated == false) {//////////clean these ifs?
+                                || fromGroup.hasTerminated == false) {//////////clean these ifs?
                             add = false;
                             break;
                         }
                     } else { // op is PL
                         if (from.behavior == OperatorBehavior.store_and_forward) {
-              /* The input must come from terminated groups */
+                            /* The input must come from terminated groups */
                             if (fromGroup == null || fromGroup.hasTerminated == false) {
                                 add = false;
                                 break;
                             }
                         } else {
-              /* The input must come from terminated groups or from ready PL operators */
+                            /* The input must come from terminated groups or from ready PL operators */
                             if ((fromGroup == null || fromGroup.hasTerminated == false)
-                                && readyOperatorGroupMap.containsKey(from.operatorName) == false) {
+                                    && readyOperatorGroupMap.containsKey(from.operatorName) == false) {
                                 add = false;
                                 break;
                             }
@@ -166,14 +166,14 @@ public class OperatorGroupDependencySolver {
                     }
                 }
                 if (add) {
-          /* Check the space shared resources */
+                    /* Check the space shared resources */
                     Resources ac = state.resourceManager.getAvailableResources(coe.container);
                     if (ac.accuireIfAvailable(coe)) {
                         LinkedList<OperatorGroup> mergeWith = new LinkedList<OperatorGroup>();
                         operatorsWithActiveResources.add(coe);
-            /* Check if some groups must be merged together */
+                        /* Check if some groups must be merged together */
                         for (OperatorEntity from : state.getPlan()
-                            .getFromLinks(coe)) {///////////more perf
+                                .getFromLinks(coe)) {///////////more perf
                             OperatorGroup g = readyOperatorGroupMap.get(from.operatorName);
                             if (g != null) {
                                 mergeWith.add(g);
@@ -181,9 +181,9 @@ public class OperatorGroupDependencySolver {
                         }
                         OperatorGroup group = createNewGroup();
                         addOperatorToGroup(coe, group, readyOperatorGroupMap);
-            /* Merge with other groups */
+                        /* Merge with other groups */
                         for (OperatorGroup m : mergeWith) {
-              /* Add all operators to the new group */
+                            /* Add all operators to the new group */
                             for (OperatorEntity op : m.operatorMap.values()) {
                                 group.operatorMap.put(op.operatorName, op);
                                 readyOperatorGroupMap.put(op.operatorName, group);
@@ -196,7 +196,7 @@ public class OperatorGroupDependencySolver {
                         fixedPoint = false;
                     } else {
                         log.debug(
-                            "Not enough available resources, container: " + coe.containerName);
+                                "Not enough available resources, container: " + coe.containerName);
                         notEnoughRes = true;
                     }
                 }
@@ -221,8 +221,8 @@ public class OperatorGroupDependencySolver {
             if (entity.type == OperatorType.processing) {
                 this.state.incrTerminatedOperatorCount();
                 state.getPlanSession().getPlanSessionStatus()
-                    .operatorFinished(entity.operatorName, acOp.exitCode, acOp.exitMessage,
-                        acOp.exitDate);
+                        .operatorFinished(entity.operatorName, acOp.exitCode, acOp.exitMessage,
+                                acOp.exitDate);
             }
         }
         state.resourceManager.printUsage("Terminated");

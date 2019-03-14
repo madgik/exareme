@@ -25,13 +25,15 @@
 # 02110-1301  USA
 ######################### END LICENSE BLOCK #########################
 
-from mbcharsetprober import MultiByteCharSetProber
-from codingstatemachine import CodingStateMachine
+import constants
+import sys
 from chardistribution import SJISDistributionAnalysis
-from jpcntx import SJISContextAnalysis
-from mbcssm import SJISSMModel
-import constants, sys
+from codingstatemachine import CodingStateMachine
 from constants import eStart, eError, eItsMe
+from jpcntx import SJISContextAnalysis
+from mbcharsetprober import MultiByteCharSetProber
+from mbcssm import SJISSMModel
+
 
 class SJISProber(MultiByteCharSetProber):
     def __init__(self):
@@ -44,7 +46,7 @@ class SJISProber(MultiByteCharSetProber):
     def reset(self):
         MultiByteCharSetProber.reset(self)
         self._mContextAnalyzer.reset()
-        
+
     def get_charset_name(self):
         return "SHIFT_JIS"
 
@@ -64,17 +66,17 @@ class SJISProber(MultiByteCharSetProber):
                 charLen = self._mCodingSM.get_current_charlen()
                 if i == 0:
                     self._mLastChar[1] = aBuf[0]
-                    self._mContextAnalyzer.feed(self._mLastChar[2 - charLen :], charLen)
+                    self._mContextAnalyzer.feed(self._mLastChar[2 - charLen:], charLen)
                     self._mDistributionAnalyzer.feed(self._mLastChar, charLen)
                 else:
-                    self._mContextAnalyzer.feed(aBuf[i + 1 - charLen : i + 3 - charLen], charLen)
-                    self._mDistributionAnalyzer.feed(aBuf[i - 1 : i + 1], charLen)
-                    
+                    self._mContextAnalyzer.feed(aBuf[i + 1 - charLen: i + 3 - charLen], charLen)
+                    self._mDistributionAnalyzer.feed(aBuf[i - 1: i + 1], charLen)
+
         self._mLastChar[0] = aBuf[aLen - 1]
-        
+
         if self.get_state() == constants.eDetecting:
             if self._mContextAnalyzer.got_enough_data() and \
-                   (self.get_confidence() > constants.SHORTCUT_THRESHOLD):
+                    (self.get_confidence() > constants.SHORTCUT_THRESHOLD):
                 self._mState = constants.eFoundIt
 
         return self.get_state()

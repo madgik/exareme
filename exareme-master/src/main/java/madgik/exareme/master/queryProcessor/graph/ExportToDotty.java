@@ -125,8 +125,8 @@ import java.util.List;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class ExportToDotty {
@@ -161,7 +161,7 @@ public class ExportToDotty {
 
     public static String exportToDotty(ConcreteQueryGraph graph, SchedulingResult schedule) {
         HashMap<Integer, OperatorAssignment> assignments =
-            new HashMap<Integer, OperatorAssignment>();
+                new HashMap<Integer, OperatorAssignment>();
         for (OperatorAssignment oa : schedule.operatorAssigments) {
             if (oa == null) {
                 continue;
@@ -179,7 +179,7 @@ public class ExportToDotty {
                 continue;
             }
             sb.append("\t" + oa.getOpID() +
-                " [label = \"" + oa.getOpID() + "/" + oa.container + "\"];" + "\n");
+                    " [label = \"" + oa.getOpID() + "/" + oa.container + "\"];" + "\n");
 
         }
         sb.append("}");
@@ -187,7 +187,7 @@ public class ExportToDotty {
     }
 
     public static String exportToDotty(ConcreteQueryGraph graph,
-        List<Pair<Integer, Double>> rankings) {
+                                       List<Pair<Integer, Double>> rankings) {
         StringBuilder sb = new StringBuilder(100);
 
         sb.append("digraph G { \n");
@@ -226,7 +226,7 @@ public class ExportToDotty {
             }
 
             sb.append("\t" + metrics.a +
-                " [label = \"\", fillcolor=\"#" + hex2 + " " + hex2 + " " + hex2 + "\"];" + "\n");
+                    " [label = \"\", fillcolor=\"#" + hex2 + " " + hex2 + " " + hex2 + "\"];" + "\n");
         }
 
         sb.append("}");

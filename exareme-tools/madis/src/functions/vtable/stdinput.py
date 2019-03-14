@@ -14,13 +14,13 @@ Examples::
     stdinputline2
     stdinputline3
 """
-import sys
 import vtbase
 
-registered=True
+registered = True
+
 
 class StdInput(vtbase.VT):
-    def VTiter(self, *args,**formatArgs):
+    def VTiter(self, *args, **formatArgs):
         yield [('C1', 'text')]
 
         while True:
@@ -29,8 +29,10 @@ class StdInput(vtbase.VT):
                 break
             yield (unicode(a.rstrip('\r\n'), 'utf_8'),)
 
+
 def Source():
     return vtbase.VTGenerator(StdInput)
+
 
 if not ('.' in __name__):
     """
@@ -38,13 +40,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()
-
-

@@ -4,23 +4,13 @@
 package madgik.exareme.jdbc.federated;
 
 import com.google.gson.Gson;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+
 import java.io.InputStreamReader;
 import java.io.StringBufferInputStream;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.RowIdLifetime;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
+import java.sql.*;
+import java.util.*;
 
 /**
- *
  * @author dimitris
  */
 public class AdpDatabaseMetaData implements java.sql.DatabaseMetaData {
@@ -672,22 +662,22 @@ public class AdpDatabaseMetaData implements java.sql.DatabaseMetaData {
 
     @Override
     public ResultSet getProcedures(String catalog, String schemaPattern,
-            String procedureNamePattern) throws
+                                   String procedureNamePattern) throws
             SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public ResultSet getProcedureColumns(String catalog, String schemaPattern,
-            String procedureNamePattern,
-            String columnNamePattern) throws
+                                         String procedureNamePattern,
+                                         String columnNamePattern) throws
             SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public ResultSet getTables(String catalog, String schemaPattern,
-            String tableNamePattern, String[] types) throws
+                               String tableNamePattern, String[] types) throws
             SQLException {
         //tableNamePattern cannot be null!
         FederatedConnections cons = con.getFederatedConnections();
@@ -747,8 +737,8 @@ public class AdpDatabaseMetaData implements java.sql.DatabaseMetaData {
                     sb.append(g.toJson((ArrayList<Object>) res));
                 }
                 first.close();
-                AdpResultSet result=new AdpResultSet(new InputStreamReader(new StringBufferInputStream(sb.toString())), this.con.createStatement());        
-                result.setCloseStOnClose(true);        
+                AdpResultSet result = new AdpResultSet(new InputStreamReader(new StringBufferInputStream(sb.toString())), this.con.createStatement());
+                result.setCloseStOnClose(true);
                 return result;
             }
         }
@@ -849,8 +839,8 @@ public class AdpDatabaseMetaData implements java.sql.DatabaseMetaData {
         internalExaremeTables.close();
         exSt.close();
 
-        AdpResultSet result=new AdpResultSet(new InputStreamReader(new StringBufferInputStream(sb.toString())), this.con.createStatement());        
-        result.setCloseStOnClose(true);        
+        AdpResultSet result = new AdpResultSet(new InputStreamReader(new StringBufferInputStream(sb.toString())), this.con.createStatement());
+        result.setCloseStOnClose(true);
         return result;
     }
 
@@ -880,8 +870,8 @@ public class AdpDatabaseMetaData implements java.sql.DatabaseMetaData {
         res.add("adp");
         res.add(null);
         sb.append(g.toJson((ArrayList<Object>) res));
-        AdpResultSet result=new AdpResultSet(new InputStreamReader(new StringBufferInputStream(sb.toString())), this.con.createStatement());        
-        result.setCloseStOnClose(true);        
+        AdpResultSet result = new AdpResultSet(new InputStreamReader(new StringBufferInputStream(sb.toString())), this.con.createStatement());
+        result.setCloseStOnClose(true);
         return result;
     }
 
@@ -897,7 +887,7 @@ public class AdpDatabaseMetaData implements java.sql.DatabaseMetaData {
 
     @Override
     public ResultSet getColumns(String catalog, String schemaPattern,
-            String tableNamePattern, String columnNamePattern)
+                                String tableNamePattern, String columnNamePattern)
             throws SQLException {
         FederatedConnections cons = con.getFederatedConnections();
         if (cons.isEmpty()) {
@@ -959,8 +949,8 @@ public class AdpDatabaseMetaData implements java.sql.DatabaseMetaData {
 
                 }
                 first.close();
-                AdpResultSet result=new AdpResultSet(new InputStreamReader(new StringBufferInputStream(sb.toString())), this.con.createStatement());        
-                result.setCloseStOnClose(true);        
+                AdpResultSet result = new AdpResultSet(new InputStreamReader(new StringBufferInputStream(sb.toString())), this.con.createStatement());
+                result.setCloseStOnClose(true);
                 return result;
             }
         }
@@ -1065,31 +1055,31 @@ public class AdpDatabaseMetaData implements java.sql.DatabaseMetaData {
         }
         internalExaremeTableCols.close();
         exSt.close();
-        
-        AdpResultSet result=new AdpResultSet(new InputStreamReader(new StringBufferInputStream(sb.toString())), this.con.createStatement());        
-        result.setCloseStOnClose(true);        
+
+        AdpResultSet result = new AdpResultSet(new InputStreamReader(new StringBufferInputStream(sb.toString())), this.con.createStatement());
+        result.setCloseStOnClose(true);
         return result;
 
     }
 
     @Override
     public ResultSet getColumnPrivileges(String catalog, String schema,
-            String table, String columnNamePattern)
+                                         String table, String columnNamePattern)
             throws SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public ResultSet getTablePrivileges(String catalog, String schemaPattern,
-            String tableNamePattern) throws
+                                        String tableNamePattern) throws
             SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public ResultSet getBestRowIdentifier(String catalog, String schema,
-            String table, int scope,
-            boolean nullable) throws SQLException {
+                                          String table, int scope,
+                                          boolean nullable) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -1168,8 +1158,8 @@ public class AdpDatabaseMetaData implements java.sql.DatabaseMetaData {
             sb.append(g.toJson((ArrayList<Object>) res));
         }
         first.close();
-        AdpResultSet result=new AdpResultSet(new InputStreamReader(new StringBufferInputStream(sb.toString())), this.con.createStatement());        
-        result.setCloseStOnClose(true);        
+        AdpResultSet result = new AdpResultSet(new InputStreamReader(new StringBufferInputStream(sb.toString())), this.con.createStatement());
+        result.setCloseStOnClose(true);
         return result;
 
     }
@@ -1294,8 +1284,8 @@ public class AdpDatabaseMetaData implements java.sql.DatabaseMetaData {
          sb.append(g.toJson((ArrayList<Object>) res));
          }}
          */
-        AdpResultSet result=new AdpResultSet(new InputStreamReader(new StringBufferInputStream(sb.toString())), this.con.createStatement());        
-        result.setCloseStOnClose(true);        
+        AdpResultSet result = new AdpResultSet(new InputStreamReader(new StringBufferInputStream(sb.toString())), this.con.createStatement());
+        result.setCloseStOnClose(true);
         return result;
     }
 
@@ -1420,16 +1410,16 @@ public class AdpDatabaseMetaData implements java.sql.DatabaseMetaData {
          sb.append(g.toJson((ArrayList<Object>) res));
          }}
          */
-        AdpResultSet result=new AdpResultSet(new InputStreamReader(new StringBufferInputStream(sb.toString())), this.con.createStatement());        
-        result.setCloseStOnClose(true);        
+        AdpResultSet result = new AdpResultSet(new InputStreamReader(new StringBufferInputStream(sb.toString())), this.con.createStatement());
+        result.setCloseStOnClose(true);
         return result;
 
     }
 
     @Override
     public ResultSet getCrossReference(String parentCatalog, String parentSchema,
-            String parentTable, String foreignCatalog,
-            String foreignSchema, String foreignTable)
+                                       String parentTable, String foreignCatalog,
+                                       String foreignSchema, String foreignTable)
             throws SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -1503,14 +1493,14 @@ public class AdpDatabaseMetaData implements java.sql.DatabaseMetaData {
             }
             next.close();
         }
-        AdpResultSet result=new AdpResultSet(new InputStreamReader(new StringBufferInputStream(sb.toString())), this.con.createStatement());        
-        result.setCloseStOnClose(true);        
+        AdpResultSet result = new AdpResultSet(new InputStreamReader(new StringBufferInputStream(sb.toString())), this.con.createStatement());
+        result.setCloseStOnClose(true);
         return result;
     }
 
     @Override
     public ResultSet getIndexInfo(String catalog, String schema, String table,
-            boolean unique, boolean approximate) throws
+                                  boolean unique, boolean approximate) throws
             SQLException {
         FederatedConnections cons = con.getFederatedConnections();
         if (cons.isEmpty()) {
@@ -1572,8 +1562,8 @@ public class AdpDatabaseMetaData implements java.sql.DatabaseMetaData {
                     sb.append(g.toJson((ArrayList<Object>) res));
                 }
                 first.close();
-                AdpResultSet result=new AdpResultSet(new InputStreamReader(new StringBufferInputStream(sb.toString())), this.con.createStatement());        
-                result.setCloseStOnClose(true);        
+                AdpResultSet result = new AdpResultSet(new InputStreamReader(new StringBufferInputStream(sb.toString())), this.con.createStatement());
+                result.setCloseStOnClose(true);
                 return result;
             }
         }
@@ -1617,8 +1607,8 @@ public class AdpDatabaseMetaData implements java.sql.DatabaseMetaData {
             }
             internalExaremeIndex.close();
             exSt.close();
-            AdpResultSet result=new AdpResultSet(new InputStreamReader(new StringBufferInputStream(sb.toString())), this.con.createStatement());        
-            result.setCloseStOnClose(true);        
+            AdpResultSet result = new AdpResultSet(new InputStreamReader(new StringBufferInputStream(sb.toString())), this.con.createStatement());
+            result.setCloseStOnClose(true);
             return result;
         } catch (Exception e) {
             throw new SQLException(e.getMessage());
@@ -1688,7 +1678,7 @@ public class AdpDatabaseMetaData implements java.sql.DatabaseMetaData {
 
     @Override
     public ResultSet getUDTs(String catalog, String schemaPattern,
-            String typeNamePattern, int[] types) throws
+                             String typeNamePattern, int[] types) throws
             SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -1720,20 +1710,20 @@ public class AdpDatabaseMetaData implements java.sql.DatabaseMetaData {
 
     @Override
     public ResultSet getSuperTypes(String catalog, String schemaPattern,
-            String typeNamePattern) throws SQLException {
+                                   String typeNamePattern) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public ResultSet getSuperTables(String catalog, String schemaPattern,
-            String tableNamePattern) throws SQLException {
+                                    String tableNamePattern) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public ResultSet getAttributes(String catalog, String schemaPattern,
-            String typeNamePattern,
-            String attributeNamePattern) throws
+                                   String typeNamePattern,
+                                   String attributeNamePattern) throws
             SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -1812,22 +1802,22 @@ public class AdpDatabaseMetaData implements java.sql.DatabaseMetaData {
 
     @Override
     public ResultSet getFunctions(String catalog, String schemaPattern,
-            String functionNamePattern) throws SQLException {
+                                  String functionNamePattern) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public ResultSet getFunctionColumns(String catalog, String schemaPattern,
-            String functionNamePattern,
-            String columnNamePattern) throws
+                                        String functionNamePattern,
+                                        String columnNamePattern) throws
             SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public ResultSet getPseudoColumns(String catalog, String schemaPattern,
-            String tableNamePattern,
-            String columnNamePattern) throws
+                                      String tableNamePattern,
+                                      String columnNamePattern) throws
             SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -1839,7 +1829,7 @@ public class AdpDatabaseMetaData implements java.sql.DatabaseMetaData {
 
     @Override
     public <T> T
-            unwrap(Class< T> iface) throws SQLException {
+    unwrap(Class<T> iface) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

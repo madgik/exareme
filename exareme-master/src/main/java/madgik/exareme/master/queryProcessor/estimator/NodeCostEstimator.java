@@ -20,7 +20,7 @@ import static madgik.exareme.master.queryProcessor.estimator.metadata.Metadata.N
 public class NodeCostEstimator {
 
     private static final org.apache.log4j.Logger log =
-        org.apache.log4j.Logger.getLogger(NodeCostEstimator.class);
+            org.apache.log4j.Logger.getLogger(NodeCostEstimator.class);
 
     public static Double getCostForOperator(Node o, Node e) {
         if (o.getOpCode() == Node.JOIN) {
@@ -70,7 +70,7 @@ public class NodeCostEstimator {
     }
 
     public static double estimateJoin(Node n, NonUnaryWhereCondition nuwc, Node left, Node right)
-        throws Exception {
+            throws Exception {
 
         double leftRelTuples = left.getNodeInfo().getNumberOfTuples();
         double leftRelSize = left.getNodeInfo().outputRelSize();
@@ -79,7 +79,7 @@ public class NodeCostEstimator {
 
         //        double childrenMaxResponseTime = Math.max(leftRelSize, rightRelSize);
         double responseTime = localJoinProcessingTime(leftRelTuples, leftRelSize, rightRelTuples,
-            rightRelSize);// + childrenMaxResponseTime;
+                rightRelSize);// + childrenMaxResponseTime;
         //this.planInfo.get(n.getHashId()).setResponseTimeEstimation(responseTime);
         if (Double.isNaN(responseTime)) {
             throw new Exception("NaN");
@@ -97,7 +97,7 @@ public class NodeCostEstimator {
             double relSize = n.getNodeInfo().outputRelSize();
 
             double responseTime = repartition(relSize, Metadata.NUMBER_OF_VIRTUAL_MACHINES,
-                Metadata.NUMBER_OF_VIRTUAL_MACHINES);
+                    Metadata.NUMBER_OF_VIRTUAL_MACHINES);
             responseTime += localHashingTime(relTuples, relSize);
             responseTime += localUnionTime(relSize);
 
@@ -117,7 +117,7 @@ public class NodeCostEstimator {
 
     public static double estimateReplication(double data, int replicas) {
         return ((data / Metadata.PAGE_SIZE) * Metadata.PAGE_IO_TIME) * replicas + replicas * (data
-            / NETWORK_RATE);
+                / NETWORK_RATE);
     }
 
     public static double estimateUnion(Node n) {
@@ -142,7 +142,7 @@ public class NodeCostEstimator {
     /*private-helper methods*/
     //estimation model      
     private static double repartition(double relSize, int fromNumOfPartitions,
-        int toNumOfPartitions) {
+                                      int toNumOfPartitions) {
         return (relSize * (1 / fromNumOfPartitions)) / (NETWORK_RATE / fromNumOfPartitions);
     }
 
@@ -153,14 +153,14 @@ public class NodeCostEstimator {
     //TODO: relSize as argument?? 10 mb/sec => 1 tuple->8bytes(for numeric) thus: (10*2^20)/8 tuples/sec = 1310720 tuples/sec thus for 1 tuple : 0.000000763 sec
     private static double localHashingTime(double relTuples, double relSize) {
         return relTuples
-            * 0.000034;        //time for a tuple hushing: 0.000034 sec (disk io + cpu time included)
+                * 0.000034;        //time for a tuple hushing: 0.000034 sec (disk io + cpu time included)
     }
 
     private static double localJoinProcessingTime(double leftRelTuples, double leftRelSize,
-        double rightRelTuples, double rightRelSize) {
+                                                  double rightRelTuples, double rightRelSize) {
         double cpuLocalCost, diskLocalCost,
-            smallRelTuples = leftRelTuples, bigRelTuples = rightRelTuples,
-            smallRelSize = leftRelSize, bigRelSize = rightRelSize;
+                smallRelTuples = leftRelTuples, bigRelTuples = rightRelTuples,
+                smallRelSize = leftRelSize, bigRelSize = rightRelSize;
 
         if (rightRelTuples < leftRelTuples) {
             smallRelTuples = rightRelTuples;
@@ -172,14 +172,14 @@ public class NodeCostEstimator {
         //disk cost
         //->index construcrion, scanning the smallest tule table
         double diskSmallRelIndexConstruction =
-            (smallRelSize / Metadata.PAGE_SIZE) * Metadata.PAGE_IO_TIME;
+                (smallRelSize / Metadata.PAGE_SIZE) * Metadata.PAGE_IO_TIME;
         double diskBigRelScan = (bigRelSize / Metadata.PAGE_SIZE) * Metadata.PAGE_IO_TIME;
         diskLocalCost = diskSmallRelIndexConstruction + diskBigRelScan;
 
         //cpu cost
         double smallRelTuples_log10 = Math.log10(smallRelTuples);
         double localIndexConstruction =
-            smallRelTuples * smallRelTuples_log10 * Metadata.CPU_CYCLE_TIME;
+                smallRelTuples * smallRelTuples_log10 * Metadata.CPU_CYCLE_TIME;
         double localComparisons = bigRelTuples * smallRelTuples_log10 * Metadata.CPU_CYCLE_TIME;
         cpuLocalCost = localIndexConstruction + localComparisons;
 

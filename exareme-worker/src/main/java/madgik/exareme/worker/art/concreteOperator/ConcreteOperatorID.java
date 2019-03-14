@@ -9,9 +9,9 @@ import java.io.Serializable;
  * @author Herald Kllapi<br>
  * @author Dimitris Paparas<br>
  * @author Eva Sitaridi<br>
- *         {herald,paparas,evas}@di.uoa.gr<br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * {herald,paparas,evas}@di.uoa.gr<br>
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class ConcreteOperatorID implements Comparable<ConcreteOperatorID>, Serializable {
@@ -26,7 +26,8 @@ public class ConcreteOperatorID implements Comparable<ConcreteOperatorID>, Seria
         this.operatorName = operatorName;
     }
 
-    @Override public boolean equals(Object object) {
+    @Override
+    public boolean equals(Object object) {
         if (object instanceof ConcreteOperatorID) {
             ConcreteOperatorID opId = (ConcreteOperatorID) object;
             return (uniqueID == opId.uniqueID && operatorName.equals(opId.operatorName));
@@ -34,14 +35,16 @@ public class ConcreteOperatorID implements Comparable<ConcreteOperatorID>, Seria
         throw new IllegalArgumentException();
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int hash = 3;
         hash = 37 * hash + (int) (this.uniqueID ^ (this.uniqueID >>> 32));
         hash = 37 * hash + (int) (this.sessionID ^ (this.sessionID >>> 32));
         return hash;
     }
 
-    @Override public int compareTo(ConcreteOperatorID opId) {
+    @Override
+    public int compareTo(ConcreteOperatorID opId) {
         return (int) (uniqueID - opId.uniqueID);
     }
 }

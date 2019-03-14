@@ -10,10 +10,9 @@ import madgik.exareme.master.engine.iterations.state.exceptions.IterationsStateF
  * <p>The {@code IterationsStateManager} provides a central location for querying and retrieving
  * state regarding iterative algorithms and their execution.
  *
- * @see AdpDBQueryID
- *
  * @author Christos Aslanoglou <br> caslanoglou@di.uoa.gr <br> University of Athens / Department of
- *         Informatics and Telecommunications.
+ * Informatics and Telecommunications.
+ * @see AdpDBQueryID
  */
 public interface IterationsStateManager {
     /**
@@ -29,7 +28,7 @@ public interface IterationsStateManager {
      * @see IterativeAlgorithmState
      */
     void submitIterativeAlgorithm(String algorithmKey,
-                                         IterativeAlgorithmState iterativeAlgorithmState);
+                                  IterativeAlgorithmState iterativeAlgorithmState);
 
     /**
      * Removes an {@code IterativeAlgorithmState} object from the {@code IterationsStateManager}

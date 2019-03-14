@@ -29,29 +29,35 @@ public class SimpleNetManager implements NetManagerInterface {
         this.statistics = statistics;
     }
 
-    @Override public NetSession getGlobalSession(PlanSessionID planSessionID)
-        throws RemoteException {
+    @Override
+    public NetSession getGlobalSession(PlanSessionID planSessionID)
+            throws RemoteException {
         return new NetSessionSynchronized(new NetSessionSimple());
     }
 
-    @Override public NetSession getContainerSession(ContainerSessionID containerSessionID,
-        PlanSessionID planSessionID) throws RemoteException {
+    @Override
+    public NetSession getContainerSession(ContainerSessionID containerSessionID,
+                                          PlanSessionID planSessionID) throws RemoteException {
         return new NetSessionSynchronized(new NetSessionSimple());
     }
 
-    @Override public NetSession getOperatorSession(ConcreteOperatorID opID,
-        ContainerSessionID containerSessionID, PlanSessionID planSessionID) throws RemoteException {
+    @Override
+    public NetSession getOperatorSession(ConcreteOperatorID opID,
+                                         ContainerSessionID containerSessionID, PlanSessionID planSessionID) throws RemoteException {
         return new NetSessionSynchronized(new NetSessionSimple());
     }
 
-    @Override public void destroyContainerSession(ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void destroyContainerSession(ContainerSessionID containerSessionID,
+                                        PlanSessionID sessionID) throws RemoteException {
     }
 
-    @Override public void destroySessions(PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void destroySessions(PlanSessionID sessionID) throws RemoteException {
     }
 
-    @Override public void destroyAllSessions() throws RemoteException {
+    @Override
+    public void destroyAllSessions() throws RemoteException {
     }
 
     public void setWrapper(NetManagerInterface wrapper) {

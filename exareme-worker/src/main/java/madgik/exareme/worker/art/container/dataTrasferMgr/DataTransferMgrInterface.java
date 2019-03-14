@@ -14,7 +14,7 @@ import java.io.IOException;
 /**
  * @author John Chronis <br>
  * @author Vaggelis Nikolopoulos <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public interface DataTransferMgrInterface {
@@ -27,7 +27,7 @@ public interface DataTransferMgrInterface {
 
     //returns the id to be used for this register
     int addRegister(Integer DtOpId, String filename, String tableFile, String Fip, String Fport,
-        String Tip, String Tport, PlanSessionID pid) throws IOException;
+                    String Tip, String Tport, PlanSessionID pid) throws IOException;
 
     void addSuccesfulTransfer(Integer DtRegId) throws Exception;
 

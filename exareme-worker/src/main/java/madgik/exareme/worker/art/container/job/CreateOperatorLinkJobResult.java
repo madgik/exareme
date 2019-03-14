@@ -17,7 +17,8 @@ public class CreateOperatorLinkJobResult extends ContainerJobResult {
         this.bufferJobResult = bufferJobResult;
     }
 
-    @Override public ContainerJobType getType() {
+    @Override
+    public ContainerJobType getType() {
         return ContainerJobType.createOperatorLink;
     }
 }

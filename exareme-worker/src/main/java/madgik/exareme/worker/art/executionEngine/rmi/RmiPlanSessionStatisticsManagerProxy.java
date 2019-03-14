@@ -23,8 +23,8 @@ import java.rmi.RemoteException;
  * @author herald
  */
 public class RmiPlanSessionStatisticsManagerProxy
-    extends RmiObjectProxy<PlanSessionStatisticsManager>
-    implements PlanSessionStatisticsManagerProxy {
+        extends RmiObjectProxy<PlanSessionStatisticsManager>
+        implements PlanSessionStatisticsManagerProxy {
     private static final long serialVersionUID = 1L;
     private static final Logger log = Logger.getLogger(PlanSessionStatisticsManagerProxy.class);
     public PlanSessionID sessionID = null;
@@ -33,27 +33,31 @@ public class RmiPlanSessionStatisticsManagerProxy
         super(regEntryName, regEntityName);
     }
 
-    @Override public ConcreteOperatorStatistics getOperatorStatistics(OperatorEntity operatorEntity)
-        throws RemoteException {
+    @Override
+    public ConcreteOperatorStatistics getOperatorStatistics(OperatorEntity operatorEntity)
+            throws RemoteException {
         return super.getRemoteObject().getOperatorStatistics(operatorEntity, sessionID);
     }
 
     @Override
     public BufferStatistics getBufferStatistics(BufferEntity bufferEntity, PlanSessionID sessionID)
-        throws RemoteException {
+            throws RemoteException {
         return super.getRemoteObject().getBufferStatistics(bufferEntity, sessionID);
     }
 
-    @Override public PlanSessionStatistics getStatistics() throws RemoteException {
+    @Override
+    public PlanSessionStatistics getStatistics() throws RemoteException {
         log.debug("Try to get stats for " + sessionID);
         return super.getRemoteObject().getStatistics(sessionID);
     }
 
-    @Override public PlanSessionProgressStats getProgress() throws RemoteException {
+    @Override
+    public PlanSessionProgressStats getProgress() throws RemoteException {
         return super.getRemoteObject().getProgress(sessionID);
     }
 
-    @Override public ElasticTreeStatistics getElasticTreeStatistics() throws RemoteException {
+    @Override
+    public ElasticTreeStatistics getElasticTreeStatistics() throws RemoteException {
         return super.getRemoteObject().getElasticTreeStatistics();
     }
 }

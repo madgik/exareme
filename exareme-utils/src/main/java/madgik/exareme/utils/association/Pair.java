@@ -26,7 +26,8 @@ public class Pair<A, B> implements Serializable {
 
     public static <A extends Comparable<A>, B> Comparator<Pair<A, B>> getAComparator() {
         return new Comparator<Pair<A, B>>() {
-            @Override public int compare(Pair<A, B> o1, Pair<A, B> o2) {
+            @Override
+            public int compare(Pair<A, B> o1, Pair<A, B> o2) {
                 return o1.a.compareTo(o2.a);
             }
         };
@@ -34,7 +35,8 @@ public class Pair<A, B> implements Serializable {
 
     public static <A extends Comparable<A>, B> Comparator<Pair<A, B>> getAComparatorDesc() {
         return new Comparator<Pair<A, B>>() {
-            @Override public int compare(Pair<A, B> o1, Pair<A, B> o2) {
+            @Override
+            public int compare(Pair<A, B> o1, Pair<A, B> o2) {
                 return o2.a.compareTo(o1.a);
             }
         };
@@ -42,7 +44,8 @@ public class Pair<A, B> implements Serializable {
 
     public static <A, B extends Comparable<B>> Comparator<Pair<A, B>> getBComparator() {
         return new Comparator<Pair<A, B>>() {
-            @Override public int compare(Pair<A, B> o1, Pair<A, B> o2) {
+            @Override
+            public int compare(Pair<A, B> o1, Pair<A, B> o2) {
                 return o1.b.compareTo(o2.b);
             }
         };
@@ -50,7 +53,8 @@ public class Pair<A, B> implements Serializable {
 
     public static <A, B extends Comparable<B>> Comparator<Pair<A, B>> getBComparatorDesc() {
         return new Comparator<Pair<A, B>>() {
-            @Override public int compare(Pair<A, B> o1, Pair<A, B> o2) {
+            @Override
+            public int compare(Pair<A, B> o1, Pair<A, B> o2) {
                 return o2.b.compareTo(o1.b);
             }
         };
@@ -64,7 +68,8 @@ public class Pair<A, B> implements Serializable {
         return b;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "<" + a + "," + b + ">";
     }
 }

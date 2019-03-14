@@ -20,7 +20,8 @@ public class FromBaseTableVisitor extends AbstractVisitor {
         super(query);
     }
 
-    @Override public Visitable visit(Visitable node) throws StandardException {
+    @Override
+    public Visitable visit(Visitable node) throws StandardException {
         if (node instanceof FromBaseTable) {
             Table queryTable = new Table();
             FromBaseTable parserTable = (FromBaseTable) node;
@@ -36,6 +37,6 @@ public class FromBaseTableVisitor extends AbstractVisitor {
 
     public boolean skipChildren(Visitable node) {
         return FromSubquery.class.isInstance(node) || (node instanceof JoinNode
-            && query.getJoinType() != null);
+                && query.getJoinType() != null);
     }
 }

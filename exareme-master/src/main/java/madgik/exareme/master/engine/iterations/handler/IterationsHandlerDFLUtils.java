@@ -1,5 +1,13 @@
 package madgik.exareme.master.engine.iterations.handler;
 
+import madgik.exareme.master.engine.iterations.exceptions.IterationsFatalException;
+import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
+import madgik.exareme.master.queryProcessor.composer.AlgorithmsProperties;
+import madgik.exareme.master.queryProcessor.composer.Composer;
+import madgik.exareme.master.queryProcessor.composer.ComposerConstants;
+import madgik.exareme.master.queryProcessor.composer.ComposerException;
+import madgik.exareme.utils.association.Pair;
+import madgik.exareme.utils.file.FileUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
@@ -10,20 +18,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import madgik.exareme.master.engine.iterations.exceptions.IterationsFatalException;
-import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
-import madgik.exareme.master.queryProcessor.composer.AlgorithmsProperties;
-import madgik.exareme.master.queryProcessor.composer.Composer;
-import madgik.exareme.master.queryProcessor.composer.ComposerConstants;
-import madgik.exareme.master.queryProcessor.composer.ComposerException;
-import madgik.exareme.utils.association.Pair;
-import madgik.exareme.utils.file.FileUtil;
-
 import static madgik.exareme.common.consts.HBPConstants.DEMO_ALGORITHMS_WORKING_DIRECTORY;
-import static madgik.exareme.master.engine.iterations.handler.IterationsConstants.iterationsPropertyMaximumNumber;
-import static madgik.exareme.master.engine.iterations.handler.IterationsConstants.previousPhaseOutputTblPlaceholder;
-import static madgik.exareme.master.engine.iterations.handler.IterationsConstants.selectStr;
-import static madgik.exareme.master.engine.iterations.handler.IterationsConstants.terminationConditionTemplateSQLFilename;
+import static madgik.exareme.master.engine.iterations.handler.IterationsConstants.*;
 import static madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState.IterativeAlgorithmPhasesModel.termination_condition;
 
 /**
@@ -35,12 +31,13 @@ import static madgik.exareme.master.engine.iterations.state.IterativeAlgorithmSt
  * step phase as input).
  *
  * @author Christos Aslanoglou <br> caslanoglou@di.uoa.gr <br> University of Athens / Department of
- *         Informatics and Telecommunications.
+ * Informatics and Telecommunications.
  */
 public class IterationsHandlerDFLUtils {
     private static final Logger log = Logger.getLogger(IterationsHandlerDFLUtils.class);
 
     // DFL Generation ---------------------------------------------------------------------------
+
     /**
      * Generates the DFL scripts (for all iterative algorithm phases).
      *
@@ -123,7 +120,7 @@ public class IterationsHandlerDFLUtils {
                 sqlTemplateFile = IterationsHandlerDFLUtils.getLastGlobalFromMultipleLocalGlobal(
                         new File(demoCurrentAlgorithmDir + "/" + phase.name()));
             } else {
-                sqlTemplateFile = new File(demoCurrentAlgorithmDir  + "/"
+                sqlTemplateFile = new File(demoCurrentAlgorithmDir + "/"
                         + termination_condition
                         + "/" + terminationConditionTemplateSQLFilename);
                 if (!sqlTemplateFile.exists()) {
@@ -157,7 +154,7 @@ public class IterationsHandlerDFLUtils {
                                 Paths.get(demoCurrentAlgorithmDir).getParent().toString(),
                                 algorithmKey,
                                 algorithmProperties, null, phase);
-                log.info("dfl: " + dflScripts[dflScriptIdx-1]);
+                log.info("dfl: " + dflScripts[dflScriptIdx - 1]);
             } catch (ComposerException e) {
                 throw new IterationsFatalException("Composer failure to generate DFL script for phase: "
                         + phase.name() + ".", e);
@@ -454,9 +451,10 @@ public class IterationsHandlerDFLUtils {
 
     /**
      * Generates the output table name of a given iterative phase.
+     *
      * @param outputTblPrefix the prefix of the output table
-     * @param algorithmKey the iterative algorithm's key
-     * @param iterativePhase the iterative phase for which the table name is generated
+     * @param algorithmKey    the iterative algorithm's key
+     * @param iterativePhase  the iterative phase for which the table name is generated
      */
     private static String generateIterativePhaseOutputTblName(
             String outputTblPrefix,
@@ -474,6 +472,7 @@ public class IterationsHandlerDFLUtils {
 
 
     // Utilities --------------------------------------------------------------------------------
+
     /**
      * Copies the algorithm's template structure into the demo directory under the algorithm's key.
      *
@@ -511,6 +510,7 @@ public class IterationsHandlerDFLUtils {
 
 
     // Public API -------------------------------------------------------------------------------
+
     /**
      * Generates the initPhase output table name of the current algorithm
      */

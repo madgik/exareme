@@ -73,11 +73,13 @@ Examples::
 
 """
 
-import setpath
 import functions
+
 import vtbase
+
 registered = True
 external_query = True
+
 
 class WhileVT(vtbase.VT):
     def VTiter(self, *parsedArgs, **envars):
@@ -105,7 +107,7 @@ class WhileVT(vtbase.VT):
             stepv = int(largs[2])
         if len(largs) == 1:
             fromv = 1
-            tov = int(largs[0])+1
+            tov = int(largs[0]) + 1
 
         if functions.variables.execdb is None:
             con = functions.Connection('')
@@ -137,10 +139,12 @@ class WhileVT(vtbase.VT):
             fromv += 1
             if tov is not None and fromv >= tov:
                 return
-            yield (fromv, )
+            yield (fromv,)
+
 
 def Source():
     return vtbase.VTGenerator(WhileVT)
+
 
 if not ('.' in __name__):
     """
@@ -148,11 +152,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

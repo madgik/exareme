@@ -20,17 +20,18 @@ public class VOptimalSA extends SimulatedAnnealing {
     private int bucketNum = 0;
 
     public VOptimalSA(int maxSteps, int stepsNotImprovedTermination, Temperature temperature,
-        ArrayList<Pair<?, Double>> data, int bucketNum) {
+                      ArrayList<Pair<?, Double>> data, int bucketNum) {
         super(maxSteps, stepsNotImprovedTermination, temperature);
 
         this.data = data;
         this.bucketNum = bucketNum;
     }
 
-    @Override public State getInitial() throws RemoteException {
+    @Override
+    public State getInitial() throws RemoteException {
         int[] thresholds = new int[bucketNum - 1];
 
-    /* Initialize thresholds */
+        /* Initialize thresholds */
         int step = data.size() / bucketNum;
         for (int i = 0; i < thresholds.length; i++) {
             thresholds[i] = (i + 1) * step;
@@ -39,15 +40,16 @@ public class VOptimalSA extends SimulatedAnnealing {
         return new VOptimalState(data, thresholds);
     }
 
-    @Override public Pair<Transformation, Transformation> getNeighbor(State state, Random rand)
-        throws RemoteException {
+    @Override
+    public Pair<Transformation, Transformation> getNeighbor(State state, Random rand)
+            throws RemoteException {
         VOptimalState vos = (VOptimalState) state;
 
         int threshold = 0;
         int offset = 0;
 
         while (true) {
-      /* Peek a random threshold */
+            /* Peek a random threshold */
             threshold = rand.nextInt(bucketNum - 1);
             int leftOffset = 0;
             int rightOffset = 0;

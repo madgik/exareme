@@ -113,7 +113,7 @@ public class ConcreteGraphStatistics {
             }
         }
         Check.True(visited.cardinality() == numOps,
-            "Not all operators are examined: " + visited.cardinality() + " / " + numOps);
+                "Not all operators are examined: " + visited.cardinality() + " / " + numOps);
         for (double[] span : minMaxSpan.values()) {
             if (maxSpan < span[1]) {
                 minSpan = span[0] / runTime.quantum__SEC;
@@ -146,10 +146,11 @@ public class ConcreteGraphStatistics {
         return maxWork / minSpan;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         DecimalFormat df = new DecimalFormat("#.##");
         return "Work : " + df.format(minWork) + " - " + df.format(maxWork) + "\n" +
-            "Span : " + df.format(minSpan) + " - " + df.format(maxSpan) + "\n" +
-            "P    : " + df.format(minWork / maxSpan) + " - " + df.format(maxWork / minSpan);
+                "Span : " + df.format(minSpan) + " - " + df.format(maxSpan) + "\n" +
+                "P    : " + df.format(minWork / maxSpan) + " - " + df.format(maxWork / minSpan);
     }
 }

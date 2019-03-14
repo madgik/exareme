@@ -11,5 +11,5 @@ import madgik.exareme.utils.properties.AdpProperties;
 public class AdaptorConstants {
 
     public static AdaptorImplType adaptorImpl = AdaptorImplType
-        .valueOf(AdpProperties.getArtProps().getString("art.container.adaptor.impl"));
+            .valueOf(AdpProperties.getArtProps().getString("art.container.adaptor.impl"));
 }

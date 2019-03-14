@@ -18,8 +18,9 @@ public class IndependentEventsListener implements EventListener<IndependentEvent
     public IndependentEventsListener() {
     }
 
-    @Override public void processed(IndependentEvents event, RemoteException exception,
-        EventProcessor processor) {
+    @Override
+    public void processed(IndependentEvents event, RemoteException exception,
+                          EventProcessor processor) {
         if (exception != null) {
             LogUtils.logException("Independent", exception);
             PlanEventScheduler.engineInternalException(event, exception);

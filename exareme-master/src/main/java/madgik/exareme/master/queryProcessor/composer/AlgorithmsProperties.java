@@ -1,15 +1,10 @@
 package madgik.exareme.master.queryProcessor.composer;
 
 import com.google.gson.Gson;
-
-import madgik.exareme.utils.properties.AdpProperties;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileReader;
-import java.io.IOException;
+
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +13,7 @@ import java.util.Map;
 /**
  * Represent the mip-algorithms repository properties,
  * able to interact throw gson.
+ *
  * @author alexpap
  */
 public class AlgorithmsProperties {
@@ -118,7 +114,9 @@ public class AlgorithmsProperties {
             this.type = type;
         }
 
-        public String getResponseContentType() {return responseContentType;}
+        public String getResponseContentType() {
+            return responseContentType;
+        }
 
         public void setResponseContentType(String returnContentType) {
             this.responseContentType = returnContentType;
@@ -128,10 +126,12 @@ public class AlgorithmsProperties {
             return parameters;
         }
 
-        public void setParameters(ParameterProperties[] parameters) {this.parameters = parameters;}
+        public void setParameters(ParameterProperties[] parameters) {
+            this.parameters = parameters;
+        }
 
         public static AlgorithmProperties createAlgorithmProperties(String algorithmPropertyFilePath)
-            throws IOException {
+                throws IOException {
 
             File propertyFile = new File(algorithmPropertyFilePath);
             if (!propertyFile.exists())
@@ -151,17 +151,17 @@ public class AlgorithmsProperties {
         }
 
         public static AlgorithmProperties createAlgorithmProperties(
-            HashMap<String, String> inputContent) throws IOException {
+                HashMap<String, String> inputContent) throws IOException {
 
             String algorithm_name = inputContent.get(ComposerConstants.algorithmKey);
-            String path =  Composer.getInstance().getRepositoryPath() + algorithm_name + "/properties.json";
+            String path = Composer.getInstance().getRepositoryPath() + algorithm_name + "/properties.json";
 
             AlgorithmProperties newAlgorithmParameters =
-                AlgorithmProperties.createAlgorithmProperties(path);
+                    AlgorithmProperties.createAlgorithmProperties(path);
             //for(String s: inputContent.keySet()){
             //    String key = s;
             //    String val = inputContent.get(s);
-                //log.info("Before "+key+"="+val);
+            //log.info("Before "+key+"="+val);
             //}
             for (ParameterProperties algorithmParameter : newAlgorithmParameters.getParameters()) {
 
@@ -170,8 +170,7 @@ public class AlgorithmsProperties {
                     //log.info("value= "+value);
                     algorithmParameter.setValue(value);
                     inputContent.remove(algorithmParameter.getName());
-               }
-               else{
+                } else {
                     value = "";
                     algorithmParameter.setValue(value);
                     inputContent.remove(algorithmParameter.getName());
@@ -180,9 +179,9 @@ public class AlgorithmsProperties {
             //for(String s: inputContent.keySet()){
             //    String key = s;
             //    String val = inputContent.get(s);
-                //log.info("After "+key+"="+val);
+            //log.info("After "+key+"="+val);
             //}
-            if(!inputContent.isEmpty()) {
+            if (!inputContent.isEmpty()) {
 
                 ArrayList<ParameterProperties> list = new ArrayList<>();
                 for (Map.Entry<String, String> entry : inputContent.entrySet()) {
@@ -192,12 +191,12 @@ public class AlgorithmsProperties {
                     list.add(properties);
                 }
                 int n = newAlgorithmParameters.getParameters().length + list.size();
-                if ( n > 0) {
+                if (n > 0) {
                     ParameterProperties[] parameterProperties = new ParameterProperties[n];
                     for (int i = 0; i < newAlgorithmParameters.getParameters().length; i++) {
                         parameterProperties[i] = newAlgorithmParameters.getParameters()[i];
                     }
-                    for(int i =0; i < list.size(); i ++){
+                    for (int i = 0; i < list.size(); i++) {
                         parameterProperties[newAlgorithmParameters.getParameters().length + i] = list.get(i);
                     }
                     newAlgorithmParameters.setParameters(parameterProperties);
@@ -254,12 +253,12 @@ public class AlgorithmsProperties {
         }
     }
 
-    public enum EndpointStatus{
+    public enum EndpointStatus {
         up,
         down
     }
 
-    public static class EndpointLocalEngine{
+    public static class EndpointLocalEngine {
 
         private String name;
         private ParameterProperties[] parameters;
@@ -292,7 +291,7 @@ public class AlgorithmsProperties {
             this.query = query;
         }
 
-        public String toUDF(String query){
+        public String toUDF(String query) {
             StringBuilder builder = new StringBuilder();
             builder.append("(select __rid ,__colname ,__val from (file header:t file:/root/mip-algorithms/input_tbl.csv))");
            /* builder.append(name);
@@ -300,8 +299,9 @@ public class AlgorithmsProperties {
             builder.append("))");*/
             return builder.toString();
         }
+
         // TODO push filters efficiently
-        public String toUDF(List<String> variables){
+        public String toUDF(List<String> variables) {
             StringBuilder builder = new StringBuilder();
             builder.append("(select __rid ,__colname ,__val from (file header:t file:/root/mip-algorithms/input_tbl.csv))");
             /*builder.append(name);
@@ -434,15 +434,15 @@ public class AlgorithmsProperties {
             }
         })) {
             AlgorithmProperties algorithm =
-                gson.fromJson(
-                    new BufferedReader(
-                        new FileReader(file.getAbsolutePath() + "/properties.json")),
-                    AlgorithmProperties.class);
+                    gson.fromJson(
+                            new BufferedReader(
+                                    new FileReader(file.getAbsolutePath() + "/properties.json")),
+                            AlgorithmProperties.class);
             algs.add(algorithm);
         }
         algorithms.setAlgorithms(algs.toArray(new AlgorithmProperties[algs.size()]));
         for (EndpointProperties endpointProperties : algorithms.getEndpoints()) {
-            if(endpointProperties.getLocal_engine() == null){
+            if (endpointProperties.getLocal_engine() == null) {
                 endpointProperties.setLocal_engine(algorithms.getLocal_engine_default());
             }
         }

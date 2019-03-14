@@ -9,7 +9,7 @@ import madgik.exareme.worker.art.container.dataTransfer.rest.RestDataTransferGat
  * @author Herald Kllapi
  * @author John Chronis <br>
  * @author Vaggelis Nikolopoulos <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class ContainerDataTransferGatewayFactory {

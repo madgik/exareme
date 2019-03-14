@@ -17,11 +17,13 @@ public class ContainerID implements Comparable<ContainerID>, Serializable {
         this.id = id;
     }
 
-    @Override public int compareTo(ContainerID sessionID) {
+    @Override
+    public int compareTo(ContainerID sessionID) {
         return (int) (id - sessionID.id);
     }
 
-    @Override public boolean equals(Object object) {
+    @Override
+    public boolean equals(Object object) {
         if (object instanceof ContainerID) {
             ContainerID sessionID = (ContainerID) object;
             return (id == sessionID.id);
@@ -29,7 +31,8 @@ public class ContainerID implements Comparable<ContainerID>, Serializable {
         throw new IllegalArgumentException();
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int hash = 3;
         hash = 13 * hash + (int) (this.id ^ (this.id >>> 32));
         return hash;

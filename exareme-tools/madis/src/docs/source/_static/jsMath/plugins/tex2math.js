@@ -118,8 +118,7 @@ if (!jsMath.tex2math.loaded) {                // only load it once
             var match = this.oldExec(string.substr(this.lastIndex));
             if (match) {
                 this.lastIndex += match.lastIndex
-            }
-            else {
+            } else {
                 this.lastIndex = null
             }
             return match;
@@ -137,7 +136,7 @@ if (!jsMath.tex2math.loaded) {                // only load it once
             if (!element) {
                 element = jsMath.document.body
             }
-            if (typeof(element) == 'string') {
+            if (typeof (element) == 'string') {
                 element = jsMath.document.getElementById(element)
             }
             if (jsMath.Controls.cookie.tex2math &&
@@ -167,7 +166,7 @@ if (!jsMath.tex2math.loaded) {                // only load it once
             if (!element) {
                 element = jsMath.document.body
             }
-            if (typeof(element) == 'string') {
+            if (typeof (element) == 'string') {
                 element = jsMath.document.getElementById(element)
             }
             while (element) {
@@ -221,7 +220,7 @@ if (!jsMath.tex2math.loaded) {                // only load it once
                 prev = element;
                 element = element.nextSibling;
                 while (element && (element.nodeName.toLowerCase() == 'br' ||
-                element.nodeName.toLowerCase() == "#comment")) {
+                    element.nodeName.toLowerCase() == "#comment")) {
                     prev = element;
                     element = element.nextSibling
                 }
@@ -347,8 +346,7 @@ if (!jsMath.tex2math.loaded) {                // only load it once
             var close = search.close;
             if (search.cpos == close.length) {
                 close = close.nextSibling
-            }
-            else {
+            } else {
                 close = close.splitText(search.cpos)
             }
             if (!close) {

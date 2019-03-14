@@ -6,7 +6,7 @@ import madgik.exareme.worker.art.container.operatorGroupMgr.OperatorGroupManager
 
 /**
  * @author Vaggelis Nikolopoulos <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  * @since 1.0
  */
 
@@ -18,13 +18,15 @@ public class SynchronizedOperatorGroupManager implements OperatorGroupManagerInt
         this.manager = manager;
     }
 
-    @Override public void clear(PlanSessionID planID) {
+    @Override
+    public void clear(PlanSessionID planID) {
         synchronized (manager) {
             manager.clear(planID);
         }
     }
 
-    @Override public void clear(PlanSessionID planID, ContainerSessionID csID) {
+    @Override
+    public void clear(PlanSessionID planID, ContainerSessionID csID) {
         synchronized (manager) {
             manager.clear(planID, csID);
         }

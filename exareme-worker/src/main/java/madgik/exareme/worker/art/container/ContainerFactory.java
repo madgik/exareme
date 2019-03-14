@@ -37,8 +37,8 @@ import static madgik.exareme.worker.art.container.dataTrasferMgr.DataTransferMgr
  * @author Herald Kllapi<br>
  * @author Dimitris Paparas<br>
  * @author Eva Sitaridi<br>
- *         {herald,paparas,evas}@di.uoa.gr<br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * {herald,paparas,evas}@di.uoa.gr<br>
+ * University of Athens / Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class ContainerFactory {
@@ -50,11 +50,11 @@ public class ContainerFactory {
     }
 
     public static Container createRMIThreadContainer(String containerName, ContainerID containerID,
-        EntityName regEntityName, int dtPort) throws RemoteException {
+                                                     EntityName regEntityName, int dtPort) throws RemoteException {
 
         JobQueueInterface jobQueueInterface = new JobQueue();
         ContainerResources resources =
-            new ContainerResources(100);//TODO(DSQ) resources of container
+                new ContainerResources(100);//TODO(DSQ) resources of container
         Executor executor = new Executor(resources);
         jobQueueInterface.setExecutor(executor);
         executor.setJobQueue(jobQueueInterface);
@@ -62,43 +62,43 @@ public class ContainerFactory {
         ContainerStatus containerStatus = new ContainerStatus();
 
         StatisticsManagerInterface statisticsManagerInterface =
-            StatisticsManagerFactory.createSimpleManager(containerName);
+                StatisticsManagerFactory.createSimpleManager(containerName);
 
 
         BufferManagerInterface bufferManagerInterface = BufferManagerInterfaceFactory
-            .createBufferManagerInterface(containerStatus.bufferStatus, statisticsManagerInterface);
+                .createBufferManagerInterface(containerStatus.bufferStatus, statisticsManagerInterface);
 
         DiskManagerInterface diskManagerInterface = DiskManagerInterfaceFactory
-            .createSimpleDiskManager(containerStatus.diskManagerStatus, statisticsManagerInterface);
+                .createSimpleDiskManager(containerStatus.diskManagerStatus, statisticsManagerInterface);
 
         DataTransferRequestHandler.diskManagerInterface = diskManagerInterface;
 
         NetManagerInterface netManagerInterface = NetManagerInterfaceFactory
-            .createSimpleNetManager(containerStatus.netManagerStatus, statisticsManagerInterface);
+                .createSimpleNetManager(containerStatus.netManagerStatus, statisticsManagerInterface);
 
         AdaptorManagerInterface adaptorManager = AdaptorManagerFactory.createAdaptorManager();
 
         log.debug("\t DataTranferManager ... ");
         DataTransferMgrInterface dataTransferManagerDTP =
-            createDataTransferManagerDTPInterface(dtPort);
+                createDataTransferManagerDTPInterface(dtPort);
         DataTransferMgrLocator.setDataTransferMgr(dataTransferManagerDTP, dtPort);
         OperatorGroupManagerInterface operatorGroupManager =
-            new SynchronizedOperatorGroupManager(new OperatorGroupManager());
+                new SynchronizedOperatorGroupManager(new OperatorGroupManager());
 
         ConcreteOperatorManagerInterface concreteOperatorManagerInterface =
-            new SynchronizedConcreteOperatorManager(
-                new ThreadConcreteOperatorManager(containerStatus.operatorStatus,
-                    diskManagerInterface, statisticsManagerInterface, containerID,
-                    jobQueueInterface, dataTransferManagerDTP, operatorGroupManager));
+                new SynchronizedConcreteOperatorManager(
+                        new ThreadConcreteOperatorManager(containerStatus.operatorStatus,
+                                diskManagerInterface, statisticsManagerInterface, containerID,
+                                jobQueueInterface, dataTransferManagerDTP, operatorGroupManager));
 
 
         //DataTransferManagerInterface dataTransferManagerInterface = new DataTransferManager ();
         regEntityName.setDataTransferPort(dtPort);
         log.trace("Just before container creation... ");
         Container container = new RmiContainer(containerName, concreteOperatorManagerInterface,
-            bufferManagerInterface, diskManagerInterface, netManagerInterface, adaptorManager,
-            statisticsManagerInterface, jobQueueInterface, executor, resources, regEntityName,
-            containerStatus, dataTransferManagerDTP, containerID);
+                bufferManagerInterface, diskManagerInterface, netManagerInterface, adaptorManager,
+                statisticsManagerInterface, jobQueueInterface, executor, resources, regEntityName,
+                containerStatus, dataTransferManagerDTP, containerID);
         return container;
     }
 }

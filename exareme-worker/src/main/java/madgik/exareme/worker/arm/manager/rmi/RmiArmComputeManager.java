@@ -24,14 +24,16 @@ public class RmiArmComputeManager implements ArmComputeManager {
         this.armManager = armManager;
     }
 
-    @Override public ArmCompute getCompute() throws RemoteException {
+    @Override
+    public ArmCompute getCompute() throws RemoteException {
         return compute;
     }
 
-    @Override public void startCompute() throws RemoteException {
+    @Override
+    public void startCompute() throws RemoteException {
         try {
             compute = ArmComputeFactory
-                .createRMICluster(ArtRegistryLocator.getLocalRmiRegistryEntityName());
+                    .createRMICluster(ArtRegistryLocator.getLocalRmiRegistryEntityName());
             ArmComputeProxy proxy = compute.createProxy();
             ArtRegistryLocator.getArtRegistryProxy().registerComputeMediator(proxy);
             ArmComputeLocator.setArmCompute(proxy);
@@ -40,11 +42,13 @@ public class RmiArmComputeManager implements ArmComputeManager {
         }
     }
 
-    @Override public void stopCompute() throws RemoteException {
+    @Override
+    public void stopCompute() throws RemoteException {
         compute.stopArmCompute();
     }
 
-    @Override public boolean isUp() throws RemoteException {
+    @Override
+    public boolean isUp() throws RemoteException {
         return compute != null;
     }
 }

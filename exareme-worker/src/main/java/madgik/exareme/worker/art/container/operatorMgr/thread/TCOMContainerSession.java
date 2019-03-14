@@ -35,27 +35,27 @@ public class TCOMContainerSession {
     JobQueueInterface jobQueueInterface;
     private long operatorCount = 0;
     private HashMap<ConcreteOperatorID, AbstractOperatorImpl> operatorMap =
-        new HashMap<ConcreteOperatorID, AbstractOperatorImpl>();
+            new HashMap<ConcreteOperatorID, AbstractOperatorImpl>();
     private HashMap<ConcreteOperatorID, OperatorExecutionThread> operatorExecutionMap =
-        new HashMap<ConcreteOperatorID, OperatorExecutionThread>();
+            new HashMap<ConcreteOperatorID, OperatorExecutionThread>();
     private HashMap<ConcreteOperatorID, OperatorImplementationEntity> operatorEntityMap =
-        new HashMap<ConcreteOperatorID, OperatorImplementationEntity>();
+            new HashMap<ConcreteOperatorID, OperatorImplementationEntity>();
     private HashMap<ConcreteOperatorID, PlanSessionReportID> sessionReportMap =
-        new HashMap<ConcreteOperatorID, PlanSessionReportID>();
+            new HashMap<ConcreteOperatorID, PlanSessionReportID>();
     private HashMap<ConcreteOperatorID, Future<?>> futureMap =
-        new HashMap<ConcreteOperatorID, Future<?>>();
+            new HashMap<ConcreteOperatorID, Future<?>>();
     // Executor service
     private ExecutorService execService = null;
     //  Used for dynamic class loading
     private ClassLoader classLoader = null;
     private HashMap<URL, ClassLoader> classLoaderURLMap = new HashMap<URL, ClassLoader>();
     private HashMap<OperatorImplementationEntity, Class<?>> loadedClassMap =
-        new HashMap<OperatorImplementationEntity, Class<?>>();
+            new HashMap<OperatorImplementationEntity, Class<?>>();
     private ContainerSessionID containerSessionID = null;
     private PlanSessionID sessionID = null;
 
     public TCOMContainerSession(ContainerSessionID containerSessionID, PlanSessionID sessionID,
-        JobQueueInterface jobQueueInterface) {
+                                JobQueueInterface jobQueueInterface) {
         this.containerSessionID = containerSessionID;
         this.sessionID = sessionID;
         this.operatorCount = 0;
@@ -86,11 +86,11 @@ public class TCOMContainerSession {
     }
 
     public ClassLoader createClassLoader(OperatorImplementationEntity entity)
-        throws RemoteException {
+            throws RemoteException {
         if (entity.getLocations() != null) {
             for (URL url : entity.getLocations()) {
                 if (!classLoaderURLMap.containsKey(url)) {
-                    ClassLoader newLoader = new URLClassLoader(new URL[] {url}, classLoader);
+                    ClassLoader newLoader = new URLClassLoader(new URL[]{url}, classLoader);
                     classLoaderURLMap.put(url, newLoader);
                     classLoader = newLoader;
                 }
@@ -109,8 +109,8 @@ public class TCOMContainerSession {
     }
 
     public void addInstance(ConcreteOperatorID opID, PlanSessionReportID sessionReportID,
-        OperatorImplementationEntity operator, AbstractOperatorImpl op,
-        OperatorExecutionThread executionThread) throws RemoteException {
+                            OperatorImplementationEntity operator, AbstractOperatorImpl op,
+                            OperatorExecutionThread executionThread) throws RemoteException {
         operatorExecutionMap.put(opID, executionThread);
         operatorMap.put(opID, op);
         operatorEntityMap.put(opID, operator);
@@ -177,8 +177,8 @@ public class TCOMContainerSession {
     }
 
     public void addReadAdaptor(ConcreteOperatorID opID, CombinedReadAdaptorProxy adaptor,
-        String adaptorName, String portName, Parameters parameters, boolean remote)
-        throws RemoteException {
+                               String adaptorName, String portName, Parameters parameters, boolean remote)
+            throws RemoteException {
         try {
             checkNotRunning(opID);
 
@@ -188,15 +188,15 @@ public class TCOMContainerSession {
             }
 
             op.getAdaptorManager()
-                .addReadAdaptor(adaptor, adaptorName, portName, parameters, remote);
+                    .addReadAdaptor(adaptor, adaptorName, portName, parameters, remote);
         } catch (Exception e) {
             throw new ServerException("Cannot ses input", e);
         }
     }
 
     public void addWriteAdaptor(ConcreteOperatorID opID, CombinedWriteAdaptorProxy adaptor,
-        String adaptorName, String portName, Parameters parameters, boolean remote)
-        throws RemoteException {
+                                String adaptorName, String portName, Parameters parameters, boolean remote)
+            throws RemoteException {
         try {
             checkNotRunning(opID);
 
@@ -206,7 +206,7 @@ public class TCOMContainerSession {
             }
 
             op.getAdaptorManager()
-                .addWriteAdaptor(adaptor, adaptorName, portName, parameters, remote);
+                    .addWriteAdaptor(adaptor, adaptorName, portName, parameters, remote);
         } catch (Exception e) {
             throw new ServerException("Cannot se output", e);
         }
@@ -223,7 +223,7 @@ public class TCOMContainerSession {
         try {
             log.debug("Destroying instances ...");
             ArrayList<ConcreteOperatorID> opIDs =
-                new ArrayList<ConcreteOperatorID>(operatorMap.keySet());
+                    new ArrayList<ConcreteOperatorID>(operatorMap.keySet());
             for (ConcreteOperatorID id : opIDs) {
                 destroyInstance(id);
                 jobQueueInterface.freeResources(id); // TODO(DSD): free resources?

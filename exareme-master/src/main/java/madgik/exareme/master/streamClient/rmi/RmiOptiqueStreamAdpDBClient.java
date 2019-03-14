@@ -4,11 +4,11 @@
 package madgik.exareme.master.streamClient.rmi;
 
 import com.google.gson.Gson;
+import madgik.exareme.master.client.AdpDBClientProperties;
 import madgik.exareme.master.engine.AdpDBExecutor;
 import madgik.exareme.master.engine.AdpDBManager;
-import madgik.exareme.master.registry.Registry;
-import madgik.exareme.master.client.AdpDBClientProperties;
 import madgik.exareme.master.gateway.OptiqueStreamQueryMetadata.StreamRegisterQuery;
+import madgik.exareme.master.registry.Registry;
 import madgik.exareme.master.streamClient.AdpStreamDBClient;
 import madgik.exareme.worker.art.container.ContainerProxy;
 import madgik.exareme.worker.art.executionEngine.ExecutionEngineLocator;
@@ -42,19 +42,21 @@ public class RmiOptiqueStreamAdpDBClient implements AdpStreamDBClient {
     private AdpDBClientProperties properties;
 
     public RmiOptiqueStreamAdpDBClient(AdpDBManager manager, AdpDBClientProperties properties)
-        throws RemoteException {
+            throws RemoteException {
         this.executor = manager.getAdpDBExecutor();
         this.properties = properties;
         this.registry = Registry.getInstance(properties.getDatabase());
     }
 
-    @Override public String explain(String queryScript) throws RemoteException {
+    @Override
+    public String explain(String queryScript) throws RemoteException {
         // Nothing
         return null;
     }
 
-    @Override public StreamRegisterQuery.QueryInfo query(String queryID, String queryScript)
-        throws RemoteException {
+    @Override
+    public StreamRegisterQuery.QueryInfo query(String queryID, String queryScript)
+            throws RemoteException {
 
         EditableExecutionPlanImpl plan = new EditableExecutionPlanImpl();
         List<String> containers = new ArrayList<String>();
@@ -65,8 +67,8 @@ public class RmiOptiqueStreamAdpDBClient implements AdpStreamDBClient {
 
         String containerIp = container[containerNumber].getEntityName().getIP();
         StreamRegisterQuery.QueryInfo info =
-            new StreamRegisterQuery.QueryInfo(queryScript, containerIp,
-                StreamRegisterQuery.getInstance().getUnusedPort(containerIp));
+                new StreamRegisterQuery.QueryInfo(queryScript, containerIp,
+                        StreamRegisterQuery.getInstance().getUnusedPort(containerIp));
 
         plan.addContainer(new Container("c" + containerNumber, //name
                 container[containerNumber].getEntityName().getName(), //IP

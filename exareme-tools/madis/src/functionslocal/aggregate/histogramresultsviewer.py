@@ -1,16 +1,16 @@
 __docformat__ = 'reStructuredText en'
 
+
 class histogramresultsviewer:
     # input colname0 id0 minvalue0 maxvalue0 colname1 id1 val total
 
-    import itertools
-    registered = True #Value to define db operator
+    registered = True  # Value to define db operator
 
     def __init__(self):
         self.n = 0
         self.myhist = dict()
-        self.buckets =dict()
-        self.column2names=dict()
+        self.buckets = dict()
+        self.column2names = dict()
 
     def step(self, *args):
         if self.n == 0:
@@ -20,9 +20,9 @@ class histogramresultsviewer:
             if args[5] == None:
                 self.myhist[int(args[1])] = int(args[7])
             else:
-                self.myhist[int(args[1]),int(args[5])] = int(args[7])
+                self.myhist[int(args[1]), int(args[5])] = int(args[7])
                 self.column2names[int(args[5])] = str(args[6])
-            self.buckets[int(args[1])]= str(str(args[2])+" - " + str(args[3]))
+            self.buckets[int(args[1])] = str(str(args[2]) + " - " + str(args[3]))
             self.n += 1
 
         except (ValueError, TypeError):
@@ -33,14 +33,14 @@ class histogramresultsviewer:
         print self.n
         if self.n > 0:
             if self.column2name != 'None':
-                myresult =  "{\"chart\": { \"type\": \"column\"},\
+                myresult = "{\"chart\": { \"type\": \"column\"},\
                              \"title\": { \"text\": \"Histogram\"},\
                              \"subtitle\": {\"text\": \" " + self.column1name + " - " + self.column2name + " \"}, \
                              \"xAxis\": { \"categories\": ["
                 for i in xrange(len(self.buckets)):
-                    myresult += "\"" + self.buckets[i] +"\""
-                    if i< len(self.buckets)-1:
-                        myresult +=","
+                    myresult += "\"" + self.buckets[i] + "\""
+                    if i < len(self.buckets) - 1:
+                        myresult += ","
 
                 myresult += " ],\"crosshair\": true},\
                                 \"yAxis\": { \"min\": 0, \"title\": { \"text\": \"Number of Participants\" } },\
@@ -52,24 +52,24 @@ class histogramresultsviewer:
                                 \"plotOptions\": { \"column\": { \"pointPadding\": 0.2, \"borderWidth\": 0 }}, \
                                 \"series\": [ "
                 for i in xrange(len(self.column2names)):
-                    myresult += "{ \"name\": \" "+ self.column2names[i]+" \", \"data\": ["
+                    myresult += "{ \"name\": \" " + self.column2names[i] + " \", \"data\": ["
                     for j in xrange(len(self.buckets)):
-                        myresult +=  str(self.myhist[j,i])
-                        if j<len(self.buckets)-1:
-                            myresult+=","
+                        myresult += str(self.myhist[j, i])
+                        if j < len(self.buckets) - 1:
+                            myresult += ","
                     myresult += "]}"
-                    if i<len(self.column2names)-1:
-                        myresult+=","
-                myresult+="]}"
+                    if i < len(self.column2names) - 1:
+                        myresult += ","
+                myresult += "]}"
             else:
-                myresult =  "{\"chart\": { \"type\": \"column\"},\
+                myresult = "{\"chart\": { \"type\": \"column\"},\
                              \"title\": { \"text\": \"Histogram\"},\
                              \"subtitle\": {\"text\": \" " + self.column1name + " \"}, \
                              \"xAxis\": { \"categories\": ["
                 for i in xrange(len(self.buckets)):
-                    myresult += "\"" + self.buckets[i] +"\""
-                    if i< len(self.buckets)-1:
-                        myresult +=","
+                    myresult += "\"" + self.buckets[i] + "\""
+                    if i < len(self.buckets) - 1:
+                        myresult += ","
 
                 myresult += " ],\"crosshair\": true},\
                                 \"yAxis\": { \"min\": 0, \"title\": { \"text\": \"Number of Participants\" } },\
@@ -81,15 +81,15 @@ class histogramresultsviewer:
                                 \"plotOptions\": { \"column\": { \"pointPadding\": 0.2, \"borderWidth\": 0 }}, \
                                 \"series\": [ "
 
-                myresult += "{ \"name\": \" "+ self.column1name +" \" , \"data\": ["
+                myresult += "{ \"name\": \" " + self.column1name + " \" , \"data\": ["
                 for j in xrange(len(self.buckets)):
-                    myresult +=  str(self.myhist[j])
-                    if j<len(self.buckets)-1:
-                        myresult+=","
+                    myresult += str(self.myhist[j])
+                    if j < len(self.buckets) - 1:
+                        myresult += ","
                 myresult += "]}]}"
         else:
 
-            myresult =  "{\"chart\": { \"type\": \"column\"},\
+            myresult = "{\"chart\": { \"type\": \"column\"},\
                              \"title\": { \"text\": \"Histogram\"},\
                               \"xAxis\": { \"categories\": [],\"crosshair\": true},\
                                 \"yAxis\": { \"min\": 0, \"title\": { \"text\": \"Number of Participants\" } },\
@@ -101,9 +101,8 @@ class histogramresultsviewer:
                                 \"plotOptions\": { \"column\": { \"pointPadding\": 0.2, \"borderWidth\": 0 }}, \
                                 \"series\": []}"
 
-
-
         yield (myresult,)
+
 
 if not ('.' in __name__):
     """
@@ -112,9 +111,11 @@ if not ('.' in __name__):
     """
     import sys
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

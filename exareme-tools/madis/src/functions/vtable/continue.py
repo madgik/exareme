@@ -13,24 +13,26 @@ if the execution succeds or 0 if the execution fails
     0
 """
 
-import setpath          #for importing from project root directory  KEEP IT IN FIRST LINE
-from vtout import SourceNtoOne
 import functions
 
- #UNCOMMENT TO REGISTER THE N to 1 OPERATOR
-registered=False
+from vtout import SourceNtoOne
 
-def execontinue(diter, schema, *args,**kargs):
+# UNCOMMENT TO REGISTER THE N to 1 OPERATOR
+registered = False
+
+
+def execontinue(diter, schema, *args, **kargs):
     if args or kargs:
-        raise functions.OperatorError(__name__.rsplit('.')[-1],"operator takes no arguments")
-    
+        raise functions.OperatorError(__name__.rsplit('.')[-1], "operator takes no arguments")
+
     for el in diter:
-        pass    
+        pass
     pass
 
-def Source():
 
-    return SourceNtoOne(execontinue,retalways=True)
+def Source():
+    return SourceNtoOne(execontinue, retalways=True)
+
 
 if not ('.' in __name__):
     """
@@ -38,11 +40,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

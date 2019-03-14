@@ -18,22 +18,24 @@ import java.rmi.RemoteException;
  * @author herald
  */
 public class RmiReadSocketStreamAdaptorProxy extends RmiObjectProxy<ReadSocketStreamAdaptor>
-    implements ReadSocketStreamAdaptorProxy {
+        implements ReadSocketStreamAdaptorProxy {
 
     private static final long serialVersionUID = 1L;
     private InputStream input = null;
     private NetSession session = null;
 
     public RmiReadSocketStreamAdaptorProxy(String regEntryName, EntityName regEntityName)
-        throws RemoteException {
+            throws RemoteException {
         super(regEntryName, regEntityName);
     }
 
-    @Override public void setNetSession(NetSession session) throws RemoteException {
+    @Override
+    public void setNetSession(NetSession session) throws RemoteException {
         this.session = session;
     }
 
-    @Override public InputStream getInputStream() throws RemoteException {
+    @Override
+    public InputStream getInputStream() throws RemoteException {
         EntityName netEntityName = null;
         try {
             netEntityName = this.getRemoteObject().getNetEntityName();
@@ -45,7 +47,8 @@ public class RmiReadSocketStreamAdaptorProxy extends RmiObjectProxy<ReadSocketSt
 
     }
 
-    @Override public void close() throws RemoteException {
+    @Override
+    public void close() throws RemoteException {
         try {
             if (input != null) {
                 this.input.close();

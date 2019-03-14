@@ -21,7 +21,7 @@ public class OperatorExceptionEvent extends ExecEngineEvent {
     public int messageCount = 0;
 
     public OperatorExceptionEvent(ConcreteOperatorID operatorID, RemoteException ex, Date time,
-        PlanEventSchedulerState state) {
+                                  PlanEventSchedulerState state) {
         super(state);
         this.operatorID = operatorID;
         this.exception = ex;

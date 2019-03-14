@@ -89,7 +89,7 @@ public class BarChart {
             int size = getSize(v);
             String valueStr = getStringValue(v);
             sb.append(name + " |" + getBar(size) + "|" + getEmpty(barSize - size) + " : " +
-                getEmpty(maxValueStringSize - valueStr.length()) + valueStr + "\n");
+                    getEmpty(maxValueStringSize - valueStr.length()) + valueStr + "\n");
         }
         return sb.toString();
     }

@@ -66,7 +66,6 @@ public final class NodeInfo {
     }
 
 
-
     /*interface methods*/
     public double outputRelSize() {
         return this.numberOfTuples * this.tupleLength;

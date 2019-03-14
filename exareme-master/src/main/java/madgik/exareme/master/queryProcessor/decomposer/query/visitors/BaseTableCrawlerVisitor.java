@@ -23,19 +23,23 @@ public class BaseTableCrawlerVisitor implements Visitor {
         this.tables = baseTables;
     }
 
-    @Override public boolean visitChildrenFirst(Visitable node) {
+    @Override
+    public boolean visitChildrenFirst(Visitable node) {
         return false;
     }
 
-    @Override public boolean stopTraversal() {
+    @Override
+    public boolean stopTraversal() {
         return false;
     }
 
-    @Override public boolean skipChildren(Visitable node) throws StandardException {
+    @Override
+    public boolean skipChildren(Visitable node) throws StandardException {
         return false;
     }
 
-    @Override public Visitable visit(Visitable vstbl) throws StandardException {
+    @Override
+    public Visitable visit(Visitable vstbl) throws StandardException {
         if (vstbl instanceof FromBaseTable) {
             Table queryTable = new Table();
             FromBaseTable parserTable = (FromBaseTable) vstbl;

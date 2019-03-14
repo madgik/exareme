@@ -33,21 +33,22 @@ public class HttpAsyncQueryHandler implements HttpAsyncRequestHandler<HttpReques
     public HttpAsyncQueryHandler() {
     }
 
-    @Override public HttpAsyncRequestConsumer<HttpRequest> processRequest(HttpRequest request,
-        HttpContext context) throws HttpException, IOException {
+    @Override
+    public HttpAsyncRequestConsumer<HttpRequest> processRequest(HttpRequest request,
+                                                                HttpContext context) throws HttpException, IOException {
         return new BasicAsyncRequestConsumer();
     }
 
     @Override
     public void handle(HttpRequest request, HttpAsyncExchange httpExchange, HttpContext context)
-        throws HttpException, IOException {
+            throws HttpException, IOException {
         HttpResponse response = httpExchange.getResponse();
         handleInternal(request, response, context);
         httpExchange.submitResponse(new BasicAsyncResponseProducer(response));
     }
 
     private void handleInternal(HttpRequest request, HttpResponse response, HttpContext context)
-        throws UnsupportedHttpVersionException, IOException {
+            throws UnsupportedHttpVersionException, IOException {
         String dbname = null;
         String query = null;
         try {
@@ -82,7 +83,7 @@ public class HttpAsyncQueryHandler implements HttpAsyncRequestHandler<HttpReques
         AdpDBClientQueryStatus queryStatus = null;
         try {
             AdpDBClientProperties properties =
-                new AdpDBClientProperties(dbname, "", "", false, true, -1, 10);
+                    new AdpDBClientProperties(dbname, "", "", false, true, -1, 10);
             AdpDBClient dbClient = AdpDBClientFactory.createDBClient(manager, properties);
             queryStatus = dbClient.query("noid", query);
             BasicHttpEntity entity = new NQueryStatusEntity(queryStatus);

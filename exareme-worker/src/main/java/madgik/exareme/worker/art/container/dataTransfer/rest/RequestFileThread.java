@@ -13,13 +13,13 @@ import java.util.logging.Logger;
 /**
  * @author John Chronis <br>
  * @author Vaggelis Nikolopoulos <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class RequestFileThread extends Thread {
 
     private static final org.apache.log4j.Logger log =
-        org.apache.log4j.Logger.getLogger(RequestFileThread.class);
+            org.apache.log4j.Logger.getLogger(RequestFileThread.class);
     String workerIP;
     Integer fid;
     String fileName;
@@ -28,7 +28,7 @@ public class RequestFileThread extends Thread {
     DiskManagerInterface diskManagerInterface;
 
     RequestFileThread(String workerIP, Integer fid, String fileName, String workerPort, String pid,
-        DiskManagerInterface diskManagerInterface) {
+                      DiskManagerInterface diskManagerInterface) {
         this.workerIP = workerIP;
         this.fid = fid;
         this.diskManagerInterface = diskManagerInterface;
@@ -37,10 +37,11 @@ public class RequestFileThread extends Thread {
         this.fileName = fileName;
     }
 
-    @Override public void run() {
+    @Override
+    public void run() {
         try {
             DataTransferClient
-                .requestByID(workerIP, fid, fileName, workerPort, pid, diskManagerInterface);
+                    .requestByID(workerIP, fid, fileName, workerPort, pid, diskManagerInterface);
         } catch (Exception ex) {
             Logger.getLogger(RequestFileThread.class.getName()).log(Level.SEVERE, null, ex);
         }

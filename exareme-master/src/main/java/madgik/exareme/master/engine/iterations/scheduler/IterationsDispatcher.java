@@ -1,10 +1,9 @@
 package madgik.exareme.master.engine.iterations.scheduler;
 
-import org.apache.log4j.Logger;
-
 import madgik.exareme.common.app.engine.AdpDBQueryID;
 import madgik.exareme.common.app.engine.AdpDBQueryListener;
 import madgik.exareme.common.app.engine.AdpDBStatus;
+import org.apache.log4j.Logger;
 
 /**
  * Listener that submits
@@ -12,7 +11,7 @@ import madgik.exareme.common.app.engine.AdpDBStatus;
  * to the {@link IterationsScheduler}.
  *
  * @author Christos Aslanoglou <br> caslanoglou@di.uoa.gr <br> University of Athens / Department of
- *         Informatics and Telecommunications.
+ * Informatics and Telecommunications.
  */
 public class IterationsDispatcher implements AdpDBQueryListener {
     private static final Logger log = Logger.getLogger(IterationsDispatcher.class);

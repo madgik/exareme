@@ -3,19 +3,13 @@
  */
 package madgik.exareme.master.queryProcessor.decomposer.query;
 
-import madgik.exareme.master.queryProcessor.decomposer.federation.DBInfoReaderDB;
-import madgik.exareme.master.queryProcessor.decomposer.federation.SinlgePlanDFLGenerator;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-
-import org.jfree.util.Log;
-
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
+import madgik.exareme.master.queryProcessor.decomposer.federation.DBInfoReaderDB;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author heraldkllapi
@@ -25,9 +19,9 @@ public class Table {
     private Boolean hasDBIdRemoved;
     private String name;
     private String alias;
-    private HashCode hash=null;
+    private HashCode hash = null;
     private static final org.apache.log4j.Logger log = org.apache.log4j.Logger
-			.getLogger(Table.class);
+            .getLogger(Table.class);
 
     public Table() {
         hasDBIdRemoved = false;
@@ -64,10 +58,10 @@ public class Table {
     }
 
     public String getDBName() {
-    	if(name == null){
-    		log.debug("null table name:"+this.toString());
-    		return null;
-    	}
+        if (name == null) {
+            log.debug("null table name:" + this.toString());
+            return null;
+        }
         for (String id : DBInfoReaderDB.dbInfo.getAllDBIDs()) {
             if (getName().toUpperCase().startsWith(id.toUpperCase() + "_")) {
                 return id;
@@ -77,7 +71,8 @@ public class Table {
         return null;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return this.getlocalName() + " " + getAlias();
     }
 
@@ -94,7 +89,8 @@ public class Table {
         }
     }
 
-    @Override public boolean equals(Object other) {
+    @Override
+    public boolean equals(Object other) {
         if (other == null) {
             return false;
         }
@@ -106,28 +102,29 @@ public class Table {
             return this.getName().equals(otherT.getName());
         }
         return (this.getName().equals(otherT.getName()) && this.getAlias()
-            .equals(otherT.getAlias()));
+                .equals(otherT.getAlias()));
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int hash = 7;
         hash = 89 * hash + Objects.hashCode(this.getAlias());
         hash = 89 * hash + Objects.hashCode(this.getName());
         return hash;
     }
-    
+
     public int getHashId() {
         int hash = 31;
-        String aliasUp=alias.toUpperCase();
-        String nameUp=name.toUpperCase();
-        
-        int last=aliasUp.charAt(aliasUp.length()-1)+19;
-        last*=last;
-        hash = 31*hash+last;
+        String aliasUp = alias.toUpperCase();
+        String nameUp = name.toUpperCase();
+
+        int last = aliasUp.charAt(aliasUp.length() - 1) + 19;
+        last *= last;
+        hash = 31 * hash + last;
         hash = 89 * hash + aliasUp.hashCode();
         hash = 89 * hash + nameUp.hashCode();
-        hash = 89 * hash +(new StringBuilder(aliasUp).reverse().toString()).hashCode();
-        hash = 89 * hash +(new StringBuilder(nameUp).reverse().toString()).hashCode();
+        hash = 89 * hash + (new StringBuilder(aliasUp).reverse().toString()).hashCode();
+        hash = 89 * hash + (new StringBuilder(nameUp).reverse().toString()).hashCode();
         return hash;
     }
 
@@ -143,7 +140,7 @@ public class Table {
      */
     public void setName(String name) {
         this.name = name;
-        hash=null;
+        hash = null;
     }
 
     /**
@@ -158,7 +155,7 @@ public class Table {
      */
     public void setAlias(String alias) {
         this.alias = alias;
-        hash=null;
+        hash = null;
     }
 
     public boolean hasDBIdRemoved() {
@@ -169,14 +166,14 @@ public class Table {
         this.hasDBIdRemoved = true;
     }
 
-	public HashCode getHashID() {
-		if(hash==null){
-		List<HashCode> codes=new ArrayList<HashCode>();
-		codes.add(Hashing.sha1().hashBytes(alias.toUpperCase().getBytes()));
-		codes.add(Hashing.sha1().hashBytes(name.toUpperCase().getBytes()));
-		hash= Hashing.combineOrdered(codes);
-		}
-		return hash;
-		
-	}
+    public HashCode getHashID() {
+        if (hash == null) {
+            List<HashCode> codes = new ArrayList<HashCode>();
+            codes.add(Hashing.sha1().hashBytes(alias.toUpperCase().getBytes()));
+            codes.add(Hashing.sha1().hashBytes(name.toUpperCase().getBytes()));
+            hash = Hashing.combineOrdered(codes);
+        }
+        return hash;
+
+    }
 }

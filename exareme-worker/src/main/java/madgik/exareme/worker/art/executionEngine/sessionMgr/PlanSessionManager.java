@@ -13,8 +13,8 @@ import java.rmi.RemoteException;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public interface PlanSessionManager extends RemoteObject<PlanSessionManagerProxy> {
@@ -24,7 +24,7 @@ public interface PlanSessionManager extends RemoteObject<PlanSessionManagerProxy
     ContainerSessionID createContainerSession(PlanSessionID planSessionID) throws RemoteException;
 
     void executeElasticTree(ExecutionPlan plan, SLA sla, PlanSessionID sessionID)
-        throws RemoteException;
+            throws RemoteException;
 
 
     void execute(ExecutionPlan plan, PlanSessionID sessionID) throws RemoteException;

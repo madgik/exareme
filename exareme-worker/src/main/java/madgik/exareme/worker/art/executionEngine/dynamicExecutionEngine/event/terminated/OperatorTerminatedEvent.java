@@ -23,8 +23,8 @@ public class OperatorTerminatedEvent extends ExecEngineEvent {
     public boolean terminateGroup;
 
     public OperatorTerminatedEvent(ConcreteOperatorID operatorID, int exidCode,
-        Serializable exitMessage, PlanEventScheduler scheduler, PlanEventSchedulerState state,
-        boolean terminateGroup) {
+                                   Serializable exitMessage, PlanEventScheduler scheduler, PlanEventSchedulerState state,
+                                   boolean terminateGroup) {
         super(state);
         this.operatorID = operatorID;
         this.exidCode = exidCode;

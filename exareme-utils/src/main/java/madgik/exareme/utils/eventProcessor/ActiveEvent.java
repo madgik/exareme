@@ -19,7 +19,7 @@ public class ActiveEvent {
     private long endProcessTime = 0;
 
     public ActiveEvent(Event event, EventHandler handler, EventListener eventListener,
-        EventFuture future) {
+                       EventFuture future) {
         this.event = event;
         this.handler = handler;
         this.eventListener = eventListener;

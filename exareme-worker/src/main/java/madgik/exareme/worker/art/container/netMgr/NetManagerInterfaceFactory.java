@@ -17,7 +17,7 @@ public class NetManagerInterfaceFactory {
     }
 
     public static NetManagerInterface createSimpleNetManager(NetManagerStatus status,
-        StatisticsManagerInterface statistics) {
+                                                             StatisticsManagerInterface statistics) {
         SimpleNetManager simpleDiskManager = new SimpleNetManager(status, statistics);
         SynchronizedNetManager wrapper = new SynchronizedNetManager(simpleDiskManager);
         simpleDiskManager.setWrapper(wrapper);

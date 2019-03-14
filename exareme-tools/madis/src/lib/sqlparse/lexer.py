@@ -22,6 +22,7 @@ from sqlparse.tokens import _TokenType
 class include(str):
     pass
 
+
 class combined(tuple):
     """Indicates a state combined from multiple states."""
 
@@ -31,6 +32,7 @@ class combined(tuple):
     def __init__(self, *args):
         # tuple.__init__ doesn't do anything
         pass
+
 
 def is_keyword(value):
     test = value.upper()
@@ -84,7 +86,7 @@ class LexerMeta(type):
                                   % (tdef[0], state, cls, err)))
 
             assert type(tdef[1]) is _TokenType or callable(tdef[1]), \
-                   'token type must be simple type or callable, not %r' % (tdef[1],)
+                'token type must be simple type or callable, not %r' % (tdef[1],)
 
             if len(tdef) == 2:
                 new_state = None
@@ -118,7 +120,7 @@ class LexerMeta(type):
                     for state in tdef2:
                         assert (state in unprocessed or
                                 state in ('#pop', '#push')), \
-                               'unknown new state ' + state
+                            'unknown new state ' + state
                     new_state = tdef2
                 else:
                     assert False, 'unknown new state def %r' % tdef2
@@ -129,7 +131,7 @@ class LexerMeta(type):
         cls._all_tokens = {}
         cls._tmpname = 0
         processed = cls._all_tokens[cls.__name__] = {}
-        #tokendefs = tokendefs or cls.tokens[name]
+        # tokendefs = tokendefs or cls.tokens[name]
         for state in cls.tokens.keys():
             cls._process_state(cls.tokens, processed, state)
         return processed
@@ -147,10 +149,7 @@ class LexerMeta(type):
         return type.__call__(cls, *args, **kwds)
 
 
-
-
 class Lexer:
-
     __metaclass__ = LexerMeta
 
     encoding = 'utf-8'
@@ -176,7 +175,7 @@ class Lexer:
             (r'[0-9]+', Number.Integer),
             # TODO: Backslash escapes?
             (r"'(''|[^'])*'", String.Single),
-            (r'"(""|[^"])*"', String.Symbol), # not a real string literal in ANSI SQL
+            (r'"(""|[^"])*"', String.Symbol),  # not a real string literal in ANSI SQL
             (r'(LEFT |RIGHT )?(INNER |OUTER )?JOIN\b', Keyword),
             (r'END( IF| LOOP)?\b', Keyword),
             (r'CREATE( OR REPLACE)?\b', Keyword.DDL),
@@ -235,17 +234,18 @@ class Lexer:
             text = text.strip('\n')
         if self.tabsize > 0:
             text = text.expandtabs(self.tabsize)
-#        if not text.endswith('\n'):
-#            text += '\n'
+
+        #        if not text.endswith('\n'):
+        #            text += '\n'
 
         def streamer():
             for i, t, v in self.get_tokens_unprocessed(text):
                 yield t, v
+
         stream = streamer()
         if not unfiltered:
             stream = apply_filters(stream, self.filters, self)
         return stream
-
 
     def get_tokens_unprocessed(self, text, stack=('root',)):
         """

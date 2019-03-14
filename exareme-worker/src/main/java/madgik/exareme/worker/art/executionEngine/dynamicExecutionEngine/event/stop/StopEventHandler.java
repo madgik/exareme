@@ -27,23 +27,24 @@ public class StopEventHandler implements ExecEngineEventHandler<StopEvent> {
     public StopEventHandler() {
     }
 
-    @Override public void preProcess(StopEvent event, PlanEventSchedulerState state)
-        throws RemoteException {
+    @Override
+    public void preProcess(StopEvent event, PlanEventSchedulerState state)
+            throws RemoteException {
         try {
             String operatorName =
-                (event.stop != null) ? event.stop.operatorName : event.stopEntity.operatorName;
+                    (event.stop != null) ? event.stop.operatorName : event.stopEntity.operatorName;
             ActiveOperator activeOperator = state.getActiveOperator(operatorName);
             ActiveOperatorGroup activeGroup = activeOperator.operatorGroup.objectNameActiveGroupMap
-                .get(activeOperator.objectName);
+                    .get(activeOperator.objectName);
             StopEntity stopEntity = event.stopEntity;
             if (stopEntity == null) {
                 stopEntity =
-                    activeGroup.planSession.getExecutionPlan().createStopEntity(event.stop);
+                        activeGroup.planSession.getExecutionPlan().createStopEntity(event.stop);
             }
             ContainerSessionID containerSessionID = activeGroup.containerSessionID;
             event.session = state.getContainerSession(stopEntity.containerName, containerSessionID);
             ConcreteOperatorID opID =
-                activeGroup.planSession.getOperatorIdMap().get(stopEntity.operatorEntity);
+                    activeGroup.planSession.getOperatorIdMap().get(stopEntity.operatorEntity);
             event.jobs = new ContainerJobs();
             event.jobs.addJob(new StopOperatorJob(opID));
         } catch (SemanticError e) {
@@ -51,13 +52,15 @@ public class StopEventHandler implements ExecEngineEventHandler<StopEvent> {
         }
     }
 
-    @Override public void handle(StopEvent event, EventProcessor proc) throws RemoteException {
+    @Override
+    public void handle(StopEvent event, EventProcessor proc) throws RemoteException {
         event.results = event.session.execJobs(event.jobs);
         event.messageCount = 1;
     }
 
-    @Override public void postProcess(StopEvent event, PlanEventSchedulerState state)
-        throws RemoteException {
+    @Override
+    public void postProcess(StopEvent event, PlanEventSchedulerState state)
+            throws RemoteException {
         state.getStatistics().incrControlMessagesCountBy(event.messageCount);
     }
 }

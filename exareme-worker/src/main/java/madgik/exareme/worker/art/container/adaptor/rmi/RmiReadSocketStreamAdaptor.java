@@ -16,28 +16,31 @@ import java.rmi.ServerException;
  * @author herald
  */
 public class RmiReadSocketStreamAdaptor extends RmiRemoteObject<ReadSocketStreamAdaptorProxy>
-    implements ReadSocketStreamAdaptor {
+        implements ReadSocketStreamAdaptor {
 
     private EntityName netEntityName = null;
     private EntityName regEntityName = null;
 
     public RmiReadSocketStreamAdaptor(String name, EntityName netEntityName,
-        EntityName regEntityName) throws RemoteException {
+                                      EntityName regEntityName) throws RemoteException {
         super(name);
         this.netEntityName = netEntityName;
         this.regEntityName = regEntityName;
     }
 
-    @Override public EntityName getNetEntityName() throws RemoteException {
+    @Override
+    public EntityName getNetEntityName() throws RemoteException {
         return netEntityName;
     }
 
-    @Override public RmiReadSocketStreamAdaptorProxy createProxy() throws RemoteException {
+    @Override
+    public RmiReadSocketStreamAdaptorProxy createProxy() throws RemoteException {
         super.register();
         return new RmiReadSocketStreamAdaptorProxy(super.getRegEntryName(), regEntityName);
     }
 
-    @Override public void close() throws RemoteException {
+    @Override
+    public void close() throws RemoteException {
         try {
             super.unregister();
         } catch (IOException e) {

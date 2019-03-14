@@ -1,13 +1,12 @@
 package madgik.exareme.master.engine.iterations.handler;
 
-import org.apache.log4j.Logger;
-
 import madgik.exareme.common.consts.HBPConstants;
 import madgik.exareme.master.queryProcessor.composer.AlgorithmsProperties;
+import org.apache.log4j.Logger;
 
 /**
  * @author Christos Aslanoglou <br> caslanoglou@di.uoa.gr <br> University of Athens / Department of
- *         Informatics and Telecommunications.
+ * Informatics and Telecommunications.
  */
 public class IterationsHandlerUtils {
     private static final Logger log = Logger.getLogger(IterationsHandlerUtils.class);

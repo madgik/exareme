@@ -12,7 +12,6 @@ import madgik.exareme.master.queryProcessor.decomposer.query.Operand;
 import madgik.exareme.master.queryProcessor.decomposer.query.Output;
 import madgik.exareme.master.queryProcessor.decomposer.query.QueryUtils;
 import madgik.exareme.master.queryProcessor.decomposer.query.SQLQuery;
-import org.apache.log4j.Logger;
 
 /**
  * @author heraldkllapi
@@ -23,7 +22,8 @@ public class ResultColumnVisitor extends AbstractVisitor {
         super(query);
     }
 
-    @Override public Visitable visit(Visitable node) throws StandardException {
+    @Override
+    public Visitable visit(Visitable node) throws StandardException {
         if (node instanceof ResultColumn) {
             ResultColumn parserColumn = (ResultColumn) node;
 

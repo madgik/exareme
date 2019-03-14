@@ -18,7 +18,7 @@ import java.util.logging.Level;
 
 /**
  * @author Christos Mallios <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  */
 public class QuerySimulationExecution implements QueryExecution {
 
@@ -35,9 +35,10 @@ public class QuerySimulationExecution implements QueryExecution {
 
     //This function executes a query in a db server and returns the
     //results as a sqlite database
-    @Override public synchronized void executeQuery(ServerInfo server, String query, File directory,
-        String madisMainDB, String tableName, String lnDirectory, ProcessManager processManager)
-        throws RemoteException {
+    @Override
+    public synchronized void executeQuery(ServerInfo server, String query, File directory,
+                                          String madisMainDB, String tableName, String lnDirectory, ProcessManager processManager)
+            throws RemoteException {
 
         StringBuilder script = new StringBuilder();
         Thread queryExecution;
@@ -55,7 +56,7 @@ public class QuerySimulationExecution implements QueryExecution {
 
         StringBuilder executableQuery = new StringBuilder();
         executableQuery.append("create table ").append(tableName).
-            append(" as select *");
+                append(" as select *");
         executableQuery.append(" from(").append(server.sqlDatabase);
         executableQuery.append(" h:").append(server.ip);
         executableQuery.append(" port:").append(server.port);
@@ -82,7 +83,8 @@ public class QuerySimulationExecution implements QueryExecution {
 
         queryExecution = new Thread() {
 
-            @Override public void run() {
+            @Override
+            public void run() {
 
                 String stats;
 
@@ -97,7 +99,7 @@ public class QuerySimulationExecution implements QueryExecution {
                     Class.forName("org.sqlite.JDBC");
                 } catch (ClassNotFoundException ex) {
                     java.util.logging.Logger.getLogger(QueryExecutionImplementation.class.getName())
-                        .log(Level.SEVERE, null, ex);
+                            .log(Level.SEVERE, null, ex);
                 }
                 try {
                     connection = DriverManager.getConnection("jdbc:sqlite:" + database);
@@ -108,7 +110,7 @@ public class QuerySimulationExecution implements QueryExecution {
                     ////                  + "`size` "
                     ////                  + " FROM query_data WHERE `query` = '" + splitQuery[0] + "'");
                     ResultSet rs = statement.executeQuery("SELECT `processing_time`, " + "`size` "
-                        + " FROM query_data WHERE `query` = '" + originalQuery + "'");
+                            + " FROM query_data WHERE `query` = '" + originalQuery + "'");
 
                     if (rs.next()) {
                         duration = rs.getInt("processing_time");
@@ -119,14 +121,14 @@ public class QuerySimulationExecution implements QueryExecution {
 
                     long endTime = System.currentTimeMillis();
                     System.out.println(
-                        "wait gia query " + originalQuery + " gia " + (endTime - startTime));
+                            "wait gia query " + originalQuery + " gia " + (endTime - startTime));
 
                     ID++;
                     remotedQuery.queryCompletion(serverInfo, originalQuery, dir.toString(), madisDB,
-                        storageTable, (int) (endTime - startTime), size);
+                            storageTable, (int) (endTime - startTime), size);
                 } catch (SQLException | IOException | InterruptedException ex) {
                     java.util.logging.Logger.getLogger(QueryExecutionImplementation.class.getName())
-                        .log(Level.SEVERE, null, ex);
+                            .log(Level.SEVERE, null, ex);
                 }
             }
         };
@@ -134,7 +136,7 @@ public class QuerySimulationExecution implements QueryExecution {
     }
 
     public synchronized void executeQuery(File directory, String baseTable, String view,
-        ProcessManager processManager) throws RemoteException, InterruptedException {
+                                          ProcessManager processManager) throws RemoteException, InterruptedException {
 
     }
 

@@ -16,7 +16,8 @@ import java.net.URL;
  */
 public class OperatorSerialiser implements JsonSerializer<Operator> {
 
-    @Override public JsonElement serialize(Operator op, Type type, JsonSerializationContext jsc) {
+    @Override
+    public JsonElement serialize(Operator op, Type type, JsonSerializationContext jsc) {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty(PlanExpressionConstants.CONTAINERNAME, op.containerName);
         jsonObject.addProperty(PlanExpressionConstants.OPERATOR, op.operator);

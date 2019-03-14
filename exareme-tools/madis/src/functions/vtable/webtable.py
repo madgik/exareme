@@ -16,38 +16,39 @@ Examples:
     France  | 89.1                            | 2012 est. | 89.97                                     | 2012 est. | Europe
     
 """
-import setpath
 import functions
 import urllib2
-import vtbase
 from lib import TableHTMLParser
 
-registered=True
-external_stream=True
+import vtbase
+
+registered = True
+external_stream = True
+
 
 class WebTable(vtbase.VT):
-    def parse(self,*args):
-        tableNum=1
-        argsnum=len(args)
-        if argsnum<1 or argsnum>2:
-            raise functions.OperatorError(__name__.rsplit('.')[-1],"Wrong number of arguments")
-        tableUrl=args[0]
-        if argsnum==2:
+    def parse(self, *args):
+        tableNum = 1
+        argsnum = len(args)
+        if argsnum < 1 or argsnum > 2:
+            raise functions.OperatorError(__name__.rsplit('.')[-1], "Wrong number of arguments")
+        tableUrl = args[0]
+        if argsnum == 2:
             try:
-                tableNum=int(args[1])
+                tableNum = int(args[1])
             except Exception:
-                raise functions.OperatorError(__name__.rsplit('.')[-1],"Table number must be integer")
+                raise functions.OperatorError(__name__.rsplit('.')[-1], "Table number must be integer")
         return (tableUrl, tableNum)
 
-    def VTiter(self,tableUrl, tableNum,**envars):
+    def VTiter(self, tableUrl, tableNum, **envars):
         tableiter = TableParse(tableUrl, tableNum)
 
         samplerow = tableiter.next()
 
         if type(samplerow) == tuple:
-            yield [(header,'text') for header in samplerow]
+            yield [(header, 'text') for header in samplerow]
         else:
-            yield [('C'+str(i),'text') for i in range(1, len(samplerow)+1)]
+            yield [('C' + str(i), 'text') for i in range(1, len(samplerow) + 1)]
             yield samplerow
 
         for r in tableiter:
@@ -55,7 +56,7 @@ class WebTable(vtbase.VT):
 
 
 class TableParse:
-    def __init__(self,tableUrl, tableNum):
+    def __init__(self, tableUrl, tableNum):
         url = tableUrl
 
         try:
@@ -67,29 +68,29 @@ class TableParse:
             self.ufile = urllib2.urlopen(req)
             headers = self.ufile.info()
         except Exception:
-            raise functions.OperatorError(__name__.rsplit('.')[-1],"Cannot load url:'%s'" %(repr(url)))
+            raise functions.OperatorError(__name__.rsplit('.')[-1], "Cannot load url:'%s'" % (repr(url)))
         parser = TableHTMLParser.TableHTMLParser(tableNum)
-        
-        self.iterator=linkiter(self.ufile,parser.parse)
+
+        self.iterator = linkiter(self.ufile, parser.parse)
+
     def __iter__(self):
         return self
+
     def next(self):
         try:
             current = self.iterator.next()
             return current
-        except TableHTMLParser.HTMLParseError,e:            
-            raise functions.OperatorError(__name__.rsplit('.')[-1],e)
+        except TableHTMLParser.HTMLParseError, e:
+            raise functions.OperatorError(__name__.rsplit('.')[-1], e)
 
-        
     def close(self):
         self.ufile.close()
-        
 
-def linkiter(source,consume):
+
+def linkiter(source, consume):
     for inp in source:
         for out in consume(inp):
-                yield out
-
+            yield out
 
 
 def Source():
@@ -102,12 +103,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
-        sys.setdefaultencoding('utf-8')        
+        sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()
-        

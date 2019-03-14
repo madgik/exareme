@@ -23,7 +23,7 @@ public class QueryErrorEventListener implements EventListener<QueryErrorEvent> {
     }
 
     public void processed(QueryErrorEvent event, RemoteException exception,
-        EventProcessor processor) {
+                          EventProcessor processor) {
         if (exception != null) {
             exception.printStackTrace();
         }

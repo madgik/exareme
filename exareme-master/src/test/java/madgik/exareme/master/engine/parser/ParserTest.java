@@ -11,7 +11,7 @@ public class ParserTest extends TestCase {
 
     public void test() throws Exception {
         String queryScript = "distributed create table a \n as select 'a', \"aa;\" from a;\n"
-            + "distributed create table b \n as select 'b;' from b;\n";
+                + "distributed create table b \n as select 'b;' from b;\n";
         SQLScript sQLScript = null;
         try {
             ByteArrayInputStream stream = new ByteArrayInputStream(queryScript.getBytes());

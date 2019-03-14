@@ -137,77 +137,91 @@ Examples::
     4.17.135.64 | 4.17.142.255 | 68257600 | 68259583 | US | United States
 """
 
-registered=True
-external_stream=True
+registered = True
+external_stream = True
 
-from vtiterable import SourceVT
-from lib.dsv import reader                
-import lib.gzip34 as gzip
-import urllib
-import urlparse
+import csv
 import functions
-from lib.iterutils import peekable
-from lib.ziputils import ZipIter
-import lib.inoutparsing
-from functions.conf import domainExtraHeaders
-from functions import mstr
 import itertools
 import json
+import lib.gzip34 as gzip
+import lib.inoutparsing
 import os.path
+import urllib
+import urlparse
 from codecs import utf_8_decode
-import csv
+from functions import mstr
+from functions.conf import domainExtraHeaders
+from lib.dsv import reader
+from lib.iterutils import peekable
+from lib.ziputils import ZipIter
+
+from vtiterable import SourceVT
 
 # Set maximum field size to 20MB
 csv.field_size_limit(20000000)
 
+
 class defaultcsv(csv.Dialect):
     def __init__(self):
-        self.delimiter=','
-        self.doublequote=True
-        self.quotechar='"'
-        self.quoting=csv.QUOTE_MINIMAL
-        self.lineterminator='\n'
+        self.delimiter = ','
+        self.doublequote = True
+        self.quotechar = '"'
+        self.quoting = csv.QUOTE_MINIMAL
+        self.lineterminator = '\n'
+
 
 class tsv(csv.Dialect):
     def __init__(self):
-        self.delimiter='\t'
-        self.doublequote=True
-        self.quotechar='"'
-        self.quoting=csv.QUOTE_MINIMAL
-        self.lineterminator='\n'
+        self.delimiter = '\t'
+        self.doublequote = True
+        self.quotechar = '"'
+        self.quoting = csv.QUOTE_MINIMAL
+        self.lineterminator = '\n'
 
 
 class line(csv.Dialect):
     def __init__(self):
-        self.delimiter='\n'
-        self.doublequote=False
-        self.quotechar='"'
-        self.quoting=csv.QUOTE_NONE
-        self.lineterminator='\n'
+        self.delimiter = '\n'
+        self.doublequote = False
+        self.quotechar = '"'
+        self.quoting = csv.QUOTE_NONE
+        self.lineterminator = '\n'
 
-csvkeywordparams=set(['delimiter','doublequote','escapechar','lineterminator','quotechar','quoting','skipinitialspace','dialect', 'fast'])
-nonstringargs = {'quoting':{'QUOTE_ALL':csv.QUOTE_ALL, 'QUOTE_NONE':csv.QUOTE_NONE, 'QUOTE_MINIMAL':csv.QUOTE_MINIMAL, 'QUOTE_NONNUMERIC':csv.QUOTE_NONNUMERIC}}
+
+csvkeywordparams = set(
+    ['delimiter', 'doublequote', 'escapechar', 'lineterminator', 'quotechar', 'quoting', 'skipinitialspace', 'dialect',
+     'fast'])
+nonstringargs = {
+    'quoting': {'QUOTE_ALL': csv.QUOTE_ALL, 'QUOTE_NONE': csv.QUOTE_NONE, 'QUOTE_MINIMAL': csv.QUOTE_MINIMAL,
+                'QUOTE_NONNUMERIC': csv.QUOTE_NONNUMERIC}}
+
 
 def nullify(iterlist):
     for lst in iterlist:
-        yield [x if x.upper()!='NULL' else None for x in lst]
+        yield [x if x.upper() != 'NULL' else None for x in lst]
+
 
 def directfile(f, encoding='utf_8'):
     for line in f:
-        yield ( unicode(line.rstrip("\r\n"), encoding), )
+        yield (unicode(line.rstrip("\r\n"), encoding),)
+
 
 def directfileutf8(f):
     try:
         for line in f:
-            yield ( utf_8_decode(line.rstrip("\r\n"))[0], )
+            yield (utf_8_decode(line.rstrip("\r\n"))[0],)
     except UnicodeDecodeError, e:
-        raise functions.OperatorError(__name__.rsplit('.')[-1], unicode(e)+"\nFile is not %s encoded" %(self.encoding))
+        raise functions.OperatorError(__name__.rsplit('.')[-1],
+                                      unicode(e) + "\nFile is not %s encoded" % (self.encoding))
+
 
 def strict0(tabiter, colcount):
     while True:
         row = tabiter.next()
         if len(row) == colcount:
             yield row
+
 
 def convnumbers(r):
     out = []
@@ -222,13 +236,17 @@ def convnumbers(r):
         out.append(c)
     return out
 
+
 def tojdict(tabiter, header, preable):
     for r in tabiter:
-        yield r[:preable] + [json.dumps(dict(zip(header, convnumbers(r[preable:]))), separators=(',',':'), ensure_ascii=False)]
+        yield r[:preable] + [
+            json.dumps(dict(zip(header, convnumbers(r[preable:]))), separators=(',', ':'), ensure_ascii=False)]
+
 
 def tojlist(tabiter, preable):
     for r in tabiter:
-        yield r[:preable] + [json.dumps(convnumbers(r[preable:]), separators=(',',':'), ensure_ascii=False)]
+        yield r[:preable] + [json.dumps(convnumbers(r[preable:]), separators=(',', ':'), ensure_ascii=False)]
+
 
 def strict1(tabiter, colcount):
     linenum = 0
@@ -236,10 +254,15 @@ def strict1(tabiter, colcount):
         row = tabiter.next()
         linenum += 1
         if len(row) != colcount:
-            raise functions.OperatorError(__name__.rsplit('.')[-1],"Line " + str(linenum) + " is invalid. Found "+str(len(row))+" of expected "+str(colcount)+" columns\n"+"The line's parsed contents are:\n" + u','.join([mstr(x) for x in row]))
+            raise functions.OperatorError(__name__.rsplit('.')[-1],
+                                          "Line " + str(linenum) + " is invalid. Found " + str(
+                                              len(row)) + " of expected " + str(
+                                              colcount) + " columns\n" + "The line's parsed contents are:\n" + u','.join(
+                                              [mstr(x) for x in row]))
         yield row
 
-def strictminus1(tabiter, colcount, hasheader = False):
+
+def strictminus1(tabiter, colcount, hasheader=False):
     linenum = 0
     if hasheader:
         linenum += 1
@@ -249,12 +272,15 @@ def strictminus1(tabiter, colcount, hasheader = False):
         if len(row) != colcount:
             yield (linenum, len(row), colcount, u','.join([unicode(x) for x in row]))
 
+
 def cleanBOM(t):
-    return t.encode('ascii', errors = 'ignore').strip()
+    return t.encode('ascii', errors='ignore').strip()
+
 
 class FileCursor:
-    def __init__(self,filename,isurl,compressiontype,compression,hasheader,first,namelist,extraurlheaders,**rest):
-        self.encoding='utf_8'
+    def __init__(self, filename, isurl, compressiontype, compression, hasheader, first, namelist, extraurlheaders,
+                 **rest):
+        self.encoding = 'utf_8'
         self.fast = False
         self.strict = None
         self.toj = -1
@@ -264,7 +290,7 @@ class FileCursor:
         self.dialect = 'csv'
 
         if 'encoding' in rest:
-            self.encoding=rest['encoding']
+            self.encoding = rest['encoding']
             del rest['encoding']
 
         if 'strict' in rest:
@@ -284,25 +310,26 @@ class FileCursor:
 
         if 'dialect' in rest:
             self.dialect = rest['dialect']
-            dialects = {'line':line(), 'tsv':tsv(), 'csv':defaultcsv()}
+            dialects = {'line': line(), 'tsv': tsv(), 'csv': defaultcsv()}
             if self.dialect in dialects:
                 rest['dialect'] = dialects[self.dialect]
 
-        self.nonames=first
+        self.nonames = first
         for el in rest:
             if el not in csvkeywordparams:
-                raise functions.OperatorError(__name__.rsplit('.')[-1],"Invalid parameter %s" %(el))
+                raise functions.OperatorError(__name__.rsplit('.')[-1], "Invalid parameter %s" % (el))
 
-        pathname=None
-        gzipcompressed=False
-        
+        pathname = None
+        gzipcompressed = False
+
         try:
-            if compression and compressiontype=='zip':
-                self.fileiter=ZipIter(filename,"r")
+            if compression and compressiontype == 'zip':
+                self.fileiter = ZipIter(filename, "r")
             elif not isurl:
                 pathname = filename.strip()
                 if self.fast or compression or \
-                        (pathname is not None and (pathname.endswith('.gz') or pathname.endswith('.gzip') or pathname.endswith('.avro'))):
+                        (pathname is not None and (
+                                pathname.endswith('.gz') or pathname.endswith('.gzip') or pathname.endswith('.avro'))):
                     self.fileiter = open(filename, "rb", buffering=1000000)
                 else:
                     if "MSPW" in functions.apsw_version:
@@ -310,27 +337,28 @@ class FileCursor:
                     else:
                         self.fileiter = open(filename, "rU", buffering=1000000)
             else:
-                pathname=urlparse.urlparse(filename)[2]
+                pathname = urlparse.urlparse(filename)[2]
                 # req=urllib.Request(filename,None,extraurlheaders)
-                hreq=urllib.urlopen(filename)
-                if [1 for x,y in hreq.headers.items() if x.lower() in ('content-encoding', 'content-type') and y.lower().find('gzip')!=-1]:
-                    gzipcompressed=True
-                self.fileiter=hreq
+                hreq = urllib.urlopen(filename)
+                if [1 for x, y in hreq.headers.items() if
+                    x.lower() in ('content-encoding', 'content-type') and y.lower().find('gzip') != -1]:
+                    gzipcompressed = True
+                self.fileiter = hreq
 
-            if pathname!=None and ( pathname.endswith('.gz') or pathname.endswith('.gzip') ):
-                gzipcompressed=True
+            if pathname != None and (pathname.endswith('.gz') or pathname.endswith('.gzip')):
+                gzipcompressed = True
 
-            if compression and compressiontype=='gz':
-                gzipcompressed=True
+            if compression and compressiontype == 'gz':
+                gzipcompressed = True
 
             if gzipcompressed:
                 if filename.endswith('.gz'):
                     filename = filename[:-3]
                 if filename.endswith('.gzip'):
                     filename = filename[:-5]
-                self.fileiter = gzip.GzipFile(mode = 'rb', fileobj=self.fileiter)
+                self.fileiter = gzip.GzipFile(mode='rb', fileobj=self.fileiter)
 
-        except Exception,e:
+        except Exception, e:
             raise functions.OperatorError(__name__.rsplit('.')[-1], e)
 
         _, filenameExt = os.path.splitext(filename)
@@ -348,8 +376,8 @@ class FileCursor:
             schemalinetype = type(schemaline)
 
             if schemalinetype == list:
-                for i in xrange(1, len(schemaline)+1):
-                    namelist.append(['C'+str(i), 'text'])
+                for i in xrange(1, len(schemaline) + 1):
+                    namelist.append(['C' + str(i), 'text'])
                 self.fileiter = itertools.chain([firstline], self.fileiter)
 
             elif schemalinetype == dict and 'schema' in schemaline:
@@ -393,33 +421,34 @@ class FileCursor:
             if self.dialect == 'tsv':
                 rest['delimiter'] = '\t'
 
-        if hasheader or len(rest) > 0:  #if at least one csv argument default dialect is csv else line
+        if hasheader or len(rest) > 0:  # if at least one csv argument default dialect is csv else line
             if 'dialect' not in rest:
-                rest['dialect']=lib.inoutparsing.defaultcsv()
+                rest['dialect'] = lib.inoutparsing.defaultcsv()
 
             linelen = 0
             if first and not hasheader:
                 if self.fast:
                     delim = rest['delimiter']
-                    self.iter=peekable((unicode(r[:-1] if r[-1] == '\n' else r, 'utf_8').split(delim) for r in self.fileiter))
+                    self.iter = peekable(
+                        (unicode(r[:-1] if r[-1] == '\n' else r, 'utf_8').split(delim) for r in self.fileiter))
                 else:
-                    self.iter=peekable(nullify(reader(self.fileiter, encoding=self.encoding,**rest)))
+                    self.iter = peekable(nullify(reader(self.fileiter, encoding=self.encoding, **rest)))
                     if self.strict == None:
                         self.strict = 1
-                sample=self.iter.peek()
+                sample = self.iter.peek()
                 linelen = len(sample)
-            else: ###not first or header
+            else:  ###not first or header
                 if self.fast:
                     delim = rest['delimiter']
                     self.iter = (unicode(r[:-1] if r[-1] == '\n' else r, 'utf_8').split(delim) for r in self.fileiter)
                 else:
-                    self.iter=nullify(reader(self.fileiter, encoding=self.encoding, **rest))
+                    self.iter = nullify(reader(self.fileiter, encoding=self.encoding, **rest))
                     if self.strict == None:
                         self.strict = 1
                 linelen = len(namelist)
 
                 if hasheader:
-                    sample=self.iter.next()
+                    sample = self.iter.next()
                     linelen = len(sample)
 
             if self.strict == 0:
@@ -430,33 +459,33 @@ class FileCursor:
 
             if self.strict == -1:
                 self.iter = strictminus1(self.iter, linelen, hasheader)
-                namelist += [['linenumber', 'int'], ['foundcols', 'int'], ['expectedcols', 'int'],['contents', 'text']]
+                namelist += [['linenumber', 'int'], ['foundcols', 'int'], ['expectedcols', 'int'], ['contents', 'text']]
 
-            if first and namelist==[]:
+            if first and namelist == []:
                 if hasheader:
                     for i in sample:
-                        namelist.append( [cleanBOM(i), 'text'] )
+                        namelist.append([cleanBOM(i), 'text'])
                 else:
-                    for i in xrange(1, linelen+1):
-                        namelist.append( ['C'+str(i), 'text'] )
+                    for i in xrange(1, linelen + 1):
+                        namelist.append(['C' + str(i), 'text'])
 
-        else: #### Default read lines
+        else:  #### Default read lines
             if self.encoding == 'utf_8':
                 self.iter = directfileutf8(self.fileiter)
                 self.fast = True
             else:
                 self.iter = directfile(self.fileiter, encoding=self.encoding)
-            namelist.append( ['C1', 'text'] )
+            namelist.append(['C1', 'text'])
 
-        if self.toj >=0:
+        if self.toj >= 0:
             header = [x[0] for x in namelist]
             while len(namelist) > self.toj: namelist.pop()
             header = header[self.toj:]
             if self.hasheader:
-                namelist.append( ['Cjdict', 'text'] )
+                namelist.append(['Cjdict', 'text'])
                 self.iter = tojdict(self.iter, header, self.toj)
             else:
-                namelist.append( ['Cjlist', 'text'] )
+                namelist.append(['Cjlist', 'text'])
                 self.iter = tojlist(self.iter, self.toj)
 
         if self.fast:
@@ -472,59 +501,65 @@ class FileCursor:
         try:
             return self.iter.next()
         except UnicodeDecodeError, e:
-            raise functions.OperatorError(__name__.rsplit('.')[-1], unicode(e)+"\nFile is not UTF8 encoded")
+            raise functions.OperatorError(__name__.rsplit('.')[-1], unicode(e) + "\nFile is not UTF8 encoded")
 
     def close(self):
         self.fileiter.close()
-        
+
+
 class FileVT:
-    def __init__(self,envdict,largs,dictargs): #DO NOT DO ANYTHING HEAVY
-        self.largs=largs
-        self.envdict=envdict
-        self.dictargs=dictargs
-        self.nonames=True
-        self.names=[]
-        self.destroyfiles=[]
-        self.inoutargs={}
-        self.extraheader={}
-        
+    def __init__(self, envdict, largs, dictargs):  # DO NOT DO ANYTHING HEAVY
+        self.largs = largs
+        self.envdict = envdict
+        self.dictargs = dictargs
+        self.nonames = True
+        self.names = []
+        self.destroyfiles = []
+        self.inoutargs = {}
+        self.extraheader = {}
+
     def getdescription(self):
         if not self.names:
-            raise functions.OperatorError(__name__.rsplit('.')[-1],"VTable getdescription called before initiliazation")
-        self.nonames=False
+            raise functions.OperatorError(__name__.rsplit('.')[-1],
+                                          "VTable getdescription called before initiliazation")
+        self.nonames = False
         return self.names
-    
+
     def open(self):
         if self.nonames:
             try:
-                self.inoutargs=lib.inoutparsing.inoutargsparse(self.largs,self.dictargs)
+                self.inoutargs = lib.inoutparsing.inoutargsparse(self.largs, self.dictargs)
             except lib.inoutparsing.InputsError:
-                raise functions.OperatorError(__name__.rsplit('.')[-1]," One source input is required")
+                raise functions.OperatorError(__name__.rsplit('.')[-1], " One source input is required")
             if not self.inoutargs['filename']:
-                raise functions.OperatorError(__name__.rsplit('.')[-1],"No input provided")
-            
+                raise functions.OperatorError(__name__.rsplit('.')[-1], "No input provided")
+
             if self.inoutargs['url']:
                 for domain in domainExtraHeaders:
                     if domain in self.inoutargs['filename']:
-                        self.extraheader=domainExtraHeaders[domain]
+                        self.extraheader = domainExtraHeaders[domain]
                         break
                 if 'User-Agent' not in self.extraheader:
-                    self.extraheader['User-Agent']='Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)'
-            if self.inoutargs['url'] and self.inoutargs['compression'] and self.inoutargs['compressiontype']=='zip':
-                self.inoutargs['filename']=lib.inoutparsing.cacheurl(self.inoutargs['filename'], self.extraheader)
-                self.destroyfiles=[self.inoutargs['filename']]
-                self.inoutargs['url']=False
-        
-        return FileCursor(self.inoutargs['filename'],self.inoutargs['url'],self.inoutargs['compressiontype'],self.inoutargs['compression'],self.inoutargs['header'],self.nonames,self.names,self.extraheader,**self.dictargs)
+                    self.extraheader['User-Agent'] = 'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)'
+            if self.inoutargs['url'] and self.inoutargs['compression'] and self.inoutargs['compressiontype'] == 'zip':
+                self.inoutargs['filename'] = lib.inoutparsing.cacheurl(self.inoutargs['filename'], self.extraheader)
+                self.destroyfiles = [self.inoutargs['filename']]
+                self.inoutargs['url'] = False
+
+        return FileCursor(self.inoutargs['filename'], self.inoutargs['url'], self.inoutargs['compressiontype'],
+                          self.inoutargs['compression'], self.inoutargs['header'], self.nonames, self.names,
+                          self.extraheader, **self.dictargs)
 
     def destroy(self):
         import os
         for f in self.destroyfiles:
             os.remove(f)
 
+
 def Source():
     global boolargs, nonstringargs
-    return SourceVT(FileVT, lib.inoutparsing.boolargs+['header','compression'], nonstringargs, lib.inoutparsing.needsescape)
+    return SourceVT(FileVT, lib.inoutparsing.boolargs + ['header', 'compression'], nonstringargs,
+                    lib.inoutparsing.needsescape)
 
 
 if not ('.' in __name__):
@@ -533,11 +568,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

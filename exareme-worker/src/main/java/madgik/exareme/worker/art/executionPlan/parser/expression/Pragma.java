@@ -18,7 +18,8 @@ public class Pragma implements Serializable {
         this.pragmaValue = pragmaValue;
     }
 
-    @Override public boolean equals(Object obj) {
+    @Override
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -30,7 +31,8 @@ public class Pragma implements Serializable {
         return pragmaName.equals(guest.pragmaName) && pragmaValue.equals(guest.pragmaValue);
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int hash = 7;
         hash = 89 * hash + Objects.hashCode(this.pragmaName);
         hash = 89 * hash + Objects.hashCode(this.pragmaValue);

@@ -38,7 +38,7 @@ jsMath.Script.Uncompress = function (data) {
         var d = data[k];
         var n = d.length;
         for (var i = 0; i < n; i++) {
-            if (typeof(d[i]) == 'number') {
+            if (typeof (d[i]) == 'number') {
                 d[i] = d[d[i]]
             }
         }

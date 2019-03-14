@@ -26,23 +26,20 @@ __version__ = '2.0.0'
 
 import struct
 
-class Error(Exception):
 
+class Error(Exception):
     """Base class for exceptions."""
 
 
 class IPTypeError(Error):
-
     """Tried to perform a v4 action on v6 object or vice versa."""
 
 
 class IPAddressExclusionError(Error):
-
     """An Error we should never see occurred in address exclusion."""
 
 
 class IPAddressIPValidationError(Error):
-
     """Raised when a single address (v4 or v6) was given a network."""
 
     def __init__(self, ip):
@@ -53,8 +50,8 @@ class IPAddressIPValidationError(Error):
         return "%s is not a valid address (hint, it's probably a network)" % (
             repr(self._ip))
 
-class IPv4IpValidationError(Error):
 
+class IPv4IpValidationError(Error):
     """Raised when an IPv4 address is invalid."""
 
     def __init__(self, ip):
@@ -64,8 +61,8 @@ class IPv4IpValidationError(Error):
     def __str__(self):
         return repr(self._ip) + ' is not a valid IPv4 address'
 
-class IPv4NetmaskValidationError(Error):
 
+class IPv4NetmaskValidationError(Error):
     """Raised when a netmask is invalid."""
 
     def __init__(self, netmask):
@@ -77,7 +74,6 @@ class IPv4NetmaskValidationError(Error):
 
 
 class IPv6IpValidationError(Error):
-
     """Raised when an IPv6 address is invalid."""
 
     def __init__(self, ip):
@@ -89,7 +85,6 @@ class IPv6IpValidationError(Error):
 
 
 class IPv6NetmaskValidationError(Error):
-
     """Raised when an IPv6 netmask is invalid."""
 
     def __init__(self, netmask):
@@ -101,7 +96,6 @@ class IPv6NetmaskValidationError(Error):
 
 
 class PrefixlenDiffInvalidError(Error):
-
     """Raised when Sub/Supernets is called with a bad prefixlen_diff."""
 
     def __init__(self, error_str):
@@ -207,6 +201,7 @@ def _find_address_range(addresses):
             break
     return (first, last)
 
+
 def _get_prefix_length(number1, number2, bits):
     """Get the number of leading bits that are same for two numbers.
 
@@ -224,6 +219,7 @@ def _get_prefix_length(number1, number2, bits):
             return bits - i
     return 0
 
+
 def _count_righthand_zero_bits(number, bits):
     """Count the number of zero bits on the right hand side.
 
@@ -240,6 +236,7 @@ def _count_righthand_zero_bits(number, bits):
     for i in range(bits):
         if (number >> i) % 2:
             return i
+
 
 def summarize_address_range(first, last):
     """Summarize a network range given the first and last IP addresses.
@@ -290,7 +287,7 @@ def summarize_address_range(first, last):
         nbits = _count_righthand_zero_bits(first_int, ip_bits)
         current = None
         while nbits >= 0:
-            addend = 2**nbits - 1
+            addend = 2 ** nbits - 1
             current = first_int + addend
             nbits -= 1
             if current <= last_int:
@@ -303,6 +300,7 @@ def summarize_address_range(first, last):
         first_int = current + 1
         first = IPAddress(first_int, version=first._version)
     return networks
+
 
 def _collapse_address_list_recursive(addresses):
     """Loops through the addresses, collapsing concurrent netblocks.
@@ -410,6 +408,7 @@ def collapse_address_list(addresses):
     return _collapse_address_list_recursive(sorted(
         addrs + nets, key=BaseNet._get_networks_key))
 
+
 # backwards compatibility
 CollapseAddrList = collapse_address_list
 
@@ -420,12 +419,11 @@ CollapseAddrList = collapse_address_list
 # b'12::' (the IPv4 address 49.50.58.58) and '12::' (an IPv6 address).
 try:
     _compat_has_real_bytes = bytes is not str
-except NameError: # <Python2.6
+except NameError:  # <Python2.6
     _compat_has_real_bytes = False
 
 
 class IPAddrBase(object):
-
     """The mother class."""
 
     def __index__(self):
@@ -449,7 +447,6 @@ class IPAddrBase(object):
 
 
 class BaseIP(IPAddrBase):
-
     """A generic IP object.
 
     This IP class contains the version independent methods which are
@@ -504,7 +501,7 @@ class BaseIP(IPAddrBase):
         return '%s(%r)' % (self.__class__.__name__, str(self))
 
     def __str__(self):
-        return  '%s' % self._string_from_ip_int(self._ip)
+        return '%s' % self._string_from_ip_int(self._ip)
 
     def __hash__(self):
         return hash(self._ip)
@@ -515,7 +512,6 @@ class BaseIP(IPAddrBase):
 
 
 class BaseNet(IPAddrBase):
-
     """A generic IP object.
 
     This IP class contains the version independent methods which are
@@ -613,8 +609,8 @@ class BaseNet(IPAddrBase):
         return not eq
 
     def __str__(self):
-        return  '%s/%s' % (str(self.ip),
-                           str(self._prefixlen))
+        return '%s/%s' % (str(self.ip),
+                          str(self._prefixlen))
 
     def __hash__(self):
         return hash(self._ip ^ int(self.netmask))
@@ -729,7 +725,7 @@ class BaseNet(IPAddrBase):
 
         # Make sure we're comparing the network of other.
         other = IPNetwork('%s/%s' % (str(other.network), str(other.prefixlen)),
-                   version=other._version)
+                          version=other._version)
 
         s1, s2 = self.subnet()
         while s1 != other and s2 != other:
@@ -910,7 +906,7 @@ class BaseNet(IPAddrBase):
 
         first = IPNetwork('%s/%s' % (str(self.network),
                                      str(self._prefixlen + prefixlen_diff)),
-                         version=self._version)
+                          version=self._version)
         subnets = [first]
         current = first
         while True:
@@ -955,7 +951,6 @@ class BaseNet(IPAddrBase):
                 raise ValueError('cannot set prefixlen_diff and new_prefix')
             prefixlen_diff = self._prefixlen - new_prefix
 
-
         if self.prefixlen - prefixlen_diff < 0:
             raise PrefixlenDiffInvalidError(
                 'current prefixlen is %d, cannot have a prefixlen_diff of %d' %
@@ -973,7 +968,6 @@ class BaseNet(IPAddrBase):
 
 
 class BaseV4(object):
-
     """Base IPv4 object.
 
     The following methods are used by IPv4 objects in both single IP
@@ -982,7 +976,7 @@ class BaseV4(object):
     """
 
     # Equivalent to 255.255.255.255 or 32 bits of 1's.
-    _ALL_ONES = (2**32) - 1
+    _ALL_ONES = (2 ** 32) - 1
 
     def __init__(self, address):
         self._version = 4
@@ -1069,14 +1063,14 @@ class BaseV4(object):
 
     @property
     def is_reserved(self):
-       """Test if the address is otherwise IETF reserved.
+        """Test if the address is otherwise IETF reserved.
 
-        Returns:
-            A boolean, True if the address is within the
-            reserved IPv4 Network range.
- 
-       """
-       return self in IPv4Network('240.0.0.0/4')
+         Returns:
+             A boolean, True if the address is within the
+             reserved IPv4 Network range.
+
+        """
+        return self in IPv4Network('240.0.0.0/4')
 
     @property
     def is_private(self):
@@ -1123,7 +1117,6 @@ class BaseV4(object):
 
 
 class IPv4Address(BaseV4, BaseIP):
-
     """Represent and manipulate single IPv4 Addresses."""
 
     def __init__(self, address):
@@ -1171,7 +1164,6 @@ class IPv4Address(BaseV4, BaseIP):
 
 
 class IPv4Network(BaseV4, BaseNet):
-
     """This class represents and manipulates 32-bit IPv4 networks.
 
     Attributes: [examples for IPv4Network('1.2.3.4/27')]
@@ -1317,7 +1309,6 @@ class IPv4Network(BaseV4, BaseNet):
 
 
 class BaseV6(object):
-
     """Base IPv6 object.
 
     The following methods are used by IPv6 objects in both single IP
@@ -1325,7 +1316,7 @@ class BaseV6(object):
 
     """
 
-    _ALL_ONES = (2**128) - 1
+    _ALL_ONES = (2 ** 128) - 1
 
     def __init__(self, address):
         self._version = 6
@@ -1433,7 +1424,7 @@ class BaseV6(object):
         hex_str = '%032x' % ip_int
         hextets = []
         for x in range(0, 32, 4):
-            hextets.append('%x' % int(hex_str[x:x+4], 16))
+            hextets.append('%x' % int(hex_str[x:x + 4], 16))
 
         hextets = self._compress_hextets(hextets)
         return ':'.join(hextets)
@@ -1544,7 +1535,7 @@ class BaseV6(object):
     @property
     def packed(self):
         """The binary representation of this address."""
-        return struct.pack('!QQ', self._ip >> 64, self._ip & (2**64 - 1))
+        return struct.pack('!QQ', self._ip >> 64, self._ip & (2 ** 64 - 1))
 
     @property
     def version(self):
@@ -1658,10 +1649,9 @@ class BaseV6(object):
             return IPv4Address(int('%s%s' % (hextets[-2], hextets[-1]), 16))
         except IPv4IpvalidationError:
             return None
-    
+
 
 class IPv6Address(BaseV6, BaseIP):
-
     """Represent and manipulate single IPv6 Addresses.
     """
 
@@ -1712,7 +1702,6 @@ class IPv6Address(BaseV6, BaseIP):
 
 
 class IPv6Network(BaseV6, BaseNet):
-
     """This class represents and manipulates 128-bit IPv6 networks.
 
     Attributes: [examples for IPv6('2001:658:22A:CAFE:200::1/64')]
@@ -1724,7 +1713,6 @@ class IPv6Network(BaseV6, BaseNet):
         .prefixlen: 64
 
     """
-
 
     def __init__(self, address):
         """Instantiate a new IPv6 Network object.
@@ -1800,7 +1788,6 @@ class IPv6Network(BaseV6, BaseNet):
 
         self._ip = self._ip_int_from_string(addr[0])
         self.ip = IPv6Address(self._ip)
-
 
     def _is_valid_netmask(self, prefixlen):
         """Verify that the netmask/prefixlen is valid.

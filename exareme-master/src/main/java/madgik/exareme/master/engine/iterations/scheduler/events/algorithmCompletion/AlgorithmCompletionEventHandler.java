@@ -1,17 +1,16 @@
 package madgik.exareme.master.engine.iterations.scheduler.events.algorithmCompletion;
 
-import org.apache.log4j.Logger;
-
 import madgik.exareme.master.engine.iterations.scheduler.IterationsDispatcher;
 import madgik.exareme.master.engine.iterations.scheduler.events.IterationsEventHandler;
 import madgik.exareme.master.engine.iterations.scheduler.events.newAlgorithm.NewAlgorithmEventHandler;
 import madgik.exareme.master.engine.iterations.state.IterationsStateManager;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.utils.eventProcessor.EventProcessor;
+import org.apache.log4j.Logger;
 
 /**
  * @author Christos Aslanoglou <br> caslanoglou@di.uoa.gr <br> University of Athens / Department of
- *         Informatics and Telecommunications.
+ * Informatics and Telecommunications.
  */
 public class AlgorithmCompletionEventHandler extends IterationsEventHandler<AlgorithmCompletionEvent> {
     private static final Logger log = Logger.getLogger(NewAlgorithmEventHandler.class);

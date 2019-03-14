@@ -27,7 +27,8 @@ public class NetSessionSimple implements NetSession {
     public NetSessionSimple() {
     }
 
-    @Override public InputStream openInputStream(EntityName netAddress) throws RemoteException {
+    @Override
+    public InputStream openInputStream(EntityName netAddress) throws RemoteException {
         try {
             Socket socket = connect(netAddress);
             return StreamUtil.createZippedInputStream(socket.getInputStream());
@@ -36,25 +37,28 @@ public class NetSessionSimple implements NetSession {
         }
     }
 
-    @Override public OutputStream openOutputStream(SocketBuffer socket) throws RemoteException {
+    @Override
+    public OutputStream openOutputStream(SocketBuffer socket) throws RemoteException {
         try {
             return StreamUtil
-                .createZippedOutputStream(socket.openServerConnection().getOutputStream());
+                    .createZippedOutputStream(socket.openServerConnection().getOutputStream());
         } catch (IOException e) {
             throw new RemoteException("Cannot open stream", e);
         }
     }
 
-    @Override public InputStream openInputStream(SocketBuffer socket) throws RemoteException {
+    @Override
+    public InputStream openInputStream(SocketBuffer socket) throws RemoteException {
         try {
             return StreamUtil
-                .createZippedInputStream(socket.openServerConnection().getInputStream());
+                    .createZippedInputStream(socket.openServerConnection().getInputStream());
         } catch (IOException e) {
             throw new RemoteException("Cannot open stream", e);
         }
     }
 
-    @Override public OutputStream openOutputStream(EntityName netAddress) throws RemoteException {
+    @Override
+    public OutputStream openOutputStream(EntityName netAddress) throws RemoteException {
         try {
             Socket socket = connect(netAddress);
             return StreamUtil.createZippedOutputStream(socket.getOutputStream());
@@ -68,9 +72,9 @@ public class NetSessionSimple implements NetSession {
         long begin = System.currentTimeMillis();
         try {
             InetSocketAddress client =
-                new InetSocketAddress(netAddress.getIP(), netAddress.getPort());
+                    new InetSocketAddress(netAddress.getIP(), netAddress.getPort());
             log.trace("Connecting to (" + tries + ") " +
-                netAddress.getIP() + ":" + netAddress.getPort() + " ...");
+                    netAddress.getIP() + ":" + netAddress.getPort() + " ...");
             RetryPolicy retryPolicy = RetryPolicyFactory.socketRetryPolicy();
             while (true) {
                 try {
@@ -82,7 +86,7 @@ public class NetSessionSimple implements NetSession {
                     return socket;
                 } catch (Exception e) {
                     log.trace("Connecting to (" + tries + ") " +
-                        netAddress.getIP() + ":" + netAddress.getPort() + " ...");
+                            netAddress.getIP() + ":" + netAddress.getPort() + " ...");
                     if (retryPolicy.getRetryTimesPolicy().retry(e, tries) == false) {
                         break;
                     }
@@ -96,6 +100,6 @@ public class NetSessionSimple implements NetSession {
             log.debug("Total time to connect: " + (end - begin));
         }
         throw new RemoteException("Cannot connect to " +
-            netAddress.getIP() + ":" + netAddress.getPort() + " ...");
+                netAddress.getIP() + ":" + netAddress.getPort() + " ...");
     }
 }

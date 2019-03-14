@@ -25,37 +25,43 @@ public class WriteSocketStreamAdaptorProxyMonitor implements WriteSocketStreamAd
     private OutputStreamMonitor monitor = null;
 
     public WriteSocketStreamAdaptorProxyMonitor(WriteSocketStreamAdaptorProxy proxy,
-        AdaptorStatistics adaptorStatistics, ConcreteOperatorStatistics statistics) {
+                                                AdaptorStatistics adaptorStatistics, ConcreteOperatorStatistics statistics) {
         this.proxy = proxy;
         this.adaptorStatistics = adaptorStatistics;
         this.statistics = statistics;
     }
 
-    @Override public OutputStream getOutputStream() throws RemoteException {
+    @Override
+    public OutputStream getOutputStream() throws RemoteException {
         if (monitor == null) {
             monitor =
-                new OutputStreamMonitor(proxy.getOutputStream(), adaptorStatistics, statistics);
+                    new OutputStreamMonitor(proxy.getOutputStream(), adaptorStatistics, statistics);
         }
         return monitor;
     }
 
-    @Override public void close() throws RemoteException {
+    @Override
+    public void close() throws RemoteException {
         proxy.close();
     }
 
-    @Override public RetryPolicy getRetryPolicy() throws RemoteException {
+    @Override
+    public RetryPolicy getRetryPolicy() throws RemoteException {
         return proxy.getRetryPolicy();
     }
 
-    @Override public void setNetSession(NetSession manager) throws RemoteException {
+    @Override
+    public void setNetSession(NetSession manager) throws RemoteException {
         proxy.setNetSession(manager);
     }
 
-    @Override public WriteSocketStreamAdaptor connect() throws RemoteException {
+    @Override
+    public WriteSocketStreamAdaptor connect() throws RemoteException {
         return proxy.connect();
     }
 
-    @Override public WriteSocketStreamAdaptor getRemoteObject() throws RemoteException {
+    @Override
+    public WriteSocketStreamAdaptor getRemoteObject() throws RemoteException {
         return proxy.getRemoteObject();
     }
 }

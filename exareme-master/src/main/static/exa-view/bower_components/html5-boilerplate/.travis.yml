@@ -5,10 +5,10 @@
 after_success:
   - |
 
-      # Automatically update the content from the `dist/` directory
-      $(npm bin)/commit-changes --branch "master" \
-                                --commands "npm run build" \
-                                --commit-message "Update content from the \`dist\` directory [skip ci]"
+    # Automatically update the content from the `dist/` directory
+    $(npm bin)/commit-changes --branch "master" \
+                              --commands "npm run build" \
+                              --commit-message "Update content from the \`dist\` directory [skip ci]"
 
 env:
   global:

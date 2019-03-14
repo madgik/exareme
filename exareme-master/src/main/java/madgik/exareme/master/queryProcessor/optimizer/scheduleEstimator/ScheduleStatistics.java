@@ -29,7 +29,7 @@ public class ScheduleStatistics implements Serializable {
     private final double money_NoFrag;
 
     public ScheduleStatistics(int numOfContainers, int containerUsed, int time_SEC,
-        double time_Quanta, int money_quanta, double money_NoFrag) {
+                              double time_Quanta, int money_quanta, double money_NoFrag) {
         this.numOfContainers = numOfContainers;
         this.containerUsed = containerUsed;
         this.time_SEC = time_SEC;
@@ -62,7 +62,8 @@ public class ScheduleStatistics implements Serializable {
         return money_NoFrag;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return DF.format(money_Quanta) + "\t" + DF.format(time_Quanta);
     }
 }

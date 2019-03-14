@@ -11,10 +11,10 @@
 /*jslint browser: true, es5: true */
 /*globals $: true, rootPath: true */
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     'use strict';
 
-    document.getElementById('toggle-nav').onclick = function(e) {
+    document.getElementById('toggle-nav').onclick = function (e) {
         var toc = document.getElementById('toc');
         var pagewrapper = document.getElementById('page-wrapper');
         toggleClass(toc, 'mobile-hidden');
@@ -57,14 +57,14 @@ document.addEventListener('DOMContentLoaded', function() {
             var nav = document.createElement('p');
 
             if (i > 0) {
-                var prevNode = toc[i-1].cloneNode(true);
+                var prevNode = toc[i - 1].cloneNode(true);
                 prevNode.className = 'left';
                 prevNode.setAttribute('rel', 'prev');
                 nav.appendChild(prevNode);
             }
 
             if (i < toc.length - 1) {
-                var nextNode = toc[i+1].cloneNode(true);
+                var nextNode = toc[i + 1].cloneNode(true);
                 nextNode.className = 'right';
                 nextNode.setAttribute('rel', 'next');
                 nav.appendChild(nextNode);

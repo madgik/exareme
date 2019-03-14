@@ -40,7 +40,7 @@ public class ComputeDemo {
             ArmComputeSession computeSession = computeProxy.createSession();
 
             ComputeSessionContainerManagerProxy containerManagerProxy =
-                computeSession.getComputeSessionContainerManagerProxy();
+                    computeSession.getComputeSessionContainerManagerProxy();
 
             ActiveContainer ac = containerManagerProxy.getContainers(1)[0];
             log.debug(ac.containerName);

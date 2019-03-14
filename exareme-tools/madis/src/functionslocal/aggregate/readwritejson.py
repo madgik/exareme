@@ -1,9 +1,6 @@
 __docformat__ = 'reStructuredText en'
 
-import setpath
-import lib.jopts as jopts
 import json
-from collections import OrderedDict
 
 try:
     from collections import OrderedDict
@@ -19,7 +16,7 @@ class tabletojson:
     Example:
 
     """
-    registered = True #Value to define db operator
+    registered = True  # Value to define db operator
 
     def __init__(self):
         self.d = {}
@@ -30,19 +27,18 @@ class tabletojson:
         if self.i == 0:
             self.colnames = str(args[-1]).split(',')
 
-        for j in xrange(len(args)-1):
+        for j in xrange(len(args) - 1):
             # print self.colnames[j],args[j]
             self.d[self.colnames[j]] = args[j]
         self.dlist.append(self.d.copy())
-        self.i = self.i +1
+        self.i = self.i + 1
 
     def final(self):
         return json.dumps(self.dlist)
 
 
 class jsontotable:
-
-    registered = True #Value to define db operator
+    registered = True  # Value to define db operator
 
     def __init__(self):
         self.d = {}
@@ -56,19 +52,16 @@ class jsontotable:
         init = True
         for x in self.jsondata:
             if init is True:
-                colnames =[]
-                vals =[]
-                for key,value in x.iteritems():
+                colnames = []
+                vals = []
+                for key, value in x.iteritems():
                     colnames.append(str(key))
                     vals.append(value)
                 yield tuple(colnames)
-                yield tuple (vals)
+                yield tuple(vals)
                 init = False
             else:
-                vals =[]
+                vals = []
                 for z in xrange(len(colnames)):
                     vals.append(x[colnames[z]])
                 yield tuple(vals)
-
-
-

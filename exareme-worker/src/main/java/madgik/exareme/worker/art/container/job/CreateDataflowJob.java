@@ -27,8 +27,8 @@ public class CreateDataflowJob implements ContainerJob {
     public EntityName entityName;
 
     public CreateDataflowJob(ExecutionPlan plan, HashMap<EntityName, ContainerProxy> NameToProxy,
-        HashMap<EntityName, ContainerSessionID> NameToSessionID,
-        PlanSessionReportID planSessionReportID, EntityName entityName) {
+                             HashMap<EntityName, ContainerSessionID> NameToSessionID,
+                             PlanSessionReportID planSessionReportID, EntityName entityName) {
         this.plan = plan;
         this.entityNameToProxy = NameToProxy;
         this.entityNameToSessionID = NameToSessionID;
@@ -36,7 +36,8 @@ public class CreateDataflowJob implements ContainerJob {
         this.entityName = entityName;
     }
 
-    @Override public ContainerJobType getType() {
+    @Override
+    public ContainerJobType getType() {
         return ContainerJobType.distributedJobCreateDataflow;
     }
 

@@ -34,22 +34,23 @@ import java.util.LinkedList;
  * @author heraldkllapi
  */
 public class OperatorElasticTreeTerminatedEventHandler
-    implements ExecEngineEventHandler<OperatorTerminatedEvent> {
+        implements ExecEngineEventHandler<OperatorTerminatedEvent> {
     public static final OperatorElasticTreeTerminatedEventHandler instance =
-        new OperatorElasticTreeTerminatedEventHandler();
+            new OperatorElasticTreeTerminatedEventHandler();
     private static final long serialVersionUID = 1L;
     private static final Logger log =
-        Logger.getLogger(OperatorElasticTreeTerminatedEventHandler.class);
+            Logger.getLogger(OperatorElasticTreeTerminatedEventHandler.class);
 
-    @Override public void preProcess(OperatorTerminatedEvent event, PlanEventSchedulerState state)
-        throws RemoteException {
+    @Override
+    public void preProcess(OperatorTerminatedEvent event, PlanEventSchedulerState state)
+            throws RemoteException {
         //    log.info("PRE");
         if (event instanceof OperatorElasticTreeTerminatedEvent == false) {
             throw new RemoteException("Event not supported: " + event.getClass().getName());
         }
 
         PlanEventSchedulerStateElasticTree treeState =
-            ((OperatorElasticTreeTerminatedEvent) event).elasticState;
+                ((OperatorElasticTreeTerminatedEvent) event).elasticState;
 
         boolean hasTerminated = false;
 
@@ -67,7 +68,7 @@ public class OperatorElasticTreeTerminatedEventHandler
             }
             OperatorGroup group = activeOperator.operatorGroup;
             ActiveOperatorGroup activeGroup =
-                group.setTerminated(activeOperator.operatorEntity, false);
+                    group.setTerminated(activeOperator.operatorEntity, false);
             activeOperator.exitCode = event.exidCode;
             activeOperator.exitMessage = event.exitMessage;
             activeOperator.exitDate = new Date();
@@ -77,10 +78,10 @@ public class OperatorElasticTreeTerminatedEventHandler
                 String containerName = activeOperator.operatorEntity.containerName;
                 EntityName anyCont = plan.getContainer(containerName);
                 EntityName realCont =
-                    treeState.getRealContainer(state.getSessionID(), anyCont.getName());
+                        treeState.getRealContainer(state.getSessionID(), anyCont.getName());
                 treeState.operatorFinished(state.getSessionID(),
-                    activeOperator.operatorEntity.operatorName, realCont,
-                    (ExecuteQueryExitMessage) event.exitMessage);
+                        activeOperator.operatorEntity.operatorName, realCont,
+                        (ExecuteQueryExitMessage) event.exitMessage);
             }
             // Check if the group has terminated
             if ((activeGroup.hasError == false) && group.hasTerminated) {
@@ -92,7 +93,7 @@ public class OperatorElasticTreeTerminatedEventHandler
             }
             // Check if the plan has terminated
             if (state.getTerminatedOperatorCount() == state.getStatistics()
-                .totalProcessingOperators()) {
+                    .totalProcessingOperators()) {
                 // Notify and close the session
                 IndependentEvents termJobs = new IndependentEvents(state);
                 state.eventScheduler.planTerminated(termJobs);
@@ -116,7 +117,7 @@ public class OperatorElasticTreeTerminatedEventHandler
             group.createPartialPlan();
 
             ActiveOperatorGroup activeGroup = group.createNewActiveGroup(
-                state.eventScheduler.getPlanManager().createContainerSession(state.getSessionID()));
+                    state.eventScheduler.getPlanManager().createContainerSession(state.getSessionID()));
 
             activeGroups.add(activeGroup);
         }
@@ -138,7 +139,7 @@ public class OperatorElasticTreeTerminatedEventHandler
                 String containerName = op.containerName;
                 EntityName anyCont = plan.getContainer(containerName);
                 EntityName realCont =
-                    treeState.getRealContainer(state.getSessionID(), anyCont.getName());
+                        treeState.getRealContainer(state.getSessionID(), anyCont.getName());
                 if (op.type == OperatorType.processing) {
                     // Find the level and rank of the operator
                     int[] levelRank = new int[2];
@@ -147,49 +148,49 @@ public class OperatorElasticTreeTerminatedEventHandler
                     switch (levelRank[0]) {
                         case 0: { // Leaf
                             log.info("LEAF OP: (" + levelRank[1] + ") " + op.type + " :: "
-                                + op.operatorName);
+                                    + op.operatorName);
                             // Make the assignment of the operator
                             if (realCont != null) {
                                 throw new RemoteException(
-                                    "Internal Error: Leaf operators should not be assigned");
+                                        "Internal Error: Leaf operators should not be assigned");
                             }
                             realCont =
-                                treeState.getDataContainer(state.getSessionID(), levelRank[1]);
+                                    treeState.getDataContainer(state.getSessionID(), levelRank[1]);
                             treeState
-                                .addAnyContainer(state.getSessionID(), anyCont.getName(), realCont);
+                                    .addAnyContainer(state.getSessionID(), anyCont.getName(), realCont);
                             log.info(
-                                "DATA CONT: " + containerName + "@" + anyCont + " -> " + realCont);
+                                    "DATA CONT: " + containerName + "@" + anyCont + " -> " + realCont);
                             treeState
-                                .scheduleOperator(state.getSessionID(), op.operatorName, realCont,
-                                    0);
+                                    .scheduleOperator(state.getSessionID(), op.operatorName, realCont,
+                                            0);
                             break;
                         }
                         case 1: // Internal
                             log.info("INTERNAL OP: " + op.type + " :: " + op.operatorName);
                             treeState
-                                .scheduleOperator(state.getSessionID(), op.operatorName, realCont,
-                                    1);
+                                    .scheduleOperator(state.getSessionID(), op.operatorName, realCont,
+                                            1);
                             break;
                         case 2: // Root
                             treeState
-                                .scheduleOperator(state.getSessionID(), op.operatorName, realCont,
-                                    2);
+                                    .scheduleOperator(state.getSessionID(), op.operatorName, realCont,
+                                            2);
                             log.info("ROOT OP: " + op.type + " :: " + op.operatorName);
                             break;
                         default: // ERROR
                             throw new RemoteException(
-                                "Unsuported graph type: it should be a tree!");
+                                    "Unsuported graph type: it should be a tree!");
                     }
                 } else {
                     if (realCont == null) {
                         int[] levelRank = new int[2];
                         ElasticTreeUtils.findDataOpLevelAndRank(op.operatorName, levelRank);
                         log.info("DATA OP: (" + levelRank[0] + "," + levelRank[1] + ") " +
-                            op.type + " :: " + op.operatorName);
+                                op.type + " :: " + op.operatorName);
                         Check.True(levelRank[0] > 0, "Level of unassigned data ops should be >= 1");
                         realCont = treeState.getContainer(state.getSessionID(), levelRank[0]);
                         treeState
-                            .addAnyContainer(state.getSessionID(), anyCont.getName(), realCont);
+                                .addAnyContainer(state.getSessionID(), anyCont.getName(), realCont);
                         log.info("CONTAINER: " + containerName + "@" + anyCont + " -> " + realCont);
                     }
                 }
@@ -199,10 +200,10 @@ public class OperatorElasticTreeTerminatedEventHandler
             for (String containerName : plan.iterateContainers()) {
                 EntityName anyContainer = plan.getContainer(containerName);
                 EntityName realContainer =
-                    treeState.getRealContainer(state.getSessionID(), anyContainer.getName());
+                        treeState.getRealContainer(state.getSessionID(), anyContainer.getName());
                 if (realContainer == null) {
                     throw new RemoteException(
-                        "Internal Error: containers should be specified earlier.");
+                            "Internal Error: containers should be specified earlier.");
                 }
                 state.eventScheduler.addContainer(containerName, realContainer, addContainer);
             }
@@ -210,20 +211,20 @@ public class OperatorElasticTreeTerminatedEventHandler
             for (OperatorEntity createOp : plan.iterateOperators()) {
                 log.info("OPERATOR: " + createOp.type + " :: " + createOp.operatorName);
                 ContainerJobsEvent e = ContainerJobsEventHandler
-                    .getEvent(createOp.container.getName(), create, createMap, state);
+                        .getEvent(createOp.container.getName(), create, createMap, state);
                 state.eventScheduler.createOperator(createOp, e);
             }
             for (OperatorLinkEntity link : plan.iterateOperatorLinks()) {
                 ContainerJobsEvent e = ContainerJobsEventHandler
-                    .getEvent(link.container.getName(), links, linkMap, state);
+                        .getEvent(link.container.getName(), links, linkMap, state);
                 state.eventScheduler.createLink(link, e);
             }
             // Schedule the start of the operators
             for (OperatorEntity createOp : plan.iterateOperators()) {
                 ContainerJobsEvent e = ContainerJobsEventHandler
-                    .getEvent(createOp.container.getName(), start, startMap, state);
+                        .getEvent(createOp.container.getName(), start, startMap, state);
                 state.eventScheduler
-                    .start(new Start(createOp.operatorName, createOp.containerName), e);
+                        .start(new Start(createOp.operatorName, createOp.containerName), e);
             }
         }
         if (activeGroups.size() > 0) {
@@ -239,14 +240,16 @@ public class OperatorElasticTreeTerminatedEventHandler
         }
     }
 
-    @Override public void handle(OperatorTerminatedEvent event, EventProcessor proc)
-        throws RemoteException {
+    @Override
+    public void handle(OperatorTerminatedEvent event, EventProcessor proc)
+            throws RemoteException {
         //    log.info("PROCESS");
         //
     }
 
-    @Override public void postProcess(OperatorTerminatedEvent event, PlanEventSchedulerState state)
-        throws RemoteException {
+    @Override
+    public void postProcess(OperatorTerminatedEvent event, PlanEventSchedulerState state)
+            throws RemoteException {
         //    log.info("POST");
         state.getStatistics().incrControlMessagesCountBy(event.messageCount);
     }

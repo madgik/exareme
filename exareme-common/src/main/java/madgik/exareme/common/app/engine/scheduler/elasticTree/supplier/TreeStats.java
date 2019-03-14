@@ -23,9 +23,9 @@ public class TreeStats {
     public final int replication;
 
     public TreeStats(SLA[] sla, double[] queriesPerSLA, double[] CPULoadPerLevel,
-        double[] dataLoadPerLevel, double concurentQueries, int currentDataContainers,
-        double[] currentContainersPerLevel, int totalDataParts, double partitionSize,
-        int replication, double historyWindow) {
+                     double[] dataLoadPerLevel, double concurentQueries, int currentDataContainers,
+                     double[] currentContainersPerLevel, int totalDataParts, double partitionSize,
+                     int replication, double historyWindow) {
         this.sla = sla;
         this.queriesPerSLA = queriesPerSLA;
         this.CPULoadPerLevel = CPULoadPerLevel;

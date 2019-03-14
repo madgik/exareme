@@ -38,13 +38,14 @@ public class Resources {
             memory += op.memory;
             try {
                 Check.True(memory <= 100, "Memory not set correctly: " + memory);
-            } catch (RuntimeException e){
+            } catch (RuntimeException e) {
                 memory = 100;
             }
         }
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         synchronized (lock) {
             return DF.format(memory);
         }

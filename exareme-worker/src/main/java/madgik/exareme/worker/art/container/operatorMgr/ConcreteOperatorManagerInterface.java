@@ -24,39 +24,39 @@ import java.util.Map;
  * @author Herald Kllapi<br>
  * @author Dimitris Paparas<br>
  * @author Eva Sitaridi<br>
- *         {herald,paparas,evas}@di.uoa.gr<br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * {herald,paparas,evas}@di.uoa.gr<br>
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public interface ConcreteOperatorManagerInterface extends SessionBased {
 
     ConcreteOperatorID instantiate(String name, String category, OperatorType type,
-        OperatorImplementationEntity operator, Parameters parameters,
-        Map<String, LinkedList<Parameter>> outParameters, String queryString,
-        PlanSessionReportID sessionReportID, ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException;
+                                   OperatorImplementationEntity operator, Parameters parameters,
+                                   Map<String, LinkedList<Parameter>> outParameters, String queryString,
+                                   PlanSessionReportID sessionReportID, ContainerSessionID containerSessionID,
+                                   PlanSessionID sessionID) throws RemoteException;
 
 
     void start(ConcreteOperatorID opID, ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException;
+               PlanSessionID sessionID) throws RemoteException;
 
     void destroyInstance(ConcreteOperatorID opID, ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException;
+                         PlanSessionID sessionID) throws RemoteException;
 
     void stop(ConcreteOperatorID opID, ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException;
+              PlanSessionID sessionID) throws RemoteException;
 
     ConcreteOperatorStatistics getOperatorStatistics(ConcreteOperatorID opID,
-        ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException;
+                                                     ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException;
 
     void addReadAdaptor(CombinedReadAdaptorProxy adaptor, String adaptorName, String portName,
-        Parameters parameters, boolean remote, ConcreteOperatorID iD,
-        ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException;
+                        Parameters parameters, boolean remote, ConcreteOperatorID iD,
+                        ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException;
 
     void addWriteAdaptor(CombinedWriteAdaptorProxy adaptor, String adaptorName, String portName,
-        Parameters parameters, boolean remote, ConcreteOperatorID iD,
-        ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException;
+                         Parameters parameters, boolean remote, ConcreteOperatorID iD,
+                         ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException;
 
     ConcreteOperatorManagerStatus getStatus() throws RemoteException;
 

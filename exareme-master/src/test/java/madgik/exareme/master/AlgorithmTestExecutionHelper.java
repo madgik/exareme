@@ -1,5 +1,7 @@
 package madgik.exareme.master;
 
+import madgik.exareme.master.engine.iterations.IterationsTestGenericUtils;
+import madgik.exareme.master.gateway.async.handler.HttpAsyncMiningQueryHandler;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.HeaderIterator;
 import org.apache.http.HttpEntity;
@@ -12,20 +14,13 @@ import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
 import org.apache.http.impl.nio.client.HttpAsyncClients;
 import org.apache.log4j.Logger;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileFilter;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-
-import madgik.exareme.master.engine.iterations.IterationsTestGenericUtils;
-import madgik.exareme.master.gateway.async.handler.HttpAsyncMiningQueryHandler;
 
 import static madgik.exareme.master.gateway.GatewayConstants.COOKIE_ALGORITHM_EXECUTION_ID;
 
@@ -45,7 +40,7 @@ import static madgik.exareme.master.gateway.GatewayConstants.COOKIE_ALGORITHM_EX
  * (annotated with {@code @Before}).</b>
  *
  * @author Christos Aslanoglou <br> caslanoglou@di.uoa.gr <br> University of Athens / Department of
- *         Informatics and Telecommunications.
+ * Informatics and Telecommunications.
  */
 public class AlgorithmTestExecutionHelper {
     private static final Logger log = Logger.getLogger(AlgorithmTestExecutionHelper.class);
@@ -80,6 +75,7 @@ public class AlgorithmTestExecutionHelper {
     }
 
     // Public API -------------------------------------------------------------------------------
+
     /**
      * Adds an algorithm to be later executed.
      * Can be used to either add one algorithm and then execute it using
@@ -253,6 +249,7 @@ public class AlgorithmTestExecutionHelper {
     }
 
     // Utilities --------------------------------------------------------------------------------
+
     /**
      * Removes the generated algorithm SQL templates and DFL files.
      *
@@ -304,11 +301,10 @@ public class AlgorithmTestExecutionHelper {
                         + ") does not contain \"" + COOKIE_ALGORITHM_EXECUTION_ID + "\" cookie.\n"
                         + "Maybe " + HttpAsyncMiningQueryHandler.class.getSimpleName()
                         + "#handle function's code has been changed.");
-        }
-        else
+        } else
             throw new NoSuchElementException("Header for cookies (" + SET_COOKIE_HEADER_NAME + ")" +
                     " has not been set for testing. \nMaybe "
-                    +  HttpAsyncMiningQueryHandler.class.getSimpleName() + "#handle function's "
+                    + HttpAsyncMiningQueryHandler.class.getSimpleName() + "#handle function's "
                     + "code has been changed to not \"echo\" the algorithm execution id cookie.");
     }
 

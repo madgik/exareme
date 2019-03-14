@@ -39,16 +39,19 @@ public class RmiArmManager implements ArmManager {
         }
     }
 
-    @Override public ArmComputeManager getComputeManager() throws RemoteException {
+    @Override
+    public ArmComputeManager getComputeManager() throws RemoteException {
         return armComputeManager;
     }
 
-    @Override public ArmStorageManager getStorageManager() throws RemoteException {
+    @Override
+    public ArmStorageManager getStorageManager() throws RemoteException {
         //    return armStorageManager;
         throw new UnsupportedOperationException("Not support yet!");
     }
 
-    @Override public void stopManager() throws RemoteException {
+    @Override
+    public void stopManager() throws RemoteException {
         armComputeManager.stopCompute();
         //    armStorageManager.stopStorage();
     }

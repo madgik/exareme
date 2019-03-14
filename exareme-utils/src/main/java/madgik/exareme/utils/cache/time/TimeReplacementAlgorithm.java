@@ -28,7 +28,8 @@ public class TimeReplacementAlgorithm implements ReplacementAlgorithm {
         this.free = new PriorityQueue<Triple<Long, BigInteger, Boolean>>(10, this.comparator);
     }
 
-    @Override public void insert(long objectNum) {
+    @Override
+    public void insert(long objectNum) {
         clock = clock.add(BigInteger.ONE);
         Triple<Long, BigInteger, Boolean> obj = objectMap.get(objectNum);
         if (obj == null) {
@@ -38,12 +39,14 @@ public class TimeReplacementAlgorithm implements ReplacementAlgorithm {
         obj.b = clock;
     }
 
-    @Override public void delete(long objectNum) {
+    @Override
+    public void delete(long objectNum) {
         Triple<Long, BigInteger, Boolean> obj = objectMap.get(objectNum);
         free.remove(obj);
     }
 
-    @Override public long getNext() {
+    @Override
+    public long getNext() {
         if (free.isEmpty()) {
             return -1;
         }
@@ -55,7 +58,8 @@ public class TimeReplacementAlgorithm implements ReplacementAlgorithm {
         return head.a;
     }
 
-    @Override public void pin(long objectNum) {
+    @Override
+    public void pin(long objectNum) {
         clock = clock.add(BigInteger.ONE);
         Triple<Long, BigInteger, Boolean> obj = objectMap.get(objectNum);
         free.remove(obj);
@@ -67,7 +71,8 @@ public class TimeReplacementAlgorithm implements ReplacementAlgorithm {
         obj.b = clock;
     }
 
-    @Override public void unpin(long objectNum) {
+    @Override
+    public void unpin(long objectNum) {
         clock = clock.add(BigInteger.ONE);
         Triple<Long, BigInteger, Boolean> obj = objectMap.get(objectNum);
         obj.b = clock;
@@ -79,12 +84,14 @@ public class TimeReplacementAlgorithm implements ReplacementAlgorithm {
         free.offer(obj);
     }
 
-    @Override public void clear() {
+    @Override
+    public void clear() {
         objectMap.clear();
         free.clear();
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return free.toString() + ":" + objectMap.toString();
     }
 }

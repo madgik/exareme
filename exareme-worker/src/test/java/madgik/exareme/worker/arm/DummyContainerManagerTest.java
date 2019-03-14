@@ -85,7 +85,7 @@ public class DummyContainerManagerTest extends TestCase {
         long duration_time = 0L;
         DummyContainerManager instance = manager;
         ActiveContainer[] result =
-            instance.getContainers(number_of_containers, sessionID, duration_time);
+                instance.getContainers(number_of_containers, sessionID, duration_time);
         acquired = number_of_containers;
         requested = result.length;
         assertEquals(requested, acquired);
@@ -104,7 +104,7 @@ public class DummyContainerManagerTest extends TestCase {
         DummyContainerManager instance = manager;
         ActiveContainer[] result = instance.getContainers(first_request, sessionID, duration_time);
         ActiveContainer[] acquired_containers =
-            instance.getContainers(second_request, sessionID, duration_time);
+                instance.getContainers(second_request, sessionID, duration_time);
         if (acquired_containers == null) {
             acquired = 0;
         } else {
@@ -174,7 +174,7 @@ public class DummyContainerManagerTest extends TestCase {
 
         number_of_containers = 2;
         ActiveContainer[] second_result =
-            instance.tryGetContainers(number_of_containers, sessionID);
+                instance.tryGetContainers(number_of_containers, sessionID);
 
         if (second_result != null) {
             acquired = second_result.length;

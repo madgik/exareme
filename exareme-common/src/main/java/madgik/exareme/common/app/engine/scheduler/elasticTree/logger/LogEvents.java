@@ -79,7 +79,7 @@ public class LogEvents {
         public final int queuedQueries;
 
         public Queries(long time, int totalQueries, int errorQueries, int runningQueries,
-            int queuedQueries) {
+                       int queuedQueries) {
             super(time, EventType.queries);
             this.totalQueries = totalQueries;
             this.errorQueries = errorQueries;
@@ -133,7 +133,7 @@ public class LogEvents {
         public final double dataVar;
 
         public ElasticTreeLevel(long time, int level, int containers, long numOps, double cpuLoad,
-            double cpuVar, double dataLoad, double dataVar) {
+                                double cpuVar, double dataLoad, double dataVar) {
             super(time, EventType.elasticTreeLevel);
             this.level = level;
             this.containers = containers;
@@ -154,7 +154,7 @@ public class LogEvents {
         public final double windowRevenue;
 
         public Money(long time, double totalCost, double totalRevenue, double profit,
-            double windowCost, double windowRevenue) {
+                     double windowCost, double windowRevenue) {
             super(time, EventType.money);
             this.totalCost = totalCost;
             this.totalRevenue = totalRevenue;

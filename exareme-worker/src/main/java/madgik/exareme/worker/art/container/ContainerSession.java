@@ -13,9 +13,9 @@ import java.rmi.RemoteException;
  * @author Herald Kllapi<br>
  * @author Dimitris Paparas<br>
  * @author Eva Sitaridi<br>
- *         {herald,paparas,evas}@di.uoa.gr<br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * {herald,paparas,evas}@di.uoa.gr<br>
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class ContainerSession implements Serializable {
@@ -26,7 +26,7 @@ public class ContainerSession implements Serializable {
     private ContainerProxy containerProxy = null;
 
     public ContainerSession(ContainerProxy containerProxy, ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) {
+                            PlanSessionID sessionID) {
         this.containerProxy = containerProxy;
         this.containerSessionID = containerSessionID;
         this.sessionID = sessionID;

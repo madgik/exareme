@@ -46,16 +46,19 @@ public class OperatorAssignment implements Serializable {
         this.memory = co.memory_MB;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return opID + ":" + operatorName + "," + container + "," + behavior;
     }
 
-    @Override public boolean equals(Object obj) {
+    @Override
+    public boolean equals(Object obj) {
         OperatorAssignment oa = (OperatorAssignment) obj;
         return oa.opID == opID;
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int hash = 5;
         hash = 29 * hash + this.opID;
         return hash;

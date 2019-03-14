@@ -16,7 +16,7 @@ public class ContainerResources extends Resources {
 
     private static final Logger log = Logger.getLogger(ContainerResources.class);
     HashMap<ConcreteOperatorID, Resources> resourceMap =
-        new HashMap<ConcreteOperatorID, Resources>();
+            new HashMap<ConcreteOperatorID, Resources>();
 
     public ContainerResources(int memory) {
         super(memory);

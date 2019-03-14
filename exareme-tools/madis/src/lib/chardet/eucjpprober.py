@@ -25,13 +25,15 @@
 # 02110-1301  USA
 ######################### END LICENSE BLOCK #########################
 
-import constants, sys
-from constants import eStart, eError, eItsMe
-from mbcharsetprober import MultiByteCharSetProber
-from codingstatemachine import CodingStateMachine
+import constants
+import sys
 from chardistribution import EUCJPDistributionAnalysis
+from codingstatemachine import CodingStateMachine
+from constants import eStart, eError, eItsMe
 from jpcntx import EUCJPContextAnalysis
+from mbcharsetprober import MultiByteCharSetProber
 from mbcssm import EUCJPSMModel
+
 
 class EUCJPProber(MultiByteCharSetProber):
     def __init__(self):
@@ -44,7 +46,7 @@ class EUCJPProber(MultiByteCharSetProber):
     def reset(self):
         MultiByteCharSetProber.reset(self)
         self._mContextAnalyzer.reset()
-        
+
     def get_charset_name(self):
         return "EUC-JP"
 
@@ -67,14 +69,14 @@ class EUCJPProber(MultiByteCharSetProber):
                     self._mContextAnalyzer.feed(self._mLastChar, charLen)
                     self._mDistributionAnalyzer.feed(self._mLastChar, charLen)
                 else:
-                    self._mContextAnalyzer.feed(aBuf[i-1:i+1], charLen)
-                    self._mDistributionAnalyzer.feed(aBuf[i-1:i+1], charLen)
-                    
+                    self._mContextAnalyzer.feed(aBuf[i - 1:i + 1], charLen)
+                    self._mDistributionAnalyzer.feed(aBuf[i - 1:i + 1], charLen)
+
         self._mLastChar[0] = aBuf[aLen - 1]
-        
+
         if self.get_state() == constants.eDetecting:
             if self._mContextAnalyzer.got_enough_data() and \
-                   (self.get_confidence() > constants.SHORTCUT_THRESHOLD):
+                    (self.get_confidence() > constants.SHORTCUT_THRESHOLD):
                 self._mState = constants.eFoundIt
 
         return self.get_state()

@@ -20,7 +20,8 @@ public class StartOperatorJob implements ContainerJob {
         this.contSessionID = contSessionID;
     }
 
-    @Override public ContainerJobType getType() {
+    @Override
+    public ContainerJobType getType() {
         return ContainerJobType.startOperator;
     }
 }

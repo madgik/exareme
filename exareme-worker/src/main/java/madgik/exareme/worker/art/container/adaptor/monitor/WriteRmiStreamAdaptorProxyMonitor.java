@@ -24,33 +24,38 @@ public class WriteRmiStreamAdaptorProxyMonitor implements WriteRmiStreamAdaptorP
     private OutputStreamMonitor monitor = null;
 
     public WriteRmiStreamAdaptorProxyMonitor(WriteRmiStreamAdaptorProxy proxy,
-        AdaptorStatistics adaptorStatistics, ConcreteOperatorStatistics statistics) {
+                                             AdaptorStatistics adaptorStatistics, ConcreteOperatorStatistics statistics) {
         this.proxy = proxy;
         this.adaptorStatistics = adaptorStatistics;
         this.statistics = statistics;
     }
 
-    @Override public OutputStream getOutputStream() throws RemoteException {
+    @Override
+    public OutputStream getOutputStream() throws RemoteException {
         if (monitor == null) {
             monitor =
-                new OutputStreamMonitor(proxy.getOutputStream(), adaptorStatistics, statistics);
+                    new OutputStreamMonitor(proxy.getOutputStream(), adaptorStatistics, statistics);
         }
         return monitor;
     }
 
-    @Override public void close() throws RemoteException {
+    @Override
+    public void close() throws RemoteException {
         proxy.close();
     }
 
-    @Override public WriteRmiStreamAdaptor connect() throws RemoteException {
+    @Override
+    public WriteRmiStreamAdaptor connect() throws RemoteException {
         return proxy.connect();
     }
 
-    @Override public WriteRmiStreamAdaptor getRemoteObject() throws RemoteException {
+    @Override
+    public WriteRmiStreamAdaptor getRemoteObject() throws RemoteException {
         return proxy.getRemoteObject();
     }
 
-    @Override public RetryPolicy getRetryPolicy() throws RemoteException {
+    @Override
+    public RetryPolicy getRetryPolicy() throws RemoteException {
         return proxy.getRetryPolicy();
     }
 }

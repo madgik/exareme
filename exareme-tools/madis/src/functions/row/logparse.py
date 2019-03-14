@@ -1,26 +1,28 @@
 # coding: utf-8
-import re
 import functions
+import re
 
-apache_log_split=re.compile('^(\\S*) (\\S*) (\\S*) (\\[[^\\]]+\\]) \\"(\\w+) ([^"\\\\]*(?:\\\\.[^"\\\\]*)*) HTTP/([\\d.]+)\\" (\\S*) (\\S*) \\"([^"\\\\]*(?:\\\\.[^"\\\\]*)*)\\" \\"([^\\"]*)\\"$', re.UNICODE)
+apache_log_split = re.compile(
+    '^(\\S*) (\\S*) (\\S*) (\\[[^\\]]+\\]) \\"(\\w+) ([^"\\\\]*(?:\\\\.[^"\\\\]*)*) HTTP/([\\d.]+)\\" (\\S*) (\\S*) \\"([^"\\\\]*(?:\\\\.[^"\\\\]*)*)\\" \\"([^\\"]*)\\"$',
+    re.UNICODE)
 
 months = {
-    'Jan':'01',
-    'Feb':'02',
-    'Mar':'03',
-    'Apr':'04',
-    'May':'05',
-    'Jun':'06',
-    'Jul':'07',
-    'Aug':'08',
-    'Sep':'09',
-    'Oct':'10',
-    'Nov':'11',
-    'Dec':'12'
-    }
+    'Jan': '01',
+    'Feb': '02',
+    'Mar': '03',
+    'Apr': '04',
+    'May': '05',
+    'Jun': '06',
+    'Jul': '07',
+    'Aug': '08',
+    'Sep': '09',
+    'Oct': '10',
+    'Nov': '11',
+    'Dec': '12'
+}
+
 
 def apachelogsplit(*args):
-
     """
     .. function:: apachelogsplit(apache_log_line) -> [ip, ident, authuser, date, request, status, bytes, referrer, useragent]
 
@@ -40,29 +42,33 @@ def apachelogsplit(*args):
 
     yield ('ip', 'ident', 'authuser', 'date', 'method', 'uri', 'httpver', 'status', 'bytes', 'referrer', 'useragent')
 
-    f=apache_log_split.match(''.join(args).strip())
+    f = apache_log_split.match(''.join(args).strip())
 
     if f == None:
         raise functions.OperatorError("APACHELOGSPLIT", "Row function didn't receive any input")
-    f=f.groups()
+    f = f.groups()
 
-    f=[None if x=='-' else x for x in f]
+    f = [None if x == '-' else x for x in f]
 
-    #parse date
-    if f[3]!=None:
+    # parse date
+    if f[3] != None:
         if f[3][4:7] in months:
-            f[3]=f[3][1:-1]
-            date=f[3]
-            f[3]=date[7:11]+'-'+months[date[3:6]]+'-'+date[0:2]+'T'+date[12:14]+':'+date[15:17]+':'+date[18:20]+date[21:]
+            f[3] = f[3][1:-1]
+            date = f[3]
+            f[3] = date[7:11] + '-' + months[date[3:6]] + '-' + date[0:2] + 'T' + date[12:14] + ':' + date[
+                                                                                                      15:17] + ':' + date[
+                                                                                                                     18:20] + date[
+                                                                                                                              21:]
 
-    if f[7]!=None:
-        f[7]=int(f[7])
-    if f[8]!=None:
-        f[8]=int(f[8])
+    if f[7] != None:
+        f[7] = int(f[7])
+    if f[8] != None:
+        f[8] = int(f[8])
 
     yield f
 
-apachelogsplit.registered=True
+
+apachelogsplit.registered = True
 
 if not ('.' in __name__):
     """
@@ -70,11 +76,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

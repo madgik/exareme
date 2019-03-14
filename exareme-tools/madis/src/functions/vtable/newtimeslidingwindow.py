@@ -1,9 +1,8 @@
-import setpath
-import vtbase
 import functions
-from collections import deque
-import time
 import math
+from collections import deque
+
+import vtbase
 
 ### Classic stream iterator
 registered = True
@@ -28,26 +27,26 @@ class NewTimeSlidingWindow(vtbase.VT):
             timecolumn = int(dictargs['timecolumn'])
 
         if 'frequency' not in dictargs:
-            frequency = 1                   #window slides every 1 minute by default
+            frequency = 1  # window slides every 1 minute by default
         else:
             frequency = int(dictargs['frequency'])
         if frequency < 1:
             frequency = 1
 
         if 'granularity' not in dictargs:
-            granularity = 60                   #window slides every 1 minute by default
+            granularity = 60  # window slides every 1 minute by default
         else:
             granularity = int(dictargs['granularity'])
         if granularity < 1:
             granularity = 1
 
         if 'equivalence' not in dictargs:
-            equivalence = "std"                   #window slides every 1 minute by default
+            equivalence = "std"  # window slides every 1 minute by default
         else:
             equivalence = dictargs['equivalence']
 
         if 'parts' not in dictargs:
-            parts = 1                   #window slides every 1 minute by default
+            parts = 1  # window slides every 1 minute by default
         else:
             parts = int(dictargs['parts'])
             if parts < 2:
@@ -56,12 +55,12 @@ class NewTimeSlidingWindow(vtbase.VT):
             if 'minepochtime' not in dictargs:
                 raise functions.OperatorError(__name__.rsplit('.')[-1], "No minepochtime argument ")
             else:
-                minwid = int(float(long(dictargs['minepochtime']))/float(frequency * granularity))
+                minwid = int(float(long(dictargs['minepochtime'])) / float(frequency * granularity))
 
             if 'maxepochtime' not in dictargs:
                 raise functions.OperatorError(__name__.rsplit('.')[-1], "No maxepochtime argument ")
             else:
-                maxwid = int(float(long(dictargs['maxepochtime']))/float(frequency * granularity))
+                maxwid = int(float(long(dictargs['maxepochtime'])) / float(frequency * granularity))
 
             # modwid = math.ceil(float((maxwid - minwid) + 1) / float(parts))
             modwid = float((maxwid - minwid) + 1) / float(parts)
@@ -86,10 +85,10 @@ class NewTimeSlidingWindow(vtbase.VT):
                     pass
 
         if equivalence == 'floor':
-            windowaboxes = int(math.ceil(float(winlen)/float(granularity))) + 1
+            windowaboxes = int(math.ceil(float(winlen) / float(granularity))) + 1
             aboxfunc = GetFloorAbox
         elif equivalence == 'ceil':
-            windowaboxes = int(math.floor(float(winlen)/float(granularity))) + 1
+            windowaboxes = int(math.floor(float(winlen) / float(granularity))) + 1
             aboxfunc = GetCeilAbox
         else:
             raise functions.OperatorError(__name__.rsplit('.')[-1], "Standard equivalence are not supported yet ")
@@ -97,9 +96,9 @@ class NewTimeSlidingWindow(vtbase.VT):
         window = deque([[] for _ in xrange(windowaboxes)], windowaboxes)
 
         r = c.next()
-        wid = int(float(r[timecolumn])/float(frequency * granularity))
-        windowendtime = (wid + 1) * (frequency*granularity)
-        windowstartaboxtime = windowendtime - windowaboxes*granularity + 1
+        wid = int(float(r[timecolumn]) / float(frequency * granularity))
+        windowendtime = (wid + 1) * (frequency * granularity)
+        windowstartaboxtime = windowendtime - windowaboxes * granularity + 1
         tupletime = long(r[timecolumn])
         abox = aboxfunc(tupletime, granularity, windowstartaboxtime)
 
@@ -125,9 +124,9 @@ class NewTimeSlidingWindow(vtbase.VT):
                     for _ in range(0, numberofslides):
                         window.append([])
 
-                    windowstartaboxtime += numberofslidingwindows*frequency*granularity
-                    windowendtime += numberofslidingwindows*frequency*granularity
-                    wid += numberofslidingwindows # *frequency # Maybe must uncomment
+                    windowstartaboxtime += numberofslidingwindows * frequency * granularity
+                    windowendtime += numberofslidingwindows * frequency * granularity
+                    wid += numberofslidingwindows  # *frequency # Maybe must uncomment
 
                     emptywindow = True
                     for i, l in enumerate(window):
@@ -157,9 +156,9 @@ class NewTimeSlidingWindow(vtbase.VT):
                 for _ in range(0, numberofslides):
                     window.append([])
 
-                windowstartaboxtime += numberofslidingwindows*frequency*granularity
-                windowendtime += numberofslidingwindows*frequency*granularity
-                wid += numberofslidingwindows # *frequency # Maybe must uncomment
+                windowstartaboxtime += numberofslidingwindows * frequency * granularity
+                windowendtime += numberofslidingwindows * frequency * granularity
+                wid += numberofslidingwindows  # *frequency # Maybe must uncomment
 
                 for i, l in enumerate(window):
                     for t in l:
@@ -180,14 +179,18 @@ class NewTimeSlidingWindow(vtbase.VT):
                 else:
                     yield (int(float(wid - minwid) / float(modwid)), wid, abox,) + r
 
+
 def GetFloorAbox(tupletime, granularity, windowstartaboxtime):
     return int(float(tupletime - (granularity - 1) - windowstartaboxtime) / float(granularity))
+
 
 def GetCeilAbox(tupletime, granularity, windowstartaboxtime):
     return int(float(tupletime - windowstartaboxtime) / float(granularity))
 
+
 def Source():
     return vtbase.VTGenerator(NewTimeSlidingWindow)
+
 
 if not ('.' in __name__):
     """
@@ -195,7 +198,6 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
 
     testfunction()

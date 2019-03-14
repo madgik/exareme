@@ -18,7 +18,8 @@ public class GetStatisticsJobResult extends ContainerJobResult {
         this.stats = stats;
     }
 
-    @Override public ContainerJobType getType() {
+    @Override
+    public ContainerJobType getType() {
         return ContainerJobType.getStatistics;
     }
 

@@ -28,12 +28,12 @@ public class NetManager {
         this.globalNetSession = netManager.getGlobalSession(sessionManager.getSessionID());
 
         this.containerNetSession = netManager
-            .getContainerSession(sessionManager.getContainerSessionID(),
-                sessionManager.getSessionID());
+                .getContainerSession(sessionManager.getContainerSessionID(),
+                        sessionManager.getSessionID());
 
         this.operatorNetSession = netManager
-            .getOperatorSession(sessionManager.getOpID(), sessionManager.getContainerSessionID(),
-                sessionManager.getSessionID());
+                .getOperatorSession(sessionManager.getOpID(), sessionManager.getContainerSessionID(),
+                        sessionManager.getSessionID());
     }
 
     public NetSession getGlobalSession() {

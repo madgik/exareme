@@ -8,13 +8,15 @@ def check_engine(host='localhost', port='9090'):
     response = None
 
     try:
-        url = 'http://{0}:{1}'.format (host, port)
+        url = 'http://{0}:{1}'.format(host, port)
         request = urllib2.Request(url=url)
         response = urllib2.urlopen(request, timeout=1)
         logging.debug("Response code : " + str(response.code))
 
-        if response.code is 200: status = True
-        else : status = False
+        if response.code is 200:
+            status = True
+        else:
+            status = False
 
     except urllib2.URLError, e:
         if hasattr(e, 'reason'):
@@ -27,6 +29,7 @@ def check_engine(host='localhost', port='9090'):
             response.close()
     return status
 
+
 def exa_request(host, port, api, **kwargs):
     '''
      e.g. exa_request("localhost", 9090, "/query", db="", query="")
@@ -34,7 +37,7 @@ def exa_request(host, port, api, **kwargs):
           exa_request("localhost", 9090, "/history", db="", table="")
     '''
     # header
-    url = 'http://{0}:{1}'.format (host, port)
+    url = 'http://{0}:{1}'.format(host, port)
     headers = dict()
 
     # body
@@ -46,21 +49,24 @@ def exa_request(host, port, api, **kwargs):
     # request
     return urllib2.Request(url, body, headers)
 
+
 def get_response(request):
     return urllib2.urlopen(request)
 
+
 default_dict = {
     'host': 'localhost',
-    'port' : '9090',
-    'db' : None,    # required
-    'query' : None  # required
+    'port': '9090',
+    'db': None,  # required
+    'query': None  # required
 }
+
 
 class ExaError(Exception):
     pass
 
-def combine_properties(site_list, site_dict, global_dict):
 
+def combine_properties(site_list, site_dict, global_dict):
     # copy default properties
     properties = dict(default_dict)
 
@@ -80,21 +86,24 @@ def combine_properties(site_list, site_dict, global_dict):
             raise ExaError("Please provide %s property." % key)
     return properties
 
+
 def query(db=None, query=None):
     if db is None or query is None:
         raise ExaError("Please provide db, query.")
-    yield [('status', ),]
+    yield [('status',), ]
     yield ["testing"]
 
+
 def result(db, table):
-    result = {'schema' : [['eid','int'], ['ename', 'text'], ['age', 'int'], ['salary','real']],
+    result = {'schema': [['eid', 'int'], ['ename', 'text'], ['age', 'int'], ['salary', 'real']],
               'errors': 'null'}
-    yield result['schema']             # schema
-    yield [0, "John", 40, 40000.0]     # row
+    yield result['schema']  # schema
+    yield [0, "John", 40, 40000.0]  # row
+
 
 def stats(db, table):
     yield [('status', 'text')]  # schema
-    yield [""]                  # row
+    yield [""]  # row
 
 
 if __name__ == "__main__":

@@ -8,20 +8,20 @@
 
 """
 
-
-
 registered = True
 external_query = True
 
 import functions
+
 default_dict = {
     'host': 'localhost',
-    'port' : '9090',
+    'port': '9090',
     'api': 'explain/',
-    'db' : None,    # required
-    'query' : None,  # required
-    'mode' : 'viz'
+    'db': None,  # required
+    'query': None,  # required
+    'mode': 'viz'
 }
+
 
 class ExaExplain(functions.vtable.vtbase.VT):
     engine_status = False
@@ -48,20 +48,19 @@ class ExaExplain(functions.vtable.vtbase.VT):
                 raise functions.OperatorError(__name__.rsplit('.')[-1],
                                               "Provide %s property." % key)
 
-
         if self.query.startswith("file"):
-            connection=envars['db']
-            cursor=connection.cursor()
-            dfl_queries=str()
-            for row in  cursor.execute("flow " + self.query):
-                dfl_queries+=str(row[0])
-                dfl_queries+="\n"
-            self.query=dfl_queries
-        else :
+            connection = envars['db']
+            cursor = connection.cursor()
+            dfl_queries = str()
+            for row in cursor.execute("flow " + self.query):
+                dfl_queries += str(row[0])
+                dfl_queries += "\n"
+            self.query = dfl_queries
+        else:
             raise functions.OperatorError(__name__.rsplit('.')[-1],
                                           "Use file operator with your script location.")
         # set http request
-        url="http://{0}:{1}/{2}".format(self.host, self.port, self.api)
+        url = "http://{0}:{1}/{2}".format(self.host, self.port, self.api)
         # self.query += ';\n'
         data = urllib.urlencode(self.__dict__)
 
@@ -79,8 +78,10 @@ class ExaExplain(functions.vtable.vtbase.VT):
             if response is not None:
                 response.close()
 
+
 def Source():
     return functions.vtable.vtbase.VTGenerator(ExaExplain)
+
 
 if not ('.' in __name__):
     """

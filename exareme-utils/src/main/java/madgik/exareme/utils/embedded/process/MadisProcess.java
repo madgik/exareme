@@ -45,7 +45,7 @@ public class MadisProcess {
         File madis = new File(madisPath);
         if (!madis.exists() || madis.isDirectory()) {
             log.warn(
-                "Madis path does not exist... Default Path: " + madisDefaultPath + " is setting");
+                    "Madis path does not exist... Default Path: " + madisDefaultPath + " is setting");
             return madisDefaultPath;
         }
 
@@ -53,7 +53,7 @@ public class MadisProcess {
     }
 
     public void start() throws IOException {
-        log.debug("Starting process ... (" + dbFile + " "+ python + " " +madisPath);
+        log.debug("Starting process ... (" + dbFile + " " + python + " " + madisPath);
         ProcessBuilder pb;
         if (dbFile == null) {
             pb = new ProcessBuilder("stdbuf", "-oL", python, madisPath);

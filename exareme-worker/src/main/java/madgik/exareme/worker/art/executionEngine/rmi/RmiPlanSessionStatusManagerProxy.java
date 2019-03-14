@@ -16,12 +16,12 @@ import java.util.List;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class RmiPlanSessionStatusManagerProxy extends RmiObjectProxy<PlanSessionStatusManager>
-    implements PlanSessionStatusManagerProxy {
+        implements PlanSessionStatusManagerProxy {
 
     private static final long serialVersionUID = 1L;
     public PlanSessionID sessionID = null;
@@ -30,24 +30,29 @@ public class RmiPlanSessionStatusManagerProxy extends RmiObjectProxy<PlanSession
         super(regEntryName, regEntityName);
     }
 
-    @Override public boolean hasError() throws RemoteException {
+    @Override
+    public boolean hasError() throws RemoteException {
         return super.getRemoteObject().hasError(sessionID);
     }
 
-    @Override public boolean hasFinished() throws RemoteException {
+    @Override
+    public boolean hasFinished() throws RemoteException {
         return super.getRemoteObject().hasFinished(sessionID);
     }
 
-    @Override public ActiveExecutionPlan getActiveExecutionPlan() throws RemoteException {
+    @Override
+    public ActiveExecutionPlan getActiveExecutionPlan() throws RemoteException {
         return super.getRemoteObject().getActiveExecutionPlan(sessionID);
     }
 
-    @Override public ConcreteOperatorStatus getOperatorStatus(String operatorName)
-        throws RemoteException {
+    @Override
+    public ConcreteOperatorStatus getOperatorStatus(String operatorName)
+            throws RemoteException {
         return super.getRemoteObject().getOperatorStatus(operatorName, sessionID);
     }
 
-    @Override public List<Exception> getErrorList() throws RemoteException {
+    @Override
+    public List<Exception> getErrorList() throws RemoteException {
         return super.getRemoteObject().getErrorList(sessionID);
     }
 }

@@ -9,8 +9,8 @@ import madgik.exareme.worker.art.container.adaptor.WriteAdaptorWrapper;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public abstract class AbstractMiMo extends AbstractOperatorImpl {
@@ -28,7 +28,8 @@ public abstract class AbstractMiMo extends AbstractOperatorImpl {
         return super.getAdaptorManager().getReadStreamAdaptor(in);
     }
 
-    @Override protected AdaptorManager createAdaptorManager() {
+    @Override
+    protected AdaptorManager createAdaptorManager() {
         return new AdaptorManager(-1, -1, this.getSessionManager());
     }
 

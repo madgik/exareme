@@ -15,6 +15,6 @@ import java.util.TreeMap;
 public interface PriorityListInterface {
 
     boolean checkPriority(ArmComputeSessionID sessionID,
-        TreeMap<Integer, LinkedList<ArmComputeSessionID>> onusIndex);
+                          TreeMap<Integer, LinkedList<ArmComputeSessionID>> onusIndex);
 
 }

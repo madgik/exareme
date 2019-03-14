@@ -292,11 +292,11 @@
                     jsMath.UpdateCookie();
                     if (jsMath.isMSIEmac) {
                         alert("MSIE/Mac has a bug that causes it not to go local properly.  "
-                                + "After you press OK below, your browser will appear to hang.  "
-                                + "When this happens, press Command-. to cancel the action.  "
-                                + "The window should clear and the page location will appear "
-                                + "in the address area at the top of the screen.  Press the "
-                                + "REFRESH button to load the page correctly.");
+                            + "After you press OK below, your browser will appear to hang.  "
+                            + "When this happens, press Command-. to cancel the action.  "
+                            + "The window should clear and the page location will appear "
+                            + "in the address area at the top of the screen.  Press the "
+                            + "REFRESH button to load the page correctly.");
                     }
                     jsMath.location = jsMath.window.location;
                     if (jsMath.window.location.protocol == 'file:' && jsMath.Global.cookie) {
@@ -306,10 +306,10 @@
                     return;
                 }
                 alert("You are viewing a web page from a site other than the "
-                        + "one where you loaded jsMath-Global, so jsMath can't read "
-                        + "its URL to load it locally.\n\n"
-                        + "Check to see if your browser has a contextual menu item to "
-                        + "open the active frame in a separate window.");
+                    + "one where you loaded jsMath-Global, so jsMath can't read "
+                    + "its URL to load it locally.\n\n"
+                    + "Check to see if your browser has a contextual menu item to "
+                    + "open the active frame in a separate window.");
             },
 
             /*
@@ -352,7 +352,7 @@
                         };
                         var exp = new Date;
                         exp.setTime(exp.getTime() +
-                                cookie.keep.substr(0, 1) * ms[cookie.keep.substr(1, 1)]);
+                            cookie.keep.substr(0, 1) * ms[cookie.keep.substr(1, 1)]);
                         cookies += '; expires=' + exp.toGMTString();
                     }
                     jsMath.window.document.cookie = 'jsMath=' + cookies;
@@ -425,9 +425,9 @@
                     //
                     if (jsMath.isOpera) {
                         setTimeout(
-                                'jsMath.controls.src = "about:blank";\n' +
-                                'jsMath.controls.src = jsMath.root+"jsMath-global-controls.html"+jsMath.domain;\n' +
-                                'jsMath.frame.src = jsMath.window.location;', 1
+                            'jsMath.controls.src = "about:blank";\n' +
+                            'jsMath.controls.src = jsMath.root+"jsMath-global-controls.html"+jsMath.domain;\n' +
+                            'jsMath.frame.src = jsMath.window.location;', 1
                         );
                     }
                 }
@@ -493,7 +493,7 @@
             Content: function () {
                 if (this.src != '') {
                     this.root = (!this.isOpera) ? '' :
-                            String(window.location).replace(/\/jsMath-global.html\??.*/, '/');
+                        String(window.location).replace(/\/jsMath-global.html\??.*/, '/');
                     document.writeln('<frameset rows="0,*" onload="jsMath.Init()">');
                     document.writeln('<frame src="' + this.root + 'jsMath-global-controls.html' + this.domain + '" frameborder="0" scrolling="no" id="jsMath_controls" />');
                     document.writeln('<frame src="' + this.root + 'jsMath-global.html" frameborder="0" onload="jsMath.Loaded()" id="jsMath_frame" />');

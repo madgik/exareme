@@ -28,7 +28,8 @@ public class SkyTest {
 
     }
 
-    @Test public void testSky() throws Exception {
+    @Test
+    public void testSky() throws Exception {
         Logger.getRootLogger().setLevel(Level.OFF);
         //    ConcreteQueryGraph graph = GraphGenerator.createLatticeGraph(5, 10, 0);
         File loadFile = new File(SkyTest.class.getResource("MONTAGE.n.100.0.dax").getFile());
@@ -48,13 +49,13 @@ public class SkyTest {
 
         MultiObjectiveQueryScheduler sa = new SkyScheduler();
         SolutionSpace space =
-            sa.callOptimizer(graph, filter, containers, NoContainerFilter.getInstance(),
-                runTimeParams, financialProps);
+                sa.callOptimizer(graph, filter, containers, NoContainerFilter.getInstance(),
+                        runTimeParams, financialProps);
 
         for (SchedulingResult sr : space.getResults()) {
             System.out.println("   " +
-                sr.getStatistics().getTimeInQuanta() + " " +
-                sr.getStatistics().getMoneyInQuanta());
+                    sr.getStatistics().getTimeInQuanta() + " " +
+                    sr.getStatistics().getMoneyInQuanta());
         }
         space.computeStats();
         System.out.println("TIME: " + space.getOptimizationTime());

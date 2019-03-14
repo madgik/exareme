@@ -5,7 +5,7 @@ package madgik.exareme.master.engine.remoteQuery.impl.cache;
 
 /**
  * @author Christos Mallios <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  */
 public class CachedDataInfo {
 
@@ -21,7 +21,7 @@ public class CachedDataInfo {
     public double benefit;
 
     public CachedDataInfo(String database, String table, String query, String storagePath,
-        String lastUpdate, CacheInfo cacheInfo, String storageTime, double size) {
+                          String lastUpdate, CacheInfo cacheInfo, String storageTime, double size) {
 
         this.cacheInfo = cacheInfo;
         this.database = database;
@@ -34,7 +34,7 @@ public class CachedDataInfo {
     }
 
     public CachedDataInfo(String database, String table, String query, String storagePath,
-        String lastUpdate, CacheInfo cacheInfo, String storageTime, double size, double benefit) {
+                          String lastUpdate, CacheInfo cacheInfo, String storageTime, double size, double benefit) {
 
         this.cacheInfo = cacheInfo;
         this.database = database;

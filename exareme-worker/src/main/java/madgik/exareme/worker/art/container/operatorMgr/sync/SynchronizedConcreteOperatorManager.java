@@ -35,19 +35,20 @@ public class SynchronizedConcreteOperatorManager implements ConcreteOperatorMana
 
     @Override
     public ConcreteOperatorID instantiate(String operatorName, String category, OperatorType type,
-        OperatorImplementationEntity operator, Parameters parameters,
-        Map<String, LinkedList<Parameter>> outParameters, String queryString,
-        PlanSessionReportID sessionReportID, ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException {
+                                          OperatorImplementationEntity operator, Parameters parameters,
+                                          Map<String, LinkedList<Parameter>> outParameters, String queryString,
+                                          PlanSessionReportID sessionReportID, ContainerSessionID containerSessionID,
+                                          PlanSessionID sessionID) throws RemoteException {
         synchronized (manager) {
             return manager
-                .instantiate(operatorName, category, type, operator, parameters, outParameters,
-                    queryString, sessionReportID, containerSessionID, sessionID);
+                    .instantiate(operatorName, category, type, operator, parameters, outParameters,
+                            queryString, sessionReportID, containerSessionID, sessionID);
         }
     }
 
-    @Override public void start(ConcreteOperatorID opID, ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void start(ConcreteOperatorID opID, ContainerSessionID containerSessionID,
+                      PlanSessionID sessionID) throws RemoteException {
         synchronized (manager) {
             manager.start(opID, containerSessionID, sessionID);
         }
@@ -55,64 +56,72 @@ public class SynchronizedConcreteOperatorManager implements ConcreteOperatorMana
 
     @Override
     public void destroyInstance(ConcreteOperatorID opID, ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException {
+                                PlanSessionID sessionID) throws RemoteException {
         synchronized (manager) {
             manager.destroyInstance(opID, containerSessionID, sessionID);
         }
     }
 
-    @Override public void destroyContainerSession(ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void destroyContainerSession(ContainerSessionID containerSessionID,
+                                        PlanSessionID sessionID) throws RemoteException {
         synchronized (manager) {
             manager.destroyContainerSession(containerSessionID, sessionID);
         }
     }
 
-    @Override public void destroySessions(PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void destroySessions(PlanSessionID sessionID) throws RemoteException {
         synchronized (manager) {
             manager.destroySessions(sessionID);
         }
     }
 
-    @Override public void destroyAllSessions() throws RemoteException {
+    @Override
+    public void destroyAllSessions() throws RemoteException {
         synchronized (manager) {
             manager.destroyAllSessions();
         }
     }
 
-    @Override public void stop(ConcreteOperatorID opID, ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void stop(ConcreteOperatorID opID, ContainerSessionID containerSessionID,
+                     PlanSessionID sessionID) throws RemoteException {
         synchronized (manager) {
             manager.stop(opID, containerSessionID, sessionID);
         }
     }
 
-    @Override public ConcreteOperatorStatistics getOperatorStatistics(ConcreteOperatorID opID,
-        ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public ConcreteOperatorStatistics getOperatorStatistics(ConcreteOperatorID opID,
+                                                            ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
         synchronized (manager) {
             return manager.getOperatorStatistics(opID, containerSessionID, sessionID);
         }
     }
 
-    @Override public void addReadAdaptor(CombinedReadAdaptorProxy adaptor, String adaptorName,
-        String portName, Parameters parameters, boolean remote, ConcreteOperatorID iD,
-        ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void addReadAdaptor(CombinedReadAdaptorProxy adaptor, String adaptorName,
+                               String portName, Parameters parameters, boolean remote, ConcreteOperatorID iD,
+                               ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
         synchronized (manager) {
             manager.addReadAdaptor(adaptor, adaptorName, portName, parameters, remote, iD,
-                containerSessionID, sessionID);
+                    containerSessionID, sessionID);
         }
     }
 
-    @Override public void addWriteAdaptor(CombinedWriteAdaptorProxy adaptor, String adaptorName,
-        String portName, Parameters parameters, boolean remote, ConcreteOperatorID iD,
-        ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void addWriteAdaptor(CombinedWriteAdaptorProxy adaptor, String adaptorName,
+                                String portName, Parameters parameters, boolean remote, ConcreteOperatorID iD,
+                                ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
         synchronized (manager) {
             manager.addWriteAdaptor(adaptor, adaptorName, portName, parameters, remote, iD,
-                containerSessionID, sessionID);
+                    containerSessionID, sessionID);
         }
     }
 
-    @Override public ConcreteOperatorManagerStatus getStatus() throws RemoteException {
+    @Override
+    public ConcreteOperatorManagerStatus getStatus() throws RemoteException {
         synchronized (manager) {
             return manager.getStatus();
         }

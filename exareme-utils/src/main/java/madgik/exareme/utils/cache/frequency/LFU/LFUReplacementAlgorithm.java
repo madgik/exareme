@@ -12,27 +12,33 @@ public class LFUReplacementAlgorithm implements ReplacementAlgorithm {
 
     private static final long serialVersionUID = 1L;
 
-    @Override public void insert(long objectNum) {
+    @Override
+    public void insert(long objectNum) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public long getNext() {
+    @Override
+    public long getNext() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public void pin(long objectNum) {
+    @Override
+    public void pin(long objectNum) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public void unpin(long objectNum) {
+    @Override
+    public void unpin(long objectNum) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public void delete(long objectNum) {
+    @Override
+    public void delete(long objectNum) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public void clear() {
+    @Override
+    public void clear() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

@@ -20,7 +20,8 @@ public class PruningInfo {
         this.pc = pc;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "PruningInfo{" + "pc=" + pc + '}';
     }
 

@@ -16,7 +16,8 @@ public class GetStatisticsJob implements ContainerJob {
     public GetStatisticsJob() {
     }
 
-    @Override public ContainerJobType getType() {
+    @Override
+    public ContainerJobType getType() {
         return ContainerJobType.getStatistics;
     }
 }

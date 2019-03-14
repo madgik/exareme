@@ -4,7 +4,7 @@ package madgik.exareme.master.engine.iterations.exceptions;
  * A type of RuntimeException thrown when a fatal error regarding iterations logic occurs.
  *
  * @author Christos Aslanoglou <br> caslanoglou@di.uoa.gr <br> University of Athens / Department of
- *         Informatics and Telecommunications.
+ * Informatics and Telecommunications.
  */
 public class IterationsFatalException extends RuntimeException {
     protected String erroneousAlgorithmKey;

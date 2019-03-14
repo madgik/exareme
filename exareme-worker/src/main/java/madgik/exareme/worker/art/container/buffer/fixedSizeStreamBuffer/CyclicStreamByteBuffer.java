@@ -100,7 +100,7 @@ public class CyclicStreamByteBuffer implements StreamBuffer {
                     throw new IOException("Pipe is closed!");
                 }
 
-        /*  */
+                /*  */
                 int acquired = 1;
                 int remaining = length - current - acquired;
                 int min = Math.min(remaining, maxSize - currentSize - 1);
@@ -167,7 +167,7 @@ public class CyclicStreamByteBuffer implements StreamBuffer {
                     break;
                 }
 
-        /*  */
+                /*  */
                 int acquired = 1;
                 int remaining = length - current - acquired;
                 int min = Math.min(remaining, currentSize - 1);
@@ -210,7 +210,8 @@ public class CyclicStreamByteBuffer implements StreamBuffer {
         return current;
     }
 
-    @Override public void clear() {
+    @Override
+    public void clear() {
         data = null;
     }
 }

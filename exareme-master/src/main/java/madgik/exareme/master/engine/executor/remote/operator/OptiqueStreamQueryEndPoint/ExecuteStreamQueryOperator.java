@@ -1,22 +1,9 @@
 package madgik.exareme.master.engine.executor.remote.operator.OptiqueStreamQueryEndPoint;
 
-import java.util.List;
-
 import madgik.exareme.master.gateway.ExaremeGatewayUtils;
 import madgik.exareme.utils.association.SimplePair;
 import madgik.exareme.utils.http.HttpUtils;
 import madgik.exareme.worker.art.concreteOperator.AbstractNiNo;
-
-import java.io.IOException;
-import java.net.SocketTimeoutException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayDeque;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.http.*;
 import org.apache.http.config.SocketConfig;
 import org.apache.http.entity.EntityTemplate;
@@ -26,29 +13,37 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.protocol.HttpRequestHandler;
 import org.apache.log4j.Logger;
 
+import java.io.IOException;
+import java.net.SocketTimeoutException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+
 public class ExecuteStreamQueryOperator extends AbstractNiNo {
     private static Logger log = Logger.getLogger(ExecuteStreamQueryOperator.class);
 
-    @Override public void run() throws Exception {
+    @Override
+    public void run() throws Exception {
         log.trace("Parsing parameters ...");
         String queryString = super.getParameterManager().getQueryString();
         int port =
-            Integer.valueOf(super.getParameterManager().getParameter("port").get(0).getValue());
+                Integer.valueOf(super.getParameterManager().getParameter("port").get(0).getValue());
 
         StreamQueryExecutorThread queryExecutor =
-            new StreamQueryExecutorThread(queryString, 15 * 60);
+                new StreamQueryExecutorThread(queryString, 15 * 60);
         queryExecutor.start();
 
         SocketConfig socketConfig =
-            SocketConfig.custom().setSoTimeout(15000).setTcpNoDelay(true).build();
+                SocketConfig.custom().setSoTimeout(15000).setTcpNoDelay(true).build();
 
         final HttpServer server =
-            ServerBootstrap.bootstrap().setListenerPort(port).setServerInfo("Test/1.1")
-                .setSocketConfig(socketConfig).setExceptionLogger(new StdErrorExceptionLogger())
-                .registerHandler(ExaremeGatewayUtils.GW_API_STREAMQUERY_RESULT,
-                    new HttpGetStreamResultHandler(queryExecutor))
-                .registerHandler(ExaremeGatewayUtils.GW_API_STREAMQUERY_DELETE,
-                    new HttpDeleteStreamHandler(queryExecutor)).create();
+                ServerBootstrap.bootstrap().setListenerPort(port).setServerInfo("Test/1.1")
+                        .setSocketConfig(socketConfig).setExceptionLogger(new StdErrorExceptionLogger())
+                        .registerHandler(ExaremeGatewayUtils.GW_API_STREAMQUERY_RESULT,
+                                new HttpGetStreamResultHandler(queryExecutor))
+                        .registerHandler(ExaremeGatewayUtils.GW_API_STREAMQUERY_DELETE,
+                                new HttpDeleteStreamHandler(queryExecutor)).create();
 
         server.start();
         //        server.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
@@ -72,7 +67,8 @@ public class ExecuteStreamQueryOperator extends AbstractNiNo {
 
     static class StdErrorExceptionLogger implements ExceptionLogger {
 
-        @Override public void log(final Exception ex) {
+        @Override
+        public void log(final Exception ex) {
             if (ex instanceof SocketTimeoutException) {
                 System.err.println("Connection timed out");
             } else if (ex instanceof ConnectionClosedException) {
@@ -96,7 +92,7 @@ public class ExecuteStreamQueryOperator extends AbstractNiNo {
         }
 
         public void handle(final HttpRequest request, final HttpResponse response,
-            final HttpContext context) throws HttpException, IOException {
+                           final HttpContext context) throws HttpException, IOException {
 
             String method = request.getRequestLine().getMethod().toUpperCase(Locale.ROOT);
             if (!method.equals("GET") && !method.equals("POST")) {
@@ -142,7 +138,7 @@ public class ExecuteStreamQueryOperator extends AbstractNiNo {
                 SimplePair<List<String[]>, ArrayDeque<Object[]>> buffer;
                 try {
                     log.debug(
-                        "Starttimestamp: " + startTimestamp + ", EndTimestamp: " + endTimestamp);
+                            "Starttimestamp: " + startTimestamp + ", EndTimestamp: " + endTimestamp);
                     buffer = queryExecutor.getBuffer(startTimestamp, endTimestamp);
                 } catch (IllegalThreadStateException ex) {
                     HttpResponses.serviceUnavailable(response, ex.getMessage());
@@ -191,7 +187,7 @@ public class ExecuteStreamQueryOperator extends AbstractNiNo {
         }
 
         public void handle(final HttpRequest request, final HttpResponse response,
-            final HttpContext context) throws HttpException, IOException {
+                           final HttpContext context) throws HttpException, IOException {
 
             String method = request.getRequestLine().getMethod().toUpperCase(Locale.ROOT);
             if (!method.equals("DELETE")) {

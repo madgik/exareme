@@ -30,7 +30,7 @@ public class XMLFileStreamIterator implements Iterator<XMLDocument> {
     private String suffix = null;
 
     public XMLFileStreamIterator(BufferedReader input, StringBuilder dtd, String delimiterLine,
-        String preffix, String suffix) throws Exception {
+                                 String preffix, String suffix) throws Exception {
         this.input = input;
         this.dtd = dtd;
         this.delimiterLine = delimiterLine;
@@ -43,11 +43,13 @@ public class XMLFileStreamIterator implements Iterator<XMLDocument> {
         this.currentLine = this.input.readLine();
     }
 
-    @Override public boolean hasNext() {
+    @Override
+    public boolean hasNext() {
         return (currentLine != null);
     }
 
-    @Override public XMLDocument next() {
+    @Override
+    public XMLDocument next() {
         StringBuilder buffer = new StringBuilder(Metrics.KB);
         buffer.append(dtd);
 
@@ -64,7 +66,7 @@ public class XMLFileStreamIterator implements Iterator<XMLDocument> {
                     break;
                 }
             } while (currentLine != null
-                && currentLine.trim().equalsIgnoreCase(delimiterLine) != true);
+                    && currentLine.trim().equalsIgnoreCase(delimiterLine) != true);
 
             buffer.append(suffix);
 
@@ -79,7 +81,8 @@ public class XMLFileStreamIterator implements Iterator<XMLDocument> {
         }
     }
 
-    @Override public void remove() {
+    @Override
+    public void remove() {
         throw new UnsupportedOperationException("Not supported!");
     }
 }

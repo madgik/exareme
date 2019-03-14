@@ -12,21 +12,22 @@ Examples:
 
 """
 
-import setpath
-import vtbase
 import functions
 from types import NoneType
+
+import vtbase
 
 registered = True
 external_query = True
 
+
 class MySQL(vtbase.VT):
-    def VTiter(self, *parsedArgs,**envars):
+    def VTiter(self, *parsedArgs, **envars):
         from lib import pymysql
         t = pymysql.FIELD_TYPE
-        
+
         typetrans = {
-            t.DECIMAL:'INT',
+            t.DECIMAL: 'INT',
             t.TINY: 'INT',
             t.SHORT: 'INT',
             t.LONG: 'INT',
@@ -58,9 +59,9 @@ class MySQL(vtbase.VT):
         largs, dictargs = self.full_parse(parsedArgs)
 
         if 'query' not in dictargs:
-            raise functions.OperatorError(__name__.rsplit('.')[-1],"No query argument ")
+            raise functions.OperatorError(__name__.rsplit('.')[-1], "No query argument ")
 
-        query=dictargs['query']
+        query = dictargs['query']
 
         host = dictargs.get('host', dictargs.get('h', '127.0.0.1'))
         port = int(dictargs.get('port', 3306))
@@ -69,22 +70,22 @@ class MySQL(vtbase.VT):
         db = dictargs.get('db', 'mysql')
 
         try:
-            conn = pymysql.connect(host=host, port=port, user=user, passwd=passwd, db=db, use_unicode = True)
+            conn = pymysql.connect(host=host, port=port, user=user, passwd=passwd, db=db, use_unicode=True)
 
             cur = conn.cursor(pymysql.cursors.SSCursor)
             cur.execute(query)
 
             desc = cur.description
             if desc == None:
-                yield [( 'None', )]
+                yield [('None',)]
             else:
-                yield [( c[0], typetrans.get(c[1], '') ) for c in desc]
+                yield [(c[0], typetrans.get(c[1], '')) for c in desc]
 
             for i in cur:
                 yield [unicode(c) if type(c) not in (long, int, float, str, unicode, NoneType, bool) else c for c in i]
 
         except (pymysql.err.InternalError, pymysql.err.ProgrammingError) as e:
-            raise functions.OperatorError(__name__.rsplit('.')[-1], str(e[0]) +': ' + e[1])
+            raise functions.OperatorError(__name__.rsplit('.')[-1], str(e[0]) + ': ' + e[1])
         except Exception, e:
             raise functions.OperatorError(__name__.rsplit('.')[-1], str(e))
         finally:
@@ -93,7 +94,7 @@ class MySQL(vtbase.VT):
             except:
                 pass
 
-        
+
 def Source():
     return vtbase.VTGenerator(MySQL)
 
@@ -104,11 +105,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

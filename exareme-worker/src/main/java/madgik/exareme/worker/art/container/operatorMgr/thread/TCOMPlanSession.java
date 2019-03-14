@@ -18,7 +18,7 @@ public class TCOMPlanSession {
 
     JobQueueInterface jobQueueInterface;
     private HashMap<ContainerSessionID, TCOMContainerSession> sessionMap =
-        new HashMap<ContainerSessionID, TCOMContainerSession>();
+            new HashMap<ContainerSessionID, TCOMContainerSession>();
     private PlanSessionID sessionID = null;
 
     public TCOMPlanSession(PlanSessionID sessionID, JobQueueInterface jobQueueInterface) {
@@ -44,7 +44,7 @@ public class TCOMPlanSession {
     public int destroySession() throws RemoteException {
         // TODO(DSD): free resources? to kanei i destroy session
         LinkedList<ContainerSessionID> ids =
-            new LinkedList<ContainerSessionID>(sessionMap.keySet());
+                new LinkedList<ContainerSessionID>(sessionMap.keySet());
         int count = 0;
         for (ContainerSessionID id : ids) {
             count += destroySession(id);

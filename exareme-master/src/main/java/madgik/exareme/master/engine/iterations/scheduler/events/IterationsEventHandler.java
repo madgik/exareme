@@ -1,15 +1,14 @@
 package madgik.exareme.master.engine.iterations.scheduler.events;
 
-import org.apache.log4j.Logger;
-
-import java.rmi.RemoteException;
-
 import madgik.exareme.common.app.engine.AdpDBQueryID;
 import madgik.exareme.master.client.AdpDBClientQueryStatus;
 import madgik.exareme.master.engine.iterations.scheduler.IterationsDispatcher;
 import madgik.exareme.master.engine.iterations.state.IterationsStateManager;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.utils.eventProcessor.EventHandler;
+import org.apache.log4j.Logger;
+
+import java.rmi.RemoteException;
 
 /**
  * Abstract class which all iterations events must subtype.
@@ -21,7 +20,7 @@ import madgik.exareme.utils.eventProcessor.EventHandler;
  * which notifies us for a query termination event.
  *
  * @author Christos Aslanoglou <br> caslanoglou@di.uoa.gr <br> University of Athens / Department of
- *         Informatics and Telecommunications.
+ * Informatics and Telecommunications.
  */
 public abstract class IterationsEventHandler<T extends IterationsEvent>
         implements EventHandler<T> {

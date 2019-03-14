@@ -34,7 +34,7 @@ public class ClientJob implements Runnable {
 
 
     public ClientJob(ClusterArmComputeInterface manager, int number, int number_of_threads,
-        ArrayList<EntityName> entities) {
+                     ArrayList<EntityName> entities) {
         this.number = number + 1;
         this.manager = manager;
         this.entities = entities;
@@ -43,7 +43,7 @@ public class ClientJob implements Runnable {
 
 
     private boolean checkRelativeConstraints(
-        ArrayList<Pair<PatternElement, ActiveContainer>> results, ArrayList<EntityName> entities) {
+            ArrayList<Pair<PatternElement, ActiveContainer>> results, ArrayList<EntityName> entities) {
 
         ActiveContainer[] array = new ActiveContainer[results.size()];
         int i, current_position, max_position = 0, relativeName;
@@ -86,7 +86,8 @@ public class ClientJob implements Runnable {
     }
 
 
-    @Override public void run() {
+    @Override
+    public void run() {
 
         ArmComputeSessionID id = new ArmComputeSessionID(number);
         ArrayList<PatternElement> array = new ArrayList<PatternElement>();

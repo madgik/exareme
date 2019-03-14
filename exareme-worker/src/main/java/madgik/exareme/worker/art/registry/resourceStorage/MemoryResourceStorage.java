@@ -16,8 +16,8 @@ import java.util.concurrent.Semaphore;
 
 /**
  * @author Dimitris Paparas<br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class MemoryResourceStorage implements RegistryResourceStorage {
@@ -34,7 +34,8 @@ public class MemoryResourceStorage implements RegistryResourceStorage {
         semaphore = new Semaphore(1);
     }
 
-    @Override public void store(Registerable r) throws RemoteException {
+    @Override
+    public void store(Registerable r) throws RemoteException {
         try {
             semaphore.acquire();
             Registerable old = objectMap.put(r.getEntityName().getName(), r);
@@ -55,20 +56,21 @@ public class MemoryResourceStorage implements RegistryResourceStorage {
         } catch (Exception e) {
             semaphore.release();
             throw new RemoteException(
-                "Cannot store object: '" + r.getEntityName().getName() + "' at " + r.getEntityName()
-                    .getIP() + ":" + r.getEntityName().getPort(), e);
+                    "Cannot store object: '" + r.getEntityName().getName() + "' at " + r.getEntityName()
+                            .getIP() + ":" + r.getEntityName().getPort(), e);
         }
     }
 
-    @Override public Registerable retrieve(EntityName epr) throws RemoteException {
+    @Override
+    public Registerable retrieve(EntityName epr) throws RemoteException {
         try {
             semaphore.acquire();
             Registerable r = objectMap.get(epr.getName());
             semaphore.release();
             if (r == null) {
                 throw new NoSuchObjectException(
-                    "Object was not found: '" + epr.getName() + "' at " + epr.getIP() + ":" + epr
-                        .getPort());
+                        "Object was not found: '" + epr.getName() + "' at " + epr.getIP() + ":" + epr
+                                .getPort());
             }
             return r;
         } catch (Exception e) {
@@ -77,15 +79,16 @@ public class MemoryResourceStorage implements RegistryResourceStorage {
         }
     }
 
-    @Override public void delete(EntityName epr) throws RemoteException {
+    @Override
+    public void delete(EntityName epr) throws RemoteException {
         try {
             semaphore.acquire();
             Registerable r = objectMap.remove(epr.getName());
 
             if (r == null) {
                 throw new NoSuchObjectException(
-                    "Object was not found: '" + epr.getName() + "' at " + epr.getIP() + ":" + epr
-                        .getPort());
+                        "Object was not found: '" + epr.getName() + "' at " + epr.getIP() + ":" + epr
+                                .getPort());
             }
             registryResourceStorageStatus.decreaseStoredObjects();
             List<Registerable> l = typeMap.get(r.getType());
@@ -97,7 +100,8 @@ public class MemoryResourceStorage implements RegistryResourceStorage {
         }
     }
 
-    @Override public Collection<Registerable> retrieveAll(Type type) throws RemoteException {
+    @Override
+    public Collection<Registerable> retrieveAll(Type type) throws RemoteException {
         Collection<Registerable> col = null;
         try {
             semaphore.acquire();
@@ -109,16 +113,19 @@ public class MemoryResourceStorage implements RegistryResourceStorage {
         return col;
     }
 
-    @Override public RegistryResourceStorageStatus getResourceStorageStatus()
-        throws RemoteException {
+    @Override
+    public RegistryResourceStorageStatus getResourceStorageStatus()
+            throws RemoteException {
         return registryResourceStorageStatus;
     }
 
-    @Override public String getInfo() throws RemoteException {
+    @Override
+    public String getInfo() throws RemoteException {
         return "Memory Storage";
     }
 
-    @Override public Collection<Registerable> retrieveAll() throws RemoteException {
+    @Override
+    public Collection<Registerable> retrieveAll() throws RemoteException {
         Collection<Registerable> col = new ArrayList<Registerable>();
         try {
             semaphore.acquire();

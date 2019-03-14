@@ -17,7 +17,8 @@ public class DestroyOperatorJob implements ContainerJob {
         this.opID = operatorID;
     }
 
-    @Override public ContainerJobType getType() {
+    @Override
+    public ContainerJobType getType() {
         return ContainerJobType.destroyOperator;
     }
 }

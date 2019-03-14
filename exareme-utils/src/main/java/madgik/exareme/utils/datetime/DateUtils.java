@@ -19,9 +19,9 @@ public class DateUtils {
         DateFormat df = new SimpleDateFormat("hh:mm:ss");
         Date date = df.parse(seconds);
         return (date.getDay() - 4) * Metrics.Day +
-            date.getHours() * Metrics.Hour +
-            date.getMinutes() * Metrics.Min +
-            date.getSeconds();
+                date.getHours() * Metrics.Hour +
+                date.getMinutes() * Metrics.Min +
+                date.getSeconds();
     }
 
     public static void main(String[] args) throws Exception {

@@ -36,7 +36,8 @@ public class TreeDataflowMixedGenerator implements DataflowGenerator {
         }
     }
 
-    @Override public TreeQuery getNextDataflow() throws Exception {
+    @Override
+    public TreeQuery getNextDataflow() throws Exception {
         // Wait for the query to arive
         long waitTime = gen.next() * Metrics.MiliSec;
         Thread.sleep(waitTime);

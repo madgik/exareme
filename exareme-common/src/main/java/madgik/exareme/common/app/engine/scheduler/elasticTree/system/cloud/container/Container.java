@@ -81,7 +81,8 @@ public class Container implements Comparable<Container> {
         return (deleted) ? deletedTime : -1.0;
     }
 
-    @Override public int compareTo(Container o) {
+    @Override
+    public int compareTo(Container o) {
         return Long.compare(id, o.id);
     }
 }

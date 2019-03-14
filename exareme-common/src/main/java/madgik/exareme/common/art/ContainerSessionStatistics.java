@@ -23,14 +23,14 @@ public class ContainerSessionStatistics implements Serializable {
     private final PlanSessionID sessionID;
 
     public ContainerSessionStatistics(ContainerSessionID containerSessionID,
-        PlanSessionID sessionID, String containerName) {
+                                      PlanSessionID sessionID, String containerName) {
         this.containerSessionID = containerSessionID;
         this.sessionID = sessionID;
         this.containerName = containerName;
     }
 
     public ConcreteOperatorStatistics createOperatorStatistics(String name, String category,
-        OperatorType type) {
+                                                               OperatorType type) {
         synchronized (containerSessionID) {
             ConcreteOperatorStatistics stats = new ConcreteOperatorStatistics(name, category, type);
             operators.add(stats);

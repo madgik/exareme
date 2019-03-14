@@ -11,8 +11,8 @@ import java.rmi.RemoteException;
 public interface AdpDBLocking {
 
     AdpDBTablePartKey getSharedKey(String database, String tableName, int part)
-        throws RemoteException;
+            throws RemoteException;
 
     AdpDBTablePartKey getExclusiveKey(String database, String tableName, int part)
-        throws RemoteException;
+            throws RemoteException;
 }

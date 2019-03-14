@@ -22,14 +22,15 @@ public class Buffer implements Serializable {
     public LinkedList<Parameter> paramList;
 
     public Buffer(String bufferName, String QoS, String containerName,
-        LinkedList<Parameter> paramList) {
+                  LinkedList<Parameter> paramList) {
         this.bufferName = bufferName;
         this.QoS = QoS;
         this.containerName = containerName;
         this.paramList = paramList;
     }
 
-    @Override public boolean equals(Object obj) {
+    @Override
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -40,12 +41,12 @@ public class Buffer implements Serializable {
         Buffer guest = (Buffer) obj;
         //check strings
         if (!(bufferName.equals(guest.bufferName) && QoS.equals(guest.QoS) && containerName
-            .equals(guest.containerName))) {
+                .equals(guest.containerName))) {
             return false;
         }
         //check lists
         if ((paramList != null && guest.paramList == null) || (paramList == null
-            && guest.paramList != null)) {
+                && guest.paramList != null)) {
             return false;
         }
 
@@ -62,7 +63,8 @@ public class Buffer implements Serializable {
         return true;
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int hash = 7;
         hash = 29 * hash + Objects.hashCode(this.bufferName);
         hash = 29 * hash + Objects.hashCode(this.QoS);

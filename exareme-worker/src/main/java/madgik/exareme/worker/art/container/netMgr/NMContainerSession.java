@@ -19,7 +19,7 @@ public class NMContainerSession implements Serializable {
     private StatisticsManagerInterface statistics = null;
 
     public NMContainerSession(ContainerSessionID containerSessionID, PlanSessionID sessionID,
-        StatisticsManagerInterface statistics) {
+                              StatisticsManagerInterface statistics) {
         this.containerSessionID = containerSessionID;
         this.sessionID = sessionID;
         this.statistics = statistics;

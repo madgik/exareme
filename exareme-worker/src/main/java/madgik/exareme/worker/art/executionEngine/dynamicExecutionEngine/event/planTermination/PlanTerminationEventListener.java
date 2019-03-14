@@ -20,8 +20,9 @@ public class PlanTerminationEventListener implements EventListener<PlanTerminati
     public PlanTerminationEventListener() {
     }
 
-    @Override public void processed(PlanTerminationEvent event, RemoteException exception,
-        EventProcessor processor) {
+    @Override
+    public void processed(PlanTerminationEvent event, RemoteException exception,
+                          EventProcessor processor) {
         if (exception != null) {
             LogUtils.logException("PlanTermination", exception);
             PlanEventScheduler.engineInternalException(event, exception);

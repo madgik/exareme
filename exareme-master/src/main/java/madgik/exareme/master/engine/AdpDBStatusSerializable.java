@@ -25,7 +25,7 @@ public class AdpDBStatusSerializable implements AdpDBStatus, Serializable {
     private final AdpDBStatistics stats;
 
     public AdpDBStatusSerializable(int id, boolean hasFinished, boolean hasError,
-        List<Exception> exceptions, AdpDBStatistics stats) {
+                                   List<Exception> exceptions, AdpDBStatistics stats) {
         this.id = id;
         this.hasFinished = hasFinished;
         this.hasError = hasError;
@@ -37,7 +37,8 @@ public class AdpDBStatusSerializable implements AdpDBStatus, Serializable {
         return id;
     }
 
-    @Override public AdpDBQueryID getQueryID() {
+    @Override
+    public AdpDBQueryID getQueryID() {
         return null;
     }
 

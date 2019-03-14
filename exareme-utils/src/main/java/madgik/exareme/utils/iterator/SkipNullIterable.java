@@ -19,7 +19,8 @@ public class SkipNullIterable<T> implements Iterable<T>, Serializable {
         this.collection = collection;
     }
 
-    @Override public Iterator<T> iterator() {
+    @Override
+    public Iterator<T> iterator() {
         return new SkipNullIterator<T>(collection.iterator());
     }
 }

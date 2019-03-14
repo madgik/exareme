@@ -26,7 +26,7 @@ public class AdpDBJobSession {
     private AdpDBQueryID queryID;
 
     public AdpDBJobSession(AdpDBQueryID queryID, ExecutionEngineSessionPlan sessionPlan,
-        Map<String, String> categoryMessageMap) {
+                           Map<String, String> categoryMessageMap) {
         statistics = new AdpDBStatistics(categoryMessageMap);
         this.sessionPlan = sessionPlan;
         this.queryID = queryID;

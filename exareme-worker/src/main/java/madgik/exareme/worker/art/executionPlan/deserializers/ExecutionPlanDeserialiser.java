@@ -16,7 +16,7 @@ public class ExecutionPlanDeserialiser implements JsonDeserializer<PlanExpressio
 
     @Override
     public PlanExpression deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
-        throws JsonParseException {
+            throws JsonParseException {
         final JsonObject jsonObject = je.getAsJsonObject();
 
         //    Buffer[] buffers = jdc.deserialize(
@@ -24,14 +24,14 @@ public class ExecutionPlanDeserialiser implements JsonDeserializer<PlanExpressio
         //    BufferLink[] bufferLinks = jdc.deserialize(
         //      jsonObject.get(PlanExpressionConstants.BUFFER_LINKS), BufferLink[].class);
         Container[] containers =
-            jdc.deserialize(jsonObject.get(PlanExpressionConstants.CONTAINERS), Container[].class);
+                jdc.deserialize(jsonObject.get(PlanExpressionConstants.CONTAINERS), Container[].class);
         Operator[] operators =
-            jdc.deserialize(jsonObject.get(PlanExpressionConstants.OPERATORS), Operator[].class);
+                jdc.deserialize(jsonObject.get(PlanExpressionConstants.OPERATORS), Operator[].class);
         OperatorLink[] operatorLinks =
-            jdc.deserialize(jsonObject.get(PlanExpressionConstants.OPERATOR_LINKS),
-                OperatorLink[].class);
+                jdc.deserialize(jsonObject.get(PlanExpressionConstants.OPERATOR_LINKS),
+                        OperatorLink[].class);
         Pragma[] pragma =
-            jdc.deserialize(jsonObject.get(PlanExpressionConstants.PRAGMA), Pragma[].class);
+                jdc.deserialize(jsonObject.get(PlanExpressionConstants.PRAGMA), Pragma[].class);
 
         final PlanExpression expression = new PlanExpression();
         //    if (buffers != null) {

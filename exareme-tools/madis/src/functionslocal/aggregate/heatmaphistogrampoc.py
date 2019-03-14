@@ -41,7 +41,7 @@ class heatmaphistogrampoc:
         self.n = 0
         self.heatmap = {}
         self.noofargs = 0;
-        self.flag = False #1D or 2D histogram
+        self.flag = False  # 1D or 2D histogram
 
     def step(self, *args):
         import json
@@ -49,7 +49,7 @@ class heatmaphistogrampoc:
             self.colnames = [None] * 2
             self.curvalues = [None] * 2
             self.index = [None] * 2
-            #print args[5]
+            # print args[5]
             if args[5] != None:
                 self.flag = True
 
@@ -61,8 +61,8 @@ class heatmaphistogrampoc:
                 self.minvalue = float(args[2])
                 self.maxvalue = float(args[3])
                 self.nobuckets = int(args[4])
-                self.step = (self.maxvalue+ 0.01 - self.minvalue) / self.nobuckets
-                #print self.step, self.minvalue, self.maxvalue
+                self.step = (self.maxvalue + 0.01 - self.minvalue) / self.nobuckets
+                # print self.step, self.minvalue, self.maxvalue
                 if self.flag == True:
                     self.colnames[1] = (args[5])
                     try:
@@ -71,15 +71,15 @@ class heatmaphistogrampoc:
                         self.distinctvalues = (args[7])
                     for i in xrange(self.nobuckets):
                         for j in xrange(len(self.distinctvalues)):
-                            self.index[0]=i
-                            self.index[1]=j
+                            self.index[0] = i
+                            self.index[1] = j
                             self.heatmap[tuple(self.index)] = 0
                 if self.flag == False:
                     for i in xrange(self.nobuckets):
                         self.index[0] = i
                         self.index[1] = 0
                         self.heatmap[tuple(self.index)] = 0
-                        #print self.heatmap
+                        # print self.heatmap
 
             self.curvalues[0] = float(args[1])
             if self.flag == True:
@@ -91,9 +91,9 @@ class heatmaphistogrampoc:
 
         self.index[0] = int((self.curvalues[0] - self.minvalue) / self.step)
         if self.index[0] >= self.nobuckets:
-            self.index[0] = self.nobuckets -1
+            self.index[0] = self.nobuckets - 1
         if self.index[0] < 0:
-            self.index[0]= 0
+            self.index[0] = 0
 
         if self.flag == True:
             self.index[1] = self.distinctvalues.index(self.curvalues[1])
@@ -106,12 +106,12 @@ class heatmaphistogrampoc:
             self.heatmap[tuple(self.index)] = 1
 
     def final(self):
-        #print self.heatmap
-        #print self.n
+        # print self.heatmap
+        # print self.n
         if self.flag == True:
             yield ('colname0', 'id0', 'minvalue0', 'maxvalue0', 'colname1', 'id1', 'val', 'num')
         else:
-            yield ('colname0', 'id0', 'minvalue0', 'maxvalue0', 'colname1', 'id1', 'val','num')
+            yield ('colname0', 'id0', 'minvalue0', 'maxvalue0', 'colname1', 'id1', 'val', 'num')
 
         if self.n > 0:
             for item in self.heatmap:
@@ -131,6 +131,7 @@ class heatmaphistogrampoc:
                 result.append(self.heatmap[item])
                 yield result
 
+
 if not ('.' in __name__):
     """
     This is needed to be able to test the function, put it at the end of every
@@ -138,9 +139,11 @@ if not ('.' in __name__):
     """
     import sys
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

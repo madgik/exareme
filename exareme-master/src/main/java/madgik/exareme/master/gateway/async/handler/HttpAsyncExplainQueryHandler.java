@@ -31,21 +31,22 @@ public class HttpAsyncExplainQueryHandler implements HttpAsyncRequestHandler<Htt
     public HttpAsyncExplainQueryHandler() {
     }
 
-    @Override public HttpAsyncRequestConsumer<HttpRequest> processRequest(HttpRequest request,
-        HttpContext context) throws HttpException, IOException {
+    @Override
+    public HttpAsyncRequestConsumer<HttpRequest> processRequest(HttpRequest request,
+                                                                HttpContext context) throws HttpException, IOException {
         return new BasicAsyncRequestConsumer();
     }
 
     @Override
     public void handle(HttpRequest request, HttpAsyncExchange httpExchange, HttpContext context)
-        throws HttpException, IOException {
+            throws HttpException, IOException {
         HttpResponse response = httpExchange.getResponse();
         handleInternal(request, response, context);
         httpExchange.submitResponse(new BasicAsyncResponseProducer(response));
     }
 
     private void handleInternal(HttpRequest request, HttpResponse response, HttpContext context)
-        throws UnsupportedHttpVersionException, IOException {
+            throws UnsupportedHttpVersionException, IOException {
         String dbname = null;
         String query = null;
         String mode = "";
@@ -84,7 +85,7 @@ public class HttpAsyncExplainQueryHandler implements HttpAsyncRequestHandler<Htt
         String queryExplain = null;
         try {
             AdpDBClient dbClient =
-                AdpDBClientFactory.createDBClient(manager, new AdpDBClientProperties(dbname));
+                    AdpDBClientFactory.createDBClient(manager, new AdpDBClientProperties(dbname));
             queryExplain = dbClient.explain(query, mode);
             StringEntity entity = new StringEntity(queryExplain);
             response.setStatusCode(HttpStatus.SC_OK);

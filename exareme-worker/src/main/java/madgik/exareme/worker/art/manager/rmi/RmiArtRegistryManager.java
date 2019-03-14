@@ -17,8 +17,8 @@ import java.rmi.registry.Registry;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class RmiArtRegistryManager implements ArtRegistryManager {
@@ -41,15 +41,18 @@ public class RmiArtRegistryManager implements ArtRegistryManager {
         return localRegEntityName;
     }
 
-    @Override public boolean isOnline() throws RemoteException {
+    @Override
+    public boolean isOnline() throws RemoteException {
         return (artRmiRegistry != null);
     }
 
-    @Override public ArtRegistry getRegistry() throws RemoteException {
+    @Override
+    public ArtRegistry getRegistry() throws RemoteException {
         return artRegistry;
     }
 
-    @Override public void startArtRegistry() throws RemoteException {
+    @Override
+    public void startArtRegistry() throws RemoteException {
         try {
             artRmiRegistry = LocateRegistry.createRegistry(localRegistryPort);
         } catch (Exception e) {
@@ -68,7 +71,8 @@ public class RmiArtRegistryManager implements ArtRegistryManager {
         isLocalRegistry = true;
     }
 
-    @Override public void connectToRegistry(EntityName name) throws RemoteException {
+    @Override
+    public void connectToRegistry(EntityName name) throws RemoteException {
         try {
             artRmiRegistry = LocateRegistry.getRegistry(name.getIP(), name.getPort());
             try {
@@ -78,7 +82,7 @@ public class RmiArtRegistryManager implements ArtRegistryManager {
                 localRmiRegistry = LocateRegistry.getRegistry(localRegistryPort);
             }
             localRegEntityName =
-                new EntityName("RmiRegistry", NetUtil.getIPv4(), localRegistryPort);
+                    new EntityName("RmiRegistry", NetUtil.getIPv4(), localRegistryPort);
 
             ArtRegistryLocator.setArtRmiRegistry(artRmiRegistry);
             ArtRegistryLocator.setLocalRmiRegistry(localRmiRegistry, localRegEntityName);
@@ -93,7 +97,8 @@ public class RmiArtRegistryManager implements ArtRegistryManager {
         }
     }
 
-    @Override public void stopArtRegistry() throws RemoteException {
+    @Override
+    public void stopArtRegistry() throws RemoteException {
         if (isLocalRegistry) {
             artRegistry.stopArtRegistry();
         }

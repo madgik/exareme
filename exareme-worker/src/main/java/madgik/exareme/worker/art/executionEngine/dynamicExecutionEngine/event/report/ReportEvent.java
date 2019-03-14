@@ -22,7 +22,7 @@ public class ReportEvent extends ExecEngineEvent {
     public PlanEventScheduler scheduler = null;
 
     public ReportEvent(ConcreteOperatorID operatorID, int exidCode, Serializable exitMessage,
-        PlanEventScheduler scheduler, PlanEventSchedulerState state) {
+                       PlanEventScheduler scheduler, PlanEventSchedulerState state) {
         super(state);
         this.operatorID = operatorID;
         this.exidCode = exidCode;

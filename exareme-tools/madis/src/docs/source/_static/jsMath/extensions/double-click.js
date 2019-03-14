@@ -180,14 +180,11 @@ jsMath.Add(jsMath.Click, {
     DeselectText: function (x, y) {
         if (jsMath.window.getSelection && jsMath.window.getSelection().removeAllRanges) {
             jsMath.window.getSelection().removeAllRanges()
-        }
-        else if (jsMath.document.getSelection && jsMath.document.getSelection().removeAllRanges) {
+        } else if (jsMath.document.getSelection && jsMath.document.getSelection().removeAllRanges) {
             jsMath.document.getSelection().removeAllRanges()
-        }
-        else if (jsMath.document.selection && jsMath.document.selection.empty) {
+        } else if (jsMath.document.selection && jsMath.document.selection.empty) {
             jsMath.document.selection.empty()
-        }
-        else {
+        } else {
             /* Hack to deselect the text in Opera and Safari */
             if (jsMath.browser == 'MSIE') return;  // don't try it if MISE on Mac
             jsMath.hiddenTop.innerHTML =

@@ -41,7 +41,8 @@ public class TransactionalBitSet implements TransactionalObject {
         changed = true;
     }
 
-    @Override public void commit() {
+    @Override
+    public void commit() {
         if (changed) {
             commitedValue.clear();
             commitedValue.or(value);
@@ -49,7 +50,8 @@ public class TransactionalBitSet implements TransactionalObject {
         }
     }
 
-    @Override public void rollback() {
+    @Override
+    public void rollback() {
         if (changed) {
             value.clear();
             value.or(commitedValue);

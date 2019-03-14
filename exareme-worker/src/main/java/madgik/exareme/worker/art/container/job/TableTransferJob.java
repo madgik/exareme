@@ -17,7 +17,8 @@ public class TableTransferJob implements ContainerJob {
         this.sessionReportID = sessionReportID;
     }
 
-    @Override public ContainerJobType getType() {
+    @Override
+    public ContainerJobType getType() {
         return ContainerJobType.dataTransfer;
     }
 }

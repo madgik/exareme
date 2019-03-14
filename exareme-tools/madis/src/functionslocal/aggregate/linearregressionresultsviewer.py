@@ -1,6 +1,5 @@
 class linearregressionresultsviewer:
-
-    registered = True #Value to define db operator
+    registered = True  # Value to define db operator
 
     def __init__(self):
         self.n = 0
@@ -14,7 +13,7 @@ class linearregressionresultsviewer:
         # self.noofclusters = args[5]
         try:
             self.variablenames.append(str(args[0]))
-            self.mydata[(args[0])] = str(args[1]),str(args[2]),str(args[3]),str(args[4])
+            self.mydata[(args[0])] = str(args[1]), str(args[2]), str(args[3]), str(args[4])
             self.n += 1
             # if self.n <= self.noofvariables :
             #     self.variablenames.append(str(args[1]))
@@ -24,10 +23,10 @@ class linearregressionresultsviewer:
     def final(self):
         yield ('linearregressionresult',)
 
-        myresult="{\"resources\": [{\"name\": \"linear-regression\", \"profile\": \"tabular-data-resource\", \
+        myresult = "{\"resources\": [{\"name\": \"linear-regression\", \"profile\": \"tabular-data-resource\", \
                    \"data\": [[\"variable\", \"estimate\", \"standard_error\", \"t-value\", \"p-value\"]"
         if len(self.variablenames) != 0:
-            myresult+=","
+            myresult += ","
         for i in xrange(len(self.variablenames)):
             myresult += "[\"" + str(self.variablenames[i]) + "\","
             # row=[]
@@ -35,21 +34,20 @@ class linearregressionresultsviewer:
             for j in xrange(4):
                 myresult += "\"" + str(self.mydata[(self.variablenames[i])][j]) + "\""
                 if j < 3:
-                    myresult+=","
+                    myresult += ","
                     # row.append(self.mydata[(self.variablenames[i])][j])
             # myresult+= str(row)
-            if i< len(self.variablenames)-1:
-                myresult+="],"
+            if i < len(self.variablenames) - 1:
+                myresult += "],"
 
         if len(self.variablenames) != 0:
-             myresult+="]"
+            myresult += "]"
 
-        myresult+="],\"schema\":  { \"fields\": [{\"name\": \"variable\", \"type\": \"string\"}, \
+        myresult += "],\"schema\":  { \"fields\": [{\"name\": \"variable\", \"type\": \"string\"}, \
                   {\"name\": \"estimate\", \"type\": \"number\"},{\"name\": \"standard_error\", \"type\": \"number\"}, \
                   {\"name\": \"t-value\", \"type\": \"number\"}, {\"name\": \"p-value\", \"type\": \"string\"}] } }]}"
 
         yield (myresult,)
-
 
 
 if not ('.' in __name__):
@@ -59,9 +57,11 @@ if not ('.' in __name__):
     """
     import sys
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

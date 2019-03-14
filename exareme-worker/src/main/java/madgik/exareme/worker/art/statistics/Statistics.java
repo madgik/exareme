@@ -21,7 +21,7 @@ public class Statistics {
     private static int maxOperatorsRunning = 0;
 
     static {
-    /* Find ADP Root directory */
+        /* Find ADP Root directory */
         try {
 
             StatisticsManagement envManagment = new StatisticsManagement();

@@ -1,18 +1,15 @@
-import setpath
-import functions
-import math
-from lib import iso8601
-import re
 import datetime
-from fractions import Fraction
+import functions
 import json
+import math
+import re
 from fractions import Fraction
-
+from lib import iso8601
 
 __docformat__ = 'reStructuredText en'
 
-class modeop:
 
+class modeop:
     """
     .. function:: modeop(X) -> [ModeOpElements int/str, ModeOpValue int]
 
@@ -92,39 +89,39 @@ class modeop:
     None           | None
 
     """
-    registered=True #Value to define db operator
-    multiset=True
+    registered = True  # Value to define db operator
+    multiset = True
 
     def __init__(self):
-        self.init=True
+        self.init = True
         self.sample = []
         self.modevalue = 0
 
     def initargs(self, args):
-        self.init=False
+        self.init = False
         if not args:
-            raise functions.OperatorError("modeop","No arguments")
-        if len(args)>1:
-            raise functions.OperatorError("modeop","Wrong number of arguments")
+            raise functions.OperatorError("modeop", "No arguments")
+        if len(args) > 1:
+            raise functions.OperatorError("modeop", "Wrong number of arguments")
 
     def step(self, *args):
-        if self.init==True:
+        if self.init == True:
             self.initargs(args)
 
         if isinstance(args[0], basestring):
-            #For the case of textual dataset, values are converted to lowercase
+            # For the case of textual dataset, values are converted to lowercase
             self.element = (args[0]).lower()
         else:
-            #For the case of arithmetic dataset, values are rounded and converted to int
+            # For the case of arithmetic dataset, values are rounded and converted to int
             self.element = int(round(args[0]))
         self.sample.append(self.element)
-        
+
     def final(self):
-        output=[]
+        output = []
 
         if (not self.sample):
-            output+=['None']
-            modevalue='None'
+            output += ['None']
+            modevalue = 'None'
         else:
             self.sample.sort()
 
@@ -133,25 +130,25 @@ class modeop:
             # Build dictionary: key - data set values; item - data frequency.
             for x in self.sample:
                 if (x in frequency.keys()):
-                    frequency[x]+=1
+                    frequency[x] += 1
                 else:
-                    frequency[x]=1
+                    frequency[x] = 1
             # Find the modeval, i.e. the maximum frequency
             modevalue = max(frequency.values())
 
             # If the value of mode is 1, there is no mode for the given data set.
             if (modevalue == 1):
-                 output+=['None']
-                 modevalue='None'
+                output += ['None']
+                modevalue = 'None'
             else:
                 # Step through the frequency dictionary, looking for keys equaling
                 # the current modevalue.  If found, append the key to output list.
                 for x in frequency:
                     if (modevalue == frequency[x]):
-                        output+=[x]
+                        output += [x]
 
-        #CREATE MULTISET OUTPUT
-        #print all keys, along with the modevlaue
+        # CREATE MULTISET OUTPUT
+        # print all keys, along with the modevlaue
         yield ("ModeOpElements", "ModeOpValue")
         for el in output:
             yield (el, modevalue)
@@ -226,26 +223,26 @@ class median:
     None
 
     """
-    registered=True #Value to define db operator
+    registered = True  # Value to define db operator
 
     def __init__(self):
-        self.init=True
+        self.init = True
         self.sample = []
-        self.counter=0
+        self.counter = 0
 
     def initargs(self, args):
-        self.init=False
+        self.init = False
         if not args:
-            raise functions.OperatorError("median","No arguments")
-        if len(args)>1:
-            raise functions.OperatorError("median","Wrong number of arguments")
+            raise functions.OperatorError("median", "No arguments")
+        if len(args) > 1:
+            raise functions.OperatorError("median", "Wrong number of arguments")
 
     def step(self, *args):
-        if self.init==True:
+        if self.init == True:
             self.initargs(args)
 
-        if not(isinstance(args[0], basestring)) and args[0]:
-            self.counter +=1
+        if not (isinstance(args[0], basestring)) and args[0]:
+            self.counter += 1
             self.element = float((args[0]))
             self.sample.append(self.element)
 
@@ -255,14 +252,13 @@ class median:
         self.sample.sort()
 
         """Determine the value which is in the exact middle of the data set."""
-        if (self.counter%2):		# Number of elements in data set is even.
-            self.median = self.sample[self.counter/2]
-        else:                           # Number of elements in data set is odd.
-            midpt = self.counter/2
-            self.median = (self.sample[midpt-1] + self.sample[midpt])/2.0
+        if (self.counter % 2):  # Number of elements in data set is even.
+            self.median = self.sample[self.counter / 2]
+        else:  # Number of elements in data set is odd.
+            midpt = self.counter / 2
+            self.median = (self.sample[midpt - 1] + self.sample[midpt]) / 2.0
 
         return self.median
-
 
 
 class variance:
@@ -316,62 +312,62 @@ class variance:
     -----------
     None
     """
-    registered=True #Value to define db operator
+    registered = True  # Value to define db operator
 
     def __init__(self):
-        self.init=True
-        self.population=False
-        self.n=0
-        self.mean=Fraction(0.0)
-        self.M2=Fraction(0.0)
+        self.init = True
+        self.population = False
+        self.n = 0
+        self.mean = Fraction(0.0)
+        self.M2 = Fraction(0.0)
 
     def initargs(self, args):
-        self.init=False
+        self.init = False
         if not args:
-            raise functions.OperatorError("sdev","No arguments")
-        elif len(args)==2:
+            raise functions.OperatorError("sdev", "No arguments")
+        elif len(args) == 2:
             tmp = args[1].lower()
-            if tmp=='false' or tmp=='sample':
-                self.population=False
-            elif tmp=='true' or tmp=='population':
-                self.population=True
+            if tmp == 'false' or tmp == 'sample':
+                self.population = False
+            elif tmp == 'true' or tmp == 'population':
+                self.population = True
             else:
-                raise functions.OperatorError("sdev", "Wrong value in second argument"+'\n'+
-            "Accepted Values:"+'\n'
-            "----False, false, FALSE, sample---- for Sample Standard Deviation"+'\n'+
-            "----True, true, TRUE, population---- for Population Standard Deviation"+'\n')
-        elif len(args)>2:
-            raise functions.OperatorError("sdev","Wrong number of arguments")
+                raise functions.OperatorError("sdev", "Wrong value in second argument" + '\n' +
+                                              "Accepted Values:" + '\n'
+                                                                   "----False, false, FALSE, sample---- for Sample Standard Deviation" + '\n' +
+                                              "----True, true, TRUE, population---- for Population Standard Deviation" + '\n')
+        elif len(args) > 2:
+            raise functions.OperatorError("sdev", "Wrong number of arguments")
 
     def step(self, *args):
-        if self.init==True:
+        if self.init == True:
             self.initargs(args)
 
         try:
-            x=Fraction(args[0])
+            x = Fraction(args[0])
         except KeyboardInterrupt:
             raise
         except:
             return
-        self.n+=1
-        delta=x-self.mean
+        self.n += 1
+        delta = x - self.mean
         self.mean += delta / self.n
         if self.n > 1:
             self.M2 += delta * (x - self.mean)
 
     def final(self):
-        if self.n==0:
+        if self.n == 0:
             return None
         try:
-            if (not self.population and self.n>1):   # Divide sum of squares by N-1 (sample variance).
-                variance = self.M2/(self.n-1)
-            else:                       # Divide sum of squares by N (population variance).
-                variance = self.M2/self.n
+            if (not self.population and self.n > 1):  # Divide sum of squares by N-1 (sample variance).
+                variance = self.M2 / (self.n - 1)
+            else:  # Divide sum of squares by N (population variance).
+                variance = self.M2 / self.n
         except:
             variance = 0.0
 
         return float(variance)
-        
+
 
 class stdev:
     """
@@ -417,65 +413,64 @@ class stdev:
     
     """
 
-    registered=True #Value to define db operator
+    registered = True  # Value to define db operator
 
     def __init__(self):
-        self.init=True
-        self.population=False
-        self.n=0
-        self.mean=Fraction(0.0)
-        self.M2=Fraction(0.0)
+        self.init = True
+        self.population = False
+        self.n = 0
+        self.mean = Fraction(0.0)
+        self.M2 = Fraction(0.0)
 
     def initargs(self, args):
-        self.init=False
+        self.init = False
         if not args:
-            raise functions.OperatorError("sdev","No arguments")
-        elif len(args)==2:
+            raise functions.OperatorError("sdev", "No arguments")
+        elif len(args) == 2:
             tmp = args[1].lower()
-            if tmp=='false' or tmp=='sample':
-                self.population=False
-            elif tmp=='true' or tmp=='population':
-                self.population=True
+            if tmp == 'false' or tmp == 'sample':
+                self.population = False
+            elif tmp == 'true' or tmp == 'population':
+                self.population = True
             else:
-                raise functions.OperatorError("sdev", "Wrong value in second argument"+'\n'+
-            "Accepted Values:"+'\n'
-            "----False, false, FALSE, sample---- for Sample Standard Deviation"+'\n'+
-            "----True, true, TRUE, population---- for Population Standard Deviation"+'\n')
-        elif len(args)>2:
-            raise functions.OperatorError("sdev","Wrong number of arguments")
+                raise functions.OperatorError("sdev", "Wrong value in second argument" + '\n' +
+                                              "Accepted Values:" + '\n'
+                                                                   "----False, false, FALSE, sample---- for Sample Standard Deviation" + '\n' +
+                                              "----True, true, TRUE, population---- for Population Standard Deviation" + '\n')
+        elif len(args) > 2:
+            raise functions.OperatorError("sdev", "Wrong number of arguments")
 
     def step(self, *args):
-        if self.init==True:
+        if self.init == True:
             self.initargs(args)
-        
+
         try:
-            x=Fraction(args[0])
+            x = Fraction(args[0])
         except KeyboardInterrupt:
-            raise          
+            raise
         except:
             return
-        self.n+=1
-        delta=x-self.mean
+        self.n += 1
+        delta = x - self.mean
         self.mean += delta / self.n
         if self.n > 1:
             self.M2 += delta * (x - self.mean)
 
     def final(self):
-        if self.n==0:
+        if self.n == 0:
             return None
         try:
-            if (not self.population and self.n>1):   # Divide sum of squares by N-1 (sample variance).
-                variance = self.M2/(self.n-1)
-            else:                       # Divide sum of squares by N (population variance).
-                variance = self.M2/self.n
+            if (not self.population and self.n > 1):  # Divide sum of squares by N-1 (sample variance).
+                variance = self.M2 / (self.n - 1)
+            else:  # Divide sum of squares by N (population variance).
+                variance = self.M2 / self.n
         except:
             variance = 0.0
-        
+
         return math.sqrt(variance)
 
 
 class rangef:
-
     """
     .. function:: rangef(X) -> [rangef float]
 
@@ -510,26 +505,25 @@ class rangef:
     ---------
     None
     """
-    registered=True #Value to define db operator
-    
+    registered = True  # Value to define db operator
 
     def __init__(self):
-        self.init=True
-        self.sample=[]
+        self.init = True
+        self.sample = []
 
     def initargs(self, args):
-        self.init=False
-        if len(args)<>1:
-            raise functions.OperatorError("rangef","Wrong number of arguments")
-    
+        self.init = False
+        if len(args) <> 1:
+            raise functions.OperatorError("rangef", "Wrong number of arguments")
+
     def step(self, *args):
-        if not(isinstance(args[0], basestring)) and args[0]:
+        if not (isinstance(args[0], basestring)) and args[0]:
             self.sample.append(float(args[0]))
-        
+
     def final(self):
         if (not self.sample):
             return
-        self.range=max(self.sample) - min(self.sample)
+        self.range = max(self.sample) - min(self.sample)
         return self.range
 
 
@@ -565,34 +559,34 @@ class amean:
     None
     
     """
-    registered=True #Value to define db function
+    registered = True  # Value to define db function
 
     def __init__(self):
-        self.init=True
-        self.counter=0
-        self.sum=0.0
-        self.sample=[]
+        self.init = True
+        self.counter = 0
+        self.sum = 0.0
+        self.sample = []
 
     def initargs(self, args):
-        self.init=False
+        self.init = False
         if not args:
-            raise functions.OperatorError("amean","No arguments")
-        elif len(args)>1:
-            raise functions.OperatorError("amean","Wrong number of arguments")
+            raise functions.OperatorError("amean", "No arguments")
+        elif len(args) > 1:
+            raise functions.OperatorError("amean", "Wrong number of arguments")
 
     def step(self, *args):
-        if self.init==True:
+        if self.init == True:
             self.initargs(args)
 
-        if not(isinstance(args[0], basestring)) and args[0]:
+        if not (isinstance(args[0], basestring)) and args[0]:
             self.sample.append(float(args[0]))
             self.sum += float(args[0])
-            self.counter+=1
+            self.counter += 1
 
     def final(self):
         if (not self.sample):
             return
-        return self.sum/self.counter
+        return self.sum / self.counter
 
 
 class wamean:
@@ -634,30 +628,30 @@ class wamean:
     None
 
     """
-    registered=True #Value to define db operator
+    registered = True  # Value to define db operator
 
     def __init__(self):
-        self.init=True
-        self.counter=0
-        self.sum=0.0
+        self.init = True
+        self.counter = 0
+        self.sum = 0.0
 
     def initargs(self, args):
-        self.init=False
-        if (len(args)<>2):
-            raise functions.OperatorError("wamean","Wrong number of arguments")
+        self.init = False
+        if (len(args) <> 2):
+            raise functions.OperatorError("wamean", "Wrong number of arguments")
 
     def step(self, *args):
-        if self.init==True:
+        if self.init == True:
             self.initargs(args)
 
-        if not(isinstance(args[0], basestring)) and args[0] and not(isinstance(args[1], basestring)) and args[1]:
-            self.sum += args[0]*args[1]
-            self.counter+=args[0]
+        if not (isinstance(args[0], basestring)) and args[0] and not (isinstance(args[1], basestring)) and args[1]:
+            self.sum += args[0] * args[1]
+            self.counter += args[0]
 
     def final(self):
-        if (self.counter==0):
+        if (self.counter == 0):
             return
-        return self.sum/self.counter
+        return self.sum / self.counter
 
 
 class gmean:
@@ -735,55 +729,56 @@ class gmean:
     
 
     """
-    registered=True #Value to define db operator
+    registered = True  # Value to define db operator
 
     def __init__(self):
-        self.init=True
-        self.counter=0
-        self.sum=0.0
-        self.p=0.0
-        self.result=0.0
+        self.init = True
+        self.counter = 0
+        self.sum = 0.0
+        self.p = 0.0
+        self.result = 0.0
 
     def initargs(self, args):
-        self.init=False
+        self.init = False
 
         if not args:
-            raise functions.OperatorError("gmean","No arguments")
-        elif len(args)>2:
-            raise functions.OperatorError("gmean","Wrong number of arguments")
-        elif len(args)==2:
-            self.p=args[1]
-            if self.p>2 or self.p<-1:
-                raise functions.OperatorError("\n gmean","Second argument takes values from -1 to 2\n"+
-        "p=2 :quadratic mean     (for both negative and positive values)\n"+
-        "p=1 :artihmetic mean\n"+
-        "p=0 :geometric mean     (for positive real numbers)\n"+
-        "p=-1:harmonian mean     (for positive real numbers)\n")
+            raise functions.OperatorError("gmean", "No arguments")
+        elif len(args) > 2:
+            raise functions.OperatorError("gmean", "Wrong number of arguments")
+        elif len(args) == 2:
+            self.p = args[1]
+            if self.p > 2 or self.p < -1:
+                raise functions.OperatorError("\n gmean", "Second argument takes values from -1 to 2\n" +
+                                              "p=2 :quadratic mean     (for both negative and positive values)\n" +
+                                              "p=1 :artihmetic mean\n" +
+                                              "p=0 :geometric mean     (for positive real numbers)\n" +
+                                              "p=-1:harmonian mean     (for positive real numbers)\n")
 
     def step(self, *args):
-        if self.init==True:
+        if self.init == True:
             self.initargs(args)
-        if not(isinstance(args[0], basestring)) and args[0]:
-            if self.p<1 and args[0]<1:
-                raise functions.OperatorError("gmean","The specified type of mean applies only to positive numbers")
-        # The easiest way to think of the geometric mean is that
-        #it is the average of the logarithmic values, converted back to a base 10 number.
-            if self.p==0:
+        if not (isinstance(args[0], basestring)) and args[0]:
+            if self.p < 1 and args[0] < 1:
+                raise functions.OperatorError("gmean", "The specified type of mean applies only to positive numbers")
+            # The easiest way to think of the geometric mean is that
+            # it is the average of the logarithmic values, converted back to a base 10 number.
+            if self.p == 0:
                 self.sum += math.log10(args[0])
             else:
-                self.sum += args[0]**self.p
-            self.counter +=1
+                self.sum += args[0] ** self.p
+            self.counter += 1
 
     def final(self):
-        if (self.counter==0):
+        if (self.counter == 0):
             return
-        if self.p==0:
-            result = 10**(self.sum/self.counter)
+        if self.p == 0:
+            result = 10 ** (self.sum / self.counter)
             return result
         else:
-            return  (self.sum/self.counter)**(1.0/self.p)
+            return (self.sum / self.counter) ** (1.0 / self.p)
 
-re_now=re.compile('now:(?P<now>.*)')
+
+re_now = re.compile('now:(?P<now>.*)')
 
 
 class frecency:
@@ -827,52 +822,51 @@ class frecency:
    
     """
 
-    registered=True #Value to define db operator
+    registered = True  # Value to define db operator
 
     def __init__(self):
-        self.frecency=0
-        self.initstatic=False
-        self.points=None
-        self.now=None
+        self.frecency = 0
+        self.initstatic = False
+        self.points = None
+        self.now = None
 
-    def __decrease(self,offsettimedelta):
-        if offsettimedelta<=datetime.timedelta(days=10):
+    def __decrease(self, offsettimedelta):
+        if offsettimedelta <= datetime.timedelta(days=10):
             return 1.0
-        if offsettimedelta<=datetime.timedelta(days=30):
+        if offsettimedelta <= datetime.timedelta(days=30):
             return 0.7
-        if offsettimedelta<=datetime.timedelta(days=(30*3)):
+        if offsettimedelta <= datetime.timedelta(days=(30 * 3)):
             return 0.5
-        if offsettimedelta<=datetime.timedelta(days=(30*6)):
+        if offsettimedelta <= datetime.timedelta(days=(30 * 6)):
             return 0.3
         return 0.1
 
     def step(self, *args):
         if not args:
-            raise functions.OperatorError("frecency","No arguments")
+            raise functions.OperatorError("frecency", "No arguments")
         # last 2 arguments are static , so they are parse only the first time
         if not self.initstatic:
-            self.initstatic=True
-            self.points=100.0
-            self.now=datetime.datetime.now()
-            if len(args)>=2:
+            self.initstatic = True
+            self.points = 100.0
+            self.now = datetime.datetime.now()
+            if len(args) >= 2:
                 for arg in args[1:]:
-                    isnowarg=re_now.match(arg)
+                    isnowarg = re_now.match(arg)
                     if isnowarg:
-                      nowdate=isnowarg.groupdict()['now']
-                      self.now=iso8601.parse_date(nowdate)
+                        nowdate = isnowarg.groupdict()['now']
+                        self.now = iso8601.parse_date(nowdate)
                     else:
-                        self.points=int(arg)
+                        self.points = int(arg)
 
-        input=args[0]
-        dt=iso8601.parse_date(input)
-        self.frecency+=self.__decrease(self.now-dt)*self.points
+        input = args[0]
+        dt = iso8601.parse_date(input)
+        self.frecency += self.__decrease(self.now - dt) * self.points
 
     def final(self):
         return self.frecency
 
 
 class pearson:
-
     """
     .. function:: pearson(X,Y) -> float
 
@@ -901,42 +895,42 @@ class pearson:
     0
     """
 
-    registered=True #Value to define db operator
-    sum_x=0
-    sum_y=0
+    registered = True  # Value to define db operator
+    sum_x = 0
+    sum_y = 0
 
     def __init__(self):
-        self.sX=Fraction(0)
-        self.sX2=Fraction(0)
-        self.sY=Fraction(0)
-        self.sY2=Fraction(0)
-        self.sXY=Fraction(0)
-        self.n=0
+        self.sX = Fraction(0)
+        self.sX2 = Fraction(0)
+        self.sY = Fraction(0)
+        self.sY2 = Fraction(0)
+        self.sXY = Fraction(0)
+        self.n = 0
 
-    def step(self,*args):
+    def step(self, *args):
         try:
             x, y = [Fraction(i) for i in args[:2]]
         except KeyboardInterrupt:
             raise
         except:
             return
-        self.n+=1
-        self.sX+=x
-        self.sY+=y
-        self.sX2+=x*x
-        self.sY2+=y*y
-        self.sXY+=x*y
+        self.n += 1
+        self.sX += x
+        self.sY += y
+        self.sX2 += x * x
+        self.sY2 += y * y
+        self.sXY += x * y
 
     def final(self):
-        if self.n==0:
+        if self.n == 0:
             return None
 
-        d = (math.sqrt(self.n*self.sX2-self.sX*self.sX)*math.sqrt(self.n*self.sY2-self.sY*self.sY))
+        d = (math.sqrt(self.n * self.sX2 - self.sX * self.sX) * math.sqrt(self.n * self.sY2 - self.sY * self.sY))
 
         if d == 0:
             return 0
 
-        return float((self.n*self.sXY-self.sX*self.sY)/d)
+        return float((self.n * self.sXY - self.sX * self.sY) / d)
 
 
 class fsum:
@@ -982,7 +976,7 @@ class fsum:
         if self.init:
             self.init = False
             if not args:
-                raise functions.OperatorError("fsum","No arguments")
+                raise functions.OperatorError("fsum", "No arguments")
 
         try:
             if type(args[0]) in (int, float, long):
@@ -1004,20 +998,18 @@ class fsum:
         return json.dumps([self.x.numerator, self.x.denominator])
 
 
-
-
-
 if not ('.' in __name__):
     """
     This is needed to be able to test the function, put it at the end of every
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

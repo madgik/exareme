@@ -18,5 +18,5 @@ import java.rmi.RemoteException;
 public interface StatisticsManager extends SessionBased, JobExecutor, Stoppable {
 
     ContainerSessionStatistics getStatistics(ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException;
+                                             PlanSessionID sessionID) throws RemoteException;
 }

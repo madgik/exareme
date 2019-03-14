@@ -31,33 +31,34 @@ public class TpchDistributor {
 
     public static String createScript() throws RemoteException {
         String[] tables =
-            {"customer.tbl", "lineitem.tbl", "nation.tbl", "orders.tbl", "partsupp.tbl", "part.tbl",
-                "region.tbl", "supplier.tbl",};
+                {"customer.tbl", "lineitem.tbl", "nation.tbl", "orders.tbl", "partsupp.tbl", "part.tbl",
+                        "region.tbl", "supplier.tbl",};
 
         ContainerProxy[] proxies = ArtRegistryLocator.getArtRegistryProxy().getContainers();
         StringBuilder script = new StringBuilder();
 
         // Sort the proxies based on name
         Arrays.sort(proxies, new Comparator<ContainerProxy>() {
-            @Override public int compare(ContainerProxy o1, ContainerProxy o2) {
+            @Override
+            public int compare(ContainerProxy o1, ContainerProxy o2) {
                 return o1.getEntityName().compareTo(o2.getEntityName());
             }
         });
 
         for (int c = 0; c < proxies.length; ++c) {
             script.append(
-                "container c" + c + "('" + proxies[c].getEntityName().getName() + "', 1099);\n");
+                    "container c" + c + "('" + proxies[c].getEntityName().getName() + "', 1099);\n");
         }
         StringBuilder netcatScript = new StringBuilder();
         for (int part = 0; part < 32; ++part) {
             script.append("operator op" + part + " c" + part +
-                "('madgik.exareme.core.operatorLibrary.tpch.TPCHFilePartReader', " + "part='" + part
-                + "', " + "memoryPercentage='60');\n");
+                    "('madgik.exareme.core.operatorLibrary.tpch.TPCHFilePartReader', " + "part='" + part
+                    + "', " + "memoryPercentage='60');\n");
             for (int t = 0; t < tables.length; ++t) {
                 netcatScript.append("cat " + tables[t] + ".out." + part +
-                    " | nc " +
-                    proxies[part].getEntityName().getIP() +
-                    " 40" + t + "" + part + " & \n");
+                        " | nc " +
+                        proxies[part].getEntityName().getIP() +
+                        " 40" + t + "" + part + " & \n");
             }
         }
         System.out.println(netcatScript);
@@ -76,7 +77,7 @@ public class TpchDistributor {
         // Create the manager
         manager = ArtManagerFactory.createRmiArtManager();
         manager.getRegistryManager()
-            .connectToRegistry(new EntityName("ArtRegistry", artRegistry, 1098));
+                .connectToRegistry(new EntityName("ArtRegistry", artRegistry, 1098));
         manager.getExecutionEngineManager().connectToExecutionEngine();
 
         // Create and Parse ART plan
@@ -97,13 +98,13 @@ public class TpchDistributor {
 
         sessionPlan.submitPlan(executionPlan);
         while (sessionPlan.getPlanSessionStatusManagerProxy().hasError() == false
-            && sessionPlan.getPlanSessionStatusManagerProxy().hasFinished() == false) {
+                && sessionPlan.getPlanSessionStatusManagerProxy().hasFinished() == false) {
             log.info("Completed: " + sessionPlan.getPlanSessionStatisticsManagerProxy().
-                getStatistics().operatorCompleted + " ops");
+                    getStatistics().operatorCompleted + " ops");
             Thread.sleep(10000);
         }
         log.info("Completed: " + sessionPlan.getPlanSessionStatisticsManagerProxy().
-            getStatistics().operatorCompleted + " ops");
+                getStatistics().operatorCompleted + " ops");
         for (Exception e : sessionPlan.getPlanSessionStatusManagerProxy().getErrorList()) {
             e.printStackTrace();
         }
@@ -131,7 +132,8 @@ class CloseSession extends Thread {
         this.stop = stop;
     }
 
-    @Override public void run() {
+    @Override
+    public void run() {
         if (stop == false) {
             return;
         }
