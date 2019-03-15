@@ -1,7 +1,6 @@
 package madgik.exareme.master.gateway.async.handler;
 
 import madgik.exareme.master.queryProcessor.composer.Composer;
-import madgik.exareme.master.queryProcessor.composer.ComposerException;
 import org.apache.http.HttpException;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
@@ -57,11 +56,6 @@ public class HttpAsyncMiningAlgorithmsHandler implements HttpAsyncRequestHandler
             throw new UnsupportedHttpVersionException(method + "not supported.");
         }
 
-        try {
-            response.setEntity(new NStringEntity(composer.getAlgorithms()));
-        } catch (ComposerException e) {
-            log.error(e);
-            throw new HttpException("Internal error");
-        }
+        response.setEntity(new NStringEntity(composer.getAlgorithms()));
     }
 }
