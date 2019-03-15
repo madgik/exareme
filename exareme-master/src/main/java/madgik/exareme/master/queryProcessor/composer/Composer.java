@@ -57,14 +57,9 @@ public class Composer {
         return instance;
     }
 
-
     public String getRepositoryPath() {
         return repoPath;
     }
-
-    /*public String getEndpoints() throws ComposerException {
-        return gson.toJson(algorithms.getEndpoints(), Algorithms.EndpointProperties[].class);
-    }*/
 
     public String getAlgorithms() throws ComposerException {
         return gson.toJson(algorithms.getAlgorithms(), Algorithms.AlgorithmProperties[].class);
@@ -162,6 +157,8 @@ public class Composer {
         // Get Variables
         List<String> variables = new ArrayList<>();
         List<String> filters = new ArrayList<>();
+
+
         /*
         for (String parameter : parameters.values()) {
             if(allowedParameters.contains(parameter)){

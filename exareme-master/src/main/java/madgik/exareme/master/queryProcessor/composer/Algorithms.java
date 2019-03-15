@@ -3,15 +3,16 @@ package madgik.exareme.master.queryProcessor.composer;
 import com.google.gson.Gson;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Objects;
 
 /**
  * Represent the mip-algorithms repository properties,
- * able to interact throw gson.
+ * able to interact through gson.
  *
  * @author alexpap
  */
@@ -36,16 +37,13 @@ public class Algorithms {
                 generic                     // other usage
             }
 
-            public ParameterProperties() {
-            }
-
-            ParameterProperties(ParameterProperties orig) {
+            ParameterProperties(@NotNull ParameterProperties orig) {
                 name = orig.name;
                 desc = orig.desc;
                 value = orig.value;
                 notBlank = orig.notBlank;
                 multiValue = orig.multiValue;
-
+                type = orig.type;
             }
 
             public String getName() {
@@ -91,18 +89,6 @@ public class Algorithms {
             local_global,               // exec global over the union of local results
             multiple_local_global,      // exec sequentially multiple local_global
             iterative                   // exec iterative algorithm
-        }
-
-        public enum AlgorithmVisualizationType {
-            piechart,
-            linechart,
-            clusterplot,
-            none
-        }
-
-        public enum AlgorithmStatus {
-            enabled,
-            disabled
         }
 
         private String name;
@@ -159,9 +145,9 @@ public class Algorithms {
          *
          * @param algorithmName                 the name of the algorithm
          * @return                              an AlgorithmProperties class with the default values
-         * @throws IOException
+         * @throws IOException                  when algorithm property file does not exist
          */
-        public static AlgorithmProperties loadAlgorithmProperties(String algorithmName)
+        private static AlgorithmProperties loadAlgorithmProperties(String algorithmName)
                 throws IOException {
 
             String algorithmPropertyFilePath = Composer.getInstance().getRepositoryPath() + algorithmName + "/properties.json";
@@ -182,7 +168,7 @@ public class Algorithms {
          *
          * @param inputContent  a HashMap with the properties
          * @return              algorithm properties
-         * @throws IOException
+         * @throws IOException  when algorithm property file does not exist
          */
         public static AlgorithmProperties createAlgorithmProperties(
                 HashMap<String, String> inputContent, String algorithmName) throws IOException {
@@ -195,7 +181,6 @@ public class Algorithms {
                 if (value == null) {
                     if (parameterProperties.getNotBlank()) {
                         // TODO Throw Exception
-                        throw new IOException("Exception");
                     }
                     value = "";
                 }
@@ -216,7 +201,7 @@ public class Algorithms {
             return algorithmProperties;
         }
 
-        public static HashMap<String, String> toHashMap(ParameterProperties[] parameterProperties) {
+        public static HashMap<String, String> toHashMap(@NotNull ParameterProperties[] parameterProperties) {
             HashMap<String, String> map = new HashMap<>();
             for (ParameterProperties algorithmParameter : parameterProperties) {
                 map.put(algorithmParameter.getName(), algorithmParameter.getValue());
@@ -232,7 +217,7 @@ public class Algorithms {
          * @param propertyValue       the updated value of the parameter property
          * @return true on success, false if the given {@code propertyName} hasn't been found
          */
-        public static boolean updateParameterProperty(AlgorithmProperties algorithmProperties,
+        public static boolean updateParameterProperty(@NotNull AlgorithmProperties algorithmProperties,
                                                       String propertyName,
                                                       String propertyValue) {
             for (ParameterProperties property :
@@ -243,23 +228,6 @@ public class Algorithms {
                 }
             }
             return false;
-        }
-
-        /**
-         * Copies the {@code src} {@code ParameterProperties[]} entries to {@code dst}.
-         *
-         * @param src the source parameter properties, not null
-         * @return a copy of the {@code src} parameter properties
-         */
-        public static ParameterProperties[] copyParameterProperties(ParameterProperties[] src) {
-            if (src == null)
-                return null;
-
-            ParameterProperties[] copy = new ParameterProperties[src.length];
-            for (int i = 0; i < src.length; i++) {
-                copy[i] = new ParameterProperties(src[i]);
-            }
-            return copy;
         }
     }
 
@@ -283,21 +251,21 @@ public class Algorithms {
         Algorithms algorithms = gson.fromJson(new BufferedReader(new FileReader(repoPath + "/properties.json")), Algorithms.class);
 
         // read per algorithm property.json
-        ArrayList<AlgorithmProperties> algs = new ArrayList<>();
-        for (File file : repoFile.listFiles(new FileFilter() {
+        ArrayList<AlgorithmProperties> algos = new ArrayList<>();
+        for (File file : Objects.requireNonNull(repoFile.listFiles(new FileFilter() {
             @Override
             public boolean accept(File pathname) {
-                return pathname.isDirectory() && !pathname.getName().startsWith(".") && !pathname.getName().contains("unit_tests") ? true : false;
+                return pathname.isDirectory() && !pathname.getName().startsWith(".") && !pathname.getName().contains("unit_tests");
             }
-        })) {
+        }))) {
             AlgorithmProperties algorithm =
                     gson.fromJson(
                             new BufferedReader(
                                     new FileReader(file.getAbsolutePath() + "/properties.json")),
                             AlgorithmProperties.class);
-            algs.add(algorithm);
+            algos.add(algorithm);
         }
-        algorithms.setAlgorithms(algs.toArray(new AlgorithmProperties[algs.size()]));
+        algorithms.setAlgorithms(algos.toArray(new AlgorithmProperties[0]));
 
         return algorithms;
     }
