@@ -1,9 +1,5 @@
 language: java
 
-env:
-  global:
-    - CC_TEST_REPORTER_ID=f4cad78464edd110ce856555a4dec1c70e1ea7002a299d3490859fae059ecbfe
-    
 before_install:
   - sudo apt-get install -y python-apsw
   - sudo pip install requests NumPy SciPy scikit-learn titus
@@ -16,5 +12,6 @@ before_script:
 script: mvn clean install -DskipTests=false
 
 after_script:
-  - ./cc-test-reporter format-coverage -d -t jacoco ./target/jacoco-ut/jacoco.xml
-  - ./cc-test-reporter upload-coverage -d
+  JACOCO_SOURCE_PATH=src/main/java 
+  ./cc-test-reporter format-coverage -d target/site/jacoco/jacoco.xml --input-type jacoco
+  ./cc-test-reporter upload-coverage -d
