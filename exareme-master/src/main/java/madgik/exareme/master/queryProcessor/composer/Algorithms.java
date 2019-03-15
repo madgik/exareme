@@ -37,13 +37,8 @@ public class Algorithms {
                 generic                     // other usage
             }
 
-            ParameterProperties(@NotNull ParameterProperties orig) {
-                name = orig.name;
-                desc = orig.desc;
-                value = orig.value;
-                notBlank = orig.notBlank;
-                multiValue = orig.multiValue;
-                type = orig.type;
+            public ParameterProperties(){
+
             }
 
             public String getName() {

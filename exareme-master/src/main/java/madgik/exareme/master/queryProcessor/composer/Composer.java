@@ -9,6 +9,7 @@ import madgik.exareme.utils.file.FileUtil;
 import madgik.exareme.utils.properties.AdpProperties;
 import madgik.exareme.worker.art.registry.ArtRegistryLocator;
 import org.apache.log4j.Logger;
+import org.jetbrains.annotations.Contract;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -34,25 +35,23 @@ import static madgik.exareme.master.engine.iterations.state.IterativeAlgorithmSt
 public class Composer {
 
     private static final Logger log = Logger.getLogger(Composer.class);
-
-    private Composer() {
-    }
-
     private static final Composer instance = new Composer();
-    private static String repoPath = null;
-    private static Algorithms algorithms = null;
+    private static String repoPath;
+    private static String DATA_DIRECTORY;
+    private static Algorithms algorithms;
     private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     static {
+        repoPath = AdpProperties.getGatewayProperties().getString("demo.repository.path");
+        DATA_DIRECTORY = AdpProperties.getGatewayProperties().getString("data.path");
         try {
-            repoPath = AdpProperties.getGatewayProperties().getString("demo.repository.path");
-            log.trace(repoPath);
             algorithms = Algorithms.createAlgorithms(repoPath);
         } catch (IOException e) {
             log.error("Unable to locate repository properties (*.json).", e);
         }
     }
 
+    @Contract(pure = true)
     public static Composer getInstance() {
         return instance;
     }
@@ -61,12 +60,32 @@ public class Composer {
         return repoPath;
     }
 
-    public String getAlgorithms() throws ComposerException {
+    public String getAlgorithms() {
         return gson.toJson(algorithms.getAlgorithms(), Algorithms.AlgorithmProperties[].class);
     }
 
-    public String getAlgorithmsProperties() throws ComposerException {
-        return gson.toJson(algorithms, Algorithms.class);
+    /**
+     * Creates the query that will run against the local dataset file to fetch the data
+     *
+     * @param variables will be used to select specific columns from the database
+     * @param filters   will be used to filter the results
+     * @return  a query for the local database
+     */
+    public String createLocalTableQuery(List<String> variables, List<String> filters) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("(select ");
+        for(String variable : variables){
+            builder.append(variable);
+            builder.append(",");
+        }
+        builder.deleteCharAt(builder.lastIndexOf(","));
+
+        builder.append(" from (file header:t file:" + DATA_DIRECTORY + "))");
+
+        log.info("Line 85 - createLocalTableQuery");
+        log.info(builder.toString());
+
+        return builder.toString();
     }
 
     /**
@@ -128,10 +147,10 @@ public class Composer {
      *                           supported or finally, if this method could not retrieve
      *                           ContainerProxies.
      */
-    public String composeVirtual(String repositoryPath, String qKey,
-                                 Algorithms.AlgorithmProperties algorithmProperties,
-                                 IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase,
-                                 int numberOfWorkers
+    private String composeVirtual(String repositoryPath, String qKey,
+                                  Algorithms.AlgorithmProperties algorithmProperties,
+                                  IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase,
+                                  int numberOfWorkers
     )
             throws ComposerException {
 
@@ -146,91 +165,36 @@ public class Composer {
 
         HashMap<String, String> parameters =
                 Algorithms.AlgorithmProperties.toHashMap(algorithmProperties.getParameters());
-        String localScriptPath =
-                repoPath + algorithmProperties.getName() + "/local.template.sql";
-        String localUpdateScriptPath =
-                repoPath + algorithmProperties.getName() + "/localupdate.template.sql";
-        String globalScriptPath =
-                repoPath + algorithmProperties.getName() + "/global.template.sql";
 
-        // TODO - Refactor maybe?
-        // Get Variables
+        // Get variables and filters from the algorithm parameters and use them to create the inputLocalTbl query
         List<String> variables = new ArrayList<>();
         List<String> filters = new ArrayList<>();
-
-
-        /*
-        for (String parameter : parameters.values()) {
-            if(allowedParameters.contains(parameter)){
-
-            }else{
-                // Throw Exception that wrong parameter was specified
-            }
-        }
-
-        ArrayList<String> allowedParameters = new ArrayList<String>(
-            Arrays.asList("filter", "variable", "column1", "columns", "column2", "groupings", "covariables", "dataset",
-            "x", "y", "descriptive_attributes", "target_attributes", "classname", "kfold", "testdataset"));
-
-
-        for (String inputVariable : inputVariables) {
-            if (parameters.containsKey(inputVariable)) {
-                String s = parameters.get(inputVariable);
-
-                if ("covariables".equals(inputVariable) || "groupings".equals(inputVariable)) {
-                    for (String s1 : s.split(",")) {
-                        variables.add(s1);
-                    }
-                } else if ("dataset".equals(inputVariable)) {
-                    variables.add("dataset");
-                } else if ("x".equals(inputVariable)) {
-                    for (String s1 : s.split("\\+|\\*")) {
-                        variables.add(s1);
-                    }
-                } else if ("y".equals(inputVariable)) {
-                    variables.add(s);
-                } else if ("columns".equals(inputVariable)) {
-                    for (String s1 : s.split(",")) {
-                        variables.add(s1);
-                    }
-                } else if ("target_attributes".equals(inputVariable)) {
-                    for (String s1 : s.split(",")) {
-                        variables.add(s1);
-                    }
-                } else if ("descriptive_attributes".equals(inputVariable)) {
-                    for (String s1 : s.split(",")) {
-                        variables.add(s1);
-                    }
-                } else if ("filter".equals(inputVariable)) {
-                    if (!s.isEmpty()) {
-                        String filter = " filter:";
-                        String filterVar = new Filter().getFilter(s);
-                        variables.add(filter + filterVar);
-                    }
-                } else if ("centers".equals(inputVariable)) {
-                    variables.add(s);
-                } else if ("classname".equals(inputVariable)) {
-                    variables.add(s);
-                } else if ("kfold".equals(inputVariable)) {
-                    variables.add(s);
-                } else if ("testdataset".equals(inputVariable)) {
-                    variables.add(s);
+        for (Algorithms.AlgorithmProperties.ParameterProperties parameter : algorithmProperties.getParameters()) {
+            if(parameter.getType() == Algorithms.AlgorithmProperties.ParameterProperties.ParameterType.database_parameter ) {
+                if (parameter.getMultiValue()) {
+                    variables.addAll(Arrays.asList(parameter.getValue().split("\\+|\\*,")));
                 } else {
-                    //if (!"dataset".equals(inputVariable))
-                    variables.add(s);
+                    variables.add(parameter.getValue());
                 }
+            }else if(parameter.getType() == Algorithms.AlgorithmProperties.ParameterProperties.ParameterType.filter ) {
+                filters.add(new Filter().getFilter(parameter.getValue()));
             }
         }
-        */
 
-        // TODO Add the toUDF function from Sofia
-        String inputLocalTbl = "toUDF function from Sofia";
-
-
+        String inputLocalTbl = createLocalTableQuery(variables,filters);
         parameters.put(ComposerConstants.inputLocalTblKey, inputLocalTbl);
 
         String outputGlobalTbl = "output_" + qKey;                                          //output_tbl
         parameters.put(ComposerConstants.outputGlobalTblKey, outputGlobalTbl);
+
+        // Assigning the proper identifier for the defaultDB
+        String dbIdentifier;
+        if (parameters.get(ComposerConstants.dbIdentifierKey) == null)
+            dbIdentifier = qKey;
+        else
+            dbIdentifier = parameters.get(ComposerConstants.dbIdentifierKey);
+        parameters.put(ComposerConstants.defaultDBKey,
+                HBPConstants.DEMO_DB_WORKING_DIRECTORY + dbIdentifier + "_defaultDB.db");
 
         if (iterativeAlgorithmPhase != null) {                                              //For iterative
             // Handle iterations specific logic, related to Composer
@@ -248,15 +212,12 @@ public class Composer {
                 parameters.remove(iterationsPropertyMaximumNumber);
         }
 
-        // Assigning the proper identifier for the defaultDB
-        String dbIdentifier;
-        if (parameters.get(ComposerConstants.dbIdentifierKey) == null)
-            dbIdentifier = qKey;
-        else
-            dbIdentifier = parameters.get(ComposerConstants.dbIdentifierKey);
-        parameters.put(ComposerConstants.defaultDBKey,
-                HBPConstants.DEMO_DB_WORKING_DIRECTORY + dbIdentifier + "_defaultDB.db");
-
+        String localScriptPath =
+                repoPath + algorithmProperties.getName() + "/local.template.sql";
+        String localUpdateScriptPath =
+                repoPath + algorithmProperties.getName() + "/localupdate.template.sql";
+        String globalScriptPath =
+                repoPath + algorithmProperties.getName() + "/global.template.sql";
         switch (algorithmProperties.getType()) {
 
             case local:
@@ -342,7 +303,6 @@ public class Composer {
                     parameters.remove(ComposerConstants.inputLocalTblKey);
                     parameters.put(ComposerConstants.inputGlobalTblKey, "input_global_tbl");
                 }
-
 
                 dflScript.append(String
                         .format("\nusing input_global_tbl \ndistributed create table %s as external \n",
@@ -452,15 +412,13 @@ public class Composer {
             String repositoryPath,
             HashMap<String, String> parameters,
             IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase)
-            throws ComposerException {
+    {
 
         StringBuilder dflScript = new StringBuilder();
 
         String algorithmKey = parameters.get(ComposerConstants.algorithmKey);
         boolean isTmp = Boolean.valueOf(parameters.get(ComposerConstants.isTmpKey));
-        String inputLocalTbl = parameters.get(ComposerConstants.inputLocalTblKey);
         String outputGlobalTbl = parameters.get(ComposerConstants.outputGlobalTblKey);
-        String prvOutputGlobalTbl = parameters.get(ComposerConstants.outputPrvGlobalTblKey);
         String algorithmIterstr = parameters.get(ComposerConstants.algorithmIterKey);
 
         int algorithmIter = Integer.valueOf(algorithmIterstr);

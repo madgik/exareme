@@ -77,19 +77,19 @@ public class IterationsHandlerDFLUtils {
         // Create parameterProperties array with previousPhaseOutputTbl parameter needed for step
         // and finalize iterative phases. This parameter's value is a "variable" in the format
         // ${variable_name}, which will be replaced with StrSubstitutor, during each phase.
-        ArrayList<Algorithms.ParameterProperties> parameterPropertiesArrayList =
+        ArrayList<Algorithms.AlgorithmProperties.ParameterProperties> parameterPropertiesArrayList =
                 new ArrayList<>(Arrays.asList(algorithmProperties.getParameters()));
 
-        Algorithms.ParameterProperties previousPhaseOutputTblParameter =
-                new Algorithms.ParameterProperties();
+        Algorithms.AlgorithmProperties.ParameterProperties previousPhaseOutputTblParameter =
+                new Algorithms.AlgorithmProperties.ParameterProperties();
         previousPhaseOutputTblParameter.setName(
                 IterationsConstants.previousPhaseOutputTblVariableName);
         previousPhaseOutputTblParameter.setValue(previousPhaseOutputTblPlaceholder);
 
         parameterPropertiesArrayList.add(previousPhaseOutputTblParameter);
-        Algorithms.ParameterProperties[] parameterPropertiesInclPreviousPhaseOutputTbl =
+        Algorithms.AlgorithmProperties.ParameterProperties[] parameterPropertiesInclPreviousPhaseOutputTbl =
                 parameterPropertiesArrayList.toArray(
-                        new Algorithms.ParameterProperties[parameterPropertiesArrayList.size()]);
+                        new Algorithms.AlgorithmProperties.ParameterProperties[parameterPropertiesArrayList.size()]);
 
         // ------------------------------------------
         // Iterating through each iterative phase and:
@@ -137,7 +137,7 @@ public class IterationsHandlerDFLUtils {
 
             // Set algorithmProperties.Parameters to the ones containing previousPhaseOutputTbl
             // parameter (required for execnselect of step/finalize phases)
-            Algorithms.ParameterProperties parameterPropertiesBackup[] =
+            Algorithms.AlgorithmProperties.ParameterProperties parameterPropertiesBackup[] =
                     algorithmProperties.getParameters();
             if (phase.equals(IterativeAlgorithmState.IterativeAlgorithmPhasesModel.step) ||
                     phase.equals(IterativeAlgorithmState.IterativeAlgorithmPhasesModel.finalize))

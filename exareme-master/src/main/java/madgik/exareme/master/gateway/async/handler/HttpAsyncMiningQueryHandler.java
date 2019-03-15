@@ -182,7 +182,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         int numberOfContainers = usedContainerProxies.length;
         log.debug("Containers: " + numberOfContainers);
         log.debug("Containers: " + new Gson().toJson(usedContainersIPs));
-        String qKey = "query_" + algorithmName + "_" + String.valueOf(System.currentTimeMillis());
+        String qKey = "query_" + algorithmName + "_" + System.currentTimeMillis();
 
         try {
             String dfl;
@@ -269,7 +269,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 }
                 boolean containerResponded = false;
                 for (ContainerProxy containerProxy : ArtRegistryLocator.getArtRegistryProxy().getContainers()) {
-                    if (containerProxy.getEntityName().getIP().equals(containerIP))
+                    if (containerProxy.getEntityName().getIP().equals(containerIP)) {
                         try {
                             ContainerProxy tmpContainerProxy = ArtRegistryLocator.getArtRegistryProxy()
                                     .lookupContainer(containerProxy.getEntityName());
@@ -278,6 +278,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                         } catch (Exception e) {
                             log.error("Container connection error: " + e);
                         }
+                    }
                 }
                 log.debug("Container responded: " + containerResponded);
                 if (!containerResponded) {
