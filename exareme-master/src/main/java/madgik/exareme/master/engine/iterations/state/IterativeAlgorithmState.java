@@ -119,7 +119,7 @@ public class IterativeAlgorithmState {
         this.adpDBClient = adpDBClient;
         this.algorithmProperties = algorithmProperties;
         algorithmPropertiesMap =
-                AlgorithmsProperties.AlgorithmProperties.toHashMap(algorithmProperties);
+                AlgorithmsProperties.AlgorithmProperties.toHashMap(algorithmProperties.getParameters());
         setUpPropertyFields();
 
         // State related fields initialization

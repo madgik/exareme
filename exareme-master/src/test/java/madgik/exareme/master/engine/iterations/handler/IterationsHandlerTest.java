@@ -51,7 +51,7 @@ public class IterationsHandlerTest {
 
         algorithmProperties = AlgorithmsProperties.AlgorithmProperties.createAlgorithmProperties(
                 IterationsTestGenericUtils.prepareParameterProperties(
-                        algorithmName, "true", "2"));
+                        algorithmName, "true", "2"),algorithmName);
 
     }
 

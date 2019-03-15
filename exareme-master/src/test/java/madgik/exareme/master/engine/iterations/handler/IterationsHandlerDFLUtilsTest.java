@@ -72,7 +72,7 @@ public class IterationsHandlerDFLUtilsTest {
         algorithmName = SELECT_OK_ITERATIVE;
         algorithmProperties = AlgorithmsProperties.AlgorithmProperties.createAlgorithmProperties(
                 IterationsTestGenericUtils.prepareParameterProperties(
-                        algorithmName, "true", "2"));
+                        algorithmName, "true", "2"),algorithmName);
 
         // Mimicking IterationsHandler first steps:
         String algorithmKey = generateAlgorithmKey(algorithmProperties);
@@ -104,7 +104,7 @@ public class IterationsHandlerDFLUtilsTest {
         algorithmName = SAMPLE_ITERATIVE;
         algorithmProperties = AlgorithmsProperties.AlgorithmProperties.createAlgorithmProperties(
                 IterationsTestGenericUtils.prepareParameterProperties(
-                        algorithmName, "false", "2"));
+                        algorithmName, "false", "2"),algorithmName);
 
         // Mimicking IterationsHandler first steps:
         algorithmKey = generateAlgorithmKey(algorithmProperties);
@@ -139,7 +139,7 @@ public class IterationsHandlerDFLUtilsTest {
         algorithmName = SELECT_OK_ITERATIVE_ERRONEOUS_TERM_COND;
         algorithmProperties = AlgorithmsProperties.AlgorithmProperties.createAlgorithmProperties(
                 IterationsTestGenericUtils.prepareParameterProperties(
-                        algorithmName, "false", "2"));
+                        algorithmName, "false", "2"),algorithmName);
 
         // Mimicking IterationsHandler first steps:
         String algorithmKey = generateAlgorithmKey(algorithmProperties);
@@ -175,7 +175,7 @@ public class IterationsHandlerDFLUtilsTest {
         algorithmName = SAMPLE_ITERATIVE;
         algorithmProperties = AlgorithmsProperties.AlgorithmProperties.createAlgorithmProperties(
                 IterationsTestGenericUtils.prepareParameterProperties(
-                        algorithmName, "true", "2"));
+                        algorithmName, "true", "2"),algorithmName);
 
         // Mimicking IterationsHandler first steps:
         String algorithmKey = generateAlgorithmKey(algorithmProperties);

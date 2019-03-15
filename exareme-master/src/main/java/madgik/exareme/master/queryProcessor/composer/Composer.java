@@ -34,9 +34,6 @@ import static madgik.exareme.master.engine.iterations.state.IterativeAlgorithmSt
 public class Composer {
 
     private static final Logger log = Logger.getLogger(Composer.class);
-    private static String[] inputVariables = new String[]{
-            "filter", "variable", "column1", "columns", "column2", "groupings", "covariables", "dataset",
-            "x", "y", "descriptive_attributes", "target_attributes", "classname", "kfold", "testdataset"};
 
     private Composer() {
     }
@@ -46,15 +43,15 @@ public class Composer {
     private static AlgorithmsProperties algorithms = null;
     private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-    static {
+    /*static {
         try {
             repoPath = AdpProperties.getGatewayProperties().getString("demo.repository.path");
             log.trace(repoPath);
-            algorithms = AlgorithmsProperties.createAlgorithms(repoPath);
+            //algorithms = AlgorithmsProperties.createAlgorithms(repoPath);
         } catch (IOException e) {
             log.error("Unable to locate repository properties (*.json).", e);
         }
-    }
+    }*/
 
     public static Composer getInstance() {
         return instance;
@@ -92,11 +89,10 @@ public class Composer {
      */
     public String composeVirtual(String qKey,
                                  AlgorithmsProperties.AlgorithmProperties algorithmProperties,
-                                 String query,
                                  IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase
     ) throws ComposerException {
         try {
-            return composeVirtual(null, qKey, algorithmProperties, query, iterativeAlgorithmPhase,
+            return composeVirtual(null, qKey, algorithmProperties, iterativeAlgorithmPhase,
                     ArtRegistryLocator.getArtRegistryProxy() == null ? 0 : ArtRegistryLocator.getArtRegistryProxy().getContainers().length);
         } catch (RemoteException e) {
             throw new ComposerException(e.getMessage());
@@ -105,11 +101,10 @@ public class Composer {
 
     public String composeVirtual(String repositoryPath, String qKey,
                                  AlgorithmsProperties.AlgorithmProperties algorithmProperties,
-                                 String query,
                                  IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase
     ) throws ComposerException {
         try {
-            return composeVirtual(repositoryPath, qKey, algorithmProperties, query, iterativeAlgorithmPhase,
+            return composeVirtual(repositoryPath, qKey, algorithmProperties, iterativeAlgorithmPhase,
                     ArtRegistryLocator.getArtRegistryProxy() == null ? 0 : ArtRegistryLocator.getArtRegistryProxy().getContainers().length);
         } catch (RemoteException e) {
             throw new ComposerException(e.getMessage());
@@ -118,11 +113,10 @@ public class Composer {
 
     public String composeVirtual(String qKey,
                                  AlgorithmsProperties.AlgorithmProperties algorithmProperties,
-                                 String query,
                                  IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase,
                                  int numberOfWorkers
     ) throws ComposerException {
-        return composeVirtual(null, qKey, algorithmProperties, query, iterativeAlgorithmPhase, numberOfWorkers);
+        return composeVirtual(null, qKey, algorithmProperties, iterativeAlgorithmPhase, numberOfWorkers);
     }
 
     /**
@@ -141,7 +135,6 @@ public class Composer {
      */
     public String composeVirtual(String repositoryPath, String qKey,
                                  AlgorithmsProperties.AlgorithmProperties algorithmProperties,
-                                 String query,
                                  IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase,
                                  int numberOfWorkers
     )
@@ -157,7 +150,7 @@ public class Composer {
             workingDir = generateWorkingDirectoryString(repositoryPath, qKey, iterativeAlgorithmPhase);
 
         HashMap<String, String> parameters =
-                AlgorithmsProperties.AlgorithmProperties.toHashMap(algorithmProperties);
+                AlgorithmsProperties.AlgorithmProperties.toHashMap(algorithmProperties.getParameters());
         String localScriptPath =
                 repoPath + algorithmProperties.getName() + "/local.template.sql";
         String localUpdateScriptPath =
@@ -167,8 +160,22 @@ public class Composer {
 
         // TODO - Refactor maybe?
         // Get Variables
-
         List<String> variables = new ArrayList<>();
+        List<String> filters = new ArrayList<>();
+        /*
+        for (String parameter : parameters.values()) {
+            if(allowedParameters.contains(parameter)){
+
+            }else{
+                // Throw Exception that wrong parameter was specified
+            }
+        }
+
+        ArrayList<String> allowedParameters = new ArrayList<String>(
+            Arrays.asList("filter", "variable", "column1", "columns", "column2", "groupings", "covariables", "dataset",
+            "x", "y", "descriptive_attributes", "target_attributes", "classname", "kfold", "testdataset"));
+
+
         for (String inputVariable : inputVariables) {
             if (parameters.containsKey(inputVariable)) {
                 String s = parameters.get(inputVariable);
@@ -217,10 +224,12 @@ public class Composer {
                 }
             }
         }
+        */
 
+        // TODO Combine the toUDF call into one
         String inputLocalTbl;
         if (variables.isEmpty())
-            inputLocalTbl = algorithms.getLocal_engine_default().toUDF(query);
+            inputLocalTbl = algorithms.getLocal_engine_default().toUDF(variables);
         else
             inputLocalTbl = algorithms.getLocal_engine_default().toUDF(variables);
         parameters.put(ComposerConstants.inputLocalTblKey, inputLocalTbl);
@@ -244,9 +253,14 @@ public class Composer {
                 parameters.remove(iterationsPropertyMaximumNumber);
         }
 
-        String dbIdentifier = parameters.get(ComposerConstants.dbIdentifierKey);
+        // Assigning the proper identifier for the defaultDB
+        String dbIdentifier;
+        if (parameters.get(ComposerConstants.dbIdentifierKey) == null)
+            dbIdentifier = qKey;
+        else
+            dbIdentifier = parameters.get(ComposerConstants.dbIdentifierKey);
         parameters.put(ComposerConstants.defaultDBKey,
-                HBPConstants.DEMO_DB_WORKING_DIRECTORY + dbIdentifier + "_defaultDB.db");       //defaultDB
+                HBPConstants.DEMO_DB_WORKING_DIRECTORY + dbIdentifier + "_defaultDB.db");
 
         switch (algorithmProperties.getType()) {
 

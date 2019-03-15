@@ -24,6 +24,17 @@ public class AlgorithmsProperties {
         private String name;
         private String desc;
         private String value;
+        private Boolean notBlank;
+        private Boolean multiValue;
+        private ParameterType type;
+
+        public enum ParameterType {
+            database_parameter,         // used for querying the database
+            filter,                     // used for filtering on the database input
+            dataset,                    // used for choosing database input
+            algorithm_parameter,        // used from the algorithm
+            generic                     // other usage
+        }
 
         public ParameterProperties() {
         }
@@ -32,6 +43,9 @@ public class AlgorithmsProperties {
             name = orig.name;
             desc = orig.desc;
             value = orig.value;
+            notBlank = orig.notBlank;
+            multiValue = orig.multiValue;
+
         }
 
         public String getName() {
@@ -57,6 +71,19 @@ public class AlgorithmsProperties {
         public void setValue(String value) {
             this.value = value;
         }
+
+        public Boolean getNotBlank() { return notBlank; }
+
+        public void setNotBlank(Boolean notBlank) { this.notBlank = notBlank; }
+
+        public Boolean getMultiValue() { return multiValue; }
+
+        public void setMultiValue(Boolean multiValue) { this.multiValue = multiValue; }
+
+        public ParameterType getType() { return type; }
+
+        public void setType(ParameterType type) { this.type = type; }
+
     }
 
     public static class AlgorithmProperties {
@@ -130,85 +157,71 @@ public class AlgorithmsProperties {
             this.parameters = parameters;
         }
 
-        public static AlgorithmProperties createAlgorithmProperties(String algorithmPropertyFilePath)
+        /**
+         * Initializes the algorithm properties with the values from it's properties.json file
+         *
+         * @param algorithmName                 the name of the algorithm
+         * @return                              an AlgorithmProperties class with the default values
+         * @throws IOException
+         */
+        public static AlgorithmProperties loadAlgorithmProperties(String algorithmName)
                 throws IOException {
+
+            String algorithmPropertyFilePath = Composer.getInstance().getRepositoryPath() + algorithmName + "/properties.json";
 
             File propertyFile = new File(algorithmPropertyFilePath);
             if (!propertyFile.exists())
-                throw new IOException("Algorithm property file does not exits.");
+                throw new IOException("Algorithm property file does not exist.");
 
             Gson gson = new Gson();
             return gson.fromJson(FileUtils.readFileToString(propertyFile), AlgorithmProperties.class);
         }
 
-        public static AlgorithmProperties copyAlgorithmProperties(AlgorithmProperties src) {
-            AlgorithmProperties copyAlgorithmProperties = new AlgorithmProperties();
-            copyAlgorithmProperties.setName(src.getName());
-            copyAlgorithmProperties.setDesc(src.getDesc());
-            copyAlgorithmProperties.setResponseContentType(src.getResponseContentType());
-            copyAlgorithmProperties.setParameters(copyParameterProperties(src.getParameters()));
-            return copyAlgorithmProperties;
-        }
-
+        /**
+         * Initializes the AlgorithmProperties from the properties.json file
+         *  and the ParameterProperties of the algorithm from the inputContent.
+         *  It also checks if the parameter values given from the inputContent
+         *   match with the types specified in the properties.json
+         *
+         * @param inputContent  a HashMap with the properties
+         * @return              algorithm properties
+         * @throws IOException
+         */
         public static AlgorithmProperties createAlgorithmProperties(
-                HashMap<String, String> inputContent) throws IOException {
+                HashMap<String, String> inputContent, String algorithmName) throws IOException {
 
-            String algorithm_name = inputContent.get(ComposerConstants.algorithmKey);
-            String path = Composer.getInstance().getRepositoryPath() + algorithm_name + "/properties.json";
+            AlgorithmProperties algorithmProperties =
+                    AlgorithmProperties.loadAlgorithmProperties(algorithmName);
 
-            AlgorithmProperties newAlgorithmParameters =
-                    AlgorithmProperties.createAlgorithmProperties(path);
-            //for(String s: inputContent.keySet()){
-            //    String key = s;
-            //    String val = inputContent.get(s);
-            //log.info("Before "+key+"="+val);
-            //}
-            for (ParameterProperties algorithmParameter : newAlgorithmParameters.getParameters()) {
-
-                String value = inputContent.get(algorithmParameter.getName());
-                if (value != null) {
-                    //log.info("value= "+value);
-                    algorithmParameter.setValue(value);
-                    inputContent.remove(algorithmParameter.getName());
-                } else {
+            for (ParameterProperties parameterProperties : algorithmProperties.getParameters()) {
+                String value = inputContent.get(parameterProperties.getName());
+                if (value == null) {
+                    if (parameterProperties.getNotBlank()) {
+                        // TODO Throw Exception
+                        throw new IOException("blablbabafb");
+                    }
                     value = "";
-                    algorithmParameter.setValue(value);
-                    inputContent.remove(algorithmParameter.getName());
                 }
-            }
-            //for(String s: inputContent.keySet()){
-            //    String key = s;
-            //    String val = inputContent.get(s);
-            //log.info("After "+key+"="+val);
-            //}
-            if (!inputContent.isEmpty()) {
-
-                ArrayList<ParameterProperties> list = new ArrayList<>();
-                for (Map.Entry<String, String> entry : inputContent.entrySet()) {
-                    ParameterProperties properties = new ParameterProperties();
-                    properties.setName(entry.getKey());
-                    properties.setValue(entry.getValue());
-                    list.add(properties);
-                }
-                int n = newAlgorithmParameters.getParameters().length + list.size();
-                if (n > 0) {
-                    ParameterProperties[] parameterProperties = new ParameterProperties[n];
-                    for (int i = 0; i < newAlgorithmParameters.getParameters().length; i++) {
-                        parameterProperties[i] = newAlgorithmParameters.getParameters()[i];
-                    }
-                    for (int i = 0; i < list.size(); i++) {
-                        parameterProperties[newAlgorithmParameters.getParameters().length + i] = list.get(i);
-                    }
-                    newAlgorithmParameters.setParameters(parameterProperties);
-                }
+                parameterProperties.setValue(value);
             }
 
-            return newAlgorithmParameters;
+            log.debug("Line 197 - algorithmProperties");
+            for (ParameterProperties parameter : algorithmProperties.getParameters()) {
+                log.debug("Property name: " + parameter.name + ", value: " + parameter.value + ", notBlank: "
+                        + parameter.notBlank + ", multiValue: " + parameter.multiValue  + ", type: " + parameter.type);
+            }
+
+            log.debug("Line 203 - inputContent");
+            for (String s : inputContent.keySet()) {
+                log.debug("Input name: " + s + ", value: " + inputContent.get(s));
+            }
+
+            return algorithmProperties;
         }
 
-        public static HashMap<String, String> toHashMap(AlgorithmProperties algorithmProperties) {
+        public static HashMap<String, String> toHashMap(ParameterProperties[] parameterProperties) {
             HashMap<String, String> map = new HashMap<>();
-            for (ParameterProperties algorithmParameter : algorithmProperties.getParameters()) {
+            for (ParameterProperties algorithmParameter : parameterProperties) {
                 map.put(algorithmParameter.getName(), algorithmParameter.getValue());
             }
             return map;
@@ -322,7 +335,6 @@ public class AlgorithmsProperties {
             return builder.toString();
         }
     }
-
 
     public static class EndpointProperties {
 

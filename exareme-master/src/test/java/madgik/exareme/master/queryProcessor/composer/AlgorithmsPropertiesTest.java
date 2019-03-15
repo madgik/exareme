@@ -23,7 +23,7 @@ public class AlgorithmsPropertiesTest {
         Logger.getRootLogger().setLevel(Level.DEBUG);
     }
 
-    @Test
+    /*@Test
     public void testCreateAlgorithms() throws Exception {
         URL resource = AlgorithmsProperties.class.getResource("properties.json");
         String path = new File(resource.getFile()).getParentFile().getAbsolutePath();
@@ -33,5 +33,5 @@ public class AlgorithmsPropertiesTest {
         String result = new Gson().toJson(algorithms, AlgorithmsProperties.class);
         log.debug(result);
         assertNotNull(result, resource.toString());
-    }
+    }*/
 }

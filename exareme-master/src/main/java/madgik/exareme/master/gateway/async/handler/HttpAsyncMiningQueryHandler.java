@@ -19,7 +19,6 @@ import madgik.exareme.master.queryProcessor.composer.AlgorithmsProperties;
 import madgik.exareme.master.queryProcessor.composer.Composer;
 import madgik.exareme.master.queryProcessor.composer.ComposerConstants;
 import madgik.exareme.master.queryProcessor.composer.ComposerException;
-import madgik.exareme.utils.encoding.Base64Util;
 import madgik.exareme.utils.net.NetUtil;
 import madgik.exareme.utils.properties.AdpProperties;
 import madgik.exareme.worker.art.container.ContainerProxy;
@@ -108,6 +107,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         httpExchange.submitResponse(new BasicAsyncResponseProducer(response));
     }
 
+    // TODO Refactor as much as possible
     private void handleInternal(HttpRequest request, HttpResponse response, HttpContext context)
             throws HttpException, IOException {
 
@@ -115,6 +115,9 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         RequestLine requestLine = request.getRequestLine();
         String uri = requestLine.getUri();
         String method = requestLine.getMethod().toUpperCase(Locale.ENGLISH);
+        if (!"POST".equals(method)) {
+            throw new UnsupportedHttpVersionException(method + "not supported.");
+        }
 
         log.debug("Parsing content ...");
         String content = "";
@@ -124,20 +127,17 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             HttpEntity entity = ((HttpEntityEnclosingRequest) request).getEntity();
             content = EntityUtils.toString(entity);
         }
+
         HashMap<String, String> inputContent = new HashMap<String, String>();
         List<Map> parameters = new ArrayList();
         if (content != null && !content.isEmpty()) {
-//            ExaremeGatewayUtils.getValues(content, inputContent);
             parameters = new Gson().fromJson(content, List.class);
         }
-        if (!"POST".equals(method)) {
-            throw new UnsupportedHttpVersionException(method + "not supported.");
-        }
-        String query = null;
-        String algorithm = uri.substring(uri.lastIndexOf('/') + 1);
+
+        String algorithmName = uri.substring(uri.lastIndexOf('/') + 1);
 
         boolean format = false;
-        log.debug("Posting " + algorithm + " ...\n");
+        log.debug("Posting " + algorithmName + " ...\n");
         String[] usedDatasets = null;
 
         log.debug("All of the parameters: " + parameters);
@@ -145,24 +145,24 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             String name = (String) k.get("name");
             String value = (String) k.get("value");
             if (name == null || name.isEmpty() || value == null || value.isEmpty()) continue;
+
+            log.debug("Parameter in the json: ");
             log.debug(name + " = " + value);
-            if (name.equals("filter")) {
+
+            if (name.equals("filter"))
                 value = value.replaceAll("[^A-Za-z0-9,._*+><=&|(){}:\"\\[\\]]", "");
-            } else
+            else
                 value = value.replaceAll("[^A-Za-z0-9,._*+():\\-{}\\\"\\[\\]]", "");    // ><=&| we no more need those for filtering
             value = value.replaceAll("\\s+", "");
-            if ("local_pfa".equals(name)) {
-                Map map = new Gson().fromJson(value, Map.class);
-                query = (String) ((Map) ((Map) ((Map) map.get("cells")).get("query")).get("init")).get("sql");
-                value = Base64Util.simpleEncodeBase64(value);
-            } else if ("format".equals(name)) {
-                format = Boolean.parseBoolean(value);
-            } else if ("dataset".equals(name)) {
+
+            if ("dataset".equals(name)) {
                 usedDatasets = value.split(",");
             }
-            inputContent.put(name, value);
-            log.debug("Parameters in the json: ");
+
+            log.debug("Parameter after format: ");
             log.debug(name + " = " + value);
+
+            inputContent.put(name, value);
         }
 
         Set<String> usedContainersIPs = getUsedContainers(usedDatasets, response);
@@ -183,20 +183,15 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         int numberOfContainers = usedContainerProxies.length;
         log.debug("Containers: " + numberOfContainers);
         log.debug("Containers: " + new Gson().toJson(usedContainersIPs));
-        String qKey = "query_" + algorithm + "_" + String.valueOf(System.currentTimeMillis());
+        String qKey = "query_" + algorithmName + "_" + String.valueOf(System.currentTimeMillis());
 
         try {
             String dfl;
             AdpDBClientQueryStatus queryStatus;
 
-            inputContent.put(ComposerConstants.algorithmKey, algorithm);
-            if (inputContent.get(ComposerConstants.dbIdentifierKey) == null)
-                inputContent.put(ComposerConstants.dbIdentifierKey, qKey);
             AlgorithmsProperties.AlgorithmProperties algorithmProperties =
-                    AlgorithmsProperties.AlgorithmProperties.createAlgorithmProperties(inputContent);
+                    AlgorithmsProperties.AlgorithmProperties.createAlgorithmProperties(inputContent,algorithmName);
 
-            // Was initialized to "DataSerialization.ldjson", and that was followed with
-            // if(format) ds = DataSerialization.summary; but was commented-out.
             DataSerialization ds = DataSerialization.summary;
 
             if (algorithmProperties.getResponseContentType() != null) {
@@ -216,7 +211,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 response.setStatusCode(HttpStatus.SC_OK);
                 response.setEntity(entity);
             } else {
-                dfl = composer.composeVirtual(qKey, algorithmProperties, query, null, numberOfContainers);
+                dfl = composer.composeVirtual(qKey, algorithmProperties, null, numberOfContainers);
                 log.debug(dfl);
                 try {
                     Composer.persistDFLScriptToAlgorithmsDemoDirectory(
