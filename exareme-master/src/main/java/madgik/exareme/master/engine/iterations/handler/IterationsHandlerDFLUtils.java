@@ -2,7 +2,7 @@ package madgik.exareme.master.engine.iterations.handler;
 
 import madgik.exareme.master.engine.iterations.exceptions.IterationsFatalException;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
-import madgik.exareme.master.queryProcessor.composer.AlgorithmsProperties;
+import madgik.exareme.master.queryProcessor.composer.Algorithms;
 import madgik.exareme.master.queryProcessor.composer.Composer;
 import madgik.exareme.master.queryProcessor.composer.ComposerConstants;
 import madgik.exareme.master.queryProcessor.composer.ComposerException;
@@ -50,13 +50,13 @@ public class IterationsHandlerDFLUtils {
      * @param iterativeAlgorithmState the state of iterative algorithm, only used for reading data
      * @return the generated DFL scripts (one for each phase)
      * @throws IterationsFatalException If {@link Composer#composeVirtual} fails.
-     * @see AlgorithmsProperties.AlgorithmProperties
+     * @see Algorithms.AlgorithmProperties
      */
     static String[] prepareDFLScripts(
             String demoCurrentAlgorithmDir,
             String algorithmKey,
             Composer composer,
-            AlgorithmsProperties.AlgorithmProperties algorithmProperties,
+            Algorithms.AlgorithmProperties algorithmProperties,
             IterativeAlgorithmState iterativeAlgorithmState) {
 
         String[] dflScripts = new String[
@@ -66,7 +66,7 @@ public class IterationsHandlerDFLUtils {
         // We're changing the algorithmProperties object type but the original is already saved
         // in the iterativeAlgorithmState.
         algorithmProperties.setType(
-                AlgorithmsProperties.AlgorithmProperties.AlgorithmType.multiple_local_global);
+                Algorithms.AlgorithmProperties.AlgorithmType.multiple_local_global);
 
         // ------------------------------------------
         // Preparing SQLUpdates baseline.
@@ -77,19 +77,19 @@ public class IterationsHandlerDFLUtils {
         // Create parameterProperties array with previousPhaseOutputTbl parameter needed for step
         // and finalize iterative phases. This parameter's value is a "variable" in the format
         // ${variable_name}, which will be replaced with StrSubstitutor, during each phase.
-        ArrayList<AlgorithmsProperties.ParameterProperties> parameterPropertiesArrayList =
+        ArrayList<Algorithms.ParameterProperties> parameterPropertiesArrayList =
                 new ArrayList<>(Arrays.asList(algorithmProperties.getParameters()));
 
-        AlgorithmsProperties.ParameterProperties previousPhaseOutputTblParameter =
-                new AlgorithmsProperties.ParameterProperties();
+        Algorithms.ParameterProperties previousPhaseOutputTblParameter =
+                new Algorithms.ParameterProperties();
         previousPhaseOutputTblParameter.setName(
                 IterationsConstants.previousPhaseOutputTblVariableName);
         previousPhaseOutputTblParameter.setValue(previousPhaseOutputTblPlaceholder);
 
         parameterPropertiesArrayList.add(previousPhaseOutputTblParameter);
-        AlgorithmsProperties.ParameterProperties[] parameterPropertiesInclPreviousPhaseOutputTbl =
+        Algorithms.ParameterProperties[] parameterPropertiesInclPreviousPhaseOutputTbl =
                 parameterPropertiesArrayList.toArray(
-                        new AlgorithmsProperties.ParameterProperties[parameterPropertiesArrayList.size()]);
+                        new Algorithms.ParameterProperties[parameterPropertiesArrayList.size()]);
 
         // ------------------------------------------
         // Iterating through each iterative phase and:
@@ -101,7 +101,7 @@ public class IterationsHandlerDFLUtils {
 
             // Update the output tbl name for each phase, for having a consistent naming scheme
             // for each iterative phase.
-            if (!AlgorithmsProperties.AlgorithmProperties.updateParameterProperty(
+            if (!Algorithms.AlgorithmProperties.updateParameterProperty(
                     algorithmProperties,
                     ComposerConstants.outputGlobalTblKey,
                     generateIterativePhaseOutputTblName(
@@ -137,7 +137,7 @@ public class IterationsHandlerDFLUtils {
 
             // Set algorithmProperties.Parameters to the ones containing previousPhaseOutputTbl
             // parameter (required for execnselect of step/finalize phases)
-            AlgorithmsProperties.ParameterProperties parameterPropertiesBackup[] =
+            Algorithms.ParameterProperties parameterPropertiesBackup[] =
                     algorithmProperties.getParameters();
             if (phase.equals(IterativeAlgorithmState.IterativeAlgorithmPhasesModel.step) ||
                     phase.equals(IterativeAlgorithmState.IterativeAlgorithmPhasesModel.finalize))
@@ -146,7 +146,7 @@ public class IterationsHandlerDFLUtils {
             // Termination condition is a special case of "local", due to the different
             // template sql filename.
             if (phase.equals(termination_condition))
-                algorithmProperties.setType(AlgorithmsProperties.AlgorithmProperties.AlgorithmType.iterative);
+                algorithmProperties.setType(Algorithms.AlgorithmProperties.AlgorithmType.iterative);
 
             try {
                 dflScripts[dflScriptIdx++] =
@@ -170,7 +170,7 @@ public class IterationsHandlerDFLUtils {
             if (phase.equals(
                     termination_condition))
                 algorithmProperties.setType(
-                        AlgorithmsProperties.AlgorithmProperties.AlgorithmType.multiple_local_global);
+                        Algorithms.AlgorithmProperties.AlgorithmType.multiple_local_global);
         }
 
         return dflScripts;

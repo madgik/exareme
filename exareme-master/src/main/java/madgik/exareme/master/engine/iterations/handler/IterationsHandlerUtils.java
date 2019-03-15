@@ -1,7 +1,7 @@
 package madgik.exareme.master.engine.iterations.handler;
 
 import madgik.exareme.common.consts.HBPConstants;
-import madgik.exareme.master.queryProcessor.composer.AlgorithmsProperties;
+import madgik.exareme.master.queryProcessor.composer.Algorithms;
 import org.apache.log4j.Logger;
 
 /**
@@ -19,7 +19,7 @@ public class IterationsHandlerUtils {
      * @param algorithmProperties the algorithm's properties object
      * @return a unique algorithm key.
      */
-    static String generateAlgorithmKey(AlgorithmsProperties.AlgorithmProperties algorithmProperties) {
+    static String generateAlgorithmKey(Algorithms.AlgorithmProperties algorithmProperties) {
         return algorithmProperties.getName() + "_" + String.valueOf(System.currentTimeMillis());
     }
 

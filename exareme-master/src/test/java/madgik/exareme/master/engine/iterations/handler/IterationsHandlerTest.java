@@ -7,7 +7,7 @@ import madgik.exareme.master.engine.iterations.IterationsTestGenericUtils;
 import madgik.exareme.master.engine.iterations.state.IterationsStateManager;
 import madgik.exareme.master.engine.iterations.state.IterationsStateManagerImpl;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
-import madgik.exareme.master.queryProcessor.composer.AlgorithmsProperties;
+import madgik.exareme.master.queryProcessor.composer.Algorithms;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.junit.Before;
@@ -33,7 +33,7 @@ public class IterationsHandlerTest {
     private static final Logger log = Logger.getLogger(IterationsHandlerTest.class);
 
     private static final String algorithmName = "SAMPLE_ITERATIVE";
-    private AlgorithmsProperties.AlgorithmProperties algorithmProperties;
+    private Algorithms.AlgorithmProperties algorithmProperties;
     private IterationsHandler handler;
     private IterationsStateManager stateManager;
 
@@ -49,7 +49,7 @@ public class IterationsHandlerTest {
         handler = IterationsHandler.getInstance();
         stateManager = IterationsStateManagerImpl.getInstance();
 
-        algorithmProperties = AlgorithmsProperties.AlgorithmProperties.createAlgorithmProperties(
+        algorithmProperties = Algorithms.AlgorithmProperties.createAlgorithmProperties(
                 IterationsTestGenericUtils.prepareParameterProperties(
                         algorithmName, "true", "2"),algorithmName);
 

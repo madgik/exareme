@@ -9,7 +9,7 @@ import madgik.exareme.master.engine.AdpDBManager;
 import madgik.exareme.master.engine.AdpDBManagerLocator;
 import madgik.exareme.master.engine.iterations.IterationsTestGenericUtils;
 import madgik.exareme.master.engine.iterations.state.exceptions.IterationsStateFatalException;
-import madgik.exareme.master.queryProcessor.composer.AlgorithmsProperties;
+import madgik.exareme.master.queryProcessor.composer.Algorithms;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -33,7 +33,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore("javax.management.*")
-@PrepareForTest(AlgorithmsProperties.AlgorithmProperties.class)
+@PrepareForTest(Algorithms.AlgorithmProperties.class)
 public class IterativeAlgorithmStateTest {
     private static final String algorithmName = "SAMPLE_ITERATIVE";
     private static AdpDBClient adpDBClient;
@@ -41,7 +41,7 @@ public class IterativeAlgorithmStateTest {
     @Rule
     public final ExpectedException expectedException = ExpectedException.none();
 
-    private AlgorithmsProperties.AlgorithmProperties algorithmPropertiesMock;
+    private Algorithms.AlgorithmProperties algorithmPropertiesMock;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -64,8 +64,8 @@ public class IterativeAlgorithmStateTest {
                 IterationsTestGenericUtils.prepareParameterProperties(
                         algorithmName, null, "3");
 
-        PowerMockito.mockStatic(AlgorithmsProperties.AlgorithmProperties.class);
-        when(AlgorithmsProperties.AlgorithmProperties.toHashMap(algorithmPropertiesMock.getParameters()))
+        PowerMockito.mockStatic(Algorithms.AlgorithmProperties.class);
+        when(Algorithms.AlgorithmProperties.toHashMap(algorithmPropertiesMock.getParameters()))
                 .thenReturn(parametersMap);
 
         new IterativeAlgorithmState(algorithmName, algorithmPropertiesMock, adpDBClient);
@@ -79,8 +79,8 @@ public class IterativeAlgorithmStateTest {
                 IterationsTestGenericUtils.prepareParameterProperties(
                         algorithmName, "yes", "3");
 
-        PowerMockito.mockStatic(AlgorithmsProperties.AlgorithmProperties.class);
-        when(AlgorithmsProperties.AlgorithmProperties.toHashMap(algorithmPropertiesMock.getParameters()))
+        PowerMockito.mockStatic(Algorithms.AlgorithmProperties.class);
+        when(Algorithms.AlgorithmProperties.toHashMap(algorithmPropertiesMock.getParameters()))
                 .thenReturn(parametersMap);
 
         new IterativeAlgorithmState(algorithmName, algorithmPropertiesMock, adpDBClient);
@@ -93,8 +93,8 @@ public class IterativeAlgorithmStateTest {
                 IterationsTestGenericUtils.prepareParameterProperties(
                         algorithmName, "true", null);
 
-        PowerMockito.mockStatic(AlgorithmsProperties.AlgorithmProperties.class);
-        when(AlgorithmsProperties.AlgorithmProperties.toHashMap(algorithmPropertiesMock.getParameters()))
+        PowerMockito.mockStatic(Algorithms.AlgorithmProperties.class);
+        when(Algorithms.AlgorithmProperties.toHashMap(algorithmPropertiesMock.getParameters()))
                 .thenReturn(parametersMap);
 
         new IterativeAlgorithmState(algorithmName, algorithmPropertiesMock, adpDBClient);
@@ -107,8 +107,8 @@ public class IterativeAlgorithmStateTest {
                 IterationsTestGenericUtils.prepareParameterProperties(
                         algorithmName, "true", "X");
 
-        PowerMockito.mockStatic(AlgorithmsProperties.AlgorithmProperties.class);
-        when(AlgorithmsProperties.AlgorithmProperties.toHashMap(algorithmPropertiesMock.getParameters()))
+        PowerMockito.mockStatic(Algorithms.AlgorithmProperties.class);
+        when(Algorithms.AlgorithmProperties.toHashMap(algorithmPropertiesMock.getParameters()))
                 .thenReturn(parametersMap);
 
         new IterativeAlgorithmState(algorithmName, algorithmPropertiesMock, adpDBClient);
@@ -122,8 +122,8 @@ public class IterativeAlgorithmStateTest {
                 IterationsTestGenericUtils.prepareParameterProperties(
                         algorithmName, "true", "3");
 
-        PowerMockito.mockStatic(AlgorithmsProperties.AlgorithmProperties.class);
-        when(AlgorithmsProperties.AlgorithmProperties.toHashMap(algorithmPropertiesMock.getParameters()))
+        PowerMockito.mockStatic(Algorithms.AlgorithmProperties.class);
+        when(Algorithms.AlgorithmProperties.toHashMap(algorithmPropertiesMock.getParameters()))
                 .thenReturn(parametersMap);
 
         IterativeAlgorithmState ias =

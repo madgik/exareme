@@ -8,7 +8,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Represent the mip-algorithms repository properties,
@@ -16,77 +15,75 @@ import java.util.Map;
  *
  * @author alexpap
  */
-public class AlgorithmsProperties {
+public class Algorithms {
     private static final Logger log = Logger.getLogger(Composer.class);
 
-    public static class ParameterProperties {
-
-        private String name;
-        private String desc;
-        private String value;
-        private Boolean notBlank;
-        private Boolean multiValue;
-        private ParameterType type;
-
-        public enum ParameterType {
-            database_parameter,         // used for querying the database
-            filter,                     // used for filtering on the database input
-            dataset,                    // used for choosing database input
-            algorithm_parameter,        // used from the algorithm
-            generic                     // other usage
-        }
-
-        public ParameterProperties() {
-        }
-
-        ParameterProperties(ParameterProperties orig) {
-            name = orig.name;
-            desc = orig.desc;
-            value = orig.value;
-            notBlank = orig.notBlank;
-            multiValue = orig.multiValue;
-
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getDesc() {
-            return desc;
-        }
-
-        public void setDesc(String desc) {
-            this.desc = desc;
-        }
-
-        public String getValue() {
-            return value;
-        }
-
-        public void setValue(String value) {
-            this.value = value;
-        }
-
-        public Boolean getNotBlank() { return notBlank; }
-
-        public void setNotBlank(Boolean notBlank) { this.notBlank = notBlank; }
-
-        public Boolean getMultiValue() { return multiValue; }
-
-        public void setMultiValue(Boolean multiValue) { this.multiValue = multiValue; }
-
-        public ParameterType getType() { return type; }
-
-        public void setType(ParameterType type) { this.type = type; }
-
-    }
-
     public static class AlgorithmProperties {
+
+        public static class ParameterProperties {
+            private String name;
+            private String desc;
+            private String value;
+            private Boolean notBlank;
+            private Boolean multiValue;
+            private ParameterType type;
+
+            public enum ParameterType {
+                database_parameter,         // used for querying the database
+                filter,                     // used for filtering on the database input
+                dataset,                    // used for choosing database input
+                algorithm_parameter,        // used from the algorithm
+                generic                     // other usage
+            }
+
+            public ParameterProperties() {
+            }
+
+            ParameterProperties(ParameterProperties orig) {
+                name = orig.name;
+                desc = orig.desc;
+                value = orig.value;
+                notBlank = orig.notBlank;
+                multiValue = orig.multiValue;
+
+            }
+
+            public String getName() {
+                return name;
+            }
+
+            public void setName(String name) {
+                this.name = name;
+            }
+
+            public String getDesc() {
+                return desc;
+            }
+
+            public void setDesc(String desc) {
+                this.desc = desc;
+            }
+
+            public String getValue() {
+                return value;
+            }
+
+            public void setValue(String value) {
+                this.value = value;
+            }
+
+            public Boolean getNotBlank() { return notBlank; }
+
+            public void setNotBlank(Boolean notBlank) { this.notBlank = notBlank; }
+
+            public Boolean getMultiValue() { return multiValue; }
+
+            public void setMultiValue(Boolean multiValue) { this.multiValue = multiValue; }
+
+            public ParameterType getType() { return type; }
+
+            public void setType(ParameterType type) { this.type = type; }
+        }
 
         public enum AlgorithmType {
             local,                      // exec single node local
@@ -198,7 +195,7 @@ public class AlgorithmsProperties {
                 if (value == null) {
                     if (parameterProperties.getNotBlank()) {
                         // TODO Throw Exception
-                        throw new IOException("blablbabafb");
+                        throw new IOException("Exception");
                     }
                     value = "";
                 }
@@ -266,143 +263,7 @@ public class AlgorithmsProperties {
         }
     }
 
-    public enum EndpointStatus {
-        up,
-        down
-    }
-
-    public static class EndpointLocalEngine {
-
-        private String name;
-        private ParameterProperties[] parameters;
-        private String query;
-
-        public EndpointLocalEngine() {
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public ParameterProperties[] getParameters() {
-            return parameters;
-        }
-
-        public void setParameters(ParameterProperties[] parameters) {
-            this.parameters = parameters;
-        }
-
-        public String getQuery() {
-            return query;
-        }
-
-        public void setQuery(String query) {
-            this.query = query;
-        }
-
-        public String toUDF(String query) {
-            StringBuilder builder = new StringBuilder();
-            builder.append("(select __rid ,__colname ,__val from (file header:t file:/root/mip-algorithms/input_tbl.csv))");
-           /* builder.append(name);
-            builder.append(" ");
-            builder.append("))");*/
-            return builder.toString();
-        }
-
-        // TODO push filters efficiently
-        public String toUDF(List<String> variables) {
-            StringBuilder builder = new StringBuilder();
-            builder.append("(select __rid ,__colname ,__val from (file header:t file:/root/mip-algorithms/input_tbl.csv))");
-            /*builder.append(name);
-            builder.append(" ");
-
-            for (int i = 0; i < variables.size() - 1; i++) {
-                if(variables.get(i).contains("filter:")){
-                    builder.append(variables.get(i));
-                    builder.append(" ");
-                }
-                else{
-                    builder.append(variables.get(i));
-                    builder.append(",");
-                }
-            }
-            builder.append(variables.get(variables.size()-1));
-            builder.append("))");*/
-            return builder.toString();
-        }
-    }
-
-    public static class EndpointProperties {
-
-        private String name;
-        private String desc;
-        private String host;
-        private String port;
-        private EndpointStatus status;
-        private EndpointLocalEngine local_engine;
-
-        public EndpointProperties() {
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getDesc() {
-            return desc;
-        }
-
-        public void setDesc(String desc) {
-            this.desc = desc;
-        }
-
-        public String getHost() {
-            return host;
-        }
-
-        public void setHost(String host) {
-            this.host = host;
-        }
-
-        public String getPort() {
-            return port;
-        }
-
-        public void setPort(String port) {
-            this.port = port;
-        }
-
-        public EndpointStatus getStatus() {
-            return status;
-        }
-
-        public void setStatus(EndpointStatus status) {
-            this.status = status;
-        }
-
-        public EndpointLocalEngine getLocal_engine() {
-            return local_engine;
-        }
-
-        public void setLocal_engine(EndpointLocalEngine local_engine) {
-            this.local_engine = local_engine;
-        }
-    }
-
     private AlgorithmProperties[] algorithms;
-    private EndpointProperties[] endpoints;
-    private EndpointLocalEngine local_engine_default;
-
-    public AlgorithmsProperties() {
-    }
 
     public AlgorithmProperties[] getAlgorithms() {
         return algorithms;
@@ -412,30 +273,14 @@ public class AlgorithmsProperties {
         this.algorithms = algorithms;
     }
 
-    public EndpointProperties[] getEndpoints() {
-        return endpoints;
-    }
-
-    public void setEndpoints(EndpointProperties[] endpoints) {
-        this.endpoints = endpoints;
-    }
-
-    public EndpointLocalEngine getLocal_engine_default() {
-        return local_engine_default;
-    }
-
-    public void setLocal_engine_default(EndpointLocalEngine local_engine_default) {
-        this.local_engine_default = local_engine_default;
-    }
-
-    public static AlgorithmsProperties createAlgorithms(String repoPath) throws IOException {
+    public static Algorithms createAlgorithms(String repoPath) throws IOException {
 
         File repoFile = new File(repoPath);
         if (!repoFile.exists()) throw new IOException("Unable to locate property file.");
 
         // read property.json
         Gson gson = new Gson();
-        AlgorithmsProperties algorithms = gson.fromJson(new BufferedReader(new FileReader(repoPath + "/properties.json")), AlgorithmsProperties.class);
+        Algorithms algorithms = gson.fromJson(new BufferedReader(new FileReader(repoPath + "/properties.json")), Algorithms.class);
 
         // read per algorithm property.json
         ArrayList<AlgorithmProperties> algs = new ArrayList<>();
@@ -453,11 +298,7 @@ public class AlgorithmsProperties {
             algs.add(algorithm);
         }
         algorithms.setAlgorithms(algs.toArray(new AlgorithmProperties[algs.size()]));
-        for (EndpointProperties endpointProperties : algorithms.getEndpoints()) {
-            if (endpointProperties.getLocal_engine() == null) {
-                endpointProperties.setLocal_engine(algorithms.getLocal_engine_default());
-            }
-        }
+
         return algorithms;
     }
 }

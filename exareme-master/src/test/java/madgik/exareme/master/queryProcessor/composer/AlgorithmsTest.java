@@ -14,24 +14,24 @@ import static org.junit.Assert.assertNotNull;
 /**
  * @author alexpap
  */
-public class AlgorithmsPropertiesTest {
+public class AlgorithmsTest {
 
-    private static final Logger log = Logger.getLogger(AlgorithmsPropertiesTest.class);
+    private static final Logger log = Logger.getLogger(AlgorithmsTest.class);
 
     @Before
     public void setUp() throws Exception {
         Logger.getRootLogger().setLevel(Level.DEBUG);
     }
 
-    /*@Test
+    @Test
     public void testCreateAlgorithms() throws Exception {
-        URL resource = AlgorithmsProperties.class.getResource("properties.json");
+        URL resource = Algorithms.class.getResource("properties.json");
         String path = new File(resource.getFile()).getParentFile().getAbsolutePath();
         log.debug(path);
-        AlgorithmsProperties algorithms = AlgorithmsProperties
+        Algorithms algorithms = Algorithms
                 .createAlgorithms(path);
-        String result = new Gson().toJson(algorithms, AlgorithmsProperties.class);
+        String result = new Gson().toJson(algorithms, Algorithms.class);
         log.debug(result);
         assertNotNull(result, resource.toString());
-    }*/
+    }
 }

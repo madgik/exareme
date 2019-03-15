@@ -40,18 +40,18 @@ public class Composer {
 
     private static final Composer instance = new Composer();
     private static String repoPath = null;
-    private static AlgorithmsProperties algorithms = null;
+    private static Algorithms algorithms = null;
     private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-    /*static {
+    static {
         try {
             repoPath = AdpProperties.getGatewayProperties().getString("demo.repository.path");
             log.trace(repoPath);
-            //algorithms = AlgorithmsProperties.createAlgorithms(repoPath);
+            algorithms = Algorithms.createAlgorithms(repoPath);
         } catch (IOException e) {
             log.error("Unable to locate repository properties (*.json).", e);
         }
-    }*/
+    }
 
     public static Composer getInstance() {
         return instance;
@@ -62,16 +62,16 @@ public class Composer {
         return repoPath;
     }
 
-    public String getEndpoints() throws ComposerException {
-        return gson.toJson(algorithms.getEndpoints(), AlgorithmsProperties.EndpointProperties[].class);
-    }
+    /*public String getEndpoints() throws ComposerException {
+        return gson.toJson(algorithms.getEndpoints(), Algorithms.EndpointProperties[].class);
+    }*/
 
     public String getAlgorithms() throws ComposerException {
-        return gson.toJson(algorithms.getAlgorithms(), AlgorithmsProperties.AlgorithmProperties[].class);
+        return gson.toJson(algorithms.getAlgorithms(), Algorithms.AlgorithmProperties[].class);
     }
 
     public String getAlgorithmsProperties() throws ComposerException {
-        return gson.toJson(algorithms, AlgorithmsProperties.class);
+        return gson.toJson(algorithms, Algorithms.class);
     }
 
     /**
@@ -88,7 +88,7 @@ public class Composer {
      *                           ContainerProxies.
      */
     public String composeVirtual(String qKey,
-                                 AlgorithmsProperties.AlgorithmProperties algorithmProperties,
+                                 Algorithms.AlgorithmProperties algorithmProperties,
                                  IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase
     ) throws ComposerException {
         try {
@@ -100,7 +100,7 @@ public class Composer {
     }
 
     public String composeVirtual(String repositoryPath, String qKey,
-                                 AlgorithmsProperties.AlgorithmProperties algorithmProperties,
+                                 Algorithms.AlgorithmProperties algorithmProperties,
                                  IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase
     ) throws ComposerException {
         try {
@@ -112,7 +112,7 @@ public class Composer {
     }
 
     public String composeVirtual(String qKey,
-                                 AlgorithmsProperties.AlgorithmProperties algorithmProperties,
+                                 Algorithms.AlgorithmProperties algorithmProperties,
                                  IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase,
                                  int numberOfWorkers
     ) throws ComposerException {
@@ -134,7 +134,7 @@ public class Composer {
      *                           ContainerProxies.
      */
     public String composeVirtual(String repositoryPath, String qKey,
-                                 AlgorithmsProperties.AlgorithmProperties algorithmProperties,
+                                 Algorithms.AlgorithmProperties algorithmProperties,
                                  IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase,
                                  int numberOfWorkers
     )
@@ -150,7 +150,7 @@ public class Composer {
             workingDir = generateWorkingDirectoryString(repositoryPath, qKey, iterativeAlgorithmPhase);
 
         HashMap<String, String> parameters =
-                AlgorithmsProperties.AlgorithmProperties.toHashMap(algorithmProperties.getParameters());
+                Algorithms.AlgorithmProperties.toHashMap(algorithmProperties.getParameters());
         String localScriptPath =
                 repoPath + algorithmProperties.getName() + "/local.template.sql";
         String localUpdateScriptPath =
@@ -226,12 +226,10 @@ public class Composer {
         }
         */
 
-        // TODO Combine the toUDF call into one
-        String inputLocalTbl;
-        if (variables.isEmpty())
-            inputLocalTbl = algorithms.getLocal_engine_default().toUDF(variables);
-        else
-            inputLocalTbl = algorithms.getLocal_engine_default().toUDF(variables);
+        // TODO Add the toUDF function from Sofia
+        String inputLocalTbl = "toUDF function from Sofia";
+
+
         parameters.put(ComposerConstants.inputLocalTblKey, inputLocalTbl);
 
         String outputGlobalTbl = "output_" + qKey;                                          //output_tbl

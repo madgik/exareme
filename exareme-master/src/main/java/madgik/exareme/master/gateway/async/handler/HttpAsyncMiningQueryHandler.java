@@ -15,9 +15,8 @@ import madgik.exareme.master.engine.iterations.handler.NIterativeAlgorithmResult
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.master.gateway.ExaremeGatewayUtils;
 import madgik.exareme.master.gateway.async.handler.entity.NQueryResultEntity;
-import madgik.exareme.master.queryProcessor.composer.AlgorithmsProperties;
+import madgik.exareme.master.queryProcessor.composer.Algorithms;
 import madgik.exareme.master.queryProcessor.composer.Composer;
-import madgik.exareme.master.queryProcessor.composer.ComposerConstants;
 import madgik.exareme.master.queryProcessor.composer.ComposerException;
 import madgik.exareme.utils.net.NetUtil;
 import madgik.exareme.utils.properties.AdpProperties;
@@ -189,8 +188,8 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             String dfl;
             AdpDBClientQueryStatus queryStatus;
 
-            AlgorithmsProperties.AlgorithmProperties algorithmProperties =
-                    AlgorithmsProperties.AlgorithmProperties.createAlgorithmProperties(inputContent,algorithmName);
+            Algorithms.AlgorithmProperties algorithmProperties =
+                    Algorithms.AlgorithmProperties.createAlgorithmProperties(inputContent,algorithmName);
 
             DataSerialization ds = DataSerialization.summary;
 
@@ -200,7 +199,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
 
             // Bypass direct composer call in case of iterative algorithm.
             if (algorithmProperties.getType() ==
-                    AlgorithmsProperties.AlgorithmProperties.AlgorithmType.iterative) {
+                    Algorithms.AlgorithmProperties.AlgorithmType.iterative) {
 
                 final IterativeAlgorithmState iterativeAlgorithmState =
                         iterationsHandler.handleNewIterativeAlgorithmRequest(

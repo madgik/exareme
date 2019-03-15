@@ -7,7 +7,7 @@ import madgik.exareme.master.client.AdpDBClientQueryStatus;
 import madgik.exareme.master.engine.iterations.handler.IterationsConstants;
 import madgik.exareme.master.engine.iterations.handler.IterationsHandlerDFLUtils;
 import madgik.exareme.master.engine.iterations.state.exceptions.IterationsStateFatalException;
-import madgik.exareme.master.queryProcessor.composer.AlgorithmsProperties;
+import madgik.exareme.master.queryProcessor.composer.Algorithms;
 import org.apache.commons.lang3.text.StrSubstitutor;
 import org.apache.http.nio.IOControl;
 import org.apache.log4j.Logger;
@@ -45,7 +45,7 @@ public class IterativeAlgorithmState {
 
     // Fields -----------------------------------------------------------------------------------
     private String algorithmKey;
-    private AlgorithmsProperties.AlgorithmProperties algorithmProperties;
+    private Algorithms.AlgorithmProperties algorithmProperties;
     private HashMap<String, String> algorithmPropertiesMap;
     private String[] dflScripts;
     private final String iterationsDBPath;
@@ -109,7 +109,7 @@ public class IterativeAlgorithmState {
      */
     public IterativeAlgorithmState(
             String algorithmKey,
-            AlgorithmsProperties.AlgorithmProperties algorithmProperties,
+            Algorithms.AlgorithmProperties algorithmProperties,
             AdpDBClient adpDBClient) {
 
         this.algorithmKey = algorithmKey;
@@ -119,7 +119,7 @@ public class IterativeAlgorithmState {
         this.adpDBClient = adpDBClient;
         this.algorithmProperties = algorithmProperties;
         algorithmPropertiesMap =
-                AlgorithmsProperties.AlgorithmProperties.toHashMap(algorithmProperties.getParameters());
+                Algorithms.AlgorithmProperties.toHashMap(algorithmProperties.getParameters());
         setUpPropertyFields();
 
         // State related fields initialization
