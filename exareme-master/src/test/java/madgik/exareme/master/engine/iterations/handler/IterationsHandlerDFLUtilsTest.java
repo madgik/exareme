@@ -70,9 +70,9 @@ public class IterationsHandlerDFLUtilsTest {
         // Testing with [condition_query_provided=false] with a provided condition query in
         // termination_condition template file.
         algorithmName = SELECT_OK_ITERATIVE;
-        algorithmProperties = Algorithms.AlgorithmProperties.createAlgorithmProperties(
+        algorithmProperties = Algorithms.AlgorithmProperties.createAlgorithmProperties(algorithmName,
                 IterationsTestGenericUtils.prepareParameterProperties(
-                        algorithmName, "true", "2"),algorithmName);
+                        algorithmName, "true", "2"));
 
         // Mimicking IterationsHandler first steps:
         String algorithmKey = generateAlgorithmKey(algorithmProperties);
@@ -102,9 +102,9 @@ public class IterationsHandlerDFLUtilsTest {
         // Testing with [condition_query_provided=true] with no provided condition query in
         // termination_condition template file.
         algorithmName = SAMPLE_ITERATIVE;
-        algorithmProperties = Algorithms.AlgorithmProperties.createAlgorithmProperties(
+        algorithmProperties = Algorithms.AlgorithmProperties.createAlgorithmProperties(algorithmName,
                 IterationsTestGenericUtils.prepareParameterProperties(
-                        algorithmName, "false", "2"),algorithmName);
+                        algorithmName, "false", "2"));
 
         // Mimicking IterationsHandler first steps:
         algorithmKey = generateAlgorithmKey(algorithmProperties);
@@ -137,9 +137,9 @@ public class IterationsHandlerDFLUtilsTest {
         // Preparation phase ----------------------
         // [Ensure termination condition under its required directory exists]
         algorithmName = SELECT_OK_ITERATIVE_ERRONEOUS_TERM_COND;
-        algorithmProperties = Algorithms.AlgorithmProperties.createAlgorithmProperties(
+        algorithmProperties = Algorithms.AlgorithmProperties.createAlgorithmProperties(algorithmName,
                 IterationsTestGenericUtils.prepareParameterProperties(
-                        algorithmName, "false", "2"),algorithmName);
+                        algorithmName, "false", "2"));
 
         // Mimicking IterationsHandler first steps:
         String algorithmKey = generateAlgorithmKey(algorithmProperties);
@@ -173,9 +173,9 @@ public class IterationsHandlerDFLUtilsTest {
     public void ensureGeneratedTemplateFilesMatchHandwrittenOnes() throws Exception {
         // Preparation phase ----------------------
         algorithmName = SAMPLE_ITERATIVE;
-        algorithmProperties = Algorithms.AlgorithmProperties.createAlgorithmProperties(
+        algorithmProperties = Algorithms.AlgorithmProperties.createAlgorithmProperties(algorithmName,
                 IterationsTestGenericUtils.prepareParameterProperties(
-                        algorithmName, "true", "2"),algorithmName);
+                        algorithmName, "true", "2"));
 
         // Mimicking IterationsHandler first steps:
         String algorithmKey = generateAlgorithmKey(algorithmProperties);

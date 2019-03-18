@@ -99,20 +99,6 @@ public class IterationsHandlerDFLUtils {
         for (IterativeAlgorithmState.IterativeAlgorithmPhasesModel phase :
                 IterativeAlgorithmState.IterativeAlgorithmPhasesModel.values()) {
 
-            // Update the output tbl name for each phase, for having a consistent naming scheme
-            // for each iterative phase.
-            if (!Algorithms.AlgorithmProperties.updateParameterProperty(
-                    algorithmProperties,
-                    ComposerConstants.outputGlobalTblKey,
-                    generateIterativePhaseOutputTblName(
-                            IterationsConstants.iterationsOutputTblPrefix,
-                            algorithmKey,
-                            phase)
-            )) {
-                throw new IterationsFatalException("Failed to set output table name for iterative " +
-                        "phase: " + phase.name() + " of algorithm: " + iterativeAlgorithmState.toString());
-            }
-
             // Each update is applied to the latest global template script of a multiple local
             // global structure.
             File sqlTemplateFile;
@@ -456,7 +442,7 @@ public class IterationsHandlerDFLUtils {
      * @param algorithmKey    the iterative algorithm's key
      * @param iterativePhase  the iterative phase for which the table name is generated
      */
-    private static String generateIterativePhaseOutputTblName(
+    public static String generateIterativePhaseOutputTblName(
             String outputTblPrefix,
             String algorithmKey,
             IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativePhase) {

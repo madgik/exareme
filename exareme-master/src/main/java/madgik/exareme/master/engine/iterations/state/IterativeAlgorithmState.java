@@ -46,7 +46,7 @@ public class IterativeAlgorithmState {
     // Fields -----------------------------------------------------------------------------------
     private String algorithmKey;
     private Algorithms.AlgorithmProperties algorithmProperties;
-    private HashMap<String, String> algorithmPropertiesMap;
+    private HashMap<String, String> algorithmPropertiesParameters;
     private String[] dflScripts;
     private final String iterationsDBPath;
     /**
@@ -118,7 +118,7 @@ public class IterativeAlgorithmState {
                         + IterationsConstants.iterationsParameterIterDBValueSuffix;
         this.adpDBClient = adpDBClient;
         this.algorithmProperties = algorithmProperties;
-        algorithmPropertiesMap =
+        algorithmPropertiesParameters =
                 Algorithms.AlgorithmProperties.toHashMap(algorithmProperties.getParameters());
         setUpPropertyFields();
 
@@ -153,7 +153,7 @@ public class IterativeAlgorithmState {
         // Ensure conditionQueryProvided is provided in properties.json, then ensure its value is
         // true/false and finally, set the corresponding field.
         final String iterationsConditionQueryProvidedValue =
-                algorithmPropertiesMap.get(iterationsPropertyConditionQueryProvided);
+                algorithmPropertiesParameters.get(iterationsPropertyConditionQueryProvided);
         if (iterationsConditionQueryProvidedValue == null) {
             throw new IterationsStateFatalException("AlgorithmProperty \""
                     + iterationsPropertyConditionQueryProvided
@@ -172,7 +172,7 @@ public class IterativeAlgorithmState {
         // Ensure maxIterationsNumber is provided in properties.json, them ensure its value is
         // true/false and finally, set the corresponding field.
         final String iterationsMaxNumberVal =
-                algorithmPropertiesMap.get(iterationsPropertyMaximumNumber);
+                algorithmPropertiesParameters.get(iterationsPropertyMaximumNumber);
         if (iterationsMaxNumberVal == null) {
             throw new IterationsStateFatalException("AlgorithmProperty \""
                     + iterationsPropertyMaximumNumber

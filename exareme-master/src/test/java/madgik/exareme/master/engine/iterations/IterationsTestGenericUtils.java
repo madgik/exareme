@@ -49,6 +49,7 @@ public class IterationsTestGenericUtils {
                     iterationsMaximumNumber);
         inputContent.put(ComposerConstants.algorithmKey, algorithmName);
         inputContent.put(ComposerConstants.outputGlobalTblKey, "output");
+
         return inputContent;
     }
 

@@ -182,14 +182,14 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         int numberOfContainers = usedContainerProxies.length;
         log.debug("Containers: " + numberOfContainers);
         log.debug("Containers: " + new Gson().toJson(usedContainersIPs));
-        String qKey = "query_" + algorithmName + "_" + System.currentTimeMillis();
+        String algorithmKey = algorithmName + "_" + System.currentTimeMillis();
 
         try {
             String dfl;
             AdpDBClientQueryStatus queryStatus;
 
             Algorithms.AlgorithmProperties algorithmProperties =
-                    Algorithms.AlgorithmProperties.createAlgorithmProperties(inputContent,algorithmName);
+                    Algorithms.AlgorithmProperties.createAlgorithmProperties(algorithmName,inputContent);
 
             DataSerialization ds = DataSerialization.summary;
 
@@ -207,28 +207,29 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
 
                 BasicHttpEntity entity = new NIterativeAlgorithmResultEntity(
                         iterativeAlgorithmState, ds, ExaremeGatewayUtils.RESPONSE_BUFFER_SIZE);
+
                 response.setStatusCode(HttpStatus.SC_OK);
                 response.setEntity(entity);
             } else {
-                dfl = composer.composeVirtual(qKey, algorithmProperties, null, numberOfContainers);
+                dfl = composer.composeVirtual(algorithmKey, algorithmProperties, null, numberOfContainers);
                 log.debug(dfl);
                 try {
                     Composer.persistDFLScriptToAlgorithmsDemoDirectory(
-                            HBPConstants.DEMO_ALGORITHMS_WORKING_DIRECTORY + "/" + qKey
-                                    + "/" + qKey,
+                            HBPConstants.DEMO_ALGORITHMS_WORKING_DIRECTORY + "/" + algorithmKey
+                                    + "/" + algorithmKey,
                             dfl, null);
                 } catch (ComposerException e) {
                     // Ignoring error if failed to persist DFL Scripts - it's not something fatal.
                 }
                 AdpDBClientProperties clientProperties =
                         new AdpDBClientProperties(
-                                HBPConstants.DEMO_DB_WORKING_DIRECTORY + qKey,
+                                HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey,
                                 "", "", false, false,
                                 -1, 10);
                 clientProperties.setContainerProxies(usedContainerProxies);
                 AdpDBClient dbClient =
                         AdpDBClientFactory.createDBClient(manager, clientProperties);
-                queryStatus = dbClient.query(qKey, dfl);
+                queryStatus = dbClient.query(algorithmKey, dfl);
                 BasicHttpEntity entity = new NQueryResultEntity(queryStatus, ds,
                         ExaremeGatewayUtils.RESPONSE_BUFFER_SIZE);
                 response.setStatusCode(HttpStatus.SC_OK);

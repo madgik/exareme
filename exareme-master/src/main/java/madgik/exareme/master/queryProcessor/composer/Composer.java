@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import madgik.exareme.common.consts.HBPConstants;
 import madgik.exareme.master.engine.iterations.handler.IterationsConstants;
+import madgik.exareme.master.engine.iterations.handler.IterationsHandlerDFLUtils;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.utils.file.FileUtil;
 import madgik.exareme.utils.properties.AdpProperties;
@@ -135,7 +136,7 @@ public class Composer {
      * Composes the DFL script for the given algorithm properties and query.
      *
      * @param repositoryPath          the algorithm's repository path
-     * @param qKey                    the query key, or in general a key for the algorithm
+     * @param algorithmKey                    the query key, or in general a key for the algorithm
      * @param algorithmProperties     the algorithm properties instance
      * @param iterativeAlgorithmPhase in the case of iterative algorithms, this is one value of
      *                                {@link madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState.IterativeAlgorithmPhasesModel}
@@ -145,7 +146,7 @@ public class Composer {
      *                           supported or finally, if this method could not retrieve
      *                           ContainerProxies.
      */
-    private String composeVirtual(String repositoryPath, String qKey,
+    private String composeVirtual(String repositoryPath, String algorithmKey,
                                   Algorithms.AlgorithmProperties algorithmProperties,
                                   IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase,
                                   int numberOfWorkers
@@ -159,7 +160,7 @@ public class Composer {
             workingDir = generateWorkingDirectoryString(repositoryPath, algorithmProperties.getName(),
                     null);
         else
-            workingDir = generateWorkingDirectoryString(repositoryPath, qKey, iterativeAlgorithmPhase);
+            workingDir = generateWorkingDirectoryString(repositoryPath, algorithmKey, iterativeAlgorithmPhase);
 
         HashMap<String, String> parameters =
                 Algorithms.AlgorithmProperties.toHashMap(algorithmProperties.getParameters());
@@ -182,24 +183,22 @@ public class Composer {
         String inputLocalTbl = createLocalTableQuery(variables,filters);
         parameters.put(ComposerConstants.inputLocalTblKey, inputLocalTbl);
 
-        String outputGlobalTbl = "output_" + qKey;                                          //output_tbl
-        parameters.put(ComposerConstants.outputGlobalTblKey, outputGlobalTbl);
-
         // Assigning the proper identifier for the defaultDB
         String dbIdentifier;
         if (parameters.get(ComposerConstants.dbIdentifierKey) == null)
-            dbIdentifier = qKey;
+            dbIdentifier = algorithmKey;
         else
             dbIdentifier = parameters.get(ComposerConstants.dbIdentifierKey);
         parameters.put(ComposerConstants.defaultDBKey,
                 HBPConstants.DEMO_DB_WORKING_DIRECTORY + dbIdentifier + "_defaultDB.db");
 
+        String outputGlobalTbl;
         if (iterativeAlgorithmPhase != null) {                                              //For iterative
             // Handle iterations specific logic, related to Composer
             // 1. Create iterationsDB algorithm parameter.
             // qKey is actually algorithm key in the case of iterative algorithms.
             parameters.put(IterationsConstants.iterationsParameterIterDBKey,
-                    generateIterationsDBName(qKey));                                         //iterationDB
+                    generateIterationsDBName(algorithmKey));                                         //iterationDB
 
             // 2. Remove unneeded parameter
             parameters.remove(iterationsPropertyConditionQueryProvided);
@@ -208,7 +207,17 @@ public class Composer {
             if (!iterativeAlgorithmPhase.equals(
                     IterativeAlgorithmState.IterativeAlgorithmPhasesModel.termination_condition))
                 parameters.remove(iterationsPropertyMaximumNumber);
+
+            outputGlobalTbl = IterationsHandlerDFLUtils.generateIterativePhaseOutputTblName(
+                                    IterationsConstants.iterationsOutputTblPrefix,
+                                    algorithmKey,
+                                    iterativeAlgorithmPhase
+                                    );
+        }else{
+            outputGlobalTbl = "output_" + algorithmKey;
         }
+        parameters.put(ComposerConstants.outputGlobalTblKey, outputGlobalTbl);
+
 
         String localScriptPath =
                 repoPath + algorithmProperties.getName() + "/local.template.sql";
@@ -339,7 +348,7 @@ public class Composer {
                          * algorithm execution.
                          */
                         parameters.put(ComposerConstants.algorithmKey,
-                                "/" + qKey
+                                "/" + algorithmKey
                                         + "/" + iterativeAlgorithmPhase.name()
                                         + "/" + listFiles[i].getName());
                         /*
@@ -356,7 +365,7 @@ public class Composer {
                         if (iterativeAlgorithmPhase.equals(init) && !listFiles[i].getName().equals("2")) {
                             dflScript.append(String.format("distributed create temporary table createPathTempTable as virtual\n" +
                                             "select execprogram(null, 'mkdir', '-p', '%s') as C1;\n\n",
-                                    HBPConstants.DEMO_DB_WORKING_DIRECTORY + qKey));
+                                    HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey));
                         }
                     }
 

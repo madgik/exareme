@@ -155,8 +155,7 @@ public class Algorithms {
         }
 
         /**
-         * Initializes the AlgorithmProperties from the properties.json file
-         *  and the ParameterProperties of the algorithm from the inputContent.
+         * Initializes the AlgorithmProperties from the properties.json file.
          *  It also checks if the parameter values given from the inputContent
          *   match with the types specified in the properties.json
          *
@@ -165,7 +164,7 @@ public class Algorithms {
          * @throws IOException  when algorithm property file does not exist
          */
         public static AlgorithmProperties createAlgorithmProperties(
-                HashMap<String, String> inputContent, String algorithmName) throws IOException {
+                String algorithmName, HashMap<String, String> inputContent) throws IOException {
 
             AlgorithmProperties algorithmProperties =
                     AlgorithmProperties.loadAlgorithmProperties(algorithmName);
@@ -202,27 +201,6 @@ public class Algorithms {
                 map.put(algorithmParameter.getName(), algorithmParameter.getValue());
             }
             return map;
-        }
-
-        /**
-         * Updates the given {@code ParameterProperty} of the {@code algorithmProperties} argument.
-         *
-         * @param algorithmProperties the algorithm properties whose parameter will be updated
-         * @param propertyName        the name of the parameter property to be updated
-         * @param propertyValue       the updated value of the parameter property
-         * @return true on success, false if the given {@code propertyName} hasn't been found
-         */
-        public static boolean updateParameterProperty(AlgorithmProperties algorithmProperties,
-                                                      String propertyName,
-                                                      String propertyValue) {
-            for (ParameterProperties property :
-                    algorithmProperties.getParameters()) {
-                if (property.getName().equals(propertyName)) {
-                    property.setValue(propertyValue);
-                    return true;
-                }
-            }
-            return false;
         }
     }
 

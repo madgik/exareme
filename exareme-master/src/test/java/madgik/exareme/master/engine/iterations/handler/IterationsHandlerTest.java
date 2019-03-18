@@ -49,9 +49,9 @@ public class IterationsHandlerTest {
         handler = IterationsHandler.getInstance();
         stateManager = IterationsStateManagerImpl.getInstance();
 
-        algorithmProperties = Algorithms.AlgorithmProperties.createAlgorithmProperties(
+        algorithmProperties = Algorithms.AlgorithmProperties.createAlgorithmProperties(algorithmName,
                 IterationsTestGenericUtils.prepareParameterProperties(
-                        algorithmName, "true", "2"),algorithmName);
+                        algorithmName, "true", "2"));
 
     }
 
