@@ -9,7 +9,6 @@ import madgik.exareme.utils.file.FileUtil;
 import madgik.exareme.utils.properties.AdpProperties;
 import madgik.exareme.worker.art.registry.ArtRegistryLocator;
 import org.apache.log4j.Logger;
-import org.jetbrains.annotations.Contract;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -51,7 +50,6 @@ public class Composer {
         }
     }
 
-    @Contract(pure = true)
     public static Composer getInstance() {
         return instance;
     }

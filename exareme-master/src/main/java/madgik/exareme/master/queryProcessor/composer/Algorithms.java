@@ -176,6 +176,7 @@ public class Algorithms {
                 if (value == null) {
                     if (parameterProperties.getNotBlank()) {
                         // TODO Throw Exception
+                        // throw new Exception("The variable does not have a value!");
                     }
                     value = "";
                 }
@@ -238,15 +239,14 @@ public class Algorithms {
 
     public static Algorithms createAlgorithms(String repoPath) throws IOException {
 
+        Gson gson = new Gson();
+        Algorithms algorithms = new Algorithms();
+
         File repoFile = new File(repoPath);
         if (!repoFile.exists()) throw new IOException("Unable to locate property file.");
 
-        // read property.json
-        Gson gson = new Gson();
-        Algorithms algorithms = gson.fromJson(new BufferedReader(new FileReader(repoPath + "/properties.json")), Algorithms.class);
-
         // read per algorithm property.json
-        ArrayList<AlgorithmProperties> algos = new ArrayList<>();
+        ArrayList<AlgorithmProperties> currentAlgorithms = new ArrayList<>();
         for (File file : Objects.requireNonNull(repoFile.listFiles(new FileFilter() {
             @Override
             public boolean accept(File pathname) {
@@ -258,9 +258,9 @@ public class Algorithms {
                             new BufferedReader(
                                     new FileReader(file.getAbsolutePath() + "/properties.json")),
                             AlgorithmProperties.class);
-            algos.add(algorithm);
+            currentAlgorithms.add(algorithm);
         }
-        algorithms.setAlgorithms(algos.toArray(new AlgorithmProperties[0]));
+        algorithms.setAlgorithms(currentAlgorithms.toArray(new AlgorithmProperties[0]));
 
         return algorithms;
     }
