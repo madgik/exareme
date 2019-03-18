@@ -70,19 +70,27 @@ public class Composer {
      * @param filters   will be used to filter the results
      * @return  a query for the local database
      */
-    public String createLocalTableQuery(List<String> variables, List<String> filters) {
+    public String createLocalTableQuery(List<String> variables, String filters) {
         StringBuilder builder = new StringBuilder();
-        builder.append("(select ");
-        for(String variable : variables){
-            builder.append(variable);
-            builder.append(",");
+        if (variables.isEmpty())
+            builder.append("(select * from (file header:t file:" + DATA_DIRECTORY + "))");
+        else{
+            builder.append("(select ");
+            for (String variable : variables) {
+                builder.append(variable);
+                builder.append(",");
+            }
+            builder.deleteCharAt(builder.lastIndexOf(","));
+            builder.append(" from (file header:t file:" + DATA_DIRECTORY + ")");
+            if ("".equals(filters)) {
+                builder.append(")");
+            } else {
+                filters.replaceAll("|", "or");
+                filters.replaceAll("&", "and");
+                builder.append(" where " + filters + ")");
+            }
+            log.info(builder.toString());
         }
-        builder.deleteCharAt(builder.lastIndexOf(","));
-
-        builder.append(" from (file header:t file:" + DATA_DIRECTORY + "))");
-
-        log.info("Line 85 - createLocalTableQuery");
-        log.info(builder.toString());
 
         return builder.toString();
     }
@@ -167,16 +175,17 @@ public class Composer {
 
         // Get variables and filters from the algorithm parameters and use them to create the inputLocalTbl query
         List<String> variables = new ArrayList<>();
-        List<String> filters = new ArrayList<>();
+        String filters = new String();
         for (Algorithms.AlgorithmProperties.ParameterProperties parameter : algorithmProperties.getParameters()) {
             if(parameter.getType() == Algorithms.AlgorithmProperties.ParameterProperties.ParameterType.database_parameter ) {
                 if (parameter.getMultiValue()) {
-                    variables.addAll(Arrays.asList(parameter.getValue().split("\\+|\\*,")));
+                    variables.addAll(Arrays.asList(parameter.getValue().split(",|\\+|\\*")));
                 } else {
                     variables.add(parameter.getValue());
                 }
             }else if(parameter.getType() == Algorithms.AlgorithmProperties.ParameterProperties.ParameterType.filter ) {
-                filters.add(new Filter().getFilter(parameter.getValue()));
+                if (!parameter.getValue().equals(""))
+                    filters = new Filter().getFilter(parameter.getValue());
             }
         }
 
@@ -367,6 +376,7 @@ public class Composer {
                                             "select execprogram(null, 'mkdir', '-p', '%s') as C1;\n\n",
                                     HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey));
                         }
+
                     }
 
                     parameters.put(ComposerConstants.outputGlobalTblKey, outputGlobalTbl);
