@@ -3,7 +3,6 @@ package madgik.exareme.master.queryProcessor.composer;
 import com.google.gson.Gson;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -197,7 +196,7 @@ public class Algorithms {
             return algorithmProperties;
         }
 
-        public static HashMap<String, String> toHashMap(@NotNull ParameterProperties[] parameterProperties) {
+        public static HashMap<String, String> toHashMap(ParameterProperties[] parameterProperties) {
             HashMap<String, String> map = new HashMap<>();
             for (ParameterProperties algorithmParameter : parameterProperties) {
                 map.put(algorithmParameter.getName(), algorithmParameter.getValue());
@@ -213,7 +212,7 @@ public class Algorithms {
          * @param propertyValue       the updated value of the parameter property
          * @return true on success, false if the given {@code propertyName} hasn't been found
          */
-        public static boolean updateParameterProperty(@NotNull AlgorithmProperties algorithmProperties,
+        public static boolean updateParameterProperty(AlgorithmProperties algorithmProperties,
                                                       String propertyName,
                                                       String propertyValue) {
             for (ParameterProperties property :

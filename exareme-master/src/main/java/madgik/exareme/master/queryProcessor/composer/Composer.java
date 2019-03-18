@@ -358,7 +358,6 @@ public class Composer {
                                             "select execprogram(null, 'mkdir', '-p', '%s') as C1;\n\n",
                                     HBPConstants.DEMO_DB_WORKING_DIRECTORY + qKey));
                         }
-
                     }
 
                     parameters.put(ComposerConstants.outputGlobalTblKey, outputGlobalTbl);
