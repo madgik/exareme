@@ -70,6 +70,7 @@ public class Composer {
      * @param filters   will be used to filter the results
      * @return  a query for the local database
      */
+
     public String createLocalTableQuery(List<String> variables, String filters) {
         StringBuilder builder = new StringBuilder();
         if (variables.isEmpty())
@@ -179,14 +180,16 @@ public class Composer {
         for (Algorithms.AlgorithmProperties.ParameterProperties parameter : algorithmProperties.getParameters()) {
             if (parameter.getValue().equals(""))
                 continue;
-            if(parameter.getType() == Algorithms.AlgorithmProperties.ParameterProperties.ParameterType.database_parameter ) {
+            if (parameter.getType() == Algorithms.AlgorithmProperties.ParameterProperties.ParameterType.database_parameter ) {
                 if (parameter.getMultiValue()) {
                     variables.addAll(Arrays.asList(parameter.getValue().split("[,+*]")));
                 } else {
                     variables.add(parameter.getValue());
                 }
-            }else if(parameter.getType() == Algorithms.AlgorithmProperties.ParameterProperties.ParameterType.filter ) {
+            } else if (parameter.getType() == Algorithms.AlgorithmProperties.ParameterProperties.ParameterType.filter ) {
                 filters = new Filter().getFilter(parameter.getValue());
+            } else if (parameter.getType() == Algorithms.AlgorithmProperties.ParameterProperties.ParameterType.dataset){
+                variables.add(parameter.getName());
             }
         }
 
