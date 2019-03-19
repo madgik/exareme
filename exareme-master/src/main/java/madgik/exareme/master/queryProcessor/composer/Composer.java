@@ -179,7 +179,7 @@ public class Composer {
         for (Algorithms.AlgorithmProperties.ParameterProperties parameter : algorithmProperties.getParameters()) {
             if(parameter.getType() == Algorithms.AlgorithmProperties.ParameterProperties.ParameterType.database_parameter ) {
                 if (parameter.getMultiValue()) {
-                    variables.addAll(Arrays.asList(parameter.getValue().split(",|\\+|\\*")));
+                    variables.addAll(Arrays.asList(parameter.getValue().split("[,+*]")));
                 } else {
                     variables.add(parameter.getValue());
                 }
