@@ -28,7 +28,13 @@ class totabulardataresourceformat(functions.vtable.vtbase.VT):
         myresult = myresult[:-1] +" ],"
 
         for myrow in c:
-            myresult +=str(list(myrow))+','
+            myresult += "["
+            for i in xrange(len(myrow)):
+                if str(myrow[i]).isdigit():
+                    myresult +=str(myrow[i])+','
+                else:
+                    myresult +="\"" + str(myrow[i])+"\""+','
+            myresult = myresult[:-1]+ "],"
         myresult = myresult[:-1]+ "], \"schema\":  { \"fields\": ["
 
         for i in xrange(len(schema)):
