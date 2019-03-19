@@ -149,7 +149,7 @@ class highchartscatter3d(functions.vtable.vtbase.VT):
             myresult +=str(list(myrow))+','
         myresult= myresult[:-1] + "],\"marker\": {\"radius\": 5}}]}"
         # print "myresult", myresult
-        git ayield [('highchartresult',)]
+        yield [('highchartresult',)]
         yield (myresult,)
 
 def Source():
