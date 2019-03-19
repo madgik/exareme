@@ -175,8 +175,10 @@ public class Composer {
 
         // Get variables and filters from the algorithm parameters and use them to create the inputLocalTbl query
         List<String> variables = new ArrayList<>();
-        String filters = new String();
+        String filters = "";
         for (Algorithms.AlgorithmProperties.ParameterProperties parameter : algorithmProperties.getParameters()) {
+            if (parameter.getValue().equals(""))
+                continue;
             if(parameter.getType() == Algorithms.AlgorithmProperties.ParameterProperties.ParameterType.database_parameter ) {
                 if (parameter.getMultiValue()) {
                     variables.addAll(Arrays.asList(parameter.getValue().split("[,+*]")));
@@ -184,8 +186,7 @@ public class Composer {
                     variables.add(parameter.getValue());
                 }
             }else if(parameter.getType() == Algorithms.AlgorithmProperties.ParameterProperties.ParameterType.filter ) {
-                if (!parameter.getValue().equals(""))
-                    filters = new Filter().getFilter(parameter.getValue());
+                filters = new Filter().getFilter(parameter.getValue());
             }
         }
 
