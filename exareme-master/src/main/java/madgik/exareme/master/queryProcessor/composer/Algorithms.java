@@ -3,6 +3,9 @@ package madgik.exareme.master.queryProcessor.composer;
 import com.google.gson.Gson;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -23,21 +26,27 @@ public class Algorithms {
         public static class ParameterProperties {
             private String name;
             private String desc;
-            private String value;
-            private Boolean notBlank;
-            private Boolean multiValue;
             private ParameterType type;
+            private String value;
+            private Boolean valueNotBlank;
+            private Boolean valueMultiple;
+            private ParameterValueType valueType;
 
             public enum ParameterType {
-                database_parameter,         // used for querying the database
-                filter,                     // used for filtering on the database input
-                dataset,                    // used for choosing database input
-                algorithm_parameter,        // used from the algorithm
-                generic                     // other usage
+                database,              // used for querying the database
+                filter,                // used for filtering on the database input
+                dataset,               // used for choosing database input
+                other                  // for any other reason
             }
 
-            public ParameterProperties(){
+            public enum ParameterValueType {
+                string,
+                integer,
+                real,
+                json
+            }
 
+            public ParameterProperties() {
             }
 
             public String getName() {
@@ -56,6 +65,14 @@ public class Algorithms {
                 this.desc = desc;
             }
 
+            public ParameterType getType() {
+                return type;
+            }
+
+            public void setType(ParameterType type) {
+                this.type = type;
+            }
+
             public String getValue() {
                 return value;
             }
@@ -64,17 +81,29 @@ public class Algorithms {
                 this.value = value;
             }
 
-            public Boolean getNotBlank() { return notBlank; }
+            public Boolean getValueNotBlank() {
+                return valueNotBlank;
+            }
 
-            public void setNotBlank(Boolean notBlank) { this.notBlank = notBlank; }
+            public void setValueNotBlank(Boolean valueNotBlank) {
+                this.valueNotBlank = valueNotBlank;
+            }
 
-            public Boolean getMultiValue() { return multiValue; }
+            public Boolean getValueMultiple() {
+                return valueMultiple;
+            }
 
-            public void setMultiValue(Boolean multiValue) { this.multiValue = multiValue; }
+            public void setValueMultiple(Boolean valueMultiple) {
+                this.valueMultiple = valueMultiple;
+            }
 
-            public ParameterType getType() { return type; }
+            public ParameterValueType getValueType() {
+                return valueType;
+            }
 
-            public void setType(ParameterType type) { this.type = type; }
+            public void setValueType(ParameterValueType valueType) {
+                this.valueType = valueType;
+            }
         }
 
         public enum AlgorithmType {
@@ -135,11 +164,42 @@ public class Algorithms {
         }
 
         /**
+         * Checks if the parameterValue has the correct type
+         * @param value  the value of the parameter
+         * @param valueType  the type of the value
+         */
+        private static void checkAlgorithmParameterValue(String value, AlgorithmProperties.ParameterProperties.ParameterValueType valueType){
+            if (valueType == ParameterProperties.ParameterValueType.real){
+                try {
+                    Double.parseDouble(value);
+                } catch (NumberFormatException nfe) {
+                    // TODO Throw Wrong Type Exception
+                }
+            }else if (valueType == ParameterProperties.ParameterValueType.integer){
+                try {
+                    Integer.parseInt(value);
+                } catch(NumberFormatException e) {
+                    // TODO Throw Wrong Type Exception
+                }
+            }else if (valueType == ParameterProperties.ParameterValueType.json){
+                try {
+                    new JSONObject(value);
+                } catch (JSONException ex) {
+                    try {
+                        new JSONArray(value);
+                    } catch (JSONException ex1) {
+                        // TODO Throw Wrong Type Exception
+                    }
+                }
+            }
+        }
+
+        /**
          * Initializes the algorithm properties with the values from it's properties.json file
          *
-         * @param algorithmName                 the name of the algorithm
-         * @return                              an AlgorithmProperties class with the default values
-         * @throws IOException                  when algorithm property file does not exist
+         * @param algorithmName the name of the algorithm
+         * @return an AlgorithmProperties class with the default values
+         * @throws IOException when algorithm property file does not exist
          */
         private static AlgorithmProperties loadAlgorithmProperties(String algorithmName)
                 throws IOException {
@@ -156,12 +216,12 @@ public class Algorithms {
 
         /**
          * Initializes the AlgorithmProperties from the properties.json file.
-         *  It also checks if the parameter values given from the inputContent
-         *   match with the types specified in the properties.json
+         * It also checks if the parameter values given from the inputContent
+         * match with the types specified in the properties.json
          *
-         * @param inputContent  a HashMap with the properties
-         * @return              algorithm properties
-         * @throws IOException  when algorithm property file does not exist
+         * @param inputContent a HashMap with the properties
+         * @return algorithm properties
+         * @throws IOException when algorithm property file does not exist
          */
         public static AlgorithmProperties createAlgorithmProperties(
                 String algorithmName, HashMap<String, String> inputContent) throws IOException {
@@ -171,10 +231,11 @@ public class Algorithms {
 
             for (ParameterProperties parameterProperties : algorithmProperties.getParameters()) {
                 String value = inputContent.get(parameterProperties.getName());
-                if (value == null) {
-                    if (parameterProperties.getNotBlank()) {
-                        // TODO Throw Exception
-                        // throw new Exception("The variable does not have a value!");
+                if (value != null) {
+                    checkAlgorithmParameterValue(value,parameterProperties.getValueType());
+                } else {            // if value is null
+                    if (parameterProperties.getValueNotBlank()) {
+                        // TODO Throw blank value Exception
                     }
                     value = "";
                 }
@@ -183,8 +244,8 @@ public class Algorithms {
 
             log.debug("Line 197 - algorithmProperties");
             for (ParameterProperties parameter : algorithmProperties.getParameters()) {
-                log.debug("Property name: " + parameter.name + ", value: " + parameter.value + ", notBlank: "
-                        + parameter.notBlank + ", multiValue: " + parameter.multiValue  + ", type: " + parameter.type);
+                log.debug("Property name: " + parameter.getName() + ", type: " + parameter.getType() + ", value: " + parameter.getValue() + ", valueNotBlank: "
+                        + parameter.getValueNotBlank() + ", valueMultiple: " + parameter.getValueMultiple() + ", valueType: " + parameter.getValueType());
             }
 
             log.debug("Line 203 - inputContent");

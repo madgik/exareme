@@ -187,8 +187,8 @@ public class Composer {
         for (Algorithms.AlgorithmProperties.ParameterProperties parameter : algorithmProperties.getParameters()) {
             if (parameter.getValue().equals(""))
                 continue;
-            if (parameter.getType() == Algorithms.AlgorithmProperties.ParameterProperties.ParameterType.database_parameter ) {
-                if (parameter.getMultiValue()) {
+            if (parameter.getType() == Algorithms.AlgorithmProperties.ParameterProperties.ParameterType.database ) {
+                if (parameter.getValueMultiple()) {
                     variables.addAll(Arrays.asList(parameter.getValue().split("[,+*]")));
                 } else {
                     variables.add(parameter.getValue());
@@ -212,7 +212,7 @@ public class Composer {
         parameters.put(ComposerConstants.defaultDBKey,
                 HBPConstants.DEMO_DB_WORKING_DIRECTORY + dbIdentifier + "_defaultDB.db");
 
-        String outputGlobalTbl;                                                         // outputGlobalTbl
+        String outputGlobalTbl;
         if (iterativeAlgorithmPhase != null) {
             outputGlobalTbl = IterationsHandlerDFLUtils.generateIterativePhaseOutputTblName(
                     IterationsConstants.iterationsOutputTblPrefix,
@@ -247,7 +247,6 @@ public class Composer {
             case local:
                 parameters.remove(ComposerConstants.outputGlobalTblKey);
 
-                // format local
                 dflScript.append("distributed create table " + outputGlobalTbl + " as external \n");
                 dflScript.append(
                         String.format("select * from (\n    execnselect 'path:%s' ", workingDir));
