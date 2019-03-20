@@ -82,15 +82,13 @@ public class IterationsHandler {
             log.error(errMsg);
             throw new IterationsFatalException(errMsg, e);
         }
-        if (log.isDebugEnabled())
-            log.debug("Created " + AdpDBClient.class.getSimpleName() + " for iterative algorithm: "
-                    + algorithmKey + ".");
+
+        log.debug("Created " + AdpDBClient.class.getSimpleName() + " for iterative algorithm: " + algorithmKey + ".");
 
         IterativeAlgorithmState iterativeAlgorithmState =
                 new IterativeAlgorithmState(algorithmKey, algorithmProperties, adpDBClient);
-        if (log.isDebugEnabled())
-            log.debug("Created " + IterativeAlgorithmState.class.getSimpleName() + " for: "
-                    + iterativeAlgorithmState.toString() + ".");
+        log.debug("Created " + IterativeAlgorithmState.class.getSimpleName() + " for: "
+                + iterativeAlgorithmState.toString() + ".");
         // -----------------------------------------
         // Copy template files to algorithm's demo directory, prepare DFL scripts and then persist
         // them, as well.
@@ -117,8 +115,7 @@ public class IterationsHandler {
 
         iterativeAlgorithmState.setDflScripts(dflScripts);
 
-        if (log.isDebugEnabled())
-            log.debug("Generated DFL scripts for: " + iterativeAlgorithmState.toString());
+        log.debug("Generated DFL scripts for: " + iterativeAlgorithmState.toString());
 
         // -----------------------------------------
         // Only after DFL initialization, submit to IterationsStateManager and schedule it

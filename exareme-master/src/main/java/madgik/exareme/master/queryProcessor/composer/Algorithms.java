@@ -169,19 +169,19 @@ public class Algorithms {
          * @param valueType  the type of the value
          */
         private static void checkAlgorithmParameterValue(String value, AlgorithmProperties.ParameterProperties.ParameterValueType valueType){
-            if (valueType == ParameterProperties.ParameterValueType.real){
+            if (valueType.equals(ParameterProperties.ParameterValueType.real)){
                 try {
                     Double.parseDouble(value);
                 } catch (NumberFormatException nfe) {
                     // TODO Throw Wrong Type Exception
                 }
-            }else if (valueType == ParameterProperties.ParameterValueType.integer){
+            }else if (valueType.equals(ParameterProperties.ParameterValueType.integer)){
                 try {
                     Integer.parseInt(value);
                 } catch(NumberFormatException e) {
                     // TODO Throw Wrong Type Exception
                 }
-            }else if (valueType == ParameterProperties.ParameterValueType.json){
+            }else if (valueType.equals(ParameterProperties.ParameterValueType.json)){
                 try {
                     new JSONObject(value);
                 } catch (JSONException ex) {

@@ -62,12 +62,6 @@ public class IterationsHandlerDFLUtils {
         String[] dflScripts = new String[
                 IterativeAlgorithmState.IterativeAlgorithmPhasesModel.values().length];
 
-        // Assuming multiple_local_global format for each iterative phase (except for term. cond.)
-        // We're changing the algorithmProperties object type but the original is already saved
-        // in the iterativeAlgorithmState.
-        algorithmProperties.setType(
-                Algorithms.AlgorithmProperties.AlgorithmType.multiple_local_global);
-
         // ------------------------------------------
         // Preparing SQLUpdates baseline.
         ArrayList<Pair<String, IterationsHandlerDFLUtils.SQLUpdateLocation>> sqlUpdates =
@@ -129,11 +123,6 @@ public class IterationsHandlerDFLUtils {
                     phase.equals(IterativeAlgorithmState.IterativeAlgorithmPhasesModel.finalize))
                 algorithmProperties.setParameters(parameterPropertiesInclPreviousPhaseOutputTbl);
 
-            // Termination condition is a special case of "local", due to the different
-            // template sql filename.
-            if (phase.equals(termination_condition))
-                algorithmProperties.setType(Algorithms.AlgorithmProperties.AlgorithmType.iterative);
-
             try {
                 dflScripts[dflScriptIdx++] =
                         composer.composeVirtual(
@@ -151,12 +140,6 @@ public class IterationsHandlerDFLUtils {
             if (phase.equals(IterativeAlgorithmState.IterativeAlgorithmPhasesModel.step) ||
                     phase.equals(IterativeAlgorithmState.IterativeAlgorithmPhasesModel.finalize))
                 algorithmProperties.setParameters(parameterPropertiesBackup);
-
-            // Restore algorithm type to multiple_local_global.
-            if (phase.equals(
-                    termination_condition))
-                algorithmProperties.setType(
-                        Algorithms.AlgorithmProperties.AlgorithmType.multiple_local_global);
         }
 
         return dflScripts;

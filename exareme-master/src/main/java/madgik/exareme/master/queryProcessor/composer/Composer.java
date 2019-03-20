@@ -66,16 +66,33 @@ public class Composer {
     /**
      * Creates the query that will run against the local dataset file to fetch the data
      *
-     * @param variables will be used to select specific columns from the database
-     * @param filters   will be used to filter the results
-     * @return  a query for the local database
+     * @param algorithmProperties   the properties of the algorithm
+     * @return                      a query for the local database
      */
 
-    public String createLocalTableQuery(List<String> variables, String filters) {
+    public String createLocalTableQuery(Algorithms.AlgorithmProperties algorithmProperties) {
+        List<String> variables = new ArrayList<>();
+        String filters = "";
+        for (Algorithms.AlgorithmProperties.ParameterProperties parameter : algorithmProperties.getParameters()) {
+            if (parameter.getValue().equals(""))
+                continue;
+            if (parameter.getType() == Algorithms.AlgorithmProperties.ParameterProperties.ParameterType.database) {
+                if (parameter.getValueMultiple()) {
+                    variables.addAll(Arrays.asList(parameter.getValue().split("[,+*]")));
+                } else {
+                    variables.add(parameter.getValue());
+                }
+            } else if (parameter.getType() == Algorithms.AlgorithmProperties.ParameterProperties.ParameterType.filter) {
+                filters = new Filter().getFilter(parameter.getValue());
+            } else if (parameter.getType() == Algorithms.AlgorithmProperties.ParameterProperties.ParameterType.dataset) {
+                variables.add(parameter.getName());
+            }
+        }
+
         StringBuilder builder = new StringBuilder();
         if (variables.isEmpty())
             builder.append("(select * from (file header:t file:" + DATA_DIRECTORY + "))");
-        else{
+        else {
             builder.append("(select ");
             for (String variable : variables) {
                 builder.append(variable);
@@ -162,48 +179,13 @@ public class Composer {
     )
             throws ComposerException {
 
-        String localScriptPath =
-                repoPath + algorithmProperties.getName() + "/local.template.sql";
-        String localUpdateScriptPath =
-                repoPath + algorithmProperties.getName() + "/localupdate.template.sql";
-        String globalScriptPath =
-                repoPath + algorithmProperties.getName() + "/global.template.sql";
-
         StringBuilder dflScript = new StringBuilder();
-
-        String workingDir;
-        if (iterativeAlgorithmPhase == null)
-            workingDir = generateWorkingDirectoryString(repositoryPath, algorithmProperties.getName(),
-                    null);
-        else
-            workingDir = generateWorkingDirectoryString(repositoryPath, algorithmKey, iterativeAlgorithmPhase);
 
         HashMap<String, String> parameters =
                 Algorithms.AlgorithmProperties.toHashMap(algorithmProperties.getParameters());
 
-        // Get variables and filters from the algorithm parameters and use them to create the inputLocalTbl query
-        List<String> variables = new ArrayList<>();
-        String filters = "";
-        for (Algorithms.AlgorithmProperties.ParameterProperties parameter : algorithmProperties.getParameters()) {
-            if (parameter.getValue().equals(""))
-                continue;
-            if (parameter.getType() == Algorithms.AlgorithmProperties.ParameterProperties.ParameterType.database ) {
-                if (parameter.getValueMultiple()) {
-                    variables.addAll(Arrays.asList(parameter.getValue().split("[,+*]")));
-                } else {
-                    variables.add(parameter.getValue());
-                }
-            } else if (parameter.getType() == Algorithms.AlgorithmProperties.ParameterProperties.ParameterType.filter ) {
-                filters = new Filter().getFilter(parameter.getValue());
-            } else if (parameter.getType() == Algorithms.AlgorithmProperties.ParameterProperties.ParameterType.dataset){
-                variables.add(parameter.getName());
-            }
-        }
-
-        String inputLocalTbl = createLocalTableQuery(variables, filters);
-        parameters.put(ComposerConstants.inputLocalTblKey, inputLocalTbl);
-
         // Assigning the proper identifier for the defaultDB
+        //      if the dbIdentifier is provided as a parameter or not
         String dbIdentifier;
         if (parameters.get(ComposerConstants.dbIdentifierKey) == null)
             dbIdentifier = algorithmKey;
@@ -212,35 +194,21 @@ public class Composer {
         parameters.put(ComposerConstants.defaultDBKey,
                 HBPConstants.DEMO_DB_WORKING_DIRECTORY + dbIdentifier + "_defaultDB.db");
 
-        String outputGlobalTbl;
-        if (iterativeAlgorithmPhase != null) {
-            outputGlobalTbl = IterationsHandlerDFLUtils.generateIterativePhaseOutputTblName(
-                    IterationsConstants.iterationsOutputTblPrefix,
-                    algorithmKey,
-                    iterativeAlgorithmPhase
-            );
-        }else{
-            outputGlobalTbl = "output_" + algorithmKey;
-        }
+        String inputLocalTbl = createLocalTableQuery(algorithmProperties);
+        parameters.put(ComposerConstants.inputLocalTblKey, inputLocalTbl);
+
+        String outputGlobalTbl = "output_" + algorithmKey;
         parameters.put(ComposerConstants.outputGlobalTblKey, outputGlobalTbl);
 
-
-        // Add iterative specific parameters
-        if (iterativeAlgorithmPhase != null) {
-            // Handle iterations specific logic, related to Composer
-            // 1. Create iterationsDB algorithm parameter.
-            // qKey is actually algorithm key in the case of iterative algorithms.
-            parameters.put(IterationsConstants.iterationsParameterIterDBKey,
-                    generateIterationsDBName(algorithmKey));                                         //iterationDB
-
-            // 2. Remove unneeded parameter
-            parameters.remove(iterationsPropertyConditionQueryProvided);
-
-            // 3. Remove max iterations for all iterative phases except for termination_condition.
-            if (!iterativeAlgorithmPhase.equals(
-                    IterativeAlgorithmState.IterativeAlgorithmPhasesModel.termination_condition))
-                parameters.remove(iterationsPropertyMaximumNumber);
-        }
+        File[] listFiles;
+        String workingDir = generateWorkingDirectoryString(repositoryPath,
+                algorithmProperties.getName(), null);
+        String localScriptPath =
+                repoPath + algorithmProperties.getName() + "/local.template.sql";
+        String localUpdateScriptPath =
+                repoPath + algorithmProperties.getName() + "/localupdate.template.sql";
+        String globalScriptPath =
+                repoPath + algorithmProperties.getName() + "/global.template.sql";
 
         // Create the dflScript depending on algorithm type
         switch (algorithmProperties.getType()) {
@@ -248,65 +216,21 @@ public class Composer {
                 parameters.remove(ComposerConstants.outputGlobalTblKey);
 
                 dflScript.append("distributed create table " + outputGlobalTbl + " as external \n");
-                dflScript.append(
-                        String.format("select * from (\n    execnselect 'path:%s' ", workingDir));
+                dflScript.append(String.format("select * from (\n    execnselect 'path:%s' ", workingDir));
                 for (String key : parameters.keySet()) {
                     dflScript.append(String.format("'%s:%s' ", key, parameters.get(key)));
                 }
                 dflScript.append(String.format("\n    select filetext('%s')\n", localScriptPath));
                 dflScript.append(");\n");
-                break;
-            case pipeline:
-
-                for (int i = 0; i < numberOfWorkers; i++) {
-
-                    if (i == 0) {
-                        dflScript.append(String.format(
-                                "distributed create temporary table output_local_tbl_%d as remote \n", i));
-                    } else {
-                        dflScript.append(String.format(
-                                "using output_local_tbl_%d distributed create temporary table output_local_tbl_%d as remote \n",
-                                i - 1, i));
-                    }
-                    dflScript.append(String
-                            .format("select * from (\n    execnselect 'path:%s' ", workingDir));
-                    for (String key : parameters.keySet()) {
-                        dflScript.append(String.format("'%s:%s' ", key, parameters.get(key)));
-                    }
-
-                    if (i == 0) {
-                        dflScript.append(
-                                String.format("\n    select filetext('%s')\n", localScriptPath));
-                    } else {
-                        dflScript.append(String.format("'prv_output_local_tbl:(output_local_tbl_%d)' ", i - 1));
-                        dflScript.append(
-                                String.format("\n    select filetext('%s')\n", localUpdateScriptPath));
-                    }
-                    dflScript.append(");\n");
-                }
-
-                dflScript.append(String.format("using output_local_tbl_%d distributed create table %s as external ",
-                        (numberOfWorkers - 1), outputGlobalTbl));
-                dflScript.append(String
-                        .format("select * from (\n    execnselect 'path:%s' ", workingDir));
-                for (String key : parameters.keySet()) {
-                    dflScript.append(String.format("'%s:%s' ", key, parameters.get(key)));
-                }
-
-                dflScript.append(String.format("'prv_output_local_tbl:(output_local_tbl_%d)' ",
-                        numberOfWorkers - 1));
-                dflScript.append(String.format("\n    select filetext('%s')\n", globalScriptPath));
-                dflScript.append(");\n");
 
                 break;
+
             case local_global:
                 parameters.remove(ComposerConstants.outputGlobalTblKey);
 
-                // format local
-                dflScript
-                        .append("distributed create temporary table output_local_tbl as virtual \n");
-                dflScript.append(
-                        String.format("select * from (\n    execnselect 'path:%s' ", workingDir));
+                // Format local
+                dflScript.append("distributed create temporary table output_local_tbl as virtual \n");
+                dflScript.append(String.format("select * from (\n    execnselect 'path:%s' ", workingDir));
                 for (String key : parameters.keySet()) {
                     dflScript.append(String.format("'%s:%s' ", key, parameters.get(key)));
                 }
@@ -318,11 +242,9 @@ public class Composer {
                         .append("\ndistributed create temporary table input_global_tbl to 1 as  \n");
                 dflScript.append("select * from output_local_tbl;\n");
 
-                // format global
-                if (parameters.containsKey(ComposerConstants.inputLocalTblKey)) {
-                    parameters.remove(ComposerConstants.inputLocalTblKey);
-                    parameters.put(ComposerConstants.inputGlobalTblKey, "input_global_tbl");
-                }
+                // Format global
+                parameters.remove(ComposerConstants.inputLocalTblKey);
+                parameters.put(ComposerConstants.inputGlobalTblKey, "input_global_tbl");
 
                 dflScript.append(String
                         .format("\nusing input_global_tbl \ndistributed create table %s as external \n",
@@ -337,8 +259,9 @@ public class Composer {
                 dflScript.append(");\n");
 
                 break;
+
             case multiple_local_global:
-                File[] listFiles = new File(workingDir).listFiles(new FileFilter() {
+                listFiles = new File(workingDir).listFiles(new FileFilter() {
                     @Override
                     public boolean accept(File pathname) {
                         return pathname.isDirectory();
@@ -346,47 +269,11 @@ public class Composer {
                 });
                 Arrays.sort(listFiles);
                 for (int i = 0; i < listFiles.length; i++) {
-
-                    parameters.put(ComposerConstants.inputLocalTblKey, inputLocalTbl);
-
-                    // Iterations support distinction
-                    if (iterativeAlgorithmPhase == null) {
-                        parameters.put(ComposerConstants.algorithmKey,
-                                algorithmProperties.getName() + "/" + listFiles[i].getName());
-                    } else {
-                        /*
-                         * qKey here is actually the algorithm's key, which is the one we want to
-                         * use. This is due to the requirement for persisting algorithm template
-                         * and DFL scripts in demo-algorithm's directory, for a **particular**
-                         * algorithm execution.
-                         */
-                        parameters.put(ComposerConstants.algorithmKey,
-                                "/" + algorithmKey
-                                        + "/" + iterativeAlgorithmPhase.name()
-                                        + "/" + listFiles[i].getName());
-                        /*
-                         * [Only for iterative algorithms]
-                         * Only use previousPhaseOutputTbl parameter (set in outputGlobalTblKey)
-                         * if it's the 1st step of a multiple_local_global (for step/finalize
-                         * phases).
-                         */
-                        if ((iterativeAlgorithmPhase.equals(step) ||
-                                iterativeAlgorithmPhase.equals(finalize)) && i == 1)
-                            parameters.remove(IterationsConstants.previousPhaseOutputTblVariableName);
-
-                        //Create database directory
-                        if (iterativeAlgorithmPhase.equals(init) && !listFiles[i].getName().equals("2")) {
-                            dflScript.append(String.format("distributed create temporary table createPathTempTable as virtual\n" +
-                                            "select execprogram(null, 'mkdir', '-p', '%s') as C1;\n\n",
-                                    HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey));
-                        }
-
-                    }
-
-                    parameters.put(ComposerConstants.outputGlobalTblKey, outputGlobalTbl);
+                    parameters.put(ComposerConstants.algorithmKey,
+                            algorithmProperties.getName() + "/" + listFiles[i].getName());
+                    parameters.put(ComposerConstants.algorithmIterKey, String.valueOf(i + 1));
                     parameters.put(ComposerConstants.outputPrvGlobalTblKey, "output_global_tbl_"
                             .concat(String.valueOf(Integer.valueOf(listFiles[i].getName()) - 1)));
-                    parameters.put(ComposerConstants.algorithmIterKey, String.valueOf(i + 1));
                     if (listFiles.length - 1 == i) {
                         parameters.put(ComposerConstants.isTmpKey, "false");
                     } else {
@@ -395,12 +282,23 @@ public class Composer {
                     dflScript.append(composeLocalGlobal(repositoryPath, parameters,
                             iterativeAlgorithmPhase));
                 }
-                break;
-            case iterative:
-                // Handling special iterative case, such as termination_condition DFL.
-                if (iterativeAlgorithmPhase != null &&
-                        iterativeAlgorithmPhase.equals(termination_condition)) {
 
+                break;
+
+            case iterative:
+                if (iterativeAlgorithmPhase == null)
+                    throw new ComposerException("Unsupported iterative algorithm phase.");
+
+                // workingDir and outputGlobalTbl are different on iterative
+                workingDir = generateWorkingDirectoryString(repositoryPath, algorithmKey, iterativeAlgorithmPhase);
+                outputGlobalTbl = IterationsHandlerDFLUtils.generateIterativePhaseOutputTblName(
+                        IterationsConstants.iterationsOutputTblPrefix, algorithmKey, iterativeAlgorithmPhase);
+
+                parameters.put(IterationsConstants.iterationsParameterIterDBKey,
+                        generateIterationsDBName(algorithmKey));
+                parameters.remove(iterationsPropertyConditionQueryProvided);        // Not needed in the dflScript
+
+                if (iterativeAlgorithmPhase.equals(termination_condition)) {
                     // Remove outputGlobalTblKey since it's not needed as an execnselect parameter.
                     parameters.remove(ComposerConstants.outputGlobalTblKey);
 
@@ -418,8 +316,91 @@ public class Composer {
                     dflScript.append(String.format("\n    select filetext('%s')\n",
                             workingDir + "/" + terminationConditionTemplateSQLFilename));
                     dflScript.append(");\n");
-                } else
-                    throw new ComposerException("Unsupported iterative algorithm phase.");
+
+                } else {          // The iteration works like multiple_local_global in the init,step,finalize steps
+
+                    // iterationsPropertyMaximumNumber is needed only in the termination_condition
+                    parameters.remove(iterationsPropertyMaximumNumber);
+
+                    listFiles = new File(workingDir).listFiles(new FileFilter() {
+                        @Override
+                        public boolean accept(File pathname) {
+                            return pathname.isDirectory();
+                        }
+                    });
+                    Arrays.sort(listFiles);
+                    for (int i = 0; i < listFiles.length; i++) {
+                        // Create database directory
+                        if (iterativeAlgorithmPhase.equals(init) && !listFiles[i].getName().equals("2")) {
+                            dflScript.append(String.format("distributed create temporary table createPathTempTable as virtual\n" +
+                                            "select execprogram(null, 'mkdir', '-p', '%s') as C1;\n\n",
+                                    HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey));
+                        }
+
+                        parameters.put(ComposerConstants.algorithmKey,
+                                "/" + algorithmKey
+                                        + "/" + iterativeAlgorithmPhase.name()
+                                        + "/" + listFiles[i].getName());
+                        /*
+                         * [Only for iterative algorithms]
+                         * Only use previousPhaseOutputTbl parameter (set in outputGlobalTblKey)
+                         * if it's the 1st step of a multiple_local_global (for step/finalize
+                         * phases).
+                         */
+                        if ((iterativeAlgorithmPhase.equals(step) ||
+                                iterativeAlgorithmPhase.equals(finalize)) && i == 1)
+                            parameters.remove(IterationsConstants.previousPhaseOutputTblVariableName);
+                        parameters.put(ComposerConstants.outputPrvGlobalTblKey, "output_global_tbl_"
+                                .concat(String.valueOf(Integer.valueOf(listFiles[i].getName()) - 1)));
+                        parameters.put(ComposerConstants.algorithmIterKey, String.valueOf(i + 1));
+                        if (listFiles.length - 1 == i) {
+                            parameters.put(ComposerConstants.isTmpKey, "false");
+                        } else {
+                            parameters.put(ComposerConstants.isTmpKey, "true");
+                        }
+                        dflScript.append(composeLocalGlobal(repositoryPath, parameters,
+                                iterativeAlgorithmPhase));
+                    }
+                }
+
+                break;
+
+            case pipeline:
+                dflScript.append(String.format(
+                        "distributed create temporary table output_local_tbl_%d as remote \n", 0));
+                dflScript.append(String
+                        .format("select * from (\n    execnselect 'path:%s' ", workingDir));
+                for (String key : parameters.keySet()) {
+                    dflScript.append(String.format("'%s:%s' ", key, parameters.get(key)));
+                }
+                dflScript.append(
+                        String.format("\n    select filetext('%s')\n", localScriptPath));
+
+                for (int i = 1; i < numberOfWorkers; i++) {
+                    dflScript.append(String.format(
+                            "using output_local_tbl_%d distributed create temporary table output_local_tbl_%d as remote \n",
+                            i - 1, i));
+
+                    dflScript.append(String.format("select * from (\n    execnselect 'path:%s' ", workingDir));
+                    for (String key : parameters.keySet()) {
+                        dflScript.append(String.format("'%s:%s' ", key, parameters.get(key)));
+                    }
+                    dflScript.append(String.format("'prv_output_local_tbl:(output_local_tbl_%d)' ", i - 1));
+                    dflScript.append(String.format("\n    select filetext('%s')\n", localUpdateScriptPath));
+
+                    dflScript.append(");\n");
+                }
+
+                dflScript.append(String.format("using output_local_tbl_%d distributed create table %s as external ",
+                        (numberOfWorkers - 1), outputGlobalTbl));
+                dflScript.append(String.format("select * from (\n    execnselect 'path:%s' ", workingDir));
+                for (String key : parameters.keySet()) {
+                    dflScript.append(String.format("'%s:%s' ", key, parameters.get(key)));
+                }
+                dflScript.append(String.format("'prv_output_local_tbl:(output_local_tbl_%d)' ",numberOfWorkers - 1));
+                dflScript.append(String.format("\n    select filetext('%s')\n", globalScriptPath));
+                dflScript.append(");\n");
+
                 break;
             default:
                 throw new ComposerException("Unable to determine algorithm type.");
@@ -431,17 +412,16 @@ public class Composer {
     private static String composeLocalGlobal(
             String repositoryPath,
             HashMap<String, String> parameters,
-            IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase)
-    {
+            IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase) {
 
         StringBuilder dflScript = new StringBuilder();
 
         String algorithmKey = parameters.get(ComposerConstants.algorithmKey);
         boolean isTmp = Boolean.valueOf(parameters.get(ComposerConstants.isTmpKey));
         String outputGlobalTbl = parameters.get(ComposerConstants.outputGlobalTblKey);
-        String algorithmIterstr = parameters.get(ComposerConstants.algorithmIterKey);
+        String algorithmIterStr = parameters.get(ComposerConstants.algorithmIterKey);
 
-        int algorithmIter = Integer.valueOf(algorithmIterstr);
+        int algorithmIter = Integer.valueOf(algorithmIterStr);
         parameters.remove(ComposerConstants.outputGlobalTblKey);
 
         if (repositoryPath == null)
