@@ -158,22 +158,17 @@ public class TestAdpDBClient {
         public void run() {
             try {
                 AdpDBClientQueryStatus queryStatus =
-                        client.query("load_" + String.valueOf(id), load_script[id]);
-                while (queryStatus.hasFinished() == false && queryStatus.hasError() == false) {
+                        client.query("load_" + id, load_script[id]);
+                while (!queryStatus.hasFinished() && !queryStatus.hasError()) {
                     Thread.sleep(1000 * 2);
                 }
-                if (queryStatus.hasError() || queryStatus == null) {
+                if (queryStatus.hasError()) {
                     log.error("Exception occured..." + queryStatus.getError());
                     problem = true;
                 }
-
-
                 log.info("Client " + id + " finished.");
             } catch (RemoteException e) {
                 log.error("Error occurred ( " + String.valueOf(id) + ")!", e);
-
-            } catch (IOException e) {
-                log.error("Error occurred while reading results", e);
 
             } catch (Exception e) {
                 log.error("Error");

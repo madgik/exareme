@@ -41,7 +41,7 @@ public class IterativeAlgorithmStateTest {
     @Rule
     public final ExpectedException expectedException = ExpectedException.none();
 
-    private Algorithms.AlgorithmProperties algorithmPropertiesMock;
+    private Algorithms.AlgorithmProperties algorithmPropertiesMock = new Algorithms.AlgorithmProperties();
 
     @BeforeClass
     public static void setUp() throws Exception {

@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.IOException;
 
 import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerDFLUtils.copyAlgorithmTemplatesToDemoDirectory;
-import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerUtils.generateAlgorithmKey;
 import static madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState.IterativeAlgorithmPhasesModel.termination_condition;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
@@ -75,7 +74,7 @@ public class IterationsHandlerDFLUtilsTest {
                         algorithmName, "true", "2"));
 
         // Mimicking IterationsHandler first steps:
-        String algorithmKey = generateAlgorithmKey(algorithmProperties);
+        String algorithmKey = IterationsTestGenericUtils.generateAlgorithmKey(algorithmProperties);
         IterativeAlgorithmState iterativeAlgorithmState =
                 new IterativeAlgorithmState(algorithmKey, algorithmProperties, null);
 
@@ -107,7 +106,7 @@ public class IterationsHandlerDFLUtilsTest {
                         algorithmName, "false", "2"));
 
         // Mimicking IterationsHandler first steps:
-        algorithmKey = generateAlgorithmKey(algorithmProperties);
+        algorithmKey = IterationsTestGenericUtils.generateAlgorithmKey(algorithmProperties);
         iterativeAlgorithmState =
                 new IterativeAlgorithmState(algorithmKey, algorithmProperties, null);
 
@@ -142,7 +141,7 @@ public class IterationsHandlerDFLUtilsTest {
                         algorithmName, "false", "2"));
 
         // Mimicking IterationsHandler first steps:
-        String algorithmKey = generateAlgorithmKey(algorithmProperties);
+        String algorithmKey = IterationsTestGenericUtils.generateAlgorithmKey(algorithmProperties);
         IterativeAlgorithmState iterativeAlgorithmState =
                 new IterativeAlgorithmState(algorithmKey, algorithmProperties, null);
 
@@ -178,7 +177,7 @@ public class IterationsHandlerDFLUtilsTest {
                         algorithmName, "true", "2"));
 
         // Mimicking IterationsHandler first steps:
-        String algorithmKey = generateAlgorithmKey(algorithmProperties);
+        String algorithmKey = IterationsTestGenericUtils.generateAlgorithmKey(algorithmProperties);
         IterativeAlgorithmState iterativeAlgorithmState =
                 new IterativeAlgorithmState(algorithmKey, algorithmProperties, null);
 
@@ -252,5 +251,4 @@ public class IterationsHandlerDFLUtilsTest {
         }
         return sb.toString();
     }
-
 }

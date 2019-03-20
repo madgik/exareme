@@ -189,7 +189,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             AdpDBClientQueryStatus queryStatus;
 
             Algorithms.AlgorithmProperties algorithmProperties =
-                    Algorithms.AlgorithmProperties.createAlgorithmProperties(algorithmName,inputContent);
+                    Algorithms.AlgorithmProperties.createAlgorithmProperties(algorithmName, inputContent);
 
             DataSerialization ds = DataSerialization.summary;
 
@@ -203,7 +203,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
 
                 final IterativeAlgorithmState iterativeAlgorithmState =
                         iterationsHandler.handleNewIterativeAlgorithmRequest(
-                                manager, algorithmProperties);
+                                manager, algorithmKey, algorithmProperties);
 
                 BasicHttpEntity entity = new NIterativeAlgorithmResultEntity(
                         iterativeAlgorithmState, ds, ExaremeGatewayUtils.RESPONSE_BUFFER_SIZE);

@@ -145,7 +145,7 @@ public class Composer {
      * Composes the DFL script for the given algorithm properties and query.
      *
      * @param repositoryPath          the algorithm's repository path
-     * @param algorithmKey                    the query key, or in general a key for the algorithm
+     * @param algorithmKey            the algorithm key, or in general a key for the algorithm
      * @param algorithmProperties     the algorithm properties instance
      * @param iterativeAlgorithmPhase in the case of iterative algorithms, this is one value of
      *                                {@link madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState.IterativeAlgorithmPhasesModel}
@@ -161,6 +161,13 @@ public class Composer {
                                   int numberOfWorkers
     )
             throws ComposerException {
+
+        String localScriptPath =
+                repoPath + algorithmProperties.getName() + "/local.template.sql";
+        String localUpdateScriptPath =
+                repoPath + algorithmProperties.getName() + "/localupdate.template.sql";
+        String globalScriptPath =
+                repoPath + algorithmProperties.getName() + "/global.template.sql";
 
         StringBuilder dflScript = new StringBuilder();
 
@@ -193,7 +200,7 @@ public class Composer {
             }
         }
 
-        String inputLocalTbl = createLocalTableQuery(variables,filters);
+        String inputLocalTbl = createLocalTableQuery(variables, filters);
         parameters.put(ComposerConstants.inputLocalTblKey, inputLocalTbl);
 
         // Assigning the proper identifier for the defaultDB
@@ -205,8 +212,21 @@ public class Composer {
         parameters.put(ComposerConstants.defaultDBKey,
                 HBPConstants.DEMO_DB_WORKING_DIRECTORY + dbIdentifier + "_defaultDB.db");
 
-        String outputGlobalTbl;
-        if (iterativeAlgorithmPhase != null) {                                              //For iterative
+        String outputGlobalTbl;                                                         // outputGlobalTbl
+        if (iterativeAlgorithmPhase != null) {
+            outputGlobalTbl = IterationsHandlerDFLUtils.generateIterativePhaseOutputTblName(
+                    IterationsConstants.iterationsOutputTblPrefix,
+                    algorithmKey,
+                    iterativeAlgorithmPhase
+            );
+        }else{
+            outputGlobalTbl = "output_" + algorithmKey;
+        }
+        parameters.put(ComposerConstants.outputGlobalTblKey, outputGlobalTbl);
+
+
+        // Add iterative specific parameters
+        if (iterativeAlgorithmPhase != null) {
             // Handle iterations specific logic, related to Composer
             // 1. Create iterationsDB algorithm parameter.
             // qKey is actually algorithm key in the case of iterative algorithms.
@@ -220,30 +240,12 @@ public class Composer {
             if (!iterativeAlgorithmPhase.equals(
                     IterativeAlgorithmState.IterativeAlgorithmPhasesModel.termination_condition))
                 parameters.remove(iterationsPropertyMaximumNumber);
-
-            outputGlobalTbl = IterationsHandlerDFLUtils.generateIterativePhaseOutputTblName(
-                                    IterationsConstants.iterationsOutputTblPrefix,
-                                    algorithmKey,
-                                    iterativeAlgorithmPhase
-                                    );
-        }else{
-            outputGlobalTbl = "output_" + algorithmKey;
         }
-        parameters.put(ComposerConstants.outputGlobalTblKey, outputGlobalTbl);
 
-
-        String localScriptPath =
-                repoPath + algorithmProperties.getName() + "/local.template.sql";
-        String localUpdateScriptPath =
-                repoPath + algorithmProperties.getName() + "/localupdate.template.sql";
-        String globalScriptPath =
-                repoPath + algorithmProperties.getName() + "/global.template.sql";
+        // Create the dflScript depending on algorithm type
         switch (algorithmProperties.getType()) {
-
             case local:
                 parameters.remove(ComposerConstants.outputGlobalTblKey);
-
-                String lp = repoPath + algorithmProperties.getName() + "/local.template.sql";
 
                 // format local
                 dflScript.append("distributed create table " + outputGlobalTbl + " as external \n");
@@ -252,7 +254,7 @@ public class Composer {
                 for (String key : parameters.keySet()) {
                     dflScript.append(String.format("'%s:%s' ", key, parameters.get(key)));
                 }
-                dflScript.append(String.format("\n    select filetext('%s')\n", lp));
+                dflScript.append(String.format("\n    select filetext('%s')\n", localScriptPath));
                 dflScript.append(");\n");
                 break;
             case pipeline:
@@ -296,7 +298,6 @@ public class Composer {
                         numberOfWorkers - 1));
                 dflScript.append(String.format("\n    select filetext('%s')\n", globalScriptPath));
                 dflScript.append(");\n");
-
 
                 break;
             case local_global:
