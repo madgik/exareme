@@ -34,7 +34,9 @@ class tabletojson:
         self.i = self.i + 1
 
     def final(self):
-        return json.dumps(self.dlist)
+        json_result = json.dumps(self.dlist)
+        json_result= json_result.replace(' ','')
+        return json_result
 
 
 class jsontotable:
