@@ -2,6 +2,7 @@ package madgik.exareme.master.engine.iterations;
 
 import madgik.exareme.common.consts.HBPConstants;
 import madgik.exareme.master.engine.iterations.handler.IterationsConstants;
+import madgik.exareme.master.queryProcessor.composer.Algorithms;
 import madgik.exareme.master.queryProcessor.composer.Composer;
 import madgik.exareme.master.queryProcessor.composer.ComposerConstants;
 import madgik.exareme.utils.properties.AdpProperties;
@@ -101,5 +102,18 @@ public class IterationsTestGenericUtils {
         modifiersField.setAccessible(true);
         modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
         field.set(null, newValue);
+    }
+
+
+    /**
+     * Generates a unique algorithm key.
+     *
+     * <p> It provides a unique name with <b>granularity of a ms!</b>
+     *
+     * @param algorithmProperties the algorithm's properties object
+     * @return a unique algorithm key.
+     */
+    public static String generateAlgorithmKey(Algorithms.AlgorithmProperties algorithmProperties) {
+        return algorithmProperties.getName() + "_" + String.valueOf(System.currentTimeMillis());
     }
 }

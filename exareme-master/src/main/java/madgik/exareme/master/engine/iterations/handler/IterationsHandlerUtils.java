@@ -12,18 +12,6 @@ public class IterationsHandlerUtils {
     private static final Logger log = Logger.getLogger(IterationsHandlerUtils.class);
 
     /**
-     * Generates a unique algorithm key.
-     *
-     * <p> It provides a unique name with <b>granularity of a ms!</b>
-     *
-     * @param algorithmProperties the algorithm's properties object
-     * @return a unique algorithm key.
-     */
-    static String generateAlgorithmKey(Algorithms.AlgorithmProperties algorithmProperties) {
-        return algorithmProperties.getName() + "_" + String.valueOf(System.currentTimeMillis());
-    }
-
-    /**
      * Generates the iterationsDB absolute filename.
      *
      * @param algorithmKey the algorithm key generated for the current iterative algorithm

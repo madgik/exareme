@@ -18,7 +18,6 @@ import org.apache.log4j.Logger;
 import java.rmi.RemoteException;
 
 import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerDFLUtils.copyAlgorithmTemplatesToDemoDirectory;
-import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerUtils.generateAlgorithmKey;
 
 /**
  * Handles iteration requests
@@ -63,13 +62,11 @@ public class IterationsHandler {
      * @see Algorithms.AlgorithmProperties
      */
     public IterativeAlgorithmState handleNewIterativeAlgorithmRequest(
-            AdpDBManager adpDBManager,
+            AdpDBManager adpDBManager, String algorithmKey,
             Algorithms.AlgorithmProperties algorithmProperties) {
 
-        // Generate algorithm key, the adpDBClient for this algorithm and a new
+        // Generate the adpDBClient for this algorithm and a new
         // IterativeAlgorithmState
-        String algorithmKey = generateAlgorithmKey(algorithmProperties);
-
         String database = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey;
         // -----------------------------------------
         // Create AdpDBClient of iterative algorithm state (used for submitting all queries)

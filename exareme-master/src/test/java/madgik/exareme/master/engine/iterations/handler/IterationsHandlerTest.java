@@ -58,8 +58,10 @@ public class IterationsHandlerTest {
     // Functional tests -------------------------------------------------------------------------
     @Test
     public void ensureIterativeAlgorithmIsSubmittedToStateManager() throws IOException {
+        String algorithmKey = IterationsTestGenericUtils.generateAlgorithmKey(algorithmProperties);
+
         final IterativeAlgorithmState ias = handler.handleNewIterativeAlgorithmRequest(
-                AdpDBManagerLocator.getDBManager(), algorithmProperties);
+                AdpDBManagerLocator.getDBManager(), algorithmKey, algorithmProperties);
 
         final Map<String, IterativeAlgorithmState> iterativeAlgorithmMapping =
                 Whitebox.getInternalState(stateManager, "iterativeAlgorithmMapping");
