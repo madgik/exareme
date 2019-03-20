@@ -46,11 +46,13 @@ class pathtree(functions.vtable.vtbase.VT):
 
         mytable=[]
         mytable = list(c)
+        print mytable
 
-        nextnode = nodeValue
-        while nextnode!='1':
-            nextnode,row = newTreeRecord(mytable,nextnode)
-            yield row
+        if nodeValue in [x[3] for x in mytable]:
+            nextnode = nodeValue
+            while nextnode!='1':
+                nextnode,row = newTreeRecord(mytable,nextnode)
+                yield row
 
 
 
