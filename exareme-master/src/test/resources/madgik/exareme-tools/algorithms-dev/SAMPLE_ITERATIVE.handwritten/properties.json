@@ -1,18 +1,24 @@
 {
-  "name": "SAMPLE_ITERATIVE.handwritten",
-  "desc": "",
-  "type": "iterative",
-  "status": "disabled",
-  "parameters": [
-    {
-      "name": "iterations_max_number",
-      "desc": "Maximum number of iterations the algorithm will perform.",
-      "value": "6"
-    },
-    {
-      "name": "iterations_condition_query_provided",
-      "desc": "Defines if a termination query is provided, or otherwise iterations_count will be solely used.",
-      "value": "true"
-    }
-  ]
+	"name": "SAMPLE_ITERATIVE.handwritten",
+	"desc": "",
+	"type": "iterative",
+	"status": "disabled",
+	"parameters": [{
+			"name": "iterations_max_number",
+			"desc": "",
+			"type": "other",
+			"value": "6",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "integer"
+		}, {
+			"name": "iterations_condition_query_provided",
+			"desc": "Defines if a termination query is provided, or otherwise iterations_count will be solely used.",
+			"type": "other",
+			"value": "true",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "string"
+		}
+	]
 }
