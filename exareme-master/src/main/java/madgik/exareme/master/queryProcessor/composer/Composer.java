@@ -269,6 +269,8 @@ public class Composer {
                 });
                 Arrays.sort(listFiles);
                 for (int i = 0; i < listFiles.length; i++) {
+                    parameters.put(ComposerConstants.inputLocalTblKey, inputLocalTbl);
+                    parameters.put(ComposerConstants.outputGlobalTblKey, outputGlobalTbl);
                     parameters.put(ComposerConstants.algorithmKey,
                             algorithmProperties.getName() + "/" + listFiles[i].getName());
                     parameters.put(ComposerConstants.algorithmIterKey, String.valueOf(i + 1));
@@ -330,6 +332,9 @@ public class Composer {
                     });
                     Arrays.sort(listFiles);
                     for (int i = 0; i < listFiles.length; i++) {
+                        parameters.put(ComposerConstants.inputLocalTblKey, inputLocalTbl);
+                        parameters.put(ComposerConstants.outputGlobalTblKey, outputGlobalTbl);
+
                         // Create database directory
                         if (iterativeAlgorithmPhase.equals(init) && !listFiles[i].getName().equals("2")) {
                             dflScript.append(String.format("distributed create temporary table createPathTempTable as virtual\n" +
@@ -375,6 +380,7 @@ public class Composer {
                 }
                 dflScript.append(
                         String.format("\n    select filetext('%s')\n", localScriptPath));
+                dflScript.append(");\n");
 
                 for (int i = 1; i < numberOfWorkers; i++) {
                     dflScript.append(String.format(
@@ -409,6 +415,7 @@ public class Composer {
 
     }
 
+    // TODO Refactor
     private static String composeLocalGlobal(
             String repositoryPath,
             HashMap<String, String> parameters,
@@ -473,14 +480,11 @@ public class Composer {
 
         // format global
         parameters.remove(ComposerConstants.outputPrvGlobalTblKey);
-        for (String key : parameters.keySet()) {
-            if (key.equals("input_local_tbl")) {
-                parameters.remove("input_local_tbl");
-                parameters
-                        .put("input_global_tbl", String.format("input_global_tbl_%d", algorithmIter));
-                break;
-            }
+        if(parameters.get(ComposerConstants.inputLocalTblKey) != null){
+            parameters.remove(ComposerConstants.inputLocalTblKey);
+            parameters.put("input_global_tbl", String.format("input_global_tbl_%d", algorithmIter));
         }
+
         if (isTmp)
             dflScript.append(String.format(
                     "\nusing input_global_tbl_%d \ndistributed create temporary table output_global_tbl_%d as external \n",
