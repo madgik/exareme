@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
+import static madgik.exareme.common.consts.HBPConstants.DEMO_ALGORITHMS_WORKING_DIRECTORY;
 import static madgik.exareme.master.engine.iterations.handler.IterationsConstants.*;
 
 /**
@@ -49,6 +50,7 @@ public class IterativeAlgorithmState {
     private HashMap<String, String> algorithmPropertiesParameters;
     private String[] dflScripts;
     private final String iterationsDBPath;
+
     /**
      * Variable name and key of the {@code dflVariablesMap} to be used for DFL scripts variable
      * StrSubstitution.

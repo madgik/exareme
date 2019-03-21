@@ -47,7 +47,7 @@ public class IterationsHandlerDFLUtils {
      * @param composer                the Composer instance used to generate DFL script for each
      *                                phase
      * @param algorithmProperties     the properties of this algorithm
-     * @param iterativeAlgorithmState the state of iterative algorithm, only used for reading data
+     * @param iterativeAlgorithmState the state of iterative algorithm, only usced for reading data
      * @return the generated DFL scripts (one for each phase)
      * @throws IterationsFatalException If {@link Composer#composeVirtual} fails.
      * @see Algorithms.AlgorithmProperties
@@ -125,10 +125,7 @@ public class IterationsHandlerDFLUtils {
 
             try {
                 dflScripts[dflScriptIdx++] =
-                        composer.composeVirtual(
-                                Paths.get(demoCurrentAlgorithmDir).getParent().toString(),
-                                algorithmKey,
-                                algorithmProperties, phase);
+                        composer.composeVirtual(algorithmKey, algorithmProperties, phase);
                 log.info("dfl: " + dflScripts[dflScriptIdx - 1]);
             } catch (ComposerException e) {
                 throw new IterationsFatalException("Composer failure to generate DFL script for phase: "
@@ -454,24 +451,15 @@ public class IterationsHandlerDFLUtils {
      */
     public static String copyAlgorithmTemplatesToDemoDirectory(String algorithmName,
                                                                String algorithmKey) {
-        String algorithmRepoPath;
-        try {
-            algorithmRepoPath = Composer.generateWorkingDirectoryString(
-                    null, algorithmName, null);
-        } catch (ComposerException e) {
-            throw new IterationsFatalException("Failed to retrieve algorithm's repository " +
-                    "directory name.", e);
-        }
-
+        String algorithmFolderPath = Composer.getInstance().getAlgorithmFolderPath(algorithmName);
         String algorithmDemoDestinationDirectory =
                 DEMO_ALGORITHMS_WORKING_DIRECTORY + "/" + algorithmKey;
-
         try {
-            FileUtils.copyDirectory(new File(algorithmRepoPath),
+            FileUtils.copyDirectory(new File(algorithmFolderPath),
                     new File(algorithmDemoDestinationDirectory));
         } catch (IOException e) {
             throw new IterationsFatalException("Failed to copy algorithm's template files from ["
-                    + algorithmRepoPath + "] to demo directory ["
+                    + algorithmFolderPath + "] to demo directory ["
                     + algorithmDemoDestinationDirectory + "].", e);
         }
         return algorithmDemoDestinationDirectory;

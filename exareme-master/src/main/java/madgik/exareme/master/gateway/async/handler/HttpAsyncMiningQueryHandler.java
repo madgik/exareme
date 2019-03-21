@@ -235,8 +235,6 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 response.setStatusCode(HttpStatus.SC_OK);
                 response.setEntity(entity);
             }
-
-
         } catch (ComposerException e) {
             log.error(e);
         } catch (IterationsFatalException e) {

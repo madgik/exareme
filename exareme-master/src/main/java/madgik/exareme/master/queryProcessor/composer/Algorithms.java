@@ -204,7 +204,7 @@ public class Algorithms {
         private static AlgorithmProperties loadAlgorithmProperties(String algorithmName)
                 throws IOException {
 
-            String algorithmPropertyFilePath = Composer.getInstance().getRepositoryPath() + algorithmName + "/properties.json";
+            String algorithmPropertyFilePath = Composer.getInstance().getAlgorithmFolderPath(algorithmName) + "/properties.json";
 
             File propertyFile = new File(algorithmPropertyFilePath);
             if (!propertyFile.exists())

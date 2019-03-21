@@ -36,16 +36,19 @@ public class Composer {
 
     private static final Logger log = Logger.getLogger(Composer.class);
     private static final Composer instance = new Composer();
-    private static String repoPath;
+
+    // The directory where the algorithms' SQL scripts are
+    private static String algorithmsFolderPath;
+
     private static String DATA_DIRECTORY;
     private static Algorithms algorithms;
     private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     static {
-        repoPath = AdpProperties.getGatewayProperties().getString("demo.repository.path");
+        algorithmsFolderPath = AdpProperties.getGatewayProperties().getString("demo.repository.path");
         DATA_DIRECTORY = AdpProperties.getGatewayProperties().getString("data.path");
         try {
-            algorithms = Algorithms.createAlgorithms(repoPath);
+            algorithms = Algorithms.createAlgorithms(algorithmsFolderPath);
         } catch (IOException e) {
             log.error("Unable to locate repository properties (*.json).", e);
         }
@@ -55,8 +58,8 @@ public class Composer {
         return instance;
     }
 
-    public String getRepositoryPath() {
-        return repoPath;
+    public String getAlgorithmFolderPath(String algorithmName) {
+        return algorithmsFolderPath + algorithmName;
     }
 
     public String getAlgorithms() {
@@ -66,8 +69,8 @@ public class Composer {
     /**
      * Creates the query that will run against the local dataset file to fetch the data
      *
-     * @param algorithmProperties   the properties of the algorithm
-     * @return                      a query for the local database
+     * @param algorithmProperties the properties of the algorithm
+     * @return a query for the local database
      */
 
     public String createLocalTableQuery(Algorithms.AlgorithmProperties algorithmProperties) {
@@ -131,37 +134,16 @@ public class Composer {
                                  IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase
     ) throws ComposerException {
         try {
-            return composeVirtual(null, qKey, algorithmProperties, iterativeAlgorithmPhase,
+            return composeVirtual(qKey, algorithmProperties, iterativeAlgorithmPhase,
                     ArtRegistryLocator.getArtRegistryProxy() == null ? 0 : ArtRegistryLocator.getArtRegistryProxy().getContainers().length);
         } catch (RemoteException e) {
             throw new ComposerException(e.getMessage());
         }
-    }
-
-    public String composeVirtual(String repositoryPath, String qKey,
-                                 Algorithms.AlgorithmProperties algorithmProperties,
-                                 IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase
-    ) throws ComposerException {
-        try {
-            return composeVirtual(repositoryPath, qKey, algorithmProperties, iterativeAlgorithmPhase,
-                    ArtRegistryLocator.getArtRegistryProxy() == null ? 0 : ArtRegistryLocator.getArtRegistryProxy().getContainers().length);
-        } catch (RemoteException e) {
-            throw new ComposerException(e.getMessage());
-        }
-    }
-
-    public String composeVirtual(String qKey,
-                                 Algorithms.AlgorithmProperties algorithmProperties,
-                                 IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase,
-                                 int numberOfWorkers
-    ) throws ComposerException {
-        return composeVirtual(null, qKey, algorithmProperties, iterativeAlgorithmPhase, numberOfWorkers);
     }
 
     /**
      * Composes the DFL script for the given algorithm properties and query.
      *
-     * @param repositoryPath          the algorithm's repository path
      * @param algorithmKey            the algorithm key, or in general a key for the algorithm
      * @param algorithmProperties     the algorithm properties instance
      * @param iterativeAlgorithmPhase in the case of iterative algorithms, this is one value of
@@ -172,7 +154,7 @@ public class Composer {
      *                           supported or finally, if this method could not retrieve
      *                           ContainerProxies.
      */
-    private String composeVirtual(String repositoryPath, String algorithmKey,
+    public String composeVirtual(String algorithmKey,
                                   Algorithms.AlgorithmProperties algorithmProperties,
                                   IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase,
                                   int numberOfWorkers
@@ -200,15 +182,14 @@ public class Composer {
         String outputGlobalTbl = "output_" + algorithmKey;
         parameters.put(ComposerConstants.outputGlobalTblKey, outputGlobalTbl);
 
-        File[] listFiles;
-        String workingDir = generateWorkingDirectoryString(repositoryPath,
-                algorithmProperties.getName(), null);
+        File[] listFiles;       // TODO Remove
+        String currentAlgorithmFolderPath = getAlgorithmFolderPath(algorithmProperties.getName());
         String localScriptPath =
-                repoPath + algorithmProperties.getName() + "/local.template.sql";
+                getAlgorithmFolderPath(algorithmProperties.getName()) + "/local.template.sql";
         String localUpdateScriptPath =
-                repoPath + algorithmProperties.getName() + "/localupdate.template.sql";
+                getAlgorithmFolderPath(algorithmProperties.getName()) + "/localupdate.template.sql";
         String globalScriptPath =
-                repoPath + algorithmProperties.getName() + "/global.template.sql";
+                getAlgorithmFolderPath(algorithmProperties.getName()) + "/global.template.sql";
 
         // Create the dflScript depending on algorithm type
         switch (algorithmProperties.getType()) {
@@ -216,7 +197,7 @@ public class Composer {
                 parameters.remove(ComposerConstants.outputGlobalTblKey);
 
                 dflScript.append("distributed create table " + outputGlobalTbl + " as external \n");
-                dflScript.append(String.format("select * from (\n    execnselect 'path:%s' ", workingDir));
+                dflScript.append(String.format("select * from (\n    execnselect 'path:%s' ", currentAlgorithmFolderPath));
                 for (String key : parameters.keySet()) {
                     dflScript.append(String.format("'%s:%s' ", key, parameters.get(key)));
                 }
@@ -230,7 +211,7 @@ public class Composer {
 
                 // Format local
                 dflScript.append("distributed create temporary table output_local_tbl as virtual \n");
-                dflScript.append(String.format("select * from (\n    execnselect 'path:%s' ", workingDir));
+                dflScript.append(String.format("select * from (\n    execnselect 'path:%s' ", currentAlgorithmFolderPath));
                 for (String key : parameters.keySet()) {
                     dflScript.append(String.format("'%s:%s' ", key, parameters.get(key)));
                 }
@@ -251,7 +232,7 @@ public class Composer {
                                 outputGlobalTbl));
                 dflScript.append("select * \n");
                 dflScript.append("from (\n");
-                dflScript.append(String.format("  execnselect 'path:%s' ", workingDir));
+                dflScript.append(String.format("  execnselect 'path:%s' ", currentAlgorithmFolderPath));
                 for (String key : parameters.keySet()) {
                     dflScript.append(String.format("'%s:%s' ", key, parameters.get(key)));
                 }
@@ -261,29 +242,14 @@ public class Composer {
                 break;
 
             case multiple_local_global:
-                listFiles = new File(workingDir).listFiles(new FileFilter() {
-                    @Override
-                    public boolean accept(File pathname) {
-                        return pathname.isDirectory();
-                    }
-                });
-                Arrays.sort(listFiles);
-                for (int i = 0; i < listFiles.length; i++) {
-                    parameters.put(ComposerConstants.inputLocalTblKey, inputLocalTbl);
-                    parameters.put(ComposerConstants.outputGlobalTblKey, outputGlobalTbl);
-                    parameters.put(ComposerConstants.algorithmKey,
-                            algorithmProperties.getName() + "/" + listFiles[i].getName());
-                    parameters.put(ComposerConstants.algorithmIterKey, String.valueOf(i + 1));
-                    parameters.put(ComposerConstants.outputPrvGlobalTblKey, "output_global_tbl_"
-                            .concat(String.valueOf(Integer.valueOf(listFiles[i].getName()) - 1)));
-                    if (listFiles.length - 1 == i) {
-                        parameters.put(ComposerConstants.isTmpKey, "false");
-                    } else {
-                        parameters.put(ComposerConstants.isTmpKey, "true");
-                    }
-                    dflScript.append(composeLocalGlobal(repositoryPath, parameters,
-                            iterativeAlgorithmPhase));
-                }
+
+
+                // ------------->
+                dflScript.append(composeMultipleLocalGlobal(
+                        currentAlgorithmFolderPath, algorithmProperties, parameters, inputLocalTbl,
+                        outputGlobalTbl, iterativeAlgorithmPhase
+                ));
+                // <--------------------
 
                 break;
 
@@ -292,7 +258,7 @@ public class Composer {
                     throw new ComposerException("Unsupported iterative algorithm phase.");
 
                 // workingDir and outputGlobalTbl are different on iterative
-                workingDir = generateWorkingDirectoryString(repositoryPath, algorithmKey, iterativeAlgorithmPhase);
+                currentAlgorithmFolderPath = generateIterativeWorkingDirectoryString(algorithmKey, iterativeAlgorithmPhase);
                 outputGlobalTbl = IterationsHandlerDFLUtils.generateIterativePhaseOutputTblName(
                         IterationsConstants.iterationsOutputTblPrefix, algorithmKey, iterativeAlgorithmPhase);
 
@@ -311,12 +277,12 @@ public class Composer {
                     // Format termination condition script.
                     dflScript.append("distributed create table ").append(outputGlobalTbl).append(" as external \n");
                     dflScript.append(
-                            String.format("select * from (\n    execnselect 'path:%s' ", workingDir));
+                            String.format("select * from (\n    execnselect 'path:%s' ", currentAlgorithmFolderPath));
                     for (String key : parameters.keySet()) {
                         dflScript.append(String.format("'%s:%s' ", key, parameters.get(key)));
                     }
                     dflScript.append(String.format("\n    select filetext('%s')\n",
-                            workingDir + "/" + terminationConditionTemplateSQLFilename));
+                            currentAlgorithmFolderPath + "/" + terminationConditionTemplateSQLFilename));
                     dflScript.append(");\n");
 
                 } else {          // The iteration works like multiple_local_global in the init,step,finalize steps
@@ -324,7 +290,7 @@ public class Composer {
                     // iterationsPropertyMaximumNumber is needed only in the termination_condition
                     parameters.remove(iterationsPropertyMaximumNumber);
 
-                    listFiles = new File(workingDir).listFiles(new FileFilter() {
+                    listFiles = new File(currentAlgorithmFolderPath).listFiles(new FileFilter() {
                         @Override
                         public boolean accept(File pathname) {
                             return pathname.isDirectory();
@@ -363,7 +329,7 @@ public class Composer {
                         } else {
                             parameters.put(ComposerConstants.isTmpKey, "true");
                         }
-                        dflScript.append(composeLocalGlobal(repositoryPath, parameters,
+                        dflScript.append(composeLocalGlobal(parameters,
                                 iterativeAlgorithmPhase));
                     }
                 }
@@ -374,7 +340,7 @@ public class Composer {
                 dflScript.append(String.format(
                         "distributed create temporary table output_local_tbl_%d as remote \n", 0));
                 dflScript.append(String
-                        .format("select * from (\n    execnselect 'path:%s' ", workingDir));
+                        .format("select * from (\n    execnselect 'path:%s' ", currentAlgorithmFolderPath));
                 for (String key : parameters.keySet()) {
                     dflScript.append(String.format("'%s:%s' ", key, parameters.get(key)));
                 }
@@ -387,7 +353,7 @@ public class Composer {
                             "using output_local_tbl_%d distributed create temporary table output_local_tbl_%d as remote \n",
                             i - 1, i));
 
-                    dflScript.append(String.format("select * from (\n    execnselect 'path:%s' ", workingDir));
+                    dflScript.append(String.format("select * from (\n    execnselect 'path:%s' ", currentAlgorithmFolderPath));
                     for (String key : parameters.keySet()) {
                         dflScript.append(String.format("'%s:%s' ", key, parameters.get(key)));
                     }
@@ -399,11 +365,11 @@ public class Composer {
 
                 dflScript.append(String.format("using output_local_tbl_%d distributed create table %s as external ",
                         (numberOfWorkers - 1), outputGlobalTbl));
-                dflScript.append(String.format("select * from (\n    execnselect 'path:%s' ", workingDir));
+                dflScript.append(String.format("select * from (\n    execnselect 'path:%s' ", currentAlgorithmFolderPath));
                 for (String key : parameters.keySet()) {
                     dflScript.append(String.format("'%s:%s' ", key, parameters.get(key)));
                 }
-                dflScript.append(String.format("'prv_output_local_tbl:(output_local_tbl_%d)' ",numberOfWorkers - 1));
+                dflScript.append(String.format("'prv_output_local_tbl:(output_local_tbl_%d)' ", numberOfWorkers - 1));
                 dflScript.append(String.format("\n    select filetext('%s')\n", globalScriptPath));
                 dflScript.append(");\n");
 
@@ -415,9 +381,45 @@ public class Composer {
 
     }
 
+
+    private String composeMultipleLocalGlobal(
+            String workingDir, Algorithms.AlgorithmProperties algorithmProperties,
+            HashMap<String, String> parameters, String inputLocalTbl, String outputGlobalTbl,
+            IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase
+    ) {
+
+        File[] listFiles;
+        StringBuilder dflScript = new StringBuilder();
+
+        listFiles = new File(workingDir).listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File pathname) {
+                return pathname.isDirectory();
+            }
+        });
+        Arrays.sort(listFiles);
+        for (int i = 0; i < listFiles.length; i++) {
+            parameters.put(ComposerConstants.inputLocalTblKey, inputLocalTbl);
+            parameters.put(ComposerConstants.outputGlobalTblKey, outputGlobalTbl);
+            parameters.put(ComposerConstants.algorithmKey,
+                    algorithmProperties.getName() + "/" + listFiles[i].getName());
+            parameters.put(ComposerConstants.algorithmIterKey, String.valueOf(i + 1));
+            parameters.put(ComposerConstants.outputPrvGlobalTblKey, "output_global_tbl_"
+                    .concat(String.valueOf(Integer.valueOf(listFiles[i].getName()) - 1)));
+            if (listFiles.length - 1 == i) {
+                parameters.put(ComposerConstants.isTmpKey, "false");
+            } else {
+                parameters.put(ComposerConstants.isTmpKey, "true");
+            }
+            dflScript.append(composeLocalGlobal(parameters,
+                    iterativeAlgorithmPhase));
+        }
+        return dflScript.toString();
+    }
+
     // TODO Refactor
-    private static String composeLocalGlobal(
-            String repositoryPath,
+    //  Add the parameters as arguments of the method
+    private String composeLocalGlobal(
             HashMap<String, String> parameters,
             IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase) {
 
@@ -431,9 +433,11 @@ public class Composer {
         int algorithmIter = Integer.valueOf(algorithmIterStr);
         parameters.remove(ComposerConstants.outputGlobalTblKey);
 
-        if (repositoryPath == null)
-            repositoryPath = Composer.repoPath;
-        String workingDir = repositoryPath + algorithmKey;
+        String workingDir;
+        if (iterativeAlgorithmPhase != null)
+            workingDir = HBPConstants.DEMO_ALGORITHMS_WORKING_DIRECTORY + "/" + algorithmKey;
+        else
+            workingDir = getAlgorithmFolderPath(algorithmKey);
 
         // All local.template.sql scripts are to be retrieved from the algorithms repository
         // directory, since they are not modified (even in iterative algorithms).
@@ -447,9 +451,9 @@ public class Composer {
             String algorithmName = algorithmKey.substring(1, algorithmKey.lastIndexOf('_'));
             String restOfAlgorithmKey = "/" + iterativeAlgorithmPhase.name()
                     + algorithmKey.substring(algorithmKey.lastIndexOf("/"), algorithmKey.length());
-            localScriptsWorkingDir = repoPath + algorithmName + restOfAlgorithmKey;
+            localScriptsWorkingDir = algorithmsFolderPath + algorithmName + restOfAlgorithmKey;
         } else
-            localScriptsWorkingDir = repoPath + algorithmKey;
+            localScriptsWorkingDir = algorithmsFolderPath + algorithmKey;
 
         String localScriptPath = localScriptsWorkingDir + "/local.template.sql";
         String globalScriptPath = workingDir + "/global.template.sql";
@@ -480,7 +484,7 @@ public class Composer {
 
         // format global
         parameters.remove(ComposerConstants.outputPrvGlobalTblKey);
-        if(parameters.get(ComposerConstants.inputLocalTblKey) != null){
+        if (parameters.get(ComposerConstants.inputLocalTblKey) != null) {
             parameters.remove(ComposerConstants.inputLocalTblKey);
             parameters.put("input_global_tbl", String.format("input_global_tbl_%d", algorithmIter));
         }
@@ -508,6 +512,46 @@ public class Composer {
 
 
     // Utilities --------------------------------------------------------------------------------
+
+    /**
+     * @param algorithmKey            is the identifier of the algorithm
+     * @param iterativeAlgorithmPhase the phase of the iterative algorithm
+     * @return the directory where the iterative algorithm's sql scripts are
+     * @throws ComposerException if the iterativeAlgorithmPhase is not proper
+     */
+    public static String generateIterativeWorkingDirectoryString(
+            String algorithmKey,
+            IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase)
+            throws ComposerException {
+
+        if (iterativeAlgorithmPhase == null)
+            throw new ComposerException("IterativeAlgorithmPhasesModel should not be null");
+
+        String workingDir;
+
+        // TODO   algorithmWorkingDirectory should not be hardcoded anywhere
+        String algorithmWorkingDirectory = HBPConstants.DEMO_ALGORITHMS_WORKING_DIRECTORY + "/" + algorithmKey;
+        switch (iterativeAlgorithmPhase) {
+            case init:
+                workingDir = algorithmWorkingDirectory + "/" + algorithmKey + "/" + init.name();
+                break;
+            case step:
+                workingDir = algorithmWorkingDirectory + "/" + algorithmKey + "/" + step.name();
+                break;
+            case termination_condition:
+                workingDir = algorithmWorkingDirectory + "/" + algorithmKey + "/" + termination_condition.name();
+                break;
+            case finalize:
+                workingDir = algorithmWorkingDirectory + "/" + algorithmKey + "/" + finalize.name();
+                break;
+            default:
+                throw new ComposerException("Unsupported iterative algorithm case.");
+        }
+        return workingDir;
+    }
+
+
+    // TODO Remove from here if possible
 
     /**
      * Persists DFL Script on disk, at demo algorithm's directory - for an algorithm's particular
@@ -538,54 +582,5 @@ public class Composer {
             throw new ComposerException("Failed to persist DFL Script ["
                     + dflScriptOutputFile.getName() + "].");
         }
-    }
-
-    /**
-     * Generates the working directory string, depending on the algorithm name and in the case of
-     * iterative algorithms, its current phase.
-     *
-     * @param repositoryPath          the algorithm's repository path, if it's null, then the
-     *                                default (Composer's) repository path is used
-     * @param algorithmName           the algorithm's name or query's key in case of non iterative
-     *                                algorithm, can be null
-     * @param iterativeAlgorithmPhase the iterative algorithm phase for which to generate working
-     *                                directory String<br> <b>In the case of non iterative
-     *                                algorithms this is null</b>
-     * @return the working directory string
-     * @throws ComposerException In case of iterative algorithms, if an iterative phase is not
-     *                           supported.
-     * @see madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState.IterativeAlgorithmPhasesModel
-     */
-    public static String generateWorkingDirectoryString(
-            String repositoryPath,
-            String algorithmName,
-            IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase)
-            throws ComposerException {
-
-        if (repositoryPath == null)
-            repositoryPath = Composer.repoPath;
-
-        String workingDir;
-        if (iterativeAlgorithmPhase == null)
-            workingDir = repositoryPath + algorithmName;
-        else {
-            switch (iterativeAlgorithmPhase) {
-                case init:
-                    workingDir = repositoryPath + "/" + algorithmName + "/" + init.name();
-                    break;
-                case step:
-                    workingDir = repositoryPath + "/" + algorithmName + "/" + step.name();
-                    break;
-                case termination_condition:
-                    workingDir = repositoryPath + "/" + algorithmName + "/" + termination_condition.name();
-                    break;
-                case finalize:
-                    workingDir = repositoryPath + "/" + algorithmName + "/" + finalize.name();
-                    break;
-                default:
-                    throw new ComposerException("Unsupported iterative algorithm case.");
-            }
-        }
-        return workingDir;
     }
 }
