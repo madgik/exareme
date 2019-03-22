@@ -12,9 +12,14 @@ import madgik.exareme.master.engine.iterations.state.IterationsStateManagerImpl;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.master.queryProcessor.composer.Algorithms;
 import madgik.exareme.master.queryProcessor.composer.Composer;
+import madgik.exareme.master.queryProcessor.composer.ComposerConstants;
 import madgik.exareme.master.queryProcessor.composer.ComposerException;
+import madgik.exareme.utils.file.FileUtil;
 import org.apache.log4j.Logger;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.rmi.RemoteException;
 
 import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerDFLUtils.copyAlgorithmTemplatesToDemoDirectory;
@@ -105,11 +110,10 @@ public class IterationsHandler {
         try {
             for (IterativeAlgorithmState.IterativeAlgorithmPhasesModel phase :
                     IterativeAlgorithmState.IterativeAlgorithmPhasesModel.values()) {
-
-                Composer.persistDFLScriptToAlgorithmsDemoDirectory(
+                persistDFLScriptToAlgorithmsDemoDirectory(
                         demoCurrentAlgorithmDir, dflScripts[phase.ordinal()], phase);
             }
-        } catch (ComposerException e) {
+        } catch (IOException e) {
             log.error("Failed to persist DFL scripts for algorithm [" + algorithmKey + "]");
         }
 
@@ -146,5 +150,37 @@ public class IterationsHandler {
         log.info("Removing " + IterativeAlgorithmState.class.getSimpleName() + " from "
                 + IterationsStateManager.class.getSimpleName());
         iterationsStateManager.removeIterativeAlgorithm(algorithmKey);
+    }
+
+    /**
+     * Persists DFL Script on disk, at demo algorithm's directory - for an algorithm's particular
+     * execution.
+     *
+     * @param algorithmDemoDirectoryName the algorithm's demo execution directory
+     * @param dflScript                  the algorithm's particular execution DFL scripts
+     * @throws IOException               if writing the DFLScript fails.
+     */
+    public static void persistDFLScriptToAlgorithmsDemoDirectory(
+            String algorithmDemoDirectoryName, String dflScript,
+            IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativePhase)
+            throws IOException {
+        File dflScriptOutputFile;
+        if (iterativePhase != null)
+            dflScriptOutputFile = new File(algorithmDemoDirectoryName + "/"
+                    + iterativePhase.name() + ComposerConstants.DFL_SCRIPT_FILE_EXTENSION);
+        else
+            dflScriptOutputFile = new File(algorithmDemoDirectoryName
+                    + ComposerConstants.DFL_SCRIPT_FILE_EXTENSION);
+
+
+        if(dflScriptOutputFile.getParentFile().mkdirs()){
+            throw new IOException("Failed to create directory: " + dflScriptOutputFile.getParentFile());
+        }
+        Files.createFile(dflScriptOutputFile.toPath());
+        if(dflScriptOutputFile.createNewFile()){
+            throw new IOException("Failed to create file : " + dflScriptOutputFile.getAbsolutePath()
+                                    + " because it already exists");
+        }
+        FileUtil.writeFile(dflScript, dflScriptOutputFile);
     }
 }
