@@ -6,6 +6,7 @@ import madgik.exareme.common.consts.HBPConstants;
 import madgik.exareme.master.engine.iterations.handler.IterationsConstants;
 import madgik.exareme.master.engine.iterations.handler.IterationsHandlerDFLUtils;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
+import madgik.exareme.utils.file.FileUtil;
 import madgik.exareme.utils.properties.AdpProperties;
 import madgik.exareme.worker.art.registry.ArtRegistryLocator;
 import org.apache.log4j.Logger;
@@ -13,6 +14,7 @@ import org.apache.log4j.Logger;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -170,7 +172,7 @@ public class Composer {
             dbIdentifier = algorithmKey;
         }else {
             dbIdentifier = algorithmParameters.get(ComposerConstants.dbIdentifierKey);
-            algorithmParameters.remove(ComposerConstants.dbIdentifierKey);      // It is no longer needed // TODO Check if it works
+            algorithmParameters.remove(ComposerConstants.dbIdentifierKey);      // It is no longer needed
         }
         algorithmParameters.put(ComposerConstants.defaultDBKey,
                 HBPConstants.DEMO_DB_WORKING_DIRECTORY + dbIdentifier + "_defaultDB.db");
@@ -243,7 +245,7 @@ public class Composer {
             case multiple_local_global:
 
 
-                // ------------->
+                // ------------->  // TODO
                 dflScript.append(composeMultipleLocalGlobal(
                         currentAlgorithmFolderPath, algorithmProperties, algorithmParameters, inputLocalTbl,
                         outputGlobalTbl, iterativeAlgorithmPhase
@@ -551,5 +553,36 @@ public class Composer {
                 throw new ComposerException("Unsupported iterative algorithm case.");
         }
         return algorithmPhaseWorkingDir;
+    }
+
+    /**
+     * Persists DFL Script on disk, at demo algorithm's directory - for an algorithm's particular
+     * execution.
+     *
+     * @param algorithmDemoDirectoryName the algorithm's demo execution directory
+     * @param dflScript                  the algorithm's particular execution DFL scripts
+     * @throws IOException               if writing the DFLScript fails.
+     */
+    public static void persistDFLScriptToAlgorithmsDemoDirectory(
+            String algorithmDemoDirectoryName, String dflScript,
+            IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativePhase)
+            throws IOException {
+        File dflScriptOutputFile;
+        if (iterativePhase != null) {
+            dflScriptOutputFile = new File(algorithmDemoDirectoryName + "/"
+                    + iterativePhase.name() + ComposerConstants.DFL_SCRIPT_FILE_EXTENSION);
+        }else {
+            dflScriptOutputFile = new File(algorithmDemoDirectoryName
+                    + ComposerConstants.DFL_SCRIPT_FILE_EXTENSION);
+        }
+        
+        if(!dflScriptOutputFile.getParentFile().mkdirs())
+            throw new IOException("Failed to create parent directories: " + dflScriptOutputFile.getParentFile());
+
+        if(!dflScriptOutputFile.createNewFile())
+            throw new IOException("Failed to create file : " + dflScriptOutputFile.getAbsolutePath()
+                    + " because it already exists");
+
+        FileUtil.writeFile(dflScript, dflScriptOutputFile);
     }
 }
