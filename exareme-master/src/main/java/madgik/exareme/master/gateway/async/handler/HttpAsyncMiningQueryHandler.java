@@ -214,7 +214,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 dfl = composer.composeVirtual(algorithmKey, algorithmProperties, null, numberOfContainers);
                 log.debug(dfl);
                 try {
-                    IterationsHandler.persistDFLScriptToAlgorithmsDemoDirectory(
+                    Composer.persistDFLScriptToAlgorithmsDemoDirectory(
                             HBPConstants.DEMO_ALGORITHMS_WORKING_DIRECTORY + "/" + algorithmKey
                                     + "/" + algorithmKey,
                             dfl, null);
