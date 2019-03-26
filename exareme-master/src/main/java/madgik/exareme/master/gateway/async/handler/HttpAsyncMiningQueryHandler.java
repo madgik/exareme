@@ -248,27 +248,55 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         }
     }
 
-    private boolean allWorkersRunning(HttpResponse response, Set<String> usedIPs) throws IOException {
+    private BasicHttpEntity getMessage(HttpResponse response,String message) throws IOException {
         BasicHttpEntity entity = new BasicHttpEntity();
+        String result = "{\"Error\":\""+message+"\"}";
+        byte[] contentBytes = result.getBytes(Charsets.UTF_8.name());
+        entity.setContent(new ByteArrayInputStream(contentBytes));
+        entity.setContentLength(contentBytes.length);
+        entity.setContentEncoding(Charsets.UTF_8.name());
+        entity.setChunked(false);
+        response.setStatusCode(HttpStatus.SC_METHOD_FAILURE);
+        response.setEntity(entity);
+        return entity;
+    }
 
-        String workersPath = AdpProperties.getGatewayProperties().getString("workers.path");
-        log.debug("Workers Path : " + workersPath);
-        try (BufferedReader br = new BufferedReader(new FileReader(workersPath))) {
-            String containerIP, containerNAME, line;
-            String[] container;
-            while ((line = br.readLine()) != null) {
-                container = line.split(" ");
-                containerIP = container[0];
-                containerNAME = container[1];
+    private boolean allWorkersRunning(HttpResponse response, Set<String> usedIPs) throws IOException {
+        Gson gson = new Gson();
+        List<String> nodeIPs = new ArrayList<>();
+        boolean containerResponded = false;
 
-                log.debug("Will check container with IP: " + containerIP + " and NAME: " + containerNAME);
-                if (usedIPs != null && !usedIPs.contains(containerIP)) {
+        String master = searchConsul("master?keys");
+        if (master == null){        //if there is no master folder in Consul, return. Do not try to contact workers as there is no point since master is not running...
+            getMessage(response,"It seems that there is no master folder under Consul URL. Try to contact your administrator");
+            return false;
+        }
+        else {
+            String[] masterPath = gson.fromJson(master, String[].class);
+            for (String masterName : masterPath) {
+                log.debug(searchConsul(masterName + "?raw"));
+                nodeIPs.add(searchConsul(masterName + "?raw"));
+            }
+
+            String activeWorkers = searchConsul("active_workers?keys");
+            if (activeWorkers != null) {      //maybe there is no worker folder in Consul because none workers are running. Continue
+                String[] activeWorkersPath = gson.fromJson(activeWorkers, String[].class);
+
+                for (String workersName : activeWorkersPath) {
+                    log.debug(searchConsul(workersName + "?raw"));
+                    nodeIPs.add(searchConsul(workersName + "?raw"));
+                }
+            }
+
+            for (String nodeIP : nodeIPs) {
+                log.debug("Will check container with IP: " + nodeIP);
+                if (usedIPs != null && !usedIPs.contains(nodeIP)) {
                     log.debug("Container not used, skipping");
                     continue;
                 }
-                boolean containerResponded = false;
+
                 for (ContainerProxy containerProxy : ArtRegistryLocator.getArtRegistryProxy().getContainers()) {
-                    if (containerProxy.getEntityName().getIP().equals(containerIP)) {
+                    if (containerProxy.getEntityName().getIP().equals(nodeIP)) {
                         try {
                             ContainerProxy tmpContainerProxy = ArtRegistryLocator.getArtRegistryProxy()
                                     .lookupContainer(containerProxy.getEntityName());
@@ -281,21 +309,10 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 }
                 log.debug("Container responded: " + containerResponded);
                 if (!containerResponded) {
-                    String result = "{\"Error\":\"Container with IP " + containerIP + " and NAME " + containerNAME + " is not responding. Please inform your system administrator\"}";
-                    byte[] contentBytes = result.getBytes(Charsets.UTF_8.name());
-
-                    entity.setContent(new ByteArrayInputStream(contentBytes));
-                    entity.setContentLength(contentBytes.length);
-                    entity.setContentEncoding(Charsets.UTF_8.name());
-                    entity.setChunked(false);
-                    response.setStatusCode(HttpStatus.SC_METHOD_FAILURE);
-                    response.setEntity(entity);
+                    getMessage(response,"Container with IP " + nodeIP + " is not responding. Please inform your system administrator");
                     return false;
                 }
-
             }
-        } catch (FileNotFoundException e) {
-            log.warn("Workers file not found at: " + workersPath + ". Will continue without checking that all containers are running");
         }
         return true;
     }
@@ -312,6 +329,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             HashMap<String, List<String>> datasetToNodes = new HashMap<>();
             //Find nodes with datasets defined at consul
             String nodesKeys = searchConsul("datasets/?keys");
+            if (nodesKeys == null) return null;
             log.debug(nodesKeys);
             Gson gson = new Gson();
             String[] nodesKeysArray = gson.fromJson(nodesKeys, String[].class);
@@ -327,6 +345,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                     }
                     datasetToNodes.get(nodeDataset).add(getNodeIP(nodeName));
                 }
+
             }
 
             //Find IPs of used containers
@@ -353,8 +372,10 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         }
     }
 
-    private void returnNotFoundError(HttpResponse response, List<String> notFoundDatasets) throws UnsupportedEncodingException {
+    private void returnNotFoundError(HttpResponse response, List<String> notFoundDatasets) throws IOException {
         StringBuilder notFound = new StringBuilder();
+        BasicHttpEntity entity;
+
         for (String ds : notFoundDatasets) {
             notFound.append(ds);
             notFound.append(", ");
@@ -362,14 +383,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         String notFoundSring = notFound.toString();
         notFoundSring = notFoundSring.substring(0, notFoundSring.length() - 2);
         log.debug("Dataset(s) " + notFoundSring + " not found!");
-        String result = "{\"Error\":\"Dataset(s) " + notFoundSring + " not found!\"}";
-        byte[] contentBytes = result.getBytes(Charsets.UTF_8.name());
-        BasicHttpEntity entity = new BasicHttpEntity();
-        entity.setContent(new ByteArrayInputStream(contentBytes));
-        entity.setContentLength(contentBytes.length);
-        entity.setContentEncoding(Charsets.UTF_8.name());
-        entity.setChunked(false);
-        response.setStatusCode(HttpStatus.SC_METHOD_FAILURE);
+        entity = getMessage(response,"Dataset(s) " + notFoundSring + " not found!");
         response.setEntity(entity);
     }
 
@@ -382,46 +396,53 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
     }
 
     private String getNodeIP(String name) throws IOException {
-        try {
-            return searchConsul("active_workers/" + name + "?raw");
-        } catch (IOException e) { //Worker not found
-            try {
-                return searchConsul("master/" + name + "?raw");
-            } catch (IOException em) {
-                throw new IOException("Worker with name " + name + " not found");
-            }
+        if (searchConsul("active_workers/" + name + "?raw") == null){
+            return searchConsul("master/" + name + "?raw");
         }
+        else
+            return searchConsul("active_workers/" + name + "?raw");
     }
 
     private String searchConsul(String query) throws IOException {
-        String result;
+        String result = null;
         CloseableHttpClient httpclient = HttpClients.createDefault();
         String consulURL = System.getenv("CONSULURL");
         if (consulURL == null) throw new IOException("Consul url not set");
         if (!consulURL.startsWith("http://")) {
             consulURL = "http://" + consulURL;
         }
-
-        HttpGet httpGet = null;
         try {
+            HttpGet httpGet;
             httpGet = new HttpGet(consulURL + "/v1/kv/" + query);
             log.debug("Running: " + httpGet.getURI());
             CloseableHttpResponse response = null;
-            try {
-                response = httpclient.execute(httpGet);
-                if (response.getStatusLine().getStatusCode() != 200) {
-                    throw new ServerException("Cannot contact consul", new Exception(EntityUtils.toString(response.getEntity())));
-                } else {
-                    result = EntityUtils.toString(response.getEntity());
+            if (httpGet.toString().contains("master") || httpGet.toString().contains("datasets")) {    //if we can not contact : http://exareme-keystore:8500/v1/kv/master* or http://exareme-keystore:8500/v1/kv/datasets*
+                try {   //then throw exception
+                    response = httpclient.execute(httpGet);
+                    if (response.getStatusLine().getStatusCode() != 200) {
+                        throw new ServerException("Cannot contact consul", new Exception(EntityUtils.toString(response.getEntity())));
+                    } else {
+                        result = EntityUtils.toString(response.getEntity());
+                    }
+                } finally {
+                    response.close();
                 }
-            } finally {
-                response.close();
+            }
+            if (httpGet.toString().contains("active_workers")) {    //if we can not contact : http://exareme-keystore:8500/v1/kv/active_workers*
+                try {   //then maybe there are no workers running
+                    response = httpclient.execute(httpGet);
+                    if (response.getStatusLine().getStatusCode() != 200) {
+                        log.debug("No workers running.");
+                    } else {
+                        result = EntityUtils.toString(response.getEntity());
+                    }
+                } finally {
+                    response.close();
+                }
             }
         } finally {
-            httpGet.releaseConnection();
-            httpclient.close();
+            return result;
         }
-        return result;
     }
 }
 
