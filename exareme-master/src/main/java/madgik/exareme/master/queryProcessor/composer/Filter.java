@@ -74,7 +74,7 @@ public class Filter {
                 mylist.add(filternow.toString());
             }
         }
-        String myresult = (mylist.get(mylist.size() - 1).toString()).replaceAll("\"", "");
+        String myresult = (mylist.get(mylist.size() - 1).toString());
         return myresult;
     }
 }
