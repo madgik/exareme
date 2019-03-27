@@ -44,7 +44,7 @@ public class Composer {
     private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     static {
-        algorithmsFolderPath = AdpProperties.getGatewayProperties().getString("demo.repository.path");
+        algorithmsFolderPath = AdpProperties.getGatewayProperties().getString("algorithms.path");
         DATA_DIRECTORY = AdpProperties.getGatewayProperties().getString("data.path");
         try {
             algorithms = Algorithms.createAlgorithms(algorithmsFolderPath);
