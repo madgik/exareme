@@ -12,7 +12,8 @@ public class ComposerConstants {
     public static final String inputLocalTblKey = "input_local_tbl";
     public static final String inputGlobalTblKey = "input_global_tbl";
     public static final String outputGlobalTblKey = "output_tbl";
-    public static final String outputPrvGlobalTblKey = "prv_output_global_tbl";
+    public static final String prevOutputGlobalTblKey = "prv_output_global_tbl";
+    public static final String prevOutputLocalTblKey = "prv_output_local_tbl";
     public static final String isTmpKey = "isTmp";
     public static final String algorithmIterKey = "algorithm_iter_key";
     public static final String defaultDBKey = "defaultDB";

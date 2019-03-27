@@ -418,16 +418,14 @@ public class IterationsHandlerDFLUtils {
     /**
      * Generates the output table name of a given iterative phase.
      *
-     * @param outputTblPrefix the prefix of the output table
      * @param algorithmKey    the iterative algorithm's key
      * @param iterativePhase  the iterative phase for which the table name is generated
      */
     public static String generateIterativePhaseOutputTblName(
-            String outputTblPrefix,
             String algorithmKey,
             IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativePhase) {
         String iterativePhaseOutputTblName =
-                outputTblPrefix + "_" + algorithmKey + "_" + iterativePhase.name();
+                IterationsConstants.iterationsOutputTblPrefix + "_" + algorithmKey + "_" + iterativePhase.name();
         if (iterativePhase.equals(IterativeAlgorithmState.IterativeAlgorithmPhasesModel.step) ||
                 iterativePhase.equals(
                         termination_condition))
@@ -473,7 +471,6 @@ public class IterationsHandlerDFLUtils {
      */
     public static String getInitPhaseOutputTblName(String algorithmKey) {
         return generateIterativePhaseOutputTblName(
-                IterationsConstants.iterationsOutputTblPrefix,
                 algorithmKey,
                 IterativeAlgorithmState.IterativeAlgorithmPhasesModel.init);
     }
