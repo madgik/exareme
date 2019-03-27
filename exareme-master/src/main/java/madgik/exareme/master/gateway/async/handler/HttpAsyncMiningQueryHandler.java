@@ -266,7 +266,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         List<String> nodeIPs = new ArrayList<>();
         boolean containerResponded = false;
 
-        String master = searchConsul("master?keys");
+        String master = searchConsul("master/?keys");
         if (master == null){        //if there is no master folder in Consul, return. Do not try to contact workers as there is no point since master is not running...
             getMessage(response,"It seems that there is no master folder under Consul URL. Try to contact your administrator");
             return false;
@@ -274,16 +274,16 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         else {
             String[] masterPath = gson.fromJson(master, String[].class);
             for (String masterName : masterPath) {
-                log.debug(searchConsul(masterName + "?raw"));
+                //log.debug(searchConsul(masterName + "?raw"));
                 nodeIPs.add(searchConsul(masterName + "?raw"));
             }
 
-            String activeWorkers = searchConsul("active_workers?keys");
+            String activeWorkers = searchConsul("active_workers/?keys");
             if (activeWorkers != null) {      //maybe there is no worker folder in Consul because none workers are running. Continue
                 String[] activeWorkersPath = gson.fromJson(activeWorkers, String[].class);
 
                 for (String workersName : activeWorkersPath) {
-                    log.debug(searchConsul(workersName + "?raw"));
+                    //log.debug(searchConsul(workersName + "?raw"));
                     nodeIPs.add(searchConsul(workersName + "?raw"));
                 }
             }
@@ -335,7 +335,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             String[] nodesKeysArray = gson.fromJson(nodesKeys, String[].class);
             //For every node (with dataset...)
             for (String nodeKey : nodesKeysArray) {
-                log.debug(searchConsul(nodeKey + "?raw"));
+                //log.debug(searchConsul(nodeKey + "?raw"));
                 String[] nodeDatasets = gson.fromJson(searchConsul(nodeKey + "?raw"), String[].class);
                 String nodeName = nodeKey.replace("datasets/", "");
                 //For every dataset of this node, add to hashmap
@@ -416,7 +416,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             httpGet = new HttpGet(consulURL + "/v1/kv/" + query);
             log.debug("Running: " + httpGet.getURI());
             CloseableHttpResponse response = null;
-            if (httpGet.toString().contains("master") || httpGet.toString().contains("datasets")) {    //if we can not contact : http://exareme-keystore:8500/v1/kv/master* or http://exareme-keystore:8500/v1/kv/datasets*
+            if (httpGet.toString().contains("master/") || httpGet.toString().contains("datasets/")) {    //if we can not contact : http://exareme-keystore:8500/v1/kv/master* or http://exareme-keystore:8500/v1/kv/datasets*
                 try {   //then throw exception
                     response = httpclient.execute(httpGet);
                     if (response.getStatusLine().getStatusCode() != 200) {
@@ -428,11 +428,12 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                     response.close();
                 }
             }
-            if (httpGet.toString().contains("active_workers")) {    //if we can not contact : http://exareme-keystore:8500/v1/kv/active_workers*
+            if (httpGet.toString().contains("active_workers/")) {    //if we can not contact : http://exareme-keystore:8500/v1/kv/active_workers*
                 try {   //then maybe there are no workers running
                     response = httpclient.execute(httpGet);
                     if (response.getStatusLine().getStatusCode() != 200) {
-                        log.debug("No workers running.");
+                        if (httpGet.toString().contains("?keys"))
+                            log.debug("No workers running. Continue with master");
                     } else {
                         result = EntityUtils.toString(response.getEntity());
                     }
