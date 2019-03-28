@@ -3,4 +3,4 @@ before_install:
   - sudo pip install requests NumPy SciPy scikit-learn titus
 
 language: java
-script: mvn clean install -DskipTests=false
+script: mvn clean install -DskipTests=false cobertura:cobertura coveralls:report
