@@ -1,17 +1,7 @@
-language: java
-
 before_install:
   - sudo apt-get install -y python-apsw
   - sudo pip install requests NumPy SciPy scikit-learn titus
-
-before_script:
-  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-  - chmod +x ./cc-test-reporter
-  - ./cc-test-reporter before-build
   
-script: mvn clean install -DskipTests=false
+language: java
 
-after_script:
-  JACOCO_SOURCE_PATH=src/main/java 
-  ./cc-test-reporter format-coverage -d target/site/jacoco/jacoco.xml --input-type jacoco
-  ./cc-test-reporter upload-coverage -d
+script: mvn clean install -DskipTests=false
