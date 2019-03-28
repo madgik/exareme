@@ -19,7 +19,6 @@ import madgik.exareme.master.queryProcessor.composer.Algorithms;
 import madgik.exareme.master.queryProcessor.composer.Composer;
 import madgik.exareme.master.queryProcessor.composer.ComposerException;
 import madgik.exareme.utils.net.NetUtil;
-import madgik.exareme.utils.properties.AdpProperties;
 import madgik.exareme.worker.art.container.ContainerProxy;
 import madgik.exareme.worker.art.registry.ArtRegistryLocator;
 import org.apache.commons.io.Charsets;
@@ -211,7 +210,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 response.setStatusCode(HttpStatus.SC_OK);
                 response.setEntity(entity);
             } else {
-                dfl = composer.composeVirtual(algorithmKey, algorithmProperties, null, numberOfContainers);
+                dfl = composer.composeDFLScript(algorithmKey, algorithmProperties, null, numberOfContainers);
                 log.debug(dfl);
                 try {
                     Composer.persistDFLScriptToAlgorithmsDemoDirectory(

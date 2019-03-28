@@ -4,7 +4,6 @@ import madgik.exareme.master.engine.iterations.exceptions.IterationsFatalExcepti
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.master.queryProcessor.composer.Algorithms;
 import madgik.exareme.master.queryProcessor.composer.Composer;
-import madgik.exareme.master.queryProcessor.composer.ComposerConstants;
 import madgik.exareme.master.queryProcessor.composer.ComposerException;
 import madgik.exareme.utils.association.Pair;
 import madgik.exareme.utils.file.FileUtil;
@@ -14,7 +13,6 @@ import org.apache.log4j.Logger;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -49,7 +47,7 @@ public class IterationsHandlerDFLUtils {
      * @param algorithmProperties     the properties of this algorithm
      * @param iterativeAlgorithmState the state of iterative algorithm, only usced for reading data
      * @return the generated DFL scripts (one for each phase)
-     * @throws IterationsFatalException If {@link Composer#composeVirtual} fails.
+     * @throws IterationsFatalException If {@link Composer#composeDFLScript} fails.
      * @see Algorithms.AlgorithmProperties
      */
     static String[] prepareDFLScripts(
@@ -125,7 +123,7 @@ public class IterationsHandlerDFLUtils {
 
             try {
                 dflScripts[dflScriptIdx++] =
-                        composer.composeVirtual(algorithmKey, algorithmProperties, phase);
+                        composer.composeDFLScript(algorithmKey, algorithmProperties, phase);
                 log.info("dfl: " + dflScripts[dflScriptIdx - 1]);
             } catch (ComposerException e) {
                 throw new IterationsFatalException("Composer failure to generate DFL script for phase: "
