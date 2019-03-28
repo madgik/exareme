@@ -13,10 +13,9 @@ import java.util.HashMap;
 import java.util.Objects;
 
 /**
- * Represent the mip-algorithms repository properties,
- * able to interact through gson.
- *
- * @author alexpap
+ * Represents the mip-algorithms repository properties.
+ * <p>
+ * The properties.json file is an AlgorithmProperties class.
  */
 public class Algorithms {
     private static final Logger log = Logger.getLogger(Composer.class);
@@ -165,31 +164,45 @@ public class Algorithms {
 
         /**
          * Checks if the parameterValue has the correct type
-         * @param value  the value of the parameter
-         * @param valueType  the type of the value
+         *
+         * @param value               the value of the parameter
+         * @param parameterProperties the type of the value
          */
-        private static void checkAlgorithmParameterValue(String value, AlgorithmProperties.ParameterProperties.ParameterValueType valueType){
-            if (valueType.equals(ParameterProperties.ParameterValueType.real)){
+        private static void checkAlgorithmParameterValue(
+                String value,
+                AlgorithmProperties.ParameterProperties parameterProperties
+        ) throws AlgorithmsException {
+            if (parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.real)) {
                 try {
                     Double.parseDouble(value);
                 } catch (NumberFormatException nfe) {
-                    // TODO Throw Wrong Type Exception
+                    throw new AlgorithmsException(
+                            "The value of the parameter '" + parameterProperties.getName() + "' should be a real number.");
                 }
-            }else if (valueType.equals(ParameterProperties.ParameterValueType.integer)){
+            } else if (parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.integer)) {
                 try {
                     Integer.parseInt(value);
-                } catch(NumberFormatException e) {
-                    // TODO Throw Wrong Type Exception
+                } catch (NumberFormatException e) {
+                    throw new AlgorithmsException(
+                            "The value of the parameter '" + parameterProperties.getName() + "' should be an integer.");
                 }
-            }else if (valueType.equals(ParameterProperties.ParameterValueType.json)){
+            } else if (parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.json)) {
                 try {
                     new JSONObject(value);
                 } catch (JSONException ex) {
                     try {
                         new JSONArray(value);
                     } catch (JSONException ex1) {
-                        // TODO Throw Wrong Type Exception
+                        throw new AlgorithmsException(
+                                "The value of the parameter '"
+                                        + parameterProperties.getName() + "' cannot be parsed into json.");
                     }
+                }
+            } else if (parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.string)) {
+                if (!parameterProperties.getValueMultiple() && value.contains(",")) {
+                    throw new AlgorithmsException(
+                            "The value of the parameter '" + parameterProperties.getName()
+                                    + "' should contain only one value.");
                 }
             }
         }
@@ -224,7 +237,8 @@ public class Algorithms {
          * @throws IOException when algorithm property file does not exist
          */
         public static AlgorithmProperties createAlgorithmProperties(
-                String algorithmName, HashMap<String, String> inputContent) throws IOException {
+                String algorithmName, HashMap<String, String> inputContent
+        ) throws IOException, AlgorithmsException {
 
             AlgorithmProperties algorithmProperties =
                     AlgorithmProperties.loadAlgorithmProperties(algorithmName);
@@ -232,10 +246,11 @@ public class Algorithms {
             for (ParameterProperties parameterProperties : algorithmProperties.getParameters()) {
                 String value = inputContent.get(parameterProperties.getName());
                 if (value != null) {
-                    checkAlgorithmParameterValue(value,parameterProperties.getValueType());
+                    checkAlgorithmParameterValue(value, parameterProperties);
                 } else {            // if value is null
                     if (parameterProperties.getValueNotBlank()) {
-                        // TODO Throw blank value Exception
+                        throw new AlgorithmsException(
+                                "The value of the parameter '" + parameterProperties.getName() + "' should not be blank.");
                     }
                     value = "";
                 }

@@ -16,6 +16,7 @@ import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.master.gateway.ExaremeGatewayUtils;
 import madgik.exareme.master.gateway.async.handler.entity.NQueryResultEntity;
 import madgik.exareme.master.queryProcessor.composer.Algorithms;
+import madgik.exareme.master.queryProcessor.composer.AlgorithmsException;
 import madgik.exareme.master.queryProcessor.composer.Composer;
 import madgik.exareme.master.queryProcessor.composer.ComposerException;
 import madgik.exareme.utils.net.NetUtil;
@@ -219,6 +220,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                             dfl, null);
                 } catch (IOException e) {
                     // Ignoring error if failed to persist DFL Scripts - it's not something fatal.
+                    log.error(e);
                 }
                 AdpDBClientProperties clientProperties =
                         new AdpDBClientProperties(
@@ -234,8 +236,6 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 response.setStatusCode(HttpStatus.SC_OK);
                 response.setEntity(entity);
             }
-        } catch (ComposerException e) {
-            log.error(e);
         } catch (IterationsFatalException e) {
             if (e.getErroneousAlgorithmKey() != null)
                 iterationsHandler.removeIterativeAlgorithmStateInstanceFromISM(
@@ -243,13 +243,16 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             log.error(e);
         } catch (Exception e) {
             log.error(e);
-            throw new IOException(e.getMessage(), e);
+            BasicHttpEntity entity = new BasicHttpEntity();
+            entity.setContent(new ByteArrayInputStream(("{\"error\" : \"" + e.getMessage() + "\"}").getBytes()));
+            response.setStatusCode(HttpStatus.SC_BAD_REQUEST);
+            response.setEntity(entity);
         }
     }
 
-    private BasicHttpEntity getMessage(HttpResponse response,String message) throws IOException {
+    private BasicHttpEntity getMessage(HttpResponse response, String message) throws IOException {
         BasicHttpEntity entity = new BasicHttpEntity();
-        String result = "{\"Error\":\""+message+"\"}";
+        String result = "{\"Error\":\"" + message + "\"}";
         byte[] contentBytes = result.getBytes(Charsets.UTF_8.name());
         entity.setContent(new ByteArrayInputStream(contentBytes));
         entity.setContentLength(contentBytes.length);
@@ -266,11 +269,10 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         boolean containerResponded = false;
 
         String master = searchConsul("master/?keys");
-        if (master == null){        //if there is no master folder in Consul, return. Do not try to contact workers as there is no point since master is not running...
-            getMessage(response,"It seems that there is no master folder under Consul URL. Try to contact your administrator");
+        if (master == null) {        //if there is no master folder in Consul, return. Do not try to contact workers as there is no point since master is not running...
+            getMessage(response, "It seems that there is no master folder under Consul URL. Try to contact your administrator");
             return false;
-        }
-        else {
+        } else {
             String[] masterPath = gson.fromJson(master, String[].class);
             for (String masterName : masterPath) {
                 //log.debug(searchConsul(masterName + "?raw"));
@@ -308,7 +310,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 }
                 log.debug("Container responded: " + containerResponded);
                 if (!containerResponded) {
-                    getMessage(response,"Container with IP " + nodeIP + " is not responding. Please inform your system administrator");
+                    getMessage(response, "Container with IP " + nodeIP + " is not responding. Please inform your system administrator");
                     return false;
                 }
             }
@@ -382,7 +384,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         String notFoundSring = notFound.toString();
         notFoundSring = notFoundSring.substring(0, notFoundSring.length() - 2);
         log.debug("Dataset(s) " + notFoundSring + " not found!");
-        entity = getMessage(response,"Dataset(s) " + notFoundSring + " not found!");
+        entity = getMessage(response, "Dataset(s) " + notFoundSring + " not found!");
         response.setEntity(entity);
     }
 
@@ -395,10 +397,9 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
     }
 
     private String getNodeIP(String name) throws IOException {
-        if (searchConsul("active_workers/" + name + "?raw") == null){
+        if (searchConsul("active_workers/" + name + "?raw") == null) {
             return searchConsul("master/" + name + "?raw");
-        }
-        else
+        } else
             return searchConsul("active_workers/" + name + "?raw");
     }
 

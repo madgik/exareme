@@ -37,7 +37,6 @@ public class Composer {
 
     // The directory where the algorithms' SQL scripts are
     private static String algorithmsFolderPath;
-
     private static String DATA_DIRECTORY;
     private static Algorithms algorithms;
     private static Gson gson = new GsonBuilder().setPrettyPrinting().create();

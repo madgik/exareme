@@ -5,6 +5,7 @@ import madgik.exareme.master.engine.iterations.IterationsTestGenericUtils;
 import madgik.exareme.master.engine.iterations.exceptions.IterationsFatalException;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.master.queryProcessor.composer.Algorithms;
+import madgik.exareme.master.queryProcessor.composer.AlgorithmsException;
 import madgik.exareme.master.queryProcessor.composer.Composer;
 import madgik.exareme.utils.file.FileUtil;
 import org.apache.commons.io.FileUtils;
@@ -40,6 +41,7 @@ public class IterationsHandlerDFLUtilsTest {
     private static final String SELECT_OK_ITERATIVE_ERRONEOUS_TERM_COND
             = "SELECT_OK_ITERATIVE_ERRONEOUS_TERM_COND";
     // Sample-iterative contains a termination_condition_query.
+    // Sample-iterative contains a termination_condition_query.
     private static final String SAMPLE_ITERATIVE = "SAMPLE_ITERATIVE";
     private static final String HANDWRITTEN_EXTENSION = ".handwritten";
     private static final String TEMPLATE_FILES_SUFFIX = ".template.sql";
@@ -64,7 +66,8 @@ public class IterationsHandlerDFLUtilsTest {
      * query isn't provided, then prepareDFLScripts function must throw an IterationsFatalException.
      */
     @Test
-    public void ensureErrorIfTerminationCondQueryInconsistencyAmongPropertyAndTemplate() throws IOException {
+    public void ensureErrorIfTerminationCondQueryInconsistencyAmongPropertyAndTemplate()
+            throws IOException, AlgorithmsException {
         // Preparation phase ----------------------
         // Testing with [condition_query_provided=false] with a provided condition query in
         // termination_condition template file.
@@ -132,7 +135,8 @@ public class IterationsHandlerDFLUtilsTest {
     }
 
     @Test
-    public void ensureIterativeAlgorithmTerminationConditionDirectoryFormat() throws IOException {
+    public void ensureIterativeAlgorithmTerminationConditionDirectoryFormat()
+            throws IOException, AlgorithmsException {
         // Preparation phase ----------------------
         // [Ensure termination condition under its required directory exists]
         algorithmName = SELECT_OK_ITERATIVE_ERRONEOUS_TERM_COND;
@@ -169,7 +173,8 @@ public class IterationsHandlerDFLUtilsTest {
     }
 
     @Test
-    public void ensureGeneratedTemplateFilesMatchHandwrittenOnes() throws Exception {
+    public void ensureGeneratedTemplateFilesMatchHandwrittenOnes()
+            throws Exception, AlgorithmsException {
         // Preparation phase ----------------------
         algorithmName = SAMPLE_ITERATIVE;
         algorithmProperties = Algorithms.AlgorithmProperties.createAlgorithmProperties(algorithmName,
