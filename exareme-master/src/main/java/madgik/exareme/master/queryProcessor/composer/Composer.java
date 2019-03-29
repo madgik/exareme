@@ -9,6 +9,7 @@ import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.master.queryProcessor.composer.Algorithms.AlgorithmProperties.ParameterProperties;
 import madgik.exareme.utils.file.FileUtil;
 import madgik.exareme.utils.properties.AdpProperties;
+import madgik.exareme.worker.art.executionPlan.parser.expression.Parameter;
 import madgik.exareme.worker.art.registry.ArtRegistryLocator;
 import org.apache.log4j.Logger;
 
@@ -123,20 +124,16 @@ public class Composer {
      *
      * @param qKey                    the query key, or in general a key for the algorithm
      * @param algorithmProperties     the algorithm properties instance
-     * @param iterativeAlgorithmPhase in the case of iterative algorithms, this is one value of
-     *                                {@link madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState.IterativeAlgorithmPhasesModel}
-     *                                <b>otherwise, it is null</b>
      * @return the generated DFL script
      * @throws ComposerException If the algorithm type or the iterative algorithm phase isn't
      *                           supported or finally, if this method could not retrieve
      *                           ContainerProxies.
      */
     public String composeDFLScript(String qKey,
-                                   Algorithms.AlgorithmProperties algorithmProperties,
-                                   IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase
+                                   Algorithms.AlgorithmProperties algorithmProperties
     ) throws ComposerException {
         try {
-            return composeDFLScript(qKey, algorithmProperties, iterativeAlgorithmPhase,
+            return composeDFLScript(qKey, algorithmProperties,
                     ArtRegistryLocator.getArtRegistryProxy() == null ? 0 : ArtRegistryLocator.getArtRegistryProxy().getContainers().length);
         } catch (RemoteException e) {
             throw new ComposerException(e.getMessage());
@@ -145,12 +142,10 @@ public class Composer {
 
     /**
      * Composes the DFL script for the given algorithm properties and query.
+     * It does not create the script for iterative algorithms.
      *
      * @param algorithmKey            the algorithm key, or in general a key for the algorithm
      * @param algorithmProperties     the algorithm properties instance
-     * @param iterativeAlgorithmPhase in the case of iterative algorithms, this is one value of
-     *                                {@link madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState.IterativeAlgorithmPhasesModel}
-     *                                <b>otherwise, it is null</b>
      * @return the generated DFL script
      * @throws ComposerException If the algorithm type or the iterative algorithm phase isn't
      *                           supported or finally, if this method could not retrieve
@@ -159,19 +154,13 @@ public class Composer {
     public String composeDFLScript(
             String algorithmKey,
             Algorithms.AlgorithmProperties algorithmProperties,
-            IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase,
             int numberOfWorkers
     ) throws ComposerException {
         // Assigning the proper identifier for the defaultDB
         //      if the dbIdentifier is provided as a parameter or not
-        String dbIdentifier;
-        HashMap<String, String> algorithmParameters =
-                Algorithms.AlgorithmProperties.toHashMap(algorithmProperties.getParameters());
-        if (algorithmParameters.get(ComposerConstants.dbIdentifierKey) == null) {
+        String dbIdentifier = algorithmProperties.getParameterValue(ComposerConstants.dbIdentifierKey);
+        if (dbIdentifier == null)
             dbIdentifier = algorithmKey;
-        } else {
-            dbIdentifier = algorithmParameters.get(ComposerConstants.dbIdentifierKey);
-        }
         String algorithmName = algorithmProperties.getName();
         String defaultDBFileName = HBPConstants.DEMO_DB_WORKING_DIRECTORY + dbIdentifier + "_defaultDB.db";
         String inputLocalTbl = createLocalTableQuery(algorithmProperties);
@@ -192,14 +181,12 @@ public class Composer {
                 dflScript = composeMultipleLocalGlobalAlgorithmsDFLScript(algorithmName, inputLocalTbl, outputGlobalTbl,
                         defaultDBFileName, algorithmProperties.getParameters());
                 break;
-            case iterative:
-                dflScript = composeIterativeAlgorithmsDFLScript(algorithmName, algorithmKey, inputLocalTbl, defaultDBFileName,
-                        algorithmProperties.getParameters(), iterativeAlgorithmPhase);
-                break;
             case pipeline:
                 dflScript = composePipelineAlgorithmsDFLScript(algorithmName, inputLocalTbl, outputGlobalTbl,
                         defaultDBFileName, algorithmProperties.getParameters(), numberOfWorkers);
                 break;
+            case iterative:
+                throw new ComposerException("Iterative Algorithms should not call composeDFLScripts");
             default:
                 throw new ComposerException("Unable to determine algorithm type.");
         }
@@ -384,24 +371,101 @@ public class Composer {
     }
 
     /**
+     * Returns an exaDFL script for the algorithms of type pipeline
+     *
+     * @param algorithmName       the name of the algorithm
+     * @param inputLocalTbl       the query to read from the local table
+     * @param outputGlobalTbl     the table where the output is going to be printed
+     * @param defaultDBFileName   the name of the local db that the SQL scripts are going to use
+     * @param algorithmParameters the parameters of the algorithm provided
+     * @param numberOfWorkers     the number of workers that the algorithm is going to run on
+     * @return an ExaDFL script that Exareme will use to run the query
+     */
+    private String composePipelineAlgorithmsDFLScript(
+            String algorithmName,
+            String inputLocalTbl,
+            String outputGlobalTbl,
+            String defaultDBFileName,
+            ParameterProperties[] algorithmParameters,
+            int numberOfWorkers
+    ) {
+        StringBuilder dflScript = new StringBuilder();
+        String localScriptPath = getAlgorithmFolderPath(algorithmName) + "/local.template.sql";
+        String localUpdateScriptPath = getAlgorithmFolderPath(algorithmName) + "/localupdate.template.sql";
+        String globalScriptPath = getAlgorithmFolderPath(algorithmName) + "/global.template.sql";
+        String algorithmFolderPath = getAlgorithmFolderPath(algorithmName);
+        String outputLocalTbl = "output_local_tbl_" + 0;
+        String prevOutputLocalTbl;
+
+        dflScript.append(String.format(
+                "distributed create temporary table %s as remote \n", outputLocalTbl));
+        dflScript.append(String
+                .format("select * from (\n  execnselect 'path:%s' ", algorithmFolderPath));
+        for (ParameterProperties parameter : algorithmParameters) {
+            dflScript.append(String.format("'%s:%s' ", parameter.getName(), parameter.getValue()));
+        }
+        dflScript.append(String.format("'%s:%s' ", ComposerConstants.defaultDBKey, defaultDBFileName));
+        dflScript.append(String.format("'%s:%s' ", ComposerConstants.inputLocalTblKey, inputLocalTbl));
+        dflScript.append(String.format("'%s:%s' ", ComposerConstants.outputGlobalTblKey, outputGlobalTbl));
+        dflScript.append(String.format("\n  select filetext('%s')\n", localScriptPath));
+        dflScript.append(");\n");
+
+        for (int iteration = 1; iteration < numberOfWorkers; iteration++) {
+            outputLocalTbl = "output_local_tbl_" + iteration;
+            prevOutputLocalTbl = "output_local_tbl_" + (iteration - 1);
+
+            dflScript.append(String.format("using %s distributed create temporary table %s as remote \n",
+                    prevOutputLocalTbl, outputLocalTbl));
+            dflScript.append(String.format("select * from (\n  execnselect 'path:%s' ", algorithmFolderPath));
+            for (ParameterProperties parameter : algorithmParameters) {
+                dflScript.append(String.format("'%s:%s' ", parameter.getName(), parameter.getValue()));
+            }
+            dflScript.append(String.format("'%s:%s' ", ComposerConstants.defaultDBKey, defaultDBFileName));
+            dflScript.append(String.format("'%s:%s' ", ComposerConstants.inputLocalTblKey, inputLocalTbl));
+            dflScript.append(String.format("'%s:%s' ", ComposerConstants.outputGlobalTblKey, outputGlobalTbl));
+            dflScript.append(String.format("'%s:%s' ", ComposerConstants.prevOutputLocalTblKey, prevOutputLocalTbl));
+            dflScript.append(String.format("\n  select filetext('%s')\n", localUpdateScriptPath));
+            dflScript.append(");\n");
+        }
+
+        prevOutputLocalTbl = "output_local_tbl_" + (numberOfWorkers - 1);
+        dflScript.append(String.format("using output_local_tbl_%d distributed create table %s as external ",
+                (numberOfWorkers - 1), outputGlobalTbl));
+        dflScript.append(String.format("select * from (\n  execnselect 'path:%s' ", algorithmFolderPath));
+        for (ParameterProperties parameter : algorithmParameters) {
+            dflScript.append(String.format("'%s:%s' ", parameter.getName(), parameter.getValue()));
+        }
+        dflScript.append(String.format("'%s:%s' ", ComposerConstants.defaultDBKey, defaultDBFileName));
+        dflScript.append(String.format("'%s:%s' ", ComposerConstants.inputLocalTblKey, inputLocalTbl));
+        dflScript.append(String.format("'%s:%s' ", ComposerConstants.outputGlobalTblKey, outputGlobalTbl));
+        dflScript.append(String.format("'%s:%s' ", ComposerConstants.prevOutputLocalTblKey, prevOutputLocalTbl));
+        dflScript.append(String.format("\n  select filetext('%s')\n", globalScriptPath));
+        dflScript.append(");\n");
+
+        return dflScript.toString();
+    }
+
+    /**
      * Returns an exaDFL script for the algorithms of type iterative
      *
-     * @param algorithmName           the name of the algorithm
      * @param algorithmKey            the key of the algorithm
-     * @param inputLocalTbl           the query to read from the local table
-     * @param defaultDBFileName       the name of the local db that the SQL scripts are going to use
-     * @param algorithmParameters     the parameters of the algorithm provided
+     * @param algorithmProperties     the properties of the algorithm
      * @param iterativeAlgorithmPhase the phase of the iteration
      * @return an ExaDFL script that Exareme will use to run the query
      */
-    private String composeIterativeAlgorithmsDFLScript(
-            String algorithmName,
+    public String composeIterativeAlgorithmsDFLScript(
             String algorithmKey,
-            String inputLocalTbl,
-            String defaultDBFileName,
-            ParameterProperties[] algorithmParameters,
+            Algorithms.AlgorithmProperties algorithmProperties,
             IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase
     ) throws ComposerException {
+        String dbIdentifier = algorithmProperties.getParameterValue(ComposerConstants.dbIdentifierKey);
+        if (dbIdentifier == null)
+            dbIdentifier = algorithmKey;
+        String algorithmName = algorithmProperties.getName();
+        String defaultDBFileName = HBPConstants.DEMO_DB_WORKING_DIRECTORY + dbIdentifier + "_defaultDB.db";
+        String inputLocalTbl = createLocalTableQuery(algorithmProperties);
+        ParameterProperties[] algorithmParameters = algorithmProperties.getParameters();
+
         StringBuilder dflScript = new StringBuilder();
 
         if (iterativeAlgorithmPhase == null)
@@ -505,81 +569,6 @@ public class Composer {
         return dflScript.toString();
     }
 
-    /**
-     * Returns an exaDFL script for the algorithms of type pipeline
-     *
-     * @param algorithmName       the name of the algorithm
-     * @param inputLocalTbl       the query to read from the local table
-     * @param outputGlobalTbl     the table where the output is going to be printed
-     * @param defaultDBFileName   the name of the local db that the SQL scripts are going to use
-     * @param algorithmParameters the parameters of the algorithm provided
-     * @param numberOfWorkers     the number of workers that the algorithm is going to run on
-     * @return an ExaDFL script that Exareme will use to run the query
-     */
-    private String composePipelineAlgorithmsDFLScript(
-            String algorithmName,
-            String inputLocalTbl,
-            String outputGlobalTbl,
-            String defaultDBFileName,
-            ParameterProperties[] algorithmParameters,
-            int numberOfWorkers
-    ) {
-        StringBuilder dflScript = new StringBuilder();
-        String localScriptPath = getAlgorithmFolderPath(algorithmName) + "/local.template.sql";
-        String localUpdateScriptPath = getAlgorithmFolderPath(algorithmName) + "/localupdate.template.sql";
-        String globalScriptPath = getAlgorithmFolderPath(algorithmName) + "/global.template.sql";
-        String algorithmFolderPath = getAlgorithmFolderPath(algorithmName);
-        String outputLocalTbl = "output_local_tbl_" + 0;
-        String prevOutputLocalTbl;
-
-        dflScript.append(String.format(
-                "distributed create temporary table %s as remote \n", outputLocalTbl));
-        dflScript.append(String
-                .format("select * from (\n  execnselect 'path:%s' ", algorithmFolderPath));
-        for (ParameterProperties parameter : algorithmParameters) {
-            dflScript.append(String.format("'%s:%s' ", parameter.getName(), parameter.getValue()));
-        }
-        dflScript.append(String.format("'%s:%s' ", ComposerConstants.defaultDBKey, defaultDBFileName));
-        dflScript.append(String.format("'%s:%s' ", ComposerConstants.inputLocalTblKey, inputLocalTbl));
-        dflScript.append(String.format("'%s:%s' ", ComposerConstants.outputGlobalTblKey, outputGlobalTbl));
-        dflScript.append(String.format("\n  select filetext('%s')\n", localScriptPath));
-        dflScript.append(");\n");
-
-        for (int iteration = 1; iteration < numberOfWorkers; iteration++) {
-            outputLocalTbl = "output_local_tbl_" + iteration;
-            prevOutputLocalTbl = "output_local_tbl_" + (iteration - 1);
-
-            dflScript.append(String.format("using %s distributed create temporary table %s as remote \n",
-                    prevOutputLocalTbl, outputLocalTbl));
-            dflScript.append(String.format("select * from (\n  execnselect 'path:%s' ", algorithmFolderPath));
-            for (ParameterProperties parameter : algorithmParameters) {
-                dflScript.append(String.format("'%s:%s' ", parameter.getName(), parameter.getValue()));
-            }
-            dflScript.append(String.format("'%s:%s' ", ComposerConstants.defaultDBKey, defaultDBFileName));
-            dflScript.append(String.format("'%s:%s' ", ComposerConstants.inputLocalTblKey, inputLocalTbl));
-            dflScript.append(String.format("'%s:%s' ", ComposerConstants.outputGlobalTblKey, outputGlobalTbl));
-            dflScript.append(String.format("'%s:%s' ", ComposerConstants.prevOutputLocalTblKey, prevOutputLocalTbl));
-            dflScript.append(String.format("\n  select filetext('%s')\n", localUpdateScriptPath));
-            dflScript.append(");\n");
-        }
-
-        prevOutputLocalTbl = "output_local_tbl_" + (numberOfWorkers - 1);
-        dflScript.append(String.format("using output_local_tbl_%d distributed create table %s as external ",
-                (numberOfWorkers - 1), outputGlobalTbl));
-        dflScript.append(String.format("select * from (\n  execnselect 'path:%s' ", algorithmFolderPath));
-        for (ParameterProperties parameter : algorithmParameters) {
-            dflScript.append(String.format("'%s:%s' ", parameter.getName(), parameter.getValue()));
-        }
-        dflScript.append(String.format("'%s:%s' ", ComposerConstants.defaultDBKey, defaultDBFileName));
-        dflScript.append(String.format("'%s:%s' ", ComposerConstants.inputLocalTblKey, inputLocalTbl));
-        dflScript.append(String.format("'%s:%s' ", ComposerConstants.outputGlobalTblKey, outputGlobalTbl));
-        dflScript.append(String.format("'%s:%s' ", ComposerConstants.prevOutputLocalTblKey, prevOutputLocalTbl));
-        dflScript.append(String.format("\n  select filetext('%s')\n", globalScriptPath));
-        dflScript.append(");\n");
-
-        return dflScript.toString();
-    }
-
     // Utilities --------------------------------------------------------------------------------
 
     /**
@@ -594,7 +583,7 @@ public class Composer {
      * @return the directory where the iterative algorithm's sql scripts are
      * @throws ComposerException if the iterativeAlgorithmPhase is not proper
      */
-    public static String generateIterativeWorkingDirectoryString(
+    private static String generateIterativeWorkingDirectoryString(
             String algorithmKey,
             IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase
     ) throws ComposerException {
