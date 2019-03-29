@@ -2,7 +2,6 @@ package madgik.exareme.master.queryProcessor.composer;
 
 import com.google.gson.Gson;
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -18,8 +17,6 @@ import java.util.Objects;
  * The properties.json file is an AlgorithmProperties class.
  */
 public class Algorithms {
-    private static final Logger log = Logger.getLogger(Composer.class);
-
     public static class AlgorithmProperties {
 
         public static class ParameterProperties {
@@ -266,9 +263,9 @@ public class Algorithms {
          * @param parameterName the name of a parameter
          * @return the value of the parameter provided
          */
-        public String getParameterValue(String parameterName){
-            for(ParameterProperties parameter: parameters){
-                if(parameter.getName().equals(parameterName))
+        public String getParameterValue(String parameterName) {
+            for (ParameterProperties parameter : parameters) {
+                if (parameter.getName().equals(parameterName))
                     return parameter.getValue();
             }
             return null;

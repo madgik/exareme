@@ -9,7 +9,6 @@ import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.master.queryProcessor.composer.Algorithms.AlgorithmProperties.ParameterProperties;
 import madgik.exareme.utils.file.FileUtil;
 import madgik.exareme.utils.properties.AdpProperties;
-import madgik.exareme.worker.art.executionPlan.parser.expression.Parameter;
 import madgik.exareme.worker.art.registry.ArtRegistryLocator;
 import org.apache.log4j.Logger;
 
@@ -19,10 +18,10 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
-import static madgik.exareme.master.engine.iterations.handler.IterationsConstants.*;
+import static madgik.exareme.master.engine.iterations.handler.IterationsConstants.iterationsParameterIterDBKey;
+import static madgik.exareme.master.engine.iterations.handler.IterationsConstants.terminationConditionTemplateSQLFilename;
 import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerUtils.generateIterationsDBName;
 import static madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState.IterativeAlgorithmPhasesModel.*;
 
@@ -122,8 +121,8 @@ public class Composer {
     /**
      * Composes the DFL script for the given algorithm properties and query.
      *
-     * @param qKey                    the query key, or in general a key for the algorithm
-     * @param algorithmProperties     the algorithm properties instance
+     * @param qKey                the query key, or in general a key for the algorithm
+     * @param algorithmProperties the algorithm properties instance
      * @return the generated DFL script
      * @throws ComposerException If the algorithm type or the iterative algorithm phase isn't
      *                           supported or finally, if this method could not retrieve
@@ -144,8 +143,8 @@ public class Composer {
      * Composes the DFL script for the given algorithm properties and query.
      * It does not create the script for iterative algorithms.
      *
-     * @param algorithmKey            the algorithm key, or in general a key for the algorithm
-     * @param algorithmProperties     the algorithm properties instance
+     * @param algorithmKey        the algorithm key, or in general a key for the algorithm
+     * @param algorithmProperties the algorithm properties instance
      * @return the generated DFL script
      * @throws ComposerException If the algorithm type or the iterative algorithm phase isn't
      *                           supported or finally, if this method could not retrieve

@@ -383,8 +383,8 @@ public class IterationsHandlerDFLUtils {
     /**
      * Generates the output table name of a given iterative phase.
      *
-     * @param algorithmKey    the iterative algorithm's key
-     * @param iterativePhase  the iterative phase for which the table name is generated
+     * @param algorithmKey   the iterative algorithm's key
+     * @param iterativePhase the iterative phase for which the table name is generated
      */
     public static String generateIterativePhaseOutputTblName(
             String algorithmKey,

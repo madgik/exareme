@@ -12,14 +12,9 @@ import madgik.exareme.master.engine.iterations.state.IterationsStateManagerImpl;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.master.queryProcessor.composer.Algorithms;
 import madgik.exareme.master.queryProcessor.composer.Composer;
-import madgik.exareme.master.queryProcessor.composer.ComposerConstants;
-import madgik.exareme.master.queryProcessor.composer.ComposerException;
-import madgik.exareme.utils.file.FileUtil;
 import org.apache.log4j.Logger;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.rmi.RemoteException;
 
 import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerDFLUtils.copyAlgorithmTemplatesToDemoDirectory;
