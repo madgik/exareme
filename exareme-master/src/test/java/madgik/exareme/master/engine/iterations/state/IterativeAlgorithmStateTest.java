@@ -8,6 +8,7 @@ import madgik.exareme.master.client.AdpDBClientProperties;
 import madgik.exareme.master.engine.AdpDBManager;
 import madgik.exareme.master.engine.AdpDBManagerLocator;
 import madgik.exareme.master.engine.iterations.IterationsTestGenericUtils;
+import madgik.exareme.master.engine.iterations.handler.IterationsConstants;
 import madgik.exareme.master.engine.iterations.state.exceptions.IterationsStateFatalException;
 import madgik.exareme.master.queryProcessor.composer.Algorithms;
 import org.junit.BeforeClass;
@@ -41,7 +42,7 @@ public class IterativeAlgorithmStateTest {
     @Rule
     public final ExpectedException expectedException = ExpectedException.none();
 
-    private Algorithms.AlgorithmProperties algorithmPropertiesMock = new Algorithms.AlgorithmProperties();
+    private Algorithms.AlgorithmProperties algorithmPropertiesMock = new PowerMockito().mock(Algorithms.AlgorithmProperties.class);
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -60,13 +61,11 @@ public class IterativeAlgorithmStateTest {
     @Test(expected = IterationsStateFatalException.class)
     public void ensureExceptionOnMissingConditionQueryProperty() {
         // Omit iterations termination condition query property.
-        final HashMap<String, String> parametersMap =
-                IterationsTestGenericUtils.prepareParameterProperties(
-                        algorithmName, null, "3");
-
         PowerMockito.mockStatic(Algorithms.AlgorithmProperties.class);
-        when(Algorithms.AlgorithmProperties.toHashMap(algorithmPropertiesMock.getParameters()))
-                .thenReturn(parametersMap);
+        when(algorithmPropertiesMock.getParameterValue(IterationsConstants.iterationsPropertyConditionQueryProvided))
+                .thenReturn(null);
+        when(algorithmPropertiesMock.getParameterValue(IterationsConstants.iterationsPropertyMaximumNumber))
+                .thenReturn("3");
 
         new IterativeAlgorithmState(algorithmName, algorithmPropertiesMock, adpDBClient);
     }
@@ -75,13 +74,11 @@ public class IterativeAlgorithmStateTest {
     public void ensureExceptionOnErroneousConditionQueryPropertyValue() {
         // Have iterations termination condition query property with erroneous value
         // (must be "true" / "false").
-        final HashMap<String, String> parametersMap =
-                IterationsTestGenericUtils.prepareParameterProperties(
-                        algorithmName, "yes", "3");
-
         PowerMockito.mockStatic(Algorithms.AlgorithmProperties.class);
-        when(Algorithms.AlgorithmProperties.toHashMap(algorithmPropertiesMock.getParameters()))
-                .thenReturn(parametersMap);
+        when(algorithmPropertiesMock.getParameterValue(IterationsConstants.iterationsPropertyConditionQueryProvided))
+                .thenReturn("yes");
+        when(algorithmPropertiesMock.getParameterValue(IterationsConstants.iterationsPropertyMaximumNumber))
+                .thenReturn("3");
 
         new IterativeAlgorithmState(algorithmName, algorithmPropertiesMock, adpDBClient);
     }
@@ -89,13 +86,11 @@ public class IterativeAlgorithmStateTest {
     @Test(expected = IterationsStateFatalException.class)
     public void ensureExceptionOnMissingIterationsMaxNumberProperty() {
         // Omit iterations maximum number property.
-        final HashMap<String, String> parametersMap =
-                IterationsTestGenericUtils.prepareParameterProperties(
-                        algorithmName, "true", null);
-
         PowerMockito.mockStatic(Algorithms.AlgorithmProperties.class);
-        when(Algorithms.AlgorithmProperties.toHashMap(algorithmPropertiesMock.getParameters()))
-                .thenReturn(parametersMap);
+        when(algorithmPropertiesMock.getParameterValue(IterationsConstants.iterationsPropertyConditionQueryProvided))
+                .thenReturn("true");
+        when(algorithmPropertiesMock.getParameterValue(IterationsConstants.iterationsPropertyMaximumNumber))
+                .thenReturn(null);
 
         new IterativeAlgorithmState(algorithmName, algorithmPropertiesMock, adpDBClient);
     }
@@ -103,13 +98,11 @@ public class IterativeAlgorithmStateTest {
     @Test(expected = IterationsStateFatalException.class)
     public void ensureExceptionOnErroneousIterationsMaxNumberPropertyValue() {
         // Have condition query property with erroneous value (must be a Long)
-        final HashMap<String, String> parametersMap =
-                IterationsTestGenericUtils.prepareParameterProperties(
-                        algorithmName, "true", "X");
-
         PowerMockito.mockStatic(Algorithms.AlgorithmProperties.class);
-        when(Algorithms.AlgorithmProperties.toHashMap(algorithmPropertiesMock.getParameters()))
-                .thenReturn(parametersMap);
+        when(algorithmPropertiesMock.getParameterValue(IterationsConstants.iterationsPropertyConditionQueryProvided))
+                .thenReturn("true");
+        when(algorithmPropertiesMock.getParameterValue(IterationsConstants.iterationsPropertyMaximumNumber))
+                .thenReturn("X");
 
         new IterativeAlgorithmState(algorithmName, algorithmPropertiesMock, adpDBClient);
     }
@@ -118,13 +111,11 @@ public class IterativeAlgorithmStateTest {
     @Test
     public void ensureThatIncrementIterNumberIsForced() {
         // Correct algorithm parameters
-        final HashMap<String, String> parametersMap =
-                IterationsTestGenericUtils.prepareParameterProperties(
-                        algorithmName, "true", "3");
-
         PowerMockito.mockStatic(Algorithms.AlgorithmProperties.class);
-        when(Algorithms.AlgorithmProperties.toHashMap(algorithmPropertiesMock.getParameters()))
-                .thenReturn(parametersMap);
+        when(algorithmPropertiesMock.getParameterValue(IterationsConstants.iterationsPropertyConditionQueryProvided))
+                .thenReturn("true");
+        when(algorithmPropertiesMock.getParameterValue(IterationsConstants.iterationsPropertyMaximumNumber))
+                .thenReturn("3");
 
         IterativeAlgorithmState ias =
                 new IterativeAlgorithmState(algorithmName, algorithmPropertiesMock, adpDBClient);
