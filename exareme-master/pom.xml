@@ -133,6 +133,11 @@
             <version>RELEASE</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>com.itfsw</groupId>
+            <artifactId>QueryBuilder</artifactId>
+            <version>1.0.5-SNAPSHOT</version>
+        </dependency>
 
     </dependencies>
 

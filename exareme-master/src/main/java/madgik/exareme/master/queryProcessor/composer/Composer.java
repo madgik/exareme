@@ -2,6 +2,9 @@ package madgik.exareme.master.queryProcessor.composer;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.itfsw.query.builder.SqlQueryBuilderFactory;
+import com.itfsw.query.builder.support.builder.SqlBuilder;
+import com.itfsw.query.builder.support.model.result.SqlQueryResult;
 import madgik.exareme.common.consts.HBPConstants;
 import madgik.exareme.master.engine.iterations.handler.IterationsConstants;
 import madgik.exareme.master.engine.iterations.handler.IterationsHandlerDFLUtils;
@@ -86,7 +89,16 @@ public class Composer {
                     variables.add(parameter.getValue());
                 }
             } else if (parameter.getType() == Algorithms.AlgorithmProperties.ParameterProperties.ParameterType.filter) {
-                filters = new Filter().getFilter(parameter.getValue());
+                SqlQueryBuilderFactory sqlQueryBuilderFactory = new SqlQueryBuilderFactory();
+                SqlBuilder sqlBuilder = sqlQueryBuilderFactory.builder();
+                try {   // build query
+                    SqlQueryResult sqlQueryResult = sqlBuilder.build(parameter.getValue());
+                    filters = String.valueOf(sqlQueryResult);
+                    filters = filters.replaceAll("'","\"");
+                    log.debug(filters);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             } else if (parameter.getType() == Algorithms.AlgorithmProperties.ParameterProperties.ParameterType.dataset) {
                 variables.add(parameter.getName());
             }
@@ -106,8 +118,6 @@ public class Composer {
             if ("".equals(filters)) {
                 builder.append(")");
             } else {
-                filters.replaceAll("|", "or");
-                filters.replaceAll("&", "and");
                 builder.append(" where " + filters + ")");
             }
             log.info(builder.toString());
