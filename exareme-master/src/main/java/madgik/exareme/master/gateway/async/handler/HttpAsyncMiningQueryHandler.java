@@ -41,12 +41,6 @@ import java.util.*;
 
 import static madgik.exareme.master.gateway.GatewayConstants.COOKIE_ALGORITHM_EXECUTION_ID;
 
-/**
- * Mining  Handler
- *
- * @author alex
- * @since 0.1
- */
 public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<HttpRequest> {
 
     private static final Logger log = Logger.getLogger(HttpAsyncMiningQueryHandler.class);
