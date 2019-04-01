@@ -204,7 +204,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 response.setStatusCode(HttpStatus.SC_OK);
                 response.setEntity(entity);
             } else {
-                dfl = composer.composeDFLScript(algorithmKey, algorithmProperties, null, numberOfContainers);
+                dfl = composer.composeDFLScript(algorithmKey, algorithmProperties, numberOfContainers);
                 log.debug(dfl);
                 try {
                     Composer.persistDFLScriptToAlgorithmsDemoDirectory(
@@ -234,6 +234,10 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 iterationsHandler.removeIterativeAlgorithmStateInstanceFromISM(
                         e.getErroneousAlgorithmKey());
             log.error(e);
+            BasicHttpEntity entity = new BasicHttpEntity();
+            entity.setContent(new ByteArrayInputStream(("{\"error\" : \"" + e.getMessage() + "\"}").getBytes()));
+            response.setStatusCode(HttpStatus.SC_BAD_REQUEST);
+            response.setEntity(entity);
         } catch (Exception e) {
             log.error(e);
             BasicHttpEntity entity = new BasicHttpEntity();

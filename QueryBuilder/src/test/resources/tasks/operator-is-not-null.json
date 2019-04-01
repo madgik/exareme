@@ -1,0 +1,15 @@
+{
+  "condition": "OR",
+  "rules": [
+    {
+      "id": "name",
+      "field": "username",
+      "type": "string",
+      "input": "text",
+      "operator": "is_not_null",
+      "value": null
+    }
+  ],
+  "not": false,
+  "valid": true
+}

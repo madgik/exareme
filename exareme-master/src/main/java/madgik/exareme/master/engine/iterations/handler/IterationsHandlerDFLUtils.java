@@ -66,24 +66,6 @@ public class IterationsHandlerDFLUtils {
                 IterationsHandlerDFLUtils.prepareBaselineSQLUpdates();
 
         // ------------------------------------------
-        // Create parameterProperties array with previousPhaseOutputTbl parameter needed for step
-        // and finalize iterative phases. This parameter's value is a "variable" in the format
-        // ${variable_name}, which will be replaced with StrSubstitutor, during each phase.
-        ArrayList<Algorithms.AlgorithmProperties.ParameterProperties> parameterPropertiesArrayList =
-                new ArrayList<>(Arrays.asList(algorithmProperties.getParameters()));
-
-        Algorithms.AlgorithmProperties.ParameterProperties previousPhaseOutputTblParameter =
-                new Algorithms.AlgorithmProperties.ParameterProperties();
-        previousPhaseOutputTblParameter.setName(
-                IterationsConstants.previousPhaseOutputTblVariableName);
-        previousPhaseOutputTblParameter.setValue(previousPhaseOutputTblPlaceholder);
-
-        parameterPropertiesArrayList.add(previousPhaseOutputTblParameter);
-        Algorithms.AlgorithmProperties.ParameterProperties[] parameterPropertiesInclPreviousPhaseOutputTbl =
-                parameterPropertiesArrayList.toArray(
-                        new Algorithms.AlgorithmProperties.ParameterProperties[parameterPropertiesArrayList.size()]);
-
-        // ------------------------------------------
         // Iterating through each iterative phase and:
         //      1. Apply updates to SQL template files (related to iterations control plane).
         //      2. Generate DFL.
@@ -112,29 +94,14 @@ public class IterationsHandlerDFLUtils {
                     sqlTemplateFile, sqlUpdates);
 
             // 2. Generate DFL
-
-            // Set algorithmProperties.Parameters to the ones containing previousPhaseOutputTbl
-            // parameter (required for execnselect of step/finalize phases)
-            Algorithms.AlgorithmProperties.ParameterProperties parameterPropertiesBackup[] =
-                    algorithmProperties.getParameters();
-            if (phase.equals(IterativeAlgorithmState.IterativeAlgorithmPhasesModel.step) ||
-                    phase.equals(IterativeAlgorithmState.IterativeAlgorithmPhasesModel.finalize))
-                algorithmProperties.setParameters(parameterPropertiesInclPreviousPhaseOutputTbl);
-
             try {
                 dflScripts[dflScriptIdx++] =
-                        composer.composeDFLScript(algorithmKey, algorithmProperties, phase);
+                        composer.composeIterativeAlgorithmsDFLScript(algorithmKey, algorithmProperties, phase);
                 log.info("dfl: " + dflScripts[dflScriptIdx - 1]);
             } catch (ComposerException e) {
                 throw new IterationsFatalException("Composer failure to generate DFL script for phase: "
                         + phase.name() + ".", e);
             }
-
-            // Restore algorithmProperties.Parameters backup (i.e. parameters *not* containing the
-            // previousPhaseOutputTbl parameter)
-            if (phase.equals(IterativeAlgorithmState.IterativeAlgorithmPhasesModel.step) ||
-                    phase.equals(IterativeAlgorithmState.IterativeAlgorithmPhasesModel.finalize))
-                algorithmProperties.setParameters(parameterPropertiesBackup);
         }
 
         return dflScripts;
@@ -416,8 +383,8 @@ public class IterationsHandlerDFLUtils {
     /**
      * Generates the output table name of a given iterative phase.
      *
-     * @param algorithmKey    the iterative algorithm's key
-     * @param iterativePhase  the iterative phase for which the table name is generated
+     * @param algorithmKey   the iterative algorithm's key
+     * @param iterativePhase the iterative phase for which the table name is generated
      */
     public static String generateIterativePhaseOutputTblName(
             String algorithmKey,

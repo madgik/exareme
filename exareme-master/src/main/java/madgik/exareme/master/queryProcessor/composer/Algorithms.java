@@ -2,7 +2,6 @@ package madgik.exareme.master.queryProcessor.composer;
 
 import com.google.gson.Gson;
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -18,8 +17,6 @@ import java.util.Objects;
  * The properties.json file is an AlgorithmProperties class.
  */
 public class Algorithms {
-    private static final Logger log = Logger.getLogger(Composer.class);
-
     public static class AlgorithmProperties {
 
         public static class ParameterProperties {
@@ -158,9 +155,9 @@ public class Algorithms {
             return parameters;
         }
 
-        public void setParameters(ParameterProperties[] parameters) {
-            this.parameters = parameters;
-        }
+        //public void setParameters(ParameterProperties[] parameters) {
+        //    this.parameters = parameters;
+        //}
 
         /**
          * Checks if the parameterValue has the correct type
@@ -256,27 +253,22 @@ public class Algorithms {
                 }
                 parameterProperties.setValue(value);
             }
-
-            log.debug("Line 197 - algorithmProperties");
-            for (ParameterProperties parameter : algorithmProperties.getParameters()) {
-                log.debug("Property name: " + parameter.getName() + ", type: " + parameter.getType() + ", value: " + parameter.getValue() + ", valueNotBlank: "
-                        + parameter.getValueNotBlank() + ", valueMultiple: " + parameter.getValueMultiple() + ", valueType: " + parameter.getValueType());
-            }
-
-            log.debug("Line 203 - inputContent");
-            for (String s : inputContent.keySet()) {
-                log.debug("Input name: " + s + ", value: " + inputContent.get(s));
-            }
-
             return algorithmProperties;
         }
 
-        public static HashMap<String, String> toHashMap(ParameterProperties[] parameterProperties) {
-            HashMap<String, String> map = new HashMap<>();
-            for (ParameterProperties algorithmParameter : parameterProperties) {
-                map.put(algorithmParameter.getName(), algorithmParameter.getValue());
+        /**
+         * Returns the value of the parameter provided
+         * If it doesn't exist null is returned.
+         *
+         * @param parameterName the name of a parameter
+         * @return the value of the parameter provided
+         */
+        public String getParameterValue(String parameterName) {
+            for (ParameterProperties parameter : parameters) {
+                if (parameter.getName().equals(parameterName))
+                    return parameter.getValue();
             }
-            return map;
+            return null;
         }
     }
 
