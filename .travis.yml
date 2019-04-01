@@ -4,4 +4,4 @@ before_install:
   
 language: java
 
-script: mvn clean install
+script: mvn clean install -DskipTests=false
