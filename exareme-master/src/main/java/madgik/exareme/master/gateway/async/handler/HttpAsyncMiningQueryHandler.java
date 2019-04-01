@@ -16,9 +16,7 @@ import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.master.gateway.ExaremeGatewayUtils;
 import madgik.exareme.master.gateway.async.handler.entity.NQueryResultEntity;
 import madgik.exareme.master.queryProcessor.composer.Algorithms;
-import madgik.exareme.master.queryProcessor.composer.AlgorithmsException;
 import madgik.exareme.master.queryProcessor.composer.Composer;
-import madgik.exareme.master.queryProcessor.composer.ComposerException;
 import madgik.exareme.utils.net.NetUtil;
 import madgik.exareme.worker.art.container.ContainerProxy;
 import madgik.exareme.worker.art.registry.ArtRegistryLocator;
@@ -35,19 +33,14 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.ServerException;
 import java.util.*;
 
 import static madgik.exareme.master.gateway.GatewayConstants.COOKIE_ALGORITHM_EXECUTION_ID;
 
-/**
- * Mining  Handler
- *
- * @author alex
- * @since 0.1
- */
 public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<HttpRequest> {
 
     private static final Logger log = Logger.getLogger(HttpAsyncMiningQueryHandler.class);

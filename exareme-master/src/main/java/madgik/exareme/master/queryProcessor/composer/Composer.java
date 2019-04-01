@@ -21,7 +21,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import static madgik.exareme.master.engine.iterations.handler.IterationsConstants.*;
+import static madgik.exareme.master.engine.iterations.handler.IterationsConstants.iterationsParameterIterDBKey;
+import static madgik.exareme.master.engine.iterations.handler.IterationsConstants.terminationConditionTemplateSQLFilename;
 import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerUtils.generateIterationsDBName;
 import static madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState.IterativeAlgorithmPhasesModel.*;
 
