@@ -85,7 +85,7 @@ public class Composer {
         for (ParameterProperties parameter : algorithmProperties.getParameters()) {
             if (parameter.getValue().equals(""))
                 continue;
-            if (parameter.getType() == ParameterProperties.ParameterType.database) {
+            if (parameter.getType() == ParameterProperties.ParameterType.column) {
                 if (parameter.getValueMultiple()) {
                     variables.addAll(Arrays.asList(parameter.getValue().split("[,+*]")));
                 } else {
