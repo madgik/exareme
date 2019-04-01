@@ -25,7 +25,7 @@ import static madgik.exareme.master.engine.remoteQuery.impl.utility.Sets.powerse
 
 /**
  * @author Christos Mallios <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  */
 public class FederatedCache implements QueryCache {
 
@@ -90,7 +90,8 @@ public class FederatedCache implements QueryCache {
         return requiredSize <= cacheInfo.totalSize - excludedSize;
     }
 
-    @Override public QueryInfo getQueryInfo(String query) {
+    @Override
+    public QueryInfo getQueryInfo(String query) {
 
         QueryInfo info;
         info = new QueryInfo(requestsMap.get(query), pinMap.get(query).getLast().info.benefit);
@@ -99,7 +100,8 @@ public class FederatedCache implements QueryCache {
 
     }
 
-    @Override public void boot(Bootstrap bootstrap, String storagePath) {
+    @Override
+    public void boot(Bootstrap bootstrap, String storagePath) {
 
         CacheInfo info = null;
 
@@ -150,19 +152,23 @@ public class FederatedCache implements QueryCache {
         System.out.println("telos boot");
     }
 
-    @Override public CacheInfo getInfo() {
+    @Override
+    public CacheInfo getInfo() {
         return cacheInfo;
     }
 
-    @Override public double getTotalCacheSize() {
+    @Override
+    public double getTotalCacheSize() {
         return cacheInfo.totalSize;
     }
 
-    @Override public void setTotalCacheSize(double size) {
+    @Override
+    public void setTotalCacheSize(double size) {
         cacheInfo.totalSize = size;
     }
 
-    @Override public CachedDataInfo getCacheInfo(String query) {
+    @Override
+    public CachedDataInfo getCacheInfo(String query) {
 
         if (!pinMap.containsKey(query)) {
             return null;
@@ -170,7 +176,8 @@ public class FederatedCache implements QueryCache {
         return pinMap.get(query).getLast().info;
     }
 
-    @Override public void setCacheInfo(CachedDataInfo info) {
+    @Override
+    public void setCacheInfo(CachedDataInfo info) {
 
         int queryResponseTime = info.requests.queryResponseTime;
         boolean newVersion = false;
@@ -229,7 +236,8 @@ public class FederatedCache implements QueryCache {
         }
     }
 
-    @Override public void updateCache(String query) {
+    @Override
+    public void updateCache(String query) {
 
         try {
             double previousBenefit;
@@ -262,7 +270,8 @@ public class FederatedCache implements QueryCache {
         }
     }
 
-    @Override public void pinQuery(String query, boolean firstRequestOfTheBatch) {
+    @Override
+    public void pinQuery(String query, boolean firstRequestOfTheBatch) {
         Node node = pinMap.get(query).getLast();
         node.numberOfPins++;
         if (!firstRequestOfTheBatch) {
@@ -281,7 +290,8 @@ public class FederatedCache implements QueryCache {
         }
     }
 
-    @Override public void unpinQueryResults(String query, CachedDataInfo info) {
+    @Override
+    public void unpinQueryResults(String query, CachedDataInfo info) {
 
         List<Node> nodes = pinMap.get(query);
 
@@ -304,7 +314,8 @@ public class FederatedCache implements QueryCache {
         }
     }
 
-    @Override public boolean isPinned(String query, CachedDataInfo info) {
+    @Override
+    public boolean isPinned(String query, CachedDataInfo info) {
 
         LinkedList<Node> queryNodes = pinMap.get(query);
         for (Node node : queryNodes) {
@@ -315,7 +326,8 @@ public class FederatedCache implements QueryCache {
         return false;
     }
 
-    @Override public boolean isEmpty() {
+    @Override
+    public boolean isEmpty() {
         return requestsMap.isEmpty();
     }
 

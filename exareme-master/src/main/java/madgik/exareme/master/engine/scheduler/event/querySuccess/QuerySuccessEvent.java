@@ -21,7 +21,7 @@ public class QuerySuccessEvent implements Event {
     public final AdpDBQueryID queryID;
 
     public QuerySuccessEvent(AdpDBQueryExecutionPlan execPlan, Registry.Schema schema,
-        AdpDBStatus status, AdpDBQueryID queryID) {
+                             AdpDBStatus status, AdpDBQueryID queryID) {
         this.execPlan = execPlan;
         this.schema = schema;
         this.status = status;

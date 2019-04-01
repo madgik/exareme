@@ -39,7 +39,7 @@ public class ArtClient {
         // Create the manager
         manager = ArtManagerFactory.createRmiArtManager();
         manager.getRegistryManager()
-            .connectToRegistry(new EntityName("ArtRegistry", artRegistry, 1098));
+                .connectToRegistry(new EntityName("ArtRegistry", artRegistry, 1098));
         manager.getExecutionEngineManager().connectToExecutionEngine();
         // Parse ART plan
         String art = FileUtil.readFile(new File(scriptFile));
@@ -54,7 +54,7 @@ public class ArtClient {
         final ExecutionEngineSessionPlan sessionPlan = session.startSession();
         sessionPlan.submitPlan(executionPlan);
         while (sessionPlan.getPlanSessionStatusManagerProxy().hasFinished() == false || sessionPlan
-            .getPlanSessionStatusManagerProxy().hasError()) {
+                .getPlanSessionStatusManagerProxy().hasError()) {
             Thread.sleep(100);
         }
         sessionPlan.close();

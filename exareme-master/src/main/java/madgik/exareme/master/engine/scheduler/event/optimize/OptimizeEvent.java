@@ -24,7 +24,7 @@ public class OptimizeEvent implements Event {
     public final AdpDBHistoricalQueryData queryData;
 
     public OptimizeEvent(String queryScript, Registry.Schema schema, Statistics stats,
-        AdpDBHistoricalQueryData queryData, AdpDBQueryID queryID) {
+                         AdpDBHistoricalQueryData queryData, AdpDBQueryID queryID) {
         this.queryScriptString = queryScript;
         this.queryScript = null;
         this.schema = schema;
@@ -35,7 +35,7 @@ public class OptimizeEvent implements Event {
 
 
     public OptimizeEvent(QueryScript queryScript, Registry.Schema schema, Statistics stats,
-        AdpDBHistoricalQueryData queryData, AdpDBQueryID queryID) {
+                         AdpDBHistoricalQueryData queryData, AdpDBQueryID queryID) {
         this.queryScriptString = null;
         this.queryScript = queryScript;
         this.schema = schema;

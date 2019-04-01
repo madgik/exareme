@@ -28,17 +28,18 @@ Examples:
 
 import functions
 
-registered=True
+registered = True
+
 
 class Oracle(functions.vtable.vtbase.VT):
-    def VTiter(self, *parsedArgs,**envars):
+    def VTiter(self, *parsedArgs, **envars):
         from lib import jaydebeapi
         import os
         from types import NoneType
         try:
             import jpype
         except ImportError:
-            raise functions.OperatorError(__name__.rsplit('.')[-1],"""
+            raise functions.OperatorError(__name__.rsplit('.')[-1], """
 For this operator to work you'll need to:
  - Install JPype Python package. For Debian/Ubuntu do:
      sudo apt-get install python-jpype
@@ -49,9 +50,9 @@ For this operator to work you'll need to:
         largs, dictargs = self.full_parse(parsedArgs)
 
         if 'query' not in dictargs:
-            raise functions.OperatorError(__name__.rsplit('.')[-1],"No query argument ")
+            raise functions.OperatorError(__name__.rsplit('.')[-1], "No query argument ")
 
-        query=dictargs['query']
+        query = dictargs['query']
         jdbc = 'jdbc:' + str(dictargs.get('jdbc', 'oracle:thin:@//127.0.0.1:6667/xe'))
         user = str(dictargs.get('user', dictargs.get('u', 'system')))
         passwd = str(dictargs.get('passwd', dictargs.get('p', '')))
@@ -62,7 +63,7 @@ For this operator to work you'll need to:
             jar = os.path.abspath(os.path.join(jarpath, '..', '..', 'lib', 'jdbc', jar))
 
         try:
-            conn = jaydebeapi.connect('oracle.jdbc.pool.OracleDataSource', [jdbc, user, passwd], jar,)
+            conn = jaydebeapi.connect('oracle.jdbc.pool.OracleDataSource', [jdbc, user, passwd], jar, )
             cur = conn.cursor()
             cur.execute(query)
             yield [(c[0], c[1]) for c in cur.description]
@@ -71,12 +72,13 @@ For this operator to work you'll need to:
                 row = cur.fetchone()
                 if not row:
                     break
-                yield [unicode(c) if type(c) not in (long, int, float, str, unicode, NoneType, bool) else c for c in row]
+                yield [unicode(c) if type(c) not in (long, int, float, str, unicode, NoneType, bool) else c for c in
+                       row]
 
             cur.close()
 
         except Exception, e:
-             raise functions.OperatorError(__name__.rsplit('.')[-1], ' '.join(str(t) for t in e))
+            raise functions.OperatorError(__name__.rsplit('.')[-1], ' '.join(str(t) for t in e))
 
 
 def Source():
@@ -90,9 +92,11 @@ if not ('.' in __name__):
     """
     import sys
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

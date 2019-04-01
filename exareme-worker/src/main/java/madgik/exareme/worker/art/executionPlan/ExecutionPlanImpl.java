@@ -19,7 +19,7 @@ import java.util.Map;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class ExecutionPlanImpl implements EditableExecutionPlan {
@@ -31,22 +31,22 @@ public class ExecutionPlanImpl implements EditableExecutionPlan {
     private Map<String, EntityName> containerEntityNames = new LinkedHashMap<String, EntityName>();
     private Map<String, OperatorEntity> concreteOpMap = new LinkedHashMap<String, OperatorEntity>();
     private Map<String, OperatorLinkEntity> operatorLinkMap =
-        new LinkedHashMap<String, OperatorLinkEntity>();
+            new LinkedHashMap<String, OperatorLinkEntity>();
     private Map<String, StateEntity> stateMap = new LinkedHashMap<String, StateEntity>();
     private Map<String, StateLinkEntity> stateLinkMap =
-        new LinkedHashMap<String, StateLinkEntity>();
+            new LinkedHashMap<String, StateLinkEntity>();
     private Map<String, SwitchEntity> switchMap = new LinkedHashMap<String, SwitchEntity>();
     private Map<String, SwitchLinkEntity> switchLinkMap =
-        new LinkedHashMap<String, SwitchLinkEntity>();
+            new LinkedHashMap<String, SwitchLinkEntity>();
     private DirectedGraph<String, Edge<String>> operatorEntityGraph =
-        new HashDirectedGraph<String, Edge<String>>();
+            new HashDirectedGraph<String, Edge<String>>();
     private int dataTransferOperatorsCount;
     // Operator to state map
     private Map<String, Map<String, StateEntity>> opStateMap =
-        new LinkedHashMap<String, Map<String, StateEntity>>();
+            new LinkedHashMap<String, Map<String, StateEntity>>();
     // State to operator map
     private Map<String, Map<String, OperatorEntity>> stateOpMap =
-        new LinkedHashMap<String, Map<String, OperatorEntity>>();
+            new LinkedHashMap<String, Map<String, OperatorEntity>>();
 
     public ExecutionPlanImpl() {
     }
@@ -77,7 +77,8 @@ public class ExecutionPlanImpl implements EditableExecutionPlan {
         }
     }
 
-    @Override public ObjectType getType(String name) throws SemanticError {
+    @Override
+    public ObjectType getType(String name) throws SemanticError {
         ObjectType type = nameTypeMap.get(name);
         if (type == null) {
             throw new SemanticError("Name not found: " + name);
@@ -85,7 +86,8 @@ public class ExecutionPlanImpl implements EditableExecutionPlan {
         return type;
     }
 
-    @Override public boolean isDefined(String name) throws SemanticError {
+    @Override
+    public boolean isDefined(String name) throws SemanticError {
         return nameTypeMap.containsKey(name);
     }
 
@@ -104,36 +106,39 @@ public class ExecutionPlanImpl implements EditableExecutionPlan {
 
         if (type.equals(ofType) == false) {
             throw new SemanticError(
-                "Name defined as " + type + " and not as " + ofType + ": " + name);
+                    "Name defined as " + type + " and not as " + ofType + ": " + name);
         }
     }
 
-    @Override public final EntityName addContainer(Container cont) throws SemanticError {
+    @Override
+    public final EntityName addContainer(Container cont) throws SemanticError {
         checkExistence(cont.name);
         nameTypeMap.put(cont.name, ObjectType.Container);
         EntityName entityName =
-            new EntityName(cont.ip, cont.ip, cont.port, cont.getDataTransferPort());
+                new EntityName(cont.ip, cont.ip, cont.port, cont.getDataTransferPort());
         containerEntityNames.put(cont.name, entityName);
         return entityName;
     }
 
-    @Override public EntityName removeContainer(String containerName) throws SemanticError {
+    @Override
+    public EntityName removeContainer(String containerName) throws SemanticError {
         checkExistence(containerName, ObjectType.Container);
         nameTypeMap.remove(containerName);
         EntityName entityName = containerEntityNames.remove(containerName);
         return entityName;
     }
 
-    @Override public final OperatorEntity addOperator(Operator operator) throws SemanticError {
+    @Override
+    public final OperatorEntity addOperator(Operator operator) throws SemanticError {
         checkExistence(operator.operatorName);
         checkExistence(operator.containerName, ObjectType.Container);
         nameTypeMap.put(operator.operatorName, ObjectType.Operator);
         EntityName container = containerEntityNames.get(operator.containerName);
 
         OperatorEntity opEntity =
-            new OperatorEntity(operator.operatorName, operator.operator, operator.paramList,
-                operator.queryString, operator.locations, operator.containerName, container,
-                operator.linksparams);
+                new OperatorEntity(operator.operatorName, operator.operator, operator.paramList,
+                        operator.queryString, operator.locations, operator.containerName, container,
+                        operator.linksparams);
 
         concreteOpMap.put(operator.operatorName, opEntity);
         operatorEntityGraph.addVertex(opEntity.operatorName);
@@ -141,12 +146,14 @@ public class ExecutionPlanImpl implements EditableExecutionPlan {
         return opEntity;
     }
 
-    @Override public OperatorEntity removeOperator(String operatorName) throws SemanticError {
+    @Override
+    public OperatorEntity removeOperator(String operatorName) throws SemanticError {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
-    @Override public final OperatorLinkEntity addOperatorLink(OperatorLink opLink)
-        throws SemanticError {
+    @Override
+    public final OperatorLinkEntity addOperatorLink(OperatorLink opLink)
+            throws SemanticError {
         log.trace(" ~~~~ ADD: " + opLink.from + "->" + opLink.to);
         String linkName = opLink.from + ":" + opLink.to;
         checkExistence(opLink.containerName, ObjectType.Container);
@@ -171,8 +178,8 @@ public class ExecutionPlanImpl implements EditableExecutionPlan {
         }
 
         opLinkEntity =
-            new OperatorLinkEntity(fromOperator, toOperator, linkType, opLink.containerName,
-                container, opLink.paramList);
+                new OperatorLinkEntity(fromOperator, toOperator, linkType, opLink.containerName,
+                        container, opLink.paramList);
 
         operatorLinkMap.put(linkName, opLinkEntity);
         Pair<OperatorEntity, OperatorEntity> inputOutput = new Pair<>(fromOperator, toOperator);
@@ -186,8 +193,9 @@ public class ExecutionPlanImpl implements EditableExecutionPlan {
     }
 
 
-    @Override public OperatorLinkEntity removeOperatorLink(String fromName, String toName)
-        throws SemanticError {
+    @Override
+    public OperatorLinkEntity removeOperatorLink(String fromName, String toName)
+            throws SemanticError {
         log.trace(" ~~~~ REMOVE: " + fromName + "->" + toName);
         String linkName = fromName + ":" + toName;
         checkExistence(linkName, ObjectType.OperatorConnect);
@@ -196,20 +204,22 @@ public class ExecutionPlanImpl implements EditableExecutionPlan {
 
         String fromToName = link.fromOperator.operatorName + ":" + link.toOperator.operatorName;
         if (operatorEntityGraph
-            .removeEdge(link.fromOperator.operatorName, link.toOperator.operatorName) == null) {
+                .removeEdge(link.fromOperator.operatorName, link.toOperator.operatorName) == null) {
             throw new SemanticError("Edge not found: " + link.fromOperator.operatorName + " -> "
-                + link.toOperator.operatorName);
+                    + link.toOperator.operatorName);
         }
         operatorLinkMap.remove(linkName);
         return link;
     }
 
 
-    @Override public Iterable<OperatorEntity> iterateOperators() {
+    @Override
+    public Iterable<OperatorEntity> iterateOperators() {
         return concreteOpMap.values();
     }
 
-    @Override public int getOperatorCount() {
+    @Override
+    public int getOperatorCount() {
         return concreteOpMap.size();
     }
 
@@ -217,11 +227,13 @@ public class ExecutionPlanImpl implements EditableExecutionPlan {
         return this.operatorLinkMap.size();
     }
 
-    @Override public int getContainerCount() {
+    @Override
+    public int getContainerCount() {
         return containerEntityNames.size();
     }
 
-    @Override public OperatorEntity getOperator(String operatorName) throws SemanticError {
+    @Override
+    public OperatorEntity getOperator(String operatorName) throws SemanticError {
         checkExistence(operatorName, ObjectType.Operator);
         return concreteOpMap.get(operatorName);
     }
@@ -233,10 +245,11 @@ public class ExecutionPlanImpl implements EditableExecutionPlan {
     }
 
     public EntityName[] getContainerEntities() {
-        return containerEntityNames.values().toArray(new EntityName[] {});
+        return containerEntityNames.values().toArray(new EntityName[]{});
     }
 
-    @Override public StartEntity createStartEntity(Start start) throws SemanticError {
+    @Override
+    public StartEntity createStartEntity(Start start) throws SemanticError {
         checkExistence(start.containerName, ObjectType.Container);
         checkExistence(start.operatorName, ObjectType.Operator);
         EntityName container = containerEntityNames.get(start.containerName);
@@ -244,7 +257,8 @@ public class ExecutionPlanImpl implements EditableExecutionPlan {
         return new StartEntity(start.operatorName, operatorEntity, start.containerName, container);
     }
 
-    @Override public StopEntity createStopEntity(Stop stop) throws SemanticError {
+    @Override
+    public StopEntity createStopEntity(Stop stop) throws SemanticError {
         checkExistence(stop.containerName, ObjectType.Container);
         checkExistence(stop.operatorName, ObjectType.Operator);
         EntityName container = containerEntityNames.get(stop.containerName);
@@ -252,7 +266,8 @@ public class ExecutionPlanImpl implements EditableExecutionPlan {
         return new StopEntity(stop.operatorName, operatorEntity, stop.containerName, container);
     }
 
-    @Override public DestroyEntity createDestroyEntity(Destroy destroy) throws SemanticError {
+    @Override
+    public DestroyEntity createDestroyEntity(Destroy destroy) throws SemanticError {
         checkExistence(destroy.containerName, ObjectType.Container);
         ObjectType type = nameTypeMap.get(destroy.objectName);
         if (type == null) {
@@ -265,8 +280,8 @@ public class ExecutionPlanImpl implements EditableExecutionPlan {
                 OperatorEntity operatorEntity = getOperator(destroy.objectName);
 
                 destroyEntity =
-                    new DestroyEntity(destroy.objectName, operatorEntity, destroy.containerName,
-                        container);
+                        new DestroyEntity(destroy.objectName, operatorEntity, destroy.containerName,
+                                container);
                 break;
             }
         }
@@ -274,7 +289,8 @@ public class ExecutionPlanImpl implements EditableExecutionPlan {
         return destroyEntity;
     }
 
-    @Override public Iterable<OperatorEntity> getFromLinks(OperatorEntity to) throws SemanticError {
+    @Override
+    public Iterable<OperatorEntity> getFromLinks(OperatorEntity to) throws SemanticError {
         checkExistence(to.containerName, ObjectType.Container);
         checkExistence(to.operatorName, ObjectType.Operator);
 
@@ -286,7 +302,8 @@ public class ExecutionPlanImpl implements EditableExecutionPlan {
         return fromLinks;
     }
 
-    @Override public Iterable<OperatorEntity> getToLinks(OperatorEntity from) throws SemanticError {
+    @Override
+    public Iterable<OperatorEntity> getToLinks(OperatorEntity from) throws SemanticError {
         checkExistence(from.containerName, ObjectType.Container);
         checkExistence(from.operatorName, ObjectType.Operator);
 
@@ -298,25 +315,28 @@ public class ExecutionPlanImpl implements EditableExecutionPlan {
         return toLinks;
     }
 
-    @Override public final StateEntity addState(State state) throws SemanticError {
+    @Override
+    public final StateEntity addState(State state) throws SemanticError {
         checkExistence(state.stateName);
         checkExistence(state.containerName, ObjectType.Container);
         nameTypeMap.put(state.stateName, ObjectType.State);
         EntityName container = containerEntityNames.get(state.containerName);
 
         StateEntity entity =
-            new StateEntity(state.stateName, state.state, state.paramList, state.queryString,
-                state.locations, state.containerName, container);
+                new StateEntity(state.stateName, state.state, state.paramList, state.queryString,
+                        state.locations, state.containerName, container);
 
         stateMap.put(state.stateName, entity);
         return entity;
     }
 
-    @Override public StateEntity removeState(String stateName) throws SemanticError {
+    @Override
+    public StateEntity removeState(String stateName) throws SemanticError {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
-    @Override public final StateLinkEntity addStateLink(StateLink stateLink) throws SemanticError {
+    @Override
+    public final StateLinkEntity addStateLink(StateLink stateLink) throws SemanticError {
         String stateLinkName = stateLink.operatorName + ":" + stateLink.stateName;
         checkExistence(stateLinkName);
         checkExistence(stateLink.containerName, ObjectType.Container);
@@ -328,8 +348,8 @@ public class ExecutionPlanImpl implements EditableExecutionPlan {
         StateEntity stateEntity = stateMap.get(stateLink.stateName);
 
         StateLinkEntity linkEntity =
-            new StateLinkEntity(operatorEntity, stateEntity, stateLinkName, container,
-                stateLink.paramList);
+                new StateLinkEntity(operatorEntity, stateEntity, stateLinkName, container,
+                        stateLink.paramList);
 
         stateLinkMap.put(stateLinkName, linkEntity);
         Map<String, StateEntity> sMap = opStateMap.get(stateLink.operatorName);
@@ -347,8 +367,9 @@ public class ExecutionPlanImpl implements EditableExecutionPlan {
         return linkEntity;
     }
 
-    @Override public StateLinkEntity removeStateLink(String opName, String stateName)
-        throws SemanticError {
+    @Override
+    public StateLinkEntity removeStateLink(String opName, String stateName)
+            throws SemanticError {
         String stateLinkName = opName + ":" + stateName;
         checkExistence(stateLinkName, ObjectType.StateLink);
         nameTypeMap.remove(stateLinkName);
@@ -360,28 +381,33 @@ public class ExecutionPlanImpl implements EditableExecutionPlan {
         return linkEntity;
     }
 
-    @Override public StateEntity getState(String stateName) throws SemanticError {
+    @Override
+    public StateEntity getState(String stateName) throws SemanticError {
         checkExistence(stateName, ObjectType.State);
         return stateMap.get(stateName);
     }
 
-    @Override public StateLinkEntity getStateLink(String operatorName, String stateName)
-        throws SemanticError {
+    @Override
+    public StateLinkEntity getStateLink(String operatorName, String stateName)
+            throws SemanticError {
         String stateLinkName = operatorName + ":" + stateName;
         checkExistence(stateLinkName, ObjectType.StateLink);
         return stateLinkMap.get(stateLinkName);
     }
 
-    @Override public Iterable<StateEntity> iterateStates() {
+    @Override
+    public Iterable<StateEntity> iterateStates() {
         return stateMap.values();
     }
 
-    @Override public Iterable<StateLinkEntity> iterateStateLinks() {
+    @Override
+    public Iterable<StateLinkEntity> iterateStateLinks() {
         return stateLinkMap.values();
     }
 
-    @Override public Iterable<StateEntity> getConnectedStates(String operatorName)
-        throws SemanticError {
+    @Override
+    public Iterable<StateEntity> getConnectedStates(String operatorName)
+            throws SemanticError {
         checkExistence(operatorName, ObjectType.Operator);
         Map<String, StateEntity> sMap = opStateMap.get(operatorName);
         if (sMap == null) {
@@ -391,8 +417,9 @@ public class ExecutionPlanImpl implements EditableExecutionPlan {
         }
     }
 
-    @Override public Iterable<OperatorEntity> getConnectedOperators(String stateName)
-        throws SemanticError {
+    @Override
+    public Iterable<OperatorEntity> getConnectedOperators(String stateName)
+            throws SemanticError {
         checkExistence(stateName, ObjectType.State);
         Map<String, OperatorEntity> opsMap = stateOpMap.get(stateName);
         if (opsMap == null) {
@@ -402,89 +429,107 @@ public class ExecutionPlanImpl implements EditableExecutionPlan {
         }
     }
 
-    @Override public EntityName getContainer(String containerName) throws SemanticError {
+    @Override
+    public EntityName getContainer(String containerName) throws SemanticError {
         checkExistence(containerName, ObjectType.Container);
         return containerEntityNames.get(containerName);
     }
 
-    @Override public Iterable<String> iterateContainers() {
+    @Override
+    public Iterable<String> iterateContainers() {
         return containerEntityNames.keySet();
     }
 
-    @Override public int getPragmaCount() {
+    @Override
+    public int getPragmaCount() {
         return pragmaEntityName.size();
     }
 
-    @Override public Iterable<PragmaEntity> iteratePragmas() {
+    @Override
+    public Iterable<PragmaEntity> iteratePragmas() {
         return pragmaEntityName.values();
     }
 
-    @Override public PragmaEntity getPragma(String pragmaName) throws SemanticError {
+    @Override
+    public PragmaEntity getPragma(String pragmaName) throws SemanticError {
         return pragmaEntityName.get(pragmaName);
     }
 
     /* TODO: add switch */
-    @Override public final SwitchEntity addSwitch(Switch s) throws SemanticError {
+    @Override
+    public final SwitchEntity addSwitch(Switch s) throws SemanticError {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    @Override public SwitchEntity removeSwitch(Switch s) throws SemanticError {
+    @Override
+    public SwitchEntity removeSwitch(Switch s) throws SemanticError {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public SwitchLinkEntity addSwitchConnect(SwitchLink switchConnect)
-        throws SemanticError {
+    @Override
+    public SwitchLinkEntity addSwitchConnect(SwitchLink switchConnect)
+            throws SemanticError {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    @Override public SwitchLinkEntity removeSwitchConnect(SwitchLink switchConnect)
-        throws SemanticError {
+    @Override
+    public SwitchLinkEntity removeSwitchConnect(SwitchLink switchConnect)
+            throws SemanticError {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public final PragmaEntity addPragma(Pragma p) throws SemanticError {
+    @Override
+    public final PragmaEntity addPragma(Pragma p) throws SemanticError {
         PragmaEntity entity = new PragmaEntity(p.pragmaName, p.pragmaValue);
         pragmaEntityName.put(p.pragmaName, entity);
         return entity;
     }
 
-    @Override public PragmaEntity removePragma(String pragmaName) throws SemanticError {
+    @Override
+    public PragmaEntity removePragma(String pragmaName) throws SemanticError {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public void setDataTransferOperatorsCount(int dataTransferOperatorsCount) {
+    @Override
+    public void setDataTransferOperatorsCount(int dataTransferOperatorsCount) {
         this.dataTransferOperatorsCount = dataTransferOperatorsCount;
     }
 
-    @Override public int getDataTransferOperatorsCount() {
+    @Override
+    public int getDataTransferOperatorsCount() {
         return dataTransferOperatorsCount;
     }
 
 
-    @Override public int getStateCount() {
+    @Override
+    public int getStateCount() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public int getStateLinkCount() {
+    @Override
+    public int getStateLinkCount() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public int getOperatorLinkCount() {
+    @Override
+    public int getOperatorLinkCount() {
         return operatorLinkMap.size();
     }
 
-    @Override public Iterable<OperatorLinkEntity> iterateOperatorLinks() {
+    @Override
+    public Iterable<OperatorLinkEntity> iterateOperatorLinks() {
         return operatorLinkMap.values();
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "ExecutionPlanImpl{" + "\n\tnameTypeMap=" + nameTypeMap + ", \n\tpragmaEntityName="
-            + pragmaEntityName + ", \n\tcontainerEntityNames=" + containerEntityNames
-            + ", \n\tconcreteOpMap=" + concreteOpMap + ", \n\toperatorLinkMap=" + operatorLinkMap
-            + ", \n\tstateMap=" + stateMap + ", \n\tstateLinkMap=" + stateLinkMap
-            + ", \n\tswitchMap=" + switchMap + ", \n\tswitchLinkMap=" + switchLinkMap
-            + ", \n\toperatorEntityGraph=" + operatorEntityGraph + ", \n\topStateMap=" + opStateMap
-            + ", \n\tstateOpMap=" + stateOpMap + '}';
+                + pragmaEntityName + ", \n\tcontainerEntityNames=" + containerEntityNames
+                + ", \n\tconcreteOpMap=" + concreteOpMap + ", \n\toperatorLinkMap=" + operatorLinkMap
+                + ", \n\tstateMap=" + stateMap + ", \n\tstateLinkMap=" + stateLinkMap
+                + ", \n\tswitchMap=" + switchMap + ", \n\tswitchLinkMap=" + switchLinkMap
+                + ", \n\toperatorEntityGraph=" + operatorEntityGraph + ", \n\topStateMap=" + opStateMap
+                + ", \n\tstateOpMap=" + stateOpMap + '}';
     }
 
 }

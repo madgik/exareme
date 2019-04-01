@@ -20,7 +20,8 @@ public class PartitionCols {
         this.cols = new HashSet();
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "PartitionCols{" + "cols=" + cols + '}';
     }
 
@@ -28,13 +29,15 @@ public class PartitionCols {
         return cols;
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int hash = 7;
         hash = 89 * hash + (this.cols != null ? this.cols.hashCode() : 0);
         return hash;
     }
 
-    @Override public boolean equals(Object obj) {
+    @Override
+    public boolean equals(Object obj) {
         if (obj == null) {
             return false;
         }

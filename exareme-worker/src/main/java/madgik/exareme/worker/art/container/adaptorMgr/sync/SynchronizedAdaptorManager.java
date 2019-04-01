@@ -25,29 +25,33 @@ public class SynchronizedAdaptorManager implements AdaptorManagerInterface {
         this.manager = manager;
     }
 
-    @Override public AdaptorID addReadAdaptor(CombinedReadAdaptor adaptor,
-        ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public AdaptorID addReadAdaptor(CombinedReadAdaptor adaptor,
+                                    ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
         synchronized (manager) {
             return manager.addReadAdaptor(adaptor, containerSessionID, sessionID);
         }
     }
 
-    @Override public AdaptorID addWriteAdaptor(CombinedWriteAdaptor adaptor,
-        ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public AdaptorID addWriteAdaptor(CombinedWriteAdaptor adaptor,
+                                     ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
         synchronized (manager) {
             return manager.addWriteAdaptor(adaptor, containerSessionID, sessionID);
         }
     }
 
-    @Override public CombinedReadAdaptor getReadAdaptor(AdaptorID adaptorID,
-        ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public CombinedReadAdaptor getReadAdaptor(AdaptorID adaptorID,
+                                              ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
         synchronized (manager) {
             return manager.getReadAdaptor(adaptorID, containerSessionID, sessionID);
         }
     }
 
-    @Override public CombinedWriteAdaptor getWriteAdaptor(AdaptorID adaptorID,
-        ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public CombinedWriteAdaptor getWriteAdaptor(AdaptorID adaptorID,
+                                                ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
         synchronized (manager) {
             return manager.getWriteAdaptor(adaptorID, containerSessionID, sessionID);
         }
@@ -55,7 +59,7 @@ public class SynchronizedAdaptorManager implements AdaptorManagerInterface {
 
     @Override
     public Triple<Long, List<CombinedReadAdaptor>, List<CombinedWriteAdaptor>> destroyContainerSession(
-        ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
+            ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
         synchronized (manager) {
             return manager.destroyContainerSession(containerSessionID, sessionID);
         }
@@ -63,7 +67,7 @@ public class SynchronizedAdaptorManager implements AdaptorManagerInterface {
 
     @Override
     public Triple<Long, List<CombinedReadAdaptor>, List<CombinedWriteAdaptor>> destroySessions(
-        PlanSessionID sessionID) throws RemoteException {
+            PlanSessionID sessionID) throws RemoteException {
         synchronized (manager) {
             return manager.destroySessions(sessionID);
         }
@@ -71,7 +75,7 @@ public class SynchronizedAdaptorManager implements AdaptorManagerInterface {
 
     @Override
     public Triple<Long, List<CombinedReadAdaptor>, List<CombinedWriteAdaptor>> destroyAllSessions()
-        throws RemoteException {
+            throws RemoteException {
         synchronized (manager) {
             return manager.destroyAllSessions();
         }

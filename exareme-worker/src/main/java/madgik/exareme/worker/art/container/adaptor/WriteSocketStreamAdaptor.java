@@ -12,7 +12,7 @@ import java.rmi.RemoteException;
  * @author herald
  */
 public interface WriteSocketStreamAdaptor
-    extends Adaptor, RemoteObject<WriteSocketStreamAdaptorProxy> {
+        extends Adaptor, RemoteObject<WriteSocketStreamAdaptorProxy> {
 
     EntityName getNetEntityName() throws RemoteException;
 

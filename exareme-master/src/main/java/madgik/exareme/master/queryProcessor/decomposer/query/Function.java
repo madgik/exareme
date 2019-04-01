@@ -3,13 +3,11 @@
  */
 package madgik.exareme.master.queryProcessor.decomposer.query;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author heraldkllapi
@@ -21,7 +19,8 @@ public class Function implements Operand {
     //public String outputName;
     private boolean isDistinct = false;
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         StringBuilder output = new StringBuilder();
         output.append(functionName);
         output.append("(");
@@ -40,7 +39,8 @@ public class Function implements Operand {
         return output.toString();
     }
 
-    @Override public ArrayList<Column> getAllColumnRefs() {
+    @Override
+    public ArrayList<Column> getAllColumnRefs() {
         ArrayList<Column> cols = new ArrayList<Column>();
         for (Operand p : this.params) {
             for (Column c : p.getAllColumnRefs()) {
@@ -74,7 +74,8 @@ public class Function implements Operand {
         return this.isDistinct;
     }
 
-    @Override public void changeColumn(Column oldCol, Column newCol) {
+    @Override
+    public void changeColumn(Column oldCol, Column newCol) {
         for (int i = 0; i < params.size(); i++) {
             Operand o = params.get(i);
             if (o.getClass().equals(Column.class)) {
@@ -92,7 +93,8 @@ public class Function implements Operand {
         this.params = pars;
     }
 
-    @Override public Function clone() throws CloneNotSupportedException {
+    @Override
+    public Function clone() throws CloneNotSupportedException {
         Function cloned = (Function) super.clone();
         cloned.setParams(new ArrayList<Operand>());
         for (Operand o : this.params) {
@@ -101,7 +103,8 @@ public class Function implements Operand {
         return cloned;
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int hash = 7;
         hash = 23 * hash + (this.functionName != null ? this.functionName.hashCode() : 0);
         hash = 23 * hash + (this.params != null ? this.params.hashCode() : 0);
@@ -109,7 +112,8 @@ public class Function implements Operand {
         return hash;
     }
 
-    @Override public boolean equals(Object obj) {
+    @Override
+    public boolean equals(Object obj) {
         if (obj == null) {
             return false;
         }
@@ -118,12 +122,12 @@ public class Function implements Operand {
         }
         final Function other = (Function) obj;
         if ((this.functionName == null) ?
-            (other.functionName != null) :
-            !this.functionName.equals(other.functionName)) {
+                (other.functionName != null) :
+                !this.functionName.equals(other.functionName)) {
             return false;
         }
         if (this.params != other.params && (this.params == null || !this.params
-            .equals(other.params))) {
+                .equals(other.params))) {
             return false;
         }
         if (this.isDistinct != other.isDistinct) {
@@ -132,19 +136,18 @@ public class Function implements Operand {
         return true;
     }
 
-	@Override
-	public HashCode getHashID() {
-		List<HashCode> codes=new ArrayList<HashCode>();
-		for(Operand o:this.params){
-			codes.add(o.getHashID());
-		}
-		codes.add(Hashing.sha1().hashBytes(functionName.toUpperCase().getBytes()));
-		if(isDistinct){
-			codes.add(Hashing.sha1().hashBytes("true".getBytes()));
-		}
-		else{
-			codes.add(Hashing.sha1().hashBytes("false".getBytes()));
-		}
-		return Hashing.combineOrdered(codes);
-	}
+    @Override
+    public HashCode getHashID() {
+        List<HashCode> codes = new ArrayList<HashCode>();
+        for (Operand o : this.params) {
+            codes.add(o.getHashID());
+        }
+        codes.add(Hashing.sha1().hashBytes(functionName.toUpperCase().getBytes()));
+        if (isDistinct) {
+            codes.add(Hashing.sha1().hashBytes("true".getBytes()));
+        } else {
+            codes.add(Hashing.sha1().hashBytes("false".getBytes()));
+        }
+        return Hashing.combineOrdered(codes);
+    }
 }

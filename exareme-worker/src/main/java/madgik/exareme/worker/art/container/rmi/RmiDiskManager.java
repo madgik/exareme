@@ -23,24 +23,27 @@ public class RmiDiskManager implements DiskManager {
     private EntityName regEntityName = null;
 
     public RmiDiskManager(Container container, DiskManagerInterface diskManagerInterface,
-        EntityName regEntityName) throws RemoteException {
+                          EntityName regEntityName) throws RemoteException {
         this.container = container;
         this.diskManagerInterface = diskManagerInterface;
         this.regEntityName = regEntityName;
     }
 
-    @Override public void destroyContainerSession(ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void destroyContainerSession(ContainerSessionID containerSessionID,
+                                        PlanSessionID sessionID) throws RemoteException {
         log.debug("destroyContainerSession");
         diskManagerInterface.destroyContainerSession(containerSessionID, sessionID);
     }
 
-    @Override public void destroySessions(PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void destroySessions(PlanSessionID sessionID) throws RemoteException {
         log.debug("destroySessions");
         diskManagerInterface.destroySessions(sessionID);
     }
 
-    @Override public void destroyAllSessions() throws RemoteException {
+    @Override
+    public void destroyAllSessions() throws RemoteException {
         log.debug("destroyAllSessions");
         diskManagerInterface.destroyAllSessions();
     }

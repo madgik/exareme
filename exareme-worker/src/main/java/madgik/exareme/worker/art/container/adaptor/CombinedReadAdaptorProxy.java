@@ -18,7 +18,7 @@ public class CombinedReadAdaptorProxy implements Serializable {
     public ReadSocketStreamAdaptorProxy readSocketStreamAdaptorProxy = null;
 
     public CombinedReadAdaptorProxy(ReadRmiStreamAdaptorProxy readStreamAdaptorProxy,
-        ReadSocketStreamAdaptorProxy readStreamAdaptorProxy2) {
+                                    ReadSocketStreamAdaptorProxy readStreamAdaptorProxy2) {
         this.readRmiStreamAdaptorProxy = readStreamAdaptorProxy;
         this.readSocketStreamAdaptorProxy = readStreamAdaptorProxy2;
     }

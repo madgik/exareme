@@ -20,7 +20,7 @@ public class Table {
     private final String primaryKey;
 
     public Table(String tableName, int numberOfColumns, int toupleSize,
-        Map<String, Column> columnMap, int not, String pk) {
+                 Map<String, Column> columnMap, int not, String pk) {
         this.tableName = tableName;
         this.numberOfColumns = numberOfColumns;
         this.toupleSize = toupleSize;
@@ -53,9 +53,10 @@ public class Table {
         return columnMap;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "Table{" + "tableName=" + tableName + ", numberOfColumns=" + numberOfColumns
-            + ", toupleSize=" + toupleSize + ", columnMap=" + columnMap + '}';
+                + ", toupleSize=" + toupleSize + ", columnMap=" + columnMap + '}';
     }
 
 }

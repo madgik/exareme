@@ -21,9 +21,9 @@ import java.util.Map;
  * @author Herald Kllapi<br>
  * @author Dimitris Paparas<br>
  * @author Eva Sitaridi<br>
- *         {herald,paparas,evas}@di.uoa.gr<br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * {herald,paparas,evas}@di.uoa.gr<br>
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class PlanSession {
@@ -38,22 +38,22 @@ public class PlanSession {
     private Map<OperatorLinkEntity, AdaptorID> adaptorIdMap = null;
 
     public PlanSession(EditableExecutionPlan executionPlan, PlanSessionStatus planSessionStatus,
-        PlanSessionReportID sessionReportID) {
+                       PlanSessionReportID sessionReportID) {
         this.executionPlan = executionPlan;
         this.planSessionStatus = planSessionStatus;
         this.sessionReportID = sessionReportID;
         this.containerSessionMap =
-            Collections.synchronizedMap(new HashMap<EntityName, ContainerSession>());
+                Collections.synchronizedMap(new HashMap<EntityName, ContainerSession>());
 
         this.operatorIdMap =
-            Collections.synchronizedMap(new HashMap<OperatorEntity, ConcreteOperatorID>());
+                Collections.synchronizedMap(new HashMap<OperatorEntity, ConcreteOperatorID>());
 
         this.operatorIdEntityMap =
-            Collections.synchronizedMap(new HashMap<ConcreteOperatorID, OperatorEntity>());
+                Collections.synchronizedMap(new HashMap<ConcreteOperatorID, OperatorEntity>());
         this.bufferIdMap = Collections
-            .synchronizedMap(new HashMap<OperatorEntity, Map<String, Pair<String, BufferID>>>());
+                .synchronizedMap(new HashMap<OperatorEntity, Map<String, Pair<String, BufferID>>>());
         this.adaptorIdMap =
-            Collections.synchronizedMap(new HashMap<OperatorLinkEntity, AdaptorID>());
+                Collections.synchronizedMap(new HashMap<OperatorLinkEntity, AdaptorID>());
     }
 
     public EditableExecutionPlan getExecutionPlan() {
@@ -101,6 +101,6 @@ public class PlanSession {
 
     public void createActivePlan() {
         this.activeExecutionPlan =
-            new ActiveExecutionPlan(executionPlan, operatorIdMap, adaptorIdMap);
+                new ActiveExecutionPlan(executionPlan, operatorIdMap, adaptorIdMap);
     }
 }

@@ -1,5 +1,13 @@
 package madgik.exareme.master.engine.iterations.handler;
 
+import madgik.exareme.common.consts.HBPConstants;
+import madgik.exareme.master.engine.iterations.IterationsTestGenericUtils;
+import madgik.exareme.master.engine.iterations.exceptions.IterationsFatalException;
+import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
+import madgik.exareme.master.queryProcessor.composer.Algorithms;
+import madgik.exareme.master.queryProcessor.composer.AlgorithmsException;
+import madgik.exareme.master.queryProcessor.composer.Composer;
+import madgik.exareme.utils.file.FileUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.junit.BeforeClass;
@@ -12,23 +20,14 @@ import org.powermock.reflect.Whitebox;
 import java.io.File;
 import java.io.IOException;
 
-import madgik.exareme.common.consts.HBPConstants;
-import madgik.exareme.master.engine.iterations.IterationsTestGenericUtils;
-import madgik.exareme.master.engine.iterations.exceptions.IterationsFatalException;
-import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
-import madgik.exareme.master.queryProcessor.composer.AlgorithmsProperties;
-import madgik.exareme.master.queryProcessor.composer.Composer;
-import madgik.exareme.utils.file.FileUtil;
-
 import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerDFLUtils.copyAlgorithmTemplatesToDemoDirectory;
-import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerUtils.generateAlgorithmKey;
 import static madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState.IterativeAlgorithmPhasesModel.termination_condition;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 /**
  * @author Christos Aslanoglou <br> caslanoglou@di.uoa.gr <br> University of Athens / Department of
- *         Informatics and Telecommunications.
+ * Informatics and Telecommunications.
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore("javax.management.*")
@@ -42,13 +41,14 @@ public class IterationsHandlerDFLUtilsTest {
     private static final String SELECT_OK_ITERATIVE_ERRONEOUS_TERM_COND
             = "SELECT_OK_ITERATIVE_ERRONEOUS_TERM_COND";
     // Sample-iterative contains a termination_condition_query.
+    // Sample-iterative contains a termination_condition_query.
     private static final String SAMPLE_ITERATIVE = "SAMPLE_ITERATIVE";
     private static final String HANDWRITTEN_EXTENSION = ".handwritten";
     private static final String TEMPLATE_FILES_SUFFIX = ".template.sql";
     // ------------------------------------------------------------------------------------------
 
     private static String algorithmName;
-    private AlgorithmsProperties.AlgorithmProperties algorithmProperties;
+    private Algorithms.AlgorithmProperties algorithmProperties;
     private static Composer composer;
 
     @BeforeClass
@@ -66,17 +66,18 @@ public class IterationsHandlerDFLUtilsTest {
      * query isn't provided, then prepareDFLScripts function must throw an IterationsFatalException.
      */
     @Test
-    public void ensureErrorIfTerminationCondQueryInconsistencyAmongPropertyAndTemplate() throws IOException {
+    public void ensureErrorIfTerminationCondQueryInconsistencyAmongPropertyAndTemplate()
+            throws IOException, AlgorithmsException {
         // Preparation phase ----------------------
         // Testing with [condition_query_provided=false] with a provided condition query in
         // termination_condition template file.
         algorithmName = SELECT_OK_ITERATIVE;
-        algorithmProperties = AlgorithmsProperties.AlgorithmProperties.createAlgorithmProperties(
+        algorithmProperties = Algorithms.AlgorithmProperties.createAlgorithmProperties(algorithmName,
                 IterationsTestGenericUtils.prepareParameterProperties(
                         algorithmName, "true", "2"));
 
         // Mimicking IterationsHandler first steps:
-        String algorithmKey = generateAlgorithmKey(algorithmProperties);
+        String algorithmKey = IterationsTestGenericUtils.generateAlgorithmKey(algorithmProperties);
         IterativeAlgorithmState iterativeAlgorithmState =
                 new IterativeAlgorithmState(algorithmKey, algorithmProperties, null);
 
@@ -103,12 +104,12 @@ public class IterationsHandlerDFLUtilsTest {
         // Testing with [condition_query_provided=true] with no provided condition query in
         // termination_condition template file.
         algorithmName = SAMPLE_ITERATIVE;
-        algorithmProperties = AlgorithmsProperties.AlgorithmProperties.createAlgorithmProperties(
+        algorithmProperties = Algorithms.AlgorithmProperties.createAlgorithmProperties(algorithmName,
                 IterationsTestGenericUtils.prepareParameterProperties(
                         algorithmName, "false", "2"));
 
         // Mimicking IterationsHandler first steps:
-        algorithmKey = generateAlgorithmKey(algorithmProperties);
+        algorithmKey = IterationsTestGenericUtils.generateAlgorithmKey(algorithmProperties);
         iterativeAlgorithmState =
                 new IterativeAlgorithmState(algorithmKey, algorithmProperties, null);
 
@@ -121,8 +122,7 @@ public class IterationsHandlerDFLUtilsTest {
                     algorithmKey, composer, algorithmProperties, iterativeAlgorithmState);
             fail("IterationsHandlerDFLUtils.prepareDFLScripts should fail, since condition query " +
                     "property is set to false, while a termination condition query is provided.");
-        }
-        catch (IterationsFatalException e) {
+        } catch (IterationsFatalException e) {
             // This is what we want - but we specifically need a ConditionQueryProvided related error.
             if (!e.getMessage().contains("ConditionQueryProvided"))
                 fail("Should have received \"ConditionQueryProvided\" related exception\n" +
@@ -135,16 +135,17 @@ public class IterationsHandlerDFLUtilsTest {
     }
 
     @Test
-    public void ensureIterativeAlgorithmTerminationConditionDirectoryFormat() throws IOException {
+    public void ensureIterativeAlgorithmTerminationConditionDirectoryFormat()
+            throws IOException, AlgorithmsException {
         // Preparation phase ----------------------
         // [Ensure termination condition under its required directory exists]
         algorithmName = SELECT_OK_ITERATIVE_ERRONEOUS_TERM_COND;
-        algorithmProperties = AlgorithmsProperties.AlgorithmProperties.createAlgorithmProperties(
+        algorithmProperties = Algorithms.AlgorithmProperties.createAlgorithmProperties(algorithmName,
                 IterationsTestGenericUtils.prepareParameterProperties(
                         algorithmName, "false", "2"));
 
         // Mimicking IterationsHandler first steps:
-        String algorithmKey = generateAlgorithmKey(algorithmProperties);
+        String algorithmKey = IterationsTestGenericUtils.generateAlgorithmKey(algorithmProperties);
         IterativeAlgorithmState iterativeAlgorithmState =
                 new IterativeAlgorithmState(algorithmKey, algorithmProperties, null);
 
@@ -172,15 +173,16 @@ public class IterationsHandlerDFLUtilsTest {
     }
 
     @Test
-    public void ensureGeneratedTemplateFilesMatchHandwrittenOnes() throws Exception {
+    public void ensureGeneratedTemplateFilesMatchHandwrittenOnes()
+            throws Exception, AlgorithmsException {
         // Preparation phase ----------------------
         algorithmName = SAMPLE_ITERATIVE;
-        algorithmProperties = AlgorithmsProperties.AlgorithmProperties.createAlgorithmProperties(
+        algorithmProperties = Algorithms.AlgorithmProperties.createAlgorithmProperties(algorithmName,
                 IterationsTestGenericUtils.prepareParameterProperties(
                         algorithmName, "true", "2"));
 
         // Mimicking IterationsHandler first steps:
-        String algorithmKey = generateAlgorithmKey(algorithmProperties);
+        String algorithmKey = IterationsTestGenericUtils.generateAlgorithmKey(algorithmProperties);
         IterativeAlgorithmState iterativeAlgorithmState =
                 new IterativeAlgorithmState(algorithmKey, algorithmProperties, null);
 
@@ -194,7 +196,7 @@ public class IterationsHandlerDFLUtilsTest {
         boolean outputDiffers = false;
         // Template files being updated to include iterations-control logic are only global files
         // and especially the last global files of a multiple-local-global.
-        for(IterativeAlgorithmState.IterativeAlgorithmPhasesModel phase:
+        for (IterativeAlgorithmState.IterativeAlgorithmPhasesModel phase :
                 IterativeAlgorithmState.IterativeAlgorithmPhasesModel.values()) {
 
             File generatedFile, handwrittenFile;
@@ -208,8 +210,7 @@ public class IterationsHandlerDFLUtilsTest {
                                 + algorithmName + HANDWRITTEN_EXTENSION + "/"
                                 + phase.name() + "/"
                                 + phase.name() + TEMPLATE_FILES_SUFFIX);
-            }
-            else {
+            } else {
                 generatedFile = Whitebox.invokeMethod(
                         IterationsHandlerDFLUtils.class, "getLastGlobalFromMultipleLocalGlobal",
                         new File(HBPConstants.DEMO_ALGORITHMS_WORKING_DIRECTORY + "/"
@@ -255,5 +256,4 @@ public class IterationsHandlerDFLUtilsTest {
         }
         return sb.toString();
     }
-
 }

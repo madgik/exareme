@@ -15,7 +15,8 @@ public class TransactionalIntegerTest {
     public TransactionalIntegerTest() {
     }
 
-    @Test public void testInteger() {
+    @Test
+    public void testInteger() {
         TransactionalInteger ti = new TransactionalInteger(5);
         assertEquals(5, ti.getValue());
 

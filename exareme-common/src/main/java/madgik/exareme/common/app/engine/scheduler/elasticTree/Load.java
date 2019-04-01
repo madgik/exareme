@@ -29,7 +29,8 @@ public class Load implements Comparable<Load> {
         this.isInt = true;
     }
 
-    @Override public int compareTo(Load o) {
+    @Override
+    public int compareTo(Load o) {
         if (isInt != o.isInt) {
             throw new RuntimeException("Not same objects");
         }
@@ -62,7 +63,8 @@ public class Load implements Comparable<Load> {
         load_int += delta;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "(" + id + " = " + ((isInt) ? load_int : load_double) + ")";
     }
 }

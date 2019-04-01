@@ -57,7 +57,7 @@ public class FederatedAnalyzer implements Analyzer {
     }
 
     public FederatedAnalyzer(String ipAddress, int portNo, String user, String pass, String db,
-        String vendorName) throws Exception {
+                             String vendorName) throws Exception {
 
         this.ip = ipAddress;
         this.port = portNo;
@@ -67,7 +67,8 @@ public class FederatedAnalyzer implements Analyzer {
         createConnection(vendorName);
     }
 
-    @Override public void analyzeAll() throws Exception {
+    @Override
+    public void analyzeAll() throws Exception {
         this.statCols = specifyTables();
         createSample();
         countRows();
@@ -78,7 +79,8 @@ public class FederatedAnalyzer implements Analyzer {
         // this.con.close();
     }
 
-    @Override public void analyzeTable(String tableName) throws Exception {
+    @Override
+    public void analyzeTable(String tableName) throws Exception {
         this.statCols = specifyColumns(tableName);
         createSample();
         countRows();
@@ -89,7 +91,8 @@ public class FederatedAnalyzer implements Analyzer {
         // this.con.close();
     }
 
-    @Override public void analyzeAttrs(String tableName, Set<String> attrs) throws Exception {
+    @Override
+    public void analyzeAttrs(String tableName, Set<String> attrs) throws Exception {
         this.statCols = new HashMap<String, Set<String>>();
         this.statCols.put(tableName, attrs);
         createSample();
@@ -124,7 +127,7 @@ public class FederatedAnalyzer implements Analyzer {
 
             tableNamePattern = tableName;
             ResultSet resultColumns =
-                dbmd.getColumns(catalog, schemaPattern, tableNamePattern, columnNamePattern);
+                    dbmd.getColumns(catalog, schemaPattern, tableNamePattern, columnNamePattern);
             Set<String> columns = new HashSet<String>();
 
             while (resultColumns.next()) {
@@ -176,21 +179,21 @@ public class FederatedAnalyzer implements Analyzer {
             int i = 0;
             for (String c : this.statCols.get(tableName)) {
                 String minQuery =
-                    " (select * from " + tableName + " t where t." + c + " in (select min(t2." + c
-                        + ") from " + tableName + " t2) limit 1) ";
+                        " (select * from " + tableName + " t where t." + c + " in (select min(t2." + c
+                                + ") from " + tableName + " t2) limit 1) ";
 
                 String maxQuery =
-                    " (select * from " + tableName + " t where t." + c + " in (select max(t2." + c
-                        + ") from " + tableName + " t2) limit 1) ";
+                        " (select * from " + tableName + " t where t." + c + " in (select max(t2." + c
+                                + ") from " + tableName + " t2) limit 1) ";
 
                 if (this.vendor == Vendor.Oracle) {
                     minQuery =
-                        " (select * from " + tableName + " t where t." + c + " in (select min(t2."
-                            + c + ") from " + tableName + " t2) and ROWNUM<2) ";
+                            " (select * from " + tableName + " t where t." + c + " in (select min(t2."
+                                    + c + ") from " + tableName + " t2) and ROWNUM<2) ";
 
                     maxQuery =
-                        " (select * from " + tableName + " t where t." + c + " in (select max(t2."
-                            + c + ") from " + tableName + " t2) and ROWNUM<2) ";
+                            " (select * from " + tableName + " t where t." + c + " in (select max(t2."
+                                    + c + ") from " + tableName + " t2) and ROWNUM<2) ";
                 }
 
                 mm.append(minQuery).append(" UNION ALL ").append(maxQuery);
@@ -205,11 +208,11 @@ public class FederatedAnalyzer implements Analyzer {
             switch (this.vendor) {
                 case Oracle:
                     sampleQuery =
-                        "select * from (oracle jdbc:oracle:thin:@" + this.ip + ":" + this.port + ":"
-                            + this.dbName + " u:" + this.username + " p:" + this.password
-                            + "  select * from ( select * from   " + tableName
-                            + " order by dbms_random.value() ) where ROWNUM <= 1000  UNION ALL "
-                            + mm.toString() + " );";
+                            "select * from (oracle jdbc:oracle:thin:@" + this.ip + ":" + this.port + ":"
+                                    + this.dbName + " u:" + this.username + " p:" + this.password
+                                    + "  select * from ( select * from   " + tableName
+                                    + " order by dbms_random.value() ) where ROWNUM <= 1000  UNION ALL "
+                                    + mm.toString() + " );";
                     break;
                 case Mysql:
                     // sampleQuery =
@@ -217,17 +220,17 @@ public class FederatedAnalyzer implements Analyzer {
                     // + tableName + "` order by rand() limit 1000)";
                     if (this.password.isEmpty()) {
                         sampleQuery =
-                            "select * from (mysql h:" + this.ip + " port:" + this.port + " u:"
-                                + this.username + " db:" + this.dbName + " (select * from "
-                                + tableName + " order by rand() limit 1000) UNION ALL " + mm
-                                .toString() + ");";
+                                "select * from (mysql h:" + this.ip + " port:" + this.port + " u:"
+                                        + this.username + " db:" + this.dbName + " (select * from "
+                                        + tableName + " order by rand() limit 1000) UNION ALL " + mm
+                                        .toString() + ");";
 
                     } else {
                         sampleQuery =
-                            "select * from (mysql h:" + this.ip + " port:" + this.port + " u:"
-                                + this.username + " p:" + this.password + " db:" + this.dbName
-                                + " (select * from " + tableName
-                                + " order by rand() limit 1000) UNION ALL " + mm.toString() + " ;";
+                                "select * from (mysql h:" + this.ip + " port:" + this.port + " u:"
+                                        + this.username + " p:" + this.password + " db:" + this.dbName
+                                        + " (select * from " + tableName
+                                        + " order by rand() limit 1000) UNION ALL " + mm.toString() + " ;";
                     }
                     System.out.println("==========================");
                     System.out.println("==========================\n\n");
@@ -237,16 +240,16 @@ public class FederatedAnalyzer implements Analyzer {
                     // select * from (postgres h:127.0.0.1 port:5432 u:root p:rootpw
                     // db:testdb select 5 as num, 'test' as text);
                     sampleQuery =
-                        "select * from (postgres h:" + this.ip + " port:" + this.port + " u:"
-                            + this.username + " p:" + this.password + " db:" + this.dbName
-                            + " (select * from " + tableName
-                            + " order by random() limit 1000) UNION ALL " + mm.toString() + ");";
+                            "select * from (postgres h:" + this.ip + " port:" + this.port + " u:"
+                                    + this.username + " p:" + this.password + " db:" + this.dbName
+                                    + " (select * from " + tableName
+                                    + " order by random() limit 1000) UNION ALL " + mm.toString() + ");";
                     // break;
             }
 
             String command =
-                "echo \"create table " + tableName + " as " + sampleQuery + "\" | " + PYTHON_PATH
-                    + " " + MADIS_PATH + " " + TMP_SAMPLE_DIR + tableName + ".db";
+                    "echo \"create table " + tableName + " as " + sampleQuery + "\" | " + PYTHON_PATH
+                            + " " + MADIS_PATH + " " + TMP_SAMPLE_DIR + tableName + ".db";
 
             // hugeCommand.append(command);
             // if(j < this.statCols.keySet().size() - 1)
@@ -256,7 +259,7 @@ public class FederatedAnalyzer implements Analyzer {
             Process process = Runtime.getRuntime().exec(cmd);
             process.waitFor();
             BufferedReader dbr =
-                new BufferedReader(new InputStreamReader(process.getErrorStream()));
+                    new BufferedReader(new InputStreamReader(process.getErrorStream()));
             String s;
             while ((s = dbr.readLine()) != null) {
                 System.out.println(s);
@@ -328,14 +331,14 @@ public class FederatedAnalyzer implements Analyzer {
             Class.forName("oracle.jdbc.driver.OracleDriver");
 
             con = DriverManager
-                .getConnection("jdbc:oracle:thin:@" + this.ip + ":" + this.port + ":" + this.dbName,
-                    this.username, this.password);
+                    .getConnection("jdbc:oracle:thin:@" + this.ip + ":" + this.port + ":" + this.dbName,
+                            this.username, this.password);
         } else if (vendorName.equals("Mysql")) {
             this.vendor = Vendor.Mysql;
             Class.forName("com.mysql.jdbc.Driver");
             con = DriverManager
-                .getConnection("jdbc:mysql://" + this.ip + ":" + this.port + "/" + this.dbName,
-                    this.username, this.password);
+                    .getConnection("jdbc:mysql://" + this.ip + ":" + this.port + "/" + this.dbName,
+                            this.username, this.password);
         } else if (vendorName.equals("Postgres")) {
             this.vendor = Vendor.Postgres;
         }

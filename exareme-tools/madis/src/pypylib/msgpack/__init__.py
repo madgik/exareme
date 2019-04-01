@@ -1,12 +1,11 @@
 # coding: utf-8
-from msgpack._version import version
-from msgpack.exceptions import *
-
 from collections import namedtuple
+from msgpack.exceptions import *
 
 
 class ExtType(namedtuple('ExtType', 'code data')):
     """ExtType represents ext type in msgpack."""
+
     def __new__(cls, code, data):
         if not isinstance(code, int):
             raise TypeError("code must be int")
@@ -18,8 +17,9 @@ class ExtType(namedtuple('ExtType', 'code data')):
 
 
 import os
+
 if os.environ.get('MSGPACK_PUREPYTHON'):
-    from msgpack.fallback import Packer, unpack, unpackb, Unpacker
+    from msgpack.fallback import Packer, unpack, unpackb
 else:
     try:
         from msgpack._packer import Packer
@@ -45,6 +45,7 @@ def packb(o, **kwargs):
     See :class:`Packer` for options.
     """
     return Packer(**kwargs).pack(o)
+
 
 # alias for compatibility to simplejson/marshal/pickle.
 load = unpack

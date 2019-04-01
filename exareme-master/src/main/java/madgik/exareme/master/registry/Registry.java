@@ -40,18 +40,18 @@ public class Registry {
             Statement stmt = regConn.createStatement();
 
             stmt.execute(
-                "create table if not exists sql(" + "table_name text, " + "sql_definition text, "
-                    + "primary key(table_name));");
+                    "create table if not exists sql(" + "table_name text, " + "sql_definition text, "
+                            + "primary key(table_name));");
 
             stmt.execute("create table if not exists partition(" + "table_name text, "
-                + "partition_number integer, " + "location text, " + "partition_column text, "
-                + "primary key(table_name, partition_number, location, partition_column), "
-                + "foreign key(table_name) references sql(table_name));");
+                    + "partition_number integer, " + "location text, " + "partition_column text, "
+                    + "primary key(table_name, partition_number, location, partition_column), "
+                    + "foreign key(table_name) references sql(table_name));");
 
             stmt.execute("create table if not exists table_index(" + "index_name text, "
-                + "table_name text, " + "column_name text, " + "partition_number integer, "
-                + "primary key(index_name, partition_number), "
-                + "foreign key(table_name) references sql(table_name));");
+                    + "table_name text, " + "column_name text, " + "partition_number integer, "
+                    + "primary key(index_name, partition_number), "
+                    + "foreign key(table_name) references sql(table_name));");
 
             stmt.close();
         } catch (SQLException | ClassNotFoundException e) {
@@ -101,17 +101,17 @@ public class Registry {
         log.info("PhysicalTable Insert Into Registry: " + gson.toJson(table));
 
         try (
-            PreparedStatement insertSqlStatemenet = regConn
-                .prepareStatement("INSERT INTO sql(table_name, sql_definition) VALUES(?, ?)");
+                PreparedStatement insertSqlStatemenet = regConn
+                        .prepareStatement("INSERT INTO sql(table_name, sql_definition) VALUES(?, ?)");
 
 
-            PreparedStatement insertPartitionStatemenet = regConn.prepareStatement(
-                "INSERT INTO partition(table_name, " + "location, " + "partition_column, "
-                    + "partition_number) " + "VALUES(?, ?, ?, ?)");
+                PreparedStatement insertPartitionStatemenet = regConn.prepareStatement(
+                        "INSERT INTO partition(table_name, " + "location, " + "partition_column, "
+                                + "partition_number) " + "VALUES(?, ?, ?, ?)");
 
-            PreparedStatement insertIndexStatemenet = regConn.prepareStatement(
-                "INSERT INTO table_index(index_name, " + "table_name, " + "column_name, "
-                    + "partition_number) " + "VALUES(?, ?, ?, ?)")
+                PreparedStatement insertIndexStatemenet = regConn.prepareStatement(
+                        "INSERT INTO table_index(index_name, " + "table_name, " + "column_name, "
+                                + "partition_number) " + "VALUES(?, ?, ?, ?)")
         ) {
             insertSqlStatemenet.setString(1, table.getTable().getName());
             insertSqlStatemenet.setString(2, table.getTable().getSqlDefinition());
@@ -130,7 +130,7 @@ public class Registry {
                             insertPartitionStatemenet.setString(1, table.getTable().getName());
                             insertPartitionStatemenet.setString(2, partition.getLocations().get(i));
                             insertPartitionStatemenet
-                                .setString(3, partition.getPartitionColumns().get(j));
+                                    .setString(3, partition.getPartitionColumns().get(j));
                             insertPartitionStatemenet.setInt(4, partition.getpNum());
                             insertPartitionStatemenet.addBatch();
                         }
@@ -164,15 +164,15 @@ public class Registry {
     public PhysicalTable removePhysicalTable(String name) {
         PhysicalTable returnPhysicalTable = getPhysicalTable(name);
         try (
-            Statement deleteIndexStatement = regConn.createStatement();
-            Statement deletePartitionStatement = regConn.createStatement();
-            Statement deleteSqlStatement = regConn.createStatement()
+                Statement deleteIndexStatement = regConn.createStatement();
+                Statement deletePartitionStatement = regConn.createStatement();
+                Statement deleteSqlStatement = regConn.createStatement()
         ) {
             deleteIndexStatement
-                .execute("DELETE FROM table_index WHERE table_name = '" + name + "'");
+                    .execute("DELETE FROM table_index WHERE table_name = '" + name + "'");
 
             deletePartitionStatement
-                .execute("DELETE FROM partition WHERE table_name = '" + name + "'");
+                    .execute("DELETE FROM partition WHERE table_name = '" + name + "'");
 
             deleteSqlStatement.execute("DELETE FROM sql WHERE table_name = '" + name + "'");
 
@@ -188,7 +188,7 @@ public class Registry {
 
         try (Statement statement = regConn.createStatement()) {
             ResultSet rs = statement.executeQuery(
-                "SELECT table_name " + "FROM sql " + "WHERE table_name = '" + name + "';");
+                    "SELECT table_name " + "FROM sql " + "WHERE table_name = '" + name + "';");
 
             if (rs.next())
                 ret = true;
@@ -204,13 +204,13 @@ public class Registry {
         PhysicalTable returnPhysicalTable = null;
 
         try (
-            Statement getSqlStatement = regConn.createStatement();
-            Statement getIndexStatement = regConn.createStatement();
-            Statement getPartitionStatement = regConn.createStatement()
+                Statement getSqlStatement = regConn.createStatement();
+                Statement getIndexStatement = regConn.createStatement();
+                Statement getPartitionStatement = regConn.createStatement()
         ) {
 
             ResultSet rs = getSqlStatement
-                .executeQuery("SELECT * FROM sql " + "WHERE table_name = '" + name + "'");
+                    .executeQuery("SELECT * FROM sql " + "WHERE table_name = '" + name + "'");
 
             if (rs.next()) {
                 Table table = new Table(rs.getString("table_name"));
@@ -221,9 +221,9 @@ public class Registry {
             rs.close();
 
             rs = getPartitionStatement.executeQuery(
-                "SELECT partition_number, " + "partition_column, location " + "FROM partition "
-                    + "WHERE table_name = '" + name + "' "
-                    + "GROUP BY partition_number, partition_column, location;");
+                    "SELECT partition_number, " + "partition_column, location " + "FROM partition "
+                            + "WHERE table_name = '" + name + "' "
+                            + "GROUP BY partition_number, partition_column, location;");
 
             int pNum = -1;
             Partition part = null;
@@ -245,8 +245,8 @@ public class Registry {
             rs.close();
 
             rs = getIndexStatement.executeQuery(
-                "SELECT DISTINCT index_name " + "FROM table_index " + "WHERE table_name = '" + name
-                    + "';");
+                    "SELECT DISTINCT index_name " + "FROM table_index " + "WHERE table_name = '" + name
+                            + "';");
 
             while (rs.next()) {
                 // TODO: one query
@@ -280,9 +280,9 @@ public class Registry {
 
     public void addIndex(Index idx) {
         try (
-            PreparedStatement insertIndexStatemenet = regConn.prepareStatement(
-                "INSERT INTO table_index(index_name, " + "table_name, " + "column_name, "
-                    + "partition_number) " + "VALUES(?, ?, ?, ?)")
+                PreparedStatement insertIndexStatemenet = regConn.prepareStatement(
+                        "INSERT INTO table_index(index_name, " + "table_name, " + "column_name, "
+                                + "partition_number) " + "VALUES(?, ?, ?, ?)")
         ) {
             for (int i = idx.getParitions().nextSetBit(0);
                  i >= 0; i = idx.getParitions().nextSetBit(i + 1)) {
@@ -305,7 +305,7 @@ public class Registry {
 
         try (Statement statement = regConn.createStatement()) {
             ResultSet rs = statement.executeQuery(
-                "SELECT table_name " + "FROM table_index " + "WHERE index_name = '" + name + "';");
+                    "SELECT table_name " + "FROM table_index " + "WHERE index_name = '" + name + "';");
 
             if (rs.next())
                 ret = true;
@@ -320,15 +320,15 @@ public class Registry {
         Index index = null;
         try (Statement statement = regConn.createStatement()) {
             ResultSet rs = statement.executeQuery(
-                "SELECT * FROM table_index " + "WHERE index_name = '" + name + "' "
-                    + "GROUP BY table_name, " + "column_name, " + "index_name, "
-                    + "partition_number;");
+                    "SELECT * FROM table_index " + "WHERE index_name = '" + name + "' "
+                            + "GROUP BY table_name, " + "column_name, " + "index_name, "
+                            + "partition_number;");
 
             boolean first = true;
             while (rs.next()) {
                 if (first) {
                     index = new Index(rs.getString("table_name"), rs.getString("column_name"),
-                        rs.getString("index_name"));
+                            rs.getString("index_name"));
                     first = false;
                 }
 

@@ -17,7 +17,7 @@ public class GeoDemo {
         double maxMoney = 3.0;
 
         Line2D.Double lineMoneyMax =
-            new Line2D.Double(minTime, maxMoney, minTime, Double.MAX_VALUE);
+                new Line2D.Double(minTime, maxMoney, minTime, Double.MAX_VALUE);
         Line2D.Double lineTimeMax = new Line2D.Double(maxTime, minMoney, 100000.0, minMoney);
 
         System.out.println(lineMoneyMax.ptLineDist(8.5, 16.0));

@@ -19,17 +19,19 @@ public class QueryScriptListener implements AdpDBQueryListener {
     private final AdpDBQueryExecutionPlan execPlan;
 
     public QueryScriptListener(AdpDBStatus status, QuerySchedulerState state,
-        AdpDBQueryExecutionPlan execPlan) {
+                               AdpDBQueryExecutionPlan execPlan) {
         this.status = status;
         this.state = state;
         this.execPlan = execPlan;
     }
 
-    @Override public void statusChanged(AdpDBQueryID queryID, AdpDBStatus status) {
+    @Override
+    public void statusChanged(AdpDBQueryID queryID, AdpDBStatus status) {
 
     }
 
-    @Override public void terminated(AdpDBQueryID queryID, AdpDBStatus status) {
+    @Override
+    public void terminated(AdpDBQueryID queryID, AdpDBStatus status) {
         try {
             state.queryScheduler.getState().setStatus(status);
             if (status == null || status.hasError()) {

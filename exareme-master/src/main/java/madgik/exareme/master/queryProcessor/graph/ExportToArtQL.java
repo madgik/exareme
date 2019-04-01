@@ -14,8 +14,8 @@ import java.util.LinkedList;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class ExportToArtQL {
@@ -26,37 +26,37 @@ public class ExportToArtQL {
     }
 
     public static String exportToArtQL(ConcreteQueryGraph queryGraph, SchedulingResult schedule,
-        LinkedList<String> containerNames) {
+                                       LinkedList<String> containerNames) {
         StringBuilder containers = new StringBuilder(Metrics.KB);
         StringBuilder operators = new StringBuilder(Metrics.KB);
         StringBuilder buffers = new StringBuilder(Metrics.KB);
         StringBuilder links = new StringBuilder(Metrics.KB);
 
         LinkedHashMap<Integer, String> containerMap =
-            new LinkedHashMap<>(schedule.getStatistics().getContainersUsed());
+                new LinkedHashMap<>(schedule.getStatistics().getContainersUsed());
 
         LinkedHashMap<String, OperatorAssignment> operatorAssigmentMap =
-            new LinkedHashMap<>(queryGraph.getNumOfOperators());
+                new LinkedHashMap<>(queryGraph.getNumOfOperators());
 
         for (OperatorAssignment oa : schedule.operatorAssigments) {
             operatorAssigmentMap.put(oa.operatorName, oa);
         }
 
-    /* Operators */
+        /* Operators */
         for (ConcreteOperator op : queryGraph.getOperators()) {
             OperatorAssignment oa = operatorAssigmentMap.get(op.operatorName);
 
-      /* Add the containers */
+            /* Add the containers */
             String containerName = "C" + oa.container;
             containerMap.put(oa.container, containerName);
 
             operators.append("instantiate " + oa.operatorName + " " + containerName + "(\n");
             if (oa.behavior == OperatorBehavior.store_and_forward) {
                 operators
-                    .append("\t'madgik.exareme.db.operatorLibrary.artificialWorkload.AWmimoSF',\n");
+                        .append("\t'madgik.exareme.db.operatorLibrary.artificialWorkload.AWmimoSF',\n");
             } else {
                 operators
-                    .append("\t'madgik.exareme.db.operatorLibrary.artificialWorkload.AWmimoPL',\n");
+                        .append("\t'madgik.exareme.db.operatorLibrary.artificialWorkload.AWmimoPL',\n");
             }
             for (LinkData link : op.outputDataArray) {
                 operators.append("\tout='(" + link.name + "," + link.size_MB + "MB)',\n");
@@ -71,16 +71,16 @@ public class ExportToArtQL {
             operators.append("\tcpuTime='" + (op.runTime_SEC * oa.cpuUtil) + "',\n");
             operators.append("\tbehavior='" + op.behavior + "');\n");
 
-      /* TODO: All other parameters */
+            /* TODO: All other parameters */
         }
 
-    /* Buffers and Links */
+        /* Buffers and Links */
         int bNum = 0;
         for (Link link : queryGraph.getLinks()) {
             OperatorAssignment fromOA = operatorAssigmentMap.get(link.from.operatorName);
             OperatorAssignment toOA = operatorAssigmentMap.get(link.to.operatorName);
 
-      /* Create the buffer to producer */
+            /* Create the buffer to producer */
             String fromContainerName = "C" + fromOA.container;
             String toContainerName = "C" + toOA.container;
             String bufferName = "b" + bNum;
@@ -88,15 +88,15 @@ public class ExportToArtQL {
             buffers.append("create " + bufferName + " " + fromContainerName + "('3');\n");
             bNum++;
 
-      /* Create links */
+            /* Create links */
             links.append(
-                "connect " + fromContainerName + "(" + fromOA.operatorName + ", " + bufferName
-                    + ");\n");
+                    "connect " + fromContainerName + "(" + fromOA.operatorName + ", " + bufferName
+                            + ");\n");
             links.append("connect " + toContainerName + "(" + bufferName + ", " + toOA.operatorName
-                + ");\n");
+                    + ");\n");
         }
 
-    /* Ignore Outputs */
+        /* Ignore Outputs */
         for (ConcreteOperator op : queryGraph.getOperators()) {
             //      if (queryGraph.fromLinkMap.get(op.opID).size() == 0) {
             if (queryGraph.getOutputLinks(op.opID).isEmpty()) {
@@ -122,24 +122,24 @@ public class ExportToArtQL {
                     bNum++;
 
                     links.append(
-                        "connect " + containerName + "(" + oa.operatorName + ", " + bufferName
-                            + ");\n");
+                            "connect " + containerName + "(" + oa.operatorName + ", " + bufferName
+                                    + ");\n");
 
                     links.append(
-                        "connect " + containerName + "(" + bufferName + ", " + nullName + ");\n");
+                            "connect " + containerName + "(" + bufferName + ", " + nullName + ");\n");
                 }
             }
         }
 
-    /* Containers */
+        /* Containers */
         int cNum = 0;
         for (Integer cId : containerMap.keySet()) {
             if (containerNames != null) {
                 containers.append("container " + containerMap.get(cId) +
-                    " ('" + containerNames.get(cNum) + "', 1099);\n");
+                        " ('" + containerNames.get(cNum) + "', 1099);\n");
             } else {
                 containers.append("container " + containerMap.get(cId) +
-                    " ('$C" + cNum + "', 1099);\n");
+                        " ('$C" + cNum + "', 1099);\n");
             }
             cNum++;
         }

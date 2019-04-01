@@ -18,9 +18,9 @@ import java.util.Map;
  * @author Herald Kllapi<br>
  * @author Dimitris Paparas<br>
  * @author Eva Sitaridi<br>
- *         {herald,paparas,evas}@di.uoa.gr<br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * {herald,paparas,evas}@di.uoa.gr<br>
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class ActiveExecutionPlan implements Serializable {
@@ -32,8 +32,8 @@ public class ActiveExecutionPlan implements Serializable {
     private Map<String, OperatorEntity> entityMap = null;
 
     public ActiveExecutionPlan(ExecutionPlan executionPlan,
-        Map<OperatorEntity, ConcreteOperatorID> operatorIdMap,
-        Map<OperatorLinkEntity, AdaptorID> adaptorIdMap) {
+                               Map<OperatorEntity, ConcreteOperatorID> operatorIdMap,
+                               Map<OperatorLinkEntity, AdaptorID> adaptorIdMap) {
         this.executionPlan = executionPlan;
         setOperatorIdMap(operatorIdMap);
         setAdaptorIdMap(adaptorIdMap);

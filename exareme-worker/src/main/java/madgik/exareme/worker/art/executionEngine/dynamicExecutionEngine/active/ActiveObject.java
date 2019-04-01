@@ -18,7 +18,7 @@ public class ActiveObject {
     public OperatorGroup operatorGroup = null;
 
     public ActiveObject(ObjectType objectType, String objectName,
-        ContainerSessionID containerSessionID, OperatorGroup operatorGroup) {
+                        ContainerSessionID containerSessionID, OperatorGroup operatorGroup) {
         this.objectType = objectType;
         this.objectName = objectName;
         this.containerSessionID = containerSessionID;

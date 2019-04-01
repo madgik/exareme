@@ -19,9 +19,9 @@ public class AdpDBSessionStatisticsExctactor {
     private static Logger log = Logger.getLogger(AdpDBSessionStatisticsExctactor.class);
     private PlanSessionStatistics stats = null;
     private HashMap<String, ConcreteOperatorStatistics> opStatsMap =
-        new HashMap<String, ConcreteOperatorStatistics>();
+            new HashMap<String, ConcreteOperatorStatistics>();
     private HashMap<String, BufferStatistics> bufferStatsMap =
-        new HashMap<String, BufferStatistics>();
+            new HashMap<String, BufferStatistics>();
 
     public AdpDBSessionStatisticsExctactor(PlanSessionStatistics stats) {
         this.stats = stats;
@@ -54,7 +54,7 @@ public class AdpDBSessionStatisticsExctactor {
     }
 
     public BufferStatistics getBufferStats(String adaptorName, String fromOperator,
-        String toOperator) {
+                                           String toOperator) {
         BufferStatistics adaptorStats = bufferStatsMap.get("b_" + fromOperator + "_" + toOperator);
         if (adaptorStats == null) {
             log.error("Adaptor stats not found : " + adaptorName + " | " + bufferStatsMap.keySet());

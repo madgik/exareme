@@ -19,9 +19,9 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author Herald Kllapi<br>
  * @author Dimitris Paparas<br>
  * @author Eva Sitaridi<br>
- *         {herald,paparas,evas}@di.uoa.gr<br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * {herald,paparas,evas}@di.uoa.gr<br>
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class ExecutionEngineSessionPlan implements Serializable {
@@ -33,7 +33,7 @@ public class ExecutionEngineSessionPlan implements Serializable {
     private ReentrantLock lock = new ReentrantLock();
 
     public ExecutionEngineSessionPlan(PlanSessionID sessionID, ExecutionEngine engine)
-        throws RemoteException {
+            throws RemoteException {
         this.sessionID = sessionID;
         this.engine = engine;
         this.managerProxy = getPlanSessionStatusManagerProxy();
@@ -53,7 +53,7 @@ public class ExecutionEngineSessionPlan implements Serializable {
     }
 
     public final PlanSessionStatusManagerProxy getPlanSessionStatusManagerProxy()
-        throws RemoteException {
+            throws RemoteException {
         lock.lock();
         try {
             return engine.getPlanSessionStatusManagerProxy(sessionID);
@@ -82,7 +82,7 @@ public class ExecutionEngineSessionPlan implements Serializable {
     }
 
     public PlanSessionStatisticsManagerProxy getPlanSessionStatisticsManagerProxy()
-        throws RemoteException {
+            throws RemoteException {
         lock.lock();
         try {
             return engine.getPlanSessionStatisticsManagerProxy(sessionID);

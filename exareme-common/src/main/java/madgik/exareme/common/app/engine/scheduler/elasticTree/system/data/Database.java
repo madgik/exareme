@@ -54,8 +54,9 @@ public class Database {
         return maxNumOfParts;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "Num Tables:       " + tables.size() + "\n" +
-            "Total Size:       " + df.format(totalTableSize);
+                "Total Size:       " + df.format(totalTableSize);
     }
 }

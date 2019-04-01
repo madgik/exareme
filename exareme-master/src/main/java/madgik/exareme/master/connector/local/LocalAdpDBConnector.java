@@ -25,8 +25,9 @@ public class LocalAdpDBConnector implements AdpDBConnector {
     public LocalAdpDBConnector() {
     }
 
-    @Override public InputStream readTable(String tableName, Map<String, Object> alsoIncludeProps,
-        AdpDBClientProperties props) throws RemoteException {
+    @Override
+    public InputStream readTable(String tableName, Map<String, Object> alsoIncludeProps,
+                                 AdpDBClientProperties props) throws RemoteException {
         try {
             PipedOutputStream out = new PipedOutputStream();
             pool.submit(new AdpDBTableReaderThread(tableName, alsoIncludeProps, props, out));

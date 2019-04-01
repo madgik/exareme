@@ -1,5 +1,3 @@
-
-
 import functions
 
 registered = True
@@ -8,11 +6,12 @@ external_query = True
 # default properties
 default_dict = {
     'host': 'localhost',
-    'port' : '9090',
+    'port': '9090',
     'api': 'table/',
-    'db' : None,    # required
-    'query' : None  # required
+    'db': None,  # required
+    'query': None  # required
 }
+
 
 class ExaTable(functions.vtable.vtbase.VT):
 
@@ -38,9 +37,8 @@ class ExaTable(functions.vtable.vtbase.VT):
                 raise functions.OperatorError(__name__.rsplit('.')[-1],
                                               "Provide %s property." % key)
 
-
         # set http request
-        url="http://{0}:{1}/{2}".format(self.host, self.port, self.api)
+        url = "http://{0}:{1}/{2}".format(self.host, self.port, self.api)
         # self.query += ';\n'
         data = urllib.urlencode(self.__dict__)
 

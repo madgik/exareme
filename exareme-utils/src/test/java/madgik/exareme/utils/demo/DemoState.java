@@ -20,7 +20,8 @@ class DemoState implements State {
         return c;
     }
 
-    @Override public State clone() {
+    @Override
+    public State clone() {
         DemoState s = new DemoState();
         s.c = this.c;
         return s;

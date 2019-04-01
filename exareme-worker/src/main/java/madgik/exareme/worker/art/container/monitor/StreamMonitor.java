@@ -11,8 +11,8 @@ import madgik.exareme.worker.art.concreteOperator.AbstractOperatorImpl;
  * output and input streams.
  *
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.2
  */
 public class StreamMonitor {
@@ -38,8 +38,8 @@ public class StreamMonitor {
     private Float prev_averageKbps = null;
 
     private StreamMonitor(StatusVariable firstRec, StatusVariable rCount, StatusVariable rps,
-        StatusVariable averageRps, StatusVariable kbytes, StatusVariable kbps,
-        StatusVariable averageKbps, OperatorTask idle, OperatorTask working) {
+                          StatusVariable averageRps, StatusVariable kbytes, StatusVariable kbps,
+                          StatusVariable averageKbps, OperatorTask idle, OperatorTask working) {
         this.firstRec = firstRec;
         this.rCount = rCount;
         this.rps = rps;
@@ -87,7 +87,7 @@ public class StreamMonitor {
             op.getVariableManager().register(rps);
 
             StatusVariable averageRps =
-                new StatusVariable("AverageRecordPerSecond" + suffix, Float.class);
+                    new StatusVariable("AverageRecordPerSecond" + suffix, Float.class);
             op.getVariableManager().register(averageRps);
 
             StatusVariable kbytes = new StatusVariable("KBytes" + suffix, Long.class);
@@ -97,11 +97,11 @@ public class StreamMonitor {
             op.getVariableManager().register(kbps);
 
             StatusVariable averageKbps =
-                new StatusVariable("AverageKBytesPerSecond" + suffix, Float.class);
+                    new StatusVariable("AverageKBytesPerSecond" + suffix, Float.class);
             op.getVariableManager().register(averageKbps);
 
             return new StreamMonitor(firstRec, rCount, rps, averageRps, kbytes, kbps, averageKbps,
-                op.getTaskManager().getTask("Idle"), op.getTaskManager().getTask("Working"));
+                    op.getTaskManager().getTask("Idle"), op.getTaskManager().getTask("Working"));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -141,8 +141,8 @@ public class StreamMonitor {
             rCount.setStatus(recordsCount);
 
             prev_rps = new Float(
-                ((float) (recordsCount - previousRCount) / (currentTime - previousRecordReport))
-                    * 1000);
+                    ((float) (recordsCount - previousRCount) / (currentTime - previousRecordReport))
+                            * 1000);
 
             rps.setStatus(prev_rps);
 
@@ -150,7 +150,7 @@ public class StreamMonitor {
             previousRecordReport = currentTime;
 
             prev_averageRps =
-                new Float(((float) recordsCount / (currentTime - firstRecReport)) * 1000);
+                    new Float(((float) recordsCount / (currentTime - firstRecReport)) * 1000);
 
             averageRps.setStatus(prev_averageRps);
         }
@@ -192,7 +192,7 @@ public class StreamMonitor {
             this.kbytes.setStatus(new Long(kbytes));
 
             prev_kbps = new Float(
-                ((float) (kbytes - previousKBytes) / (currentTime - previousKbytesReport)) * 1000);
+                    ((float) (kbytes - previousKBytes) / (currentTime - previousKbytesReport)) * 1000);
 
             kbps.setStatus(prev_kbps);
 

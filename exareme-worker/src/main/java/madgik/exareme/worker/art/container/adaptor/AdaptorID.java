@@ -20,11 +20,13 @@ public class AdaptorID implements Comparable<AdaptorID>, Serializable {
         this.id = id;
     }
 
-    @Override public int compareTo(AdaptorID adaptorID) {
+    @Override
+    public int compareTo(AdaptorID adaptorID) {
         return (int) (id - adaptorID.id);
     }
 
-    @Override public boolean equals(Object obj) {
+    @Override
+    public boolean equals(Object obj) {
         if (obj instanceof AdaptorID) {
             AdaptorID adaptorID = (AdaptorID) obj;
             return this.id == adaptorID.id;
@@ -33,7 +35,8 @@ public class AdaptorID implements Comparable<AdaptorID>, Serializable {
         throw new ClassCastException("Cannot cast to AdaptorID");
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int hash = 7;
         hash = 83 * hash + (int) (this.id ^ (this.id >>> 32));
         return hash;

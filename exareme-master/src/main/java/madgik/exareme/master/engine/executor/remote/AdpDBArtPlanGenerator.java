@@ -38,11 +38,11 @@ public class AdpDBArtPlanGenerator {
     public static final OperatorBehavior SELECT_BEHAVIOR = OperatorBehavior.store_and_forward;
     public static final OperatorBehavior DM_BEHAVIOR = OperatorBehavior.store_and_forward;
     public static final int SELECT_MEMORY =
-        AdpDBProperties.getAdpDBProps().getInt("db.engine.memory.select");
+            AdpDBProperties.getAdpDBProps().getInt("db.engine.memory.select");
     public static final int DM_MEMORY =
-        AdpDBProperties.getAdpDBProps().getInt("db.engine.memory.dm");
+            AdpDBProperties.getAdpDBProps().getInt("db.engine.memory.dm");
     public static final int BUFFER_SIZE_MB =
-        AdpDBProperties.getAdpDBProps().getInt("db.engine.memory.bufferMB");
+            AdpDBProperties.getAdpDBProps().getInt("db.engine.memory.bufferMB");
 
     private static final Logger log = Logger.getLogger(AdpDBArtPlanGenerator.class);
 
@@ -50,8 +50,8 @@ public class AdpDBArtPlanGenerator {
     }
 
     public static void generateJsonPlan(List<String> containers, AdpDBQueryExecutionPlan plan,
-        HashMap<String, String> categoryMessageMap, PlanExpression planExpression,
-        AdpDBClientProperties props) throws IOException {
+                                        HashMap<String, String> categoryMessageMap, PlanExpression planExpression,
+                                        AdpDBClientProperties props) throws IOException {
         if (plan.getQueryOperators().isEmpty() == false) {
             generateRunQueryPlan(containers, plan, categoryMessageMap, planExpression, props);
             return;
@@ -64,8 +64,8 @@ public class AdpDBArtPlanGenerator {
     }
 
     private static void generateRunQueryPlan(List<String> containers, AdpDBQueryExecutionPlan plan,
-        Map<String, String> categoryMessageMap, PlanExpression planExpression,
-        AdpDBClientProperties props) throws IOException {
+                                             Map<String, String> categoryMessageMap, PlanExpression planExpression,
+                                             AdpDBClientProperties props) throws IOException {
         log.debug("Generating Query plan ... ");
         // Create operators
         for (ConcreteOperator cop : plan.getGraph().getOperators()) {
@@ -86,40 +86,40 @@ public class AdpDBArtPlanGenerator {
                 case runQuery:
                     operatorCode = AdpDBArtPlanGeneratorConsts.EXECUTE_SELECT;
                     operatorCategory =
-                        AdpDBArtPlanGeneratorConsts.EXECUTE_SELECT_CATEGORY + dbOperator
-                            .getOutputTables().iterator().next();
+                            AdpDBArtPlanGeneratorConsts.EXECUTE_SELECT_CATEGORY + dbOperator
+                                    .getOutputTables().iterator().next();
                     break;
                 case tableUnionReplicator:
                     operatorCode = AdpDBArtPlanGeneratorConsts.TABLE_UNION_REPLICATOR;
                     operatorCategory =
-                        AdpDBArtPlanGeneratorConsts.TABLE_UNION_REPLICATOR_CATEGORY + dbOperator
-                            .getOutputTables().iterator().next();
+                            AdpDBArtPlanGeneratorConsts.TABLE_UNION_REPLICATOR_CATEGORY + dbOperator
+                                    .getOutputTables().iterator().next();
                     break;
                 case tableInput:
                     operatorCode = AdpDBArtPlanGeneratorConsts.TABLE_UNION_REPLICATOR;
                     operatorCategory =
-                        AdpDBArtPlanGeneratorConsts.TABLE_UNION_REPLICATOR_CATEGORY + dbOperator
-                            .getOutputTables().iterator().next();
+                            AdpDBArtPlanGeneratorConsts.TABLE_UNION_REPLICATOR_CATEGORY + dbOperator
+                                    .getOutputTables().iterator().next();
                     break;
             }
             categoryMessageMap.put(operatorCategory,
-                dbOperator.getQuery().getComments() + dbOperator.getQuery().getQuery());
+                    dbOperator.getQuery().getComments() + dbOperator.getQuery().getQuery());
 
             LinkedList<Parameter> parameters = new LinkedList<>();
             parameters
-                .add(new Parameter(OperatorEntity.BEHAVIOR_PARAM, SELECT_BEHAVIOR.toString()));
+                    .add(new Parameter(OperatorEntity.BEHAVIOR_PARAM, SELECT_BEHAVIOR.toString()));
             parameters.add(new Parameter(OperatorEntity.CATEGORY_PARAM, operatorCategory));
             parameters
-                .add(new Parameter((OperatorEntity.MEMORY_PARAM), String.valueOf(SELECT_MEMORY)));
+                    .add(new Parameter((OperatorEntity.MEMORY_PARAM), String.valueOf(SELECT_MEMORY)));
 
             planExpression.addOperator(new Operator(cop.operatorName,
-                AdpDBArtPlanGeneratorConsts.LIB_PATH + "." + operatorCode, parameters,
-                "{" + opSerialized + "};", container, null));
+                    AdpDBArtPlanGeneratorConsts.LIB_PATH + "." + operatorCode, parameters,
+                    "{" + opSerialized + "};", container, null));
         }
 
         for (Link link : plan.getGraph().getLinks()) {
             OperatorAssignment from =
-                plan.getSchedulingResult().operatorAssigments.get(link.from.opID);
+                    plan.getSchedulingResult().operatorAssigments.get(link.from.opID);
             OperatorAssignment to = plan.getSchedulingResult().operatorAssigments.get(link.to.opID);
 
             AdpDBSelectOperator fromDbOp = plan.getQueryOperators().get(from.getOpID());
@@ -143,7 +143,7 @@ public class AdpDBArtPlanGenerator {
             if (common.cardinality() == 0) {
                 if (props.isTreeEnabled() == false) {
                     throw new SemanticException(
-                        "Operators do not have only one partition in common!");
+                            "Operators do not have only one partition in common!");
                 }
                 List<Integer> outputs = fromDbOp.getOutputPartitions(table);
                 if (outputs.size() != 1) {
@@ -159,7 +159,7 @@ public class AdpDBArtPlanGenerator {
             LinkedList<Parameter> parameters = new LinkedList<>();
             parameters.add(new Parameter(AdpDBArtPlanGeneratorConsts.BUFFER_TABLE_NAME, table));
             parameters.add(new Parameter(AdpDBArtPlanGeneratorConsts.BUFFER_TABLE_PART_NAME,
-                String.valueOf(commonPartition)));
+                    String.valueOf(commonPartition)));
             for (Operator op : planExpression.operatorList) {
                 //                log.debug("**DEBUG-- " + op.operatorName);
                 if (op.operatorName == from.operatorName) {
@@ -168,7 +168,7 @@ public class AdpDBArtPlanGenerator {
             }
             //            log.debug("adding Operator link, " + from.operatorName + " -> " + to.operatorName);
             planExpression.addOperatorConnect(
-                new OperatorLink(from.operatorName, to.operatorName, fromC, parameters));
+                    new OperatorLink(from.operatorName, to.operatorName, fromC, parameters));
 
 
         }
@@ -177,8 +177,8 @@ public class AdpDBArtPlanGenerator {
     }
 
     private static void generateDataManipulationQueryPlan(List<String> containers,
-        AdpDBQueryExecutionPlan plan, Map<String, String> categoryMessageMap,
-        PlanExpression planExpression) throws IOException {
+                                                          AdpDBQueryExecutionPlan plan, Map<String, String> categoryMessageMap,
+                                                          PlanExpression planExpression) throws IOException {
         log.debug("Generating DM plan ... ");
         for (ConcreteOperator cop : plan.getGraph().getOperators()) {
             OperatorAssignment oa = plan.getSchedulingResult().operatorAssigments.get(cop.opID);
@@ -194,31 +194,31 @@ public class AdpDBArtPlanGenerator {
             switch (dmOperator.getType()) {
                 case buildIndex:
                     operatorCategory =
-                        AdpDBArtPlanGeneratorConsts.BUILD_INDEX_CATEGORY + ((BuildIndex) dmOperator
-                            .getDMQuery()).getIndexName();
+                            AdpDBArtPlanGeneratorConsts.BUILD_INDEX_CATEGORY + ((BuildIndex) dmOperator
+                                    .getDMQuery()).getIndexName();
                     break;
                 case dropIndex:
                     operatorCategory =
-                        AdpDBArtPlanGeneratorConsts.DROP_INDEX_CATEGORY + ((DropIndex) dmOperator
-                            .getDMQuery()).getIndexName();
+                            AdpDBArtPlanGeneratorConsts.DROP_INDEX_CATEGORY + ((DropIndex) dmOperator
+                                    .getDMQuery()).getIndexName();
                     break;
                 case dropTable:
                     operatorCategory =
-                        AdpDBArtPlanGeneratorConsts.DROP_TABLE_CATEGORY + dmOperator.getDMQuery()
-                            .getTable();
+                            AdpDBArtPlanGeneratorConsts.DROP_TABLE_CATEGORY + dmOperator.getDMQuery()
+                                    .getTable();
                     break;
             }
 
             categoryMessageMap.put(operatorCategory,
-                dmOperator.getDMQuery().getComments() + dmOperator.getDMQuery().getQuery());
+                    dmOperator.getDMQuery().getComments() + dmOperator.getDMQuery().getQuery());
 
             LinkedList<Parameter> parameters = new LinkedList<>();
             parameters.add(new Parameter(OperatorEntity.BEHAVIOR_PARAM, DM_BEHAVIOR.toString()));
             parameters.add(new Parameter(OperatorEntity.CATEGORY_PARAM, operatorCategory));
             parameters.add(new Parameter(OperatorEntity.MEMORY_PARAM, String.valueOf(DM_MEMORY)));
             planExpression.addOperator(new Operator(cop.operatorName,
-                AdpDBArtPlanGeneratorConsts.LIB_PATH + "." + AdpDBArtPlanGeneratorConsts.EXECUTE_DM,
-                parameters, "{" + opSerialized + "};", container, null));
+                    AdpDBArtPlanGeneratorConsts.LIB_PATH + "." + AdpDBArtPlanGeneratorConsts.EXECUTE_DM,
+                    parameters, "{" + opSerialized + "};", container, null));
 
         }
     }

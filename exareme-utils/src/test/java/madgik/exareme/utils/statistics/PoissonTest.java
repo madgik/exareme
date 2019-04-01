@@ -13,11 +13,13 @@ public class PoissonTest extends TestCase {
         super(testName);
     }
 
-    @Override protected void setUp() throws Exception {
+    @Override
+    protected void setUp() throws Exception {
         super.setUp();
     }
 
-    @Override protected void tearDown() throws Exception {
+    @Override
+    protected void tearDown() throws Exception {
         super.tearDown();
     }
 
@@ -35,7 +37,7 @@ public class PoissonTest extends TestCase {
             // In poison, mean and variance are equal to lambda
             Assert.assertEquals(l, stats.getMean(), 0.1);
             Assert.assertEquals(l, stats.getVariance(), 0.1);
-           // System.out.println(l + "\t" + stats.getMean() + "\t" + stats.getVariance());
+            // System.out.println(l + "\t" + stats.getMean() + "\t" + stats.getVariance());
         }
     }
 
@@ -43,7 +45,7 @@ public class PoissonTest extends TestCase {
         for (double step = 1; step < 7200.0; step++) {
             double l = 5.0 + 4 * Math.cos(step / 200);
             Poisson poisson = new Poisson(l, 0);
-           // System.out.println(poisson.next());
+            // System.out.println(poisson.next());
         }
     }
 }

@@ -184,7 +184,8 @@ public class Statistics {
         this.cacheIntermediateSizeMB = cacheIntermediateSizeMB;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         StringBuilder sb = new StringBuilder();
 
         sb.append("Containers: " + SEP + numContainers + "\n");
@@ -207,11 +208,11 @@ public class Statistics {
         sb.append("Compute Time: " + SEP + FORMAT.format(computeTime) + "\n");
         sb.append("Total Compute Time: " + SEP + FORMAT.format(totalComputeTime) + "\n");
         sb.append("Total Compute Time Cost: " +
-            SEP + FORMAT.format(totalComputeTime * finProps.timeQuantumCost) + "\n");
+                SEP + FORMAT.format(totalComputeTime * finProps.timeQuantumCost) + "\n");
         sb.append("Total Wasted Time: " + SEP + FORMAT.format(totalWastedTime) + "\n");
         sb.append("\n");
         sb.append("Percentage Wasted Time: " + SEP + FORMAT
-            .format(100.0 * totalWastedTime / (totalWastedTime + totalComputeTime)) + " %\n");
+                .format(100.0 * totalWastedTime / (totalWastedTime + totalComputeTime)) + " %\n");
         //    sb.append("Money: " + df.format(totalMonetaryCost) + "\n");
         //    sb.append("Wasted Money: " + df.format(totalWastedMoney) + "\n");
         sb.append("Total IO Data: " + SEP + FORMAT.format(totalIOData) + "\n");
@@ -220,12 +221,12 @@ public class Statistics {
         sb.append("Cache Total: " + SEP + cacheTotalRequestCount + "\n");
         sb.append("Cache Hit: " + SEP + cacheHitCount + "\n");
         sb.append(
-            "Cache Hit %: " + SEP + FORMAT.format(100.0 * cacheHitCount / cacheTotalRequestCount)
-                + "\n");
+                "Cache Hit %: " + SEP + FORMAT.format(100.0 * cacheHitCount / cacheTotalRequestCount)
+                        + "\n");
         sb.append("Cache Total MB: " + SEP + FORMAT.format(cacheTotalRequestMB) + "\n");
         sb.append("Cache Hit MB: " + SEP + FORMAT.format(cacheHitMB) + "\n");
         sb.append("Cache Hit MB %: " + SEP + FORMAT.format(100.0 * cacheHitMB / cacheTotalRequestMB)
-            + "\n");
+                + "\n");
         sb.append("Cache Intermediate Count: " + SEP + cacheIntermediateCount + "\n");
         sb.append("Cache Intermediate MB: " + SEP + FORMAT.format(cacheIntermediateSizeMB) + "\n");
         sb.append("\n");
@@ -233,7 +234,7 @@ public class Statistics {
         sb.append("Total Revenue: " + SEP + totalRevenue + "\n");
         sb.append("Total Container Quanta: " + SEP + totalContainerQuantaAllocated + "\n");
         sb.append("Total Cost: " + SEP +
-            (totalContainerQuantaAllocated * finProps.timeQuantumCost) + "\n");
+                (totalContainerQuantaAllocated * finProps.timeQuantumCost) + "\n");
         sb.append("\n");
 
         BarChart computeChart = new BarChart("Compute Time", 50);
@@ -273,7 +274,7 @@ public class Statistics {
             id++;
         }
         sb.append(name + " Min-Max: " + SEP + FORMAT.format(execStats.getMin()) + SEP +
-            FORMAT.format(execStats.getMax()) + "\n");
+                FORMAT.format(execStats.getMax()) + "\n");
         sb.append(name + " Mean: " + SEP + FORMAT.format(execStats.getMean()) + "\n");
         sb.append(name + " p90: " + SEP + FORMAT.format(execStats.getPercentile(90)) + "\n");
         sb.append(name + " p95: " + SEP + FORMAT.format(execStats.getPercentile(95)) + "\n");
@@ -282,14 +283,15 @@ public class Statistics {
 
         // Sort data
         Collections.sort(data, new Comparator<Pair<?, Double>>() {
-            @Override public int compare(Pair<?, Double> o1, Pair<?, Double> o2) {
+            @Override
+            public int compare(Pair<?, Double> o1, Pair<?, Double> o2) {
                 return o1.b.compareTo(o2.b);
             }
         });
 
         try {
             Histogram execHistogram = new Histogram(
-                new PartitionRule(PartitionClass.serial, PartitionConstraint.equi_width));
+                    new PartitionRule(PartitionClass.serial, PartitionConstraint.equi_width));
             LinkedList<Bucket> bucketList = execHistogram.createHistogram(data, 20);
             BarChart execHistogramChart = new BarChart(name + " Histogram", 50);
             for (Bucket b : bucketList) {

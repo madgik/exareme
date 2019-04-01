@@ -17,8 +17,8 @@ import org.apache.log4j.Logger;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class BufferDemo {
@@ -40,15 +40,15 @@ public class BufferDemo {
         String planString = new String();
 
         planString += "container c ('" + container.getEntityName().getName() + "',1099);\n"
-            + "instantiate hello1 c('madgik.exareme.db.operatorLibrary.test.HelloWorld');\n"
-            + "instantiate hello2 c('madgik.exareme.db.operatorLibrary.test.HelloWorld');\n"
-            + "instantiate merge1 c('madgik.exareme.db.operatorLibrary.test.Merge');\n"
-            + "instantiate file c('madgik.exareme.db.operatorLibrary.test.WriteToTextFile', file='/tmp/result.txt');\n"
-            + "create hello1_out c('10');\n" + "create hello2_out c('10');\n"
-            + "create merge1_out c('10');\n" + "connect c(hello1, hello1_out);\n"
-            + "connect c(hello2, hello2_out);\n" + "connect c(merge1, merge1_out);\n"
-            + "connect c(hello1_out, merge1);\n" + "connect c(hello2_out, merge1);\n"
-            + "connect c(merge1_out, file);\n";
+                + "instantiate hello1 c('madgik.exareme.db.operatorLibrary.test.HelloWorld');\n"
+                + "instantiate hello2 c('madgik.exareme.db.operatorLibrary.test.HelloWorld');\n"
+                + "instantiate merge1 c('madgik.exareme.db.operatorLibrary.test.Merge');\n"
+                + "instantiate file c('madgik.exareme.db.operatorLibrary.test.WriteToTextFile', file='/tmp/result.txt');\n"
+                + "create hello1_out c('10');\n" + "create hello2_out c('10');\n"
+                + "create merge1_out c('10');\n" + "connect c(hello1, hello1_out);\n"
+                + "connect c(hello2, hello2_out);\n" + "connect c(merge1, merge1_out);\n"
+                + "connect c(hello1_out, merge1);\n" + "connect c(hello2_out, merge1);\n"
+                + "connect c(merge1_out, file);\n";
 
         //	planString +=
         //		"container c ('" + container.getEntityName().getName() + "',1099);\n"
@@ -70,11 +70,11 @@ public class BufferDemo {
             final ExecutionEngineSessionPlan sessionPlan = session.startSession();
             sessionPlan.submitPlan(plan);
             while (sessionPlan.getPlanSessionStatusManagerProxy().hasFinished() == false
-                || sessionPlan.getPlanSessionStatusManagerProxy().hasError()) {
+                    || sessionPlan.getPlanSessionStatusManagerProxy().hasError()) {
                 Thread.sleep(100);
             }
             log.debug(
-                sessionPlan.getPlanSessionStatisticsManagerProxy().getStatistics().toString());
+                    sessionPlan.getPlanSessionStatisticsManagerProxy().getStatistics().toString());
             sessionPlan.close();
 
             long end = System.currentTimeMillis();

@@ -14,8 +14,8 @@ import java.util.concurrent.Semaphore;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class RmiRegistryHelper {
@@ -71,13 +71,14 @@ public class RmiRegistryHelper {
             request.release();
         }
 
-        @Override public void run() {
+        @Override
+        public void run() {
             while (true) {
                 try {
                     request.acquire();
 
                     Remote monitorStub =
-                        UnicastRemoteObject.exportObject(remoteObject, rmiExportPort);
+                            UnicastRemoteObject.exportObject(remoteObject, rmiExportPort);
 
                     Registry registry = ArtRegistryLocator.getLocalRmiRegistry();
 
@@ -118,7 +119,8 @@ public class RmiRegistryHelper {
             request.release();
         }
 
-        @Override public void run() {
+        @Override
+        public void run() {
             while (true) {
                 try {
                     request.acquire();

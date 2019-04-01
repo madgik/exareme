@@ -32,26 +32,30 @@ public class CyclicDataPartitionLayout implements DataPartitionLayout {
         this.allContainers = new ArrayList<>();
     }
 
-    @Override public void initializeWithContainers(List<Long> containers) {
+    @Override
+    public void initializeWithContainers(List<Long> containers) {
         allContainers.addAll(containers);
         distributePartsToContainers();
     }
 
-    @Override public void addContainers(List<Long> containers) {
+    @Override
+    public void addContainers(List<Long> containers) {
         allContainers.addAll(containers);
         distributePartsToContainers();
     }
 
-    @Override public void removeContainers(List<Long> containers) {
+    @Override
+    public void removeContainers(List<Long> containers) {
         int initialNumber = allContainers.size();
         HashSet<Long> containersToDelete = new HashSet<>(containers);
         allContainers.removeAll(containersToDelete);
         Check.True(initialNumber - allContainers.size() == containers.size(),
-            "Not all containers found");
+                "Not all containers found");
         distributePartsToContainers();
     }
 
-    @Override public long getContainer(int part) {
+    @Override
+    public long getContainer(int part) {
         int randPart = rand.nextInt(replication);
         return partToContainerAssignment.get(part * replication + randPart);
     }
@@ -82,19 +86,23 @@ public class CyclicDataPartitionLayout implements DataPartitionLayout {
         //    System.out.println("---\n");
     }
 
-    @Override public int getNumContainers() {
+    @Override
+    public int getNumContainers() {
         return allContainers.size();
     }
 
-    @Override public int getReplication() {
+    @Override
+    public int getReplication() {
         return replication;
     }
 
-    @Override public int getNumParts() {
+    @Override
+    public int getNumParts() {
         return numParts;
     }
 
-    @Override public void getPartContainers(int part, Set<Long> containers) {
+    @Override
+    public void getPartContainers(int part, Set<Long> containers) {
         for (int r = 0; r < replication; ++r) {
             containers.add(partToContainerAssignment.get(part * replication + r));
         }

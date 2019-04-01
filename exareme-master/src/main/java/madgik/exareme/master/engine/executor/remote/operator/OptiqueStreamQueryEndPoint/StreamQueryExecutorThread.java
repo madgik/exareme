@@ -7,8 +7,8 @@ import org.apache.log4j.Logger;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
 import java.util.Date;
+import java.util.*;
 
 public class StreamQueryExecutorThread extends Thread {
     public enum State {LOADING, RUN, DIE, DESTROY}
@@ -47,7 +47,7 @@ public class StreamQueryExecutorThread extends Thread {
     }
 
     private ResultSet executeQuery(String sqlQuery)
-        throws ClassNotFoundException, SQLException, ParseException {
+            throws ClassNotFoundException, SQLException, ParseException {
         Class.forName("madgik.exareme.utils.embedded.AdpEmbeddedDriver");
         Properties prop = new Properties();
         prop.setProperty("MADIS_PATH", madisPath);
@@ -109,7 +109,8 @@ public class StreamQueryExecutorThread extends Thread {
         }
     }
 
-    @Override public void run() {
+    @Override
+    public void run() {
         log.debug("Loading Stream Data Query ...");
         state = State.LOADING;
         errmsg = "Query loading please wait";
@@ -152,12 +153,12 @@ public class StreamQueryExecutorThread extends Thread {
 
                     if (buffers.isEmpty())
                         buffers.add(new SimplePair<Long, Deque<Object[]>>(posixDate,
-                            new ArrayDeque<Object[]>()));
+                                new ArrayDeque<Object[]>()));
 
                     for (int i = 0; i < (posixDate - buffers.getFirst().first); ++i) {
                         long time = buffers.getFirst().first + i + 1;
                         buffers.addFirst(new SimplePair<Long, Deque<Object[]>>(time,
-                            new ArrayDeque<Object[]>()));
+                                new ArrayDeque<Object[]>()));
                     }
 
                     buffers.getFirst().second.addFirst(line);
@@ -182,7 +183,7 @@ public class StreamQueryExecutorThread extends Thread {
     }
 
     public synchronized SimplePair<List<String[]>, ArrayDeque<Object[]>> getBuffer(
-        long startUnixTime, long endUnixtime) throws IllegalThreadStateException {
+            long startUnixTime, long endUnixtime) throws IllegalThreadStateException {
         log.debug("Starttimestamp: " + startUnixTime + ", EndTimestamp: " + endUnixtime);
         if (state != State.RUN) {
             throw new IllegalThreadStateException(errmsg);

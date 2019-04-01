@@ -1,12 +1,103 @@
-{"schema":[["type","text"],["code","text"],["categories","text"],["header","text"],["val","text"]],"time":-1,"errors":[]}
-["DatasetStatistics2","APOE4_bl","0.0","0","300"]
-["DatasetStatistics2","APOE4_bl","1.0","0","226"]
-["DatasetStatistics2","APOE4_bl","2.0","0","47"]
-["DatasetStatistics1","APOE4_bl","NA","0.0","300"]
-["DatasetStatistics1","APOE4_bl","NA","1.0","226"]
-["DatasetStatistics1","APOE4_bl","NA","2.0","47"]
-["SummaryStatistics","APOE4_bl","NA","count","573"]
-["SummaryStatistics","APOE4_bl","NA","min","0.0"]
-["SummaryStatistics","APOE4_bl","NA","max","2.0"]
-["SummaryStatistics","APOE4_bl","NA","average","0.558464223385689"]
-["SummaryStatistics","APOE4_bl","NA","std","0.64136470608991"]
+{
+  "schema": [
+    [
+      "type",
+      "text"
+    ],
+    [
+      "code",
+      "text"
+    ],
+    [
+      "categories",
+      "text"
+    ],
+    [
+      "header",
+      "text"
+    ],
+    [
+      "val",
+      "text"
+    ]
+  ],
+  "time": -1,
+  "errors": []
+}
+[
+  "DatasetStatistics2",
+  "APOE4_bl",
+  "0.0",
+  "0",
+  "300"
+]
+[
+  "DatasetStatistics2",
+  "APOE4_bl",
+  "1.0",
+  "0",
+  "226"
+]
+[
+  "DatasetStatistics2",
+  "APOE4_bl",
+  "2.0",
+  "0",
+  "47"
+]
+[
+  "DatasetStatistics1",
+  "APOE4_bl",
+  "NA",
+  "0.0",
+  "300"
+]
+[
+  "DatasetStatistics1",
+  "APOE4_bl",
+  "NA",
+  "1.0",
+  "226"
+]
+[
+  "DatasetStatistics1",
+  "APOE4_bl",
+  "NA",
+  "2.0",
+  "47"
+]
+[
+  "SummaryStatistics",
+  "APOE4_bl",
+  "NA",
+  "count",
+  "573"
+]
+[
+  "SummaryStatistics",
+  "APOE4_bl",
+  "NA",
+  "min",
+  "0.0"
+]
+[
+  "SummaryStatistics",
+  "APOE4_bl",
+  "NA",
+  "max",
+  "2.0"
+]
+[
+  "SummaryStatistics",
+  "APOE4_bl",
+  "NA",
+  "average",
+  "0.558464223385689"
+]
+[
+  "SummaryStatistics",
+  "APOE4_bl",
+  "NA",
+  "std",
+  "0.64136470608991"
+]

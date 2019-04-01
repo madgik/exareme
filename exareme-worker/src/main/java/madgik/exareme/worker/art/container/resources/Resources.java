@@ -28,14 +28,16 @@ public abstract class Resources implements Comparable<Resources> {
         return false;
     }
 
-    @Override public int compareTo(Resources other) {
+    @Override
+    public int compareTo(Resources other) {
         return (resourceArray[0] < other.getResourceArray()[0]) ?
-            -1 :
-            ((resourceArray[0] == other.getResourceArray()[0]) ? 0 : 1);
+                -1 :
+                ((resourceArray[0] == other.getResourceArray()[0]) ? 0 : 1);
 
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return Double.toString(resourceArray[0]);
     }
 }

@@ -7,8 +7,8 @@ package madgik.exareme.common.art.entity;
  * This class represents a datasource entity. A datasource can be a database or Google!
  *
  * @author Herald Kllapi
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.2
  */
 public class DataSourceEntity implements Accessible {

@@ -1,25 +1,25 @@
-#Based on iso8601 from Michael Twomey
+# Based on iso8601 from Michael Twomey
 #
-#Copyright (c) 2007 Michael Twomey
+# Copyright (c) 2007 Michael Twomey
 #
-#Permission is hereby granted, free of charge, to any person obtaining a
-#copy of this software and associated documentation files (the
-#"Software"), to deal in the Software without restriction, including
-#without limitation the rights to use, copy, modify, merge, publish,
-#distribute, sublicense, and/or sell copies of the Software, and to
-#permit persons to whom the Software is furnished to do so, subject to
-#the following conditions:
+# Permission is hereby granted, free of charge, to any person obtaining a
+# copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
 #
-#The above copyright notice and this permission notice shall be included
-#in all copies or substantial portions of the Software.
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
 #
-#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-#OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-#MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-#IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-#CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-#TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-#SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+# CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+# TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 """ISO 8601 date time string parsing
@@ -32,28 +32,34 @@ datetime.datetime(2007, 1, 25, 12, 0, tzinfo=<iso8601.iso8601.Utc ...>)
 
 """
 
-from datetime import datetime, timedelta, tzinfo
 import re
+from datetime import datetime, timedelta, tzinfo
 
 __all__ = ["parse_date", "ParseError"]
 
 # Adapted from http://delete.me.uk/2005/03/iso8601.html
-ISO8601_REGEX = re.compile(r"((?P<year>[0-9]{4})(-(?P<month>[0-9]{1,2})(-(?P<day>[0-9]{1,2}))?|W(?P<week>[0-9]{1,2}))?)?"
+ISO8601_REGEX = re.compile(
+    r"((?P<year>[0-9]{4})(-(?P<month>[0-9]{1,2})(-(?P<day>[0-9]{1,2}))?|W(?P<week>[0-9]{1,2}))?)?"
     r"(.?(?P<hour>[0-9]{2}):(?P<minute>[0-9]{2})(:(?P<second>[0-9]{2})(\.(?P<fraction>[0-9]+))?)?"
     r"(?P<timezone>Z|(([-+])([0-9]{2}):([0-9]{2})))?)?"
-)
+    )
 
 TIMEZONE_REGEX = re.compile("(?P<prefix>[+-])(?P<hours>[0-9]{2}).(?P<minutes>[0-9]{2})")
+
 
 class ParseError(Exception):
     """Raised when there is a problem parsing a date string"""
 
+
 # Yoinked from python docs
 ZERO = timedelta(0)
+
+
 class Utc(tzinfo):
     """UTC
 
     """
+
     def utcoffset(self, dt):
         return ZERO
 
@@ -62,12 +68,16 @@ class Utc(tzinfo):
 
     def dst(self, dt):
         return ZERO
+
+
 UTC = Utc()
+
 
 class FixedOffset(tzinfo):
     """Fixed offset in hours and minutes from UTC
 
     """
+
     def __init__(self, offset_hours, offset_minutes, name):
         self.__offset = timedelta(hours=offset_hours, minutes=offset_minutes)
         self.__name = name
@@ -83,6 +93,7 @@ class FixedOffset(tzinfo):
 
     def __repr__(self):
         return "<FixedOffset %r>" % self.__name
+
 
 def parse_timezone(tzstring, default_timezone=UTC):
     """Parses ISO 8601 time zone specs into tzinfo offsets
@@ -103,6 +114,7 @@ def parse_timezone(tzstring, default_timezone=UTC):
         minutes = -minutes
     return FixedOffset(hours, minutes, tzstring)
 
+
 def parse_date(datestring, default_timezone=UTC):
     """Parses ISO 8601 dates into datetime objects
 
@@ -118,23 +130,23 @@ def parse_date(datestring, default_timezone=UTC):
         raise ParseError("Unable to parse date string %r" % datestring)
     groups = m.groupdict()
 
-    if default_timezone!=None:
+    if default_timezone != None:
         tz = parse_timezone(groups["timezone"], default_timezone=default_timezone)
     else:
-        tz=None
+        tz = None
 
     if not groups["year"]:
         raise ParseError("Unable to parse date string %r" % datestring)
     if not groups["month"]:
-        groups["month"]=1
+        groups["month"] = 1
     if not groups["day"]:
-        groups["day"]=1
+        groups["day"] = 1
     if not groups["hour"]:
-        groups["hour"]=0
+        groups["hour"] = 0
     if not groups["minute"]:
-        groups["minute"]=0
+        groups["minute"] = 0
     if not groups["second"]:
-        groups["second"]=0
+        groups["second"] = 0
     if not groups["fraction"]:
         groups["fraction"] = 0
     else:
@@ -142,9 +154,9 @@ def parse_date(datestring, default_timezone=UTC):
 
     if groups["week"]:
         return datetime(int(groups["year"]), 1, 1,
-            int(groups["hour"]), int(groups["minute"]), int(groups["second"]),
-            int(groups["fraction"]), tz) + timedelta(weeks=(max(int(groups["week"])-1, 0)))
+                        int(groups["hour"]), int(groups["minute"]), int(groups["second"]),
+                        int(groups["fraction"]), tz) + timedelta(weeks=(max(int(groups["week"]) - 1, 0)))
     else:
         return datetime(int(groups["year"]), int(groups["month"]), int(groups["day"]),
-            int(groups["hour"]), int(groups["minute"]), int(groups["second"]),
-            int(groups["fraction"]), tz)
+                        int(groups["hour"]), int(groups["minute"]), int(groups["second"]),
+                        int(groups["fraction"]), tz)

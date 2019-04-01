@@ -12,7 +12,7 @@ import java.rmi.RemoteException;
 
 /**
  * @author Christos Mallios <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  */
 public interface RemoteQuery {
 
@@ -28,7 +28,7 @@ public interface RemoteQuery {
      * @param   table       the tableName of the output results
      */
     public void schedule(ServerInfo server, String query, RemoteQueryListener listener,
-        ProcessManager procManager, String table) throws RemoteException, IOException;
+                         ProcessManager procManager, String table) throws RemoteException, IOException;
 
     /*
      * Request for the execution of a query and assign a listener for
@@ -44,8 +44,8 @@ public interface RemoteQuery {
      *                      query results, to be valid for the request
      */
     public void schedule(ServerInfo server, String query, RemoteQueryListener listener,
-        ProcessManager procManager, String table, double staleLimit)
-        throws RemoteException, IOException;
+                         ProcessManager procManager, String table, double staleLimit)
+            throws RemoteException, IOException;
 
     /*
      * Function which is called by the client to notify the server

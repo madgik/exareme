@@ -13,7 +13,7 @@ import java.rmi.RemoteException;
  * @author herald
  */
 public interface WriteSocketStreamAdaptorProxy
-    extends ObjectProxy<WriteSocketStreamAdaptor>, AdaptorProxy {
+        extends ObjectProxy<WriteSocketStreamAdaptor>, AdaptorProxy {
 
     void setNetSession(NetSession manager) throws RemoteException;
 

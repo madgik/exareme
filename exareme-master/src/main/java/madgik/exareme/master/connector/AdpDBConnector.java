@@ -16,5 +16,5 @@ public interface AdpDBConnector {
 
     // Returns a stream of json records.
     InputStream readTable(String tableName, Map<String, Object> alsoIncludeProps,
-        AdpDBClientProperties props) throws RemoteException;
+                          AdpDBClientProperties props) throws RemoteException;
 }

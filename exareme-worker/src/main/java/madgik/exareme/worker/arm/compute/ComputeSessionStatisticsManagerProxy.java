@@ -9,7 +9,7 @@ import madgik.exareme.worker.art.remote.ObjectProxy;
  * @author herald
  */
 public interface ComputeSessionStatisticsManagerProxy
-    extends ObjectProxy<ComputeSessionStatisticsManager> {
+        extends ObjectProxy<ComputeSessionStatisticsManager> {
 
 
 }

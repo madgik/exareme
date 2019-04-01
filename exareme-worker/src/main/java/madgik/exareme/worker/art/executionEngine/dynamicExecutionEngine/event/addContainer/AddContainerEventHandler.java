@@ -26,22 +26,23 @@ public class AddContainerEventHandler implements ExecEngineEventHandler<AddConta
     public AddContainerEventHandler() {
     }
 
-    @Override public void preProcess(AddContainerEvent event, PlanEventSchedulerState state)
-        throws RemoteException {
+    @Override
+    public void preProcess(AddContainerEvent event, PlanEventSchedulerState state)
+            throws RemoteException {
         try {
             ActiveContainer activeCont = state.getActiveContainer(event.containerName);
             OperatorGroup group = activeCont.operatorGroup;
             ActiveOperatorGroup activeGroup =
-                group.objectNameActiveGroupMap.get(event.containerName);
+                    group.objectNameActiveGroupMap.get(event.containerName);
             EntityName containerEntity = event.containerEntity;
             if (containerEntity == null) {
                 containerEntity =
-                    activeGroup.planSession.getExecutionPlan().addContainer(event.container);
+                        activeGroup.planSession.getExecutionPlan().addContainer(event.container);
             }
             ContainerSessionID containerSessionID = activeCont.containerSessionID;
             ContainerSession containerSession =
-                state.getContainerSession(event.containerName, containerSessionID);
-      /* If the session does not exist */
+                    state.getContainerSession(event.containerName, containerSessionID);
+            /* If the session does not exist */
             if (containerSession == null) {
                 ContainerProxy containerProxy = state.getContainerProxy(containerEntity.getName());
                 if (containerProxy == null) {
@@ -49,9 +50,9 @@ public class AddContainerEventHandler implements ExecEngineEventHandler<AddConta
                     state.addContainerProxy(containerEntity.getName(), containerProxy);
                 }
                 containerSession =
-                    containerProxy.createSession(containerSessionID, state.getPlanSessionID());
+                        containerProxy.createSession(containerSessionID, state.getPlanSessionID());
                 state
-                    .addContainerSession(event.containerName, containerSessionID, containerSession);
+                        .addContainerSession(event.containerName, containerSessionID, containerSession);
                 state.getStatistics().incrContainerSessions();
             }
         } catch (RemoteException e) {
@@ -59,13 +60,15 @@ public class AddContainerEventHandler implements ExecEngineEventHandler<AddConta
         }
     }
 
-    @Override public void handle(AddContainerEvent event, EventProcessor proc)
-        throws RemoteException {
+    @Override
+    public void handle(AddContainerEvent event, EventProcessor proc)
+            throws RemoteException {
         // Do nothing!
     }
 
-    @Override public void postProcess(AddContainerEvent event, PlanEventSchedulerState state)
-        throws RemoteException {
+    @Override
+    public void postProcess(AddContainerEvent event, PlanEventSchedulerState state)
+            throws RemoteException {
         state.getStatistics().incrControlMessagesCountBy(event.messageCount);
     }
 }

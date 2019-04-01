@@ -52,7 +52,8 @@ class WriteThread extends Thread {
         this.fos = new FileOutputStream(file);
     }
 
-    @Override public void run() {
+    @Override
+    public void run() {
         try {
             byte[] buffer = new byte[bufferSize];
             for (int i = 0; i < times; ++i) {
@@ -82,7 +83,8 @@ class ReadThread extends Thread {
         this.fis = new FileInputStream(file);
     }
 
-    @Override public void run() {
+    @Override
+    public void run() {
         try {
             byte[] buffer = new byte[bufferSize];
             for (int i = 0; i < times; ++i) {

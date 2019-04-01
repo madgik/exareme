@@ -13,9 +13,9 @@ import madgik.exareme.worker.art.concreteOperator.manager.AdaptorManager;
  * @author Herald Kllapi<br>
  * @author Dimitris Paparas<br>
  * @author Eva Sitaridi<br>
- *         {herald,paparas,evas}@di.uoa.gr<br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * {herald,paparas,evas}@di.uoa.gr<br>
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public abstract class AbstractNiSo extends AbstractOperatorImpl {
@@ -60,7 +60,8 @@ public abstract class AbstractNiSo extends AbstractOperatorImpl {
         this.datasource = ds;
     }
 
-    @Override protected AdaptorManager createAdaptorManager() {
+    @Override
+    protected AdaptorManager createAdaptorManager() {
         return new AdaptorManager(1, 0, this.getSessionManager());
     }
 }

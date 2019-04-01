@@ -22,7 +22,8 @@ public class ActiveContainer implements Serializable {
         this.ID = ID;
     }
 
-    @Override public boolean equals(Object obj) {
+    @Override
+    public boolean equals(Object obj) {
 
         if (obj instanceof ActiveContainer) {
             ActiveContainer container = (ActiveContainer) obj;
@@ -39,7 +40,8 @@ public class ActiveContainer implements Serializable {
         return (int) (ID - container.ID);
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         long hash = 7;
         hash = 53 * hash + this.ID;
         return (int) hash;

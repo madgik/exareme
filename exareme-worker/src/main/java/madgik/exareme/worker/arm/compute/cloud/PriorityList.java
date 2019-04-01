@@ -13,8 +13,9 @@ import java.util.*;
  */
 public abstract class PriorityList implements PriorityListInterface {
 
-    @Override public boolean checkPriority(ArmComputeSessionID sessionID,
-        TreeMap<Integer, LinkedList<ArmComputeSessionID>> onusIndex) {
+    @Override
+    public boolean checkPriority(ArmComputeSessionID sessionID,
+                                 TreeMap<Integer, LinkedList<ArmComputeSessionID>> onusIndex) {
 
         int counter, i;
         LinkedList<ArmComputeSessionID> currentSessions, prioritySessions;

@@ -11,10 +11,10 @@ import java.util.LinkedList;
 public class ParameterConvertor {
     public static Parameters convert(LinkedList<Parameter> params) {
         madgik.exareme.worker.art.parameter.Parameters paramsret =
-            new madgik.exareme.worker.art.parameter.Parameters();
+                new madgik.exareme.worker.art.parameter.Parameters();
         for (madgik.exareme.worker.art.executionPlan.parser.expression.Parameter p : params) {
             paramsret
-                .addParameter(new madgik.exareme.worker.art.parameter.Parameter(p.name, p.value));
+                    .addParameter(new madgik.exareme.worker.art.parameter.Parameter(p.name, p.value));
         }
         return paramsret;
     }

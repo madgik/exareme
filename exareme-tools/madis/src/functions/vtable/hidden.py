@@ -23,13 +23,14 @@ Examples::
     ---------
 
 """
-import setpath
-import vtbase
 import functions
 
+import vtbase
+
 ### Classic stream iterator
-registered=True
-       
+registered = True
+
+
 class NopVT(vtbase.VT):
     def VTiter(self, *parsedArgs, **envars):
         largs, dictargs = self.full_parse(parsedArgs)
@@ -59,19 +60,19 @@ class NopVT(vtbase.VT):
 def Source():
     return vtbase.VTGenerator(NopVT)
 
+
 if not ('.' in __name__):
     """
     This is needed to be able to test the function, put it at the end of every
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()
-
-

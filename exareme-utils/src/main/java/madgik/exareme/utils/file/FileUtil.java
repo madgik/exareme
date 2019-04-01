@@ -17,14 +17,14 @@ import java.util.zip.GZIPOutputStream;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class FileUtil {
 
     private static final int ioBufferSize =
-        AdpProperties.getArtProps().getInt("art.container.ioBufferSize_kb") * Metrics.KB;
+            AdpProperties.getArtProps().getInt("art.container.ioBufferSize_kb") * Metrics.KB;
     private static Logger log = Logger.getLogger(FileUtil.class);
 
     private FileUtil() {
@@ -110,7 +110,7 @@ public class FileUtil {
     public static void writeObjectFile(Serializable object, File file) throws IOException {
         file.delete();
         ObjectOutputStream oos =
-            new ObjectOutputStream(new GZIPOutputStream(new FileOutputStream(file)));
+                new ObjectOutputStream(new GZIPOutputStream(new FileOutputStream(file)));
 
         oos.writeObject(object);
         oos.flush();
@@ -118,9 +118,9 @@ public class FileUtil {
     }
 
     public static Serializable readObjectFile(File file)
-        throws IOException, ClassNotFoundException {
+            throws IOException, ClassNotFoundException {
         ObjectInputStream ois =
-            new ObjectInputStream(new GZIPInputStream(new FileInputStream(file)));
+                new ObjectInputStream(new GZIPInputStream(new FileInputStream(file)));
         Object obj = ois.readObject();
         ois.close();
         return (Serializable) obj;
@@ -197,7 +197,7 @@ public class FileUtil {
     }
 
     private static int readFully(byte[] buffer, int offset, int length, InputStream in)
-        throws IOException {
+            throws IOException {
         int b = 0;
         while (b < length) {
             b += in.read(buffer, offset + b, length - b);
@@ -224,7 +224,7 @@ public class FileUtil {
             out.write(intVal, 0, 4);
             in.close();
             log.debug("Written file with (" + bytes + ") " + totalBytes + " bytes: " + file
-                .getAbsolutePath());
+                    .getAbsolutePath());
         } finally {
             try {
                 if (in != null)
@@ -253,7 +253,7 @@ public class FileUtil {
             }
             out.flush();
             log.debug("Read file with (" + bytes + ") " + totalBytes + " bytes: " + file
-                .getAbsolutePath());
+                    .getAbsolutePath());
         } finally {
             try {
                 if (out != null)

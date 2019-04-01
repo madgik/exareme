@@ -70,7 +70,7 @@ public class StreamRegisterQuery {
     }
 
     public static synchronized boolean add(String streamName, String sqlQuery)
-        throws RemoteException {
+            throws RemoteException {
         if (streamQueryMap.containsKey(streamName)) {
             throw new RemoteException("Query with name: " + streamName + " is already registered");
         }
@@ -79,7 +79,7 @@ public class StreamRegisterQuery {
 
         String dbname = "/tmp/random-db";
         AdpStreamDBClient dbClient = AdpStreamDBClientFactory
-            .createOptiqueStreamDBClient(manager, new AdpDBClientProperties(dbname));
+                .createOptiqueStreamDBClient(manager, new AdpDBClientProperties(dbname));
         QueryInfo info = dbClient.query("noid", sqlQuery);
         streamQueryMap.put(streamName, info);
 

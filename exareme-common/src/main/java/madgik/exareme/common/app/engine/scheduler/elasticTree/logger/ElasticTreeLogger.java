@@ -77,7 +77,7 @@ public class ElasticTreeLogger {
         }
         TreeQuery treeQuery = issuedQueries.get(id);
         write(Code.QSUCCESS + SEP + id + SEP + DF.format(execTime) + SEP +
-            DF.format(treeQuery.getSLA().getBudget(execTime)));
+                DF.format(treeQuery.getSLA().getBudget(execTime)));
     }
 
     public static void queryError(long id, PlanSessionStatistics stats) {
@@ -92,31 +92,31 @@ public class ElasticTreeLogger {
     }
 
     public static void elasticTreeLevel(int level, double numCont, double numOps, double cpuLoad,
-        double dataLoad, double cpuVar, double dataVar) {
+                                        double dataLoad, double cpuVar, double dataVar) {
         write(Code.ELASTIC_TREE + SEP + level + SEP +
-            DF.format(numCont) + SEP +
-            DF.format(numOps) + SEP +
-            DF.format(cpuLoad) + SEP + DF.format(cpuVar) + SEP +
-            DF.format(dataLoad) + SEP + DF.format(dataVar));
+                DF.format(numCont) + SEP +
+                DF.format(numOps) + SEP +
+                DF.format(cpuLoad) + SEP + DF.format(cpuVar) + SEP +
+                DF.format(dataLoad) + SEP + DF.format(dataVar));
     }
 
     public static void money(double totalCost, double totalRevenue, double windowCost,
-        double windowRevenue) {
+                             double windowRevenue) {
         write(Code.MONEY + SEP +
-            DF.format(totalCost) + SEP +
-            DF.format(totalRevenue) + SEP +
-            DF.format(totalRevenue - totalCost) + SEP +
-            DF.format(windowCost) + SEP +
-            DF.format(windowRevenue));
+                DF.format(totalCost) + SEP +
+                DF.format(totalRevenue) + SEP +
+                DF.format(totalRevenue - totalCost) + SEP +
+                DF.format(windowCost) + SEP +
+                DF.format(windowRevenue));
     }
 
     public static void queries(int totalQueries, int errorQueries, int runningQueries,
-        int queuedQueries) {
+                               int queuedQueries) {
         write(Code.QUERIES + SEP +
-            totalQueries + SEP +
-            errorQueries + SEP +
-            runningQueries + SEP +
-            queuedQueries);
+                totalQueries + SEP +
+                errorQueries + SEP +
+                runningQueries + SEP +
+                queuedQueries);
     }
 
     public static void close() {

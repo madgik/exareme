@@ -25,37 +25,43 @@ public class ReadSocketStreamAdaptorProxyMonitor implements ReadSocketStreamAdap
     private InputStreamMonitor streamMonitor = null;
 
     public ReadSocketStreamAdaptorProxyMonitor(ReadSocketStreamAdaptorProxy proxy,
-        AdaptorStatistics adaptorStatistics, ConcreteOperatorStatistics statistics) {
+                                               AdaptorStatistics adaptorStatistics, ConcreteOperatorStatistics statistics) {
         this.proxy = proxy;
         this.adaptorStatistics = adaptorStatistics;
         this.statistics = statistics;
     }
 
-    @Override public InputStream getInputStream() throws RemoteException {
+    @Override
+    public InputStream getInputStream() throws RemoteException {
         if (streamMonitor == null) {
             streamMonitor =
-                new InputStreamMonitor(proxy.getInputStream(), adaptorStatistics, statistics);
+                    new InputStreamMonitor(proxy.getInputStream(), adaptorStatistics, statistics);
         }
         return streamMonitor;
     }
 
-    @Override public void close() throws RemoteException {
+    @Override
+    public void close() throws RemoteException {
         proxy.close();
     }
 
-    @Override public RetryPolicy getRetryPolicy() throws RemoteException {
+    @Override
+    public RetryPolicy getRetryPolicy() throws RemoteException {
         return proxy.getRetryPolicy();
     }
 
-    @Override public void setNetSession(NetSession manager) throws RemoteException {
+    @Override
+    public void setNetSession(NetSession manager) throws RemoteException {
         proxy.setNetSession(manager);
     }
 
-    @Override public ReadSocketStreamAdaptor connect() throws RemoteException {
+    @Override
+    public ReadSocketStreamAdaptor connect() throws RemoteException {
         return proxy.connect();
     }
 
-    @Override public ReadSocketStreamAdaptor getRemoteObject() throws RemoteException {
+    @Override
+    public ReadSocketStreamAdaptor getRemoteObject() throws RemoteException {
         return proxy.getRemoteObject();
     }
 }

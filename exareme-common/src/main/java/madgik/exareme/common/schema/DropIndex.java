@@ -15,7 +15,7 @@ public class DropIndex extends DMQuery {
 
     public DropIndex(int id, SQLDropIndex sqlDropIndex) {
         super(id, sqlDropIndex.getTable(), "drop index " + sqlDropIndex.getIndexName(),
-            sqlDropIndex.getComments().toString());
+                sqlDropIndex.getComments().toString());
         this.parsedSQLDropIndex = sqlDropIndex;
     }
 

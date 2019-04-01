@@ -1,4 +1,3 @@
-
 class MulticastDelegate(object):
     def __init__(self):
         self.delegates = []
@@ -17,4 +16,3 @@ class MulticastDelegate(object):
     def __call__(self, *args, **kwargs):
         for d in self.delegates:
             d(*args, **kwargs)
-

@@ -39,14 +39,14 @@ public class QuerySuccessEventHandler implements EventHandler<QuerySuccessEvent>
 
             HashMap<String, String> tableSQLDefs = new HashMap<String, String>();
             List<ContainerSessionStatistics> containerStats =
-                event.status.getStatistics().getAdpEngineStatistics().containerStats;
+                    event.status.getStatistics().getAdpEngineStatistics().containerStats;
             for (ContainerSessionStatistics css : containerStats) {
                 for (ConcreteOperatorStatistics cos : css.operators) {
                     if (cos.getExitMessage() != null) {
                         ExecuteQueryExitMessage msg =
-                            (ExecuteQueryExitMessage) cos.getExitMessage();
+                                (ExecuteQueryExitMessage) cos.getExitMessage();
                         tableSQLDefs.put(msg.outTableInfo.getTableName(),
-                            msg.outTableInfo.getSQLDefinition());
+                                msg.outTableInfo.getSQLDefinition());
                     }
                 }
             }

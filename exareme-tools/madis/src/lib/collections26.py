@@ -3,9 +3,9 @@ __all__ = ['Counter', 'deque', 'defaultdict', 'namedtuple', 'OrderedDict']
 # They should however be considered an integral part of collections.py.
 from _abcoll import *
 import _abcoll
+
 __all__ += _abcoll.__all__
 
-from _collections import deque, defaultdict
 from operator import itemgetter as _itemgetter
 from keyword import iskeyword as _iskeyword
 import sys as _sys
@@ -24,6 +24,7 @@ except ImportError:
 
 class OrderedDict(dict):
     'Dictionary that remembers insertion order'
+
     # An inherited dict maps keys to values.
     # The inherited dict provides __getitem__, __len__, __contains__, and get.
     # The remaining methods are order-aware.
@@ -45,7 +46,7 @@ class OrderedDict(dict):
         try:
             self.__root
         except AttributeError:
-            self.__root = root = []                     # sentinel node
+            self.__root = root = []  # sentinel node
             root[:] = [root, root, None]
             self.__map = {}
         self.__update(*args, **kwds)
@@ -128,7 +129,7 @@ class OrderedDict(dict):
 
     update = MutableMapping.update
 
-    __update = update # let subclasses override update without breaking __init__
+    __update = update  # let subclasses override update without breaking __init__
 
     __marker = object()
 
@@ -208,7 +209,7 @@ class OrderedDict(dict):
 
         '''
         if isinstance(other, OrderedDict):
-            return len(self)==len(other) and self.items() == other.items()
+            return len(self) == len(other) and self.items() == other.items()
         return dict.__eq__(self, other)
 
     def __ne__(self, other):
@@ -261,21 +262,22 @@ def namedtuple(typename, field_names, verbose=False, rename=False):
     # Parse and validate the field names.  Validation serves two purposes,
     # generating informative error messages and preventing template injection attacks.
     if isinstance(field_names, basestring):
-        field_names = field_names.replace(',', ' ').split() # names separated by whitespace and/or commas
+        field_names = field_names.replace(',', ' ').split()  # names separated by whitespace and/or commas
     field_names = tuple(map(str, field_names))
     if rename:
         names = list(field_names)
         seen = set()
         for i, name in enumerate(names):
-            if (not all(c.isalnum() or c=='_' for c in name) or _iskeyword(name)
-                or not name or name[0].isdigit() or name.startswith('_')
-                or name in seen):
+            if (not all(c.isalnum() or c == '_' for c in name) or _iskeyword(name)
+                    or not name or name[0].isdigit() or name.startswith('_')
+                    or name in seen):
                 names[i] = '_%d' % i
             seen.add(name)
         field_names = tuple(names)
     for name in (typename,) + field_names:
-        if not all(c.isalnum() or c=='_' for c in name):
-            raise ValueError('Type names and field names can only contain alphanumeric characters and underscores: %r' % name)
+        if not all(c.isalnum() or c == '_' for c in name):
+            raise ValueError(
+                'Type names and field names can only contain alphanumeric characters and underscores: %r' % name)
         if _iskeyword(name):
             raise ValueError('Type names and field names cannot be a keyword: %r' % name)
         if name[0].isdigit():
@@ -290,7 +292,7 @@ def namedtuple(typename, field_names, verbose=False, rename=False):
 
     # Create and fill-in the class template
     numfields = len(field_names)
-    argtxt = repr(field_names).replace("'", "")[1:-1]   # tuple repr without parens or quotes
+    argtxt = repr(field_names).replace("'", "")[1:-1]  # tuple repr without parens or quotes
     reprtxt = ', '.join('%s=%%r' % name for name in field_names)
     template = '''class %(typename)s(tuple):
         '%(typename)s(%(argtxt)s)' \n
@@ -397,6 +399,7 @@ class Counter(dict):
     [('a', 3), ('c', 1), ('b', 0)]
 
     '''
+
     # References:
     #   http://en.wikipedia.org/wiki/Multiset
     #   http://www.gnu.org/software/smalltalk/manual-base/html_node/Bag.html
@@ -494,7 +497,7 @@ class Counter(dict):
                     for elem, count in iterable.iteritems():
                         self[elem] = self_get(elem, 0) + count
                 else:
-                    super(Counter, self).update(iterable) # fast path when counter is empty
+                    super(Counter, self).update(iterable)  # fast path when counter is empty
             else:
                 self_get = self.get
                 for elem in iterable:
@@ -635,28 +638,36 @@ class Counter(dict):
 if __name__ == '__main__':
     # verify that instances can be pickled
     from cPickle import loads, dumps
+
     Point = namedtuple('Point', 'x, y', True)
     p = Point(x=10, y=20)
     assert p == loads(dumps(p))
 
+
     # test and demonstrate ability to override methods
     class Point(namedtuple('Point', 'x y')):
         __slots__ = ()
+
         @property
         def hypot(self):
             return (self.x ** 2 + self.y ** 2) ** 0.5
+
         def __str__(self):
             return 'Point: x=%6.3f  y=%6.3f  hypot=%6.3f' % (self.x, self.y, self.hypot)
 
-    for p in Point(3, 4), Point(14, 5/7.):
+
+    for p in Point(3, 4), Point(14, 5 / 7.):
         print p
+
 
     class Point(namedtuple('Point', 'x y')):
         'Point class with optimized _make() and _replace() without error-checking'
         __slots__ = ()
         _make = classmethod(tuple.__new__)
+
         def _replace(self, _map=map, **kwds):
             return self._make(_map(kwds.get, ('x', 'y'), self))
+
 
     print Point(11, 22)._replace(x=100)
 
@@ -664,5 +675,6 @@ if __name__ == '__main__':
     print Point3D.__doc__
 
     import doctest
+
     TestResults = namedtuple('TestResults', 'failed attempted')
     print TestResults(*doctest.testmod())

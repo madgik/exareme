@@ -26,5 +26,5 @@ public interface PlanSessionStatusManagerInterface {
     ActiveExecutionPlan getActiveExecutionPlan(PlanSessionID sessionID) throws RemoteException;
 
     ConcreteOperatorStatus getOperatorStatus(String operatorName, PlanSessionID sessionID)
-        throws RemoteException;
+            throws RemoteException;
 }

@@ -21,7 +21,7 @@ public class ContainerQuantumClockTickEvent extends ExecEngineEvent {
     // ...
 
     public ContainerQuantumClockTickEvent(ContainerID id, long quantumCount,
-        PlanEventSchedulerState state) {
+                                          PlanEventSchedulerState state) {
         super(state);
         this.id = id;
         this.timeToTick_ms = 0;
@@ -30,7 +30,7 @@ public class ContainerQuantumClockTickEvent extends ExecEngineEvent {
     }
 
     public ContainerQuantumClockTickEvent(ContainerID id, long timeToTick_ms, long quantumCount,
-        PlanEventSchedulerState state) {
+                                          PlanEventSchedulerState state) {
         super(state);
         this.id = id;
         this.timeToTick_ms = timeToTick_ms;

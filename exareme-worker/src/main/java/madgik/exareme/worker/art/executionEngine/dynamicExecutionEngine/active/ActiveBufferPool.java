@@ -16,7 +16,7 @@ public class ActiveBufferPool extends ActiveObject {
     public MaterializedBuffer buffer = null;
 
     public ActiveBufferPool(String bufferPoolSessionName, MaterializedBuffer buffer,
-        ContainerSessionID containerSessionID, OperatorGroup operatorGroup) {
+                            ContainerSessionID containerSessionID, OperatorGroup operatorGroup) {
         super(ObjectType.BufferPool, bufferPoolSessionName, containerSessionID, operatorGroup);
         this.buffer = buffer;
     }

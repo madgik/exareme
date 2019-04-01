@@ -24,8 +24,8 @@ public class CloseSessionEvent implements Event {
     public ConcreteOperatorManagerStatus status = null;
 
     public CloseSessionEvent(PlanSessionID sID, TCOMPlanSession session,
-        //                           BufferPoolManagerInterface bufferPool,
-        ConcreteOperatorManagerStatus status) {
+                             //                           BufferPoolManagerInterface bufferPool,
+                             ConcreteOperatorManagerStatus status) {
         this.sID = sID;
         this.session = session;
         //    this.bufferPool = bufferPool;
@@ -33,8 +33,8 @@ public class CloseSessionEvent implements Event {
     }
 
     public CloseSessionEvent(PlanSessionID sID, ContainerSessionID cSID, TCOMPlanSession session,
-        //                           BufferPoolManagerInterface bufferPool,
-        ConcreteOperatorManagerStatus status) {
+                             //                           BufferPoolManagerInterface bufferPool,
+                             ConcreteOperatorManagerStatus status) {
         this.sID = sID;
         this.cSID = cSID;
         this.session = session;

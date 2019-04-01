@@ -18,7 +18,7 @@ public class CombinedWriteAdaptorProxy implements Serializable {
     public WriteSocketStreamAdaptorProxy writeSocketStreamAdaptorProxy = null;
 
     public CombinedWriteAdaptorProxy(WriteRmiStreamAdaptorProxy writeRmiStreamAdaptorProxy,
-        WriteSocketStreamAdaptorProxy writeSocketStreamAdaptorProxy) {
+                                     WriteSocketStreamAdaptorProxy writeSocketStreamAdaptorProxy) {
         this.writeRmiStreamAdaptorProxy = writeRmiStreamAdaptorProxy;
         this.writeSocketStreamAdaptorProxy = writeSocketStreamAdaptorProxy;
     }

@@ -20,8 +20,9 @@ public class CreateDataflowEventListener implements EventListener<CreateDataflow
     public CreateDataflowEventListener() {
     }
 
-    @Override public void processed(CreateDataflowEvent event, RemoteException exception,
-        EventProcessor processor) {
+    @Override
+    public void processed(CreateDataflowEvent event, RemoteException exception,
+                          EventProcessor processor) {
         if (exception != null) {
             LogUtils.logException("createDataflow", exception);
         }

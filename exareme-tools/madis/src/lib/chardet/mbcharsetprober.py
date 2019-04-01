@@ -27,9 +27,11 @@
 # 02110-1301  USA
 ######################### END LICENSE BLOCK #########################
 
-import constants, sys
-from constants import eStart, eError, eItsMe
+import constants
+import sys
 from charsetprober import CharSetProber
+from constants import eStart, eError, eItsMe
+
 
 class MultiByteCharSetProber(CharSetProber):
     def __init__(self):
@@ -67,13 +69,13 @@ class MultiByteCharSetProber(CharSetProber):
                     self._mLastChar[1] = aBuf[0]
                     self._mDistributionAnalyzer.feed(self._mLastChar, charLen)
                 else:
-                    self._mDistributionAnalyzer.feed(aBuf[i-1:i+1], charLen)
-                    
+                    self._mDistributionAnalyzer.feed(aBuf[i - 1:i + 1], charLen)
+
         self._mLastChar[0] = aBuf[aLen - 1]
-        
+
         if self.get_state() == constants.eDetecting:
             if self._mDistributionAnalyzer.got_enough_data() and \
-               (self.get_confidence() > constants.SHORTCUT_THRESHOLD):
+                    (self.get_confidence() > constants.SHORTCUT_THRESHOLD):
                 self._mState = constants.eFoundIt
 
         return self.get_state()

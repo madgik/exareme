@@ -20,7 +20,8 @@ public class TpchDatabaseGenerator implements DatabaseGenerator {
         this.parts = parts;
     }
 
-    @Override public Database generateDatabase() {
+    @Override
+    public Database generateDatabase() {
         Database db = new Database();
         // lineitem 71.3 %
         Table lineitem = new Table("lineitem");

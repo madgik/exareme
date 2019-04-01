@@ -1,14 +1,14 @@
-import re
-import itertools
-import setpath
 import functions
+import itertools
 import lib.jopts as jopts
-from operator import itemgetter
 import random
+import re
+from operator import itemgetter
 
 __docformat__ = 'reStructuredText en'
 
-re_params=re.compile('(\w*):(.*)')
+re_params = re.compile('(\w*):(.*)')
+
 
 def consumer(func):
     """A decorator, advances func to its first yield point when called.
@@ -17,10 +17,11 @@ def consumer(func):
     from functools import wraps
 
     @wraps(func)
-    def wrapper(*args,**kw):
+    def wrapper(*args, **kw):
         gen = func(*args, **kw)
         gen.next()
         return gen
+
     return wrapper
 
 
@@ -98,147 +99,146 @@ class freqitemsets:
     second group | 4                    | 0                | 3                  | 0
     """
 
-
-    registered=True
-    multiset=True
+    registered = True
+    multiset = True
 
     def __init__(self):
-        self.threshold=2
-        self.startingthreshold=2
-        self.autothres=1
-        self.compress=0
-        self.initstatic=False
-        self.input={}
-        self.maxlength=0
-        self.kwcode={}
-        self.codekw={}
-        self.maxkwcode=0
-        self.overthres={}
-        self.belowthres={}
-        self.passedkw={}
-        self.init=True
-        self.itemset_id=0
-        self.maxlen=None
-        self.stats=False
+        self.threshold = 2
+        self.startingthreshold = 2
+        self.autothres = 1
+        self.compress = 0
+        self.initstatic = False
+        self.input = {}
+        self.maxlength = 0
+        self.kwcode = {}
+        self.codekw = {}
+        self.maxkwcode = 0
+        self.overthres = {}
+        self.belowthres = {}
+        self.passedkw = {}
+        self.init = True
+        self.itemset_id = 0
+        self.maxlen = None
+        self.stats = False
 
     def initargs(self, args):
-        self.init=False
+        self.init = False
         for i in xrange(1, len(args)):
-            v=re_params.match(args[i])
-            if v is not None and v.groups()[0]!='' and v.groups()[1]!='' and i>0:
-                v=v.groups()
-                if v[0]=='threshold':
+            v = re_params.match(args[i])
+            if v is not None and v.groups()[0] != '' and v.groups()[1] != '' and i > 0:
+                v = v.groups()
+                if v[0] == 'threshold':
                     try:
-                        self.threshold=int(v[1])
-                        self.startingthreshold=self.threshold
+                        self.threshold = int(v[1])
+                        self.startingthreshold = self.threshold
                     except KeyboardInterrupt:
-                        raise               
+                        raise
                     except:
-                        raise functions.OperatorError("FreqItemsets",'No integer value given for threshold')
-                if v[0]=='noautothres':
-                    self.autothres=0
-                if v[0]=='compress':
-                    self.compress=1
-                if v[0]=='maxlen':
-                    self.maxlen=int(v[1])
-                if v[0]=='stats':
-                    self.stats=True
+                        raise functions.OperatorError("FreqItemsets", 'No integer value given for threshold')
+                if v[0] == 'noautothres':
+                    self.autothres = 0
+                if v[0] == 'compress':
+                    self.compress = 1
+                if v[0] == 'maxlen':
+                    self.maxlen = int(v[1])
+                if v[0] == 'stats':
+                    self.stats = True
 
     def demultiplex(self, data):
-        iterable=None
-        iterpos=-1
+        iterable = None
+        iterpos = -1
 
         for i in xrange(len(data)):
-            if hasattr(data[i],'__iter__')==True:
-                iterable=data[i]
-                iterpos=i
+            if hasattr(data[i], '__iter__') == True:
+                iterable = data[i]
+                iterpos = i
                 break
 
-        if iterpos==-1:
+        if iterpos == -1:
             yield list(data)
         else:
-            pre=list(data[0:iterpos])
-            post=list(data[iterpos+1:])
+            pre = list(data[0:iterpos])
+            post = list(data[iterpos + 1:])
             for i in iterable:
-                if hasattr(i,'__iter__')==False:
-                    yield pre+[i]+post
+                if hasattr(i, '__iter__') == False:
+                    yield pre + [i] + post
                 else:
-                    yield pre+list(i)+post
-        
+                    yield pre + list(i) + post
+
     def insertcombfreq(self, comb, freq):
         if comb in self.overthres:
-            self.overthres[comb]+=freq
+            self.overthres[comb] += freq
         else:
             if comb in self.belowthres:
-                self.belowthres[comb]+=freq
+                self.belowthres[comb] += freq
             else:
-                self.belowthres[comb]=freq
+                self.belowthres[comb] = freq
 
-            if self.belowthres[comb]>=self.threshold:
-                self.overthres[comb]=self.belowthres[comb]
-                del(self.belowthres[comb])
+            if self.belowthres[comb] >= self.threshold:
+                self.overthres[comb] = self.belowthres[comb]
+                del (self.belowthres[comb])
                 for k in comb:
-                    if self.compress==0:
-                        self.passedkw[k]=True
+                    if self.compress == 0:
+                        self.passedkw[k] = True
                     elif not k in self.passedkw:
-                        self.passedkw[k]=self.overthres[comb]
+                        self.passedkw[k] = self.overthres[comb]
                     else:
-                        self.passedkw[k]+=self.overthres[comb]
+                        self.passedkw[k] += self.overthres[comb]
 
     def insertitemset(self, itemset):
         if itemset not in self.input:
-            self.input[itemset]=1
+            self.input[itemset] = 1
         else:
-            self.input[itemset]+=1
+            self.input[itemset] += 1
 
     def cleanitemsets(self, minlength):
-        newitemsets={}
-        for k,v in self.input.iteritems():
-            itemset=tuple(i for i in k if i in self.passedkw)
-            if self.compress==1:
-                esoteric_itemset=tuple(i for i in itemset if self.passedkw[i]==v)
-                if len(esoteric_itemset)>0:
-                    if len(itemset)>=minlength:
-                        self.overthres[itemset]=v
-                    itemset=tuple(i for i in itemset if self.passedkw[i]!=v)
-            if len(itemset)>=minlength:
+        newitemsets = {}
+        for k, v in self.input.iteritems():
+            itemset = tuple(i for i in k if i in self.passedkw)
+            if self.compress == 1:
+                esoteric_itemset = tuple(i for i in itemset if self.passedkw[i] == v)
+                if len(esoteric_itemset) > 0:
+                    if len(itemset) >= minlength:
+                        self.overthres[itemset] = v
+                    itemset = tuple(i for i in itemset if self.passedkw[i] != v)
+            if len(itemset) >= minlength:
                 if itemset not in newitemsets:
-                    newitemsets[itemset]=v
+                    newitemsets[itemset] = v
                 else:
-                    newitemsets[itemset]+=v
+                    newitemsets[itemset] += v
 
-        self.input=newitemsets
+        self.input = newitemsets
 
     def step(self, *args):
-        if self.init==True:
+        if self.init == True:
             self.initargs(args)
 
-        if len(args[0])==0:
+        if len(args[0]) == 0:
             return
-        
-        itms=sorted(set(args[0].split(' ')))
-        itms=[x for x in itms if x!='']
-        li=len(itms)
-        if li>0:
-            if li>self.maxlength:
-                self.maxlength=li
 
-            inputkws=[]
+        itms = sorted(set(args[0].split(' ')))
+        itms = [x for x in itms if x != '']
+        li = len(itms)
+        if li > 0:
+            if li > self.maxlength:
+                self.maxlength = li
+
+            inputkws = []
             for kw in itms:
-                if len(kw)==0:
+                if len(kw) == 0:
                     print itms, args[0], len(args[0]), li
                 if kw not in self.kwcode:
-                    self.kwcode[kw]=self.maxkwcode
-                    self.codekw[self.maxkwcode]=kw
+                    self.kwcode[kw] = self.maxkwcode
+                    self.codekw[self.maxkwcode] = kw
                     inputkws.append(self.maxkwcode)
-                    self.insertcombfreq( (self.maxkwcode,),1 )
-                    self.maxkwcode+=1
+                    self.insertcombfreq((self.maxkwcode,), 1)
+                    self.maxkwcode += 1
                 else:
-                    itm=self.kwcode[kw]
-                    self.insertcombfreq( (itm,),1 )
+                    itm = self.kwcode[kw]
+                    self.insertcombfreq((itm,), 1)
                     inputkws.append(itm)
 
-            if len(inputkws)>1:
+            if len(inputkws) > 1:
                 self.insertitemset(tuple(inputkws))
 
     def final(self):
@@ -247,69 +247,72 @@ class freqitemsets:
         else:
             yield ('MaxTransactionLength', 'CombinationCount', 'PassedTransactions', 'ValidKeywords')
 
-        splist=[{},{}]
-        del(self.kwcode)
-        splist[1]=self.overthres
+        splist = [{}, {}]
+        del (self.kwcode)
+        splist[1] = self.overthres
 
         if self.stats:
             yield [self.maxlength, len(splist[1]), len(self.input), len(self.passedkw)]
 
         if not self.stats:
-            for its,v in sorted(splist[1].items(), key=itemgetter(1),reverse=True):
-                self.itemset_id+=1
-                for i in self.demultiplex( (self.itemset_id, len([self.codekw[i] for i in its]), v, [self.codekw[i] for i in its]) ):
+            for its, v in sorted(splist[1].items(), key=itemgetter(1), reverse=True):
+                self.itemset_id += 1
+                for i in self.demultiplex(
+                        (self.itemset_id, len([self.codekw[i] for i in its]), v, [self.codekw[i] for i in its])):
                     yield i
 
-        if self.maxlen==None:
-            self.maxlen=self.maxlength
-        for l in xrange(2, min(self.maxlength+1, self.maxlen+1)):
+        if self.maxlen == None:
+            self.maxlen = self.maxlength
+        for l in xrange(2, min(self.maxlength + 1, self.maxlen + 1)):
             splist.append({})
-            self.belowthres={}
-            self.overthres={}
-            prevl=l-1
+            self.belowthres = {}
+            self.overthres = {}
+            prevl = l - 1
 
             # Autothresholding
-            if self.autothres==1:
-                if len(self.input)==0 or len(self.passedkw)==0:
+            if self.autothres == 1:
+                if len(self.input) == 0 or len(self.passedkw) == 0:
                     break
                 else:
-                    self.threshold=self.startingthreshold + int(len(self.passedkw)/len(self.input))
+                    self.threshold = self.startingthreshold + int(len(self.passedkw) / len(self.input))
 
             self.cleanitemsets(l)
-            self.passedkw={}
+            self.passedkw = {}
             prevsplist = splist[prevl]
             icombs = itertools.combinations
             insertcomb = self.insertcombfreq
 
-            for k,v in self.input.iteritems():
-                for k in icombs(k,l):
-                    insertit=True
+            for k, v in self.input.iteritems():
+                for k in icombs(k, l):
+                    insertit = True
                     for i1 in icombs(k, prevl):
                         if i1 not in prevsplist:
-                            insertit=False
+                            insertit = False
                             break
 
                     if insertit:
-                        insertcomb( k,v )
+                        insertcomb(k, v)
 
-            splist[l-1]={}
-            splist[l]=self.overthres
+            splist[l - 1] = {}
+            splist[l] = self.overthres
 
             if self.stats:
                 yield [self.maxlength, len(splist[l]), len(self.input), len(self.passedkw)]
 
             if not self.stats:
-                for its,v in sorted(splist[l].items(), key=itemgetter(1),reverse=True):
-                    self.itemset_id+=1
-                    for i in self.demultiplex( (self.itemset_id, len([self.codekw[i] for i in its]), v, [self.codekw[i] for i in its]) ):
+                for its, v in sorted(splist[l].items(), key=itemgetter(1), reverse=True):
+                    self.itemset_id += 1
+                    for i in self.demultiplex(
+                            (self.itemset_id, len([self.codekw[i] for i in its]), v, [self.codekw[i] for i in its])):
                         yield i
 
-        del(self.overthres)
-        del(self.belowthres)
-        del(self.passedkw)
-        del(self.input)
-        del(self.codekw)
-        del(splist)
+        del (self.overthres)
+        del (self.belowthres)
+        del (self.passedkw)
+        del (self.input)
+        del (self.codekw)
+        del (splist)
+
 
 class sampledistvals:
     """
@@ -329,26 +332,27 @@ class sampledistvals:
     ---------------------------------------------
     ["test1","test2","test4"] | [2,4] | [2,3,"t"]
     """
-    registered=True
+    registered = True
 
     def __init__(self):
-        self.vals=None
+        self.vals = None
         self.lenargs = -1
-        self.init=True
+        self.init = True
 
     def step(self, *args):
         if self.init:
             self.lenargs = len(args)
-            self.vals = a=[set() for i in xrange(self.lenargs-1)]
+            self.vals = a = [set() for i in xrange(self.lenargs - 1)]
             self.init = False
 
         for i in xrange(1, self.lenargs):
-            if len(self.vals[i-1])<args[0] and args[i] not in self.vals[i-1]:
-                self.vals[i-1].add(args[i])
+            if len(self.vals[i - 1]) < args[0] and args[i] not in self.vals[i - 1]:
+                self.vals[i - 1].add(args[i])
 
     def final(self):
-        yield tuple(['C'+str(i) for i in xrange(1, self.lenargs)] )
+        yield tuple(['C' + str(i) for i in xrange(1, self.lenargs)])
         yield [jopts.toj(list(i)) for i in self.vals]
+
 
 class samplegroup:
     """
@@ -372,7 +376,7 @@ class samplegroup:
     >>> sql("select samplegroup(2) from (select 5 where 5=6)") # doctest: +ELLIPSIS
 
     """
-    registered=True
+    registered = True
 
     def __init__(self):
         self.samplelist = []
@@ -394,9 +398,10 @@ class samplegroup:
         if self.samplelist == []:
             yield tuple(['C1'])
         else:
-            yield tuple(['C'+str(i) for i in xrange(1, len(self.samplelist[0]))] )
+            yield tuple(['C' + str(i) for i in xrange(1, len(self.samplelist[0]))])
             for r in self.samplelist:
                 yield list(r[1:])
+
 
 if not ('.' in __name__):
     """
@@ -404,12 +409,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
-        doctest.testmod()
 
+        doctest.testmod()

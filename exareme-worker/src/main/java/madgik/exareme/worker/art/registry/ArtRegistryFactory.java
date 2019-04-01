@@ -22,7 +22,7 @@ public class ArtRegistryFactory {
     }
 
     public static ArtRegistry createRmiArtMemoryRegistry(EntityName regEntityName)
-        throws RemoteException {
+            throws RemoteException {
         try {
             return new RmiArtRegistry(new MemoryResourceStorage(), regEntityName);
         } catch (Exception ex) {

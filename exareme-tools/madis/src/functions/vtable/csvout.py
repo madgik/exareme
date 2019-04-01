@@ -1,27 +1,27 @@
-import setpath
-import vtbase
-import functions
-from lib.dsv import writer
-import sys
 import csv
+import functions
+
+import vtbase
+
 ### Classic stream iterator
-registered=True
+registered = True
 import StringIO
+
 
 class csvout(vtbase.VT):
     def VTiter(self, *parsedArgs, **envars):
         largs, dictargs = self.full_parse(parsedArgs)
 
-        self.nonames=True
-        self.names=[]
-        self.types=[]
+        self.nonames = True
+        self.names = []
+        self.types = []
 
         if 'query' not in dictargs:
-            raise functions.OperatorError(__name__.rsplit('.')[-1],"No query argument ")
-        query=dictargs['query']
+            raise functions.OperatorError(__name__.rsplit('.')[-1], "No query argument ")
+        query = dictargs['query']
 
         cur = envars['db'].cursor()
-        c=cur.execute(query)
+        c = cur.execute(query)
 
         yield [('c1',)]
 
@@ -34,9 +34,9 @@ class csvout(vtbase.VT):
             yield (row,)
 
 
-
 def Source():
     return vtbase.VTGenerator(csvout)
+
 
 if not ('.' in __name__):
     """
@@ -44,12 +44,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
-        doctest.testmod()
 
+        doctest.testmod()

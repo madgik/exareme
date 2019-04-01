@@ -10,7 +10,7 @@ import java.rmi.RemoteException;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class ExecutionEngineManagement implements ExecutionEngineManagementMBean {
@@ -21,7 +21,8 @@ public class ExecutionEngineManagement implements ExecutionEngineManagementMBean
         this.engine = engine;
     }
 
-    @Override public int getActiveExecutionPlans() throws RemoteException {
+    @Override
+    public int getActiveExecutionPlans() throws RemoteException {
         return engine.getStatus().getActiveExecutionPlans();
     }
 
@@ -30,11 +31,13 @@ public class ExecutionEngineManagement implements ExecutionEngineManagementMBean
         return null;
     }
 
-    @Override public int getTotalExecutedPlans() throws RemoteException {
+    @Override
+    public int getTotalExecutedPlans() throws RemoteException {
         return engine.getStatus().getTotalExecutedPlans();
     }
 
-    @Override public int getSuccessfullyExecutedPlans() throws RemoteException {
+    @Override
+    public int getSuccessfullyExecutedPlans() throws RemoteException {
         return engine.getStatus().getSuccessfullyExecutedPlans();
     }
 }

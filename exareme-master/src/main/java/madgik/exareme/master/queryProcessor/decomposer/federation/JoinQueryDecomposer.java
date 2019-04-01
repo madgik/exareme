@@ -31,7 +31,7 @@ class JoinQueryDecomposer {
     private NodeSelectivityEstimator nse;
 
     JoinQueryDecomposer(SQLQuery s, String db, int noOfparts, boolean centralizedExecution,
-        boolean multiOpt, boolean addNotNulls, boolean pushRefCols, NodeSelectivityEstimator nse) {
+                        boolean multiOpt, boolean addNotNulls, boolean pushRefCols, NodeSelectivityEstimator nse) {
         this.outerJoin = s;
         this.database = db;
         this.notNulls = addNotNulls;
@@ -100,7 +100,7 @@ class JoinQueryDecomposer {
                 //create a query for q, else (input is local table) we don't have to do sth
                 q.setFederated(true);
                 q.setMadisFunctionString(
-                    DBInfoReaderDB.dbInfo.getDB(input.getDBName()).getMadisString());
+                        DBInfoReaderDB.dbInfo.getDB(input.getDBName()).getMadisString());
                 for (Column c : allReferencedBaseColumns) {
 
                     if (c.getAlias().equals(input.getAlias())) {
@@ -114,13 +114,13 @@ class JoinQueryDecomposer {
         } else {
             if (q.getLeftJoinTable() == null) {
                 QueryDecomposer d = new QueryDecomposer(q, this.database, this.partNo, nse);
-                List<SQLQuery> subqueries=null;
-				try {
-					subqueries = d.getSubqueries();
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+                List<SQLQuery> subqueries = null;
+                try {
+                    subqueries = d.getSubqueries();
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
                 SQLQuery last = null;
                 for (SQLQuery sub : subqueries) {
                     if (!result.contains(sub)) {
@@ -165,7 +165,6 @@ class JoinQueryDecomposer {
             //for every every column of the where (on) clause track the table from which we must take it
 
 
-
             boolean exists = false;
             for (Output o2 : q.getLeftJoinTable().getOutputs()) {
 
@@ -181,7 +180,6 @@ class JoinQueryDecomposer {
                     }
 
 
-
                 }
             }
             for (Output o2 : q.getRightJoinTable().getOutputs()) {
@@ -195,7 +193,6 @@ class JoinQueryDecomposer {
                         c.setName(o2.getOutputName());
                         exists = true;
                     }
-
 
 
                 }
@@ -227,29 +224,26 @@ class JoinQueryDecomposer {
         }
 
 
-
     }
 
     private void updateC2T(SQLQuery q) {
         for (Column cout : q.getAllOutputColumns()) {
             //  for (Output o : q.getOutputs()) {
             //update c2t to track the output columns from q
-         //   if (o.getObject() instanceof Column) {
-             //   Column cout = (Column) o.getObject();
-                // boolean needed = false;
-                for (Column initial : this.allReferencedBaseColumns) {
-                    if (cout.getName().equals(initial.getAlias() + "_" + initial.getName())) {
-                        //   needed = true;
-                        c2t.putColumnInTable(initial, q.getResultTableName());
-                        //break;
-                    }
+            //   if (o.getObject() instanceof Column) {
+            //   Column cout = (Column) o.getObject();
+            // boolean needed = false;
+            for (Column initial : this.allReferencedBaseColumns) {
+                if (cout.getName().equals(initial.getAlias() + "_" + initial.getName())) {
+                    //   needed = true;
+                    c2t.putColumnInTable(initial, q.getResultTableName());
+                    //break;
                 }
             }
         }
-        //   }
+    }
+    //   }
 
-
-    
 
     private SQLQuery getTemporarySubquery(String tablename) {
         for (SQLQuery q : this.result) {

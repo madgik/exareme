@@ -1,16 +1,15 @@
 package madgik.exareme.master.engine.iterations.scheduler;
 
-import org.apache.log4j.Logger;
-
 import madgik.exareme.common.app.engine.AdpDBQueryID;
 import madgik.exareme.common.app.engine.AdpDBStatus;
 import madgik.exareme.master.engine.iterations.scheduler.events.algorithmCompletion.AlgorithmCompletionEvent;
 import madgik.exareme.master.engine.iterations.scheduler.events.newAlgorithm.NewAlgorithmEvent;
 import madgik.exareme.master.engine.iterations.scheduler.events.phaseCompletion.PhaseCompletionEvent;
+import org.apache.log4j.Logger;
 
 /**
  * @author Christos Aslanoglou <br> caslanoglou@di.uoa.gr <br> University of Athens / Department of
- *         Informatics and Telecommunications.
+ * Informatics and Telecommunications.
  */
 public class IterationsScheduler {
     private static final Logger log = Logger.getLogger(IterationsScheduler.class);
@@ -29,6 +28,7 @@ public class IterationsScheduler {
     }
 
     // Public API -------------------------------------------------------------------------------
+
     /**
      * Called by the {@link madgik.exareme.master.engine.iterations.handler.IterationsHandler} to
      * schedule a new iterative algorithm execution.
@@ -62,6 +62,7 @@ public class IterationsScheduler {
 
     /**
      * Called via the dispatcher to schedule the termination of an iterative algorithm.
+     *
      * @param algorithmKey the algorithm that was completed
      */
     synchronized void scheduleAlgorithmCompletion(String algorithmKey) {

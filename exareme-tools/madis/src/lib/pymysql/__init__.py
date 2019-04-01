@@ -25,20 +25,21 @@ THE SOFTWARE.
 
 VERSION = (0, 5, None)
 
+import sys
+
 from constants import FIELD_TYPE
 from converters import escape_dict, escape_sequence, escape_string
 from err import Warning, Error, InterfaceError, DataError, \
-     DatabaseError, OperationalError, IntegrityError, InternalError, \
-     NotSupportedError, ProgrammingError, MySQLError
+    DatabaseError, OperationalError, IntegrityError, InternalError, \
+    NotSupportedError, ProgrammingError, MySQLError
 from times import Date, Time, Timestamp, \
     DateFromTicks, TimeFromTicks, TimestampFromTicks
-
-import sys
 
 try:
     frozenset
 except NameError:
     from sets import ImmutableSet as frozenset
+
     try:
         from sets import BaseSet as set
     except ImportError:
@@ -48,8 +49,8 @@ threadsafety = 1
 apilevel = "2.0"
 paramstyle = "format"
 
-class DBAPISet(frozenset):
 
+class DBAPISet(frozenset):
 
     def __ne__(self, other):
         if isinstance(other, set):
@@ -67,22 +68,24 @@ class DBAPISet(frozenset):
         return frozenset.__hash__(self)
 
 
-STRING    = DBAPISet([FIELD_TYPE.ENUM, FIELD_TYPE.STRING,
-                     FIELD_TYPE.VAR_STRING])
-BINARY    = DBAPISet([FIELD_TYPE.BLOB, FIELD_TYPE.LONG_BLOB,
-                     FIELD_TYPE.MEDIUM_BLOB, FIELD_TYPE.TINY_BLOB])
-NUMBER    = DBAPISet([FIELD_TYPE.DECIMAL, FIELD_TYPE.DOUBLE, FIELD_TYPE.FLOAT,
-                     FIELD_TYPE.INT24, FIELD_TYPE.LONG, FIELD_TYPE.LONGLONG,
-                     FIELD_TYPE.TINY, FIELD_TYPE.YEAR])
-DATE      = DBAPISet([FIELD_TYPE.DATE, FIELD_TYPE.NEWDATE])
-TIME      = DBAPISet([FIELD_TYPE.TIME])
+STRING = DBAPISet([FIELD_TYPE.ENUM, FIELD_TYPE.STRING,
+                   FIELD_TYPE.VAR_STRING])
+BINARY = DBAPISet([FIELD_TYPE.BLOB, FIELD_TYPE.LONG_BLOB,
+                   FIELD_TYPE.MEDIUM_BLOB, FIELD_TYPE.TINY_BLOB])
+NUMBER = DBAPISet([FIELD_TYPE.DECIMAL, FIELD_TYPE.DOUBLE, FIELD_TYPE.FLOAT,
+                   FIELD_TYPE.INT24, FIELD_TYPE.LONG, FIELD_TYPE.LONGLONG,
+                   FIELD_TYPE.TINY, FIELD_TYPE.YEAR])
+DATE = DBAPISet([FIELD_TYPE.DATE, FIELD_TYPE.NEWDATE])
+TIME = DBAPISet([FIELD_TYPE.TIME])
 TIMESTAMP = DBAPISet([FIELD_TYPE.TIMESTAMP, FIELD_TYPE.DATETIME])
-DATETIME  = TIMESTAMP
-ROWID     = DBAPISet()
+DATETIME = TIMESTAMP
+ROWID = DBAPISet()
+
 
 def Binary(x):
     """Return x as a binary type."""
     return str(x)
+
 
 def Connect(*args, **kwargs):
     """
@@ -91,26 +94,32 @@ def Connect(*args, **kwargs):
     """
     from connections import Connection
     return Connection(*args, **kwargs)
-    
+
+
 from pymysql import connections as _orig_conn
+
 Connect.__doc__ = _orig_conn.Connection.__init__.__doc__ + """\nSee connections.Connection.__init__() for
     information about defaults."""
 del _orig_conn
 
+
 def get_client_info():  # for MySQLdb compatibility
-  return '%s.%s.%s' % VERSION
+    return '%s.%s.%s' % VERSION
+
 
 connect = Connection = Connect
 
 # we include a doctored version_info here for MySQLdb compatibility
-version_info = (1,2,2,"final",0)
+version_info = (1, 2, 2, "final", 0)
 
 NULL = "NULL"
 
 __version__ = get_client_info()
 
+
 def thread_safe():
-    return True # match MySQLdb.thread_safe()
+    return True  # match MySQLdb.thread_safe()
+
 
 def install_as_MySQLdb():
     """
@@ -118,6 +127,7 @@ def install_as_MySQLdb():
     _mysql will unwittingly actually use 
     """
     sys.modules["MySQLdb"] = sys.modules["_mysql"] = sys.modules["pymysql"]
+
 
 __all__ = [
     'BINARY', 'Binary', 'Connect', 'Connection', 'DATE', 'Date',
@@ -132,5 +142,5 @@ __all__ = [
 
     "install_as_MySQLdb",
 
-    "NULL","__version__",
-    ]
+    "NULL", "__version__",
+]

@@ -19,7 +19,8 @@ public class TopKIterator<T> implements Iterator<T> {
         this.iter = iter;
     }
 
-    @Override public boolean hasNext() {
+    @Override
+    public boolean hasNext() {
         if (current >= k) {
             return false;
         }
@@ -27,12 +28,14 @@ public class TopKIterator<T> implements Iterator<T> {
         return iter.hasNext();
     }
 
-    @Override public T next() {
+    @Override
+    public T next() {
         current++;
         return iter.next();
     }
 
-    @Override public void remove() {
+    @Override
+    public void remove() {
         iter.remove();
     }
 }

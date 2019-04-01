@@ -41,12 +41,12 @@ import java.util.UUID;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class RmiExecutionEngine extends RmiRemoteObject<ExecutionEngineProxy>
-    implements ExecutionEngine {
+        implements ExecutionEngine {
     private static String BEAN_NAME = "ExecutionEngine";
     private static Logger log = Logger.getLogger(RmiExecutionEngine.class);
     private String ip = null;
@@ -61,11 +61,11 @@ public class RmiExecutionEngine extends RmiRemoteObject<ExecutionEngineProxy>
     private RegistryUpdateDeamon registryUpdateDeamon = null;
 
     public RmiExecutionEngine(PlanSessionManagerInterface sessionManagerInterface,
-        PlanSessionStatusManagerInterface statusManagerInterface,
-        PlanSessionReportManagerInterface reportManagerInterface,
-        PlanSessionStatisticsManagerInterface statisticsManagerInterface,
-        ClockTickManagerInterface clockTickManager, EntityName regEntityName,
-        ExecutionEngineStatus engineStatus) throws RemoteException {
+                              PlanSessionStatusManagerInterface statusManagerInterface,
+                              PlanSessionReportManagerInterface reportManagerInterface,
+                              PlanSessionStatisticsManagerInterface statisticsManagerInterface,
+                              ClockTickManagerInterface clockTickManager, EntityName regEntityName,
+                              ExecutionEngineStatus engineStatus) throws RemoteException {
         super(NetUtil.getIPv4() + "_execution_" + UUID.randomUUID().toString());
 
         this.ip = NetUtil.getIPv4();
@@ -74,99 +74,112 @@ public class RmiExecutionEngine extends RmiRemoteObject<ExecutionEngineProxy>
         this.engineStatus = engineStatus;
 
         this.sessionStatusManager =
-            new RmiPlanSessionStatusManager(statusManagerInterface, regEntityName);
+                new RmiPlanSessionStatusManager(statusManagerInterface, regEntityName);
 
         this.sessionReportManager =
-            new RmiPlanSessionReportManager(reportManagerInterface, regEntityName);
+                new RmiPlanSessionReportManager(reportManagerInterface, regEntityName);
 
         this.sessionStatisticsManager =
-            new RmiPlanSessionStatisticsManager(statisticsManagerInterface, regEntityName);
+                new RmiPlanSessionStatisticsManager(statisticsManagerInterface, regEntityName);
 
         this.sessionManager =
-            new RmiPlanSessionManager(sessionManagerInterface, regEntityName, artRegistryProxy);
+                new RmiPlanSessionManager(sessionManagerInterface, regEntityName, artRegistryProxy);
 
         this.clockTickManager =
-            new RmiClockTickManager(clockTickManager, regEntityName, artRegistryProxy);
+                new RmiClockTickManager(clockTickManager, regEntityName, artRegistryProxy);
 
         ExecutionEngineManagement engineManager = new ExecutionEngineManagement(this);
         ManagementUtil.registerMBean(engineManager, "ExecutionEngine");
 
         long lifeTime = AdpProperties.getArtProps()
-            .getLong("art.executionEngine.rmi.RmiExecutionEngine.lifetime");
+                .getLong("art.executionEngine.rmi.RmiExecutionEngine.lifetime");
 
         registryUpdateDeamon =
-            RegistryUpdateDeamonFactory.createDeamon(this.createProxy(), (long) (0.75 * lifeTime));
+                RegistryUpdateDeamonFactory.createDeamon(this.createProxy(), (long) (0.75 * lifeTime));
 
         registryUpdateDeamon.startDeamon();
     }
 
-    @Override public PlanSessionID createNewSession() throws RemoteException {
+    @Override
+    public PlanSessionID createNewSession() throws RemoteException {
         return sessionManager.createNewSession();
     }
 
-    @Override public PlanSessionID createNewSessionElasticTree() throws RemoteException {
+    @Override
+    public PlanSessionID createNewSessionElasticTree() throws RemoteException {
         return sessionManager.createNewSessionElasticTree();
     }
 
-    @Override public void destroySession(PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void destroySession(PlanSessionID sessionID) throws RemoteException {
         sessionManager.destroySession(sessionID);
     }
 
-    @Override public void destroyAllSessions() throws RemoteException {
+    @Override
+    public void destroyAllSessions() throws RemoteException {
         sessionManager.destroyAllSessions();
     }
 
-    @Override public final ExecutionEngineProxy createProxy() throws RemoteException {
+    @Override
+    public final ExecutionEngineProxy createProxy() throws RemoteException {
         super.register();
         return new RmiExecutionEngineProxy(ip, super.getRegEntryName(), regEntityName);
     }
 
-    @Override public ExecutionEngineStatus getStatus() throws RemoteException {
+    @Override
+    public ExecutionEngineStatus getStatus() throws RemoteException {
         return engineStatus;
     }
 
-    @Override public PlanSessionStatusManagerProxy getPlanSessionStatusManagerProxy(
-        PlanSessionID sessionPublicID) throws RemoteException {
+    @Override
+    public PlanSessionStatusManagerProxy getPlanSessionStatusManagerProxy(
+            PlanSessionID sessionPublicID) throws RemoteException {
         RmiPlanSessionStatusManagerProxy proxy =
-            (RmiPlanSessionStatusManagerProxy) sessionStatusManager.createProxy();
+                (RmiPlanSessionStatusManagerProxy) sessionStatusManager.createProxy();
         proxy.sessionID = sessionPublicID;
         return proxy;
     }
 
-    @Override public PlanSessionReportManagerProxy getPlanSessionReportManagerProxy(
-        PlanSessionReportID sessionPrivateID) throws RemoteException {
+    @Override
+    public PlanSessionReportManagerProxy getPlanSessionReportManagerProxy(
+            PlanSessionReportID sessionPrivateID) throws RemoteException {
         RmiPlanSessionReportManagerProxy proxy =
-            (RmiPlanSessionReportManagerProxy) sessionReportManager.createProxy();
+                (RmiPlanSessionReportManagerProxy) sessionReportManager.createProxy();
         proxy.internalSessionID = sessionPrivateID;
         return proxy;
     }
 
-    @Override public PlanSessionManagerProxy getPlanSessionManagerProxy(PlanSessionID sessionID)
-        throws RemoteException {
+    @Override
+    public PlanSessionManagerProxy getPlanSessionManagerProxy(PlanSessionID sessionID)
+            throws RemoteException {
         RmiPlanSessionManagerProxy proxy =
-            (RmiPlanSessionManagerProxy) sessionManager.createProxy();
+                (RmiPlanSessionManagerProxy) sessionManager.createProxy();
         proxy.sessionID = sessionID;
         return proxy;
     }
 
-    @Override public PlanSessionStatisticsManagerProxy getPlanSessionStatisticsManagerProxy(
-        PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public PlanSessionStatisticsManagerProxy getPlanSessionStatisticsManagerProxy(
+            PlanSessionID sessionID) throws RemoteException {
         RmiPlanSessionStatisticsManagerProxy proxy =
-            (RmiPlanSessionStatisticsManagerProxy) sessionStatisticsManager.createProxy();
+                (RmiPlanSessionStatisticsManagerProxy) sessionStatisticsManager.createProxy();
         proxy.sessionID = sessionID;
         return proxy;
     }
 
-    @Override public ClockTickManagerProxy getClockTickManagerProxy() throws RemoteException {
+    @Override
+    public ClockTickManagerProxy getClockTickManagerProxy() throws RemoteException {
         RmiClockTickManagerProxy proxy = (RmiClockTickManagerProxy) clockTickManager.createProxy();
         return proxy;
     }
 
-    @Override public void stopExecutionEngine() throws RemoteException {
+    @Override
+    public void stopExecutionEngine() throws RemoteException {
         stopExecutionEngine(false);
     }
 
-    @Override public void stopExecutionEngine(boolean force) throws RemoteException {
+    @Override
+    public void stopExecutionEngine(boolean force) throws RemoteException {
         try {
             sessionManager.destroyAllSessions();
             sessionManager.stopManager(force);

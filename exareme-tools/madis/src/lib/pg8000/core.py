@@ -1,23 +1,24 @@
 import datetime
-from datetime import timedelta
-from warnings import warn
+import os
 import socket
 import threading
-from struct import pack
-from hashlib import md5
-from decimal import Decimal
+import time
+from calendar import timegm
 from collections import deque, defaultdict
+from copy import deepcopy
+from datetime import timedelta
+from decimal import Decimal
+from distutils.version import LooseVersion
+from hashlib import md5
 from itertools import count, islice
-from .six.moves import map
-from .six import b, PY2, integer_types, next, PRE_26, text_type, u, binary_type
+from struct import Struct
+from struct import pack
 from sys import exc_info
 from uuid import UUID
-from copy import deepcopy
-from calendar import timegm
-import os
-from distutils.version import LooseVersion
-from struct import Struct
-import time
+from warnings import warn
+
+from .six import b, PY2, integer_types, next, PRE_26, text_type, u, binary_type
+from .six.moves import map
 
 # Copyright (c) 2007-2009, Mathieu Fenniak
 # All rights reserved.
@@ -48,12 +49,10 @@ import time
 
 __author__ = "Mathieu Fenniak"
 
-
 try:
     from json import loads
 except ImportError:
     pass  # Can only use JSON with Python 2.6 and above
-
 
 ZERO = timedelta(0)
 
@@ -68,6 +67,7 @@ class UTC(datetime.tzinfo):
 
     def dst(self, dt):
         return ZERO
+
 
 utc = UTC()
 
@@ -149,8 +149,8 @@ class Interval(object):
 
     def __eq__(self, other):
         return other is not None and isinstance(other, Interval) and \
-            self.months == other.months and self.days == other.days and \
-            self.microseconds == other.microseconds
+               self.months == other.months and self.days == other.days and \
+               self.microseconds == other.microseconds
 
     def __neq__(self, other):
         return not self.__eq__(other)
@@ -159,6 +159,7 @@ class Interval(object):
 def pack_funcs(fmt):
     struc = Struct('!' + fmt)
     return struc.pack, struc.unpack_from
+
 
 i_pack, i_unpack = pack_funcs('i')
 h_pack, h_unpack = pack_funcs('h')
@@ -174,9 +175,7 @@ ci_pack, ci_unpack = pack_funcs('ci')
 bh_pack, bh_unpack = pack_funcs('bh')
 cccc_pack, cccc_unpack = pack_funcs('cccc')
 
-
 Struct('!i')
-
 
 min_int2, max_int2 = -2 ** 15, 2 ** 15
 min_int4, max_int4 = -2 ** 31, 2 ** 31
@@ -411,6 +410,7 @@ def Binary(value):
     else:
         return value
 
+
 if PRE_26:
     bytearray = list
 
@@ -512,7 +512,7 @@ def convert_paramstyle(style, query):
                     else:
                         raise InterfaceError(
                             "'%" + next_c + "' not supported in a quoted "
-                            "string within the query string")
+                                            "string within the query string")
             else:
                 output_query.append(c)
 
@@ -531,7 +531,7 @@ def convert_paramstyle(style, query):
                     else:
                         raise InterfaceError(
                             "'%" + next_c + "' not supported in a quoted "
-                            "string within the query string")
+                                            "string within the query string")
             else:
                 output_query.append(c)
 
@@ -551,7 +551,7 @@ def convert_paramstyle(style, query):
                     else:
                         raise InterfaceError(
                             "'%" + next_c + "' not supported in a quoted "
-                            "string within the query string.")
+                                            "string within the query string.")
             else:
                 output_query.append(c)
 
@@ -650,6 +650,7 @@ def timestamptz_send_float(v):
     # convert them.
     return timestamp_send_float(v.astimezone(utc).replace(tzinfo=None))
 
+
 DATETIME_MAX_TZ = datetime.datetime.max.replace(tzinfo=utc)
 DATETIME_MIN_TZ = datetime.datetime.min.replace(tzinfo=utc)
 
@@ -746,6 +747,7 @@ def float8_recv(data, offset, length):
 def bytea_send(v):
     return v
 
+
 # bytea
 if PY2:
     def bytea_recv(data, offset, length):
@@ -760,7 +762,7 @@ def uuid_send(v):
 
 
 def uuid_recv(data, offset, length):
-    return UUID(bytes=data[offset:offset+length])
+    return UUID(bytes=data[offset:offset + length])
 
 
 TRUE = b("\x01")
@@ -1050,6 +1052,7 @@ class Cursor():
         finally:
             self._c._lock.release()
 
+
 if PY2:
     Cursor.next = Cursor.__next__
 
@@ -1112,7 +1115,6 @@ RESPONSE_ROUTINE = b("R")
 IDLE = b("I")
 IDLE_IN_TRANSACTION = b("T")
 IDLE_IN_FAILED_TRANSACTION = b("E")
-
 
 arr_trans = dict(zip(map(ord, u("[] 'u")), list(u('{}')) + [None] * 3))
 
@@ -1372,9 +1374,9 @@ class Connection(object):
         def array_in(data, idx, length):
             arr = []
             prev_c = None
-            for c in data[idx:idx+length].decode(
+            for c in data[idx:idx + length].decode(
                     self._client_encoding).translate(
-                    trans_tab).replace(u('NULL'), u('None')):
+                trans_tab).replace(u('NULL'), u('None')):
                 if c not in ('[', ']', ',', 'N') and prev_c in ('[', ','):
                     arr.extend("Decimal('")
                 elif c in (']', ',') and prev_c not in ('[', ']', ',', 'e'):
@@ -1417,7 +1419,7 @@ class Connection(object):
             return values
 
         def vector_in(data, idx, length):
-            return eval('[' + data[idx:idx+length].decode(
+            return eval('[' + data[idx:idx + length].decode(
                 self._client_encoding).replace(' ', ',') + ']')
 
         if PY2:
@@ -1991,11 +1993,11 @@ class Connection(object):
             # For each result-column format code:
             #   Int16 - The format code.
             ps['bind_1'] = statement_name_bin + h_pack(len(params)) + \
-                pack("!" + "h" * len(param_fcs), *param_fcs) + \
-                h_pack(len(params))
+                           pack("!" + "h" * len(param_fcs), *param_fcs) + \
+                           h_pack(len(params))
 
             ps['bind_2'] = h_pack(len(output_fc)) + \
-                pack("!" + "h" * len(output_fc), *output_fc)
+                           pack("!" + "h" * len(output_fc), *output_fc)
 
             cache['ps'][key] = ps
 
@@ -2005,7 +2007,7 @@ class Connection(object):
         self.portal_number += 1
         cursor.portal_name_bin = cursor.portal_name.encode('ascii') + NULL_BYTE
         cursor.execute_msg = cursor.portal_name_bin + \
-            Connection._row_cache_size_bin
+                             Connection._row_cache_size_bin
 
         # Byte1('B') - Identifies the Bind command.
         # Int32 - Message length, including self.
@@ -2346,7 +2348,7 @@ class Connection(object):
             self.autocommit = True
             if xid in self.tpc_recover():
                 self.execute(
-                    self._cursor, "COMMIT PREPARED '%s';" % (xid[1], ),
+                    self._cursor, "COMMIT PREPARED '%s';" % (xid[1],),
                     None)
             else:
                 # a single-phase commit
@@ -2407,14 +2409,14 @@ class Connection(object):
         finally:
             self.autocommit = previous_autocommit_mode
 
+
 # pg element oid -> pg array typeoid
 pg_array_types = {
     16: 1000,
-    25: 1009,    # TEXT[]
+    25: 1009,  # TEXT[]
     701: 1022,
     1700: 1231,  # NUMERIC[]
 }
-
 
 # PostgreSQL encodings:
 #   http://www.postgresql.org/docs/8.3/interactive/multibyte.html

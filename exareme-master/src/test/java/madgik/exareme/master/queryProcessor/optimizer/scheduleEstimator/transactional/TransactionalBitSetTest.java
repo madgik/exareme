@@ -18,7 +18,8 @@ public class TransactionalBitSetTest {
     /**
      * Test of rollback method, of class TransactionalBitSet.
      */
-    @Test public void testBitSet() {
+    @Test
+    public void testBitSet() {
         TransactionalBitSet tbs = new TransactionalBitSet();
 
         tbs.set(10);

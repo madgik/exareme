@@ -10,11 +10,9 @@ import madgik.exareme.worker.art.container.ContainerJobs;
 import madgik.exareme.worker.art.container.ContainerProxy;
 import madgik.exareme.worker.art.executionEngine.dynamicExecutionEngine.PlanEventSchedulerState;
 import madgik.exareme.worker.art.executionEngine.dynamicExecutionEngine.event.ExecEngineEventHandler;
-import madgik.exareme.worker.art.registry.ArtRegistryLocator;
 import org.apache.log4j.Logger;
 
 import java.rmi.RemoteException;
-import java.util.Iterator;
 
 /**
  * @author Herald Kllapi
@@ -27,17 +25,18 @@ public class ContainersErrorEventHandler implements ExecEngineEventHandler<Conta
     public ContainersErrorEventHandler() {
     }
 
-    @Override public void preProcess(ContainersErrorEvent event, PlanEventSchedulerState state)
-        throws RemoteException {
+    @Override
+    public void preProcess(ContainersErrorEvent event, PlanEventSchedulerState state)
+            throws RemoteException {
         for (EntityName containerName : event.containers) {
             try {
                 ContainerProxy containerProxy = state.registryProxy.lookupContainer(containerName);
                 log.debug(
-                    "Container status: " + (containerProxy.connect().execJobs(new ContainerJobs())
-                        != null));
+                        "Container status: " + (containerProxy.connect().execJobs(new ContainerJobs())
+                                != null));
             } catch (Exception e) {
                 log.error(e);
-                if (AdpProperties.getArtProps().getString("art.container.errorBehavior").equals("returnError")){
+                if (AdpProperties.getArtProps().getString("art.container.errorBehavior").equals("returnError")) {
                     event.faultyContainers.add(containerName);
                     state.getPlanSession().getPlanSessionStatus().getExceptions().add(
                             new RemoteException("Containers: " + event.faultyContainers + " not responding"));
@@ -54,13 +53,15 @@ public class ContainersErrorEventHandler implements ExecEngineEventHandler<Conta
         }
     }
 
-    @Override public void handle(ContainersErrorEvent event, EventProcessor proc)
-        throws RemoteException {
+    @Override
+    public void handle(ContainersErrorEvent event, EventProcessor proc)
+            throws RemoteException {
 
     }
 
-    @Override public void postProcess(ContainersErrorEvent event, PlanEventSchedulerState state)
-        throws RemoteException {
+    @Override
+    public void postProcess(ContainersErrorEvent event, PlanEventSchedulerState state)
+            throws RemoteException {
         if (!event.faultyContainers.isEmpty()) {
             if (AdpProperties.getArtProps().getString("art.container.errorBehavior").equals("returnError")) {
                 state.eventScheduler.destroyPlanWithError();
@@ -74,7 +75,6 @@ public class ContainersErrorEventHandler implements ExecEngineEventHandler<Conta
 //            state.eventScheduler.destroyPlanWithError();
             }
         }
-
 
 
     }

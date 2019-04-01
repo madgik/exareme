@@ -46,17 +46,17 @@ public class StatQueries {
     }
 
     public int computeColumnSize(String columnName, int columnType, String table_sample)
-        throws Exception {
+            throws Exception {
         int columnSize = 0;
         if (columnType == Types.INTEGER || columnType == Types.REAL || columnType == Types.DOUBLE
-            || columnType == Types.DECIMAL || columnType == Types.FLOAT
-            || columnType == Types.NUMERIC) {
+                || columnType == Types.DECIMAL || columnType == Types.FLOAT
+                || columnType == Types.NUMERIC) {
             columnSize = NUM_SIZE;
         } else if (columnType == Types.VARCHAR) {
             String query0 =
-                "select max(length(`" + columnName + "`)) as length from (select `" + columnName
-                    + "` from `" + table_sample + "`)" + " where `" + columnName
-                    + "` is not null limit " + MAX_STRING_SAMPLE;
+                    "select max(length(`" + columnName + "`)) as length from (select `" + columnName
+                            + "` from `" + table_sample + "`)" + " where `" + columnName
+                            + "` is not null limit " + MAX_STRING_SAMPLE;
 
             Statement stmt0 = con.createStatement();
             ResultSet rs0 = stmt0.executeQuery(query0);
@@ -75,7 +75,7 @@ public class StatQueries {
 
     public MinMax computeMinMax(String tableName, String columnName) throws Exception {
         String query1 = "select min(`" + columnName + "`) as minVal, max(`" + columnName + "`) "
-            + "as maxVal  from `" + tableName + "` where `" + columnName + "` is not null";
+                + "as maxVal  from `" + tableName + "` where `" + columnName + "` is not null";
 
         String minVal = "", maxVal = "";
 
@@ -92,10 +92,10 @@ public class StatQueries {
     }
 
     public int computeValOccurences(String tableName, String columnName, String value)
-        throws Exception {
+            throws Exception {
         String queryDf =
-            "select count(*) as valCount " + "from `" + tableName + "` where `" + columnName
-                + "` is not null and  `" + columnName + "` = \"" + value + "\"";
+                "select count(*) as valCount " + "from `" + tableName + "` where `" + columnName
+                        + "` is not null and  `" + columnName + "` = \"" + value + "\"";
         Statement stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery(queryDf);
         int diffValCount = 0;
@@ -109,11 +109,11 @@ public class StatQueries {
     }
 
     public List<ValFreq> computeDistinctValuesFrequency(String table_sample, String columnName)
-        throws Exception {
+            throws Exception {
         List<ValFreq> freqs = new LinkedList<ValFreq>();
 
         String query = "select `" + columnName + "` as val, count(*) as freq from `" + table_sample
-            + "` where `" + columnName + "` is not null group by `" + columnName + "`";
+                + "` where `" + columnName + "` is not null group by `" + columnName + "`";
 
         Statement stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery(query);

@@ -112,7 +112,7 @@ public class OperatorDependencySolver {
                     }
                     case store_and_forward: {
                         boolean add = true;
-            /* All operators in it's inputs must have terminated */
+                        /* All operators in it's inputs must have terminated */
                         for (Link toLink : queryGraph.getInputLinks(toOpId)) {
                             if (terminatedOperators.get(toLink.from.opID) == false) {
                                 add = false;

@@ -9,8 +9,8 @@ import java.io.Serializable;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class StopEntity implements Serializable {
@@ -22,7 +22,7 @@ public class StopEntity implements Serializable {
     public final EntityName container;
 
     public StopEntity(String operatorName, OperatorEntity operatorEntity, String containerName,
-        EntityName container) {
+                      EntityName container) {
         this.containerName = containerName;
         this.container = container;
         this.operatorName = operatorName;

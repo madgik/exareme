@@ -1,4 +1,3 @@
-
 """
 .. function:: output formatting_options 'filename' query
 
@@ -67,82 +66,86 @@ Examples:
     Mark  | 7   | 3
     Lila  | 74  | 1
 """
-import os.path
-
-import setpath
-from vtout import SourceNtoOne
-from lib.dsv import writer
-import gzip
-from lib.ziputils import ZipIter
+import apsw
 import functions
-from lib.vtoutgtable import vtoutpugtformat
+import gc
+import gzip
 import lib.inoutparsing
 import os
-import apsw
-import gc
+import os.path
 from collections import defaultdict
+from lib.dsv import writer
+from lib.vtoutgtable import vtoutpugtformat
+from lib.ziputils import ZipIter
 
-registered=True
+from vtout import SourceNtoOne
+
+registered = True
+
 
 def fileit(p, append=False):
     if append:
         return open(p, "a", buffering=100000)
-    return open(p, "w" , buffering=100000)
+    return open(p, "w", buffering=100000)
 
-def getoutput(p, append,compress,comptype):
-    source=p
-    it=None
 
-    if compress and ( comptype == 'zip'):
+def getoutput(p, append, compress, comptype):
+    source = p
+    it = None
+
+    if compress and (comptype == 'zip'):
         it = ZipIter(source, "w")
-    elif compress and (comptype=='gzip' or comptype == 'gz'):
-            itt = fileit(source+'.gz')
-            it = gzip.GzipFile(mode="w", compresslevel=6, fileobj=itt)
+    elif compress and (comptype == 'gzip' or comptype == 'gz'):
+        itt = fileit(source + '.gz')
+        it = gzip.GzipFile(mode="w", compresslevel=6, fileobj=itt)
     else:
-        it=fileit(source,append)
+        it = fileit(source, append)
     return it
 
+
 def autoext(f, ftype, typelist):
-    fname, ext=os.path.splitext(f)
-    if ext=='' and ftype in typelist:
-        ext=typelist[ftype]
-        return fname+'.'+ext
+    fname, ext = os.path.splitext(f)
+    if ext == '' and ftype in typelist:
+        ext = typelist[ftype]
+        return fname + '.' + ext
     return f
 
+
 def autotype(f, extlist):
-    fname, ext=os.path.splitext(f)
-    if ext!='':
-        ext=ext[1:]
+    fname, ext = os.path.splitext(f)
+    if ext != '':
+        ext = ext[1:]
         if ext in extlist:
             return extlist[ext]
     return 'plain'
 
+
 def outputData(diter, schema, connection, *args, **formatArgs):
     ### Parameter handling ###
-    where=None
-    if len(args)>0:
-        where=args[0]
+    where = None
+    if len(args) > 0:
+        where = args[0]
     elif 'file' in formatArgs:
-        where=formatArgs['file']
+        where = formatArgs['file']
     else:
-        raise functions.OperatorError(__name__.rsplit('.')[-1],"No destination provided")
+        raise functions.OperatorError(__name__.rsplit('.')[-1], "No destination provided")
 
     if 'file' in formatArgs:
         del formatArgs['file']
 
     if 'mode' not in formatArgs:
-        formatArgs['mode']=autotype(where, {'csv':'csv', 'tsv':'tsv', 'xls':'tsv', 'db':'db', 'json':'json'})
+        formatArgs['mode'] = autotype(where, {'csv': 'csv', 'tsv': 'tsv', 'xls': 'tsv', 'db': 'db', 'json': 'json'})
 
     if 'header' not in formatArgs:
-        header=False
+        header = False
     else:
-        header=formatArgs['header']
+        header = formatArgs['header']
         del formatArgs['header']
 
     if 'compression' not in formatArgs:
-       formatArgs['compression']=False
+        formatArgs['compression'] = False
     if 'compressiontype' not in formatArgs:
-        formatArgs['compressiontype']='gz'
+        formatArgs['compressiontype'] = 'gz'
 
     orderby = None
     if 'orderby' in formatArgs:
@@ -153,47 +156,47 @@ def outputData(diter, schema, connection, *args, **formatArgs):
         orderby = formatArgs['orderbydesc'] + ' desc'
         del formatArgs['orderbydesc']
 
-    append=False
+    append = False
     if 'append' in formatArgs:
-        append=formatArgs['append']
+        append = formatArgs['append']
         del formatArgs['append']
 
-    type2ext={'csv':'csv', 'tsv':'xls', 'plain':'txt', 'db':'db', 'json':'json'}
+    type2ext = {'csv': 'csv', 'tsv': 'xls', 'plain': 'txt', 'db': 'db', 'json': 'json'}
 
-    where=autoext(where, formatArgs['mode'], type2ext)
-    filename, ext=os.path.splitext(os.path.basename(where))
-    fullpath=os.path.split(where)[0]
+    where = autoext(where, formatArgs['mode'], type2ext)
+    filename, ext = os.path.splitext(os.path.basename(where))
+    fullpath = os.path.split(where)[0]
 
-    if not (formatArgs['mode'] == 'db' or (formatArgs['mode']=='json' and 'split' in formatArgs)):
-        fileIter=getoutput(where,append,formatArgs['compression'],formatArgs['compressiontype'])
+    if not (formatArgs['mode'] == 'db' or (formatArgs['mode'] == 'json' and 'split' in formatArgs)):
+        fileIter = getoutput(where, append, formatArgs['compression'], formatArgs['compressiontype'])
 
     del formatArgs['compressiontype']
     del formatArgs['compression']
     try:
-        
-        if formatArgs['mode']=='json':
+
+        if formatArgs['mode'] == 'json':
             del formatArgs['mode']
             import json
-            je = json.JSONEncoder(separators = (',',':'), ensure_ascii = True, check_circular = False).encode
+            je = json.JSONEncoder(separators=(',', ':'), ensure_ascii=True, check_circular=False).encode
 
             if 'split' in formatArgs:
                 def cjs():
                     unikey = unicode(key)
-                    t=open(os.path.join(fullpath, filename+'.'+unikey+ext), 'w')
-                    print >> t, je( {'schema':schema[1:]} )
-                    splitkeys[unikey]=t
-                    jsfiles[key]=t
+                    t = open(os.path.join(fullpath, filename + '.' + unikey + ext), 'w')
+                    print >> t, je({'schema': schema[1:]})
+                    splitkeys[unikey] = t
+                    jsfiles[key] = t
                     # Case for number as key
                     if unikey != key:
                         splitkeys[key] = splitkeys[unikey]
                     return splitkeys[key]
 
                 jsfiles = {}
-                splitkeys=defaultdict(cjs)
+                splitkeys = defaultdict(cjs)
 
                 gc.disable()
                 for row in diter:
-                    key=row[0]
+                    key = row[0]
                     print >> splitkeys[key], je(row[1:])
                 gc.enable()
 
@@ -214,7 +217,7 @@ def outputData(diter, schema, connection, *args, **formatArgs):
                     if f is not None:
                         f.close()
             else:
-                fileIter.write(je({'schema':schema}) + '\n')
+                fileIter.write(je({'schema': schema}) + '\n')
 
                 for row in diter:
                     print >> fileIter, je(row)
@@ -224,7 +227,7 @@ def outputData(diter, schema, connection, *args, **formatArgs):
             csvprinter = writer(fileIter, 'excel', **formatArgs)
             if header:
                 csvprinter.writerow([h[0] for h in schema])
-                
+
             for row in diter:
                 csvprinter.writerow(row)
 
@@ -235,47 +238,50 @@ def outputData(diter, schema, connection, *args, **formatArgs):
                 csvprinter.writerow([h[0] for h in schema])
 
             for row in diter:
-                csvprinter.writerow([x.replace('\t', '    ') if type(x) is str or type(x) is unicode else x for x in row])
+                csvprinter.writerow(
+                    [x.replace('\t', '    ') if type(x) is str or type(x) is unicode else x for x in row])
 
-        elif formatArgs['mode']=='gtable':
-            vtoutpugtformat(fileIter,diter,simplejson=False)
+        elif formatArgs['mode'] == 'gtable':
+            vtoutpugtformat(fileIter, diter, simplejson=False)
 
-        elif formatArgs['mode']=='gjson':
-            vtoutpugtformat(fileIter,diter,simplejson=True)
+        elif formatArgs['mode'] == 'gjson':
+            vtoutpugtformat(fileIter, diter, simplejson=True)
 
-        elif formatArgs['mode']=='html':
-            raise functions.OperatorError(__name__.rsplit('.')[-1],"HTML format not available yet")
+        elif formatArgs['mode'] == 'html':
+            raise functions.OperatorError(__name__.rsplit('.')[-1], "HTML format not available yet")
 
-        elif formatArgs['mode']=='plain':
+        elif formatArgs['mode'] == 'plain':
             for row in diter:
-                fileIter.write(((''.join([unicode(x) for x in row]))+'\n').encode('utf-8'))
+                fileIter.write(((''.join([unicode(x) for x in row])) + '\n').encode('utf-8'))
 
-        elif formatArgs['mode']=='db':
+        elif formatArgs['mode'] == 'db':
             def createdb(where, tname, schema, page_size=16384):
                 c = apsw.Connection(where)
                 cursor = c.cursor()
-                list(cursor.execute('pragma page_size='+str(page_size)+';pragma cache_size=-1000;pragma legacy_file_format=false;pragma synchronous=0;pragma journal_mode=OFF;PRAGMA locking_mode = EXCLUSIVE'))
+                list(cursor.execute('pragma page_size=' + str(
+                    page_size) + ';pragma cache_size=-1000;pragma legacy_file_format=false;pragma synchronous=0;pragma journal_mode=OFF;PRAGMA locking_mode = EXCLUSIVE'))
                 if orderby:
                     tname = '_' + tname
-                    create_schema='create temp table '+tname+'('
+                    create_schema = 'create temp table ' + tname + '('
                 else:
-                    create_schema='create table '+tname+'('
-                create_schema+='`'+unicode(schema[0][0])+'`'+ (' '+unicode(schema[0][1]) if schema[0][1]!=None else '')
+                    create_schema = 'create table ' + tname + '('
+                create_schema += '`' + unicode(schema[0][0]) + '`' + (
+                    ' ' + unicode(schema[0][1]) if schema[0][1] != None else '')
                 for colname, coltype in schema[1:]:
-                    create_schema+=',`'+unicode(colname)+'`'+ (' '+unicode(coltype) if coltype!=None else '')
-                create_schema+='); begin exclusive;'
+                    create_schema += ',`' + unicode(colname) + '`' + (' ' + unicode(coltype) if coltype != None else '')
+                create_schema += '); begin exclusive;'
                 list(cursor.execute(create_schema))
-                insertquery="insert into "+tname+' values('+','.join(['?']*len(schema))+')'
+                insertquery = "insert into " + tname + ' values(' + ','.join(['?'] * len(schema)) + ')'
                 return c, cursor, insertquery
 
             if 'pagesize' in formatArgs:
-                page_size=int(formatArgs['pagesize'])
+                page_size = int(formatArgs['pagesize'])
             else:
-                page_size=list(connection.cursor().execute('pragma page_size'))[0][0]
-                
-            tablename=filename
+                page_size = list(connection.cursor().execute('pragma page_size'))[0][0]
+
+            tablename = filename
             if 'tablename' in formatArgs:
-                tablename=formatArgs['tablename']
+                tablename = formatArgs['tablename']
 
             if 'split' in formatArgs:
                 maxparts = 0
@@ -286,24 +292,26 @@ def outputData(diter, schema, connection, *args, **formatArgs):
 
                 # If not split parts is defined
                 if maxparts == 0:
-                    ns = lambda x:x
+                    ns = lambda x: x
+
                     def cdb():
                         unikey = unicode(key)
-                        t=createdb(os.path.join(fullpath, filename+'.'+unikey+ext), tablename, schema[1:], page_size)
-                        splitkeys[unikey]=t[1].execute
+                        t = createdb(os.path.join(fullpath, filename + '.' + unikey + ext), tablename, schema[1:],
+                                     page_size)
+                        splitkeys[unikey] = t[1].execute
                         ns.insertqueryw = t[2]
-                        dbcon[key]=t[0], t[1]
+                        dbcon[key] = t[0], t[1]
                         # Case for number as key
                         if unikey != key:
                             splitkeys[key] = splitkeys[unikey]
                         return splitkeys[key]
 
                     dbcon = {}
-                    splitkeys=defaultdict(cdb)
+                    splitkeys = defaultdict(cdb)
 
                     gc.disable()
                     for row in diter:
-                        key=row[0]
+                        key = row[0]
                         splitkeys[key](ns.insertqueryw, row[1:])
                     gc.enable()
 
@@ -312,14 +320,15 @@ def outputData(diter, schema, connection, *args, **formatArgs):
                             cursor.execute('commit')
                             c.close()
                 else:
-                # Splitparts defined
+                    # Splitparts defined
                     cursors = []
                     dbcon = []
                     if "MSPW" in functions.apsw_version:
                         iters = []
                         senders = []
                         for i in xrange(0, maxparts):
-                            t = createdb(os.path.join(fullpath, filename+'.'+str(i)+ext), tablename, schema[1:], page_size)
+                            t = createdb(os.path.join(fullpath, filename + '.' + str(i) + ext), tablename, schema[1:],
+                                         page_size)
                             it = t[1].executesplit(t[2])
                             iters.append(it)
                             senders.append(it.send)
@@ -334,7 +343,8 @@ def outputData(diter, schema, connection, *args, **formatArgs):
                             it.close()
                     else:
                         for i in xrange(0, maxparts):
-                            t = createdb(os.path.join(fullpath, filename+'.'+str(i)+ext), tablename, schema[1:], page_size)
+                            t = createdb(os.path.join(fullpath, filename + '.' + str(i) + ext), tablename, schema[1:],
+                                         page_size)
                             cursors.append(t[1].execute)
                             dbcon.append((t[0], t[1]))
                             insertqueryw = t[2]
@@ -346,12 +356,13 @@ def outputData(diter, schema, connection, *args, **formatArgs):
                     for c, cursor in dbcon:
                         if c != None:
                             if orderby:
-                                cursor.execute('pragma cache_size=-'+str(100000)+';create table '+tablename+' as select * from _'+tablename+' order by '+orderby)
+                                cursor.execute('pragma cache_size=-' + str(
+                                    100000) + ';create table ' + tablename + ' as select * from _' + tablename + ' order by ' + orderby)
                             cursor.execute('commit')
                             c.close()
             else:
                 # Write to db without split
-                c, cursor, insertquery=createdb(where, tablename, schema, page_size)
+                c, cursor, insertquery = createdb(where, tablename, schema, page_size)
 
                 gc.disable()
                 cursor.executemany(insertquery, diter)
@@ -360,9 +371,9 @@ def outputData(diter, schema, connection, *args, **formatArgs):
                 list(cursor.execute('commit'))
                 c.close()
         else:
-            raise functions.OperatorError(__name__.rsplit('.')[-1],"Unknown mode value")
+            raise functions.OperatorError(__name__.rsplit('.')[-1], "Unknown mode value")
 
-    except StopIteration,e:
+    except StopIteration, e:
         pass
 
     try:
@@ -370,12 +381,14 @@ def outputData(diter, schema, connection, *args, **formatArgs):
     except NameError:
         pass
 
-boolargs=lib.inoutparsing.boolargs+['append','header','compression']
+
+boolargs = lib.inoutparsing.boolargs + ['append', 'header', 'compression']
 
 
 def Source():
     global boolargs, nonstringargs
-    return SourceNtoOne(outputData,boolargs, lib.inoutparsing.nonstringargs,lib.inoutparsing.needsescape, connectionhandler=True)
+    return SourceNtoOne(outputData, boolargs, lib.inoutparsing.nonstringargs, lib.inoutparsing.needsescape,
+                        connectionhandler=True)
 
 
 if not ('.' in __name__):
@@ -384,11 +397,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

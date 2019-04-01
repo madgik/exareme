@@ -18,7 +18,7 @@ public class StatsMContainerSession implements Serializable {
     private ContainerSessionStatistics statistics = null;
 
     public StatsMContainerSession(ContainerSessionID containerSessionID, PlanSessionID sessionID,
-        String containerName) {
+                                  String containerName) {
         statistics = new ContainerSessionStatistics(containerSessionID, sessionID, containerName);
     }
 

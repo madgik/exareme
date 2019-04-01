@@ -12,12 +12,13 @@ Examples::
 
 """
 
-import setpath
-import vtbase
-import functions
 import apsw
+import functions
 
-registered=True
+import vtbase
+
+registered = True
+
 
 class QueryPlan(vtbase.VT):
     def VTiter(self, *parsedArgs, **envars):
@@ -31,23 +32,23 @@ class QueryPlan(vtbase.VT):
         def buststatementcache():
             c = connection.cursor()
             for i in xrange(110):
-                a=list(c.execute("select "+str(i)))
+                a = list(c.execute("select " + str(i)))
 
         _, dictargs = self.full_parse(parsedArgs)
-        
-        if 'query' not in dictargs:
-            raise functions.OperatorError(__name__.rsplit('.')[-1]," needs query argument ")
 
-        query=dictargs['query']
+        if 'query' not in dictargs:
+            raise functions.OperatorError(__name__.rsplit('.')[-1], " needs query argument ")
+
+        query = dictargs['query']
 
         connection = envars['db']
-        plan=[]
+        plan = []
 
         buststatementcache()
 
         cursor = connection.cursor()
 
-        cursor.setexectrace(lambda x,y,z:apsw.SQLITE_DENY)
+        cursor.setexectrace(lambda x, y, z: apsw.SQLITE_DENY)
 
         connection.setauthorizer(authorizer)
 
@@ -55,16 +56,19 @@ class QueryPlan(vtbase.VT):
 
         connection.setauthorizer(None)
 
-        yield [('operation', 'text'), ('paramone', 'text'), ('paramtwo', 'text'), ('databasename', 'text'), ('triggerorview', 'text')]
+        yield [('operation', 'text'), ('paramone', 'text'), ('paramtwo', 'text'), ('databasename', 'text'),
+               ('triggerorview', 'text')]
 
         for r in plan:
             yield r
-    
+
     def destroy(self):
         pass
 
+
 def Source():
     return vtbase.VTGenerator(QueryPlan)
+
 
 if not ('.' in __name__):
     """
@@ -72,11 +76,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

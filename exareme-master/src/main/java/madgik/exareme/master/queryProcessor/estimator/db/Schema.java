@@ -41,15 +41,15 @@ public class Schema {
     public Map<String, RelInfo> getTableIndex() {
         return tableIndex;
     }
-    
+
     /*interface methods*/
 
 
     /*standard methods*/
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "Schema{" + "schemaName=" + schemaName + ", tableIndex=" + tableIndex + '}';
     }
-
 
 
 }

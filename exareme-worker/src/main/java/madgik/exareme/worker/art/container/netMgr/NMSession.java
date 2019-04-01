@@ -21,10 +21,10 @@ public class NMSession {
     private StatisticsManagerInterface statistics = null;
     private NetManagerInterface manager = null;
     private HashMap<ContainerSessionID, NMContainerSession> containerSessionMap =
-        new HashMap<ContainerSessionID, NMContainerSession>();
+            new HashMap<ContainerSessionID, NMContainerSession>();
 
     public NMSession(PlanSessionID sessionID, StatisticsManagerInterface statistics,
-        NetManagerInterface manager) {
+                     NetManagerInterface manager) {
         this.sessionID = sessionID;
         this.statistics = statistics;
         this.manager = manager;

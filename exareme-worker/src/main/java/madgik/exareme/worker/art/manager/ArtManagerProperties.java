@@ -12,8 +12,8 @@ import madgik.exareme.utils.properties.AdpProperties;
  * @author Herald Kllapi<br>
  * @author Dimitris Paparas<br>
  * @author Eva Sitaridi<br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class ArtManagerProperties {
@@ -23,7 +23,7 @@ public class ArtManagerProperties {
 
     public ArtManagerProperties() {
         containerName =
-            AdpProperties.getArtProps().getString("art.container.rmi.RmiContainer.defaultID");
+                AdpProperties.getArtProps().getString("art.container.rmi.RmiContainer.defaultID");
         localRegistryPort = AdpProperties.getArtProps().getInt("art.registry.rmi.defaultPort");
         dataTransferPort = AdpProperties.getArtProps().getInt("art.container.data.port");
     }

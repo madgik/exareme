@@ -15,14 +15,15 @@ import java.rmi.RemoteException;
  */
 public class OperatorTerminatedEventListener implements EventListener<OperatorTerminatedEvent> {
     public static final OperatorTerminatedEventListener instance =
-        new OperatorTerminatedEventListener();
+            new OperatorTerminatedEventListener();
     private static final long serialVersionUID = 1L;
 
     public OperatorTerminatedEventListener() {
     }
 
-    @Override public void processed(OperatorTerminatedEvent event, RemoteException exception,
-        EventProcessor processor) {
+    @Override
+    public void processed(OperatorTerminatedEvent event, RemoteException exception,
+                          EventProcessor processor) {
         //    log.trace("$$ TERMINATED: " + event.operatorID + " :"
         //            + state.getTerminatedOperatorCount() + "/"
         //            + state.getStatistics().totalProcessingOperators() + " ACTIVE: "

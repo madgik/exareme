@@ -19,7 +19,7 @@ import java.util.Map;
  * @author John Chronis
  */
 public class CreateDataflowEventHandler
-    //  implements ExecEngineEventHandler<CreateDataflowEvent> {
+        //  implements ExecEngineEventHandler<CreateDataflowEvent> {
 {
     public static final CreateDataflowEventHandler instance = new CreateDataflowEventHandler();
     private static final long serialVersionUID = 1L;
@@ -29,7 +29,7 @@ public class CreateDataflowEventHandler
     }
 
     public void preProcess(CreateDataflowEvent event, PlanEventSchedulerState state)
-        throws RemoteException {
+            throws RemoteException {
         ContainerSession containerSession = null;
         ContainerSessionID containerSessionID = null;
         ActiveContainer activeCont;
@@ -43,12 +43,12 @@ public class CreateDataflowEventHandler
             ContainerProxy containerProxy = state.registryProxy.lookupContainer(entityName);
             event.plan.getContainer(containerName);
             containerSessionID = state.eventScheduler.getPlanManager()
-                .createContainerSession(state.getPlanSessionID());
+                    .createContainerSession(state.getPlanSessionID());
             containerSession = state.getContainerSession(containerName, containerSessionID);
 
             if (containerSession == null) {
                 containerSession =
-                    containerProxy.createSession(containerSessionID, state.getPlanSessionID());
+                        containerProxy.createSession(containerSessionID, state.getPlanSessionID());
             }
             event.entityNameToProxy.put(entityName, containerProxy);
             event.entityNameToSessionID.put(entityName, containerSessionID);
@@ -64,8 +64,8 @@ public class CreateDataflowEventHandler
             log.debug("DThttp11 " + containerName + " " + containerSession);
             ContainerJobs jobs = new ContainerJobs();
             jobs.addJob(new CreateDataflowJob(event.plan, event.entityNameToProxy,
-                event.entityNameToSessionID, state.getPlanSessionReportID(),
-                event.plan.getContainer(containerName)));
+                    event.entityNameToSessionID, state.getPlanSessionReportID(),
+                    event.plan.getContainer(containerName)));
             event.jobs.put(event.plan.getContainer(containerName), jobs);
             //      event.jobs.add();
         }
@@ -78,7 +78,7 @@ public class CreateDataflowEventHandler
         event.results = new ContainerJobResults();
         for (Map.Entry<EntityName, ContainerSession> entry : event.entityNameToSession.entrySet()) {
             log.debug("DThttp11 handler " + entry.getKey().getName() + " " + event.jobs
-                .get(entry.getKey()));
+                    .get(entry.getKey()));
 
             ContainerJobResults results = entry.getValue().execJobs(event.jobs.get(entry.getKey()));
 
@@ -90,6 +90,6 @@ public class CreateDataflowEventHandler
     }
 
     public void postProcess(CreateDataflowEvent event, PlanEventSchedulerState state)
-        throws RemoteException {
+            throws RemoteException {
     }
 }

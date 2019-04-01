@@ -41,17 +41,18 @@ public class SkyScheduler implements MultiObjectiveQueryScheduler {
     public SkyScheduler() {
     }
 
-    @Override public SolutionSpace callOptimizer(final ConcreteQueryGraph graph,
-        final AssignedOperatorFilter subgraphFilter, final ArrayList<ContainerResources> containers,
-        final ContainerFilter containerFilter, final RunTimeParameters runTimeParams,
-        final FinancialProperties finProps) throws RemoteException {
+    @Override
+    public SolutionSpace callOptimizer(final ConcreteQueryGraph graph,
+                                       final AssignedOperatorFilter subgraphFilter, final ArrayList<ContainerResources> containers,
+                                       final ContainerFilter containerFilter, final RunTimeParameters runTimeParams,
+                                       final FinancialProperties finProps) throws RemoteException {
         long startCPU = System.currentTimeMillis() / Metrics.MiliSec;
         if (containers.size() == 1) {
             this.onlyOneContainer(graph, subgraphFilter, containers, containerFilter, runTimeParams,
-                finProps);
+                    finProps);
         } else {
             this.initialize(graph, subgraphFilter, containers, containerFilter, runTimeParams,
-                finProps);
+                    finProps);
             this.createAssigments();
         }
         // Create solution space
@@ -61,7 +62,7 @@ public class SkyScheduler implements MultiObjectiveQueryScheduler {
                 continue;
             }
             space.addResult(
-                new SchedulingResult(containers.size(), runTimeParams, finProps, exception, plan));
+                    new SchedulingResult(containers.size(), runTimeParams, finProps, exception, plan));
         }
         long endCPU = System.currentTimeMillis() / Metrics.MiliSec;
         space.setOptimizationTime(endCPU - startCPU);
@@ -69,8 +70,8 @@ public class SkyScheduler implements MultiObjectiveQueryScheduler {
     }
 
     public void onlyOneContainer(ConcreteQueryGraph graph, AssignedOperatorFilter subgraphFilter,
-        ArrayList<ContainerResources> containers, ContainerFilter containerFilter,
-        RunTimeParameters runTimeParams, FinancialProperties financialProps) {
+                                 ArrayList<ContainerResources> containers, ContainerFilter containerFilter,
+                                 RunTimeParameters runTimeParams, FinancialProperties financialProps) {
         ScheduleEstimator plan = new ScheduleEstimator(graph, containers, runTimeParams);
         for (ConcreteOperator co : graph.getOperators()) {
             plan.addOperatorAssignment(co.opID, 0, graph);
@@ -80,8 +81,8 @@ public class SkyScheduler implements MultiObjectiveQueryScheduler {
     }
 
     public void initialize(ConcreteQueryGraph graph, AssignedOperatorFilter subgraphFilter,
-        ArrayList<ContainerResources> containers, ContainerFilter containerFilter,
-        RunTimeParameters runTimeParams, FinancialProperties financialProps) {
+                           ArrayList<ContainerResources> containers, ContainerFilter containerFilter,
+                           RunTimeParameters runTimeParams, FinancialProperties financialProps) {
         this.graph = graph;
         this.subgraphFilter = subgraphFilter;
         this.runTimeParams = runTimeParams;
@@ -133,14 +134,15 @@ public class SkyScheduler implements MultiObjectiveQueryScheduler {
             if (skylinePlans.size() > skylinePlansToKeep) {
                 // Keep only some schedules in the skyline
                 Collections.sort(skylinePlans, new Comparator<ScheduleEstimator>() {
-                    @Override public int compare(ScheduleEstimator o1, ScheduleEstimator o2) {
+                    @Override
+                    public int compare(ScheduleEstimator o1, ScheduleEstimator o2) {
                         return Double.compare(o1.getScheduleStatistics().getTimeInQuanta(),
-                            o2.getScheduleStatistics().getTimeInQuanta());
+                                o2.getScheduleStatistics().getTimeInQuanta());
                     }
                 });
                 int schedulesKept = 2;
                 int windowSize =
-                    (int) Math.ceil((skylinePlans.size() - 2.0) / (skylinePlansToKeep - 2.0));
+                        (int) Math.ceil((skylinePlans.size() - 2.0) / (skylinePlansToKeep - 2.0));
                 for (int p = 1; p < skylinePlans.size() - 1; ++p) {
                     if (p % windowSize != 0) {
                         skylinePlans.set(p, null);
@@ -149,7 +151,7 @@ public class SkyScheduler implements MultiObjectiveQueryScheduler {
                     }
                 }
                 Check.True(Math.abs(schedulesKept - skylinePlansToKeep) <= skylinePlansToKeep / 2,
-                    "Error. Schedules kept: " + schedulesKept + " / " + skylinePlansToKeep);
+                        "Error. Schedules kept: " + schedulesKept + " / " + skylinePlansToKeep);
             }
 
             // All the producers have to be assigned before the consumer.
@@ -173,7 +175,7 @@ public class SkyScheduler implements MultiObjectiveQueryScheduler {
     }
 
     private ArrayList<WhatIfEstimation> computeSkyline(ConcreteOperator co,
-        ArrayList<WhatIfEstimation> candidates) {
+                                                       ArrayList<WhatIfEstimation> candidates) {
         // Sort by time breaking equality by sorting by money
         Collections.sort(candidates);
 
@@ -199,7 +201,7 @@ public class SkyScheduler implements MultiObjectiveQueryScheduler {
     }
 
     private void getCandidateContainers(ConcreteOperator co, ScheduleEstimator plan,
-        ArrayList<WhatIfEstimation> estimations) throws RemoteException {
+                                        ArrayList<WhatIfEstimation> estimations) throws RemoteException {
         int containerNum = subgraphFilter.getOperatorAssignment(co.opID);
         if (containerNum < 0) {
             int[] end = plan.getContainerEnd();
@@ -236,7 +238,7 @@ public class SkyScheduler implements MultiObjectiveQueryScheduler {
         public final double fragmentation;
 
         public WhatIfEstimation(int opID, int container, AssignmentResult estimation,
-            ScheduleEstimator estimator) {
+                                ScheduleEstimator estimator) {
             this.opID = opID;
             this.container = container;
             this.estimation = estimation;
@@ -247,7 +249,8 @@ public class SkyScheduler implements MultiObjectiveQueryScheduler {
             this.fragmentation = moneyQuanta - estimation.after.moneyNoFragmentation;
         }
 
-        @Override public int compareTo(WhatIfEstimation other) {
+        @Override
+        public int compareTo(WhatIfEstimation other) {
             if (time_SEC == other.time_SEC) {
                 if (moneyQuanta == other.moneyQuanta) {
                     if (containersUsed == other.containersUsed) {

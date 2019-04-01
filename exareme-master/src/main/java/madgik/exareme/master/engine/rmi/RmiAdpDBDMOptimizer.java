@@ -42,14 +42,14 @@ public class RmiAdpDBDMOptimizer {
     }
 
     public AdpDBQueryExecutionPlan optimize(InputData input, AdpDBClientProperties props)
-        throws RemoteException {
+            throws RemoteException {
         log.debug("Creating state ...");
         StateData state = new StateData();
         log.debug("Getting containers ... ");
         state.proxies = props.getContainerProxies() != null ? props.getContainerProxies() :
                 ArtRegistryLocator.getArtRegistryProxy().getContainers();
         ArrayList<ContainerResources> containers =
-            new ArrayList<ContainerResources>(state.proxies.length);
+                new ArrayList<ContainerResources>(state.proxies.length);
         for (int i = 0; i < state.proxies.length; ++i) {
             containers.add(new ContainerResources());
         }
@@ -87,10 +87,10 @@ public class RmiAdpDBDMOptimizer {
                 int[] locations = new int[contFilter.cardinality()];
                 if (locations.length == 0) {
                     throw new ServerException(
-                        "Location of table not found: " + pTable.getName() + "/" + p);
+                            "Location of table not found: " + pTable.getName() + "/" + p);
                 }
                 log.debug("Table '" + pTable.getName() + "/" + p + "' located at " + Arrays
-                    .toString(locations));
+                        .toString(locations));
                 int loc = 0;
                 for (int i = contFilter.nextSetBit(0); i >= 0; i = contFilter.nextSetBit(i + 1)) {
                     locations[loc] = i;
@@ -110,20 +110,20 @@ public class RmiAdpDBDMOptimizer {
                             break;
                     }
                     ConcreteOperator indexOperator = ConcreteGraphFactory
-                        .createBuildIndex(pTable.getName() + "_" + p + "_" + name + "_" + l);
+                            .createBuildIndex(pTable.getName() + "_" + p + "_" + name + "_" + l);
                     // Add index partition
                     if (index != null) {
                         index.addPartition(p);
                     }
                     log.debug("add_operator_d " + indexOperator.getName() + " "
-                        + indexOperator.operatorName);
+                            + indexOperator.operatorName);
                     state.graph.addOperator(indexOperator);
                     AdpDBDMOperator dmOp = new AdpDBDMOperator(type, dm);
                     dmOp.setPart(p);
                     ListUtil.setItem(state.dmOps, indexOperator.opID, dmOp);
                     // TODO(herald): Round robin! this is temporary!
                     ListUtil.setItem(operatorLocations, indexOperator.opID,
-                        locations[p % locations.length]);
+                            locations[p % locations.length]);
                     break;
                 }
             }
@@ -134,10 +134,10 @@ public class RmiAdpDBDMOptimizer {
         ScheduleEstimator planAssigment = new ScheduleEstimator(state.graph, containers, rtp);
         for (ConcreteOperator cop : state.graph.getOperators()) {
             planAssigment
-                .addOperatorAssignment(cop.opID, operatorLocations.get(cop.opID), state.graph);
+                    .addOperatorAssignment(cop.opID, operatorLocations.get(cop.opID), state.graph);
         }
         state.result =
-            new SchedulingResult(state.graph.getNumOfOperators(), rtp, fp, null, planAssigment);
+                new SchedulingResult(state.graph.getNumOfOperators(), rtp, fp, null, planAssigment);
 
         return new AdpDBQueryExecutionPlan(input, state);
     }

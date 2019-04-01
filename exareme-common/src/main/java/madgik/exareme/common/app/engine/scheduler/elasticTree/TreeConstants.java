@@ -32,11 +32,11 @@ public class TreeConstants {
     public double QUERY_MEAN_ARRIVAL_TIME_SEC = 30;
 
     // SYSTEM - WITH STATIC TREE HEIGHT (3)
-    public int[] STATIC_CONTAINERS_SMALL = new int[] {10, 4, 1};
+    public int[] STATIC_CONTAINERS_SMALL = new int[]{10, 4, 1};
     // + 16, 4, 1
-    public int[] STATIC_CONTAINERS_MEDIUM = new int[] {26, 8, 2};
+    public int[] STATIC_CONTAINERS_MEDIUM = new int[]{26, 8, 2};
     // + 16, 4, 1
-    public int[] STATIC_CONTAINERS_LARGE = new int[] {42, 12, 3};
+    public int[] STATIC_CONTAINERS_LARGE = new int[]{42, 12, 3};
 
     // SLAs
     public int CRITICAL_SLA = 0;
@@ -44,9 +44,9 @@ public class TreeConstants {
     public int NORMAL_SLA = 2;
     public int BEST_EFFORT_SLA = 3;
 
-    public SLA[] SLAS = new SLA[] {new ExponentialSLA(CRITICAL_SLA, 40, 20),
-        new ExponentialSLA(HIGH_PRIORITY_SLA, 20, 40), new ExponentialSLA(NORMAL_SLA, 10, 80),
-        new ExponentialSLA(BEST_EFFORT_SLA, 4, 1000)};
+    public SLA[] SLAS = new SLA[]{new ExponentialSLA(CRITICAL_SLA, 40, 20),
+            new ExponentialSLA(HIGH_PRIORITY_SLA, 20, 40), new ExponentialSLA(NORMAL_SLA, 10, 80),
+            new ExponentialSLA(BEST_EFFORT_SLA, 4, 1000)};
 
     // Topology
     public int MAX_TREE_HEIGHT = 3;

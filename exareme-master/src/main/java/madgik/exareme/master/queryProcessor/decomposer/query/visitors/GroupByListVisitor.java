@@ -18,7 +18,8 @@ public class GroupByListVisitor extends AbstractVisitor {
         super(query);
     }
 
-    @Override public Visitable visit(Visitable node) throws StandardException {
+    @Override
+    public Visitable visit(Visitable node) throws StandardException {
         if (node instanceof GroupByList) {
             GroupByColumnVisitor groupByVisitor = new GroupByColumnVisitor(query);
             node.accept(groupByVisitor);
@@ -26,7 +27,8 @@ public class GroupByListVisitor extends AbstractVisitor {
         return node;
     }
 
-    @Override public boolean skipChildren(Visitable node) {
+    @Override
+    public boolean skipChildren(Visitable node) {
         return FromSubquery.class.isInstance(node);
     }
 }

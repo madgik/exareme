@@ -1927,7 +1927,7 @@ jsMath.Setup.Styles({
  */
 
 jsMath.noAppleSymbols = (jsMath.BBoxFor('&#x2223;').w ==
-jsMath.BBoxFor('<span style="font-family: \'Apple Symbols\'">&#x2223;</span>').w);
+    jsMath.BBoxFor('<span style="font-family: \'Apple Symbols\'">&#x2223;</span>').w);
 
 if (jsMath.noAppleSymbols) {
     jsMath.Update.TeXfonts({

@@ -85,20 +85,20 @@ public class PlanEventScheduler {
     private IndependentEventsListener independentEventsListener = null;
 
     public PlanEventScheduler(PlanSessionID sessionID, PlanSessionReportID reportID,
-        EventProcessor eventProcessor, DynamicPlanManager planManager,
-        PlanSessionResourceManager resourceManager, ArtRegistryProxy registryProxy) {
+                              EventProcessor eventProcessor, DynamicPlanManager planManager,
+                              PlanSessionResourceManager resourceManager, ArtRegistryProxy registryProxy) {
         this.lock = new ReentrantLock();
         //    this.eventsLock = new Semaphore(1);
         this.planManager = planManager;
         this.state =
-            new PlanEventSchedulerState(sessionID, reportID, null, eventProcessor, planManager,
-                registryProxy, resourceManager, this);
+                new PlanEventSchedulerState(sessionID, reportID, null, eventProcessor, planManager,
+                        registryProxy, resourceManager, this);
         createHandlers();
         createListeners();
     }
 
     public PlanEventScheduler(EventProcessor eventProcessor, DynamicPlanManager planManager,
-        PlanSessionResourceManager resourceManager, ArtRegistryProxy registryProxy) {
+                              PlanSessionResourceManager resourceManager, ArtRegistryProxy registryProxy) {
         this.planManager = planManager;
         createHandlersAndListeners();
     }
@@ -150,54 +150,54 @@ public class PlanEventScheduler {
     private LinkedList<Parameter> createMediatorParams(String type, OperatorEntity op) {
         LinkedList<Parameter> params = new LinkedList<>();
         params.add(new Parameter(OperatorEntity.MEMORY_PARAM,
-            String.valueOf(ExecEngineConstants.DATA_TRANSFER_MEM)));
+                String.valueOf(ExecEngineConstants.DATA_TRANSFER_MEM)));
         params.add(new Parameter(OperatorEntity.BEHAVIOR_PARAM,
-            String.valueOf(OperatorBehavior.pipeline)));
+                String.valueOf(OperatorBehavior.pipeline)));
         params.add(
-            new Parameter(OperatorEntity.TYPE_PARAM, String.valueOf(OperatorType.dataTransfer)));
+                new Parameter(OperatorEntity.TYPE_PARAM, String.valueOf(OperatorType.dataTransfer)));
         params.add(new Parameter(OperatorEntity.CATEGORY_PARAM,
-            op.category + "_" + type + "_" + OperatorCategory.dt));
+                op.category + "_" + type + "_" + OperatorCategory.dt));
         return params;
     }
 
     private void addMediators(OperatorEntity from, OperatorEntity to, EditableExecutionPlan plan,
-        String fromMediatorOperator, String toMediatorOperator) throws SemanticError {
+                              String fromMediatorOperator, String toMediatorOperator) throws SemanticError {
         log.trace("Add icm after " + from.operatorName);
         log.trace("Create the 'from' mediator operator ... ");
         LinkedList<Parameter> fromMediatorParams = createMediatorParams("F", from);
         LinkedList<Parameter> toMediatorParams = createMediatorParams("T", to);
 
         OperatorEntity fromMediator = plan.addOperator(
-            new Operator(to.operatorName + "_" + from.operatorName + ".ICM_FROM",
-                fromMediatorOperator, fromMediatorParams, "", from.containerName,
-                from.linksparams));
+                new Operator(to.operatorName + "_" + from.operatorName + ".ICM_FROM",
+                        fromMediatorOperator, fromMediatorParams, "", from.containerName,
+                        from.linksparams));
 
         OperatorEntity toMediator = plan.addOperator(
-            new Operator(from.operatorName + "_" + to.operatorName + ".ICM_TO", toMediatorOperator,
-                toMediatorParams, "", to.containerName, from.linksparams));
+                new Operator(from.operatorName + "_" + to.operatorName + ".ICM_TO", toMediatorOperator,
+                        toMediatorParams, "", to.containerName, from.linksparams));
 
         log.trace("Remove existing link between from and to ... ");
         OperatorLinkEntity operatorLink =
-            plan.removeOperatorLink(from.operatorName, to.operatorName);
+                plan.removeOperatorLink(from.operatorName, to.operatorName);
 
         log.trace("Connect 'from' with the with 'icm from' ...");
         plan.addOperatorLink(
-            new OperatorLink(from.operatorName, fromMediator.operatorName, from.containerName,
-                operatorLink.paramList));
+                new OperatorLink(from.operatorName, fromMediator.operatorName, from.containerName,
+                        operatorLink.paramList));
 
         log.trace("Connect 'icm from' with 'icm to' ... ");
         plan.addOperatorLink(new OperatorLink(fromMediator.operatorName, toMediator.operatorName,
-            toMediator.containerName, operatorLink.paramList));
+                toMediator.containerName, operatorLink.paramList));
 
         log.trace("Connect 'icm from' with to ... ");
         plan.addOperatorLink(
-            new OperatorLink(toMediator.operatorName, to.operatorName, to.containerName,
-                operatorLink.paramList));
+                new OperatorLink(toMediator.operatorName, to.operatorName, to.containerName,
+                        operatorLink.paramList));
 
     }
 
     private void addMediator(OperatorEntity from, List<OperatorEntity> toOps,
-        EditableExecutionPlan plan, String datatransfer) throws SemanticError {
+                             EditableExecutionPlan plan, String datatransfer) throws SemanticError {
 
         LinkedList<Parameter> DTParams = createMediatorParams("F", from);
         Map<String, LinkedList<Parameter>> outParams = from.linksparams;
@@ -207,19 +207,19 @@ public class PlanEventScheduler {
             //      log.debug("**-- " + to.container.getDataTransferPort()+"");
             outParameters = outLink.paramList;
             outParameters.add(new Parameter(OperatorEntity.TO_CONTAINER_IP_PARAM,
-                to.container.getIP().split("_")[0]));
+                    to.container.getIP().split("_")[0]));
             outParameters.add(new Parameter(OperatorEntity.FROM_CONTAINER_IP_PARAM,
-                from.container.getIP().split("_")[0]));
+                    from.container.getIP().split("_")[0]));
             outParameters.add(new Parameter(OperatorEntity.TO_CONTAINER_PORT_PARAM,
-                to.container.getDataTransferPort() + ""));
+                    to.container.getDataTransferPort() + ""));
             outParameters.add(new Parameter(OperatorEntity.FROM_CONTAINER_PORT_PARAM,
-                from.container.getDataTransferPort() + ""));
+                    from.container.getDataTransferPort() + ""));
             outParams.put(to.operatorName, outParameters);
         }
 
         OperatorEntity dataTrasferOp = plan.addOperator(
-            new Operator(from.operatorName + ".DT", datatransfer, DTParams, "", from.containerName,
-                outParams));
+                new Operator(from.operatorName + ".DT", datatransfer, DTParams, "", from.containerName,
+                        outParams));
 
         OperatorLinkEntity operatorLink = null;
         for (OperatorEntity to : toOps) {
@@ -228,13 +228,13 @@ public class PlanEventScheduler {
 
             log.trace("Connect 'dt' with 'to' ... ");
             plan.addOperatorLink(
-                new OperatorLink(dataTrasferOp.operatorName, to.operatorName, to.containerName,
-                    operatorLink.paramList));
+                    new OperatorLink(dataTrasferOp.operatorName, to.operatorName, to.containerName,
+                            operatorLink.paramList));
         }
         log.trace("Connect 'from' with the with 'dt' ...");
         plan.addOperatorLink(
-            new OperatorLink(from.operatorName, dataTrasferOp.operatorName, from.containerName,
-                operatorLink.paramList));
+                new OperatorLink(from.operatorName, dataTrasferOp.operatorName, from.containerName,
+                        operatorLink.paramList));
     }
 
     public EditableExecutionPlan preprocessPlan(ExecutionPlan plan) throws RemoteException {
@@ -243,13 +243,13 @@ public class PlanEventScheduler {
         addLinkParameters(plan);
 
         PragmaEntity mediatorFrom =
-            plan.getPragma(ExecEngineConstants.PRAGMA_INTER_CONTAINER_MEDIATOR_FROM);
+                plan.getPragma(ExecEngineConstants.PRAGMA_INTER_CONTAINER_MEDIATOR_FROM);
 
         PragmaEntity mediatorTo =
-            plan.getPragma(ExecEngineConstants.PRAGMA_INTER_CONTAINER_MEDIATOR_TO);
+                plan.getPragma(ExecEngineConstants.PRAGMA_INTER_CONTAINER_MEDIATOR_TO);
 
         PragmaEntity dataTransfer =
-            plan.getPragma(ExecEngineConstants.PRAGMA_INTER_CONTAINER_DATA_TRANSFER);
+                plan.getPragma(ExecEngineConstants.PRAGMA_INTER_CONTAINER_DATA_TRANSFER);
 
         if (mediatorFrom == null && mediatorTo == null) {
             log.debug("No preprocessing needed!");
@@ -323,9 +323,9 @@ public class PlanEventScheduler {
         try {
             IndependentEvents jobs = new IndependentEvents(state);
             OperatorTerminatedEvent event =
-                new OperatorTerminatedEvent(null, -1, null, this, state, false);
+                    new OperatorTerminatedEvent(null, -1, null, this, state, false);
             jobs.addEvent(event, OperatorGroupTerminatedEventHandler.instance,
-                OperatorTerminatedEventListener.instance);
+                    OperatorTerminatedEventListener.instance);
             queueIndependentEvents(jobs, true);
             return true;
         } finally {
@@ -338,7 +338,7 @@ public class PlanEventScheduler {
         try {
             PlanTerminationEvent event = new PlanTerminationEvent(state);
             jobs.addEvent(event, PlanTerminationEventHandler.instance,
-                PlanTerminationEventListener.instance);
+                    PlanTerminationEventListener.instance);
         } finally {
             lock.unlock();
         }
@@ -349,7 +349,7 @@ public class PlanEventScheduler {
         try {
             PlanTerminationEvent event = new PlanTerminationEvent(state);
             jobs.addEvent(event, PlanTerminationEventHandler.instance,
-                PlanTerminationEventListener.instance);
+                    PlanTerminationEventListener.instance);
         } finally {
             lock.unlock();
         }
@@ -360,26 +360,26 @@ public class PlanEventScheduler {
         try {
             CloseContainerSessionEvent event = new CloseContainerSessionEvent(contSID, state);
             jobs.addEvent(event, CloseContainerSessionEventHandler.instance,
-                CloseContainerSessionEventListener.instance);
+                    CloseContainerSessionEventListener.instance);
         } finally {
             lock.unlock();
         }
     }
 
     public void addContainer(String containerName, EntityName container, IndependentEvents jobs)
-        throws RemoteException {
+            throws RemoteException {
         lock.lock();
         try {
             AddContainerEvent event = new AddContainerEvent(containerName, container, state);
             jobs.addEvent(event, AddContainerEventHandler.instance,
-                AddContainerEventListener.instance);
+                    AddContainerEventListener.instance);
         } finally {
             lock.unlock();
         }
     }
 
     public void createOperator(OperatorEntity operator, ContainerJobsEvent jobs)
-        throws RemoteException {
+            throws RemoteException {
         lock.lock();
         try {
             CreateOperatorEvent event = new CreateOperatorEvent(operator, state);
@@ -390,7 +390,7 @@ public class PlanEventScheduler {
     }
 
     public void createLink(OperatorLinkEntity connect, ContainerJobsEvent jobs)
-        throws RemoteException {
+            throws RemoteException {
         lock.lock();
         try {
             CreateOperatorConnectEvent event = new CreateOperatorConnectEvent(connect, state);
@@ -502,14 +502,14 @@ public class PlanEventScheduler {
 
     // START Container Events
     public void exception(ConcreteOperatorID operatorID, RemoteException exception, Date time,
-        PlanSessionID sessionID) throws RemoteException {
+                          PlanSessionID sessionID) throws RemoteException {
         lock.lock();
         try {
             IndependentEvents jobs = new IndependentEvents(state);
             OperatorExceptionEvent event =
-                new OperatorExceptionEvent(operatorID, exception, time, state);
+                    new OperatorExceptionEvent(operatorID, exception, time, state);
             jobs.addEvent(event, OperatorExceptionEventHandler.instance,
-                OperatorExceptionEventListener.instance);
+                    OperatorExceptionEventListener.instance);
             queueIndependentEvents(jobs);
             terminatedActiveEvents = 0;
         } finally {
@@ -519,14 +519,14 @@ public class PlanEventScheduler {
 
     // START Container Events
     public void exception(ConcreteOperatorID operatorID, RemoteException exception, Date time)
-        throws RemoteException {
+            throws RemoteException {
         lock.lock();
         try {
             IndependentEvents jobs = new IndependentEvents(state);
             OperatorExceptionEvent event =
-                new OperatorExceptionEvent(operatorID, exception, time, state);
+                    new OperatorExceptionEvent(operatorID, exception, time, state);
             jobs.addEvent(event, OperatorExceptionEventHandler.instance,
-                OperatorExceptionEventListener.instance);
+                    OperatorExceptionEventListener.instance);
             queueIndependentEvents(jobs);
             terminatedActiveEvents = 0;
         } finally {
@@ -535,16 +535,16 @@ public class PlanEventScheduler {
     }
 
     public void terminated(ConcreteOperatorID operatorID, int exidCode, Serializable exitMessage,
-        Date time, PlanSessionID sessionID, boolean terminateGroup) throws RemoteException {
+                           Date time, PlanSessionID sessionID, boolean terminateGroup) throws RemoteException {
         lock.lock();
         try {
             IndependentEvents jobs = new IndependentEvents(state);
             OperatorTerminatedEvent event =
-                new OperatorTerminatedEvent(operatorID, exidCode, exitMessage, this, state,
-                    terminateGroup);
+                    new OperatorTerminatedEvent(operatorID, exidCode, exitMessage, this, state,
+                            terminateGroup);
 
             jobs.addEvent(event, OperatorGroupTerminatedEventHandler.instance,
-                OperatorTerminatedEventListener.instance);
+                    OperatorTerminatedEventListener.instance);
 
             queueIndependentEvents(jobs, true);
             // this.reportOperator(operatorID, exidCode, exitMessage, time);
@@ -554,16 +554,16 @@ public class PlanEventScheduler {
     }
 
     public void terminated(ConcreteOperatorID operatorID, int exidCode, Serializable exitMessage,
-        Date time, boolean terminateGroup) throws RemoteException {
+                           Date time, boolean terminateGroup) throws RemoteException {
         lock.lock();
         try {
             IndependentEvents jobs = new IndependentEvents(state);
             OperatorTerminatedEvent event =
-                new OperatorTerminatedEvent(operatorID, exidCode, exitMessage, this, state,
-                    terminateGroup);
+                    new OperatorTerminatedEvent(operatorID, exidCode, exitMessage, this, state,
+                            terminateGroup);
 
             jobs.addEvent(event, OperatorGroupTerminatedEventHandler.instance,
-                OperatorTerminatedEventListener.instance);
+                    OperatorTerminatedEventListener.instance);
 
             queueIndependentEvents(jobs, true);
             // this.reportOperator(operatorID, exidCode, exitMessage, time);
@@ -573,7 +573,7 @@ public class PlanEventScheduler {
     }
 
     public void reportOperator(ConcreteOperatorID operatorID, int exidCode,
-        Serializable exitMessage, Date time) throws RemoteException {
+                               Serializable exitMessage, Date time) throws RemoteException {
         lock.lock();
         try {
             // IndependentEvents jobs = new IndependentEvents();
@@ -590,14 +590,14 @@ public class PlanEventScheduler {
     }
 
     public void containerWarningClockTick(ContainerID id, long timeToTick_ms, long quantumCount)
-        throws RemoteException {
+            throws RemoteException {
         lock.lock();
         try {
             IndependentEvents jobs = new IndependentEvents(state);
             ContainerQuantumClockTickEvent event =
-                new ContainerQuantumClockTickEvent(id, timeToTick_ms, quantumCount, state);
+                    new ContainerQuantumClockTickEvent(id, timeToTick_ms, quantumCount, state);
             jobs.addEvent(event, ContainerQuantumClockTickEventHandler.instance,
-                ContainerQuantumClockTickEventListener.instance);
+                    ContainerQuantumClockTickEventListener.instance);
             queueIndependentEvents(jobs);
         } finally {
             lock.unlock();
@@ -609,9 +609,9 @@ public class PlanEventScheduler {
         try {
             IndependentEvents jobs = new IndependentEvents(state);
             ContainerQuantumClockTickEvent event =
-                new ContainerQuantumClockTickEvent(id, quantumCount, state);
+                    new ContainerQuantumClockTickEvent(id, quantumCount, state);
             jobs.addEvent(event, ContainerQuantumClockTickEventHandler.instance,
-                ContainerQuantumClockTickEventListener.instance);
+                    ContainerQuantumClockTickEventListener.instance);
             queueIndependentEvents(jobs);
         } finally {
             lock.unlock();
@@ -622,14 +622,14 @@ public class PlanEventScheduler {
     //
     //
     public void globalWarningClockTick(long timeToTick_ms, long quantumCount)
-        throws RemoteException {
+            throws RemoteException {
         lock.lock();
         try {
             IndependentEvents jobs = new IndependentEvents(state);
             GlobalQuantumClockTickEvent event =
-                new GlobalQuantumClockTickEvent(timeToTick_ms, quantumCount, state);
+                    new GlobalQuantumClockTickEvent(timeToTick_ms, quantumCount, state);
             jobs.addEvent(event, GlobalQuantumClockTickEventHandler.instance,
-                GlobalQuantumClockTickEventListener.instance);
+                    GlobalQuantumClockTickEventListener.instance);
             queueIndependentEvents(jobs);
         } finally {
             lock.unlock();
@@ -641,9 +641,9 @@ public class PlanEventScheduler {
         try {
             IndependentEvents jobs = new IndependentEvents(state);
             GlobalQuantumClockTickEvent event =
-                new GlobalQuantumClockTickEvent(quantumCount, state);
+                    new GlobalQuantumClockTickEvent(quantumCount, state);
             jobs.addEvent(event, GlobalQuantumClockTickEventHandler.instance,
-                GlobalQuantumClockTickEventListener.instance);
+                    GlobalQuantumClockTickEventListener.instance);
             queueIndependentEvents(jobs);
         } finally {
             lock.unlock();
@@ -657,7 +657,7 @@ public class PlanEventScheduler {
                 Parameters linkParameters = new Parameters();
                 for (Parameter p : link.paramList) {
                     linkParameters.addParameter(
-                        new madgik.exareme.worker.art.parameter.Parameter(p.name, p.value));
+                            new madgik.exareme.worker.art.parameter.Parameter(p.name, p.value));
 
                 }
                 params.put(link.toOperator.operatorName, linkParameters);
@@ -672,7 +672,7 @@ public class PlanEventScheduler {
             IndependentEvents jobs = new IndependentEvents(state);
             ContainersErrorEvent event = new ContainersErrorEvent(state, faultyContainers);
             jobs.addEvent(event, ContainersErrorEventHandler.instance,
-                ContainersErrorEventListener.instance);
+                    ContainersErrorEventListener.instance);
             queueIndependentEvents(jobs);
         } finally {
             lock.unlock();

@@ -18,27 +18,33 @@ public class ContainerManagement implements ContainerManagementMBean {
         this.container = container;
     }
 
-    @Override public long getActiveConcreteOperators() throws RemoteException {
+    @Override
+    public long getActiveConcreteOperators() throws RemoteException {
         return container.getStatus().operatorStatus.getOperatorMeasurement().getActiveValue();
     }
 
-    @Override public long getActiveBuffers() throws RemoteException {
+    @Override
+    public long getActiveBuffers() throws RemoteException {
         return container.getStatus().bufferStatus.getPipeCountMeasurement().getActiveValue();
     }
 
-    @Override public long getActiveAdaptors() throws RemoteException {
+    @Override
+    public long getActiveAdaptors() throws RemoteException {
         return container.getStatus().adaptorStatus.getAdaptorMeasurement().getActiveValue();
     }
 
-    @Override public long getActiveSessions() throws RemoteException {
+    @Override
+    public long getActiveSessions() throws RemoteException {
         return 0;
     }
 
-    @Override public long getPipePoolSize() throws RemoteException {
+    @Override
+    public long getPipePoolSize() throws RemoteException {
         return container.getStatus().bufferStatus.getPipeSizeMeasurement().getActiveValue();
     }
 
-    @Override public long getPipePoolSessions() throws RemoteException {
+    @Override
+    public long getPipePoolSessions() throws RemoteException {
         return container.getStatus().bufferStatus.getSessionMeasurement().getActiveValue();
     }
 }

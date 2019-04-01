@@ -9,7 +9,7 @@ import java.util.Calendar;
 
 /**
  * @author Christos Mallios <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  */
 public class Date {
 
@@ -25,7 +25,7 @@ public class Date {
     }
 
     /*
-     * Function which returns the difference of the current date time to 
+     * Function which returns the difference of the current date time to
      * the given date time in seconds
      */
     public static double getDifferenceInSec(String date) throws ParseException {

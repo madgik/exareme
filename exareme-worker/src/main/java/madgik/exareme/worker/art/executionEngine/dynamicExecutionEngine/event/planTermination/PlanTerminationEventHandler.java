@@ -25,8 +25,9 @@ public class PlanTerminationEventHandler implements ExecEngineEventHandler<PlanT
     public PlanTerminationEventHandler() {
     }
 
-    @Override public void preProcess(PlanTerminationEvent event, PlanEventSchedulerState state)
-        throws RemoteException {
+    @Override
+    public void preProcess(PlanTerminationEvent event, PlanEventSchedulerState state)
+            throws RemoteException {
         if (state.isTerminated() == false) {
             for (ContainerProxy proxy : state.getContainerProxies()) {
                 try {
@@ -65,12 +66,14 @@ public class PlanTerminationEventHandler implements ExecEngineEventHandler<PlanT
 
     }
 
-    @Override public void handle(PlanTerminationEvent event, EventProcessor proc)
-        throws RemoteException {
+    @Override
+    public void handle(PlanTerminationEvent event, EventProcessor proc)
+            throws RemoteException {
     }
 
-    @Override public void postProcess(PlanTerminationEvent event, PlanEventSchedulerState state)
-        throws RemoteException {
+    @Override
+    public void postProcess(PlanTerminationEvent event, PlanEventSchedulerState state)
+            throws RemoteException {
         state.getStatistics().incrControlMessagesCountBy(event.messageCount);
     }
 }

@@ -11,8 +11,8 @@ import java.rmi.RemoteException;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public interface PlanSessionManagerProxy extends ObjectProxy<PlanSessionManager> {

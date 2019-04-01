@@ -52,19 +52,19 @@ public class SimpleDiskManager implements DiskManagerInterface {
     }
 
     public DiskSession getContainerSession(ContainerSessionID containerSessionID,
-        PlanSessionID planSessionID) throws RemoteException {
+                                           PlanSessionID planSessionID) throws RemoteException {
         DMSession session = getOrCreateDBSession(planSessionID);
         return session.getContainerSession(containerSessionID);
     }
 
     public DiskSession getOperatorSession(ConcreteOperatorID opID,
-        ContainerSessionID containerSessionID, PlanSessionID planSessionID) throws RemoteException {
+                                          ContainerSessionID containerSessionID, PlanSessionID planSessionID) throws RemoteException {
         DMSession session = getOrCreateDBSession(planSessionID);
         return session.getOperatorSession(opID, containerSessionID);
     }
 
     public void destroyContainerSession(ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException {
+                                        PlanSessionID sessionID) throws RemoteException {
         DMSession session = getOrCreateDBSession(sessionID);
         session.destroyContainerSession(containerSessionID);
     }

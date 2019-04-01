@@ -24,7 +24,7 @@ public class FinishedDataflow {
         if (msg == ErrorMsg.SUCCESS) {
             Check.NotNull(dataflow.getDataflow().getSLA(), "SLA should not be null");
             this.chargedMoney =
-                dataflow.getDataflow().getSLA().getBudget(finishedTime - dataflow.getQueuedTime());
+                    dataflow.getDataflow().getSLA().getBudget(finishedTime - dataflow.getQueuedTime());
         } else {
             this.chargedMoney = 0;
         }

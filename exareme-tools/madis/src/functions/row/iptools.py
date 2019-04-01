@@ -1,13 +1,10 @@
 # coding: utf-8
 
-import setpath
-import socket,struct
-import re
-
+import socket
+import struct
 
 
 def ip2long(*args):
-
     """
     .. function:: ip2long(ip) -> int
 
@@ -28,14 +25,17 @@ def ip2long(*args):
 
     """
 
-    if len(args)==1:
+    if len(args) == 1:
         try:
-            return struct.unpack('!L',socket.inet_aton(args[0]))[0]
+            return struct.unpack('!L', socket.inet_aton(args[0]))[0]
         except:
             return
-    elif len(args)==4:
-        return struct.unpack('!L',socket.inet_aton('.'.join([str(x) for x in args])))[0]
-ip2long.registered=True
+    elif len(args) == 4:
+        return struct.unpack('!L', socket.inet_aton('.'.join([str(x) for x in args])))[0]
+
+
+ip2long.registered = True
+
 
 def long2ip(*args):
     """
@@ -56,8 +56,10 @@ def long2ip(*args):
 
     """
 
-    return socket.inet_ntoa(struct.pack('!L',int(args[0])))
-long2ip.registered=True
+    return socket.inet_ntoa(struct.pack('!L', int(args[0])))
+
+
+long2ip.registered = True
 
 
 def ip_prefix(*args):
@@ -82,17 +84,18 @@ def ip_prefix(*args):
     123.34
     """
 
-    if args[0]=='':
+    if args[0] == '':
         return ''
-    
-    ipl=[int(x) for x in args[0].split('.')]
 
-    if len(args)==1:
+    ipl = [int(x) for x in args[0].split('.')]
+
+    if len(args) == 1:
         return len(ipl)
 
-    return '.'.join( [str(x) for x in ipl[0:int(args[1])] ] )
+    return '.'.join([str(x) for x in ipl[0:int(args[1])]])
 
-ip_prefix.registered=True
+
+ip_prefix.registered = True
 
 if not ('.' in __name__):
     """
@@ -100,11 +103,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

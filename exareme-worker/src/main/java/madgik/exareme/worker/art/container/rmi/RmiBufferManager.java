@@ -34,7 +34,7 @@ public class RmiBufferManager implements BufferManager {
     private EntityName regEntityName = null;
 
     public RmiBufferManager(Container container, BufferManagerInterface bufferManagerInterface,
-        EntityName regEntityName) throws RemoteException {
+                            EntityName regEntityName) throws RemoteException {
         this.container = container;
         this.bufferManagerInterface = bufferManagerInterface;
         this.regEntityName = regEntityName;
@@ -42,7 +42,7 @@ public class RmiBufferManager implements BufferManager {
 
     @Override
     public ContainerJobResult prepareJob(ContainerJob job, ContainerSessionID contSessionID,
-        PlanSessionID sessionID) throws RemoteException {
+                                         PlanSessionID sessionID) throws RemoteException {
         switch (job.getType()) {
             case createBuffer: {
                 return createBuffer((CreateBufferJob) job, contSessionID, sessionID);
@@ -54,19 +54,21 @@ public class RmiBufferManager implements BufferManager {
         throw new RemoteException("Job type not supported: " + job.getType());
     }
 
-    @Override public boolean hasExec(ContainerJob job) {
+    @Override
+    public boolean hasExec(ContainerJob job) {
         return false;
     }
 
-    @Override public void execJob(ContainerJob job, ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void execJob(ContainerJob job, ContainerSessionID containerSessionID,
+                        PlanSessionID sessionID) throws RemoteException {
         //TODO(DSQ)
     }
 
     private CreateBufferJobResult createBuffer(CreateBufferJob job,
-        ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
+                                               ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
         BufferID bufferID = bufferManagerInterface
-            .createBuffer(job.bufferName, job.quality, containerSessionID, sessionID);
+                .createBuffer(job.bufferName, job.quality, containerSessionID, sessionID);
 
         bufferID.session = container.createProxy().createSession(containerSessionID, sessionID);
 
@@ -74,25 +76,29 @@ public class RmiBufferManager implements BufferManager {
     }
 
     private DestroyBufferJobResult destroyBuffer(DestroyBufferJob job,
-        ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
+                                                 ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
         bufferManagerInterface.destroyBuffer(job.bufferID, containerSessionID, sessionID);
         return new DestroyBufferJobResult();
     }
 
-    @Override public void destroyContainerSession(ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void destroyContainerSession(ContainerSessionID containerSessionID,
+                                        PlanSessionID sessionID) throws RemoteException {
         bufferManagerInterface.destroyContainerSession(containerSessionID, sessionID);
     }
 
-    @Override public void destroySessions(PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void destroySessions(PlanSessionID sessionID) throws RemoteException {
         bufferManagerInterface.destroySessions(sessionID);
     }
 
-    @Override public void destroyAllSessions() throws RemoteException {
+    @Override
+    public void destroyAllSessions() throws RemoteException {
         bufferManagerInterface.destroyAllSessions();
     }
 
-    @Override public void stopManager() throws RemoteException {
+    @Override
+    public void stopManager() throws RemoteException {
     }
 
 }

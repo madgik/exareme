@@ -56,18 +56,18 @@ public class AdpDBHistoricalQueryData implements Serializable {
             if (opStats == null)
                 continue;
             ConcreteOperator newOp = new ConcreteOperator(op.operatorName,
-                (double) opStats.getTotalTime_ms() / Metrics.MiliSec, op.cpuUtilization,
-                op.memory_MB, op.behavior);
+                    (double) opStats.getTotalTime_ms() / Metrics.MiliSec, op.cpuUtilization,
+                    op.memory_MB, op.behavior);
             log.debug("Operator : '" + newOp.operatorName + "' ...");
             double runTimeDiff = 100.0 * Math.abs(newOp.runTime_SEC - op.runTime_SEC) / Math
-                .max(newOp.runTime_SEC, op.runTime_SEC);
+                    .max(newOp.runTime_SEC, op.runTime_SEC);
             log.debug(
-                "    Time : " + newOp.runTime_SEC + " old[" + op.runTime_SEC + "] -> " + runTimeDiff
-                    + "%");
+                    "    Time : " + newOp.runTime_SEC + " old[" + op.runTime_SEC + "] -> " + runTimeDiff
+                            + "%");
             double cpuUtilDiff = 100.0 * Math.abs(newOp.cpuUtilization - op.cpuUtilization) / Math
-                .max(newOp.cpuUtilization, op.cpuUtilization);
+                    .max(newOp.cpuUtilization, op.cpuUtilization);
             log.debug("     CPU : " + newOp.cpuUtilization + " old[" + op.cpuUtilization + "] -> "
-                + cpuUtilDiff + "%");
+                    + cpuUtilDiff + "%");
             operatorMap.put(newOp.operatorName, newOp);
         }
         log.info("Operators : " + operatorMap.size());
@@ -77,20 +77,20 @@ public class AdpDBHistoricalQueryData implements Serializable {
         ConcreteQueryGraph graph = plan.getGraph();
         for (Link link : graph.getLinks()) {
             log.debug("Link   : '" + link.from.operatorName + "[" + link.data.name + "]"
-                + link.to.operatorName + "' ...");
+                    + link.to.operatorName + "' ...");
             BufferStatistics adaptorStats = extractor
-                .getBufferStats(link.data.name, link.from.operatorName, link.to.operatorName);
+                    .getBufferStats(link.data.name, link.from.operatorName, link.to.operatorName);
             LinkData newLinkData =
-                new LinkData(link.data.name, (double) adaptorStats.getDataRead() / Metrics.MB);
+                    new LinkData(link.data.name, (double) adaptorStats.getDataRead() / Metrics.MB);
             double dataDiff = 100.0 * Math.abs(newLinkData.size_MB - link.data.size_MB) / Math
-                .max(newLinkData.size_MB, link.data.size_MB);
+                    .max(newLinkData.size_MB, link.data.size_MB);
             log.debug(
-                "  Data : " + newLinkData.size_MB + " old[" + link.data.size_MB + "] -> " + dataDiff
-                    + "%");
+                    "  Data : " + newLinkData.size_MB + " old[" + link.data.size_MB + "] -> " + dataDiff
+                            + "%");
 
             linkDataMap
-                .put(StringUtils.concatenateUnique(link.from.operatorName, link.to.operatorName),
-                    newLinkData);
+                    .put(StringUtils.concatenateUnique(link.from.operatorName, link.to.operatorName),
+                            newLinkData);
         }
         log.info("Links : " + linkDataMap.size());
     }
@@ -112,7 +112,7 @@ public class AdpDBHistoricalQueryData implements Serializable {
             return null;
         }
         return new ConcreteOperator(operatorName, op.runTime_SEC, op.cpuUtilization, op.memory_MB,
-            op.behavior);
+                op.behavior);
     }
 
     public LinkData getLinkData(String name, String fromOperator, String toOperator) {

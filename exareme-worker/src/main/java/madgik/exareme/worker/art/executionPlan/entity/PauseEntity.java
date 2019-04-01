@@ -7,8 +7,8 @@ import madgik.exareme.common.art.entity.EntityName;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class PauseEntity {
@@ -19,7 +19,7 @@ public class PauseEntity {
     public final OperatorEntity operatorEntity;
 
     public PauseEntity(String operatorName, OperatorEntity operatorEntity, String containerName,
-        EntityName container) {
+                       EntityName container) {
         this.containerName = containerName;
         this.container = container;
         this.operatorName = operatorName;

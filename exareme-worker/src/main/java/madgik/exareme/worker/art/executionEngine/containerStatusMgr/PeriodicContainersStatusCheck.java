@@ -19,7 +19,7 @@ public class PeriodicContainersStatusCheck {
 
 
     public PeriodicContainersStatusCheck(PlanEventScheduler planEventScheduler,
-        Set<EntityName> containersToCheck) {
+                                         Set<EntityName> containersToCheck) {
         this.containersToCheck = containersToCheck;
         this.planEventScheduler = planEventScheduler;
         Thread periodic = new PeriodicCheck();
@@ -46,7 +46,7 @@ public class PeriodicContainersStatusCheck {
                     log.debug("Checking container: " + containerName);
                     try {
                         ContainerProxy containerProxy = planEventScheduler.getState().registryProxy
-                            .lookupContainer(containerName);
+                                .lookupContainer(containerName);
 
                     } catch (Exception e) {
                         log.error("Container connection error: " + e);

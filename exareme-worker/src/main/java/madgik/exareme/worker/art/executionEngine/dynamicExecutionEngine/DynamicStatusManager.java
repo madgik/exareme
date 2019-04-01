@@ -16,53 +16,58 @@ import java.util.concurrent.Semaphore;
  * @author herald
  */
 public class DynamicStatusManager extends EventSchedulerManipulator
-    implements PlanSessionStatusManagerInterface {
+        implements PlanSessionStatusManagerInterface {
 
     public DynamicStatusManager() {
     }
 
-    @Override public boolean hasFinished(PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public boolean hasFinished(PlanSessionID sessionID) throws RemoteException {
         PlanEventScheduler eventScheduler = getSchedulerWithId(sessionID);
         return eventScheduler.getState().getPlanSession().getPlanSessionStatus().hasFinished();
     }
 
-    @Override public void waitUntilFinish(PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void waitUntilFinish(PlanSessionID sessionID) throws RemoteException {
         PlanEventScheduler eventScheduler = getSchedulerWithId(sessionID);
         try {
             if (eventScheduler.getState().isTerminated()) {
                 return;
             }
-      /* Register the listener and wait for termination */
+            /* Register the listener and wait for termination */
             Semaphore wait = new Semaphore(0);
             eventScheduler.getState()
-                .registerTerminationListener(new SemaphoreTerminationListener(wait));
+                    .registerTerminationListener(new SemaphoreTerminationListener(wait));
             wait.acquire();
         } catch (Exception e) {
             throw new RemoteException("Cannot wait until finished!", e);
         }
     }
 
-    @Override public boolean hasError(PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public boolean hasError(PlanSessionID sessionID) throws RemoteException {
         PlanEventScheduler eventScheduler = getSchedulerWithId(sessionID);
         return eventScheduler.getState().getPlanSession().getPlanSessionStatus().hasError();
     }
 
-    @Override public List<Exception> getErrorList(PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public List<Exception> getErrorList(PlanSessionID sessionID) throws RemoteException {
         PlanEventScheduler eventScheduler = getSchedulerWithId(sessionID);
         return eventScheduler.getState().getPlanSession().getPlanSessionStatus().getExceptions();
     }
 
-    @Override public ActiveExecutionPlan getActiveExecutionPlan(PlanSessionID sessionID)
-        throws RemoteException {
+    @Override
+    public ActiveExecutionPlan getActiveExecutionPlan(PlanSessionID sessionID)
+            throws RemoteException {
         PlanEventScheduler eventScheduler = getSchedulerWithId(sessionID);
         return eventScheduler.getState().getPlanSession().getActiveExecutionPlan();
     }
 
     @Override
     public ConcreteOperatorStatus getOperatorStatus(String operatorName, PlanSessionID sessionID)
-        throws RemoteException {
+            throws RemoteException {
         PlanEventScheduler eventScheduler = getSchedulerWithId(sessionID);
         return eventScheduler.getState().getPlanSession().getPlanSessionStatus()
-            .getStatus(operatorName);
+                .getStatus(operatorName);
     }
 }

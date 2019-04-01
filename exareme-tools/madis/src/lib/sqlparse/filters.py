@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from sqlparse.engine import grouping
-from sqlparse import tokens as T
 from sqlparse import sql
+from sqlparse import tokens as T
+from sqlparse.engine import grouping
 
 
 class Filter(object):
@@ -23,7 +22,6 @@ class TokenFilter(Filter):
 # token process
 
 class _CaseFilter(TokenFilter):
-
     ttype = None
 
     def __init__(self, case=None):
@@ -63,9 +61,9 @@ class StripCommentsFilter(Filter):
             # Replace by whitespace if prev and next exist and if they're not
             # whitespaces. This doesn't apply if prev or next is a paranthesis.
             if (prev is not None and next_ is not None
-                and not prev.is_whitespace() and not next_.is_whitespace()
-                and not (prev.match(T.Punctuation, '(')
-                         or next_.match(T.Punctuation, ')'))):
+                    and not prev.is_whitespace() and not next_.is_whitespace()
+                    and not (prev.match(T.Punctuation, '(')
+                             or next_.match(T.Punctuation, ')'))):
                 tlist.tokens[tidx] = grouping.Token(T.Whitespace, ' ')
             else:
                 tlist.tokens.pop(tidx)
@@ -121,15 +119,15 @@ class ReindentFilter(Filter):
     def _get_offset(self, token):
         all_ = list(self._curr_stmt.flatten())
         idx = all_.index(token)
-        raw = ''.join(unicode(x) for x in all_[:idx+1])
+        raw = ''.join(unicode(x) for x in all_[:idx + 1])
         line = raw.splitlines()[-1]
         # Now take current offset into account and return relative offset.
-        full_offset = len(line)-(len(self.char*(self.width*self.indent)))
+        full_offset = len(line) - (len(self.char * (self.width * self.indent)))
         return full_offset - self.offset
 
     def nl(self):
         # TODO: newline character should be configurable
-        ws = '\n'+(self.char*((self.indent*self.width)+self.offset))
+        ws = '\n' + (self.char * ((self.indent * self.width) + self.offset))
         return grouping.Token(T.Whitespace, ws)
 
     def _split_kwds(self, tlist):
@@ -146,14 +144,14 @@ class ReindentFilter(Filter):
                 tlist.tokens.pop(tlist.token_index(prev))
                 offset += 1
             if (prev
-                and isinstance(prev, sql.Comment)
-                and (str(prev).endswith('\n')
-                     or str(prev).endswith('\r'))):
+                    and isinstance(prev, sql.Comment)
+                    and (str(prev).endswith('\n')
+                         or str(prev).endswith('\r'))):
                 nl = tlist.token_next(token)
             else:
                 nl = self.nl()
                 tlist.insert_before(token, nl)
-            token = tlist.token_next_match(tlist.token_index(nl)+offset,
+            token = tlist.token_next_match(tlist.token_index(nl) + offset,
                                            T.Keyword, split_words, regex=True)
 
     def _split_statements(self, tlist):
@@ -167,7 +165,7 @@ class ReindentFilter(Filter):
             if prev:
                 nl = self.nl()
                 tlist.insert_before(token, nl)
-            token = tlist.token_next_by_type(tlist.token_index(token)+1,
+            token = tlist.token_next_by_type(tlist.token_index(token) + 1,
                                              (T.Keyword.DDL, T.Keyword.DML))
 
     def _process(self, tlist):
@@ -190,7 +188,7 @@ class ReindentFilter(Filter):
             tlist.tokens.insert(0, self.nl())
             indented = True
         num_offset = self._get_offset(tlist.token_next_match(0,
-                                                        T.Punctuation, '('))
+                                                             T.Punctuation, '('))
         self.offset += num_offset
         self._process_default(tlist, stmts=not indented)
         if indented:
@@ -201,7 +199,7 @@ class ReindentFilter(Filter):
         identifiers = tlist.get_identifiers()
         if len(identifiers) > 1 and not tlist.within(sql.Function):
             first = list(identifiers[0].flatten())[0]
-            num_offset = self._get_offset(first)-len(first.value)
+            num_offset = self._get_offset(first) - len(first.value)
             self.offset += num_offset
             for token in identifiers[1:]:
                 tlist.insert_before(token, self.nl())
@@ -213,12 +211,12 @@ class ReindentFilter(Filter):
         is_first = True
         num_offset = None
         case = tlist.tokens[0]
-        outer_offset = self._get_offset(case)-len(case.value)
+        outer_offset = self._get_offset(case) - len(case.value)
         self.offset += outer_offset
         for cond, value in tlist.get_cases():
             if is_first:
                 is_first = False
-                num_offset = self._get_offset(cond[0])-len(cond[0].value)
+                num_offset = self._get_offset(cond[0]) - len(cond[0].value)
                 self.offset += num_offset
                 continue
             if cond is None:
@@ -255,16 +253,15 @@ class ReindentFilter(Filter):
                 else:
                     nl = '\n\n'
                 stmt.tokens.insert(0,
-                    grouping.Token(T.Whitespace, nl))
+                                   grouping.Token(T.Whitespace, nl))
             if self._last_stmt != stmt:
                 self._last_stmt = stmt
 
 
 # FIXME: Doesn't work ;)
 class RightMarginFilter(Filter):
-
     keep_together = (
-#        grouping.TypeCast, grouping.Identifier, grouping.Alias,
+        #        grouping.TypeCast, grouping.Identifier, grouping.Alias,
     )
 
     def __init__(self, width=79):
@@ -338,7 +335,7 @@ class OutputPythonFilter(Filter):
                 after_lb = token.value.split('\n', 1)[1]
                 yield grouping.Token(T.Text, " '")
                 yield grouping.Token(T.Whitespace, '\n')
-                for i in range(len(varname)+4):
+                for i in range(len(varname) + 4):
                     yield grouping.Token(T.Whitespace, ' ')
                 yield grouping.Token(T.Text, "'")
                 if after_lb:  # it's the indendation
@@ -379,9 +376,9 @@ class OutputPHPFilter(Filter):
         cnt = 0
         for token in stream:
             if token.is_whitespace() and '\n' in token.value:
-#                cnt += 1
-#                if cnt == 1:
-#                    continue
+                #                cnt += 1
+                #                if cnt == 1:
+                #                    continue
                 after_lb = token.value.split('\n', 1)[1]
                 yield grouping.Token(T.Text, ' "')
                 yield grouping.Token(T.Operator, ';')

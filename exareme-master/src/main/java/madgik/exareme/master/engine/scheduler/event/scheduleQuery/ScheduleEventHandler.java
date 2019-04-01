@@ -27,7 +27,8 @@ public class ScheduleEventHandler implements EventHandler<ScheduleEvent> {
         this.state = schedulerState;
     }
 
-    @Override public void handle(ScheduleEvent event, EventProcessor proc) throws RemoteException {
+    @Override
+    public void handle(ScheduleEvent event, EventProcessor proc) throws RemoteException {
         try {
             log.debug("Scheduling query plan: " + event.queryID.getQueryID());
             AdpDBExecutor executor = state.manager.getAdpDBExecutor();

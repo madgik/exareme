@@ -19,19 +19,22 @@ public class DataTransferEventHandler implements ExecEngineEventHandler<DataTran
     public DataTransferEventHandler() {
     }
 
-    @Override public void preProcess(DataTransferEvent event, PlanEventSchedulerState state)
-        throws RemoteException {
+    @Override
+    public void preProcess(DataTransferEvent event, PlanEventSchedulerState state)
+            throws RemoteException {
 
     }
 
-    @Override public void handle(DataTransferEvent event, EventProcessor proc)
-        throws RemoteException {
+    @Override
+    public void handle(DataTransferEvent event, EventProcessor proc)
+            throws RemoteException {
         event.session.execJobs(event.jobs);
         event.messageCount = 1;
     }
 
-    @Override public void postProcess(DataTransferEvent event, PlanEventSchedulerState state)
-        throws RemoteException {
+    @Override
+    public void postProcess(DataTransferEvent event, PlanEventSchedulerState state)
+            throws RemoteException {
         state.getStatistics().incrControlMessagesCountBy(event.messageCount);
     }
 }

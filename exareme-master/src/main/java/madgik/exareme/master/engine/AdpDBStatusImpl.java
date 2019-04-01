@@ -31,41 +31,50 @@ public class AdpDBStatusImpl implements AdpDBStatus {
         return queryID;
     }
 
-    @Override public int getId() {
+    @Override
+    public int getId() {
         return id;
     }
 
-    @Override public boolean hasFinished() throws RemoteException {
+    @Override
+    public boolean hasFinished() throws RemoteException {
         return AdpDBStatusManagerLocator.getStatusManager().hasFinished(id);
     }
 
-    @Override public boolean hasError() throws RemoteException {
+    @Override
+    public boolean hasError() throws RemoteException {
         return AdpDBStatusManagerLocator.getStatusManager().hasError(id);
     }
 
-    @Override public void registerListener(AdpDBQueryListener listener) throws RemoteException {
+    @Override
+    public void registerListener(AdpDBQueryListener listener) throws RemoteException {
         AdpDBStatusManagerLocator.getStatusManager().registerListener(listener, id);
     }
 
-    @Override public void stopExecution() throws RemoteException {
+    @Override
+    public void stopExecution() throws RemoteException {
         AdpDBStatusManagerLocator.getStatusManager().stopExecution(id);
     }
 
-    @Override public AdpDBStatistics getStatistics() throws RemoteException {
+    @Override
+    public AdpDBStatistics getStatistics() throws RemoteException {
         return AdpDBStatusManagerLocator.getStatusManager().getStatistics(id);
     }
 
-    @Override public Exception getLastException() throws RemoteException {
+    @Override
+    public Exception getLastException() throws RemoteException {
         return AdpDBStatusManagerLocator.getStatusManager().getLastException(id);
     }
 
-    @Override public List<Exception> getExceptions(int k) throws RemoteException {
+    @Override
+    public List<Exception> getExceptions(int k) throws RemoteException {
         return AdpDBStatusManagerLocator.getStatusManager().getExceptions(k, id);
     }
 
-    @Override public AdpDBStatus createSerializableStatus() throws RemoteException {
+    @Override
+    public AdpDBStatus createSerializableStatus() throws RemoteException {
         return new AdpDBStatusSerializable(id, hasFinished(), hasError(), null,
-            // TODO(herald): Make this right.
-            getStatistics());
+                // TODO(herald): Make this right.
+                getStatistics());
     }
 }

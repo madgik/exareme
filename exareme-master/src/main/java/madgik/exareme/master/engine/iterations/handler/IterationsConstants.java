@@ -6,7 +6,7 @@ import madgik.exareme.common.consts.DBConstants;
  * Contains iterations related constants.
  *
  * @author Christos Aslanoglou <br> caslanoglou@di.uoa.gr <br> University of Athens / Department of
- *         Informatics and Telecommunications.
+ * Informatics and Telecommunications.
  */
 public class IterationsConstants {
     // DFL Variables -------------------------------------------------------------------------

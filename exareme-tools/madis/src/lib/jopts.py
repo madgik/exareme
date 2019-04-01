@@ -60,143 +60,152 @@ u'[]'
 """
 
 import json
+
 try:
     from collections import OrderedDict
 except ImportError:
     # Python 2.6
     from lib.collections26 import OrderedDict
 
+
 def toj(l):
-    if l==None:
+    if l == None:
         return l
-    typel=type(l)
-    if typel==str or typel==unicode:
-        if l=='':
+    typel = type(l)
+    if typel == str or typel == unicode:
+        if l == '':
             return u''
-        elif l[0]!='[' or l[-1]!=']':
+        elif l[0] != '[' or l[-1] != ']':
             return l
         else:
-            return json.dumps([l], separators=(',',':'), ensure_ascii=False)
-    if typel==int or typel==float:
+            return json.dumps([l], separators=(',', ':'), ensure_ascii=False)
+    if typel == int or typel == float:
         return l
-    if typel==list or typel==tuple:
-        lenl=len(l)
-        if lenl==1:
-            typel=type(l[0])
-            if typel==str or typel==unicode:
-                if l[0]=='':
+    if typel == list or typel == tuple:
+        lenl = len(l)
+        if lenl == 1:
+            typel = type(l[0])
+            if typel == str or typel == unicode:
+                if l[0] == '':
                     return u''
-                elif  l[0][0]!='[' or l[0][-1]!=']':
+                elif l[0][0] != '[' or l[0][-1] != ']':
                     return l[0]
-            if typel==int or typel==float:
+            if typel == int or typel == float:
                 return l[0]
-        if lenl==0:
+        if lenl == 0:
             return u'[]'
-        return json.dumps(l, separators=(',',':'), ensure_ascii=False)
-    return json.dumps(l, separators=(',',':'), ensure_ascii=False)
+        return json.dumps(l, separators=(',', ':'), ensure_ascii=False)
+    return json.dumps(l, separators=(',', ':'), ensure_ascii=False)
+
 
 def tojstrict(l):
-    if type(l)==list:
-        return json.dumps(l, separators=(',',':'), ensure_ascii=False)
-    return json.dumps([l], separators=(',',':'), ensure_ascii=False)
+    if type(l) == list:
+        return json.dumps(l, separators=(',', ':'), ensure_ascii=False)
+    return json.dumps([l], separators=(',', ':'), ensure_ascii=False)
+
 
 def fromjsingle(j):
-    typej=type(j)
+    typej = type(j)
     if typej == int or typej == float:
         return j
     if typej == str or typej == unicode:
         if j == '':
             return u''
-        if (j[0] == '[' and j[-1] == ']') or (j[0]=='{' and j[-1]=='}'):
+        if (j[0] == '[' and j[-1] == ']') or (j[0] == '{' and j[-1] == '}'):
             try:
-                return json.loads(j, object_pairs_hook = OrderedDict)
+                return json.loads(j, object_pairs_hook=OrderedDict)
             except KeyboardInterrupt:
                 raise
             except:
                 return j
         return j
 
+
 def fromj(*jargs):
-    fj=[]
+    fj = []
     for j in jargs:
-        typej=type(j)
-        if typej==int or typej==float:
-            fj+= [j]
+        typej = type(j)
+        if typej == int or typej == float:
+            fj += [j]
             continue
-        if typej==str or typej==unicode:
-            if j=='':
-                fj+= [u'']
+        if typej == str or typej == unicode:
+            if j == '':
+                fj += [u'']
                 continue
-            if (j[0]=='[' and j[-1]==']'):
+            if (j[0] == '[' and j[-1] == ']'):
                 try:
-                    fj+=json.loads(j)
+                    fj += json.loads(j)
                     continue
                 except KeyboardInterrupt:
                     raise
                 except:
-                    fj+= [j]
+                    fj += [j]
                     continue
-            if (j[0]=='{' and j[-1]=='}'):
+            if (j[0] == '{' and j[-1] == '}'):
                 try:
-                    fj+=list(json.loads(j, object_pairs_hook = OrderedDict))
+                    fj += list(json.loads(j, object_pairs_hook=OrderedDict))
                     continue
                 except KeyboardInterrupt:
                     raise
                 except:
-                    fj+= [j]
+                    fj += [j]
                     continue
-            fj+= [j]
+            fj += [j]
     return fj
+
 
 def elemfromj(*jargs):
-    fj=[]
+    fj = []
     for j in jargs:
         if j is None:
-            fj+=[None]
+            fj += [None]
             continue
-        typej=type(j)
-        if typej==int or typej==float:
-            fj+= [j]
+        typej = type(j)
+        if typej == int or typej == float:
+            fj += [j]
             continue
-        if typej==str or typej==unicode:
-            if j=='':
-                fj+= [u'']
+        if typej == str or typej == unicode:
+            if j == '':
+                fj += [u'']
                 continue
-            if j[0]=='[' and j[-1]==']':
+            if j[0] == '[' and j[-1] == ']':
                 try:
-                    fj+=[json.loads(j)]
+                    fj += [json.loads(j)]
                     continue
                 except KeyboardInterrupt:
                     raise
                 except:
-                    fj+= [j]
+                    fj += [j]
                     continue
-            if (j[0]=='{' and j[-1]=='}'):
+            if (j[0] == '{' and j[-1] == '}'):
                 try:
-                    fj+=[json.loads(j, object_pairs_hook = OrderedDict)]
+                    fj += [json.loads(j, object_pairs_hook=OrderedDict)]
                     continue
                 except KeyboardInterrupt:
                     raise
                 except:
-                    fj+= [j]
-                    continue          
-            fj+= [j]
+                    fj += [j]
+                    continue
+            fj += [j]
     return fj
 
-#Flatten based on BasicTypes for Python
+
+# Flatten based on BasicTypes for Python
 #	Copyright (c) 2002-2003, Michael C. Fletcher
 #	All rights reserved.
-def flatten(inlist, type=type, ltype=(list,tuple)):
+def flatten(inlist, type=type, ltype=(list, tuple)):
     try:
-        ind=0
+        ind = 0
         while True:
-            while isinstance( inlist[ind], ltype):
-                inlist[ind:ind+1] = list(inlist[ind])
-            ind+=1
+            while isinstance(inlist[ind], ltype):
+                inlist[ind:ind + 1] = list(inlist[ind])
+            ind += 1
     except IndexError:
         pass
     return inlist
 
+
 if __name__ == "__main__":
     import doctest
+
     doctest.testmod()

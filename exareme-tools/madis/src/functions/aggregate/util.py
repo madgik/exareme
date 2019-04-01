@@ -1,5 +1,6 @@
 __docformat__ = 'reStructuredText en'
 
+
 class expandgroups:
     """
     .. function:: expandgroups(args) -> args
@@ -47,18 +48,19 @@ class expandgroups:
 
     """
 
-    registered=True
+    registered = True
 
     def __init__(self):
-        self.rows=[]
+        self.rows = []
 
     def step(self, *args):
         self.rows.append(args)
 
     def final(self):
-        yield tuple(('C'+str(x) for x in xrange(1,len(self.rows[0])+1)))
+        yield tuple(('C' + str(x) for x in xrange(1, len(self.rows[0]) + 1)))
         for r in self.rows:
             yield r
+
 
 class showgroups:
     """
@@ -103,16 +105,17 @@ class showgroups:
 
     """
 
-    registered=True
+    registered = True
 
     def __init__(self):
-        self.rows=[]
+        self.rows = []
 
     def step(self, *args):
         self.rows.append(args)
 
     def final(self):
-        return '\n'+'\n'.join(['\t'.join([unicode(x) for x in r]) for r in self.rows])
+        return '\n' + '\n'.join(['\t'.join([unicode(x) for x in r]) for r in self.rows])
+
 
 if not ('.' in __name__):
     """
@@ -120,11 +123,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

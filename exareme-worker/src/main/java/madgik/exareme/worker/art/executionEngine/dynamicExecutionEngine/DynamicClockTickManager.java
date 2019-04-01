@@ -13,12 +13,12 @@ import java.rmi.RemoteException;
  * @author heraldkllapi
  */
 public class DynamicClockTickManager extends EventSchedulerManipulator
-    implements ClockTickManagerInterface {
+        implements ClockTickManagerInterface {
     private static final Logger log = Logger.getLogger(DynamicClockTickManager.class);
 
     @Override
     public void containerWarningClockTick(ContainerID id, long timeToTick_ms, long quantumCount)
-        throws RemoteException {
+            throws RemoteException {
         log.info("Container Warning Clock Tick");
         getGlobalScheduler().containerWarningClockTick(id, timeToTick_ms, quantumCount);
         for (PlanEventScheduler scheduler : getAllSessions()) {
@@ -26,8 +26,9 @@ public class DynamicClockTickManager extends EventSchedulerManipulator
         }
     }
 
-    @Override public void containerClockTick(ContainerID id, long quantumCount)
-        throws RemoteException {
+    @Override
+    public void containerClockTick(ContainerID id, long quantumCount)
+            throws RemoteException {
         log.info("Container Clock Tick");
         getGlobalScheduler().containerClockTick(id, quantumCount);
         for (PlanEventScheduler scheduler : getAllSessions()) {
@@ -35,8 +36,9 @@ public class DynamicClockTickManager extends EventSchedulerManipulator
         }
     }
 
-    @Override public void globalWarningClockTick(long timeToTick_ms, long quantumCount)
-        throws RemoteException {
+    @Override
+    public void globalWarningClockTick(long timeToTick_ms, long quantumCount)
+            throws RemoteException {
         log.info("Global Warning Clock Tick");
         getGlobalScheduler().globalWarningClockTick(timeToTick_ms, quantumCount);
         for (PlanEventScheduler scheduler : getAllSessions()) {
@@ -44,7 +46,8 @@ public class DynamicClockTickManager extends EventSchedulerManipulator
         }
     }
 
-    @Override public void globalClockTick(long quantumCount) throws RemoteException {
+    @Override
+    public void globalClockTick(long quantumCount) throws RemoteException {
         log.info("Global Clock Tick");
         getGlobalScheduler().globalClockTick(quantumCount);
         for (PlanEventScheduler scheduler : getAllSessions()) {

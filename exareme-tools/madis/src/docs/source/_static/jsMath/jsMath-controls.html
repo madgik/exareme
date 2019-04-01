@@ -48,7 +48,7 @@
             //   catch the error (Grrr!) so don't even attempt it.
             //
             if (pageDomain.match(/\..*\./) &&
-                    (navigator.appName != 'Microsoft Internet Explorer' || !navigator.platform.match(/Mac/) || !navigator.userProfile || !document.all)) {
+                (navigator.appName != 'Microsoft Internet Explorer' || !navigator.platform.match(/Mac/) || !navigator.userProfile || !document.all)) {
                 try {
                     document.domain = pageDomain.replace(/^[^.]*\./, '');
                     showWarning = 0;
@@ -60,9 +60,9 @@
 
     function Warning() {
         alert(
-                "jsMath can't open the control panel, since jsMath was not " +
-                "obtained from a server that is in the same domain as the " +
-                "page that loaded it."
+            "jsMath can't open the control panel, since jsMath was not " +
+            "obtained from a server that is in the same domain as the " +
+            "page that loaded it."
         );
     }
 
@@ -96,7 +96,7 @@
                     stayhires: 1, autofont: 1, alpha: 1, tex2math: 1, global: 1
                 }) {
                     if (this.cookie[id] && this.cookie[id] != this.oldCookie[id] &&
-                            this.oldCookie[id] != null) {
+                        this.oldCookie[id] != null) {
                         this.Reload();
                         return;
                     }
@@ -111,20 +111,20 @@
                 jsMath.Element("_version").innerHTML = jsMath.version;
 
                 jsMath.Element("_fontType").innerHTML =
-                        ({
-                            tex: "TeX",
-                            image: "Image",
-                            symbol: "Image symbol",
-                            unicode: "Unicode"
-                        })[this.cookie.font];
+                    ({
+                        tex: "TeX",
+                        image: "Image",
+                        symbol: "Image symbol",
+                        unicode: "Unicode"
+                    })[this.cookie.font];
 
                 jsMath.Element("_mailto").href =
-                        "mailto:dpvc@union.edu?subject=Bug Report for jsMath "
-                        + jsMath.version + " (using " + jsMath.browser
-                        + " in " + this.cookie.font + " mode)";
+                    "mailto:dpvc@union.edu?subject=Bug Report for jsMath "
+                    + jsMath.version + " (using " + jsMath.browser
+                    + " in " + this.cookie.font + " mode)";
 
                 if (this.cookie.print ||
-                        (this.cookie.font != 'image' && this.cookie.font != 'symbol')) {
+                    (this.cookie.font != 'image' && this.cookie.font != 'symbol')) {
                     jsMath.Element("_resolution").disabled = true
                 }
 
@@ -173,12 +173,11 @@
                 var font = jsMath.document.getElementsByName("jsMath__font");
                 for (var i = 0; i < font.length; i++) {
                     if ((font[i].value == 'tex' && jsMath.nofonts) ||
-                            ((font[i].value == 'symbol' || font[i].value == 'image') &&
+                        ((font[i].value == 'symbol' || font[i].value == 'image') &&
                             jsMath.noImgFonts)) {
                         jsMath.Element('_' + font[i].value + "Text").className = "disabled";
                         font[i].disabled = true;
-                    }
-                    else if (this.cookie.font == font[i].value) {
+                    } else if (this.cookie.font == font[i].value) {
                         font[i].checked = true
                     }
                 }
@@ -557,7 +556,7 @@
                             <tr>
                                 <td><input type="radio" name="jsMath__font" value="image"
                                            onclick="jsMath.Controls.NoAuto()"/>
-<span id="jsMath__imageText">Use image fonts
+                                    <span id="jsMath__imageText">Use image fonts
 <span id="jsMath__scaleImgText">(<input type="checkbox" id="jsMath__scaleImg" value="1"/> scalable)</span></span>
                                 </td>
                             </tr>

@@ -15,7 +15,8 @@ public class ConcreteOperatorTest {
     public ConcreteOperatorTest() {
     }
 
-    @Test public void testOrdering() {
+    @Test
+    public void testOrdering() {
         PriorityQueue<ConcreteOperator> readyOps = new PriorityQueue<>();
         readyOps.offer(new ConcreteOperator("A", 10, 0, 0, OperatorBehavior.store_and_forward));
         readyOps.offer(new ConcreteOperator("B", 20, 0, 0, OperatorBehavior.store_and_forward));

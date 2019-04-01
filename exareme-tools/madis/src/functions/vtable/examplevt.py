@@ -29,12 +29,13 @@ Examples:
 """
 import vtbase
 
-registered=True
+registered = True
 external_query = True
+
 
 class examplevt(vtbase.VT):
     def VTiter(self, *parsedArgs, **envars):
-        yield [('varname', ), ('value', 'text')]
+        yield [('varname',), ('value', 'text')]
 
         largs, dictargs = self.full_parse(parsedArgs)
 
@@ -46,11 +47,13 @@ class examplevt(vtbase.VT):
         for k, v in dictargs.iteritems():
             yield [unicode(k), unicode(v)]
 
-        for x,y in envars.iteritems():
-            yield ["envar:"+x, str(y)]
+        for x, y in envars.iteritems():
+            yield ["envar:" + x, str(y)]
+
 
 def Source():
     return vtbase.VTGenerator(examplevt)
+
 
 if not ('.' in __name__):
     """
@@ -58,11 +61,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

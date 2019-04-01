@@ -11,7 +11,7 @@ import java.io.InputStream;
 public class InputStreamConsumerThread extends Thread {
 
     private static final int ioBufferSize =
-        AdpProperties.getArtProps().getInt("art.container.ioBufferSize_kb") * Metrics.KB;
+            AdpProperties.getArtProps().getInt("art.container.ioBufferSize_kb") * Metrics.KB;
     private final InputStream inputStream;
     private StringBuffer output = new StringBuffer();
     private boolean print = false;
@@ -26,7 +26,8 @@ public class InputStreamConsumerThread extends Thread {
         this.print = print;
     }
 
-    @Override public void run() {
+    @Override
+    public void run() {
         try {
             byte[] buffer = new byte[ioBufferSize];
             int length = 0;

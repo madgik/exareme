@@ -2,17 +2,15 @@
 
 // Declare app level module which depends on views, and components
 angular.module('myApp', [
-  'ngRoute',
-  'myApp.view1',
-  'myApp.view2',
-  'myApp.version'
-]).
-config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
-  $locationProvider.hashPrefix('!');
+    'ngRoute',
+    'myApp.view1',
+    'myApp.view2',
+    'myApp.version'
+]).config(['$locationProvider', '$routeProvider', function ($locationProvider, $routeProvider) {
+    $locationProvider.hashPrefix('!');
 
-  $routeProvider.otherwise({redirectTo: '/view1'});
-}]).
-controller('ExaController', function($scope, $http){
+    $routeProvider.otherwise({redirectTo: '/view1'});
+}]).controller('ExaController', function ($scope, $http) {
     var exa = this;
     exa.algorithms = [];
     exa.result = [];
@@ -29,7 +27,7 @@ controller('ExaController', function($scope, $http){
         exa.algorithms = [];
     });
 
-    exa.submit = function(algorithm){
+    exa.submit = function (algorithm) {
         exa.result = {};
         Highcharts.chart('visualization', exa.result).destroy();
         $http({
@@ -37,7 +35,7 @@ controller('ExaController', function($scope, $http){
             url: '/mining/query/' + algorithm.name,
             data: algorithm.parameters
         }).then(function successCallback(response) {
-            if(response.status == 200){
+            if (response.status == 200) {
                 exa.name = algorithm.name;
                 /*if(exa.name == 'KMEANSnew'){      //visual output of K_MEANS
                     if (response.data.Error){
@@ -113,9 +111,9 @@ controller('ExaController', function($scope, $http){
                 }
 
                 else{              // */                        //json output
-                 exa.result = response.data;
+                exa.result = response.data;
                 //}
-}
+            }
         }, function errorCallback(response) {
             //result = response.data;
             exa.result = response;

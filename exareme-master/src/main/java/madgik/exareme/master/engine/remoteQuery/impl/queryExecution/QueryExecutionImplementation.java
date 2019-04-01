@@ -17,7 +17,7 @@ import java.util.logging.Level;
 
 /**
  * @author Christos Mallios <br>cacheHit University of Athens / Department of
- *         Informatics and Telecommunications.
+ * Informatics and Telecommunications.
  */
 public class QueryExecutionImplementation implements QueryExecution {
 
@@ -34,9 +34,10 @@ public class QueryExecutionImplementation implements QueryExecution {
 
     //This function executes a query in a db server and returns the
     //results as a sqlite database
-    @Override public synchronized void executeQuery(ServerInfo server, String query, File directory,
-        String madisMainDB, String tableName, String lnDirectory, ProcessManager processManager)
-        throws RemoteException {
+    @Override
+    public synchronized void executeQuery(ServerInfo server, String query, File directory,
+                                          String madisMainDB, String tableName, String lnDirectory, ProcessManager processManager)
+            throws RemoteException {
 
         StringBuilder script = new StringBuilder();
         Thread queryExecution;
@@ -57,7 +58,7 @@ public class QueryExecutionImplementation implements QueryExecution {
         // Add query
         StringBuilder executableQuery = new StringBuilder();
         executableQuery.append("create table ").append(tableName).
-            append(" as ");
+                append(" as ");
         //                .append("select *");
         //    executableQuery.append(" from(").append(server.sqlDatabase);
         //    executableQuery.append(" h:").append(server.ip);
@@ -93,7 +94,8 @@ public class QueryExecutionImplementation implements QueryExecution {
 
         queryExecution = new Thread() {
 
-            @Override public void run() {
+            @Override
+            public void run() {
 
                 String stats;
 
@@ -104,7 +106,7 @@ public class QueryExecutionImplementation implements QueryExecution {
                     stats = ExecUtils.runQueryOnTable(queryScript, madisDB, dir, procManager);
 
                     log.debug(
-                        "The results of the query were saved " + "in a local SQLite database");
+                            "The results of the query were saved " + "in a local SQLite database");
 
                     long endTime = System.currentTimeMillis();
 
@@ -112,15 +114,15 @@ public class QueryExecutionImplementation implements QueryExecution {
                     //                            dir.toString(), madisDB, storageTable,
                     //                            (int) (endTime - startTime), 10);
                     remotedQuery.queryCompletion(serverInfo, originalQuery, linkDirectory, madisDB,
-                        storageTable, (int) (endTime - startTime), 10);
+                            storageTable, (int) (endTime - startTime), 10);
 
                 } catch (RemoteException ex) {
                     log.error("The results of the query were failed to be saved"
-                            + " to a local SQLite database!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1 ",
-                        ex);
+                                    + " to a local SQLite database!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1 ",
+                            ex);
                 } catch (IOException | SQLException ex) {
                     java.util.logging.Logger.getLogger(QueryExecutionImplementation.class.getName())
-                        .log(Level.SEVERE, null, ex);
+                            .log(Level.SEVERE, null, ex);
                 }
             }
 
@@ -128,8 +130,9 @@ public class QueryExecutionImplementation implements QueryExecution {
         queryExecution.start();
     }
 
-    @Override public synchronized void executeQuery(File directory, String baseTable, String view,
-        ProcessManager processManager) throws RemoteException, InterruptedException {
+    @Override
+    public synchronized void executeQuery(File directory, String baseTable, String view,
+                                          ProcessManager processManager) throws RemoteException, InterruptedException {
 
 
         StringBuilder script = new StringBuilder();
@@ -149,8 +152,8 @@ public class QueryExecutionImplementation implements QueryExecution {
         // Add query
         StringBuilder executableQuery = new StringBuilder();
         executableQuery.append("create view if not exists ")
-            .append(view.replaceAll("\\.[0-9]\\.db", "")).
-            append(" as ");
+                .append(view.replaceAll("\\.[0-9]\\.db", "")).
+                append(" as ");
         executableQuery.append("select * from " + baseTable.replaceAll("\\.[0-9]\\.db", ""));
         script.append(executableQuery).append(";");
         //    script.append(query);
@@ -169,7 +172,8 @@ public class QueryExecutionImplementation implements QueryExecution {
 
         queryExecution = new Thread() {
 
-            @Override public void run() {
+            @Override
+            public void run() {
 
                 String stats;
 
@@ -181,11 +185,11 @@ public class QueryExecutionImplementation implements QueryExecution {
 
                 } catch (RemoteException ex) {
                     log.error("The view has not been materialized"
-                            + " to a local SQLite database!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1 ",
-                        ex);
+                                    + " to a local SQLite database!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1 ",
+                            ex);
                 } catch (IOException ex) {
                     java.util.logging.Logger.getLogger(QueryExecutionImplementation.class.getName())
-                        .log(Level.SEVERE, null, ex);
+                            .log(Level.SEVERE, null, ex);
                 }
             }
 

@@ -14,9 +14,9 @@ import java.rmi.RemoteException;
  * @author herald
  */
 public class GlobalQuantumClockTickEventHandler
-    implements ExecEngineEventHandler<GlobalQuantumClockTickEvent> {
+        implements ExecEngineEventHandler<GlobalQuantumClockTickEvent> {
     public static final GlobalQuantumClockTickEventHandler instance =
-        new GlobalQuantumClockTickEventHandler();
+            new GlobalQuantumClockTickEventHandler();
     private static final long serialVersionUID = 1L;
 
     public GlobalQuantumClockTickEventHandler() {
@@ -24,18 +24,19 @@ public class GlobalQuantumClockTickEventHandler
 
     @Override
     public void preProcess(GlobalQuantumClockTickEvent event, PlanEventSchedulerState state)
-        throws RemoteException {
+            throws RemoteException {
         // ...
     }
 
-    @Override public void handle(GlobalQuantumClockTickEvent event, EventProcessor proc)
-        throws RemoteException {
+    @Override
+    public void handle(GlobalQuantumClockTickEvent event, EventProcessor proc)
+            throws RemoteException {
         // ...
     }
 
     @Override
     public void postProcess(GlobalQuantumClockTickEvent event, PlanEventSchedulerState state)
-        throws RemoteException {
+            throws RemoteException {
         LogUtils.logInfo("Total Quanta: " + state.totalQuanta);
     }
 }

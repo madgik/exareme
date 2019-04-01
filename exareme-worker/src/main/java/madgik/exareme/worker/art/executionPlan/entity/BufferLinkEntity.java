@@ -11,8 +11,8 @@ import java.util.LinkedList;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class BufferLinkEntity implements Serializable {
@@ -27,8 +27,8 @@ public class BufferLinkEntity implements Serializable {
     public BufferEntity bufferEntity;
 
     public BufferLinkEntity(OperatorEntity operatorEntity, BufferEntity bufferEntity,
-        ConnectType type, ConnectDirection direction, String containerName, EntityName container,
-        LinkedList<Parameter> paramList) {
+                            ConnectType type, ConnectDirection direction, String containerName, EntityName container,
+                            LinkedList<Parameter> paramList) {
         this.containerName = containerName;
         this.container = container;
         this.type = type;

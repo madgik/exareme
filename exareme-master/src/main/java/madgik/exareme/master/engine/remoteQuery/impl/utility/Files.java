@@ -16,7 +16,7 @@ import java.sql.SQLException;
 
 /**
  * @author Christos Mallios <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  */
 public class Files {
 
@@ -43,7 +43,7 @@ public class Files {
      * along with it's soft link
      */
     public static void deleteDB(CachedDataInfo info, Metadata metadata)
-        throws IOException, SQLException {
+            throws IOException, SQLException {
 
         File file = new File(info.storagePath);
         file.delete();
@@ -60,7 +60,7 @@ public class Files {
      * along with it's soft link
      */
     public static void deleteDBFile(String storageDir, String cacheDir, String filename)
-        throws IOException, SQLException {
+            throws IOException, SQLException {
 
         File file = new File(storageDir + "/" + filename);
         file.delete();

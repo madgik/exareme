@@ -1,11 +1,10 @@
-from HTMLParser import *
 import re
-import Queue
-
+from HTMLParser import *
 
 piencodingRegExp = '.*encoding=\"([^\"]+)\"'
 
 metaencodingRegExp = '.*charset=([^\" ;]+)'
+
 
 class TableHTMLParser(HTMLParser):
     "HTMLParser derived parser."
@@ -24,36 +23,36 @@ class TableHTMLParser(HTMLParser):
         HTMLParser.__init__(self)
         self.line = []
         self.lines = []
-        self.header=[]
-        self.value=''
+        self.header = []
+        self.value = ''
         self.tableNum = tableNum
         self.encoding = 'utf-8'
         self.rowIndex = 0
         self.columnIndex = 0
-        self.columnsNumber=0
-        self.rowRepeats=dict()
+        self.columnsNumber = 0
+        self.rowRepeats = dict()
 
     def close(self):
         self.f.close()
 
-
     def parse(self, s):
         "Parse the given string 's'."
         self.lines = []
-        self.feed(unicode(s,self.encoding))
-        if self.columnsNumber==0 and self.lines!=[]:
-            self.columnsNumber=len(self.lines[0])
+        self.feed(unicode(s, self.encoding))
+        if self.columnsNumber == 0 and self.lines != []:
+            self.columnsNumber = len(self.lines[0])
         for el in self.lines:
-            lineSize=len(el)
-            if lineSize<self.columnsNumber:
-                el+=['']*(self.columnsNumber-lineSize)
+            lineSize = len(el)
+            if lineSize < self.columnsNumber:
+                el += [''] * (self.columnsNumber - lineSize)
 
             yield el
-    def handle_pi(self,data):
 
-        lst=re.findall(piencodingRegExp,data)
+    def handle_pi(self, data):
+
+        lst = re.findall(piencodingRegExp, data)
         if len(lst):
-            self.encoding=lst[0]
+            self.encoding = lst[0]
 
     def handle_data(self, data):
         "Handle arbitrary data"
@@ -61,50 +60,51 @@ class TableHTMLParser(HTMLParser):
             self.value += data
 
     def handle_starttag(self, tag, attrs):
-        dattrs=dict(attrs)
-        if tag=='meta':
+        dattrs = dict(attrs)
+        if tag == 'meta':
             if 'content' in dattrs:
-                lst=re.findall(metaencodingRegExp,dattrs['content'])
+                lst = re.findall(metaencodingRegExp, dattrs['content'])
                 if len(lst):
-                    self.encoding=lst[0]
+                    self.encoding = lst[0]
 
         if tag == "table":
             self.tablesFound += 1
             self.state = self.intable
             if self.tablesFound == self.tableNum:
-                self.bInspecting = False # table found
-            else: self.bInspecting = True
+                self.bInspecting = False  # table found
+            else:
+                self.bInspecting = True
         elif tag == "th":
-            self.columnIndex+=1
+            self.columnIndex += 1
             if 'colspan' in dattrs:
-                self.replicatecolumn=int(dattrs['colspan'])
+                self.replicatecolumn = int(dattrs['colspan'])
             else:
-                self.replicatecolumn=0
+                self.replicatecolumn = 0
             if 'rowspan' in dattrs:
-                self.replicaterow+=int(dattrs['rowspan'])
+                self.replicaterow += int(dattrs['rowspan'])
             else:
-                self.replicaterow=0
+                self.replicaterow = 0
 
             self.state = self.incolumn
-            self.value=''
-            
+            self.value = ''
+
         elif tag == "tr":
-            self.rowIndex+=1
-            self.line = [] # init line
+            self.rowIndex += 1
+            self.line = []  # init line
             self.header = []
             self.state = self.inraw
-            self.columnIndex=0
-        elif tag == "td":           #### an exei colspan simeiwse to kai sto telos vale sti litsa ... an exei rowspan to idio an exei kai ta duo
-            self.columnIndex+=1
+            self.columnIndex = 0
+        elif tag == "td":  #### an exei colspan simeiwse to kai sto telos vale sti litsa ... an exei rowspan to idio an exei kai ta duo
+            self.columnIndex += 1
             if 'colspan' in dattrs:
-                self.replicatecolumn=int(dattrs['colspan'])
+                self.replicatecolumn = int(dattrs['colspan'])
             else:
-                self.replicatecolumn=0
+                self.replicatecolumn = 0
             if 'rowspan' in dattrs:
-                self.replicaterow+=int(dattrs['rowspan'])
+                self.replicaterow += int(dattrs['rowspan'])
             else:
-                self.replicaterow=0
-            self.value=''
+                self.replicaterow = 0
+            self.value = ''
             self.state = self.incolumn
 
     def handle_endtag(self, tag):
@@ -115,63 +115,63 @@ class TableHTMLParser(HTMLParser):
             if self.bInspecting == False:
                 ####koita an proigeitai kati
                 while self.rowIndex in self.rowRepeats and self.columnIndex in self.rowRepeats[self.rowIndex]:
-                    self.header+=[self.rowRepeats[self.rowIndex][self.columnIndex]]
-                    self.columnIndex+=1
+                    self.header += [self.rowRepeats[self.rowIndex][self.columnIndex]]
+                    self.columnIndex += 1
 
                 if self.replicatecolumn or self.replicaterow:
-                    if self.replicatecolumn:self.replicatecolumn-=1
-                    if self.replicaterow:self.replicaterow-=1
-                    for i in range(self.replicaterow+1):
-                        for j in range(self.replicatecolumn+1):
-                            if i==j and i==0:
+                    if self.replicatecolumn: self.replicatecolumn -= 1
+                    if self.replicaterow: self.replicaterow -= 1
+                    for i in range(self.replicaterow + 1):
+                        for j in range(self.replicatecolumn + 1):
+                            if i == j and i == 0:
                                 continue
-                            curRow=i+self.rowIndex
+                            curRow = i + self.rowIndex
                             if curRow not in self.rowRepeats:
-                                self.rowRepeats[curRow]=dict()
-                            self.rowRepeats[curRow][j+self.columnIndex]=self.value
-                self.header+=[self.value]
+                                self.rowRepeats[curRow] = dict()
+                            self.rowRepeats[curRow][j + self.columnIndex] = self.value
+                self.header += [self.value]
             self.state = self.inraw
         elif tag == "tr" and self.bInspecting == False:
-            self.columnIndex+=1
-            if self.header!=[]:
+            self.columnIndex += 1
+            if self.header != []:
                 while self.rowIndex in self.rowRepeats and self.columnIndex in self.rowRepeats[self.rowIndex]:
-                    self.header+=[self.rowRepeats[self.rowIndex][self.columnIndex]]
-                    self.columnIndex+=1
+                    self.header += [self.rowRepeats[self.rowIndex][self.columnIndex]]
+                    self.columnIndex += 1
             else:
                 while self.rowIndex in self.rowRepeats and self.columnIndex in self.rowRepeats[self.rowIndex]:
-                    self.line+=[self.rowRepeats[self.rowIndex][self.columnIndex]]
-                    self.columnIndex+=1
+                    self.line += [self.rowRepeats[self.rowIndex][self.columnIndex]]
+                    self.columnIndex += 1
 
-            if self.header!=[]:
-                self.lines+=[tuple(self.header)]
+            if self.header != []:
+                self.lines += [tuple(self.header)]
             else:
-                self.lines+=[self.line]
-            self.line=[]
-            self.header=[]
+                self.lines += [self.line]
+            self.line = []
+            self.header = []
             self.state = self.intable
 
             if self.rowIndex in self.rowRepeats:
-                 del self.rowRepeats[self.rowIndex]
-        elif tag == "td":       ### koitame an proigountai kapoia kopy ta vazoume kai colindex++
+                del self.rowRepeats[self.rowIndex]
+        elif tag == "td":  ### koitame an proigountai kapoia kopy ta vazoume kai colindex++
             if self.bInspecting == False:
-                while self.rowIndex in self.rowRepeats and self.columnIndex in self.rowRepeats[self.rowIndex]:                    
-                    self.line+=[self.rowRepeats[self.rowIndex][self.columnIndex]]
-                    self.columnIndex+=1
+                while self.rowIndex in self.rowRepeats and self.columnIndex in self.rowRepeats[self.rowIndex]:
+                    self.line += [self.rowRepeats[self.rowIndex][self.columnIndex]]
+                    self.columnIndex += 1
 
                 if self.replicatecolumn or self.replicaterow:
-                    
-                    if self.replicatecolumn:self.replicatecolumn-=1
-                    if self.replicaterow:self.replicaterow-=1
-                    for i in range(self.replicaterow+1):
-                        for j in range(self.replicatecolumn+1):
-                            if i==j and i==0:
+
+                    if self.replicatecolumn: self.replicatecolumn -= 1
+                    if self.replicaterow: self.replicaterow -= 1
+                    for i in range(self.replicaterow + 1):
+                        for j in range(self.replicatecolumn + 1):
+                            if i == j and i == 0:
                                 continue
-                            
-                            curRow=i+self.rowIndex
+
+                            curRow = i + self.rowIndex
                             if curRow not in self.rowRepeats:
-                                self.rowRepeats[curRow]=dict()
-                            self.rowRepeats[curRow][j+self.columnIndex]=self.value
-                
-                self.line+=[self.value]
-                
+                                self.rowRepeats[curRow] = dict()
+                            self.rowRepeats[curRow][j + self.columnIndex] = self.value
+
+                self.line += [self.value]
+
             self.state = self.inraw

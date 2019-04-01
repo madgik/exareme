@@ -1,5 +1,6 @@
 import json
 
+
 class heatmaphistogram:
     """
     .. function:: heatmaphistogram(colname1,val1,minval1,maxval1,buckets1[,colname2,val2,distinctvalues2])

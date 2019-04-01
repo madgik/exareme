@@ -15,7 +15,7 @@ public class LatticeGraphGenerator {
     }
 
     public static ConcreteQueryGraph createLatticeGraph(int depth, int breadth,
-        RandomParameters params, long seed) {
+                                                        RandomParameters params, long seed) {
         ConcreteQueryGraph graph = new ConcreteQueryGraph();
 
         Random rand = new Random(seed);
@@ -47,7 +47,7 @@ public class LatticeGraphGenerator {
             for (int j = 0; j < Math.pow(breadth, i); j++) {
                 opNum++;
                 ConcreteOperator op =
-                    GraphGenerator.createOperator("op" + opNum, breadth, params, rand);
+                        GraphGenerator.createOperator("op" + opNum, breadth, params, rand);
                 downOperators.add(op);
                 graph.addOperator(op);
             }
@@ -88,7 +88,7 @@ public class LatticeGraphGenerator {
         for (int j = 0; j < middleOperators.size(); j++) {
             ConcreteOperator from = middleOperators.get(j);
             ConcreteOperator to =
-                operatorsLevelsUp.get(operatorsLevelsUp.size() - 1).get((j / breadth));
+                    operatorsLevelsUp.get(operatorsLevelsUp.size() - 1).get((j / breadth));
 
             LinkData data = from.getOutputData(0);
             Link link = new Link(from, to, data);

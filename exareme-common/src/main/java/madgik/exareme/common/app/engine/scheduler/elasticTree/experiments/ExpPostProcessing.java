@@ -54,8 +54,8 @@ public class ExpPostProcessing {
                 execSmooth.add(event.time, event.toQuerySuccess().execTime);
                 if (prevReportTime < event.time - REPORT_EVERY_QUERY) {
                     System.out.println(event.time + "\t" +
-                        event.toQuerySuccess().execTime + "\t" +
-                        execSmooth.getValue());
+                            event.toQuerySuccess().execTime + "\t" +
+                            execSmooth.getValue());
                     prevReportTime = event.time;
                 }
             } else if (event.type == LogEvents.EventType.queryError) {
@@ -106,12 +106,12 @@ public class ExpPostProcessing {
                     profitSmooth.add(event.time, event.toMoney().profit);
                     profitMargSmooth.add(event.time, windowProfit);
                     System.out.println(event.time + "\t" +
-                        event.toMoney().totalCost + "\t" +
-                        event.toMoney().totalRevenue + "\t" +
-                        event.toMoney().profit + "\t" +
-                        (costMargSmooth.getValue() * REPORT_EVERY) + "\t" +
-                        (revenueMargSmooth.getValue() * REPORT_EVERY) + "\t" +
-                        (profitMargSmooth.getValue() * REPORT_EVERY));
+                            event.toMoney().totalCost + "\t" +
+                            event.toMoney().totalRevenue + "\t" +
+                            event.toMoney().profit + "\t" +
+                            (costMargSmooth.getValue() * REPORT_EVERY) + "\t" +
+                            (revenueMargSmooth.getValue() * REPORT_EVERY) + "\t" +
+                            (profitMargSmooth.getValue() * REPORT_EVERY));
                     prevReportTime = event.time;
                 }
             }
@@ -136,9 +136,9 @@ public class ExpPostProcessing {
                     levels[e.level].add(event.time, event.toElasticLevel().containers);
                     if (e.level == 2) {
                         System.out.println(event.time + "\t" +
-                            levels[0].getValue() + "\t" +
-                            levels[1].getValue() + "\t" +
-                            levels[2].getValue());
+                                levels[0].getValue() + "\t" +
+                                levels[1].getValue() + "\t" +
+                                levels[2].getValue());
                         prevReportTime = event.time;
                     }
                 }

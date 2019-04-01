@@ -29,17 +29,17 @@ public abstract class GraphTest extends TestCase {
         Graph<Integer, Edge<Integer>> graph = newGraph();
         Integer[] integersArray = new Integer[25];
 
-    /*
-     * add all integers in [0,24]
-     */
+        /*
+         * add all integers in [0,24]
+         */
         for (int i = 0; i < 25; i++) {
             integersArray[i] = new Integer(i);
             graph.addVertex(integersArray[i]);
         }
 
-    /*
-     * create edges between all integers i, j for which (i + j) is even
-     */
+        /*
+         * create edges between all integers i, j for which (i + j) is even
+         */
         for (int i = 0; i < 25; i++) {
             for (int j = 0; j < 25; j++) {
                 if ((i + j) % 2 != 0) {
@@ -84,14 +84,14 @@ public abstract class GraphTest extends TestCase {
         for (int i = 0; i < 25; i++) {
             for (int j = 0; j < 25; j++) {
                 Assert
-                    .assertTrue(graph.addEdge(new UnweightedEdge(new Integer(i), new Integer(j))));
+                        .assertTrue(graph.addEdge(new UnweightedEdge(new Integer(i), new Integer(j))));
             }
         }
 
         for (int i = 0; i < 25; i++) {
             for (int j = 0; j < 25; j++) {
                 Assert
-                    .assertFalse(graph.addEdge(new UnweightedEdge(new Integer(i), new Integer(j))));
+                        .assertFalse(graph.addEdge(new UnweightedEdge(new Integer(i), new Integer(j))));
             }
         }
     }
@@ -246,7 +246,7 @@ public abstract class GraphTest extends TestCase {
                 }
 
                 Assert.assertNotNull(
-                    graph.removeEdge(new UnweightedEdge(new Integer(i), new Integer(j))));
+                        graph.removeEdge(new UnweightedEdge(new Integer(i), new Integer(j))));
                 Assert.assertFalse(graph.containsEdge(new Integer(i), new Integer(j)));
             }
         }

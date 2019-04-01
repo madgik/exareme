@@ -27,7 +27,8 @@ public class JSONTest {
 
         ObjectOutputStream outStream = new ObjectOutputStream(new OutputStream() {
 
-            @Override public void write(int b) throws IOException {
+            @Override
+            public void write(int b) throws IOException {
                 bytes++;
             }
         });

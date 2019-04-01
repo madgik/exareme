@@ -46,7 +46,8 @@ public class ElasticTreeStatistics implements Serializable {
         dataLoadVarPerLevel = new double[TreeConstants.SETTINGS.MAX_TREE_HEIGHT];
     }
 
-    @Override public boolean equals(Object obj) {
+    @Override
+    public boolean equals(Object obj) {
         if (obj instanceof ElasticTreeStatistics == false) {
             return false;
         }
@@ -56,30 +57,31 @@ public class ElasticTreeStatistics implements Serializable {
         }
         for (int level = 0; level < containersPerLevel.length; ++level) {
             if (Integer.compare(scheduledOpsPerLevel[level], other.scheduledOpsPerLevel[level]) != 0
-                ||
-                Double.compare(containersPerLevel[level], other.containersPerLevel[level]) != 0 ||
-                Double.compare(cpuLoadPerLevel[level], other.cpuLoadPerLevel[level]) != 0 ||
-                Double.compare(cpuLoadVarPerLevel[level], other.cpuLoadVarPerLevel[level]) != 0 ||
-                Double.compare(dataLoadPerLevel[level], other.dataLoadPerLevel[level]) != 0 ||
-                Double.compare(dataLoadVarPerLevel[level], other.dataLoadVarPerLevel[level]) != 0) {
+                    ||
+                    Double.compare(containersPerLevel[level], other.containersPerLevel[level]) != 0 ||
+                    Double.compare(cpuLoadPerLevel[level], other.cpuLoadPerLevel[level]) != 0 ||
+                    Double.compare(cpuLoadVarPerLevel[level], other.cpuLoadVarPerLevel[level]) != 0 ||
+                    Double.compare(dataLoadPerLevel[level], other.dataLoadPerLevel[level]) != 0 ||
+                    Double.compare(dataLoadVarPerLevel[level], other.dataLoadVarPerLevel[level]) != 0) {
                 return false;
             }
         }
         return !(Double.compare(totalCost, other.totalCost) != 0 ||
-            Double.compare(totalRevene, other.totalRevene) != 0 ||
-            Double.compare(windowCost, other.windowCost) != 0 ||
-            Double.compare(windowRevenue, other.windowRevenue) != 0 ||
-            Integer.compare(totalQueries, other.totalQueries) != 0 ||
-            Integer.compare(totalErrorQueries, other.totalErrorQueries) != 0 ||
-            Integer.compare(runningQueries, other.runningQueries) != 0 ||
-            Integer.compare(queuedQueries, other.queuedQueries) != 0);
+                Double.compare(totalRevene, other.totalRevene) != 0 ||
+                Double.compare(windowCost, other.windowCost) != 0 ||
+                Double.compare(windowRevenue, other.windowRevenue) != 0 ||
+                Integer.compare(totalQueries, other.totalQueries) != 0 ||
+                Integer.compare(totalErrorQueries, other.totalErrorQueries) != 0 ||
+                Integer.compare(runningQueries, other.runningQueries) != 0 ||
+                Integer.compare(queuedQueries, other.queuedQueries) != 0);
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int hash = 5;
         hash = 79 * hash + Arrays.hashCode(this.scheduledOpsPerLevel);
         hash = 79 * hash + (int) (Double.doubleToLongBits(this.totalContainers) ^ (
-            Double.doubleToLongBits(this.totalContainers) >>> 32));
+                Double.doubleToLongBits(this.totalContainers) >>> 32));
         hash = 79 * hash + Arrays.hashCode(this.containersPerLevel);
         hash = 79 * hash + Arrays.hashCode(this.cpuLoadPerLevel);
         hash = 79 * hash + Arrays.hashCode(this.dataLoadPerLevel);

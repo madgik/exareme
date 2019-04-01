@@ -94,7 +94,7 @@ jsMath.Package(jsMath.Parser, {
         if (this.error) return;
         var def = this.GetArgument(this.cmd + name);
         if (this.error) return;
-        if (typeof(params) == 'number') {
+        if (typeof (params) == 'number') {
             jsMath.Parser.prototype.macros[cs] = ['Macro', def, params];
         } else {
             jsMath.Parser.prototype.macros[cs] = ['MacroWithTemplate', def, params[0], params[1]];

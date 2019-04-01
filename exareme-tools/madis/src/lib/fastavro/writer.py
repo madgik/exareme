@@ -13,10 +13,10 @@ except ImportError:
     from .six import utob, unicode, MemoryIO, long
     from .reader import MASK, HEADER_SCHEMA, SYNC_SIZE, MAGIC
 
+import json
 from binascii import crc32
 from os import urandom, SEEK_SET
 from struct import pack, unpack
-import json
 
 NoneType = type(None)
 
@@ -40,6 +40,7 @@ def write_int(fo, datum, schema=None):
         fo.write(chr((datum & 0x7f) | 0x80))
         datum >>= 7
     fo.write(chr(datum))
+
 
 write_long = write_int
 

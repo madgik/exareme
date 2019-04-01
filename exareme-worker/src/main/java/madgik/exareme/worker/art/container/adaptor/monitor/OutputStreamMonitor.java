@@ -20,13 +20,14 @@ public class OutputStreamMonitor extends OutputStream {
     private OutputStream output = null;
 
     public OutputStreamMonitor(OutputStream output, AdaptorStatistics adaptorStats,
-        ConcreteOperatorStatistics opStats) {
+                               ConcreteOperatorStatistics opStats) {
         this.output = output;
         this.adaptorStats = adaptorStats;
         this.opStats = opStats;
     }
 
-    @Override public void write(int b) throws IOException {
+    @Override
+    public void write(int b) throws IOException {
         long start = System.currentTimeMillis();
         long cpuStart = ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime();
 
@@ -38,7 +39,8 @@ public class OutputStreamMonitor extends OutputStream {
         opStats.addSystemTime_ms(end - start, (cpuEnd - cpuStart) / 1000000);
     }
 
-    @Override public void write(byte[] b) throws IOException {
+    @Override
+    public void write(byte[] b) throws IOException {
         long start = System.currentTimeMillis();
         long cpuStart = ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime();
 
@@ -50,7 +52,8 @@ public class OutputStreamMonitor extends OutputStream {
         opStats.addSystemTime_ms(end - start, (cpuEnd - cpuStart) / 1000000);
     }
 
-    @Override public void write(byte[] bytes, int off, int len) throws IOException {
+    @Override
+    public void write(byte[] bytes, int off, int len) throws IOException {
         long start = System.currentTimeMillis();
         long cpuStart = ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime();
 
@@ -62,7 +65,8 @@ public class OutputStreamMonitor extends OutputStream {
         opStats.addSystemTime_ms(end - start, (cpuEnd - cpuStart) / 1000000);
     }
 
-    @Override public void close() throws IOException {
+    @Override
+    public void close() throws IOException {
         long start = System.currentTimeMillis();
         long cpuStart = ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime();
 

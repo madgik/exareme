@@ -22,35 +22,41 @@ public class StaticLoadBalanceTreeResourceScheduler implements ResourceSchedulin
     protected int concurentQueries = 0;
 
     public StaticLoadBalanceTreeResourceScheduler(int containersPerLevel[],
-        ContainerTopology topology) {
+                                                  ContainerTopology topology) {
         this.containersPerLevel = containersPerLevel;
         this.topology = topology;
     }
 
-    @Override public void initializeResources(ComputeCloud cloud, GlobalSystemState state) {
+    @Override
+    public void initializeResources(ComputeCloud cloud, GlobalSystemState state) {
         topology.allocateStaticContainersPerLevel(containersPerLevel);
     }
 
-    @Override public void finalizeResources(ComputeCloud cloud, GlobalSystemState state) {
+    @Override
+    public void finalizeResources(ComputeCloud cloud, GlobalSystemState state) {
         topology.deleteAllContainers();
     }
 
-    @Override public void reserveResources(Dataflow dataflow, RunningDataflow runningDataflow,
-        ComputeCloud cloud, GlobalSystemState state) {
+    @Override
+    public void reserveResources(Dataflow dataflow, RunningDataflow runningDataflow,
+                                 ComputeCloud cloud, GlobalSystemState state) {
         concurentQueries++;
     }
 
-    @Override public void dataflowFinished(RunningDataflow runningDataflow, ComputeCloud cloud,
-        GlobalSystemState state) {
+    @Override
+    public void dataflowFinished(RunningDataflow runningDataflow, ComputeCloud cloud,
+                                 GlobalSystemState state) {
         concurentQueries--;
     }
 
-    @Override public void dataflowError(RunningDataflow runningDataflow, ComputeCloud cloud,
-        GlobalSystemState state) {
+    @Override
+    public void dataflowError(RunningDataflow runningDataflow, ComputeCloud cloud,
+                              GlobalSystemState state) {
         concurentQueries--;
     }
 
-    @Override public void reorganizeResources(GlobalSystemState state) throws RemoteException {
+    @Override
+    public void reorganizeResources(GlobalSystemState state) throws RemoteException {
         // Do nothing!
     }
 }

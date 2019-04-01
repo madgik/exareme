@@ -3,7 +3,6 @@ import json
 
 
 def dummycode(*args):
-
     # if type(args[0]) not in (str,unicode):
     #      yield args[0]
 
@@ -13,22 +12,20 @@ def dummycode(*args):
     values = json.loads(args[3])
     values.pop(0)
 
-    yield ("rid","colname", "val")
+    yield ("rid", "colname", "val")
 
     res = []
     for i in xrange(len(values)):
         if val == values[i]:
-            yield (rid,colname+values[i],float(1.0))
+            yield (rid, colname + values[i], float(1.0))
         else:
-            yield (rid,colname+values[i],float(0.0))
+            yield (rid, colname + values[i], float(0.0))
 
 
 dummycode.registered = True
 
 
-
 def t_distribution_cdf(*args):
-
     from scipy import stats
 
     # colname = args[0]
@@ -44,8 +41,6 @@ def t_distribution_cdf(*args):
 
 t_distribution_cdf.registered = True
 
-
-
 if not ('.' in __name__):
     """
     This is needed to be able to test the function, put it at the end of every
@@ -53,9 +48,11 @@ if not ('.' in __name__):
     """
     import sys
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

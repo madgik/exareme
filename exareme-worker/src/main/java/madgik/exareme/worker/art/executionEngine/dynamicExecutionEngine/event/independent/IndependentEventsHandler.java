@@ -23,7 +23,7 @@ import java.util.concurrent.Semaphore;
 public class IndependentEventsHandler implements EventHandler<IndependentEvents> {
     private static final long serialVersionUID = 1L;
     private static final ExecutorService service =
-        Executors.newFixedThreadPool(ExecEngineConstants.THREADS_PER_INDEPENDENT_TASKS);
+            Executors.newFixedThreadPool(ExecEngineConstants.THREADS_PER_INDEPENDENT_TASKS);
     private static final Logger log = Logger.getLogger(IndependentEventsHandler.class);
     private long startTime = 0;
     private long endTime = 0;
@@ -32,8 +32,9 @@ public class IndependentEventsHandler implements EventHandler<IndependentEvents>
 
     }
 
-    @Override public void handle(IndependentEvents event, EventProcessor proc)
-        throws RemoteException {
+    @Override
+    public void handle(IndependentEvents event, EventProcessor proc)
+            throws RemoteException {
         try {
             startTime = System.currentTimeMillis();
             Semaphore wait = new Semaphore(0);
@@ -61,7 +62,7 @@ public class IndependentEventsHandler implements EventHandler<IndependentEvents>
             event.state.getStatistics().incrIndependentMessages();
             endTime = System.currentTimeMillis();
             event.state.getStatistics()
-                .addTotalEventProcessTime(endTime - startTime, startTime - event.queueTime);
+                    .addTotalEventProcessTime(endTime - startTime, startTime - event.queueTime);
             event.state.getStatistics().setXaxIndependentMsgCount(event.events.size());
         } catch (Exception e) {
             throw new RemoteException("Cannot handle independent events", e);

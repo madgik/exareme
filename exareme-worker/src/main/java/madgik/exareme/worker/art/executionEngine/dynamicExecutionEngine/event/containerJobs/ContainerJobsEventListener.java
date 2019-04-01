@@ -16,8 +16,9 @@ import java.rmi.RemoteException;
 public class ContainerJobsEventListener implements EventListener<ContainerJobsEvent> {
     public static final ContainerJobsEventListener instance = new ContainerJobsEventListener();
 
-    @Override public void processed(ContainerJobsEvent event, RemoteException exception,
-        EventProcessor processor) {
+    @Override
+    public void processed(ContainerJobsEvent event, RemoteException exception,
+                          EventProcessor processor) {
         if (exception != null) {
             LogUtils.logException("Create", exception);
             PlanEventScheduler.engineInternalException(event, exception);

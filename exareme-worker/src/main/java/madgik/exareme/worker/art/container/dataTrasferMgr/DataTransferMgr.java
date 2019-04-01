@@ -23,7 +23,7 @@ import java.util.*;
 /**
  * @author John Chronis <br>
  * @author Vaggelis Nikolopoulos <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  * @since 1.0
  */
 
@@ -54,7 +54,7 @@ public class DataTransferMgr implements DataTransferMgrInterface {
         log.debug("\t DataTranfer starting on port: " + port + "...");
 
         dataTransfer =
-            ContainerDataTransferGatewayFactory.createDataTransferServer("0.0.0.0", port);
+                ContainerDataTransferGatewayFactory.createDataTransferServer("0.0.0.0", port);
         dataTransfer.start();
         this.nextDtOpId = 0;
         this.nextDtRegId = 0;
@@ -78,15 +78,18 @@ public class DataTransferMgr implements DataTransferMgrInterface {
 
     }
 
-    @Override public CloseableHttpClient getHttpClient() {
+    @Override
+    public CloseableHttpClient getHttpClient() {
         return httpClient;
     }
 
-    @Override public int getPort() {
+    @Override
+    public int getPort() {
         return port;
     }
 
-    @Override public int getDTId(String operatorName) {
+    @Override
+    public int getDTId(String operatorName) {
         if (operatorNameToTransferID.get(operatorName) != null) {
             return operatorNameToTransferID.get(operatorName);
         }
@@ -94,25 +97,28 @@ public class DataTransferMgr implements DataTransferMgrInterface {
     }
 
     //returns the dt id to be used to identify all the register and oks TODO(J) not serial ids
-    @Override public int addDataTransfer(AbstractOperatorImpl aoimpl, int numberofDT) {
+    @Override
+    public int addDataTransfer(AbstractOperatorImpl aoimpl, int numberofDT) {
         transferIdToAoimpl.put(nextDtOpId, aoimpl);
         transferIdToRegIds.put(nextDtOpId, new HashSet<Integer>());
         transferIDToNumOfDts.put(nextDtOpId, numberofDT);
         return nextDtOpId++;
     }
 
-    @Override public void stopDataTransferServer() {
+    @Override
+    public void stopDataTransferServer() {
         dataTransfer.stop();
     }
 
     //returns the id to be used for this register
-    @Override public int addRegister(Integer DtOpId, String filename, String tableFile, String Fip,
-        String Fport, String Tip, String Tport, PlanSessionID pid) throws IOException {
+    @Override
+    public int addRegister(Integer DtOpId, String filename, String tableFile, String Fip,
+                           String Fport, String Tip, String Tport, PlanSessionID pid) throws IOException {
         RedIdToTransferId.put(nextDtRegId, DtOpId);
         transferIdToRegIds.get(DtOpId).add(nextDtRegId);
         RegIDToFilename.put(nextDtRegId, filename);//cleanup when done
         RegIDToTableFile.put(nextDtRegId, tableFile);
-       log.trace("Add register " + DtOpId + " " + nextDtRegId + " " + filename);
+        log.trace("Add register " + DtOpId + " " + nextDtRegId + " " + filename);
 
         DataTransferClient.registerFileByID(Tip, nextDtRegId, filename, Fip, Fport, Tport, pid);
 
@@ -120,14 +126,16 @@ public class DataTransferMgr implements DataTransferMgrInterface {
         return nextDtRegId++;
     }
 
-    @Override public void addFailedTransfer(int DtOpId) throws Exception {
+    @Override
+    public void addFailedTransfer(int DtOpId) throws Exception {
         AbstractOperatorImpl aoimp = transferIdToAoimpl.get(DtOpId);
         aoimp.getSessionManager().getOperatorStatistics()
-            .setException(new Exception());//JV exception set
+                .setException(new Exception());//JV exception set
         aoimp.error(new Exception());
     }
 
-    @Override public void addSuccesfulTransfer(Integer DtRegId) throws Exception {
+    @Override
+    public void addSuccesfulTransfer(Integer DtRegId) throws Exception {
         log.trace("addSuccesfulTransfer: " + DtRegId);
         if (RedIdToTransferId.containsKey(DtRegId)) {
             int DtOpId = RedIdToTransferId.get(DtRegId);
@@ -146,17 +154,17 @@ public class DataTransferMgr implements DataTransferMgrInterface {
                 aoimp.getSessionManager().getOperatorStatistics().setEndTime_ms(end);
                 aoimp.getSessionManager().getOperatorStatistics().setExitCode(aoimp.getExitCode());
                 aoimp.getSessionManager().getOperatorStatistics()
-                    .setExitMessage(aoimp.getExitMessage());
+                        .setExitMessage(aoimp.getExitMessage());
 
                 aoimp.getSessionManager().getOperatorStatistics().
-                    setTotalTime_ms(end - aoimp.start,
-                        ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime() / 1000000);
+                        setTotalTime_ms(end - aoimp.start,
+                                ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime() / 1000000);
 
                 log.trace("addSuccesfulTransfer done all");
                 aoimp.getSessionManager().getSessionReportID().reportManagerProxy
-                    .operatorSuccess(aoimp.getSessionManager().getOpID(), aoimp.getExitCode(),
-                        aoimp.getExitMessage(), new Date(),
-                        aoimp.getSessionManager().getContainerID(), true);
+                        .operatorSuccess(aoimp.getSessionManager().getOpID(), aoimp.getExitCode(),
+                                aoimp.getExitMessage(), new Date(),
+                                aoimp.getSessionManager().getContainerID(), true);
                 aoimp.freeresources(aoimp.getSessionManager().getOpID());
                 transferIdToAoimpl.remove(DtOpId);
 
@@ -177,12 +185,14 @@ public class DataTransferMgr implements DataTransferMgrInterface {
         return RegIDToTableFile.get(regId);
     }
 
-    @Override public void destroySessions(PlanSessionID sessionID) {
+    @Override
+    public void destroySessions(PlanSessionID sessionID) {
 
 
     }
 
-    @Override public void restart() {
+    @Override
+    public void restart() {
 
     }
 

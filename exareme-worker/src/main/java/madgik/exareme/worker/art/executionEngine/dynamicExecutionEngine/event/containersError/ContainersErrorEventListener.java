@@ -18,8 +18,9 @@ public class ContainersErrorEventListener implements EventListener<ContainersErr
     public ContainersErrorEventListener() {
     }
 
-    @Override public void processed(ContainersErrorEvent event, RemoteException exception,
-        EventProcessor processor) {
+    @Override
+    public void processed(ContainersErrorEvent event, RemoteException exception,
+                          EventProcessor processor) {
 
         event.done();
     }

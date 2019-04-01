@@ -14,16 +14,17 @@ import java.rmi.RemoteException;
  * @author herald
  */
 public class CloseContainerSessionEventListener
-    implements EventListener<CloseContainerSessionEvent> {
+        implements EventListener<CloseContainerSessionEvent> {
     public static final CloseContainerSessionEventListener instance =
-        new CloseContainerSessionEventListener();
+            new CloseContainerSessionEventListener();
     private static final long serialVersionUID = 1L;
 
     public CloseContainerSessionEventListener() {
     }
 
-    @Override public void processed(CloseContainerSessionEvent event, RemoteException exception,
-        EventProcessor processor) {
+    @Override
+    public void processed(CloseContainerSessionEvent event, RemoteException exception,
+                          EventProcessor processor) {
         if (exception != null) {
             LogUtils.logException("CloseContainerSession", exception);
             PlanEventScheduler.engineInternalException(event, exception);

@@ -19,21 +19,25 @@ public class RmiArmStorageManager implements ArmStorageManager {
         this.armManager = armManager;
     }
 
-    @Override public ArmStorage getStorage() throws RemoteException {
+    @Override
+    public ArmStorage getStorage() throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public void startStorage() throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet.");
-
-    }
-
-    @Override public void stopStorage() throws RemoteException {
+    @Override
+    public void startStorage() throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
 
     }
 
-    @Override public boolean isUp() throws RemoteException {
+    @Override
+    public void stopStorage() throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet.");
+
+    }
+
+    @Override
+    public boolean isUp() throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

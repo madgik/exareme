@@ -39,27 +39,28 @@ Examples::
     1     | James | 10 | 2
     2     | Mark  | 7  | 3
 """
-import setpath
-import vtbase
 import functions
 
+import vtbase
+
 ### Classic stream iterator
-registered=True
-       
+registered = True
+
+
 class RowidVT(vtbase.VT):
     def VTiter(self, *parsedArgs, **envars):
         largs, dictargs = self.full_parse(parsedArgs)
 
-        self.nonames=True
-        self.names=[]
-        self.types=[]
+        self.nonames = True
+        self.names = []
+        self.types = []
 
         if 'query' not in dictargs:
-            raise functions.OperatorError(__name__.rsplit('.')[-1],"No query argument ")
-        query=dictargs['query']
+            raise functions.OperatorError(__name__.rsplit('.')[-1], "No query argument ")
+        query = dictargs['query']
 
         cur = envars['db'].cursor()
-        c=cur.execute(query)
+        c = cur.execute(query)
 
         try:
             yield [('rowid', 'integer')] + list(cur.getdescriptionsafe())
@@ -76,8 +77,10 @@ class RowidVT(vtbase.VT):
             yield [i] + list(r)
             i += 1
 
+
 def Source():
     return vtbase.VTGenerator(RowidVT)
+
 
 if not ('.' in __name__):
     """
@@ -85,13 +88,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()
-
-

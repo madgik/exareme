@@ -23,7 +23,7 @@ public class ScheduleEventListener implements EventListener<ScheduleEvent> {
     }
 
     public void processed(ScheduleEvent event, RemoteException exception,
-        EventProcessor processor) {
+                          EventProcessor processor) {
         if (exception != null) {
             exception.printStackTrace();
         }

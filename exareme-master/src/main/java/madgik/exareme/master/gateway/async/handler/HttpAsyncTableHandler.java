@@ -36,21 +36,22 @@ public class HttpAsyncTableHandler implements HttpAsyncRequestHandler<HttpReques
     public HttpAsyncTableHandler() {
     }
 
-    @Override public HttpAsyncRequestConsumer<HttpRequest> processRequest(HttpRequest request,
-        HttpContext context) throws HttpException, IOException {
+    @Override
+    public HttpAsyncRequestConsumer<HttpRequest> processRequest(HttpRequest request,
+                                                                HttpContext context) throws HttpException, IOException {
         return new BasicAsyncRequestConsumer();
     }
 
     @Override
     public void handle(HttpRequest request, HttpAsyncExchange httpExchange, HttpContext context)
-        throws HttpException, IOException {
+            throws HttpException, IOException {
         HttpResponse response = httpExchange.getResponse();
         handleInternal(request, response, context);
         httpExchange.submitResponse(new BasicAsyncResponseProducer(response));
     }
 
     private void handleInternal(HttpRequest request, HttpResponse response, HttpContext context)
-        throws UnsupportedHttpVersionException, IOException {
+            throws UnsupportedHttpVersionException, IOException {
         // validate request
         String method = request.getRequestLine().getMethod().toUpperCase(Locale.ENGLISH);
         log.trace("Validate request : " + method);
@@ -78,7 +79,7 @@ public class HttpAsyncTableHandler implements HttpAsyncRequestHandler<HttpReques
         HttpEntity body = null;
         try {
             AdpDBClient dbClient =
-                AdpDBClientFactory.createDBClient(manager, new AdpDBClientProperties(dbname));
+                    AdpDBClientFactory.createDBClient(manager, new AdpDBClientProperties(dbname));
             body = new InputStreamEntity(dbClient.readTable(table), ContentType.TEXT_PLAIN);
             log.trace("entity is stream.");
         } catch (Exception e) {
@@ -87,8 +88,8 @@ public class HttpAsyncTableHandler implements HttpAsyncRequestHandler<HttpReques
             //          .format("{\"schema\":[[\"error\", \"null\"]]}\n[\"%s\"]\n",
             //              StringEscapeUtils.escapeJavaScript(e.getCause().getMessage())));
             body = new StringEntity(String
-                .format("{\"schema\":[[\"error\", \"null\"]]}\n[\"%s\"]\n",
-                    e.getCause().getMessage()));
+                    .format("{\"schema\":[[\"error\", \"null\"]]}\n[\"%s\"]\n",
+                            e.getCause().getMessage()));
         }
         response.setEntity(body);
     }

@@ -20,7 +20,8 @@ public class Parameter implements Serializable {
         this.value = value;
     }
 
-    @Override public boolean equals(Object obj) {
+    @Override
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -37,7 +38,8 @@ public class Parameter implements Serializable {
         return value.equals(guest.value);
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "{" + name + " : " + value + '}';
     }
 

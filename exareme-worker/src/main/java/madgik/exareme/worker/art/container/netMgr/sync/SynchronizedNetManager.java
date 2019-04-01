@@ -22,41 +22,47 @@ public class SynchronizedNetManager implements NetManagerInterface {
         this.netManager = netManager;
     }
 
-    @Override public NetSession getGlobalSession(PlanSessionID planSessionID)
-        throws RemoteException {
+    @Override
+    public NetSession getGlobalSession(PlanSessionID planSessionID)
+            throws RemoteException {
         synchronized (netManager) {
             return netManager.getGlobalSession(planSessionID);
         }
     }
 
-    @Override public NetSession getContainerSession(ContainerSessionID containerSessionID,
-        PlanSessionID planSessionID) throws RemoteException {
+    @Override
+    public NetSession getContainerSession(ContainerSessionID containerSessionID,
+                                          PlanSessionID planSessionID) throws RemoteException {
         synchronized (netManager) {
             return netManager.getContainerSession(containerSessionID, planSessionID);
         }
     }
 
-    @Override public NetSession getOperatorSession(ConcreteOperatorID opID,
-        ContainerSessionID containerSessionID, PlanSessionID planSessionID) throws RemoteException {
+    @Override
+    public NetSession getOperatorSession(ConcreteOperatorID opID,
+                                         ContainerSessionID containerSessionID, PlanSessionID planSessionID) throws RemoteException {
         synchronized (netManager) {
             return netManager.getOperatorSession(opID, containerSessionID, planSessionID);
         }
     }
 
-    @Override public void destroyContainerSession(ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void destroyContainerSession(ContainerSessionID containerSessionID,
+                                        PlanSessionID sessionID) throws RemoteException {
         synchronized (netManager) {
             netManager.destroyContainerSession(containerSessionID, sessionID);
         }
     }
 
-    @Override public void destroySessions(PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void destroySessions(PlanSessionID sessionID) throws RemoteException {
         synchronized (netManager) {
             netManager.destroySessions(sessionID);
         }
     }
 
-    @Override public void destroyAllSessions() throws RemoteException {
+    @Override
+    public void destroyAllSessions() throws RemoteException {
         synchronized (netManager) {
             netManager.destroyAllSessions();
         }

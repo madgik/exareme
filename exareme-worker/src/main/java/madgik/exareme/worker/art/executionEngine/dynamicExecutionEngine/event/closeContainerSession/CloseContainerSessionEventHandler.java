@@ -26,9 +26,9 @@ import java.util.concurrent.TimeUnit;
  * @author herald
  */
 public class CloseContainerSessionEventHandler
-    implements ExecEngineEventHandler<CloseContainerSessionEvent> {
+        implements ExecEngineEventHandler<CloseContainerSessionEvent> {
     public static final CloseContainerSessionEventHandler instance =
-        new CloseContainerSessionEventHandler();
+            new CloseContainerSessionEventHandler();
     private static final long serialVersionUID = 1L;
 
     public CloseContainerSessionEventHandler() {
@@ -36,10 +36,10 @@ public class CloseContainerSessionEventHandler
 
     @Override
     public void preProcess(CloseContainerSessionEvent event, PlanEventSchedulerState state)
-        throws RemoteException {
+            throws RemoteException {
         try {
             ExecutorService service =
-                Executors.newFixedThreadPool(ExecEngineConstants.THREADS_PER_INDEPENDENT_TASKS);
+                    Executors.newFixedThreadPool(ExecEngineConstants.THREADS_PER_INDEPENDENT_TASKS);
             ArrayList<GetStatsAndCloseSession> workers = new ArrayList<GetStatsAndCloseSession>();
             List<ContainerSession> sessions = state.getContSessions(event.containerSessionID);
             for (ContainerSession session : sessions) {
@@ -58,13 +58,14 @@ public class CloseContainerSessionEventHandler
         }
     }
 
-    @Override public void handle(CloseContainerSessionEvent event, EventProcessor proc)
-        throws RemoteException {
+    @Override
+    public void handle(CloseContainerSessionEvent event, EventProcessor proc)
+            throws RemoteException {
     }
 
     @Override
     public void postProcess(CloseContainerSessionEvent event, PlanEventSchedulerState state)
-        throws RemoteException {
+            throws RemoteException {
         state.getStatistics().incrControlMessagesCountBy(event.messageCount);
     }
 }
@@ -81,7 +82,8 @@ class GetStatsAndCloseSession extends Thread {
         this.session = session;
     }
 
-    @Override public void run() {
+    @Override
+    public void run() {
         try {
             log.trace("Closing session: " + session.getSessionID().getLongId());
             ContainerJobs jobs = new ContainerJobs();

@@ -45,12 +45,14 @@ public class TcpSocketBuffer implements SocketBuffer {
         }
     }
 
-    @Override public EntityName getNetEntityName() throws RemoteException {
+    @Override
+    public EntityName getNetEntityName() throws RemoteException {
         openSocketAndGetPort();
         return new EntityName("", NetUtil.getIPv4(), serverSocket.getLocalPort());
     }
 
-    @Override public void close() throws RemoteException {
+    @Override
+    public void close() throws RemoteException {
         try {
             if (serverSocket != null) {
                 log.debug("Buffer closing on port: " + serverSocket.getLocalPort());
@@ -62,7 +64,8 @@ public class TcpSocketBuffer implements SocketBuffer {
         }
     }
 
-    @Override public Socket openServerConnection() throws RemoteException {
+    @Override
+    public Socket openServerConnection() throws RemoteException {
         try {
             openSocketAndGetPort();
             return serverSocket.accept();

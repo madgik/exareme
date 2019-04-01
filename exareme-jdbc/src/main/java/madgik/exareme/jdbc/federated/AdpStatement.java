@@ -4,33 +4,24 @@
 package madgik.exareme.jdbc.federated;
 
 import com.google.gson.Gson;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.StringBufferInputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
-import java.sql.SQLWarning;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.CoreConnectionPNames;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.StringBufferInputStream;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- *
  * @author dimitris
  */
 public class AdpStatement implements Statement {
@@ -49,11 +40,11 @@ public class AdpStatement implements Statement {
         this.resultSet = null;
         this.g = new Gson();
         httpclient = new DefaultHttpClient();
-        timeout=0;
+        timeout = 0;
     }
 
     public AdpStatement(AdpConnection connection, int resultSetType,
-            int resultSetConcurrency) {
+                        int resultSetConcurrency) {
         this.con = connection;
         this.closeOnCompletion = false;
         this.resultSet = null;
@@ -74,7 +65,7 @@ public class AdpStatement implements Statement {
             // return new AdpResultSet(manageFederatedEndpoints(sql), this);
         } else if (sql.startsWith("select * from")
                 && sql.endsWith("where 0 = 1")) {
-			// schema spy query to collect metadata!!!!
+            // schema spy query to collect metadata!!!!
             // hack to execute directly to endpoint without connecting to ADP
             // server
 
@@ -127,7 +118,7 @@ public class AdpStatement implements Statement {
                             new StringBufferInputStream(sb.toString())),
                             this.con.createStatement());
                     return resultSet;
-					// return new AdpResultSet(new InputStreamReader(new
+                    // return new AdpResultSet(new InputStreamReader(new
                     // StringBufferInputStream(sb.toString())),
                     // this.con.createStatement());
 
@@ -215,7 +206,7 @@ public class AdpStatement implements Statement {
         }
         //httpclient.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT,
         //        seconds * 1000);
-        this.timeout=seconds;
+        this.timeout = seconds;
     }
 
     @Override
@@ -463,10 +454,10 @@ public class AdpStatement implements Statement {
     }
 
     private InputStreamReader createOKResultStreamReader() {
-		// HashMap<String, ArrayList<ArrayList<String>>> firstRow=new
+        // HashMap<String, ArrayList<ArrayList<String>>> firstRow=new
         // HashMap<String, ArrayList<ArrayList<String>>>();
         ArrayList<ArrayList<String>> schema = new ArrayList<ArrayList<String>>();
-		// ArrayList<String> typenames=new ArrayList<String>();
+        // ArrayList<String> typenames=new ArrayList<String>();
         // typenames.add("VARCHAR");
         // schema.add(typenames);
         ArrayList<String> names = new ArrayList<String>();

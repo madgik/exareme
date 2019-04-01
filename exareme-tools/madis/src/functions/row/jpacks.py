@@ -1,12 +1,11 @@
-import setpath
+import functions
+import itertools
+import json
+import math
+import operator
 from lib import jopts
 from lib.jsonpath import jsonpath as libjsonpath
-import json
-import operator
-import itertools
-import re
-import functions
-import math
+
 try:
     from collections import OrderedDict
 except ImportError:
@@ -15,7 +14,6 @@ except ImportError:
 
 
 def jpack(*args):
-
     """
     .. function:: jpack(args...) -> jpack
 
@@ -44,10 +42,11 @@ def jpack(*args):
 
     return jopts.toj(jopts.elemfromj(*args))
 
-jpack.registered=True
+
+jpack.registered = True
+
 
 def jngrams(*args):
-
     """
     .. function:: jngrams(n,text) -> jpack
 
@@ -75,14 +74,15 @@ def jngrams(*args):
         text = args[0]
     g = text.split(' ')
     listofngrams = []
-    for i in xrange(len(g)-n+1):
-        listofngrams.append(g[i:i+n])
+    for i in xrange(len(g) - n + 1):
+        listofngrams.append(g[i:i + n])
     return jopts.toj(listofngrams)
 
-jngrams.registered=True
+
+jngrams.registered = True
+
 
 def jfrequentwords(*args):
-
     """
     .. function:: jfrequentwords(args...) -> jpack
 
@@ -93,18 +93,19 @@ def jfrequentwords(*args):
     setwords = set(wordslist)
     c = dict.fromkeys(setwords, 0)
     for w in wordslist:
-        c[w]+=1
+        c[w] += 1
     lenwords = len(setwords)
-    extremevals = int(math.ceil(lenwords * 3 * 1.0/100))
-    frequences = sorted(c.values())[extremevals:(lenwords-extremevals)]
-    avgfrequency = math.ceil(sum(frequences)*1.0/len(frequences))
+    extremevals = int(math.ceil(lenwords * 3 * 1.0 / 100))
+    frequences = sorted(c.values())[extremevals:(lenwords - extremevals)]
+    avgfrequency = math.ceil(sum(frequences) * 1.0 / len(frequences))
 
-    return jopts.toj([k for k,v in c.iteritems() if v >= avgfrequency])
+    return jopts.toj([k for k, v in c.iteritems() if v >= avgfrequency])
 
-jfrequentwords.registered=True
+
+jfrequentwords.registered = True
+
 
 def jsonstrict(*args):
-
     """
     .. function:: jsonstrict(args...) -> json string
 
@@ -130,12 +131,13 @@ def jsonstrict(*args):
 
     """
 
-    return json.dumps(jopts.elemfromj(*args), separators=(',',':'), ensure_ascii=False)
+    return json.dumps(jopts.elemfromj(*args), separators=(',', ':'), ensure_ascii=False)
 
-jsonstrict.registered=True
+
+jsonstrict.registered = True
+
 
 def jzip(*args):
-
     """
     .. function:: jzip(args...) -> json string
 
@@ -149,12 +151,13 @@ def jzip(*args):
     [["a",1,4],["b",2,5]]
 
     """
-    return json.dumps([list(x) for x in zip(*jopts.elemfromj(*args))], separators=(',',':'), ensure_ascii=False)
+    return json.dumps([list(x) for x in zip(*jopts.elemfromj(*args))], separators=(',', ':'), ensure_ascii=False)
 
-jzip.registered=True
+
+jzip.registered = True
+
 
 def jzipdict(*args):
-
     """
     .. function:: jzipdict(args...) -> json string
 
@@ -168,12 +171,14 @@ def jzipdict(*args):
     {"a":[1,4],"b":[2,5]}
 
     """
-    return json.dumps(dict(tuple([x[0], x[1:]]) for x in zip(*jopts.elemfromj(*args))), separators=(',',':'), ensure_ascii=False)
+    return json.dumps(dict(tuple([x[0], x[1:]]) for x in zip(*jopts.elemfromj(*args))), separators=(',', ':'),
+                      ensure_ascii=False)
 
-jzipdict.registered=True
+
+jzipdict.registered = True
+
 
 def jlen(*args):
-
     """
     .. function:: jlen(args...) -> int
 
@@ -202,9 +207,11 @@ def jlen(*args):
     3
 
     """
-    return sum([len(x) if type(x) in (dict,list) else 1 for x in (jopts.elemfromj(*args))])
+    return sum([len(x) if type(x) in (dict, list) else 1 for x in (jopts.elemfromj(*args))])
 
-jlen.registered=True
+
+jlen.registered = True
+
 
 def jrange(num):
     """
@@ -220,12 +227,14 @@ def jrange(num):
     ["0","1","2","3"]
 
     """
-    jran = [None]*num
+    jran = [None] * num
     for i in xrange(num):
         jran[i] = str(i)
     return jopts.toj(jran)
 
-jrange.registered=True
+
+jrange.registered = True
+
 
 def jfilterempty(*args):
     """
@@ -252,9 +261,11 @@ def jfilterempty(*args):
 
     """
 
-    return jopts.toj([x for x in jopts.fromj(*args) if x!='' and x!=[] and x!=None])
+    return jopts.toj([x for x in jopts.fromj(*args) if x != '' and x != [] and x != None])
 
-jfilterempty.registered=True
+
+jfilterempty.registered = True
+
 
 def jlengthiest(*args):
     """
@@ -281,12 +292,12 @@ def jlengthiest(*args):
 
     """
 
-    maxlen=-1
-    res=None
-    
+    maxlen = -1
+    res = None
+
     for i in (x for x in jopts.fromj(*args)):
-        if i == None: 
-            l=-1
+        if i == None:
+            l = -1
         else:
             l = len(unicode(i))
         if l > maxlen:
@@ -295,7 +306,9 @@ def jlengthiest(*args):
 
     return res
 
-jlengthiest.registered=True
+
+jlengthiest.registered = True
+
 
 def jchars(*args):
     """
@@ -319,14 +332,15 @@ def jchars(*args):
     output = []
 
     for i in args:
-        output+=list(i)
+        output += list(i)
 
-    return json.dumps(output, separators=(',',':'), ensure_ascii=False)
+    return json.dumps(output, separators=(',', ':'), ensure_ascii=False)
 
-jchars.registered=True
+
+jchars.registered = True
+
 
 def j2s(*args):
-
     """
     .. function:: j2s(jpack) -> space separated string
 
@@ -351,12 +365,13 @@ def j2s(*args):
 
     """
 
-    return ' '.join([ unicode(x).replace('\n',' ') for x in jopts.fromj(*args) ])
+    return ' '.join([unicode(x).replace('\n', ' ') for x in jopts.fromj(*args)])
 
-j2s.registered=True
+
+j2s.registered = True
+
 
 def j2t(*args):
-
     """
     .. function:: j2t(jpack) -> tabpack
 
@@ -382,12 +397,13 @@ def j2t(*args):
 
     """
 
-    return '\t'.join([ unicode(x).replace('\t', '    ').replace('\n',' ') for x in jopts.fromj(*args) ])
+    return '\t'.join([unicode(x).replace('\t', '    ').replace('\n', ' ') for x in jopts.fromj(*args)])
 
-j2t.registered=True
+
+j2t.registered = True
+
 
 def t2j(*args):
-
     """
     .. function:: t2j(tabpack) -> jpack
 
@@ -406,17 +422,18 @@ def t2j(*args):
     ["asdfasdf"]
 
     """
-    
-    fj=[]
+
+    fj = []
     for t in args:
-        fj+=t.split('\t')
+        fj += t.split('\t')
 
-    return json.dumps(fj, separators=(',',':'), ensure_ascii=False)
+    return json.dumps(fj, separators=(',', ':'), ensure_ascii=False)
 
-t2j.registered=True
+
+t2j.registered = True
+
 
 def s2j(*args):
-
     """
     .. function:: s2j(tabpack) -> jpack
 
@@ -430,32 +447,34 @@ def s2j(*args):
     ["1","2","3"]
     """
 
-    fj=[]
+    fj = []
     for t in args:
-        fj+=[x for x in t.split(' ') if x!='']
+        fj += [x for x in t.split(' ') if x != '']
 
     return jopts.toj(fj)
 
-s2j.registered=True
+
+s2j.registered = True
+
 
 def nl2j(*args):
-
     """
     .. function:: nl2j(text) -> jpack
 
     Converts a text with newlines to a jpack.
     """
 
-    fj=[]
+    fj = []
     for t in args:
-        fj+=[x for x in t.split('\n')]
+        fj += [x for x in t.split('\n')]
 
     return jopts.toj(fj)
 
-nl2j.registered=True
+
+nl2j.registered = True
+
 
 def j2nl(*args):
-
     """
     .. function:: j2nl(jpack) -> text
 
@@ -488,10 +507,11 @@ def j2nl(*args):
 
     return '\n'.join([unicode(x) for x in jopts.fromj(*args)])
 
+
 j2nl.registered = True
 
-def jmerge(*args):
 
+def jmerge(*args):
     """
     .. function:: jmerge(jpacks) -> jpack
 
@@ -506,9 +526,10 @@ def jmerge(*args):
 
     """
 
-    return jopts.toj( jopts.fromj(*args) )
+    return jopts.toj(jopts.fromj(*args))
 
-jmerge.registered=True
+
+jmerge.registered = True
 
 
 def jset(*args):
@@ -527,6 +548,7 @@ def jset(*args):
     """
 
     return jopts.toj(sorted(set(jopts.fromj(*args))))
+
 
 jset.registered = True
 
@@ -552,10 +574,11 @@ def jexcept(*args):
     """
 
     if len(args) < 2:
-        raise functions.OperatorError("jexcept","operator needs at least two inputs")
+        raise functions.OperatorError("jexcept", "operator needs at least two inputs")
 
     b = set(jopts.fromj(args[1]))
     return jopts.toj([x for x in jopts.fromj(args[0]) if x not in b])
+
 
 jexcept.registered = True
 
@@ -581,15 +604,15 @@ def jintersection(*args):
     """
 
     if len(args) < 2:
-        raise functions.OperatorError("jintersection","operator needs at least two inputs")
+        raise functions.OperatorError("jintersection", "operator needs at least two inputs")
 
     return jopts.toj(sorted(set.intersection(*[set(jopts.fromj(x)) for x in args])))
+
 
 jintersection.registered = True
 
 
 def jsort(*args):
-
     """
     .. function:: jsort(jpacks) -> jpack
 
@@ -604,12 +627,13 @@ def jsort(*args):
 
     """
 
-    return jopts.toj(sorted( jopts.fromj(*args) ))
+    return jopts.toj(sorted(jopts.fromj(*args)))
 
-jsort.registered=True
+
+jsort.registered = True
+
 
 def jsplitv(*args):
-
     """
     .. function:: jsplitv(jpacks) -> [C1]
 
@@ -632,15 +656,16 @@ def jsplitv(*args):
 
     """
 
-    yield ('C1', )
+    yield ('C1',)
 
     for j1 in jopts.fromj(*args):
         yield [jopts.toj(j1)]
 
-jsplitv.registered=True
+
+jsplitv.registered = True
+
 
 def jsplit(*args):
-
     """
     .. function:: jsplit(jpacks) -> [C1, C2, ...]
 
@@ -655,18 +680,19 @@ def jsplit(*args):
 
     """
 
-    fj=[jopts.toj(x) for x in jopts.fromj(*args)]
+    fj = [jopts.toj(x) for x in jopts.fromj(*args)]
 
-    if fj==[]:
+    if fj == []:
         yield ('C1',)
-            
-    yield tuple( ['C'+str(x) for x in xrange(1,len(fj)+1)] )
+
+    yield tuple(['C' + str(x) for x in xrange(1, len(fj) + 1)])
     yield fj
 
-jsplit.registered=True
+
+jsplit.registered = True
+
 
 def jflatten(*args):
-
     """
     .. function:: jflattten(jpacks) -> jpack
 
@@ -686,12 +712,13 @@ def jflatten(*args):
 
     """
 
-    return jopts.toj( jopts.flatten( jopts.elemfromj(*args) ))
+    return jopts.toj(jopts.flatten(jopts.elemfromj(*args)))
 
-jflatten.registered=True
+
+jflatten.registered = True
+
 
 def jmergeregexp(*args):
-
     """
     .. function:: jmergeregexp(jpacks) -> jpack
 
@@ -726,28 +753,29 @@ def jmergeregexp(*args):
 
     inp = jopts.fromj(*args)
 
-    if len(inp)>0 and type(inp[0]) == list:
-        out={}
-        for x,y in inp:
+    if len(inp) > 0 and type(inp[0]) == list:
+        out = {}
+        for x, y in inp:
             if x not in out:
                 out[x] = [y]
             else:
                 out[x].append(y)
 
-        res = '|'.join('(?P<'+ x + '>' + '|'.join(y)+')' for x, y in out.iteritems() if y!='')
+        res = '|'.join('(?P<' + x + '>' + '|'.join(y) + ')' for x, y in out.iteritems() if y != '')
         if res == '':
             res = '_^'
         return res
 
-    res = '|'.join('(?:'+x+')' for x in inp if x!='')
+    res = '|'.join('(?:' + x + ')' for x in inp if x != '')
     if res == '':
         res = '_^'
     return res
 
-jmergeregexp.registered=True
+
+jmergeregexp.registered = True
+
 
 def jmergeregexpnamed(*args):
-
     """
     .. function:: jmergeregexpnamed(jpacks) -> jpack
 
@@ -768,14 +796,15 @@ def jmergeregexpnamed(*args):
 
     out = []
     for g in xrange(0, len(inp), 99):
-        out.append('|'.join('('+x+')' for x in inp[g:g+99]))
+        out.append('|'.join('(' + x + ')' for x in inp[g:g + 99]))
 
     return jopts.toj(out)
 
-jmergeregexpnamed.registered=True
+
+jmergeregexpnamed.registered = True
+
 
 def jdict(*args):
-
     """
     .. function:: jdict(key, value, key1, value1) -> jdict
 
@@ -806,20 +835,21 @@ def jdict(*args):
 
     """
 
-    if len(args)==1:
-        raise functions.OperatorError('jdict',"At least two arguments required")
+    if len(args) == 1:
+        raise functions.OperatorError('jdict', "At least two arguments required")
 
     result = OrderedDict()
-    
+
     for i in xrange(0, len(args), 2):
-        result[args[i]] = jopts.fromjsingle(args[i+1])
+        result[args[i]] = jopts.fromjsingle(args[i + 1])
 
-    return jopts.toj( result )
+    return jopts.toj(result)
 
-jdict.registered=True
+
+jdict.registered = True
+
 
 def jdictkeys(*args):
-
     """
     .. function:: jdictkeys(jdict) -> jpack
 
@@ -846,30 +876,31 @@ def jdictkeys(*args):
     []
 
     """
-    
-    if len(args)==1:
-        keys=[]
-        i=args[0]
+
+    if len(args) == 1:
+        keys = []
+        i = args[0]
         try:
-            if i[0]=='{' and i[-1]=='}':
-                keys=[x for x in json.loads(i, object_pairs_hook=OrderedDict).iterkeys()]
-        except TypeError,e:
+            if i[0] == '{' and i[-1] == '}':
+                keys = [x for x in json.loads(i, object_pairs_hook=OrderedDict).iterkeys()]
+        except TypeError, e:
             pass
     else:
-        keys=OrderedDict()
+        keys = OrderedDict()
         for i in args:
             try:
-                if i[0]=='{' and i[-1]=='}':
-                    keys.update([(x,None) for x in json.loads(i, object_pairs_hook=OrderedDict).iterkeys()])
-            except TypeError,e:
+                if i[0] == '{' and i[-1] == '}':
+                    keys.update([(x, None) for x in json.loads(i, object_pairs_hook=OrderedDict).iterkeys()])
+            except TypeError, e:
                 pass
-        keys=list(keys)
-    return jopts.toj( keys )
+        keys = list(keys)
+    return jopts.toj(keys)
 
-jdictkeys.registered=True
+
+jdictkeys.registered = True
+
 
 def jdictvals(*args):
-
     """
     .. function:: jdictvals(jdict, [key1, key2,..]) -> jpack
 
@@ -903,15 +934,15 @@ def jdictvals(*args):
 
     """
 
-    if type(args[0]) in (int,float) or args[0][0]!='{' or args[0][-1]!='}':
+    if type(args[0]) in (int, float) or args[0][0] != '{' or args[0][-1] != '}':
         return args[0]
-    d=json.loads(args[0])
-    if len(args)==1:
-        d=d.items()
-        d.sort(key=operator.itemgetter(1,0))
-        vals=[x[1] for x in d]
+    d = json.loads(args[0])
+    if len(args) == 1:
+        d = d.items()
+        d.sort(key=operator.itemgetter(1, 0))
+        vals = [x[1] for x in d]
     else:
-        vals=[]
+        vals = []
         for i in args[1:]:
             try:
                 vals.append(d[i])
@@ -919,13 +950,14 @@ def jdictvals(*args):
                 raise
             except:
                 vals.append(None)
-        
-    return jopts.toj( vals )
 
-jdictvals.registered=True
+    return jopts.toj(vals)
+
+
+jdictvals.registered = True
+
 
 def jdictsplit(*args):
-
     """
     .. function:: jdictsplit(jdict, [key1, key2,..]) -> columns
 
@@ -947,28 +979,28 @@ def jdictsplit(*args):
 
     """
 
-    d=json.loads(args[0])
-    if len(args)==1:
-        d=sorted(d.items())
+    d = json.loads(args[0])
+    if len(args) == 1:
+        d = sorted(d.items())
         yield tuple([x[0] for x in d])
         yield [jopts.toj(x[1]) for x in d]
     else:
-        vals=[]
+        vals = []
         yield tuple(args[1:])
         for i in args[1:]:
             try:
                 vals.append(jopts.toj(d[i]))
             except KeyboardInterrupt:
-                raise    
+                raise
             except:
                 vals.append(None)
         yield vals
 
-jdictsplit.registered=True
+
+jdictsplit.registered = True
 
 
 def jdictsplitv(*args):
-
     """
     .. function:: jdictsplitv(jdict, [key1, key2,..]) -> columns
 
@@ -1005,7 +1037,9 @@ def jdictsplitv(*args):
             except KeyError:
                 pass
 
+
 jdictsplitv.registered = True
+
 
 def jdictgroupkey(*args):
     """
@@ -1036,22 +1070,22 @@ def jdictgroupkey(*args):
     """
 
     def recgroupkey(jdict, gkeys):
-        outdict=OrderedDict()
+        outdict = OrderedDict()
 
         for d in jdict:
             if d[gkeys[0]] not in outdict:
                 outdict[d[gkeys[0]]] = [d]
             else:
                 outdict[d[gkeys[0]]].append(d)
-            del(d[gkeys[0]])
+            del (d[gkeys[0]])
 
-        if len(gkeys)>1:
-            outdict = OrderedDict([(x, recgroupkey(y, gkeys[1:])) for x,y in outdict.iteritems()])
+        if len(gkeys) > 1:
+            outdict = OrderedDict([(x, recgroupkey(y, gkeys[1:])) for x, y in outdict.iteritems()])
 
-        return {gkeys[0]:outdict}
+        return {gkeys[0]: outdict}
 
-    outdict=OrderedDict()
-    dlist=json.loads(args[0], object_pairs_hook=OrderedDict)
+    outdict = OrderedDict()
+    dlist = json.loads(args[0], object_pairs_hook=OrderedDict)
 
     if len(args) == 1:
         groupkeys = [iter(dlist[0]).next()]
@@ -1062,10 +1096,11 @@ def jdictgroupkey(*args):
 
     return jopts.toj(outdict[groupkeys[0]])
 
-jdictgroupkey.registered=True
+
+jdictgroupkey.registered = True
+
 
 def jsplice(*args):
-
     """
     .. function:: jsplice(jpack, range1_start, range1_end, ...) -> jpack
 
@@ -1105,13 +1140,13 @@ def jsplice(*args):
 
     """
 
-    largs=len(args)
-    if largs==1:
+    largs = len(args)
+    if largs == 1:
         return args[0]
 
-    fj=jopts.fromj(args[0])
+    fj = jopts.fromj(args[0])
 
-    if largs==2:
+    if largs == 2:
         try:
             return jopts.toj(fj[args[1]])
         except KeyboardInterrupt:
@@ -1119,22 +1154,22 @@ def jsplice(*args):
         except:
             return None
 
-    outj=[]
-    for i in xrange(1,largs,2):
+    outj = []
+    for i in xrange(1, largs, 2):
         try:
-            outj+=fj[args[i]:args[i+1]]
+            outj += fj[args[i]:args[i + 1]]
         except KeyboardInterrupt:
-            raise           
+            raise
         except:
             pass
 
     return jopts.toj(outj)
-        
 
-jsplice.registered=True
+
+jsplice.registered = True
+
 
 def jcombinations(*args):
-
     """
     .. function:: jcombinations(jpack, r) -> multiset
 
@@ -1168,18 +1203,19 @@ def jcombinations(*args):
     t4
     """
 
-    r=1
-    if len(args)==2:
-        r=args[1]
+    r = 1
+    if len(args) == 2:
+        r = args[1]
 
-    yield tuple(('C'+str(x) for x in xrange(1,r+1)))
+    yield tuple(('C' + str(x) for x in xrange(1, r + 1)))
     for p in itertools.combinations(jopts.fromj(args[0]), r):
         yield [jopts.toj(x) for x in p]
 
-jcombinations.registered=True
+
+jcombinations.registered = True
+
 
 def jpermutations(*args):
-
     """
     .. function:: jpermutations(jpack, r) -> multiset
 
@@ -1218,19 +1254,19 @@ def jpermutations(*args):
     t4
     """
 
-    r=1
-    if len(args)==2:
-        r=args[1]
+    r = 1
+    if len(args) == 2:
+        r = args[1]
 
-    yield tuple(('C'+str(x) for x in xrange(1,r+1)))
+    yield tuple(('C' + str(x) for x in xrange(1, r + 1)))
     for p in itertools.permutations(jopts.fromj(args[0]), r):
         yield [jopts.toj(x) for x in p]
 
-jpermutations.registered=True
+
+jpermutations.registered = True
 
 
 def jsonpath(*args):
-
     """
     .. function:: jsonpath(JSON, jsonpathexpr1, jsonpathexpr2) -> multiset
 
@@ -1278,30 +1314,30 @@ def jsonpath(*args):
 
     j = json.loads(args[0])
 
-    yield tuple( ('C'+str(x)for x in xrange( 1,len(args) ) )   )
-    output=[libjsonpath(j, jp, use_eval=False) for jp in args[1:]]
+    yield tuple(('C' + str(x) for x in xrange(1, len(args))))
+    output = [libjsonpath(j, jp, use_eval=False) for jp in args[1:]]
 
-    l=0
-    lchanges=0
+    l = 0
+    lchanges = 0
     for i in output:
         try:
-            if len(i)!=l:
-                l=len(i)
-                lchanges+=1
+            if len(i) != l:
+                l = len(i)
+                lchanges += 1
         except TypeError:
             pass
 
-    if l==0:
+    if l == 0:
         return
 
-    if lchanges>1:
-        yield [jopts.toj(x) if type(x)!=bool else None for x in output]
+    if lchanges > 1:
+        yield [jopts.toj(x) if type(x) != bool else None for x in output]
     else:
         for i in xrange(l):
-            yield [jopts.toj(x[i]) if type(x)!=bool else None for x in output]
+            yield [jopts.toj(x[i]) if type(x) != bool else None for x in output]
 
-jsonpath.registered=True
 
+jsonpath.registered = True
 
 if not ('.' in __name__):
     """
@@ -1309,11 +1345,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

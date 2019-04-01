@@ -20,7 +20,7 @@ public class ExecuteQueryExitMessage implements Serializable {
     public final AdpDBOperatorType type;
 
     public ExecuteQueryExitMessage(TableInfo outTableInfo, ExecutionStatistics execStats,
-        int queryID, int serialNumber, AdpDBOperatorType type) {
+                                   int queryID, int serialNumber, AdpDBOperatorType type) {
         this.outTableInfo = outTableInfo;
         this.execStats = execStats;
         this.queryID = queryID;

@@ -11,15 +11,15 @@ import java.rmi.RemoteException;
  * The implementation of the bean that manages ART properties.
  *
  * @author Dimitris Paparas <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class PropertiesManagement implements PropertiesManagementMBean {
 
     public boolean getCachingStatus() throws RemoteException {
         return AdpProperties.getArtProps()
-            .getBoolean("art.registry.rmi.RmiArtRegistryProxy.caching");
+                .getBoolean("art.registry.rmi.RmiArtRegistryProxy.caching");
     }
 
     public int getRegisterCacheSize() throws RemoteException {
@@ -28,7 +28,7 @@ public class PropertiesManagement implements PropertiesManagementMBean {
 
     public int getMessageEventDumpPeriod() throws RemoteException {
         return AdpProperties.getArtProps()
-            .getInt("art.logger.database.sqlite.SqliteMessageEventStorage.dumpPeriod");
+                .getInt("art.logger.database.sqlite.SqliteMessageEventStorage.dumpPeriod");
     }
 
     public long getContainerLifetime() throws RemoteException {
@@ -37,6 +37,6 @@ public class PropertiesManagement implements PropertiesManagementMBean {
 
     public long getRmiExecutionEngineLifetime() throws RemoteException {
         return AdpProperties.getArtProps()
-            .getLong("art.executionEngine.rmi.RmiExecutionEngine.lifetime");
+                .getLong("art.executionEngine.rmi.RmiExecutionEngine.lifetime");
     }
 }

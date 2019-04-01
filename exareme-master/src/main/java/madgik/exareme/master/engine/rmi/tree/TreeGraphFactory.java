@@ -9,7 +9,7 @@ import java.util.List;
 public class TreeGraphFactory {
 
     public static TreeConcreteQueryGraph createQueryGraph(ContainerTopology topology)
-        throws RemoteException {
+            throws RemoteException {
         // TODO(panos): fix me
         TreeGenerator gen = new TreeGenerator();
         List<TreeConcreteQueryGraph> trees = gen.generateSupportedTreeQueryGraphs(topology, "");

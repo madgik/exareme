@@ -1,12 +1,11 @@
 # coding: utf-8
 
-import setpath
-import sqlparse.sql
-import sqlparse
-import re
-from sqlparse.tokens import *
-import zlib
 import functions
+import re
+import sqlparse
+import sqlparse.sql
+import zlib
+from sqlparse.tokens import *
 
 try:
     from collections import OrderedDict
@@ -30,7 +29,7 @@ if __name__ != "__main__":
             del sqlparse.keywords.KEYWORDS[i]
 
 
-#Parse comments for inline ops
+# Parse comments for inline ops
 def opcomments(s):
     if r'/**' not in unicode(s):
         return []
@@ -63,7 +62,7 @@ def opcomments(s):
     return out
 
 
-#Top level transform (runs once)
+# Top level transform (runs once)
 def transform(query, multiset_functions=None, vtables=[], row_functions=[], substitute=lambda x: x):
     if type(query) not in (str, unicode):
         return (query, [], [])
@@ -128,7 +127,7 @@ class Transclass:
         self.vtables = vtables
         self.row_functions = row_functions
 
-    #recursive transform
+    # recursive transform
     def rectransform(self, s, s_orig=None):
         if not (re.search(ur'(?i)(select|' + '|'.join([x for x in self.vtables]) + '|' + '|'.join(
                 self.multiset_functions) + '|' + '|'.join(self.row_functions) + ')', unicode(s), re.UNICODE)):
@@ -168,7 +167,8 @@ class Transclass:
                 inv_s = ','.join(paramslist)
                 vname = vt_name(op_for_inv)
                 self.direct_exec += [(op_for_inv, paramslist, subq)]
-                s_orig.tokens[s_orig.token_index(s.tokens[0]):s_orig.token_index(s.tokens[-1]) + 1] = [sqlparse.sql.Token(Token.Keyword, 'select * from ' + vname + ' ')]
+                s_orig.tokens[s_orig.token_index(s.tokens[0]):s_orig.token_index(s.tokens[-1]) + 1] = [
+                    sqlparse.sql.Token(Token.Keyword, 'select * from ' + vname + ' ')]
                 return unicode(s), vt_distinct([(vname, op_for_inv, inv_s)]), self.direct_exec
 
         # Process internal parenthesis
@@ -184,7 +184,7 @@ class Transclass:
 
         # Process Inversions
 
-        #Process direct row inversion
+        # Process direct row inversion
         t = re.match(r'\s*(\w+)(\s+.*|$)', unicode(s), re.DOTALL | re.UNICODE)
         if t != None and t.groups()[0].lower() in self.row_functions:
             op_for_inv = t.groups()[0]
@@ -211,7 +211,7 @@ class Transclass:
                 break
             strt = unicode(t).lower()
             if strt in self.vtables:
-                #print "FOUND INVERSION:", strt, fs
+                # print "FOUND INVERSION:", strt, fs
                 tindex = fs.index(t)
                 # Break if '.' exists before vtable
                 if tindex > 0 and unicode(fs[tindex - 1]) == '.':
@@ -237,13 +237,13 @@ class Transclass:
                                    re.findall(r"'([^']*?)'|(\w+:[^\s]+)", params, re.UNICODE)]
                     inv_s = ''.join(
                         [unicode(x) for x in fs[:fs.index(t)]]) + 'SELECT * FROM ' + op_for_inv + '(' + ','.join(
-                            paramslist) + ')'
+                        paramslist) + ')'
                 else:
                     paramslist = [format_param(''.join(x)) for x in
                                   re.findall(r"'([^']*?)'|(\w+:[^\s]+)", params, re.UNICODE)]
                     inv_s = ''.join(
                         [unicode(x) for x in fs[:fs.index(t)]]) + 'SELECT * FROM ' + op_for_inv + '(' + ','.join(
-                            paramslist) + ') ' + subq
+                        paramslist) + ') ' + subq
                 subs = sqlparse.parse(inv_s)[0]
                 self.direct_exec += [(op_for_inv, paramslist, orig_subq)]
                 s_orig.tokens[s_orig.token_index(s.tokens[0]):s_orig.token_index(s.tokens[-1]) + 1] = subs.tokens
@@ -376,7 +376,7 @@ def expand_tokens(inpt):
     """
     for token in inpt.tokens:
         if (token.is_group() and isinstance(token, (
-        sqlparse.sql.Identifier, sqlparse.sql.IdentifierList, sqlparse.sql.Where))):
+                sqlparse.sql.Identifier, sqlparse.sql.IdentifierList, sqlparse.sql.Where))):
             for i in expand_tokens(token):
                 yield i
         else:
@@ -400,13 +400,17 @@ if __name__ == "__main__":
     sql = []
     multiset_functions = ['nnfunc1', 'nnfunc2', 'apriori', 'ontop', 'strsplit']
 
+
     def file():
         pass
 
+
     file.external_stream = True
+
 
     def execv():
         pass
+
 
     execv.no_results = True
 
@@ -468,9 +472,9 @@ if __name__ == "__main__":
     sql += [
         r"select * from ( output 'bla' select * from file('collection-general.csv','dialect:line') where rowid!=1 ) "]
     sql += [r"select * from testtable where x not in (file 'lalakis')"]
-    #sql+=[r".help ασδαδδ"]
+    # sql+=[r".help ασδαδδ"]
     sql += [r"names (file 'testfile')"]
-    #sql+=[r"select * from (select lala from table limit)"]
+    # sql+=[r"select * from (select lala from table limit)"]
     sql += [r"""create table session_to_country(
 	sesid text NOT NULL primary key,
 	geoip_ccode text

@@ -21,7 +21,8 @@ public class Bucket implements Serializable, Cloneable {
         this.data = data;
     }
 
-    @Override public Bucket clone() {
+    @Override
+    public Bucket clone() {
         return new Bucket(new ArrayList<Pair<?, Double>>(this.data));
     }
 

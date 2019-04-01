@@ -19,7 +19,8 @@ public class AssignmentResult {
         this.after = new AssigmentStats();
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return after.moneyQuanta + " - " + after.time_SEC;
     }
 

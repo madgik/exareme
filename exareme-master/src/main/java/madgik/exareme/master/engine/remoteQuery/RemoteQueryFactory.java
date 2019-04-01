@@ -11,7 +11,7 @@ import java.io.File;
 
 /**
  * @author Christos Mallios <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  */
 public class RemoteQueryFactory {
 
@@ -25,7 +25,7 @@ public class RemoteQueryFactory {
     }
 
     public static RemoteQuery createDefaultRemoteQuery(CacheAlgorithm algorithm, File metadataPath,
-        File storagePath, File cachePath) throws Exception {
+                                                       File storagePath, File cachePath) throws Exception {
 
         remoteQuery = new AsynchronousRemoteQuery(metadataPath, storagePath, cachePath, algorithm);
 
@@ -33,7 +33,7 @@ public class RemoteQueryFactory {
     }
 
     public static RemoteQuery createRemoteQuery(CacheAlgorithm algorithm, boolean synchronization)
-        throws Exception {
+            throws Exception {
 
         if (synchronization) {
             remoteQuery = new SynchronousRemoteQuery(null, null, null, algorithm);
@@ -45,14 +45,14 @@ public class RemoteQueryFactory {
     }
 
     public static RemoteQuery createRemoteQuery(CacheAlgorithm algorithm, boolean synchronization,
-        File metadataPath, File storagePath, File cachePath) throws Exception {
+                                                File metadataPath, File storagePath, File cachePath) throws Exception {
 
         if (synchronization) {
             remoteQuery =
-                new SynchronousRemoteQuery(metadataPath, storagePath, cachePath, algorithm);
+                    new SynchronousRemoteQuery(metadataPath, storagePath, cachePath, algorithm);
         } else {
             remoteQuery =
-                new AsynchronousRemoteQuery(metadataPath, storagePath, cachePath, algorithm);
+                    new AsynchronousRemoteQuery(metadataPath, storagePath, cachePath, algorithm);
         }
 
         return remoteQuery;

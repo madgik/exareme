@@ -9,8 +9,8 @@ import madgik.exareme.master.engine.AdpDBManager;
 import madgik.exareme.master.engine.AdpDBManagerLocator;
 import madgik.exareme.master.gateway.ExaremeGatewayUtils;
 import madgik.exareme.master.gateway.async.handler.entity.NQueryStatusEntity;
+import madgik.exareme.worker.art.registry.ArtRegistryLocator;
 import org.apache.http.*;
-//import org.apache.http.ParseException;
 import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.nio.entity.NStringEntity;
 import org.apache.http.nio.protocol.*;
@@ -18,14 +18,15 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
-import java.text.*;
-import java.text.ParseException;
-import java.util.*;
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import madgik.exareme.worker.art.registry.ArtRegistryLocator;
+
+//import org.apache.http.ParseException;
 
 /**
  * Query Handler.
@@ -35,12 +36,12 @@ import madgik.exareme.worker.art.registry.ArtRegistryLocator;
  */
 
 public class HttpAsyncOptiqueHistoricalQueriesHandler
-    implements HttpAsyncRequestHandler<HttpRequest> {
+        implements HttpAsyncRequestHandler<HttpRequest> {
     private static final Logger log =
-        Logger.getLogger(HttpAsyncOptiqueHistoricalQueriesHandler.class);
+            Logger.getLogger(HttpAsyncOptiqueHistoricalQueriesHandler.class);
     private static final AdpDBManager manager = AdpDBManagerLocator.getDBManager();
     private static int numberOfMachines;
-    
+
     static {
         try {
             numberOfMachines = ArtRegistryLocator.getArtRegistryProxy().getContainers().length;
@@ -53,21 +54,22 @@ public class HttpAsyncOptiqueHistoricalQueriesHandler
     public HttpAsyncOptiqueHistoricalQueriesHandler() {
     }
 
-    @Override public HttpAsyncRequestConsumer<HttpRequest> processRequest(HttpRequest request,
-        HttpContext context) throws HttpException, IOException {
+    @Override
+    public HttpAsyncRequestConsumer<HttpRequest> processRequest(HttpRequest request,
+                                                                HttpContext context) throws HttpException, IOException {
         return new BasicAsyncRequestConsumer();
     }
 
     @Override
     public void handle(HttpRequest request, HttpAsyncExchange httpExchange, HttpContext context)
-        throws HttpException, IOException {
+            throws HttpException, IOException {
         HttpResponse response = httpExchange.getResponse();
         handleInternal(request, response, context);
         httpExchange.submitResponse(new BasicAsyncResponseProducer(response));
     }
 
     private void handleInternal(HttpRequest request, HttpResponse response, HttpContext context)
-        throws UnsupportedHttpVersionException, IOException {
+            throws UnsupportedHttpVersionException, IOException {
         String dbname = null;
         String query = null;
         String inputQuery = null;
@@ -113,7 +115,7 @@ public class HttpAsyncOptiqueHistoricalQueriesHandler
         AdpDBClientQueryStatus queryStatus = null;
         try {
             AdpDBClientProperties properties =
-                new AdpDBClientProperties(dbname, "", "", false, true, -1, 10);
+                    new AdpDBClientProperties(dbname, "", "", false, true, -1, 10);
             AdpDBClient dbClient = AdpDBClientFactory.createDBClient(manager, properties);
             queryStatus = dbClient.query("noid", query);
             BasicHttpEntity entity = new NQueryStatusEntity(queryStatus);
@@ -141,7 +143,7 @@ public class HttpAsyncOptiqueHistoricalQueriesHandler
         List<String> script = new ArrayList<>();
         List<String> windowTablesName = new ArrayList<>();
         Pattern madisCreateStmtPattern = Pattern
-            .compile("(?i)\\s*create\\s+(temp|temporary)\\s+(view|table)\\s+(\\w+)\\s+as\\s+([\\s\\S]*)");
+                .compile("(?i)\\s*create\\s+(temp|temporary)\\s+(view|table)\\s+(\\w+)\\s+as\\s+([\\s\\S]*)");
         for (String stream : madisQuery.split(";\\s+")) {
             String query = stream.trim();
             if (!query.isEmpty()) {
@@ -151,17 +153,17 @@ public class HttpAsyncOptiqueHistoricalQueriesHandler
                         String tableName = createStmtMatcher.group(3);
                         String windowQuery = createStmtMatcher.group(4);
                         dflQuery.append("distributed create temporary table ").append(tableName)
-                            .append("_unordered")
-                            .append(" to " + numberOfMachines + " on part as direct\n")
-                            .append(getWindowRangePartitionQuery(windowQuery)).append(";\n\n");
+                                .append("_unordered")
+                                .append(" to " + numberOfMachines + " on part as direct\n")
+                                .append(getWindowRangePartitionQuery(windowQuery)).append(";\n\n");
 
                         script.add(
-                            "create index " + tableName + "_index on " + tableName
-                                + "_unordered (wid, abox, timestamp)");
+                                "create index " + tableName + "_index on " + tableName
+                                        + "_unordered (wid, abox, timestamp)");
 
                         script.add(
-                            "create temp view " + tableName + " as select * from " + tableName
-                                + "_unordered order by wid, abox, timestamp");
+                                "create temp view " + tableName + " as select * from " + tableName
+                                        + "_unordered order by wid, abox, timestamp");
                         windowTablesName.add(tableName + "_unordered");
                     } else {
                         script.add(query);
@@ -185,7 +187,7 @@ public class HttpAsyncOptiqueHistoricalQueriesHandler
         }
 
         dflQuery.append("distributed create table ").append(queryName)
-            .append(" as directscript\n");
+                .append(" as directscript\n");
         int i;
         for (i = 0; i < script.size() - 1; ++i) {
             String query = script.get(i).replaceAll("'", "''").replaceAll("\\s+", " ");
@@ -206,7 +208,7 @@ public class HttpAsyncOptiqueHistoricalQueriesHandler
         Pattern endTimestampPattern1 = Pattern.compile("(?i)\\s+timestamp\\s+(<|<=)\\s+'(\\S+)'");
         Pattern endTimestampPattern2 = Pattern.compile("(?i)\\s+'(\\S+)'\\s+(>|>=)\\s+timestamp");
         Pattern betweenPattern =
-            Pattern.compile("(?i)between\\s+timestamp\\s+'(\\S+)'\\s+and\\s+'(\\S+)'");
+                Pattern.compile("(?i)between\\s+timestamp\\s+'(\\S+)'\\s+and\\s+'(\\S+)'");
 
         Matcher betweenMatcher = betweenPattern.matcher(query);
         if (betweenMatcher.find()) {
@@ -248,7 +250,7 @@ public class HttpAsyncOptiqueHistoricalQueriesHandler
         }
 
         return query.replace("timeslidingwindow",
-            "timeslidingwindow minepochtime:" + startEpochTime + " parts:8 ")
-            .replace("timeslidingwindow", "timeslidingwindow maxepochtime:" + endEpochTime + " ");
+                "timeslidingwindow minepochtime:" + startEpochTime + " parts:8 ")
+                .replace("timeslidingwindow", "timeslidingwindow maxepochtime:" + endEpochTime + " ");
     }
 }

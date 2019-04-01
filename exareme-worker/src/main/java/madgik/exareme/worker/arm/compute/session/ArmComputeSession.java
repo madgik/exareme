@@ -24,22 +24,22 @@ public class ArmComputeSession implements Serializable {
     }
 
     public ComputeSessionContainerManagerProxy getComputeSessionContainerManagerProxy()
-        throws RemoteException {
+            throws RemoteException {
         return compute.getComputeSessionContainerManagerProxy(sessionID);
     }
 
     public ComputeSessionReportManagerProxy getComputeSessionReportManagerProxy()
-        throws RemoteException {
+            throws RemoteException {
         return compute.getComputeSessionReportManagerProxy(sessionID);
     }
 
     public ComputeSessionStatisticsManagerProxy getComputeSessionStatisticsManagerProxy()
-        throws RemoteException {
+            throws RemoteException {
         return compute.getComputeSessionStatisticsManagerProxy(sessionID);
     }
 
     public ComputeSessionStatusManagerProxy getComputeSessionStatusManagerProxy()
-        throws RemoteException {
+            throws RemoteException {
         return compute.getComputeSessionStatusManagerProxy(sessionID);
     }
 

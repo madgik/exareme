@@ -1,7 +1,9 @@
-import cStringIO,operator
+import cStringIO
+import operator
+
 
 def indent(rows, hasHeader=False, headerChar='-', delim=' | ', justify='left',
-           separateRows=False, prefix='', postfix='', wrapfunc=lambda x:x):
+           separateRows=False, prefix='', postfix='', wrapfunc=lambda x: x):
     """Indents a table by column.
        - rows: A sequence of sequences of items, one sequence per row.
        - hasHeader: True if the first row consists of the columns' names.
@@ -19,46 +21,46 @@ def indent(rows, hasHeader=False, headerChar='-', delim=' | ', justify='left',
 
     logicalRows = [[row] for row in rows]
     # columns of physical rows
-    columns = map(None,*reduce(operator.add,logicalRows))
+    columns = map(None, *reduce(operator.add, logicalRows))
     # get the maximum of each column by the string length of its items
     maxWidths = [max([len(str(item)) for item in column]) for column in columns]
     rowSeparator = headerChar * (len(prefix) + len(postfix) + sum(maxWidths) + \
-                                 len(delim)*(len(maxWidths)-1))
+                                 len(delim) * (len(maxWidths) - 1))
     # select the appropriate justify method
-    justify = {'center':str.center, 'right':str.rjust, 'left':str.ljust}[justify.lower()]
-    output=cStringIO.StringIO()
+    justify = {'center': str.center, 'right': str.rjust, 'left': str.ljust}[justify.lower()]
+    output = cStringIO.StringIO()
     if separateRows: print >> output, rowSeparator
     for physicalRows in logicalRows:
         for row in physicalRows:
             print >> output, \
                 (prefix \
-                + delim.join([justify(str(item),width) for (item,width) in zip(row,maxWidths)]) \
-                + postfix).rstrip()
-        if separateRows or hasHeader: print >> output, rowSeparator; hasHeader=False
+                 + delim.join([justify(str(item), width) for (item, width) in zip(row, maxWidths)]) \
+                 + postfix).rstrip()
+        if separateRows or hasHeader: print >> output, rowSeparator; hasHeader = False
     return output.getvalue()
 
-  
+
 if __name__ == '__main__':
     labels = ('First Name', 'Last Name', 'Age', 'Position')
     data = \
-    '''John,Smith,24,Software Engineer
-       Mary,Brohowski,23,Sales Manager
-       Aristidis,Papageorgopoulos,28,Senior Reseacher'''
-    rows = [row.strip().split(',')  for row in data.splitlines()]
+        '''John,Smith,24,Software Engineer
+           Mary,Brohowski,23,Sales Manager
+           Aristidis,Papageorgopoulos,28,Senior Reseacher'''
+    rows = [row.strip().split(',') for row in data.splitlines()]
 
-    print indent([labels]+rows, hasHeader=True)
+    print indent([labels] + rows, hasHeader=True)
 
-    data=[['0asdf'],[1]]
+    data = [['0asdf'], [1]]
 
     print indent(data, hasHeader=True)
-    
+
     # output:
     #
-    #Without wrapping function
+    # Without wrapping function
     #
-    #First Name | Last Name        | Age | Position         
-    #-------------------------------------------------------
-    #John       | Smith            | 24  | Software Engineer
-    #Mary       | Brohowski        | 23  | Sales Manager    
-    #Aristidis  | Papageorgopoulos | 28  | Senior Reseacher 
+    # First Name | Last Name        | Age | Position
+    # -------------------------------------------------------
+    # John       | Smith            | 24  | Software Engineer
+    # Mary       | Brohowski        | 23  | Sales Manager
+    # Aristidis  | Papageorgopoulos | 28  | Senior Reseacher
     #

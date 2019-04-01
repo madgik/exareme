@@ -1,11 +1,10 @@
 # coding: utf-8
 
-import setpath
 import functions
 import os
 
-def var(*args):
 
+def var(*args):
     """
     .. function:: var(varname[, value]) -> value
 
@@ -32,26 +31,27 @@ def var(*args):
     5
     """
 
-    if len(args)==0:
+    if len(args) == 0:
         return str(functions.variables.__dict__)
 
-    var=args[0]
+    var = args[0]
 
-    if len(args)==1:
-        if hasattr(functions.variables,var):
+    if len(args) == 1:
+        if hasattr(functions.variables, var):
             return functions.variables.__dict__[var]
         else:
-            raise functions.OperatorError('var', "Variable '" +var+"' does not exist")
-    elif len(args)==2:
-        functions.variables.__dict__[var]=args[1]
+            raise functions.OperatorError('var', "Variable '" + var + "' does not exist")
+    elif len(args) == 2:
+        functions.variables.__dict__[var] = args[1]
         return functions.variables.__dict__[var]
     else:
         return None
 
-var.registered=True
+
+var.registered = True
+
 
 def getvar(*args):
-
     """
     .. function:: getvar(varname) -> value
 
@@ -78,9 +78,11 @@ def getvar(*args):
     try:
         return functions.variables.__dict__[args[0]]
     except KeyError:
-        raise functions.OperatorError('var', "Variable '" +var+"' does not exist")
+        raise functions.OperatorError('var', "Variable '" + var + "' does not exist")
 
-getvar.registered=True
+
+getvar.registered = True
+
 
 def requirevars(*args):
     """
@@ -115,10 +117,12 @@ def requirevars(*args):
 
     for v in (' '.join(args).strip()).split():
         if not hasattr(functions.variables, v):
-            raise functions.OperatorError("requirevars","Variable %s isn't initialized"%v)
+            raise functions.OperatorError("requirevars", "Variable %s isn't initialized" % v)
     return 1
 
-requirevars.registered=True
+
+requirevars.registered = True
+
 
 def flowname(*args):
     """
@@ -143,21 +147,23 @@ def flowname(*args):
     Operator FLOWNAME: Flowname accepts only 1 argument
     """
 
-    var='flowname'
-    if len(args)>1:
-        raise functions.OperatorError('flowname','Flowname accepts only 1 argument')
+    var = 'flowname'
+    if len(args) > 1:
+        raise functions.OperatorError('flowname', 'Flowname accepts only 1 argument')
 
-    if len(args)==0 and hasattr(functions.variables,var):
+    if len(args) == 0 and hasattr(functions.variables, var):
         return str(functions.variables.__dict__[var])
-    elif len(args)==1:
-        functions.variables.__dict__[var]=' '.join( [str(x) for x in args[0:] ] )
+    elif len(args) == 1:
+        functions.variables.__dict__[var] = ' '.join([str(x) for x in args[0:]])
         return str(functions.variables.__dict__[var])
     else:
         return None
-flowname.registered=True
+
+
+flowname.registered = True
+
 
 def setexecdb(*args):
-
     """
     .. function:: setexecdb(str)
 
@@ -165,14 +171,16 @@ def setexecdb(*args):
 
     """
 
-    var='execdb'
-    if len(args)==0 and hasattr(functions.variables,var):
+    var = 'execdb'
+    if len(args) == 0 and hasattr(functions.variables, var):
         return str(functions.variables.__dict__[var])
     else:
-        functions.variables.__dict__[var]=str(os.path.abspath(os.path.expandvars(os.path.expanduser(os.path.normcase(args[0])))))
+        functions.variables.__dict__[var] = str(
+            os.path.abspath(os.path.expandvars(os.path.expanduser(os.path.normcase(args[0])))))
         return str(functions.variables.__dict__[var])
 
-setexecdb.registered=True
+
+setexecdb.registered = True
 
 if not ('.' in __name__):
     """
@@ -180,11 +188,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

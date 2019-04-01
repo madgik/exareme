@@ -13,27 +13,27 @@ public class JsonPlanTest {
         //                .getPort() + "');";
 
         String jsonArtPlan = "{\n" +
-            "  \"containers\": [\n" +
-            "    {\n" +
-            "      \"name\": \"c1\",\n" +
-            "      \"IP\":" + "\"192.129\"" + ",\n" +
-            "      \"port\": \"1000\",\n" +
-            "       \"data_transfer_port\": 8088\n" +
-            "    }],\n" +
-            "  \"operators\": [\n" +
-            "    {\n" +
-            "      \"name\": \"op\",\n" +
-            "      \"container\": \"c1\",\n" +
-            "      \"operator\": \"'madgik.adp.operatorLibrary.test.HelloWorld'\"\n" +
-            "    }\n" +
-            "  ]\n" +
-            "}";
+                "  \"containers\": [\n" +
+                "    {\n" +
+                "      \"name\": \"c1\",\n" +
+                "      \"IP\":" + "\"192.129\"" + ",\n" +
+                "      \"port\": \"1000\",\n" +
+                "       \"data_transfer_port\": 8088\n" +
+                "    }],\n" +
+                "  \"operators\": [\n" +
+                "    {\n" +
+                "      \"name\": \"op\",\n" +
+                "      \"container\": \"c1\",\n" +
+                "      \"operator\": \"'madgik.adp.operatorLibrary.test.HelloWorld'\"\n" +
+                "    }\n" +
+                "  ]\n" +
+                "}";
 
 
         String artPlan = "container c('" + "19.168.1.1" + "', 1000); \n"
-            + "operator op c('AdpDBNetReaderOperator', " + "database='" + "dbase" + "', "
-            + "table='" + "tName" + "', " + "part='" + "0" + "', " + "sendHeader='" + "handler"
-            + "', " + "ip='" + "127.0.0.1" + "', " + "port='" + "1099" + "');";
+                + "operator op c('AdpDBNetReaderOperator', " + "database='" + "dbase" + "', "
+                + "table='" + "tName" + "', " + "part='" + "0" + "', " + "sendHeader='" + "handler"
+                + "', " + "ip='" + "127.0.0.1" + "', " + "port='" + "1099" + "');";
 
         ExecutionPlan plan = null;
         try {

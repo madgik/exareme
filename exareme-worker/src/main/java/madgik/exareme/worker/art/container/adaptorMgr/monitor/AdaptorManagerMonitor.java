@@ -19,41 +19,45 @@ import java.util.List;
  */
 public class AdaptorManagerMonitor implements AdaptorManagerInterface {
 
-    @Override public AdaptorID addReadAdaptor(CombinedReadAdaptor adaptor,
-        ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public AdaptorID addReadAdaptor(CombinedReadAdaptor adaptor,
+                                    ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public AdaptorID addWriteAdaptor(CombinedWriteAdaptor adaptor,
-        ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public AdaptorID addWriteAdaptor(CombinedWriteAdaptor adaptor,
+                                     ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public CombinedReadAdaptor getReadAdaptor(AdaptorID adaptorID,
-        ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public CombinedReadAdaptor getReadAdaptor(AdaptorID adaptorID,
+                                              ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public CombinedWriteAdaptor getWriteAdaptor(AdaptorID adaptorID,
-        ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public CombinedWriteAdaptor getWriteAdaptor(AdaptorID adaptorID,
+                                                ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public Triple<Long, List<CombinedReadAdaptor>, List<CombinedWriteAdaptor>> destroyContainerSession(
-        ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
+            ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public Triple<Long, List<CombinedReadAdaptor>, List<CombinedWriteAdaptor>> destroySessions(
-        PlanSessionID sessionID) throws RemoteException {
+            PlanSessionID sessionID) throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public Triple<Long, List<CombinedReadAdaptor>, List<CombinedWriteAdaptor>> destroyAllSessions()
-        throws RemoteException {
+            throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

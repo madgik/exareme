@@ -13,7 +13,7 @@ import madgik.exareme.worker.art.executionPlan.entity.ObjectType;
 public class ActiveContainer extends ActiveObject {
 
     public ActiveContainer(String containerName, ContainerSessionID containerSessionID,
-        OperatorGroup operatorGroup) {
+                           OperatorGroup operatorGroup) {
         super(ObjectType.Container, containerName, containerSessionID, operatorGroup);
     }
 }

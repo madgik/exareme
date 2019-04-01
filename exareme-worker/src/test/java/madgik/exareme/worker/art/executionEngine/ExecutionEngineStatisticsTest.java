@@ -16,8 +16,8 @@ import org.apache.log4j.Logger;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class ExecutionEngineStatisticsTest {
@@ -44,10 +44,10 @@ public class ExecutionEngineStatisticsTest {
         //                "connect c(hello, hello_out);\n";
 
         planString += "container c ('" + container.getEntityName().getName() + "',1099);\n"
-            + "instantiate hello c('madgik.exareme.db.operatorLibrary.test.HelloWorld2');\n"
-            + "instantiate print c('madgik.exareme.db.operatorLibrary.test.Print');\n"
-            + "create hello_out c('10');\n" + "connect c(hello, hello_out);\n"
-            + "connect c(hello_out, print);\n";
+                + "instantiate hello c('madgik.exareme.db.operatorLibrary.test.HelloWorld2');\n"
+                + "instantiate print c('madgik.exareme.db.operatorLibrary.test.Print');\n"
+                + "create hello_out c('10');\n" + "connect c(hello, hello_out);\n"
+                + "connect c(hello_out, print);\n";
 
         long start = System.currentTimeMillis();
 
@@ -90,7 +90,7 @@ public class ExecutionEngineStatisticsTest {
         //    log.debug("Running Time = " + (end - start));
 
         ConcreteOperatorStatistics stats = sessionPlan.getPlanSessionStatisticsManagerProxy()
-            .getOperatorStatistics(plan.getOperator("hello"));
+                .getOperatorStatistics(plan.getOperator("hello"));
 
         sessionPlan.close();
 

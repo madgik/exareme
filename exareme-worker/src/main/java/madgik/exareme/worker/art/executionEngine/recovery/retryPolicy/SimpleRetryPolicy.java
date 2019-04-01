@@ -16,7 +16,8 @@ public class SimpleRetryPolicy implements RetryPolicy {
         this.numOfFailures = numOfFailures;
     }
 
-    @Override public boolean retry(Exception exception, int retries) throws RemoteException {
+    @Override
+    public boolean retry(Exception exception, int retries) throws RemoteException {
         return retries < numOfFailures;
     }
 }

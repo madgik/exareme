@@ -9,13 +9,13 @@ import java.rmi.RemoteException;
 
 /**
  * @author Herald Kllapi<br>
- *         herald,@di.uoa.gr<br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * herald,@di.uoa.gr<br>
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public interface ComputeSessionReportManager
-    extends RemoteObject<ComputeSessionReportManagerProxy> {
+        extends RemoteObject<ComputeSessionReportManagerProxy> {
 
     void stopManager() throws RemoteException;
 }

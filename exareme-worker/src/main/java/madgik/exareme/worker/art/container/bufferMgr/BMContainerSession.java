@@ -34,7 +34,7 @@ public class BMContainerSession implements Serializable {
     private long bufferNum = 0;
 
     public BMContainerSession(ContainerSessionID containerSessionID, PlanSessionID sessionID,
-        StatisticsManagerInterface statistics) {
+                              StatisticsManagerInterface statistics) {
         this.containerSessionID = containerSessionID;
         this.sessionID = sessionID;
         this.statistics = statistics;
@@ -50,8 +50,8 @@ public class BMContainerSession implements Serializable {
             SocketBuffer socketBuffer = StreamBufferFactory.createSocketBuffer(size);
 
             BufferMonitor monitor = new BufferMonitor(streamBuffer,
-                statistics.getStatistics(containerSessionID, sessionID).
-                    createBufferStatistics(bufferName));
+                    statistics.getStatistics(containerSessionID, sessionID).
+                            createBufferStatistics(bufferName));
 
             bufferMap.put(bufferID, new CombinedBuffer(socketBuffer, monitor));
             bufferNum++;

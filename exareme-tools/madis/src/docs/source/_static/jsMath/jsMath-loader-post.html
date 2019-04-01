@@ -71,9 +71,9 @@
     if (isCheck) {
         var fn = jsMath.Controls.TestVersion.toString();
         window.parent.postMessage(ID + ":SCR:" +
-                "jsMath.Controls.TestVersion = " + fn + ";" +
-                "jsMath.Message.Clear(); jsMath.Message.doClear();" +
-                "jsMath.Controls.TestVersion()", "*"
+            "jsMath.Controls.TestVersion = " + fn + ";" +
+            "jsMath.Message.Clear(); jsMath.Message.doClear();" +
+            "jsMath.Controls.TestVersion()", "*"
         );
         window.parent.postMessage(ID + ":END:", "*");
     }

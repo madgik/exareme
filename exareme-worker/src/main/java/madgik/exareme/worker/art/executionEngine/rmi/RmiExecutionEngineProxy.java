@@ -17,12 +17,12 @@ import java.rmi.ServerException;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class RmiExecutionEngineProxy extends RmiObjectProxy<ExecutionEngine>
-    implements ExecutionEngineProxy {
+        implements ExecutionEngineProxy {
 
     private static final long serialVersionUID = 1L;
     private String ip = null;
@@ -31,7 +31,7 @@ public class RmiExecutionEngineProxy extends RmiObjectProxy<ExecutionEngine>
     private RegisterPolicy registerPolicy = null;
 
     public RmiExecutionEngineProxy(String ip, String regEntryName, EntityName regEntityName)
-        throws RemoteException {
+            throws RemoteException {
         super(regEntryName, regEntityName);
 
         if (ip == null) {
@@ -42,23 +42,27 @@ public class RmiExecutionEngineProxy extends RmiObjectProxy<ExecutionEngine>
         this.regEntryName = regEntryName;
         this.entityName = new EntityName(regEntryName, ip);
         long lifeTime = AdpProperties.getArtProps()
-            .getLong("art.executionEngine.rmi.RmiExecutionEngine.lifetime");
+                .getLong("art.executionEngine.rmi.RmiExecutionEngine.lifetime");
         this.registerPolicy = PolicyFactory.generateTimeExpirationDeletePolicy(lifeTime);
     }
 
-    @Override public EntityName getEntityName() {
+    @Override
+    public EntityName getEntityName() {
         return entityName;
     }
 
-    @Override public RegisterPolicy getRegisterPolicy() {
+    @Override
+    public RegisterPolicy getRegisterPolicy() {
         return registerPolicy;
     }
 
-    @Override public Type getType() {
+    @Override
+    public Type getType() {
         return Type.executionEngine;
     }
 
-    @Override public ExecutionEngineSession createSession() throws RemoteException {
+    @Override
+    public ExecutionEngineSession createSession() throws RemoteException {
         return new ExecutionEngineSession(this.getRemoteObject());
     }
 }

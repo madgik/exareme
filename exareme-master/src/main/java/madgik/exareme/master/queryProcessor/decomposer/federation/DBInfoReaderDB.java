@@ -28,7 +28,6 @@ public class DBInfoReaderDB {
             statement.setQueryTimeout(30);  // set timeout to 30 sec.
 
 
-
             ResultSet rs = statement.executeQuery("select * from endpoint");
             while (rs.next()) {
                 String db = rs.getString("id");
@@ -54,11 +53,11 @@ public class DBInfoReaderDB {
             }
         }
     }
-    
+
     public static NamesToAliases readAliases(String filename) throws ClassNotFoundException {
         // load the sqlite-JDBC driver using the current class loader
         Class.forName("org.sqlite.JDBC");
-        NamesToAliases n2a=new NamesToAliases();
+        NamesToAliases n2a = new NamesToAliases();
         Connection connection = null;
         try {
             // create a database connection
@@ -70,16 +69,15 @@ public class DBInfoReaderDB {
             statement.setQueryTimeout(30);  // set timeout to 30 sec.
 
 
-            
             ResultSet rs = statement.executeQuery("select * from aliases");
-            int counter=0;
+            int counter = 0;
             while (rs.next()) {
                 String t = rs.getString("tablename");
-                String[] aliases=rs.getString("aliases").split(" ");
+                String[] aliases = rs.getString("aliases").split(" ");
                 //for(int i=0;i<aliases.length;i++){
-                	n2a.addTable(t, aliases);
-                	counter+=aliases.length;
-               // }
+                n2a.addTable(t, aliases);
+                counter += aliases.length;
+                // }
             }
             n2a.setCounter(counter);
         } catch (SQLException e) {

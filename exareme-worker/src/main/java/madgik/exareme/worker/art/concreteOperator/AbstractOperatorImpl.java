@@ -24,8 +24,8 @@ import java.io.Serializable;
  * @author Herald Kllapi<br>
  * @author Dimitris Paparas<br>
  * @author Eva Sitaridi<br>
- *         {herald,paparas,evas}@di.uoa.gr<br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * {herald,paparas,evas}@di.uoa.gr<br>
+ * University of Athens / Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public abstract class AbstractOperatorImpl {
@@ -58,14 +58,14 @@ public abstract class AbstractOperatorImpl {
 
     /* Create the operator session (Logger, Status, Tasks). */
     public void createSession(String operatorName, String category, OperatorType type,
-        ConcreteOperatorID opID, PlanSessionReportID sessionReportID,
-        ContainerSessionID containerSessionID, PlanSessionID sessionID, ContainerID containerID,
-        DataTransferMgrInterface dataTransferManagerDTP,
-        OperatorGroupManagerInterface operatorGroupManager) throws Exception {
+                              ConcreteOperatorID opID, PlanSessionReportID sessionReportID,
+                              ContainerSessionID containerSessionID, PlanSessionID sessionID, ContainerID containerID,
+                              DataTransferMgrInterface dataTransferManagerDTP,
+                              OperatorGroupManagerInterface operatorGroupManager) throws Exception {
         opname = operatorName;
         sessionManager =
-            new SessionManager(operatorName, category, type, opID, containerSessionID, sessionID,
-                sessionReportID, new OperatorStatus(), containerID);
+                new SessionManager(operatorName, category, type, opID, containerSessionID, sessionID,
+                        sessionReportID, new OperatorStatus(), containerID);
         exceptionManager = new ExceptionManager(sessionManager);
         parameterManager = new ParameterManager(sessionManager);
         adaptorManager = createAdaptorManager();
@@ -76,7 +76,7 @@ public abstract class AbstractOperatorImpl {
         processManager = new ProcessManager(sessionManager);
         this.dataTransferManagerDTP = dataTransferManagerDTP;
         this.operatorGroupManager = operatorGroupManager;
-    /* Create the default tasks */
+        /* Create the default tasks */
         taskManager.createTask("Working");
     }
 
@@ -130,7 +130,7 @@ public abstract class AbstractOperatorImpl {
                 closeIO();
                 cleanResources();
 
-        /* Report the exit code */
+                /* Report the exit code */
                 StatusVariable exitCodeSV = new StatusVariable("ExitCode", Integer.class);
                 variableManager.register(exitCodeSV);
                 exitCodeSV.setStatus(code);
@@ -163,7 +163,7 @@ public abstract class AbstractOperatorImpl {
                 cleanResources();
                 getExceptionManager().reportException("", exception);
                 log.debug(
-                    "exception in abstract op" + exception.getMessage() + " " + this.opname + " ");
+                        "exception in abstract op" + exception.getMessage() + " " + this.opname + " ");
                 exception.printStackTrace();
             } catch (Exception e) {
 

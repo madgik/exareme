@@ -15,11 +15,13 @@ public class NoSubgraphFilter implements AssignedOperatorFilter {
         return instance;
     }
 
-    @Override public int getOperatorAssignment(int opNum) {
+    @Override
+    public int getOperatorAssignment(int opNum) {
         return -1;
     }
 
-    @Override public int getNumberFilteredOperators() {
+    @Override
+    public int getNumberFilteredOperators() {
         return 0;
     }
 }

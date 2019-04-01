@@ -13,9 +13,9 @@ import java.rmi.RemoteException;
  * @author herald
  */
 public class ContainerQuantumClockTickEventHandler
-    implements ExecEngineEventHandler<ContainerQuantumClockTickEvent> {
+        implements ExecEngineEventHandler<ContainerQuantumClockTickEvent> {
     public static final ContainerQuantumClockTickEventHandler instance =
-        new ContainerQuantumClockTickEventHandler();
+            new ContainerQuantumClockTickEventHandler();
     private static final long serialVersionUID = 1L;
 
     public ContainerQuantumClockTickEventHandler() {
@@ -23,20 +23,21 @@ public class ContainerQuantumClockTickEventHandler
 
     @Override
     public void preProcess(ContainerQuantumClockTickEvent event, PlanEventSchedulerState state)
-        throws RemoteException {
+            throws RemoteException {
         if (event.warning == false) {
             state.totalQuanta++;
         }
     }
 
-    @Override public void handle(ContainerQuantumClockTickEvent event, EventProcessor proc)
-        throws RemoteException {
+    @Override
+    public void handle(ContainerQuantumClockTickEvent event, EventProcessor proc)
+            throws RemoteException {
         // ...
     }
 
     @Override
     public void postProcess(ContainerQuantumClockTickEvent event, PlanEventSchedulerState state)
-        throws RemoteException {
+            throws RemoteException {
         // ...
     }
 }

@@ -13,7 +13,8 @@ import java.io.FileWriter;
 public class LocalArmStorageClientTest {
     private Logger log = Logger.getLogger(LocalArmStorageClientTest.class);
 
-    @Test public void testLocal() throws Exception {
+    @Test
+    public void testLocal() throws Exception {
         log.info("----- TEST ----");
         LocalArmStorageClient storageClient = new LocalArmStorageClient();
         File testFile = new File("/tmp/test.db");
@@ -27,7 +28,7 @@ public class LocalArmStorageClientTest {
         log.info("File " + testFile.getAbsolutePath() + " created.");
         storageClient.connect();
         storageClient
-            .put(testFile.getAbsolutePath(), "/tmp/exaclient-db/test/" + testFile.getName());
+                .put(testFile.getAbsolutePath(), "/tmp/exaclient-db/test/" + testFile.getName());
         storageClient.disconnect();
 
         log.info("----- TEST ----");

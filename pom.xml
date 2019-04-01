@@ -188,11 +188,11 @@
         <module>exareme-worker</module>
         <module>exareme-master</module>
         <module>exareme-distribution</module>
+	<module>QueryBuilder</module>
     </modules>
     <properties>
-            <skipTests>true</skipTests>
+        <skipTests>true</skipTests>
         <repoToken>${env.REPO_TOKEN}</repoToken>
-
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <file.encoding>UTF-8</file.encoding>
         <javaVersion>1.7</javaVersion>

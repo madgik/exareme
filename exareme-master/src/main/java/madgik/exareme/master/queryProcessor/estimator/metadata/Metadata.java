@@ -34,13 +34,12 @@ public final class Metadata {
     public Schema getSchema() {
         return schema;
     }
-    
+
     /*interface methods*/
 
     public static void feedMetadata(Schema fullSchema) {
         schema = fullSchema;
     }
-
 
 
 }

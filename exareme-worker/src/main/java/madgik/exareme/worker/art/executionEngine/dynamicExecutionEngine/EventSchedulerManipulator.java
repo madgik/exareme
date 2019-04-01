@@ -22,9 +22,9 @@ public class EventSchedulerManipulator {
 
     public EventSchedulerManipulator() {
         activeSchedulers =
-            Collections.synchronizedMap(new LinkedHashMap<PlanSessionID, PlanEventScheduler>());
+                Collections.synchronizedMap(new LinkedHashMap<PlanSessionID, PlanEventScheduler>());
         activeSchedulersReportIdMap = Collections
-            .synchronizedMap(new LinkedHashMap<PlanSessionReportID, PlanEventScheduler>());
+                .synchronizedMap(new LinkedHashMap<PlanSessionReportID, PlanEventScheduler>());
     }
 
     public PlanEventScheduler getGlobalScheduler() {
@@ -36,7 +36,7 @@ public class EventSchedulerManipulator {
     }
 
     public void registerScheduler(PlanSessionID sessionID, PlanSessionReportID sessionReportID,
-        PlanEventScheduler scheduler) {
+                                  PlanEventScheduler scheduler) {
         activeSchedulers.put(sessionID, scheduler);
         activeSchedulersReportIdMap.put(sessionReportID, scheduler);
     }

@@ -39,9 +39,9 @@ Examples::
     1     | James | 10 | 2
     2     | Mark  | 7  | 3
 """
-import setpath
-import vtbase
 import functions
+
+import vtbase
 
 ### Classic stream iterator
 registered = True
@@ -95,16 +95,14 @@ class arff_writer(vtbase.VT):
             yield (('result',),)
             yield (1,)
             return
-            
 
         updated_schema = []
 
         for i in range(len(schema)):
-            t = (schema[i][0],"NUMERIC")
+            t = (schema[i][0], "NUMERIC")
             updated_schema.append(t)
 
         data[u'attributes'] = updated_schema
-
 
         for row in c:
             raw.append(row)
@@ -113,16 +111,11 @@ class arff_writer(vtbase.VT):
         data[u'description'] = u''
         data[u'relation'] = u'hour-weka.filters.unsupervised.attribute.Remove-R1-2'
 
-
-        f = open('input.arff','w')
+        f = open('input.arff', 'w')
         f.write(arff.dumps(data))
 
-
-        yield(('result',),)
+        yield (('result',),)
         yield (1,)
-
-
-
 
 
 def Source():
@@ -135,7 +128,6 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
 
     testfunction()
@@ -145,5 +137,3 @@ if not ('.' in __name__):
         import doctest
 
         doctest.testmod()
-
-

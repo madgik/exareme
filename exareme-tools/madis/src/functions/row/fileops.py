@@ -1,8 +1,8 @@
 # coding: utf-8
 import os
 
-def fileextension(*args):
 
+def fileextension(*args):
     """
     .. function:: fileextension(text) -> text
 
@@ -23,11 +23,12 @@ def fileextension(*args):
     """
 
     try:
-        ret=os.path.splitext(args[0])
+        ret = os.path.splitext(args[0])
     except ValueError:
         return None
 
     return ret[1].lower()
+
 
 fileextension.registered = True
 
@@ -63,8 +64,8 @@ def filetext(*args):
         return None
     return data
 
-filetext.registered = True
 
+filetext.registered = True
 
 if not ('.' in __name__):
     """
@@ -72,11 +73,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

@@ -4,13 +4,13 @@
  */
 package madgik.exareme.master.queryProcessor.decomposer.query;
 
+import com.google.common.hash.HashCode;
+import com.google.common.hash.Hashing;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import com.google.common.hash.HashCode;
-import com.google.common.hash.Hashing;
 
 /**
  * @author dimitris
@@ -51,7 +51,8 @@ public class Selection implements Operand {
         return this.ops;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         StringBuilder sb = new StringBuilder();
 
         // sb.append("SELECT(");
@@ -69,7 +70,8 @@ public class Selection implements Operand {
         return sb.toString();
     }
 
-    @Override public boolean equals(Object obj) {
+    @Override
+    public boolean equals(Object obj) {
         if (this == obj) {
             return true;
         }
@@ -89,7 +91,8 @@ public class Selection implements Operand {
         return false;
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
 
         int hash = 7;
         //  for(Operand o:this.ops){
@@ -101,12 +104,14 @@ public class Selection implements Operand {
         return hash;
     }
 
-    @Override public void changeColumn(Column oldCol, Column newCol) {
+    @Override
+    public void changeColumn(Column oldCol, Column newCol) {
         throw new UnsupportedOperationException(
-            "Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                "Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override public Operand clone() throws CloneNotSupportedException {
+    @Override
+    public Operand clone() throws CloneNotSupportedException {
         Selection cloned = new Selection();
         for (Operand o : this.ops) {
             cloned.ops.add(o.clone());
@@ -115,12 +120,12 @@ public class Selection implements Operand {
     }
 
     @Override
-	public HashCode getHashID() {
-    	List<HashCode> codes=new ArrayList<HashCode>();
-		for(Operand o:this.ops){
-			codes.add(o.getHashID());
-		}
-		return Hashing.combineUnordered(codes);
-	}
+    public HashCode getHashID() {
+        List<HashCode> codes = new ArrayList<HashCode>();
+        for (Operand o : this.ops) {
+            codes.add(o.getHashID());
+        }
+        return Hashing.combineUnordered(codes);
+    }
 
 }

@@ -18,7 +18,7 @@ public class ExecutionPlanFactory {
     }
 
     public static EditableExecutionPlan createEditableExecutionPlan(PlanExpression expression)
-        throws SemanticError {
+            throws SemanticError {
         return new ExecutionPlanImpl(expression);
     }
 }

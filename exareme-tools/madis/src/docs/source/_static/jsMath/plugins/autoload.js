@@ -244,8 +244,7 @@ jsMath.Add(jsMath.Autoload, {
                 var data = this.queue[i][1];
                 if (data.length == 1) {
                     jsMath[name](data[0])
-                }
-                else {
+                } else {
                     jsMath[name](data[0], data[1], data[2], data[3])
                 }
             }
@@ -403,7 +402,7 @@ jsMath.Add(jsMath.Autoload, {
             jsMath.Macro = function () {
             };
             jsMath.Synchronize = function (code, data) {
-                if (typeof(code) == 'string') {
+                if (typeof (code) == 'string') {
                     eval(code)
                 } else {
                     code(data)
@@ -436,7 +435,7 @@ jsMath.Add(jsMath.Autoload, {
         if (!obj) {
             obj = document
         }
-        if (typeof(obj) == 'string') {
+        if (typeof (obj) == 'string') {
             obj = document.getElementById(obj)
         }
         if (!obj.getElementsByTagName) {
@@ -491,7 +490,7 @@ jsMath.Add(jsMath.Autoload, {
         ;
         var fonts = jsMath.Autoload.loadFonts;
         if (fonts) {
-            if (typeof(fonts) != 'object') {
+            if (typeof (fonts) != 'object') {
                 fonts = [fonts]
             }
             for (var i = 0; i < fonts.length; i++) {
@@ -500,7 +499,7 @@ jsMath.Add(jsMath.Autoload, {
         }
         var files = jsMath.Autoload.loadFiles;
         if (files) {
-            if (typeof(files) != 'object') {
+            if (typeof (files) != 'object') {
                 files = [files]
             }
             for (var i = 0; i < files.length; i++) {
@@ -510,7 +509,7 @@ jsMath.Add(jsMath.Autoload, {
         var macros = jsMath.Autoload.macros;
         if (macros) {
             for (var id in macros) {
-                if (typeof(macros[id]) == 'string') {
+                if (typeof (macros[id]) == 'string') {
                     jsMath.Macro(id, macros[id]);
                 } else {
                     jsMath.Macro(id, macros[id][0], macros[id][1]);
@@ -531,8 +530,7 @@ jsMath.Add(jsMath.Autoload, {
             this.div = document.createElement('div');
             if (!document.body.hasChildNodes) {
                 document.body.appendChild(this.div)
-            }
-            else {
+            } else {
                 document.body.insertBefore(this.div, document.body.firstChild)
             }
             var style = {

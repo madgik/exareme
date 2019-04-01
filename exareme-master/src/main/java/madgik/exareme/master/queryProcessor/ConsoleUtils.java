@@ -21,21 +21,21 @@ public class ConsoleUtils {
     private static TimeFormat tf = new TimeFormat(TimeUnit.min);
 
     public static void printStatisticsToLog(String tag, ConcreteQueryGraph graph,
-        RunTimeParameters runTimeParams, ScheduleStatistics stats, Logger log, Level level) {
+                                            RunTimeParameters runTimeParams, ScheduleStatistics stats, Logger log, Level level) {
         log.log(level, "[" + tag + "] " +
-            "G(V=" + graph.getNumOfOperators() +
-            ",E=" + graph.getNumOfLinks() + ") Time(" +
-            tf.format(
-                (int) (stats.getTimeInQuanta() * runTimeParams.quantum__SEC * Metrics.MiliSec))
-            + ")" +
-            "$(" + stats.getMoneyInQuanta() + ")");
+                "G(V=" + graph.getNumOfOperators() +
+                ",E=" + graph.getNumOfLinks() + ") Time(" +
+                tf.format(
+                        (int) (stats.getTimeInQuanta() * runTimeParams.quantum__SEC * Metrics.MiliSec))
+                + ")" +
+                "$(" + stats.getMoneyInQuanta() + ")");
     }
 
     public static void printSkylineToLog(ConcreteQueryGraph graph, RunTimeParameters runTimeParams,
-        SolutionSpace space, Logger log, Level level) {
+                                         SolutionSpace space, Logger log, Level level) {
         for (SchedulingResult sr : space.findSkyline()) {
             printStatisticsToLog("" + sr.getStatistics().getContainersUsed(), graph, runTimeParams,
-                sr.getStatistics(), log, level);
+                    sr.getStatistics(), log, level);
         }
     }
 }

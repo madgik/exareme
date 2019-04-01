@@ -16,8 +16,8 @@ import java.rmi.RemoteException;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class RmiArtManager implements ArtManager {
@@ -29,45 +29,51 @@ public class RmiArtManager implements ArtManager {
     private static int dataTransferPort;
 
     public RmiArtManager(String containerName, long cId, int localRegistryPort,
-        int dataTransferPort) throws RemoteException {
+                         int dataTransferPort) throws RemoteException {
         RmiArtManager.dataTransferPort = dataTransferPort;
         artRegistryManager = new RmiArtRegistryManager(localRegistryPort, this);
         containerManager = new RmiContainerManager(containerName, cId, this, dataTransferPort);
         engineManager = new RmiExecutionEngineManager(this);
         globalQuantumClock =
-            new GlobalQuantumClock(AdpProperties.getCloudProps().getLong("cloud.warnTime") * 1000,
-                AdpProperties.getCloudProps().getLong("cloud.quantum") * 1000);
+                new GlobalQuantumClock(AdpProperties.getCloudProps().getLong("cloud.warnTime") * 1000,
+                        AdpProperties.getCloudProps().getLong("cloud.quantum") * 1000);
         try {
             ManagerManagement artManager = new ManagerManagement(this);
             madgik.exareme.utils.managementBean.ManagementUtil
-                .registerMBean(artManager, "ArtManager");
+                    .registerMBean(artManager, "ArtManager");
             log.info("Art manager bean registered!");
         } catch (Exception e) {
             log.error("Art manager registration error (already running?)!", e);
         }
     }
 
-    @Override public ArtRegistryManager getRegistryManager() {
+    @Override
+    public ArtRegistryManager getRegistryManager() {
         return artRegistryManager;
     }
 
-    @Override public ExecutionEngineManager getExecutionEngineManager() {
+    @Override
+    public ExecutionEngineManager getExecutionEngineManager() {
         return engineManager;
     }
 
-    @Override public ContainerManager getContainerManager() {
+    @Override
+    public ContainerManager getContainerManager() {
         return containerManager;
     }
 
-    @Override public void startGlobalQuantumClock() throws RemoteException {
+    @Override
+    public void startGlobalQuantumClock() throws RemoteException {
         globalQuantumClock.startDeamon();
     }
 
-    @Override public void stopManager() throws RemoteException {
+    @Override
+    public void stopManager() throws RemoteException {
         stopManager(false);
     }
 
-    @Override public void stopManager(boolean force) throws RemoteException {
+    @Override
+    public void stopManager(boolean force) throws RemoteException {
         if (engineManager.isOnline()) {
             engineManager.stopExecutionEngine(force);
         }

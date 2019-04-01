@@ -22,7 +22,7 @@ import java.util.logging.Logger;
 
 /**
  * @author Christos Mallios <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  */
 public class RemoteQueryBootstrap implements Bootstrap {
 
@@ -49,17 +49,20 @@ public class RemoteQueryBootstrap implements Bootstrap {
         statement = connection.createStatement();
     }
 
-    @Override public void updateDirectories(String directory) throws SQLException {
+    @Override
+    public void updateDirectories(String directory) throws SQLException {
 
     }
 
-    @Override public void close() throws SQLException {
+    @Override
+    public void close() throws SQLException {
 
         statement.close();
         connection.close();
     }
 
-    @Override public CacheInfo getCacheInfo() throws SQLException {
+    @Override
+    public CacheInfo getCacheInfo() throws SQLException {
 
         CacheInfo cacheInfo = null;
 
@@ -89,10 +92,10 @@ public class RemoteQueryBootstrap implements Bootstrap {
         LinkedList<CachedDataInfo> list = new LinkedList<CachedDataInfo>();
 
         String select_query = "SELECT `database`,`table`,`query`,`last_update`, "
-            + "`storage_time`, `size`, `benefit`, `number_of_requests`,  "
-            + "`number_of_last_version_requests`, `number_of_total_requests`,  "
-            + "`query_response_time`, `number_of_versions` FROM queries "
-            + "ORDER BY DATETIME(`last_update`)";
+                + "`storage_time`, `size`, `benefit`, `number_of_requests`,  "
+                + "`number_of_last_version_requests`, `number_of_total_requests`,  "
+                + "`query_response_time`, `number_of_versions` FROM queries "
+                + "ORDER BY DATETIME(`last_update`)";
 
         try {
 
@@ -113,8 +116,8 @@ public class RemoteQueryBootstrap implements Bootstrap {
                 size = rs.getDouble("size");
                 benefit = rs.getDouble("benefit");
                 System.out.println(
-                    "cache data " + db + "|" + table + "|" + query + "|" + lastUpdate + "|"
-                        + storageTime + "|" + size + "|" + benefit);
+                        "cache data " + db + "|" + table + "|" + query + "|" + lastUpdate + "|"
+                                + storageTime + "|" + size + "|" + benefit);
 
                 //If it is the newest version of a query
                 if (!lastResults.contains(query)) {
@@ -129,11 +132,11 @@ public class RemoteQueryBootstrap implements Bootstrap {
                     queryResponseTime = rs.getInt("query_response_time");
                     numberOfVersions = rs.getInt("number_of_versions");
                     requests = new QueryRequests(numberOfRequests, numberOfLastVersionRequests,
-                        numberOfTotalRequests, queryResponseTime, numberOfVersions);
+                            numberOfTotalRequests, queryResponseTime, numberOfVersions);
 
                     cachedDataInfo =
-                        new CachedDataInfo(db, table, query, storagePath + "/" + db, lastUpdate,
-                            cacheInfo, storageTime, size, benefit);
+                            new CachedDataInfo(db, table, query, storagePath + "/" + db, lastUpdate,
+                                    cacheInfo, storageTime, size, benefit);
                     cachedDataInfo.setQueryRequests(requests);
 
                     list.add(cachedDataInfo);
@@ -154,7 +157,7 @@ public class RemoteQueryBootstrap implements Bootstrap {
 
         } catch (SQLException ex) {
             Logger.getLogger(RemoteQueryBootstrap.class.getName()).
-                log(Level.SEVERE, null, ex);
+                    log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(RemoteQueryBootstrap.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -162,13 +165,14 @@ public class RemoteQueryBootstrap implements Bootstrap {
         return list;
     }
 
-    @Override public Pair<String, Long> getStorageDirectory() throws SQLException {
+    @Override
+    public Pair<String, Long> getStorageDirectory() throws SQLException {
 
         String directory = null;
         long maxID = 0;
 
         String select_query =
-            "SELECT `storage_directory`, `max_database_id`" + " FROM general_info";
+                "SELECT `storage_directory`, `max_database_id`" + " FROM general_info";
 
         ResultSet rs = statement.executeQuery(select_query);
 

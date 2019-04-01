@@ -48,11 +48,13 @@ public class AdpDBQueryID implements Comparable<AdpDBQueryID>, Serializable {
         this.id = id;
     }
 
-    @Override public int compareTo(AdpDBQueryID queryID) {
+    @Override
+    public int compareTo(AdpDBQueryID queryID) {
         return (int) (id - queryID.id);
     }
 
-    @Override public boolean equals(Object object) {
+    @Override
+    public boolean equals(Object object) {
         if (object instanceof AdpDBQueryID) {
             AdpDBQueryID queryID = (AdpDBQueryID) object;
 
@@ -62,7 +64,8 @@ public class AdpDBQueryID implements Comparable<AdpDBQueryID>, Serializable {
         }
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int hash = 3;
         hash = 13 * hash + (int) (this.id ^ (this.id >>> 32));
         return hash;

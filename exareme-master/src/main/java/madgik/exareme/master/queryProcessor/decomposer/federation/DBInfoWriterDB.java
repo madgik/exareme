@@ -29,12 +29,11 @@ public class DBInfoWriterDB {
             statement.setQueryTimeout(30);  // set timeout to 30 sec.
 
 
-
             DatabaseMetaData dbm = connection.getMetaData();
             ResultSet tables = dbm.getTables(null, null, "endpoint", null);
             if (!tables.next()) {
                 statement.executeUpdate(
-                    "create table endpoint (id string, url string, driver string, user string, pass string, madis string, schema string)");
+                        "create table endpoint (id string, url string, driver string, user string, pass string, madis string, schema string)");
             }
 
 
@@ -51,13 +50,12 @@ public class DBInfoWriterDB {
                         host = host.substring(2);
                     }
                     madisString =
-                        "mysql " + "h:" + host + " u:" + params[3] + " p:" + params[4] + " db:"
-                            + params[1].split("/")[params[1].split("/").length - 1];
+                            "mysql " + "h:" + host + " u:" + params[3] + " p:" + params[4] + " db:"
+                                    + params[1].split("/")[params[1].split("/").length - 1];
                 } else if (params[2].contains("OracleDriver")) {
                     host = params[1];
                     madisString = "oracle " + host + " u:" + params[3] + " p:" + params[4];
-                } 
-                else if (params[2].contains("postgresql")) {
+                } else if (params[2].contains("postgresql")) {
                     host = params[1].split(":")[2];
                     if (host.startsWith("//")) {
                         host = host.substring(2);
@@ -76,14 +74,14 @@ public class DBInfoWriterDB {
                     }
 
                     madisString =
-                        "postgres " + "h:" + host + " port:" + port + " u:" + params[3] + " p:"
-                            + params[4] + " db:" + db;
+                            "postgres " + "h:" + host + " port:" + port + " u:" + params[3] + " p:"
+                                    + params[4] + " db:" + db;
                 }
                 statement.executeUpdate("DELETE FROM endpoint WHERE id = '" + params[0] + "';");
                 statement.executeUpdate(
-                    "INSERT INTO endpoint VALUES ('" + params[0] + "','" + params[1] + "','"
-                        + params[2] + "','" + params[3] + "','" + params[4] + "','" + madisString
-                        + "','" + params[5] + "');");
+                        "INSERT INTO endpoint VALUES ('" + params[0] + "','" + params[1] + "','"
+                                + params[2] + "','" + params[3] + "','" + params[4] + "','" + madisString
+                                + "','" + params[5] + "');");
                 statement.close();
 
             }
@@ -103,7 +101,7 @@ public class DBInfoWriterDB {
             }
         }
     }
-    
+
     public static void writeAliases(NamesToAliases n2a, String directory) throws ClassNotFoundException {
         Class.forName("org.sqlite.JDBC");
         log.debug("Writing aliases");
@@ -118,32 +116,30 @@ public class DBInfoWriterDB {
             statement.setQueryTimeout(30);  // set timeout to 30 sec.
 
 
-
             DatabaseMetaData dbm = connection.getMetaData();
             // check if "employee" table is there
             ResultSet tables = dbm.getTables(null, null, "aliases", null);
             if (!tables.next()) {
                 statement.executeUpdate(
-                    "create table aliases (tablename string, aliases string)");
+                        "create table aliases (tablename string, aliases string)");
             }
 
 
-           
-            for(String tablename:n2a.getTables()){
-            	statement.executeUpdate("DELETE FROM aliases WHERE tablename = '" +tablename + "';");
-            	String aliasesForTable="";
-            	String del="";
-            	for(String alias:n2a.getAllAliasesForBaseTable(tablename)){
-            		aliasesForTable+=del;
-            		aliasesForTable+=alias;
-            		del=" ";
-            	}
-            	statement.executeUpdate(
-                        "INSERT INTO aliases VALUES ('" + tablename + "','"  + aliasesForTable + "');");
-                    
+            for (String tablename : n2a.getTables()) {
+                statement.executeUpdate("DELETE FROM aliases WHERE tablename = '" + tablename + "';");
+                String aliasesForTable = "";
+                String del = "";
+                for (String alias : n2a.getAllAliasesForBaseTable(tablename)) {
+                    aliasesForTable += del;
+                    aliasesForTable += alias;
+                    del = " ";
+                }
+                statement.executeUpdate(
+                        "INSERT INTO aliases VALUES ('" + tablename + "','" + aliasesForTable + "');");
+
             }
-                
-                statement.close();
+
+            statement.close();
 
         } catch (SQLException e) {
             // if the error message is "out of memory", 

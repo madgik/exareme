@@ -7,8 +7,8 @@ import java.io.Serializable;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class Link implements Serializable {
@@ -25,12 +25,14 @@ public class Link implements Serializable {
         this.data = data;
     }
 
-    @Override public boolean equals(Object obj) {
+    @Override
+    public boolean equals(Object obj) {
         Link l = (Link) obj;
         return (this.linkId == l.linkId);
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int hash = 7;
         hash = 29 * hash + this.linkId;
         return hash;

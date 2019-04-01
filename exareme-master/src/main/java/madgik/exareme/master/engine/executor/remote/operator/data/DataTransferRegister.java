@@ -24,9 +24,10 @@ public class DataTransferRegister extends AbstractMiMo {
 
     private static Logger log = Logger.getLogger(DataTransferRegister.class);
 
-    @Override public void run() throws Exception {
+    @Override
+    public void run() throws Exception {
         log.info("Starting DataTransfer Register, out operators: " + super.getParameterManager()
-            .getOutOperators());
+                .getOutOperators());
         int size = super.getParameterManager().getOutOperators().size();
         int datatranferID = super.getDataTransferManagerDTP().addDataTransfer(this, size);
 
@@ -60,7 +61,7 @@ public class DataTransferRegister extends AbstractMiMo {
             String tableFile = null;
             try {
                 sessionFileStream = new ObjectInputStream(
-                    super.getDiskManager().getGlobalSession().openInputStream(sessionFile));
+                        super.getDiskManager().getGlobalSession().openInputStream(sessionFile));
 
                 tableFile = (String) sessionFileStream.readObject();
             } finally {
@@ -78,8 +79,8 @@ public class DataTransferRegister extends AbstractMiMo {
             //
             try {
                 super.getDataTransferManagerDTP()
-                    .addRegister(datatranferID, filename, tableFile, FIP, Fport, TIP, Tport,
-                        super.getSessionManager().getSessionID());
+                        .addRegister(datatranferID, filename, tableFile, FIP, Fport, TIP, Tport,
+                                super.getSessionManager().getSessionID());
             } catch (Exception e) {
                 log.debug("data transfer register exception: " + e.toString());
                 hasExeption = true;

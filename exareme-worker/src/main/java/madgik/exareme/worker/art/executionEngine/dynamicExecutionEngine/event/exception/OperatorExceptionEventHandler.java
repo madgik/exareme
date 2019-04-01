@@ -28,17 +28,18 @@ import java.util.Iterator;
  * @author Vaggelis
  */
 public class OperatorExceptionEventHandler
-    implements ExecEngineEventHandler<OperatorExceptionEvent> {
+        implements ExecEngineEventHandler<OperatorExceptionEvent> {
     public static final OperatorExceptionEventHandler instance =
-        new OperatorExceptionEventHandler();
+            new OperatorExceptionEventHandler();
     private static final long serialVersionUID = 1L;
     private static final Logger log = Logger.getLogger(OperatorExceptionEventHandler.class);
 
     public OperatorExceptionEventHandler() {
     }
 
-    @Override public void preProcess(OperatorExceptionEvent event, PlanEventSchedulerState state)
-        throws RemoteException {
+    @Override
+    public void preProcess(OperatorExceptionEvent event, PlanEventSchedulerState state)
+            throws RemoteException {
         ActiveOperator activeOperator = state.getActiveOperator(event.operatorID);
         if (activeOperator.operatorEntity.type == OperatorType.processing) {
             String opName = activeOperator.operatorEntity.operatorName.split("\\.")[0];
@@ -54,16 +55,16 @@ public class OperatorExceptionEventHandler
         if (errorCnt == 1) {
             // Stop & destroy the operators
             ActiveOperatorGroup activeGroup =
-                group.opNameActiveGroupMap.get(activeOperator.objectName);
+                    group.opNameActiveGroupMap.get(activeOperator.objectName);
             for (OperatorEntity entity : activeGroup.planSession.getExecutionPlan()
-                .iterateOperators()) {
+                    .iterateOperators()) {
                 ContainerJobsEvent e = ContainerJobsEventHandler
-                    .getEvent(entity.containerName, events, jobsMap, state);
+                        .getEvent(entity.containerName, events, jobsMap, state);
                 log.debug("Destroying operator: " + entity.operatorName + " at container: "
-                    + entity.containerName);
+                        + entity.containerName);
 
                 state.eventScheduler
-                    .destroy(new Destroy(entity.operatorName, entity.containerName), e);
+                        .destroy(new Destroy(entity.operatorName, entity.containerName), e);
             }
             // Destroy the buffers
       /*for (BufferEntity buffer : activeGroup.planSession.getExecutionPlan().iterateBuffers()) {
@@ -81,12 +82,12 @@ public class OperatorExceptionEventHandler
             if (state.retryPolicy.retry(event.exception, group.timesFailed)) {
                 // Re-schedule operator group
                 log.debug("Operator " + activeOperator.operatorEntity.operatorName
-                    + " failed, retrying...");
+                        + " failed, retrying...");
                 if (activeOperator.operatorEntity.type.equals(OperatorType.dataTransfer)
-                    && (event.exception.getCause() instanceof DataTransferOperatorException)) {
+                        && (event.exception.getCause() instanceof DataTransferOperatorException)) {
                     log.debug("Data transfer exception");
                     DataTransferOperatorException ex =
-                        (DataTransferOperatorException) event.exception.getCause();
+                            (DataTransferOperatorException) event.exception.getCause();
                     for (String outOperator : ex.getFailedOut()) {
                         log.debug("Out " + outOperator + " failed");
                     }
@@ -110,22 +111,24 @@ public class OperatorExceptionEventHandler
             } else {
                 // Fail: stop excecution
                 log.debug("Operator " + activeOperator.operatorEntity.operatorName
-                    + " failed, destroying Plan...");
+                        + " failed, destroying Plan...");
                 state.getPlanSession().getPlanSessionStatus()
-                    .operatorException(activeOperator.operatorEntity.operatorName, event.exception,
-                        new Date());
+                        .operatorException(activeOperator.operatorEntity.operatorName, event.exception,
+                                new Date());
                 state.eventScheduler.destroyPlanWithError();
             }
         }
         state.getStatistics().incrOperatorsError();
     }
 
-    @Override public void handle(OperatorExceptionEvent event, EventProcessor proc)
-        throws RemoteException {
+    @Override
+    public void handle(OperatorExceptionEvent event, EventProcessor proc)
+            throws RemoteException {
     }
 
-    @Override public void postProcess(OperatorExceptionEvent event, PlanEventSchedulerState state)
-        throws RemoteException {
+    @Override
+    public void postProcess(OperatorExceptionEvent event, PlanEventSchedulerState state)
+            throws RemoteException {
         state.getStatistics().incrControlMessagesCountBy(event.messageCount);
     }
 }

@@ -11,7 +11,7 @@ import java.rmi.RemoteException;
 public interface SessionBased {
 
     void destroyContainerSession(ContainerSessionID containerSessionID, PlanSessionID sessionID)
-        throws RemoteException;
+            throws RemoteException;
 
     void destroySessions(PlanSessionID sessionID) throws RemoteException;
 

@@ -81,12 +81,12 @@ the moment, we assume that the data is ordered by the temporal column that
 
 """
 
-import setpath
-import vtbase
 import functions
-from collections import deque
 import time
+from collections import deque
 from lib.dateutil import parser
+
+import vtbase
 
 ### Classic stream iterator
 registered = True
@@ -187,8 +187,6 @@ class TimeSlidingWindow(vtbase.VT):
                             yield (wid,) + t
 
 
-
-
 def Source():
     return vtbase.VTGenerator(TimeSlidingWindow)
 
@@ -199,7 +197,6 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
 
     testfunction()

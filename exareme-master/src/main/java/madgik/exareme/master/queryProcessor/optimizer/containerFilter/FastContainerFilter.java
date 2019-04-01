@@ -25,11 +25,13 @@ public class FastContainerFilter implements ContainerFilter {
         ++filtered;
     }
 
-    @Override public boolean canUseContainer(int cNum) {
+    @Override
+    public boolean canUseContainer(int cNum) {
         return containers[cNum];
     }
 
-    @Override public int getNumberOfFilterefContainers() {
+    @Override
+    public int getNumberOfFilterefContainers() {
         return filtered;
     }
 }

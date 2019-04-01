@@ -14,7 +14,7 @@ final public class AbstractQueryGraphEdge extends AbstractEdge<AbstractOperator>
     }
 
     public AbstractQueryGraphEdge(AbstractOperator source, AbstractOperator target,
-        double size_MB) {
+                                  double size_MB) {
         super(source, target);
         this.size_MB = size_MB;
     }

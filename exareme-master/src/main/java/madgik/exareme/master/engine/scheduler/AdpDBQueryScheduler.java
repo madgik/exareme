@@ -62,8 +62,8 @@ public class AdpDBQueryScheduler {
     private ScheduleEventListener scheduleEventListener = null;
 
     public AdpDBQueryScheduler(Registry.Schema schema, AdpDBStats statistics,
-        EventProcessor eventProcessor, AdpDBManager manager, AdpDBHistoricalDataManager histManager,
-        AdpDBQueryID queryID) throws RemoteException {
+                               EventProcessor eventProcessor, AdpDBManager manager, AdpDBHistoricalDataManager histManager,
+                               AdpDBQueryID queryID) throws RemoteException {
         this.statistics = statistics;
         this.eventProcessor = eventProcessor;
         this.manager = manager;
@@ -100,7 +100,7 @@ public class AdpDBQueryScheduler {
     }
 
     public void schedule(String queryScript, AdpDBHistoricalQueryData queryData, String database)
-        throws RemoteException {
+            throws RemoteException {
         lock.lock();
         try {
             optimize(queryScript, schema, statistics.getStatistics(), queryData);
@@ -110,7 +110,7 @@ public class AdpDBQueryScheduler {
     }
 
     public void schedule(QueryScript queryScript, AdpDBHistoricalQueryData queryData)
-        throws RemoteException {
+            throws RemoteException {
         lock.lock();
         try {
             optimize(queryScript, schema, statistics.getStatistics(), queryData);
@@ -120,7 +120,7 @@ public class AdpDBQueryScheduler {
     }
 
     public void optimize(String queryScript, Registry.Schema schema, Statistics stats,
-        AdpDBHistoricalQueryData queryData) throws RemoteException {
+                         AdpDBHistoricalQueryData queryData) throws RemoteException {
         lock.lock();
         try {
             OptimizeEvent event = new OptimizeEvent(queryScript, schema, stats, queryData, queryID);
@@ -133,7 +133,7 @@ public class AdpDBQueryScheduler {
     }
 
     public void optimize(QueryScript queryScript, Registry.Schema schema, Statistics stats,
-        AdpDBHistoricalQueryData queryData) throws RemoteException {
+                         AdpDBHistoricalQueryData queryData) throws RemoteException {
         lock.lock();
         try {
             OptimizeEvent event = new OptimizeEvent(queryScript, schema, stats, queryData, queryID);
@@ -158,7 +158,7 @@ public class AdpDBQueryScheduler {
     }
 
     public void success(AdpDBQueryExecutionPlan execPlan, AdpDBStatus status)
-        throws RemoteException {
+            throws RemoteException {
         lock.lock();
         try {
             QuerySuccessEvent event = new QuerySuccessEvent(execPlan, schema, status, queryID);

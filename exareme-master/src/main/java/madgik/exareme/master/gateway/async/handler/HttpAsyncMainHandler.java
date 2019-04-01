@@ -17,21 +17,23 @@ public class HttpAsyncMainHandler implements HttpAsyncRequestHandler<HttpRequest
 
     private static final Logger log = Logger.getLogger(HttpAsyncMainHandler.class);
     private static final String msg = "{ "
-        + "\"schema\":[[\"error\",\"text\"]], "
-        + "\"errors\":[[null]] " + "}\n"
-        + "[\"Not supported.\" ]";
+            + "\"schema\":[[\"error\",\"text\"]], "
+            + "\"errors\":[[null]] " + "}\n"
+            + "[\"Not supported.\" ]";
 
-    @Override public HttpAsyncRequestConsumer<HttpRequest> processRequest(
-        HttpRequest request,
-        HttpContext context) throws HttpException, IOException {
+    @Override
+    public HttpAsyncRequestConsumer<HttpRequest> processRequest(
+            HttpRequest request,
+            HttpContext context) throws HttpException, IOException {
 
         return new BasicAsyncRequestConsumer();
     }
 
-    @Override public void handle(
-        HttpRequest httpRequest,
-        HttpAsyncExchange httpExchange,
-        HttpContext context) throws HttpException, IOException {
+    @Override
+    public void handle(
+            HttpRequest httpRequest,
+            HttpAsyncExchange httpExchange,
+            HttpContext context) throws HttpException, IOException {
 
         log.debug("New request on main handler");
         HttpResponse httpResponse = httpExchange.getResponse();

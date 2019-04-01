@@ -17,12 +17,12 @@ public class AdpDBManagerFactory {
     }
 
     public static AdpDBManager createManager(String artRegistry, int artRegistryPort, int dtPort)
-        throws RemoteException {
+            throws RemoteException {
         return createRmiManager(artRegistry, artRegistryPort, dtPort);
     }
 
     public static AdpDBManager createRmiManager(String artRegistry, int artRegistryPort, int dtPort)
-        throws RemoteException {
+            throws RemoteException {
         return new RmiAdpDBManager(artRegistry, artRegistryPort, dtPort);
     }
 

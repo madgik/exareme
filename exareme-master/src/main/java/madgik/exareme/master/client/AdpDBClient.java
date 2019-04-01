@@ -39,7 +39,7 @@ public interface AdpDBClient {
      * @throws RemoteException
      */
     AdpDBClientQueryStatus aquery(String queryID, String queryScript, AdpDBQueryListener listener)
-        throws RemoteException;
+            throws RemoteException;
 
     /**
      * @param tableName
@@ -47,6 +47,7 @@ public interface AdpDBClient {
      * @throws RemoteException
      */
     InputStream readTable(String tableName) throws RemoteException;
+
     InputStream readTable(String tableName, DataSerialization ds) throws RemoteException;
 
 }

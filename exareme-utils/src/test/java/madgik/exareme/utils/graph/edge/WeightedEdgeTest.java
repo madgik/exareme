@@ -11,7 +11,7 @@ import java.util.Random;
 public class WeightedEdgeTest extends TestCase {
 
     protected WeightedEdge<Integer, Integer> newEdge(Integer source, Integer target,
-        Integer weight) {
+                                                     Integer weight) {
         return new WeightedEdge<Integer, Integer>(source, target, weight);
     }
 
@@ -48,7 +48,7 @@ public class WeightedEdgeTest extends TestCase {
         Integer weight = new Integer(r.nextInt());
 
         Assert.assertTrue(
-            newEdge(source, target, weight).hashCode() == newEdge(source, target, weight)
-                .hashCode());
+                newEdge(source, target, weight).hashCode() == newEdge(source, target, weight)
+                        .hashCode());
     }
 }

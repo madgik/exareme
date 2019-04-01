@@ -36,7 +36,7 @@ KEYWORDS = {
     'BOTH': Keyword,
     'BREADTH': Keyword,
 
-#    'C': Keyword,  # most likely this is an alias
+    #    'C': Keyword,  # most likely this is an alias
     'CACHE': Keyword,
     'CALL': Keyword,
     'CALLED': Keyword,
@@ -491,7 +491,6 @@ KEYWORDS = {
 
     'ZONE': Keyword,
 
-
     'ARRAY': Name.Builtin,
     'BIGINT': Name.Builtin,
     'BINARY': Name.Builtin,
@@ -517,8 +516,7 @@ KEYWORDS = {
     'INT8': Name.Builtin,
     'SERIAL8': Name.Builtin,
     'TEXT': Name.Builtin,
-    }
-
+}
 
 KEYWORDS_COMMON = {
     'SELECT': Keyword.DML,
@@ -560,4 +558,4 @@ KEYWORDS_COMMON = {
     'MAX': Keyword,
     'DISTINCT': Keyword,
 
-    }
+}

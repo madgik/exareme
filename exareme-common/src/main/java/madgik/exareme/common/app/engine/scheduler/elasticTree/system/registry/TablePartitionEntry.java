@@ -34,15 +34,18 @@ public class TablePartitionEntry implements Entry {
         return partId;
     }
 
-    @Override public double getSize_MB() {
+    @Override
+    public double getSize_MB() {
         return size;
     }
 
-    @Override public String getId() {
+    @Override
+    public String getId() {
         return id;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "" + getId();
     }
 }

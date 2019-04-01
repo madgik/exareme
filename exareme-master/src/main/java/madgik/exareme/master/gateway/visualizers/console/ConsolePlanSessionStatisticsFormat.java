@@ -45,7 +45,7 @@ public class ConsolePlanSessionStatisticsFormat {
     }
 
     public String format(PlanSessionStatistics stats, ConcreteQueryGraph graph,
-        RunTimeParameters params) {
+                         RunTimeParameters params) {
         long totalUserTime = 0;
         long totalSystemTime = 0;
 
@@ -131,19 +131,19 @@ public class ConsolePlanSessionStatisticsFormat {
         sb.append(" -- Session " + stats.sessionID.getLongId() + " statistics -- \n");
         sb.append("Operators           : " + numFormat(stats.operatorCompleted()) + "\n");
         sb.append("Buffers             : " + numFormat(stats.buffersCreated()) +
-            " (" + bufferCount + ")" + "\n");
+                " (" + bufferCount + ")" + "\n");
         sb.append("Links               : " + numFormat(stats.linksCreated()) +
-            " (" + linkCount + " : " + localLinkCount + "+" + remoteLinkCount + ")" + "\n");
+                " (" + linkCount + " : " + localLinkCount + "+" + remoteLinkCount + ")" + "\n");
         sb.append(" -- -- \n");
 
         if (graph != null) {
             ConcreteGraphStatistics gStats = new ConcreteGraphStatistics(graph, params);
             sb.append("Work                : [" +
-                dFormat(gStats.getMinWork()) + ", " + dFormat(gStats.getMaxWork()) + "]\n");
+                    dFormat(gStats.getMinWork()) + ", " + dFormat(gStats.getMaxWork()) + "]\n");
             sb.append("Span                : [" +
-                dFormat(gStats.getMinSpan()) + ", " + dFormat(gStats.getMaxSpan()) + "]\n");
+                    dFormat(gStats.getMinSpan()) + ", " + dFormat(gStats.getMaxSpan()) + "]\n");
             sb.append("Parallelism         : [" +
-                dFormat(gStats.getMinP()) + ", " + dFormat(gStats.getMaxP()) + "]\n");
+                    dFormat(gStats.getMinP()) + ", " + dFormat(gStats.getMaxP()) + "]\n");
             sb.append(" -- -- \n");
         }
 
@@ -156,19 +156,19 @@ public class ConsolePlanSessionStatisticsFormat {
         sb.append("Max Wait Time       : " + numFormat(maxWaitTime) + "\n");
         sb.append("Max Time            : " + numFormat(maxEventProcessTime) + "\n");
         sb.append(
-            "Avg Time            : " + numFormat(totalEventProcTime / independentMsgs) + "\n");
+                "Avg Time            : " + numFormat(totalEventProcTime / independentMsgs) + "\n");
         sb.append(" -- -- \n");
 
         sb.append(
-            "Exec Time           : " + timeFormat(stats.endTime() - stats.startTime()) + "\n");
+                "Exec Time           : " + timeFormat(stats.endTime() - stats.startTime()) + "\n");
         sb.append("Total Time          : " + timeFormat(totalUserTime) + "\n");
         sb.append("Total Time(CPU)     : " + timeFormat(totalCpuUserTime) + "\n");
         sb.append("Speedup             : " + percentageFormat(
-            (double) totalUserTime / (stats.endTime() - stats.startTime())) + "\n");
+                (double) totalUserTime / (stats.endTime() - stats.startTime())) + "\n");
         sb.append(" -- -- \n");
 
         double time = ((double) (stats.endTime() - stats.startTime()) / Metrics.MiliSec)
-            / params.quantum__SEC;
+                / params.quantum__SEC;
         sb.append("Time                : " + quantaFormat(time) + "\n");
         sb.append("Money               : " + quantaFormat(money) + "\n");
         sb.append("Money no frag       : " + quantaFormat(moneyNoFrag) + "\n");
@@ -177,8 +177,8 @@ public class ConsolePlanSessionStatisticsFormat {
         sb.append("System Time         : " + timeFormat(totalSystemTime) + "\n");
         sb.append("System Time(CPU)    : " + timeFormat(totalCpuSystemTime) + "\n");
         sb.append(
-            "Percentage          : " + percentageFormat((double) totalSystemTime / totalUserTime)
-                + "\n");
+                "Percentage          : " + percentageFormat((double) totalSystemTime / totalUserTime)
+                        + "\n");
         sb.append(" -- -- \n");
 
         sb.append("Total Data Pipes    : " + dataFormat(totalDataRead + totalDataWrite) + "\n");
@@ -189,7 +189,7 @@ public class ConsolePlanSessionStatisticsFormat {
         sb.append("Local Data          : " + dataFormat(localData) + "\n");
         sb.append("Net Data            : " + dataFormat(networkData) + "\n");
         sb.append("Percentage          : " + percentageFormat(
-            (double) networkData / (totalDataRead + totalDataWrite)) + "\n");
+                (double) networkData / (totalDataRead + totalDataWrite)) + "\n");
         sb.append(" -- -- \n");
 
         sb.append("Pool Data           : " + dataFormat(bufferPoolData) + "\n");
@@ -276,7 +276,7 @@ public class ConsolePlanSessionStatisticsFormat {
             String minTime = timeF.format((long) time.getMin());
             String maxTime = timeF.format((long) time.getMax());
             String stdevTime =
-                String.format("%s", timeF.format((long) time.getStandardDeviation()));
+                    String.format("%s", timeF.format((long) time.getStandardDeviation()));
 
             String meanIn = String.format("%9s", dataF.format((long) input.getMean()));
             String minIn = dataF.format((long) input.getMin());
@@ -287,13 +287,13 @@ public class ConsolePlanSessionStatisticsFormat {
             String minOut = dataF.format((long) output.getMin());
             String maxOut = dataF.format((long) output.getMax());
             String stdevOut =
-                String.format("%s", dataF.format((long) output.getStandardDeviation()));
+                    String.format("%s", dataF.format((long) output.getStandardDeviation()));
 
             return String.format("%-26s", category) + " : " +
-                n + "\t" +
-                meanTime + "\t" + "[" + minTime + ", " + maxTime + "]@" + stdevTime + " s\t" +
-                meanIn + "\t" + "[" + minIn + ", " + maxIn + "]@" + stdevIn + " MB\t" +
-                meanOut + "\t" + "[" + minOut + ", " + maxOut + "]@" + stdevOut + " MB\t";
+                    n + "\t" +
+                    meanTime + "\t" + "[" + minTime + ", " + maxTime + "]@" + stdevTime + " s\t" +
+                    meanIn + "\t" + "[" + minIn + ", " + maxIn + "]@" + stdevIn + " MB\t" +
+                    meanOut + "\t" + "[" + minOut + ", " + maxOut + "]@" + stdevOut + " MB\t";
         }
     }
 }

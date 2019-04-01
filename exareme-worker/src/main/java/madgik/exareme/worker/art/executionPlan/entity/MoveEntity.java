@@ -9,8 +9,8 @@ import java.util.List;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class MoveEntity {
@@ -26,9 +26,9 @@ public class MoveEntity {
     public List<BufferLinkEntity> newLinks;
 
     public MoveEntity(String operatorName, OperatorEntity oldOperatorEntity,
-        OperatorEntity newOperatorEntity, List<BufferLinkEntity> oldLinks,
-        List<BufferLinkEntity> newLinks, String fromContainerName, EntityName fromContainer,
-        String toContainerName, EntityName toContainer) {
+                      OperatorEntity newOperatorEntity, List<BufferLinkEntity> oldLinks,
+                      List<BufferLinkEntity> newLinks, String fromContainerName, EntityName fromContainer,
+                      String toContainerName, EntityName toContainer) {
         this.fromContainerName = fromContainerName;
         this.fromContainer = fromContainer;
         this.toContainerName = toContainerName;

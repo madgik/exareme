@@ -81,42 +81,46 @@ Examples::
 """
 
 import vtbase
-registered=True
+
+registered = True
+
 
 class RangeVT(vtbase.VT):
-    def VTiter(self, *parsedArgs,**envars):
+    def VTiter(self, *parsedArgs, **envars):
         largs, dictargs = self.full_parse(parsedArgs)
-        fromv=0
-        tov=10
-        stepv=1
+        fromv = 0
+        tov = 10
+        stepv = 1
 
         if 'from' in dictargs:
-            fromv=int(dictargs['from'])
+            fromv = int(dictargs['from'])
         if 'to' in dictargs:
-            tov=int(dictargs['to'])
+            tov = int(dictargs['to'])
         if 'step' in dictargs:
-            stepv=int(dictargs['step'])
-        if len(largs)>=1:
-            fromv=int(largs[0])
-        if len(largs)>=2:
-            tov=int(largs[1])
-        if len(largs)>=3:
-            stepv=int(largs[2])
-        if len(largs)==1:
-            fromv=1
-            tov=int(largs[0])+1
+            stepv = int(dictargs['step'])
+        if len(largs) >= 1:
+            fromv = int(largs[0])
+        if len(largs) >= 2:
+            tov = int(largs[1])
+        if len(largs) >= 3:
+            stepv = int(largs[2])
+        if len(largs) == 1:
+            fromv = 1
+            tov = int(largs[0]) + 1
 
         if 'query' in dictargs:
-            fromv=1
-            tov=int(dictargs['query'])+1
+            fromv = 1
+            tov = int(dictargs['query']) + 1
 
         yield [('C1', 'int')]
 
-        for i in xrange(fromv,tov,stepv):
+        for i in xrange(fromv, tov, stepv):
             yield [i]
+
 
 def Source():
     return vtbase.VTGenerator(RangeVT)
+
 
 if not ('.' in __name__):
     """
@@ -124,11 +128,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  * @author Christos Mallios <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  */
 public interface Bootstrap {
 

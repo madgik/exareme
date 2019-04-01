@@ -24,7 +24,7 @@ import java.util.concurrent.ExecutorService;
 /**
  * @author John Chronis <br>
  * @author Vaggelis Nikolopoulos <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class DataTransferMainThread extends Thread {
@@ -37,25 +37,25 @@ public class DataTransferMainThread extends Thread {
     private boolean acceptConnections = true;
 
     public DataTransferMainThread(int port, ExecutorService threadPool, String artRegistry,
-        ArtManager artManager) throws IOException {
+                                  ArtManager artManager) throws IOException {
         this.serversocket = new ServerSocket(port);
         this.threadPool = threadPool;
         this.params = new SyncBasicHttpParams();
         this.params.setIntParameter(CoreConnectionPNames.SO_TIMEOUT, Integer.MAX_VALUE)
-            .setIntParameter(CoreConnectionPNames.SOCKET_BUFFER_SIZE, bufferSizeKB * Metrics.KB)
-            .setBooleanParameter(CoreConnectionPNames.STALE_CONNECTION_CHECK, false)
-            .setBooleanParameter(CoreConnectionPNames.TCP_NODELAY, false)
-            .setParameter(CoreProtocolPNames.ORIGIN_SERVER, "HttpComponents/1.1");
+                .setIntParameter(CoreConnectionPNames.SOCKET_BUFFER_SIZE, bufferSizeKB * Metrics.KB)
+                .setBooleanParameter(CoreConnectionPNames.STALE_CONNECTION_CHECK, false)
+                .setBooleanParameter(CoreConnectionPNames.TCP_NODELAY, false)
+                .setParameter(CoreProtocolPNames.ORIGIN_SERVER, "HttpComponents/1.1");
         // Set up the HTTP protocol processor
         HttpProcessor httpproc =
-            new ImmutableHttpProcessor(new ResponseDate(), new ResponseServer(),
-                new ResponseContent(), new ResponseConnControl());
+                new ImmutableHttpProcessor(new ResponseDate(), new ResponseServer(),
+                        new ResponseContent(), new ResponseConnControl());
         // Set up request handlers
         HttpRequestHandlerRegistry reqistry = new HttpRequestHandlerRegistry();
         reqistry.register("*", new DataTransferRequestHandler(port));
         // Set up the HTTP service
         this.httpService = new HttpService(httpproc, new DefaultConnectionReuseStrategy(),
-            new DefaultHttpResponseFactory(), reqistry, this.params);
+                new DefaultHttpResponseFactory(), reqistry, this.params);
     }
 
 
@@ -63,7 +63,8 @@ public class DataTransferMainThread extends Thread {
         acceptConnections = false;
     }
 
-    @Override public void run() {
+    @Override
+    public void run() {
         log.debug("Listening on port " + this.serversocket.getLocalPort());
         while (!Thread.interrupted() && acceptConnections) {
             try {

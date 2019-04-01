@@ -1,7 +1,7 @@
 # This code was originally contributed by Jeffrey Harris.
+import _winreg
 import datetime
 import struct
-import _winreg
 
 __author__ = "Jeffrey Harris & Gustavo Niemeyer <gustavo@niemeyer.net>"
 
@@ -13,6 +13,7 @@ TZKEYNAMENT = r"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones"
 TZKEYNAME9X = r"SOFTWARE\Microsoft\Windows\CurrentVersion\Time Zones"
 TZLOCALKEYNAME = r"SYSTEM\CurrentControlSet\Control\TimeZoneInformation"
 
+
 def _settzkeyname():
     global TZKEYNAME
     handle = _winreg.ConnectRegistry(None, _winreg.HKEY_LOCAL_MACHINE)
@@ -23,7 +24,9 @@ def _settzkeyname():
         TZKEYNAME = TZKEYNAME9X
     handle.Close()
 
+
 _settzkeyname()
+
 
 class tzwinbase(datetime.tzinfo):
     """tzinfo class based on win32's timezones available in the registry."""
@@ -40,7 +43,7 @@ class tzwinbase(datetime.tzinfo):
             return datetime.timedelta(minutes=minutes)
         else:
             return datetime.timedelta(0)
-        
+
     def tzname(self, dt):
         if self._isdst(dt):
             return self._dstname
@@ -56,11 +59,12 @@ class tzwinbase(datetime.tzinfo):
         tzkey.Close()
         handle.Close()
         return result
+
     list = staticmethod(list)
 
     def display(self):
         return self._display
-    
+
     def _isdst(self, dt):
         dston = picknthweekday(dt.year, self._dstmonth, self._dstdayofweek,
                                self._dsthour, self._dstminute,
@@ -89,21 +93,21 @@ class tzwin(tzwinbase):
         self._dstname = keydict["Dlt"].encode("iso-8859-1")
 
         self._display = keydict["Display"]
-        
+
         # See http://ww_winreg.jsiinc.com/SUBA/tip0300/rh0398.htm
         tup = struct.unpack("=3l16h", keydict["TZI"])
-        self._stdoffset = -tup[0]-tup[1]         # Bias + StandardBias * -1
-        self._dstoffset = self._stdoffset-tup[2] # + DaylightBias * -1
-        
+        self._stdoffset = -tup[0] - tup[1]  # Bias + StandardBias * -1
+        self._dstoffset = self._stdoffset - tup[2]  # + DaylightBias * -1
+
         (self._stdmonth,
          self._stddayofweek,  # Sunday = 0
-         self._stdweeknumber, # Last = 5
+         self._stdweeknumber,  # Last = 5
          self._stdhour,
          self._stdminute) = tup[4:9]
 
         (self._dstmonth,
          self._dstdayofweek,  # Sunday = 0
-         self._dstweeknumber, # Last = 5
+         self._dstweeknumber,  # Last = 5
          self._dsthour,
          self._dstminute) = tup[12:17]
 
@@ -115,7 +119,7 @@ class tzwin(tzwinbase):
 
 
 class tzwinlocal(tzwinbase):
-    
+
     def __init__(self):
 
         handle = _winreg.ConnectRegistry(None, _winreg.HKEY_LOCAL_MACHINE)
@@ -128,7 +132,7 @@ class tzwinlocal(tzwinbase):
         self._dstname = keydict["DaylightName"].encode("iso-8859-1")
 
         try:
-            tzkey = _winreg.OpenKey(handle, "%s\%s"%(TZKEYNAME, self._stdname))
+            tzkey = _winreg.OpenKey(handle, "%s\%s" % (TZKEYNAME, self._stdname))
             _keydict = valuestodict(tzkey)
             self._display = _keydict["Display"]
             tzkey.Close()
@@ -136,17 +140,16 @@ class tzwinlocal(tzwinbase):
             self._display = None
 
         handle.Close()
-        
-        self._stdoffset = -keydict["Bias"]-keydict["StandardBias"]
-        self._dstoffset = self._stdoffset-keydict["DaylightBias"]
 
+        self._stdoffset = -keydict["Bias"] - keydict["StandardBias"]
+        self._dstoffset = self._stdoffset - keydict["DaylightBias"]
 
         # See http://ww_winreg.jsiinc.com/SUBA/tip0300/rh0398.htm
         tup = struct.unpack("=8h", keydict["StandardStart"])
 
         (self._stdmonth,
          self._stddayofweek,  # Sunday = 0
-         self._stdweeknumber, # Last = 5
+         self._stdweeknumber,  # Last = 5
          self._stdhour,
          self._stdminute) = tup[1:6]
 
@@ -154,21 +157,23 @@ class tzwinlocal(tzwinbase):
 
         (self._dstmonth,
          self._dstdayofweek,  # Sunday = 0
-         self._dstweeknumber, # Last = 5
+         self._dstweeknumber,  # Last = 5
          self._dsthour,
          self._dstminute) = tup[1:6]
 
     def __reduce__(self):
         return (self.__class__, ())
 
+
 def picknthweekday(year, month, dayofweek, hour, minute, whichweek):
     """dayofweek == 0 means Sunday, whichweek 5 means last instance"""
     first = datetime.datetime(year, month, 1, hour, minute)
-    weekdayone = first.replace(day=((dayofweek-first.isoweekday())%7+1))
+    weekdayone = first.replace(day=((dayofweek - first.isoweekday()) % 7 + 1))
     for n in xrange(whichweek):
-        dt = weekdayone+(whichweek-n)*ONEWEEK
+        dt = weekdayone + (whichweek - n) * ONEWEEK
         if dt.month == month:
             return dt
+
 
 def valuestodict(key):
     """Convert a registry key's values to a dictionary."""
