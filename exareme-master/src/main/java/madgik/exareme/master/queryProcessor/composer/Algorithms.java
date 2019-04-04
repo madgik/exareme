@@ -270,6 +270,23 @@ public class Algorithms {
             }
             return null;
         }
+
+        /**
+         * Changes the value of an algorithm property
+         *
+         * @param parameterName  the name of the parameter
+         * @param parameterValue the new value of the parameter
+         * @return if the parameter exists in the algorithm or not
+         */
+        public Boolean setParameterValue(String parameterName, String parameterValue) {
+            for (ParameterProperties parameter : parameters) {
+                if (parameter.getName().equals(parameterName)) {
+                    parameter.setValue(parameterValue);
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 
     private AlgorithmProperties[] algorithms;

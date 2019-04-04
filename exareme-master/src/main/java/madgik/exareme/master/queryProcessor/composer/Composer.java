@@ -168,8 +168,10 @@ public class Composer {
         // Assigning the proper identifier for the defaultDB
         //      if the dbIdentifier is provided as a parameter or not
         String dbIdentifier = algorithmProperties.getParameterValue(ComposerConstants.dbIdentifierKey);
-        if (dbIdentifier == null)
+        if (dbIdentifier == null || dbIdentifier.equals("")) {
             dbIdentifier = algorithmKey;
+            algorithmProperties.setParameterValue(ComposerConstants.dbIdentifierKey,dbIdentifier);
+        }
         String algorithmName = algorithmProperties.getName();
         String defaultDBFileName = HBPConstants.DEMO_DB_WORKING_DIRECTORY + dbIdentifier + "_defaultDB.db";
         String inputLocalTbl = createLocalTableQuery(algorithmProperties);
@@ -183,7 +185,7 @@ public class Composer {
                         defaultDBFileName, algorithmProperties.getParameters());
                 break;
             case local_global:
-                dflScript = composeLocalGlobalAlgorithmsDFLScript(algorithmName, inputLocalTbl, outputGlobalTbl,
+                dflScript = composeLocalGlobalAlgorithmsDFLScript(algorithmName, dbIdentifier, inputLocalTbl, outputGlobalTbl,
                         defaultDBFileName, algorithmProperties.getParameters());
                 break;
             case multiple_local_global:
@@ -242,6 +244,7 @@ public class Composer {
      * Returns an exaDFL script for the algorithms of type local_global
      *
      * @param algorithmName       the name of the algorithm
+     * @param dbIdentifier        the identifier of the local database
      * @param inputLocalTbl       the query to read from the local table
      * @param outputGlobalTbl     the table where the output is going to be printed
      * @param defaultDBFileName   the name of the local db that the SQL scripts are going to use
@@ -250,6 +253,7 @@ public class Composer {
      */
     private String composeLocalGlobalAlgorithmsDFLScript(
             String algorithmName,
+            String dbIdentifier,
             String inputLocalTbl,
             String outputGlobalTbl,
             String defaultDBFileName,

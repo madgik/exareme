@@ -30,10 +30,7 @@ class sklearnkfold(functions.vtable.vtbase.VT):
         c = cur.execute(query)
 
         for r in c:
-            if r[0].isdigit():
-                self.data.append(r[0])
-            else:
-                self.data.append(str(r[0]))
+            self.data.append(str(r[0]))
         yield [('rid',), ('idofset',)]
 
         # print "data", self.data
