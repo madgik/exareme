@@ -296,7 +296,10 @@ public class Algorithms {
         for (File file : Objects.requireNonNull(repoFile.listFiles(new FileFilter() {
             @Override
             public boolean accept(File pathname) {
-                return pathname.isDirectory() && !pathname.getName().startsWith(".") && !pathname.getName().contains("unit_tests");
+                return pathname.isDirectory()
+                        && !pathname.getName().startsWith(".")
+                        && !pathname.getName().contains("unit_tests")
+                        && !pathname.getName().contains("Library");
             }
         }))) {
             AlgorithmProperties algorithm =
