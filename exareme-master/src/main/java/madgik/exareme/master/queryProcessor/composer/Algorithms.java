@@ -103,6 +103,7 @@ public class Algorithms {
         }
 
         public enum AlgorithmType {
+            python_local_global,
             local,                      // exec single node local
             pipeline,                   // exec local on each endpoint
             local_global,               // exec global over the union of local results

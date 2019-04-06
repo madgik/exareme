@@ -97,7 +97,7 @@ public class Composer {
                 try {   // build query
                     SqlQueryResult sqlQueryResult = sqlBuilder.build(parameter.getValue());
                     filters = String.valueOf(sqlQueryResult);
-                    filters = filters.replaceAll("'","\"");
+                    filters = filters.replaceAll("'", "\"");
                     log.debug(filters);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -178,6 +178,10 @@ public class Composer {
         // Create the dflScript depending on algorithm type
         String dflScript;
         switch (algorithmProperties.getType()) {
+            case python_local_global:
+                dflScript = composePythonLocalGlobalAlgorithmsDFLScript(algorithmName, inputLocalTbl, outputGlobalTbl,
+                        defaultDBFileName, algorithmProperties.getParameters());
+                break;
             case local:
                 dflScript = composeLocalAlgorithmsDFLScript(algorithmName, inputLocalTbl, outputGlobalTbl,
                         defaultDBFileName, algorithmProperties.getParameters());
@@ -201,6 +205,74 @@ public class Composer {
         }
         return dflScript;
 
+    }
+
+    /**
+     * TODO
+     */
+    private String composePythonLocalGlobalAlgorithmsDFLScript(
+            String algorithmName,
+            String inputLocalTbl,
+            String outputGlobalTbl,
+            String defaultDBFileName,
+            ParameterProperties[] algorithmParameters
+    ) {
+        return "distributed create temporary table output_local_tbl as virtual\n" +
+                "select * from (\n" +
+                "  call_python_script 'python /root/mip-algorithms/NUMBER_OF_WORKERS/local.py -input_local_csv /root/exareme/datasets/datasets.csv'\n" +
+                ");\n" +
+                "\n" +
+                "distributed create temporary table input_global_tbl to 1 as\n" +
+                "select * from output_local_tbl;\n" +
+                "\n" +
+                "using input_global_tbl\n" +
+                "distributed create table output_NUMBER_OF_WORKERS_1554403320880 as external\n" +
+                "select *\n" +
+                "from (\n" +
+                "\tcall_python_script 'python /root/mip-algorithms/NUMBER_OF_WORKERS/global.py -input_db /tmp/demo/db/test.db' select * from (output '/tmp/demo/db/test.db' select * from input_global_tbl)\n" +
+                ");";
+        /*
+        StringBuilder dflScript = new StringBuilder();
+
+        String localScriptPath = getAlgorithmFolderPath(algorithmName) + "/local.template.sql";
+        String globalScriptPath = getAlgorithmFolderPath(algorithmName) + "/global.template.sql";
+        String algorithmFolderPath = getAlgorithmFolderPath(algorithmName);
+
+        // Format local
+        dflScript.append("distributed create temporary table output_local_tbl as virtual \n");
+        dflScript.append(String.format("select * from (\n  execnselect 'path:%s' ", algorithmFolderPath));
+        for (ParameterProperties parameter : algorithmParameters) {
+            dflScript.append(String.format("'%s:%s' ", parameter.getName(), parameter.getValue()));
+        }
+        dflScript.append(String.format("'%s:%s' ", ComposerConstants.defaultDBKey, defaultDBFileName));
+        dflScript.append(String.format("'%s:%s' ", ComposerConstants.inputLocalTblKey, inputLocalTbl));
+
+        dflScript.append(String.format("\n  select filetext('%s')\n", localScriptPath));
+        dflScript.append(");\n");
+
+        // Format union
+        dflScript
+                .append("\ndistributed create temporary table input_global_tbl to 1 as  \n");
+        dflScript.append("select * from output_local_tbl;\n");
+
+        // Format global
+        dflScript.append(String
+                .format("\nusing input_global_tbl \ndistributed create table %s as external \n",
+                        outputGlobalTbl));
+        dflScript.append("select * \n");
+        dflScript.append("from (\n");
+        dflScript.append(String.format("  execnselect 'path:%s' ", algorithmFolderPath));
+        for (ParameterProperties parameter : algorithmParameters) {
+            dflScript.append(String.format("'%s:%s' ", parameter.getName(), parameter.getValue()));
+        }
+        dflScript.append(String.format("'%s:%s' ", ComposerConstants.defaultDBKey, defaultDBFileName));
+        dflScript.append(String.format("'%s:%s' ", ComposerConstants.inputGlobalTblKey, "input_global_tbl"));
+
+        dflScript.append(String.format("\n  select filetext('%s')\n", globalScriptPath));
+        dflScript.append(");\n");
+
+        return dflScript.toString();
+        */
     }
 
     /**
