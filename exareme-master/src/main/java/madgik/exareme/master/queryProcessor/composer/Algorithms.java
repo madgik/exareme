@@ -296,10 +296,9 @@ public class Algorithms {
         for (File file : Objects.requireNonNull(repoFile.listFiles(new FileFilter() {
             @Override
             public boolean accept(File pathname) {
-                return pathname.isDirectory()
-                        && !pathname.getName().startsWith(".")
-                        && !pathname.getName().contains("unit_tests")
-                        && !pathname.getName().contains("Library");
+                if(!pathname.isDirectory())
+                    return false;
+                return new File(pathname, "properties.json").exists();
             }
         }))) {
             AlgorithmProperties algorithm =
