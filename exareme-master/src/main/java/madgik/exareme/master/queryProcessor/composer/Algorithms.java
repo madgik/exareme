@@ -103,12 +103,13 @@ public class Algorithms {
         }
 
         public enum AlgorithmType {
-            python_local_global,
             local,                      // exec single node local
             pipeline,                   // exec local on each endpoint
             local_global,               // exec global over the union of local results
             multiple_local_global,      // exec sequentially multiple local_global
-            iterative                   // exec iterative algorithm
+            iterative,                  // exec iterative algorithm
+            python_local,               // exec python based local algorithm
+            python_local_global         // exec python based local global algorithm
         }
 
         private String name;
@@ -155,10 +156,6 @@ public class Algorithms {
         public ParameterProperties[] getParameters() {
             return parameters;
         }
-
-        //public void setParameters(ParameterProperties[] parameters) {
-        //    this.parameters = parameters;
-        //}
 
         /**
          * Checks if the parameterValue has the correct type
