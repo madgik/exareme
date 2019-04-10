@@ -30,6 +30,7 @@
 __author__ = "Mathieu Fenniak"
 
 import socket
+
 try:
     import ssl as sslmodule
 except ImportError:
@@ -43,6 +44,7 @@ from cStringIO import StringIO
 from errors import *
 from util import MulticastDelegate
 import types
+
 
 ##
 # An SSLRequest message.  To initiate an SSL-encrypted connection, an
@@ -309,6 +311,7 @@ class Flush(object):
     def __repr__(self):
         return "<Flush>"
 
+
 ##
 # Causes the backend to close the current transaction (if not in a BEGIN/COMMIT
 # block), and issue ReadyForQuery.
@@ -380,6 +383,7 @@ class Terminate(object):
     def serialize(self):
         return 'X\x00\x00\x00\x04'
 
+
 ##
 # Base class of all Authentication[*] messages.
 # <p>
@@ -410,10 +414,12 @@ class AuthenticationRequest(object):
             return klass(data[4:])
         else:
             raise NotSupportedError("authentication method %r not supported" % (ident,))
+
     createFromData = staticmethod(createFromData)
 
     def ok(self, conn, user, **kwargs):
         raise InternalError("ok method should be overridden on AuthenticationRequest instance")
+
 
 ##
 # A message representing that the backend accepting the provided username
@@ -454,6 +460,7 @@ class AuthenticationMD5Password(AuthenticationRequest):
         else:
             raise msg.createException()
 
+
 authentication_codes = {
     0: AuthenticationOk,
     5: AuthenticationMD5Password,
@@ -476,8 +483,9 @@ class ParameterStatus(object):
     # String - Runtime parameter value.
     def createFromData(data):
         key = data[:data.find("\x00")]
-        value = data[data.find("\x00")+1:-1]
+        value = data[data.find("\x00") + 1:-1]
         return ParameterStatus(key, value)
+
     createFromData = staticmethod(createFromData)
 
 
@@ -499,6 +507,7 @@ class BackendKeyData(object):
     def createFromData(data):
         process_id, secret_key = struct.unpack("!2i", data)
         return BackendKeyData(process_id, secret_key)
+
     createFromData = staticmethod(createFromData)
 
 
@@ -511,6 +520,7 @@ class NoData(object):
     # Int32(4) - Message length, including self.
     def createFromData(data):
         return NoData()
+
     createFromData = staticmethod(createFromData)
 
 
@@ -523,6 +533,7 @@ class ParseComplete(object):
     # Int32(4) - Message length, including self.
     def createFromData(data):
         return ParseComplete()
+
     createFromData = staticmethod(createFromData)
 
 
@@ -535,6 +546,7 @@ class BindComplete(object):
     # Int32(4) - Message length, including self.
     def createFromData(data):
         return BindComplete()
+
     createFromData = staticmethod(createFromData)
 
 
@@ -547,6 +559,7 @@ class CloseComplete(object):
     # Int32(4) - Message length, including self.
     def createFromData(data):
         return CloseComplete()
+
     createFromData = staticmethod(createFromData)
 
 
@@ -560,6 +573,7 @@ class PortalSuspended(object):
     # Int32(4) - Message length, including self.
     def createFromData(data):
         return PortalSuspended()
+
     createFromData = staticmethod(createFromData)
 
 
@@ -577,13 +591,14 @@ class ReadyForQuery(object):
 
     def __repr__(self):
         return "<ReadyForQuery %s>" % \
-                {"I": "Idle", "T": "Idle in Transaction", "E": "Idle in Failed Transaction"}[self.status]
+               {"I": "Idle", "T": "Idle in Transaction", "E": "Idle in Failed Transaction"}[self.status]
 
     # Byte1('Z') - Identifier.
     # Int32(5) - Message length, including self.
     # Byte1 -   Status indicator.
     def createFromData(data):
         return ReadyForQuery(data)
+
     createFromData = staticmethod(createFromData)
 
 
@@ -615,8 +630,8 @@ class ReadyForQuery(object):
 class NoticeResponse(object):
     responseKeys = {
         "S": "severity",  # always present
-        "C": "code",      # always present
-        "M": "msg",       # always present
+        "C": "code",  # always present
+        "M": "msg",  # always present
         "D": "detail",
         "H": "hint",
         "P": "position",
@@ -643,6 +658,7 @@ class NoticeResponse(object):
             key = NoticeResponse.responseKeys.get(key, key)
             retval[key] = value
         return retval
+
     dataIntoDict = staticmethod(dataIntoDict)
 
     # Byte1('N') - Identifier
@@ -652,6 +668,7 @@ class NoticeResponse(object):
     #   String - field value
     def createFromData(data):
         return NoticeResponse(**NoticeResponse.dataIntoDict(data))
+
     createFromData = staticmethod(createFromData)
 
 
@@ -675,6 +692,7 @@ class ErrorResponse(object):
 
     def createFromData(data):
         return ErrorResponse(**NoticeResponse.dataIntoDict(data))
+
     createFromData = staticmethod(createFromData)
 
 
@@ -716,20 +734,23 @@ class NotificationResponse(object):
         data = data[4:]
         null = data.find("\x00")
         condition = data[:null]
-        data = data[null+1:]
+        data = data[null + 1:]
         null = data.find("\x00")
         additional_info = data[:null]
         return NotificationResponse(backend_pid, condition, additional_info)
+
     createFromData = staticmethod(createFromData)
 
 
 class ParameterDescription(object):
     def __init__(self, type_oids):
         self.type_oids = type_oids
+
     def createFromData(data):
         count = struct.unpack("!h", data[:2])[0]
-        type_oids = struct.unpack("!" + "i"*count, data[2:])
+        type_oids = struct.unpack("!" + "i" * count, data[2:])
         return ParameterDescription(type_oids)
+
     createFromData = staticmethod(createFromData)
 
 
@@ -744,12 +765,15 @@ class RowDescription(object):
         for i in range(count):
             null = data.find("\x00")
             field = {"name": data[:null]}
-            data = data[null+1:]
-            field["table_oid"], field["column_attrnum"], field["type_oid"], field["type_size"], field["type_modifier"], field["format"] = struct.unpack("!ihihih", data[:18])
+            data = data[null + 1:]
+            field["table_oid"], field["column_attrnum"], field["type_oid"], field["type_size"], field["type_modifier"], \
+            field["format"] = struct.unpack("!ihihih", data[:18])
             data = data[18:]
             fields.append(field)
         return RowDescription(fields)
+
     createFromData = staticmethod(createFromData)
+
 
 class CommandComplete(object):
     def __init__(self, command, rows=None, oid=None):
@@ -768,6 +792,7 @@ class CommandComplete(object):
         else:
             args['command'] = data[:-1]
         return CommandComplete(**args)
+
     createFromData = staticmethod(createFromData)
 
 
@@ -788,6 +813,7 @@ class DataRow(object):
                 fields.append(data[:val_len])
                 data = data[val_len:]
         return DataRow(fields)
+
     createFromData = staticmethod(createFromData)
 
 
@@ -798,8 +824,9 @@ class CopyData(object):
 
     def createFromData(data):
         return CopyData(data)
+
     createFromData = staticmethod(createFromData)
-    
+
     def serialize(self):
         return 'd' + struct.pack('!i', len(self.data) + 4) + self.data
 
@@ -812,9 +839,10 @@ class CopyDone(object):
         return CopyDone()
 
     createFromData = staticmethod(createFromData)
-    
+
     def serialize(self):
         return 'c\x00\x00\x00\x04'
+
 
 class CopyOutResponse(object):
     # Byte1('H')
@@ -826,7 +854,7 @@ class CopyOutResponse(object):
     def __init__(self, is_binary, column_formats):
         self.is_binary = is_binary
         self.column_formats = column_formats
-    
+
     def createFromData(data):
         is_binary, num_cols = struct.unpack('!bh', data[:3])
         column_formats = struct.unpack('!' + ('h' * num_cols), data[3:])
@@ -838,11 +866,11 @@ class CopyOutResponse(object):
 class CopyInResponse(object):
     # Byte1('G')
     # Otherwise the same as CopyOutResponse
-    
+
     def __init__(self, is_binary, column_formats):
         self.is_binary = is_binary
         self.column_formats = column_formats
-    
+
     def createFromData(data):
         is_binary, num_cols = struct.unpack('!bh', data[:3])
         column_formats = struct.unpack('!' + ('h' * num_cols), data[3:])
@@ -872,7 +900,7 @@ class MessageReader(object):
 
     def return_value(self, value):
         self._retval = value
-    
+
     def handle_messages(self):
         exc = None
         while 1:
@@ -909,6 +937,7 @@ class MessageReader(object):
             elif not self.ignore_unhandled_messages:
                 raise InternalError("Unexpected response msg %r" % (msg))
 
+
 def sync_on_error(fn):
     def _fn(self, *args, **kwargs):
         try:
@@ -919,7 +948,9 @@ def sync_on_error(fn):
             raise
         finally:
             self._sock_lock.release()
+
     return _fn
+
 
 class Connection(object):
     def __init__(self, unix_sock=None, host=None, port=5432, socket_timeout=60, ssl=False):
@@ -975,12 +1006,12 @@ class Connection(object):
 
     def _send(self, msg):
         assert self._sock_lock.locked()
-        #print "_send(%r)" % msg
+        # print "_send(%r)" % msg
         data = msg.serialize()
         if not isinstance(data, str):
             raise TypeError("bytes data expected")
         self._send_sock_buf.append(data)
-    
+
     def _flush(self):
         assert self._sock_lock.locked()
         self._sock.sendall("".join(self._send_sock_buf))
@@ -1009,14 +1040,14 @@ class Connection(object):
         bytes = self._read_bytes(data_len)
         assert len(bytes) == data_len
         msg = message_types[message_code].createFromData(bytes)
-        #print "_read_message() -> %r" % msg
+        # print "_read_message() -> %r" % msg
         return msg
 
     def authenticate(self, user, **kwargs):
         self.verifyState("noauth")
         self._sock_lock.acquire()
         try:
-            self._send(StartupMessage(user, database=kwargs.get("database",None)))
+            self._send(StartupMessage(user, database=kwargs.get("database", None)))
             self._flush()
 
             reader = MessageReader(self)
@@ -1036,6 +1067,7 @@ class Connection(object):
             reader.add_message(BackendKeyData, self._receive_backend_key_data)
             reader.handle_messages()
             return 1
+
         return _func
 
     def _ready_for_query(self, msg):
@@ -1050,7 +1082,8 @@ class Connection(object):
         self.verifyState("ready")
 
         type_info = [types.pg_type_info(x) for x in param_types]
-        param_types, param_fc = [x[0] for x in type_info], [x[1] for x in type_info] # zip(*type_info) -- fails on empty arr
+        param_types, param_fc = [x[0] for x in type_info], [x[1] for x in
+                                                            type_info]  # zip(*type_info) -- fails on empty arr
         self._send(Parse(statement, qs.encode(self._client_encoding), param_types))
         self._send(DescribePreparedStatement(statement))
         self._send(Flush())
@@ -1086,7 +1119,8 @@ class Connection(object):
             # We've got row_desc that allows us to identify what we're going to
             # get back from this statement.
             output_fc = [types.py_type_info(f) for f in row_desc.fields]
-        self._send(Bind(portal, statement, param_fc, params, output_fc, client_encoding = self._client_encoding, integer_datetimes = self._integer_datetimes))
+        self._send(Bind(portal, statement, param_fc, params, output_fc, client_encoding=self._client_encoding,
+                        integer_datetimes=self._integer_datetimes))
         # We need to describe the portal after bind, since the return
         # format codes will be different (hopefully, always what we
         # requested).
@@ -1277,14 +1311,14 @@ class Connection(object):
     def fileno(self):
         # This should be safe to do without a lock
         return self._sock.fileno()
-    
+
     def isready(self):
         self._sock_lock.acquire()
         try:
             rlst, _wlst, _xlst = select.select([self], [], [], 0)
             if not rlst:
                 return False
-                
+
             self._sync()
             return True
         finally:
@@ -1318,6 +1352,4 @@ message_types = {
     "d": CopyData,
     "G": CopyInResponse,
     "H": CopyOutResponse,
-    }
-
-
+}

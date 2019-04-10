@@ -20,21 +20,22 @@ import java.rmi.RemoteException;
  * @author heraldkllapi
  */
 public class NonLinearOptLoadBalanceTreeResourceScheduler
-    extends StaticLoadBalanceTreeResourceScheduler {
+        extends StaticLoadBalanceTreeResourceScheduler {
     private final Database db;
     private final ContainerTopology topology;
     private final DataPartitionLayout dataLayout;
     private double lastSupplierRun = 0;
 
     public NonLinearOptLoadBalanceTreeResourceScheduler(int[] initialContainersPerLevel,
-        Database db, ContainerTopology topology, DataPartitionLayout dataLayout) {
+                                                        Database db, ContainerTopology topology, DataPartitionLayout dataLayout) {
         super(initialContainersPerLevel, topology);
         this.db = db;
         this.topology = topology;
         this.dataLayout = dataLayout;
     }
 
-    @Override public void finalizeResources(ComputeCloud cloud, GlobalSystemState state) {
+    @Override
+    public void finalizeResources(ComputeCloud cloud, GlobalSystemState state) {
         super.finalizeResources(cloud, state);
     }
 
@@ -64,15 +65,15 @@ public class NonLinearOptLoadBalanceTreeResourceScheduler
         }
 
         TreeStats treeStats =
-            new TreeStats(TreeConstants.SETTINGS.SLAS, queriesPerSLA, cpuLoadPerLevel,
-                dataLoadPerLevel, concurent, topology.getContainersAtLevel(0),
-                currentContainersPerLevel, db.getMaxNumOfParts(),
-                db.getTotalTableSize() / db.getMaxNumOfParts(), dataLayout.getReplication(),
-                window);
+                new TreeStats(TreeConstants.SETTINGS.SLAS, queriesPerSLA, cpuLoadPerLevel,
+                        dataLoadPerLevel, concurent, topology.getContainersAtLevel(0),
+                        currentContainersPerLevel, db.getMaxNumOfParts(),
+                        db.getTotalTableSize() / db.getMaxNumOfParts(), dataLayout.getReplication(),
+                        window);
 
         double[] contaienersPerLevel = new double[TreeConstants.SETTINGS.MAX_TREE_HEIGHT];
         double objectiveFun =
-            NonLinearEQSolver.optimize(treeStats, contaienersPerLevel, predictionWindow);
+                NonLinearEQSolver.optimize(treeStats, contaienersPerLevel, predictionWindow);
 
         if (TreeConstants.SETTINGS.VERBOSE_OUTPUT >= 1) {
             System.out.println("QUERIES: " + totalNumQueries);
@@ -97,11 +98,12 @@ public class NonLinearOptLoadBalanceTreeResourceScheduler
         }
     }
 
-    @Override public void dataflowFinished(RunningDataflow runningDataflow, ComputeCloud cloud,
-        GlobalSystemState state) {
+    @Override
+    public void dataflowFinished(RunningDataflow runningDataflow, ComputeCloud cloud,
+                                 GlobalSystemState state) {
         super.dataflowFinished(runningDataflow, cloud, state);
         if (GlobalTime.getCurrentSec() - lastSupplierRun
-            > TreeConstants.SETTINGS.RUN_SUPPLIER_EVERY) {
+                > TreeConstants.SETTINGS.RUN_SUPPLIER_EVERY) {
             try {
                 changeElasticLevels(state);
             } catch (Exception e) {
@@ -111,7 +113,8 @@ public class NonLinearOptLoadBalanceTreeResourceScheduler
         }
     }
 
-    @Override public void reorganizeResources(GlobalSystemState state) throws RemoteException {
+    @Override
+    public void reorganizeResources(GlobalSystemState state) throws RemoteException {
         changeElasticLevels(state);
         topology.progress();
     }

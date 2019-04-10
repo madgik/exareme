@@ -1,11 +1,10 @@
 # coding: utf-8
-import setpath
-import re
 import functions
-import unicodedata
 import hashlib
-import zlib
 import itertools
+import re
+import unicodedata
+import zlib
 from collections import deque
 from lib import jopts
 
@@ -19,15 +18,16 @@ except:
 # like below. If you want to embed the UNICODE directive inside the
 # regular expression use:
 # (?u) like re.sub(ur'(?u)[\W\d]', ' ', o)
-delete_numbers_and_non_letters=re.compile(ur'[\W]',re.UNICODE)
-delete_non_letters=re.compile(ur'[\W]',re.UNICODE)
-delete_word_all=re.compile(ur'\w+\sall',re.UNICODE)
-delete_word_all_and_or=re.compile(ur'\w+\sall\s(?:and|or)',re.UNICODE)
+delete_numbers_and_non_letters = re.compile(ur'[\W]', re.UNICODE)
+delete_non_letters = re.compile(ur'[\W]', re.UNICODE)
+delete_word_all = re.compile(ur'\w+\sall', re.UNICODE)
+delete_word_all_and_or = re.compile(ur'\w+\sall\s(?:and|or)', re.UNICODE)
 text_tokens = re.compile(ur'([\d.]+\b|\w+|\$[\d.]+)', re.UNICODE)
-strip_remove_newlines=re.compile(u'(?:\\s+$|^\\s+|(?<=[^\\s\\d\\w.;,!?])\n+)', re.UNICODE)
-reduce_spaces=re.compile(ur'\s+', re.UNICODE)
-cqlterms=('title', 'subject', 'person', 'enter', 'creator', 'isbn')
+strip_remove_newlines = re.compile(u'(?:\\s+$|^\\s+|(?<=[^\\s\\d\\w.;,!?])\n+)', re.UNICODE)
+reduce_spaces = re.compile(ur'\s+', re.UNICODE)
+cqlterms = ('title', 'subject', 'person', 'enter', 'creator', 'isbn')
 replchars = re.compile(r'[\n\r]')
+
 
 def escapechars(*args):
     def replchars_to_hex(match):
@@ -35,11 +35,11 @@ def escapechars(*args):
 
     return replchars.sub(replchars_to_hex, ''.join(args))
 
+
 escapechars.registered = True
 
 
 def keywords(*args):
-
     """
     .. function:: keywords(text1, [text2,...]) -> text
 
@@ -61,17 +61,17 @@ def keywords(*args):
     πέμπτο all qwer zxcv
     """
 
-    out=text_tokens.findall(args[0])
+    out = text_tokens.findall(args[0])
     for i in args[1:]:
-        out+=text_tokens.findall(i)
+        out += text_tokens.findall(i)
 
     return ' '.join((x for x in out if x != '.'))
 
-keywords.registered=True
+
+keywords.registered = True
 
 
 def cqlkeywords(*args):
-
     """
     .. function:: cqlkeywords(text1, [text2,...]) -> text
 
@@ -101,27 +101,27 @@ def cqlkeywords(*args):
     and something other
     """
 
-    out=[]
+    out = []
     for i in args:
-        o=i.lower()
-        o=delete_non_letters.sub(' ',o)
-        o=delete_word_all_and_or.sub('',o)
-        o=delete_word_all.sub('',o)
-        o=reduce_spaces.sub(' ',o)
-        o=o.strip()
-        o=o.split(' ')
+        o = i.lower()
+        o = delete_non_letters.sub(' ', o)
+        o = delete_word_all_and_or.sub('', o)
+        o = delete_word_all.sub('', o)
+        o = reduce_spaces.sub(' ', o)
+        o = o.strip()
+        o = o.split(' ')
 
         for k in o:
-            if len(k)>0 and k not in cqlterms:
+            if len(k) > 0 and k not in cqlterms:
                 out.append(k)
 
     return ' '.join(out)
 
-cqlkeywords.registered=True
+
+cqlkeywords.registered = True
 
 
 def kwnum(*args):
-
     """
     .. function:: kwnum(text1, [text2,...]) -> int
 
@@ -144,13 +144,15 @@ def kwnum(*args):
     1
     """
 
-    o=0
+    o = 0
     for i in args:
-        o+=len(i.split(' '))
+        o += len(i.split(' '))
 
     return o
 
-kwnum.registered=True
+
+kwnum.registered = True
+
 
 def uniqueterms(*args):
     """
@@ -173,23 +175,23 @@ def uniqueterms(*args):
     word
     """
 
-    o=set()
-    l=[]
+    o = set()
+    l = []
     for i in args:
         for t in i.split(' '):
-            if t not in o and not t=='':
+            if t not in o and not t == '':
                 o.add(t)
                 l.append(t)
 
     return ' '.join(l)
 
-uniqueterms.registered=True
 
+uniqueterms.registered = True
 
-match_field_all=re.compile('(title|isbn|issn|subject|creator|language|type)\sall',re.UNICODE)
+match_field_all = re.compile('(title|isbn|issn|subject|creator|language|type)\sall', re.UNICODE)
+
 
 def cqlfields(*args):
-
     """
     This functions returns the keywords inside a single column or aggregated
     from multiple columns. It plays well with Unicode.
@@ -210,18 +212,19 @@ def cqlfields(*args):
     <BLANKLINE>
     """
 
-    out=[]
+    out = []
     for i in args:
-        o=i.lower()
-        o=delete_numbers_and_non_letters.sub(' ',o)
-        fields=match_field_all.findall(o)
+        o = i.lower()
+        o = delete_numbers_and_non_letters.sub(' ', o)
+        fields = match_field_all.findall(o)
 
         for k in fields:
             out.append(k)
     return ' '.join(out)
 
 
-cqlfields.registered=True
+cqlfields.registered = True
+
 
 def comprspaces(*args):
     """
@@ -244,23 +247,26 @@ def comprspaces(*args):
     if len(args) == 1:
         return reduce_spaces.sub(' ', strip_remove_newlines.sub('', args[0]))
 
-    out=[]
+    out = []
     for i in args:
-        o=reduce_spaces.sub(' ', strip_remove_newlines.sub('', i))
-        out+=[o]
+        o = reduce_spaces.sub(' ', strip_remove_newlines.sub('', i))
+        out += [o]
 
     return ' '.join(out)
 
-comprspaces.registered=True
 
-reduce_special_characters=re.compile(ur'(?:[\s\n,.;]+|[^\w,.\s]+)',re.UNICODE)
-reduce_underscore = re.compile(ur'(\b_+\b)',re.UNICODE)
+comprspaces.registered = True
+
+reduce_special_characters = re.compile(ur'(?:[\s\n,.;]+|[^\w,.\s]+)', re.UNICODE)
+reduce_underscore = re.compile(ur'(\b_+\b)', re.UNICODE)
+
 
 def normreplace(a):
     if (a.group()[0] in ' \t\n.,;'):
         return ' '
 
     return '_';
+
 
 def normalizetext(*args):
     """
@@ -282,21 +288,21 @@ def normalizetext(*args):
     πρωτο_δευτερο_ τριτο_τέταρτο
     πέμπτο all έκτο title all τεστ
     """
-    out=[]
+    out = []
     for o in args:
-        o=reduce_special_characters.sub(normreplace,o)
-        o=reduce_underscore.sub(' ',o)
+        o = reduce_special_characters.sub(normreplace, o)
+        o = reduce_underscore.sub(' ', o)
         out.append(reduce_spaces.sub(' ', o).strip())
 
     return ' '.join(out)
 
-normalizetext.registered=True
 
+normalizetext.registered = True
 
-query_regular_characters=re.compile(ur"""^[·∆©(́−·¨¬…‐"•΄€„”“‘’´«»’ʹ–\w\s\[!-~\]]*$""", re.UNICODE)
+query_regular_characters = re.compile(ur"""^[·∆©(́−·¨¬…‐"•΄€„”“‘’´«»’ʹ–\w\s\[!-~\]]*$""", re.UNICODE)
+
 
 def isvalidutf8(*args):
-
     """
     .. function:: isvalidutf8(text) -> 1/0
 
@@ -322,20 +328,20 @@ def isvalidutf8(*args):
     """
 
     for i in args:
-        if i==None:
+        if i == None:
             return 0
         if not query_regular_characters.match(i):
             return 0
 
     return 1
 
-isvalidutf8.registered=True
 
+isvalidutf8.registered = True
 
-characters_to_clean=re.compile(ur"""[^\w!-~]""", re.UNICODE)
+characters_to_clean = re.compile(ur"""[^\w!-~]""", re.UNICODE)
+
 
 def utf8clean(*args):
-
     """
     .. function:: utf8clean(text) -> text
 
@@ -359,25 +365,26 @@ def utf8clean(*args):
     """
 
     def cleanchar(c):
-        c=c.group()[0]
+        c = c.group()[0]
         if c != '\n' and unicodedata.category(c)[0] == 'C':
             return u''
         else:
             return c
 
-    o=''
+    o = ''
     for i in args:
-        if type(i) in (str,unicode):
-            o+=characters_to_clean.sub(cleanchar, i)
+        if type(i) in (str, unicode):
+            o += characters_to_clean.sub(cleanchar, i)
         else:
-            o+=unicode(i, errors='replace')
+            o += unicode(i, errors='replace')
 
     return o
 
-utf8clean.registered=True
+
+utf8clean.registered = True
+
 
 def regexpr(*args):
-
     """
     .. function:: regexp(pattern,expression[,replacestr])
 
@@ -409,13 +416,13 @@ def regexpr(*args):
     -----------------------------------------
     ["one","two"]
     """
-    if len(args)<2:
+    if len(args) < 2:
         return
 
-    if len(args)==2:
-        a=re.search(args[0], unicode(args[1]),re.UNICODE)
-        if a!=None:
-            if len(a.groups())>0:
+    if len(args) == 2:
+        a = re.search(args[0], unicode(args[1]), re.UNICODE)
+        if a != None:
+            if len(a.groups()) > 0:
                 return jopts.toj(a.groups())
             else:
                 return True
@@ -428,7 +435,9 @@ def regexpr(*args):
         except TypeError:
             return re.sub(args[0], args[2], args[1])
 
+
 regexpr.registered = True
+
 
 def regexprfindall(*args):
     """
@@ -448,16 +457,17 @@ def regexprfindall(*args):
     --------------------------------------
     ["one","two","three"]
     """
-    
-    if len(args)!=2:
+
+    if len(args) != 2:
         raise functions.OperatorError('regexprfindall', 'Two parameters should be provided')
 
-    return jopts.tojstrict(re.findall(args[0], unicode(args[1]),re.UNICODE))
+    return jopts.tojstrict(re.findall(args[0], unicode(args[1]), re.UNICODE))
 
-regexprfindall.registered=True
+
+regexprfindall.registered = True
+
 
 def regexprmatches(*args):
-
     """
     .. function:: regexprmatches(pattern, arg)
 
@@ -473,19 +483,20 @@ def regexprmatches(*args):
     1
 
     """
-    if len(args)!=2:
+    if len(args) != 2:
         raise functions.OperatorError('regexprmatches', 'Two parameters should be provided')
 
-    a=re.search(args[0], unicode(args[1]),re.UNICODE)
-    if a!=None:
+    a = re.search(args[0], unicode(args[1]), re.UNICODE)
+    if a != None:
         return True
     else:
         return False
 
-regexprmatches.registered=True
+
+regexprmatches.registered = True
 
 
-def regexpcountwithpositions(pattern,expression,start = 0,min = 0.5,multiply = 1):
+def regexpcountwithpositions(pattern, expression, start=0, min=0.5, multiply=1):
     """
     .. function:: regexpcountwithpositions(pattern, expression,start = 0,min = 0.5,multiply = 1,)
 
@@ -522,22 +533,22 @@ def regexpcountwithpositions(pattern,expression,start = 0,min = 0.5,multiply = 1
     count = 0
     if start == 0:
         total = 0
-        for i in re.finditer(pattern+'|(\s)',expression,re.UNICODE):
+        for i in re.finditer(pattern + '|(\s)', expression, re.UNICODE):
             count += 1
-            if i.group()!=' ':
+            if i.group() != ' ':
                 total += count * multiply
         if total == 0:
             return 0.0
         else:
-            if count == 0 :
+            if count == 0:
                 return min
             return min + total / float(count)
     else:
         matches = []
         total = 0
-        for i in re.finditer(pattern+'|(\s)',expression,re.UNICODE):
+        for i in re.finditer(pattern + '|(\s)', expression, re.UNICODE):
             count += 1
-            if i.group()!=' ':
+            if i.group() != ' ':
                 matches.append(count)
                 total += count * multiply
         if total == 0:
@@ -547,7 +558,8 @@ def regexpcountwithpositions(pattern,expression,start = 0,min = 0.5,multiply = 1
                 return min
             return min + sum(count - i for i in matches) / float(count)
 
-regexpcountwithpositions.registered=True
+
+regexpcountwithpositions.registered = True
 
 
 def regexpcountuniquematches(*args):
@@ -574,7 +586,8 @@ def regexpcountuniquematches(*args):
 
     return len(set(re.findall(args[0], unicode(args[1]), re.UNICODE)))
 
-regexpcountuniquematches.registered=True
+
+regexpcountuniquematches.registered = True
 
 
 def regexpcountwords(*args):
@@ -596,9 +609,10 @@ def regexpcountwords(*args):
     2
     """
 
-    return sum(((i.group().strip().count(' ')+1)  for i in re.finditer(args[0],unicode(args[1]),re.UNICODE) ))
+    return sum(((i.group().strip().count(' ') + 1) for i in re.finditer(args[0], unicode(args[1]), re.UNICODE)))
 
-regexpcountwords.registered=True
+
+regexpcountwords.registered = True
 
 
 def contains(*args):
@@ -618,13 +632,14 @@ def contains(*args):
     ----
     0
     """
-    if len(args)!=2:
-        raise functions.OperatorError("included","operator takes exactly two arguments")
+    if len(args) != 2:
+        raise functions.OperatorError("included", "operator takes exactly two arguments")
     if (args[1] in args[0]):
         return True
     return False
 
-contains.registered=True
+
+contains.registered = True
 
 
 def unitosuni(*args):
@@ -649,18 +664,19 @@ def unitosuni(*args):
     ------------
     9
     """
-    if len(args)!=1:
-        raise functions.OperatorError("unitosuni","operator takes only one arguments")
-    if args[0]==None:
+    if len(args) != 1:
+        raise functions.OperatorError("unitosuni", "operator takes only one arguments")
+    if args[0] == None:
         return None
     try:
-        return repr(unicode(args[0])).replace('\\x','\\u00')[2:-1]
+        return repr(unicode(args[0])).replace('\\x', '\\u00')[2:-1]
     except KeyboardInterrupt:
         raise
     except Exception:
         return args[0]
 
-unitosuni.registered=True
+
+unitosuni.registered = True
 
 
 def sunitouni(*args):
@@ -688,11 +704,11 @@ def sunitouni(*args):
     ------------
     9
     """
-    if len(args)!=1:
-        raise functions.OperatorError("sunitouni","operator takes only one arguments")
-    if args[0]==None:
+    if len(args) != 1:
+        raise functions.OperatorError("sunitouni", "operator takes only one arguments")
+    if args[0] == None:
         return None
-    kk="u'%s'" %(unicode(args[0]).replace("'","\\'"))
+    kk = "u'%s'" % (unicode(args[0]).replace("'", "\\'"))
     try:
         return eval(kk)
     except KeyboardInterrupt:
@@ -700,7 +716,8 @@ def sunitouni(*args):
     except Exception:
         return args[0]
 
-sunitouni.registered=True
+
+sunitouni.registered = True
 
 
 def stripchars(*args):
@@ -727,37 +744,40 @@ def stripchars(*args):
     ----------------
     None
     """
-    if len(args)<1:
-        raise functions.OperatorError("stripchars","operator takes at least one arguments")
-    if args[0]==None:
+    if len(args) < 1:
+        raise functions.OperatorError("stripchars", "operator takes at least one arguments")
+    if args[0] == None:
         return None
-    if len(args)<2:
+    if len(args) < 2:
         return unicode(args[0]).strip()
     return unicode(args[0]).strip(args[1])
-stripchars.registered=True
+
+
+stripchars.registered = True
 
 
 def reencode(*args):
-    if len(args)!=1:
-        raise functions.OperatorError("reencode","operator takes only one arguments")
+    if len(args) != 1:
+        raise functions.OperatorError("reencode", "operator takes only one arguments")
 
-    us=args[0]
-    if us==None:
+    us = args[0]
+    if us == None:
         return None
-    us=unicode(us)
+    us = unicode(us)
     try:
-        a=unicode(us.encode('iso-8859-1'),'utf-8')
+        a = unicode(us.encode('iso-8859-1'), 'utf-8')
         return a
     except KeyboardInterrupt:
         raise
     except Exception:
         try:
-            a=unicode(us.encode('windows-1252'),'utf-8')
+            a = unicode(us.encode('windows-1252'), 'utf-8')
             return a
         except Exception:
             return us
 
-reencode.registered=False
+
+reencode.registered = False
 
 
 def normuni(*args):
@@ -791,13 +811,14 @@ def normuni(*args):
     ------
     \u00c7
     """
-    if len(args)!=1:
-        raise functions.OperatorError("normuni","operator takes only one arguments")
-    if args[0]==None:
-        return None    
+    if len(args) != 1:
+        raise functions.OperatorError("normuni", "operator takes only one arguments")
+    if args[0] == None:
+        return None
     return unicodedata.normalize('NFC', args[0])
 
-normuni.registered=True
+
+normuni.registered = True
 
 
 def hashmd5(*args):
@@ -827,12 +848,13 @@ def hashmd5(*args):
     7000aaf68ca7a93da0af3d03850571c2
     """
 
-    if len(args)==1:
+    if len(args) == 1:
         return hashlib.md5(repr(args[0])).hexdigest()
     else:
         return hashlib.md5(chr(30).join([repr(x) for x in args])).hexdigest()
 
-hashmd5.registered=True
+
+hashmd5.registered = True
 
 
 def hashmd5mod(*args):
@@ -865,12 +887,13 @@ def hashmd5mod(*args):
     4
     """
 
-    if len(args)==2:
-        return int(hashlib.md5(repr(args[0])).hexdigest(),16) % args[-1]
+    if len(args) == 2:
+        return int(hashlib.md5(repr(args[0])).hexdigest(), 16) % args[-1]
     else:
-        return int(hashlib.md5(chr(30).join([repr(x) for x in args])).hexdigest(),16) % args[-1]
+        return int(hashlib.md5(chr(30).join([repr(x) for x in args])).hexdigest(), 16) % args[-1]
 
-hashmd5mod.registered=True
+
+hashmd5mod.registered = True
 
 
 def crc32(*args):
@@ -903,12 +926,14 @@ def crc32(*args):
     1201448970
     """
 
-    if len(args)==1:
+    if len(args) == 1:
         return zlib.crc32(repr(args[0])) & 0xffffffff
     else:
         return zlib.crc32(chr(30).join([repr(x) for x in args])) & 0xffffffff
 
-crc32.registered=True
+
+crc32.registered = True
+
 
 def hashmodarchdep(*args):
     """
@@ -948,7 +973,8 @@ def hashmodarchdep(*args):
     else:
         return hash(tuple(args[:-1])) % args[-1]
 
-hashmodarchdep.registered=True
+
+hashmodarchdep.registered = True
 
 
 def hashmodarchdep2(a, b):
@@ -983,12 +1009,13 @@ def hashmodarchdep2(a, b):
     ----------------------
     ...
     """
-    return hash(a)%b
-
-hashmodarchdep2.registered=True
+    return hash(a) % b
 
 
-def textreferences(txt,maxlen = 5,pattern = r'(\b|_)((1[5-9]\d{2,2})|(20\d{2,2}))(\b|_)' ):
+hashmodarchdep2.registered = True
+
+
+def textreferences(txt, maxlen=5, pattern=r'(\b|_)((1[5-9]\d{2,2})|(20\d{2,2}))(\b|_)'):
     """
     .. function:: textreferences(text, maxlen = 5, pattern = (\b|_)(1|2)\d{3,3}(\b|_))
 
@@ -1043,9 +1070,9 @@ def textreferences(txt,maxlen = 5,pattern = r'(\b|_)((1[5-9]\d{2,2})|(20\d{2,2})
     <BLANKLINE>
     """
 
-    exp = re.sub('\r\n','\n',txt)
+    exp = re.sub('\r\n', '\n', txt)
 
-    if exp.count('\n')<10:
+    if exp.count('\n') < 10:
         return exp
     references = []
     reversedtext = iter(reversed(exp.split('\n')[10:]))
@@ -1053,47 +1080,48 @@ def textreferences(txt,maxlen = 5,pattern = r'(\b|_)((1[5-9]\d{2,2})|(20\d{2,2})
     results = []
     densities = []
 
-    for i in xrange(maxlen/2):
+    for i in xrange(maxlen / 2):
         results.append(1)
     for i in reversedtext:
-        if len(i)>10:
-            if re.search(pattern,i):
-                    results.append(1)
+        if len(i) > 10:
+            if re.search(pattern, i):
+                results.append(1)
             else:
-                    results.append(0)
+                results.append(0)
 
-    for i in xrange(maxlen/2):
+    for i in xrange(maxlen / 2):
         results.append(0)
 
     out = 0
     temp = 0
-    for i in xrange(maxlen/2,len(results)-maxlen/2):
-        if i==maxlen/2 :
-            temp = sum(results[0:maxlen])*1.0/maxlen
+    for i in xrange(maxlen / 2, len(results) - maxlen / 2):
+        if i == maxlen / 2:
+            temp = sum(results[0:maxlen]) * 1.0 / maxlen
         else:
-            if out == results[i+maxlen/2]:
+            if out == results[i + maxlen / 2]:
                 pass
-            elif results[i+maxlen/2]:
-                temp = (temp*maxlen+1) *1.0 / maxlen
+            elif results[i + maxlen / 2]:
+                temp = (temp * maxlen + 1) * 1.0 / maxlen
             else:
-                temp = (temp*maxlen-1) *1.0 / maxlen
+                temp = (temp * maxlen - 1) * 1.0 / maxlen
         densities.append(temp)
-        out = results[i-maxlen/2]
+        out = results[i - maxlen / 2]
 
     try:
-        threshold =  sum(densities)/len(densities)
+        threshold = sum(densities) / len(densities)
     except:
         threshold = 0
 
     current = 0
     for i in reversedtext2:
-        if len(i)>10:
+        if len(i) > 10:
             if densities[current] >= threshold:
                 references.append(i)
-            current+=1
-    return  '\n'.join(reversed(references))
+            current += 1
+    return '\n'.join(reversed(references))
 
-textreferences.registered=True
+
+textreferences.registered = True
 
 
 def textwindow(*args):
@@ -1168,8 +1196,8 @@ def textwindow(*args):
             pattern = args[3]
     except IndexError:
         pass
-    
-    try :
+
+    try:
         if type(args[4]) == int:
             middle = args[4]
         else:
@@ -1180,55 +1208,57 @@ def textwindow(*args):
     if pattern == None:
         prev = abs(prev)
 
-    yield tuple(itertools.chain( ('prev'+str(x) for x in xrange(1,abs(prev)+1)),('middle',), ('next'+str(y) for y in xrange(1,nextlen + 1)) ))
-    g = [''] * prev + r.split(' ') + [''] * ((middle-1)+nextlen)
+    yield tuple(itertools.chain(('prev' + str(x) for x in xrange(1, abs(prev) + 1)), ('middle',),
+                                ('next' + str(y) for y in xrange(1, nextlen + 1))))
+    g = [''] * prev + r.split(' ') + [''] * ((middle - 1) + nextlen)
 
-    if prev >= 0:    
+    if prev >= 0:
         window = prev + nextlen + middle
-        pm = prev+middle
+        pm = prev + middle
         im = prev
         if middle == 1:
             if pattern == None:
-                for i in xrange(len(g)-window + 1):
-                    yield (g[i:i+window])
+                for i in xrange(len(g) - window + 1):
+                    yield (g[i:i + window])
             else:
-                 patt = re.compile(pattern,re.UNICODE)
-                 for i in xrange(len(g)-window + 1):
-                    if patt.search(g[i+im]):
-                        yield (g[i:i+window])
+                patt = re.compile(pattern, re.UNICODE)
+                for i in xrange(len(g) - window + 1):
+                    if patt.search(g[i + im]):
+                        yield (g[i:i + window])
 
-        else :
+        else:
             if pattern == None:
-                for i in xrange(len(g)-window+1):
-                    yield (  g[i:i+prev] + [' '.join(g[i+prev:i+pm])] + g[i+prev+middle:i+window]  )
+                for i in xrange(len(g) - window + 1):
+                    yield (g[i:i + prev] + [' '.join(g[i + prev:i + pm])] + g[i + prev + middle:i + window])
             else:
-                 patt = re.compile(pattern,re.UNICODE)
-                 for i in xrange(len(g)-window+1):
-                    mid = ' '.join(g[i+prev:i+pm])
+                patt = re.compile(pattern, re.UNICODE)
+                for i in xrange(len(g) - window + 1):
+                    mid = ' '.join(g[i + prev:i + pm])
                     if patt.search(mid):
-                        yield (  g[i:i+prev] + [mid] + g[i+pm:i+window]  )
-    elif prev<0:
+                        yield (g[i:i + prev] + [mid] + g[i + pm:i + window])
+    elif prev < 0:
         prev = abs(prev)
         window = nextlen + middle
         winprev = [''] * prev
         winprev = deque(winprev, prev)
         if middle == 1:
-             patt = re.compile(pattern,re.UNICODE)
-             for i in xrange(len(g)-window + 1):
+            patt = re.compile(pattern, re.UNICODE)
+            for i in xrange(len(g) - window + 1):
                 if patt.search(g[i]):
-                    yield tuple(itertools.chain(winprev,(g[i:i+window])))
+                    yield tuple(itertools.chain(winprev, (g[i:i + window])))
                 else:
                     winprev.append(g[i])
-        else :
-             patt = re.compile(pattern,re.UNICODE)
-             for i in xrange(len(g)-window + 1):
-                mid = ' '.join(g[i:i+middle])
+        else:
+            patt = re.compile(pattern, re.UNICODE)
+            for i in xrange(len(g) - window + 1):
+                mid = ' '.join(g[i:i + middle])
                 if patt.search(g[i]):
-                    yield tuple(itertools.chain(winprev, ([mid] + g[i+middle:i+window]  )))
+                    yield tuple(itertools.chain(winprev, ([mid] + g[i + middle:i + window])))
                 else:
                     winprev.append(g[i])
 
-textwindow.registered=True
+
+textwindow.registered = True
 
 
 def textwindow2s(*args):
@@ -1259,7 +1289,7 @@ def textwindow2s(*args):
 
     """
     g = args[0].split(' ')
-    yield tuple(('prev','middle','next'))
+    yield tuple(('prev', 'middle', 'next'))
 
     try:
         prev = args[1]
@@ -1276,7 +1306,7 @@ def textwindow2s(*args):
         try:
             nextlen = int(nextlen)
         except:
-            raise functions.OperatorError('textwindow2s','Third argument should be an integer')
+            raise functions.OperatorError('textwindow2s', 'Third argument should be an integer')
     except IndexError:
         nextlen = 0
 
@@ -1284,19 +1314,19 @@ def textwindow2s(*args):
         try:
             patt = re.compile(args[4])
         except:
-            raise functions.OperatorError('textwindow2s','Fourth argument must be string or compiled pattern')
-        for i in xrange(len(g)-middle+1):
-            im = i+middle
+            raise functions.OperatorError('textwindow2s', 'Fourth argument must be string or compiled pattern')
+        for i in xrange(len(g) - middle + 1):
+            im = i + middle
             mid = ' '.join(g[i:im])
             if patt.search(mid):
-                yield (' '.join(g[max(i-prev,0):i]),mid,' '.join(g[im:im+nextlen]))
+                yield (' '.join(g[max(i - prev, 0):i]), mid, ' '.join(g[im:im + nextlen]))
     else:
-        for i in xrange(len(g)-middle+1):
-            im = i+middle
-            yield (' '.join(g[max(i-prev,0):i]),' '.join(g[i:im]),' '.join(g[im:im+nextlen]))
-        
-textwindow2s.registered=True
+        for i in xrange(len(g) - middle + 1):
+            im = i + middle
+            yield (' '.join(g[max(i - prev, 0):i]), ' '.join(g[i:im]), ' '.join(g[im:im + nextlen]))
 
+
+textwindow2s.registered = True
 
 if not ('.' in __name__):
     """
@@ -1304,11 +1334,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

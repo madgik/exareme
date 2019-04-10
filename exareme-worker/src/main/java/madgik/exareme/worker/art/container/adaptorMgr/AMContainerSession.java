@@ -24,9 +24,9 @@ public class AMContainerSession implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private HashMap<AdaptorID, CombinedReadAdaptor> readAdaptorMap =
-        new HashMap<AdaptorID, CombinedReadAdaptor>();
+            new HashMap<AdaptorID, CombinedReadAdaptor>();
     private HashMap<AdaptorID, CombinedWriteAdaptor> writeAdaptorMap =
-        new HashMap<AdaptorID, CombinedWriteAdaptor>();
+            new HashMap<AdaptorID, CombinedWriteAdaptor>();
     private ContainerSessionID containerSessionID = null;
     private PlanSessionID sessionID = null;
 
@@ -64,8 +64,8 @@ public class AMContainerSession implements Serializable {
     public Pair<List<CombinedReadAdaptor>, List<CombinedWriteAdaptor>> destroySession() {
 
         Pair<List<CombinedReadAdaptor>, List<CombinedWriteAdaptor>> all =
-            new Pair<List<CombinedReadAdaptor>, List<CombinedWriteAdaptor>>(
-                new LinkedList<CombinedReadAdaptor>(), new LinkedList<CombinedWriteAdaptor>());
+                new Pair<List<CombinedReadAdaptor>, List<CombinedWriteAdaptor>>(
+                        new LinkedList<CombinedReadAdaptor>(), new LinkedList<CombinedWriteAdaptor>());
 
         for (CombinedReadAdaptor read : readAdaptorMap.values()) {
             all.a.add(read);

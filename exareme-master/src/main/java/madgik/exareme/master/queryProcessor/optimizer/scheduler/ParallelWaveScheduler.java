@@ -34,10 +34,11 @@ public class ParallelWaveScheduler implements MultiObjectiveQueryScheduler {
         bean.setThreadCpuTimeEnabled(true);
     }
 
-    @Override public SolutionSpace callOptimizer(final ConcreteQueryGraph queryGraph,
-        final AssignedOperatorFilter subgraphFilter, final ArrayList<ContainerResources> containers,
-        final ContainerFilter containerFilter, final RunTimeParameters runTimeParams,
-        final FinancialProperties finProps) throws RemoteException {
+    @Override
+    public SolutionSpace callOptimizer(final ConcreteQueryGraph queryGraph,
+                                       final AssignedOperatorFilter subgraphFilter, final ArrayList<ContainerResources> containers,
+                                       final ContainerFilter containerFilter, final RunTimeParameters runTimeParams,
+                                       final FinancialProperties finProps) throws RemoteException {
         long start = bean.getCurrentThreadCpuTime() / 1000000;
         SolutionSpace skyline = new SolutionSpace();
         GraphParallelOperatorWaves2 waves = new GraphParallelOperatorWaves2();
@@ -48,8 +49,8 @@ public class ParallelWaveScheduler implements MultiObjectiveQueryScheduler {
             waveLimits[w] = maxPar - 1;
         }
         SchedulingResult sch =
-            run(waveLimits, waves, queryGraph, subgraphFilter, containers, containerFilter,
-                runTimeParams, finProps);
+                run(waveLimits, waves, queryGraph, subgraphFilter, containers, containerFilter,
+                        runTimeParams, finProps);
         skyline.addResult(sch);
         if (skyline.getResults().size() > FIND_SKYLINE_EVERY) {
             List<SchedulingResult> sky = skyline.findSkyline();
@@ -63,13 +64,13 @@ public class ParallelWaveScheduler implements MultiObjectiveQueryScheduler {
     }
 
     private SchedulingResult run(int waveLimits[], GraphParallelOperatorWaves2 waves,
-        final ConcreteQueryGraph queryGraph, final AssignedOperatorFilter subgraphFilter,
-        final ArrayList<ContainerResources> containers, final ContainerFilter containerFilter,
-        final RunTimeParameters runTimeParams, final FinancialProperties finProps)
-        throws RemoteException {
+                                 final ConcreteQueryGraph queryGraph, final AssignedOperatorFilter subgraphFilter,
+                                 final ArrayList<ContainerResources> containers, final ContainerFilter containerFilter,
+                                 final RunTimeParameters runTimeParams, final FinancialProperties finProps)
+            throws RemoteException {
         ArrayList<SchedulingResult> graphSchedules = new ArrayList<>();
         ScheduleEstimator planAssigment =
-            new ScheduleEstimator(queryGraph, containers, runTimeParams);
+                new ScheduleEstimator(queryGraph, containers, runTimeParams);
         int[] currentContainer = new int[waveLimits.length];
         // Run all waves individually
         for (ConcreteOperator cOp : queryGraph.getOperators()) {
@@ -84,7 +85,7 @@ public class ParallelWaveScheduler implements MultiObjectiveQueryScheduler {
             planAssigment.addOperatorAssignment(cOp.opID, c, queryGraph);
         }
         SchedulingResult combinedResult =
-            new SchedulingResult(containers.size(), runTimeParams, finProps, null, planAssigment);
+                new SchedulingResult(containers.size(), runTimeParams, finProps, null, planAssigment);
         // Combine all into one graph
         return combinedResult;
     }
@@ -122,7 +123,7 @@ public class ParallelWaveScheduler implements MultiObjectiveQueryScheduler {
                 addOperator(op, wave);
                 for (Link fromLink : graph.getOutputLinks(op.opID)) {
                     if (readyOperators.containsKey(fromLink.to.opID) || opIdWaveMap
-                        .containsKey(fromLink.to.opID)) {
+                            .containsKey(fromLink.to.opID)) {
                         continue;
                     }
                     boolean allAssigned = true;

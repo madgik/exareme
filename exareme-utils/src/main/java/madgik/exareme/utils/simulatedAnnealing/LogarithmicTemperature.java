@@ -15,7 +15,8 @@ public class LogarithmicTemperature implements Temperature {
         this.d = d;
     }
 
-    @Override public double getTemperature(int step) {
+    @Override
+    public double getTemperature(int step) {
         return d / Math.log((double) step);
     }
 }

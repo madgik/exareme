@@ -18,24 +18,26 @@ import java.util.Arrays;
  * @author herald
  */
 public class RmiReadStreamAdaptor extends RmiRemoteObject<ReadRmiStreamAdaptorProxy>
-    implements ReadRmiStreamAdaptor {
+        implements ReadRmiStreamAdaptor {
 
     private StreamBuffer buffer = null;
     private EntityName regEntityName = null;
 
     public RmiReadStreamAdaptor(String name, StreamBuffer buffer, EntityName regEntityName)
-        throws RemoteException {
+            throws RemoteException {
         super(name);
         this.buffer = buffer;
         this.regEntityName = regEntityName;
     }
 
-    @Override public RmiReadStreamAdaptorProxy createProxy() throws RemoteException {
+    @Override
+    public RmiReadStreamAdaptorProxy createProxy() throws RemoteException {
         super.register();
         return new RmiReadStreamAdaptorProxy(super.getRegEntryName(), regEntityName);
     }
 
-    @Override public byte[] read(int length) throws RemoteException {
+    @Override
+    public byte[] read(int length) throws RemoteException {
         try {
             byte[] bytes = new byte[length];
             int len = buffer.read(bytes, 0, length);
@@ -55,7 +57,8 @@ public class RmiReadStreamAdaptor extends RmiRemoteObject<ReadRmiStreamAdaptorPr
         }
     }
 
-    @Override public void close() throws RemoteException {
+    @Override
+    public void close() throws RemoteException {
         try {
             buffer.closeReader();
             super.unregister();

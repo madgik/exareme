@@ -33,7 +33,7 @@ public class RmiContainerProxy extends RmiObjectProxy<Container> implements Cont
 
 
     public RmiContainerProxy(String ip, String regEntryName, EntityName regEntityName)
-        throws RemoteException {
+            throws RemoteException {
         super(regEntryName, regEntityName);
         this.ip = ip;
         if (ip == null) {
@@ -41,41 +41,48 @@ public class RmiContainerProxy extends RmiObjectProxy<Container> implements Cont
         }
         this.regEntryName = regEntryName;
         this.entityName = new EntityName(regEntryName, ip, regEntityName.getPort(),
-            regEntityName.getDataTransferPort());
+                regEntityName.getDataTransferPort());
         long lifeTime =
-            AdpProperties.getArtProps().getLong("art.container.rmi.RmiContainer.lifetime");
+                AdpProperties.getArtProps().getLong("art.container.rmi.RmiContainer.lifetime");
         this.registerPolicy = PolicyFactory.generateTimeExpirationDeletePolicy(lifeTime);
     }
 
-    @Override public EntityName getEntityName() {
+    @Override
+    public EntityName getEntityName() {
         return entityName;
     }
 
-    @Override public RegisterPolicy getRegisterPolicy() {
+    @Override
+    public RegisterPolicy getRegisterPolicy() {
         return registerPolicy;
     }
 
-    @Override public Type getType() {
+    @Override
+    public Type getType() {
         return Type.container;
     }
 
-    @Override public ContainerSession createSession(ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public ContainerSession createSession(ContainerSessionID containerSessionID,
+                                          PlanSessionID sessionID) throws RemoteException {
         return new ContainerSession(this, containerSessionID, sessionID);
     }
 
-    @Override public void destroySessions(PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void destroySessions(PlanSessionID sessionID) throws RemoteException {
         //log.debug("edooo");
 
         getRemoteObject().destroySessions(sessionID);
     }
 
-    @Override public void destroyAllSessions() throws RemoteException {
+    @Override
+    public void destroyAllSessions() throws RemoteException {
         getRemoteObject().destroyAllSessions();
     }
 
-    @Override public void destroyContainerSession(ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void destroyContainerSession(ContainerSessionID containerSessionID,
+                                        PlanSessionID sessionID) throws RemoteException {
         getRemoteObject().destroyContainerSession(containerSessionID, sessionID);
     }
 }

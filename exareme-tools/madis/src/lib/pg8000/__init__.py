@@ -1,3 +1,4 @@
+from ._version import get_versions
 from .core import (
     Warning, Bytea, DataError, DatabaseError, InterfaceError, ProgrammingError,
     Error, OperationalError, IntegrityError, InternalError, NotSupportedError,
@@ -5,7 +6,7 @@ from .core import (
     ArrayDimensionsNotConsistentError, ArrayContentNotSupportedError, utc,
     Connection, Cursor, Binary, Date, DateFromTicks, Time, TimeFromTicks,
     Timestamp, TimestampFromTicks, BINARY, Interval)
-from ._version import get_versions
+
 __version__ = get_versions()['version']
 del get_versions
 
@@ -102,6 +103,7 @@ def connect(
     return Connection(
         user, host, unix_sock, port, database, password, ssl, timeout)
 
+
 apilevel = "2.0"
 """The DBAPI level supported, currently "2.0".
 
@@ -148,7 +150,6 @@ can be changed to any of the following values:
 
 STRING = 1043
 """String type oid."""
-
 
 NUMBER = 1700
 """Numeric type oid"""

@@ -29,37 +29,44 @@ public class JsonParserTest {
     public JsonParserTest() {
     }
 
-    @BeforeClass public static void setUpClass() throws Exception {
+    @BeforeClass
+    public static void setUpClass() throws Exception {
         Logger.getRootLogger().setLevel(Level.OFF);
     }
 
-    @AfterClass public static void tearDownClass() {
+    @AfterClass
+    public static void tearDownClass() {
     }
 
-    @Before public void setUp() {
+    @Before
+    public void setUp() {
     }
 
-    @After public void tearDown() {
+    @After
+    public void tearDown() {
     }
 
-    @Test public void compareHelloWorld() throws Exception {
+    @Test
+    public void compareHelloWorld() throws Exception {
         System.out.println("HelloWorldDemo/////////////////////////////////////////");
         compareExpressions("demo/art/HelloWorldDemo");
     }
 
-    @Test public void compareQuery() throws Exception {
+    @Test
+    public void compareQuery() throws Exception {
         System.out.println("Query/////////////////////////////////////////");
         compareExpressions("demo/art/Query");
     }
 
-    @Test public void compareQuery2() throws Exception {
+    @Test
+    public void compareQuery2() throws Exception {
         System.out.println("Query2/////////////////////////////////////////");
         compareExpressions("demo/art/Query2");
     }
 
     public void compareExpressions(String filename) throws Exception {
 
-    /*read and proccess .ep file*/
+        /*read and proccess .ep file*/
   /*  String planEP = FileUtil.readFile(new File(filename + ".ep"));
     System.out.println(planEP);
 
@@ -67,9 +74,9 @@ public class JsonParserTest {
     ExecutionPlanQueryParser parser = new ExecutionPlanQueryParser(stream);
     PlanExpression expressionEP = parser.parse();*/
 
-    /*read and proccess .json file*/
+        /*read and proccess .json file*/
         String planJson = FileUtil.readFile(new File(JsonParserTest.class.getClassLoader()
-                        .getResource("madgik/exareme/worker/art/HelloWorldDemo.json").getFile()));
+                .getResource("madgik/exareme/worker/art/HelloWorldDemo.json").getFile()));
         //String planJson = FileUtil.readFile(new File(filename + ".json"));
         System.out.println(planJson);
 
@@ -88,7 +95,7 @@ public class JsonParserTest {
 
         printExpression(expressionJson);
 
-    /*compare the two expressions*/
+        /*compare the two expressions*/
   /*  assertEquals(expressionEP.bufferConnectList.size(), expressionJson.bufferConnectList.size());
     assertEquals(expressionEP.bufferList.size(), expressionJson.bufferList.size());
     assertEquals(expressionEP.containersList.size(), expressionJson.containersList.size());

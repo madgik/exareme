@@ -237,7 +237,7 @@ jsMath.Package(jsMath.Parser, {
     Star: function (name) {
         this.NoLabel();
         var cmd = this.environments[name.substr(0, name.length - 1)];
-        if (typeof(cmd) === 'string') {
+        if (typeof (cmd) === 'string') {
             cmd = [cmd]
         }
         this[cmd[0]](name, cmd.slice(1));

@@ -17,8 +17,8 @@ import java.rmi.RemoteException;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class RmiArmComputeProxy extends RmiObjectProxy<ArmCompute> implements ArmComputeProxy {
@@ -34,23 +34,27 @@ public class RmiArmComputeProxy extends RmiObjectProxy<ArmCompute> implements Ar
         this.entityName = new EntityName(regEntryName, null);
 
         long lifeTime =
-            AdpProperties.getArmProps().getLong("arm.compute.rmi.RmiArmCompute.lifetime");
+                AdpProperties.getArmProps().getLong("arm.compute.rmi.RmiArmCompute.lifetime");
         this.registerPolicy = PolicyFactory.generateTimeExpirationDeletePolicy(lifeTime);
     }
 
-    @Override public EntityName getEntityName() {
+    @Override
+    public EntityName getEntityName() {
         return entityName;
     }
 
-    @Override public RegisterPolicy getRegisterPolicy() {
+    @Override
+    public RegisterPolicy getRegisterPolicy() {
         return registerPolicy;
     }
 
-    @Override public Type getType() {
+    @Override
+    public Type getType() {
         return Type.computeMediator;
     }
 
-    @Override public ArmComputeSession createSession() throws RemoteException {
+    @Override
+    public ArmComputeSession createSession() throws RemoteException {
         ArmComputeSessionID sessionID = this.getRemoteObject().createNewSession();
         return new ArmComputeSession(sessionID, this.getRemoteObject());
     }

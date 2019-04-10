@@ -59,7 +59,8 @@ public class Table implements Serializable {
         this.level = level;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return name + (temp ? " temp" : "");
     }
 }

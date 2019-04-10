@@ -4,13 +4,11 @@
  */
 package madgik.exareme.master.queryProcessor.decomposer.query;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author dimitris
@@ -23,14 +21,16 @@ public class CastOperand implements Operand {
         return castOp;
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int hash = 3;
         hash = 97 * hash + (this.castOp != null ? this.castOp.hashCode() : 0);
         hash = 97 * hash + (this.castType != null ? this.castType.hashCode() : 0);
         return hash;
     }
 
-    @Override public boolean equals(Object obj) {
+    @Override
+    public boolean equals(Object obj) {
         if (obj == null) {
             return false;
         }
@@ -38,10 +38,10 @@ public class CastOperand implements Operand {
             return false;
         }
         CastOperand other = (CastOperand) obj;
-        if(other.getCastOp().equals(this.castOp)&&other.castType.equalsIgnoreCase(this.castType))
-        	return true;
+        if (other.getCastOp().equals(this.castOp) && other.castType.equalsIgnoreCase(this.castType))
+            return true;
         else
-        	return false;
+            return false;
     }
 
     private String castType;
@@ -59,15 +59,18 @@ public class CastOperand implements Operand {
         this.castType = t;
     }
 
-    @Override public List<Column> getAllColumnRefs() {
+    @Override
+    public List<Column> getAllColumnRefs() {
         return castOp.getAllColumnRefs();
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "cast(" + castOp.toString() + " as " + castType + ")";
     }
 
-    @Override public void changeColumn(Column oldCol, Column newCol) {
+    @Override
+    public void changeColumn(Column oldCol, Column newCol) {
 
         if (castOp.getClass().equals(Column.class)) {
             if (((Column) castOp).equals(oldCol)) {
@@ -78,7 +81,8 @@ public class CastOperand implements Operand {
         }
     }
 
-    @Override public CastOperand clone() throws CloneNotSupportedException {
+    @Override
+    public CastOperand clone() throws CloneNotSupportedException {
         CastOperand cloned = (CastOperand) super.clone();
         cloned.setCastOp(this.castOp.clone());
         return cloned;
@@ -88,11 +92,11 @@ public class CastOperand implements Operand {
         this.castOp = op;
     }
 
-	@Override
-	public HashCode getHashID() {
-		List<HashCode> codes=new ArrayList<HashCode>();
-		codes.add(this.castOp.getHashID());
-		codes.add(Hashing.sha1().hashBytes(castType.getBytes()));
-		return Hashing.combineOrdered(codes);
-	}
+    @Override
+    public HashCode getHashID() {
+        List<HashCode> codes = new ArrayList<HashCode>();
+        codes.add(this.castOp.getHashID());
+        codes.add(Hashing.sha1().hashBytes(castType.getBytes()));
+        return Hashing.combineOrdered(codes);
+    }
 }

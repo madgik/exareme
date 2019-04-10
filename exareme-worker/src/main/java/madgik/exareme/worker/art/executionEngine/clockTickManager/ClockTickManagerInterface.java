@@ -13,7 +13,7 @@ import java.rmi.RemoteException;
 public interface ClockTickManagerInterface {
 
     void containerWarningClockTick(ContainerID id, long timeToTick_ms, long quantumCount)
-        throws RemoteException;
+            throws RemoteException;
 
     void containerClockTick(ContainerID id, long quantumCount) throws RemoteException;
 

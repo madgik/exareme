@@ -39,7 +39,7 @@ public class RunQueryRemotely {
 
         ArtManager manager = ArtManagerFactory.createRmiArtManager();
         manager.getRegistryManager()
-            .connectToRegistry(new EntityName("ArtRegistry", args[0], Integer.parseInt(args[1])));
+                .connectToRegistry(new EntityName("ArtRegistry", args[0], Integer.parseInt(args[1])));
         manager.getExecutionEngineManager().connectToExecutionEngine();
 
         final ExecutionPlanParser parser = new ExecutionPlanParser();
@@ -47,12 +47,12 @@ public class RunQueryRemotely {
 
         ArrayList<String> containers = new ArrayList<String>();
         for (ContainerProxy containerProxy : ArtRegistryLocator.getArtRegistryProxy()
-            .getContainers()) {
+                .getContainers()) {
             log.debug(containerProxy.getEntityName().getName());
             containers.add(containerProxy.getEntityName().getName());
         }
 
-    /* Read query */
+        /* Read query */
         String planString = new String();
 
         BufferedReader input = new BufferedReader(new FileReader(new File(args[2])));
@@ -71,33 +71,34 @@ public class RunQueryRemotely {
 
         log.debug(planString);
 
-    /* Build execution plan */
+        /* Build execution plan */
         final ExecutionPlan plan = parser.parse(planString);
 
         new Thread() {
 
-            @Override public void run() {
+            @Override
+            public void run() {
                 try {
 
                     long start = System.currentTimeMillis();
 
-          /* Create session */
+                    /* Create session */
                     ExecutionEngineSession session = engine.createSession();
                     ExecutionEngineSessionPlan sessionPlan = session.startSession();
                     sessionPlan.submitPlan(plan);
                     PlanSessionStatusManagerProxy managerProxy =
-                        sessionPlan.getPlanSessionStatusManagerProxy();
+                            sessionPlan.getPlanSessionStatusManagerProxy();
 
                     if (managerProxy.hasError()) {
                         System.err.println("Finished - Errors");
                         sessionPlan.getPlanSessionStatusManagerProxy().
-                            getErrorList().get(0).printStackTrace();
+                                getErrorList().get(0).printStackTrace();
                         sessionPlan.close();
                         return;
                     }
 
                     while (sessionPlan.getPlanSessionStatusManagerProxy().hasFinished() == false
-                        || sessionPlan.getPlanSessionStatusManagerProxy().hasError()) {
+                            || sessionPlan.getPlanSessionStatusManagerProxy().hasError()) {
                         Thread.sleep(100);
                     }
 

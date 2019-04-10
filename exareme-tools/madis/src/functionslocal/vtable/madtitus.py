@@ -48,10 +48,12 @@ Examples::
 
 """
 
-registered=True
+registered = True
+import base64
 import functions
 from functions.vtable import vtbase
-import base64
+
+
 def decode_base64(data):
     """Decode base64, padding being optional.
 
@@ -61,8 +63,9 @@ def decode_base64(data):
     """
     missing_padding = 4 - len(data) % 4
     if missing_padding:
-        data += b'='* missing_padding
+        data += b'=' * missing_padding
     return base64.decodestring(data)
+
 
 class madtitus(vtbase.VT):
 
@@ -110,8 +113,10 @@ class madtitus(vtbase.VT):
         except Exception, e:
             raise functions.OperatorError(__name__.rsplit('.')[-1], e)
 
+
 def Source():
     return vtbase.VTGenerator(madtitus)
+
 
 if not ('.' in __name__):
     """
@@ -121,9 +126,11 @@ if not ('.' in __name__):
     import sys
     import functions.vtable.setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

@@ -1,6 +1,0 @@
-datasets/
-data/
-doc/html/
-raw-admin/conf/.htpasswd
-raw-admin/logs/*.log
-docker-compose-node*.yml

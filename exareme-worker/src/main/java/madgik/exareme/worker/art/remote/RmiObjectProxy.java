@@ -30,12 +30,13 @@ public abstract class RmiObjectProxy<T> implements ObjectProxy<T> {
         this.regEntityName = regEntityName;
     }
 
-    @Override public synchronized T connect() throws RemoteException {
+    @Override
+    public synchronized T connect() throws RemoteException {
         int tries = 0;
         while (true) {
             try {
                 log.trace("Connecting to (" + tries + ") " +
-                    regEntityName.getIP() + ":" + regEntityName.getPort() + " ...");
+                        regEntityName.getIP() + ":" + regEntityName.getPort() + " ...");
                 tries++;
                 Registry registry = RmiRegistryCache.getRegistry(regEntityName);
                 remoteObject = (T) registry.lookup(regEntryName);
@@ -43,7 +44,7 @@ public abstract class RmiObjectProxy<T> implements ObjectProxy<T> {
                 return remoteObject;
             } catch (Exception e) {
                 log.error("Cannot connect to " +
-                    regEntityName.getIP() + ":" + regEntityName.getPort() + " ...", e);
+                        regEntityName.getIP() + ":" + regEntityName.getPort() + " ...", e);
                 if (getRetryPolicy().getRetryTimesPolicy().retry(e, tries) == false) {
                     break;
                 }
@@ -56,17 +57,19 @@ public abstract class RmiObjectProxy<T> implements ObjectProxy<T> {
             }
         }
         throw new RemoteException(
-            "Cannot connect to " + regEntityName.getIP() + ":" + regEntityName.getPort());
+                "Cannot connect to " + regEntityName.getIP() + ":" + regEntityName.getPort());
     }
 
-    @Override public T getRemoteObject() throws RemoteException {
+    @Override
+    public T getRemoteObject() throws RemoteException {
         if (isConnected == false) {
             connect();
         }
         return remoteObject;
     }
 
-    @Override public RetryPolicy getRetryPolicy() throws RemoteException {
+    @Override
+    public RetryPolicy getRetryPolicy() throws RemoteException {
         return RetryPolicyFactory.defaultRetryPolicy();
     }
 }

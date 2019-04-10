@@ -24,12 +24,13 @@ public class AdpDBInMemoryQueryCache implements AdpDBQueryCache {
 
     @Override
     public void addPlan(QueryScript script, Registry registry, AdpDBQueryExecutionPlan plan)
-        throws RemoteException {
+            throws RemoteException {
         //    cache.put(script.toString(), SerializationUtil.deepCopy(plan));
     }
 
-    @Override public AdpDBQueryExecutionPlan getPlan(QueryScript script, Registry registry)
-        throws RemoteException {
+    @Override
+    public AdpDBQueryExecutionPlan getPlan(QueryScript script, Registry registry)
+            throws RemoteException {
         if (true) {
             return null;
         }

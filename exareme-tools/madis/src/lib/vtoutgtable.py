@@ -1,87 +1,87 @@
-from gtable import gtablefileFull , gjsonfileFull ,gjsonFull
-from iterutils import peekable
-from sqlitetypes import typestoSqliteTypes
 import types
 
+from gtable import gtablefileFull, gjsonfileFull
+from iterutils import peekable
+from sqlitetypes import typestoSqliteTypes
 
-def vtoutpugtformat(out,diter,simplejson=True): #### TODO Work on types patttern
+
+def vtoutpugtformat(out, diter, simplejson=True):  #### TODO Work on types patttern
     """
     Reads diter stream of tuples(row,types) and formats row values to
     the google json format or if simplejson is False to the google like format.
     Writes formated tables in file like stream out the
     """
-    def unfold(it):        
-        for row,h in it:
+
+    def unfold(it):
+        for row, h in it:
             yield row
-        return    
-    d=peekable(diter)
-    samplevals, sampleheads =d.peek()
-    names=[]
-    gtypes=[]
-    
-    mustguess=False
+        return
+
+    d = peekable(diter)
+    samplevals, sampleheads = d.peek()
+    names = []
+    gtypes = []
+
+    mustguess = False
     for val, headinfo in zip(samplevals, sampleheads):
         names.append(headinfo[0].title())
-        coltype=typestoSqliteTypes(headinfo[1])
-        
-        if coltype=="INTEGER" or coltype=="REAL" or coltype=="NUMERIC":
+        coltype = typestoSqliteTypes(headinfo[1])
+
+        if coltype == "INTEGER" or coltype == "REAL" or coltype == "NUMERIC":
             gtypes.append('number')
-        elif coltype=="TEXT":
+        elif coltype == "TEXT":
             gtypes.append('string')
         else:
-            mustguess=True
+            mustguess = True
 
             gtypes.append("GUESS")
     if mustguess:
-        samples=d.maxpeek(30)
-        samplestats=dict()
+        samples = d.maxpeek(30)
+        samplestats = dict()
         for i in xrange(len(gtypes)):
-            if gtypes[i]=="GUESS":
-                samplestats[i]={'string':False,"number":False}
+            if gtypes[i] == "GUESS":
+                samplestats[i] = {'string': False, "number": False}
         for row in unfold(samples):
-            allknown=True
+            allknown = True
             for uto in samplestats:
                 if not samplestats[uto]['string']:
-                    allknown=False
-                    if row[uto]!="":
-                        samplestats[uto][typeguessing(row[uto])]=True
+                    allknown = False
+                    if row[uto] != "":
+                        samplestats[uto][typeguessing(row[uto])] = True
             if allknown:
                 break
         for uto in samplestats:
-            if samplestats[uto]['string']:# or not samplestats[uto]['number']:
-                gtypes[uto]='string'
+            if samplestats[uto]['string']:  # or not samplestats[uto]['number']:
+                gtypes[uto] = 'string'
             else:
-                gtypes[uto]='number'
-
+                gtypes[uto] = 'number'
 
     if simplejson:
-        #out.write(gjsonFull(unfold(d),names,gtypes).encode('utf-8'))
-        gjsonfileFull(unfold(d),out,names,gtypes)
+        # out.write(gjsonFull(unfold(d),names,gtypes).encode('utf-8'))
+        gjsonfileFull(unfold(d), out, names, gtypes)
     else:
-        gtablefileFull(unfold(d),out,names,gtypes)
-        #out.write(gtableFull(unfold(d),names,gtypes).encode('utf-8'))
-    
+        gtablefileFull(unfold(d), out, names, gtypes)
+        # out.write(gtableFull(unfold(d),names,gtypes).encode('utf-8'))
 
 
-def typeguessing(el): ####Oi upoloipoi typoi
-#    import types
-#    if type(el) not in types.StringTypes:
-#        print "Element is : --%s-- , Type is %s Type of element not string!!!!!!!!!!!!!" %(el,type(el))
-#        raise Exception
+def typeguessing(el):  ####Oi upoloipoi typoi
+    #    import types
+    #    if type(el) not in types.StringTypes:
+    #        print "Element is : --%s-- , Type is %s Type of element not string!!!!!!!!!!!!!" %(el,type(el))
+    #        raise Exception
     if type(el) not in types.StringTypes:
-        el=str(el)
+        el = str(el)
     if el.startswith("0") and not el.startswith("0."):
         return 'string'
     try:
-        int(el)            
+        int(el)
         return 'number'
     except ValueError:
         try:
-            float(el)            
+            float(el)
             return 'number'
         except ValueError:
             return 'string'
-
 
 
 """

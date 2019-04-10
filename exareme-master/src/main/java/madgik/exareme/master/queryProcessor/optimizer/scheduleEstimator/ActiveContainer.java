@@ -34,13 +34,15 @@ public class ActiveContainer implements TransactionalObject {
         timeUsed_SEC.set(startQuantum, endQuantum);
     }
 
-    @Override public void commit() {
+    @Override
+    public void commit() {
         lastOpEnd_SEC.commit();
         timeUsed_SEC.commit();
         timeUsedNoFrag_SEC.commit();
     }
 
-    @Override public void rollback() {
+    @Override
+    public void rollback() {
         lastOpEnd_SEC.rollback();
         timeUsed_SEC.rollback();
         timeUsedNoFrag_SEC.rollback();

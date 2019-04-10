@@ -27,7 +27,8 @@ abstract public class AbstractEdge<V> implements Edge<V> {
      * An edge is equal with another if the source vertices are the same and the
      * target vertices are the same.
      */
-    @Override public boolean equals(Object e) {
+    @Override
+    public boolean equals(Object e) {
         if (!(e instanceof Edge)) {
             return false;
         }
@@ -35,10 +36,11 @@ abstract public class AbstractEdge<V> implements Edge<V> {
         Edge edge = (Edge) e;
 
         return this.source.equals(edge.getSourceVertex()) && this.target
-            .equals(edge.getTargetVertex());
+                .equals(edge.getTargetVertex());
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int hash = 5;
         hash = 79 * hash + (this.source != null ? this.source.hashCode() : 0);
         hash = 79 * hash + (this.target != null ? this.target.hashCode() : 0);

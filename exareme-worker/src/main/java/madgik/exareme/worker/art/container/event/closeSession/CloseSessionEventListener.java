@@ -16,8 +16,9 @@ public class CloseSessionEventListener implements EventListener<CloseSessionEven
     public static CloseSessionEventListener instance = new CloseSessionEventListener();
     private static Logger log = Logger.getLogger(CloseSessionEventListener.class);
 
-    @Override public void processed(CloseSessionEvent event, RemoteException exception,
-        EventProcessor processor) {
+    @Override
+    public void processed(CloseSessionEvent event, RemoteException exception,
+                          EventProcessor processor) {
         if (exception != null) {
             log.error("Cannot close session", exception);
         }

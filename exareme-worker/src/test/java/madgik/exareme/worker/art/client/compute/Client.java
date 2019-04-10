@@ -31,7 +31,7 @@ public class Client {
 
 
         ClusterArmComputeInterface manager =
-            new ClusterArmComputeInterface(number_of_usages, containers);
+                new ClusterArmComputeInterface(number_of_usages, containers);
 
         for (i = 0; i < number_of_threads; i++) {
             Thread threads = new Thread(new ClientJob(manager, i, number_of_threads, entities));

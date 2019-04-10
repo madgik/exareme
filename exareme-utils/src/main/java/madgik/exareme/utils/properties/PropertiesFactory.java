@@ -30,7 +30,7 @@ public class PropertiesFactory {
                 properties.setProperty(key, rb.getObject(key).toString());
             }
             String sitePath =
-                System.getenv("EXAREME_HOME") + "/etc/exareme/" + propertiesName + ".properties";
+                    System.getenv("EXAREME_HOME") + "/etc/exareme/" + propertiesName + ".properties";
             File sitePropFile = new File(sitePath);
 
             if (sitePropFile.exists()) {
@@ -65,7 +65,7 @@ public class PropertiesFactory {
 
 
             String sitePath =
-                System.getenv("EXAREME_HOME") + "/etc/exareme/" + propertiesName + ".properties";
+                    System.getenv("EXAREME_HOME") + "/etc/exareme/" + propertiesName + ".properties";
             File sitePropFile = new File(sitePath);
 
             if (sitePropFile.exists()) {

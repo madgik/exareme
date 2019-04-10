@@ -22,8 +22,8 @@ import java.util.Map;
  * An implementation of the status manager that lies in memory.
  *
  * @author Herald Kllapi <br>
- *         herald@di.uoa.gr /
- *         University of Athens
+ * herald@di.uoa.gr /
+ * University of Athens
  * @since 1.0
  */
 public class AdpDBStatusManagerInMemory implements AdpDBStatusManager {
@@ -35,7 +35,7 @@ public class AdpDBStatusManagerInMemory implements AdpDBStatusManager {
 
     @Override
     public AdpDBStatus createNewStatus(AdpDBQueryID queryID, ExecutionEngineSessionPlan sessionPlan,
-        Map<String, String> categoryMessageMap) throws RemoteException {
+                                       Map<String, String> categoryMessageMap) throws RemoteException {
         AdpDBStatus stat = null;
         synchronized (sessions) {
             stat = new AdpDBStatusImpl(sessions.size(), queryID);
@@ -44,8 +44,9 @@ public class AdpDBStatusManagerInMemory implements AdpDBStatusManager {
         return stat;
     }
 
-    @Override public AdpDBStatus createNewStatus(ExecutionEngineSessionPlan sessionPlan,
-        ConcreteQueryGraph graph, Map<String, String> categoryMessageMap) throws RemoteException {
+    @Override
+    public AdpDBStatus createNewStatus(ExecutionEngineSessionPlan sessionPlan,
+                                       ConcreteQueryGraph graph, Map<String, String> categoryMessageMap) throws RemoteException {
         AdpDBStatus stat = null;
         synchronized (sessions) {
             stat = new AdpDBStatusImpl(sessions.size());
@@ -54,7 +55,8 @@ public class AdpDBStatusManagerInMemory implements AdpDBStatusManager {
         return stat;
     }
 
-    @Override public boolean hasFinished(int statusId) {
+    @Override
+    public boolean hasFinished(int statusId) {
         AdpDBJobSession session;
         synchronized (sessions) {
             session = sessions.get(statusId);
@@ -65,7 +67,8 @@ public class AdpDBStatusManagerInMemory implements AdpDBStatusManager {
         }
     }
 
-    @Override public void setFinished(int statusId) {
+    @Override
+    public void setFinished(int statusId) {
         AdpDBJobSession session;
         synchronized (sessions) {
             session = sessions.get(statusId);
@@ -76,7 +79,8 @@ public class AdpDBStatusManagerInMemory implements AdpDBStatusManager {
         }
     }
 
-    @Override public boolean hasError(int statusId) {
+    @Override
+    public boolean hasError(int statusId) {
         AdpDBJobSession session;
         synchronized (sessions) {
             session = sessions.get(statusId);
@@ -86,7 +90,8 @@ public class AdpDBStatusManagerInMemory implements AdpDBStatusManager {
         }
     }
 
-    @Override public void setError(int statusId, Exception exception) {
+    @Override
+    public void setError(int statusId, Exception exception) {
         AdpDBJobSession session;
         synchronized (sessions) {
             session = sessions.get(statusId);
@@ -96,7 +101,8 @@ public class AdpDBStatusManagerInMemory implements AdpDBStatusManager {
         }
     }
 
-    @Override public Exception getLastException(int statusId) {
+    @Override
+    public Exception getLastException(int statusId) {
         AdpDBJobSession session;
         synchronized (sessions) {
             session = sessions.get(statusId);
@@ -105,7 +111,8 @@ public class AdpDBStatusManagerInMemory implements AdpDBStatusManager {
         return session.getException();
     }
 
-    @Override public List<Exception> getExceptions(int k, int statusId) {
+    @Override
+    public List<Exception> getExceptions(int k, int statusId) {
         AdpDBJobSession session;
         synchronized (sessions) {
             session = sessions.get(statusId);
@@ -114,7 +121,8 @@ public class AdpDBStatusManagerInMemory implements AdpDBStatusManager {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public void addException(Exception exception, int statusId) {
+    @Override
+    public void addException(Exception exception, int statusId) {
         AdpDBJobSession session;
         synchronized (sessions) {
             session = sessions.get(statusId);
@@ -123,7 +131,8 @@ public class AdpDBStatusManagerInMemory implements AdpDBStatusManager {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public AdpDBStatistics getStatistics(int statusId) {
+    @Override
+    public AdpDBStatistics getStatistics(int statusId) {
         AdpDBJobSession session;
         synchronized (sessions) {
             session = sessions.get(statusId);
@@ -134,7 +143,8 @@ public class AdpDBStatusManagerInMemory implements AdpDBStatusManager {
         }
     }
 
-    @Override public void updateWith(AdpDBStatistics delta, int statusId) {
+    @Override
+    public void updateWith(AdpDBStatistics delta, int statusId) {
         AdpDBJobSession session;
         synchronized (sessions) {
             session = sessions.get(statusId);
@@ -143,7 +153,8 @@ public class AdpDBStatusManagerInMemory implements AdpDBStatusManager {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public void stopExecution(int statusId) throws RemoteException {
+    @Override
+    public void stopExecution(int statusId) throws RemoteException {
         AdpDBJobSession session;
         synchronized (sessions) {
             session = sessions.get(statusId);
@@ -154,8 +165,9 @@ public class AdpDBStatusManagerInMemory implements AdpDBStatusManager {
         }
     }
 
-    @Override public void registerListener(AdpDBQueryListener listener, int statusId)
-        throws RemoteException {
+    @Override
+    public void registerListener(AdpDBQueryListener listener, int statusId)
+            throws RemoteException {
         AdpDBJobSession session;
         synchronized (sessions) {
             session = sessions.get(statusId);

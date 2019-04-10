@@ -82,9 +82,9 @@
                         non-Unicode string. It returns a dictionary containing the auto-detected
                         character encoding and a confidence level from <tt class="constant">0</tt>
                         to <tt class="constant">1</tt>.</p>
-<pre class="screen"><tt class="prompt">&gt;&gt;&gt; </tt><span class="userinput"><font color='navy'><b>import</b></font> urllib</span>
+                    <pre class="screen"><tt class="prompt">&gt;&gt;&gt; </tt><span class="userinput"><font color='navy'><b>import</b></font> urllib</span>
 <tt class="prompt">&gt;&gt;&gt; </tt><span class="userinput">rawdata = urllib.urlopen(<font
-            color='olive'>'http://yahoo.co.jp/'</font>).read()</span>
+                                color='olive'>'http://yahoo.co.jp/'</font>).read()</span>
 <tt class="prompt">&gt;&gt;&gt; </tt><span class="userinput"><font color='navy'><b>import</b></font> chardet</span>
 <tt class="prompt">&gt;&gt;&gt; </tt><span class="userinput">chardet.detect(rawdata)</span>
 <span class="computeroutput">{'encoding': 'EUC-JP', 'confidence': 0.99}</span></pre>
@@ -130,9 +130,9 @@
                                                          height="9"></a>
 
                     <h3 class="title">Example: Detecting encoding incrementally</h3>
-<pre class="programlisting python"><font color='navy'><b>import</b></font> urllib
+                    <pre class="programlisting python"><font color='navy'><b>import</b></font> urllib
 <font color='navy'><b>from</b></font> chardet.universaldetector <font
-            color='navy'><b>import</b></font> UniversalDetector
+                                color='navy'><b>import</b></font> UniversalDetector
 
 usock = urllib.urlopen(<font color='olive'>'http://yahoo.co.jp/'</font>)
 detector = UniversalDetector()
@@ -142,7 +142,8 @@ detector = UniversalDetector()
 detector.close()
 usock.close()
 <font color='navy'><b>print</b></font> detector.result</pre>
-                    <pre class="screen"><span class="computeroutput">{'encoding': 'EUC-JP', 'confidence': 0.99}</span></pre>
+                    <pre class="screen"><span
+                            class="computeroutput">{'encoding': 'EUC-JP', 'confidence': 0.99}</span></pre>
                 </div>
                 <p>If you want to detect the encoding of multiple texts (such as separate files),
                     you can re-use a single <tt class="classname">UniversalDetector</tt> object.
@@ -159,17 +160,17 @@ usock.close()
                             width="8" height="9"></a>
 
                     <h3 class="title">Example: Detecting encodings of multiple files</h3>
-<pre class="programlisting python"><font color='navy'><b>import</b></font> glob
+                    <pre class="programlisting python"><font color='navy'><b>import</b></font> glob
 <font color='navy'><b>from</b></font> charset.universaldetector <font
-            color='navy'><b>import</b></font> UniversalDetector
+                                color='navy'><b>import</b></font> UniversalDetector
 
 detector = UniversalDetector()
 <font color='navy'><b>for</b></font> filename <font color='navy'><b>in</b></font> glob.glob(<font
-            color='olive'>'*.xml'</font>):
+                                color='olive'>'*.xml'</font>):
     <font color='navy'><b>print</b></font> filename.ljust(60),
     detector.reset()
     <font color='navy'><b>for</b></font> line <font
-            color='navy'><b>in</b></font> file(filename, <font color='olive'>'rb'</font>):
+                                color='navy'><b>in</b></font> file(filename, <font color='olive'>'rb'</font>):
         detector.feed(line)
         <font color='navy'><b>if</b></font> detector.done: <font color='navy'><b>break</b></font>
     detector.close()

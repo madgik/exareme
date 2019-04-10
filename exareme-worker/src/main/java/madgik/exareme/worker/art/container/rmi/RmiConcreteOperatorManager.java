@@ -34,8 +34,8 @@ public class RmiConcreteOperatorManager implements ConcreteOperatorManager {
     private DataTransferMgrInterface dataTransferManagerDTP = null;
 
     public RmiConcreteOperatorManager(
-        ConcreteOperatorManagerInterface concreteOperatorManagerInterface, EntityName regEntityName,
-        DataTransferMgrInterface dataTransferManagerDTP) throws RemoteException {
+            ConcreteOperatorManagerInterface concreteOperatorManagerInterface, EntityName regEntityName,
+            DataTransferMgrInterface dataTransferManagerDTP) throws RemoteException {
         this.concreteOperatorManagerInterface = concreteOperatorManagerInterface;
         this.regEntityName = regEntityName;
         this.dataTransferManagerDTP = dataTransferManagerDTP;
@@ -43,19 +43,20 @@ public class RmiConcreteOperatorManager implements ConcreteOperatorManager {
         //JC na parei to container
     }
 
-    @Override public void stopManager() throws RemoteException {
+    @Override
+    public void stopManager() throws RemoteException {
     }
 
     @Override
     public ContainerJobResult prepareJob(ContainerJob job, ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException {
+                                         PlanSessionID sessionID) throws RemoteException {
         switch (job.getType()) {
             //      case dataTransferRegister:{
             //        return create((CreateOperatorJob) job, containerSessionID, sessionID);
             //      }
             case createOperator: {
                 CreateOperatorJobResult cpjr =
-                    create((CreateOperatorJob) job, containerSessionID, sessionID);
+                        create((CreateOperatorJob) job, containerSessionID, sessionID);
                 if (((CreateOperatorJob) job).type == OperatorType.dataTransfer) {
                     //           //concreteOperatorManagerInterface.
                     //             dataTransferManagerDTP.AddTodataTransferSuccess.put(
@@ -78,20 +79,21 @@ public class RmiConcreteOperatorManager implements ConcreteOperatorManager {
             }
             case stopOperator: {
                 concreteOperatorManagerInterface
-                    .stop(((StopOperatorJob) job).opID, containerSessionID, sessionID);
+                        .stop(((StopOperatorJob) job).opID, containerSessionID, sessionID);
                 return new StopOperatorJobResult();
             }
             case destroyOperator: {
                 concreteOperatorManagerInterface
-                    .destroyInstance(((DestroyOperatorJob) job).opID, containerSessionID,
-                        sessionID);
+                        .destroyInstance(((DestroyOperatorJob) job).opID, containerSessionID,
+                                sessionID);
                 return new DestroyOperatorJobResult();
             }
         }
         throw new RemoteException("Job type not supported: " + job.getType());
     }
 
-    @Override public boolean hasExec(ContainerJob job) {
+    @Override
+    public boolean hasExec(ContainerJob job) {
         switch (job.getType()) {
             //case dataTransferRegister:
             case destroyOperator:
@@ -106,16 +108,17 @@ public class RmiConcreteOperatorManager implements ConcreteOperatorManager {
         return false;
     }
 
-    @Override public void execJob(ContainerJob job, ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void execJob(ContainerJob job, ContainerSessionID containerSessionID,
+                        PlanSessionID sessionID) throws RemoteException {
         switch (job.getType()) {
             case createOperator: {
                 return;
             }
             case startOperator: {
                 concreteOperatorManagerInterface
-                    .start(((StartOperatorJob) job).opID, ((StartOperatorJob) job).contSessionID,
-                        sessionID);
+                        .start(((StartOperatorJob) job).opID, ((StartOperatorJob) job).contSessionID,
+                                sessionID);
                 return;
             }
             case stopOperator: {
@@ -129,35 +132,40 @@ public class RmiConcreteOperatorManager implements ConcreteOperatorManager {
     }
 
     private CreateOperatorJobResult create(CreateOperatorJob job,
-        ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
+                                           ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
 
         return new CreateOperatorJobResult(concreteOperatorManagerInterface
-            .instantiate(job.operatorName, job.category, job.type, job.operator, job.parameters,
-                job.linkMapParameters, job.queryString, job.sessionReportID, containerSessionID,
-                sessionID));
+                .instantiate(job.operatorName, job.category, job.type, job.operator, job.parameters,
+                        job.linkMapParameters, job.queryString, job.sessionReportID, containerSessionID,
+                        sessionID));
     }
 
-    @Override public ConcreteOperatorManagerStatus getStatus() throws RemoteException {
+    @Override
+    public ConcreteOperatorManagerStatus getStatus() throws RemoteException {
         return concreteOperatorManagerInterface.getStatus();
     }
 
-    @Override public void destroyContainerSession(ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void destroyContainerSession(ContainerSessionID containerSessionID,
+                                        PlanSessionID sessionID) throws RemoteException {
         concreteOperatorManagerInterface.destroyContainerSession(containerSessionID, sessionID);
     }
 
-    @Override public void destroySessions(PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void destroySessions(PlanSessionID sessionID) throws RemoteException {
         concreteOperatorManagerInterface.destroySessions(sessionID);
     }
 
-    @Override public void destroyAllSessions() throws RemoteException {
+    @Override
+    public void destroyAllSessions() throws RemoteException {
         concreteOperatorManagerInterface.destroyAllSessions();
     }
 
-    @Override public ConcreteOperatorStatistics getOperatorStatistics(ConcreteOperatorID opID,
-        ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public ConcreteOperatorStatistics getOperatorStatistics(ConcreteOperatorID opID,
+                                                            ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
         return concreteOperatorManagerInterface
-            .getOperatorStatistics(opID, containerSessionID, sessionID);
+                .getOperatorStatistics(opID, containerSessionID, sessionID);
     }
 
 }

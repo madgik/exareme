@@ -19,15 +19,18 @@ public class IntermediateResultEntry implements Entry {
         this.size_MB = size_MB;
     }
 
-    @Override public double getSize_MB() {
+    @Override
+    public double getSize_MB() {
         return size_MB;
     }
 
-    @Override public String getId() {
+    @Override
+    public String getId() {
         return id;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "" + getId();
     }
 }

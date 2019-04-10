@@ -20,32 +20,32 @@ public class ConcreteGraphFactory {
 
     public static ConcreteOperator createTableReader(String name) {
         return getOrCreateOperator("I_" + name, 20.0, 0.2, AdpDBArtPlanGenerator.SELECT_MEMORY,
-            OperatorBehavior.pipeline);
+                OperatorBehavior.pipeline);
     }
 
     public static ConcreteOperator createTableTransferReplicator(String name) {
         return getOrCreateOperator("TR_" + name, 20.0, 0.5, AdpDBArtPlanGenerator.SELECT_MEMORY,
-            OperatorBehavior.pipeline);
+                OperatorBehavior.pipeline);
     }
 
     public static ConcreteOperator createRunQuery(String name) {
         return getOrCreateOperator("R_" + name, 200.0, 1.0, AdpDBArtPlanGenerator.SELECT_MEMORY,
-            OperatorBehavior.store_and_forward);
+                OperatorBehavior.store_and_forward);
     }
 
     public static ConcreteOperator createBuildIndex(String name) {
         return getOrCreateOperator("IDX_" + name, 50.0, 1.0, AdpDBArtPlanGenerator.DM_MEMORY,
-            OperatorBehavior.store_and_forward);
+                OperatorBehavior.store_and_forward);
     }
 
     public static ConcreteOperator createDropIndex(String name) {
         return getOrCreateOperator("D_IDX_" + name, 10.0, 1.0, AdpDBArtPlanGenerator.DM_MEMORY,
-            OperatorBehavior.store_and_forward);
+                OperatorBehavior.store_and_forward);
     }
 
     public static ConcreteOperator createDropTable(String name) {
         return getOrCreateOperator("D_TBL_" + name, 10.0, 1.0, AdpDBArtPlanGenerator.DM_MEMORY,
-            OperatorBehavior.store_and_forward);
+                OperatorBehavior.store_and_forward);
     }
 
     public static Link createLink(String name, ConcreteOperator from, ConcreteOperator to) {
@@ -89,7 +89,7 @@ public class ConcreteGraphFactory {
     }
 
     private static ConcreteOperator getOrCreateOperator(String name, double runTime_SEC,
-        double cpuUtilization, int memory_MB, OperatorBehavior behavior) {
+                                                        double cpuUtilization, int memory_MB, OperatorBehavior behavior) {
         return new ConcreteOperator(name, runTime_SEC, cpuUtilization, memory_MB, behavior);
     }
 }

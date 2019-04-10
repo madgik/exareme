@@ -21,14 +21,14 @@ public class DMContainerSession {
 
     private static final Logger log = Logger.getLogger(DMContainerSession.class);
     private HashMap<ConcreteOperatorID, DiskSession> sessionIDMap =
-        new HashMap<ConcreteOperatorID, DiskSession>();
+            new HashMap<ConcreteOperatorID, DiskSession>();
     private File rootFile = null;
     private DiskSession globalSession = null;
     private ContainerSessionID containerSessionID = null;
     private PlanSessionID sessionID = null;
 
     public DMContainerSession(File root, ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) {
+                              PlanSessionID sessionID) {
         this.containerSessionID = containerSessionID;
         this.sessionID = sessionID;
 

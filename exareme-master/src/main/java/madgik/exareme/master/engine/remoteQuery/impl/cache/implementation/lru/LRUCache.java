@@ -24,7 +24,7 @@ import java.util.logging.Level;
 
 /**
  * @author Christos Mallios <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  */
 
 /*
@@ -58,7 +58,8 @@ public class LRUCache implements QueryCache {
         this.metadata = metadata;
     }
 
-    @Override public void boot(Bootstrap bootstrap, String storagePath) {
+    @Override
+    public void boot(Bootstrap bootstrap, String storagePath) {
 
         CacheInfo info = null;
 
@@ -92,19 +93,23 @@ public class LRUCache implements QueryCache {
         }
     }
 
-    @Override public CacheInfo getInfo() {
+    @Override
+    public CacheInfo getInfo() {
         return cacheInfo;
     }
 
-    @Override public double getTotalCacheSize() {
+    @Override
+    public double getTotalCacheSize() {
         return cacheInfo.totalSize;
     }
 
-    @Override public void setTotalCacheSize(double size) {
+    @Override
+    public void setTotalCacheSize(double size) {
         cacheInfo.totalSize = size;
     }
 
-    @Override public CachedDataInfo getCacheInfo(String query) {
+    @Override
+    public CachedDataInfo getCacheInfo(String query) {
 
         Node node = null;
 
@@ -123,13 +128,15 @@ public class LRUCache implements QueryCache {
         return ((ListNode) node.value).cacheInfo;
     }
 
-    @Override public void updateCache(String query) {
+    @Override
+    public void updateCache(String query) {
 
         pinQuery(query, true);
         lruSequence.lruUpdate(cacheIndex.get(query).getLast());
     }
 
-    @Override public void setCacheInfo(CachedDataInfo info) {
+    @Override
+    public void setCacheInfo(CachedDataInfo info) {
 
         try {
 
@@ -146,9 +153,9 @@ public class LRUCache implements QueryCache {
             removeOldVersions(cacheIndex.get(info.query), info.query);
 
             //      log.trace("Prin apo pithano delete");
-      /*System.out.println("Prin apo pithano delete");*/
-      /*lruSequence.printAll();*/
-      /*System.out.println("Telos me print");*/
+            /*System.out.println("Prin apo pithano delete");*/
+            /*lruSequence.printAll();*/
+            /*System.out.println("Telos me print");*/
             //      log.trace("Telos me print");
             Node lruNode;
             while (cacheInfo.currentSize > cacheInfo.totalSize) {
@@ -164,7 +171,7 @@ public class LRUCache implements QueryCache {
 
                     removeDB(lruNode);
 
-          /*System.out.println("Mpika gia to query " + query);*/
+                    /*System.out.println("Mpika gia to query " + query);*/
                     List<Node> list = cacheIndex.get(query);
                     boolean queryInstance = true;
                     String db = null, currentQuery;
@@ -177,12 +184,12 @@ public class LRUCache implements QueryCache {
                             queryInstance = false;
                         }
                         if (currentQuery.equals(db)) {
-              /*System.out.println("Diagrafi query " + query);*/
+                            /*System.out.println("Diagrafi query " + query);*/
                             cacheIndex.get(query).remove(node);
                         }
                     }
                     if (cacheIndex.get(query).isEmpty()) {
-            /*System.out.println("Telika delete to query " + query);*/
+                        /*System.out.println("Telika delete to query " + query);*/
                         cacheIndex.remove(query);
                     }
 
@@ -190,16 +197,16 @@ public class LRUCache implements QueryCache {
 
                     //metadata.deleteCacheRecord(((ListNode) lruNode.value).cacheInfo.database);
                     //          log.trace("Meta apo delete");
-          /*System.out.println("Meta apo delete");*/
-          /*lruSequence.printAll();*/
+                    /*System.out.println("Meta apo delete");*/
+                    /*lruSequence.printAll();*/
                     //          log.trace("Telos me print");
-          /*System.out.println("Telos me print");*/
+                    /*System.out.println("Telos me print");*/
                 } catch (IOException ex) {
                     java.util.logging.Logger.getLogger(LRUCache.class.getName())
-                        .log(Level.SEVERE, null, ex);
+                            .log(Level.SEVERE, null, ex);
                 } catch (SQLException ex) {
                     java.util.logging.Logger.getLogger(LRUCache.class.getName())
-                        .log(Level.SEVERE, null, ex);
+                            .log(Level.SEVERE, null, ex);
                 }
             }
 
@@ -207,23 +214,25 @@ public class LRUCache implements QueryCache {
                 metadata.updateCacheSize(cacheInfo.currentSize);
             } catch (SQLException ex) {
                 java.util.logging.Logger.getLogger(LRUCache.class.getName())
-                    .log(Level.SEVERE, null, ex);
+                        .log(Level.SEVERE, null, ex);
             }
         } catch (IOException ex) {
             java.util.logging.Logger.getLogger(LRUCache.class.getName())
-                .log(Level.SEVERE, null, ex);
+                    .log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
             java.util.logging.Logger.getLogger(LRUCache.class.getName())
-                .log(Level.SEVERE, null, ex);
+                    .log(Level.SEVERE, null, ex);
         }
     }
 
-    @Override public void pinQuery(String query, boolean firstRequestOfTheBatch) {
+    @Override
+    public void pinQuery(String query, boolean firstRequestOfTheBatch) {
 
         lruSequence.pin(cacheIndex.get(query).getLast());
     }
 
-    @Override public boolean isPinned(String query, CachedDataInfo info) {
+    @Override
+    public boolean isPinned(String query, CachedDataInfo info) {
 
         LinkedList<Node> listNode = cacheIndex.get(query);
 
@@ -237,7 +246,8 @@ public class LRUCache implements QueryCache {
         return false;
     }
 
-    @Override public void unpinQueryResults(String query, CachedDataInfo info) {
+    @Override
+    public void unpinQueryResults(String query, CachedDataInfo info) {
 
         LinkedList<Node> listNode = cacheIndex.get(query);
 
@@ -253,25 +263,26 @@ public class LRUCache implements QueryCache {
                     metadata.updateCacheSize(cacheInfo.currentSize);
                 } catch (IOException ex) {
                     java.util.logging.Logger.getLogger(LRUCache.class.
-                        getName()).log(Level.SEVERE, null, ex);
+                            getName()).log(Level.SEVERE, null, ex);
                 } catch (SQLException ex) {
                     java.util.logging.Logger.getLogger(LRUCache.class.
-                        getName()).log(Level.SEVERE, null, ex);
+                            getName()).log(Level.SEVERE, null, ex);
                 }
                 break;
             }
         }
     }
 
-    @Override public boolean isEmpty() {
+    @Override
+    public boolean isEmpty() {
         return cacheIndex.isEmpty();
     }
 
     private void removeDB(Node lruNode) throws IOException, SQLException {
 
-    /*System.out.println("prin apo delete to db size einai " + cacheInfo.currentSize);*/
+        /*System.out.println("prin apo delete to db size einai " + cacheInfo.currentSize);*/
         cacheInfo.currentSize -= ((ListNode) lruNode.value).cacheInfo.size;
-    /*System.out.println("meta apo delete to db size einai " + cacheInfo.currentSize);*/
+        /*System.out.println("meta apo delete to db size einai " + cacheInfo.currentSize);*/
         Files.deleteDB(lruNode, metadata);
     }
 
@@ -287,7 +298,8 @@ public class LRUCache implements QueryCache {
         }
     }
 
-    @Override public QueryInfo getQueryInfo(String query) {
+    @Override
+    public QueryInfo getQueryInfo(String query) {
         return null;
     }
 }

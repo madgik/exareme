@@ -125,12 +125,12 @@ if (jsMath.Easy.autoload) {
 } else {
     jsMath.Easy.tex2math =
         (jsMath.Easy.processSingleDollars ||
-        jsMath.Easy.processDoubleDollars ||
-        jsMath.Easy.processSlashParens ||
-        jsMath.Easy.processSlashBrackets ||
-        jsMath.Easy.processLaTeXenvironments ||
-        jsMath.Easy.fixEscapedDollars ||
-        jsMath.Easy.customDelimiters);
+            jsMath.Easy.processDoubleDollars ||
+            jsMath.Easy.processSlashParens ||
+            jsMath.Easy.processSlashBrackets ||
+            jsMath.Easy.processLaTeXenvironments ||
+            jsMath.Easy.fixEscapedDollars ||
+            jsMath.Easy.customDelimiters);
 
     if (!jsMath.Setup) {
         jsMath.Setup = {}
@@ -152,7 +152,7 @@ if (jsMath.Easy.autoload) {
         }
         if (easy.macros) {
             for (i in easy.macros) {
-                if (typeof(easy.macros[i]) == 'string') {
+                if (typeof (easy.macros[i]) == 'string') {
                     jsMath.Macro(i, easy.macros[i]);
                 } else {
                     jsMath.Macro(i, easy.macros[i][0], easy.macros[i][1]);
@@ -186,10 +186,8 @@ jsMath.Easy.onload = function () {
 
 if (window.addEventListener) {
     window.addEventListener("load", jsMath.Easy.onload, false)
-}
-else if (window.attachEvent) {
+} else if (window.attachEvent) {
     window.attachEvent("onload", jsMath.Easy.onload)
-}
-else {
+} else {
     window.onload = jsMath.Easy.onload
 }

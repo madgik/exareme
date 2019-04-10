@@ -15,12 +15,12 @@ public class AbstractOperatorTest extends TestCase {
 
         assertEquals(new AbstractOperator("id").getName(), new AbstractOperator("id").getName());
         Assert.assertFalse(new AbstractOperator("id").getName()
-            .equals(new AbstractOperator("another.id").getName()));
+                .equals(new AbstractOperator("another.id").getName()));
     }
 
     /**
      * Test of getConcreteOperators method, of class AbstractOperator.
-//     */
+     //     */
 //    public void testGetConcreteOperators() {
 //        System.out.println("getConcreteOperators");
 //        Assert.fail("The test case is a prototype.");
@@ -45,6 +45,6 @@ public class AbstractOperatorTest extends TestCase {
 
         assertEquals(new AbstractOperator("id").toString(), new AbstractOperator("id").toString());
         Assert.assertFalse(new AbstractOperator("id").toString()
-            .equals(new AbstractOperator("another.id").toString()));
+                .equals(new AbstractOperator("another.id").toString()));
     }
 }

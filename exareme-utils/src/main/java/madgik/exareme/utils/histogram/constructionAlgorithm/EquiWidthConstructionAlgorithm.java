@@ -19,7 +19,7 @@ public class EquiWidthConstructionAlgorithm implements ConstructionAlgorithm {
     private static final long serialVersionUID = 1L;
 
     public LinkedList<Bucket> createHistogram(ArrayList<Pair<?, Double>> data, int bucketNum,
-        PartitionRule partitionRule) throws RemoteException {
+                                              PartitionRule partitionRule) throws RemoteException {
         if (data.isEmpty()) {
             LinkedList<Bucket> bucketList = new LinkedList<Bucket>();
             for (int i = 0; i < bucketNum; ++i) {
@@ -34,7 +34,7 @@ public class EquiWidthConstructionAlgorithm implements ConstructionAlgorithm {
         double step = (max - min) / (double) bucketNum;
 
         ArrayList<LinkedList<Pair<?, Double>>> buckets =
-            new ArrayList<LinkedList<Pair<?, Double>>>();
+                new ArrayList<LinkedList<Pair<?, Double>>>();
         for (int i = 0; i < bucketNum; ++i) {
             buckets.add(new LinkedList<Pair<?, Double>>());
         }

@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 /**
  * @author Herald Kllapi<br> herald@di.uoa.gr<br> University of Athens /
- *         Department of Informatics and Telecommunications.
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class ArmComputeSessionID implements Serializable {
@@ -28,7 +28,8 @@ public class ArmComputeSessionID implements Serializable {
         return (int) (id - sessionID.id);
     }
 
-    @Override @SuppressWarnings("AccessingNonPublicFieldOfAnotherObject")
+    @Override
+    @SuppressWarnings("AccessingNonPublicFieldOfAnotherObject")
     public boolean equals(Object object) {
         if (object instanceof ArmComputeSessionID) {
             ArmComputeSessionID sessionID = (ArmComputeSessionID) object;
@@ -37,7 +38,8 @@ public class ArmComputeSessionID implements Serializable {
         throw new IllegalArgumentException();
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int hash = 3;
         hash = 13 * hash + (int) (this.id ^ (this.id >>> 32));
         return hash;

@@ -4,11 +4,10 @@
  */
 package madgik.exareme.master.queryProcessor.decomposer.dag;
 
+import com.google.common.hash.HashCode;
 import madgik.exareme.master.queryProcessor.estimator.NodeSelectivityEstimator;
 
 import java.util.HashMap;
-
-import com.google.common.hash.HashCode;
 
 /**
  * @author dimitris
@@ -16,15 +15,14 @@ import com.google.common.hash.HashCode;
 public class NodeHashValues extends HashMap<HashCode, Node> {
 
     /**
-	 * 
-	 */
-	private static final long serialVersionUID = -1463579163197580938L;
-	private NodeSelectivityEstimator nse;
+     *
+     */
+    private static final long serialVersionUID = -1463579163197580938L;
+    private NodeSelectivityEstimator nse;
 
     public void setSelectivityEstimator(NodeSelectivityEstimator nse) {
         this.nse = nse;
     }
-
 
 
     public void putWithChildren(Node n) {
@@ -35,12 +33,13 @@ public class NodeHashValues extends HashMap<HashCode, Node> {
     }
 
 
-    @Override public Node put(HashCode key, Node value) {
+    @Override
+    public Node put(HashCode key, Node value) {
         if (nse != null && value.getType() == Node.OR && value.getNodeInfo() == null) {
             nse.makeEstimationForNode(value);
         }
         return super
-            .put(key, value); //To change body of generated methods, choose Tools | Templates.
+                .put(key, value); //To change body of generated methods, choose Tools | Templates.
     }
 
 
@@ -78,7 +77,6 @@ public class NodeHashValues extends HashMap<HashCode, Node> {
              }
          }
     }*/
-
 
 
 }

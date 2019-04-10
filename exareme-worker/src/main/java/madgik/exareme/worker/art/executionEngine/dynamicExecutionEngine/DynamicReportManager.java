@@ -18,7 +18,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author herald
  */
 public class DynamicReportManager extends EventSchedulerManipulator
-    implements PlanSessionReportManagerInterface {
+        implements PlanSessionReportManagerInterface {
     private final Logger log = Logger.getLogger(DynamicReportManager.class);
     private ReentrantLock lock = null;
 
@@ -28,7 +28,7 @@ public class DynamicReportManager extends EventSchedulerManipulator
 
     @Override
     public void planStart(Date time, ContainerID containerID, PlanSessionReportID sessionID)
-        throws RemoteException {
+            throws RemoteException {
         lock.lock();
         try {
             log.trace("Plan Start:" + sessionID);
@@ -37,8 +37,9 @@ public class DynamicReportManager extends EventSchedulerManipulator
         }
     }
 
-    @Override public void planInstantiationException(RemoteException exception, Date time,
-        ContainerID containerID, PlanSessionReportID sessionID) throws RemoteException {
+    @Override
+    public void planInstantiationException(RemoteException exception, Date time,
+                                           ContainerID containerID, PlanSessionReportID sessionID) throws RemoteException {
         lock.lock();
         try {
             PlanEventScheduler eventScheduler = getSchedulerWiReportId(sessionID);
@@ -49,9 +50,10 @@ public class DynamicReportManager extends EventSchedulerManipulator
         }
     }
 
-    @Override public void operatorSuccess(ConcreteOperatorID operatorID, int exidCode,
-        Serializable exitMessage, Date time, ContainerID containerID, PlanSessionReportID sessionID,
-        boolean terminateGroup) throws RemoteException {
+    @Override
+    public void operatorSuccess(ConcreteOperatorID operatorID, int exidCode,
+                                Serializable exitMessage, Date time, ContainerID containerID, PlanSessionReportID sessionID,
+                                boolean terminateGroup) throws RemoteException {
         lock.lock();
         try {
             PlanEventScheduler eventScheduler = getSchedulerWiReportId(sessionID);
@@ -63,7 +65,7 @@ public class DynamicReportManager extends EventSchedulerManipulator
 
     @Override
     public void operatorError(ConcreteOperatorID operatorID, RemoteException exception, Date time,
-        ContainerID containerID, PlanSessionReportID sessionID) throws RemoteException {
+                              ContainerID containerID, PlanSessionReportID sessionID) throws RemoteException {
         lock.lock();
         try {
             PlanEventScheduler eventScheduler = getSchedulerWiReportId(sessionID);
@@ -74,8 +76,9 @@ public class DynamicReportManager extends EventSchedulerManipulator
         }
     }
 
-    @Override public void quantumFinished(int quantumNum, ContainerID containerID,
-        PlanSessionReportID sessionID) throws RemoteException {
+    @Override
+    public void quantumFinished(int quantumNum, ContainerID containerID,
+                                PlanSessionReportID sessionID) throws RemoteException {
         lock.lock();
         try {
             // ...

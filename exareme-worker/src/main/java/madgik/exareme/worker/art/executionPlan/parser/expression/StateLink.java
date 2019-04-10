@@ -17,14 +17,15 @@ public class StateLink {
     public LinkedList<Parameter> paramList;
 
     public StateLink(String operatorName, String stateName, String containerName,
-        LinkedList<Parameter> paramList) {
+                     LinkedList<Parameter> paramList) {
         this.containerName = containerName;
         this.operatorName = operatorName;
         this.stateName = stateName;
         this.paramList = paramList;
     }
 
-    @Override public boolean equals(Object obj) {
+    @Override
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -35,12 +36,12 @@ public class StateLink {
         StateLink guest = (StateLink) obj;
         //check strings
         if (!(operatorName.equals(guest.operatorName) && stateName.equals(guest.stateName)
-            && containerName.equals(guest.containerName))) {
+                && containerName.equals(guest.containerName))) {
             return false;
         }
         //check lists
         if ((paramList != null && guest.paramList == null) || (paramList == null
-            && guest.paramList != null)) {
+                && guest.paramList != null)) {
             return false;
         }
 
@@ -57,7 +58,8 @@ public class StateLink {
         return true;
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int hash = 5;
         hash = 37 * hash + Objects.hashCode(this.containerName);
         hash = 37 * hash + Objects.hashCode(this.operatorName);

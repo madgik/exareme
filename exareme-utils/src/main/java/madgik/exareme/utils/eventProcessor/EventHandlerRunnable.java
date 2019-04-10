@@ -21,7 +21,8 @@ public class EventHandlerRunnable implements Runnable {
         this.eventProcessor = eventProcessor;
     }
 
-    @Override public void run() {
+    @Override
+    public void run() {
         try {
             event.startProcessing();
             event.getHandler().handle(event.getEvent(), eventProcessor);
@@ -31,7 +32,7 @@ public class EventHandlerRunnable implements Runnable {
         event.getEventListener().processed(event.getEvent(), event.getException(), eventProcessor);
         event.endProcessing();
         log.debug("Event processed times: " +
-            event.getWaitTime() + " / " + event.getProcessTime() +
-            " (" + event.getEvent().getClass().getName() + ")");
+                event.getWaitTime() + " / " + event.getProcessTime() +
+                " (" + event.getEvent().getClass().getName() + ")");
     }
 }

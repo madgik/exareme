@@ -4,9 +4,9 @@ Copyright (c) 2003-2005  Gustavo Niemeyer <gustavo@niemeyer.net>
 This module offers extensions to the standard python 2.3+
 datetime module.
 """
+import os
 from dateutil.tz import tzfile
 from tarfile import TarFile
-import os
 
 __author__ = "Gustavo Niemeyer <gustavo@niemeyer.net>"
 __license__ = "PSF License"
@@ -16,9 +16,11 @@ __all__ = ["setcachesize", "gettz", "rebuild"]
 CACHE = []
 CACHESIZE = 10
 
+
 class tzfile(tzfile):
     def __reduce__(self):
         return (gettz, (self._filename,))
+
 
 def getzoneinfofile():
     filenames = os.listdir(os.path.join(os.path.dirname(__file__)))
@@ -29,14 +31,17 @@ def getzoneinfofile():
             return os.path.join(os.path.dirname(__file__), entry)
     return None
 
+
 ZONEINFOFILE = getzoneinfofile()
 
 del getzoneinfofile
+
 
 def setcachesize(size):
     global CACHESIZE, CACHE
     CACHESIZE = size
     del CACHE[size:]
+
 
 def gettz(name):
     tzinfo = None
@@ -57,12 +62,13 @@ def gettz(name):
             del CACHE[CACHESIZE:]
     return tzinfo
 
+
 def rebuild(filename, tag=None, format="gz"):
     import tempfile, shutil
     tmpdir = tempfile.mkdtemp()
     zonedir = os.path.join(tmpdir, "zoneinfo")
     moduledir = os.path.dirname(__file__)
-    if tag: tag = "-"+tag
+    if tag: tag = "-" + tag
     targetname = "zoneinfo%s.tar.%s" % (tag, format)
     try:
         tf = TarFile.open(filename)

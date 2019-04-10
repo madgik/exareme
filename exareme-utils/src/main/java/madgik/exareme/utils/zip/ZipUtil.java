@@ -14,14 +14,14 @@ import java.util.zip.ZipInputStream;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class ZipUtil {
 
     private static final int ioBufferSize =
-        AdpProperties.getArtProps().getInt("art.container.ioBufferSize_kb") * Metrics.KB;
+            AdpProperties.getArtProps().getInt("art.container.ioBufferSize_kb") * Metrics.KB;
     private static Logger log = Logger.getLogger(ZipUtil.class);
 
     private ZipUtil() {
@@ -42,7 +42,7 @@ public class ZipUtil {
             } else {
                 log.trace("Extracting file: " + zipentry.getName());
                 copyInputStream(zipInputStream, new BufferedOutputStream(
-                    new FileOutputStream(destinationDir + zipentry.getName())));
+                        new FileOutputStream(destinationDir + zipentry.getName())));
             }
             zipInputStream.closeEntry();
             zipentry = zipInputStream.getNextEntry();

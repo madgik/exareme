@@ -57,7 +57,8 @@ public abstract class QuantumClock extends Thread {
         }
     }
 
-    @Override public final void run() {
+    @Override
+    public final void run() {
         // Start of time
         bigBang = System.currentTimeMillis();
         long lastClockTick = bigBang;

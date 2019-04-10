@@ -1,7 +1,7 @@
 # coding: utf-8
 
-import setpath
 import lib.stringdists as sd
+
 
 def levendist(*args):
     """
@@ -16,12 +16,14 @@ def levendist(*args):
     -----------------------------
     7
     """
-    if len(args)!=2:
-        raise functions.OperatorError("levendist","operator accepts two arguments")
+    if len(args) != 2:
+        raise functions.OperatorError("levendist", "operator accepts two arguments")
 
-    return sd.levenshtein_dist(args[0],args[1])
+    return sd.levenshtein_dist(args[0], args[1])
 
-levendist.registered=True
+
+levendist.registered = True
+
 
 def damlevendist(*args):
     """
@@ -36,12 +38,14 @@ def damlevendist(*args):
     --------------------------------
     6
     """
-    if len(args)!=2:
-        raise functions.OperatorError("damlevendist","operator accepts two arguments")
+    if len(args) != 2:
+        raise functions.OperatorError("damlevendist", "operator accepts two arguments")
 
-    return sd.dameraulevenshtein_dist(args[0],args[1])
+    return sd.dameraulevenshtein_dist(args[0], args[1])
 
-damlevendist.registered=True
+
+damlevendist.registered = True
+
 
 def quickstrdist(*args):
     """
@@ -57,12 +61,13 @@ def quickstrdist(*args):
     --------------------------------
     8
     """
-    if len(args)!=2:
-        raise functions.OperatorError("quickstrdist","operator accepts two arguments")
+    if len(args) != 2:
+        raise functions.OperatorError("quickstrdist", "operator accepts two arguments")
 
-    return sd.quick_string_dist(args[0],args[1])
+    return sd.quick_string_dist(args[0], args[1])
 
-quickstrdist.registered=True
+
+quickstrdist.registered = True
 
 if not ('.' in __name__):
     """
@@ -70,11 +75,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

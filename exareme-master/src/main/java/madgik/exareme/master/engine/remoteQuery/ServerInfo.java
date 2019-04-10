@@ -5,7 +5,7 @@ package madgik.exareme.master.engine.remoteQuery;
 
 /**
  * @author Christos Mallios <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  */
 public class ServerInfo {
 
@@ -23,7 +23,7 @@ public class ServerInfo {
 
 
     public ServerInfo(String serverDatabase, String serverIP, String serverPort, String dbName,
-        String dbUsername, String dbPassword) {
+                      String dbUsername, String dbPassword) {
 
         sqlDatabase = serverDatabase;
         ip = serverIP;
@@ -33,7 +33,8 @@ public class ServerInfo {
         password = dbPassword;
     }
 
-    @Override public boolean equals(Object obj) {
+    @Override
+    public boolean equals(Object obj) {
 
         if (obj == null) {
             return false;
@@ -55,17 +56,18 @@ public class ServerInfo {
             return false;
         }
         if ((this.username == null) ?
-            (other.username != null) :
-            !this.username.equals(other.username)) {
+                (other.username != null) :
+                !this.username.equals(other.username)) {
             return false;
         }
 
         return !((this.password == null) ?
-            (other.password != null) :
-            !this.password.equals(other.password));
+                (other.password != null) :
+                !this.password.equals(other.password));
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int hash = 5;
         hash = 43 * hash + (this.ip != null ? this.ip.hashCode() : 0);
         hash = 43 * hash + (this.port != null ? this.port.hashCode() : 0);

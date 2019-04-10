@@ -45,7 +45,7 @@ public class LocalArmComputeInterface implements ContainerManagerInterface {
 
     @Override
     public ActiveContainer[] getContainers(int numOfContainers, ArmComputeSessionID sessionID)
-        throws RemoteException {
+            throws RemoteException {
         try {
             sem.acquire();
             sessionStatus.put(sessionID.getId(), true);
@@ -55,10 +55,10 @@ public class LocalArmComputeInterface implements ContainerManagerInterface {
             manager.startContainer();
 
             ActiveContainer activeContainer =
-                new ActiveContainer(0, manager.getContainer().createProxy().getEntityName(), 0);
+                    new ActiveContainer(0, manager.getContainer().createProxy().getEntityName(), 0);
 
             created = true;
-            return new ActiveContainer[] {activeContainer};
+            return new ActiveContainer[]{activeContainer};
         } catch (Exception e) {
             throw new AccessException("Cannot get containers", e);
         }
@@ -66,27 +66,30 @@ public class LocalArmComputeInterface implements ContainerManagerInterface {
 
     @Override
     public ActiveContainer[] tryGetContainers(int numOfContainers, ArmComputeSessionID sessionID)
-        throws RemoteException {
+            throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public ActiveContainer[] getAtMostContainers(int numOfContainers, ArmComputeSessionID sessionID)
-        throws RemoteException {
+            throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public void stopContainer(ActiveContainer container, ArmComputeSessionID sessionID)
-        throws RemoteException {
+    @Override
+    public void stopContainer(ActiveContainer container, ArmComputeSessionID sessionID)
+            throws RemoteException {
         manager.stopContainer();
         created = false;
     }
 
-    @Override public ContainerManagerStatus getStatus() throws RemoteException {
+    @Override
+    public ContainerManagerStatus getStatus() throws RemoteException {
         return managerStatus;
     }
 
-    @Override public void closeSession(ArmComputeSessionID sessionID) throws RemoteException {
+    @Override
+    public void closeSession(ArmComputeSessionID sessionID) throws RemoteException {
         synchronized (lock) {
             if (sessionStatus.containsKey(sessionID.getId())) {
                 sessionStatus.remove(sessionID.getId());
@@ -96,22 +99,25 @@ public class LocalArmComputeInterface implements ContainerManagerInterface {
         }
     }
 
-    @Override public void startManager() throws RemoteException {
-    /* Do nothing */
+    @Override
+    public void startManager() throws RemoteException {
+        /* Do nothing */
     }
 
-    @Override public void stopManager() throws RemoteException {
-    /* Do nothing */
+    @Override
+    public void stopManager() throws RemoteException {
+        /* Do nothing */
     }
 
     @Override
     public void setPattern(ArrayList<PatternElement> pattern, ArmComputeSessionID sessionID)
-        throws RemoteException {
+            throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public ArrayList<Pair<PatternElement, ActiveContainer>> getAtMostContainers(
-        ArmComputeSessionID sessionID) throws RemoteException {
+    @Override
+    public ArrayList<Pair<PatternElement, ActiveContainer>> getAtMostContainers(
+            ArmComputeSessionID sessionID) throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

@@ -10,6 +10,7 @@ import json
 from os import SEEK_CUR
 from struct import pack, unpack
 from zlib import decompress
+
 try:
     from ._six import MemoryIO, xrange, btou
 except ImportError:
@@ -25,15 +26,15 @@ HEADER_SCHEMA = {
         {
             'name': 'magic',
             'type': {'type': 'fixed', 'name': 'magic', 'size': len(MAGIC)},
-            },
+        },
         {
             'name': 'meta',
             'type': {'type': 'map', 'values': 'bytes'}
-            },
+        },
         {
             'name': 'sync',
             'type': {'type': 'fixed', 'name': 'sync', 'size': SYNC_SIZE}
-            },
+        },
     ]
 }
 MASK = 0xFF
@@ -221,6 +222,7 @@ def read_record(fo, schema):
 
     return record
 
+
 READERS = {
     'null': read_null,
     'boolean': read_boolean,
@@ -280,6 +282,7 @@ def deflate_read_block(fo):
     # zlib headers) decompression.  See zlib.h.
     return MemoryIO(decompress(data, -15))
 
+
 BLOCK_READERS = {
     'null': null_read_block,
     'deflate': deflate_read_block
@@ -288,11 +291,13 @@ BLOCK_READERS = {
 try:
     import snappy
 
+
     def snappy_read_block(fo):
         length = read_long(fo, None)
         data = fo.read(length - 4)
         fo.read(4)  # CRC
         return MemoryIO(snappy.decompress(data))
+
 
     BLOCK_READERS['snappy'] = snappy_read_block
 except ImportError:
@@ -360,6 +365,7 @@ class iter_avro:
             for record in avro:
                 process_record(record)
     '''
+
     def __init__(self, fo):
         self.fo = fo
         try:

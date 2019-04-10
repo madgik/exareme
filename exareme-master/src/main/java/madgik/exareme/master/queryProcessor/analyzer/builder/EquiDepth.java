@@ -24,7 +24,8 @@ public class EquiDepth implements HistogramBuilder {
 
     private static final double BUCKET_FACTOR = 0.2; // double 0..1
 
-    @Override public Schema build(Map<String, Table> dbStats) {
+    @Override
+    public Schema build(Map<String, Table> dbStats) {
         // System.out.println("=======================>" +
         // dbStats.get("lineitem").getColumnMap().get("l_partkey").getNumberOfDiffValues());
         Map<String, RelInfo> relMap = new HashMap<String, RelInfo>();
@@ -43,7 +44,7 @@ public class EquiDepth implements HistogramBuilder {
                 NavigableMap<Double, Bucket> bucketIndex = new TreeMap<Double, Bucket>();
 
                 TreeMap<Double, Integer> sdata =
-                    sortData(t.getValue().getColumnMap().get(c.getKey()).getDiffValFreqMap());
+                        sortData(t.getValue().getColumnMap().get(c.getKey()).getDiffValFreqMap());
 
                 final double bucketDepth = (double) totalSampledRows * BUCKET_FACTOR;
 
@@ -73,8 +74,8 @@ public class EquiDepth implements HistogramBuilder {
                     // /
                     if (c.getKey().equals("l_partkey")) {
                         System.out.println(
-                            "==================> " + "curdepth: " + curDepth + " bucket_depth: "
-                                + bucketDepth + " has_next: " + it.hasNext());
+                                "==================> " + "curdepth: " + curDepth + " bucket_depth: "
+                                        + bucketDepth + " has_next: " + it.hasNext());
                     }
 
                     // /
@@ -95,29 +96,29 @@ public class EquiDepth implements HistogramBuilder {
                 double fscale;
                 for (Entry<Double, Bucket> e : bucketIndex.entrySet()) {
                     fscale = ((e.getValue().estimateBucketNumberOfTuples() * (double) t.getValue()
-                        .getNumberOfTuples()) / (double) totalSampledRows) / e.getValue()
-                        .getDiffValues();
+                            .getNumberOfTuples()) / (double) totalSampledRows) / e.getValue()
+                            .getDiffValues();
                     e.getValue().setFrequency(fscale);
                 }
 
                 bucketIndex.put(Math.nextAfter(lastHistVal, Double.MAX_VALUE),
-                    Bucket.FINAL_HISTOGRAM_BUCKET);
+                        Bucket.FINAL_HISTOGRAM_BUCKET);
 
                 attrIndex.put(c.getKey(), new AttrInfo(c.getKey(), new Histogram(bucketIndex),
-                    c.getValue().getColumnLength()));
+                        c.getValue().getColumnLength()));
 
                 System.out.println(
-                    "ATTR_NAME: " + c.getKey() + " NUM_BUCKETS: " + attrIndex.get(c.getKey())
-                        .getHistogram().getBucketIndex().size() + " HIST_TUPLES: " + attrIndex
-                        .get(c.getKey()).getHistogram().numberOfTuples());
+                        "ATTR_NAME: " + c.getKey() + " NUM_BUCKETS: " + attrIndex.get(c.getKey())
+                                .getHistogram().getBucketIndex().size() + " HIST_TUPLES: " + attrIndex
+                                .get(c.getKey()).getHistogram().numberOfTuples());
             }
 
             Set<String> hs = new HashSet<String>();
             hs.add(t.getValue().getPrimaryKey());
 
             relMap.put(t.getKey(),
-                new RelInfo(t.getKey(), attrIndex, dbStats.get(t.getKey()).getNumberOfTuples(),
-                    t.getValue().getToupleSize(), RelInfo.DEFAULT_NUM_PARTITIONS, hs));
+                    new RelInfo(t.getKey(), attrIndex, dbStats.get(t.getKey()).getNumberOfTuples(),
+                            t.getValue().getToupleSize(), RelInfo.DEFAULT_NUM_PARTITIONS, hs));
 
         }
 

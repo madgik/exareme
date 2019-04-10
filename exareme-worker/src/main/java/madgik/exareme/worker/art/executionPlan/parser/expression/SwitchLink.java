@@ -14,14 +14,15 @@ public class SwitchLink {
     public LinkedList<Parameter> paramList;
 
     public SwitchLink(String from, String to, String containerName,
-        LinkedList<Parameter> paramList) {
+                      LinkedList<Parameter> paramList) {
         this.from = from;
         this.to = to;
         this.containerName = containerName;
         this.paramList = paramList;
     }
 
-    @Override public boolean equals(Object obj) {
+    @Override
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -32,12 +33,12 @@ public class SwitchLink {
         SwitchLink guest = (SwitchLink) obj;
         //check strings
         if (!(from.equals(guest.from) && to.equals(guest.to) && containerName
-            .equals(guest.containerName))) {
+                .equals(guest.containerName))) {
             return false;
         }
         //check lists
         if ((paramList != null && guest.paramList == null) || (paramList == null
-            && guest.paramList != null)) {
+                && guest.paramList != null)) {
             return false;
         }
 
@@ -54,7 +55,8 @@ public class SwitchLink {
         return true;
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int hash = 5;
         hash = 83 * hash + Objects.hashCode(this.containerName);
         hash = 83 * hash + Objects.hashCode(this.from);

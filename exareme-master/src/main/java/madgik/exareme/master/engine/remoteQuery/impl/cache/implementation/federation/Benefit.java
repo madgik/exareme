@@ -16,7 +16,7 @@ import static madgik.exareme.master.engine.remoteQuery.impl.utility.Sets.powerse
 
 /**
  * @author Christos Mallios <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  */
 public class Benefit {
 
@@ -27,7 +27,7 @@ public class Benefit {
     }
 
     public static List<String> maximizeBenefit(List<List<String>> powerSet, FederatedCache cache,
-        String newQuery) {
+                                               String newQuery) {
 
         double maxBenefit = 0, benefit;
         List<String> maxSet = null;
@@ -62,7 +62,7 @@ public class Benefit {
     public static double computeBenefit(double a, QueryRequests request) {
 
         return a * request.numberOfRequests * request.queryResponseTime
-            / request.numberOfTotalRequests;
+                / request.numberOfTotalRequests;
     }
 
     public static void main(String[] args) {

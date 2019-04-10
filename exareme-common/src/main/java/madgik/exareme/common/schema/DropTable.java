@@ -16,7 +16,7 @@ public class DropTable extends DMQuery {
 
     public DropTable(int id, SQLDropTable sqlDropTable) {
         super(id, sqlDropTable.getTable(), "drop table " + sqlDropTable.getTable(),
-            sqlDropTable.getComments().toString());
+                sqlDropTable.getComments().toString());
         this.parsedSQLDropTable = sqlDropTable;
     }
 

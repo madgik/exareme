@@ -31,7 +31,7 @@ public class StatBuilder {
     private String fileName = "NOVAL";
 
     public StatBuilder(String[] db, HistogramBuildMethod method, Map<String, Table> schema)
-        throws Exception {
+            throws Exception {
         this.db = db;
         this.method = method;
         this.dbStats = loadData(schema);

@@ -15,7 +15,7 @@ import java.rmi.RemoteException;
 public interface AdpDBQueryCache {
 
     void addPlan(QueryScript script, Registry registry, AdpDBQueryExecutionPlan plan)
-        throws RemoteException;
+            throws RemoteException;
 
     AdpDBQueryExecutionPlan getPlan(QueryScript script, Registry registry) throws RemoteException;
 }

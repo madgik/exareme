@@ -19,17 +19,18 @@ import java.rmi.ServerException;
  * @author herald
  */
 public class RmiWriteStreamAdaptorProxy extends RmiObjectProxy<WriteRmiStreamAdaptor>
-    implements WriteRmiStreamAdaptorProxy {
+        implements WriteRmiStreamAdaptorProxy {
     private static final long serialVersionUID = 1L;
 
     private OutputStream output = null;
 
     public RmiWriteStreamAdaptorProxy(String regEntryName, EntityName regEntityName)
-        throws RemoteException {
+            throws RemoteException {
         super(regEntryName, regEntityName);
     }
 
-    @Override public OutputStream getOutputStream() throws RemoteException {
+    @Override
+    public OutputStream getOutputStream() throws RemoteException {
         if (output == null) {
             try {
                 output = StreamFactory.createOutputStream(this.getRemoteObject());
@@ -40,7 +41,8 @@ public class RmiWriteStreamAdaptorProxy extends RmiObjectProxy<WriteRmiStreamAda
         return output;
     }
 
-    @Override public void close() throws RemoteException {
+    @Override
+    public void close() throws RemoteException {
         try {
             if (output != null) {
                 this.output.close();

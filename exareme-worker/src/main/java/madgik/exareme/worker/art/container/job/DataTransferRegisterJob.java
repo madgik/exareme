@@ -25,15 +25,16 @@ public class DataTransferRegisterJob implements ContainerJob {
     PlanSessionReportID sessionReportID;
 
     public DataTransferRegisterJob(String operatorName,
-        Map<String, LinkedList<Parameter>> linkMapParameters, Parameters parameters,
-        PlanSessionReportID sessionReportID) {
+                                   Map<String, LinkedList<Parameter>> linkMapParameters, Parameters parameters,
+                                   PlanSessionReportID sessionReportID) {
         this.linkMapParameters = linkMapParameters;
         this.operatorName = operatorName;
         this.parameters = parameters;
         this.sessionReportID = sessionReportID;
     }
 
-    @Override public ContainerJobType getType() {
+    @Override
+    public ContainerJobType getType() {
         return ContainerJobType.dataTransferRegister;
     }
 

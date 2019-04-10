@@ -202,12 +202,14 @@ Examples:
     row3val1 |
     row4val1 | row4val2
 """
-import vtbase
+import StringIO as unicodeStringIO
+import cStringIO as StringIO
 import functions
 import json
-import cStringIO as StringIO
-import StringIO as unicodeStringIO
 import re
+
+import vtbase
+
 try:
     from collections import OrderedDict
 except ImportError:
@@ -220,13 +222,14 @@ except:
     import xml.etree.ElementTree as etree
 
 registered = True
-cleandata = re.compile(r'[\n\r]*(.*?)\s*$', re.DOTALL| re.UNICODE)
-cleansubtree = re.compile(r'[^<]*<[^<>]+?>(.*)</[^<>]+?>[^>]*$', re.DOTALL| re.UNICODE)
+cleandata = re.compile(r'[\n\r]*(.*?)\s*$', re.DOTALL | re.UNICODE)
+cleansubtree = re.compile(r'[^<]*<[^<>]+?>(.*)</[^<>]+?>[^>]*$', re.DOTALL | re.UNICODE)
 attribguard = '@'
 
 # Workaround for older versions of elementtree
 if not hasattr(etree, 'ParseError'):
-    etree.ParseError=etree.XMLParserError
+    etree.ParseError = etree.XMLParserError
+
 
 def matchtag(a, b):
     if b[0] == '{':
@@ -236,15 +239,17 @@ def matchtag(a, b):
             return a.split('}')[1] == b
         return a == b
 
+
 def pathwithoutns(path):
-    outpath=[]
+    outpath = []
     for i in path:
-        if i[0]=="{":
-            i=i.split('}')[1]
+        if i[0] == "{":
+            i = i.split('}')[1]
         elif ":" in i:
-            i=i.split(':')[1]
-        outpath+=[i]
+            i = i.split(':')[1]
+        outpath += [i]
     return "/".join(outpath)
+
 
 def itertext(elem):
     tag = elem.tag
@@ -258,32 +263,33 @@ def itertext(elem):
         if e.tail:
             yield e.tail
 
+
 class rowobj():
     def __init__(self, schema, strictness):
-        self.schema=schema.schema
-        self.schemagetall=schema.getall
-        self.sobj=schema
-        self.schemacolsnum=len(schema.schema)+len(schema.getall)
-        self.row=['']*self.schemacolsnum
-        self.strict= strictness
-        self.tabreplace='    '
-        if self.schemagetall=={}:
-            self.addtorowall=lambda x, y, z:0
+        self.schema = schema.schema
+        self.schemagetall = schema.getall
+        self.sobj = schema
+        self.schemacolsnum = len(schema.schema) + len(schema.getall)
+        self.row = [''] * self.schemacolsnum
+        self.strict = strictness
+        self.tabreplace = '    '
+        if self.schemagetall == {}:
+            self.addtorowall = lambda x, y, z: 0
         else:
-            self.addtorowall=self.addtorow
+            self.addtorowall = self.addtorow
 
     def addtorow(self, xpath, data, elem=None):
-        fullp='/'.join(xpath)
-        path=None
+        fullp = '/'.join(xpath)
+        path = None
 
-        if elem!=None:
-            s=self.schemagetall
+        if elem != None:
+            s = self.schemagetall
             if fullp in s:
-                path=fullp
+                path = fullp
             else:
-                shortp=pathwithoutns(xpath)
+                shortp = pathwithoutns(xpath)
                 if shortp in s:
-                    path=shortp
+                    path = shortp
 
             if path == None:
                 return
@@ -293,47 +299,48 @@ class rowobj():
             except AttributeError:
                 data = etree.tostring(elem)
         else:
-            s=self.schema
+            s = self.schema
 
         if fullp in s:
-            path=fullp
+            path = fullp
         else:
-            shortp=pathwithoutns(xpath)
+            shortp = pathwithoutns(xpath)
             if shortp in s:
-                path=shortp
+                path = shortp
 
-        if path==None:
-            if self.strict==2 and elem==None:
-                path=xpath
+        if path == None:
+            if self.strict == 2 and elem == None:
+                path = xpath
                 self.resetrow()
-                msg='Undeclared path in XML-prototype was found in the input data. The path is:\n'
-                shortp='/'+pathwithoutns(path)
-                fullp='/'+'/'.join(path)
-                if shortp!=fullp:
-                    msg+=shortp+'\n'
-                msg+=fullp+'\nThe data to insert into path was:\n'+functions.mstr(data)
+                msg = 'Undeclared path in XML-prototype was found in the input data. The path is:\n'
+                shortp = '/' + pathwithoutns(path)
+                fullp = '/' + '/'.join(path)
+                if shortp != fullp:
+                    msg += shortp + '\n'
+                msg += fullp + '\nThe data to insert into path was:\n' + functions.mstr(data)
                 raise etree.ParseError(msg)
         else:
-            if self.row[s[path][0]]=='':
-                self.row[s[path][0]]=data.replace('\t', self.tabreplace)
+            if self.row[s[path][0]] == '':
+                self.row[s[path][0]] = data.replace('\t', self.tabreplace)
                 return
 
-            i=1
-            attribnum=path+'1'
+            i = 1
+            attribnum = path + '1'
 
-            oldattribnum=path
+            oldattribnum = path
             while attribnum in s:
-                if self.row[s[attribnum][0]]=='':
-                    self.row[s[attribnum][0]]=data.replace('\t', self.tabreplace)
+                if self.row[s[attribnum][0]] == '':
+                    self.row[s[attribnum][0]] = data.replace('\t', self.tabreplace)
                     return
-                i+=1
-                oldattribnum=attribnum
-                attribnum=path+str(i)
+                i += 1
+                oldattribnum = attribnum
+                attribnum = path + str(i)
 
-            self.row[s[oldattribnum][0]]+='\t'+data.replace('\t', self.tabreplace)
+            self.row[s[oldattribnum][0]] += '\t' + data.replace('\t', self.tabreplace)
 
     def resetrow(self):
-        self.row=['']*self.schemacolsnum
+        self.row = [''] * self.schemacolsnum
+
 
 class jdictrowobj():
     def __init__(self, ns, subtreeroot=None):
@@ -343,12 +350,12 @@ class jdictrowobj():
             self.root = [subtreeroot]
         else:
             self.root = []
-            
+
     def addtorow(self, xpath, data):
         if self.namespace:
-            path='/'.join(self.root+xpath)
+            path = '/'.join(self.root + xpath)
         else:
-            path=pathwithoutns(self.root+xpath)
+            path = pathwithoutns(self.root + xpath)
 
         if path not in self.rowdata:
             self.rowdata[path] = data
@@ -362,7 +369,7 @@ class jdictrowobj():
     @staticmethod
     def addtorowall(xpath, data, elem):
         return
-    
+
     @property
     def row(self):
         return [json.dumps(self.rowdata, separators=(',', ':'), ensure_ascii=False)]
@@ -370,208 +377,209 @@ class jdictrowobj():
     def resetrow(self):
         self.rowdata = OrderedDict()
 
+
 class schemaobj():
     def __init__(self):
-        self.schema={}
-        self.colnames={}
-        self.getall={}
+        self.schema = {}
+        self.colnames = {}
+        self.getall = {}
 
-    def addtoschema(self, path, subtreeroot = None):
-        s=self.schema
-        pathpostfix=[]
-        if path!=[] and path[-1] in ('*', '$'):
-            path=path[0:-1]
-            s=self.getall
-            pathpostfix=['$']
+    def addtoschema(self, path, subtreeroot=None):
+        s = self.schema
+        pathpostfix = []
+        if path != [] and path[-1] in ('*', '$'):
+            path = path[0:-1]
+            s = self.getall
+            pathpostfix = ['$']
 
-        fpath=cleandata.match("/".join(path)).groups()[0].lower()
+        fpath = cleandata.match("/".join(path)).groups()[0].lower()
 
         if fpath == '' and pathpostfix == []:
             return
 
         if fpath not in s:
-            s[fpath]=(len(self.schema)+len(self.getall), self.colname(path+pathpostfix))
+            s[fpath] = (len(self.schema) + len(self.getall), self.colname(path + pathpostfix))
         else:
-            fpath1=fpath
-            i=1
+            fpath1 = fpath
+            i = 1
             while True:
-                fpath1=fpath+str(i)
+                fpath1 = fpath + str(i)
                 if fpath1 not in s:
-                    s[fpath1]=(len(self.schema)+len(self.getall), self.colname(path+pathpostfix))
+                    s[fpath1] = (len(self.schema) + len(self.getall), self.colname(path + pathpostfix))
                     break
-                i=i+1
+                i = i + 1
 
     def colname(self, path):
-        sp=self.shortifypath(path).lower()
+        sp = self.shortifypath(path).lower()
         if sp not in self.colnames:
-            self.colnames[sp]=0
+            self.colnames[sp] = 0
             return sp
         else:
-            self.colnames[sp]+=1
-            return sp+str(self.colnames[sp])
+            self.colnames[sp] += 1
+            return sp + str(self.colnames[sp])
 
     def shortifypath(self, path):
-        outpath=[]
+        outpath = []
         for i in path:
-            if i==attribguard:
+            if i == attribguard:
                 continue
-            if i[0]=="{":
-                i=i.split('}')[1]
+            if i[0] == "{":
+                i = i.split('}')[1]
             elif ":" in i:
-                i=i.split(':')[1]
-            i="".join([x for x in i if x=='$' or (x.lower()>="a" and x<="z")])
-            outpath+=[i]
+                i = i.split(':')[1]
+            i = "".join([x for x in i if x == '$' or (x.lower() >= "a" and x <= "z")])
+            outpath += [i]
         return "_".join(outpath)
 
     def getrelschema(self):
-        relschema=[None]*(len(self.schema)+len(self.getall))
+        relschema = [None] * (len(self.schema) + len(self.getall))
 
-        for x,y in self.schema.itervalues():
-            relschema[x]=(y, 'text')
+        for x, y in self.schema.itervalues():
+            relschema[x] = (y, 'text')
 
-        for x,y in self.getall.itervalues():
-            relschema[x]=(y, 'text')
+        for x, y in self.getall.itervalues():
+            relschema[x] = (y, 'text')
 
         return relschema
 
 
 class XMLparse(vtbase.VT):
     def __init__(self):
-        self.schema=None
-        self.subtreeroot=None
-        self.rowobj=None
-        self.query=None
-        self.strict=1
-        self.namespace=False
-        self.fast=0
+        self.schema = None
+        self.subtreeroot = None
+        self.rowobj = None
+        self.query = None
+        self.strict = 1
+        self.namespace = False
+        self.fast = 0
 
-    def getschema(self, *parsedArgs,**envars):
-            s=schemaobj()
+    def getschema(self, *parsedArgs, **envars):
+        s = schemaobj()
 
-            opts=self.full_parse(parsedArgs)
+        opts = self.full_parse(parsedArgs)
 
-            if 'root' in opts[1]:
-                self.subtreeroot=opts[1]['root'].lower()
+        if 'root' in opts[1]:
+            self.subtreeroot = opts[1]['root'].lower()
 
-            if 'namespace' in opts[1] or 'ns' in opts[1]:
-                self.namespace=True
+        if 'namespace' in opts[1] or 'ns' in opts[1]:
+            self.namespace = True
 
-            if 'fast' in opts[1]:
+        if 'fast' in opts[1]:
+            try:
+                self.fast = int(opts[1]['fast'])
+            except:
+                self.fast = 1
+
+        if 'strict' in opts[1]:
+            self.strict = int(opts[1]['strict'])
+            if self.strict <= 0:
+                self.fast = 0
+
+        try:
+            self.query = opts[1]['query']
+        except:
+            raise functions.OperatorError(__name__.rsplit('.')[-1], "An input query should be provided as a parameter")
+
+        try:
+            xp = opts[0][0]
+        except:
+            self.rowobj = jdictrowobj(self.namespace, self.subtreeroot)
+            self.schema = None
+            return [('C1', 'text')]
+
+        try:
+            jxp = json.loads(xp, object_pairs_hook=OrderedDict)
+        except ValueError:
+            jxp = None
+
+        if type(jxp) is list:
+            for i in jxp:
+                path = i.split('/')
+                if path[0] == '':
+                    path = path[1:]
+
+                if self.subtreeroot == None:
+                    self.subtreeroot = path[0]
+
                 try:
-                    self.fast=int(opts[1]['fast'])
-                except:
-                    self.fast=1
+                    path = path[path.index(self.subtreeroot) + 1:]
+                except ValueError:
+                    continue
 
-            if 'strict' in opts[1]:
-                self.strict=int(opts[1]['strict'])
-                if self.strict<=0:
-                    self.fast=0
+                if path != []:
+                    s.addtoschema(path)
 
-            try:
-                self.query=opts[1]['query']
-            except:
-                raise functions.OperatorError(__name__.rsplit('.')[-1],"An input query should be provided as a parameter")
+        elif type(jxp) is OrderedDict:
+            for k, v in jxp.iteritems():
+                path = k.split('/')
+                if path[0] == '':
+                    path = path[1:]
 
-            try:
-                xp=opts[0][0]
-            except:
-                self.rowobj=jdictrowobj(self.namespace, self.subtreeroot)
-                self.schema=None
-                return [('C1', 'text')]
+                if self.subtreeroot is None:
+                    self.subtreeroot = path[0]
 
-            try:
-                jxp=json.loads(xp, object_pairs_hook=OrderedDict)
-            except ValueError:
-                jxp=None
+                try:
+                    path = path[path.index(self.subtreeroot) + 1:]
+                except ValueError:
+                    continue
 
-            if type(jxp) is list:
-                for i in jxp:
-                    path=i.split('/')
-                    if path[0] == '':
-                        path=path[1:]
-
-                    if self.subtreeroot==None:
-                        self.subtreeroot=path[0]
-
-                    try:
-                        path = path[ path.index(self.subtreeroot)+1: ]
-                    except ValueError:
-                        continue
-
-                    if path!=[]:
-                        s.addtoschema(path)
-                        
-            elif type(jxp) is OrderedDict:
-                for k,v in jxp.iteritems():
-                    path = k.split('/')
-                    if path[0] == '':
-                        path = path[1:]
-                        
-                    if self.subtreeroot is None:
-                        self.subtreeroot = path[0]
-
-                    try:
-                        path = path[path.index(self.subtreeroot)+1:]
-                    except ValueError:
-                        continue
-
-                    if type(v) in (list, OrderedDict):
-                        for i in v:
-                            if i in ('*', '$'):
-                                s.addtoschema(path+['*'])
-                            else:
-                                # if path == []:
-                                #     continue
-                                s.addtoschema(path)
-                    else:
-                        if v in ('*', '$'):
-                            s.addtoschema(path+['*'])
+                if type(v) in (list, OrderedDict):
+                    for i in v:
+                        if i in ('*', '$'):
+                            s.addtoschema(path + ['*'])
                         else:
                             # if path == []:
                             #     continue
                             s.addtoschema(path)
-            else:
-                xpath=[]
-                capture=False
+                else:
+                    if v in ('*', '$'):
+                        s.addtoschema(path + ['*'])
+                    else:
+                        # if path == []:
+                        #     continue
+                        s.addtoschema(path)
+        else:
+            xpath = []
+            capture = False
 
-                for ev, el in etree.iterparse(unicodeStringIO.StringIO(xp), ("start", "end")):
-                    if ev=="start":
-                        if self.subtreeroot==None:
-                            self.subtreeroot=el.tag
-                        if capture:
-                            xpath.append(el.tag)
-                        if matchtag(el.tag.lower(), self.subtreeroot) and not capture:
-                            capture=True
-                        if capture and el.attrib!={}:
-                            for k in el.attrib:
-                                s.addtoschema(xpath+[attribguard, k])
-                        continue
-
+            for ev, el in etree.iterparse(unicodeStringIO.StringIO(xp), ("start", "end")):
+                if ev == "start":
+                    if self.subtreeroot == None:
+                        self.subtreeroot = el.tag
                     if capture:
-                        if el.text!=None and cleandata.match(el.text).groups()[0]!='':
-                            if el.text.strip() in ('$', '*'):
-                                s.addtoschema(xpath+['*'])
-                            else:
-                                s.addtoschema(xpath)
-                        if ev=="end":
-                            if el.tag.lower()==self.subtreeroot:
-                                capture=False
-                            if len(xpath)>0:
-                                xpath.pop()
+                        xpath.append(el.tag)
+                    if matchtag(el.tag.lower(), self.subtreeroot) and not capture:
+                        capture = True
+                    if capture and el.attrib != {}:
+                        for k in el.attrib:
+                            s.addtoschema(xpath + [attribguard, k])
+                    continue
 
-                    if ev=="end":
-                        el.clear()
+                if capture:
+                    if el.text != None and cleandata.match(el.text).groups()[0] != '':
+                        if el.text.strip() in ('$', '*'):
+                            s.addtoschema(xpath + ['*'])
+                        else:
+                            s.addtoschema(xpath)
+                    if ev == "end":
+                        if el.tag.lower() == self.subtreeroot:
+                            capture = False
+                        if len(xpath) > 0:
+                            xpath.pop()
 
-            relschema=s.getrelschema()
-            
-            if relschema==[]:
-                raise functions.OperatorError(__name__.rsplit('.')[-1], 'No input schema found')
+                if ev == "end":
+                    el.clear()
 
-            self.rowobj=rowobj(s, self.strict)
-            if self.strict>=0:
-                return s.getrelschema()
-            else:
-                return [('C1', 'text')]
+        relschema = s.getrelschema()
+
+        if relschema == []:
+            raise functions.OperatorError(__name__.rsplit('.')[-1], 'No input schema found')
+
+        self.rowobj = rowobj(s, self.strict)
+        if self.strict >= 0:
+            return s.getrelschema()
+        else:
+            return [('C1', 'text')]
 
     def VTiter(self, *parsedArgs, **envars):
 
@@ -584,25 +592,26 @@ class XMLparse(vtbase.VT):
                 self.read = self.readstart
                 self.fast = fast
                 self.htmlentities = htmlentities.entities.copy()
-                del(self.htmlentities['lt'])
-                del(self.htmlentities['gt'])
-#                del(self.htmlentities['quot'])
-#                del(self.htmlentities['amp'])
-                self.forcedroottag='<xmlparce-forced-root-element>\n'
+                del (self.htmlentities['lt'])
+                del (self.htmlentities['gt'])
+                #                del(self.htmlentities['quot'])
+                #                del(self.htmlentities['amp'])
+                self.forcedroottag = '<xmlparce-forced-root-element>\n'
                 if self.fast == 2:
                     self.header = self.forcedroottag
                 else:
-                    self.header ='<!DOCTYPE forceddoctype ['+''.join(['<!ENTITY '+x.strip(';')+' "'+str(v)+'">' for x,v in self.htmlentities.iteritems()])
-                    self.header +=']>\n'+self.forcedroottag
-                self.replacexmlheaders = re.compile(r'\<\?xml.+?(\<[\w\d:])', re.DOTALL| re.UNICODE)
-                self.finddatatag = re.compile(r'(\<[\w\d:])', re.DOTALL| re.UNICODE)
-                self.deldoctype = re.compile(r'\<!DOCTYPE[^>]+?\>', re.DOTALL| re.UNICODE)
+                    self.header = '<!DOCTYPE forceddoctype [' + ''.join(
+                        ['<!ENTITY ' + x.strip(';') + ' "' + str(v) + '">' for x, v in self.htmlentities.iteritems()])
+                    self.header += ']>\n' + self.forcedroottag
+                self.replacexmlheaders = re.compile(r'\<\?xml.+?(\<[\w\d:])', re.DOTALL | re.UNICODE)
+                self.finddatatag = re.compile(r'(\<[\w\d:])', re.DOTALL | re.UNICODE)
+                self.deldoctype = re.compile(r'\<!DOCTYPE[^>]+?\>', re.DOTALL | re.UNICODE)
 
             def unescape(self, text):
                 return self.unescapere.sub(self.fixup, text)
 
             def restart(self):
-                self.read=self.readstart
+                self.read = self.readstart
 
             def readstart(self, n):
 
@@ -611,7 +620,7 @@ class XMLparse(vtbase.VT):
                     if l.endswith('\n'):
                         return l
                     else:
-                        return l+'\n'
+                        return l + '\n'
 
                 self.lastline = readline()
                 line = self.lastline.strip()
@@ -621,12 +630,12 @@ class XMLparse(vtbase.VT):
                     line = readline()
                     longline += line
 
-                if longline.find('<!E')!=-1:
+                if longline.find('<!E') != -1:
                     # If xml entities exist in header
-                    self.lastline = self.finddatatag.sub(self.forcedroottag+r'\1', longline, 1)
+                    self.lastline = self.finddatatag.sub(self.forcedroottag + r'\1', longline, 1)
                 else:
                     longline = self.deldoctype.sub('', longline)
-                    self.lastline = self.finddatatag.sub(self.header+r'\1', longline, 1)
+                    self.lastline = self.finddatatag.sub(self.header + r'\1', longline, 1)
 
                 if self.fast:
                     if self.fast == 2:
@@ -656,17 +665,17 @@ class XMLparse(vtbase.VT):
                 return line
 
             def readtailfast(self, n):
-                buf=''
+                buf = ''
                 try:
                     while len(buf) < n:
-                        line= self.qiter.next()[0]
+                        line = self.qiter.next()[0]
                         if line.startswith('<?'):
                             if line.startswith('<?xml'):
                                 longline = line
                                 while not self.finddatatag.search(line):
                                     line = self.qiter.next()[0]
-                                    longline+=line
-                                line = self.replacexmlheaders.sub(r'\1',longline,1)
+                                    longline += line
+                                line = self.replacexmlheaders.sub(r'\1', longline, 1)
                         buf += line
                 except StopIteration:
                     if len(buf) == 0:
@@ -676,7 +685,7 @@ class XMLparse(vtbase.VT):
             def readtailfast2(self, n):
                 buf = StringIO.StringIO()
                 try:
-                    while buf.tell()<n:
+                    while buf.tell() < n:
                         buf.write(self.qiter.next()[0])
                 except StopIteration:
                     if buf.tell() == 0:
@@ -686,22 +695,22 @@ class XMLparse(vtbase.VT):
             def close(self):
                 self.qiter.close()
 
-        yield self.getschema(*parsedArgs,**envars)
+        yield self.getschema(*parsedArgs, **envars)
 
-        rio=inputio(envars['db'], self.query, self.fast)
-        etreeended=False
+        rio = inputio(envars['db'], self.query, self.fast)
+        etreeended = False
 
         try:
             while not etreeended:
-                etreeparse=iter(etree.iterparse(rio, ("start", "end")))
-                capture=False
-                xpath=[]
+                etreeparse = iter(etree.iterparse(rio, ("start", "end")))
+                capture = False
+                xpath = []
                 addtorow = self.rowobj.addtorow
                 addtorowall = self.rowobj.addtorowall
                 resetrow = self.rowobj.resetrow
                 if self.subtreeroot is None:
-                    lmatchtag=lambda x, y:True
-                    clmatchtag=lambda x, y:False
+                    lmatchtag = lambda x, y: True
+                    clmatchtag = lambda x, y: False
                     capture = True
                 else:
                     lmatchtag = matchtag
@@ -709,7 +718,7 @@ class XMLparse(vtbase.VT):
 
                 try:
                     treeroot = self.subtreeroot
-                    root=etreeparse.next()[1]
+                    root = etreeparse.next()[1]
 
                     for ev, el in etreeparse:
                         if ev[0] == 's':  # ev == 'start'
@@ -726,7 +735,7 @@ class XMLparse(vtbase.VT):
                             if capture:
                                 if el.attrib != {}:
                                     for k, v in el.attrib.iteritems():
-                                        addtorow(xpath+[attribguard, k.lower()], v)
+                                        addtorow(xpath + [attribguard, k.lower()], v)
                         else:
                             if capture:
                                 addtorowall(xpath, '', el)  # Add all subchildren ("*" op)
@@ -756,7 +765,8 @@ class XMLparse(vtbase.VT):
                     rio.restart()
                     resetrow()
                     if self.strict >= 1:
-                        raise functions.OperatorError(__name__.rsplit('.')[-1], str(e)+'\n'+'Last input line was:\n'+rio.lastline)
+                        raise functions.OperatorError(__name__.rsplit('.')[-1],
+                                                      str(e) + '\n' + 'Last input line was:\n' + rio.lastline)
                     if self.strict == -1:
                         yield [rio.lastline]
         finally:
@@ -773,11 +783,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

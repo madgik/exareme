@@ -30,7 +30,7 @@ public class RmiAdpDBManager implements AdpDBManager {
 
     public RmiAdpDBManager(ArtManager artManager) throws RemoteException {
         log.trace(" Develop mode : " + AdpProperties.getEnvProps().getString("run_level")
-            .equals("develop"));
+                .equals("develop"));
         if (AdpProperties.getEnvProps().getString("run_level").equals("develop")) {
             log.trace("StartingADPEngine...");
             startADPEngine();
@@ -42,7 +42,7 @@ public class RmiAdpDBManager implements AdpDBManager {
     }
 
     public RmiAdpDBManager(String artRegistry, int artRegistryPort, int dtPort)
-        throws RemoteException {
+            throws RemoteException {
         if (AdpProperties.getEnvProps().getString("run_level").equals("develop")) {
             log.trace("StartingADPEngine...");
             startADPEngine();
@@ -63,19 +63,23 @@ public class RmiAdpDBManager implements AdpDBManager {
         AdpDBManagerLocator.setDBManager(this);
     }
 
-    @Override public AdpDBOptimizer getAdpDBOptimizer() throws RemoteException {
+    @Override
+    public AdpDBOptimizer getAdpDBOptimizer() throws RemoteException {
         return optimizer;
     }
 
-    @Override public AdpDBExecutor getAdpDBExecutor() throws RemoteException {
+    @Override
+    public AdpDBExecutor getAdpDBExecutor() throws RemoteException {
         return adpDBExecutor;
     }
 
-    @Override public AdpDBStatusManager getStatusManager() throws RemoteException {
+    @Override
+    public AdpDBStatusManager getStatusManager() throws RemoteException {
         return statusManager;
     }
 
-    @Override public void stopManager() throws RemoteException {
+    @Override
+    public void stopManager() throws RemoteException {
         log.debug("Stopping adp db executor ...");
         adpDBExecutor.stop();
         if (AdpProperties.getEnvProps().getString("run_level").equals("develop")) {
@@ -95,11 +99,11 @@ public class RmiAdpDBManager implements AdpDBManager {
     }
 
     private void connectToADPEngine(String artRegistry, int artRegistryPort, int dtPort)
-        throws RemoteException {
+            throws RemoteException {
         log.debug("Connecting to remote adp engine ...");
         manager = ArtManagerFactory.createRmiArtManager();
         manager.getRegistryManager()
-            .connectToRegistry(new EntityName("ArtRegistry", artRegistry, artRegistryPort, dtPort));
+                .connectToRegistry(new EntityName("ArtRegistry", artRegistry, artRegistryPort, dtPort));
         manager.getExecutionEngineManager().connectToExecutionEngine();
         log.info("Connected to remote adp engine!");
     }

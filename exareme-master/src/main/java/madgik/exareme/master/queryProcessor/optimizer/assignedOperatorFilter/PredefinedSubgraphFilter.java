@@ -18,11 +18,13 @@ public class PredefinedSubgraphFilter implements AssignedOperatorFilter {
         this.numOfOperators = numOfOperators;
     }
 
-    @Override public int getOperatorAssignment(int opNum) {
+    @Override
+    public int getOperatorAssignment(int opNum) {
         return container;
     }
 
-    @Override public int getNumberFilteredOperators() {
+    @Override
+    public int getNumberFilteredOperators() {
         return numOfOperators;
     }
 }

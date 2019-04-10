@@ -21,13 +21,13 @@ public interface ResourceSchedulingAlgorithm {
     void finalizeResources(ComputeCloud cloud, GlobalSystemState state);
 
     void reserveResources(Dataflow dataflow, RunningDataflow runDataflow, ComputeCloud cloud,
-        GlobalSystemState state);
+                          GlobalSystemState state);
 
     void dataflowFinished(RunningDataflow runningDataflow, ComputeCloud cloud,
-        GlobalSystemState state);
+                          GlobalSystemState state);
 
     void dataflowError(RunningDataflow runningDataflow, ComputeCloud cloud,
-        GlobalSystemState state);
+                       GlobalSystemState state);
 
     // SYSTEM INTEGRATION
     void reorganizeResources(GlobalSystemState state) throws RemoteException;

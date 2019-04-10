@@ -16,8 +16,8 @@ import madgik.exareme.worker.art.executionEngine.session.PlanSessionReportID;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class SessionManager {
@@ -35,9 +35,9 @@ public class SessionManager {
     private ContainerID containerID = null;
 
     public SessionManager(String operatorName, String category, OperatorType type,
-        ConcreteOperatorID opID, ContainerSessionID containerSessionID, PlanSessionID sessionID,
-        PlanSessionReportID sessionReportID, OperatorStatus operatorStatus,
-        ContainerID containerID) {
+                          ConcreteOperatorID opID, ContainerSessionID containerSessionID, PlanSessionID sessionID,
+                          PlanSessionReportID sessionReportID, OperatorStatus operatorStatus,
+                          ContainerID containerID) {
         this.operatorName = operatorName;
         this.operatorCategory = category;
         this.operatorType = type;
@@ -69,7 +69,7 @@ public class SessionManager {
     public void setSessionStatistics(ContainerSessionStatistics sessionStatistics) {
         this.sessionStatistics = sessionStatistics;
         this.operatorStatistics = sessionStatistics
-            .createOperatorStatistics(operatorName, operatorCategory, operatorType);
+                .createOperatorStatistics(operatorName, operatorCategory, operatorType);
     }
 
     public ConcreteOperatorID getOpID() {

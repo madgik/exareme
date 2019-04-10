@@ -48,7 +48,8 @@ public class Index implements Serializable {
         return partitions;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "build index " + indexName + " on " + tableName + "(" + columnName + ")";
     }
 }

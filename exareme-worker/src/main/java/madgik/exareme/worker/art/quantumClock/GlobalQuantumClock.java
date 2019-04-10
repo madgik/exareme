@@ -21,20 +21,21 @@ public class GlobalQuantumClock extends QuantumClock {
         this.setName("Global Quantum Clock");
     }
 
-    @Override protected void clockWarningTick(long timeToTick_ms, long quantumCount) {
+    @Override
+    protected void clockWarningTick(long timeToTick_ms, long quantumCount) {
         try {
             ArtRegistry artRegistry = ArtRegistryLocator.getArtRegistryProxy().getRemoteObject();
             log.debug(
-                "Send warning tick event to exec engines: " + quantumCount + " in " + timeToTick_ms
-                    + " ms");
+                    "Send warning tick event to exec engines: " + quantumCount + " in " + timeToTick_ms
+                            + " ms");
             ExecutionEngineProxy[] execEngines = artRegistry.createProxy().getExecutionEngines();
             for (ExecutionEngineProxy exec : execEngines) {
                 try {
                     exec.connect().getClockTickManagerProxy()
-                        .globalWarningClockTick(timeToTick_ms, quantumCount);
+                            .globalWarningClockTick(timeToTick_ms, quantumCount);
                 } catch (RemoteException e) {
                     log.error("Cannot send tick event: " + exec.getRemoteObject().getRegEntryName(),
-                        e);
+                            e);
                 }
             }
         } catch (RemoteException e) {
@@ -42,7 +43,8 @@ public class GlobalQuantumClock extends QuantumClock {
         }
     }
 
-    @Override protected void clockTick(long quantumCount) {
+    @Override
+    protected void clockTick(long quantumCount) {
         try {
             ArtRegistry artRegistry = ArtRegistryLocator.getArtRegistryProxy().getRemoteObject();
             log.debug("Send tick event to exec engines: " + quantumCount);
@@ -52,7 +54,7 @@ public class GlobalQuantumClock extends QuantumClock {
                     exec.connect().getClockTickManagerProxy().globalClockTick(quantumCount);
                 } catch (RemoteException e) {
                     log.error("Cannot send tick event: " + exec.getRemoteObject().getRegEntryName(),
-                        e);
+                            e);
                 }
             }
         } catch (RemoteException e) {

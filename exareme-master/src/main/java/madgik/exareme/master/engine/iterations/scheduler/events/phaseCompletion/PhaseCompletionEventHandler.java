@@ -1,9 +1,5 @@
 package madgik.exareme.master.engine.iterations.scheduler.events.phaseCompletion;
 
-import org.apache.log4j.Logger;
-
-import java.rmi.RemoteException;
-
 import madgik.exareme.common.app.engine.AdpDBQueryID;
 import madgik.exareme.master.client.AdpDBClientQueryStatus;
 import madgik.exareme.master.engine.iterations.scheduler.IterationsDispatcher;
@@ -13,14 +9,15 @@ import madgik.exareme.master.engine.iterations.state.IterationsStateManager;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.master.engine.iterations.state.exceptions.IterationsStateFatalException;
 import madgik.exareme.utils.eventProcessor.EventProcessor;
+import org.apache.log4j.Logger;
 
-import static madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState.IterativeAlgorithmPhasesModel.finalize;
-import static madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState.IterativeAlgorithmPhasesModel.step;
-import static madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState.IterativeAlgorithmPhasesModel.termination_condition;
+import java.rmi.RemoteException;
+
+import static madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState.IterativeAlgorithmPhasesModel.*;
 
 /**
  * @author Christos Aslanoglou <br> caslanoglou@di.uoa.gr <br> University of Athens / Department of
- *         Informatics and Telecommunications.
+ * Informatics and Telecommunications.
  */
 public class PhaseCompletionEventHandler extends IterationsEventHandler<PhaseCompletionEvent> {
     private static final Logger log = Logger.getLogger(PhaseCompletionEventHandler.class);
@@ -142,7 +139,7 @@ public class PhaseCompletionEventHandler extends IterationsEventHandler<PhaseCom
                 }
             } catch (RemoteException | IterationsStateFatalException e) {
                 AdpDBQueryID queryID = queryStatus != null ? queryStatus.getQueryID() : null;
-                cleanupOnFailure(ias.getAlgorithmKey(),  queryID, log, errMsg);
+                cleanupOnFailure(ias.getAlgorithmKey(), queryID, log, errMsg);
                 if (e instanceof RemoteException) {
                     throw e;
                 }

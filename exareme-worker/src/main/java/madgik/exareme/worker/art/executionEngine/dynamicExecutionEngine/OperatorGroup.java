@@ -90,18 +90,18 @@ public class OperatorGroup {
     }
 
     public void createPartialPlan() throws RemoteException {
-    /* Add materialization operators */
+        /* Add materialization operators */
         if (partialPlan == null) {
             {/* Create the partial plan */
 
                 partialPlan = ExecutionPlanFactory.createEditableExecutionPlan();
-        /* Add the operators */
+                /* Add the operators */
                 for (OperatorEntity co : operatorMap.values()) {
-          /* Add the container */
+                    /* Add the container */
                     addContainer(co.containerName, co.container);
                     OperatorEntity newCo = partialPlan.addOperator(
-                        new Operator(co.operatorName, co.operator, co.paramList, co.queryString,
-                            co.containerName, co.linksparams, co.locations));
+                            new Operator(co.operatorName, co.operator, co.paramList, co.queryString,
+                                    co.containerName, co.linksparams, co.locations));
                     this.partialToRealOperatorNameMap.put(newCo.operatorName, co);
                     this.realToPartialOperatorNameMap.put(co.operatorName, newCo);
                 }
@@ -110,19 +110,19 @@ public class OperatorGroup {
             HashMap<String, OperatorEntity> ops = new HashMap<String, OperatorEntity>(operatorMap);
 
             for (OperatorEntity op : ops.values()) {
-        /* Add the read materialized buffers */
+                /* Add the read materialized buffers */
                 if (op.type.equals(OperatorType.dataTransfer)) {
                     OperatorEntity from = state.getPlan().getFromLinks(op).iterator().next();
                     for (OperatorEntity to : state.getPlan().getToLinks(op)) {
                         if (ops.containsKey(from.operatorName) == false) {
                             log.trace("Get matBuff: " + from.operatorName + "_" + to.operatorName);
                             MaterializedBuffer matBuff = this.state
-                                .getMaterializedBuffer(from.operatorName + "_" + to.operatorName);
+                                    .getMaterializedBuffer(from.operatorName + "_" + to.operatorName);
                             String fileName = matBuff.fileName;
                             log.trace("FILENAME DT: " + fileName);
                             //TODO(JV) make this right for more than one outputs
                             op.linksparams.get(to.operatorName)
-                                .add(new Parameter("Name", fileName));
+                                    .add(new Parameter("Name", fileName));
                         }
 
                     }
@@ -135,11 +135,11 @@ public class OperatorGroup {
                         String fromName = from.operatorName;
                         if (from.type.equals(OperatorType.dataTransfer)) {
                             fromName =
-                                state.getPlan().getFromLinks(from).iterator().next().operatorName;
+                                    state.getPlan().getFromLinks(from).iterator().next().operatorName;
                         }
 
                         MaterializedBuffer matBuff = this.state.getMaterializedBuffer(
-                            fromName.split("\\.")[0] + "_" + op.operatorName);
+                                fromName.split("\\.")[0] + "_" + op.operatorName);
 
                         this.inputBufferPoolSessions.add(matBuff);
 
@@ -149,65 +149,65 @@ public class OperatorGroup {
                         LinkedList<Parameter> readParameters = new LinkedList<Parameter>();
                         readParameters.add(new Parameter("Name", fileName));
                         readParameters.add(new Parameter(OperatorEntity.MEMORY_PARAM,
-                            String.valueOf(dataMaterializationMem)));
+                                String.valueOf(dataMaterializationMem)));
                         readParameters.add(new Parameter(OperatorEntity.BEHAVIOR_PARAM,
-                            String.valueOf(OperatorBehavior.store_and_forward)));
+                                String.valueOf(OperatorBehavior.store_and_forward)));
                         readParameters.add(new Parameter(OperatorEntity.TYPE_PARAM,
-                            String.valueOf(OperatorType.dataMaterialization)));
+                                String.valueOf(OperatorType.dataMaterialization)));
                         readParameters.add(new Parameter(OperatorEntity.CATEGORY_PARAM,
-                            op.category + "_R_" + OperatorCategory.dt));
+                                op.category + "_R_" + OperatorCategory.dt));
 
                         String bufferReader;
                         PragmaEntity bufferReaderPragma = state.getPlan()
-                            .getPragma(ExecEngineConstants.PRAGMA_MATERIALIZED_BUFFER_READER);
+                                .getPragma(ExecEngineConstants.PRAGMA_MATERIALIZED_BUFFER_READER);
                         if (bufferReaderPragma != null) {
                             bufferReader = bufferReaderPragma.pragmaValue;
                         } else {
                             bufferReader = ExecEngineConstants.MATERIALIZED_BUFFER_READER;
                         }
                         OperatorEntity read = partialPlan.addOperator(
-                            new Operator(from.operatorName + "-R", bufferReader, readParameters, "",
-                                op.containerName, null));
+                                new Operator(from.operatorName + "-R", bufferReader, readParameters, "",
+                                        op.containerName, null));
                         operatorMap.put(read.operatorName, read);
 
-            /* Create and register the active operator */
+                        /* Create and register the active operator */
                         ActiveOperator acOp = new ActiveOperator(read, null, this);
                         acOp.isActive = true;
                         this.state.addActiveObject(read.operatorName, acOp);
 
                         OperatorLinkEntity connect =
-                            state.getPlan().getOperatorLink(from.operatorName, op.operatorName);
-            /* Create the connection */
+                                state.getPlan().getOperatorLink(from.operatorName, op.operatorName);
+                        /* Create the connection */
                         partialPlan.addOperatorLink(
-                            new OperatorLink(read.operatorName, op.operatorName,
-                                connect.containerName, connect.paramList));
+                                new OperatorLink(read.operatorName, op.operatorName,
+                                        connect.containerName, connect.paramList));
 
                     } else {
                         OperatorLinkEntity connect =
-                            state.getPlan().getOperatorLink(from.operatorName, op.operatorName);
-            /* Create the connection */
+                                state.getPlan().getOperatorLink(from.operatorName, op.operatorName);
+                        /* Create the connection */
                         partialPlan.addOperatorLink(
-                            new OperatorLink(connect.fromOperator.operatorName,
-                                connect.toOperator.operatorName, connect.containerName,
-                                connect.paramList));
+                                new OperatorLink(connect.fromOperator.operatorName,
+                                        connect.toOperator.operatorName, connect.containerName,
+                                        connect.paramList));
 
                     }
                 }
-        /* Add the write materialized buffers */
+                /* Add the write materialized buffers */
                 Iterable<OperatorEntity> toList = state.getPlan().getToLinks(op);
                 Map<String, MaterializedBuffer> partToMatBuff = new HashMap<>();
                 for (OperatorEntity to1 : toList) {
 
                     if (to1.type.equals(OperatorType.dataTransfer)) { //next is dt
                         for (OperatorEntity to : state.getPlan()
-                            .getToLinks(to1)) { //iterate on dt's next operators
+                                .getToLinks(to1)) { //iterate on dt's next operators
                             log.trace(op.operatorName + " -> " + to1.operatorName + " -> "
-                                + to.operatorName);
+                                    + to.operatorName);
                             if (ops.containsKey(to.operatorName) == false) {
                                 addContainer(to1.containerName, to1.container);
                                 String part = null;
                                 for (Parameter p : state.getPlan()
-                                    .getOperatorLink(to1.operatorName, to.operatorName).paramList) {
+                                        .getOperatorLink(to1.operatorName, to.operatorName).paramList) {
                                     if (p.name.equals("part")) {
                                         part = p.value;
                                     }
@@ -216,19 +216,19 @@ public class OperatorGroup {
                                     throw new RemoteException("part parameter in Operator is null");
                                 }
                                 String fileName = op.operatorName + "_P_" + part + ".S-" + state
-                                    .getPlanSessionID().getLongId();
+                                        .getPlanSessionID().getLongId();
                                 if (!partToMatBuff.containsKey(part)) {
-                /* Register the materialized buffer */
+                                    /* Register the materialized buffer */
                                     MaterializedBuffer matBuff =
-                                        new MaterializedBuffer(op.operatorName, fileName,
-                                            op.containerName);
+                                            new MaterializedBuffer(op.operatorName, fileName,
+                                                    op.containerName);
                                     partToMatBuff.put(part, matBuff);
                                     // Register the buffer pool session
                                     ActiveBufferPool bufferPool =
-                                        new ActiveBufferPool(matBuff.fileName, matBuff, null, this);
+                                            new ActiveBufferPool(matBuff.fileName, matBuff, null, this);
                                     this.state.addActiveObject(matBuff.fileName, bufferPool);
                                     this.state.addMaterializedBuffer(
-                                        op.operatorName + "_" + to.operatorName, matBuff);
+                                            op.operatorName + "_" + to.operatorName, matBuff);
                                     this.outputBufferPoolSessions.add(matBuff);
 
                                     log.trace("FILENAME:::: ADD :::: " + op.operatorName);
@@ -236,51 +236,51 @@ public class OperatorGroup {
                                     LinkedList<Parameter> writeParameters = new LinkedList<>();
                                     writeParameters.add(new Parameter("Name", fileName));
                                     writeParameters.add(new Parameter(OperatorEntity.MEMORY_PARAM,
-                                        String.valueOf(dataMaterializationMem)));
+                                            String.valueOf(dataMaterializationMem)));
                                     writeParameters.add(new Parameter(OperatorEntity.BEHAVIOR_PARAM,
-                                        String.valueOf(OperatorBehavior.store_and_forward)));
+                                            String.valueOf(OperatorBehavior.store_and_forward)));
                                     writeParameters.add(new Parameter(OperatorEntity.TYPE_PARAM,
-                                        String.valueOf(OperatorType.dataMaterialization)));
+                                            String.valueOf(OperatorType.dataMaterialization)));
                                     writeParameters.add(new Parameter(OperatorEntity.CATEGORY_PARAM,
-                                        to1.category + "_W_" + OperatorCategory.dt));
+                                            to1.category + "_W_" + OperatorCategory.dt));
 
 
                                     String bufferWriter;
                                     state.getPlan()
-                                        .getOperatorLink(to1.operatorName, to.operatorName);
+                                            .getOperatorLink(to1.operatorName, to.operatorName);
                                     PragmaEntity bufferWriterEntity = state.getPlan().getPragma(
-                                        ExecEngineConstants.PRAGMA_MATERIALIZED_BUFFER_WRITER);
+                                            ExecEngineConstants.PRAGMA_MATERIALIZED_BUFFER_WRITER);
                                     if (bufferWriterEntity != null) {
                                         bufferWriter = bufferWriterEntity.pragmaValue;
                                     } else {
                                         bufferWriter =
-                                            ExecEngineConstants.MATERIALIZED_BUFFER_WRITER;
+                                                ExecEngineConstants.MATERIALIZED_BUFFER_WRITER;
                                     }
 
                                     log.trace("Adding operator: " + op.operatorName + "-W-" + "P-"
-                                        + part);
+                                            + part);
                                     OperatorEntity write = partialPlan.addOperator(
-                                        new Operator(op.operatorName + "-W-" + "P-" + part,
-                                            bufferWriter, writeParameters, "", op.containerName,
-                                            null));
+                                            new Operator(op.operatorName + "-W-" + "P-" + part,
+                                                    bufferWriter, writeParameters, "", op.containerName,
+                                                    null));
 
 
-                /* Create and register the active operator */
+                                    /* Create and register the active operator */
                                     ActiveOperator acOp = new ActiveOperator(write, null, this);
                                     acOp.isActive = true;
                                     this.state.addActiveObject(write.operatorName, acOp);
                                     OperatorLinkEntity connect = state.getPlan()
-                                        .getOperatorLink(to1.operatorName, to.operatorName);
+                                            .getOperatorLink(to1.operatorName, to.operatorName);
 
-                /* Create the connections */
+                                    /* Create the connections */
                                     partialPlan.addOperatorLink(
-                                        new OperatorLink(op.operatorName, write.operatorName,
-                                            op.containerName, connect.paramList));
+                                            new OperatorLink(op.operatorName, write.operatorName,
+                                                    op.containerName, connect.paramList));
 
                                 } else {
                                     this.state.addMaterializedBuffer(
-                                        op.operatorName + "_" + to.operatorName,
-                                        partToMatBuff.get(part));
+                                            op.operatorName + "_" + to.operatorName,
+                                            partToMatBuff.get(part));
                                 }
                             }
                         }
@@ -291,11 +291,11 @@ public class OperatorGroup {
                     log.trace(op.operatorName + " -> " + to.operatorName);
 
                     if (ops.containsKey(to.operatorName) == false && !to.type
-                        .equals(OperatorType.dataTransfer)) {
+                            .equals(OperatorType.dataTransfer)) {
                         addContainer(to.containerName, to.container);
                         String part = null;
                         for (Parameter p : state.getPlan()
-                            .getOperatorLink(op.operatorName, to.operatorName).paramList) {
+                                .getOperatorLink(op.operatorName, to.operatorName).paramList) {
                             if (p.name.equals("part")) {
                                 part = p.value;
                             }
@@ -305,20 +305,20 @@ public class OperatorGroup {
                         }
                         if (!partToMatBuff.containsKey(part)) {
                             String fileName =
-                                op.operatorName + "_P_" + part + ".S-" + state.getPlanSessionID()
-                                    .getLongId();
-            /* Register the materialized buffer */
+                                    op.operatorName + "_P_" + part + ".S-" + state.getPlanSessionID()
+                                            .getLongId();
+                            /* Register the materialized buffer */
                             MaterializedBuffer matBuff =
-                                new MaterializedBuffer(op.operatorName, fileName, op.containerName);
+                                    new MaterializedBuffer(op.operatorName, fileName, op.containerName);
                             partToMatBuff.put(part, matBuff);
                             // Register the buffer pool session
                             ActiveBufferPool bufferPool =
-                                new ActiveBufferPool(matBuff.fileName, matBuff, null, this);
+                                    new ActiveBufferPool(matBuff.fileName, matBuff, null, this);
 
                             this.state.addActiveObject(matBuff.fileName, bufferPool);
                             this.state
-                                .addMaterializedBuffer(op.operatorName + "_" + to.operatorName,
-                                    matBuff);
+                                    .addMaterializedBuffer(op.operatorName + "_" + to.operatorName,
+                                            matBuff);
                             this.outputBufferPoolSessions.add(matBuff);
 
                             log.trace("FILENAME:::: ADD :::: " + op.operatorName);
@@ -326,18 +326,18 @@ public class OperatorGroup {
                             LinkedList<Parameter> writeParameters = new LinkedList<>();
                             writeParameters.add(new Parameter("Name", fileName));
                             writeParameters.add(new Parameter(OperatorEntity.MEMORY_PARAM,
-                                String.valueOf(dataMaterializationMem)));
+                                    String.valueOf(dataMaterializationMem)));
                             writeParameters.add(new Parameter(OperatorEntity.BEHAVIOR_PARAM,
-                                String.valueOf(OperatorBehavior.store_and_forward)));
+                                    String.valueOf(OperatorBehavior.store_and_forward)));
                             writeParameters.add(new Parameter(OperatorEntity.TYPE_PARAM,
-                                String.valueOf(OperatorType.dataMaterialization)));
+                                    String.valueOf(OperatorType.dataMaterialization)));
                             writeParameters.add(new Parameter(OperatorEntity.CATEGORY_PARAM,
-                                op.category + "_W_" + OperatorCategory.dt));
+                                    op.category + "_W_" + OperatorCategory.dt));
 
                             String bufferWriter;
                             state.getPlan().getOperatorLink(op.operatorName, to.operatorName);
                             PragmaEntity bufferWriterEntity = state.getPlan()
-                                .getPragma(ExecEngineConstants.PRAGMA_MATERIALIZED_BUFFER_WRITER);
+                                    .getPragma(ExecEngineConstants.PRAGMA_MATERIALIZED_BUFFER_WRITER);
                             if (bufferWriterEntity != null) {
                                 bufferWriter = bufferWriterEntity.pragmaValue;
                             } else {
@@ -346,25 +346,25 @@ public class OperatorGroup {
 
                             log.trace("Adding operator: " + op.operatorName + "-W-" + "P-" + part);
                             OperatorEntity write = partialPlan.addOperator(
-                                new Operator(op.operatorName + "-W-" + "P-" + part, bufferWriter,
-                                    writeParameters, "", op.containerName, null));
+                                    new Operator(op.operatorName + "-W-" + "P-" + part, bufferWriter,
+                                            writeParameters, "", op.containerName, null));
 
-            /* Create and register the active operator */
+                            /* Create and register the active operator */
                             ActiveOperator acOp = new ActiveOperator(write, null, this);
                             acOp.isActive = true;
                             this.state.addActiveObject(write.operatorName, acOp);
                             OperatorLinkEntity connect =
-                                state.getPlan().getOperatorLink(op.operatorName, to.operatorName);
+                                    state.getPlan().getOperatorLink(op.operatorName, to.operatorName);
 
-            /* Create the connections */
+                            /* Create the connections */
                             partialPlan.addOperatorLink(
-                                new OperatorLink(op.operatorName, write.operatorName,
-                                    connect.containerName, connect.paramList));
+                                    new OperatorLink(op.operatorName, write.operatorName,
+                                            connect.containerName, connect.paramList));
 
                         } else {
                             this.state
-                                .addMaterializedBuffer(op.operatorName + "_" + to.operatorName,
-                                    partToMatBuff.get(part));
+                                    .addMaterializedBuffer(op.operatorName + "_" + to.operatorName,
+                                            partToMatBuff.get(part));
                         }
 
                     }
@@ -375,18 +375,18 @@ public class OperatorGroup {
     }
 
     private void addContainer(String containerName, EntityName entityName) throws SemanticError {
-    /* Add the container */
+        /* Add the container */
         if (partialPlan.isDefined(containerName) == false) {
             partialPlan.addContainer(
-                new Container(containerName, entityName.getName(), entityName.getPort(),
-                    entityName.getDataTransferPort()));
+                    new Container(containerName, entityName.getName(), entityName.getPort(),
+                            entityName.getDataTransferPort()));
         }
     }
 
     public ActiveOperatorGroup createNewActiveGroup(ContainerSessionID containerSessionID)
-        throws SemanticError {
+            throws SemanticError {
         ActiveOperatorGroup group =
-            new ActiveOperatorGroup(activeOperatorGroups.size(), this, containerSessionID);
+                new ActiveOperatorGroup(activeOperatorGroups.size(), this, containerSessionID);
         activeOperatorGroups.add(group);
         return group;
     }
@@ -414,7 +414,8 @@ public class OperatorGroup {
         return group.setError(entity, exception);
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return operatorMap.values().toString();
     }
 }

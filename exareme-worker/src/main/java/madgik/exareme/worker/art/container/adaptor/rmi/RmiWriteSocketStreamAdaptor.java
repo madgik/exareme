@@ -17,28 +17,31 @@ import java.rmi.ServerException;
  * @author herald
  */
 public class RmiWriteSocketStreamAdaptor extends RmiRemoteObject<WriteSocketStreamAdaptorProxy>
-    implements WriteSocketStreamAdaptor {
+        implements WriteSocketStreamAdaptor {
 
     private SocketBuffer socket = null;
     private EntityName regEntityName = null;
 
     public RmiWriteSocketStreamAdaptor(String name, SocketBuffer socket, EntityName regEntityName)
-        throws RemoteException {
+            throws RemoteException {
         super(name);
         this.regEntityName = regEntityName;
         this.socket = socket;
     }
 
-    @Override public EntityName getNetEntityName() throws RemoteException {
+    @Override
+    public EntityName getNetEntityName() throws RemoteException {
         return socket.getNetEntityName();
     }
 
-    @Override public WriteSocketStreamAdaptorProxy createProxy() throws RemoteException {
+    @Override
+    public WriteSocketStreamAdaptorProxy createProxy() throws RemoteException {
         super.register();
         return new RmiWriteSocketStreamAdaptorProxy(super.getRegEntryName(), socket, regEntityName);
     }
 
-    @Override public void close() throws RemoteException {
+    @Override
+    public void close() throws RemoteException {
         try {
             super.unregister();
         } catch (IOException e) {

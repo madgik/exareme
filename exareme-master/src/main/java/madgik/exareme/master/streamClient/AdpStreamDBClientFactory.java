@@ -15,7 +15,7 @@ import java.rmi.RemoteException;
 public class AdpStreamDBClientFactory {
 
     public static AdpStreamDBClient createOptiqueStreamDBClient(AdpDBManager manager,
-        AdpDBClientProperties properties) throws RemoteException {
+                                                                AdpDBClientProperties properties) throws RemoteException {
         return new RmiOptiqueStreamAdpDBClient(manager, properties);
     }
 

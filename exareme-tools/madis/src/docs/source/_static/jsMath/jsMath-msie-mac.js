@@ -23,7 +23,6 @@
  */
 
 
-
 /*
  *  MSIE crashes if it changes the page too quickly, so we add a
  *  delay between processing math entries.  Unfortunately, this really

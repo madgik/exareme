@@ -30,33 +30,33 @@ public class RmiAdpDBSelectScheduler {
 
     static {
         runTimeParams.disk_throughput__MB_SEC =
-            AdpDBProperties.getAdpDBProps().getFloat(PROPS + "runtime.diskThroughput");
+                AdpDBProperties.getAdpDBProps().getFloat(PROPS + "runtime.diskThroughput");
         runTimeParams.network_speed__MB_SEC =
-            AdpDBProperties.getAdpDBProps().getFloat(PROPS + "runtime.networkSpeed");
+                AdpDBProperties.getAdpDBProps().getFloat(PROPS + "runtime.networkSpeed");
         runTimeParams.quantum__SEC =
-            AdpDBProperties.getAdpDBProps().getFloat(PROPS + "runtime.quantum");
+                AdpDBProperties.getAdpDBProps().getFloat(PROPS + "runtime.quantum");
         exhaustiveThreshold = new BigInteger(
-            AdpDBProperties.getAdpDBProps().getString(PROPS + "whatif.exhaustiveThreshold"));
+                AdpDBProperties.getAdpDBProps().getString(PROPS + "whatif.exhaustiveThreshold"));
     }
 
     //todo like our demo main for plan generation :)
     public static SolutionSpace schedule(ConcreteQueryGraph graph,
-        AssignedOperatorFilter subgraphFilter, ArrayList<ContainerResources> containers,
-        ContainerFilter contFilter) throws RemoteException {
+                                         AssignedOperatorFilter subgraphFilter, ArrayList<ContainerResources> containers,
+                                         ContainerFilter contFilter) throws RemoteException {
         int algIndex = AdpDBProperties.getAdpDBProps().getInt(PROPS + "algorithm.index");
 
         String schedulerClassName =
-            "madgik.exareme.master.queryProcessor.optimizer.scheduler." + AdpDBProperties
-                .getAdpDBProps().getString(PROPS + "algorithm." + algIndex + ".name");
+                "madgik.exareme.master.queryProcessor.optimizer.scheduler." + AdpDBProperties
+                        .getAdpDBProps().getString(PROPS + "algorithm." + algIndex + ".name");
         log.debug("Using search scheduler '" + schedulerClassName + "' ...");
 
         SolutionSpace space = new SolutionSpace();
         try {
             MultiObjectiveQueryScheduler scheduler =
-                (MultiObjectiveQueryScheduler) Class.forName(schedulerClassName).newInstance();
+                    (MultiObjectiveQueryScheduler) Class.forName(schedulerClassName).newInstance();
             space = scheduler
-                .callOptimizer(graph, subgraphFilter, containers, contFilter, runTimeParams,
-                    finProps);
+                    .callOptimizer(graph, subgraphFilter, containers, contFilter, runTimeParams,
+                            finProps);
         } catch (Exception e) {
             log.error("Cannot schedule graph", e);
             throw new SemanticException("Cannot schedule graph", e);

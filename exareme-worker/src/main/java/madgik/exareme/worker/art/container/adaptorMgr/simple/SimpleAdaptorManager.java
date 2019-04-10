@@ -20,8 +20,8 @@ import java.util.List;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class SimpleAdaptorManager implements AdaptorManagerInterface {
@@ -42,8 +42,9 @@ public class SimpleAdaptorManager implements AdaptorManagerInterface {
         return session;
     }
 
-    @Override public AdaptorID addReadAdaptor(CombinedReadAdaptor adaptor,
-        ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public AdaptorID addReadAdaptor(CombinedReadAdaptor adaptor,
+                                    ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
         AMSession session = getSession(sessionID);
         AMContainerSession cSession = session.getSession(containerSessionID);
 
@@ -55,8 +56,9 @@ public class SimpleAdaptorManager implements AdaptorManagerInterface {
         return adaptorID;
     }
 
-    @Override public AdaptorID addWriteAdaptor(CombinedWriteAdaptor adaptor,
-        ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public AdaptorID addWriteAdaptor(CombinedWriteAdaptor adaptor,
+                                     ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
         AMSession session = getSession(sessionID);
         AMContainerSession cSession = session.getSession(containerSessionID);
 
@@ -68,16 +70,18 @@ public class SimpleAdaptorManager implements AdaptorManagerInterface {
         return adaptorID;
     }
 
-    @Override public CombinedReadAdaptor getReadAdaptor(AdaptorID adaptorID,
-        ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public CombinedReadAdaptor getReadAdaptor(AdaptorID adaptorID,
+                                              ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
         AMSession session = getSession(sessionID);
         AMContainerSession cSession = session.getSession(containerSessionID);
 
         return cSession.getReadAdaptor(adaptorID);
     }
 
-    @Override public CombinedWriteAdaptor getWriteAdaptor(AdaptorID adaptorID,
-        ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public CombinedWriteAdaptor getWriteAdaptor(AdaptorID adaptorID,
+                                                ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
         AMSession session = getSession(sessionID);
         AMContainerSession cSession = session.getSession(containerSessionID);
 
@@ -86,7 +90,7 @@ public class SimpleAdaptorManager implements AdaptorManagerInterface {
 
     @Override
     public Triple<Long, List<CombinedReadAdaptor>, List<CombinedWriteAdaptor>> destroyContainerSession(
-        ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
+            ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
 
         AMSession session = getSession(sessionID);
         return session.destroySession(containerSessionID);
@@ -94,7 +98,7 @@ public class SimpleAdaptorManager implements AdaptorManagerInterface {
 
     @Override
     public Triple<Long, List<CombinedReadAdaptor>, List<CombinedWriteAdaptor>> destroySessions(
-        PlanSessionID sessionID) throws RemoteException {
+            PlanSessionID sessionID) throws RemoteException {
 
         AMSession session = getSession(sessionID);
         return session.destroyAllSessions();
@@ -102,15 +106,15 @@ public class SimpleAdaptorManager implements AdaptorManagerInterface {
 
     @Override
     public Triple<Long, List<CombinedReadAdaptor>, List<CombinedWriteAdaptor>> destroyAllSessions()
-        throws RemoteException {
+            throws RemoteException {
 
         Triple<Long, List<CombinedReadAdaptor>, List<CombinedWriteAdaptor>> result =
-            new Triple<Long, List<CombinedReadAdaptor>, List<CombinedWriteAdaptor>>(0L,
-                new LinkedList<CombinedReadAdaptor>(), new LinkedList<CombinedWriteAdaptor>());
+                new Triple<Long, List<CombinedReadAdaptor>, List<CombinedWriteAdaptor>>(0L,
+                        new LinkedList<CombinedReadAdaptor>(), new LinkedList<CombinedWriteAdaptor>());
 
         for (AMSession session : sessionMap.values()) {
             Triple<Long, List<CombinedReadAdaptor>, List<CombinedWriteAdaptor>> r =
-                session.destroyAllSessions();
+                    session.destroyAllSessions();
 
             result.a += r.a;
             result.b.addAll(r.b);

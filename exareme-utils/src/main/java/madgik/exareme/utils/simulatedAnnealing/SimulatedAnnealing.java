@@ -20,7 +20,7 @@ public abstract class SimulatedAnnealing implements Serializable {
     private Temperature temperature = null;
 
     public SimulatedAnnealing(int maxSteps, int stepsNotImprovedTermination,
-        Temperature temperature) {
+                              Temperature temperature) {
         this.maxSteps = maxSteps;
         this.stepsNotImprovedTermination = stepsNotImprovedTermination;
         this.temperature = temperature;
@@ -36,7 +36,7 @@ public abstract class SimulatedAnnealing implements Serializable {
      *  B: B(A(state)) -> state
      */
     public abstract Pair<Transformation, Transformation> getNeighbor(State state, Random rand)
-        throws RemoteException;
+            throws RemoteException;
 
     public State search() throws RemoteException {
         State bestState = getInitial();
@@ -55,16 +55,16 @@ public abstract class SimulatedAnnealing implements Serializable {
             double cost = state.getCost();
             state = neighbor.a.apply(state);
 
-      /* Always keep a better state */
+            /* Always keep a better state */
             if (bestState.getCost() > state.getCost()) {
                 bestState = state.clone();
 
                 lastBestStep = k;
             } else {
-        /* Keep the solution with a probability */
+                /* Keep the solution with a probability */
                 if (propability(cost, state.getCost(), temperature.getTemperature(k)) <= rand
-                    .nextDouble()) {
-          /* do not accept the solution */
+                        .nextDouble()) {
+                    /* do not accept the solution */
                     state = neighbor.b.apply(state);
                 }
             }
@@ -74,7 +74,7 @@ public abstract class SimulatedAnnealing implements Serializable {
     }
 
     public double propability(double cost, double newCost, double temperature)
-        throws RemoteException {
+            throws RemoteException {
         if (newCost < cost) {
             return 1.0;
         }

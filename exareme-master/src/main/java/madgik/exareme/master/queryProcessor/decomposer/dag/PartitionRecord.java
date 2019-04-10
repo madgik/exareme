@@ -51,7 +51,8 @@ public class PartitionRecord {
         return true;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "PartitionRecord{" + "record=" + record + '}';
     }
 

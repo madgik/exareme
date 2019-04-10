@@ -23,14 +23,16 @@ public class MemoKey {
         return this.n;
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int hash = 7;
         hash = 31 * hash + (this.n != null ? this.n.hashCode() : 0);
         hash = 31 * hash + (this.c != null ? this.c.hashCode() : 0);
         return hash;
     }
 
-    @Override public boolean equals(Object obj) {
+    @Override
+    public boolean equals(Object obj) {
         if (obj == null) {
             return false;
         }
@@ -46,12 +48,13 @@ public class MemoKey {
         }
         return true;
     }
-    
-    public Column getColumn(){
-    	return this.c;
+
+    public Column getColumn() {
+        return this.c;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "MemoKey{" + "n=" + n.getObject().toString() + ", c=" + c + '}';
     }
 

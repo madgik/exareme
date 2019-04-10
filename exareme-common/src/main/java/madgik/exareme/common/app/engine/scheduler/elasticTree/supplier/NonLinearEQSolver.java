@@ -22,7 +22,7 @@ public class NonLinearEQSolver {
     private static final String NL_HUMAN = "\n";
 
     private static String generateFunction(TreeStats stats, double[] containersPerLevel,
-        double predictionWindow, String end, String nl) {
+                                           double predictionWindow, String end, String nl) {
         double qSize = SystemConstants.SETTINGS.RUNTIME_PROPS.quantum__SEC;
         double qCost = SystemConstants.SETTINGS.FIN_PROPS.timeQuantumCost;
         double netSpeed = SystemConstants.SETTINGS.RUNTIME_PROPS.network_speed__MB_SEC;
@@ -47,8 +47,8 @@ public class NonLinearEQSolver {
         func.append("  dataContDiff <- abs(dataContNum - levelsv[1])").append(end);
         //    func.append("  dataMove <- dataSize * (1 - (1 / 1.8 ^ dataContDiff))").append("\n\n");
         func.append(
-            "  dataMove <- dataSize * (1 - min(dataContNum / levelsv[1], levelsv[1] / dataContNum))")
-            .append(end + nl);
+                "  dataMove <- dataSize * (1 - min(dataContNum / levelsv[1], levelsv[1] / dataContNum))")
+                .append(end + nl);
 
         // Load vector
         func.append("  cpuv <- c(" + stats.CPULoadPerLevel[0]);
@@ -93,7 +93,7 @@ public class NonLinearEQSolver {
 
         // Data repartition cost
         func.append("  dataTime <- dataReplication * dataMove / (netSpeed * levelsv[1])")
-            .append(end);
+                .append(end);
 
         // Time
         func.append("  timev <- cpuv / levelsv + netv / (netSpeed * levelsv)").append(end);
@@ -105,12 +105,12 @@ public class NonLinearEQSolver {
         // SLAs
         func.append("  futureQueriesDataV <- gueriesv * dataTime / hist_window").append(end + nl);
         func.append("  futureQueriesV <- gueriesv * (pred_window - dataTime) / hist_window")
-            .append(end + nl);
+                .append(end + nl);
 
         func.append("  avgQueryDataCost <- futureQueriesDataV * alphav * exp(-qTimeData / gammav)")
-            .append(end);
+                .append(end);
         func.append("  avgQueryCost <- futureQueriesV * alphav * exp(-qTime / gammav)")
-            .append(end + nl);
+                .append(end + nl);
 
         func.append("  revQueryData <- sum(avgQueryDataCost)").append(end);
         func.append("  revQuery <- sum(avgQueryCost)").append(end);
@@ -126,13 +126,13 @@ public class NonLinearEQSolver {
     }
 
     public static double optimize(TreeStats stats, double[] containersPerLevel,
-        double predictionWindow) throws RemoteException {
+                                  double predictionWindow) throws RemoteException {
         String func =
-            generateFunction(stats, containersPerLevel, predictionWindow, END_CODE, NL_CODE);
+                generateFunction(stats, containersPerLevel, predictionWindow, END_CODE, NL_CODE);
 
         if (TreeConstants.SETTINGS.VERBOSE_OUTPUT >= 2) {
             System.out.println(
-                generateFunction(stats, containersPerLevel, predictionWindow, END_HUMAN, NL_HUMAN));
+                    generateFunction(stats, containersPerLevel, predictionWindow, END_HUMAN, NL_HUMAN));
         }
 
         double max = TreeConstants.SETTINGS.MAX_NUM_CONTAINERS;
@@ -152,6 +152,6 @@ public class NonLinearEQSolver {
         minv[minv.length - 1] = minRoot;
 
         return RInterface.optimize(func.toString(), stats.currentContainersPerLevel, minv, maxv,
-            containersPerLevel);
+                containersPerLevel);
     }
 }

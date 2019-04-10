@@ -16,7 +16,7 @@ import java.util.Date;
  * tasks, Left and Right Working.
  *
  * @author Herald Kllapi <br> University of Athens / Department of Informatics
- *         and Telecommunications.
+ * and Telecommunications.
  * @since 1.0
  */
 public class OperatorTask extends StatusVariable {
@@ -46,7 +46,8 @@ public class OperatorTask extends StatusVariable {
      * @param svStatus The new value.
      * @throws MonitorException
      */
-    @Override public void setStatus(Object svStatus) throws MonitorException {
+    @Override
+    public void setStatus(Object svStatus) throws MonitorException {
         throw new MonitorException("Not supported!");
     }
 

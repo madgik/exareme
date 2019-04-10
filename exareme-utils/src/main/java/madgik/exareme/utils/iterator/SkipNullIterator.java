@@ -18,7 +18,8 @@ public class SkipNullIterator<T> implements Iterator<T> {
         this.iter = iter;
     }
 
-    @Override public boolean hasNext() {
+    @Override
+    public boolean hasNext() {
         if (current != null) {
             return true;
         }
@@ -33,13 +34,15 @@ public class SkipNullIterator<T> implements Iterator<T> {
         return (current != null);
     }
 
-    @Override public T next() {
+    @Override
+    public T next() {
         T next = current;
         current = null;
         return next;
     }
 
-    @Override public void remove() {
+    @Override
+    public void remove() {
         throw new RuntimeException("Not supported");
     }
 }

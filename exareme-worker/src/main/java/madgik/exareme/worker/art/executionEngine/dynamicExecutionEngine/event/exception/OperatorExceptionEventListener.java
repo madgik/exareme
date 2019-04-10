@@ -15,14 +15,15 @@ import java.rmi.RemoteException;
  */
 public class OperatorExceptionEventListener implements EventListener<OperatorExceptionEvent> {
     public static final OperatorExceptionEventListener instance =
-        new OperatorExceptionEventListener();
+            new OperatorExceptionEventListener();
     private static final long serialVersionUID = 1L;
 
     public OperatorExceptionEventListener() {
     }
 
-    @Override public void processed(OperatorExceptionEvent event, RemoteException exception,
-        EventProcessor processor) {
+    @Override
+    public void processed(OperatorExceptionEvent event, RemoteException exception,
+                          EventProcessor processor) {
         if (exception != null) {
             LogUtils.logException("OperatorException", exception);
             PlanEventScheduler.engineInternalException(event, exception);

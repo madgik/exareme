@@ -12,8 +12,8 @@ import java.rmi.RemoteException;
 
 /**
  * @author Dimitris Paparas<br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class RegistryUpdateDeamon extends Thread {
@@ -41,7 +41,8 @@ public class RegistryUpdateDeamon extends Thread {
         this.interrupt();
     }
 
-    @Override public void run() {
+    @Override
+    public void run() {
         while (!stop) {
             try {
                 Thread.sleep(period);

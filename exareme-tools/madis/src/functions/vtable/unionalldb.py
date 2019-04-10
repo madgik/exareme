@@ -22,14 +22,15 @@ Usage examples:
   select * from (unionalldb start:1 end:4 'dbname');
 
 """
-import vtbase
-import functions
 import apsw
-import os
-import sys
+import functions
 import gc
+import os
 
-registered=True
+import vtbase
+
+registered = True
+
 
 class UnionAllDB(vtbase.VT):
     def findschema(self):
@@ -38,16 +39,16 @@ class UnionAllDB(vtbase.VT):
             schema = self.xcursor.getdescription()
         except apsw.ExecutionCompleteError:
             # Else create a tempview and query the view
-            list(self.xcursor.execute('create temp view temp.___schemaview as '+ self.query + ';'))
+            list(self.xcursor.execute('create temp view temp.___schemaview as ' + self.query + ';'))
             schema = [(x[1], x[2]) for x in list(self.xcursor.execute('pragma table_info(___schemaview);'))]
             list(self.xcursor.execute('drop view temp.___schemaview;'))
 
         return schema
 
-    def VTiter(self, *parsedArgs,**envars):
-        opts=self.full_parse(parsedArgs)
+    def VTiter(self, *parsedArgs, **envars):
+        opts = self.full_parse(parsedArgs)
 
-        self.query=None
+        self.query = None
 
         self.start = 0
         self.end = sys.maxint
@@ -59,12 +60,12 @@ class UnionAllDB(vtbase.VT):
             self.end = int(opts[1]['end'])
 
         try:
-            dbname=opts[0][0]
+            dbname = opts[0][0]
         except:
-            raise functions.OperatorError(__name__.rsplit('.')[-1],"A DB filename should be provided")
+            raise functions.OperatorError(__name__.rsplit('.')[-1], "A DB filename should be provided")
 
         try:
-            self.query=opts[1]['query']
+            self.query = opts[1]['query']
         except:
             pass
 
@@ -72,31 +73,31 @@ class UnionAllDB(vtbase.VT):
 
         tablename = os.path.split(self.dbfile)[1]
         if 'tablename' in opts[1]:
-            tablename=opts[1]['tablename']
+            tablename = opts[1]['tablename']
 
         if 'table' in opts[1]:
-            tablename=opts[1]['table']
+            tablename = opts[1]['table']
 
         if self.query == None:
-            self.query = 'select * from '+tablename+';'
+            self.query = 'select * from ' + tablename + ';'
 
         self.part = self.start
         try:
-            self.xcon=apsw.Connection(self.dbfile+'.' + str(self.part) + '.db', flags=apsw.SQLITE_OPEN_READONLY)
-        except Exception,e:
+            self.xcon = apsw.Connection(self.dbfile + '.' + str(self.part) + '.db', flags=apsw.SQLITE_OPEN_READONLY)
+        except Exception, e:
             print e
-            raise functions.OperatorError(__name__.rsplit('.')[-1],"DB could not be opened")
+            raise functions.OperatorError(__name__.rsplit('.')[-1], "DB could not be opened")
 
-        self.xcursor=self.xcon.cursor()
-        self.xexec=self.xcursor.execute(self.query)
+        self.xcursor = self.xcon.cursor()
+        self.xexec = self.xcursor.execute(self.query)
         yield self.findschema()
 
         while self.part < self.end:
             try:
-                self.xcon = apsw.Connection(self.dbfile+'.' + str(self.part) + '.db', flags=apsw.SQLITE_OPEN_READONLY)
+                self.xcon = apsw.Connection(self.dbfile + '.' + str(self.part) + '.db', flags=apsw.SQLITE_OPEN_READONLY)
                 self.xcursor = self.xcon.cursor()
-                self.xexec =self.xcursor.execute(self.query)
-            except apsw.CantOpenError,e:
+                self.xexec = self.xcursor.execute(self.query)
+            except apsw.CantOpenError, e:
                 raise StopIteration
 
             gc.disable()
@@ -105,6 +106,7 @@ class UnionAllDB(vtbase.VT):
             gc.enable()
 
             self.part += 1
+
 
 def Source():
     return vtbase.VTGenerator(UnionAllDB)
@@ -116,11 +118,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

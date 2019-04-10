@@ -12,40 +12,47 @@ and returns the results of the last target query.
 ***Notice also that forwards the connecntions to the target environment.
 """
 
-import os, sys, re, apsw
+import apsw
 import functions
+import os
+import re
 
 comment_line = re.compile(r'/\*.*?\*/(.*)$')
 registered = True
 
+
 def filterlinecomment(s):
-    if re.match(r'\s*--', s, re.DOTALL|re.UNICODE):
+    if re.match(r'\s*--', s, re.DOTALL | re.UNICODE):
         return ''
     else:
         return s
 
+
 # TODO Fix bug, break queries same line
 def breakquery(q):
     if len(q) > 1:
-        raise functions.OperatorError(__name__.rsplit('.')[-1], "Ambiguous query column, result has more than one columns")
+        raise functions.OperatorError(__name__.rsplit('.')[-1],
+                                      "Ambiguous query column, result has more than one columns")
     st = ''
     for row in q[0].splitlines():
         strow = filterlinecomment(row)
         if strow == '':
             continue
         if st != '':
-            st += '\n'+strow
+            st += '\n' + strow
         else:
             st += strow
         if apsw.complete(st):
             yield st
             st = ''
 
-    if len(st) > 0 and not re.match(r'\s+$', st, re.DOTALL| re.UNICODE):
+    if len(st) > 0 and not re.match(r'\s+$', st, re.DOTALL | re.UNICODE):
         if len(st) > 35:
-            raise functions.OperatorError(__name__.rsplit('.')[-1], "Incomplete statement found : %s ... %s" % (st[:15], st[-15:]))
+            raise functions.OperatorError(__name__.rsplit('.')[-1],
+                                          "Incomplete statement found : %s ... %s" % (st[:15], st[-15:]))
         else:
             raise functions.OperatorError(__name__.rsplit('.')[-1], "Incomplete statement found : %s" % (st,))
+
 
 class ExecNSelectVT(functions.vtable.vtbase.VT):
 
@@ -53,8 +60,8 @@ class ExecNSelectVT(functions.vtable.vtbase.VT):
 
         # default  parsing
         largs, dictargs = self.full_parse(parsedArgs)
-        #print largs
-        #print dictargs
+        # print largs
+        # print dictargs
 
         # get default connection
         connection = envars['db']
@@ -65,9 +72,9 @@ class ExecNSelectVT(functions.vtable.vtbase.VT):
 
         # get query
         if 'query' not in dictargs:
-            raise functions.OperatorError(__name__.rsplit('.')[-1],"No query argument.")
-            #print "error 1"
-        else :
+            raise functions.OperatorError(__name__.rsplit('.')[-1], "No query argument.")
+            # print "error 1"
+        else:
             query = dictargs['query']
 
         # set up variables
@@ -85,9 +92,9 @@ class ExecNSelectVT(functions.vtable.vtbase.VT):
         for key in largs:
             if hasattr(functions.variables, key):
                 setattr(newvars, key, getattr(functions.variables, key))
-            else :
+            else:
                 raise functions.OperatorError(__name__.rsplit('.')[-1], "Variable %s doesn't exist" % (key,))
-                #print "error 2"
+                # print "error 2"
         for key, value in dictargs.items():
             setattr(newvars, key, value)
         functions.variables = newvars
@@ -106,21 +113,21 @@ class ExecNSelectVT(functions.vtable.vtbase.VT):
                     list(tcursor.execute("attach database '{0}' as {1};".format(dbfile, dbname)))
 
             counter = 0
-            results = cursor.execute(query, parse = False)
+            results = cursor.execute(query, parse=False)
             for result in results:
                 for tquery in breakquery(result):
                     # print "tquery", tquery
                     # print "tqlast", tqlast
                     if tqlast != '':
                         list(tcursor.execute(tqlast))
-                        counter+=1
+                        counter += 1
                     tqlast = tquery
-            #print "tqlast", len(tqlast)
+            # print "tqlast", len(tqlast)
             if len(tqlast) > 0:
                 tresults = tcursor.execute(tqlast)
-                counter+=1
-            
-                #print 'lala3'
+                counter += 1
+
+                # print 'lala3'
                 try:
                     yield tcursor.getdescriptionsafe()
                 except apsw.ExecutionCompleteError:
@@ -145,15 +152,16 @@ class ExecNSelectVT(functions.vtable.vtbase.VT):
             import traceback
             traceback.print_exc()
             raise functions.OperatorError(__name__.rsplit('.')[-1], "Error in query no. %d - %s" % (counter, str(ex)))
-            #print "error 3"
+            # print "error 3"
         # restore env
         functions.variables = oldvars
         if newpath:
             os.chdir(path)
-         
+
 
 def Source():
     return functions.vtable.vtbase.VTGenerator(ExecNSelectVT)
+
 
 if not ('.' in __name__):
     """
@@ -162,10 +170,12 @@ if not ('.' in __name__):
     """
     import sys
     from functions import *
+
     testfunction()
 
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

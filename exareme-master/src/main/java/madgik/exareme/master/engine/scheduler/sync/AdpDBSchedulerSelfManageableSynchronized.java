@@ -23,33 +23,38 @@ public class AdpDBSchedulerSelfManageableSynchronized implements AdpDBSchedulerS
         this.scheduler = scheduler;
     }
 
-    @Override public AdpDBSchedulerInfo getInfo() throws RemoteException {
+    @Override
+    public AdpDBSchedulerInfo getInfo() throws RemoteException {
         synchronized (scheduler) {
             return scheduler.getInfo();
         }
     }
 
-    @Override public QueryScriptStatus schedule(String query, String database)
-        throws RemoteException {
+    @Override
+    public QueryScriptStatus schedule(String query, String database)
+            throws RemoteException {
         synchronized (scheduler) {
             return scheduler.schedule(query, database);
         }
     }
 
-    @Override public QueryScriptStatus schedule(QueryScript query, String database)
-        throws RemoteException {
+    @Override
+    public QueryScriptStatus schedule(QueryScript query, String database)
+            throws RemoteException {
         synchronized (scheduler) {
             return scheduler.schedule(query, database);
         }
     }
 
-    @Override public void stopScheduler() throws RemoteException {
+    @Override
+    public void stopScheduler() throws RemoteException {
         synchronized (scheduler) {
             scheduler.stopScheduler();
         }
     }
 
-    @Override public List<QueryScriptStatus> getAutoScheduledQueries() throws RemoteException {
+    @Override
+    public List<QueryScriptStatus> getAutoScheduledQueries() throws RemoteException {
         synchronized (scheduler) {
             return scheduler.getAutoScheduledQueries();
         }

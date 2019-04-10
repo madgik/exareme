@@ -20,19 +20,19 @@ public class TreeContainerTopology implements ContainerTopology {
 
     // todo: Replace HashMaps with bit search! 3:)
     private HashMap<Integer, ContainerTopologyNode> roots =
-        new HashMap<Integer, ContainerTopologyNode>();
+            new HashMap<Integer, ContainerTopologyNode>();
     private HashMap<Integer, ContainerTopologyNode> internals =
-        new HashMap<Integer, ContainerTopologyNode>();
+            new HashMap<Integer, ContainerTopologyNode>();
     private HashMap<Integer, ContainerTopologyNode> leaves =
-        new HashMap<Integer, ContainerTopologyNode>();
+            new HashMap<Integer, ContainerTopologyNode>();
 
     private int rootLevel = TreeContainerTopology.LEAF_LEVEL;
     private HashMap<Integer, ContainerTopologyNode> allNodes =
-        new HashMap<Integer, ContainerTopologyNode>();
+            new HashMap<Integer, ContainerTopologyNode>();
 
     public int addLeafContainer() {
         ContainerTopologyNode leafNode =
-            new ContainerTopologyNode(TreeContainerTopology.LEAF_LEVEL);
+                new ContainerTopologyNode(TreeContainerTopology.LEAF_LEVEL);
         this.leaves.put(leafNode.getId(), leafNode);
         this.allNodes.put(leafNode.getId(), leafNode);
 
@@ -40,7 +40,7 @@ public class TreeContainerTopology implements ContainerTopology {
     }
 
     public int addInternalContainer(List<Integer> children) {
-    /* Container's level is greater by one, of his children's highest level */
+        /* Container's level is greater by one, of his children's highest level */
         int maxLevel = this.getMaxLevelOfChildren(children);
         ContainerTopologyNode internalNode = new ContainerTopologyNode(maxLevel + 1);
 
@@ -52,7 +52,7 @@ public class TreeContainerTopology implements ContainerTopology {
     }
 
     public int addRootContainer(List<Integer> children) {
-    /* Container's level is greater by one, of his children's highest level */
+        /* Container's level is greater by one, of his children's highest level */
         int maxLevel = this.getMaxLevelOfChildren(children);
         ContainerTopologyNode rootNode = new ContainerTopologyNode(maxLevel + 1);
         rootNode.addChildren(children);
@@ -74,7 +74,8 @@ public class TreeContainerTopology implements ContainerTopology {
         return maxLevel;
     }
 
-    @Override public int getContainerLevel(int containerId) {
+    @Override
+    public int getContainerLevel(int containerId) {
         ContainerTopologyNode node = this.allNodes.get(containerId);
         if (node != null) {
             return node.getLevel();
@@ -83,7 +84,8 @@ public class TreeContainerTopology implements ContainerTopology {
         }
     }
 
-    @Override public List<Integer> getContainersAtLevel(int level) {
+    @Override
+    public List<Integer> getContainersAtLevel(int level) {
         List<Integer> containersAtLevel = new ArrayList<Integer>();
         for (ContainerTopologyNode node : this.allNodes.values()) {
             if (node.getLevel() == level) {
@@ -93,11 +95,13 @@ public class TreeContainerTopology implements ContainerTopology {
         return containersAtLevel;
     }
 
-    @Override public List<Integer> getContainersAtNextLevel(int level) {
+    @Override
+    public List<Integer> getContainersAtNextLevel(int level) {
         return this.getContainersAtLevel(level + 1);
     }
 
-    @Override public Integer getContainerAtLevel(int level, int index) {
+    @Override
+    public Integer getContainerAtLevel(int level, int index) {
         List<Integer> containersAtLevel = new ArrayList<Integer>();
         for (ContainerTopologyNode node : this.allNodes.values()) {
             if (node.getLevel() == level) {
@@ -107,15 +111,18 @@ public class TreeContainerTopology implements ContainerTopology {
         return containersAtLevel.get(index);
     }
 
-    @Override public int getHeight() {
+    @Override
+    public int getHeight() {
         return this.rootLevel + 1;
     }
 
-    @Override public int getRootLevel() {
+    @Override
+    public int getRootLevel() {
         return this.rootLevel;
     }
 
-    @Override public List<Integer> getChildrenOf(int containerId) {
+    @Override
+    public List<Integer> getChildrenOf(int containerId) {
         ContainerTopologyNode node = this.allNodes.get(containerId);
         if (node != null) {
             return node.getChildren();
@@ -123,7 +130,8 @@ public class TreeContainerTopology implements ContainerTopology {
         return null;
     }
 
-    @Override public int getChildrenCountOf(int containerId) {
+    @Override
+    public int getChildrenCountOf(int containerId) {
         ContainerTopologyNode node = this.allNodes.get(containerId);
         if (node != null) {
             return node.getChildren().size();
@@ -131,7 +139,8 @@ public class TreeContainerTopology implements ContainerTopology {
         return 0;
     }
 
-    @Override public List<Integer> getParentsOf(int containerId) {
+    @Override
+    public List<Integer> getParentsOf(int containerId) {
         List<Integer> parents = new ArrayList<Integer>();
         for (ContainerTopologyNode node : this.allNodes.values()) {
             if (node.getChildren().contains(containerId)) {
@@ -141,11 +150,13 @@ public class TreeContainerTopology implements ContainerTopology {
         return parents;
     }
 
-    @Override public ContainerResources getContainerResourcesOf(int containerId) {
+    @Override
+    public ContainerResources getContainerResourcesOf(int containerId) {
         return this.allNodes.get(containerId).getContainerResources();
     }
 
-    @Override public ArrayList<ContainerResources> getAllContainerResources() {
+    @Override
+    public ArrayList<ContainerResources> getAllContainerResources() {
         ArrayList<ContainerResources> resources = new ArrayList<ContainerResources>();
         for (ContainerTopologyNode node : this.allNodes.values()) {
             resources.add(node.getContainerResources());
@@ -153,11 +164,13 @@ public class TreeContainerTopology implements ContainerTopology {
         return resources;
     }
 
-    @Override public Set<Integer> getAllContainers() {
+    @Override
+    public Set<Integer> getAllContainers() {
         return this.allNodes.keySet();
     }
 
-    @Override public String getVizString() {
+    @Override
+    public String getVizString() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("digraph g{");
         for (ContainerTopologyNode root : this.allNodes.values()) {

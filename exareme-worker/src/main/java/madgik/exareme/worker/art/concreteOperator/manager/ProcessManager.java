@@ -14,8 +14,8 @@ import java.util.ArrayList;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class ProcessManager {
@@ -44,7 +44,7 @@ public class ProcessManager {
     }
 
     public Process createProcess(File directory, File out, File err, String... args)
-        throws RemoteException {
+            throws RemoteException {
         try {
             ProcessBuilder pb = new ProcessBuilder(args);
             log.debug("Creating process ...");
@@ -63,7 +63,7 @@ public class ProcessManager {
     }
 
     public Pair<String, String> createAndRunProcess(File directory, String... args)
-        throws RemoteException {
+            throws RemoteException {
         Process p = createProcess(directory, args);
         // Read stdout
         InputStreamConsumerThread stdout = new InputStreamConsumerThread(p.getInputStream(), false);

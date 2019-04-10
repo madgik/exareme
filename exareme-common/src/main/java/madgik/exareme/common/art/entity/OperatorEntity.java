@@ -29,7 +29,8 @@ public class OperatorEntity implements Accessible {
         epr = new EntityName(publicIP + ":" + port, publicIP, port);
     }
 
-    @Override public EntityName getEntityName() {
+    @Override
+    public EntityName getEntityName() {
         return epr;
     }
 }

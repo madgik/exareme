@@ -10,8 +10,8 @@ import java.io.Serializable;
  * candidate for scheduling.
  *
  * @author Herald Kllapi <br>
- *         herald@di.uoa.gr /
- *         University of Athens
+ * herald@di.uoa.gr /
+ * University of Athens
  * @since 1.0
  */
 public interface AssignedOperatorFilter extends Serializable {

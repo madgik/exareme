@@ -16,16 +16,17 @@ public class ExecuteDM extends AbstractNiNo {
 
     private static Logger log = Logger.getLogger(ExecuteDM.class);
 
-    @Override public void run() throws Exception {
+    @Override
+    public void run() throws Exception {
         log.trace("Parse DM Operator ...");
         AdpDBDMOperator dmOp =
-            Base64Util.decodeBase64(super.getParameterManager().getQueryString());
+                Base64Util.decodeBase64(super.getParameterManager().getQueryString());
 
         log.debug("Operator Name : " + super.getSessionManager().getOperatorName());
 
         log.trace("Create state ...");
         ExecuteQueryState state =
-            new ExecuteQueryState(dmOp, getDiskManager(), getProcessManager(), false);
+                new ExecuteQueryState(dmOp, getDiskManager(), getProcessManager(), false);
 
         log.debug("Execute build index ...");
         state.executeDM();

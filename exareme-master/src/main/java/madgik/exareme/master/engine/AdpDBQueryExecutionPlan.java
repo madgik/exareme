@@ -76,7 +76,8 @@ public class AdpDBQueryExecutionPlan implements Serializable {
         return input.queryID;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         StringBuilder str = new StringBuilder();
         str.append("State:");
         for (ConcreteOperator operator : state.graph.getOperators()) {

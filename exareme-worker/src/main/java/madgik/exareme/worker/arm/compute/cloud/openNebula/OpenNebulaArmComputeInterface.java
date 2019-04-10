@@ -27,7 +27,7 @@ public class OpenNebulaArmComputeInterface implements ContainerManagerInterface 
     private boolean created = false;
 
     public OpenNebulaArmComputeInterface(ContainerManagerStatus managerStatus)
-        throws RemoteException {
+            throws RemoteException {
         this.managerStatus = managerStatus;
 
         try {
@@ -39,63 +39,69 @@ public class OpenNebulaArmComputeInterface implements ContainerManagerInterface 
 
     @Override
     public ActiveContainer[] getContainers(int numOfContainers, ArmComputeSessionID sessionID)
-        throws RemoteException {
+            throws RemoteException {
 
         if (created == false) {
             manager.startContainer();
 
             ActiveContainer activeContainer =
-                new ActiveContainer(0, manager.getContainer().createProxy().getEntityName(), 0);
+                    new ActiveContainer(0, manager.getContainer().createProxy().getEntityName(), 0);
 
             created = true;
 
-            return new ActiveContainer[] {activeContainer};
+            return new ActiveContainer[]{activeContainer};
         } else {
             throw new AccessException("Cannot create more than one container!");
         }
     }
 
-    @Override public void stopContainer(ActiveContainer container, ArmComputeSessionID sessionID)
-        throws RemoteException {
+    @Override
+    public void stopContainer(ActiveContainer container, ArmComputeSessionID sessionID)
+            throws RemoteException {
         manager.stopContainer();
     }
 
-    @Override public ContainerManagerStatus getStatus() throws RemoteException {
+    @Override
+    public ContainerManagerStatus getStatus() throws RemoteException {
         return managerStatus;
     }
 
-    @Override public void startManager() throws RemoteException {
+    @Override
+    public void startManager() throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public void stopManager() throws RemoteException {
+    @Override
+    public void stopManager() throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public void closeSession(ArmComputeSessionID sessionID) throws RemoteException {
+    @Override
+    public void closeSession(ArmComputeSessionID sessionID) throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public ActiveContainer[] tryGetContainers(int numOfContainers, ArmComputeSessionID sessionID)
-        throws RemoteException {
+            throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public ActiveContainer[] getAtMostContainers(int numOfContainers, ArmComputeSessionID sessionID)
-        throws RemoteException {
+            throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public void setPattern(ArrayList<PatternElement> pattern, ArmComputeSessionID sessionID)
-        throws RemoteException {
+            throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public ArrayList<Pair<PatternElement, ActiveContainer>> getAtMostContainers(
-        ArmComputeSessionID sessionID) throws RemoteException {
+    @Override
+    public ArrayList<Pair<PatternElement, ActiveContainer>> getAtMostContainers(
+            ArmComputeSessionID sessionID) throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

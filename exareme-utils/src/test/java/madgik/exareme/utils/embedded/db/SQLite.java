@@ -31,7 +31,7 @@ public class SQLite {
         Connection conn = madgik.exareme.utils.embedded.db.SQLite.createConnection("");
         Statement stat = conn.createStatement();
         stat.executeUpdate(
-            "drop table if exists people; " + "create table people (name, occupation);");
+                "drop table if exists people; " + "create table people (name, occupation);");
 
         PreparedStatement prep = conn.prepareStatement("insert into people values (?, ?);");
 

@@ -11,12 +11,12 @@ import madgik.exareme.worker.art.remote.RmiObjectProxy;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class RmiComputeSessionStatusManagerProxy extends RmiObjectProxy<ComputeSessionStatusManager>
-    implements ComputeSessionStatusManagerProxy {
+        implements ComputeSessionStatusManagerProxy {
 
     public ArmComputeSessionID sessionID = null;
 

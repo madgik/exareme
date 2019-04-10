@@ -17,7 +17,8 @@ final public class AbstractOperator {
         return this.name;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return this.getName();
     }
 }

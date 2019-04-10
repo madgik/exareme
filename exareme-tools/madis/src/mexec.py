@@ -1,17 +1,20 @@
 #!/usr/bin/env python
 
-from optparse import OptionParser
-import sys
 import apsw
-import madis
 import json
+import sys
+from optparse import OptionParser
+
+import madis
+
 
 def exitwitherror(txt):
-    sys.stderr.write(txt+'\n')
+    sys.stderr.write(txt + '\n')
     sys.exit(1)
 
+
 def main():
-    desc="""Use this program to run madSQL queries on data coming from standard input. You may provide a database to run your queries. Results are streamed to standard output.
+    desc = """Use this program to run madSQL queries on data coming from standard input. You may provide a database to run your queries. Results are streamed to standard output.
     """
     parser = OptionParser(description=desc, usage="usage: %prog [options] [dbname] flowname",
                           version="%prog 1.0")
@@ -21,7 +24,6 @@ def main():
                       help="db to connect")
     parser.add_option("-w", "--dbw",
                       help="db to connect (open in create mode)")
-
 
     (options, args) = parser.parse_args()
 
@@ -41,7 +43,7 @@ def main():
         dbname = options.dbw
 
     try:
-        Connection=madis.functions.Connection(dbname, flags)
+        Connection = madis.functions.Connection(dbname, flags)
 
     except Exception, e:
         exitwitherror("Error in opening DB: " + str(dbname) + "\nThe error was: " + str(e))
@@ -60,10 +62,9 @@ def main():
         sys.exit(1)
 
     try:
-        f = open(flowname,'r')
+        f = open(flowname, 'r')
     except Exception, e:
         exitwitherror("Error in opening SQL flow: " + str(e))
-
 
     statement = f.readline()
     if not statement:
@@ -74,22 +75,20 @@ def main():
             line = f.readline()
             statement += line
             if not line:
-                 if statement.rstrip('\r\n')!='':
-                    sys.stderr.write("Incomplete query:"+statement)
-                 f.close()
-                 sys.exit()
-        try :
+                if statement.rstrip('\r\n') != '':
+                    sys.stderr.write("Incomplete query:" + statement)
+                f.close()
+                sys.exit()
+        try:
             for row in Connection.cursor().execute(statement):
                 if len(row) > 1:
-                    print(json.dumps(row, separators=(',',':'), ensure_ascii=False).encode('utf_8', 'replace'))
+                    print(json.dumps(row, separators=(',', ':'), ensure_ascii=False).encode('utf_8', 'replace'))
                 else:
                     print(unicode(row[0]).encode('utf_8', 'replace'))
             statement = ''
         except Exception, e:
-            exitwitherror("Error when executing query: \n"+statement+"\nThe error was: "+ str(e))
+            exitwitherror("Error when executing query: \n" + statement + "\nThe error was: " + str(e))
 
 
 if __name__ == '__main__':
     main()
-
-

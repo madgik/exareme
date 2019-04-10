@@ -17,8 +17,8 @@ import java.util.ArrayList;
  * information (cpu utilization)
  *
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.2
  */
 public class OperatorMonitor {
@@ -53,7 +53,7 @@ public class OperatorMonitor {
      * @throws MonitorException
      */
     public OperatorMonitor(AbstractOperatorImpl mainOperator,
-        OperatorExecutionThread mainExecutionThread) throws MonitorException {
+                           OperatorExecutionThread mainExecutionThread) throws MonitorException {
         tmBean = ManagementFactory.getThreadMXBean();
 
         tmBean.setThreadCpuTimeEnabled(true);
@@ -78,7 +78,7 @@ public class OperatorMonitor {
         previousReport = startTime;
 
         reportPeriod =
-            AdpProperties.getArtProps().getFloat("art.container.maxStatusReportPeriod") * 1000000;
+                AdpProperties.getArtProps().getFloat("art.container.maxStatusReportPeriod") * 1000000;
     }
 
     /**

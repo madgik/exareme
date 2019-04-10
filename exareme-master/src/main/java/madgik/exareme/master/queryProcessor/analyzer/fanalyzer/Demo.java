@@ -23,12 +23,12 @@ public class Demo {
     public static void main(String[] args) throws Exception {
         // TODO code application logic here
 
-		/* analyze all tables */
-    /*
-     * FederatedAnalyzer fa = new FederatedAnalyzer(); fa.analyzeAll();
-		 */
+        /* analyze all tables */
+        /*
+         * FederatedAnalyzer fa = new FederatedAnalyzer(); fa.analyzeAll();
+         */
 
-		/* analyze specific table */
+        /* analyze specific table */
         FederatedAnalyzer fa = new FederatedAnalyzer();
         Set<String> tableNames = new HashSet<String>();
 

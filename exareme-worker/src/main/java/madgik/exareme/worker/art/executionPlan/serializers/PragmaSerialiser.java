@@ -17,7 +17,8 @@ import java.lang.reflect.Type;
  */
 public class PragmaSerialiser implements JsonSerializer<Pragma> {
 
-    @Override public JsonElement serialize(Pragma pragma, Type type, JsonSerializationContext jsc) {
+    @Override
+    public JsonElement serialize(Pragma pragma, Type type, JsonSerializationContext jsc) {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty(PlanExpressionConstants.PRAGMANAME, pragma.pragmaName);
         jsonObject.addProperty(PlanExpressionConstants.PRAGMAVALUE, pragma.pragmaValue);

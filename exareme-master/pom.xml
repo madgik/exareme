@@ -42,9 +42,9 @@
             <type>jar</type>
         </dependency>
         <dependency>
-        	<groupId>org.postgresql</groupId>
-        	<artifactId>postgresql</artifactId>
-        	<version>9.4-1200-jdbc41</version>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>9.4-1200-jdbc41</version>
         </dependency>
         <!-- http -->
         <dependency>
@@ -126,6 +126,17 @@
             <artifactId>powermock-api-mockito2</artifactId>
             <version>${powermock.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations-java5</artifactId>
+            <version>RELEASE</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.itfsw</groupId>
+            <artifactId>QueryBuilder</artifactId>
+            <version>1.0.5-SNAPSHOT</version>
         </dependency>
 
     </dependencies>

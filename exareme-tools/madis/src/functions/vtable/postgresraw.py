@@ -12,15 +12,15 @@ Examples:
 
 """
 
-import src.functions.setpath
-import vtbase
 import functions
-import re
 import json
 from types import NoneType
 
+import vtbase
+
 registered = True
 external_query = True
+
 
 class PostgresRaw(vtbase.VT):
     def VTiter(self, *parsedArgs, **envars):
@@ -95,7 +95,7 @@ class PostgresRaw(vtbase.VT):
             else:
                 larg = tuple([largs.split(",")[i].strip() for i in xrange(len(largs.split(",")))])
                 query = query.replace('%', '%%') + " where colname in %s"
-                cur.execute(query,(larg,))
+                cur.execute(query, (larg,))
             yield [(c[0], typetrans.get(c[1], '')) for c in cur.description]
 
             for i in cur:
@@ -116,7 +116,6 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import src.functions.setpath
     from functions import *
 
     testfunction()

@@ -14,8 +14,8 @@ import java.util.Map;
  * The Adp DB query statistics.
  *
  * @author Herald Kllapi <br>
- *         herald@di.uoa.gr /
- *         University of Athens
+ * herald@di.uoa.gr /
+ * University of Athens
  * @since 1.0
  */
 public class AdpDBStatistics implements Serializable {
@@ -105,19 +105,20 @@ public class AdpDBStatistics implements Serializable {
         return bucketsNum;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         StringBuffer stats = new StringBuffer();
         if (totalOperators == 0) {
             return "Initializing ... ";
         }
         stats.append(
-            "Proc: " + percentage.format(100.0 * operatorsCompleted / totalOperators) + " % ");
+                "Proc: " + percentage.format(100.0 * operatorsCompleted / totalOperators) + " % ");
         if (totalDataTransfers == 0)
             stats.append("Data 0% ");
         else
             stats.append(
-                "Data: " + percentage.format(100.0 * dataTransferCompleted / totalDataTransfers)
-                    + " % ");
+                    "Data: " + percentage.format(100.0 * dataTransferCompleted / totalDataTransfers)
+                            + " % ");
         stats.append("Errors: " + errors);
         return stats.toString();
     }

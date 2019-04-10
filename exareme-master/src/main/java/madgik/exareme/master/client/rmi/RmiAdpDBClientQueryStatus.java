@@ -35,7 +35,7 @@ public class RmiAdpDBClientQueryStatus implements AdpDBClientQueryStatus {
     private InputStream result;
 
     public RmiAdpDBClientQueryStatus(AdpDBQueryID queryId, AdpDBClientProperties properties,
-        AdpDBQueryExecutionPlan plan, AdpDBStatus status) {
+                                     AdpDBQueryExecutionPlan plan, AdpDBStatus status) {
         this.properties = properties;
         this.plan = plan;
         this.status = status;
@@ -45,7 +45,8 @@ public class RmiAdpDBClientQueryStatus implements AdpDBClientQueryStatus {
         result = null;
     }
 
-    @Override public boolean hasFinished() throws RemoteException {
+    @Override
+    public boolean hasFinished() throws RemoteException {
         if (finished) {
             return true;
         }
@@ -57,16 +58,19 @@ public class RmiAdpDBClientQueryStatus implements AdpDBClientQueryStatus {
         return true;
     }
 
-    @Override public AdpDBQueryID getQueryID() {
+    @Override
+    public AdpDBQueryID getQueryID() {
         return plan.getQueryID();
     }
 
-    @Override public String getStatus() throws RemoteException {
+    @Override
+    public String getStatus() throws RemoteException {
         lastStatus = status.getStatistics().toString();
         return lastStatus;
     }
 
-    @Override public String getStatusIfChanged() throws RemoteException {
+    @Override
+    public String getStatusIfChanged() throws RemoteException {
         String currentStatus = status.getStatistics().toString();
         if (!currentStatus.equals(lastStatus)) {
             lastStatus = currentStatus;
@@ -75,40 +79,47 @@ public class RmiAdpDBClientQueryStatus implements AdpDBClientQueryStatus {
         return null;
     }
 
-    @Override public boolean hasError() throws RemoteException {
+    @Override
+    public boolean hasError() throws RemoteException {
         if (!finished)
             return false;
         return status.hasError();
     }
 
-    @Override public String getError() throws RemoteException {
-        return status.getLastException() == null ? "exception-is-empty" :status.getLastException().toString();
+    @Override
+    public String getError() throws RemoteException {
+        return status.getLastException() == null ? "exception-is-empty" : status.getLastException().toString();
     }
 
-    @Override public String getExecutionTime() throws RemoteException {
+    @Override
+    public String getExecutionTime() throws RemoteException {
         long startTime = status.getStatistics().getAdpEngineStatistics().startTime;
         long endTime = status.getStatistics().getAdpEngineStatistics().endTime;
         return String.format("%s m", timeF.format(endTime - startTime));
     }
 
-    @Override public void close() throws RemoteException {
+    @Override
+    public void close() throws RemoteException {
         status.stopExecution();
     }
 
-    @Override public void registerListener(AdpDBQueryListener listener) throws RemoteException {
+    @Override
+    public void registerListener(AdpDBQueryListener listener) throws RemoteException {
         status.registerListener(listener);
     }
 
-    @Override public InputStream getResult() throws RemoteException {
+    @Override
+    public InputStream getResult() throws RemoteException {
         return getResult(DataSerialization.ldjson);
     }
 
 
-    @Override public InputStream getResult(DataSerialization ds) throws RemoteException {
-        if(result == null){
+    @Override
+    public InputStream getResult(DataSerialization ds) throws RemoteException {
+        if (result == null) {
 
             result = new RmiAdpDBClient(AdpDBManagerLocator.getDBManager(), properties)
-                .readTable(plan.getResultTables().get(0).getName(), ds);
+                    .readTable(plan.getResultTables().get(0).getName(), ds);
         }
         return result;
     }
@@ -120,15 +131,15 @@ public class RmiAdpDBClientQueryStatus implements AdpDBClientQueryStatus {
             HashMap<String, String> resultTablesSQLDef = new HashMap<>();
             // containers
             for (ContainerSessionStatistics containerStat : status.getStatistics()
-                .getAdpEngineStatistics().containerStats) {
+                    .getAdpEngineStatistics().containerStats) {
                 // operators
                 for (ConcreteOperatorStatistics operatorStatistics : containerStat.operators) {
                     ExecuteQueryExitMessage exitMessage =
-                        (ExecuteQueryExitMessage) operatorStatistics.getExitMessage();
+                            (ExecuteQueryExitMessage) operatorStatistics.getExitMessage();
                     // get
                     if (exitMessage != null) {
                         resultTablesSQLDef.put(exitMessage.outTableInfo.getTableName(),
-                            exitMessage.outTableInfo.getSQLDefinition());
+                                exitMessage.outTableInfo.getSQLDefinition());
                     }
                 }
             }
@@ -147,7 +158,7 @@ public class RmiAdpDBClientQueryStatus implements AdpDBClientQueryStatus {
                 if (resultTable.getTable().hasSQLDefinition() == false) {
                     if (resultTablesSQLDef.containsKey(resultTable.getName()) == false) {
                         throw new SemanticException(
-                            "Table definition not found: " + resultTable.getName());
+                                "Table definition not found: " + resultTable.getName());
                     }
                     String sqlDef = resultTablesSQLDef.get(resultTable.getName());
                     resultTable.getTable().setSqlDefinition(sqlDef);

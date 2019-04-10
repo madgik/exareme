@@ -46,13 +46,13 @@ Examples::
     1   | 2      | London   | Pilot
     2   | 5      | New York | Teacher
 """
-import setpath
-import vtbase
 import functions
-import gc
+
+import vtbase
 
 ### Classic stream iterator
-registered=True
+registered = True
+
 
 class fromEAV(vtbase.VT):
     def VTiter(self, *parsedArgs, **envars):
@@ -105,8 +105,10 @@ class fromEAV(vtbase.VT):
             record[1] = l[0]
             yield record
 
+
 def Source():
     return vtbase.VTGenerator(fromEAV)
+
 
 if not ('.' in __name__):
     """
@@ -114,11 +116,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

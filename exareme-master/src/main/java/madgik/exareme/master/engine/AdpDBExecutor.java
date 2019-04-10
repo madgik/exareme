@@ -16,8 +16,8 @@ import java.rmi.RemoteException;
  * The adp db executor that schedules the jobs.
  *
  * @author Herald Kllapi <br>
- *         herald@di.uoa.gr /
- *         University of Athens
+ * herald@di.uoa.gr /
+ * University of Athens
  * @since 1.0
  */
 public interface AdpDBExecutor {
@@ -31,7 +31,7 @@ public interface AdpDBExecutor {
      * @throws RemoteException if something goes wrong.
      */
     AdpDBStatus executeScript(AdpDBQueryExecutionPlan script, AdpDBClientProperties properties)
-        throws RemoteException;
+            throws RemoteException;
 
     void registerListener(AdpDBQueryListener listener, AdpDBQueryID queryID) throws RemoteException;
 
@@ -51,10 +51,10 @@ public interface AdpDBExecutor {
      * @throws RemoteException if something goes wrong.
      */
     String getJSONPlan(AdpDBQueryExecutionPlan script, AdpDBClientProperties properties)
-        throws RemoteException;
+            throws RemoteException;
 
     PlanExpression getExecPlan(AdpDBQueryExecutionPlan script, AdpDBClientProperties properties)
-        throws RemoteException;
+            throws RemoteException;
 
 
 }

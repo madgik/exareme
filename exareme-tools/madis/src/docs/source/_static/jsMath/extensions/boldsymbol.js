@@ -58,8 +58,7 @@ jsMath.Package(jsMath.Parser, {
         fam[2] = "cmbsy10";
         try {
             var box = this.ProcessArg(this.cmd + name)
-        }
-        catch (e) {
+        } catch (e) {
             restart = (e == "restart")
         }
         fam[0] = oldfam[0];

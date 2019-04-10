@@ -31,11 +31,13 @@ public class TransactionalInteger implements TransactionalObject {
         value += delta;
     }
 
-    @Override public void commit() {
+    @Override
+    public void commit() {
         commitedValue = value;
     }
 
-    @Override public void rollback() {
+    @Override
+    public void rollback() {
         value = commitedValue;
     }
 }

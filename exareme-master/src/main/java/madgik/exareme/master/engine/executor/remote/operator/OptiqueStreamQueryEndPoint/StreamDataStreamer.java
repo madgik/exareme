@@ -16,12 +16,13 @@ public class StreamDataStreamer implements ContentProducer {
     private static final Logger log = Logger.getLogger(StreamDataStreamer.class);
 
     public StreamDataStreamer(SimplePair<List<String[]>, ArrayDeque<Object[]>> buffer,
-        Output output) {
+                              Output output) {
         this.buffer = buffer;
         this.output = output;
     }
 
-    @Override public void writeTo(OutputStream out) throws IOException {
+    @Override
+    public void writeTo(OutputStream out) throws IOException {
         if (output == Output.JSON) {
             jsonWriteTo(out);
         } else if (output == Output.CSV) {
@@ -36,7 +37,7 @@ public class StreamDataStreamer implements ContentProducer {
         if (out != null) {
             Gson gson = new Gson();
             ArrayList<HashMap<String, Object>> jsonTuples =
-                new ArrayList<HashMap<String, Object>>();
+                    new ArrayList<HashMap<String, Object>>();
             for (Object[] tuple : buffer.second) {
                 HashMap<String, Object> tupleMap = new HashMap<String, Object>();
                 for (int i = 0; i < buffer.first.size(); ++i) {
@@ -56,8 +57,8 @@ public class StreamDataStreamer implements ContentProducer {
             // Write Schema
             for (int i = 0; i < buffer.first.size(); ++i) {
                 String schema = (i == 0) ?
-                    buffer.first.get(i)[0].toString() :
-                    "," + buffer.first.get(i)[0].toString();
+                        buffer.first.get(i)[0].toString() :
+                        "," + buffer.first.get(i)[0].toString();
                 out.write(schema.getBytes());
             }
             out.write("\n".getBytes());
@@ -77,7 +78,7 @@ public class StreamDataStreamer implements ContentProducer {
         if (out != null) {
             Gson gson = new Gson();
             LinkedHashMap<String, List<String[]>> headerMap =
-                new LinkedHashMap<String, List<String[]>>();
+                    new LinkedHashMap<String, List<String[]>>();
             headerMap.put("schema", buffer.first);
             out.write((gson.toJson(headerMap) + "\n").getBytes());
 

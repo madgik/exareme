@@ -8,8 +8,8 @@ import org.apache.log4j.Logger;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class ZipfTest {
@@ -32,7 +32,7 @@ public class ZipfTest {
             end = System.currentTimeMillis();
 
             System.out.println("Bin : (" + z + ") " +
-                (zipf.binComparisons + zipf.seqComparisons) + "(" + (end - start) + ")");
+                    (zipf.binComparisons + zipf.seqComparisons) + "(" + (end - start) + ")");
         }
     }
 }

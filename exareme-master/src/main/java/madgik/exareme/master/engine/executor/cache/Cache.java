@@ -81,7 +81,7 @@ public class Cache {
 
     private void waitToComplete(ActiveTransfer transfer) throws RemoteException {
         log.info(Thread.currentThread().getId() + ": " +
-            "WAITING TO COMPLETE: " + transfer.getFileName());
+                "WAITING TO COMPLETE: " + transfer.getFileName());
         if (transfer.waitToCompete() == false) {
             throw new RemoteException("Cannot get file: " + transfer.getFileName());
         }
@@ -130,7 +130,7 @@ public class Cache {
                 throw new RemoteException("Cannot fetch: " + active.getFileName(), exception);
             }
             Entry old = cached
-                .put(active.getFileName(), new ObjectEntry(active.getFileName(), fileSize_MB));
+                    .put(active.getFileName(), new ObjectEntry(active.getFileName(), fileSize_MB));
             lru.addToCache(active.getFileName());
             Check.True(old == null, "Old object is not null!");
             totalIOData += fileSize_MB;
@@ -168,8 +168,8 @@ public class Cache {
                 // Remove it
                 deltaCacheSize(-(entry.getSize_MB()));
                 log.debug("Removed: " + idToRemove + "\n Size: " + cacheSize +
-                    "\n Object size: " + size +
-                    "\n LRU objects: " + lru.getNumObjects());
+                        "\n Object size: " + size +
+                        "\n LRU objects: " + lru.getNumObjects());
             }
         }
         log.debug("Final size: " + cacheSize);

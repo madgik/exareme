@@ -14,7 +14,7 @@ function checkString(file, string, done) {
     var character = '';
     var matchFound = false;
     var matchedPositions = 0;
-    var readStream = fs.createReadStream(file, { 'encoding': 'utf8' });
+    var readStream = fs.createReadStream(file, {'encoding': 'utf8'});
 
     readStream.on('close', done);
     readStream.on('error', done);
@@ -23,7 +23,7 @@ function checkString(file, string, done) {
         // Read file until the string is found
         // or the whole file has been read
         while (matchFound !== true &&
-                (character = readStream.read(1)) !== null) {
+        (character = readStream.read(1)) !== null) {
 
             if (character === string.charAt(matchedPositions)) {
                 matchedPositions += 1;
@@ -69,8 +69,8 @@ function runTests() {
 
         it('"main.css" should contain a custom banner', function (done) {
             var string = '/*! HTML5 Boilerplate v' + pkg.version +
-                         ' | ' + pkg.license.type + ' License' +
-                         ' | ' + pkg.homepage + ' */\n\n/*\n';
+                ' | ' + pkg.license.type + ' License' +
+                ' | ' + pkg.homepage + ' */\n\n/*\n';
             checkString(path.resolve(dir, 'css/main.css'), string, done);
         });
 

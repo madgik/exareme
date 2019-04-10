@@ -48,7 +48,7 @@
             //   catch the error (Grrr!) so don't even attempt it.
             //
             if (pageDomain.match(/\..*\./) &&
-                    (navigator.appName != 'Microsoft Internet Explorer' || !navigator.platform.match(/Mac/) || !navigator.userProfile || !document.all)) {
+                (navigator.appName != 'Microsoft Internet Explorer' || !navigator.platform.match(/Mac/) || !navigator.userProfile || !document.all)) {
                 try {
                     document.domain = pageDomain.replace(/^[^.]*\./, '');
                     showWarning = 0;
@@ -60,15 +60,15 @@
 
     function Warning() {
         alert(
-                "jsMath can't load one of its required components, because jsMath " +
-                "was not obtained from a server that is in the same domain as the " +
-                "page that loaded it."
+            "jsMath can't load one of its required components, because jsMath " +
+            "was not obtained from a server that is in the same domain as the " +
+            "page that loaded it."
         );
     }
 
     isOmniWeb4 = (document.readyState == 'loading' &&
-    navigator.accentColorName != null &&
-    navigator.omniWebString == null);
+        navigator.accentColorName != null &&
+        navigator.omniWebString == null);
 
     if (showWarning) {
         setTimeout("Warning()", 1)

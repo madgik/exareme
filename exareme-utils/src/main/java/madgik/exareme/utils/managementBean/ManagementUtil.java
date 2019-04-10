@@ -10,8 +10,8 @@ import java.rmi.RemoteException;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class ManagementUtil {
@@ -20,7 +20,7 @@ public class ManagementUtil {
         try {
             MBeanServer beanServer = ManagementFactory.getPlatformMBeanServer();
             ObjectName engineManagerName =
-                new ObjectName("madgik.exareme.master:type=art,name=" + name);
+                    new ObjectName("madgik.exareme.master:type=art,name=" + name);
 
             if (!beanServer.isRegistered(engineManagerName))
                 beanServer.registerMBean(object, engineManagerName);
@@ -33,7 +33,7 @@ public class ManagementUtil {
         try {
             MBeanServer beanServer = ManagementFactory.getPlatformMBeanServer();
             ObjectName engineManagerName =
-                new ObjectName("madgik.exareme.master:type=art,name=" + name);
+                    new ObjectName("madgik.exareme.master:type=art,name=" + name);
             if (beanServer.isRegistered(engineManagerName))
                 beanServer.unregisterMBean(engineManagerName);
         } catch (Exception e) {

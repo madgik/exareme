@@ -15,7 +15,7 @@ import java.rmi.RemoteException;
  * @author heraldkllapi
  */
 public class RmiClockTickManagerProxy extends RmiObjectProxy<ClockTickManager>
-    implements ClockTickManagerProxy {
+        implements ClockTickManagerProxy {
 
     public RmiClockTickManagerProxy(String regEntryName, EntityName regEntityName) {
         super(regEntryName, regEntityName);
@@ -23,21 +23,24 @@ public class RmiClockTickManagerProxy extends RmiObjectProxy<ClockTickManager>
 
     @Override
     public void containerWarningClockTick(ContainerID id, long timeToTick_ms, long quantumCount)
-        throws RemoteException {
+            throws RemoteException {
         super.getRemoteObject().containerWarningClockTick(id, timeToTick_ms, quantumCount);
     }
 
-    @Override public void containerClockTick(ContainerID id, long quantumCount)
-        throws RemoteException {
+    @Override
+    public void containerClockTick(ContainerID id, long quantumCount)
+            throws RemoteException {
         super.getRemoteObject().containerClockTick(id, quantumCount);
     }
 
-    @Override public void globalWarningClockTick(long timeToTick_ms, long quantumCount)
-        throws RemoteException {
+    @Override
+    public void globalWarningClockTick(long timeToTick_ms, long quantumCount)
+            throws RemoteException {
         super.getRemoteObject().globalWarningClockTick(timeToTick_ms, quantumCount);
     }
 
-    @Override public void globalClockTick(long quantumCount) throws RemoteException {
+    @Override
+    public void globalClockTick(long quantumCount) throws RemoteException {
         super.getRemoteObject().globalClockTick(quantumCount);
     }
 }

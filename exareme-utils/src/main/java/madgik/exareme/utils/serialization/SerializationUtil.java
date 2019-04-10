@@ -17,7 +17,8 @@ public class SerializationUtil {
         throw new RuntimeException("Cannot create instances of this class");
     }
 
-    @SuppressWarnings("unchecked") public static <T extends Serializable> T deepCopy(T object) {
+    @SuppressWarnings("unchecked")
+    public static <T extends Serializable> T deepCopy(T object) {
         try {
             SerializedObject so = new SerializedObject(object);
             return (T) so.getObject();

@@ -58,8 +58,7 @@ if (window.location.protocol == "mk:") {
         this.controlPanels = jsMath.Setup.DIV("controlPanels");
         if (!jsMath.Browser.msieButtonBug) {
             this.Button()
-        }
-        else {
+        } else {
             setTimeout("jsMath.Controls.Button()", 500)
         }
     }

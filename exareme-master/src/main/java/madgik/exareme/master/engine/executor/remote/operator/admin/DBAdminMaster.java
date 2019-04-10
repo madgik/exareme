@@ -12,7 +12,8 @@ import org.apache.log4j.Logger;
 public class DBAdminMaster extends AbstractMiMo {
     private static final Logger log = Logger.getLogger(DBAdminMaster.class);
 
-    @Override public void run() throws Exception {
+    @Override
+    public void run() throws Exception {
         log.info(DBAdminMaster.class.toString() + " ...");
 
         ParameterManager parameterManager = super.getParameterManager();

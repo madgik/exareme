@@ -18,9 +18,9 @@ import java.rmi.RemoteException;
  * @author Herald Kllapi<br>
  * @author Dimitris Paparas<br>
  * @author Eva Sitaridi<br>
- *         {herald,paparas,evas}@di.uoa.gr<br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * {herald,paparas,evas}@di.uoa.gr<br>
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public interface ExecutionEngine extends RemoteObject<ExecutionEngineProxy> {
@@ -30,16 +30,16 @@ public interface ExecutionEngine extends RemoteObject<ExecutionEngineProxy> {
     PlanSessionID createNewSessionElasticTree() throws RemoteException;
 
     PlanSessionStatusManagerProxy getPlanSessionStatusManagerProxy(PlanSessionID sessionID)
-        throws RemoteException;
+            throws RemoteException;
 
     PlanSessionReportManagerProxy getPlanSessionReportManagerProxy(
-        PlanSessionReportID sessionPrivateID) throws RemoteException;
+            PlanSessionReportID sessionPrivateID) throws RemoteException;
 
     PlanSessionManagerProxy getPlanSessionManagerProxy(PlanSessionID sessionID)
-        throws RemoteException;
+            throws RemoteException;
 
     PlanSessionStatisticsManagerProxy getPlanSessionStatisticsManagerProxy(PlanSessionID sessionID)
-        throws RemoteException;
+            throws RemoteException;
 
     ClockTickManagerProxy getClockTickManagerProxy() throws RemoteException;
 

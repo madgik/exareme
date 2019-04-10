@@ -10,7 +10,7 @@ import java.util.*;
 /**
  * @param <E>
  * @author Christos Mallios <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  */
 public class DoublyLinkedList<E> implements List {
 
@@ -177,7 +177,8 @@ public class DoublyLinkedList<E> implements List {
     /*
      * Appends the specified element to the end of this list.
      */
-    @Override public boolean add(Object element) {
+    @Override
+    public boolean add(Object element) {
 
         if (element == null) {
             throw new NullPointerException();
@@ -202,14 +203,16 @@ public class DoublyLinkedList<E> implements List {
     /*
      * Returns the number of elements in this list.
      */
-    @Override public int size() {
+    @Override
+    public int size() {
         return numberOfNodes;
     }
 
     /*
      * Removes all of the elements from this list.
      */
-    @Override public void clear() {
+    @Override
+    public void clear() {
 
         numberOfNodes = 0;
         head = null;
@@ -235,7 +238,8 @@ public class DoublyLinkedList<E> implements List {
     /*
      * Returns true if this list contains no elements.
      */
-    @Override public boolean isEmpty() {
+    @Override
+    public boolean isEmpty() {
 
         return (numberOfNodes == 0);
     }
@@ -243,7 +247,8 @@ public class DoublyLinkedList<E> implements List {
     /*
      * Returns true if this list contains the specified element value.
      */
-    @Override public boolean contains(Object object) {
+    @Override
+    public boolean contains(Object object) {
 
         if (object == null) {
             throw new NullPointerException();
@@ -263,15 +268,17 @@ public class DoublyLinkedList<E> implements List {
     /*
      * Returns an iterator over the elements in this list in proper sequence.
      */
-    @Override public Iterator iterator() {
+    @Override
+    public Iterator iterator() {
         return new LinkedListIterator(this);
     }
 
     /*
-     * Returns an array containing all of the elements in this list in 
+     * Returns an array containing all of the elements in this list in
      * proper sequence (from first to last element).
      */
-    @Override public Object[] toArray() {
+    @Override
+    public Object[] toArray() {
 
         if (numberOfNodes == 0) {
             return null;
@@ -290,15 +297,17 @@ public class DoublyLinkedList<E> implements List {
         return objectList;
     }
 
-    @Override public Object[] toArray(Object[] ts) {
+    @Override
+    public Object[] toArray(Object[] ts) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     /*
-     * Removes the first occurrence of the specified element from 
+     * Removes the first occurrence of the specified element from
      * this list, if it is present.
      */
-    @Override public boolean remove(Object o) {
+    @Override
+    public boolean remove(Object o) {
 
         if (o == null) {
             throw new NullPointerException();
@@ -320,7 +329,8 @@ public class DoublyLinkedList<E> implements List {
         return false;
     }
 
-    @Override public boolean containsAll(Collection clctn) {
+    @Override
+    public boolean containsAll(Collection clctn) {
 
         if (clctn == null) {
             throw new NullPointerException();
@@ -335,11 +345,12 @@ public class DoublyLinkedList<E> implements List {
     }
 
     /*
-     * Appends all of the elements in the specified collection to the end 
-     * of this list, in the order that they are returned by the specified 
+     * Appends all of the elements in the specified collection to the end
+     * of this list, in the order that they are returned by the specified
      * collection's iterator.
      */
-    @Override public boolean addAll(Collection clctn) {
+    @Override
+    public boolean addAll(Collection clctn) {
 
         if (clctn == null) {
             throw new NullPointerException();
@@ -356,10 +367,11 @@ public class DoublyLinkedList<E> implements List {
     }
 
     /*
-     * Inserts all of the elements in the specified collection into this 
+     * Inserts all of the elements in the specified collection into this
      * list at the specified position.
      */
-    @Override public boolean addAll(int i, Collection clctn) {
+    @Override
+    public boolean addAll(int i, Collection clctn) {
 
         if (clctn == null) {
             throw new NullPointerException();
@@ -377,10 +389,11 @@ public class DoublyLinkedList<E> implements List {
     }
 
     /*
-     * Removes from this list all of its elements that are contained in the 
+     * Removes from this list all of its elements that are contained in the
      * specified collection.
      */
-    @Override public boolean removeAll(Collection clctn) {
+    @Override
+    public boolean removeAll(Collection clctn) {
 
         if (clctn == null) {
             throw new NullPointerException();
@@ -396,7 +409,8 @@ public class DoublyLinkedList<E> implements List {
         return true;
     }
 
-    @Override public boolean retainAll(Collection clctn) {
+    @Override
+    public boolean retainAll(Collection clctn) {
 
         if (clctn == null) {
             throw new NullPointerException();
@@ -416,7 +430,8 @@ public class DoublyLinkedList<E> implements List {
     /*
      * Returns the element at the specified position in this list.
      */
-    @Override public Node<E> get(int i) {
+    @Override
+    public Node<E> get(int i) {
 
         if (i >= numberOfNodes) {
             throw new IndexOutOfBoundsException();
@@ -436,10 +451,11 @@ public class DoublyLinkedList<E> implements List {
     }
 
     /*
-     * Replaces the element at the specified position in this list 
+     * Replaces the element at the specified position in this list
      * with the specified element.
      */
-    @Override public E set(int i, Object e) {
+    @Override
+    public E set(int i, Object e) {
 
         if (e == null) {
             throw new NullPointerException();
@@ -466,7 +482,8 @@ public class DoublyLinkedList<E> implements List {
     /*
      * Inserts the specified element at the specified position in this list.
      */
-    @Override public void add(int i, Object e) {
+    @Override
+    public void add(int i, Object e) {
 
         if (e == null) {
             throw new NullPointerException();
@@ -509,7 +526,8 @@ public class DoublyLinkedList<E> implements List {
     /*
      * Removes the element at the specified position in this list.
      */
-    @Override public E remove(int i) {
+    @Override
+    public E remove(int i) {
 
         if (i >= numberOfNodes) {
             throw new IndexOutOfBoundsException();
@@ -532,10 +550,11 @@ public class DoublyLinkedList<E> implements List {
     }
 
     /*
-     * Returns the index of the first occurrence of the specified element 
+     * Returns the index of the first occurrence of the specified element
      * in this list, or -1 if this list does not contain the element.
      */
-    @Override public int indexOf(Object o) {
+    @Override
+    public int indexOf(Object o) {
 
         if (o == null) {
             throw new NullPointerException();
@@ -556,10 +575,11 @@ public class DoublyLinkedList<E> implements List {
     }
 
     /*
-     * Returns the index of the last occurrence of the specified element 
+     * Returns the index of the last occurrence of the specified element
      * in this list, or -1 if this list does not contain the element.
      */
-    @Override public int lastIndexOf(Object o) {
+    @Override
+    public int lastIndexOf(Object o) {
 
         if (o == null) {
             throw new NullPointerException();
@@ -580,15 +600,18 @@ public class DoublyLinkedList<E> implements List {
         return position;
     }
 
-    @Override public ListIterator listIterator() {
+    @Override
+    public ListIterator listIterator() {
         return new DoublyLinkedListIterator(this);
     }
 
-    @Override public ListIterator listIterator(int i) {
+    @Override
+    public ListIterator listIterator(int i) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public List subList(int i, int i1) {
+    @Override
+    public List subList(int i, int i1) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

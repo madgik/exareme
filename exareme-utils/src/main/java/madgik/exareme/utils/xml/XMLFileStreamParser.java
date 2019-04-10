@@ -21,11 +21,11 @@ public class XMLFileStreamParser {
     public XMLFileStreamParser(String delimiterLine) {
         this.delimiterLine = delimiterLine;
         ioBufferSize =
-            AdpProperties.getArtProps().getInt("art.container.ioBufferSize_kb") * Metrics.KB;
+                AdpProperties.getArtProps().getInt("art.container.ioBufferSize_kb") * Metrics.KB;
     }
 
     public Iterator<XMLDocument> parseFile(String file, String dtd, String preffix, String suffix)
-        throws Exception {
+            throws Exception {
         BufferedReader input = new BufferedReader(new FileReader(file), ioBufferSize);
 
         // Read the dtd

@@ -21,7 +21,8 @@ public class ColumnOrderBy extends Column {
         this.isAsc = asc;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         String order = "";
         if (!this.isAsc) {
             order = " DESC";

@@ -30,55 +30,55 @@ public class Statistics {
             //Statistics Tables //TODO: plan session id needed?
             //Query Statistics
             stmt.execute("create table if not exists query_statistics(" + "query_id integer, "
-                + "plan_session_id integer, " + "start_time_ms integer, " + "end_time_ms integer, "
-                + "primary key(query_id));");
+                    + "plan_session_id integer, " + "start_time_ms integer, " + "end_time_ms integer, "
+                    + "primary key(query_id));");
 
 
             //Container Statistics //TODO: remove plan session id?
             stmt.execute(
-                "create table if not exists container_statistics(" + "container_name text, "
-                    + "container_session_id integer, " + "plan_session_id integer, "
-                    + "query_id integer, " + "primary key(query_id, container_name)"
-                    + "foreign key(query_id) references query_statistics(query_id));");
+                    "create table if not exists container_statistics(" + "container_name text, "
+                            + "container_session_id integer, " + "plan_session_id integer, "
+                            + "query_id integer, " + "primary key(query_id, container_name)"
+                            + "foreign key(query_id) references query_statistics(query_id));");
 
             //Operator Statistics
             stmt.execute("create table if not exists operator_statistics(" + "operator_name text, "
-                + "operator_category text, " + "operator_type_id integer, "
-                + "start_time_ms integer, " + "end_time_ms integer, " + "exception text, "
-                + "user_time_ms integer, " + "user_cpu_time_ms integer, "
-                + "system_time_ms integer, " + "system_cpu_time integer, "
-                + "block_time_ms integer, " + "total_time_ms integer, " + "total_cpu_time integer, "
-                + "exit_code integer, " + "exit_message text, " + "query_id integer, "
-                + "primary key(query_id, operator_name), "
-                + "foreign key(operator_type_id) references operator_types(operator_type_id), "
-                + "foreign key(query_id) references query_statistics(query_id));");
+                    + "operator_category text, " + "operator_type_id integer, "
+                    + "start_time_ms integer, " + "end_time_ms integer, " + "exception text, "
+                    + "user_time_ms integer, " + "user_cpu_time_ms integer, "
+                    + "system_time_ms integer, " + "system_cpu_time integer, "
+                    + "block_time_ms integer, " + "total_time_ms integer, " + "total_cpu_time integer, "
+                    + "exit_code integer, " + "exit_message text, " + "query_id integer, "
+                    + "primary key(query_id, operator_name), "
+                    + "foreign key(operator_type_id) references operator_types(operator_type_id), "
+                    + "foreign key(query_id) references query_statistics(query_id));");
 
             //Operator Types
             stmt.execute("create table if not exists operator_types(" + "operator_type_id integer, "
-                + "operator_type text, " + "primary key(operator_type_id));");
+                    + "operator_type text, " + "primary key(operator_type_id));");
             //Initialize Operator Types
             stmt.execute("INSERT INTO operator_types(operator_type_id, " + "operator_type) "
-                + "SELECT 0, \'processing\' "
-                + "WHERE NOT EXISTS (SELECT * FROM operator_types WHERE operator_type_id=0);");
+                    + "SELECT 0, \'processing\' "
+                    + "WHERE NOT EXISTS (SELECT * FROM operator_types WHERE operator_type_id=0);");
             stmt.execute("INSERT INTO operator_types(operator_type_id, " + "operator_type) "
-                + "SELECT 1, \'dataMaterialization\' "
-                + "WHERE NOT EXISTS (SELECT * FROM operator_types WHERE operator_type_id=1);");
+                    + "SELECT 1, \'dataMaterialization\' "
+                    + "WHERE NOT EXISTS (SELECT * FROM operator_types WHERE operator_type_id=1);");
             stmt.execute("INSERT INTO operator_types(operator_type_id, " + "operator_type) "
-                + "SELECT 2, \'dataTransfer\' "
-                + "WHERE NOT EXISTS (SELECT * FROM operator_types WHERE operator_type_id=2);");
+                    + "SELECT 2, \'dataTransfer\' "
+                    + "WHERE NOT EXISTS (SELECT * FROM operator_types WHERE operator_type_id=2);");
 
             //Adaptor Statistics
             stmt.execute("create table if not exists adaptor_statistics(" + "adaptor_name text, "
-                + "from_operator_name text, " + "to_operator_name text, " + "bytes integer,"
-                + "bytes_per_sec real, " + "remote integer, " + "query_id integer, "
-                + "foreign key(query_id, from_operator_name) references operator_statistics(query_id, operator_name), "
-                + "foreign key(query_id, to_operator_name) references operator_statistics(query_id, operator_name));");
+                    + "from_operator_name text, " + "to_operator_name text, " + "bytes integer,"
+                    + "bytes_per_sec real, " + "remote integer, " + "query_id integer, "
+                    + "foreign key(query_id, from_operator_name) references operator_statistics(query_id, operator_name), "
+                    + "foreign key(query_id, to_operator_name) references operator_statistics(query_id, operator_name));");
 
 
             //Buffer Statistics
             stmt.execute("create table if not exists buffer_statistics(" + "buffer_name text, "
-                + "data_write integer, " + "data_read integer, " + "query_id integer, "
-                + "foreign key(query_id) references query_statistics(query_id));");
+                    + "data_write integer, " + "data_read integer, " + "query_id integer, "
+                    + "foreign key(query_id) references query_statistics(query_id));");
 
             stmt.close();
         } catch (SQLException e) {
@@ -134,32 +134,32 @@ public class Statistics {
 
         try {
             PreparedStatement insertQueryStatisticsStatement =
-                conn.prepareStatement("INSERT INTO query_statistics(" +
-                    "query_id, plan_session_id, start_time_ms, end_time_ms ) " +
-                    "VALUES(?, ?, ?, ?)");
+                    conn.prepareStatement("INSERT INTO query_statistics(" +
+                            "query_id, plan_session_id, start_time_ms, end_time_ms ) " +
+                            "VALUES(?, ?, ?, ?)");
 
             PreparedStatement insertContainerStatisticsStatement =
-                conn.prepareStatement("INSERT INTO container_statistics(" +
-                    "container_name, container_session_id , query_id ) " +
-                    "VALUES(?, ?, ?)");
+                    conn.prepareStatement("INSERT INTO container_statistics(" +
+                            "container_name, container_session_id , query_id ) " +
+                            "VALUES(?, ?, ?)");
 
             PreparedStatement insertOperatorsStatisticsStatement = conn.prepareStatement(
-                "INSERT INTO operator_statistics("
-                    + "operator_name, operator_category, operator_type_id, start_time_ms, end_time_ms, "
-                    + "exception, user_time_ms, user_cpu_time_ms, system_time_ms, system_cpu_time, block_time_ms, "
-                    + "total_time_ms, total_cpu_time, exit_code, exit_message, query_id ) "
-                    + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                    "INSERT INTO operator_statistics("
+                            + "operator_name, operator_category, operator_type_id, start_time_ms, end_time_ms, "
+                            + "exception, user_time_ms, user_cpu_time_ms, system_time_ms, system_cpu_time, block_time_ms, "
+                            + "total_time_ms, total_cpu_time, exit_code, exit_message, query_id ) "
+                            + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
             PreparedStatement insertBufferStatisticsStatement =
-                conn.prepareStatement("INSERT INTO buffer_statistics(" +
-                    "buffer_name, data_write, data_read, query_id ) " +
-                    "VALUES(?, ?, ?, ?)");
+                    conn.prepareStatement("INSERT INTO buffer_statistics(" +
+                            "buffer_name, data_write, data_read, query_id ) " +
+                            "VALUES(?, ?, ?, ?)");
 
             PreparedStatement insertAdaptorStatisticsStatement =
-                conn.prepareStatement("INSERT INTO adaptor_statistics(" +
-                    "adaptor_name, from_operator_name, to_operator_name, bytes, bytes_per_sec, remote, query_id ) "
-                    +
-                    "VALUES(?, ?, ?, ?, ?, ?, ?)");
+                    conn.prepareStatement("INSERT INTO adaptor_statistics(" +
+                            "adaptor_name, from_operator_name, to_operator_name, bytes, bytes_per_sec, remote, query_id ) "
+                            +
+                            "VALUES(?, ?, ?, ?, ?, ?, ?)");
 
 
             insertQueryStatisticsStatement.setLong(1, query_id);
@@ -172,40 +172,40 @@ public class Statistics {
                 //Add container statistics
                 insertContainerStatisticsStatement.setString(1, containerStats.containerName);
                 insertContainerStatisticsStatement
-                    .setLong(2, containerStats.getSessionID().getLongId());
+                        .setLong(2, containerStats.getSessionID().getLongId());
                 insertContainerStatisticsStatement.setLong(3, query_id);
                 insertContainerStatisticsStatement.addBatch();
 
                 for (ConcreteOperatorStatistics operatorStatistics : containerStats.operators) {
                     //Add operator statistics
                     insertOperatorsStatisticsStatement
-                        .setString(1, operatorStatistics.getOperatorName());
+                            .setString(1, operatorStatistics.getOperatorName());
                     insertOperatorsStatisticsStatement
-                        .setString(2, operatorStatistics.getOperatorCategory());
+                            .setString(2, operatorStatistics.getOperatorCategory());
                     insertOperatorsStatisticsStatement
-                        .setInt(3, categoryToInt(operatorStatistics.getOperatorType()));
+                            .setInt(3, categoryToInt(operatorStatistics.getOperatorType()));
                     insertOperatorsStatisticsStatement
-                        .setLong(4, operatorStatistics.getStartTime_ms());
+                            .setLong(4, operatorStatistics.getStartTime_ms());
                     insertOperatorsStatisticsStatement
-                        .setLong(5, operatorStatistics.getEndTime_ms());
+                            .setLong(5, operatorStatistics.getEndTime_ms());
                     insertOperatorsStatisticsStatement.setString(6, "null"); //TODO fix exception
                     insertOperatorsStatisticsStatement
-                        .setLong(7, operatorStatistics.getUserTime_ms());
+                            .setLong(7, operatorStatistics.getUserTime_ms());
                     insertOperatorsStatisticsStatement
-                        .setLong(8, operatorStatistics.getUserCpuTime_ms());
+                            .setLong(8, operatorStatistics.getUserCpuTime_ms());
                     insertOperatorsStatisticsStatement
-                        .setLong(9, operatorStatistics.getSystemTime_ms());
+                            .setLong(9, operatorStatistics.getSystemTime_ms());
                     insertOperatorsStatisticsStatement
-                        .setLong(10, operatorStatistics.getSystemCpuTime_ms());
+                            .setLong(10, operatorStatistics.getSystemCpuTime_ms());
                     insertOperatorsStatisticsStatement
-                        .setLong(11, operatorStatistics.getBlockTime_ms());
+                            .setLong(11, operatorStatistics.getBlockTime_ms());
                     insertOperatorsStatisticsStatement
-                        .setLong(12, operatorStatistics.getTotalTime_ms());
+                            .setLong(12, operatorStatistics.getTotalTime_ms());
                     insertOperatorsStatisticsStatement
-                        .setLong(13, operatorStatistics.getTotalCpuTime_ms());
+                            .setLong(13, operatorStatistics.getTotalCpuTime_ms());
                     insertOperatorsStatisticsStatement.setInt(14, operatorStatistics.getExitCode());
                     insertOperatorsStatisticsStatement.setString(15,
-                        operatorStatistics.getExitMessage().toString()); //TODO: check this
+                            operatorStatistics.getExitMessage().toString()); //TODO: check this
                     insertOperatorsStatisticsStatement.setLong(16, query_id);
 
                     insertOperatorsStatisticsStatement.addBatch();
@@ -230,7 +230,7 @@ public class Statistics {
                     insertAdaptorStatisticsStatement.setString(3, adaptorStatistics.getTo());
                     insertAdaptorStatisticsStatement.setLong(4, adaptorStatistics.getBytes());
                     insertAdaptorStatisticsStatement
-                        .setDouble(5, adaptorStatistics.getBytesPerSecond());
+                            .setDouble(5, adaptorStatistics.getBytesPerSecond());
                     insertAdaptorStatisticsStatement.setLong(6, query_id);
 
                     insertAdaptorStatisticsStatement.addBatch();

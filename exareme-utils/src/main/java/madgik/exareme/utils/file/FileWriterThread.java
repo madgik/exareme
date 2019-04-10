@@ -24,7 +24,8 @@ public class FileWriterThread extends Thread {
         return exception;
     }
 
-    @Override public void run() {
+    @Override
+    public void run() {
         try {
             FileUtil.readFromStream(in, file);
         } catch (Exception e) {

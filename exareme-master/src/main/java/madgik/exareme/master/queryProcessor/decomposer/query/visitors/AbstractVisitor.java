@@ -19,15 +19,18 @@ public abstract class AbstractVisitor implements Visitor {
         this.query = query;
     }
 
-    @Override public boolean visitChildrenFirst(Visitable node) {
+    @Override
+    public boolean visitChildrenFirst(Visitable node) {
         return false;
     }
 
-    @Override public boolean stopTraversal() {
+    @Override
+    public boolean stopTraversal() {
         return false;
     }
 
-    @Override public boolean skipChildren(Visitable node) throws StandardException {
+    @Override
+    public boolean skipChildren(Visitable node) throws StandardException {
         return false;
     }
 }

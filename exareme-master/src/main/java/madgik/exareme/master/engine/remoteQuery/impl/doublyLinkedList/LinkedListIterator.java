@@ -8,7 +8,7 @@ import java.util.NoSuchElementException;
 
 /**
  * @author Christos Mallios <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  */
 public class LinkedListIterator<E> implements Iterator {
 
@@ -24,11 +24,13 @@ public class LinkedListIterator<E> implements Iterator {
         currentNodePosition = 0;
     }
 
-    @Override public boolean hasNext() {
+    @Override
+    public boolean hasNext() {
         return (currentNodePosition < list.numberOfNodes);
     }
 
-    @Override public Node<E> next() {
+    @Override
+    public Node<E> next() {
 
         if (!hasNext()) {
             throw new NoSuchElementException();
@@ -40,7 +42,8 @@ public class LinkedListIterator<E> implements Iterator {
         return lastAccessed;
     }
 
-    @Override public void remove() {
+    @Override
+    public void remove() {
 
         if (lastAccessed == null) {
             throw new IllegalStateException();

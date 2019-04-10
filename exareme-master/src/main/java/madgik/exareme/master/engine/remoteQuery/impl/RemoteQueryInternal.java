@@ -12,12 +12,12 @@ import java.sql.SQLException;
 
 /**
  * @author Christos Mallios <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  */
 public interface RemoteQueryInternal {
 
     public void queryCompletion(ServerInfo server, String query, String directoryOfStorage,
-        String cacheDatabase, String cacheTable, int responseTime, int size)
-        throws IOException, SQLException;
+                                String cacheDatabase, String cacheTable, int responseTime, int size)
+            throws IOException, SQLException;
 
 }

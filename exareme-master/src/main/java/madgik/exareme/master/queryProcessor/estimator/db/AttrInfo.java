@@ -59,9 +59,10 @@ public class AttrInfo {
     }
 
     /*standard methods*/
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "Attribute{" + "attrName=" + attrName + ", histogram=" + histogram + ", attrLength="
-            + attrLength + '}';
+                + attrLength + '}';
     }
 
 

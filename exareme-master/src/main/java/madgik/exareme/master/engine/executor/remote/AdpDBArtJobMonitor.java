@@ -26,7 +26,7 @@ public class AdpDBArtJobMonitor implements Runnable {
 
     private static final Logger log = Logger.getLogger(AdpDBArtJobMonitor.class);
     private static final int statsUpdateSecs =
-        AdpDBProperties.getAdpDBProps().getInt("db.client.statisticsUpdate_sec");
+            AdpDBProperties.getAdpDBProps().getInt("db.client.statisticsUpdate_sec");
     private static int statsOldOP = 0;
     private static int statsOldDT = 0;
     private static int statsOldER = 0;
@@ -40,7 +40,7 @@ public class AdpDBArtJobMonitor implements Runnable {
     private PlanSessionStatisticsManagerProxy statsManager = null;
 
     public AdpDBArtJobMonitor(ExecutionEngineSessionPlan sessionPlan, AdpDBStatus status,
-        AdpDBStatusManager statusManager, AdpDBQueryID queryID) {
+                              AdpDBStatusManager statusManager, AdpDBQueryID queryID) {
         this.sessionPlan = sessionPlan;
         this.status = status;
         this.statusManager = statusManager;
@@ -48,7 +48,8 @@ public class AdpDBArtJobMonitor implements Runnable {
         this.listeners = new ArrayList<AdpDBQueryListener>(1);
     }
 
-    @Override public void run() {
+    @Override
+    public void run() {
         try {
             sessionManager = sessionPlan.getPlanSessionStatusManagerProxy();
             statsManager = sessionPlan.getPlanSessionStatisticsManagerProxy();
@@ -79,11 +80,10 @@ public class AdpDBArtJobMonitor implements Runnable {
                 }
 
 
-
             }
             updateProgressStatistics();
             statusManager.getStatistics(status.getId())
-                .setAdpEngineStatistics(statsManager.getStatistics());
+                    .setAdpEngineStatistics(statsManager.getStatistics());
 
             if (sessionManager != null && sessionManager.hasError() == false) {
                 statusManager.setFinished(status.getId());
@@ -95,7 +95,7 @@ public class AdpDBArtJobMonitor implements Runnable {
             statusManager.setError(status.getId(), e);
             log.error("Cannot monitor job!", e);
         } finally {
-            log.debug("Terminate listeners ( " + listeners.size()+")...");
+            log.debug("Terminate listeners ( " + listeners.size() + ")...");
             synchronized (listeners) {
                 for (AdpDBQueryListener l : listeners) {
                     l.terminated(queryID, status);
@@ -126,7 +126,7 @@ public class AdpDBArtJobMonitor implements Runnable {
             adpStats.setErrors(errors);
 
             if (statsOldOP != operatorsCompleted || statsOldER != errors
-                || statsOldDT != transferCompleted) {
+                    || statsOldDT != transferCompleted) {
                 statsOldDT = transferCompleted;
                 statsOldER = errors;
                 statsOldOP = operatorsCompleted;

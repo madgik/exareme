@@ -41,7 +41,7 @@ public class ContainerManager implements ContainerManagerInterface {
     private ArrayList<ArmComputeSessionID> aa = new ArrayList<ArmComputeSessionID>();
 
     public ContainerManager(int number_of_containers, int number_of_usages, boolean multi_usage)
-        throws RemoteException {
+            throws RemoteException {
         int i;
         EntityName entity;
 
@@ -71,17 +71,19 @@ public class ContainerManager implements ContainerManagerInterface {
         return this.number_of_available_containers;
     }
 
-    @Override public void startManager() throws RemoteException {
+    @Override
+    public void startManager() throws RemoteException {
         //throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public void stopManager() throws RemoteException {
+    @Override
+    public void stopManager() throws RemoteException {
         //throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public ActiveContainer[] getContainers(int number_of_containers, ArmComputeSessionID sessionID)
-        throws RemoteException {
+            throws RemoteException {
 
         ActiveContainer[] containers;
         System.out.println("Uparxoun " + this.number_of_available_containers);
@@ -133,7 +135,7 @@ public class ContainerManager implements ContainerManagerInterface {
 
     //@Override
     public ActiveContainer[] getContainers(int number_of_containers, ArmComputeSessionID sessionID,
-        long duration_time) throws RemoteException {
+                                           long duration_time) throws RemoteException {
 
         ActiveContainer[] containers;
 
@@ -177,8 +179,9 @@ public class ContainerManager implements ContainerManagerInterface {
         }
     }
 
-    @Override public ActiveContainer[] getAtMostContainers(int number_of_containers,
-        ArmComputeSessionID sessionID) throws RemoteException {
+    @Override
+    public ActiveContainer[] getAtMostContainers(int number_of_containers,
+                                                 ArmComputeSessionID sessionID) throws RemoteException {
 
         ActiveContainer[] containers;
 
@@ -211,8 +214,9 @@ public class ContainerManager implements ContainerManagerInterface {
         }
     }
 
-    @Override public ActiveContainer[] tryGetContainers(int number_of_containers,
-        ArmComputeSessionID sessionID) throws RemoteException {
+    @Override
+    public ActiveContainer[] tryGetContainers(int number_of_containers,
+                                              ArmComputeSessionID sessionID) throws RemoteException {
 
         ActiveContainer[] containers;
 
@@ -244,7 +248,7 @@ public class ContainerManager implements ContainerManagerInterface {
 
     //@Override
     public void releaseContainers(ActiveContainer[] containers, ArmComputeSessionID sessionID)
-        throws RemoteException {
+            throws RemoteException {
 
         synchronized (release_lock) {
 
@@ -288,7 +292,7 @@ public class ContainerManager implements ContainerManagerInterface {
                 wait_lock.lock();
                 try {
                     if ((number_of_available_containers >= expected_number_of_containers) && (
-                        expected_number_of_containers != 0)) {
+                            expected_number_of_containers != 0)) {
                         expected_number_of_containers = 0;
                         get = false;
                         wait_condition.signalAll();
@@ -298,7 +302,7 @@ public class ContainerManager implements ContainerManagerInterface {
                 }
             } else if (limit_get == true) {
                 if ((number_of_available_containers >= expected_number_of_containers) && (
-                    expected_number_of_containers != 0)) {
+                        expected_number_of_containers != 0)) {
                     expected_number_of_containers = 0;
                     limit_get = false;
                     if (sleeping_thread != null) {
@@ -313,8 +317,9 @@ public class ContainerManager implements ContainerManagerInterface {
         }
     }
 
-    @Override public void stopContainer(ActiveContainer container, ArmComputeSessionID sessionID)
-        throws RemoteException {
+    @Override
+    public void stopContainer(ActiveContainer container, ArmComputeSessionID sessionID)
+            throws RemoteException {
 
         synchronized (release_lock) {
 
@@ -348,7 +353,7 @@ public class ContainerManager implements ContainerManagerInterface {
                 wait_lock.lock();
                 try {
                     if ((number_of_available_containers >= expected_number_of_containers) && (
-                        expected_number_of_containers != 0)) {
+                            expected_number_of_containers != 0)) {
                         expected_number_of_containers = 0;
                         get = false;
                         wait_condition.signalAll();
@@ -358,7 +363,7 @@ public class ContainerManager implements ContainerManagerInterface {
                 }
             } else if (limit_get == true) {
                 if ((number_of_available_containers >= expected_number_of_containers) && (
-                    expected_number_of_containers != 0)) {
+                        expected_number_of_containers != 0)) {
                     expected_number_of_containers = 0;
                     limit_get = false;
                     if (sleeping_thread != null) {
@@ -369,7 +374,8 @@ public class ContainerManager implements ContainerManagerInterface {
         }
     }
 
-    @Override public void closeSession(ArmComputeSessionID sessionID) throws RemoteException {
+    @Override
+    public void closeSession(ArmComputeSessionID sessionID) throws RemoteException {
 
         int usages;
 
@@ -397,7 +403,7 @@ public class ContainerManager implements ContainerManagerInterface {
                     wait_lock.lock();
                     try {
                         if ((number_of_available_containers >= expected_number_of_containers) && (
-                            expected_number_of_containers != 0)) {
+                                expected_number_of_containers != 0)) {
                             expected_number_of_containers = 0;
                             get = false;
                             wait_condition.signalAll();
@@ -407,7 +413,7 @@ public class ContainerManager implements ContainerManagerInterface {
                     }
                 } else if (limit_get == true) {
                     if ((number_of_available_containers >= expected_number_of_containers) && (
-                        expected_number_of_containers != 0)) {
+                            expected_number_of_containers != 0)) {
                         expected_number_of_containers = 0;
                         limit_get = false;
                         if (sleeping_thread != null) {
@@ -421,12 +427,13 @@ public class ContainerManager implements ContainerManagerInterface {
         }
     }
 
-    @Override public ContainerManagerStatus getStatus() throws RemoteException {
+    @Override
+    public ContainerManagerStatus getStatus() throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     private ActiveContainer[] findContainers(int number_of_containers,
-        ArmComputeSessionID sessionID) {
+                                             ArmComputeSessionID sessionID) {
 
         int i, usages, temp_usage;
         boolean update = true;
@@ -537,12 +544,13 @@ public class ContainerManager implements ContainerManagerInterface {
 
     @Override
     public void setPattern(ArrayList<PatternElement> pattern, ArmComputeSessionID sessionID)
-        throws RemoteException {
+            throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public ArrayList<Pair<PatternElement, ActiveContainer>> getAtMostContainers(
-        ArmComputeSessionID sessionID) throws RemoteException {
+    @Override
+    public ArrayList<Pair<PatternElement, ActiveContainer>> getAtMostContainers(
+            ArmComputeSessionID sessionID) throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

@@ -74,7 +74,7 @@ public class SolutionSpace implements Serializable {
                 continue;
             }
             if (fastest.getStatistics().getTimeInQuanta() > optResult.getStatistics()
-                .getTimeInQuanta()) {
+                    .getTimeInQuanta()) {
                 fastest = optResult;
             }
         }
@@ -95,7 +95,7 @@ public class SolutionSpace implements Serializable {
                 continue;
             }
             if (slowest.getStatistics().getTimeInQuanta() < optResult.getStatistics()
-                .getTimeInQuanta()) {
+                    .getTimeInQuanta()) {
                 slowest = optResult;
             }
         }
@@ -116,7 +116,7 @@ public class SolutionSpace implements Serializable {
                 continue;
             }
             if (cheapest.getStatistics().getMoneyInQuanta() > optResult.getStatistics()
-                .getMoneyInQuanta()) {
+                    .getMoneyInQuanta()) {
                 cheapest = optResult;
             }
         }
@@ -137,7 +137,7 @@ public class SolutionSpace implements Serializable {
                 continue;
             }
             if (mostExpensive.getStatistics().getMoneyInQuanta() < optResult.getStatistics()
-                .getMoneyInQuanta()) {
+                    .getMoneyInQuanta()) {
                 mostExpensive = optResult;
             }
         }
@@ -161,7 +161,7 @@ public class SolutionSpace implements Serializable {
                 continue;
             }
             if (fastest.getStatistics().getTimeInQuanta() > optResult.getStatistics()
-                .getTimeInQuanta()) {
+                    .getTimeInQuanta()) {
                 fastest = optResult;
             }
         }
@@ -185,7 +185,7 @@ public class SolutionSpace implements Serializable {
                 continue;
             }
             if (cheapest.getStatistics().getMoneyInQuanta() > optResult.getStatistics()
-                .getMoneyInQuanta()) {
+                    .getMoneyInQuanta()) {
                 cheapest = optResult;
             }
         }
@@ -203,15 +203,15 @@ public class SolutionSpace implements Serializable {
             LinkedList<SchedulingResult> toRemove = new LinkedList<>();
             for (SchedulingResult sk : skyline) {
                 if (optResult.getStatistics().getTimeInQuanta() <= sk.getStatistics()
-                    .getTimeInQuanta() && optResult.getStatistics().getMoneyInQuanta() <= sk
-                    .getStatistics().getMoneyInQuanta()) {
-          /* sk is dominated */
+                        .getTimeInQuanta() && optResult.getStatistics().getMoneyInQuanta() <= sk
+                        .getStatistics().getMoneyInQuanta()) {
+                    /* sk is dominated */
                     toRemove.add(sk);
                 } else {
                     if (optResult.getStatistics().getTimeInQuanta() >= sk.getStatistics()
-                        .getTimeInQuanta() && optResult.getStatistics().getMoneyInQuanta() >= sk
-                        .getStatistics().getMoneyInQuanta()) {
-            /* Event is dominated */
+                            .getTimeInQuanta() && optResult.getStatistics().getMoneyInQuanta() >= sk
+                            .getStatistics().getMoneyInQuanta()) {
+                        /* Event is dominated */
                         dominated = true;
                     }
                 }
@@ -237,15 +237,15 @@ public class SolutionSpace implements Serializable {
             LinkedList<SchedulingResult> toRemove = new LinkedList<>();
             for (SchedulingResult sk : skyline) {
                 if (optResult.getStatistics().getTimeInQuanta() >= sk.getStatistics()
-                    .getTimeInQuanta() && optResult.getStatistics().getMoneyInQuanta() >= sk
-                    .getStatistics().getMoneyInQuanta()) {
-          /* sk is dominated */
+                        .getTimeInQuanta() && optResult.getStatistics().getMoneyInQuanta() >= sk
+                        .getStatistics().getMoneyInQuanta()) {
+                    /* sk is dominated */
                     toRemove.add(sk);
                 } else {
                     if (optResult.getStatistics().getTimeInQuanta() <= sk.getStatistics()
-                        .getTimeInQuanta() && optResult.getStatistics().getMoneyInQuanta() <= sk
-                        .getStatistics().getMoneyInQuanta()) {
-            /* Event is dominated */
+                            .getTimeInQuanta() && optResult.getStatistics().getMoneyInQuanta() <= sk
+                            .getStatistics().getMoneyInQuanta()) {
+                        /* Event is dominated */
                         dominated = true;
                     }
                 }
@@ -260,19 +260,20 @@ public class SolutionSpace implements Serializable {
         return skyline;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         String result = new String();
 
         result +=
-            "containerNum," + "time," + "cost," + "containersUsed," + "containerFragmentation,"
-                + "refinedTime," + "refinedCost," + "refinedContainersUsed,"
-                + "refinedContainerFragmentation," + "\n";
+                "containerNum," + "time," + "cost," + "containersUsed," + "containerFragmentation,"
+                        + "refinedTime," + "refinedCost," + "refinedContainersUsed,"
+                        + "refinedContainerFragmentation," + "\n";
 
         for (int i = 0; i < results.size(); i++) {
             SchedulingResult op = results.get(i);
             result += op.containerNum + "," + op.getStatistics().getTimeInQuanta() + "," + op
-                .getStatistics().getMoneyInQuanta() + "," + op.getStatistics().getContainersUsed()
-                + "," + "\n";
+                    .getStatistics().getMoneyInQuanta() + "," + op.getStatistics().getContainersUsed()
+                    + "," + "\n";
         }
         return result;
     }

@@ -12,31 +12,31 @@ import org.apache.log4j.Logger;
  */
 public class ProcessDemo {
 
-  public static void main(String[] args) throws Exception {
-    BasicConfigurator.configure();
-    Logger.getRootLogger().setLevel(Level.TRACE);
+    public static void main(String[] args) throws Exception {
+        BasicConfigurator.configure();
+        Logger.getRootLogger().setLevel(Level.TRACE);
 
-    MadisProcess proc = new MadisProcess("");
-    proc.start();
+        MadisProcess proc = new MadisProcess("");
+        proc.start();
 
-    execAndPrintResults("create table a(id, name);", proc);
-    execAndPrintResults("insert into a values (1, 'hoho');", proc);
-    execAndPrintResults("insert into a values (2, 'haha');", proc);
-    for (int i = 0; i < 100; ++i) {
-      System.out.println(">>> " + i);
-      execAndPrintResults("select * from (pipe 'echo a');", proc);
-      execAndPrintResults("select " + i + ";", proc);
+        execAndPrintResults("create table a(id, name);", proc);
+        execAndPrintResults("insert into a values (1, 'hoho');", proc);
+        execAndPrintResults("insert into a values (2, 'haha');", proc);
+        for (int i = 0; i < 100; ++i) {
+            System.out.println(">>> " + i);
+            execAndPrintResults("select * from (pipe 'echo a');", proc);
+            execAndPrintResults("select " + i + ";", proc);
+        }
+        proc.stop();
     }
-    proc.stop();
-  }
 
-  private static void execAndPrintResults(String query, MadisProcess proc) throws Exception {
-    QueryResultStream stream = proc.execQuery(query);
-    System.out.println(stream.getSchema());
-    String record = stream.getNextRecord();
-    while (record != null) {
-      System.out.println(record);
-      record = stream.getNextRecord();
+    private static void execAndPrintResults(String query, MadisProcess proc) throws Exception {
+        QueryResultStream stream = proc.execQuery(query);
+        System.out.println(stream.getSchema());
+        String record = stream.getNextRecord();
+        while (record != null) {
+            System.out.println(record);
+            record = stream.getNextRecord();
+        }
     }
-  }
 }

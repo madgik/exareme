@@ -1,11 +1,10 @@
 # coding: utf-8
 
-import setpath
 import functions
 import logging
 
-def toggle(*args):
 
+def toggle(*args):
     """
     .. function:: toggle(setting_name)
 
@@ -24,18 +23,20 @@ def toggle(*args):
     tracing is now: True
     """
 
-    if len(args)==0:
+    if len(args) == 0:
         return
-    setting=args[0].lower()
-    if setting in functions.settings and type(functions.settings[setting])==bool:
-        functions.settings[setting]^=True
-        return setting+" is now: " + str(functions.settings[setting])
+    setting = args[0].lower()
+    if setting in functions.settings and type(functions.settings[setting]) == bool:
+        functions.settings[setting] ^= True
+        return setting + " is now: " + str(functions.settings[setting])
     else:
-        return setting+" not found"
-toggle.registered=True
+        return setting + " not found"
+
+
+toggle.registered = True
+
 
 def setting(*args):
-
     """
     .. function:: setting(setting_name, [value])
 
@@ -54,30 +55,32 @@ def setting(*args):
     False
     """
 
-    if len(args)==0:
+    if len(args) == 0:
         return str(functions.settings)
-    setting=args[0].lower()
+    setting = args[0].lower()
     if setting in functions.settings:
-        if len(args)==1:
+        if len(args) == 1:
             return str(functions.settings[setting])
-        elif len(args)==2:
-            if type(functions.settings[setting])==bool:
+        elif len(args) == 2:
+            if type(functions.settings[setting]) == bool:
                 if args[1].lower() in ['true', '1']:
-                    s=True
+                    s = True
                 else:
-                    s=False
-                functions.settings[setting]=s
-            elif type(functions.settings[setting])==int:
-                functions.settings[setting]=int(args[1])
-            elif type(functions.settings[setting])==str:
-                functions.settings[setting]=str(args[1])
+                    s = False
+                functions.settings[setting] = s
+            elif type(functions.settings[setting]) == int:
+                functions.settings[setting] = int(args[1])
+            elif type(functions.settings[setting]) == str:
+                functions.settings[setting] = str(args[1])
             return str(functions.settings[setting])
     else:
-        return setting+" not found"
-setting.registered=True
+        return setting + " not found"
+
+
+setting.registered = True
+
 
 def setlog(*args):
-
     """
     .. function:: setlog(filename)
 
@@ -85,21 +88,22 @@ def setlog(*args):
 
     """
 
-    setting='logging'
+    setting = 'logging'
     if functions.settings[setting]:
         return True
 
-    functions.settings[setting]=True
-    if len(args)==0:
-        file=None
+    functions.settings[setting] = True
+    if len(args) == 0:
+        file = None
     else:
-        file=args[0]
+        file = args[0]
 
-    logging.basicConfig(filename=file,level=logging.NOTSET,format="%(asctime)s - %(name)s - %(flowname)s - %(levelname)s - %(message)s")
+    logging.basicConfig(filename=file, level=logging.NOTSET,
+                        format="%(asctime)s - %(name)s - %(flowname)s - %(levelname)s - %(message)s")
     return True
 
-setlog.registered=True
 
+setlog.registered = True
 
 if not ('.' in __name__):
     """
@@ -107,11 +111,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

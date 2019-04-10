@@ -15,7 +15,7 @@ import java.util.Map;
 public class HttpUtils {
 
     public static void getValues(String content, Map<String, String> dict)
-        throws UnsupportedEncodingException {
+            throws UnsupportedEncodingException {
         if (!content.isEmpty()) {
             try {
                 getValuesFromJDBC(content, dict);
@@ -26,14 +26,14 @@ public class HttpUtils {
     }
 
     private static void getValuesFromJDBC(String content, Map<String, String> dict)
-        throws UnsupportedEncodingException, IllegalStateException {
+            throws UnsupportedEncodingException, IllegalStateException {
         Gson g = new Gson();
         Map<String, String> values = g.fromJson(content, Map.class);
         dict.putAll(values);
     }
 
     private static void getValuesFromWeb(String content, Map<String, String> dict)
-        throws UnsupportedEncodingException {
+            throws UnsupportedEncodingException {
         String[] parts = content.split("&");
         for (String p : parts) {
             int split = p.indexOf("=");

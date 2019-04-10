@@ -1,19 +1,11 @@
-import inspect
-import math
-import random
-import numpy
-from fractions import Fraction
-import sys
-import json
 from array import *
 
 
 class approximatedmedian:
-
-    registered = True #Value to define db operator
+    registered = True  # Value to define db operator
 
     def __init__(self):
-        self.n  = 0
+        self.n = 0
         self.totalnums = 0
         self.numberofcolumns = 5
         self.colname = []
@@ -45,26 +37,18 @@ class approximatedmedian:
         # yield ('attr1', 'attr2', 'val', 'reccount')
 
         currentsum = 0
-        for i in xrange(0,self.n):
+        for i in xrange(0, self.n):
             # print i,self.totalnums / 2.0,self.nums[i],currentsum
             currentsum += self.nums[i]
             if currentsum >= (self.totalnums / 2.0):
                 break
 
-        median = self.minvalues[i]+(currentsum-self.totalnums / 2.0) * (self.maxvalues[i]-self.minvalues[i]) / self.nums[i]
+        median = self.minvalues[i] + (currentsum - self.totalnums / 2.0) * (self.maxvalues[i] - self.minvalues[i]) / \
+                 self.nums[i]
         # print (self.totalnums / 2.0), currentsum, currentsum -self.nums[i]
         numsBeforeMedian = (self.totalnums / 2.0) - (currentsum - self.nums[i])
         numsAfterMedian = currentsum - (self.totalnums / 2.0)
-        yield self.colname[0], median, i, numsBeforeMedian,numsAfterMedian
-
-
-
-
-
-
-
-
-
+        yield self.colname[0], median, i, numsBeforeMedian, numsAfterMedian
 
 
 if not ('.' in __name__):
@@ -73,10 +57,10 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
-    #from functions import *
 
-    #testfunction()
+    # from functions import *
+
+    # testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')

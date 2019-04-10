@@ -1,4 +1,5 @@
 import functions
+
 registered = True
 external_query = True
 
@@ -18,7 +19,6 @@ class ExaHistory(functions.vtable.vtbase.VT):
         import json
         import urllib
         import urllib2
-
 
         # get site properties, list_site not used!
         list_site, dict_site = self.full_parse(parsedArgs)

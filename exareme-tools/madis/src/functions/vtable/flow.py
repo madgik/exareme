@@ -39,55 +39,58 @@ Test files:
 
 
 """
-import setpath
-import vtbase
-import functions
 import apsw
+import functions
 import re
 
-registered=True
+import vtbase
+
+registered = True
+
 
 def filterlinecomment(s):
-    if re.match(r'\s*--', s, re.DOTALL| re.UNICODE):
+    if re.match(r'\s*--', s, re.DOTALL | re.UNICODE):
         return ''
     else:
         return s
 
+
 class FlowVT(vtbase.VT):
-    def VTiter(self, *parsedArgs,**envars):
+    def VTiter(self, *parsedArgs, **envars):
         largs, dictargs = self.full_parse(parsedArgs)
 
         if 'query' not in dictargs:
-            raise functions.OperatorError(__name__.rsplit('.')[-1],"No query argument ")
+            raise functions.OperatorError(__name__.rsplit('.')[-1], "No query argument ")
 
-        query=dictargs['query']
-        connection=envars['db']
-        
+        query = dictargs['query']
+        connection = envars['db']
+
         yield (('query', 'text'),)
-        cur=connection.cursor()
-        execit=cur.execute(query, parse = False)
+        cur = connection.cursor()
+        execit = cur.execute(query, parse=False)
 
-        st=''
+        st = ''
         for row in execit:
-            strow=filterlinecomment(' '.join(row))
-            if strow=='':
+            strow = filterlinecomment(' '.join(row))
+            if strow == '':
                 continue
-            if st!='':
-                st+='\n'+strow
+            if st != '':
+                st += '\n' + strow
             else:
-                st+=strow
+                st += strow
             if apsw.complete(st):
                 yield [st]
-                st=''
-        if len(st)>0 and not re.match(r'\s+$', st, re.DOTALL| re.UNICODE):
-            if len(st)>35:
-                raise functions.OperatorError(__name__.rsplit('.')[-1],"Incomplete statement found : %s ... %s" %(st[:15],st[-15:]))
+                st = ''
+        if len(st) > 0 and not re.match(r'\s+$', st, re.DOTALL | re.UNICODE):
+            if len(st) > 35:
+                raise functions.OperatorError(__name__.rsplit('.')[-1],
+                                              "Incomplete statement found : %s ... %s" % (st[:15], st[-15:]))
             else:
-                raise functions.OperatorError(__name__.rsplit('.')[-1],"Incomplete statement found : %s" %(st))
+                raise functions.OperatorError(__name__.rsplit('.')[-1], "Incomplete statement found : %s" % (st))
+
 
 def Source():
     return vtbase.VTGenerator(FlowVT)
-
 
 
 if not ('.' in __name__):
@@ -96,13 +99,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()
-
-

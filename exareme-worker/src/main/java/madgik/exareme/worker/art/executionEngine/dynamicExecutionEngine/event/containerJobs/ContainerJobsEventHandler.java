@@ -34,19 +34,20 @@ public class ContainerJobsEventHandler implements ExecEngineEventHandler<Contain
     public static final ContainerJobsEventHandler instance = new ContainerJobsEventHandler();
 
     public static ContainerJobsEvent getEvent(String container, IndependentEvents events,
-        HashMap<String, ContainerJobsEvent> jobsMap, PlanEventSchedulerState state) {
+                                              HashMap<String, ContainerJobsEvent> jobsMap, PlanEventSchedulerState state) {
         ContainerJobsEvent jobs = jobsMap.get(container);
         if (jobs == null) {
             jobs = new ContainerJobsEvent(state);
             events.addEvent(jobs, ContainerJobsEventHandler.instance,
-                ContainerJobsEventListener.instance);
+                    ContainerJobsEventListener.instance);
             jobsMap.put(container, jobs);
         }
         return jobs;
     }
 
-    @Override public void preProcess(ContainerJobsEvent event, PlanEventSchedulerState state)
-        throws RemoteException {
+    @Override
+    public void preProcess(ContainerJobsEvent event, PlanEventSchedulerState state)
+            throws RemoteException {
         for (CreateOperatorEvent op : event.operators) {
             CreateOperatorEventHandler.instance.preProcess(op, state);
             event.session = op.session;
@@ -71,8 +72,9 @@ public class ContainerJobsEventHandler implements ExecEngineEventHandler<Contain
         }
     }
 
-    @Override public void handle(ContainerJobsEvent event, EventProcessor proc)
-        throws RemoteException {
+    @Override
+    public void handle(ContainerJobsEvent event, EventProcessor proc)
+            throws RemoteException {
         ContainerJobs jobs = new ContainerJobs();
         for (CreateOperatorEvent op : event.operators) {
             jobs.addJobs(op.jobs);
@@ -93,8 +95,9 @@ public class ContainerJobsEventHandler implements ExecEngineEventHandler<Contain
         event.messageCount = 1;
     }
 
-    @Override public void postProcess(ContainerJobsEvent event, PlanEventSchedulerState state)
-        throws RemoteException {
+    @Override
+    public void postProcess(ContainerJobsEvent event, PlanEventSchedulerState state)
+            throws RemoteException {
         List<ContainerJobResult> results = event.results.getJobResults();
         int index = 0;
         for (CreateOperatorEvent op : event.operators) {

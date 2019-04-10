@@ -16,7 +16,7 @@ import java.util.Date;
  * @author Herald Kllapi<br>
  * @author Dimitris Paparas<br>
  * @author Eva Sitaridi<br>
- *         {herald,paparas,evas}
+ * {herald,paparas,evas}
  * @di.uoa.gr<br> University of Athens / Department of Informatics and
  * Telecommunications.
  * @since 1.0
@@ -24,20 +24,20 @@ import java.util.Date;
 public interface PlanSessionReportManager extends RemoteObject<PlanSessionReportManagerProxy> {
 
     void planStart(Date time, ContainerID containerID, PlanSessionReportID sessionID)
-        throws RemoteException;
+            throws RemoteException;
 
     void planInstantiationException(RemoteException exception, Date time, ContainerID containerID,
-        PlanSessionReportID sessionID) throws RemoteException;
+                                    PlanSessionReportID sessionID) throws RemoteException;
 
     void operatorSuccess(ConcreteOperatorID operatorID, int exidCode, Serializable exitMessage,
-        Date time, ContainerID containerID, PlanSessionReportID sessionID, boolean terminateGroup)
-        throws RemoteException;
+                         Date time, ContainerID containerID, PlanSessionReportID sessionID, boolean terminateGroup)
+            throws RemoteException;
 
     void operatorError(ConcreteOperatorID operatorID, RemoteException exception, Date time,
-        ContainerID containerID, PlanSessionReportID sessionID) throws RemoteException;
+                       ContainerID containerID, PlanSessionReportID sessionID) throws RemoteException;
 
     void quantumFinished(int quantumNum, ContainerID containerID, PlanSessionReportID sessionID)
-        throws RemoteException;
+            throws RemoteException;
 
     void stopManager() throws RemoteException;
 }

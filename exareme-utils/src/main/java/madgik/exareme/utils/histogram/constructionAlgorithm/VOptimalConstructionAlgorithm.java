@@ -23,7 +23,7 @@ public class VOptimalConstructionAlgorithm implements ConstructionAlgorithm {
     private static final long serialVersionUID = 1L;
 
     public LinkedList<Bucket> createHistogram(ArrayList<Pair<?, Double>> data, int bucketNum,
-        PartitionRule partitionRule) throws RemoteException {
+                                              PartitionRule partitionRule) throws RemoteException {
 
         if (bucketNum < 1) {
             throw new AccessException("Bucket num should be > 0");
@@ -40,7 +40,7 @@ public class VOptimalConstructionAlgorithm implements ConstructionAlgorithm {
         }
 
         VOptimalSA sa =
-            new VOptimalSA(10000, 1000, new LogarithmicTemperature(1.0), data, bucketNum);
+                new VOptimalSA(10000, 1000, new LogarithmicTemperature(1.0), data, bucketNum);
 
         VOptimalState result = (VOptimalState) sa.search();
 

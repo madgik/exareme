@@ -42,12 +42,12 @@ import java.util.List;
 public class ExecuteQueryState {
 
     private static final int ioBufferSize =
-        AdpProperties.getArtProps().getInt("art.container.ioBufferSize_kb") * Metrics.KB;
+            AdpProperties.getArtProps().getInt("art.container.ioBufferSize_kb") * Metrics.KB;
     private static final String execMethod =
-        AdpDBProperties.getAdpDBProps().getString("db.execution.method");
+            AdpDBProperties.getAdpDBProps().getString("db.execution.method");
     private static Logger log = Logger.getLogger(ExecuteQueryState.class);
     private final String compresion =
-        AdpDBProperties.getAdpDBProps().getString("db.execute.compresion");
+            AdpDBProperties.getAdpDBProps().getString("db.execute.compresion");
     private AdpDBSelectOperator selOperator = null;
     private AdpDBDMOperator dmOperator = null;
     private MadisExecutorResult execResult = null;
@@ -61,17 +61,17 @@ public class ExecuteQueryState {
     private boolean streaming = false;
 
     public ExecuteQueryState(AdpDBSelectOperator selOperator, DiskManager diskManager,
-        ProcessManager procManager, boolean streaming) {
+                             ProcessManager procManager, boolean streaming) {
         this(selOperator, null, diskManager, procManager, streaming);
     }
 
     public ExecuteQueryState(AdpDBDMOperator dmOperator, DiskManager diskManager,
-        ProcessManager procManager, boolean streaming) {
+                             ProcessManager procManager, boolean streaming) {
         this(null, dmOperator, diskManager, procManager, streaming);
     }
 
     private ExecuteQueryState(AdpDBSelectOperator selOperator, AdpDBDMOperator dmOperator,
-        DiskManager diskManager, ProcessManager procManager, boolean streaming) {
+                              DiskManager diskManager, ProcessManager procManager, boolean streaming) {
         this.selOperator = selOperator;
         this.dmOperator = dmOperator;
         this.diskManager = diskManager;
@@ -81,20 +81,21 @@ public class ExecuteQueryState {
         this.outputFiles = new HashMap<String, File>();
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "ExecuteQueryState{" +
-            "compresion='" + compresion + '\'' +
-            ", selOperator=" + selOperator +
-            ", dmOperator=" + dmOperator +
-            ", execResult=" + execResult +
-            ", diskManager=" + diskManager +
-            ", procManager=" + procManager +
-            ", rootDirectory=" + rootDirectory +
-            ", isInitialized=" + isInitialized +
-            ", inputFileMap=" + inputFileMap +
-            ", outputFiles=" + outputFiles +
-            ", streaming=" + streaming +
-            '}';
+                "compresion='" + compresion + '\'' +
+                ", selOperator=" + selOperator +
+                ", dmOperator=" + dmOperator +
+                ", execResult=" + execResult +
+                ", diskManager=" + diskManager +
+                ", procManager=" + procManager +
+                ", rootDirectory=" + rootDirectory +
+                ", isInitialized=" + isInitialized +
+                ", inputFileMap=" + inputFileMap +
+                ", outputFiles=" + outputFiles +
+                ", streaming=" + streaming +
+                '}';
     }
 
     private void initialize() throws RemoteException {
@@ -111,7 +112,7 @@ public class ExecuteQueryState {
         if (selOperator.getTotalInputs() != adaptorMgr.getInputCount()) {
             int local = selOperator.getTotalInputs() - adaptorMgr.getInputCount();
             log.debug("Inputs \n" + "Local  : " + local + "\n" + "Remote : " + adaptorMgr
-                .getInputCount());
+                    .getInputCount());
         }
 
         // The number of outputs is the same with the number of partitions.
@@ -124,7 +125,7 @@ public class ExecuteQueryState {
 
         if (numOfOutputs != adaptorMgr.getOutputCount()) {
             log.debug("Outputs \n" + "Tables        : " + numOfOutputs + "\n" + "Replicated to : "
-                + adaptorMgr.getOutputCount());
+                    + adaptorMgr.getOutputCount());
         }
 
         ArrayList<FileWriterThread> fileWriters = new ArrayList<FileWriterThread>();
@@ -132,8 +133,8 @@ public class ExecuteQueryState {
             log.debug("Read input table: " + table);
 
             List<String> bnames = adaptorMgr
-                .getReadStreamAdaptorNamesByParam(AdpDBArtPlanGeneratorConsts.BUFFER_TABLE_NAME,
-                    table);
+                    .getReadStreamAdaptorNamesByParam(AdpDBArtPlanGeneratorConsts.BUFFER_TABLE_NAME,
+                            table);
 
             if (bnames == null) {
                 log.debug("table : " + table + " is local!");
@@ -153,12 +154,12 @@ public class ExecuteQueryState {
 
                     Parameters params = adaptorMgr.getInputParams(bname);
                     List<Parameter> param =
-                        params.getParameter(AdpDBArtPlanGeneratorConsts.BUFFER_TABLE_PART_NAME);
+                            params.getParameter(AdpDBArtPlanGeneratorConsts.BUFFER_TABLE_PART_NAME);
 
                     if (param.size() != 1) {
                         throw new RuntimeException(
-                            AdpDBArtPlanGeneratorConsts.BUFFER_TABLE_PART_NAME
-                                + " param not found or are more than one!");
+                                AdpDBArtPlanGeneratorConsts.BUFFER_TABLE_PART_NAME
+                                        + " param not found or are more than one!");
                     }
 
                     int paramPart = Integer.parseInt(param.get(0).getValue());
@@ -170,7 +171,7 @@ public class ExecuteQueryState {
 
                 if (readFrom == null) {
                     throw new RuntimeException(
-                        "Input for partition not found: " + table + "/" + part);
+                            "Input for partition not found: " + table + "/" + part);
                 }
 
                 log.debug("Read partition: " + table + "/" + part + " from input: " + readFrom);
@@ -193,7 +194,7 @@ public class ExecuteQueryState {
     }
 
     public FileWriterThread readTable(String table, int partition, InputStream in)
-        throws Exception {
+            throws Exception {
         if (!isInitialized) {
             initialize();
         }
@@ -209,8 +210,8 @@ public class ExecuteQueryState {
 
         File tableFile;
         tableFile = diskManager.getContainerSession().requestAccess(rootDirectory,
-            table + DBConstants.DB_SUBPART_SEPERATOR + partition + DBConstants.DB_SEPERATOR
-                + subPart + ".db");
+                table + DBConstants.DB_SUBPART_SEPERATOR + partition + DBConstants.DB_SEPERATOR
+                        + subPart + ".db");
 
         partFileMap.put(partition, subPart + 1);
 
@@ -233,8 +234,8 @@ public class ExecuteQueryState {
             log.debug("Output only the file name: " + filePath);
             try {
                 Pair<String, String> stdOutErr = procManager
-                    .createAndRunProcess(rootDirectory, "ln", filePath,
-                        tableFile.getAbsolutePath());
+                        .createAndRunProcess(rootDirectory, "ln", filePath,
+                                tableFile.getAbsolutePath());
 
                 if (stdOutErr.b.trim().isEmpty() == false) {
                     throw new ServerException("Cannot execute ln: " + stdOutErr.b);
@@ -259,7 +260,7 @@ public class ExecuteQueryState {
             File file;
             for (int part : partitions) {
                 file = diskManager.getContainerSession().requestAccess(rootDirectory,
-                    outTable + DBConstants.DB_SEPERATOR + part + ".db");
+                        outTable + DBConstants.DB_SEPERATOR + part + ".db");
 
                 outputFiles.put(outTable + DBConstants.DB_SEPERATOR + part, file);
             }
@@ -267,8 +268,8 @@ public class ExecuteQueryState {
 
         // Create the executor
         MadisProcessExecutor exec = new MadisProcessExecutor(rootDirectory,
-            AdpDBProperties.getAdpDBProps().getInt("db.engine.pageSize_b"),
-            AdpDBProperties.getAdpDBProps().getInt("db.engine.defaultMemory_mb"), procManager);
+                AdpDBProperties.getAdpDBProps().getInt("db.engine.pageSize_b"),
+                AdpDBProperties.getAdpDBProps().getInt("db.engine.defaultMemory_mb"), procManager);
 
         // Execute select query
         execResult = exec.exec(this);
@@ -281,8 +282,8 @@ public class ExecuteQueryState {
 
         // Create the executor
         MadisDataManipulationExecutor exec = new MadisDataManipulationExecutor(rootDirectory,
-            AdpDBProperties.getAdpDBProps().getInt("db.engine.pageSize_b"),
-            AdpDBProperties.getAdpDBProps().getInt("db.engine.defaultMemory_mb"), procManager);
+                AdpDBProperties.getAdpDBProps().getInt("db.engine.pageSize_b"),
+                AdpDBProperties.getAdpDBProps().getInt("db.engine.defaultMemory_mb"), procManager);
 
         // Execute db query
         execResult = exec.exec(this);
@@ -297,8 +298,8 @@ public class ExecuteQueryState {
             log.debug("Write output table: " + table);
 
             List<String> bnames = adaptorMgr
-                .getWriteStreamAdaptorNamesByParam(AdpDBArtPlanGeneratorConsts.BUFFER_TABLE_NAME,
-                    table);
+                    .getWriteStreamAdaptorNamesByParam(AdpDBArtPlanGeneratorConsts.BUFFER_TABLE_NAME,
+                            table);
 
             HashSet<String> used = new HashSet<String>();
             List<Integer> partitions = selOperator.getOutputPartitions(table);
@@ -311,11 +312,11 @@ public class ExecuteQueryState {
                     }
                     Parameters params = adaptorMgr.getOutputParams(bname);
                     List<Parameter> param =
-                        params.getParameter(AdpDBArtPlanGeneratorConsts.BUFFER_TABLE_PART_NAME);
+                            params.getParameter(AdpDBArtPlanGeneratorConsts.BUFFER_TABLE_PART_NAME);
                     if (param.size() != 1) {
                         throw new RuntimeException(
-                            AdpDBArtPlanGeneratorConsts.BUFFER_TABLE_PART_NAME
-                                + " param not found or are more than one!");
+                                AdpDBArtPlanGeneratorConsts.BUFFER_TABLE_PART_NAME
+                                        + " param not found or are more than one!");
                     }
                     int paramPart = Integer.parseInt(param.get(0).getValue());
                     if (part == paramPart) {
@@ -326,7 +327,7 @@ public class ExecuteQueryState {
 
                 if (writeTo == null) {
                     throw new RuntimeException(
-                        "Output for partition not found: " + table + "/" + part);
+                            "Output for partition not found: " + table + "/" + part);
                 }
 
                 log.debug("Write partition: " + table + "/" + part + " from output: " + writeTo);
@@ -350,7 +351,7 @@ public class ExecuteQueryState {
     }
 
     public FileReaderThread writeTable(String table, int partition, OutputStream out)
-        throws Exception {
+            throws Exception {
         if (isInitialized == false) {
             initialize();
         }
@@ -411,7 +412,7 @@ public class ExecuteQueryState {
                 //          throw new RuntimeException("File not found: " + file.getAbsolutePath());
                 //        }
                 String tableFile = selOperator.getQuery().getDatabaseDir() + "/" + table +
-                    DBConstants.DB_SEPERATOR + part + ".db";
+                        DBConstants.DB_SEPERATOR + part + ".db";
                 //        if (new File(tableFile).exists()) {
                 //          throw new RuntimeException("Table already exists : " + tableFile);
                 //        }
@@ -463,6 +464,6 @@ public class ExecuteQueryState {
             execStats = execResult.getExecStats();
         }
         return new ExecuteQueryExitMessage(tableInfo, execStats, selOperator.getQuery().getId(),
-            selOperator.getSerialNumber(), selOperator.getType());
+                selOperator.getSerialNumber(), selOperator.getType());
     }
 }

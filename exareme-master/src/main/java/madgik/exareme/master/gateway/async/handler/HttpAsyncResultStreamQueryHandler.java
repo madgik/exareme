@@ -20,14 +20,15 @@ public class HttpAsyncResultStreamQueryHandler implements HttpAsyncRequestHandle
     public HttpAsyncResultStreamQueryHandler() {
     }
 
-    @Override public HttpAsyncRequestConsumer<HttpRequest> processRequest(HttpRequest request,
-        HttpContext context) throws HttpException, IOException {
+    @Override
+    public HttpAsyncRequestConsumer<HttpRequest> processRequest(HttpRequest request,
+                                                                HttpContext context) throws HttpException, IOException {
         return new BasicAsyncRequestConsumer();
     }
 
     @Override
     public void handle(HttpRequest httpRequest, HttpAsyncExchange httpExchange, HttpContext context)
-        throws HttpException, IOException {
+            throws HttpException, IOException {
 
         HttpResponse httpResponse = httpExchange.getResponse();
 
@@ -50,7 +51,7 @@ public class HttpAsyncResultStreamQueryHandler implements HttpAsyncRequestHandle
 
             if (info == null) {
                 HttpResponse response =
-                    new BasicHttpResponse(HttpVersion.HTTP_1_1, HttpStatus.SC_NOT_FOUND, "OK");
+                        new BasicHttpResponse(HttpVersion.HTTP_1_1, HttpStatus.SC_NOT_FOUND, "OK");
                 HttpEntity entity = new NStringEntity("Stream " + queryId + " Not Found");
 
                 response.setEntity(entity);
@@ -62,14 +63,14 @@ public class HttpAsyncResultStreamQueryHandler implements HttpAsyncRequestHandle
         } catch (Exception ex) {
             log.error(ex);
             HttpResponse response =
-                new BasicHttpResponse(HttpVersion.HTTP_1_1, HttpStatus.SC_OK, "");
+                    new BasicHttpResponse(HttpVersion.HTTP_1_1, HttpStatus.SC_OK, "");
             //            HttpEntity entity = new NStringEntity(
             //                    String.format("{\"schema\":[[\"status\", \"null\"]]}\n[\"%s\"]\n",
             //                    StringEscapeUtils.escapeJavaScript(ex.getMessage()))
             //            );
 
             HttpEntity entity = new NStringEntity(String
-                .format("{\"schema\":[[\"status\", \"null\"]]}\n[\"%s\"]\n", ex.getMessage()));
+                    .format("{\"schema\":[[\"status\", \"null\"]]}\n[\"%s\"]\n", ex.getMessage()));
 
             response.setEntity(entity);
             httpExchange.submitResponse(new BasicAsyncResponseProducer(response));
@@ -79,7 +80,7 @@ public class HttpAsyncResultStreamQueryHandler implements HttpAsyncRequestHandle
 
         log.info("Redirect to URL: http://" + info.ip + ":" + info.port + target);
         HttpResponse response =
-            new BasicHttpResponse(HttpVersion.HTTP_1_1, HttpStatus.SC_TEMPORARY_REDIRECT, "");
+                new BasicHttpResponse(HttpVersion.HTTP_1_1, HttpStatus.SC_TEMPORARY_REDIRECT, "");
         response.addHeader("Location", "http://" + info.ip + ":" + info.port + target);
         httpExchange.submitResponse(new BasicAsyncResponseProducer(response));
     }

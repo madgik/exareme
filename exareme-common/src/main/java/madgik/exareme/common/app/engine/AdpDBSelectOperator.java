@@ -34,7 +34,7 @@ public class AdpDBSelectOperator implements Serializable {
     }
 
     public static BitSet findCommonPartitions(AdpDBSelectOperator from, AdpDBSelectOperator to,
-        String table) {
+                                              String table) {
         HashMap<Integer, Integer> out = from.outputs.get(table);
         HashMap<Integer, Integer> in = to.inputs.get(table);
         // Compute intersection
@@ -197,7 +197,7 @@ public class AdpDBSelectOperator implements Serializable {
     }
 
     private void addPartition(String table, int partition,
-        HashMap<String, HashMap<Integer, Integer>> tablesIO) {
+                              HashMap<String, HashMap<Integer, Integer>> tablesIO) {
         HashMap<Integer, Integer> parts = getOrCreate(table, tablesIO);
         Integer currentCount = parts.get(partition);
         if (currentCount == null) {
@@ -218,7 +218,7 @@ public class AdpDBSelectOperator implements Serializable {
     }
 
     private HashMap<Integer, Integer> getOrCreate(String table,
-        HashMap<String, HashMap<Integer, Integer>> tablesIO) {
+                                                  HashMap<String, HashMap<Integer, Integer>> tablesIO) {
         HashMap<Integer, Integer> parts = tablesIO.get(table);
         if (parts == null) {
             parts = new HashMap<Integer, Integer>();
@@ -227,15 +227,16 @@ public class AdpDBSelectOperator implements Serializable {
         return parts;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "AdpDBSelectOperator{" +
-            "type=" + type +
-            ", query=" + query +
-            ", serialNumber=" + serialNumber +
-            ", totalInputs=" + totalInputs +
-            ", inputs=" + inputs +
-            ", totalOutputs=" + totalOutputs +
-            ", outputs=" + outputs +
-            '}';
+                "type=" + type +
+                ", query=" + query +
+                ", serialNumber=" + serialNumber +
+                ", totalInputs=" + totalInputs +
+                ", inputs=" + inputs +
+                ", totalOutputs=" + totalOutputs +
+                ", outputs=" + outputs +
+                '}';
     }
 }

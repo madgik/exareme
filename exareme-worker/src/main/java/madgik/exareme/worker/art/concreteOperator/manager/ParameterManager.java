@@ -13,7 +13,7 @@ import java.util.Set;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class ParameterManager {
@@ -24,7 +24,7 @@ public class ParameterManager {
     protected Parameters params = null;
     protected String queryString = null;
     protected Map<String, LinkedList<madgik.exareme.worker.art.executionPlan.parser.expression.Parameter>>
-        outputParameters;
+            outputParameters;
 
     public ParameterManager(SessionManager sessionManager) {
     }
@@ -66,7 +66,7 @@ public class ParameterManager {
     }
 
     public final void setOutputParameters(
-        Map<String, LinkedList<madgik.exareme.worker.art.executionPlan.parser.expression.Parameter>> outParams) {
+            Map<String, LinkedList<madgik.exareme.worker.art.executionPlan.parser.expression.Parameter>> outParams) {
         if (outputParameters == null) {
             outputParameters = outParams;
         }
@@ -77,7 +77,7 @@ public class ParameterManager {
     }
 
     public final LinkedList<madgik.exareme.worker.art.executionPlan.parser.expression.Parameter> getOutOperatorParameters(
-        String opname) {
+            String opname) {
         return outputParameters.get(opname);
     }
 }

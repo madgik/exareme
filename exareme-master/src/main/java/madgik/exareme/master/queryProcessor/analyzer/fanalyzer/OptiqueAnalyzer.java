@@ -23,9 +23,9 @@ public class OptiqueAnalyzer {
     public static final String TMP_SAMPLE_DIR = "dbstats/";
     public static final String BUILD_JSON = "";
     public static final String PYTHON_PATH =
-        AdpProperties.getSystemProperties().getString("EXAREME_PYTHON");
+            AdpProperties.getSystemProperties().getString("EXAREME_PYTHON");
     public static final String MADIS_PATH =
-        AdpProperties.getSystemProperties().getString("EXAREME_MADIS");
+            AdpProperties.getSystemProperties().getString("EXAREME_MADIS");
 
     private static final Logger log = Logger.getLogger(OptiqueAnalyzer.class);
 
@@ -79,29 +79,29 @@ public class OptiqueAnalyzer {
             int i = 0;
             for (String c : this.statCols.get(tableName)) {
                 String minQuery =
-                    " (select * from " + tableName + " t where t." + c + " in (select min(t2." + c
-                        + ") from " + tableName + " t2) limit 1) ";
+                        " (select * from " + tableName + " t where t." + c + " in (select min(t2." + c
+                                + ") from " + tableName + " t2) limit 1) ";
 
                 String maxQuery =
-                    " (select * from " + tableName + " t where t." + c + " in (select max(t2." + c
-                        + ") from " + tableName + " t2) limit 1) ";
+                        " (select * from " + tableName + " t where t." + c + " in (select max(t2." + c
+                                + ") from " + tableName + " t2) limit 1) ";
 
                 if (this.vendor == Vendor.Oracle) {
                     minQuery = " (select * from " + schema + "." + tableName + " t where t." + c
-                        + " in (select min(t2." + c + ") from " + schema + "." + tableName
-                        + " t2) and ROWNUM<2) ";
+                            + " in (select min(t2." + c + ") from " + schema + "." + tableName
+                            + " t2) and ROWNUM<2) ";
 
                     maxQuery = " (select * from " + schema + "." + tableName + " t where t." + c
-                        + " in (select max(t2." + c + ") from " + schema + "." + tableName
-                        + " t2) and ROWNUM<2) ";
+                            + " in (select max(t2." + c + ") from " + schema + "." + tableName
+                            + " t2) and ROWNUM<2) ";
                 } else if (this.vendor == Vendor.Postgres) {
                     minQuery = " (select * from " + tableName + " t where t.\"" + c
-                        + "\" in (select min(t2.\"" + c + "\") from " + tableName
-                        + " t2) limit 1) ";
+                            + "\" in (select min(t2.\"" + c + "\") from " + tableName
+                            + " t2) limit 1) ";
 
                     maxQuery = " (select * from " + tableName + " t where t.\"" + c
-                        + "\" in (select max(t2.\"" + c + "\") from " + tableName
-                        + " t2) limit 1) ";
+                            + "\" in (select max(t2.\"" + c + "\") from " + tableName
+                            + " t2) limit 1) ";
                 }
 
                 mm.append(minQuery).append(" UNION ALL ").append(maxQuery);
@@ -116,10 +116,10 @@ public class OptiqueAnalyzer {
             switch (this.vendor) {
                 case Oracle:
                     sampleQuery =
-                        "select * from (" + madis + "  select * from ( select * from   " + schema
-                            + "." + tableName
-                            + " order by dbms_random.value() ) where ROWNUM <= 1000  UNION ALL "
-                            + mm.toString() + " );";
+                            "select * from (" + madis + "  select * from ( select * from   " + schema
+                                    + "." + tableName
+                                    + " order by dbms_random.value() ) where ROWNUM <= 1000  UNION ALL "
+                                    + mm.toString() + " );";
                     break;
                 case Mysql:
                     // sampleQuery =
@@ -127,7 +127,7 @@ public class OptiqueAnalyzer {
                     // db:information_schema select * from `"
                     // + tableName + "` order by rand() limit 1000)";
                     sampleQuery = "select * from (" + madis + " (select * from " + tableName
-                        + " order by rand() limit 1000) UNION ALL " + mm.toString() + ");";
+                            + " order by rand() limit 1000) UNION ALL " + mm.toString() + ");";
 
                     // System.out.println("==========================");
                     // System.out.println("==========================\n\n");
@@ -137,13 +137,13 @@ public class OptiqueAnalyzer {
                     // select * from (postgres h:127.0.0.1 port:5432 u:root p:rootpw
                     // db:testdb select 5 as num, 'test' as text);
                     sampleQuery = "select * from (" + madis + " (select * from " + tableName
-                        + " order by random() limit 1000) UNION ALL " + mm.toString() + ");";
+                            + " order by random() limit 1000) UNION ALL " + mm.toString() + ");";
                     // break;
             }
 
             String command =
-                "echo \"create table " + tableName + " as " + sampleQuery + "\" | " + PYTHON_PATH
-                    + " " + MADIS_PATH + " " + dbPath + TMP_SAMPLE_DIR + tableName + ".db";
+                    "echo \"create table " + tableName + " as " + sampleQuery + "\" | " + PYTHON_PATH
+                            + " " + MADIS_PATH + " " + dbPath + TMP_SAMPLE_DIR + tableName + ".db";
             File file = new File(dbPath + TMP_SAMPLE_DIR + tableName + ".db");
             if (file.exists()) {
                 file.delete();
@@ -161,7 +161,7 @@ public class OptiqueAnalyzer {
             Process process = Runtime.getRuntime().exec(cmd);
             process.waitFor();
             BufferedReader dbr =
-                new BufferedReader(new InputStreamReader(process.getErrorStream()));
+                    new BufferedReader(new InputStreamReader(process.getErrorStream()));
             String s;
             while ((s = dbr.readLine()) != null) {
                 System.out.println(s);
@@ -211,8 +211,8 @@ public class OptiqueAnalyzer {
 
     public static int getCountFor(String tableName, String schema) throws Exception {
         String command =
-            "echo \"select * from (" + madis + " select count(*) from " + schema + "." + tableName
-                + "); " + "\" | " + PYTHON_PATH + " " + MADIS_PATH + " ";
+                "echo \"select * from (" + madis + " select count(*) from " + schema + "." + tableName
+                        + "); " + "\" | " + PYTHON_PATH + " " + MADIS_PATH + " ";
         String[] cmd = {"/bin/sh", "-c", command};
         log.debug("executing:" + command);
         Process process = Runtime.getRuntime().exec(cmd);

@@ -14,8 +14,9 @@ import java.lang.reflect.Type;
  */
 public class PragmaDeserialiser implements JsonDeserializer<Pragma> {
 
-    @Override public Pragma deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
-        throws JsonParseException {
+    @Override
+    public Pragma deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
+            throws JsonParseException {
         final JsonObject jsonObject = je.getAsJsonObject();
 
         String name = jsonObject.get(PlanExpressionConstants.NAME).getAsString();

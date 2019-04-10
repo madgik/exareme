@@ -25,30 +25,36 @@ public class BufferMonitor implements StreamBuffer {
         return buffer;
     }
 
-    @Override public void write(byte[] bytes, int offset, int length) throws IOException {
+    @Override
+    public void write(byte[] bytes, int offset, int length) throws IOException {
         buffer.write(bytes, offset, length);
         stats.addWriteBytes(length);
     }
 
-    @Override public int read(byte[] bytes, int offset, int length) throws IOException {
+    @Override
+    public int read(byte[] bytes, int offset, int length) throws IOException {
         int len = buffer.read(bytes, offset, length);
         stats.addReadBytes(len);
         return len;
     }
 
-    @Override public void closeReader() throws IOException {
+    @Override
+    public void closeReader() throws IOException {
         buffer.closeReader();
     }
 
-    @Override public void closeWriter() throws IOException {
+    @Override
+    public void closeWriter() throws IOException {
         buffer.closeWriter();
     }
 
-    @Override public int getSize() throws IOException {
+    @Override
+    public int getSize() throws IOException {
         return buffer.getSize();
     }
 
-    @Override public void clear() {
+    @Override
+    public void clear() {
         buffer.clear();
     }
 }

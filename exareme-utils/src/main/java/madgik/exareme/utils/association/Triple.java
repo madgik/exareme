@@ -36,7 +36,8 @@ public class Triple<A, B, C> implements Serializable {
         return c;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "(" + a.toString() + "," + b.toString() + "," + c.toString() + ")";
     }
 }

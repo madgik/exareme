@@ -25,7 +25,8 @@ public class CreateBufferJobResult extends ContainerJobResult {
         this.operatorIDToBufferId = null;
     }
 
-    @Override public ContainerJobType getType() {
+    @Override
+    public ContainerJobType getType() {
         return ContainerJobType.createBuffer;
     }
 

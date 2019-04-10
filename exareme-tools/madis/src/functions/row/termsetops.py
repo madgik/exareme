@@ -2,8 +2,8 @@
 
 import itertools
 
-def tset(*args):
 
+def tset(*args):
     """
     .. function:: termsetdiff(termset1, termset2) -> termset
 
@@ -24,10 +24,11 @@ def tset(*args):
 
     return ' '.join(sorted(set(' '.join(args).split(' '))))
 
-tset.registered=True
+
+tset.registered = True
+
 
 def tsetdiff(*args):
-
     """
     .. function:: termsetdiff(termset1, termset2) -> termset
 
@@ -46,12 +47,14 @@ def tsetdiff(*args):
     t1 t2
     """
 
-    if len(args)<2:
-        raise functions.OperatorError("tsetdiff","tsetdiff operator: at least two termsets should be provided")
+    if len(args) < 2:
+        raise functions.OperatorError("tsetdiff", "tsetdiff operator: at least two termsets should be provided")
 
-    return ' '.join(sorted(set(args[0].split(' '))-set(args[1].split(' '))))
+    return ' '.join(sorted(set(args[0].split(' ')) - set(args[1].split(' '))))
 
-tsetdiff.registered=True
+
+tsetdiff.registered = True
+
 
 def tsetcombinations(*args):
     """
@@ -75,25 +78,27 @@ def tsetcombinations(*args):
     t2 t4
     t3 t4
     """
-    if len(args)<1:
-        raise functions.OperatorError("tsetcombinations","tsetcombinations operator: no input")
+    if len(args) < 1:
+        raise functions.OperatorError("tsetcombinations", "tsetcombinations operator: no input")
 
-    tset=args[0]
+    tset = args[0]
 
     if not isinstance(args[1], int):
-        raise functions.OperatorError("tsetcombinations","tsetcombinations operator: second argument should be integer")
+        raise functions.OperatorError("tsetcombinations",
+                                      "tsetcombinations operator: second argument should be integer")
 
     yield ("C1",)
 
     for p in itertools.combinations(sorted(tset.split(' ')), args[1]):
-        first=False
+        first = False
         yield [' '.join(p)]
 
     if first:
         yield ['']
 
-tsetcombinations.registered=True
-tsetcombinations.multiset=True
+
+tsetcombinations.registered = True
+tsetcombinations.multiset = True
 
 if not ('.' in __name__):
     """
@@ -101,11 +106,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

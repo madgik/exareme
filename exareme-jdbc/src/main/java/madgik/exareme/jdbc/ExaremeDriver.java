@@ -23,7 +23,8 @@ public class ExaremeDriver implements Driver {
     public ExaremeDriver() {
     }
 
-    @Override public Connection connect(String url, Properties info) throws SQLException {
+    @Override
+    public Connection connect(String url, Properties info) throws SQLException {
         if (info != null && info.size() > 0)
             throw new UnsupportedOperationException("Properties not supported yet.");
         if (!acceptsURL(url))
@@ -32,28 +33,34 @@ public class ExaremeDriver implements Driver {
         return new ExaremeConnection(dbURL.getHost(), dbURL.getPort(), dbURL.getPath());
     }
 
-    @Override public boolean acceptsURL(String url) throws SQLException {
+    @Override
+    public boolean acceptsURL(String url) throws SQLException {
         return url != null && url.toLowerCase().startsWith(ExaremeDriver.URL_PREFIX);
     }
 
-    @Override public DriverPropertyInfo[] getPropertyInfo(String url, Properties info)
-        throws SQLException {
+    @Override
+    public DriverPropertyInfo[] getPropertyInfo(String url, Properties info)
+            throws SQLException {
         throw new UnsupportedOperationException("Properties not supported yet.");
     }
 
-    @Override public int getMajorVersion() {
+    @Override
+    public int getMajorVersion() {
         return 0;
     }
 
-    @Override public int getMinorVersion() {
+    @Override
+    public int getMinorVersion() {
         return 0;
     }
 
-    @Override public boolean jdbcCompliant() {
+    @Override
+    public boolean jdbcCompliant() {
         return false;
     }
 
-    @Override public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+    @Override
+    public Logger getParentLogger() throws SQLFeatureNotSupportedException {
         return log;
     }
 

@@ -24,20 +24,20 @@ public class PegasusDaxParser {
      * A mapping of AbstractOperator names and their Concrete Operator names
      */
     public final static Map<String, List<String>> abstractConcreteOperatorsMap =
-        Collections.unmodifiableMap(new HashMap<String, List<String>>() {
+            Collections.unmodifiableMap(new HashMap<String, List<String>>() {
 
-            {
-                put("mAdd", Collections.unmodifiableList(Arrays.asList("mAdd")));
-                put("mBackground", Collections.unmodifiableList(Arrays.asList("mBackground")));
-                put("mBgModel", Collections.unmodifiableList(Arrays.asList("mBgModel")));
-                put("mConcatFit", Collections.unmodifiableList(Arrays.asList("mConcatFit")));
-                put("mDiffFit", Collections.unmodifiableList(Arrays.asList("mDiffFit")));
-                put("mImgTbl", Collections.unmodifiableList(Arrays.asList("mImgTbl")));
-                put("mJPEG", Collections.unmodifiableList(Arrays.asList("mJPEG")));
-                put("mProjectPP", Collections.unmodifiableList(Arrays.asList("mProjectPP")));
-                put("mShrink", Collections.unmodifiableList(Arrays.asList("mShrink")));
-            }
-        });
+                {
+                    put("mAdd", Collections.unmodifiableList(Arrays.asList("mAdd")));
+                    put("mBackground", Collections.unmodifiableList(Arrays.asList("mBackground")));
+                    put("mBgModel", Collections.unmodifiableList(Arrays.asList("mBgModel")));
+                    put("mConcatFit", Collections.unmodifiableList(Arrays.asList("mConcatFit")));
+                    put("mDiffFit", Collections.unmodifiableList(Arrays.asList("mDiffFit")));
+                    put("mImgTbl", Collections.unmodifiableList(Arrays.asList("mImgTbl")));
+                    put("mJPEG", Collections.unmodifiableList(Arrays.asList("mJPEG")));
+                    put("mProjectPP", Collections.unmodifiableList(Arrays.asList("mProjectPP")));
+                    put("mShrink", Collections.unmodifiableList(Arrays.asList("mShrink")));
+                }
+            });
     private static final Logger LOG = Logger.getLogger(PegasusDaxParser.class);
 
     static {
@@ -53,9 +53,9 @@ public class PegasusDaxParser {
         LinkedHashMap<String, LinkData> operatorDataMap = new LinkedHashMap<>(16);
 
         LinkedHashMap<String, LinkedHashMap<String, Integer>> operatorDataInputMap =
-            new LinkedHashMap<>(16);
+                new LinkedHashMap<>(16);
         LinkedHashMap<String, LinkedHashMap<String, Integer>> operatorDataOutputMap =
-            new LinkedHashMap<>(16);
+                new LinkedHashMap<>(16);
 
         HashMap<String, LinkData> inFileDataMap = new HashMap<>();
         HashMap<String, LinkData> outFileDataMap = new HashMap<>();
@@ -79,7 +79,7 @@ public class PegasusDaxParser {
 
             String name = jobElement.getAttribute("id");
             runTimeValue =
-                Double.parseDouble(jobElement.getAttribute("runtime")) * params.multiply_by_time;
+                    Double.parseDouble(jobElement.getAttribute("runtime")) * params.multiply_by_time;
 
             LinkedHashMap<String, Integer> inMap = new LinkedHashMap<>(16);
             LinkedHashMap<String, Integer> outMap = new LinkedHashMap<>(16);
@@ -91,7 +91,7 @@ public class PegasusDaxParser {
 
                 long dataSize = (long) Double.parseDouble(useElement.getAttribute("size"));
                 LinkData data = new LinkData(useElement.getAttribute("file"),
-                    (dataSize * params.multiply_by_data) / (1024 * 1024));
+                        (dataSize * params.multiply_by_data) / (1024 * 1024));
                 operatorDataMap.put(data.name, data);
 
                 if (useElement.getAttribute("link").equals("output")) {
@@ -120,8 +120,8 @@ public class PegasusDaxParser {
             }
 
             ConcreteOperator op =
-                new ConcreteOperator(name, runTimeValue, cpuUtilizationValue, memoryValue,
-                    behavior);
+                    new ConcreteOperator(name, runTimeValue, cpuUtilizationValue, memoryValue,
+                            behavior);
 
             graph.addOperator(op);
             operatorNameMap.put(name, op);
@@ -148,7 +148,7 @@ public class PegasusDaxParser {
             ConcreteOperator toOp = operatorNameMap.get(to);
             NodeList parentList = childElement.getElementsByTagName("parent");
 
-      /* Input port names */
+            /* Input port names */
             LinkedHashMap<String, Integer> inMap = operatorDataInputMap.get(to);
             for (int p = 0; p < parentList.getLength(); p++) {
                 Node parent = parentList.item(p);
@@ -157,7 +157,7 @@ public class PegasusDaxParser {
                 String from = parentElement.getAttribute("ref");
                 ConcreteOperator fromOp = operatorNameMap.get(from);
 
-        /* Output port names */
+                /* Output port names */
                 LinkedHashMap<String, Integer> outMap = operatorDataOutputMap.get(from);
                 LinkedHashMap<String, Link> fromToLinkMap = new LinkedHashMap<>(16);
                 for (String in : inMap.keySet()) {
@@ -166,7 +166,7 @@ public class PegasusDaxParser {
                         Link link = fromToLinkMap.get(id);
                         LinkData d = operatorDataMap.get(in);
                         LinkData data = new LinkData(d.name + "-" + id, d.size_MB);
-            /* Create a new link if it does not exist */
+                        /* Create a new link if it does not exist */
                         if (link == null) {
                             link = new Link(fromOp, toOp, data);
                             data.updateLinks(link);
@@ -175,7 +175,7 @@ public class PegasusDaxParser {
                             fromToLinkMap.put(id, link);
                             graph.addLink(link);
                         } else {
-              /* Update the existing link */
+                            /* Update the existing link */
                             link.data.size_MB += data.size_MB;
                         }
                         LocalFileData lfd = new LocalFileData(data.name + ".file", data.size_MB);

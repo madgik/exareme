@@ -18,8 +18,8 @@ import java.util.Properties;
  * reads the properties from the file specified in the ART_PROPERTIES environment variable.
  *
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class AdpProperties {
@@ -27,7 +27,6 @@ public class AdpProperties {
     private static final GenericProperties dbProperties;
     private static final GenericProperties artProperties;
     private static final GenericProperties armProperties;
-    private static final GenericProperties opsProperties;
     private static final GenericProperties utilProperties;
     private static final GenericProperties envProperties;
     private static final GenericProperties cloudProperties;
@@ -43,7 +42,6 @@ public class AdpProperties {
             dbProperties = PropertiesFactory.loadProperties("db");
             artProperties = PropertiesFactory.loadProperties("art");
             armProperties = PropertiesFactory.loadProperties("arm");
-            opsProperties = PropertiesFactory.loadProperties("builtinops");
             utilProperties = PropertiesFactory.loadProperties("util");
             envProperties = PropertiesFactory.loadProperties("env");
             cloudProperties = PropertiesFactory.loadProperties("cloud");
@@ -86,10 +84,6 @@ public class AdpProperties {
 
     public static GenericProperties getArmProps() {
         return armProperties;
-    }
-
-    public static GenericProperties getBuildInOpsProps() {
-        return opsProperties;
     }
 
     public static GenericProperties getUtilProps() {

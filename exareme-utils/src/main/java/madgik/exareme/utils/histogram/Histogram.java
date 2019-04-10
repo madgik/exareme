@@ -40,11 +40,11 @@ public class Histogram {
      * @throws RemoteException in case of exception
      */
     public LinkedList<Bucket> createHistogram(ArrayList<Pair<?, Double>> data, int bucketNum)
-        throws RemoteException {
+            throws RemoteException {
 
         LinkedList<Bucket> bucketList = algorithm.createHistogram(data, bucketNum, partitionRule);
 
-    /* TODO: approximate value and frequency */
+        /* TODO: approximate value and frequency */
 
         return bucketList;
     }
@@ -57,7 +57,7 @@ public class Histogram {
      * @throws RemoteException
      */
     public LinkedList<Bucket> createHistogram(ArrayList<Pair<?, Double>> data, HistogramScore score,
-        BucketNumberGenerator generator) throws RemoteException {
+                                              BucketNumberGenerator generator) throws RemoteException {
 
         LinkedList<Bucket> best = null;
         double bestScore = 0;

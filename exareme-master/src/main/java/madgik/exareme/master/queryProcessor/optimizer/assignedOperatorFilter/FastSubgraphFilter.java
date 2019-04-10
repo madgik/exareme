@@ -24,11 +24,13 @@ public class FastSubgraphFilter implements AssignedOperatorFilter {
         ++filtered;
     }
 
-    @Override public int getOperatorAssignment(int opNum) {
+    @Override
+    public int getOperatorAssignment(int opNum) {
         return assigments[opNum];
     }
 
-    @Override public int getNumberFilteredOperators() {
+    @Override
+    public int getNumberFilteredOperators() {
         return filtered;
     }
 }

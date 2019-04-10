@@ -20,7 +20,7 @@ import java.util.logging.Level;
 
 /**
  * @author Christos Mallios <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  */
 
 /*
@@ -49,7 +49,8 @@ public class UnlimitedCache implements QueryCache {
         this.metadata = metadata;
     }
 
-    @Override public void boot(Bootstrap bootstrap, String storagePath) {
+    @Override
+    public void boot(Bootstrap bootstrap, String storagePath) {
 
         CacheInfo info = null;
         System.out.println("arxi boot unlimited");
@@ -76,16 +77,19 @@ public class UnlimitedCache implements QueryCache {
         }
     }
 
-    @Override public CacheInfo getInfo() {
+    @Override
+    public CacheInfo getInfo() {
         return cacheInfo;
     }
 
-    @Override public CachedDataInfo getCacheInfo(String query) {
+    @Override
+    public CachedDataInfo getCacheInfo(String query) {
 
         return cacheIndex.get(query);
     }
 
-    @Override public void setCacheInfo(CachedDataInfo info) {
+    @Override
+    public void setCacheInfo(CachedDataInfo info) {
 
         cacheInfo.currentSize += info.size;
 
@@ -93,52 +97,60 @@ public class UnlimitedCache implements QueryCache {
             metadata.updateCacheSize(cacheInfo.currentSize);
         } catch (SQLException ex) {
             java.util.logging.Logger.getLogger(UnlimitedCache.class.getName())
-                .log(Level.SEVERE, null, ex);
+                    .log(Level.SEVERE, null, ex);
         }
 
         cacheIndex.put(info.query, info);
     }
 
-    @Override public void unpinQueryResults(String query, CachedDataInfo info) {
+    @Override
+    public void unpinQueryResults(String query, CachedDataInfo info) {
 
         //No need of this action in unlimited cache. It does not throw
         //Exception in order to have same interface with the other cache
         //implementations
     }
 
-    @Override public void updateCache(String query) {
+    @Override
+    public void updateCache(String query) {
 
         //No need of this action in unlimited cache. It does not throw
         //Exception in order to have same interface with the other cache
         //implementations
     }
 
-    @Override public boolean isEmpty() {
+    @Override
+    public boolean isEmpty() {
 
         return cacheIndex.isEmpty();
     }
 
-    @Override public double getTotalCacheSize() {
+    @Override
+    public double getTotalCacheSize() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public void setTotalCacheSize(double size) {
+    @Override
+    public void setTotalCacheSize(double size) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public void pinQuery(String query, boolean firstRequestOfTheBatch) {
+    @Override
+    public void pinQuery(String query, boolean firstRequestOfTheBatch) {
 
         //No need of this action in unlimited cache. It does not throw
         //Exception in order to have same interface with the other cache
         //implementations
     }
 
-    @Override public boolean isPinned(String query, CachedDataInfo info) {
+    @Override
+    public boolean isPinned(String query, CachedDataInfo info) {
 
         return false;
     }
 
-    @Override public QueryInfo getQueryInfo(String query) {
+    @Override
+    public QueryInfo getQueryInfo(String query) {
 
         return null;
     }

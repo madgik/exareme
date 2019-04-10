@@ -26,23 +26,24 @@ public class StartEventHandler implements ExecEngineEventHandler<StartEvent> {
     public StartEventHandler() {
     }
 
-    @Override public void preProcess(StartEvent event, PlanEventSchedulerState state)
-        throws RemoteException {
+    @Override
+    public void preProcess(StartEvent event, PlanEventSchedulerState state)
+            throws RemoteException {
         String operatorName =
-            (event.start != null) ? event.start.operatorName : event.startEntity.operatorName;
+                (event.start != null) ? event.start.operatorName : event.startEntity.operatorName;
         ActiveOperator activeOperator = state.getActiveOperator(operatorName);
         ActiveOperatorGroup activeGroup =
-            activeOperator.operatorGroup.objectNameActiveGroupMap.get(activeOperator.objectName);
+                activeOperator.operatorGroup.objectNameActiveGroupMap.get(activeOperator.objectName);
         if (event.startEntity == null) {
             event.startEntity =
-                activeGroup.planSession.getExecutionPlan().createStartEntity(event.start);
+                    activeGroup.planSession.getExecutionPlan().createStartEntity(event.start);
             activeGroup.setRunning(event.startEntity.operatorEntity);
         }
         ContainerSessionID containerSessionID = activeGroup.containerSessionID;
         event.session =
-            state.getContainerSession(event.startEntity.containerName, containerSessionID);
+                state.getContainerSession(event.startEntity.containerName, containerSessionID);
         ConcreteOperatorID opID =
-            activeGroup.planSession.getOperatorIdMap().get(event.startEntity.operatorEntity);
+                activeGroup.planSession.getOperatorIdMap().get(event.startEntity.operatorEntity);
         if (activeOperator.operatorEntity.type == OperatorType.processing) {
             event.processOperator = true;
         }
@@ -50,13 +51,15 @@ public class StartEventHandler implements ExecEngineEventHandler<StartEvent> {
         event.jobs.addJob(new StartOperatorJob(opID, activeGroup.containerSessionID));
     }
 
-    @Override public void handle(StartEvent event, EventProcessor proc) throws RemoteException {
+    @Override
+    public void handle(StartEvent event, EventProcessor proc) throws RemoteException {
         event.results = event.session.execJobs(event.jobs);
         event.messageCount = 1;
     }
 
-    @Override public void postProcess(StartEvent event, PlanEventSchedulerState state)
-        throws RemoteException {
+    @Override
+    public void postProcess(StartEvent event, PlanEventSchedulerState state)
+            throws RemoteException {
         if (event.processOperator) {
             String opName = event.startEntity.operatorName.split("\\.")[0];
             state.getStatistics().error.remove(opName);

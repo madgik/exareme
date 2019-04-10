@@ -22,7 +22,7 @@ import java.util.Map;
  * operator opName contName('Operator', paramList);
  *
  * @author Herald Kllapi <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class OperatorEntity implements Comparable<OperatorEntity>, Serializable {
@@ -53,8 +53,8 @@ public class OperatorEntity implements Comparable<OperatorEntity>, Serializable 
     public double memory = 0.0;
 
     public OperatorEntity(String operatorName, String operator, LinkedList<Parameter> paramList,
-        String queryString, List<URL> locations, String containerName, EntityName container,
-        Map<String, LinkedList<Parameter>> linksparams) {
+                          String queryString, List<URL> locations, String containerName, EntityName container,
+                          Map<String, LinkedList<Parameter>> linksparams) {
         this.containerName = containerName;
         this.container = container;
         this.operatorName = operatorName;
@@ -116,11 +116,13 @@ public class OperatorEntity implements Comparable<OperatorEntity>, Serializable 
         this.params = params;
     }
 
-    @Override public int compareTo(OperatorEntity entity) {
+    @Override
+    public int compareTo(OperatorEntity entity) {
         return entity.operatorName.compareTo(operatorName);
     }
 
-    @Override public boolean equals(Object entityObj) {
+    @Override
+    public boolean equals(Object entityObj) {
         if (entityObj instanceof OperatorEntity) {
             OperatorEntity entity = (OperatorEntity) entityObj;
             return entity.operatorName.equals(operatorName);
@@ -128,13 +130,15 @@ public class OperatorEntity implements Comparable<OperatorEntity>, Serializable 
         throw new ClassCastException("Cannot cast to ConcreteOperatorEntity");
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int hash = 5;
         hash = 43 * hash + (this.operatorName != null ? this.operatorName.hashCode() : 0);
         return hash;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return operatorName + "(" + containerName + ")";
     }
 

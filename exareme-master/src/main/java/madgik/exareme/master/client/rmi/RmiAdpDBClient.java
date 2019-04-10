@@ -34,8 +34,8 @@ import org.apache.log4j.Logger;
 import java.awt.*;
 import java.io.InputStream;
 import java.rmi.RemoteException;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 /**
  * Exareme Database Client.
@@ -62,7 +62,7 @@ public class RmiAdpDBClient implements AdpDBClient {
     private AdpDBClientProperties properties;
 
     public RmiAdpDBClient(AdpDBManager manager, AdpDBClientProperties properties)
-        throws RemoteException {
+            throws RemoteException {
         this.optimizer = manager == null ? null : manager.getAdpDBOptimizer();
         this.executor = manager == null ? null : manager.getAdpDBExecutor();
         this.properties = properties;
@@ -70,7 +70,8 @@ public class RmiAdpDBClient implements AdpDBClient {
         this.parser = new AdpDBParser(properties);
     }
 
-    @Override public String explain(String queryScript, String exportMode) throws RemoteException {
+    @Override
+    public String explain(String queryScript, String exportMode) throws RemoteException {
         log.trace("Explain...");
         if (exportMode == null) {
             return explainJSON(queryScript);
@@ -96,13 +97,12 @@ public class RmiAdpDBClient implements AdpDBClient {
         // optimize
         AdpDBHistoricalQueryData queryData = null;
         AdpDBQueryExecutionPlan plan = optimizer
-            .optimize(script, registry, null, queryData, queryId, properties, true  /* schedule */,
-                true  /* validate */);
+                .optimize(script, registry, null, queryData, queryId, properties, true  /* schedule */,
+                        true  /* validate */);
 
         PlanExpression execPlan = executor.getExecPlan(plan, properties);
 
         Integer countrepart = 0;
-
 
 
         for (ConcreteOperator op : plan.getGraph().getOperators()) {
@@ -122,26 +122,25 @@ public class RmiAdpDBClient implements AdpDBClient {
         countrepart = countrepart / 4;
         StringBuilder Json = new StringBuilder();
         Json.append("<html>\n" +
-            "<head>\n" +
-            "    <script type=\"text/javascript\" src=\"https://cdnjs.cloudflare.com/ajax/libs/vis/4.8.2/vis.min.js\"></script>\n"
-            +
-            "    <link href=\"https://cdnjs.cloudflare.com/ajax/libs/vis/4.8.2/vis.min.css\" rel=\"stylesheet\" type=\"text/css\" />\n"
-            +
-            "\n" +
-            "    <style type=\"text/css\">\n" +
-            "        #mynetwork {\n" +
-            "            width: 1000;\n" +
-            "            height: 800px;\n" +
-            "            border: 1px solid lightgray;\n" +
-            "        }\n" +
-            "    </style>\n" +
-            "</head>\n" +
-            "<body>\n" + countrepart.toString() +
+                "<head>\n" +
+                "    <script type=\"text/javascript\" src=\"https://cdnjs.cloudflare.com/ajax/libs/vis/4.8.2/vis.min.js\"></script>\n"
+                +
+                "    <link href=\"https://cdnjs.cloudflare.com/ajax/libs/vis/4.8.2/vis.min.css\" rel=\"stylesheet\" type=\"text/css\" />\n"
+                +
+                "\n" +
+                "    <style type=\"text/css\">\n" +
+                "        #mynetwork {\n" +
+                "            width: 1000;\n" +
+                "            height: 800px;\n" +
+                "            border: 1px solid lightgray;\n" +
+                "        }\n" +
+                "    </style>\n" +
+                "</head>\n" +
+                "<body>\n" + countrepart.toString() +
 
-            "<div id=\"mynetwork\"></div>\n" +
-            "\n" +
-            "<script type=\"text/javascript\">");
-
+                "<div id=\"mynetwork\"></div>\n" +
+                "\n" +
+                "<script type=\"text/javascript\">");
 
 
         StringBuilder nodes = new StringBuilder();
@@ -152,7 +151,7 @@ public class RmiAdpDBClient implements AdpDBClient {
         int countcont = execPlan.getContainerList().size();
 
         for (madgik.exareme.worker.art.executionPlan.parser.expression.Container cont : execPlan
-            .getContainerList()) {
+                .getContainerList()) {
             Random rand;
             float r, g, b;
             Color randomColor;
@@ -172,14 +171,13 @@ public class RmiAdpDBClient implements AdpDBClient {
             }
             randomColor = contToColor.get(op.containerName);
             nodes.append("\n{id: ").append(id).append(", label: \'").append(op.operatorName)
-                .append("\'").append(",color: ").append(
-                "\'rgb(" + randomColor.getRed() + "," + randomColor.getGreen() + "," + randomColor
-                    .getBlue() + ")\'").append("}");
+                    .append("\'").append(",color: ").append(
+                    "\'rgb(" + randomColor.getRed() + "," + randomColor.getGreen() + "," + randomColor
+                            .getBlue() + ")\'").append("}");
 
             opidToOp.put(op.operatorName, id);
             id++;
         }
-
 
 
         int count = 0;
@@ -197,7 +195,7 @@ public class RmiAdpDBClient implements AdpDBClient {
                 String from = plan.getGraph().getOperator(link.from.opID).getName();
                 ;
                 edges.append("\n{from: ").append(opidToOp.get(from)).append(", to: ")
-                    .append(opidToOp.get(to)).append("}");
+                        .append(opidToOp.get(to)).append("}");
                 count++;
                 //  }
 
@@ -210,27 +208,27 @@ public class RmiAdpDBClient implements AdpDBClient {
         Json.append(nodes.toString()).append(edges.toString());
 
         Json.append("var container = document.getElementById(\'mynetwork\');")
-            .append("var data = {\n" +
-                "        nodes: nodes,\n" +
-                "        edges: edges\n" +
-                "    };\n" +
-                "    var options = {\n" +
-                " layout: { " +
-                "hierarchical: {" +
-                "   sortMethod: \"directed\" " +
-                "}" +
-                "      }," +
-                "        edges:{\n" +
-                "        arrows: {\n" +
-                "          to:     {enabled: true, scaleFactor:1},\n" +
-                "        }\n" +
-                "    }\n" +
-                "    };\n").append("var network = new vis.Network(container, data, options);\n");
+                .append("var data = {\n" +
+                        "        nodes: nodes,\n" +
+                        "        edges: edges\n" +
+                        "    };\n" +
+                        "    var options = {\n" +
+                        " layout: { " +
+                        "hierarchical: {" +
+                        "   sortMethod: \"directed\" " +
+                        "}" +
+                        "      }," +
+                        "        edges:{\n" +
+                        "        arrows: {\n" +
+                        "          to:     {enabled: true, scaleFactor:1},\n" +
+                        "        }\n" +
+                        "    }\n" +
+                        "    };\n").append("var network = new vis.Network(container, data, options);\n");
 
         Json.append("</script>\n" +
-            "   \n" +
-            "</body>\n" +
-            "</html>");
+                "   \n" +
+                "</body>\n" +
+                "</html>");
         return Json.toString();
 
     }
@@ -245,10 +243,9 @@ public class RmiAdpDBClient implements AdpDBClient {
         // optimize
         AdpDBHistoricalQueryData queryData = null;
         AdpDBQueryExecutionPlan plan = optimizer
-            .optimize(script, registry, null, queryData, queryId, properties, true  /* schedule */,
-                true  /* validate */);
+                .optimize(script, registry, null, queryData, queryId, properties, true  /* schedule */,
+                        true  /* validate */);
         log.trace("Optimized.");
-
 
 
         return executor.getJSONPlan(plan, properties);
@@ -264,8 +261,8 @@ public class RmiAdpDBClient implements AdpDBClient {
         // optimize
         AdpDBHistoricalQueryData queryData = null;
         AdpDBQueryExecutionPlan plan = optimizer
-            .optimize(qScript, registry, null, queryData, queryID, properties, true  /* schedule */,
-                true  /* validate */);
+                .optimize(qScript, registry, null, queryData, queryID, properties, true  /* schedule */,
+                        true  /* validate */);
 
         return ExportToDotty.exportToDotty(plan.getGraph());
     }
@@ -289,8 +286,9 @@ public class RmiAdpDBClient implements AdpDBClient {
     }
 
 
-    @Override public AdpDBClientQueryStatus query(String queryID, String queryScript)
-        throws RemoteException {
+    @Override
+    public AdpDBClientQueryStatus query(String queryID, String queryScript)
+            throws RemoteException {
 
         // parse
         AdpDBQueryID queryId = createNewQueryID();
@@ -300,8 +298,8 @@ public class RmiAdpDBClient implements AdpDBClient {
         // optimize
         AdpDBHistoricalQueryData queryData = null;
         AdpDBQueryExecutionPlan plan = optimizer
-            .optimize(script, registry, null, queryData, queryId, properties, true  /* schedule */,
-                true  /* validate */);
+                .optimize(script, registry, null, queryData, queryId, properties, true  /* schedule */,
+                        true  /* validate */);
         log.trace("Optimized.");
 
         // execute
@@ -309,8 +307,9 @@ public class RmiAdpDBClient implements AdpDBClient {
         return new RmiAdpDBClientQueryStatus(queryId, properties, plan, status);
     }
 
-    @Override public AdpDBClientQueryStatus aquery(String queryID, String queryScript,
-        AdpDBQueryListener listener) throws RemoteException {
+    @Override
+    public AdpDBClientQueryStatus aquery(String queryID, String queryScript,
+                                         AdpDBQueryListener listener) throws RemoteException {
         AdpDBClientQueryStatus queryStatus = query(queryID, queryScript);
         executor.registerListener(listener, queryStatus.getQueryID());
         return queryStatus;
@@ -325,7 +324,7 @@ public class RmiAdpDBClient implements AdpDBClient {
             ContainerProxy container = containers[i];
             try {
                 log.trace("Container status: " + (container.connect().execJobs(new ContainerJobs())
-                    != null));
+                        != null));
             } catch (Exception e) {
                 log.error(e);
                 log.debug("Removing container: " + container.getEntityName());

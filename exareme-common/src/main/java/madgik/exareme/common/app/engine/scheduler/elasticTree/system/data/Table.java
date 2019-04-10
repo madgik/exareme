@@ -27,7 +27,7 @@ public class Table implements Serializable {
 
     public Table(String name, List<String> attributes) {
         this.name = name;
-        this.attributes = attributes.toArray(new String[] {});
+        this.attributes = attributes.toArray(new String[]{});
     }
 
     public void addPartition(double size_MB) {

@@ -17,11 +17,11 @@ public final class Bucket {
     public static final double MIN_BUCKET_WIDTH = Double.MIN_NORMAL;
     public static final double MAX_BUCKET_DIFF_VALS = Double.POSITIVE_INFINITY;
     public static final Bucket FINAL_HISTOGRAM_BUCKET =
-        new Bucket(EMPTY_BUCKET_FREQ, EMPTY_BUCKET_DIFF_VAL);
+            new Bucket(EMPTY_BUCKET_FREQ, EMPTY_BUCKET_DIFF_VAL);
     public static final Bucket HOLE_BUCKET = new Bucket(EMPTY_BUCKET_FREQ, SINGLE_BUCKET_DIFF_VAL);
     public static final Bucket EMPTY_BUCKET = new Bucket(EMPTY_BUCKET_FREQ, EMPTY_BUCKET_DIFF_VAL);
     public static final Bucket TRANSPARENT_BUCKET =
-        new Bucket(TRANSPARENT_FREQ, MAX_BUCKET_DIFF_VALS);
+            new Bucket(TRANSPARENT_FREQ, MAX_BUCKET_DIFF_VALS);
 
     private double frequency;
     private double diffValues;
@@ -64,11 +64,13 @@ public final class Bucket {
     }
 
     /*standard methods*/
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "Bucket{" + "frequency=" + frequency + ", diffValues=" + diffValues + '}';
     }
 
-    @Override public boolean equals(Object obj) {
+    @Override
+    public boolean equals(Object obj) {
         if (obj == null) {
             return false;
         }
@@ -85,15 +87,15 @@ public final class Bucket {
         return true;
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int hash = 3;
         hash = 23 * hash + (int) (Double.doubleToLongBits(this.frequency) ^ (
-            Double.doubleToLongBits(this.frequency) >>> 32));
+                Double.doubleToLongBits(this.frequency) >>> 32));
         hash = 23 * hash + (int) (Double.doubleToLongBits(this.diffValues) ^ (
-            Double.doubleToLongBits(this.diffValues) >>> 32));
+                Double.doubleToLongBits(this.diffValues) >>> 32));
         return hash;
     }
-
 
 
 }

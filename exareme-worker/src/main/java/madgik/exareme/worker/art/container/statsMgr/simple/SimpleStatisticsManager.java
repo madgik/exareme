@@ -20,7 +20,7 @@ import java.util.HashMap;
 public class SimpleStatisticsManager implements StatisticsManagerInterface {
 
     private HashMap<PlanSessionID, StatsMSession> sessionMap =
-        new HashMap<PlanSessionID, StatsMSession>();
+            new HashMap<PlanSessionID, StatsMSession>();
     private String containerName = null;
 
     public SimpleStatisticsManager(String containerName) {
@@ -38,14 +38,14 @@ public class SimpleStatisticsManager implements StatisticsManagerInterface {
     }
 
     public ContainerSessionStatistics getStatistics(ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException {
+                                                    PlanSessionID sessionID) throws RemoteException {
         StatsMSession session = getSession(sessionID);
         StatsMContainerSession cSession = session.getSession(containerSessionID);
         return cSession.getStatistics();
     }
 
     public void destroyContainerSession(ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException {
+                                        PlanSessionID sessionID) throws RemoteException {
         StatsMSession session = getSession(sessionID);
         session.destroySession(containerSessionID);
     }

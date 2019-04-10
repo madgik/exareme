@@ -57,10 +57,10 @@ public class ThreadConcreteOperatorManager implements ConcreteOperatorManagerInt
 
 
     public ThreadConcreteOperatorManager(ConcreteOperatorManagerStatus status,
-        DiskManagerInterface diskManagerInterface, StatisticsManagerInterface statistics,
-        ContainerID containerID, JobQueueInterface jobQueueInterface,
-        DataTransferMgrInterface dataTransferManagerDTP,
-        OperatorGroupManagerInterface operatorGroupManager) {
+                                         DiskManagerInterface diskManagerInterface, StatisticsManagerInterface statistics,
+                                         ContainerID containerID, JobQueueInterface jobQueueInterface,
+                                         DataTransferMgrInterface dataTransferManagerDTP,
+                                         OperatorGroupManagerInterface operatorGroupManager) {
         this.status = status;
         this.diskManagerInterface = diskManagerInterface;
         this.statistics = statistics;
@@ -77,7 +77,7 @@ public class ThreadConcreteOperatorManager implements ConcreteOperatorManagerInt
     }
 
     private TCOMContainerSession getContainerSession(ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException {
+                                                     PlanSessionID sessionID) throws RemoteException {
         TCOMPlanSession session = getCOMPlanSession(sessionID);
         if (session == null) {
             throw new NoSuchObjectException("Session not found: " + sessionID.getLongId());
@@ -86,39 +86,40 @@ public class ThreadConcreteOperatorManager implements ConcreteOperatorManagerInt
         TCOMContainerSession containerSession = session.getSession(containerSessionID);
         if (containerSession == null) {
             throw new NoSuchObjectException(
-                "Container session not found: " + containerSessionID.getLongId());
+                    "Container session not found: " + containerSessionID.getLongId());
         }
 
         return containerSession;
     }
 
-    @Override public ConcreteOperatorID instantiate(String name, String category, OperatorType type,
-        OperatorImplementationEntity operator, Parameters parameters,
-        Map<String, LinkedList<Parameter>> outParameters, String queryString,
-        PlanSessionReportID sessionReportID, ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public ConcreteOperatorID instantiate(String name, String category, OperatorType type,
+                                          OperatorImplementationEntity operator, Parameters parameters,
+                                          Map<String, LinkedList<Parameter>> outParameters, String queryString,
+                                          PlanSessionReportID sessionReportID, ContainerSessionID containerSessionID,
+                                          PlanSessionID sessionID) throws RemoteException {
         try {
             TCOMContainerSession containerSession =
-                getContainerSession(containerSessionID, sessionID);
+                    getContainerSession(containerSessionID, sessionID);
 
             ConcreteOperatorID id =
-                new ConcreteOperatorID(containerSession.getNextOperatorID(), name);
+                    new ConcreteOperatorID(containerSession.getNextOperatorID(), name);
 
             AbstractOperatorImpl op =
-                (AbstractOperatorImpl) (containerSession.getOperatorClass(operator).newInstance());
+                    (AbstractOperatorImpl) (containerSession.getOperatorClass(operator).newInstance());
             OperatorExecutionThread executionThread = null;
 
             executionThread = new OperatorExecutionThread(operator, op, jobQueueInterface, id);
 
             op.createSession(name, category, type, id, sessionReportID, containerSessionID,
-                sessionID, containerID, dataTransferManagerDTP, operatorGroupManager);
+                    sessionID, containerID, dataTransferManagerDTP, operatorGroupManager);
 
             op.getParameterManager().setParameters(parameters);
             op.getParameterManager().setOutputParameters(outParameters);
             op.getParameterManager().setQueryString(queryString);
             op.getDiskManager().setDiskManager(diskManagerInterface);
             op.getSessionManager()
-                .setSessionStatistics(statistics.getStatistics(containerSessionID, sessionID));
+                    .setSessionStatistics(statistics.getStatistics(containerSessionID, sessionID));
 
             op.initializeOperator();
 
@@ -126,72 +127,80 @@ public class ThreadConcreteOperatorManager implements ConcreteOperatorManagerInt
             status.getOperatorMeasurement().changeActiveValue(1);
 
             log.debug(
-                "Instantiated operator: " + operator.getClassName() + " with id " + id.uniqueID);
+                    "Instantiated operator: " + operator.getClassName() + " with id " + id.uniqueID);
             return id;
         } catch (Exception e) {
             throw new ServerException("Cannot instantiate operator " + operator.getClassName(), e);
         }
     }
 
-    @Override public void start(ConcreteOperatorID opID, ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void start(ConcreteOperatorID opID, ContainerSessionID containerSessionID,
+                      PlanSessionID sessionID) throws RemoteException {
         log.debug("Starting operator : " + opID.uniqueID);
         TCOMContainerSession containerSession = getContainerSession(containerSessionID, sessionID);
         containerSession.startInstance(opID);
         //JC container
     }
 
-    @Override public void stop(ConcreteOperatorID opID, ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void stop(ConcreteOperatorID opID, ContainerSessionID containerSessionID,
+                     PlanSessionID sessionID) throws RemoteException {
         log.debug("Stopping operator : " + opID.uniqueID);
         TCOMContainerSession containerSession = getContainerSession(containerSessionID, sessionID);
         containerSession.stopInstance(opID);
     }
 
-    @Override public ConcreteOperatorManagerStatus getStatus() throws RemoteException {
+    @Override
+    public ConcreteOperatorManagerStatus getStatus() throws RemoteException {
         return status;
     }
 
-    @Override public void addReadAdaptor(CombinedReadAdaptorProxy adaptor, String adaptorName,
-        String portName, Parameters parameters, boolean remote, ConcreteOperatorID opID,
-        ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void addReadAdaptor(CombinedReadAdaptorProxy adaptor, String adaptorName,
+                               String portName, Parameters parameters, boolean remote, ConcreteOperatorID opID,
+                               ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
         TCOMContainerSession containerSession = getContainerSession(containerSessionID, sessionID);
         containerSession.addReadAdaptor(opID, adaptor, adaptorName, portName, parameters, remote);
     }
 
-    @Override public void addWriteAdaptor(CombinedWriteAdaptorProxy adaptor, String adaptorName,
-        String portName, Parameters parameters, boolean remote, ConcreteOperatorID opID,
-        ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void addWriteAdaptor(CombinedWriteAdaptorProxy adaptor, String adaptorName,
+                                String portName, Parameters parameters, boolean remote, ConcreteOperatorID opID,
+                                ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
         TCOMContainerSession containerSession = getContainerSession(containerSessionID, sessionID);
         containerSession.addWriteAdaptor(opID, adaptor, adaptorName, portName, parameters, remote);
     }
 
     @Override
     public void destroyInstance(ConcreteOperatorID opID, ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException {
+                                PlanSessionID sessionID) throws RemoteException {
         log.debug("Destroying operator : " + opID.uniqueID);
         TCOMContainerSession containerSession = getContainerSession(containerSessionID, sessionID);
         containerSession.destroyInstance(opID);
     }
 
-    @Override public void destroyContainerSession(ContainerSessionID cSID, PlanSessionID sessionID)
-        throws RemoteException {
+    @Override
+    public void destroyContainerSession(ContainerSessionID cSID, PlanSessionID sessionID)
+            throws RemoteException {
         TCOMPlanSession session = getCOMPlanSession(sessionID);
         log.debug("Destroy Container Session, Plan ID: " + sessionID.getLongId() + " cSID: " + cSID
-            .getLongId());
+                .getLongId());
         CloseSessionEvent event = new CloseSessionEvent(sessionID, cSID, session, status);
         closeSessionProcessor
-            .queue(event, CloseSessionEventHandler.instance, CloseSessionEventListener.instance);
+                .queue(event, CloseSessionEventHandler.instance, CloseSessionEventListener.instance);
     }
 
-    @Override public void destroySessions(PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void destroySessions(PlanSessionID sessionID) throws RemoteException {
         TCOMPlanSession session = sessionMap.remove(sessionID);
         CloseSessionEvent event = new CloseSessionEvent(sessionID, session, status);
         closeSessionProcessor
-            .queue(event, CloseSessionEventHandler.instance, CloseSessionEventListener.instance);
+                .queue(event, CloseSessionEventHandler.instance, CloseSessionEventListener.instance);
     }
 
-    @Override public void destroyAllSessions() throws RemoteException {
+    @Override
+    public void destroyAllSessions() throws RemoteException {
         log.debug("Destroying all sessions ...");
         ArrayList<PlanSessionID> sessions = new ArrayList<>(sessionMap.keySet());
         for (PlanSessionID sID : sessions) {
@@ -199,8 +208,9 @@ public class ThreadConcreteOperatorManager implements ConcreteOperatorManagerInt
         }
     }
 
-    @Override public ConcreteOperatorStatistics getOperatorStatistics(ConcreteOperatorID opID,
-        ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public ConcreteOperatorStatistics getOperatorStatistics(ConcreteOperatorID opID,
+                                                            ContainerSessionID containerSessionID, PlanSessionID sessionID) throws RemoteException {
         return null;
     }
 

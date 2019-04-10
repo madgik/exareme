@@ -10,19 +10,19 @@ import madgik.exareme.worker.art.registry.policy.TimeExpirationPolicy;
 
 /**
  * @author Dimitris Paparas<br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class PolicyFactory {
     public static RegisterPolicy generateNoExpirationPolicy() {
         return new RegisterPolicy(new NoExpirationPolicy(),
-            new DoNothingOnExpirationActionPolicy());
+                new DoNothingOnExpirationActionPolicy());
     }
 
     public static RegisterPolicy generateTimeExpirationDeletePolicy(long timeout) {
         return new RegisterPolicy(new TimeExpirationPolicy(timeout),
-            new DeleteOnExpirationActionPolicy());
+                new DeleteOnExpirationActionPolicy());
     }
 
 }

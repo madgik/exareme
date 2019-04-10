@@ -33,8 +33,9 @@ public class NQueryStatusEntity extends BasicHttpEntity implements HttpAsyncCont
         this.queryStatus = queryStatus;
     }
 
-    @Override public void produceContent(ContentEncoder encoder, IOControl ioctrl)
-        throws IOException {
+    @Override
+    public void produceContent(ContentEncoder encoder, IOControl ioctrl)
+            throws IOException {
         // header
         if (!schemaWritten) {
             encoder.write(ByteBuffer.wrap("{\"schema\":[[\"status\", \"null\"]]}\n".getBytes()));
@@ -48,7 +49,7 @@ public class NQueryStatusEntity extends BasicHttpEntity implements HttpAsyncCont
         // status changed
         if (queryStatus.hasFinished() == false && queryStatus.hasError() == false) {
             encoder.write(
-                ByteBuffer.wrap(String.format("[\"%s\"]\n", queryStatus.getStatus()).getBytes()));
+                    ByteBuffer.wrap(String.format("[\"%s\"]\n", queryStatus.getStatus()).getBytes()));
             ioctrl.suspendOutput();
             return;
         }
@@ -56,18 +57,19 @@ public class NQueryStatusEntity extends BasicHttpEntity implements HttpAsyncCont
         // terminated
         if (queryStatus.hasError() == false) {
             encoder.write(
-                ByteBuffer.wrap(String.format("[\"%s\"]\n", queryStatus.getStatus()).getBytes()));
+                    ByteBuffer.wrap(String.format("[\"%s\"]\n", queryStatus.getStatus()).getBytes()));
             encoder.write(
-                ByteBuffer.wrap(String.format(msg, queryStatus.getExecutionTime()).getBytes()));
+                    ByteBuffer.wrap(String.format(msg, queryStatus.getExecutionTime()).getBytes()));
         } else {
             encoder.write(
-                ByteBuffer.wrap(String.format("[\"%s\"]\n", queryStatus.getError()).getBytes()));
+                    ByteBuffer.wrap(String.format("[\"%s\"]\n", queryStatus.getError()).getBytes()));
         }
         encoder.complete();
 
     }
 
-    @Override public void close() throws IOException {
+    @Override
+    public void close() throws IOException {
 
     }
 
@@ -79,12 +81,14 @@ public class NQueryStatusEntity extends BasicHttpEntity implements HttpAsyncCont
             this.ioctl = ioctrl;
         }
 
-        @Override public void statusChanged(AdpDBQueryID queryID, AdpDBStatus status) {
+        @Override
+        public void statusChanged(AdpDBQueryID queryID, AdpDBStatus status) {
             ioctl.requestOutput();
 
         }
 
-        @Override public void terminated(AdpDBQueryID queryID, AdpDBStatus status) {
+        @Override
+        public void terminated(AdpDBQueryID queryID, AdpDBStatus status) {
             ioctl.requestOutput();
         }
     }

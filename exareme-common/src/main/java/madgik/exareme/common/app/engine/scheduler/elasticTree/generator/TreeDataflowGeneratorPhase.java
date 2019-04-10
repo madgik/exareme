@@ -43,7 +43,8 @@ public class TreeDataflowGeneratorPhase implements DataflowGenerator {
         this.experiment = experiment;
     }
 
-    @Override public TreeQuery getNextDataflow() throws Exception {
+    @Override
+    public TreeQuery getNextDataflow() throws Exception {
         Poisson gen = gen1;
         SLA sla = sla1;
         String queryString = query1;

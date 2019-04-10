@@ -7,8 +7,8 @@ import madgik.exareme.worker.art.statistics.Statistics;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.2
  */
 public class StatisticsManagement implements StatisticsManagementMBean {

@@ -24,24 +24,27 @@ public class RmiNetManager implements NetManager {
     private EntityName regEntityName = null;
 
     public RmiNetManager(Container container, NetManagerInterface netMngrIface,
-        EntityName regEntityName) throws RemoteException {
+                         EntityName regEntityName) throws RemoteException {
         this.container = container;
         this.netMngrIface = netMngrIface;
         this.regEntityName = regEntityName;
     }
 
-    @Override public void destroyContainerSession(ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void destroyContainerSession(ContainerSessionID containerSessionID,
+                                        PlanSessionID sessionID) throws RemoteException {
         log.debug("destroyContainerSession");
         //    netMngrIface.destroyContainerSession(containerSessionID, sessionID);
     }
 
-    @Override public void destroySessions(PlanSessionID sessionID) throws RemoteException {
+    @Override
+    public void destroySessions(PlanSessionID sessionID) throws RemoteException {
         log.debug("destroySessions");
         //    netMngrIface.destroySessions(sessionID);
     }
 
-    @Override public void destroyAllSessions() throws RemoteException {
+    @Override
+    public void destroyAllSessions() throws RemoteException {
         log.debug("destroyAllSessions");
         //    netMngrIface.destroyAllSessions();
     }

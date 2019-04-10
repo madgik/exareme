@@ -60,14 +60,16 @@ public class EntityName implements Comparable<EntityName>, Serializable {
         return this.port;
     }
 
-    @Override public boolean equals(Object name) {
+    @Override
+    public boolean equals(Object name) {
         if (name instanceof EntityName == false) {
             throw new ClassCastException();
         }
         return this.compareTo((EntityName) name) == 0;
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int hash = 7;
         hash = 41 * hash + (this.name != null ? this.name.hashCode() : 0);
         hash = 41 * hash + (this.ip != null ? this.ip.hashCode() : 0);
@@ -75,12 +77,14 @@ public class EntityName implements Comparable<EntityName>, Serializable {
         return hash;
     }
 
-    @Override public int compareTo(EntityName name) {
+    @Override
+    public int compareTo(EntityName name) {
         return (this.name + this.ip + this.port)
-            .compareToIgnoreCase(name.name + name.ip + name.port);
+                .compareToIgnoreCase(name.name + name.ip + name.port);
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return name;
     }
 }

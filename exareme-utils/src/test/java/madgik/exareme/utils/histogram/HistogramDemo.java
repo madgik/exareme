@@ -24,14 +24,14 @@ public class HistogramDemo {
         for (int i = 40; i < 50; i++) {
             data.add(new Pair<Integer, Double>(i, 30.0 + rand.nextDouble() * 30));
         }
-    /* Sort */
+        /* Sort */
         Collections.sort(data, new Comparator<Pair<?, Double>>() {
             public int compare(Pair<?, Double> o1, Pair<?, Double> o2) {
                 return o1.b.compareTo(o2.b);
             }
         });
         Histogram histogram =
-            new Histogram(new PartitionRule(PartitionClass.serial, PartitionConstraint.equi_width));
+                new Histogram(new PartitionRule(PartitionClass.serial, PartitionConstraint.equi_width));
 
         //    LinkedList<Bucket> bucketList = histogram.createHistogram(
         //            data,

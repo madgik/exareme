@@ -62,7 +62,8 @@ public class Parameter implements Serializable {
      * @param obj the parameter to compare.
      * @return true if obj has tha same name with this.
      */
-    @Override public boolean equals(Object obj) {
+    @Override
+    public boolean equals(Object obj) {
         if (obj instanceof Parameter) {
             Parameter param = (Parameter) obj;
             return this.attrName.compareTo(param.getName()) == 0;
@@ -76,7 +77,8 @@ public class Parameter implements Serializable {
      *
      * @return the hash code of this object.
      */
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int hash = 3;
         hash = 37 * hash + (this.attrName != null ? this.attrName.hashCode() : 0);
         return hash;

@@ -38,7 +38,7 @@ public class RmiAdpDBOptimizer implements AdpDBOptimizer {
     private AdpDBQueryCache queryCache = null;
 
     public RmiAdpDBOptimizer(AdpDBStatusManager statusManager, ArtManager manager,
-        AdpDBQueryCache queryCache) {
+                             AdpDBQueryCache queryCache) {
         this.statusManager = statusManager;
         this.manager = manager;
         this.queryCache = queryCache;
@@ -47,12 +47,12 @@ public class RmiAdpDBOptimizer implements AdpDBOptimizer {
     }
 
     static void mapPreviousPlanToCurrent(QueryScript script, Registry registry,
-        AdpDBQueryExecutionPlan plan) {
+                                         AdpDBQueryExecutionPlan plan) {
 
     }
 
     static void postProcessGraph(InputData input, StateData state, AdpDBClientProperties props)
-        throws SemanticException {
+            throws SemanticException {
         // Remove the replicator operators if they are not needed
         for (ConcreteOperator cop : state.graph.getOperators()) {
             AdpDBSelectOperator dbOp = state.dbOps.get(cop.opID);
@@ -110,7 +110,7 @@ public class RmiAdpDBOptimizer implements AdpDBOptimizer {
     }
 
     static void removeInputTableGravity(InputData input, StateData state,
-        AdpDBClientProperties props) throws SemanticException {
+                                        AdpDBClientProperties props) throws SemanticException {
         for (ConcreteOperator cop : state.graph.getOperators()) {
             AdpDBSelectOperator dbOp = state.dbOps.get(cop.opID);
             // Remove table input if the consumer is in the same container.
@@ -147,7 +147,7 @@ public class RmiAdpDBOptimizer implements AdpDBOptimizer {
     }
 
     static void validateGraph(InputData input, StateData state, AdpDBClientProperties props)
-        throws SemanticException {
+            throws SemanticException {
         log.debug("Checking if the db operators are properly updated ... ");
         HashSet<String> operatorNames = new HashSet<>();
         for (ConcreteOperator cop : state.graph.getOperators()) {
@@ -168,13 +168,13 @@ public class RmiAdpDBOptimizer implements AdpDBOptimizer {
             int dbInSize = dbOp.getTotalInputs();
             if (inSize != dbInSize) {
                 throw new SemanticException(
-                    cop.operatorName + " inputs do not match: " + inSize + " != " + dbInSize);
+                        cop.operatorName + " inputs do not match: " + inSize + " != " + dbInSize);
             }
             int outSize = state.graph.getOutputLinks(cop.opID).size();
             int dbOutSize = dbOp.getTotalOutputs();
             if (inSize != dbInSize) {
                 throw new SemanticException(
-                    cop.operatorName + " outputs do not match: " + outSize + " != " + dbOutSize);
+                        cop.operatorName + " outputs do not match: " + outSize + " != " + dbOutSize);
             }
         }
     }
@@ -183,8 +183,8 @@ public class RmiAdpDBOptimizer implements AdpDBOptimizer {
     }
 
     static void annotateWithHistoricalData(ConcreteQueryGraph graph,
-        AdpDBHistoricalQueryData queryData, ArrayList<AdpDBSelectOperator> dbOperators,
-        AdpDBClientProperties props) {
+                                           AdpDBHistoricalQueryData queryData, ArrayList<AdpDBSelectOperator> dbOperators,
+                                           AdpDBClientProperties props) {
         if (queryData == null) {
             return;
         }
@@ -198,13 +198,13 @@ public class RmiAdpDBOptimizer implements AdpDBOptimizer {
         }
         for (Link link : graph.getLinks()) {
             LinkData linkData =
-                queryData.getLinkData(link.data.name, link.from.operatorName, link.to.operatorName);
+                    queryData.getLinkData(link.data.name, link.from.operatorName, link.to.operatorName);
             if (linkData != null && linkData.size_MB > 0) {
                 link.data.size_MB = linkData.size_MB;
             } else {
                 log.debug(
-                    "Link NOT found in history: '" + link.from.operatorName + "[" + link.data.name
-                        + "]" + link.to.operatorName + "'");
+                        "Link NOT found in history: '" + link.from.operatorName + "[" + link.data.name
+                                + "]" + link.to.operatorName + "'");
             }
         }
     }
@@ -228,8 +228,8 @@ public class RmiAdpDBOptimizer implements AdpDBOptimizer {
 
     @Override
     public AdpDBQueryExecutionPlan optimize(QueryScript script, Registry registry, Statistics stats,
-        AdpDBHistoricalQueryData queryData, AdpDBQueryID queryID, AdpDBClientProperties props,
-        boolean schedule, boolean validate) throws RemoteException {
+                                            AdpDBHistoricalQueryData queryData, AdpDBQueryID queryID, AdpDBClientProperties props,
+                                            boolean schedule, boolean validate) throws RemoteException {
         AdpDBQueryExecutionPlan plan = queryCache.getPlan(script, registry);
         if (plan != null) {
             mapPreviousPlanToCurrent(script, registry, plan);
@@ -242,7 +242,7 @@ public class RmiAdpDBOptimizer implements AdpDBOptimizer {
         }
         if (numOfSelectQueries > 0 && numOfDMQueries > 0) {
             throw new SemanticException(
-                "Not supported yet: script with both queries and data manipulation");
+                    "Not supported yet: script with both queries and data manipulation");
         }
         // Create input and state
         int numContaieners = -1;
@@ -250,8 +250,8 @@ public class RmiAdpDBOptimizer implements AdpDBOptimizer {
             numContaieners = props.getMaxNumberOfContainers();
         }
         InputData input =
-            new InputData(script, registry.getSchema(), stats, queryData, queryID, numContaieners,
-                schedule, validate);
+                new InputData(script, registry.getSchema(), stats, queryData, queryID, numContaieners,
+                        schedule, validate);
         if (numOfSelectQueries > 0) {
             plan = queryOptimizer.optimize(input, props);
         } else {

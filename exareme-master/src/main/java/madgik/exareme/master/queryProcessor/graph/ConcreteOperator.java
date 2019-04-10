@@ -39,7 +39,7 @@ public class ConcreteOperator implements Serializable, Comparable<ConcreteOperat
     }
 
     public ConcreteOperator(String operatorName, double runTime_SEC, double cpuUtilization,
-        int memory_MB, OperatorBehavior behavior) {
+                            int memory_MB, OperatorBehavior behavior) {
         this.operatorName = operatorName;
 
         if (runTime_SEC < 0.0) {
@@ -123,12 +123,14 @@ public class ConcreteOperator implements Serializable, Comparable<ConcreteOperat
         dataflowInputFiles.add(data);
     }
 
-    @Override public boolean equals(Object obj) {
+    @Override
+    public boolean equals(Object obj) {
         ConcreteOperator co = (ConcreteOperator) obj;
         return this.opID == co.opID;
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int hash = 3;
         hash = 23 * hash + this.opID;
         return hash;
@@ -154,13 +156,15 @@ public class ConcreteOperator implements Serializable, Comparable<ConcreteOperat
         return this.operatorName;
     }
 
-    @Override public int compareTo(ConcreteOperator other) {
+    @Override
+    public int compareTo(ConcreteOperator other) {
         // Order by descending order
         return Double.compare(other.runTime_SEC, runTime_SEC);
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return opID + " - " + operatorName + " - " + runTime_SEC + " - " + memory_MB + " - "
-            + behavior + " - ";
+                + behavior + " - ";
     }
 }

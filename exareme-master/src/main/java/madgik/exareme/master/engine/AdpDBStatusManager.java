@@ -20,7 +20,7 @@ import java.util.Map;
 public interface AdpDBStatusManager {
 
     AdpDBStatus createNewStatus(AdpDBQueryID queryID, ExecutionEngineSessionPlan sessionPlan,
-        Map<String, String> categoryMessageMap) throws RemoteException;
+                                Map<String, String> categoryMessageMap) throws RemoteException;
 
     /**
      * Create new status.
@@ -32,7 +32,7 @@ public interface AdpDBStatusManager {
      * @throws RemoteException if something goes wrong.
      */
     AdpDBStatus createNewStatus(ExecutionEngineSessionPlan sessionPlan, ConcreteQueryGraph graph,
-        Map<String, String> categoryMessageMap) throws RemoteException;
+                                Map<String, String> categoryMessageMap) throws RemoteException;
 
     /**
      * @param statusId the status id.

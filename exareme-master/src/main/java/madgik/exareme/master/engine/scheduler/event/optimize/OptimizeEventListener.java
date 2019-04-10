@@ -23,7 +23,7 @@ public class OptimizeEventListener implements EventListener<OptimizeEvent> {
     }
 
     public void processed(OptimizeEvent event, RemoteException exception,
-        EventProcessor processor) {
+                          EventProcessor processor) {
         if (exception != null) {
             exception.printStackTrace();
         }

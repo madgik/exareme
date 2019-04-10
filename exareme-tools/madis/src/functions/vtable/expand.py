@@ -73,16 +73,17 @@ Examples::
     Lila  | 74   | Lila  | 74   | Soula | 17
 """
 
-import setpath
-import vtbase
 import functions
 import re
 from lib.sqlitetypes import getElementSqliteType
+
+import vtbase
 
 ### Classic stream iterator
 registered = True
 
 noas = re.compile('.*\(.*\).*')
+
 
 def izip2(*args):
     # izip_longest('ABCD', 'xy', fillvalue='-') --> Ax By C- D-
@@ -94,18 +95,19 @@ def izip2(*args):
     except ZipExhausted:
         pass
 
+
 class Expand(vtbase.VT):
-    def VTiter(self, *parsedArgs,**envars):
+    def VTiter(self, *parsedArgs, **envars):
 
         def exprown(row):
             for i in xrange(len(row)):
                 iobj = row[i]
                 if type(iobj) is tuple:
                     for el in iobj[1]:
-                        for l in exprown(row[(i+1):]):
+                        for l in exprown(row[(i + 1):]):
                             yield row[:i] + list(el) + l
                     try:
-                        del(self.connection.openiters[iobj[0]])
+                        del (self.connection.openiters[iobj[0]])
                     except KeyboardInterrupt:
                         raise
                     except:
@@ -117,8 +119,8 @@ class Expand(vtbase.VT):
         largs, dictargs = self.full_parse(parsedArgs)
 
         if 'query' not in dictargs:
-            raise functions.OperatorError(__name__.rsplit('.')[-1],"No query argument ")
-        query=dictargs['query']
+            raise functions.OperatorError(__name__.rsplit('.')[-1], "No query argument ")
+        query = dictargs['query']
 
         self.connection = envars['db']
         oiters = self.connection.openiters
@@ -126,17 +128,17 @@ class Expand(vtbase.VT):
         lenIH = len(iterheader)
 
         cur = self.connection.cursor()
-        c= cur.execute(query, parse = False)
+        c = cur.execute(query, parse=False)
 
         schema = cur.getdescriptionsafe()
         self.nonames = True
         types = []
         orignames = [x[0] for x in schema]
-        origtypes = [x[1] if len(x)>1 else 'None' for x in schema]
+        origtypes = [x[1] if len(x) > 1 else 'None' for x in schema]
 
         nrow = []
         nnames = []
-        ttypes=[]
+        ttypes = []
 
         try:
             row = c.next()
@@ -150,13 +152,13 @@ class Expand(vtbase.VT):
             obj = row[i]
             if type(obj) is buffer and obj[:lenIH] == iterheader:
                 strobj = str(obj)
-                oiter=oiters[strobj]
+                oiter = oiters[strobj]
                 try:
                     first = oiter.next()
                 except StopIteration:
                     first = [None]
 
-                ttypes += ['GUESS']*len(first)
+                ttypes += ['GUESS'] * len(first)
                 if noas.match(orignames[i]):
                     badschema = False
                     if type(first) != tuple:
@@ -166,17 +168,17 @@ class Expand(vtbase.VT):
                         if type(first) != tuple or type(i) not in (unicode, str) or i is None:
                             badschema = True
                             break
-                            
+
                     if badschema:
                         raise functions.OperatorError(__name__.rsplit('.')[-1],
-                            "First yielded row of multirow functions, should contain the schema inside a Python tuple.\nExample:\n  yield ('C1', 'C2')")
+                                                      "First yielded row of multirow functions, should contain the schema inside a Python tuple.\nExample:\n  yield ('C1', 'C2')")
 
                     nnames += list(first)
                 else:
                     if len(first) == 1:
                         nnames += [orignames[i]]
                     else:
-                        nnames += [orignames[i]+str(j) for j in xrange(1, len(first)+1)]
+                        nnames += [orignames[i] + str(j) for j in xrange(1, len(first) + 1)]
                 nrow += [(strobj, oiter)]
             else:
                 ttypes += [origtypes[i]]
@@ -201,14 +203,14 @@ class Expand(vtbase.VT):
 
         if firstrow is not None:
             yield firstrow
-            
+
         for exp in firstbatch:
             yield exp
 
-#        lastvals = [None] * len(nrow)
+        #        lastvals = [None] * len(nrow)
         for row in c:
             nrow = list(row)
-#            itercount = 0
+            #            itercount = 0
 
             for i in xrange(rowlen):
                 if type(nrow[i]) is buffer and nrow[i][:lenIH] == iterheader:
@@ -216,10 +218,11 @@ class Expand(vtbase.VT):
                     oiter = oiters[striter]
                     oiter.next()
                     nrow[i] = (striter, oiter)
-#                    itercount += 1
+            #                    itercount += 1
 
             for exp in exprown(nrow):
                 yield exp
+
 
 #            if itercount > 0:
 #                while True:
@@ -247,9 +250,9 @@ class Expand(vtbase.VT):
 #                yield row
 
 
-
 def Source():
     return vtbase.VTGenerator(Expand)
+
 
 if not ('.' in __name__):
     """
@@ -257,13 +260,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()
-
-

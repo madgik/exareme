@@ -19,18 +19,18 @@ import java.util.UUID;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class RmiPlanSessionStatusManager extends RmiRemoteObject<PlanSessionStatusManagerProxy>
-    implements PlanSessionStatusManager {
+        implements PlanSessionStatusManager {
 
     private PlanSessionStatusManagerInterface statusManagerInterface = null;
     private EntityName regEntityName = null;
 
     public RmiPlanSessionStatusManager(PlanSessionStatusManagerInterface statusManagerInterface,
-        EntityName regEntityName) throws RemoteException {
+                                       EntityName regEntityName) throws RemoteException {
         super(NetUtil.getIPv4() + "_planSessionManager_" + UUID.randomUUID().toString());
 
         this.statusManagerInterface = statusManagerInterface;
@@ -53,12 +53,12 @@ public class RmiPlanSessionStatusManager extends RmiRemoteObject<PlanSessionStat
     }
 
     public ActiveExecutionPlan getActiveExecutionPlan(PlanSessionID sessionID)
-        throws RemoteException {
+            throws RemoteException {
         return statusManagerInterface.getActiveExecutionPlan(sessionID);
     }
 
     public ConcreteOperatorStatus getOperatorStatus(String operatorName, PlanSessionID sessionID)
-        throws RemoteException {
+            throws RemoteException {
         return statusManagerInterface.getOperatorStatus(operatorName, sessionID);
     }
 

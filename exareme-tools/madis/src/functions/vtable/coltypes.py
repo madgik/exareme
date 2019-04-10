@@ -32,37 +32,39 @@ Applying coltypes in the result of virtual table func:`typing` function in the s
     '10'   | text | '10'   | int
 """
 
-import setpath
-import vtbase
 import functions
 
-registered=True
+import vtbase
+
+registered = True
+
 
 class ColTypes(vtbase.VT):
-    def VTiter(self, *parsedArgs,**envars):
+    def VTiter(self, *parsedArgs, **envars):
         largs, dictargs = self.full_parse(parsedArgs)
 
         if 'query' not in dictargs:
-            raise functions.OperatorError(__name__.rsplit('.')[-1],"No query argument ")
+            raise functions.OperatorError(__name__.rsplit('.')[-1], "No query argument ")
 
-        query=dictargs['query']
-        connection=envars['db']
+        query = dictargs['query']
+        connection = envars['db']
 
         yield (('column', 'text'), ('type', 'text'))
 
-        cur=connection.cursor()
-        execit=cur.execute(query, parse = False)
+        cur = connection.cursor()
+        execit = cur.execute(query, parse=False)
         try:
-            samplerow=execit.next()
+            samplerow = execit.next()
         except StopIteration:
             pass
 
-        vals=cur.getdescriptionsafe()
+        vals = cur.getdescriptionsafe()
         cur.close()
 
         for i in vals:
             yield i
-        
+
+
 def Source():
     return vtbase.VTGenerator(ColTypes)
 
@@ -73,11 +75,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

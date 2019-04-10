@@ -6,7 +6,7 @@ package madgik.exareme.master.engine.remoteQuery.impl.doublyLinkedList;
 /**
  * @param <E>
  * @author Christos Mallios <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  */
 public class Node<E> {
 

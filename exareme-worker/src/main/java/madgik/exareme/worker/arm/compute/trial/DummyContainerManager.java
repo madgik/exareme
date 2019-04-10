@@ -66,17 +66,19 @@ public class DummyContainerManager implements ContainerManagerInterface {
         return this.number_of_available_containers;
     }
 
-    @Override public void startManager() throws RemoteException {
+    @Override
+    public void startManager() throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public void stopManager() throws RemoteException {
+    @Override
+    public void stopManager() throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public ActiveContainer[] getContainers(int number_of_containers, ArmComputeSessionID sessionID)
-        throws RemoteException {
+            throws RemoteException {
         int i;
         LinkedList<ActiveContainer> personal_containers;
         synchronized (get_lock) {
@@ -136,7 +138,7 @@ public class DummyContainerManager implements ContainerManagerInterface {
 
     @Override
     public ActiveContainer[] getContainers(int number_of_containers, ArmComputeSessionID sessionID,
-        long duration_time) throws RemoteException {
+                                           long duration_time) throws RemoteException {
 
         int i;
         LinkedList<ActiveContainer> personal_containers;
@@ -193,8 +195,9 @@ public class DummyContainerManager implements ContainerManagerInterface {
         }
     }
 
-    @Override public ActiveContainer[] getAtMostContainers(int number_of_containers,
-        ArmComputeSessionID sessionID) throws RemoteException {
+    @Override
+    public ActiveContainer[] getAtMostContainers(int number_of_containers,
+                                                 ArmComputeSessionID sessionID) throws RemoteException {
 
         int i;
         LinkedList<ActiveContainer> personal_containers;
@@ -242,8 +245,9 @@ public class DummyContainerManager implements ContainerManagerInterface {
         }
     }
 
-    @Override public ActiveContainer[] tryGetContainers(int number_of_containers,
-        ArmComputeSessionID sessionID) throws RemoteException {
+    @Override
+    public ActiveContainer[] tryGetContainers(int number_of_containers,
+                                              ArmComputeSessionID sessionID) throws RemoteException {
 
         int i;
         LinkedList<ActiveContainer> personal_containers;
@@ -289,7 +293,7 @@ public class DummyContainerManager implements ContainerManagerInterface {
 
     @Override
     public void releaseContainers(ActiveContainer[] containers, ArmComputeSessionID sessionID)
-        throws RemoteException {
+            throws RemoteException {
 
         synchronized (release_lock) {
 
@@ -320,7 +324,7 @@ public class DummyContainerManager implements ContainerManagerInterface {
                 wait_lock.lock();
                 try {
                     if ((number_of_available_containers >= expected_number_of_containers) && (
-                        expected_number_of_containers != 0)) {
+                            expected_number_of_containers != 0)) {
                         expected_number_of_containers = 0;
                         get = false;
                         wait_condition.signalAll();
@@ -342,12 +346,14 @@ public class DummyContainerManager implements ContainerManagerInterface {
         }
     }
 
-    @Override public void stopContainer(ActiveContainer container, ArmComputeSessionID sessionID)
-        throws RemoteException {
+    @Override
+    public void stopContainer(ActiveContainer container, ArmComputeSessionID sessionID)
+            throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override public void closeSession(ArmComputeSessionID sessionID) throws RemoteException {
+    @Override
+    public void closeSession(ArmComputeSessionID sessionID) throws RemoteException {
 
         LinkedList<ActiveContainer> personal_containers = releasedContainers.get(sessionID);
 
@@ -357,7 +363,8 @@ public class DummyContainerManager implements ContainerManagerInterface {
         releasedContainers.remove(sessionID);
     }
 
-    @Override public ContainerManagerStatus getStatus() throws RemoteException {
+    @Override
+    public ContainerManagerStatus getStatus() throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

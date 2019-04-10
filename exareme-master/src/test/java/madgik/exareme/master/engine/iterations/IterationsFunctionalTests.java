@@ -1,7 +1,11 @@
 package madgik.exareme.master.engine.iterations;
 
 import junit.framework.Assert;
-
+import madgik.exareme.master.AlgorithmTestExecutionHelper;
+import madgik.exareme.master.app.cluster.ExaremeCluster;
+import madgik.exareme.master.app.cluster.ExaremeClusterFactory;
+import madgik.exareme.master.gateway.ExaremeGateway;
+import madgik.exareme.master.gateway.ExaremeGatewayFactory;
 import org.apache.commons.lang.text.StrSubstitutor;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -15,19 +19,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
-import madgik.exareme.master.app.cluster.ExaremeCluster;
-import madgik.exareme.master.app.cluster.ExaremeClusterFactory;
-import madgik.exareme.master.AlgorithmTestExecutionHelper;
-import madgik.exareme.master.gateway.ExaremeGateway;
-import madgik.exareme.master.gateway.ExaremeGatewayFactory;
-
 /**
  * Functional tests for iterations module.
- *
+ * <p>
  * To be used in conjunction with {@link AlgorithmTestExecutionHelper}.
  *
  * @author Christos Aslanoglou <br> caslanoglou@di.uoa.gr <br> University of Athens / Department of
- *         Informatics and Telecommunications.
+ * Informatics and Telecommunications.
  */
 public class IterationsFunctionalTests {
     private static final Logger log = Logger.getLogger(IterationsFunctionalTests.class);
@@ -61,7 +59,8 @@ public class IterationsFunctionalTests {
                 ExaremeGatewayFactory.createHttpServer(cluster.getDBManager());
         gateway.start();
         Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override public void run() {
+            @Override
+            public void run() {
                 gateway.stop();
                 try {
                     cluster.stop(false);

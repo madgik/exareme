@@ -1,13 +1,14 @@
 import Queue
-import setpath
-import functions
 import datetime
+import functions
 from lib import iso8601
 
 __docformat__ = 'reStructuredText en'
 
+
 def timedelta2millisec(tdelta):
-    return tdelta.days*24*60*60*1000+tdelta.seconds*1000+tdelta.microseconds/1000
+    return tdelta.days * 24 * 60 * 60 * 1000 + tdelta.seconds * 1000 + tdelta.microseconds / 1000
+
 
 class mindtdiff:
     """
@@ -43,39 +44,37 @@ class mindtdiff:
     None
     
     """
-    registered=True
+    registered = True
 
     def __init__(self):
-        self.dates=Queue.PriorityQueue()
+        self.dates = Queue.PriorityQueue()
 
     def step(self, *args):
         if not args:
-            raise functions.OperatorError("mindtdiff","No arguments")
-        dt=iso8601.parse_date(args[0])
+            raise functions.OperatorError("mindtdiff", "No arguments")
+        dt = iso8601.parse_date(args[0])
         self.dates.put_nowait(dt)
 
-
-
     def final(self):
-        mindiff=None
-        dtp=None
+        mindiff = None
+        dtp = None
         if not self.dates:
             return
         while not self.dates.empty():
             if not mindiff:
                 if not dtp:
-                    dtp=self.dates.get_nowait()
+                    dtp = self.dates.get_nowait()
                     continue
-            dt=self.dates.get_nowait()
-            diff=timedelta2millisec(dt-dtp)            
-            if mindiff==None:
-                mindiff=diff
-            elif mindiff>diff:
-                mindiff=diff
-            dtp=dt
-            import types
-            
+            dt = self.dates.get_nowait()
+            diff = timedelta2millisec(dt - dtp)
+            if mindiff == None:
+                mindiff = diff
+            elif mindiff > diff:
+                mindiff = diff
+            dtp = dt
+
         return mindiff
+
 
 class avgdtdiff:
     """
@@ -110,37 +109,36 @@ class avgdtdiff:
     ------------
     None
     """
-    registered=True
+    registered = True
 
     def __init__(self):
-        self.dates=Queue.PriorityQueue()
+        self.dates = Queue.PriorityQueue()
 
     def step(self, *args):
         if not args:
-            raise functions.OperatorError("avgdtdiff","No arguments")
-        dt=iso8601.parse_date(args[0])
+            raise functions.OperatorError("avgdtdiff", "No arguments")
+        dt = iso8601.parse_date(args[0])
         self.dates.put_nowait(dt)
 
-
-
     def final(self):
-        avgdiff=0
-        cntdiff=0
-        dtp=None        
+        avgdiff = 0
+        cntdiff = 0
+        dtp = None
         while not self.dates.empty():
-            if avgdiff==0:
+            if avgdiff == 0:
                 if not dtp:
-                    cntdiff+=1
-                    dtp=self.dates.get_nowait()
+                    cntdiff += 1
+                    dtp = self.dates.get_nowait()
                     continue
-            dt=self.dates.get_nowait()
-            diff=timedelta2millisec(dt-dtp)
-            cntdiff+=1
-            avgdiff+=diff
-            dtp=dt
-        if cntdiff<2:
+            dt = self.dates.get_nowait()
+            diff = timedelta2millisec(dt - dtp)
+            cntdiff += 1
+            avgdiff += diff
+            dtp = dt
+        if cntdiff < 2:
             return None
-        return float(avgdiff)/cntdiff
+        return float(avgdiff) / cntdiff
+
 
 class dategroupduration:
     """
@@ -167,7 +165,7 @@ class dategroupduration:
     0
 
     """
-    registered=True
+    registered = True
 
     def __init__(self):
         self.datemin = None
@@ -192,9 +190,9 @@ class dategroupduration:
         if self.datemin == None or self.datemax == None:
             return 0
 
-        diff=self.datemax - self.datemin
+        diff = self.datemax - self.datemin
 
-        return diff.days*86400+diff.seconds
+        return diff.days * 86400 + diff.seconds
 
 
 class frecencyindex:
@@ -218,41 +216,40 @@ class frecencyindex:
     2.9
 
     """
-    registered=True
+    registered = True
 
     def __init__(self):
-        self.monthCounter=0
-        self.trimesterCounter=0
-        self.semesterCounter=0
-        self.yearCounter=0
-        self.twoyearsCounter=0
+        self.monthCounter = 0
+        self.trimesterCounter = 0
+        self.semesterCounter = 0
+        self.yearCounter = 0
+        self.twoyearsCounter = 0
 
     def step(self, *args):
         if not args:
-            raise functions.OperatorError("frecencyindex","No arguments")
+            raise functions.OperatorError("frecencyindex", "No arguments")
 
         now = datetime.datetime.now()
         now = iso8601.parse_date(now.strftime("%Y-%m-%d %H:%M:%S"))
-        d = args[0].replace('T',' ')
-        dt = iso8601.parse_date(args[0].replace('Z',''))
-        diff=now-dt
+        d = args[0].replace('T', ' ')
+        dt = iso8601.parse_date(args[0].replace('Z', ''))
+        diff = now - dt
 
-        if (diff.days)<30:
-                    self.monthCounter+=1
-        elif (diff.days)<3*30:
-                    self.trimesterCounter+=1
-        elif (diff.days)<6*30:
-                    self.semesterCounter+=1
-        elif (diff.days)<12*30:
-                    self.yearCounter+=1
-        elif (diff.days)<24*30:
-                    self.twoyearsCounter+=1
-
-
+        if (diff.days) < 30:
+            self.monthCounter += 1
+        elif (diff.days) < 3 * 30:
+            self.trimesterCounter += 1
+        elif (diff.days) < 6 * 30:
+            self.semesterCounter += 1
+        elif (diff.days) < 12 * 30:
+            self.yearCounter += 1
+        elif (diff.days) < 24 * 30:
+            self.twoyearsCounter += 1
 
     def final(self):
 
-        return self.monthCounter*1 + self.trimesterCounter*0.7 + self.semesterCounter*0.5 + self.yearCounter*0.3+ self.twoyearsCounter*0.2
+        return self.monthCounter * 1 + self.trimesterCounter * 0.7 + self.semesterCounter * 0.5 + self.yearCounter * 0.3 + self.twoyearsCounter * 0.2
+
 
 if not ('.' in __name__):
     """
@@ -260,12 +257,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()
-        

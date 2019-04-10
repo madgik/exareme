@@ -1,15 +1,14 @@
 package madgik.exareme.master.engine.iterations.state;
 
+import madgik.exareme.common.app.engine.AdpDBQueryID;
+import madgik.exareme.master.engine.iterations.state.exceptions.IterationsStateFatalException;
 import org.apache.log4j.Logger;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import madgik.exareme.common.app.engine.AdpDBQueryID;
-import madgik.exareme.master.engine.iterations.state.exceptions.IterationsStateFatalException;
-
 /**
  * @author Christos Aslanoglou <br> caslanoglou@di.uoa.gr <br> University of Athens / Department of
- *         Informatics and Telecommunications.
+ * Informatics and Telecommunications.
  */
 public class IterationsStateManagerImpl implements IterationsStateManager {
     private static final Logger log = Logger.getLogger(IterationsStateManagerImpl.class);

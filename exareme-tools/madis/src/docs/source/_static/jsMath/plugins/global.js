@@ -29,8 +29,7 @@ if (!parent.jsMath || !parent.jsMath.isGlobal) {
     var cookies = document.cookies;
     if (window.location.protocol == 'file:') {
         cookies = unescape(window.location.search.substr(1))
-    }
-    else if (window.location.protocol == 'mk:') {
+    } else if (window.location.protocol == 'mk:') {
         cookies = unescape(window.location.hash.substr(1))
     }
     if (cookies.match(/jsMath=([^;]+)/)) {

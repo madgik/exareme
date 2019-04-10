@@ -25,7 +25,7 @@ public class ContainerSerialiser implements JsonSerializer<Container> {
         jsonObject.addProperty(PlanExpressionConstants.IP, container.ip);
         jsonObject.addProperty(PlanExpressionConstants.PORT, container.port);
         jsonObject
-            .addProperty(PlanExpressionConstants.DATATRANSFERPORT, container.dataTransferPort);
+                .addProperty(PlanExpressionConstants.DATATRANSFERPORT, container.dataTransferPort);
 
         return jsonObject;
     }

@@ -45,7 +45,7 @@ public class PlanSessionStatistics implements Serializable {
     public long maxIndependentMsgCount = 0;
 
     public ArrayList<ContainerSessionStatistics> containerStats =
-        new ArrayList<ContainerSessionStatistics>();
+            new ArrayList<ContainerSessionStatistics>();
 
     public PlanSessionStatistics(PlanSessionID sessionID) {
         this.sessionID = sessionID;

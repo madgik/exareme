@@ -27,7 +27,7 @@ public class ArmComputeFactory {
             ContainerManagerStatus managerStatus = new ContainerManagerStatus();
 
             ContainerManagerInterface computeInterface =
-                new LocalArmComputeInterface(managerStatus);
+                    new LocalArmComputeInterface(managerStatus);
 
             RmiArmCompute compute = new RmiArmCompute(computeInterface, regEntityName);
             computeInterface.startManager();
@@ -58,7 +58,7 @@ public class ArmComputeFactory {
             }
 
             ContainerManagerInterface computeInterface =
-                new ClusterArmComputeInterface(2, contNames);
+                    new ClusterArmComputeInterface(2, contNames);
 
             RmiArmCompute compute = new RmiArmCompute(computeInterface, regEntityName);
             computeInterface.startManager();

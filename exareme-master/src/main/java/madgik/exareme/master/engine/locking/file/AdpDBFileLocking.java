@@ -22,20 +22,20 @@ public class AdpDBFileLocking implements AdpDBLocking {
 
     public AdpDBFileLocking() {
         String adpDBRootFileName =
-            AdpProperties.getArtProps().getString("art.container.diskRoot") + AdpDBProperties
-                .getAdpDBProps().getString("db.scheduler.pathRoot");
+                AdpProperties.getArtProps().getString("art.container.diskRoot") + AdpDBProperties
+                        .getAdpDBProps().getString("db.scheduler.pathRoot");
 
         adpDBRootFile = new File(adpDBRootFileName);
         adpDBRootFile.mkdirs();
     }
 
     public AdpDBTablePartKey getSharedKey(String database, String tableName, int part)
-        throws RemoteException {
+            throws RemoteException {
         try {
             File databaseDir = new File(adpDBRootFile, database.replaceAll("/", "_"));
             databaseDir.mkdirs();
             RandomAccessFile fileLock =
-                new RandomAccessFile(new File(databaseDir, tableName + "_" + part), "rw");
+                    new RandomAccessFile(new File(databaseDir, tableName + "_" + part), "rw");
 
             return new AdpDBTablePartFileLock(fileLock.getChannel().lock(0, Long.MAX_VALUE, true));
         } catch (Exception e) {
@@ -44,12 +44,12 @@ public class AdpDBFileLocking implements AdpDBLocking {
     }
 
     public AdpDBTablePartKey getExclusiveKey(String database, String tableName, int part)
-        throws RemoteException {
+            throws RemoteException {
         try {
             File databaseDir = new File(adpDBRootFile, database.replaceAll("/", "_"));
             databaseDir.mkdirs();
             RandomAccessFile fileLock =
-                new RandomAccessFile(new File(databaseDir, tableName + "_" + part), "rw");
+                    new RandomAccessFile(new File(databaseDir, tableName + "_" + part), "rw");
 
             return new AdpDBTablePartFileLock(fileLock.getChannel().lock(0, Long.MAX_VALUE, false));
         } catch (Exception e) {

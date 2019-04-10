@@ -47,9 +47,9 @@ public class ExaremeMiniCluster implements ExaremeCluster {
         if (System.getSecurityManager() == null) {
             System.setSecurityManager(new DevelopmentContainerSecurityManager());
         }
-        Path madisPath =  Paths
-            .get(System.getProperty("user.dir") + "/../exareme-tools/madis/src/mterm.py");
-        if(!Files.exists(madisPath)){
+        Path madisPath = Paths
+                .get(System.getProperty("user.dir") + "/../exareme-tools/madis/src/mterm.py");
+        if (!Files.exists(madisPath)) {
             madisPath = Paths.get(System.getProperty("user.dir") + "/exareme-tools/madis/src/mterm.py");
         }
         String relMadisPath = madisPath.toString();
@@ -75,7 +75,8 @@ public class ExaremeMiniCluster implements ExaremeCluster {
         this.dbsPath = null;
     }
 
-    @Override public void start() throws RemoteException {
+    @Override
+    public void start() throws RemoteException {
         if (this.running) {
             log.info("Already running!");
             return;
@@ -88,7 +89,7 @@ public class ExaremeMiniCluster implements ExaremeCluster {
 
         // master init
         this.master =
-            ArtManagerFactory.createRmiArtManager(new ArtManagerProperties(iPv4, port, dtport));
+                ArtManagerFactory.createRmiArtManager(new ArtManagerProperties(iPv4, port, dtport));
         log.debug("Master created.");
 
         master.getRegistryManager().startArtRegistry();
@@ -111,10 +112,10 @@ public class ExaremeMiniCluster implements ExaremeCluster {
             this.workers = new ArtManager[nworkers];
             for (int i = 0; i < nworkers; i++) {
                 this.workers[i] = ArtManagerFactory.createRmiArtManager(
-                    new ArtManagerProperties(iPv4 + "_" + String.valueOf(i), port, dtport + i + 1));
+                        new ArtManagerProperties(iPv4 + "_" + String.valueOf(i), port, dtport + i + 1));
                 log.debug("Worker(" + i + ") created.");
                 this.workers[i].getRegistryManager()
-                    .connectToRegistry(new EntityName("ArtRegistry", iPv4, port, dtport));
+                        .connectToRegistry(new EntityName("ArtRegistry", iPv4, port, dtport));
                 log.debug("Worker(" + i + ") connected to Registry.");
                 this.workers[i].getContainerManager().startContainer();
                 log.debug("Worker(" + i + ") Container started.");
@@ -125,11 +126,13 @@ public class ExaremeMiniCluster implements ExaremeCluster {
         log.info("Started.");
     }
 
-    @Override public boolean isUp() {
+    @Override
+    public boolean isUp() {
         return running;
     }
 
-    @Override public void stop(boolean force) throws RemoteException {
+    @Override
+    public void stop(boolean force) throws RemoteException {
         if (!this.running) {
             log.info("Already stopped.");
             return;
@@ -150,8 +153,9 @@ public class ExaremeMiniCluster implements ExaremeCluster {
     }
 
 
-    @Override public AdpDBClient getExaremeClusterClient(AdpDBClientProperties properties)
-        throws RemoteException {
+    @Override
+    public AdpDBClient getExaremeClusterClient(AdpDBClientProperties properties)
+            throws RemoteException {
         if (!this.running) {
             log.info("Nothing is running.");
             return null;
@@ -159,22 +163,24 @@ public class ExaremeMiniCluster implements ExaremeCluster {
         return AdpDBClientFactory.createDBClient(this.manager, properties);
     }
 
-    @Override public Container[] getContainers() throws RemoteException {
+    @Override
+    public Container[] getContainers() throws RemoteException {
         ContainerProxy[] proxies = ArtRegistryLocator.getArtRegistryProxy().getContainers();
         Container[] containers = new Container[proxies.length];
 
         for (int i = 0; i < proxies.length; i++) {
             containers[i] =
-                new Container(String.format("c%1d", i), proxies[i].getEntityName().getName(),
-                    proxies[i].getEntityName().getPort(),
-                    proxies[i].getEntityName().getDataTransferPort());
+                    new Container(String.format("c%1d", i), proxies[i].getEntityName().getName(),
+                            proxies[i].getEntityName().getPort(),
+                            proxies[i].getEntityName().getDataTransferPort());
             log.info(String.format("--+ c%1d", i));
         }
 
         return containers;
     }
 
-    @Override public AdpDBManager getDBManager() throws RemoteException {
+    @Override
+    public AdpDBManager getDBManager() throws RemoteException {
         return manager;
     }
 

@@ -16,9 +16,9 @@ import java.rmi.RemoteException;
  * @author Herald Kllapi<br>
  * @author Dimitris Paparas<br>
  * @author Eva Sitaridi<br>
- *         {herald,paparas,evas}@di.uoa.gr<br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * {herald,paparas,evas}@di.uoa.gr<br>
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class ExecutionEngineFactory {
@@ -26,7 +26,7 @@ public class ExecutionEngineFactory {
     }
 
     public static ExecutionEngine createRmiDynamicExecutionEngine(EntityName regEntityName)
-        throws RemoteException {
+            throws RemoteException {
         ArtRegistryProxy registryProxy = ArtRegistryLocator.getArtRegistryProxy();
         ExecutionEngineStatus executionEngineStatus = new ExecutionEngineStatus();
         DynamicReportManager reportManager = new DynamicReportManager();
@@ -36,12 +36,12 @@ public class ExecutionEngineFactory {
         PlanSessionResourceManager resourceManager = new PlanSessionResourceManager();
 
         DynamicPlanManager sessionManager =
-            new DynamicPlanManager(registryProxy, reportManager, statusManager, resourceManager,
-                clockTickManager, statisticsManager);
+                new DynamicPlanManager(registryProxy, reportManager, statusManager, resourceManager,
+                        clockTickManager, statisticsManager);
 
         RmiExecutionEngine execEngine =
-            new RmiExecutionEngine(sessionManager, statusManager, reportManager, statisticsManager,
-                clockTickManager, regEntityName, executionEngineStatus);
+                new RmiExecutionEngine(sessionManager, statusManager, reportManager, statisticsManager,
+                        clockTickManager, regEntityName, executionEngineStatus);
 
         sessionManager.setExecutionEngine(execEngine);
         sessionManager.createGlobalScheduler();

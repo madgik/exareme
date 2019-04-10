@@ -30,7 +30,7 @@ class StatementFilter(TokenFilter):
     def _change_splitlevel(self, ttype, value):
         # PostgreSQL
         if (ttype == T.Name.Builtin
-            and value.startswith('$') and value.endswith('$')):
+                and value.startswith('$') and value.endswith('$')):
             if self._in_dbldollar:
                 self._in_dbldollar = False
                 return -1
@@ -77,7 +77,7 @@ class StatementFilter(TokenFilter):
         for ttype, value in stream:
             # Before appending the token
             if (consume_ws and ttype is not T.Whitespace
-                and ttype is not T.Comment.Single):
+                    and ttype is not T.Comment.Single):
                 consume_ws = False
                 stmt.tokens = stmt_tokens
                 yield stmt
@@ -92,7 +92,7 @@ class StatementFilter(TokenFilter):
             stmt_tokens.append(Token(ttype, value))
             # After appending the token
             if (splitlevel <= 0 and ttype is T.Punctuation
-                and value == ';'):
+                    and value == ';'):
                 consume_ws = True
         if stmt is not None:
             stmt.tokens = stmt_tokens

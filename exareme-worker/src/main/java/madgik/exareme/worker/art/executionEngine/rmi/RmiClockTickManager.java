@@ -19,13 +19,13 @@ import java.util.UUID;
  * @author heraldkllapi
  */
 public class RmiClockTickManager extends RmiRemoteObject<ClockTickManagerProxy>
-    implements ClockTickManager {
+        implements ClockTickManager {
     private ClockTickManagerInterface clockTickManagerInterface = null;
     private EntityName regEntityName = null;
     private ArtRegistryProxy registryProxy = null;
 
     public RmiClockTickManager(ClockTickManagerInterface clockTickManagerInterface,
-        EntityName regEntityName, ArtRegistryProxy registryProxy) throws RemoteException {
+                               EntityName regEntityName, ArtRegistryProxy registryProxy) throws RemoteException {
         super(NetUtil.getIPv4() + "_clockTickManager_" + UUID.randomUUID().toString());
 
         this.clockTickManagerInterface = clockTickManagerInterface;
@@ -34,27 +34,31 @@ public class RmiClockTickManager extends RmiRemoteObject<ClockTickManagerProxy>
         super.register();
     }
 
-    @Override public ClockTickManagerProxy createProxy() throws RemoteException {
+    @Override
+    public ClockTickManagerProxy createProxy() throws RemoteException {
         return new RmiClockTickManagerProxy(super.getRegEntryName(), regEntityName);
     }
 
     @Override
     public void containerWarningClockTick(ContainerID id, long timeToTick_ms, long quantumCount)
-        throws RemoteException {
+            throws RemoteException {
         clockTickManagerInterface.containerWarningClockTick(id, timeToTick_ms, quantumCount);
     }
 
-    @Override public void containerClockTick(ContainerID id, long quantumCount)
-        throws RemoteException {
+    @Override
+    public void containerClockTick(ContainerID id, long quantumCount)
+            throws RemoteException {
         clockTickManagerInterface.containerClockTick(id, quantumCount);
     }
 
-    @Override public void globalWarningClockTick(long timeToTick_ms, long quantumCount)
-        throws RemoteException {
+    @Override
+    public void globalWarningClockTick(long timeToTick_ms, long quantumCount)
+            throws RemoteException {
         clockTickManagerInterface.globalWarningClockTick(timeToTick_ms, quantumCount);
     }
 
-    @Override public void globalClockTick(long quantumCount) throws RemoteException {
+    @Override
+    public void globalClockTick(long quantumCount) throws RemoteException {
         clockTickManagerInterface.globalClockTick(quantumCount);
     }
 }

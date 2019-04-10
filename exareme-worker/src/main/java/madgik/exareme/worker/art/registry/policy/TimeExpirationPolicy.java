@@ -7,8 +7,8 @@ import madgik.exareme.worker.art.registry.ExpirationPolicy;
 
 /**
  * @author Dimitris Paparas<br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class TimeExpirationPolicy implements ExpirationPolicy {

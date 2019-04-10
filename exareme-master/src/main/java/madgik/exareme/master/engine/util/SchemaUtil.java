@@ -19,7 +19,7 @@ public class SchemaUtil {
     private static Logger log = Logger.getLogger(SchemaUtil.class);
 
     public static void getLocationsOfPartitions(ContainerProxy[] containerProxies,
-        PhysicalTable pTable, int part, BitSet filter) {
+                                                PhysicalTable pTable, int part, BitSet filter) {
         filter.clear();
         List<String> locations = pTable.getPartition(part).getLocations();
         log.debug("Locations of " + pTable.getName() + "/" + part + " are " + locations.toString());
@@ -36,7 +36,7 @@ public class SchemaUtil {
 
     public static void main(String[] args) throws Exception {
         HashMap<String, LinkedList<TablePart>> tables =
-            new HashMap<String, LinkedList<TablePart>>();
+                new HashMap<String, LinkedList<TablePart>>();
         String data = FileUtil.readFile(new File("demo/data.location"));
         String[] parts = data.split("[\n]");
         String currentServer = null;
@@ -60,7 +60,8 @@ public class SchemaUtil {
             System.out.print(e.getKey() + " = ");
             Collections.sort(e.getValue(), new Comparator<TablePart>() {
 
-                @Override public int compare(TablePart o1, TablePart o2) {
+                @Override
+                public int compare(TablePart o1, TablePart o2) {
                     return (o1.part < o2.part) ? -1 : ((o1.part == o2.part) ? 0 : 1);
                 }
             });
@@ -88,7 +89,8 @@ public class SchemaUtil {
             this.location = location;
         }
 
-        @Override public String toString() {
+        @Override
+        public String toString() {
             return part + ":" + location;
         }
     }

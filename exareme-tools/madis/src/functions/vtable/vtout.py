@@ -29,24 +29,23 @@ IF function returns normally 1 value is returned, else exeption is raised EXCEPT
 
 """
 
-import setpath
-from lib import argsparse
+import apsw
 import functions
 import logging
-import itertools
-import apsw
+from lib import argsparse
+
 
 class doall(object):
-    def __init__(self,query,connection,func,returnalways,passconnection,*args,**kargs):
-        self.connection=connection
-        self.query=query
-        self.args=args
-        self.func=func
-        self.kargs=kargs
-        self.returnalways=returnalways
-        self.passconnection=passconnection
+    def __init__(self, query, connection, func, returnalways, passconnection, *args, **kargs):
+        self.connection = connection
+        self.query = query
+        self.args = args
+        self.func = func
+        self.kargs = kargs
+        self.returnalways = returnalways
+        self.passconnection = passconnection
 
-    def run(self):        
+    def run(self):
         c = self.connection.cursor()
         try:
             cexec = c.execute(self.query, parse=False)
@@ -55,7 +54,7 @@ class doall(object):
                 schema = c.getdescriptionsafe()
             except functions.ExecutionCompleteError:
                 raise functions.DynamicSchemaWithEmptyResultError("got empty input")
-        
+
             if self.passconnection:
                 try:
                     self.func(cexec, schema, self.connection, *self.args, **self.kargs)
@@ -70,7 +69,7 @@ class doall(object):
                     self.func(cexec, schema, *self.args, **self.kargs)
 
             ret = True
-        except Exception,e:
+        except Exception, e:
             if functions.settings['logging']:
                 lg = logging.LoggerAdapter(logging.getLogger(__name__), {"flowname": functions.variables.flowname})
                 lg.exception(e)
@@ -82,63 +81,71 @@ class doall(object):
                     print "---Deep Execution traceback--"
                     print traceback.print_exc()
                 raise functions.MadisError(e)
-        finally:            
+        finally:
             try:
                 c.close()
             except:
                 pass
         return ret
 
+
 class SourceNtoOne:
-    def __init__(self, func, boolargs=None, nonstringargs=None, needsescape=None, notsplit=None, connectionhandler=False, retalways=False):
-        self.func=func
-        if boolargs==None:
-            self.boolargs=[]
+    def __init__(self, func, boolargs=None, nonstringargs=None, needsescape=None, notsplit=None,
+                 connectionhandler=False, retalways=False):
+        self.func = func
+        if boolargs == None:
+            self.boolargs = []
         else:
-            self.boolargs=boolargs
-        if nonstringargs==None:
-            self.nonstringargs=dict()
+            self.boolargs = boolargs
+        if nonstringargs == None:
+            self.nonstringargs = dict()
         else:
-            self.nonstringargs=nonstringargs
-        if needsescape==None:
-            self.needsescape=[]
+            self.nonstringargs = nonstringargs
+        if needsescape == None:
+            self.needsescape = []
         else:
-            self.needsescape=needsescape
-        if notsplit==None:
-            self.notsplit=[]
+            self.needsescape = needsescape
+        if notsplit == None:
+            self.notsplit = []
         else:
-            self.notsplit=notsplit
-        self.connectionhandler=connectionhandler
-        self.retalways=retalways
+            self.notsplit = notsplit
+        self.connectionhandler = connectionhandler
+        self.retalways = retalways
+
     def Create(self, db, modulename, dbname, tablename, *args):
 
-        schema="create table %s(return_value)" %(tablename)
-        return [schema,Table(lambda:maincode(args,self.boolargs,self.nonstringargs,self.needsescape,self.notsplit,db,self.func,self.retalways,self.connectionhandler))]
-    Connect=Create
+        schema = "create table %s(return_value)" % (tablename)
+        return [schema, Table(
+            lambda: maincode(args, self.boolargs, self.nonstringargs, self.needsescape, self.notsplit, db, self.func,
+                             self.retalways, self.connectionhandler))]
 
-def maincode(args,boolargs,nonstringargs,needsescape,notsplit,db,func,retalways,connectionhandler):
-    autostring='automatic_vtable'
+    Connect = Create
+
+
+def maincode(args, boolargs, nonstringargs, needsescape, notsplit, db, func, retalways, connectionhandler):
+    autostring = 'automatic_vtable'
     try:
-        largs, kargs = argsparse.parse(args,boolargs,nonstringargs,needsescape,notsplit)
-    except Exception,e:
+        largs, kargs = argsparse.parse(args, boolargs, nonstringargs, needsescape, notsplit)
+    except Exception, e:
         raise functions.MadisError(e)
     if 'query' not in kargs:
-        raise functions.OperatorError(func.__globals__['__name__'].rsplit('.')[-1],"needs query argument ")
-    query=kargs['query']
+        raise functions.OperatorError(func.__globals__['__name__'].rsplit('.')[-1], "needs query argument ")
+    query = kargs['query']
     del kargs['query']
     if autostring in kargs:
         del kargs[autostring]
-    return doall(query,db,func,retalways,connectionhandler,*largs,**kargs)
+    return doall(query, db, func, retalways, connectionhandler, *largs, **kargs)
+
 
 # Represents a table
 class Table:
     def __init__(self, dobj):
-        self.dobj=dobj
+        self.dobj = dobj
 
     def BestIndex(self, *args):
         return (None, 0, None, False, 1000)
 
-    def Rollback(self,*args):
+    def Rollback(self, *args):
         pass
 
     def Open(self):
@@ -150,31 +157,32 @@ class Table:
     def Destroy(self):
         pass
 
+
 # Represents a cursor
 class Cursor:
     def __init__(self, table):
-        self.table=table
-        self.row=None
+        self.table = table
+        self.row = None
 
-    def Filter(self, *args):        
+    def Filter(self, *args):
         if self.table.dobj().run():
-            self.row=[1]
+            self.row = [1]
         else:
-            self.row=[0] 
-        self.eof=False
-        self.pos=0
+            self.row = [0]
+        self.eof = False
+        self.pos = 0
 
-    def Eof(self):        
+    def Eof(self):
         return self.eof
 
-    def Rowid(self):        
-        return self.pos+1
+    def Rowid(self):
+        return self.pos + 1
 
-    def Column(self, col):        
+    def Column(self, col):
 
         return self.row[col]
 
-    def Next(self):  
+    def Next(self):
         self.eof = True
 
     def Close(self):

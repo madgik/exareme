@@ -19,26 +19,27 @@ public class ContainerQuantumClock extends QuantumClock {
     private final ContainerID containerID;
 
     public ContainerQuantumClock(ContainerID containerID, long warnTimeBeforeQuantum,
-        long quantumSize) {
+                                 long quantumSize) {
         super(warnTimeBeforeQuantum, quantumSize);
         this.containerID = containerID;
         this.setName("Container Quantum Clock");
     }
 
-    @Override protected void clockWarningTick(long timeToTick_ms, long quantumCount) {
+    @Override
+    protected void clockWarningTick(long timeToTick_ms, long quantumCount) {
         try {
             ArtRegistry artRegistry = ArtRegistryLocator.getArtRegistryProxy().getRemoteObject();
             log.debug(
-                "Send warning tick event to exec engines: " + quantumCount + " in " + timeToTick_ms
-                    + " ms");
+                    "Send warning tick event to exec engines: " + quantumCount + " in " + timeToTick_ms
+                            + " ms");
             ExecutionEngineProxy[] execEngines = artRegistry.createProxy().getExecutionEngines();
             for (ExecutionEngineProxy exec : execEngines) {
                 try {
                     exec.connect().getClockTickManagerProxy()
-                        .containerWarningClockTick(containerID, timeToTick_ms, quantumCount);
+                            .containerWarningClockTick(containerID, timeToTick_ms, quantumCount);
                 } catch (RemoteException e) {
                     log.error("Cannot send container tick event: " + exec.getRemoteObject()
-                        .getRegEntryName(), e);
+                            .getRegEntryName(), e);
                 }
             }
         } catch (RemoteException e) {
@@ -46,7 +47,8 @@ public class ContainerQuantumClock extends QuantumClock {
         }
     }
 
-    @Override protected void clockTick(long quantumCount) {
+    @Override
+    protected void clockTick(long quantumCount) {
         try {
             ArtRegistry artRegistry = ArtRegistryLocator.getArtRegistryProxy().getRemoteObject();
             log.debug("Send tick event to exec engines: " + quantumCount);
@@ -54,10 +56,10 @@ public class ContainerQuantumClock extends QuantumClock {
             for (ExecutionEngineProxy exec : execEngines) {
                 try {
                     exec.connect().getClockTickManagerProxy()
-                        .containerClockTick(containerID, quantumCount);
+                            .containerClockTick(containerID, quantumCount);
                 } catch (RemoteException e) {
                     log.error("Cannot send container tick event: " + exec.getRemoteObject()
-                        .getRegEntryName(), e);
+                            .getRegEntryName(), e);
                 }
             }
         } catch (RemoteException e) {

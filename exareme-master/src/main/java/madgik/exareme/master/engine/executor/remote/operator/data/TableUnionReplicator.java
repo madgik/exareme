@@ -23,10 +23,11 @@ public class TableUnionReplicator extends AbstractMiMo {
 
     private static Logger log = Logger.getLogger(TableUnionReplicator.class);
 
-    @Override public void run() throws Exception {
+    @Override
+    public void run() throws Exception {
         log.trace("Parse DB Operator ...");
         AdpDBSelectOperator dbOp =
-            Base64Util.decodeBase64(super.getParameterManager().getQueryString());
+                Base64Util.decodeBase64(super.getParameterManager().getQueryString());
 
         String operatorName = super.getSessionManager().getOperatorName();
         log.debug("Operator Name : " + operatorName);
@@ -34,7 +35,7 @@ public class TableUnionReplicator extends AbstractMiMo {
 
         log.trace("Create state ...");
         ExecuteQueryState state =
-            new ExecuteQueryState(dbOp, getDiskManager(), getProcessManager(), false);
+                new ExecuteQueryState(dbOp, getDiskManager(), getProcessManager(), false);
 
         log.debug("Read inputs ...");
         state.readInputs(super.getAdaptorManager());
@@ -54,7 +55,7 @@ public class TableUnionReplicator extends AbstractMiMo {
 
                 for (int out = 0; out < super.getAdaptorManager().getOutputCount(); out++) {
                     WriteAdaptorWrapper outStream =
-                        super.getAdaptorManager().getWriteStreamAdaptor(out);
+                            super.getAdaptorManager().getWriteStreamAdaptor(out);
 
                     fileReaders.add(state.writeTable(table, part, outStream.getOutputStream()));
                 }

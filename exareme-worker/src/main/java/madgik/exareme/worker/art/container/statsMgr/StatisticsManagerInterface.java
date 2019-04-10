@@ -15,10 +15,10 @@ import java.rmi.RemoteException;
 public interface StatisticsManagerInterface {
 
     ContainerSessionStatistics getStatistics(ContainerSessionID containerSessionID,
-        PlanSessionID sessionID) throws RemoteException;
+                                             PlanSessionID sessionID) throws RemoteException;
 
     void destroyContainerSession(ContainerSessionID containerSessionID, PlanSessionID sessionID)
-        throws RemoteException;
+            throws RemoteException;
 
     void destroySessions(PlanSessionID sessionID) throws RemoteException;
 

@@ -13,8 +13,8 @@ import madgik.exareme.worker.art.remote.RmiObjectProxy;
  * @author herald
  */
 public class RmiComputeSessionStatisticsManagerProxy
-    extends RmiObjectProxy<ComputeSessionStatisticsManager>
-    implements ComputeSessionStatisticsManagerProxy {
+        extends RmiObjectProxy<ComputeSessionStatisticsManager>
+        implements ComputeSessionStatisticsManagerProxy {
 
     public ArmComputeSessionID sessionID = null;
 

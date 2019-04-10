@@ -13,7 +13,7 @@ import java.sql.*;
 
 /**
  * @author Christos Mallios <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  */
 public class RemoteQueryMetadata implements Metadata {
 
@@ -70,11 +70,12 @@ public class RemoteQueryMetadata implements Metadata {
     /*
      * Function which adds the storage directory
      */
-    @Override public void addStorageDirectory(String storageDirectory) throws SQLException {
+    @Override
+    public void addStorageDirectory(String storageDirectory) throws SQLException {
 
         String insert_query =
-            "INSERT INTO general_info(`storage_directory`, " + "`max_database_id`) VALUES('"
-                + storageDirectory + "', 0)";
+                "INSERT INTO general_info(`storage_directory`, " + "`max_database_id`) VALUES('"
+                        + storageDirectory + "', 0)";
 
         statement.executeUpdate(insert_query);
     }
@@ -82,10 +83,11 @@ public class RemoteQueryMetadata implements Metadata {
     /*
      * Function which initialize the cache directory and size
      */
-    @Override public void initializeCacheInfo(String cacheDirectory) throws SQLException {
+    @Override
+    public void initializeCacheInfo(String cacheDirectory) throws SQLException {
 
         String update_query = "UPDATE general_info set `cache_directory` = '" + cacheDirectory
-            + "', `cache_size` = 0";
+                + "', `cache_size` = 0";
 
         statement.executeUpdate(update_query);
     }
@@ -93,10 +95,11 @@ public class RemoteQueryMetadata implements Metadata {
     /*
      * Function which updates the directory of the storage
      */
-    @Override public void updateStorageDirectory(String storageDirectory) throws SQLException {
+    @Override
+    public void updateStorageDirectory(String storageDirectory) throws SQLException {
 
         String update_query =
-            "UPDATE general_info set `storage_directory` = '" + storageDirectory + "'";
+                "UPDATE general_info set `storage_directory` = '" + storageDirectory + "'";
 
         statement.executeUpdate(update_query);
     }
@@ -104,10 +107,11 @@ public class RemoteQueryMetadata implements Metadata {
     /*
      * Function which updates the directory of the cache
      */
-    @Override public void updateCacheDirectory(String cacheDirectory) throws SQLException {
+    @Override
+    public void updateCacheDirectory(String cacheDirectory) throws SQLException {
 
         String update_query =
-            "UPDATE general_info set `cache_directory` = '" + cacheDirectory + "'";
+                "UPDATE general_info set `cache_directory` = '" + cacheDirectory + "'";
 
         statement.executeUpdate(update_query);
     }
@@ -115,7 +119,8 @@ public class RemoteQueryMetadata implements Metadata {
     /*
      * Function which updates the cache size
      */
-    @Override public void updateCacheSize(double cacheSize) throws SQLException {
+    @Override
+    public void updateCacheSize(double cacheSize) throws SQLException {
 
         String update_query = "UPDATE general_info set `cache_size` = '" + cacheSize + "'";
 
@@ -125,19 +130,20 @@ public class RemoteQueryMetadata implements Metadata {
     /*
      * Function which adds a new cache record
      */
-    @Override public void addNewCacheRecord(String database, String table, String query,
-        double size, double benefit, QueryRequests request) throws SQLException {
+    @Override
+    public void addNewCacheRecord(String database, String table, String query,
+                                  double size, double benefit, QueryRequests request) throws SQLException {
 
         if (request == null) {
             request = new QueryRequests();
         }
 
         PreparedStatement insertStatement = connection.prepareStatement(
-            "INSERT INTO queries(`database`, `table`, "
-                + "`query`, `size`, `last_update`, `storage_time`, `benefit`, "
-                + "`number_of_requests`, " + "`number_of_last_version_requests`, "
-                + "`number_of_total_requests`, " + "`query_response_time`, "
-                + "`number_of_versions`) " + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                "INSERT INTO queries(`database`, `table`, "
+                        + "`query`, `size`, `last_update`, `storage_time`, `benefit`, "
+                        + "`number_of_requests`, " + "`number_of_last_version_requests`, "
+                        + "`number_of_total_requests`, " + "`query_response_time`, "
+                        + "`number_of_versions`) " + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
         insertStatement.setString(1, database);
         insertStatement.setString(2, table);
@@ -158,7 +164,8 @@ public class RemoteQueryMetadata implements Metadata {
     /*
      * Function which update the maximum databaseID
      */
-    @Override public void updateDBID(long maxID) throws SQLException {
+    @Override
+    public void updateDBID(long maxID) throws SQLException {
 
         String update_query = "UPDATE general_info set `max_database_id` = " + maxID;
 
@@ -168,18 +175,19 @@ public class RemoteQueryMetadata implements Metadata {
     /*
      * Function which updates a cache record
      */
-    @Override public void updateCacheRecord(String query, double benefit, QueryRequests request)
-        throws SQLException {
+    @Override
+    public void updateCacheRecord(String query, double benefit, QueryRequests request)
+            throws SQLException {
 
         if (request == null) {
             request = new QueryRequests();
         }
 
         PreparedStatement insertStatement = connection.prepareStatement(
-            "UPDATE queries set `last_update` = ?, `benefit` = ?, "
-                + "`number_of_requests` = ?, `number_of_last_version_requests` = ?,"
-                + " `number_of_total_requests` = ?, `query_response_time` = ?, "
-                + "`number_of_versions` = ? WHERE `query` = ?");
+                "UPDATE queries set `last_update` = ?, `benefit` = ?, "
+                        + "`number_of_requests` = ?, `number_of_last_version_requests` = ?,"
+                        + " `number_of_total_requests` = ?, `query_response_time` = ?, "
+                        + "`number_of_versions` = ? WHERE `query` = ?");
 
         insertStatement.setString(1, Date.getCurrentDateTime());
         insertStatement.setDouble(2, benefit);
@@ -196,10 +204,11 @@ public class RemoteQueryMetadata implements Metadata {
     /*
      * Function which updates the number of total requests
      */
-    @Override public void updateNumberTotalRequests() throws SQLException {
+    @Override
+    public void updateNumberTotalRequests() throws SQLException {
 
         PreparedStatement updateStatement = connection.prepareStatement(
-            "UPDATE queries set `number_of_total_requests` " + "= `number_of_total_requests` + 1");
+                "UPDATE queries set `number_of_total_requests` " + "= `number_of_total_requests` + 1");
 
         updateStatement.execute();
     }
@@ -207,7 +216,8 @@ public class RemoteQueryMetadata implements Metadata {
     /*
      * Function which deletes a cache record
      */
-    @Override public void deleteCacheRecord(String database) throws SQLException {
+    @Override
+    public void deleteCacheRecord(String database) throws SQLException {
 
         String delete_query = "DELETE FROM queries WHERE `database` = '" + database + "'";
 
@@ -217,29 +227,30 @@ public class RemoteQueryMetadata implements Metadata {
     /*
      * Function which closes the sql connection
      */
-    @Override public void close() throws SQLException {
+    @Override
+    public void close() throws SQLException {
         statement.close();
         connection.close();
     }
-  /*
-   * Function which creates the metadata tables
-   */
+    /*
+     * Function which creates the metadata tables
+     */
 
     private void createTables() throws SQLException {
 
         String create_query = "CREATE TABLE IF NOT EXISTS queries(`database` "
-            + "TEXT PRIMARY KEY, `table` TEXT, `query` BLOB, `size` REAL, "
-            + "`last_update` DATETIME DEFAULT current_timestamp, "
-            + "`storage_time` DATETIME DEFAULT current_timestamp, "
-            + "`benefit` REAL, `number_of_requests` INTEGER, "
-            + "`number_of_last_version_requests` INTEGER, " + "`number_of_total_requests` INTEGER, "
-            + "`query_response_time` INTEGER, " + "`number_of_versions` INTEGER)";
+                + "TEXT PRIMARY KEY, `table` TEXT, `query` BLOB, `size` REAL, "
+                + "`last_update` DATETIME DEFAULT current_timestamp, "
+                + "`storage_time` DATETIME DEFAULT current_timestamp, "
+                + "`benefit` REAL, `number_of_requests` INTEGER, "
+                + "`number_of_last_version_requests` INTEGER, " + "`number_of_total_requests` INTEGER, "
+                + "`query_response_time` INTEGER, " + "`number_of_versions` INTEGER)";
 
         statement.executeUpdate(create_query);
 
         create_query = "CREATE TABLE IF NOT EXISTS general_info("
-            + "`storage_directory` TEXT, `cache_directory` TEXT, "
-            + "`cache_size` REAL, `max_database_id` INTEGER)";
+                + "`storage_directory` TEXT, `cache_directory` TEXT, "
+                + "`cache_size` REAL, `max_database_id` INTEGER)";
 
         statement.executeUpdate(create_query);
     }

@@ -20,7 +20,8 @@ public class HashDirectedGraph<V, E extends Edge<V>> implements DirectedGraph<V,
         this.reverseAdjacencyMap = new LinkedHashMap<V, HashSet<E>>();
     }
 
-    @Override public boolean addEdge(E e) {
+    @Override
+    public boolean addEdge(E e) {
         if (!this.adjacencyMap.containsKey(e.getSourceVertex())) {
             throw new IllegalArgumentException("Source not in graph");
         }
@@ -30,10 +31,11 @@ public class HashDirectedGraph<V, E extends Edge<V>> implements DirectedGraph<V,
         }
 
         return this.adjacencyMap.get(e.getSourceVertex()).add(e) && this.reverseAdjacencyMap
-            .get(e.getTargetVertex()).add(e);
+                .get(e.getTargetVertex()).add(e);
     }
 
-    @Override public boolean addVertex(V v) {
+    @Override
+    public boolean addVertex(V v) {
         if (this.adjacencyMap.containsKey(v)) {
             return false;
         }
@@ -43,19 +45,23 @@ public class HashDirectedGraph<V, E extends Edge<V>> implements DirectedGraph<V,
         return true;
     }
 
-    @Override public boolean containsEdge(V source, V target) {
+    @Override
+    public boolean containsEdge(V source, V target) {
         return getEdge(source, target) != null;
     }
 
-    @Override public boolean containsVertex(V v) {
+    @Override
+    public boolean containsVertex(V v) {
         return this.adjacencyMap.containsKey(v);
     }
 
-    @Override public Set<V> verticesSet() {
+    @Override
+    public Set<V> verticesSet() {
         return Collections.unmodifiableSet(this.adjacencyMap.keySet());
     }
 
-    @Override public E getEdge(V source, V target) {
+    @Override
+    public E getEdge(V source, V target) {
         if (!this.adjacencyMap.containsKey(source)) {
             return null;
         }
@@ -69,7 +75,8 @@ public class HashDirectedGraph<V, E extends Edge<V>> implements DirectedGraph<V,
         return null;
     }
 
-    @Override public Set<E> edgesSet() {
+    @Override
+    public Set<E> edgesSet() {
         HashSet<E> edges = new HashSet();
 
         for (HashSet<E> s : this.adjacencyMap.values()) {
@@ -79,7 +86,8 @@ public class HashDirectedGraph<V, E extends Edge<V>> implements DirectedGraph<V,
         return Collections.unmodifiableSet(edges);
     }
 
-    @Override public Set<E> incomingEdgesSet(V v) {
+    @Override
+    public Set<E> incomingEdgesSet(V v) {
         if (!this.reverseAdjacencyMap.containsKey(v)) {
             throw new IllegalArgumentException("Vertex not in graph");
         }
@@ -87,7 +95,8 @@ public class HashDirectedGraph<V, E extends Edge<V>> implements DirectedGraph<V,
         return Collections.unmodifiableSet(this.reverseAdjacencyMap.get(v));
     }
 
-    @Override public Set<E> outgoingEdgesSet(V v) {
+    @Override
+    public Set<E> outgoingEdgesSet(V v) {
         if (!this.adjacencyMap.containsKey(v)) {
             throw new IllegalArgumentException("Vertex not in graph");
         }
@@ -95,7 +104,8 @@ public class HashDirectedGraph<V, E extends Edge<V>> implements DirectedGraph<V,
         return Collections.unmodifiableSet(this.adjacencyMap.get(v));
     }
 
-    @Override public Set<E> edgesSet(V v) {
+    @Override
+    public Set<E> edgesSet(V v) {
         HashSet<E> edges = new HashSet();
 
         edges.addAll(incomingEdgesSet(v));
@@ -103,7 +113,8 @@ public class HashDirectedGraph<V, E extends Edge<V>> implements DirectedGraph<V,
         return Collections.unmodifiableSet(edges);
     }
 
-    @Override public Set<E> edgesSet(V source, V target) {
+    @Override
+    public Set<E> edgesSet(V source, V target) {
         if (!this.adjacencyMap.containsKey(source) || !this.adjacencyMap.containsKey(target)) {
             throw new IllegalArgumentException("Vertex not in graph");
         }
@@ -119,7 +130,8 @@ public class HashDirectedGraph<V, E extends Edge<V>> implements DirectedGraph<V,
         return edges;
     }
 
-    @Override public E removeEdge(V source, V target) {
+    @Override
+    public E removeEdge(V source, V target) {
         if (!this.adjacencyMap.containsKey(source) || !this.adjacencyMap.containsKey(target)) {
             throw new IllegalArgumentException("Vertex not in graph");
         }
@@ -148,9 +160,10 @@ public class HashDirectedGraph<V, E extends Edge<V>> implements DirectedGraph<V,
         return edge;
     }
 
-    @Override public boolean removeEdge(E e) {
+    @Override
+    public boolean removeEdge(E e) {
         if (!this.adjacencyMap.containsKey(e.getSourceVertex()) || !this.adjacencyMap
-            .containsKey(e.getTargetVertex())) {
+                .containsKey(e.getTargetVertex())) {
             throw new IllegalArgumentException("Edge vertex not in graph");
         }
 
@@ -182,7 +195,8 @@ public class HashDirectedGraph<V, E extends Edge<V>> implements DirectedGraph<V,
         return edgeRemoved;
     }
 
-    @Override public boolean removeAllEdges() {
+    @Override
+    public boolean removeAllEdges() {
         boolean hasChanged = false;
 
         for (HashSet<E> edgesSet : this.adjacencyMap.values()) {
@@ -204,7 +218,8 @@ public class HashDirectedGraph<V, E extends Edge<V>> implements DirectedGraph<V,
         return hasChanged;
     }
 
-    @Override public boolean removeVertex(V v) {
+    @Override
+    public boolean removeVertex(V v) {
         if (!this.adjacencyMap.containsKey(v)) {
             return false;
         }
@@ -214,7 +229,8 @@ public class HashDirectedGraph<V, E extends Edge<V>> implements DirectedGraph<V,
         return true;
     }
 
-    @Override public boolean removeAllVertices() {
+    @Override
+    public boolean removeAllVertices() {
         if (this.adjacencyMap.keySet().isEmpty()) {
             return false;
         }

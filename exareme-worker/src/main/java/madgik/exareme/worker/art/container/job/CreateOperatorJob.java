@@ -31,9 +31,9 @@ public class CreateOperatorJob implements ContainerJob {
     //public final int outputLinks;
 
     public CreateOperatorJob(String operatorName, String category, OperatorType type,
-        OperatorImplementationEntity operator, Parameters parameters,
-        Map<String, LinkedList<Parameter>> linkMapParameters, String queryString,
-        PlanSessionReportID sessionReportID, ContainerSessionID containerSessionID) {
+                             OperatorImplementationEntity operator, Parameters parameters,
+                             Map<String, LinkedList<Parameter>> linkMapParameters, String queryString,
+                             PlanSessionReportID sessionReportID, ContainerSessionID containerSessionID) {
         this.operatorName = operatorName;
         this.category = category;
         this.type = type;
@@ -45,7 +45,8 @@ public class CreateOperatorJob implements ContainerJob {
         this.contSessionID = containerSessionID;
     }
 
-    @Override public ContainerJobType getType() {
+    @Override
+    public ContainerJobType getType() {
         return ContainerJobType.createOperator;
     }
 }

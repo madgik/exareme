@@ -12,8 +12,8 @@ import java.util.Properties;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class RandomParameters implements Serializable {
@@ -29,7 +29,7 @@ public class RandomParameters implements Serializable {
     public Zipf dataoutDist = null;
 
     public RandomParameters(double z, double operatorType, double[] runTime, double[] cpuUtil,
-        int[] memory, double[] dataout) {
+                            int[] memory, double[] dataout) {
         this.z = z;
         this.operatorType = operatorType;
 
@@ -44,8 +44,9 @@ public class RandomParameters implements Serializable {
         this.dataoutDist = new Zipf(this.dataout.length, z);
     }
 
-    @SuppressWarnings("static-access") public static RandomParameters parseFile(String url)
-        throws IOException {
+    @SuppressWarnings("static-access")
+    public static RandomParameters parseFile(String url)
+            throws IOException {
         Properties properties = new Properties();
         properties.load(new URL(url).openStream());
 
@@ -77,7 +78,7 @@ public class RandomParameters implements Serializable {
         }
 
         RandomParameters parameters =
-            new RandomParameters(z, operatorType, runTime, cpuUtil, memory, dataout);
+                new RandomParameters(z, operatorType, runTime, cpuUtil, memory, dataout);
 
         return parameters;
     }

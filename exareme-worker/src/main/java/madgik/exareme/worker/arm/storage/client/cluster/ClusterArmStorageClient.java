@@ -32,7 +32,7 @@ public class ClusterArmStorageClient implements ArmStorageClient {
 
 
     public ClusterArmStorageClient(String defaultFS, int buffersize, int replication,
-        long blocksize) {
+                                   long blocksize) {
         this.fs = null;
         this.armStorageURI = defaultFS;
         this.buffersize = buffersize;
@@ -43,7 +43,8 @@ public class ClusterArmStorageClient implements ArmStorageClient {
     /**
      * @throws ArmStorageClientException
      */
-    @Override public void connect() throws ArmStorageClientException {
+    @Override
+    public void connect() throws ArmStorageClientException {
 
         if (this.fs != null)
             this.disconnect();
@@ -60,7 +61,7 @@ public class ClusterArmStorageClient implements ArmStorageClient {
     }
 
     private void put(String src, String dest, int buffersize, short replication, long blocksize)
-        throws ArmStorageClientException {
+            throws ArmStorageClientException {
 
     }
 
@@ -69,7 +70,8 @@ public class ClusterArmStorageClient implements ArmStorageClient {
      * @param dest
      * @throws ArmStorageClientException
      */
-    @Override public void put(String src, String dest) throws ArmStorageClientException {
+    @Override
+    public void put(String src, String dest) throws ArmStorageClientException {
 
         // connected ?
         if (this.fs == null)
@@ -101,8 +103,8 @@ public class ClusterArmStorageClient implements ArmStorageClient {
 
             //long blocksize = ArmStorageClientUtils.roundFileLength(srcFile.length());
             long currentBlockSize = blocksize == -1 ?
-                ArmStorageClientUtils.roundFileLength(srcFile.length()) :
-                blocksize;
+                    ArmStorageClientUtils.roundFileLength(srcFile.length()) :
+                    blocksize;
             out = this.fs.create(destPath, true, buffersize, (short) replication, currentBlockSize);
             IOUtils.copyBytes(in, out, buffersize);
 
@@ -119,7 +121,8 @@ public class ClusterArmStorageClient implements ArmStorageClient {
      * @param dest
      * @throws ArmStorageClientException
      */
-    @Override public void fetch(String src, String dest) throws ArmStorageClientException {
+    @Override
+    public void fetch(String src, String dest) throws ArmStorageClientException {
 
         // connected ?
         if (this.fs == null)

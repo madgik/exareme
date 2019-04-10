@@ -24,8 +24,8 @@ public class LogarithmTest extends TestCase {
             for (int base = 2; base < 100; ++base) {
                 //        log.debug(num + " / " + base);
                 Assert.assertTrue(Math.abs(
-                    Logarithm.DiscreeteLogCeil(num, base) - Logarithm.DiscreeteLogCeil2(num, base))
-                    <= 1);
+                        Logarithm.DiscreeteLogCeil(num, base) - Logarithm.DiscreeteLogCeil2(num, base))
+                        <= 1);
                 //        assertEquals(Logarithm.DiscreeteLogFloor(num, base),
                 //                     Logarithm.DiscreeteLogFloor2(num, base));
             }

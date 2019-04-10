@@ -18,14 +18,15 @@ public class DataTransferSessionHandler extends Thread {
     private final HttpServerConnection conn;
 
     public DataTransferSessionHandler(final HttpService httpservice,
-        final HttpServerConnection conn) {
+                                      final HttpServerConnection conn) {
         super();
         this.httpservice = httpservice;
         this.conn = conn;
 
     }
 
-    @Override public void run() {
+    @Override
+    public void run() {
         try {
             HttpContext context = new BasicHttpContext();
             this.httpservice.handleRequest(this.conn, context);

@@ -21,17 +21,20 @@ public class PlanIterator implements Iterator<Node> {
     }
 
     /*interface methods*/
-    @Override public boolean hasNext() {
+    @Override
+    public boolean hasNext() {
         return this.curIdx != -1;
     }
 
-    @Override public Node next() {
+    @Override
+    public Node next() {
         Node n = this.plan.get(curIdx);
         this.curIdx--;
         return n;
     }
 
-    @Override public void remove() {
+    @Override
+    public void remove() {
         this.plan.remove(this.curIdx);
         this.curIdx--;
     }

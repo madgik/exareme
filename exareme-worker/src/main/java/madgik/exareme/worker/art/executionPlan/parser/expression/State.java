@@ -20,7 +20,7 @@ public class State {
     public List<URL> locations = null;
 
     public State(String stateName, String state, LinkedList<Parameter> paramList,
-        String queryString, String containerName) {
+                 String queryString, String containerName) {
         this.stateName = stateName;
         this.containerName = containerName;
         this.state = state.substring(1, state.length() - 1);
@@ -30,7 +30,7 @@ public class State {
     }
 
     public State(String stateName, String state, LinkedList<Parameter> paramList,
-        String queryString, String containerName, List<URL> locations) {
+                 String queryString, String containerName, List<URL> locations) {
         this.stateName = stateName;
         this.containerName = containerName;
         this.state = state.substring(1, state.length() - 1);
@@ -39,7 +39,8 @@ public class State {
         this.locations = locations;
     }
 
-    @Override public boolean equals(Object obj) {
+    @Override
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -50,12 +51,12 @@ public class State {
         State guest = (State) obj;
         //check strings
         if (!(stateName.equals(guest.stateName) && state.equals(guest.state) && queryString
-            .equals(guest.queryString) && containerName.equals(guest.containerName))) {
+                .equals(guest.queryString) && containerName.equals(guest.containerName))) {
             return false;
         }
         //check lists
         if ((paramList != null && guest.paramList == null) || (paramList == null
-            && guest.paramList != null)) {
+                && guest.paramList != null)) {
             return false;
         }
 
@@ -71,7 +72,7 @@ public class State {
         }
 
         if ((locations != null && guest.locations == null) || (locations == null
-            && guest.locations != null)) {
+                && guest.locations != null)) {
             return false;
         }
 

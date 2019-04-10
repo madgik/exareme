@@ -14,30 +14,30 @@ import java.util.ArrayList;
 
 /**
  * @author Herald Kllapi <br> University of Athens / Department of Informatics
- *         and Telecommunications.
+ * and Telecommunications.
  * @since 1.0
  */
 public interface ComputeSessionContainerManager
-    extends RemoteObject<ComputeSessionContainerManagerProxy> {
+        extends RemoteObject<ComputeSessionContainerManagerProxy> {
     ActiveContainer[] getContainers(int numOfContainers, ArmComputeSessionID sessionID)
-        throws RemoteException;
+            throws RemoteException;
 
     ActiveContainer[] tryGetContainers(int numOfContainers, ArmComputeSessionID sessionID)
-        throws RemoteException;
+            throws RemoteException;
 
     ActiveContainer[] getAtMostContainers(int numOfContainers, ArmComputeSessionID sessionID)
-        throws RemoteException;
+            throws RemoteException;
 
     void stopContainer(ActiveContainer container, ArmComputeSessionID sessionID)
-        throws RemoteException;
+            throws RemoteException;
 
     void closeSession(ArmComputeSessionID sessionID) throws RemoteException;
 
     void stopManager() throws RemoteException;
 
     ArrayList<Pair<PatternElement, ActiveContainer>> getAtMostContainers(
-        ArmComputeSessionID sessionID) throws RemoteException;
+            ArmComputeSessionID sessionID) throws RemoteException;
 
     void setPattern(ArrayList<PatternElement> pattern, ArmComputeSessionID sessionID)
-        throws RemoteException;
+            throws RemoteException;
 }

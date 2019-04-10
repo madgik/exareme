@@ -21,13 +21,13 @@
 # SOFTWARE.
 
 from __future__ import absolute_import
+
 import operator
 import sys
 import types
 
 __author__ = "Benjamin Peterson <benjamin@python.org>"
 __version__ = "1.4.1"
-
 
 # Useful for very coarse version differentiation.
 PY2 = sys.version_info[0] == 2
@@ -36,7 +36,6 @@ PY3 = sys.version_info[0] == 3
 PRE_26 = PY2 and sys.version_info[1] < 6
 
 IS_JYTHON = sys.platform.lower().count('java') > 0
-
 
 if PY3:
     string_types = str,
@@ -61,6 +60,8 @@ else:
         class X(object):
             def __len__(self):
                 return 1 << 31
+
+
         try:
             len(X())
         except OverflowError:
@@ -405,7 +406,6 @@ else:
     _iteritems = "iteritems"
     _iterlists = "iterlists"
 
-
 try:
     advance_iterator = next
 except NameError:
@@ -413,17 +413,16 @@ except NameError:
         return it.next()
 next = advance_iterator
 
-
 try:
     callable = callable
 except NameError:
     def callable(obj):
         return any("__call__" in klass.__dict__ for klass in type(obj).__mro__)
 
-
 if PY3:
     def get_unbound_function(unbound):
         return unbound
+
 
     create_bound_method = types.MethodType
 
@@ -432,18 +431,20 @@ else:
     def get_unbound_function(unbound):
         return unbound.im_func
 
+
     def create_bound_method(func, obj):
         return types.MethodType(func, obj, obj.__class__)
+
 
     class Iterator(object):
 
         def next(self):
             return type(self).__next__(self)
 
+
     callable = callable
 _add_doc(get_unbound_function,
          """Get the function out of a possibly unbound function""")
-
 
 get_method_function = operator.attrgetter(_meth_func)
 get_method_self = operator.attrgetter(_meth_self)
@@ -477,8 +478,11 @@ if PY3:
     def b(s):
         return s.encode("latin-1")
 
+
     def u(s):
         return s
+
+
     unichr = chr
     if sys.version_info[1] <= 1:
         def int2byte(i):
@@ -490,39 +494,51 @@ if PY3:
     indexbytes = operator.getitem
     iterbytes = iter
     import io
+
     StringIO = io.StringIO
     BytesIO = io.BytesIO
 else:
     def b(s):
         return s
 
+
     def u(s):
         return unicode(s, "unicode_escape")  # noqa
+
+
     unichr = unichr
     int2byte = chr
+
 
     def byte2int(bs):
         return ord(bs[0])
 
+
     def indexbytes(buf, i):
         return ord(buf[i])
 
+
     def iterbytes(buf):
         return (ord(byte) for byte in buf)
+
+
     import StringIO
+
     StringIO = BytesIO = StringIO.StringIO
 _add_doc(b, """Byte literal""")
 _add_doc(u, """Text literal""")
 
-
 if PY3:
     import builtins
+
     exec_ = getattr(builtins, "exec")
+
 
     def reraise(tp, value, tb=None):
         if value.__traceback__ is not tb:
             raise value.with_traceback(tb)
         raise value
+
 
     print_ = getattr(builtins, "print")
     del builtins
@@ -538,11 +554,13 @@ else:
             del frame
         elif _locs_ is None:
             _locs_ = _globs_
-        exec("""exec _code_ in _globs_, _locs_""")
+        exec ("""exec _code_ in _globs_, _locs_""")
+
 
     exec_("""def reraise(tp, value, tb=None):
     raise tp, value, tb
 """)
+
 
     def print_(*args, **kwargs):
         """The new-style print function."""
@@ -554,6 +572,7 @@ else:
             if not isinstance(data, basestring):  # noqa
                 data = str(data)
             fp.write(data)
+
         want_unicode = False
         sep = kwargs.pop("sep", None)
         if sep is not None:
@@ -600,6 +619,7 @@ def with_metaclass(meta, *bases):
 
 def add_metaclass(metaclass):
     """Class decorator for creating a class with a metaclass."""
+
     def wrapper(cls):
         orig_vars = cls.__dict__.copy()
         orig_vars.pop('__dict__', None)
@@ -607,4 +627,5 @@ def add_metaclass(metaclass):
         for slots_var in orig_vars.get('__slots__', ()):
             orig_vars.pop(slots_var)
         return metaclass(cls.__name__, cls.__bases__, orig_vars)
+
     return wrapper

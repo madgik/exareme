@@ -78,7 +78,7 @@ public class AdpDBParser {
         log.debug("Adding queries ...");
         for (SQLSelect q : sQLScript.getQueries()) {
             if (tables.containsKey(q.getResultTable()) || registry
-                .containsPhysicalTable(q.getResultTable())) {
+                    .containsPhysicalTable(q.getResultTable())) {
                 throw new SemanticException("Table already exists: " + q.getResultTable());
             }
             Table out = new Table(q.getResultTable());
@@ -104,14 +104,14 @@ public class AdpDBParser {
             for (Select q : script.getSelectQueries()) {
                 if (q.getParsedSqlQuery().getInputDataPattern() == DataPattern.external) {
                     if (q.getParsedSqlQuery().getUsingTBLs() == null
-                        || q.getParsedSqlQuery().getUsingTBLs().size() == 0) {
+                            || q.getParsedSqlQuery().getUsingTBLs().size() == 0) {
                         log.debug("Skipping for queries with external pattern.");
                         continue;
                     }
                 }
                 if (q.getParsedSqlQuery().getInputDataPattern() == DataPattern.remote) {
                     if (q.getParsedSqlQuery().getUsingTBLs() == null
-                        || q.getParsedSqlQuery().getUsingTBLs().size() == 0) {
+                            || q.getParsedSqlQuery().getUsingTBLs().size() == 0) {
                         log.debug("Skipping for queries with remote pattern.");
                         continue;
                     }
@@ -171,7 +171,7 @@ public class AdpDBParser {
         for (Select q : script.getSelectQueries()) {
             if (registry.getPhysicalTable(q.getOutputTable().getName()) != null) {
                 throw new SemanticException(
-                    "Table exists: " + registry.getPhysicalTable(q.getOutputTable().getName()));
+                        "Table exists: " + registry.getPhysicalTable(q.getOutputTable().getName()));
             }
             if (q.getParsedSqlQuery().getInputDataPattern() == DataPattern.external) {
                 log.debug("Skipping for queries with external pattern.");
@@ -187,7 +187,7 @@ public class AdpDBParser {
             }
             SQLQueryInfo sQLQueryInfo;
             Pattern madisCreateStmtPattern = Pattern.compile(
-                "(?i)\\s*create\\s+(temp|temporary)\\s+(view|table)\\s+(\\w+)\\s+as\\s+(.*)");
+                    "(?i)\\s*create\\s+(temp|temporary)\\s+(view|table)\\s+(\\w+)\\s+as\\s+(.*)");
             try {
                 if (q.getParsedSqlQuery().isScript()) {
                     sQLQueryInfo = new SQLQueryInfo(q.getQuery());
@@ -196,9 +196,9 @@ public class AdpDBParser {
                         //            String queryStatement = rs.getString(1).trim().toLowerCase();
                         String queryStatement = rs.getString(1).trim();
                         queryStatement =
-                            (queryStatement.substring(queryStatement.length() - 1).equals(";")) ?
-                                queryStatement.substring(0, queryStatement.length() - 1) :
-                                queryStatement;
+                                (queryStatement.substring(queryStatement.length() - 1).equals(";")) ?
+                                        queryStatement.substring(0, queryStatement.length() - 1) :
+                                        queryStatement;
                         q.addQueryStatement(queryStatement);
                     }
                     rs.close();
@@ -207,13 +207,13 @@ public class AdpDBParser {
                         Matcher createStmtMatcher = madisCreateStmtPattern.matcher(queryStatement);
                         if (createStmtMatcher.find()) {
                             for (String tableName : imdb.getQueryInfo(createStmtMatcher.group(4))
-                                .getInputTables()) {
+                                    .getInputTables()) {
                                 sQLQueryInfo.addInputTable(tableName);
                             }
                             imdb.execute(queryStatement.replaceFirst("(?i)\\s+temp\\s+view\\s+", " temp table "));
                         } else if (queryStatement.startsWith("select")) {
                             for (String tableName : imdb.getQueryInfo(queryStatement)
-                                .getInputTables()) {
+                                    .getInputTables()) {
                                 sQLQueryInfo.addInputTable(tableName);
                             }
                         }
@@ -272,7 +272,7 @@ public class AdpDBParser {
             log.debug("Create the output table ...");
             String outTableName = q.getOutputTable().getTable().getName();
             imdb.execute(
-                "create table " + outTableName + " as " + q.getSelectQueryStatement() + ";\n");
+                    "create table " + outTableName + " as " + q.getSelectQueryStatement() + ";\n");
             TableInfo tableInfo = imdb.getTableInfo(outTableName);
             tables.get(outTableName).setSqlDefinition(tableInfo.getSQLDefinition());
         }
@@ -280,7 +280,7 @@ public class AdpDBParser {
     }
 
     private void addDMQueries(Registry registry, QueryScript script, SQLScript sQLScript)
-        throws Exception {
+            throws Exception {
         log.debug("Adding build indexes ...");
         for (SQLBuildIndex bi : sQLScript.getBuildIndexes()) {
             BuildIndex biq = new BuildIndex(id, bi);
@@ -320,7 +320,7 @@ public class AdpDBParser {
             return;
         }
         Gson gson = new Gson();
-        int[] parts = gson.fromJson(partsDefn, new int[] {}.getClass());
+        int[] parts = gson.fromJson(partsDefn, new int[]{}.getClass());
         log.debug("Parts of '" + table + "': " + parts.length);
         for (int pNum : parts) {
             q.addRunOnPart(pNum);

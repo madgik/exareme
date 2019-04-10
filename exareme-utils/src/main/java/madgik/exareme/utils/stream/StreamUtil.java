@@ -20,33 +20,33 @@ import java.util.zip.InflaterInputStream;
  */
 public class StreamUtil {
     private static final int ioBufferSize =
-        AdpProperties.getArtProps().getInt("art.container.ioBufferSize_kb") * Metrics.KB;
+            AdpProperties.getArtProps().getInt("art.container.ioBufferSize_kb") * Metrics.KB;
     private static final int zipBufferSize =
-        AdpProperties.getArtProps().getInt("art.container.zipBufferSize_kb") * Metrics.KB;
+            AdpProperties.getArtProps().getInt("art.container.zipBufferSize_kb") * Metrics.KB;
     private static final int ZIPLEVEL =
-        AdpProperties.getArtProps().getInt("art.container.zipLevel");
+            AdpProperties.getArtProps().getInt("art.container.zipLevel");
 
     private StreamUtil() {
     }
 
     public static OutputStream createZippedOutputStream(OutputStream out) throws IOException {
         return new LZ4BlockOutputStream(out, ioBufferSize,
-            LZ4Factory.fastestInstance().fastCompressor(), new NoChecksum(), false);
+                LZ4Factory.fastestInstance().fastCompressor(), new NoChecksum(), false);
     }
 
     public static InputStream createZippedInputStream(InputStream in) throws IOException {
         return new LZ4BlockInputStream(in, LZ4Factory.fastestInstance().fastDecompressor(),
-            new NoChecksum());
+                new NoChecksum());
     }
 
     public static OutputStream createDeflaterOutputStream(OutputStream out) throws IOException {
         return new DeflaterOutputStream(new BufferedOutputStream(out, ioBufferSize),
-            new Deflater(ZIPLEVEL), zipBufferSize);
+                new Deflater(ZIPLEVEL), zipBufferSize);
     }
 
     public static InputStream createInflaterInputStream(InputStream in) throws IOException {
         return new InflaterInputStream(new BufferedInputStream(in, ioBufferSize), new Inflater(),
-            zipBufferSize);
+                zipBufferSize);
     }
 
     public static void copyStreams(InputStream from, OutputStream to) throws IOException {

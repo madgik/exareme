@@ -80,7 +80,8 @@ public class PipeStreamByteBuffer implements StreamBuffer {
         return size;
     }
 
-    @Override public void clear() {
+    @Override
+    public void clear() {
 
     }
 }

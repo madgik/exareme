@@ -19,7 +19,8 @@ public class CreateWriteAdaptorJobResult extends CreateAdaptorJobResult {
         this.proxy = proxy;
     }
 
-    @Override public ContainerJobType getType() {
+    @Override
+    public ContainerJobType getType() {
         return ContainerJobType.createWriteAdaptor;
     }
 }

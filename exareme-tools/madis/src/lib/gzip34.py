@@ -5,15 +5,19 @@ but random access is not allowed."""
 
 # based on Andrew Kuchling's minigzip.py distributed with the zlib module
 
-import struct, sys, time, os
-import zlib
 import io
+import os
+import struct
+import sys
+import time
+import zlib
 
 __all__ = ["GzipFile", "open", "compress", "decompress"]
 
 FTEXT, FHCRC, FEXTRA, FNAME, FCOMMENT = 1, 2, 4, 8, 16
 
 READ, WRITE = 1, 2
+
 
 def open(filename, mode="rb", compresslevel=9,
          encoding=None, errors=None, newline=None):
@@ -59,10 +63,12 @@ def open(filename, mode="rb", compresslevel=9,
     else:
         return binary_file
 
+
 def write32u(output, value):
     # The L format writes the bit pattern correctly whether signed
     # or unsigned.
     output.write(struct.pack("<L", value))
+
 
 class _PaddedFile:
     """Minimal read-only file object that prepends a string to the contents
@@ -86,7 +92,7 @@ class _PaddedFile:
             read = self._read
             self._read = None
             return self._buffer[read:] + \
-                   self.file.read(size-self._length+read)
+                   self.file.read(size - self._length + read)
 
     def prepend(self, prepend=b'', readprevious=False):
         if self._read is None:
@@ -130,7 +136,7 @@ class GzipFile(io.BufferedIOBase):
     """
 
     myfileobj = None
-    max_read_chunk = 10 * 1024 * 1024   # 10Mb
+    max_read_chunk = 10 * 1024 * 1024  # 10Mb
 
     def __init__(self, filename=None, mode=None,
                  compresslevel=9, fileobj=None, mtime=None):
@@ -248,8 +254,8 @@ class GzipFile(io.BufferedIOBase):
         self.bufsize = 0
 
     def _write_gzip_header(self):
-        self.fileobj.write(b'\037\213')             # magic header
-        self.fileobj.write(b'\010')                 # compression method
+        self.fileobj.write(b'\037\213')  # magic header
+        self.fileobj.write(b'\010')  # compression method
         try:
             # RFC 1952 requires the FNAME field to be Latin-1. Do not
             # include filenames that cannot be represented that way.
@@ -307,16 +313,16 @@ class GzipFile(io.BufferedIOBase):
             # Read and discard a null-terminated string containing the filename
             while True:
                 s = self.fileobj.read(1)
-                if not s or s==b'\000':
+                if not s or s == b'\000':
                     break
         if flag & FCOMMENT:
             # Read and discard a null-terminated string containing a comment
             while True:
                 s = self.fileobj.read(1)
-                if not s or s==b'\000':
+                if not s or s == b'\000':
                     break
         if flag & FHCRC:
-            self._read_exact(2)     # Read & discard the 16-bit header CRC
+            self._read_exact(2)  # Read & discard the 16-bit header CRC
 
         unused = self.fileobj.unused()
         if unused:
@@ -324,7 +330,7 @@ class GzipFile(io.BufferedIOBase):
             self._add_read_data(uncompress)
         return True
 
-    def write(self,data):
+    def write(self, data):
         self._check_closed()
         if self.mode != WRITE:
             import errno
@@ -340,7 +346,7 @@ class GzipFile(io.BufferedIOBase):
         if len(data) > 0:
             self.size = self.size + len(data)
             self.crc = zlib.crc32(data, self.crc) & 0xffffffff
-            self.fileobj.write( self.compress.compress(data) )
+            self.fileobj.write(self.compress.compress(data))
             self.offset += len(data)
 
         return len(data)
@@ -355,11 +361,11 @@ class GzipFile(io.BufferedIOBase):
             return b''
 
         readsize = 1024
-        if size < 0:        # get the whole thing
+        if size < 0:  # get the whole thing
             while self._read(readsize):
                 readsize = min(self.max_read_chunk, readsize * 2)
             size = self.extrasize
-        else:               # just get some more of it
+        else:  # just get some more of it
             while size > self.extrasize:
                 if not self._read(readsize):
                     if size > self.extrasize:
@@ -446,11 +452,11 @@ class GzipFile(io.BufferedIOBase):
             # seen by _read_eof()
             self.fileobj.prepend(self.decompress.unused_data, True)
             self._read_eof()
-            self._add_read_data( uncompress )
+            self._add_read_data(uncompress)
             return False
 
         uncompress = self.decompress.decompress(buf)
-        self._add_read_data( uncompress )
+        self._add_read_data(uncompress)
 
         if self.decompress.unused_data != b"":
             # Ending case: we've come to the end of a member in the file,
@@ -513,7 +519,7 @@ class GzipFile(io.BufferedIOBase):
             self.myfileobj.close()
             self.myfileobj = None
 
-    def flush(self,zlib_mode=zlib.Z_SYNC_FLUSH):
+    def flush(self, zlib_mode=zlib.Z_SYNC_FLUSH):
         self._check_closed()
         if self.mode == WRITE:
             # Ensure the compressor's buffer is flushed
@@ -600,8 +606,8 @@ class GzipFile(io.BufferedIOBase):
                 i = size - 1
 
             if i >= 0 or c == b'':
-                bufs.append(c[:i + 1])    # Add portion of last chunk
-                self._unread(c[i + 1:])   # Push back rest of chunk
+                bufs.append(c[:i + 1])  # Add portion of last chunk
+                self._unread(c[i + 1:])  # Push back rest of chunk
                 break
 
             # Append chunk to list, decrease 'size',
@@ -610,7 +616,7 @@ class GzipFile(io.BufferedIOBase):
             readsize = min(size, readsize * 2)
         if readsize > self.min_readsize:
             self.min_readsize = min(self.min_readsize * 2, 512)
-        return b''.join(bufs) # Return resulting line
+        return b''.join(bufs)  # Return resulting line
 
 
 def compress(data, compresslevel=9):
@@ -621,6 +627,7 @@ def compress(data, compresslevel=9):
     with GzipFile(fileobj=buf, mode='wb', compresslevel=compresslevel) as f:
         f.write(data)
     return buf.getvalue()
+
 
 def decompress(data):
     """Decompress a gzip compressed string in one shot.
@@ -667,6 +674,7 @@ def _test():
             g.close()
         if f is not sys.stdin.buffer:
             f.close()
+
 
 if __name__ == '__main__':
     _test()

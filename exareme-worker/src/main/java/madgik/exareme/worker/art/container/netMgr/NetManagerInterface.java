@@ -18,8 +18,8 @@ public interface NetManagerInterface extends SessionBased {
     NetSession getGlobalSession(PlanSessionID planSessionID) throws RemoteException;
 
     NetSession getContainerSession(ContainerSessionID containerSessionID,
-        PlanSessionID planSessionID) throws RemoteException;
+                                   PlanSessionID planSessionID) throws RemoteException;
 
     NetSession getOperatorSession(ConcreteOperatorID opID, ContainerSessionID containerSessionID,
-        PlanSessionID planSessionID) throws RemoteException;
+                                  PlanSessionID planSessionID) throws RemoteException;
 }

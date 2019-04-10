@@ -54,7 +54,7 @@ import java.util.*;
 public class RmiAdpDBSelectOptimizer {
     private static final Logger log = Logger.getLogger(RmiAdpDBSelectOptimizer.class);
     private static final boolean filterColumns =
-        AdpDBProperties.getAdpDBProps().getBoolean("db.execution.filterUnusedColumns");
+            AdpDBProperties.getAdpDBProps().getBoolean("db.execution.filterUnusedColumns");
     // TODO(herald): find a better way to do this ... also use topology ...
     //  private final int TREE_REDUCTION_PER_LEVEL = 2;
     private static final int VIRTUAL_CPUS_PER_CONTAINER = 1;
@@ -64,7 +64,7 @@ public class RmiAdpDBSelectOptimizer {
     }
 
     public AdpDBQueryExecutionPlan optimize(InputData input, AdpDBClientProperties props)
-        throws RemoteException {
+            throws RemoteException {
         log.debug("Use sketching: " + OptimizerConstants.USE_SKETCH);
         InputData sketchInput = new InputData();
         log.debug("Creating sketch input ...");
@@ -88,7 +88,7 @@ public class RmiAdpDBSelectOptimizer {
         Check.True(VerifyDAG.isDAG(sketchState.graph), "Graph not DAG!");
         log.debug("Bind operators to location of table: " + sketchState.tableBindings.size());
         FastSubgraphFilter subgraphFilter =
-            new FastSubgraphFilter(sketchState.graph.getNumOfOperators());
+                new FastSubgraphFilter(sketchState.graph.getNumOfOperators());
         for (Pair<ConcreteOperator, Integer> co : sketchState.tableBindings) {
             subgraphFilter.assignOperator(co.a.opID, co.b);
         }
@@ -104,8 +104,8 @@ public class RmiAdpDBSelectOptimizer {
         RmiAdpDBOptimizer.estimateTimeAndData(sketchInput, sketchState, props);
         log.debug("Annotating graph with historical data ...");
         RmiAdpDBOptimizer
-            .annotateWithHistoricalData(sketchState.graph, sketchInput.queryData, sketchState.dbOps,
-                props);
+                .annotateWithHistoricalData(sketchState.graph, sketchInput.queryData, sketchState.dbOps,
+                        props);
         log.debug("Adding local file data ...");
         RmiAdpDBOptimizer.addLocalFileData(sketchState.graph);
         log.debug("Create the solution space ...");
@@ -114,20 +114,20 @@ public class RmiAdpDBSelectOptimizer {
             //          sketchState.graph, subgraphFilter, sketchState.containers, sketchState.contFilter);
         } else {
             sketchState.space = RmiAdpDBSelectScheduler
-                .schedule(sketchState.graph, subgraphFilter, sketchState.containers,
-                    sketchState.contFilter);
+                    .schedule(sketchState.graph, subgraphFilter, sketchState.containers,
+                            sketchState.contFilter);
         }
         log.debug("Creating final graph from sketch ...");
         StateData state = new StateData();
         createFinalGraphFromSketch(sketchInput, input, sketchState, state, props);
         String skyChoice =
-            AdpDBProperties.getAdpDBProps().getString("db.optimizer.scheduler.plan.choice");
+                AdpDBProperties.getAdpDBProps().getString("db.optimizer.scheduler.plan.choice");
         Check.NotNull(skyChoice, "No valid schedule selection method");
         state.result = getSchedule(skyChoice, state.space);
         log.debug("Choosing the schedule to execute: " + skyChoice);
         ConsoleUtils.printStatisticsToLog(
-            skyChoice + " " + state.result.getStatistics().getContainersUsed(), state.graph,
-            RmiAdpDBSelectScheduler.runTimeParams, state.result.getStatistics(), log, Level.DEBUG);
+                skyChoice + " " + state.result.getStatistics().getContainersUsed(), state.graph,
+                RmiAdpDBSelectScheduler.runTimeParams, state.result.getStatistics(), log, Level.DEBUG);
         log.debug("Remove table input gravity operators ...");
         RmiAdpDBOptimizer.removeInputTableGravity(sketchInput, state, props);
         //        for (AdpDBSelectOperator op : state.dbOps) {
@@ -137,7 +137,7 @@ public class RmiAdpDBSelectOptimizer {
     }
 
     private void createSketchInput(InputData input, InputData sketchInput,
-        AdpDBClientProperties props) throws SemanticException {
+                                   AdpDBClientProperties props) throws SemanticException {
         sketchInput.copyFrom(input);
         if (OptimizerConstants.USE_SKETCH == false) {
             return;
@@ -152,16 +152,17 @@ public class RmiAdpDBSelectOptimizer {
                 sketchTable.removePartition(i);
             }
             Check.True(sketchTable.getNumberOfPartitions() <= OptimizerConstants.MAX_TABLE_PARTS,
-                "Sketch not updated correctly!");
+                    "Sketch not updated correctly!");
         }
     }
 
     private void createProxies(InputData input, StateData state, AdpDBClientProperties props)
-        throws RemoteException {
+            throws RemoteException {
         addVirtualContainers(input, state);
         // Sort the proxies based on name
         Arrays.sort(state.proxies, new Comparator<ContainerProxy>() {
-            @Override public int compare(ContainerProxy o1, ContainerProxy o2) {
+            @Override
+            public int compare(ContainerProxy o1, ContainerProxy o2) {
                 return o1.getEntityName().compareTo(o2.getEntityName());
             }
         });
@@ -178,21 +179,21 @@ public class RmiAdpDBSelectOptimizer {
             Check.Equals(state.proxies.length, 1);
             log.debug("Adding virtual containers ...");
             HashMap<String, ContainerProxy> virtualContainers =
-                new HashMap<String, ContainerProxy>();
+                    new HashMap<String, ContainerProxy>();
             for (PhysicalTable pt : input.schema.getPhysicalTables()) {
                 log.debug("Checking " + pt.getName() + " ...");
                 for (int p = 0; p < pt.getNumberOfPartitions(); ++p) {
                     Partition part = pt.getPartition(p);
                     for (String location : part.getLocations()) {
                         if (virtualContainers.containsKey(location) || state.proxies[0].
-                            getEntityName().getName().startsWith(location)) {
+                                getEntityName().getName().startsWith(location)) {
                             continue;
                         }
                         for (int cpu = 0; cpu < VIRTUAL_CPUS_PER_CONTAINER; ++cpu) {
                             ContainerLocator.getLocalContainer().connect().createProxy();
                             ContainerProxy vProxy = new RmiContainerProxy(NetUtil.getIPv4(),
-                                location + "_container_" + cpu,
-                                ArtRegistryLocator.getLocalRmiRegistryEntityName());
+                                    location + "_container_" + cpu,
+                                    ArtRegistryLocator.getLocalRmiRegistryEntityName());
                             ArtRegistryLocator.getArtRegistryProxy().registerContainer(vProxy);
                             virtualContainers.put(location, vProxy);
                         }
@@ -207,15 +208,15 @@ public class RmiAdpDBSelectOptimizer {
     }
 
     private void createContainerFilter(InputData input, StateData state,
-        AdpDBClientProperties props) {
+                                       AdpDBClientProperties props) {
         if (input.maxNumCont < 0) {
             log.debug("No container filter used!");
             state.contFilter = NoContainerFilter.getInstance();
         } else {
             log.debug("Creating container filter "
-                + "(Greedy algorithm that select those with most tables) ...");
+                    + "(Greedy algorithm that select those with most tables) ...");
             ArrayList<Pair<Integer, Integer>> contTablesCntPairs =
-                new ArrayList<Pair<Integer, Integer>>();
+                    new ArrayList<Pair<Integer, Integer>>();
             for (int i = 0; i < state.proxies.length; ++i) {
                 contTablesCntPairs.add(new Pair<Integer, Integer>(i, 0));
             }
@@ -231,14 +232,14 @@ public class RmiAdpDBSelectOptimizer {
             FastContainerFilter fastCFilter = (FastContainerFilter) state.contFilter;
             for (int i = 0; i < input.maxNumCont; ++i) {
                 log.debug("Selected container " + contTablesCntPairs.get(i).a + " with "
-                    + contTablesCntPairs.get(i).b + " table partitions.");
+                        + contTablesCntPairs.get(i).b + " table partitions.");
                 fastCFilter.useContainer(contTablesCntPairs.get(i).a);
             }
         }
     }
 
     private SchedulingResult getSchedule(String scheduleChoice, SolutionSpace space)
-        throws RemoteException {
+            throws RemoteException {
         SchedulingResult sch = null;
         if (scheduleChoice.equals("fast")) {
             sch = space.getFastestPlan();
@@ -257,7 +258,7 @@ public class RmiAdpDBSelectOptimizer {
     }
 
     protected void createQueryGraph(InputData inData, StateData state, AdpDBClientProperties props)
-        throws RemoteException {
+            throws RemoteException {
         if (props.isTreeEnabled()) {
             log.debug("Creating tree schedule ...");
             processLeafQuery(inData.script.getTreeLeafQuery(), inData, state);
@@ -274,7 +275,7 @@ public class RmiAdpDBSelectOptimizer {
     }
 
     private void processQuery(Select query, InputData input, StateData state)
-        throws RemoteException {
+            throws RemoteException {
         ProcessQueryState queryState = new ProcessQueryState();
         prepareInput(query, queryState, input, state);
         applyInputPattern(query, queryState, input, state);
@@ -282,27 +283,27 @@ public class RmiAdpDBSelectOptimizer {
     }
 
     private void processLeafQuery(Select query, InputData input, StateData state)
-        throws RemoteException {
+            throws RemoteException {
         // Direct is mandatory here!
         // TODO(herald): this might be OK with cartesian as well.
         Check.True(query.getParsedSqlQuery().getInputDataPattern() == DataPattern.direct_product,
-            "The leaf pattern should be direct product");
+                "The leaf pattern should be direct product");
         processQuery(query, input, state);
     }
 
     private void processInternalQuery(Select query, InputData input, StateData state)
-        throws RemoteException {
+            throws RemoteException {
         // This might have more than one levels! For noe assume is only 1.
         processQuery(query, input, state);
     }
 
     private void processRootQuery(Select query, InputData input, StateData state)
-        throws RemoteException {
+            throws RemoteException {
         processQuery(query, input, state);
     }
 
     private void createDataTransferQueries(Select transferQ, TableView inTableView,
-        PhysicalTable pTable) throws RemoteException {
+                                           PhysicalTable pTable) throws RemoteException {
         if (filterColumns) {
             // Transfer only the used columns!
             StringBuilder queryString = new StringBuilder();
@@ -328,7 +329,7 @@ public class RmiAdpDBSelectOptimizer {
     }
 
     private void bindTablePartition(PhysicalTable pTable, int p, ConcreteOperator reader,
-        InputData input, StateData state) throws RemoteException {
+                                    InputData input, StateData state) throws RemoteException {
         BitSet contFilter = new BitSet(state.proxies.length);
         SchemaUtil.getLocationsOfPartitions(state.proxies, pTable, p, contFilter);
         int[] locations = new int[contFilter.cardinality()];
@@ -347,7 +348,7 @@ public class RmiAdpDBSelectOptimizer {
                 continue;
             }
             if (state.containerTablePartCounts[minContainer]
-                > state.containerTablePartCounts[loc]) {
+                    > state.containerTablePartCounts[loc]) {
                 minContainer = loc;
             }
         }
@@ -356,7 +357,7 @@ public class RmiAdpDBSelectOptimizer {
     }
 
     private void prepareInput(Select query, ProcessQueryState queryState, InputData input,
-        StateData state) throws RemoteException {
+                              StateData state) throws RemoteException {
         DataPattern inputPattern = query.getParsedSqlQuery().getInputDataPattern();
         TableView outTableView = query.getOutputTable();
         log.debug("Creating query " + outTableView.getName());
@@ -372,7 +373,7 @@ public class RmiAdpDBSelectOptimizer {
                 pTable = input.script.getTable(inTableView.getName());
                 intermediateTable = true;
                 Check.True(pTable.getTable().getLevel() >= 0,
-                    "Intermediate table level not set: " + pTable.getName());
+                        "Intermediate table level not set: " + pTable.getName());
             } else {
                 // Input tables have level 0.
                 pTable.getTable().setLevel(0);
@@ -399,13 +400,13 @@ public class RmiAdpDBSelectOptimizer {
                         }
                     }
                     ConcreteOperator reader = ConcreteGraphFactory
-                        .createTableReader(pTable.getName() + "_" + p + "_" + inputCount);
+                            .createTableReader(pTable.getName() + "_" + p + "_" + inputCount);
                     state.graph.addOperator(reader);
                     outputs[p] = reader;
                     Select transferQ = SerializationUtil.deepCopy(query);
                     createDataTransferQueries(transferQ, inTableView, pTable);
                     AdpDBSelectOperator dbOp =
-                        new AdpDBSelectOperator(AdpDBOperatorType.tableInput, transferQ, p);
+                            new AdpDBSelectOperator(AdpDBOperatorType.tableInput, transferQ, p);
                     log.debug("--DEBUG : " + reader.opID + " / " + reader.operatorName);
                     ListUtil.setItem(state.dbOps, reader.opID, dbOp);
                     dbOp.addOutput(pTable.getName(), p);
@@ -418,17 +419,17 @@ public class RmiAdpDBSelectOptimizer {
             }
             if (inTableView.getPattern() != inputPattern) {
                 throw new SemanticException(
-                    "All the patterns of the input must be the same: " + inTableView.getPattern()
-                        + " != " + inputPattern);
+                        "All the patterns of the input must be the same: " + inTableView.getPattern()
+                                + " != " + inputPattern);
             }
         }
     }
 
     private void applyInputPattern(
-        Select query,
-        ProcessQueryState queryState,
-        InputData input,
-        StateData state) throws RemoteException {
+            Select query,
+            ProcessQueryState queryState,
+            InputData input,
+            StateData state) throws RemoteException {
 
         TableView outTableView = query.getOutputTable();
         List<Integer> runOnParts = query.getRunOnParts();
@@ -455,7 +456,7 @@ public class RmiAdpDBSelectOptimizer {
                     } else {
                         if (numOfPartitions != producers.length) {
                             throw new SemanticException(
-                                "Direct format exception: " + query.toString());
+                                    "Direct format exception: " + query.toString());
                         }
                     }
                 }
@@ -465,7 +466,7 @@ public class RmiAdpDBSelectOptimizer {
             case tree: {
                 // This works only with one input table
                 Check.True(query.getInputTables().size() == 1,
-                    "Only one input table can be used with tree reduction");
+                        "Only one input table can be used with tree reduction");
                 TableView inTableView = query.getInputTables().get(0);
                 ConcreteOperator[] producers = state.tableProducers.get(inTableView.getName());
                 inputs.add(producers);
@@ -514,18 +515,18 @@ public class RmiAdpDBSelectOptimizer {
                         if (found < 0) {
                             queryState.outputs[oPart] = null;
                             log.debug("Part of table '" + outTableView.getName() + "' not used: "
-                                + oPart);
+                                    + oPart);
                             continue;
                         }
                     }
                     log.trace("Adding operator: " + outTableView.getName() + "_" + oPart);
                     ConcreteOperator runQuery =
-                        ConcreteGraphFactory.createRunQuery(outTableView.getName() + "_" + oPart);
+                            ConcreteGraphFactory.createRunQuery(outTableView.getName() + "_" + oPart);
                     state.graph.addOperator(runQuery);
                     queryState.outputTable
-                        .addPartition(new Partition(queryState.outputTable.getName(), oPart));
+                            .addPartition(new Partition(queryState.outputTable.getName(), oPart));
                     AdpDBSelectOperator dbOp =
-                        new AdpDBSelectOperator(AdpDBOperatorType.runQuery, query, oPart);
+                            new AdpDBSelectOperator(AdpDBOperatorType.runQuery, query, oPart);
                     ListUtil.setItem(state.dbOps, runQuery.opID, dbOp);
                     dbOp.addOutput(queryState.outputTable.getName(), oPart);
                     if (inputPattern == DataPattern.external) {
@@ -543,46 +544,46 @@ public class RmiAdpDBSelectOptimizer {
                         Check.NotNull(localHost, "Localhost not found: " + localIP);
                         log.debug("Localhost container is: " + localHost.getEntityName().getName());
                         state.tableBindings
-                            .add(new Pair<ConcreteOperator, Integer>(runQuery, localContainer));
+                                .add(new Pair<ConcreteOperator, Integer>(runQuery, localContainer));
                         state.containerTablePartCounts[localContainer]++;
                     }
                     if (inputPattern == DataPattern.remote) {
                         log.debug("Bind virtual operators in simple round robin fashion.");
-                        if ( containerCounter >= state.proxies.length){
+                        if (containerCounter >= state.proxies.length) {
                             containerCounter = 0;
                         }
                         ContainerProxy containerProxy = state.proxies[containerCounter];
                         Check.NotNull(
-                            containerProxy,
-                            "proxy not found: " + containerProxy.getEntityName().getIP());
+                                containerProxy,
+                                "proxy not found: " + containerProxy.getEntityName().getIP());
                         log.debug("proxy container is: "
-                            + containerProxy.getEntityName().getName());
+                                + containerProxy.getEntityName().getName());
                         state.tableBindings
-                            .add(new Pair<ConcreteOperator, Integer>(runQuery, containerCounter));
+                                .add(new Pair<ConcreteOperator, Integer>(runQuery, containerCounter));
                         state.containerTablePartCounts[containerCounter]++;
                         containerCounter++;
                     }
                     if (inputPattern == DataPattern.virtual) {
                         log.debug("Bind virtual operators to all machines.");
                         state.tableBindings
-                            .add(new Pair<ConcreteOperator, Integer>(runQuery, oPart));
+                                .add(new Pair<ConcreteOperator, Integer>(runQuery, oPart));
                         state.containerTablePartCounts[oPart]++;
                     }
                     // Filter only the specified partitions
                     for (int i = 0; i < inputs.size(); ++i) {
                         ConcreteOperator fromOp =
-                            inputs.get(i)[(inputs.get(i).length == 1) ? 0 : oPart];
+                                inputs.get(i)[(inputs.get(i).length == 1) ? 0 : oPart];
                         if (fromOp == null) {
                             continue;
                         }
                         Link link =
-                            ConcreteGraphFactory.createLink(oPart + "." + i, fromOp, runQuery);
+                                ConcreteGraphFactory.createLink(oPart + "." + i, fromOp, runQuery);
                         state.graph.addLink(link);
                         // Add all the outputs of from
                         AdpDBSelectOperator fromDbOp = state.dbOps.get(fromOp.opID);
                         if (dbOp.addToInputsAllOutputsOf(fromDbOp) != 1) {
                             throw new SemanticException(
-                                "The input of a db operator from another operator must be one!");
+                                    "The input of a db operator from another operator must be one!");
                         }
                     }
                     queryState.outputs[oPart] = runQuery;
@@ -602,18 +603,18 @@ public class RmiAdpDBSelectOptimizer {
                         if (found < 0) {
                             queryState.outputs[oPart] = null;
                             log.debug("Part of table '" + outTableView.getName() + "' not used: "
-                                + oPart);
+                                    + oPart);
                             oPart++;
                             continue;
                         }
                     }
                     ConcreteOperator runQuery =
-                        ConcreteGraphFactory.createRunQuery(outTableView.getName() + "_" + oPart);
+                            ConcreteGraphFactory.createRunQuery(outTableView.getName() + "_" + oPart);
                     state.graph.addOperator(runQuery);
                     queryState.outputTable
-                        .addPartition(new Partition(queryState.outputTable.getName(), oPart));
+                            .addPartition(new Partition(queryState.outputTable.getName(), oPart));
                     AdpDBSelectOperator dbOp =
-                        new AdpDBSelectOperator(AdpDBOperatorType.runQuery, query, oPart);
+                            new AdpDBSelectOperator(AdpDBOperatorType.runQuery, query, oPart);
                     ListUtil.setItem(state.dbOps, runQuery.opID, dbOp);
                     dbOp.addOutput(queryState.outputTable.getName(), oPart);
 
@@ -624,13 +625,13 @@ public class RmiAdpDBSelectOptimizer {
                             continue;
                         }
                         Link link =
-                            ConcreteGraphFactory.createLink(oPart + "." + i, fromOp, runQuery);
+                                ConcreteGraphFactory.createLink(oPart + "." + i, fromOp, runQuery);
                         state.graph.addLink(link);
                         // Add all the outputs of from
                         AdpDBSelectOperator fromDbOp = state.dbOps.get(fromOp.opID);
                         if (dbOp.addToInputsAllOutputsOf(fromDbOp) != 1) {
                             throw new SemanticException(
-                                "The input of a db operator from another operator must be one!");
+                                    "The input of a db operator from another operator must be one!");
                         }
                     }
                     queryState.outputs[oPart] = runQuery;
@@ -640,19 +641,19 @@ public class RmiAdpDBSelectOptimizer {
             }
             case tree: {
                 Check.True(runOnParts.isEmpty(),
-                    "Tree reduction cannot be combined with partition selection!");
+                        "Tree reduction cannot be combined with partition selection!");
                 Check.True(inputs.size() == 1, "Tree reduction is compatible with one input only!");
                 // Compute tree redution
                 int treeReduction = TreeUtils.getReductionPerLevel(inputs.get(0).length, 3);
                 for (int oPart = 0; oPart < outputPartitions; ++oPart) {
                     log.trace("Adding operator: " + outTableView.getName() + "_" + oPart);
                     ConcreteOperator runQuery =
-                        ConcreteGraphFactory.createRunQuery(outTableView.getName() + "_" + oPart);
+                            ConcreteGraphFactory.createRunQuery(outTableView.getName() + "_" + oPart);
                     state.graph.addOperator(runQuery);
                     queryState.outputTable
-                        .addPartition(new Partition(queryState.outputTable.getName(), oPart));
+                            .addPartition(new Partition(queryState.outputTable.getName(), oPart));
                     AdpDBSelectOperator dbOp =
-                        new AdpDBSelectOperator(AdpDBOperatorType.runQuery, query, oPart);
+                            new AdpDBSelectOperator(AdpDBOperatorType.runQuery, query, oPart);
                     ListUtil.setItem(state.dbOps, runQuery.opID, dbOp);
                     dbOp.addOutput(queryState.outputTable.getName(), oPart);
 
@@ -667,13 +668,13 @@ public class RmiAdpDBSelectOptimizer {
                             continue;
                         }
                         Link link =
-                            ConcreteGraphFactory.createLink(oPart + "." + i, fromOp, runQuery);
+                                ConcreteGraphFactory.createLink(oPart + "." + i, fromOp, runQuery);
                         state.graph.addLink(link);
                         // Add all the outputs of from
                         AdpDBSelectOperator fromDbOp = state.dbOps.get(fromOp.opID);
                         if (dbOp.addToInputsAllOutputsOf(fromDbOp) != 1) {
                             throw new SemanticException(
-                                "The input of a db operator from another operator must be one!");
+                                    "The input of a db operator from another operator must be one!");
                         }
                     }
                     queryState.outputs[oPart] = runQuery;
@@ -684,10 +685,10 @@ public class RmiAdpDBSelectOptimizer {
     }
 
     private void applyOutputPattern(
-        Select query,
-        ProcessQueryState queryState,
-        InputData input,
-        StateData state) throws RemoteException {
+            Select query,
+            ProcessQueryState queryState,
+            InputData input,
+            StateData state) throws RemoteException {
 
         TableView outTableView = query.getOutputTable();
         DataPattern outputPattern = query.getParsedSqlQuery().getOutputDataPattern();
@@ -714,8 +715,8 @@ public class RmiAdpDBSelectOptimizer {
                 if (numOfOutPartitions != 1) {
                     if (outTableView.getPatternColumnNames().isEmpty()) {
                         throw new SemanticException(
-                            "Output pattern 'many' with more than one outputs, "
-                                + "must specify at least one column.");
+                                "Output pattern 'many' with more than one outputs, "
+                                        + "must specify at least one column.");
                     }
                 }
                 break;
@@ -746,7 +747,7 @@ public class RmiAdpDBSelectOptimizer {
         ConcreteOperator[] postOutputs = new ConcreteOperator[numOfOutPartitions];
         for (int oPart = 0; oPart < numOfOutPartitions; ++oPart) {
             ConcreteOperator gatherData = ConcreteGraphFactory
-                .createTableTransferReplicator(outTableView.getName() + "_P_" + oPart);
+                    .createTableTransferReplicator(outTableView.getName() + "_P_" + oPart);
             state.graph.addOperator(gatherData);
             postOutputTable.addPartition(new Partition(queryState.outputTable.getName(), oPart));
 
@@ -755,7 +756,7 @@ public class RmiAdpDBSelectOptimizer {
             unionQ.getOutputTable().setNumOfPartitions(1);
 
             AdpDBSelectOperator dbOp =
-                new AdpDBSelectOperator(AdpDBOperatorType.tableUnionReplicator, unionQ, oPart);
+                    new AdpDBSelectOperator(AdpDBOperatorType.tableUnionReplicator, unionQ, oPart);
 
             ListUtil.setItem(state.dbOps, gatherData.opID, dbOp);
             dbOp.addOutput(queryState.outputTable.getName(), oPart);
@@ -806,15 +807,15 @@ public class RmiAdpDBSelectOptimizer {
                 ConcreteOperator co = resultTableOps[p];
                 state.tableBindings.add(new Pair<ConcreteOperator, Integer>(co, container));
                 resultTable.getPartition(p)
-                    .addLocation(state.proxies[container].getEntityName().getIP());
+                        .addLocation(state.proxies[container].getEntityName().getIP());
                 container = (container + 1) % state.proxies.length;
             }
         }
     }
 
     private void createFinalGraphFromSketch(InputData sketchInput, InputData input,
-        StateData sketchState, StateData state, AdpDBClientProperties props)
-        throws RemoteException {
+                                            StateData sketchState, StateData state, AdpDBClientProperties props)
+            throws RemoteException {
         // The work is alrady done if sketching is not used!
         if (OptimizerConstants.USE_SKETCH == false) {
             input.copyFrom(sketchInput);
@@ -831,7 +832,7 @@ public class RmiAdpDBSelectOptimizer {
         log.debug("Checking if the graph is DAG ...");
         Check.True(VerifyDAG.isDAG(state.graph), "The graph is not a DAG");
         log.debug("Bind " + state.tableBindings.size() +
-            " operators to the location of tables ... ");
+                " operators to the location of tables ... ");
         FastSubgraphFilter subgraphFilter = new FastSubgraphFilter(state.graph.getNumOfOperators());
         for (Pair<ConcreteOperator, Integer> co : state.tableBindings) {
             subgraphFilter.assignOperator(co.a.opID, co.b);
@@ -848,7 +849,7 @@ public class RmiAdpDBSelectOptimizer {
         RmiAdpDBOptimizer.estimateTimeAndData(input, state, props);
         log.debug("Annotating graph with historical data ...");
         RmiAdpDBOptimizer
-            .annotateWithHistoricalData(state.graph, input.queryData, state.dbOps, props);
+                .annotateWithHistoricalData(state.graph, input.queryData, state.dbOps, props);
         log.debug("Adding local file data ...");
         RmiAdpDBOptimizer.addLocalFileData(state.graph);
         state.space = sketchState.space;

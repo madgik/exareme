@@ -7,7 +7,7 @@ import madgik.exareme.common.optimizer.RunTimeParameters;
 
 /**
  * @author Konstantinos Tsakalozos <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class TCPSupplier extends Supplier {
@@ -25,7 +25,8 @@ public class TCPSupplier extends Supplier {
         super(runTime, fin);
     }
 
-    @Override protected long getSuggestedContainersFromRevenue(double MR) {
+    @Override
+    protected long getSuggestedContainersFromRevenue(double MR) {
         window_size = cur_vms;
         //Decide on slow start or congestion avoidance
         if (MR > MC) {

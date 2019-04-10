@@ -18,7 +18,7 @@ import java.util.logging.Level;
 /**
  * @author John Chronis <br>
  * @author Vaggelis Nikolopoulos <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class RestDataTransferGateway implements DataTransferGateway {
@@ -48,7 +48,8 @@ public class RestDataTransferGateway implements DataTransferGateway {
         this.artManager = manager;
     }
 
-    @Override public void start() throws RemoteException {
+    @Override
+    public void start() throws RemoteException {
         try {
             log.debug("Starting server ...");
             threadPool = Executors.newFixedThreadPool(threads);
@@ -62,7 +63,8 @@ public class RestDataTransferGateway implements DataTransferGateway {
         }
     }
 
-    @Override public void stop() {
+    @Override
+    public void stop() {
 
         mainThread.stopAcceptingConnections();
         mainThread.interrupt();
@@ -85,7 +87,7 @@ public class RestDataTransferGateway implements DataTransferGateway {
                 mainThread.close();
             } catch (IOException ex) {
                 java.util.logging.Logger.getLogger(RestDataTransferGateway.class.getName())
-                    .log(Level.SEVERE, null, ex);
+                        .log(Level.SEVERE, null, ex);
             }
         }
 

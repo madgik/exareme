@@ -16,8 +16,8 @@ import org.apache.log4j.Logger;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class ExecutionEngineProcessTestTutorial {
@@ -48,10 +48,10 @@ public class ExecutionEngineProcessTestTutorial {
         //                "connect c(hello, hello_out);\n";
 
         planString += "container c ('" + container.getEntityName().getName() + "',1099);\n"
-            + "instantiate hello c('madgik.exareme.db.operatorLibrary.test.HelloWorld2');\n"
-            + "instantiate print c('madgik.exareme.db.operatorLibrary.test.Print');\n"
-            + "create hello_out c('10');\n" + "connect c(hello, hello_out);\n"
-            + "connect c(hello_out, print);\n";
+                + "instantiate hello c('madgik.exareme.db.operatorLibrary.test.HelloWorld2');\n"
+                + "instantiate print c('madgik.exareme.db.operatorLibrary.test.Print');\n"
+                + "create hello_out c('10');\n" + "connect c(hello, hello_out);\n"
+                + "connect c(hello_out, print);\n";
 
         long start = System.currentTimeMillis();
 
@@ -75,7 +75,7 @@ public class ExecutionEngineProcessTestTutorial {
         Thread.sleep(1000);
         //    log.debug("Waiting to finish!");
         while (sessionPlan.getPlanSessionStatusManagerProxy().hasFinished() == false || sessionPlan
-            .getPlanSessionStatusManagerProxy().hasError()) {
+                .getPlanSessionStatusManagerProxy().hasError()) {
             Thread.sleep(100);
         }
         //     log.debug("Finished!");

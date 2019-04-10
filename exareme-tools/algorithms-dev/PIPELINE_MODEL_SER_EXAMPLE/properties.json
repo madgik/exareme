@@ -1,8 +1,0 @@
-{
-  "name" : "PIPELINE_MODEL_SER_EXAMPLE",
-  "desc" : "PIPELINE_MODEL_SER_EXAMPLE",
-  "type" : "pipeline",
-  "status" : "disabled",
-  "vtype" : "none",
-  "parameters" : [ {"name" : "variables", "desc" : "", "value" : "apoe4,av45,3rdventricle"}]
-}

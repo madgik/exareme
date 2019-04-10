@@ -40,7 +40,7 @@ import java.util.logging.Level;
 
 /**
  * @author Christos Mallios <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  */
 public final class AsynchronousRemoteQuery implements RemoteQuery, RemoteQueryInternal {
 
@@ -59,7 +59,7 @@ public final class AsynchronousRemoteQuery implements RemoteQuery, RemoteQueryIn
     //Indexes' declaration
     private final HashSet<ServerInfo> serverUsage;
     private final HashMap<ServerInfo, LinkedList<Triple<String, File, ProcessManager>>>
-        serversOnDemand;
+            serversOnDemand;
     private final HashMap<String, LinkedList<RemoteQueryListener>> listenersPerQuery;
     private final HashMap<String, String> DBNameDemands;
 
@@ -67,7 +67,8 @@ public final class AsynchronousRemoteQuery implements RemoteQuery, RemoteQueryIn
     private static final Logger log = Logger.getLogger(AsynchronousRemoteQuery.class);
     private final Object lock = new Object();
 
-    @Override public void printData() {
+    @Override
+    public void printData() {
         synchronized (lock) {
             System.out.println("cache hit " + cacheHit);
             System.out.println("cache miss " + cacheMiss);
@@ -75,7 +76,7 @@ public final class AsynchronousRemoteQuery implements RemoteQuery, RemoteQueryIn
     }
 
     public AsynchronousRemoteQuery(File metadataPath, File storagePath, File cachePath)
-        throws Exception {
+            throws Exception {
 
         serverUsage = new HashSet<>();
         serversOnDemand = new HashMap<>();
@@ -108,7 +109,7 @@ public final class AsynchronousRemoteQuery implements RemoteQuery, RemoteQueryIn
     }
 
     public AsynchronousRemoteQuery(File metadataPath, File storagePath, File cachePath,
-        CacheAlgorithm algorithm) throws Exception {
+                                   CacheAlgorithm algorithm) throws Exception {
 
         serverUsage = new HashSet<>();
         serversOnDemand = new HashMap<>();
@@ -141,7 +142,7 @@ public final class AsynchronousRemoteQuery implements RemoteQuery, RemoteQueryIn
                     cache = new UnlimitedCache(cacheDir, metadata);
                 } catch (Exception ex) {
                     java.util.logging.Logger.getLogger(AsynchronousRemoteQuery.class.getName())
-                        .log(Level.SEVERE, null, ex);
+                            .log(Level.SEVERE, null, ex);
                 }
                 break;
             case lru:
@@ -149,7 +150,7 @@ public final class AsynchronousRemoteQuery implements RemoteQuery, RemoteQueryIn
                     cache = new LRUCache(cacheDir, 100000, metadata);
                 } catch (Exception ex) {
                     java.util.logging.Logger.getLogger(AsynchronousRemoteQuery.class.getName())
-                        .log(Level.SEVERE, null, ex);
+                            .log(Level.SEVERE, null, ex);
                 }
                 break;
             case federated:
@@ -157,7 +158,7 @@ public final class AsynchronousRemoteQuery implements RemoteQuery, RemoteQueryIn
                     cache = new FederatedCache((cacheDir), 100000, metadata);
                 } catch (Exception ex) {
                     java.util.logging.Logger.getLogger(AsynchronousRemoteQuery.class.getName())
-                        .log(Level.SEVERE, null, ex);
+                            .log(Level.SEVERE, null, ex);
                 }
                 break;
             default:
@@ -169,7 +170,7 @@ public final class AsynchronousRemoteQuery implements RemoteQuery, RemoteQueryIn
     }
 
     public AsynchronousRemoteQuery(File metadataPath, File storagePath, File cachePath,
-        CacheAlgorithm algorithm, int storageSize) throws Exception {
+                                   CacheAlgorithm algorithm, int storageSize) throws Exception {
 
         serverUsage = new HashSet<>();
         serversOnDemand = new HashMap<>();
@@ -202,7 +203,7 @@ public final class AsynchronousRemoteQuery implements RemoteQuery, RemoteQueryIn
                     cache = new UnlimitedCache(cacheDir, metadata);
                 } catch (Exception ex) {
                     java.util.logging.Logger.getLogger(AsynchronousRemoteQuery.class.getName())
-                        .log(Level.SEVERE, null, ex);
+                            .log(Level.SEVERE, null, ex);
                 }
                 break;
             case lru:
@@ -210,7 +211,7 @@ public final class AsynchronousRemoteQuery implements RemoteQuery, RemoteQueryIn
                     cache = new LRUCache(cacheDir, 100000, metadata);
                 } catch (Exception ex) {
                     java.util.logging.Logger.getLogger(AsynchronousRemoteQuery.class.getName())
-                        .log(Level.SEVERE, null, ex);
+                            .log(Level.SEVERE, null, ex);
                 }
                 break;
             case federated:
@@ -218,7 +219,7 @@ public final class AsynchronousRemoteQuery implements RemoteQuery, RemoteQueryIn
                     cache = new FederatedCache((cacheDir), 100000, metadata);
                 } catch (Exception ex) {
                     java.util.logging.Logger.getLogger(AsynchronousRemoteQuery.class.getName())
-                        .log(Level.SEVERE, null, ex);
+                            .log(Level.SEVERE, null, ex);
                 }
                 break;
             default:
@@ -229,7 +230,8 @@ public final class AsynchronousRemoteQuery implements RemoteQuery, RemoteQueryIn
         boot(bootstrap);
     }
 
-    @Override public void setReplacementAlgorithm(CacheAlgorithm algorithm, int storageSize) {
+    @Override
+    public void setReplacementAlgorithm(CacheAlgorithm algorithm, int storageSize) {
 
         switch (algorithm) {
 
@@ -238,7 +240,7 @@ public final class AsynchronousRemoteQuery implements RemoteQuery, RemoteQueryIn
                     cache = new UnlimitedCache(cacheDir, metadata);
                 } catch (Exception ex) {
                     java.util.logging.Logger.getLogger(AsynchronousRemoteQuery.class.getName())
-                        .log(Level.SEVERE, null, ex);
+                            .log(Level.SEVERE, null, ex);
                 }
                 break;
             case lru:
@@ -246,7 +248,7 @@ public final class AsynchronousRemoteQuery implements RemoteQuery, RemoteQueryIn
                     cache = new LRUCache(cacheDir, storageSize, metadata);
                 } catch (Exception ex) {
                     java.util.logging.Logger.getLogger(AsynchronousRemoteQuery.class.getName())
-                        .log(Level.SEVERE, null, ex);
+                            .log(Level.SEVERE, null, ex);
                 }
                 break;
             case federated:
@@ -254,7 +256,7 @@ public final class AsynchronousRemoteQuery implements RemoteQuery, RemoteQueryIn
                     cache = new FederatedCache((cacheDir), storageSize, metadata);
                 } catch (Exception ex) {
                     java.util.logging.Logger.getLogger(AsynchronousRemoteQuery.class.getName())
-                        .log(Level.SEVERE, null, ex);
+                            .log(Level.SEVERE, null, ex);
                 }
                 break;
             default:
@@ -266,14 +268,15 @@ public final class AsynchronousRemoteQuery implements RemoteQuery, RemoteQueryIn
     /*
      * Function which makes a query request
      */
-    @Override public void schedule(ServerInfo server, String query, RemoteQueryListener listener,
-        ProcessManager procManager, String DBName) throws RemoteException, IOException {
+    @Override
+    public void schedule(ServerInfo server, String query, RemoteQueryListener listener,
+                         ProcessManager procManager, String DBName) throws RemoteException, IOException {
 
         try {
             scheduleQuery(server, query, listener, procManager, DBName, null);
         } catch (ParseException | SQLException | InterruptedException ex) {
             java.util.logging.Logger.getLogger(AsynchronousRemoteQuery.class.
-                getName()).log(Level.SEVERE, null, ex);
+                    getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -281,15 +284,16 @@ public final class AsynchronousRemoteQuery implements RemoteQuery, RemoteQueryIn
      * Function which makes a query request along with a stale limit
      * which is measured in hours
      */
-    @Override public void schedule(ServerInfo server, String query, RemoteQueryListener listener,
-        ProcessManager procManager, String DBName, double staleLimit)
-        throws RemoteException, IOException {
+    @Override
+    public void schedule(ServerInfo server, String query, RemoteQueryListener listener,
+                         ProcessManager procManager, String DBName, double staleLimit)
+            throws RemoteException, IOException {
 
         try {
             scheduleQuery(server, query, listener, procManager, DBName, staleLimit);
         } catch (ParseException | SQLException | InterruptedException ex) {
             java.util.logging.Logger.getLogger(AsynchronousRemoteQuery.class.
-                getName()).log(Level.SEVERE, null, ex);
+                    getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -297,26 +301,28 @@ public final class AsynchronousRemoteQuery implements RemoteQuery, RemoteQueryIn
      * Function which is called by the listener and informs RQI that it
      * no longer needs the results of the query
      */
-    @Override public void finished(String query, CachedDataInfo cacheInfo) throws RemoteException {
+    @Override
+    public void finished(String query, CachedDataInfo cacheInfo) throws RemoteException {
 
         synchronized (lock) {
 
             query = QueryParser.parsing(query);
 
-      /*System.out.println("Paw gia finish!!!");*/
+            /*System.out.println("Paw gia finish!!!");*/
             cache.unpinQueryResults(query, cacheInfo);
             if (!cache.isPinned(query, cacheInfo)) {
-        /*System.out.println("Eina unpin to " + query);*/
+                /*System.out.println("Eina unpin to " + query);*/
                 if (!inOperation && serverUsage.isEmpty() && cache.isEmpty()) {
                     shutDown();
                 }
             } else {
-        /*System.out.println("Pleon einai pinned");*/
+                /*System.out.println("Pleon einai pinned");*/
             }
         }
     }
 
-    @Override public void close() {
+    @Override
+    public void close() {
         inOperation = false;
     }
 
@@ -324,8 +330,8 @@ public final class AsynchronousRemoteQuery implements RemoteQuery, RemoteQueryIn
      * Function which saves the result of a query
      */
     public void scheduleQuery(ServerInfo server, String query, RemoteQueryListener listener,
-        ProcessManager processManager, String DBName, Double staleLimit)
-        throws RemoteException, ParseException, SQLException, IOException, InterruptedException {
+                              ProcessManager processManager, String DBName, Double staleLimit)
+            throws RemoteException, ParseException, SQLException, IOException, InterruptedException {
 
         //    log.debug("This is the start of the schedule");
         String madisMainDB = null, outputTable = null;
@@ -352,7 +358,7 @@ public final class AsynchronousRemoteQuery implements RemoteQuery, RemoteQueryIn
             if (locationOfCachedResults != null) {
                 inCache = true;
                 if (staleLimit == null
-                    || Date.getDifferenceInSec(locationOfCachedResults.storageTime) < staleLimit) {
+                        || Date.getDifferenceInSec(locationOfCachedResults.storageTime) < staleLimit) {
                     readFromCache = true;
                 }
             }
@@ -361,12 +367,12 @@ public final class AsynchronousRemoteQuery implements RemoteQuery, RemoteQueryIn
             if (readFromCache) {
 
                 String command = "ln -s " + locationOfCachedResults.cacheInfo.directory + "/"
-                    + locationOfCachedResults.database + " " + storageDirectory + "/" + DBName;
+                        + locationOfCachedResults.database + " " + storageDirectory + "/" + DBName;
 
                 if (!DBName.equals(locationOfCachedResults.database)) {
                     queryExecutor = new QueryExecutionImplementation(this);
                     queryExecutor.executeQuery(new File(cache.getInfo().directory),
-                        locationOfCachedResults.database, DBName, processManager);
+                            locationOfCachedResults.database, DBName, processManager);
                 }
 
                 System.out.println("command " + command);
@@ -380,13 +386,13 @@ public final class AsynchronousRemoteQuery implements RemoteQuery, RemoteQueryIn
                 //                + locationOfCachedResults.cacheInfo.directory
                 //                + "/" + locationOfCachedResults.database
                 //                + " at the table " + locationOfCachedResults.table);
-        /*System.out.println("read from cache");*/
+                /*System.out.println("read from cache");*/
 
                 System.out.println(
-                    "The results of the query " + query + " are already " + "cached in the file "
-                        + locationOfCachedResults.cacheInfo.directory + "/"
-                        + locationOfCachedResults.database + " at the table "
-                        + locationOfCachedResults.table);
+                        "The results of the query " + query + " are already " + "cached in the file "
+                                + locationOfCachedResults.cacheInfo.directory + "/"
+                                + locationOfCachedResults.database + " at the table "
+                                + locationOfCachedResults.table);
                 cache.updateCache(query);
 
                 listener.finished(locationOfCachedResults, null);
@@ -401,7 +407,7 @@ public final class AsynchronousRemoteQuery implements RemoteQuery, RemoteQueryIn
                     }
                 } catch (SQLException ex) {
                     java.util.logging.Logger.getLogger(AsynchronousRemoteQuery.class.getName())
-                        .log(Level.SEVERE, null, ex);
+                            .log(Level.SEVERE, null, ex);
                 }
             } else {
 
@@ -442,8 +448,8 @@ public final class AsynchronousRemoteQuery implements RemoteQuery, RemoteQueryIn
                     //                    queryExecutor.executeQuery(server, query, storageDirectory,
                     //                            madisMainDB, outputTable, processManager);
                     queryExecutor.executeQuery(server, query, new File(cache.getInfo().directory),
-                        madisMainDB, outputTable, storageDirectory.getAbsolutePath(),
-                        processManager);
+                            madisMainDB, outputTable, storageDirectory.getAbsolutePath(),
+                            processManager);
                 } //First request for execution of the query but the server is not
                 //available
                 else if (firstQueryRequest == true) {
@@ -452,7 +458,7 @@ public final class AsynchronousRemoteQuery implements RemoteQuery, RemoteQueryIn
                     System.out.println("mpika sto anamoni gia query apo ton srv");
                     if (!serversOnDemand.containsKey(server)) {
                         serversOnDemand
-                            .put(server, new LinkedList<Triple<String, File, ProcessManager>>());
+                                .put(server, new LinkedList<Triple<String, File, ProcessManager>>());
                     }
                     queryInfo = new Triple(query, storageDirectory, processManager);
                     serversOnDemand.get(server).add(queryInfo);
@@ -478,22 +484,23 @@ public final class AsynchronousRemoteQuery implements RemoteQuery, RemoteQueryIn
             metadata.close();
         } catch (SQLException ex) {
             java.util.logging.Logger.getLogger(AsynchronousRemoteQuery.class.
-                getName()).log(Level.SEVERE, null, ex);
+                    getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     /*
      * Function which saves the results of a query in cache
      */
-    @Override public void queryCompletion(ServerInfo server, String query,
-        String directoryOfStorage, String cacheDatabase, String cacheTable, int responseTime,
-        int Qsize) throws IOException, SQLException {
+    @Override
+    public void queryCompletion(ServerInfo server, String query,
+                                String directoryOfStorage, String cacheDatabase, String cacheTable, int responseTime,
+                                int Qsize) throws IOException, SQLException {
 
         try {
             Thread.sleep(5000);
         } catch (InterruptedException ex) {
             java.util.logging.Logger.getLogger(AsynchronousRemoteQuery.class.getName())
-                .log(Level.SEVERE, null, ex);
+                    .log(Level.SEVERE, null, ex);
         }
 
         double size;
@@ -517,8 +524,8 @@ public final class AsynchronousRemoteQuery implements RemoteQuery, RemoteQueryIn
             size = f.length();
 
             String command =
-                "ln -s " + new File(cache.getInfo().directory) + "/" + cacheDatabase + " "
-                    + directoryOfStorage + "/" + cacheDatabase;
+                    "ln -s " + new File(cache.getInfo().directory) + "/" + cacheDatabase + " "
+                            + directoryOfStorage + "/" + cacheDatabase;
 
             System.out.println("command " + command);
 
@@ -529,8 +536,8 @@ public final class AsynchronousRemoteQuery implements RemoteQuery, RemoteQueryIn
             QueryRequests request = new QueryRequests(responseTime);
             //query's results saved on the cacheFile
             cacheInfo = new CachedDataInfo(cacheDatabase, cacheTable, query,
-                directoryOfStorage + "/" + cacheDatabase, currentTime, cache.getInfo(), currentTime,
-                size);
+                    directoryOfStorage + "/" + cacheDatabase, currentTime, cache.getInfo(), currentTime,
+                    size);
             cacheInfo.setQueryRequests(request);
             cache.setCacheInfo(cacheInfo);
 
@@ -544,21 +551,21 @@ public final class AsynchronousRemoteQuery implements RemoteQuery, RemoteQueryIn
             QueryInfo info = cache.getQueryInfo(query);
             if (info != null) {
                 metadata.addNewCacheRecord(cacheInfo.database, cacheInfo.table, cacheInfo.query,
-                    cacheInfo.size, info.benefit, info.requestInfo);
+                        cacheInfo.size, info.benefit, info.requestInfo);
             } else {
                 metadata.addNewCacheRecord(cacheInfo.database, cacheInfo.table, cacheInfo.query,
-                    cacheInfo.size, 0, null);
+                        cacheInfo.size, 0, null);
             }
 
             //      log.debug("The metadata records have been saved");
             if (serverUsage
-                .contains(server)) { //Just for normal bootstrapping if server had gone down
+                    .contains(server)) { //Just for normal bootstrapping if server had gone down
                 //serverUsage.remove(server); //edw
             }
 
             //inform listeners which were waiting the results of the executed query
             if (listenersPerQuery
-                .containsKey(query)) {  //Just for normal bootstrapping if server had gone down
+                    .containsKey(query)) {  //Just for normal bootstrapping if server had gone down
                 /*if (listenersPerQuery.get(query) == null) {
          System.out.println("Einai nul!!!!!!");
          }*/
@@ -566,7 +573,7 @@ public final class AsynchronousRemoteQuery implements RemoteQuery, RemoteQueryIn
             }
 
             if (!serversOnDemand
-                .containsKey(server)) {  //Just for normal bootstrapping if server had gone down
+                    .containsKey(server)) {  //Just for normal bootstrapping if server had gone down
                 return;
             }
 
@@ -596,11 +603,11 @@ public final class AsynchronousRemoteQuery implements RemoteQuery, RemoteQueryIn
                         //                                queryOnDemand.b, madisMainDB, outputTable,
                         //                                queryOnDemand.c);
                         queryExecutor.executeQuery(server, queryOnDemand.a,
-                            new File(cache.getInfo().directory), madisMainDB, outputTable,
-                            queryOnDemand.b.getAbsolutePath(), queryOnDemand.c);
+                                new File(cache.getInfo().directory), madisMainDB, outputTable,
+                                queryOnDemand.b.getAbsolutePath(), queryOnDemand.c);
                     } catch (RemoteException ex) {
                         java.util.logging.Logger.getLogger(AsynchronousRemoteQuery.class.getName()).
-                            log(Level.SEVERE, null, ex);
+                                log(Level.SEVERE, null, ex);
                     }
                 }
             } else {
@@ -611,20 +618,20 @@ public final class AsynchronousRemoteQuery implements RemoteQuery, RemoteQueryIn
     }
 
     private void callListeners(String query, CachedDataInfo cacheInfo,
-        LinkedList<RemoteQueryListener> listeners) {
+                               LinkedList<RemoteQueryListener> listeners) {
 
         //    log.trace("mpika sto calllistner");
-    /*System.out.println("mpika sto calllistner");*/
+        /*System.out.println("mpika sto calllistner");*/
         int i = 1;
         if (listeners != null) {
             //      log.trace("arxi listener");
-      /*System.out.println("arxi listener");*/
+            /*System.out.println("arxi listener");*/
 
             boolean firstRequestOfBatch = true;
 
             for (RemoteQueryListener listener : listeners) {
                 //        log.trace("listener " + Integer.toString(i));
-        /*System.out.println("listener " + Integer.toString(i));*/
+                /*System.out.println("listener " + Integer.toString(i));*/
                 i++;
 
                 listenersPerQuery.get(query).remove(listener);

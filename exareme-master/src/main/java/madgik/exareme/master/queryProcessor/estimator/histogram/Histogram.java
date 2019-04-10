@@ -115,7 +115,6 @@ public final class Histogram {
             System.out.println("Not yet implemented!!!");
 
 
-
         } else
             this.convertToTransparentHistogram();
     }
@@ -213,7 +212,6 @@ public final class Histogram {
     }
 
 
-
     //TODO
     //    @Override
     //    public void union(Histogram h2){
@@ -241,7 +239,6 @@ public final class Histogram {
     //    }
 
 
-
     public double numberOfTuples() {
         double not = 0.0;
         for (Map.Entry<Double, Bucket> entry : this.bucketIndex.entrySet())
@@ -255,10 +252,10 @@ public final class Histogram {
         if (this.getBucketIndex().containsKey(value))
             //                this.setBucketIndex(this.getBucketIndex().tailMap(value, true));
             this.setBucketIndex(
-                new TreeMap<Double, Bucket>(this.getBucketIndex().tailMap(value, true)));
+                    new TreeMap<Double, Bucket>(this.getBucketIndex().tailMap(value, true)));
         else {
             Bucket nb = new Bucket(this.bucketIndex.get(this.bucketIndex.
-                floorKey(value)).getFrequency(), this.computeRightSemiBucketDiffVals(value));
+                    floorKey(value)).getFrequency(), this.computeRightSemiBucketDiffVals(value));
             this.bucketIndex.put(value, nb);
             //            this.bucketIndex = this.bucketIndex.tailMap(value, true);
             this.bucketIndex = new TreeMap<Double, Bucket>(this.bucketIndex.tailMap(value, true));
@@ -269,15 +266,15 @@ public final class Histogram {
     private void shrinkHistogramRight(Double value) {
         if (!this.getBucketIndex().containsKey(value)) {
             this.bucketIndex.get(this.bucketIndex.lowerKey(value))
-                .setDiffValues(this.computeLeftSemiBucketDiffVals(value));
+                    .setDiffValues(this.computeLeftSemiBucketDiffVals(value));
             this.bucketIndex.put(value, Bucket.FINAL_HISTOGRAM_BUCKET);
             //            this.setBucketIndex(this.getBucketIndex().headMap(value, true));
             this.setBucketIndex(
-                new TreeMap<Double, Bucket>(this.getBucketIndex().headMap(value, true)));
+                    new TreeMap<Double, Bucket>(this.getBucketIndex().headMap(value, true)));
         } else {
             //            this.setBucketIndex(this.getBucketIndex().headMap(value, true));
             this.setBucketIndex(
-                new TreeMap<Double, Bucket>(this.getBucketIndex().headMap(value, true)));
+                    new TreeMap<Double, Bucket>(this.getBucketIndex().headMap(value, true)));
             this.bucketIndex.put(value, Bucket.FINAL_HISTOGRAM_BUCKET);
         }
     }
@@ -314,32 +311,32 @@ public final class Histogram {
         double left = 0.0, right = 0.0;
         //finding common range        
         if (this.bucketIndex.firstKey() <= h2.getBucketIndex().firstKey()
-            && this.bucketIndex.lastKey() >= h2.getBucketIndex().lastKey()) {
+                && this.bucketIndex.lastKey() >= h2.getBucketIndex().lastKey()) {
             left = h2.getBucketIndex().firstKey();
             right = h2.getBucketIndex().lastKey();
         } else if (h2.getBucketIndex().firstKey() <= this.bucketIndex.firstKey()
-            && h2.getBucketIndex().lastKey() >= this.bucketIndex.
-            lastKey()) {
+                && h2.getBucketIndex().lastKey() >= this.bucketIndex.
+                lastKey()) {
             left = this.bucketIndex.firstKey();
             right = this.bucketIndex.lastKey();
         } else if (this.bucketIndex.firstKey() <= h2.getBucketIndex().firstKey()
-            && this.bucketIndex.lastKey() <= h2.getBucketIndex().
-            lastKey()) {
+                && this.bucketIndex.lastKey() <= h2.getBucketIndex().
+                lastKey()) {
             left = h2.getBucketIndex().firstKey();
             right = this.bucketIndex.lastKey();
         } else if (h2.getBucketIndex().firstKey() <= this.bucketIndex.firstKey()
-            && h2.getBucketIndex().lastKey() < this.bucketIndex.
-            lastKey()) {
+                && h2.getBucketIndex().lastKey() < this.bucketIndex.
+                lastKey()) {
             left = this.bucketIndex.firstKey();
             right = h2.getBucketIndex().lastKey();
         } else if (this.bucketIndex.firstKey() >= h2.getBucketIndex().firstKey()
-            && this.bucketIndex.lastKey() >= h2.getBucketIndex().
-            lastKey()) {
+                && this.bucketIndex.lastKey() >= h2.getBucketIndex().
+                lastKey()) {
             left = h2.getBucketIndex().firstKey();
             right = this.bucketIndex.lastKey();
         } else if (h2.getBucketIndex().firstKey() >= this.bucketIndex.firstKey()
-            && h2.getBucketIndex().lastKey() >= this.bucketIndex.
-            lastKey()) {
+                && h2.getBucketIndex().lastKey() >= this.bucketIndex.
+                lastKey()) {
             left = this.bucketIndex.firstKey();
             right = h2.getBucketIndex().lastKey();
         }
@@ -406,7 +403,7 @@ public final class Histogram {
         checkNotNull(h2, "Histogram::existsIntersection: parameter <h2> is null");
 
         if (this.getBucketIndex().firstKey() > h2.getBucketIndex().lastKey()
-            || this.getBucketIndex().lastKey() < h2.getBucketIndex().firstKey())
+                || this.getBucketIndex().lastKey() < h2.getBucketIndex().firstKey())
             return false;
         else
             return true;
@@ -420,7 +417,7 @@ public final class Histogram {
         Bucket combinerBucket = h2.getBucketIndex().get(combinerBucketId);
 
         if (combiningBucketId != this.bucketIndex.lastKey() && combinerBucketId != h2.bucketIndex
-            .lastKey()) {
+                .lastKey()) {
 
             double resultFreq = combiningBucket.getFrequency() * combinerBucket.getFrequency();
 
@@ -430,8 +427,8 @@ public final class Histogram {
             double maxCombiningBucketVal = this.getBucketIndex().higherKey(combiningBucketId);
 
             double combinerSubBucketDiffVals =
-                (maxCombiningBucketVal - minCombiningBucketVal) / (maxCombinerBucketVal
-                    - minCombinerBucketVal) * combinerBucket.getDiffValues();
+                    (maxCombiningBucketVal - minCombiningBucketVal) / (maxCombinerBucketVal
+                            - minCombinerBucketVal) * combinerBucket.getDiffValues();
 
 
             double nodv = combiningBucket.getDiffValues();
@@ -453,7 +450,7 @@ public final class Histogram {
 
 
         if (combiningBucketId != this.bucketIndex.lastKey() && combinerBucketId != h2.bucketIndex
-            .lastKey()) {
+                .lastKey()) {
             double resultFreq = combiningBucket.getFrequency() + combinerBucket.getFrequency();
 
             double minCombinerBucketVal = combinerBucketId;
@@ -462,8 +459,8 @@ public final class Histogram {
             double maxCombiningBucketVal = this.getBucketIndex().higherKey(combiningBucketId);
 
             double combinerSubBucketDiffVals =
-                (maxCombiningBucketVal - minCombiningBucketVal) / (maxCombinerBucketVal
-                    - minCombinerBucketVal) * combinerBucket.getDiffValues();
+                    (maxCombiningBucketVal - minCombiningBucketVal) / (maxCombinerBucketVal
+                            - minCombinerBucketVal) * combinerBucket.getDiffValues();
 
 
             double nodv = combiningBucket.getDiffValues();
@@ -495,26 +492,26 @@ public final class Histogram {
         double lastPoint = h2.getBucketIndex().firstKey();
 
         for (Map.Entry<Double, Bucket> entry2 : h2.getBucketIndex().
-            entrySet()) {
+                entrySet()) {
             if (!entry2.getKey().equals(this.getBucketIndex().firstKey())) {
 
                 if (!this.getBucketIndex().containsKey(entry2.getKey())) {
                     double nbdv = this.computeRightSemiBucketDiffVals(
-                        entry2.getKey()); //nbdv: new bucket diff values
+                            entry2.getKey()); //nbdv: new bucket diff values
                     Bucket nb = new Bucket(this.getBucketIndex().
-                        get(this.getBucketIndex().floorKey(entry2.
-                            getKey())).getFrequency(), nbdv);
+                            get(this.getBucketIndex().floorKey(entry2.
+                                    getKey())).getFrequency(), nbdv);
 
                     this.getBucketIndex().get(this.getBucketIndex().
-                        floorKey(entry2.getKey())).setDiffValues(this.
-                        getBucketIndex().get(this.getBucketIndex().
-                        floorKey(entry2.getKey())).getDiffValues() - nbdv);
+                            floorKey(entry2.getKey())).setDiffValues(this.
+                            getBucketIndex().get(this.getBucketIndex().
+                            floorKey(entry2.getKey())).getDiffValues() - nbdv);
 
                     this.getBucketIndex().put(entry2.getKey(), nb);
                 }
 
                 NavigableMap<Double, Bucket> submapView =
-                    this.getBucketIndex().subMap(lastPoint, true, entry2.getKey(), false);
+                        this.getBucketIndex().subMap(lastPoint, true, entry2.getKey(), false);
 
                 double combinerBucketId = h2.getBucketIndex().lowerKey(entry2.getKey());
 
@@ -551,14 +548,13 @@ public final class Histogram {
         this.bucketIndex.put(MAX_HISTOGRAM_VALUE, Bucket.FINAL_HISTOGRAM_BUCKET);
 
 
-
         //        System.out.println("=========================");
     }
 
     private boolean isTransparentHistogram() {
         if (this.bucketIndex.firstEntry().getValue().equals(Bucket.TRANSPARENT_BUCKET)
-            && this.bucketIndex.size() == 2 &&
-            this.bucketIndex.firstEntry().getValue().equals(Bucket.FINAL_HISTOGRAM_BUCKET))
+                && this.bucketIndex.size() == 2 &&
+                this.bucketIndex.firstEntry().getValue().equals(Bucket.FINAL_HISTOGRAM_BUCKET))
             return true;
         else
             return false;
@@ -566,15 +562,16 @@ public final class Histogram {
 
     private boolean containsValue(double value) {
         if (value >= this.getBucketIndex().firstKey() &&
-            value < this.getBucketIndex().lastKey() &&
-            !isTransparentHistogram())
+                value < this.getBucketIndex().lastKey() &&
+                !isTransparentHistogram())
             return true;
         else
             return false;
     }
 
     /*standard methods*/
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "Histogram{" + "bucketIndex=" + bucketIndex + '}';
     }
 
@@ -599,7 +596,8 @@ public final class Histogram {
         }
 
         /*standard methods*/
-        @Override public String toString() {
+        @Override
+        public String toString() {
             return "Range{" + "left=" + left + ", right=" + right + '}';
         }
 

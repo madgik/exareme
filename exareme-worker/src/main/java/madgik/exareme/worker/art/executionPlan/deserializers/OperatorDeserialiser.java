@@ -21,8 +21,9 @@ import java.util.logging.Logger;
  */
 public class OperatorDeserialiser implements JsonDeserializer<Operator> {
 
-    @Override public Operator deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
-        throws JsonParseException {
+    @Override
+    public Operator deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
+            throws JsonParseException {
         final JsonObject jsonObject = je.getAsJsonObject();
 
         String operatorName = jsonObject.get(PlanExpressionConstants.NAME).getAsString();
@@ -36,32 +37,32 @@ public class OperatorDeserialiser implements JsonDeserializer<Operator> {
 
         if (jsonObject.has(PlanExpressionConstants.PARAMETERS)) {
             JsonArray parameters =
-                jsonObject.get(PlanExpressionConstants.PARAMETERS).getAsJsonArray();
+                    jsonObject.get(PlanExpressionConstants.PARAMETERS).getAsJsonArray();
             paramList = new LinkedList<>();
             JsonArray param;
             for (JsonElement jee : parameters) {
                 param = jee.getAsJsonArray();
                 paramList
-                    .add(new Parameter(param.get(0).getAsString(), param.get(1).getAsString()));
+                        .add(new Parameter(param.get(0).getAsString(), param.get(1).getAsString()));
             }
         }
         List<URL> locations = null;
         if (jsonObject.has(PlanExpressionConstants.LOCATIONS)) {
             JsonArray jlocations =
-                jsonObject.get(PlanExpressionConstants.LOCATIONS).getAsJsonArray();
+                    jsonObject.get(PlanExpressionConstants.LOCATIONS).getAsJsonArray();
             for (JsonElement url : jlocations) {
                 try {
                     locations.add(new URL(url.getAsString()));
                 } catch (MalformedURLException ex) {
                     Logger.getLogger(OperatorDeserialiser.class.getName())
-                        .log(Level.SEVERE, null, ex);
+                            .log(Level.SEVERE, null, ex);
                 }
 
             }
         }
 
         final Operator op =
-            new Operator(operatorName, operator, paramList, queryString, containerName, null);
+                new Operator(operatorName, operator, paramList, queryString, containerName, null);
         return op;
     }
 }

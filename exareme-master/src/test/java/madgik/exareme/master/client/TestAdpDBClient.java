@@ -18,7 +18,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 
-
 /**
  * Testing multiple clients on Pseudo-distributed cluster :
  * + Initialize cluster ( registrPort, nworkers)
@@ -49,7 +48,8 @@ public class TestAdpDBClient {
 
     }
 
-    @Before public void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
 
         Logger.getRootLogger().setLevel(Level.DEBUG);
         //        Thread.sleep(1000*20);
@@ -57,41 +57,42 @@ public class TestAdpDBClient {
 //        log.debug(TestAdpDBClient.class.getResource("load_emp_template.sql") == null);
         // load & format scripts
         File loadFile =
-            new File(TestAdpDBClient.class.getResource("load_emp_template.sql").getFile());
+                new File(TestAdpDBClient.class.getResource("load_emp_template.sql").getFile());
         load_script = new String[nclients];
         index_script = new String[nclients];
         query_script = new String[nclients];
 
         for (int i = 0; i < nclients; i++) {
             this.load_script[i] = String
-                .format(FileUtils.readFileToString(loadFile), "emp_"+String.valueOf(i),
-                    String.valueOf(nworkers + 1),
-                    loadFile.getParentFile().getAbsolutePath() + "/emp.tsv");
+                    .format(FileUtils.readFileToString(loadFile), "emp_" + String.valueOf(i),
+                            String.valueOf(nworkers + 1),
+                            loadFile.getParentFile().getAbsolutePath() + "/emp.tsv");
             this.index_script[i] = String.format(FileUtils.readFileToString(new File(
-                    TestAdpDBClient.class.getResource("index_emp_template.sql").getFile())),
-                "emp_eid_" + String.valueOf(i), "emp_" + String.valueOf(i));
+                            TestAdpDBClient.class.getResource("index_emp_template.sql").getFile())),
+                    "emp_eid_" + String.valueOf(i), "emp_" + String.valueOf(i));
             this.query_script[i] = String.format(FileUtils.readFileToString(new File(
-                    TestAdpDBClient.class.getResource("query_emp_template.sql").getFile())),
-                "emp_20000_" + String.valueOf(i), "emp_" + String.valueOf(i));
+                            TestAdpDBClient.class.getResource("query_emp_template.sql").getFile())),
+                    "emp_20000_" + String.valueOf(i), "emp_" + String.valueOf(i));
         }
         log.debug("Scripts successfully formatted.");
 
 
-        this.dbPathName = "/tmp/db/client-test"+System.currentTimeMillis()+"-" + String.valueOf(System.currentTimeMillis());
+        this.dbPathName = "/tmp/db/client-test" + System.currentTimeMillis() + "-" + String.valueOf(System.currentTimeMillis());
         new File(dbPathName).mkdirs();
-        log.debug("Database created. "+dbPathName);
+        log.debug("Database created. " + dbPathName);
 
         log.debug("---- SETUP ----");
     }
 
-    @Test public void testAdpDBClient() throws Exception {
+    @Test
+    public void testAdpDBClient() throws Exception {
         log.debug("---- TEST ----");
 
         AdpDBClientProperties properties =
-            new AdpDBClientProperties(dbPathName, null, null, false, false, -1, 10);
+                new AdpDBClientProperties(dbPathName, null, null, false, false, -1, 10);
 
         ExaremeCluster miniCluster =
-            ExaremeClusterFactory.createMiniCluster(registryPort, dtPort, nworkers);
+                ExaremeClusterFactory.createMiniCluster(registryPort, dtPort, nworkers);
         log.debug("Mini cluster created.");
 
         miniCluster.start();
@@ -102,7 +103,7 @@ public class TestAdpDBClient {
 
         for (int i = 0; i < nclients; i++) {
             executorService.execute(
-                new RunnableAdpDBClient(i, miniCluster.getExaremeClusterClient(properties)));
+                    new RunnableAdpDBClient(i, miniCluster.getExaremeClusterClient(properties)));
         }
         log.debug("Clients created.(" + nclients + ")");
 
@@ -124,11 +125,11 @@ public class TestAdpDBClient {
         miniCluster.stop(false);
         log.debug("Mini cluster stopped2.");
 
-        Thread.sleep(12*1000);
+        Thread.sleep(12 * 1000);
         log.debug("Mini cluster stopped3.");
 
         miniCluster.stop(true);
-        Thread.sleep(5*1000);
+        Thread.sleep(5 * 1000);
         log.debug("Mini cluster stopped4.");
 
         log.debug("Mini cluster stopped.");
@@ -136,9 +137,10 @@ public class TestAdpDBClient {
         log.debug("---- TEST ----");
     }
 
-    @After public void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         log.debug("---- CLEAN ----");
-                FileUtils.deleteDirectory(new File(dbPathName));
+        FileUtils.deleteDirectory(new File(dbPathName));
         log.debug("---- CLEAN ----");
         //        Thread.sleep(1000 * 20);
 
@@ -156,23 +158,17 @@ public class TestAdpDBClient {
         public void run() {
             try {
                 AdpDBClientQueryStatus queryStatus =
-                    client.query("load_" + String.valueOf(id), load_script[id]);
-                while (queryStatus.hasFinished() == false && queryStatus.hasError() == false) {
+                        client.query("load_" + id, load_script[id]);
+                while (!queryStatus.hasFinished() && !queryStatus.hasError()) {
                     Thread.sleep(1000 * 2);
                 }
-                if (queryStatus.hasError() || queryStatus==null) {
+                if (queryStatus.hasError()) {
                     log.error("Exception occured..." + queryStatus.getError());
                     problem = true;
                 }
-
-
-
                 log.info("Client " + id + " finished.");
             } catch (RemoteException e) {
                 log.error("Error occurred ( " + String.valueOf(id) + ")!", e);
-
-            } catch (IOException e) {
-                log.error("Error occurred while reading results", e);
 
             } catch (Exception e) {
                 log.error("Error");

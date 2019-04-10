@@ -23,25 +23,29 @@ public class NetSessionSynchronized implements NetSession {
         this.session = session;
     }
 
-    @Override public InputStream openInputStream(EntityName netAddress) throws RemoteException {
+    @Override
+    public InputStream openInputStream(EntityName netAddress) throws RemoteException {
         synchronized (session) {
             return session.openInputStream(netAddress);
         }
     }
 
-    @Override public OutputStream openOutputStream(SocketBuffer socket) throws RemoteException {
+    @Override
+    public OutputStream openOutputStream(SocketBuffer socket) throws RemoteException {
         synchronized (session) {
             return session.openOutputStream(socket);
         }
     }
 
-    @Override public InputStream openInputStream(SocketBuffer socket) throws RemoteException {
+    @Override
+    public InputStream openInputStream(SocketBuffer socket) throws RemoteException {
         synchronized (session) {
             return session.openInputStream(socket);
         }
     }
 
-    @Override public OutputStream openOutputStream(EntityName netAddress) throws RemoteException {
+    @Override
+    public OutputStream openOutputStream(EntityName netAddress) throws RemoteException {
         synchronized (session) {
             return session.openOutputStream(netAddress);
         }

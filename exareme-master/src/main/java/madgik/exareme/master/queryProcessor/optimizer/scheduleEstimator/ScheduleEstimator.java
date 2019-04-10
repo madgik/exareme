@@ -36,7 +36,7 @@ public class ScheduleEstimator implements Serializable {
     private final TransactionalInteger scheduleTime_SEC;
 
     public ScheduleEstimator(ConcreteQueryGraph graph, ArrayList<ContainerResources> containers,
-        RunTimeParameters runTimeParams) {
+                             RunTimeParameters runTimeParams) {
         // Initialize the active structures
         this.params = runTimeParams;
         assignments = new ArrayList<>(graph.getMaxOpId());
@@ -199,8 +199,8 @@ public class ScheduleEstimator implements Serializable {
         double[] moneyNoFrag = new double[2];
         computeMoney(moneyNoFrag);
         return new ScheduleStatistics(activeContainers.size(), containerUsed.cardinality(),
-            scheduleTime_SEC.getValue(), (double) scheduleTime_SEC.getValue() / params.quantum__SEC,
-            (int) moneyNoFrag[0], moneyNoFrag[1] / params.quantum__SEC);
+                scheduleTime_SEC.getValue(), (double) scheduleTime_SEC.getValue() / params.quantum__SEC,
+                (int) moneyNoFrag[0], moneyNoFrag[1] / params.quantum__SEC);
     }
 
     public List<OperatorAssignment> getAssignments() {

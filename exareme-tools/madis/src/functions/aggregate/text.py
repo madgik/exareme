@@ -22,10 +22,10 @@ class concatgroup:
     word3word4
     """
 
-    registered=True #Value to define db operator
+    registered = True  # Value to define db operator
 
     def __init__(self):
-        self.whole_string=[]
+        self.whole_string = []
 
     def step(self, *args):
         self.whole_string.append(args[0])
@@ -57,10 +57,10 @@ class concatlines:
     word4
     """
 
-    registered=True #Value to define db operator
+    registered = True  # Value to define db operator
 
     def __init__(self):
-        self.whole_string=[]
+        self.whole_string = []
 
     def step(self, *args):
         self.whole_string.append(args[0])
@@ -90,17 +90,18 @@ class concatterms:
     word3 word4
     """
 
-    registered=True #Value to define db operator
+    registered = True  # Value to define db operator
 
     def __init__(self):
-        self.whole_string=[]
+        self.whole_string = []
 
     def step(self, *args):
-        if len(args[0])!=0:
+        if len(args[0]) != 0:
             self.whole_string.append(args[0])
 
     def final(self):
         return ' '.join(self.whole_string)
+
 
 if not ('.' in __name__):
     """
@@ -108,11 +109,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

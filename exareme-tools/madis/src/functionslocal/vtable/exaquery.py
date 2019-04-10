@@ -12,7 +12,6 @@ import functions
 registered = True
 external_query = True
 
-
 default_dict = {
     'host': 'localhost',
     'port': '9090',
@@ -29,7 +28,6 @@ class ExaQuery(functions.vtable.vtbase.VT):
         import json
         import urllib
         import urllib2
-
 
         # get site properties
         site_list, site_dict = self.full_parse(parsedArgs)
@@ -48,7 +46,6 @@ class ExaQuery(functions.vtable.vtbase.VT):
             else:
                 raise functions.OperatorError(__name__.rsplit('.')[-1],
                                               "Provide %s property." % key)
-
 
         # set http request
         url = "http://{0}:{1}/{2}".format(self.host, self.port, self.api)

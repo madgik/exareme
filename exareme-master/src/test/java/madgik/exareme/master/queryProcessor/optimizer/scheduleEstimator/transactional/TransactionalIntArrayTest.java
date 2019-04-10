@@ -15,7 +15,8 @@ public class TransactionalIntArrayTest {
     public TransactionalIntArrayTest() {
     }
 
-    @Test public void testIntArray() {
+    @Test
+    public void testIntArray() {
         TransactionalIntArray tia = new TransactionalIntArray(100);
         tia.set(5, 10);
         assertEquals(10, tia.getValue(5));

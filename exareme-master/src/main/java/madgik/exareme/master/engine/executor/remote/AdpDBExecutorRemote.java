@@ -45,7 +45,7 @@ public class AdpDBExecutorRemote implements AdpDBExecutor {
     private final static Logger log = Logger.getLogger(AdpDBExecutorRemote.class);
 
     private static final String execMethod =
-        AdpDBProperties.getAdpDBProps().getString("db.execution.method");
+            AdpDBProperties.getAdpDBProps().getString("db.execution.method");
     private final Map<AdpDBQueryID, AdpDBArtJobMonitor> monitors;
     private ArtManager manager = null;
     private ExecutionEngineProxy engine = null;
@@ -54,7 +54,7 @@ public class AdpDBExecutorRemote implements AdpDBExecutor {
     private ArrayList<AdpDBStatus> statusArray = null;
 
     public AdpDBExecutorRemote(AdpDBStatusManager statusMgr, ArtManager mgr)
-        throws RemoteException {
+            throws RemoteException {
         this.manager = mgr;
         this.statusManager = statusMgr;
         this.executor = Executors.newFixedThreadPool(100);
@@ -66,25 +66,25 @@ public class AdpDBExecutorRemote implements AdpDBExecutor {
 
     @Override
     public AdpDBStatus executeScript(AdpDBQueryExecutionPlan execPlan, AdpDBClientProperties props)
-        throws RemoteException {
+            throws RemoteException {
         PlanExpression planExpression = new PlanExpression();
         if (execMethod.equals("optimized")) {
             // Add pragmas
             planExpression.addPragma(
-                new Pragma(ExecEngineConstants.PRAGMA_MATERIALIZED_BUFFER_READER,
-                    MaterializedReader.class.getName()));
+                    new Pragma(ExecEngineConstants.PRAGMA_MATERIALIZED_BUFFER_READER,
+                            MaterializedReader.class.getName()));
             planExpression.addPragma(
-                new Pragma(ExecEngineConstants.PRAGMA_MATERIALIZED_BUFFER_WRITER,
-                    MaterializedWriter.class.getName()));
+                    new Pragma(ExecEngineConstants.PRAGMA_MATERIALIZED_BUFFER_WRITER,
+                            MaterializedWriter.class.getName()));
             planExpression.addPragma(
-                new Pragma(ExecEngineConstants.PRAGMA_INTER_CONTAINER_MEDIATOR_FROM,
-                    InterContainerMediatorFrom.class.getName()));
+                    new Pragma(ExecEngineConstants.PRAGMA_INTER_CONTAINER_MEDIATOR_FROM,
+                            InterContainerMediatorFrom.class.getName()));
             planExpression.addPragma(
-                new Pragma(ExecEngineConstants.PRAGMA_INTER_CONTAINER_MEDIATOR_TO,
-                    InterContainerMediatorTo.class.getName()));
+                    new Pragma(ExecEngineConstants.PRAGMA_INTER_CONTAINER_MEDIATOR_TO,
+                            InterContainerMediatorTo.class.getName()));
             planExpression.addPragma(
-                new Pragma(ExecEngineConstants.PRAGMA_INTER_CONTAINER_DATA_TRANSFER,
-                    DataTransferRegister.class.getName()));
+                    new Pragma(ExecEngineConstants.PRAGMA_INTER_CONTAINER_DATA_TRANSFER,
+                            DataTransferRegister.class.getName()));
 
             log.debug("Using optimized execution method ... ");
         } else {
@@ -97,9 +97,9 @@ public class AdpDBExecutorRemote implements AdpDBExecutor {
         for (int i = 0; i < container.length; ++i) {
 
             planExpression.addContainer(new Container("c" + i, //name
-                container[i].getEntityName().getName(), //IP
-                container[i].getEntityName().getPort(),
-                container[i].getEntityName().getDataTransferPort())); //[JV] TOC: port
+                    container[i].getEntityName().getName(), //IP
+                    container[i].getEntityName().getPort(),
+                    container[i].getEntityName().getDataTransferPort())); //[JV] TOC: port
             String c = "c" + i;
             containers.add(c);
         }
@@ -107,14 +107,14 @@ public class AdpDBExecutorRemote implements AdpDBExecutor {
         // Add the any containers
         for (int i = 0; i < execPlan.getGraph().getNumOfOperators(); ++i) {
             planExpression.addContainer(new Container("any" + i, //name
-                "any" + i, //IP
-                1099, 8088)); //[JV] TOC: port
+                    "any" + i, //IP
+                    1099, 8088)); //[JV] TOC: port
             containers.add("any" + i);
         }
         HashMap<String, String> categoryMessageMap = new HashMap<>();
         try {
             AdpDBArtPlanGenerator
-                .generateJsonPlan(containers, execPlan, categoryMessageMap, planExpression, props);
+                    .generateJsonPlan(containers, execPlan, categoryMessageMap, planExpression, props);
         } catch (Exception e) {
             throw new ServerException("Cannot generate ART plan!", e);
         }
@@ -145,9 +145,9 @@ public class AdpDBExecutorRemote implements AdpDBExecutor {
         }
 
         AdpDBStatus status =
-            statusManager.createNewStatus(execPlan.getQueryID(), sessionPlan, categoryMessageMap);
+                statusManager.createNewStatus(execPlan.getQueryID(), sessionPlan, categoryMessageMap);
         AdpDBArtJobMonitor monitor =
-            new AdpDBArtJobMonitor(sessionPlan, status, statusManager, execPlan.getQueryID());
+                new AdpDBArtJobMonitor(sessionPlan, status, statusManager, execPlan.getQueryID());
         monitors.put(execPlan.getQueryID(), monitor);
 
         executor.submit(monitor);
@@ -156,13 +156,15 @@ public class AdpDBExecutorRemote implements AdpDBExecutor {
     }
 
 
-    @Override public void registerListener(AdpDBQueryListener listener, AdpDBQueryID queryID)
-        throws RemoteException {
+    @Override
+    public void registerListener(AdpDBQueryListener listener, AdpDBQueryID queryID)
+            throws RemoteException {
         AdpDBArtJobMonitor monitor = monitors.get(queryID);
         monitor.registerListener(listener);
     }
 
-    @Override public void stop() throws RemoteException {
+    @Override
+    public void stop() throws RemoteException {
         for (AdpDBStatus stat : statusArray) {
             if (stat.hasFinished() == false && stat.hasError() == false) {
                 log.debug("Stopping session ... ");
@@ -173,25 +175,25 @@ public class AdpDBExecutorRemote implements AdpDBExecutor {
 
     @Override
     public String getJSONPlan(AdpDBQueryExecutionPlan execPlan, AdpDBClientProperties props)
-        throws RemoteException {
+            throws RemoteException {
         PlanExpression planExpression = new PlanExpression();
         if (execMethod.equals("optimized")) {
             // Add pragmas
             planExpression.addPragma(
-                new Pragma(ExecEngineConstants.PRAGMA_MATERIALIZED_BUFFER_READER,
-                    MaterializedReader.class.getName()));
+                    new Pragma(ExecEngineConstants.PRAGMA_MATERIALIZED_BUFFER_READER,
+                            MaterializedReader.class.getName()));
             planExpression.addPragma(
-                new Pragma(ExecEngineConstants.PRAGMA_MATERIALIZED_BUFFER_WRITER,
-                    MaterializedWriter.class.getName()));
+                    new Pragma(ExecEngineConstants.PRAGMA_MATERIALIZED_BUFFER_WRITER,
+                            MaterializedWriter.class.getName()));
             planExpression.addPragma(
-                new Pragma(ExecEngineConstants.PRAGMA_INTER_CONTAINER_MEDIATOR_FROM,
-                    InterContainerMediatorFrom.class.getName()));
+                    new Pragma(ExecEngineConstants.PRAGMA_INTER_CONTAINER_MEDIATOR_FROM,
+                            InterContainerMediatorFrom.class.getName()));
             planExpression.addPragma(
-                new Pragma(ExecEngineConstants.PRAGMA_INTER_CONTAINER_MEDIATOR_TO,
-                    InterContainerMediatorTo.class.getName()));
+                    new Pragma(ExecEngineConstants.PRAGMA_INTER_CONTAINER_MEDIATOR_TO,
+                            InterContainerMediatorTo.class.getName()));
             planExpression.addPragma(
-                new Pragma(ExecEngineConstants.PRAGMA_INTER_CONTAINER_DATA_TRANSFER,
-                    DataTransferRegister.class.getName()));
+                    new Pragma(ExecEngineConstants.PRAGMA_INTER_CONTAINER_DATA_TRANSFER,
+                            DataTransferRegister.class.getName()));
 
             log.debug("Using optimized execution method ... ");
         } else {
@@ -204,9 +206,9 @@ public class AdpDBExecutorRemote implements AdpDBExecutor {
         for (int i = 0; i < container.length; ++i) {
 
             planExpression.addContainer(new Container("c" + i, //name
-                container[i].getEntityName().getName(), //IP
-                container[i].getEntityName().getPort(),
-                container[i].getEntityName().getDataTransferPort())); //[JV] TOC: port
+                    container[i].getEntityName().getName(), //IP
+                    container[i].getEntityName().getPort(),
+                    container[i].getEntityName().getDataTransferPort())); //[JV] TOC: port
             String c = "c" + i;
             containers.add(c);
         }
@@ -222,7 +224,7 @@ public class AdpDBExecutorRemote implements AdpDBExecutor {
         HashMap<String, String> categoryMessageMap = new HashMap<>();
         try {
             AdpDBArtPlanGenerator
-                .generateJsonPlan(containers, execPlan, categoryMessageMap, planExpression, props);
+                    .generateJsonPlan(containers, execPlan, categoryMessageMap, planExpression, props);
         } catch (Exception e) {
             throw new ServerException("Cannot generate ART plan!", e);
         }
@@ -235,25 +237,25 @@ public class AdpDBExecutorRemote implements AdpDBExecutor {
 
     @Override
     public PlanExpression getExecPlan(AdpDBQueryExecutionPlan execPlan, AdpDBClientProperties props)
-        throws RemoteException {
+            throws RemoteException {
         PlanExpression planExpression = new PlanExpression();
         if (execMethod.equals("optimized")) {
             // Add pragmas
             planExpression.addPragma(
-                new Pragma(ExecEngineConstants.PRAGMA_MATERIALIZED_BUFFER_READER,
-                    MaterializedReader.class.getName()));
+                    new Pragma(ExecEngineConstants.PRAGMA_MATERIALIZED_BUFFER_READER,
+                            MaterializedReader.class.getName()));
             planExpression.addPragma(
-                new Pragma(ExecEngineConstants.PRAGMA_MATERIALIZED_BUFFER_WRITER,
-                    MaterializedWriter.class.getName()));
+                    new Pragma(ExecEngineConstants.PRAGMA_MATERIALIZED_BUFFER_WRITER,
+                            MaterializedWriter.class.getName()));
             planExpression.addPragma(
-                new Pragma(ExecEngineConstants.PRAGMA_INTER_CONTAINER_MEDIATOR_FROM,
-                    InterContainerMediatorFrom.class.getName()));
+                    new Pragma(ExecEngineConstants.PRAGMA_INTER_CONTAINER_MEDIATOR_FROM,
+                            InterContainerMediatorFrom.class.getName()));
             planExpression.addPragma(
-                new Pragma(ExecEngineConstants.PRAGMA_INTER_CONTAINER_MEDIATOR_TO,
-                    InterContainerMediatorTo.class.getName()));
+                    new Pragma(ExecEngineConstants.PRAGMA_INTER_CONTAINER_MEDIATOR_TO,
+                            InterContainerMediatorTo.class.getName()));
             planExpression.addPragma(
-                new Pragma(ExecEngineConstants.PRAGMA_INTER_CONTAINER_DATA_TRANSFER,
-                    DataTransferRegister.class.getName()));
+                    new Pragma(ExecEngineConstants.PRAGMA_INTER_CONTAINER_DATA_TRANSFER,
+                            DataTransferRegister.class.getName()));
 
             log.debug("Using optimized execution method ... ");
         } else {
@@ -266,9 +268,9 @@ public class AdpDBExecutorRemote implements AdpDBExecutor {
         for (int i = 0; i < container.length; ++i) {
 
             planExpression.addContainer(new Container("c" + i, //name
-                container[i].getEntityName().getName(), //IP
-                container[i].getEntityName().getPort(),
-                container[i].getEntityName().getDataTransferPort())); //[JV] TOC: port
+                    container[i].getEntityName().getName(), //IP
+                    container[i].getEntityName().getPort(),
+                    container[i].getEntityName().getDataTransferPort())); //[JV] TOC: port
             String c = "c" + i;
             containers.add(c);
         }
@@ -284,7 +286,7 @@ public class AdpDBExecutorRemote implements AdpDBExecutor {
         HashMap<String, String> categoryMessageMap = new HashMap<>();
         try {
             AdpDBArtPlanGenerator
-                .generateJsonPlan(containers, execPlan, categoryMessageMap, planExpression, props);
+                    .generateJsonPlan(containers, execPlan, categoryMessageMap, planExpression, props);
         } catch (Exception e) {
             throw new ServerException("Cannot generate ART plan!", e);
         }

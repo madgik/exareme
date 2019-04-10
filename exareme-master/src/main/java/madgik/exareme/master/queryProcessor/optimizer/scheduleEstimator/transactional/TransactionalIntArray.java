@@ -30,14 +30,16 @@ public class TransactionalIntArray implements TransactionalObject {
         changed = true;
     }
 
-    @Override public void commit() {
+    @Override
+    public void commit() {
         if (changed) {
             System.arraycopy(value, 0, commitedValue, 0, value.length);
             changed = false;
         }
     }
 
-    @Override public void rollback() {
+    @Override
+    public void rollback() {
         if (changed) {
             System.arraycopy(commitedValue, 0, value, 0, value.length);
             changed = false;

@@ -12,22 +12,23 @@ Examples:
 
 """
 
-import setpath
-import vtbase
 import functions
 import os
 
-registered=True
+import vtbase
+
+registered = True
 external_query = True
 
+
 class SQLite(vtbase.VT):
-    def VTiter(self, *parsedArgs,**envars):
+    def VTiter(self, *parsedArgs, **envars):
         largs, dictargs = self.full_parse(parsedArgs)
 
         if 'query' not in dictargs:
-            raise functions.OperatorError(__name__.rsplit('.')[-1],"No query argument ")
+            raise functions.OperatorError(__name__.rsplit('.')[-1], "No query argument ")
 
-        query=dictargs['query']
+        query = dictargs['query']
 
         if len(largs) > 0:
             sqdb = largs[0]
@@ -47,7 +48,8 @@ class SQLite(vtbase.VT):
             yield cur.next()
 
         cur.close()
-        
+
+
 def Source():
     return vtbase.VTGenerator(SQLite)
 
@@ -58,11 +60,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

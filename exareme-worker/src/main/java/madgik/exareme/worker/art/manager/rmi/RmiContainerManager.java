@@ -14,8 +14,8 @@ import java.rmi.RemoteException;
 
 /**
  * @author Herald Kllapi <br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class RmiContainerManager implements ContainerManager {
@@ -29,29 +29,33 @@ public class RmiContainerManager implements ContainerManager {
     private static int dataTransferPort;
 
     public RmiContainerManager(String containerName, long cId, RmiArtManager artManager,
-        int dataTransferPort) {
+                               int dataTransferPort) {
         RmiContainerManager.containerName = containerName;
         RmiContainerManager.containerID = new ContainerID(cId);
         RmiContainerManager.artManager = artManager;
         RmiContainerManager.dataTransferPort = dataTransferPort;
     }
 
-    @Override public void stopContainer() throws RemoteException {
+    @Override
+    public void stopContainer() throws RemoteException {
         container.stopContainer();
         ArtRegistryLocator.getArtRegistryProxy().removeContainer(proxy.getEntityName());
         container = null;
         proxy = null;
     }
 
-    @Override public boolean isUp() {
+    @Override
+    public boolean isUp() {
         return (container != null);
     }
 
-    @Override public Container getContainer() {
+    @Override
+    public Container getContainer() {
         return container;
     }
 
-    @Override public void startContainer() throws RemoteException {
+    @Override
+    public void startContainer() throws RemoteException {
         if (artManager.getRegistryManager().isOnline()) {
             log.debug("Starting container...");
             // Choose here a different implmenentation of the container if needed
@@ -61,7 +65,7 @@ public class RmiContainerManager implements ContainerManager {
             }
             if (engineType.equalsIgnoreCase("centralized")) {
                 container = ContainerFactory.createRMIThreadContainer(containerName, containerID,
-                    ArtRegistryLocator.getLocalRmiRegistryEntityName(), dataTransferPort);
+                        ArtRegistryLocator.getLocalRmiRegistryEntityName(), dataTransferPort);
             } else {
                 throw new RemoteException("Mode not supported: " + engineType);
             }

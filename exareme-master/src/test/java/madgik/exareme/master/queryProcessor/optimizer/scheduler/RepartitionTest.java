@@ -59,7 +59,7 @@ public class RepartitionTest {
     }
 
     private static void terminateGroup(OperatorGroup g, OperatorGroupDependencySolver solver)
-        throws Exception {
+            throws Exception {
         g.createPartialPlan();
         ActiveOperatorGroup ag = g.createNewActiveGroup(null);
         for (OperatorEntity op : ag.operatorMap.values()) {
@@ -73,7 +73,7 @@ public class RepartitionTest {
     }
 
     private static OperatorGroupDependencySolver createSolver(ConcreteQueryGraph graph)
-        throws Exception {
+            throws Exception {
         // Create session
         PlanSessionID sessionID = new PlanSessionID(0);
         PlanSessionReportID reportID = new PlanSessionReportID(0);
@@ -85,8 +85,8 @@ public class RepartitionTest {
 
         PlanSessionResourceManager resourceManager = new PlanSessionResourceManager();
         PlanEventScheduler eventScheduler =
-            new PlanEventScheduler(sessionID, reportID, eventProcessor, planManager,
-                resourceManager, registryProxy);
+                new PlanEventScheduler(sessionID, reportID, eventProcessor, planManager,
+                        resourceManager, registryProxy);
 
         List<String> containers = new ArrayList<String>();
         for (int i = 0; i < graph.getNumOfOperators() / 4; ++i) {
@@ -109,7 +109,7 @@ public class RepartitionTest {
     }
 
     private static SchedulingResult scheduleRepartition(ConcreteQueryGraph graph,
-        List<String> containerNames) {
+                                                        List<String> containerNames) {
         ArrayList<ContainerResources> containers = new ArrayList<>();
         for (int i = 0; i < containerNames.size(); ++i) {
             containers.add(new ContainerResources());
@@ -119,7 +119,7 @@ public class RepartitionTest {
             //bounds.addOperatorAssignment(opId, opId % containers.size(), graph);
         }
         SchedulingResult result =
-            new SchedulingResult(containerNames.size(), runTime, finProp, null, bounds);
+                new SchedulingResult(containerNames.size(), runTime, finProp, null, bounds);
         return result;
     }
 }

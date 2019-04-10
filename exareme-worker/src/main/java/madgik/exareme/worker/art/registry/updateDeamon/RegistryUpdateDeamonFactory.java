@@ -9,14 +9,14 @@ import java.rmi.RemoteException;
 
 /**
  * @author Dimitris Paparas<br>
- *         University of Athens /
- *         Department of Informatics and Telecommunications.
+ * University of Athens /
+ * Department of Informatics and Telecommunications.
  * @since 1.0
  */
 public class RegistryUpdateDeamonFactory {
 
     public static RegistryUpdateDeamon createDeamon(Registerable r, long period)
-        throws RemoteException {
+            throws RemoteException {
         return new RegistryUpdateDeamon(r, period);
     }
 }

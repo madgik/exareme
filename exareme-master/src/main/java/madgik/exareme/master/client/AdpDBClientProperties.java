@@ -33,8 +33,8 @@ public class AdpDBClientProperties implements Serializable {
 
 
     public AdpDBClientProperties(String database, String username, String password, boolean tree,
-        boolean useHistory, boolean validate, int maxNumberOfContainers, int statisticsUpdateSEC,
-        SLA sla) {
+                                 boolean useHistory, boolean validate, int maxNumberOfContainers, int statisticsUpdateSEC,
+                                 SLA sla) {
         this.database = database;
         this.username = username;
         this.password = password;
@@ -58,9 +58,9 @@ public class AdpDBClientProperties implements Serializable {
     }
 
     public AdpDBClientProperties(String database, String username, String password,
-        boolean useHistory, boolean validate, int maxNumberOfContainers, int statisticsUpdateSEC) {
+                                 boolean useHistory, boolean validate, int maxNumberOfContainers, int statisticsUpdateSEC) {
         this(database, username, password, false, useHistory, validate, maxNumberOfContainers,
-            statisticsUpdateSEC, null);
+                statisticsUpdateSEC, null);
     }
 
     public String getDatabase() {
@@ -95,8 +95,12 @@ public class AdpDBClientProperties implements Serializable {
         return this.sla;
     }
 
-    public ContainerProxy[] getContainerProxies() { return containerProxies; }
+    public ContainerProxy[] getContainerProxies() {
+        return containerProxies;
+    }
 
-    public void setContainerProxies(ContainerProxy[] containerProxies) { this.containerProxies = containerProxies; }
+    public void setContainerProxies(ContainerProxy[] containerProxies) {
+        this.containerProxies = containerProxies;
+    }
 
 }

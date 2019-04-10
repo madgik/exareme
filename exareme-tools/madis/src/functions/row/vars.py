@@ -1,6 +1,7 @@
 # coding: utf-8
 import functions
 
+
 def vars(*args):
     """
     *args is what the query: "var 'valExists' from select case when (select exists (select colname from
@@ -8,10 +9,12 @@ def vars(*args):
     """
 
     if args[0] == "0":
-        raise functions.OperatorError("VARIABLE","")
+        raise functions.OperatorError("VARIABLE", "")
     else:
         return 1
-vars.registered=True
+
+
+vars.registered = True
 
 
 def emptyfield(*args):
@@ -21,10 +24,13 @@ def emptyfield(*args):
     """
 
     if args[0] == "0":
-        raise functions.OperatorError("EMPTYFIELD","")
+        raise functions.OperatorError("EMPTYFIELD", "")
     else:
         return 1
-emptyfield.registered=True
+
+
+emptyfield.registered = True
+
 
 def emptyset(*args):
     """
@@ -33,10 +39,12 @@ def emptyset(*args):
     """
 
     if args[0] == "0":
-        raise functions.OperatorError("EMPTYSET","")
+        raise functions.OperatorError("EMPTYSET", "")
     else:
         return 1
-emptyset.registered=True
+
+
+emptyset.registered = True
 
 if not ('.' in __name__):
     """
@@ -44,11 +52,12 @@ if not ('.' in __name__):
     new function you create
     """
     import sys
-    import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.testmod()

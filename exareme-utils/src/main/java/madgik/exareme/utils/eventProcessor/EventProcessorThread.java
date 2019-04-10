@@ -15,13 +15,14 @@ public class EventProcessorThread extends Thread {
     private EventProcessor processor = null;
 
     public EventProcessorThread(EventQueue eventQueue, ExecutorService executor,
-        EventProcessor processor) {
+                                EventProcessor processor) {
         this.eventQueue = eventQueue;
         this.executor = executor;
         this.processor = processor;
     }
 
-    @Override public void run() {
+    @Override
+    public void run() {
         while (true) {
             try {
                 ActiveEvent next = eventQueue.getNext();

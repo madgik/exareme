@@ -16,7 +16,7 @@ public class StatsMSession implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private HashMap<ContainerSessionID, StatsMContainerSession> sessionStatsMap =
-        new HashMap<ContainerSessionID, StatsMContainerSession>();
+            new HashMap<ContainerSessionID, StatsMContainerSession>();
     private PlanSessionID sessionID = null;
     private String containerName = null;
 

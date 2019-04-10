@@ -29,8 +29,8 @@ public class CreateOperatorLinkJob implements ContainerJob {
     public final ContainerSessionID contSessionID;
 
     public CreateOperatorLinkJob(ConcreteOperatorID fromOperator, ConcreteOperatorID toOperator,
-        LinkedList<Parameter> params, AdaptorType adaptorType, BufferID bufferID, String bufferName,
-        String IpProducer, String IpConsumer, ContainerSessionID contSessionID) {
+                                 LinkedList<Parameter> params, AdaptorType adaptorType, BufferID bufferID, String bufferName,
+                                 String IpProducer, String IpConsumer, ContainerSessionID contSessionID) {
         this.adaptorType = adaptorType;
         this.toConcreteOperatorID = toOperator;
         this.fromConcreteOperatorID = fromOperator;
@@ -42,7 +42,8 @@ public class CreateOperatorLinkJob implements ContainerJob {
         this.contSessionID = contSessionID;
     }
 
-    @Override public ContainerJobType getType() {
+    @Override
+    public ContainerJobType getType() {
         return ContainerJobType.createOperatorLink;
     }
 

@@ -27,7 +27,7 @@ public class QuerySchedulerState {
     private QueryScriptState state = QueryScriptState.queued;
 
     public QuerySchedulerState(EventProcessor eventProcessor, AdpDBQueryScheduler queryScheduler,
-        AdpDBManager manager, AdpDBQueryID queryID) {
+                               AdpDBManager manager, AdpDBQueryID queryID) {
         this.eventProcessor = eventProcessor;
         this.queryScheduler = queryScheduler;
         this.manager = manager;

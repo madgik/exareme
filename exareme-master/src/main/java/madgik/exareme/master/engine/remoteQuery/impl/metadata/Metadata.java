@@ -9,7 +9,7 @@ import java.sql.SQLException;
 
 /**
  * @author Christos Mallios <br>
- *         University of Athens / Department of Informatics and Telecommunications.
+ * University of Athens / Department of Informatics and Telecommunications.
  */
 public interface Metadata {
 
@@ -26,10 +26,10 @@ public interface Metadata {
     public void updateCacheSize(double cacheSize) throws SQLException;
 
     public void addNewCacheRecord(String database, String table, String query, double size,
-        double benefit, QueryRequests request) throws SQLException;
+                                  double benefit, QueryRequests request) throws SQLException;
 
     public void updateCacheRecord(String query, double benefit, QueryRequests request)
-        throws SQLException;
+            throws SQLException;
 
     public void updateNumberTotalRequests() throws SQLException;
 

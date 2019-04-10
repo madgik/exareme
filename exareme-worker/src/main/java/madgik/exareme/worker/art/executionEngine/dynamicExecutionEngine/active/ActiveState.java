@@ -13,7 +13,7 @@ import madgik.exareme.worker.art.executionPlan.entity.ObjectType;
 public class ActiveState extends ActiveObject {
 
     public ActiveState(String stateName, ContainerSessionID containerSessionID,
-        OperatorGroup operatorGroup) {
+                       OperatorGroup operatorGroup) {
         super(ObjectType.State, stateName, containerSessionID, operatorGroup);
     }
 }

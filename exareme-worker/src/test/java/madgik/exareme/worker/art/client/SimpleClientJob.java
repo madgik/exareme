@@ -26,7 +26,7 @@ public class SimpleClientJob implements Runnable {
     private long release_ms = 0;
 
     public SimpleClientJob(ArmCompute compute, int numContainers, long keepFor_ms,
-        long release_ms) {
+                           long release_ms) {
         this.compute = compute;
         this.numContainers = numContainers;
         this.keepFor_ms = keepFor_ms;
@@ -34,7 +34,7 @@ public class SimpleClientJob implements Runnable {
     }
 
     private boolean checkRelativeConstraints(
-        ArrayList<Pair<PatternElement, ActiveContainer>> results) {
+            ArrayList<Pair<PatternElement, ActiveContainer>> results) {
 
         ActiveContainer[] array = new ActiveContainer[results.size()];
         int i, current_position, max_position = 0, relativeName;
@@ -68,7 +68,8 @@ public class SimpleClientJob implements Runnable {
         return true;
     }
 
-    @Override public void run() {
+    @Override
+    public void run() {
         try {
             ArmComputeSession session = compute.createProxy().createSession();
             ArrayList<PatternElement> array = new ArrayList<PatternElement>();
@@ -96,17 +97,17 @@ public class SimpleClientJob implements Runnable {
             }
             Thread.sleep(keepFor_ms);
             ArrayList<Pair<PatternElement, ActiveContainer>> containerArray =
-                new ArrayList<Pair<PatternElement, ActiveContainer>>();
+                    new ArrayList<Pair<PatternElement, ActiveContainer>>();
             while (true) {
                 ArrayList<Pair<PatternElement, ActiveContainer>> containers;
                 try {
                     containers =
-                        session.getComputeSessionContainerManagerProxy().getAtMostContainers();
+                            session.getComputeSessionContainerManagerProxy().getAtMostContainers();
                     Thread.sleep(release_ms);
                     for (Pair<PatternElement, ActiveContainer> container : containers) {
                         containerArray.add(container);
                         session.getComputeSessionContainerManagerProxy().
-                            stopContainer(container.b);
+                                stopContainer(container.b);
                     }
                     if (containerArray.size() == numContainers) {
                         break;
@@ -121,7 +122,7 @@ public class SimpleClientJob implements Runnable {
             log.info("");
             if (containerArray.size() != numContainers && interrupted == false) {
                 throw new RemoteException(
-                    "The session didn't aqcuire all the " + "containers, it was needed!!!");
+                        "The session didn't aqcuire all the " + "containers, it was needed!!!");
             }
 
             if (checkRelativeConstraints(containerArray) == false && interrupted == false) {
@@ -129,7 +130,7 @@ public class SimpleClientJob implements Runnable {
                     throw new Exception("Constraint doesn't work");
                 } catch (Exception ex) {
                     java.util.logging.Logger.getLogger(SimpleClientJob.class.getName()).
-                        log(Level.SEVERE, null, ex);
+                            log(Level.SEVERE, null, ex);
                 }
             }
 

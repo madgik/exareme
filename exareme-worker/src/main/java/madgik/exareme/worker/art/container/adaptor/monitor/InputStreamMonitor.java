@@ -20,13 +20,14 @@ public class InputStreamMonitor extends InputStream {
     private InputStream intput = null;
 
     public InputStreamMonitor(InputStream intput, AdaptorStatistics adaptorStats,
-        ConcreteOperatorStatistics opStats) {
+                              ConcreteOperatorStatistics opStats) {
         this.intput = intput;
         this.adaptorStats = adaptorStats;
         this.opStats = opStats;
     }
 
-    @Override public int read() throws IOException {
+    @Override
+    public int read() throws IOException {
         long start = System.currentTimeMillis();
         long cpuStart = ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime();
 
@@ -40,7 +41,8 @@ public class InputStreamMonitor extends InputStream {
         return r;
     }
 
-    @Override public int read(byte[] b) throws IOException {
+    @Override
+    public int read(byte[] b) throws IOException {
         long start = System.currentTimeMillis();
         long cpuStart = ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime();
 
@@ -54,7 +56,8 @@ public class InputStreamMonitor extends InputStream {
         return l;
     }
 
-    @Override public int read(byte[] bytes, int off, int len) throws IOException {
+    @Override
+    public int read(byte[] bytes, int off, int len) throws IOException {
         long start = System.currentTimeMillis();
         long cpuStart = ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime();
 
@@ -68,7 +71,8 @@ public class InputStreamMonitor extends InputStream {
         return l;
     }
 
-    @Override public void close() throws IOException {
+    @Override
+    public void close() throws IOException {
         long start = System.currentTimeMillis();
         long cpuStart = ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime();
 

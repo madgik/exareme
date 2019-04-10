@@ -80,7 +80,7 @@ public class ContainerTopology {
     }
 
     public void getLoadInLastWindowAtLevel(int level, double window, double wallTime_sec,
-        double[] cpuDataLoad) {
+                                           double[] cpuDataLoad) {
         cpuDataLoad[0] = 0.0;
         cpuDataLoad[1] = 0.0;
         ArrayList<Container> containers = treeLevels.get(level);
@@ -93,7 +93,7 @@ public class ContainerTopology {
     }
 
     public void getLoadInLastWindowAtLevel(int level, double window, double wallTime_sec,
-        double[] cpuDataLoad, double[] cpuDataVarLoad) {
+                                           double[] cpuDataLoad, double[] cpuDataVarLoad) {
         cpuDataLoad[0] = 0.0;
         cpuDataLoad[1] = 0.0;
         cpuDataVarLoad[0] = 0.0;

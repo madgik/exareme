@@ -17,7 +17,8 @@ public class NetSessionID implements Serializable {
         this.id = id;
     }
 
-    @Override public boolean equals(Object object) {
+    @Override
+    public boolean equals(Object object) {
         if (object instanceof NetSessionID) {
             NetSessionID buffId = (NetSessionID) object;
             return (id == buffId.id);
@@ -25,7 +26,8 @@ public class NetSessionID implements Serializable {
         throw new IllegalArgumentException();
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int hash = 5;
         hash = 89 * hash + (int) (this.id ^ (this.id >>> 32));
         return hash;
