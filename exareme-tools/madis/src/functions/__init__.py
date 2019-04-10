@@ -97,7 +97,7 @@ def mstr(s):
             raise
         except:
             pass
-        
+
     o=repr(s)
     if (o[0:2]=="u'" and o[-1]=="'") or (o[0:2]=='u"' and o[-1]=='"'):
         o=o[2:-1]
@@ -160,12 +160,12 @@ class Cursor(object):
         self.__permanentvtables=OrderedDict()
         self.__query = ''
         self.__initialised=True #this should be last in init
-        
+
     def __getattr__(self, attr):
         if self.__dict__.has_key(attr):
             return self.__dict__[attr]
         return getattr(self.__wrapped, attr)
-    
+
     def __setattr__(self, attr, value):
         if self.__dict__.has_key(attr):
             return object.__setattr__(self, attr, value)
@@ -185,7 +185,7 @@ class Cursor(object):
                     self.cleanupvts()
                 except:
                     pass
-        
+
     def execute(self,statements,bindings=None,parse=True, localbindings=None):  # overload execute statement
         if localbindings!=None:
             bindings=localbindings
@@ -199,7 +199,7 @@ class Cursor(object):
         if not parse:
             self.__query = statements
             return self.executetrace(statements,bindings)
-        
+
         svts=sqltransform.transform(statements, multiset_functions.keys(), functions['vtable'], functions['row'].keys(), substitute=functions['row']['subst'])
         s=svts[0]
         try:
@@ -253,7 +253,7 @@ class Cursor(object):
                 list(self.executetrace('drop view temp.___schemaview;'))
             except Exception, e:
                 raise apsw.ExecutionCompleteError
-            
+
         return schema
 
     def close(self, force=False):
@@ -273,7 +273,7 @@ class Connection(apsw.Connection):
             self.registered=True
             register(self)
             self.openiters = {}
-            
+
         return Cursor(apsw.Connection.cursor(self))
 
     def queryplan(self, statements, bindings=None, parse=True, localbindings=None):
@@ -309,7 +309,7 @@ class Connection(apsw.Connection):
         for r in plan:
             if r[1] not in ('sqlite_temp_master', 'sqlite_master'):
                 yield r
-    
+
     @echofunctionmember
     def close(self):
         apsw.Connection.close(self)
@@ -387,7 +387,7 @@ def register(connection=None):
     if variables.execdb!=oldexecdb:
         oldexecdb=variables.execdb
         dbpath=None
-        
+
         if variables.execdb!=None:
             dbpath=os.path.join(os.path.abspath(os.path.dirname(variables.execdb)),'functions')
 
@@ -443,7 +443,10 @@ def register_ops(module, connection):
     def wrapaggr(con, opfun):
         return lambda self: iterwrapperaggr(con, opfun, self)
 
-    multaggr = {}
+    def wrapaggregatefactory(wlambda):
+        return lambda cls: (cls(), cls.step, wlambda)
+
+
     for f in module.__dict__:
         fobject = module.__dict__[f]
         if hasattr(fobject, 'registered') and type(fobject.registered).__name__ == 'bool' and fobject.registered == True:
@@ -481,21 +484,19 @@ def register_ops(module, connection):
 
                 if isgeneratorfunction(fobject.final):
                     wlambda = wrapaggr(connection, fobject.final)
-                    multaggr[opname] = wlambda
-                    fobject.multiset=True
-                    setattr(fobject,'factory',classmethod(lambda cls:(cls(), cls.step, wlambda)))
+                    fobject.multiset = True
+                    setattr(fobject, 'factory', classmethod(wrapaggregatefactory(wlambda)))
                     connection.createaggregatefunction(opname, fobject.factory)
                 else:
-                    setattr(fobject,'factory',classmethod(lambda cls:(cls(), cls.step, cls.final)))
+                    setattr(fobject, 'factory', classmethod(lambda cls:(cls(), cls.step, cls.final)))
                     connection.createaggregatefunction(opname, fobject.factory)
 
             try:
-                if fobject.multiset == True:
-                    multiset_functions[opname]=True
+                if fobject.multiset:
+                    multiset_functions[opname] = True
             except:
                 pass
 
-    connection.multaggr = multaggr
 
 def testfunction():
     global test_connection, settings
@@ -516,14 +517,14 @@ def sql(sqlquery):
     import locale
     from lib import pptable
     global test_connection
-    
+
     language, output_encoding = locale.getdefaultlocale()
 
     if output_encoding==None:
         output_encoding="UTF8"
 
     test_cursor=test_connection.cursor()
-        
+
     e=test_cursor.execute(sqlquery.decode(output_encoding))
     try:
         desc=test_cursor.getdescription()
@@ -557,7 +558,7 @@ def table(tab, num=''):
     4   5   6
 
     """
-    
+
     colnames="abcdefghijklmnop"
     import re
     tab=tab.splitlines()
@@ -609,3 +610,4 @@ def table6(tab):
 
 def setlogfile(file):
     pass
+
