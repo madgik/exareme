@@ -89,8 +89,7 @@ class readmetadatafile (functions.vtable.vtbase.VT):
                     sqltype = 'text'
 
             if categorical =='Yes' and enumerations is None:
-                enum = [i for i in xrange(maxValue-minValue)]
-                enumerations = ','.join([str(i) for i in xrange(maxValue-minValue)] )
+                enumerations = ','.join([str(i) for i in xrange(maxValue-minValue+1)] )
 
             yield code,sqltype,categorical,enumerations,minValue,maxValue
 

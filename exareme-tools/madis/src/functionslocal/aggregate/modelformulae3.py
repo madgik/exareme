@@ -301,11 +301,12 @@ class anovastatistics:
         modelvariables = str(args[1])
         self.sumofsquares[modelvariables] = float(args[2])
         self.rows[no]= modelvariables
-        metadata = json.loads(args[3])
+        self.metadata = json.loads(args[3])
+        print self.metadata
         metadata = dict()
         for pair in self.metadata:
             metadata[str(pair[0])]= re.split(',',str(pair[1]))
-
+        print metadata
         N = int(args[4])
         self.SStotal += float(args[2])
 
@@ -315,11 +316,12 @@ class anovastatistics:
             colNamesWithValsList=[x for x in colNamesWithValsList if x] # remove nulls elements of the list
             self.df[modelvariables] = 1;
             for c in colNamesWithValsList:
-                self.df[modelvariables] = self.df[modelvariables] * (metadata[c]-1)
+                # print modelvariables
+                self.df[modelvariables] = self.df[modelvariables] * (len(metadata[c])-1)
         elif modelvariables in ['residuals']:
             self.df[modelvariables] = 1;
             for c in metadata:
-                self.df[modelvariables] = self.df[modelvariables] * metadata[c]
+                self.df[modelvariables] = self.df[modelvariables] * len(metadata[c])
             self.df[modelvariables] = N - self.df[modelvariables]
         elif modelvariables in ['intercept']:
             self.df[modelvariables] = 1
