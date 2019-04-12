@@ -61,9 +61,10 @@ class CallPythonScriptVT(vtbase.VT):
 
         yield [('results', 'text')]
 
-        child = subprocess.Popen(command, shell=True, bufsize=1, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        child = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         output, error = child.communicate()
+        raise functions.OperatorError("Error: " + error + ", return code: " + child.returncode)
         yield [output]
 
         if child.returncode != 0:

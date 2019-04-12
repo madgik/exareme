@@ -634,10 +634,10 @@ public class Composer {
         dflScript.append("distributed create table " + outputGlobalTbl + " as external \n");
         dflScript.append("select * from (\n  call_python_script 'python " + localPythonScriptPath + " ");
         for (ParameterProperties parameter : algorithmParameters) {
-            dflScript.append(String.format("-%s %s ", parameter.getName(), parameter.getValue()));
+            dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue()));
         }
-        dflScript.append(String.format("-%s %s' ", ComposerConstants.inputLocalDBKey, inputLocalDB));
-        dflScript.append(String.format("-%s %s ", ComposerConstants.dbQueryKey, dbQuery));
+        dflScript.append(String.format("-%s \"%s\"' ", ComposerConstants.inputLocalDBKey, inputLocalDB));
+        dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.dbQueryKey, dbQuery));
         dflScript.append("'\n);\n");
 
         return dflScript.toString();
@@ -671,10 +671,10 @@ public class Composer {
         dflScript.append("distributed create temporary table output_local_tbl as virtual \n");
         dflScript.append("select * from (\n  call_python_script 'python " + localPythonScriptPath + " ");
         for (ParameterProperties parameter : algorithmParameters) {
-            dflScript.append(String.format("-%s %s ", parameter.getName(), parameter.getValue()));
+            dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue()));
         }
-        dflScript.append(String.format("-%s %s' ", ComposerConstants.inputLocalDBKey, inputLocalDB));
-        dflScript.append(String.format("-%s %s ", ComposerConstants.dbQueryKey, dbQuery));
+        dflScript.append(String.format("-%s \"%s\"' ", ComposerConstants.inputLocalDBKey, inputLocalDB));
+        dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.dbQueryKey, dbQuery));
         dflScript.append("'\n);\n");
 
         // Format union
@@ -687,9 +687,9 @@ public class Composer {
                         outputGlobalTbl));
         dflScript.append("select * from (\n  call_python_script 'python " + globalPythonScriptPath + " ");
         for (ParameterProperties parameter : algorithmParameters) {
-            dflScript.append(String.format("-%s %s ", parameter.getName(), parameter.getValue()));
+            dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue()));
         }
-        dflScript.append(String.format("-%s %s ", ComposerConstants.localDBsKey, transferDBFilePath));
+        dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.localDBsKey, transferDBFilePath));
         dflScript.append(
                 String.format("' select * from (output '%s' select * from input_global_tbl)\n);\n", transferDBFilePath));
 
