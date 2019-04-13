@@ -636,7 +636,7 @@ public class Composer {
         for (ParameterProperties parameter : algorithmParameters) {
             dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue()));
         }
-        dflScript.append(String.format("-%s \"%s\"' ", ComposerConstants.inputLocalDBKey, inputLocalDB));
+        dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.inputLocalDBKey, inputLocalDB));
         dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.dbQueryKey, dbQuery));
         dflScript.append("'\n);\n");
 
@@ -673,7 +673,7 @@ public class Composer {
         for (ParameterProperties parameter : algorithmParameters) {
             dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue()));
         }
-        dflScript.append(String.format("-%s \"%s\"' ", ComposerConstants.inputLocalDBKey, inputLocalDB));
+        dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.inputLocalDBKey, inputLocalDB));
         dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.dbQueryKey, dbQuery));
         dflScript.append("'\n);\n");
 
