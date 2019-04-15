@@ -56,6 +56,7 @@ class CallPythonScriptVT(vtbase.VT):
         command = None
         if len(largs) > 0:
             command = largs[-1]
+            command.replace("\\\"","\"")
         if command is None:
             raise functions.OperatorError(__name__.rsplit('.')[-1], "No command argument found")
 

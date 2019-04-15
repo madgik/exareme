@@ -40,7 +40,6 @@ public class Composer {
 
     // The directory where the algorithms' SQL scripts are
     private static String algorithmsFolderPath;
-    private static String DATASET_CSV_DIRECTORY;
     private static String DATASET_DB_DIRECTORY;
     private static String DB_TABLENAME;
     private static String METADATA_DIRECTORY;
@@ -50,7 +49,6 @@ public class Composer {
 
     static {
         algorithmsFolderPath = AdpProperties.getGatewayProperties().getString("algorithms.path");
-        DATASET_CSV_DIRECTORY = AdpProperties.getGatewayProperties().getString("data.path");
         DATASET_DB_DIRECTORY = AdpProperties.getGatewayProperties().getString("db.path");
         DB_TABLENAME = AdpProperties.getGatewayProperties().getString("db.tablename");
         METADATA_DIRECTORY = AdpProperties.getGatewayProperties().getString("metadata.path");
@@ -88,16 +86,13 @@ public class Composer {
      */
     public String createLocalTableQuery(Algorithms.AlgorithmProperties algorithmProperties) {
         List<String> variables = new ArrayList<>();
+        List<String> datasets = new ArrayList<>();
         String filters = "";
         for (ParameterProperties parameter : algorithmProperties.getParameters()) {
             if (parameter.getValue().equals(""))
                 continue;
             if (parameter.getType() == ParameterProperties.ParameterType.column) {
-                if (parameter.getValueMultiple()) {
-                    variables.addAll(Arrays.asList(parameter.getValue().split("[,+*]")));
-                } else {
-                    variables.add(parameter.getValue());
-                }
+                variables.addAll(Arrays.asList(parameter.getValue().split("[,+*]")));
             } else if (parameter.getType() == Algorithms.AlgorithmProperties.ParameterProperties.ParameterType.filter) {
                 SqlQueryBuilderFactory sqlQueryBuilderFactory = new SqlQueryBuilderFactory();
                 SqlBuilder sqlBuilder = sqlQueryBuilderFactory.builder();
@@ -110,11 +105,12 @@ public class Composer {
                     e.printStackTrace();
                 }
             } else if (parameter.getType() == Algorithms.AlgorithmProperties.ParameterProperties.ParameterType.dataset) {
-                variables.add(parameter.getName());
+                datasets.addAll(Arrays.asList(parameter.getValue().split("[,]")));
             }
         }
 
         StringBuilder builder = new StringBuilder();
+        boolean whereAdded = false;
         if (variables.isEmpty())
             builder.append("select * from (" + DB_TABLENAME + ")");
         else {
@@ -127,7 +123,22 @@ public class Composer {
             builder.append(" from (" + DB_TABLENAME + ")");
             if (!"".equals(filters)) {
                 builder.append(" where " + filters);
+                whereAdded = true;
             }
+            if (!datasets.isEmpty()){
+                if (!whereAdded) {
+                    builder.append(" where ");
+                }else{
+                    builder.append(" AND ");
+                }
+                builder.append(" ( dataset IN (");
+                for(String dataset: datasets){
+                    builder.append("\"" + dataset + "\",");
+                }
+                builder.deleteCharAt(builder.lastIndexOf(","));
+                builder.append("))");
+            }
+
             log.info(builder.toString());
         }
         return builder.toString();
@@ -180,6 +191,8 @@ public class Composer {
         String transferDBFilePath = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey + "/transfer.db";
         String inputLocalDB = DATASET_DB_DIRECTORY;
         String dbQuery = createLocalTableQuery(algorithmProperties);
+        // Escaping double quotes for python algorithms because they are needed elsewhere
+        String pythonDBQuery = dbQuery.replace("\"","\\\"");
         String outputGlobalTbl = "output_" + algorithmKey;
 
         // Create the dflScript depending on algorithm type
@@ -202,11 +215,11 @@ public class Composer {
                         defaultDBFilePath, algorithmProperties.getParameters(), numberOfWorkers);
                 break;
             case python_local:
-                dflScript = composePythonLocalAlgorithmsDFLScript(algorithmName, inputLocalDB, dbQuery, outputGlobalTbl,
+                dflScript = composePythonLocalAlgorithmsDFLScript(algorithmName, inputLocalDB, pythonDBQuery, outputGlobalTbl,
                         algorithmProperties.getParameters());
                 break;
             case python_local_global:
-                dflScript = composePythonLocalGlobalAlgorithmsDFLScript(algorithmName, inputLocalDB, dbQuery, outputGlobalTbl,
+                dflScript = composePythonLocalGlobalAlgorithmsDFLScript(algorithmName, inputLocalDB, pythonDBQuery, outputGlobalTbl,
                         transferDBFilePath, algorithmProperties.getParameters());
                 break;
             case iterative:
@@ -627,7 +640,6 @@ public class Composer {
             ParameterProperties[] algorithmParameters
     ) {
         StringBuilder dflScript = new StringBuilder();
-
         String localPythonScriptPath = getAlgorithmFolderPath(algorithmName) + "/local.py";
 
         // Format local
@@ -663,7 +675,6 @@ public class Composer {
             ParameterProperties[] algorithmParameters
     ) {
         StringBuilder dflScript = new StringBuilder();
-
         String localPythonScriptPath = getAlgorithmFolderPath(algorithmName) + "/local.py";
         String globalPythonScriptPath = getAlgorithmFolderPath(algorithmName) + "/global.py";
 

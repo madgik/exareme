@@ -18,7 +18,6 @@ import java.util.Objects;
  */
 public class Algorithms {
     public static class AlgorithmProperties {
-
         public static class ParameterProperties {
             private String name;
             private String desc;
