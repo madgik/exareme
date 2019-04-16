@@ -7,7 +7,6 @@ import madgik.exareme.master.client.AdpDBClientFactory;
 import madgik.exareme.master.client.AdpDBClientProperties;
 import madgik.exareme.master.engine.AdpDBManager;
 import madgik.exareme.master.engine.AdpDBManagerLocator;
-import madgik.exareme.master.engine.iterations.IterationsTestGenericUtils;
 import madgik.exareme.master.engine.iterations.handler.IterationsConstants;
 import madgik.exareme.master.engine.iterations.state.exceptions.IterationsStateFatalException;
 import madgik.exareme.master.queryProcessor.composer.AlgorithmProperties;

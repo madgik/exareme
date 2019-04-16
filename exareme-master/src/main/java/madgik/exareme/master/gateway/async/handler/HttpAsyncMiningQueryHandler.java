@@ -1,6 +1,7 @@
 package madgik.exareme.master.gateway.async.handler;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import madgik.exareme.common.consts.HBPConstants;
 import madgik.exareme.master.client.AdpDBClient;
 import madgik.exareme.master.client.AdpDBClientFactory;
@@ -15,8 +16,7 @@ import madgik.exareme.master.engine.iterations.handler.NIterativeAlgorithmResult
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.master.gateway.ExaremeGatewayUtils;
 import madgik.exareme.master.gateway.async.handler.entity.NQueryResultEntity;
-import madgik.exareme.master.queryProcessor.composer.AlgorithmProperties;
-import madgik.exareme.master.queryProcessor.composer.Composer;
+import madgik.exareme.master.queryProcessor.composer.*;
 import madgik.exareme.utils.net.NetUtil;
 import madgik.exareme.worker.art.container.ContainerProxy;
 import madgik.exareme.worker.art.registry.ArtRegistryLocator;
@@ -237,7 +237,13 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             entity.setContent(new ByteArrayInputStream(("{\"error\" : \"" + e.getMessage() + "\"}").getBytes()));
             response.setStatusCode(HttpStatus.SC_BAD_REQUEST);
             response.setEntity(entity);
-        } catch (Exception e) {
+        } catch (JsonSyntaxException e) {
+            log.error("Could not parse the algorithms properly.");
+            BasicHttpEntity entity = new BasicHttpEntity();
+            entity.setContent(new ByteArrayInputStream(("{\"error\" : \"Could not parse the algorithms properly.\"}").getBytes()));
+            response.setStatusCode(HttpStatus.SC_BAD_REQUEST);
+            response.setEntity(entity);
+        }catch (IOException | AlgorithmsException | ComposerException e) {
             log.error(e);
             BasicHttpEntity entity = new BasicHttpEntity();
             entity.setContent(new ByteArrayInputStream(("{\"error\" : \"" + e.getMessage() + "\"}").getBytes()));
