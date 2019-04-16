@@ -18,7 +18,6 @@ import java.util.Objects;
  */
 public class Algorithms {
     public static class AlgorithmProperties {
-
         public static class ParameterProperties {
             private String name;
             private String desc;
@@ -103,11 +102,14 @@ public class Algorithms {
         }
 
         public enum AlgorithmType {
-            local,                      // exec single node local
-            pipeline,                   // exec local on each endpoint
-            local_global,               // exec global over the union of local results
-            multiple_local_global,      // exec sequentially multiple local_global
-            iterative                   // exec iterative algorithm
+            local,                          // exec single node local
+            pipeline,                       // exec local on each endpoint
+            local_global,                   // exec global over the union of local results
+            multiple_local_global,          // exec sequentially multiple local_global
+            iterative,                      // exec iterative algorithm
+            python_local,                   // exec python based local algorithm
+            python_local_global,            // exec python based local global algorithm
+            python_multiple_local_global    // exec python based multiple local global algorithm
         }
 
         private String name;
@@ -154,10 +156,6 @@ public class Algorithms {
         public ParameterProperties[] getParameters() {
             return parameters;
         }
-
-        //public void setParameters(ParameterProperties[] parameters) {
-        //    this.parameters = parameters;
-        //}
 
         /**
          * Checks if the parameterValue has the correct type
@@ -295,7 +293,9 @@ public class Algorithms {
         for (File file : Objects.requireNonNull(repoFile.listFiles(new FileFilter() {
             @Override
             public boolean accept(File pathname) {
-                return pathname.isDirectory() && !pathname.getName().startsWith(".") && !pathname.getName().contains("unit_tests");
+                if(!pathname.isDirectory())
+                    return false;
+                return new File(pathname, "properties.json").exists();
             }
         }))) {
             AlgorithmProperties algorithm =
