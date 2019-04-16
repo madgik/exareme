@@ -10,6 +10,7 @@ import madgik.exareme.master.engine.iterations.scheduler.IterationsScheduler;
 import madgik.exareme.master.engine.iterations.state.IterationsStateManager;
 import madgik.exareme.master.engine.iterations.state.IterationsStateManagerImpl;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
+import madgik.exareme.master.queryProcessor.composer.AlgorithmProperties;
 import madgik.exareme.master.queryProcessor.composer.Algorithms;
 import madgik.exareme.master.queryProcessor.composer.Composer;
 import org.apache.log4j.Logger;
@@ -59,11 +60,11 @@ public class IterationsHandler {
      * @return the iterative algorithm state
      * @throws IterationsFatalException if it failed to initialize an AdpDBClient for the current
      *                                  algorithm
-     * @see Algorithms.AlgorithmProperties
+     * @see AlgorithmProperties
      */
     public IterativeAlgorithmState handleNewIterativeAlgorithmRequest(
             AdpDBManager adpDBManager, String algorithmKey,
-            Algorithms.AlgorithmProperties algorithmProperties) {
+            AlgorithmProperties algorithmProperties) {
 
         // Generate the adpDBClient for this algorithm and a new
         // IterativeAlgorithmState

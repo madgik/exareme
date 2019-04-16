@@ -9,7 +9,6 @@ import madgik.exareme.common.consts.HBPConstants;
 import madgik.exareme.master.engine.iterations.handler.IterationsConstants;
 import madgik.exareme.master.engine.iterations.handler.IterationsHandlerDFLUtils;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
-import madgik.exareme.master.queryProcessor.composer.Algorithms.AlgorithmProperties.ParameterProperties;
 import madgik.exareme.utils.file.FileUtil;
 import madgik.exareme.utils.properties.AdpProperties;
 import madgik.exareme.worker.art.registry.ArtRegistryLocator;
@@ -36,7 +35,7 @@ import static madgik.exareme.master.engine.iterations.state.IterativeAlgorithmSt
 public class Composer {
 
     private static final Logger log = Logger.getLogger(Composer.class);
-    private static final Composer instance = new Composer();
+    private static Composer instance = null;
 
     // The directory where the algorithms' SQL scripts are
     private static String algorithmsFolderPath;
@@ -44,17 +43,20 @@ public class Composer {
     private static Algorithms algorithms;
     private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-    static {
+    private Composer(){
         algorithmsFolderPath = AdpProperties.getGatewayProperties().getString("algorithms.path");
         DATA_DIRECTORY = AdpProperties.getGatewayProperties().getString("data.path");
         try {
-            algorithms = Algorithms.createAlgorithms(algorithmsFolderPath);
+            algorithms = new Algorithms(algorithmsFolderPath);
         } catch (IOException e) {
             log.error("Unable to locate repository properties (*.json).", e);
         }
     }
 
     public static Composer getInstance() {
+        if(instance == null){
+            instance = new Composer();
+        }
         return instance;
     }
 
@@ -70,7 +72,7 @@ public class Composer {
     }
 
     public String getAlgorithms() {
-        return gson.toJson(algorithms.getAlgorithms(), Algorithms.AlgorithmProperties[].class);
+        return gson.toJson(algorithms.getAlgorithms(), AlgorithmProperties[].class);
     }
 
     /**
@@ -79,7 +81,7 @@ public class Composer {
      * @param algorithmProperties the properties of the algorithm
      * @return a query for the local database
      */
-    public String createLocalTableQuery(Algorithms.AlgorithmProperties algorithmProperties) {
+    public String createLocalTableQuery(AlgorithmProperties algorithmProperties) {
         List<String> variables = new ArrayList<>();
         String filters = "";
         for (ParameterProperties parameter : algorithmProperties.getParameters()) {
@@ -91,7 +93,7 @@ public class Composer {
                 } else {
                     variables.add(parameter.getValue());
                 }
-            } else if (parameter.getType() == Algorithms.AlgorithmProperties.ParameterProperties.ParameterType.filter) {
+            } else if (parameter.getType() == ParameterProperties.ParameterType.filter) {
                 SqlQueryBuilderFactory sqlQueryBuilderFactory = new SqlQueryBuilderFactory();
                 SqlBuilder sqlBuilder = sqlQueryBuilderFactory.builder();
                 try {   // build query
@@ -102,7 +104,7 @@ public class Composer {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            } else if (parameter.getType() == Algorithms.AlgorithmProperties.ParameterProperties.ParameterType.dataset) {
+            } else if (parameter.getType() == ParameterProperties.ParameterType.dataset) {
                 variables.add(parameter.getName());
             }
         }
@@ -139,7 +141,7 @@ public class Composer {
      *                           ContainerProxies.
      */
     public String composeDFLScript(String qKey,
-                                   Algorithms.AlgorithmProperties algorithmProperties
+                                   AlgorithmProperties algorithmProperties
     ) throws ComposerException {
         try {
             return composeDFLScript(qKey, algorithmProperties,
@@ -162,7 +164,7 @@ public class Composer {
      */
     public String composeDFLScript(
             String algorithmKey,
-            Algorithms.AlgorithmProperties algorithmProperties,
+            AlgorithmProperties algorithmProperties,
             int numberOfWorkers
     ) throws ComposerException {
         // Assigning the proper identifier for the defaultDB
@@ -464,7 +466,7 @@ public class Composer {
      */
     public String composeIterativeAlgorithmsDFLScript(
             String algorithmKey,
-            Algorithms.AlgorithmProperties algorithmProperties,
+            AlgorithmProperties algorithmProperties,
             IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase
     ) throws ComposerException {
         String dbIdentifier = algorithmProperties.getParameterValue(ComposerConstants.dbIdentifierKey);

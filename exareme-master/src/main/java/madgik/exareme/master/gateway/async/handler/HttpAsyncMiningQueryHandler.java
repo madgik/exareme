@@ -15,7 +15,7 @@ import madgik.exareme.master.engine.iterations.handler.NIterativeAlgorithmResult
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.master.gateway.ExaremeGatewayUtils;
 import madgik.exareme.master.gateway.async.handler.entity.NQueryResultEntity;
-import madgik.exareme.master.queryProcessor.composer.Algorithms;
+import madgik.exareme.master.queryProcessor.composer.AlgorithmProperties;
 import madgik.exareme.master.queryProcessor.composer.Composer;
 import madgik.exareme.utils.net.NetUtil;
 import madgik.exareme.worker.art.container.ContainerProxy;
@@ -181,8 +181,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             String dfl;
             AdpDBClientQueryStatus queryStatus;
 
-            Algorithms.AlgorithmProperties algorithmProperties =
-                    Algorithms.AlgorithmProperties.createAlgorithmProperties(algorithmName, inputContent);
+            AlgorithmProperties algorithmProperties = new AlgorithmProperties(algorithmName, inputContent);
 
             DataSerialization ds = DataSerialization.summary;
 
@@ -192,7 +191,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
 
             // Bypass direct composer call in case of iterative algorithm.
             if (algorithmProperties.getType() ==
-                    Algorithms.AlgorithmProperties.AlgorithmType.iterative) {
+                    AlgorithmProperties.AlgorithmType.iterative) {
 
                 final IterativeAlgorithmState iterativeAlgorithmState =
                         iterationsHandler.handleNewIterativeAlgorithmRequest(

@@ -1,0 +1,48 @@
+{
+	"name": "VARIABLES_HISTOGRAM",
+	"desc": "",
+	"type": "multiple_local_global",
+	"status": "enabled",
+	"parameters": [{
+			"name": "column1",
+			"desc": "It is a variable of the input dataset. The variable should be Real, Float, Integer. It cannot be empty.",
+			"type": "column",
+			"value": "subjectageyears",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "string"
+		}, {
+			"name": "column2",
+			"desc": "It is a variable of the input dataset. The variable should be text. It can also be empty.",
+			"type": "column",
+			"value": "",
+			"valueNotBlank": false,
+			"valueMultiple": false,
+			"valueType": "string"
+		}, {
+			"name": "nobuckets",
+			"desc": "It is a parameter of the algorithm. It should be integer. It cannot be empty.",
+			"type": "other",
+			"value": "4",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "integer"
+		}, {
+			"name": "dataset",
+			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty",
+			"type": "dataset",
+			"value": "ppmi",
+			"valueNotBlank": true,
+			"valueMultiple": true,
+			"valueType": "string"
+		}, {
+			"name": "filter",
+			"desc": "",
+			"type": "filter",
+			"value": "",
+			"valueNotBlank": false,
+			"valueMultiple": true,
+			"valueType": "string"
+		}
+	]
+}

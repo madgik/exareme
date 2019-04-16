@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>
+<html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>
+<html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>
+<html lang="en" ng-app="myApp" class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en" ng-app="myApp" class="no-js" xmlns="http://www.w3.org/1999/html"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>ExaView Demo</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/normalize.css">
+    <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/main.css">
+    <link rel="stylesheet" href="app.css">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css" rel="stylesheet" type="text/css">
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-route/angular-route.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script language="JavaScript" type="text/javascript" src="/js/jquery-1.2.6.min.js"></script>
+    <script src="bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/highcharts-more.js"></script>
+    <script src="https://code.highcharts.com/highcharts-3d.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+</head>
+<body>
+<!--<ul class="menu">-->
+<!--<li><a href="#!/view1">view1</a></li>-->
+<!--<li><a href="#!/view2">view2</a></li>-->
+<!--</ul>-->
+<section>
+    <div ng-controller="ExaController as exaCtrl">
+        <table width="100%" border="0">
+            <tr>
+                <td colspan="2">
+                    <h2>MIP EXAREME Demo </h2>
+                </td>
+            </tr>
+            <tr valign="top">
+                <td width="40%">
+                    <div>
+                        <h3>Algorithms</h3>
+                        <ul>
+                            <li ng-repeat="algorithm in exaCtrl.algorithms | orderBy:name:true">
+                                <h4>{{algorithm.name}}</h4>
+                                <p>{{algorithm.desc}}</p>
+                                <div>
+                                    <form>
+                                        <div ng-repeat="parameter in algorithm.parameters track by $index">
+                                            {{parameter.name + ":"}}<br>
+                                            <input type="text" ng-model="parameter.value">
+                                        </div>
+                                        <button type="button"
+                                                ng-click="exaCtrl.submit(algorithm)">Submit
+                                        </button>
+                                    </form>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </td>
+                <td width="100%">
+                    <div>
+                        <h2>Result</h2>
+                        <table>
+                            <tbody>
+                            <!-- <div id="container" style="width:90%;" ></div> -->
+                            <div id="visualization" style="width:90%;"></div>
+                            <tr>
+                                <pre>{{exaCtrl.result | json }}</pre>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </td>
+                <td colspan="2"></td>
+            </tr>
+        </table>
+    </div>
+</section>
+
+<!--[if lt IE 7]>
+<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
+    your browser</a> to improve your experience.</p>
+<![endif]-->
+
+<!--<div ng-view></div>-->
+
+<!--<div>Angular seed app: v<span app-version></span></div>-->
+
+<!-- In production use:
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
+-->
+<script src="app.js"></script>
+<script src="view1/view1.js"></script>
+<script src="view2/view2.js"></script>
+<script src="components/version/version.js"></script>
+<script src="components/version/version-directive.js"></script>
+<script src="components/version/interpolate-filter.js"></script>
+</body>
+</html>

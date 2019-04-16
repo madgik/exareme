@@ -2,6 +2,7 @@ package madgik.exareme.master.engine.iterations.handler;
 
 import madgik.exareme.master.engine.iterations.exceptions.IterationsFatalException;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
+import madgik.exareme.master.queryProcessor.composer.AlgorithmProperties;
 import madgik.exareme.master.queryProcessor.composer.Algorithms;
 import madgik.exareme.master.queryProcessor.composer.Composer;
 import madgik.exareme.master.queryProcessor.composer.ComposerException;
@@ -48,13 +49,13 @@ public class IterationsHandlerDFLUtils {
      * @param iterativeAlgorithmState the state of iterative algorithm, only usced for reading data
      * @return the generated DFL scripts (one for each phase)
      * @throws IterationsFatalException If {@link Composer#composeDFLScript} fails.
-     * @see Algorithms.AlgorithmProperties
+     * @see AlgorithmProperties
      */
     static String[] prepareDFLScripts(
             String demoCurrentAlgorithmDir,
             String algorithmKey,
             Composer composer,
-            Algorithms.AlgorithmProperties algorithmProperties,
+            AlgorithmProperties algorithmProperties,
             IterativeAlgorithmState iterativeAlgorithmState) {
 
         String[] dflScripts = new String[

@@ -1,0 +1,40 @@
+{
+	"name": "LINEAR_REGRESSION",
+	"desc": "",
+	"type": "multiple_local_global",
+	"status": "enabled",
+	"parameters": [{
+			"name": "x",
+			"desc": "The right part of the linear predictor function, that contains the indepedent variables in an equation supporting the symbols +, :, * , R notation.The independent variables are variables of the input dataset and they should be Real, Float, Integer or Text. It cannot be empty",
+			"type": "column",
+			"value": "adnicategory*apoe4+subjectage+minimentalstate+gender",
+			"valueNotBlank": true,
+			"valueMultiple": true,
+			"valueType": "string"
+		}, {
+			"name": "y",
+			"desc": "The left part of the linear predictor function, that contains the dependent variable.The dependent variable is a variable of the input dataset and it should be Real, Float or Integer. It cannot be empty",
+			"type": "column",
+			"value": "av45",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "string"
+		}, {
+			"name": "dataset",
+			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty.",
+			"type": "dataset",
+			"value": "adni,ppmi",
+			"valueNotBlank": true,
+			"valueMultiple": true,
+			"valueType": "string"
+		}, {
+			"name": "filter",
+			"desc": "",
+			"type": "filter",
+			"value": "",
+			"valueNotBlank": false,
+			"valueMultiple": true,
+			"valueType": "string"
+		}
+	]
+}

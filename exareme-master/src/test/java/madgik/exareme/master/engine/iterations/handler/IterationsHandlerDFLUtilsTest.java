@@ -4,6 +4,7 @@ import madgik.exareme.common.consts.HBPConstants;
 import madgik.exareme.master.engine.iterations.IterationsTestGenericUtils;
 import madgik.exareme.master.engine.iterations.exceptions.IterationsFatalException;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
+import madgik.exareme.master.queryProcessor.composer.AlgorithmProperties;
 import madgik.exareme.master.queryProcessor.composer.Algorithms;
 import madgik.exareme.master.queryProcessor.composer.AlgorithmsException;
 import madgik.exareme.master.queryProcessor.composer.Composer;
@@ -48,7 +49,7 @@ public class IterationsHandlerDFLUtilsTest {
     // ------------------------------------------------------------------------------------------
 
     private static String algorithmName;
-    private Algorithms.AlgorithmProperties algorithmProperties;
+    private AlgorithmProperties algorithmProperties;
     private static Composer composer;
 
     @BeforeClass
@@ -72,7 +73,7 @@ public class IterationsHandlerDFLUtilsTest {
         // Testing with [condition_query_provided=false] with a provided condition query in
         // termination_condition template file.
         algorithmName = SELECT_OK_ITERATIVE;
-        algorithmProperties = Algorithms.AlgorithmProperties.createAlgorithmProperties(algorithmName,
+        algorithmProperties =new AlgorithmProperties(algorithmName,
                 IterationsTestGenericUtils.prepareParameterProperties(
                         algorithmName, "true", "2"));
 
@@ -104,7 +105,7 @@ public class IterationsHandlerDFLUtilsTest {
         // Testing with [condition_query_provided=true] with no provided condition query in
         // termination_condition template file.
         algorithmName = SAMPLE_ITERATIVE;
-        algorithmProperties = Algorithms.AlgorithmProperties.createAlgorithmProperties(algorithmName,
+        algorithmProperties = new AlgorithmProperties(algorithmName,
                 IterationsTestGenericUtils.prepareParameterProperties(
                         algorithmName, "false", "2"));
 
@@ -140,7 +141,7 @@ public class IterationsHandlerDFLUtilsTest {
         // Preparation phase ----------------------
         // [Ensure termination condition under its required directory exists]
         algorithmName = SELECT_OK_ITERATIVE_ERRONEOUS_TERM_COND;
-        algorithmProperties = Algorithms.AlgorithmProperties.createAlgorithmProperties(algorithmName,
+        algorithmProperties = new AlgorithmProperties(algorithmName,
                 IterationsTestGenericUtils.prepareParameterProperties(
                         algorithmName, "false", "2"));
 
@@ -177,7 +178,7 @@ public class IterationsHandlerDFLUtilsTest {
             throws Exception, AlgorithmsException {
         // Preparation phase ----------------------
         algorithmName = SAMPLE_ITERATIVE;
-        algorithmProperties = Algorithms.AlgorithmProperties.createAlgorithmProperties(algorithmName,
+        algorithmProperties = new AlgorithmProperties(algorithmName,
                 IterationsTestGenericUtils.prepareParameterProperties(
                         algorithmName, "true", "2"));
 
