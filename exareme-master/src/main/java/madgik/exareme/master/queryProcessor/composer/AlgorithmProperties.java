@@ -25,7 +25,10 @@ public class AlgorithmProperties {
         pipeline,                   // exec local on each endpoint
         local_global,               // exec global over the union of local results
         multiple_local_global,      // exec sequentially multiple local_global
-        iterative                   // exec iterative algorithm
+        iterative,                   // exec iterative algorithm
+        python_local,                   // exec python based local algorithm
+        python_local_global,            // exec python based local global algorithm
+        python_multiple_local_global    // exec python based multiple local global algorithm
     }
 
     public AlgorithmProperties() {
