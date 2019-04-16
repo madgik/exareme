@@ -19,5 +19,8 @@ public class ComposerConstants {
     public static final String dbIdentifierKey = "dbIdentifier";
     public static final String DFL_SCRIPT_FILE_EXTENSION = ".dfl";
     public static final String localDBsKey = "local_step_dbs";
+    public static final String globalDBKey = "global_step_db";
+    public static final String curStatePKLKey = "cur_state_pkl";
+    public static final String prevStatePKLKey = "prev_state_pkl";
 
 }

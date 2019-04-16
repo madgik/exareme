@@ -125,14 +125,14 @@ public class Composer {
                 builder.append(" where " + filters);
                 whereAdded = true;
             }
-            if (!datasets.isEmpty()){
+            if (!datasets.isEmpty()) {
                 if (!whereAdded) {
                     builder.append(" where ");
-                }else{
+                } else {
                     builder.append(" AND ");
                 }
                 builder.append(" ( dataset IN (");
-                for(String dataset: datasets){
+                for (String dataset : datasets) {
                     builder.append("\"" + dataset + "\",");
                 }
                 builder.deleteCharAt(builder.lastIndexOf(","));
@@ -188,11 +188,10 @@ public class Composer {
             dbIdentifier = algorithmKey;
         String algorithmName = algorithmProperties.getName();
         String defaultDBFilePath = HBPConstants.DEMO_DB_WORKING_DIRECTORY + dbIdentifier + "_defaultDB.db";
-        String transferDBFilePath = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey + "/transfer.db";
         String inputLocalDB = DATASET_DB_DIRECTORY;
         String dbQuery = createLocalTableQuery(algorithmProperties);
         // Escaping double quotes for python algorithms because they are needed elsewhere
-        String pythonDBQuery = dbQuery.replace("\"","\\\"");
+        String pythonDBQuery = dbQuery.replace("\"", "\\\"");
         String outputGlobalTbl = "output_" + algorithmKey;
 
         // Create the dflScript depending on algorithm type
@@ -215,12 +214,16 @@ public class Composer {
                         defaultDBFilePath, algorithmProperties.getParameters(), numberOfWorkers);
                 break;
             case python_local:
-                dflScript = composePythonLocalAlgorithmsDFLScript(algorithmName, inputLocalDB, pythonDBQuery, outputGlobalTbl,
-                        algorithmProperties.getParameters());
+                dflScript = composePythonLocalAlgorithmsDFLScript(algorithmName, inputLocalDB, pythonDBQuery,
+                        outputGlobalTbl, algorithmProperties.getParameters());
                 break;
             case python_local_global:
-                dflScript = composePythonLocalGlobalAlgorithmsDFLScript(algorithmName, inputLocalDB, pythonDBQuery, outputGlobalTbl,
-                        transferDBFilePath, algorithmProperties.getParameters());
+                dflScript = composePythonLocalGlobalAlgorithmsDFLScript(algorithmName, algorithmKey, inputLocalDB,
+                        pythonDBQuery, outputGlobalTbl, algorithmProperties.getParameters());
+                break;
+            case python_multiple_local_global:
+                dflScript = composePythonMultipleLocalGlobalAlgorithmsDFLScript(algorithmName, algorithmKey,
+                        inputLocalDB, pythonDBQuery, outputGlobalTbl, algorithmProperties.getParameters());
                 break;
             case iterative:
                 throw new ComposerException("Iterative Algorithms should not call composeDFLScripts");
@@ -659,24 +662,25 @@ public class Composer {
      * Returns an exaDFL script for the algorithms of type python_local_global
      *
      * @param algorithmName       the name of the algorithm
+     * @param algorithmKey        the key of the specific algorithm
      * @param inputLocalDB        the location of the local database
      * @param dbQuery             the query to execute on the database
      * @param outputGlobalTbl     the name of the output table
-     * @param transferDBFilePath  the absolute path of the file where the transfered results will be saved
      * @param algorithmParameters the parameters of the algorithm
      * @return
      */
     private String composePythonLocalGlobalAlgorithmsDFLScript(
             String algorithmName,
+            String algorithmKey,
             String inputLocalDB,
             String dbQuery,
             String outputGlobalTbl,
-            String transferDBFilePath,
             ParameterProperties[] algorithmParameters
     ) {
         StringBuilder dflScript = new StringBuilder();
         String localPythonScriptPath = getAlgorithmFolderPath(algorithmName) + "/local.py";
         String globalPythonScriptPath = getAlgorithmFolderPath(algorithmName) + "/global.py";
+        String transferDBFilePath = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey + "/transfer.db";
 
         // Format local
         dflScript.append("distributed create temporary table output_local_tbl as virtual \n");
@@ -705,6 +709,109 @@ public class Composer {
                 String.format("' select * from (output '%s' select * from input_global_tbl)\n);\n", transferDBFilePath));
 
         return dflScript.toString();
+    }
+
+    /**
+     * Returns an exaDFL script for the algorithms of type python_multiple_local_global
+     *
+     * @param algorithmName       the name of the algorithm
+     * @param algorithmKey        the key of the specific algorithm
+     * @param inputLocalDB        the location of the local database
+     * @param dbQuery             the query to execute on the database
+     * @param outputGlobalTbl     the name of the output table
+     * @param algorithmParameters the parameters of the algorithm
+     * @return
+     */
+    private String composePythonMultipleLocalGlobalAlgorithmsDFLScript(
+            String algorithmName,
+            String algorithmKey,
+            String inputLocalDB,
+            String dbQuery,
+            String outputGlobalTbl,
+            ParameterProperties[] algorithmParameters
+    ) {
+        StringBuilder dflScript = new StringBuilder();
+
+        String algorithmFolderPath = getAlgorithmFolderPath(algorithmName);
+        File[] listFiles = new File(algorithmFolderPath).listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File pathname) {
+                return pathname.isDirectory();
+            }
+        });
+        Arrays.sort(listFiles);
+
+        // Iterating through all the local_global folders of the algorithm
+        for (int iteration = 1; iteration <= listFiles.length; iteration++) {
+            String inputGlobalTbl = "input_global_tbl_" + iteration;
+            String outputLocalTbl = "output_local_tbl_" + iteration;
+            String prevOutputGlobalTbl = "output_global_tbl_" + (iteration - 1);
+            String tempOutputGlobalTbl = "output_global_tbl_" + iteration;
+            String currentIterationAlgorithmFolderPath = algorithmFolderPath + "/" + listFiles[iteration - 1].getName();
+            String localScriptPath = currentIterationAlgorithmFolderPath + "/local.py";
+            String globalScriptPath = currentIterationAlgorithmFolderPath + "/global.py";
+            String localTransferDBFilePath = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey
+                    + "/" + iteration + "/local_transfer.db";
+            String globalTransferDBFilePath = HBPConstants.DEMO_DB_WORKING_DIRECTORY
+                    + algorithmKey + "/" + iteration + "/global_transfer.db";
+            String localStatePKLFile = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey
+                    + "/" + iteration + "/local_state.pkl";
+            String prevLocalStatePKLFile = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey
+                    + "/" + (iteration - 1) + "/local_state.pkl";
+            String globalStatePKLFile = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey
+                    + "/" + iteration + "/global_state.pkl";
+            String prevGlobalStatePKLFile = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey
+                    + "/" + (iteration - 1) + "/global_state.pkl";
+
+            // Format local
+            if (iteration > 1)
+                dflScript.append(String.format("using %s\n", prevOutputGlobalTbl));
+            dflScript.append(String
+                    .format("distributed create temporary table %s as virtual \n", outputLocalTbl));
+            dflScript.append("select * from (\n  call_python_script 'python " + localScriptPath + " ");
+            for (ParameterProperties parameter : algorithmParameters) {
+                dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue()));
+            }
+            dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.inputLocalDBKey, inputLocalDB));
+            dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.dbQueryKey, dbQuery));
+            dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.curStatePKLKey, localStatePKLFile));
+            if (iteration > 1) {
+                dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.prevStatePKLKey, prevLocalStatePKLFile));
+                dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.globalDBKey, localTransferDBFilePath));
+                dflScript.append(String.format("' select * from (output '%s' select * from %s)\n);\n",
+                        localTransferDBFilePath, prevOutputGlobalTbl));
+            } else
+                dflScript.append("'\n);\n");
+
+            // Format union
+            dflScript.append(String.format("\ndistributed create temporary table %s to 1 as \n", inputGlobalTbl));
+            dflScript.append(String.format("select * from %s;\n", outputLocalTbl));
+
+            // Format global
+            if (iteration != listFiles.length) {
+                dflScript.append(String.format(
+                        "\nusing %s \ndistributed create temporary table %s as external \n",
+                        inputGlobalTbl, tempOutputGlobalTbl));
+            } else {
+                dflScript.append(String
+                        .format("\nusing %s \ndistributed create table %s as external \n",
+                                inputGlobalTbl, outputGlobalTbl));
+            }
+
+            dflScript.append("select * from (\n  call_python_script 'python " + globalScriptPath + " ");
+            for (ParameterProperties parameter : algorithmParameters) {
+                dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue()));
+            }
+            dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.localDBsKey, globalTransferDBFilePath));
+            dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.curStatePKLKey, globalStatePKLFile));
+            if (iteration > 1) {
+                dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.prevStatePKLKey, prevGlobalStatePKLFile));
+            }
+            dflScript.append(
+                    String.format("' select * from (output '%s' select * from %s)\n);\n", globalTransferDBFilePath, inputGlobalTbl));
+        }
+        return dflScript.toString();
+
     }
     // Utilities --------------------------------------------------------------------------------
 
