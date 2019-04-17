@@ -187,3 +187,6 @@ target/
 
 # Created by .ignore support plugin (hsz.mobi)
 exareme-master/src/main/java/madgik/exareme/master/queryProcessor/decomposer/demo
+
+# Mac
+*.DS_Store
