@@ -50,7 +50,8 @@ public class IterationsHandlerTest {
         handler = IterationsHandler.getInstance();
         stateManager = IterationsStateManagerImpl.getInstance();
 
-        algorithmProperties = new AlgorithmProperties(algorithmName,
+        algorithmProperties = Algorithms.getInstance().getAlgorithmProperties(algorithmName);
+        algorithmProperties.mergeAlgorithmParametersWithInputContent(
                 IterationsTestGenericUtils.prepareParameterProperties(
                         algorithmName, "true", "2"));
 

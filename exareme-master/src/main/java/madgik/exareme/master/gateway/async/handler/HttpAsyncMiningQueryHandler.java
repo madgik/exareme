@@ -49,7 +49,6 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
 
     private static final String SET_COOKIE_HEADER_NAME = "Set-Cookie";
     private static final AdpDBManager manager = AdpDBManagerLocator.getDBManager();
-    private static final Composer composer = Composer.getInstance();
     private static final IterationsHandler iterationsHandler = IterationsHandler.getInstance();
 
     public HttpAsyncMiningQueryHandler() {
@@ -182,7 +181,8 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             String dfl;
             AdpDBClientQueryStatus queryStatus;
 
-            AlgorithmProperties algorithmProperties = new AlgorithmProperties(algorithmName, inputContent);
+            AlgorithmProperties algorithmProperties = Algorithms.getInstance().getAlgorithmProperties(algorithmName);
+            algorithmProperties.mergeAlgorithmParametersWithInputContent(inputContent);
 
             DataSerialization ds = DataSerialization.summary;
 
@@ -207,10 +207,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 response.setStatusCode(HttpStatus.SC_OK);
                 response.setEntity(entity);
             } else {
-                log.debug("OK4");
-                log.debug("Composer is null" + composer == null);
-                log.debug("algorithmProperties is null?: " + algorithmProperties == null);
-                dfl = composer.composeDFLScript(algorithmKey, algorithmProperties, numberOfContainers);
+                dfl = Composer.composeDFLScript(algorithmKey, algorithmProperties, numberOfContainers);
                 log.debug(dfl);
                 try {
                     log.debug("OK5");

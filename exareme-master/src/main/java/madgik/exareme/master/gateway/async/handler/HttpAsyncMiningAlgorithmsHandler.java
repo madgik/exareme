@@ -1,6 +1,9 @@
 package madgik.exareme.master.gateway.async.handler;
 
-import madgik.exareme.master.queryProcessor.composer.Composer;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import madgik.exareme.master.queryProcessor.composer.AlgorithmProperties;
+import madgik.exareme.master.queryProcessor.composer.Algorithms;
 import org.apache.http.HttpException;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
@@ -14,25 +17,15 @@ import org.apache.log4j.Logger;
 import java.io.IOException;
 import java.util.Locale;
 
-/**
- * Mining  Handler
- *
- * @author alex
- * @since 0.1
- */
 public class HttpAsyncMiningAlgorithmsHandler implements HttpAsyncRequestHandler<HttpRequest> {
-
     private static final Logger log = Logger.getLogger(HttpAsyncMiningAlgorithmsHandler.class);
-
-    private static final Composer composer = Composer.getInstance();
 
     public HttpAsyncMiningAlgorithmsHandler() {
     }
 
     @Override
-    public HttpAsyncRequestConsumer<HttpRequest> processRequest(HttpRequest request,
-                                                                HttpContext context) throws HttpException, IOException {
-
+    public HttpAsyncRequestConsumer<HttpRequest> processRequest(HttpRequest request, HttpContext context)
+    {
         return new BasicAsyncRequestConsumer();
     }
 
@@ -55,7 +48,8 @@ public class HttpAsyncMiningAlgorithmsHandler implements HttpAsyncRequestHandler
         if (!"GET".equals(method)) {
             throw new UnsupportedHttpVersionException(method + "not supported.");
         }
-
-        response.setEntity(new NStringEntity(composer.getAlgorithms()));
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String algorithmsJSON = gson.toJson(Algorithms.getInstance().getAlgorithms(), AlgorithmProperties[].class);
+        response.setEntity(new NStringEntity(algorithmsJSON));
     }
 }

@@ -1,10 +1,9 @@
 package madgik.exareme.master.queryProcessor.composer;
 
 import com.google.gson.Gson;
-import org.apache.commons.io.FileUtils;
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
+import madgik.exareme.utils.properties.AdpProperties;
+import org.apache.log4j.Logger;
+
 
 import java.io.*;
 import java.util.ArrayList;
@@ -12,45 +11,63 @@ import java.util.HashMap;
 import java.util.Objects;
 
 /**
- * Represents the mip-algorithms repository properties.
- * <p>
- * The properties.json file is an AlgorithmProperties class.
+ * Loads the available algorithms and their properties from the algorithm's path.
+ *
  */
 public class Algorithms {
+    private static Algorithms instance = null;
+    private HashMap<String,AlgorithmProperties> algorithmsHashMap;
+    private AlgorithmProperties[] algorithmsArray;
 
-    private AlgorithmProperties[] algorithms;
-
-    public Algorithms(String repoPath) throws IOException {
-
+    private Algorithms(String repoPath) throws IOException {
         Gson gson = new Gson();
         File repoFile = new File(repoPath);
         if (!repoFile.exists()) throw new IOException("Unable to locate property file.");
 
-        // read per algorithm property.json
+        // Read every algorithm's property.json
         ArrayList<AlgorithmProperties> currentAlgorithms = new ArrayList<>();
-
+        algorithmsHashMap = new HashMap<>();
         for (File file : Objects.requireNonNull(repoFile.listFiles(new FileFilter() {
             @Override
             public boolean accept(File pathname) {
-                if(!pathname.isDirectory())
+                if (!pathname.isDirectory())
                     return false;
-                return new File(pathname, "properties.json").exists();            }
+                return new File(pathname, "properties.json").exists();
+            }
         }))) {
-            AlgorithmProperties algorithm =
-                    gson.fromJson(
-                            new BufferedReader(
-                                    new FileReader(file.getAbsolutePath() + "/properties.json")),
-                            AlgorithmProperties.class);
+            AlgorithmProperties algorithm = gson.fromJson(new BufferedReader(
+                            new FileReader(file.getAbsolutePath() + "/properties.json")), AlgorithmProperties.class);
+            algorithmsHashMap.put(algorithm.getName(),algorithm);
             currentAlgorithms.add(algorithm);
         }
-        setAlgorithms(currentAlgorithms.toArray(new AlgorithmProperties[0]));
+        algorithmsArray = currentAlgorithms.toArray(new AlgorithmProperties[0]);
+    }
+
+    public static Algorithms getInstance() {
+        if (instance == null) {
+            try {
+                instance = new Algorithms(getAlgorithmsFolderPath());
+            } catch (IOException e) {
+                Logger log = Logger.getLogger(Composer.class);
+                log.error("Unable to locate repository properties (*.json).", e);
+            }
+        }
+        return instance;
+    }
+
+    private static String getAlgorithmsFolderPath() {
+        return AdpProperties.getGatewayProperties().getString("algorithms.path");
+    }
+
+    public static String getAlgorithmFolderPath(String algorithmName) {
+        return getAlgorithmsFolderPath() + algorithmName;
     }
 
     public AlgorithmProperties[] getAlgorithms() {
-        return algorithms;
+        return algorithmsArray;
     }
 
-    public void setAlgorithms(AlgorithmProperties[] algorithms) {
-        this.algorithms = algorithms;
+    public AlgorithmProperties getAlgorithmProperties(String algorithmName) {
+        return algorithmsHashMap.get(algorithmName);
     }
 }

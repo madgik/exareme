@@ -1,6 +1,5 @@
 package madgik.exareme.master.queryProcessor.composer;
 
-
 import com.google.gson.Gson;
 import org.apache.commons.io.FileUtils;
 import org.codehaus.jettison.json.JSONArray;
@@ -11,9 +10,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
+/**
+ * AlgorithmProperties contains all the information about the properties in each algorithm's properties.json file.
+ */
 public class AlgorithmProperties {
-
-    ParameterProperties parameterProperties;
     private String name;
     private String desc;
     private AlgorithmType type;
@@ -70,19 +70,31 @@ public class AlgorithmProperties {
         return parameters;
     }
 
-
+    /**
+     * Returns the value of the parameter provided
+     * If it doesn't exist null is returned.
+     *
+     * @param parameterName the name of a parameter
+     * @return the value of the parameter provided
+     */
+    public String getParameterValue(String parameterName) {
+        for (ParameterProperties parameter : parameters) {
+            if (parameter.getName().equals(parameterName))
+                return parameter.getValue();
+        }
+        return null;
+    }
 
     /**
-     * Initializes the AlgorithmProperties from the properties.json file.
-     * It also checks if the parameter values given from the inputContent
-     * match with the types specified in the properties.json
+     * Gets the AlgorithmProperties from the cached Algorithms.
+     * Merges the default algorithm properties with the parameters given in the HashMap.
      *
-     * @param inputContent a HashMap with the properties
-     * @return algorithm properties
-     * @throws IOException when algorithm property file does not exist
+     * @param inputContent a HashMap with the properties from the request
+     * @return the merge algorithm's properties
+     * @throws AlgorithmsException when algorithm's properties do not match the inputContent
      */
-    public AlgorithmProperties(String algorithmName, HashMap<String, String> inputContent) throws IOException, AlgorithmsException {
-        loadAlgorithmProperties(algorithmName);
+    public void mergeAlgorithmParametersWithInputContent(HashMap<String, String> inputContent)
+            throws AlgorithmsException {
 
         for (ParameterProperties parameterProperties : this.getParameters()) {
             String value = inputContent.get(parameterProperties.getName());
@@ -97,26 +109,6 @@ public class AlgorithmProperties {
             }
             parameterProperties.setValue(value);
         }
-    }
-
-    public AlgorithmProperties(String algorithmName) throws IOException, AlgorithmsException {
-        loadAlgorithmProperties(algorithmName);
-    }
-
-
-        /**
-         * Returns the value of the parameter provided
-         * If it doesn't exist null is returned.
-         *
-         * @param parameterName the name of a parameter
-         * @return the value of the parameter provided
-         */
-    public String getParameterValue(String parameterName) {
-        for (ParameterProperties parameter : parameters) {
-            if (parameter.getName().equals(parameterName))
-                return parameter.getValue();
-        }
-        return null;
     }
 
     /**
@@ -162,33 +154,5 @@ public class AlgorithmProperties {
                                 + "' should contain only one value.");
             }
         }
-    }
-
-    /**
-     * Initializes the algorithm properties with the values from it's properties.json file
-     *
-     * @param algorithmName the name of the algorithm
-     * @return an AlgorithmProperties class with the default values
-     * @throws IOException when algorithm property file does not exist
-     */
-    private void loadAlgorithmProperties(String algorithmName)
-            throws IOException {
-
-        String algorithmPropertyFilePath = Composer.getInstance().getAlgorithmFolderPath(algorithmName) + "/properties.json";
-
-        File propertyFile = new File(algorithmPropertyFilePath);
-        if (!propertyFile.exists())
-            throw new IOException("Algorithm property file does not exist.");
-
-        Gson gson = new Gson();
-
-        AlgorithmProperties algorithmProperties = gson.fromJson(FileUtils.readFileToString(propertyFile), AlgorithmProperties.class);
-
-        //All fields must be copy to this.
-        this.name = algorithmProperties.name;
-        this.desc = algorithmProperties.desc;
-        this.type = algorithmProperties.type;
-        this.responseContentType = algorithmProperties.responseContentType;
-        this.parameters = algorithmProperties.parameters;
     }
 }

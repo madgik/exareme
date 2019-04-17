@@ -43,8 +43,6 @@ public class IterationsHandlerDFLUtils {
      * @param demoCurrentAlgorithmDir the algorithm's current execution directory, obtained by
      *                                firstly running {@link IterationsHandlerDFLUtils#copyAlgorithmTemplatesToDemoDirectory}
      * @param algorithmKey            the algorithm's unique key
-     * @param composer                the Composer instance used to generate DFL script for each
-     *                                phase
      * @param algorithmProperties     the properties of this algorithm
      * @param iterativeAlgorithmState the state of iterative algorithm, only usced for reading data
      * @return the generated DFL scripts (one for each phase)
@@ -54,7 +52,6 @@ public class IterationsHandlerDFLUtils {
     static String[] prepareDFLScripts(
             String demoCurrentAlgorithmDir,
             String algorithmKey,
-            Composer composer,
             AlgorithmProperties algorithmProperties,
             IterativeAlgorithmState iterativeAlgorithmState) {
 
@@ -97,7 +94,7 @@ public class IterationsHandlerDFLUtils {
             // 2. Generate DFL
             try {
                 dflScripts[dflScriptIdx++] =
-                        composer.composeIterativeAlgorithmsDFLScript(algorithmKey, algorithmProperties, phase);
+                        Composer.composeIterativeAlgorithmsDFLScript(algorithmKey, algorithmProperties, phase);
                 log.info("dfl: " + dflScripts[dflScriptIdx - 1]);
             } catch (ComposerException e) {
                 throw new IterationsFatalException("Composer failure to generate DFL script for phase: "
@@ -415,7 +412,7 @@ public class IterationsHandlerDFLUtils {
      */
     public static String copyAlgorithmTemplatesToDemoDirectory(String algorithmName,
                                                                String algorithmKey) {
-        String algorithmFolderPath = Composer.getInstance().getAlgorithmFolderPath(algorithmName);
+        String algorithmFolderPath = Algorithms.getAlgorithmFolderPath(algorithmName);
         String algorithmDemoDestinationDirectory =
                 DEMO_ALGORITHMS_WORKING_DIRECTORY + "/" + algorithmKey;
         try {

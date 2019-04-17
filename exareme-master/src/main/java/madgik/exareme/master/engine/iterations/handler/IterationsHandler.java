@@ -43,7 +43,6 @@ public class IterationsHandler {
     }
 
     // Instance fields --------------------------------------------------------------------------
-    private Composer composer = Composer.getInstance();
     private IterationsStateManager iterationsStateManager = IterationsStateManagerImpl.getInstance();
     private IterationsScheduler iterationsScheduler = IterationsScheduler.getInstance();
 
@@ -100,8 +99,7 @@ public class IterationsHandler {
                 copyAlgorithmTemplatesToDemoDirectory(algorithmProperties.getName(), algorithmKey);
 
         String dflScripts[] = IterationsHandlerDFLUtils.prepareDFLScripts(
-                demoCurrentAlgorithmDir, algorithmKey, composer, algorithmProperties,
-                iterativeAlgorithmState);
+                demoCurrentAlgorithmDir, algorithmKey, algorithmProperties, iterativeAlgorithmState);
 
         try {
             for (IterativeAlgorithmState.IterativeAlgorithmPhasesModel phase :

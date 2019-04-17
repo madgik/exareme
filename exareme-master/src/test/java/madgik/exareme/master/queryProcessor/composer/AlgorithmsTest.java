@@ -37,7 +37,7 @@ public class AlgorithmsTest {
 
         String path = resource.getPath();
         log.debug(path);
-        Algorithms algorithms = new Algorithms(path);
+        Algorithms algorithms = Algorithms.getInstance();
         log.debug(algorithms.getAlgorithms().length);
         String result = new Gson().toJson(algorithms, Algorithms.class);
         log.debug(result);

@@ -85,9 +85,6 @@ public class IterationsTestGenericUtils {
         File algorithmsDevDirectory = new File(ALGORITHMS_DEV_DIRECTORY);
         gatewayProperties.setStringProperty("algorithms.path",
                 algorithmsDevDirectory.getCanonicalPath() + "/");
-
-        // Initialization of Composer must occur AFTER our overwriting of the demo repo. path prop.
-        Composer.getInstance();
     }
 
     /**
