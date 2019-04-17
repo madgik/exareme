@@ -10,7 +10,7 @@ public class ParameterProperties {
     private ParameterValueType valueType;
 
     public enum ParameterType {
-        database,              // used for querying the database
+        column,                // used for selecting specific columns from the database
         filter,                // used for filtering on the database input
         dataset,               // used for choosing database input
         other                  // for any other reason

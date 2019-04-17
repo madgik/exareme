@@ -38,12 +38,12 @@ public class Composer {
     private static Composer instance = null;
 
     // The directory where the algorithms' SQL scripts are
-    private static String algorithmsFolderPath;
-    private static String DATASET_DB_DIRECTORY;
-    private static String DB_TABLENAME;
-    private static String METADATA_DIRECTORY;
-    private static Algorithms algorithms;
-    private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    private String algorithmsFolderPath;
+    private String DATASET_DB_DIRECTORY;
+    private String DB_TABLENAME;
+    private String METADATA_DIRECTORY;
+    private Algorithms algorithms;
+    private Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     private Composer(){
         algorithmsFolderPath = AdpProperties.getGatewayProperties().getString("algorithms.path");
@@ -92,35 +92,30 @@ public class Composer {
         for (ParameterProperties parameter : algorithmProperties.getParameters()) {
             if (parameter.getValue().equals(""))
                 continue;
-            if (parameter.getType() == ParameterProperties.ParameterType.database) {
-                if (parameter.getValueMultiple()) {
-                    variables.addAll(Arrays.asList(parameter.getValue().split("[,+*]")));
-                } else {
-                    variables.add(parameter.getValue());
-                }
+            if (parameter.getType() == ParameterProperties.ParameterType.column) {
+                variables.addAll(Arrays.asList(parameter.getValue().split("[,+*]")));
             } else if (parameter.getType() == ParameterProperties.ParameterType.filter) {
                 SqlQueryBuilderFactory sqlQueryBuilderFactory = new SqlQueryBuilderFactory();
                 SqlBuilder sqlBuilder = sqlQueryBuilderFactory.builder();
                 try {   // build query
                     SqlQueryResult sqlQueryResult = sqlBuilder.build(parameter.getValue());
                     filters = String.valueOf(sqlQueryResult);
-                    filters = filters.replaceAll("'","\"");
+                    filters = filters.replaceAll("'", "\"");
                     log.debug(filters);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             } else if (parameter.getType() == ParameterProperties.ParameterType.dataset) {
-                variables.add(parameter.getName());
+                datasets.addAll(Arrays.asList(parameter.getValue().split("[,]")));
             }
         }
 
         StringBuilder builder = new StringBuilder();
         boolean whereAdded = false;
-
         if (variables.isEmpty())
             builder.append("select * from (" + DB_TABLENAME + ")");
         else {
-            builder.append("(select ");
+            builder.append("select ");
             for (String variable : variables) {
                 builder.append(variable);
                 builder.append(",");
@@ -144,6 +139,7 @@ public class Composer {
                 builder.deleteCharAt(builder.lastIndexOf(","));
                 builder.append("))");
             }
+
             log.info(builder.toString());
         }
         return builder.toString();
@@ -818,7 +814,6 @@ public class Composer {
         return dflScript.toString();
 
     }
-
     // Utilities --------------------------------------------------------------------------------
 
     /**

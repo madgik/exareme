@@ -70,6 +70,8 @@ public class AlgorithmProperties {
         return parameters;
     }
 
+
+
     /**
      * Initializes the AlgorithmProperties from the properties.json file.
      * It also checks if the parameter values given from the inputContent
@@ -80,9 +82,9 @@ public class AlgorithmProperties {
      * @throws IOException when algorithm property file does not exist
      */
     public AlgorithmProperties(String algorithmName, HashMap<String, String> inputContent) throws IOException, AlgorithmsException {
-        AlgorithmProperties algorithmProperties = loadAlgorithmProperties(algorithmName);
+        loadAlgorithmProperties(algorithmName);
 
-        for (ParameterProperties parameterProperties : algorithmProperties.getParameters()) {
+        for (ParameterProperties parameterProperties : this.getParameters()) {
             String value = inputContent.get(parameterProperties.getName());
             if (value != null) {
                 checkAlgorithmParameterValue(value, parameterProperties);
@@ -97,13 +99,18 @@ public class AlgorithmProperties {
         }
     }
 
-    /**
-     * Returns the value of the parameter provided
-     * If it doesn't exist null is returned.
-     *
-     * @param parameterName the name of a parameter
-     * @return the value of the parameter provided
-     */
+    public AlgorithmProperties(String algorithmName) throws IOException, AlgorithmsException {
+        loadAlgorithmProperties(algorithmName);
+    }
+
+
+        /**
+         * Returns the value of the parameter provided
+         * If it doesn't exist null is returned.
+         *
+         * @param parameterName the name of a parameter
+         * @return the value of the parameter provided
+         */
     public String getParameterValue(String parameterName) {
         for (ParameterProperties parameter : parameters) {
             if (parameter.getName().equals(parameterName))
@@ -118,7 +125,7 @@ public class AlgorithmProperties {
      * @param value               the value of the parameter
      * @param parameterProperties the type of the value
      */
-    private void checkAlgorithmParameterValue(
+    private static void checkAlgorithmParameterValue(
             String value,
             ParameterProperties parameterProperties
     ) throws AlgorithmsException {
@@ -164,7 +171,7 @@ public class AlgorithmProperties {
      * @return an AlgorithmProperties class with the default values
      * @throws IOException when algorithm property file does not exist
      */
-    private AlgorithmProperties loadAlgorithmProperties(String algorithmName)
+    private void loadAlgorithmProperties(String algorithmName)
             throws IOException {
 
         String algorithmPropertyFilePath = Composer.getInstance().getAlgorithmFolderPath(algorithmName) + "/properties.json";
@@ -174,6 +181,14 @@ public class AlgorithmProperties {
             throw new IOException("Algorithm property file does not exist.");
 
         Gson gson = new Gson();
-        return gson.fromJson(FileUtils.readFileToString(propertyFile), AlgorithmProperties.class);
+
+        AlgorithmProperties algorithmProperties = gson.fromJson(FileUtils.readFileToString(propertyFile), AlgorithmProperties.class);
+
+        //All fields must be copy to this.
+        this.name = algorithmProperties.name;
+        this.desc = algorithmProperties.desc;
+        this.type = algorithmProperties.type;
+        this.responseContentType = algorithmProperties.responseContentType;
+        this.parameters = algorithmProperties.parameters;
     }
 }
