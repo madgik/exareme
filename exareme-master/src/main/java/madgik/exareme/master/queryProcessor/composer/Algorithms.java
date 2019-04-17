@@ -55,7 +55,7 @@ public class Algorithms {
         return instance;
     }
 
-    private static String getAlgorithmsFolderPath() {
+    public static String getAlgorithmsFolderPath() {
         return AdpProperties.getGatewayProperties().getString("algorithms.path");
     }
 
