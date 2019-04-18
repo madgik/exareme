@@ -3,8 +3,8 @@ package madgik.exareme.master.engine.iterations.handler;
 import madgik.exareme.master.engine.iterations.exceptions.IterationsFatalException;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.master.queryProcessor.composer.AlgorithmProperties;
-import madgik.exareme.master.queryProcessor.composer.Algorithms;
 import madgik.exareme.master.queryProcessor.composer.Composer;
+import madgik.exareme.master.queryProcessor.composer.ComposerConstants;
 import madgik.exareme.master.queryProcessor.composer.ComposerException;
 import madgik.exareme.utils.association.Pair;
 import madgik.exareme.utils.file.FileUtil;
@@ -412,7 +412,7 @@ public class IterationsHandlerDFLUtils {
      */
     public static String copyAlgorithmTemplatesToDemoDirectory(String algorithmName,
                                                                String algorithmKey) {
-        String algorithmFolderPath = Algorithms.getAlgorithmFolderPath(algorithmName);
+        String algorithmFolderPath = ComposerConstants.getAlgorithmFolderPath(algorithmName);
         String algorithmDemoDestinationDirectory =
                 DEMO_ALGORITHMS_WORKING_DIRECTORY + "/" + algorithmKey;
         try {

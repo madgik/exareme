@@ -8,7 +8,6 @@ import madgik.exareme.master.engine.iterations.handler.IterationsConstants;
 import madgik.exareme.master.engine.iterations.handler.IterationsHandlerDFLUtils;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.utils.file.FileUtil;
-import madgik.exareme.utils.properties.AdpProperties;
 import madgik.exareme.worker.art.registry.ArtRegistryLocator;
 import org.apache.log4j.Logger;
 
@@ -33,23 +32,11 @@ import static madgik.exareme.master.engine.iterations.state.IterativeAlgorithmSt
 public class Composer {
     private static final Logger log = Logger.getLogger(Composer.class);
 
-    private static String getDatasetDBDirectory() {
-        return AdpProperties.getGatewayProperties().getString("db.path");
-    }
-
-    private static String getDBTablename() {
-        return AdpProperties.getGatewayProperties().getString("db.tablename");
-    }
-
-    public static String getMetadataDirectory() {
-        return AdpProperties.getGatewayProperties().getString("metadata.path");
-    }
-
     private static String getIterativeAlgorithmFolderPath(
             String algorithmName,
             IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase,
             int iteration) {
-        return Algorithms.getAlgorithmFolderPath(algorithmName) + "/" + iterativeAlgorithmPhase.name() + "/" + iteration;
+        return ComposerConstants.getAlgorithmFolderPath(algorithmName) + "/" + iterativeAlgorithmPhase.name() + "/" + iteration;
     }
 
     /**
@@ -86,7 +73,7 @@ public class Composer {
         StringBuilder builder = new StringBuilder();
         boolean whereAdded = false;
         if (variables.isEmpty())
-            builder.append("select * from (" + getDBTablename() + ")");
+            builder.append("select * from (" + ComposerConstants.getDBTablename() + ")");
         else {
             builder.append("select ");
             for (String variable : variables) {
@@ -94,7 +81,7 @@ public class Composer {
                 builder.append(",");
             }
             builder.deleteCharAt(builder.lastIndexOf(","));
-            builder.append(" from (" + getDBTablename() + ")");
+            builder.append(" from (" + ComposerConstants.getDBTablename() + ")");
             if (!"".equals(filters)) {
                 builder.append(" where " + filters);
                 whereAdded = true;
@@ -162,7 +149,7 @@ public class Composer {
             dbIdentifier = algorithmKey;
         String algorithmName = algorithmProperties.getName();
         String defaultDBFilePath = HBPConstants.DEMO_DB_WORKING_DIRECTORY + dbIdentifier + "_defaultDB.db";
-        String inputLocalDB = getDatasetDBDirectory();
+        String inputLocalDB = ComposerConstants.getDatasetDBDirectory();
         String dbQuery = createLocalTableQuery(algorithmProperties);
         // Escaping double quotes for python algorithms because they are needed elsewhere
         String pythonDBQuery = dbQuery.replace("\"", "\\\"");
@@ -228,8 +215,8 @@ public class Composer {
             ParameterProperties[] algorithmParameters
     ) {
         StringBuilder dflScript = new StringBuilder();
-        String localScriptPath = Algorithms.getAlgorithmFolderPath(algorithmName) + "/local.template.sql";
-        String algorithmFolderPath = Algorithms.getAlgorithmFolderPath(algorithmName);
+        String localScriptPath = ComposerConstants.getAlgorithmFolderPath(algorithmName) + "/local.template.sql";
+        String algorithmFolderPath = ComposerConstants.getAlgorithmFolderPath(algorithmName);
 
         dflScript.append("distributed create table " + outputGlobalTbl + " as external \n");
         dflScript.append(String.format("select * from (\n  execnselect 'path:%s' ", algorithmFolderPath));
@@ -266,9 +253,9 @@ public class Composer {
     ) {
         StringBuilder dflScript = new StringBuilder();
 
-        String localScriptPath = Algorithms.getAlgorithmFolderPath(algorithmName) + "/local.template.sql";
-        String globalScriptPath = Algorithms.getAlgorithmFolderPath(algorithmName) + "/global.template.sql";
-        String algorithmFolderPath = Algorithms.getAlgorithmFolderPath(algorithmName);
+        String localScriptPath = ComposerConstants.getAlgorithmFolderPath(algorithmName) + "/local.template.sql";
+        String globalScriptPath = ComposerConstants.getAlgorithmFolderPath(algorithmName) + "/global.template.sql";
+        String algorithmFolderPath = ComposerConstants.getAlgorithmFolderPath(algorithmName);
 
         // Format local
         dflScript.append("distributed create temporary table output_local_tbl as virtual \n");
@@ -328,7 +315,7 @@ public class Composer {
     ) {
         StringBuilder dflScript = new StringBuilder();
 
-        String algorithmFolderPath = Algorithms.getAlgorithmFolderPath(algorithmName);
+        String algorithmFolderPath = ComposerConstants.getAlgorithmFolderPath(algorithmName);
         File[] listFiles = new File(algorithmFolderPath).listFiles(new FileFilter() {
             @Override
             public boolean accept(File pathname) {
@@ -414,10 +401,10 @@ public class Composer {
             int numberOfWorkers
     ) {
         StringBuilder dflScript = new StringBuilder();
-        String localScriptPath = Algorithms.getAlgorithmFolderPath(algorithmName) + "/local.template.sql";
-        String localUpdateScriptPath = Algorithms.getAlgorithmFolderPath(algorithmName) + "/localupdate.template.sql";
-        String globalScriptPath = Algorithms.getAlgorithmFolderPath(algorithmName) + "/global.template.sql";
-        String algorithmFolderPath = Algorithms.getAlgorithmFolderPath(algorithmName);
+        String localScriptPath = ComposerConstants.getAlgorithmFolderPath(algorithmName) + "/local.template.sql";
+        String localUpdateScriptPath = ComposerConstants.getAlgorithmFolderPath(algorithmName) + "/localupdate.template.sql";
+        String globalScriptPath = ComposerConstants.getAlgorithmFolderPath(algorithmName) + "/global.template.sql";
+        String algorithmFolderPath = ComposerConstants.getAlgorithmFolderPath(algorithmName);
         String outputLocalTbl = "output_local_tbl_" + 0;
         String prevOutputLocalTbl;
 
@@ -490,7 +477,7 @@ public class Composer {
             dbIdentifier = algorithmKey;
         String algorithmName = algorithmProperties.getName();
         String defaultDBFileName = HBPConstants.DEMO_DB_WORKING_DIRECTORY + dbIdentifier + "_defaultDB.db";
-        String inputLocalDB = getDatasetDBDirectory();
+        String inputLocalDB = ComposerConstants.getDatasetDBDirectory();
         String dbQuery = createLocalTableQuery(algorithmProperties);
         ParameterProperties[] algorithmParameters = algorithmProperties.getParameters();
 
@@ -617,7 +604,7 @@ public class Composer {
             ParameterProperties[] algorithmParameters
     ) {
         StringBuilder dflScript = new StringBuilder();
-        String localPythonScriptPath = Algorithms.getAlgorithmFolderPath(algorithmName) + "/local.py";
+        String localPythonScriptPath = ComposerConstants.getAlgorithmFolderPath(algorithmName) + "/local.py";
 
         // Format local
         dflScript.append("distributed create table " + outputGlobalTbl + " as external \n");
@@ -652,8 +639,8 @@ public class Composer {
             ParameterProperties[] algorithmParameters
     ) {
         StringBuilder dflScript = new StringBuilder();
-        String localPythonScriptPath = Algorithms.getAlgorithmFolderPath(algorithmName) + "/local.py";
-        String globalPythonScriptPath = Algorithms.getAlgorithmFolderPath(algorithmName) + "/global.py";
+        String localPythonScriptPath = ComposerConstants.getAlgorithmFolderPath(algorithmName) + "/local.py";
+        String globalPythonScriptPath = ComposerConstants.getAlgorithmFolderPath(algorithmName) + "/global.py";
         String transferDBFilePath = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey + "/transfer.db";
 
         // Format local
@@ -706,7 +693,7 @@ public class Composer {
     ) {
         StringBuilder dflScript = new StringBuilder();
 
-        String algorithmFolderPath = Algorithms.getAlgorithmFolderPath(algorithmName);
+        String algorithmFolderPath = ComposerConstants.getAlgorithmFolderPath(algorithmName);
         File[] listFiles = new File(algorithmFolderPath).listFiles(new FileFilter() {
             @Override
             public boolean accept(File pathname) {

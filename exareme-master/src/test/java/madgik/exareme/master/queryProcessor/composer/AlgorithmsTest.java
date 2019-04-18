@@ -17,7 +17,7 @@ import static org.junit.Assert.assertEquals;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(Algorithms.class)
+@PrepareForTest(ComposerConstants.class)
 public class AlgorithmsTest {
     private static final Logger log = Logger.getLogger(AlgorithmsTest.class);
 
@@ -25,8 +25,8 @@ public class AlgorithmsTest {
     public void setUp() throws Exception {
         Logger.getRootLogger().setLevel(Level.DEBUG);
         URL resource = Algorithms.class.getResource("mip-algorithms");
-        PowerMockito.spy(Algorithms.class);
-        PowerMockito.doReturn(resource.getPath()).when(Algorithms.class, "getAlgorithmsFolderPath");
+        PowerMockito.spy(ComposerConstants.class);
+        PowerMockito.doReturn(resource.getPath()).when(ComposerConstants.class, "getAlgorithmsFolderPath");
     }
 
     @Test

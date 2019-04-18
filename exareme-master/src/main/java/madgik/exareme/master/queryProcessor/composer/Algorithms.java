@@ -46,21 +46,13 @@ public class Algorithms {
     public static Algorithms getInstance() {
         if (instance == null) {
             try {
-                instance = new Algorithms(getAlgorithmsFolderPath());
+                instance = new Algorithms(ComposerConstants.getAlgorithmsFolderPath());
             } catch (IOException e) {
                 Logger log = Logger.getLogger(Composer.class);
                 log.error("Unable to locate repository properties (*.json).", e);
             }
         }
         return instance;
-    }
-
-    public static String getAlgorithmsFolderPath() {
-        return AdpProperties.getGatewayProperties().getString("algorithms.path");
-    }
-
-    public static String getAlgorithmFolderPath(String algorithmName) {
-        return getAlgorithmsFolderPath() + algorithmName;
     }
 
     public AlgorithmProperties[] getAlgorithms() {
