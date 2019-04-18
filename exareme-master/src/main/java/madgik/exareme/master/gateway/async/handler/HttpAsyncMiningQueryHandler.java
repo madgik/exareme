@@ -177,7 +177,6 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         String algorithmKey = algorithmName + "_" + System.currentTimeMillis();
 
         try {
-            log.debug("OK1");
             String dfl;
             AdpDBClientQueryStatus queryStatus;
 
@@ -190,12 +189,9 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 response.setHeader("Content-Type", algorithmProperties.getResponseContentType());
             }
 
-            log.debug("OK2");
-
             // Bypass direct composer call in case of iterative algorithm.
             if (algorithmProperties.getType() ==
                     AlgorithmProperties.AlgorithmType.iterative) {
-                log.debug("OK3");
 
                 final IterativeAlgorithmState iterativeAlgorithmState =
                         iterationsHandler.handleNewIterativeAlgorithmRequest(
@@ -210,18 +206,14 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 dfl = Composer.composeDFLScript(algorithmKey, algorithmProperties, numberOfContainers);
                 log.debug(dfl);
                 try {
-                    log.debug("OK5");
                     Composer.persistDFLScriptToAlgorithmsDemoDirectory(
                             HBPConstants.DEMO_ALGORITHMS_WORKING_DIRECTORY + "/" + algorithmKey
                                     + "/" + algorithmKey,
                             dfl, null);
-                    log.debug("OK6");
-
                 } catch (IOException e) {
                     // Ignoring error if failed to persist DFL Scripts - it's not something fatal.
                     log.error(e);
                 }
-                log.debug("OK7");
 
                 AdpDBClientProperties clientProperties =
                         new AdpDBClientProperties(
@@ -236,8 +228,6 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                         ExaremeGatewayUtils.RESPONSE_BUFFER_SIZE);
                 response.setStatusCode(HttpStatus.SC_OK);
                 response.setEntity(entity);
-                log.debug("OK8");
-
             }
         } catch (IterationsFatalException e) {
             log.error(e);
@@ -268,8 +258,6 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             response.setStatusCode(HttpStatus.SC_BAD_REQUEST);
             response.setEntity(entity);
         }
-        log.debug("OK10");
-
     }
 
     private BasicHttpEntity getMessage(HttpResponse response, String message) throws IOException {
