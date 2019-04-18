@@ -1,9 +1,7 @@
 package madgik.exareme.master.queryProcessor.composer;
 
 import com.google.gson.Gson;
-import madgik.exareme.utils.properties.AdpProperties;
 import org.apache.log4j.Logger;
-
 
 import java.io.*;
 import java.util.ArrayList;
@@ -12,14 +10,13 @@ import java.util.Objects;
 
 /**
  * Loads the available algorithms and their properties from the algorithm's path.
- *
  */
 public class Algorithms {
     private static Algorithms instance = null;
-    private HashMap<String,AlgorithmProperties> algorithmsHashMap;
+    private HashMap<String, AlgorithmProperties> algorithmsHashMap;
     private AlgorithmProperties[] algorithmsArray;
 
-    private Algorithms(String repoPath) throws IOException {
+    private Algorithms(String repoPath) throws IOException, AlgorithmsException {
         Gson gson = new Gson();
         File repoFile = new File(repoPath);
         if (!repoFile.exists()) throw new IOException("Unable to locate property file.");
@@ -36,14 +33,15 @@ public class Algorithms {
             }
         }))) {
             AlgorithmProperties algorithm = gson.fromJson(new BufferedReader(
-                            new FileReader(file.getAbsolutePath() + "/properties.json")), AlgorithmProperties.class);
-            algorithmsHashMap.put(algorithm.getName(),algorithm);
+                    new FileReader(file.getAbsolutePath() + "/properties.json")), AlgorithmProperties.class);
+            algorithm.validateAlgorithmPropertiesInitialization();
+            algorithmsHashMap.put(algorithm.getName(), algorithm);
             currentAlgorithms.add(algorithm);
         }
         algorithmsArray = currentAlgorithms.toArray(new AlgorithmProperties[0]);
     }
 
-    public static Algorithms getInstance() {
+    public static Algorithms getInstance() throws AlgorithmsException {
         if (instance == null) {
             try {
                 instance = new Algorithms(ComposerConstants.getAlgorithmsFolderPath());

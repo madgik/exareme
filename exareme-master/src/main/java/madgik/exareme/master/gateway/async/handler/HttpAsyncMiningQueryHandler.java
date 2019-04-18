@@ -186,10 +186,6 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
 
             DataSerialization ds = DataSerialization.summary;
 
-            if (algorithmProperties.getResponseContentType() != null) {
-                response.setHeader("Content-Type", algorithmProperties.getResponseContentType());
-            }
-
             log.debug("OK2");
 
             // Bypass direct composer call in case of iterative algorithm.
@@ -237,7 +233,6 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 response.setStatusCode(HttpStatus.SC_OK);
                 response.setEntity(entity);
                 log.debug("OK8");
-
             }
         } catch (IterationsFatalException e) {
             log.error(e);

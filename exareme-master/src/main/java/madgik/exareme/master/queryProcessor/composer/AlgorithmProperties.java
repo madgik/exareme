@@ -1,13 +1,9 @@
 package madgik.exareme.master.queryProcessor.composer;
 
-import com.google.gson.Gson;
-import org.apache.commons.io.FileUtils;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 
 /**
@@ -17,7 +13,6 @@ public class AlgorithmProperties {
     private String name;
     private String desc;
     private AlgorithmType type;
-    private String responseContentType;
     private ParameterProperties[] parameters;
 
     public enum AlgorithmType {
@@ -32,6 +27,20 @@ public class AlgorithmProperties {
     }
 
     public AlgorithmProperties() {
+    }
+
+    public void validateAlgorithmPropertiesInitialization() throws AlgorithmsException {
+        if (name == null) {
+            throw new AlgorithmsException("The parameter field 'name' was not initialized in the properties.json file");
+        }
+        if (desc == null) {
+            throw new AlgorithmsException("The parameter field 'desc' was not initialized in the properties.json file");
+        }
+        if (type == null) {
+            throw new AlgorithmsException("The parameter field 'type' was not initialized in the properties.json file");
+        }
+        for (ParameterProperties parameterProperties : parameters)
+            parameterProperties.validateParameterPropertiesInitialization();
     }
 
     public String getName() {
@@ -56,14 +65,6 @@ public class AlgorithmProperties {
 
     public void setType(AlgorithmType type) {
         this.type = type;
-    }
-
-    public String getResponseContentType() {
-        return responseContentType;
-    }
-
-    public void setResponseContentType(String returnContentType) {
-        this.responseContentType = returnContentType;
     }
 
     public ParameterProperties[] getParameters() {

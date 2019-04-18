@@ -26,6 +26,30 @@ public class ParameterProperties {
     public ParameterProperties() {
     }
 
+    public void validateParameterPropertiesInitialization() throws AlgorithmsException {
+        if (name == null) {
+            throw new AlgorithmsException("The parameter field 'name' was not initialized in the properties.json file");
+        }
+        if (desc == null) {
+            throw new AlgorithmsException("The parameter field 'desc' was not initialized in the properties.json file");
+        }
+        if (type == null) {
+            throw new AlgorithmsException("The parameter field 'type' was not initialized in the properties.json file");
+        }
+        if (value == null) {
+            throw new AlgorithmsException("The parameter field 'value' was not initialized in the properties.json file");
+        }
+        if (valueNotBlank == null) {
+            throw new AlgorithmsException("The parameter field 'valueNotBlank' was not initialized in the properties.json file");
+        }
+        if (valueMultiple == null) {
+            throw new AlgorithmsException("The parameter field 'valueMultiple' was not initialized in the properties.json file");
+        }
+        if (valueType == null) {
+            throw new AlgorithmsException("The parameter field 'valueType' was not initialized in the properties.json file");
+        }
+    }
+
     public String getName() {
         return name;
     }
