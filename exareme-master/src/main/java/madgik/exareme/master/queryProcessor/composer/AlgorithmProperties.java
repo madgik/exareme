@@ -13,6 +13,7 @@ public class AlgorithmProperties {
     private String name;
     private String desc;
     private AlgorithmType type;
+    private String responseContentType;
     private ParameterProperties[] parameters;
 
     public enum AlgorithmType {
@@ -71,6 +72,9 @@ public class AlgorithmProperties {
         return parameters;
     }
 
+    public String getResponseContentType() {
+        return responseContentType;
+    }
     /**
      * Returns the value of the parameter provided
      * If it doesn't exist null is returned.
