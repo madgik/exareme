@@ -4,5 +4,5 @@ before_install:
   
 language: java
 
-script: mvn clean install -DskipTests=false cobertura:cobertura coveralls:report
+script: mvn clean install -f Exareme-Docker/src/exareme/pom.xml -DskipTests=false cobertura:cobertura coveralls:report
 
