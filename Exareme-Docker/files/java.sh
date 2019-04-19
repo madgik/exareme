@@ -1,0 +1,8 @@
+export JAVA_VERSION_MAJOR=8
+export JAVA_VERSION_MINOR=141
+export JAVA_VERSION_BUILD=15
+export JAVA_VERSION_HASH=336fa29ff2bb4ef291e347e091f7f4a7
+export JAVA_PACKAGE=server-jre
+export JAVA_HOME=/jre
+export PATH=${PATH}:/jre/bin
+export LANG=C.UTF-8

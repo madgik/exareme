@@ -4,7 +4,6 @@
 
 ### Maven template
 target/
-registry/
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
@@ -31,7 +30,7 @@ nb-configuration.xml
 .mtj.tmp/
 
 # Package Files #
-*.jar
+
 *.war
 *.ear
 !Serialization.jar
@@ -143,7 +142,6 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
 lib64/
 parts/
 sdist/
