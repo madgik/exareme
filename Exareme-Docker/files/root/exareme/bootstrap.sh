@@ -125,7 +125,7 @@ fi
 
 # Both Master and Worker should transform the csv to an sqlite db file
 echo "Parsing the csv file in " $DOCKER_METADATA_FOLDER " to a db file. "
-python ./convert-csv-dataset-to-db.py -csvFilePath $DOCKER_DATASETS_FOLDER/datasets.csv -variablesMetadataPath $DOCKER_METADATA_FOLDER/variablesMetadata.json -outputDBPath $DOCKER_METADATA_FOLDER/datasets.db
+python ./convert-csv-dataset-to-db.py --csvFilePath $DOCKER_DATASETS_FOLDER/datasets.csv --variablesMetadataPath $DOCKER_METADATA_FOLDER/variablesMetadata.json --outputDBAbsPath $DOCKER_METADATA_FOLDER/datasets.db
 
 # Running something in foreground, otherwise the container will stop
 while true
