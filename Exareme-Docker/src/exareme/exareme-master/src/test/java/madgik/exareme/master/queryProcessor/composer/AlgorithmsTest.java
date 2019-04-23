@@ -1,37 +1,40 @@
 package madgik.exareme.master.queryProcessor.composer;
 
 import com.google.gson.Gson;
+import madgik.exareme.master.engine.iterations.handler.IterationsConstants;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.io.File;
 import java.net.URL;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
+import static org.powermock.api.mockito.PowerMockito.when;
 
-/**
- * @author alexpap
- */
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(ComposerConstants.class)
 public class AlgorithmsTest {
-
     private static final Logger log = Logger.getLogger(AlgorithmsTest.class);
 
     @Before
     public void setUp() throws Exception {
         Logger.getRootLogger().setLevel(Level.DEBUG);
+        URL resource = Algorithms.class.getResource("mip-algorithms");
+        PowerMockito.spy(ComposerConstants.class);
+        PowerMockito.doReturn(resource.getPath()).when(ComposerConstants.class, "getAlgorithmsFolderPath");
     }
 
     @Test
     public void testCreateAlgorithms() throws Exception {
-        URL resource = Algorithms.class.getResource("properties.json");
-        String path = new File(resource.getFile()).getParentFile().getAbsolutePath();
-        log.debug(path);
-        Algorithms algorithms = Algorithms
-                .createAlgorithms(path);
+        Algorithms algorithms = Algorithms.getInstance();
         String result = new Gson().toJson(algorithms, Algorithms.class);
         log.debug(result);
-        assertNotNull(result, resource.toString());
+        //Test resources contains mip-algorithms directory with 6 algorithms.
+        assertEquals(4,algorithms.getAlgorithms().length);
     }
 }

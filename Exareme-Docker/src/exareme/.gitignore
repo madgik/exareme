@@ -185,3 +185,9 @@ target/
 
 # Created by .ignore support plugin (hsz.mobi)
 exareme-master/src/main/java/madgik/exareme/master/queryProcessor/decomposer/demo
+
+# Mac
+*.DS_Store
+
+# DO NOT ignore mip-algorithms on specific subfolder
+!exareme-master/src/test/resources/madgik/exareme/master/queryProcessor/composer/mip-algorithms

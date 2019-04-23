@@ -16,10 +16,7 @@ import madgik.exareme.master.engine.iterations.handler.NIterativeAlgorithmResult
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.master.gateway.ExaremeGatewayUtils;
 import madgik.exareme.master.gateway.async.handler.entity.NQueryResultEntity;
-import madgik.exareme.master.queryProcessor.composer.Algorithms;
-import madgik.exareme.master.queryProcessor.composer.AlgorithmsException;
-import madgik.exareme.master.queryProcessor.composer.Composer;
-import madgik.exareme.master.queryProcessor.composer.ComposerException;
+import madgik.exareme.master.queryProcessor.composer.*;
 import madgik.exareme.utils.net.NetUtil;
 import madgik.exareme.worker.art.container.ContainerProxy;
 import madgik.exareme.worker.art.registry.ArtRegistryLocator;
@@ -52,7 +49,6 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
 
     private static final String SET_COOKIE_HEADER_NAME = "Set-Cookie";
     private static final AdpDBManager manager = AdpDBManagerLocator.getDBManager();
-    private static final Composer composer = Composer.getInstance();
     private static final IterationsHandler iterationsHandler = IterationsHandler.getInstance();
 
     public HttpAsyncMiningQueryHandler() {
@@ -184,8 +180,8 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             String dfl;
             AdpDBClientQueryStatus queryStatus;
 
-            Algorithms.AlgorithmProperties algorithmProperties =
-                    Algorithms.AlgorithmProperties.createAlgorithmProperties(algorithmName, inputContent);
+            AlgorithmProperties algorithmProperties = Algorithms.getInstance().getAlgorithmProperties(algorithmName);
+            algorithmProperties.mergeAlgorithmParametersWithInputContent(inputContent);
 
             DataSerialization ds = DataSerialization.summary;
 
@@ -195,7 +191,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
 
             // Bypass direct composer call in case of iterative algorithm.
             if (algorithmProperties.getType() ==
-                    Algorithms.AlgorithmProperties.AlgorithmType.iterative) {
+                    AlgorithmProperties.AlgorithmType.iterative) {
 
                 final IterativeAlgorithmState iterativeAlgorithmState =
                         iterationsHandler.handleNewIterativeAlgorithmRequest(
@@ -207,7 +203,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 response.setStatusCode(HttpStatus.SC_OK);
                 response.setEntity(entity);
             } else {
-                dfl = composer.composeDFLScript(algorithmKey, algorithmProperties, numberOfContainers);
+                dfl = Composer.composeDFLScript(algorithmKey, algorithmProperties, numberOfContainers);
                 log.debug(dfl);
                 try {
                     Composer.persistDFLScriptToAlgorithmsDemoDirectory(
@@ -218,6 +214,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                     // Ignoring error if failed to persist DFL Scripts - it's not something fatal.
                     log.error(e);
                 }
+
                 AdpDBClientProperties clientProperties =
                         new AdpDBClientProperties(
                                 HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey,
@@ -233,6 +230,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 response.setEntity(entity);
             }
         } catch (IterationsFatalException e) {
+            log.error(e);
             if (e.getErroneousAlgorithmKey() != null)
                 iterationsHandler.removeIterativeAlgorithmStateInstanceFromISM(
                         e.getErroneousAlgorithmKey());
@@ -248,6 +246,12 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             response.setStatusCode(HttpStatus.SC_BAD_REQUEST);
             response.setEntity(entity);
         }catch (IOException | AlgorithmsException | ComposerException e) {
+            log.error(e);
+            BasicHttpEntity entity = new BasicHttpEntity();
+            entity.setContent(new ByteArrayInputStream(("{\"error\" : \"" + e.getMessage() + "\"}").getBytes()));
+            response.setStatusCode(HttpStatus.SC_BAD_REQUEST);
+            response.setEntity(entity);
+        }catch (Exception e){
             log.error(e);
             BasicHttpEntity entity = new BasicHttpEntity();
             entity.setContent(new ByteArrayInputStream(("{\"error\" : \"" + e.getMessage() + "\"}").getBytes()));
