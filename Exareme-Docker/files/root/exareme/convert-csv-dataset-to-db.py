@@ -2,9 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-This script uses the csv file with the data and the metadata for the csv and it produces an sqlite DB.
-
-TODO: Add the metadata inside the DB in a metadata table.
+This script uses the csv file with the data and the json file for the metadata to produce an sqlite DB.
 """
 
 import os
@@ -39,6 +37,47 @@ def addGroupVariablesToDictionary(groupMetadata, metadataDictionary):
     return metadataDictionary
 
 
+def createMetadataList(variablesMetadataPath):
+    variablesMetadata = open(variablesMetadataPath)
+    metadataJSON = json.load(variablesMetadata)
+
+    metadataList = []
+    metadataList = addGroupVariablesToList(metadataJSON,
+            metadataList)
+    return metadataList
+
+
+def addGroupVariablesToList(groupMetadata, metadataList):
+    if 'variables' in groupMetadata:
+        for variable in groupMetadata['variables']:
+            variableDictionary = {}
+            variableDictionary['code'] = variable['code']
+            variableDictionary['sql_type'] = variable['sql_type']
+            variableDictionary['categorical'] = '1' if variable['categorical'] else '0'
+            if 'enumerations' in variable: 
+                enumerations = []
+                for enumeration in variable['enumerations']:
+                    enumerations.append(str(enumeration['code']))
+                variableDictionary['enumerations'] = ', '.join(enumerations)
+
+            else:
+                variableDictionary['enumerations'] = 'null'
+            if 'min' in variable:
+                variableDictionary['min'] = variable['min']
+            else:
+                variableDictionary['min'] = 'null'
+            if 'max' in variable:
+                variableDictionary['max'] = variable['max']
+            else:
+                variableDictionary['max'] = 'null'
+            metadataList.append(variableDictionary)
+    if 'groups' in groupMetadata:
+        for group in groupMetadata['groups']:
+            metadataList = addGroupVariablesToList(group,
+                    metadataList)
+    return metadataList
+
+
 def main():
 
     # Read the parameters
@@ -61,29 +100,27 @@ def main():
 
     variablesTypesDict = createMetadataDictionary(variablesMetadataPath)
 
-    # Create the query that will create the sqlite table
+    # Create the query for the sqlite data table
 
-    createTableQuery = 'CREATE TABLE DATA('
+    createDataTableQuery = 'CREATE TABLE DATA('
 
     csvFile = open(csvFilePath, 'r')
     csvReader = csv.reader(csvFile)
     csvHeader = next(csvReader)
     rid = csvHeader[0]
-    createTableQuery += ' ' + rid + ' INTEGER PRIMARY KEY ASC'
+    createDataTableQuery += ' ' + rid + ' INTEGER PRIMARY KEY ASC'
     for column in csvHeader[1:]:
         columnType = variablesTypesDict[column]
-        createTableQuery += ', ' + column + ' ' + columnType
-    createTableQuery += ')'
+        createDataTableQuery += ', ' + column + ' ' + columnType
+    createDataTableQuery += ')'
 
-    # Create the table
-
+    # Create the data table
     con = sqlite3.connect(outputDBAbsPath)
     cur = con.cursor()
     cur.execute('DROP TABLE IF EXISTS DATA')
-    cur.execute(createTableQuery)
+    cur.execute(createDataTableQuery)
 
     # Add data
-
     columnsString = csvHeader[0]
     for column in csvHeader[1:]:
         columnsString += ', ' + column
@@ -101,6 +138,36 @@ def main():
                 insertRowQuery += ', ' + value
         insertRowQuery += ');'
         cur.execute(insertRowQuery)
+
+    # Transform the metadata JSON to a list
+    metadataList = createMetadataList(variablesMetadataPath)
+
+    # Create the query for the metadata table
+    createMetadataTableQuery = 'CREATE TABLE METADATA('
+    createMetadataTableQuery += ' code TEXT PRIMARY KEY ASC'
+    createMetadataTableQuery += ', sql_type TEXT'
+    createMetadataTableQuery += ', categorical INTEGER'
+    createMetadataTableQuery += ', enumerations TEXT'
+    createMetadataTableQuery += ', min INTEGER'
+    createMetadataTableQuery += ', max INTEGER)'
+
+    # Create the metadata table
+    cur.execute('DROP TABLE IF EXISTS METADATA')
+    cur.execute(createMetadataTableQuery)
+
+    # Add data to the metadata table		TODO
+    columnsQuery = 'INSERT INTO METADATA (code, sql_type, categorical, enumerations, min, max) VALUES ('
+
+    for variable in metadataList:
+        insertVariableQuery = columnsQuery
+        insertVariableQuery += "'" + variable['code'] + "'"
+        insertVariableQuery += ", '" + variable['sql_type'] + "'"
+        insertVariableQuery += ", '" + variable['categorical'] + "'"
+        insertVariableQuery += ", '" + variable['enumerations'] + "'"
+        insertVariableQuery += ", '" + variable['min'] + "'"
+        insertVariableQuery += ", '" + variable['max'] + "'"
+        insertVariableQuery += ");"
+        cur.execute(insertVariableQuery)
 
     con.commit()
     con.close()
