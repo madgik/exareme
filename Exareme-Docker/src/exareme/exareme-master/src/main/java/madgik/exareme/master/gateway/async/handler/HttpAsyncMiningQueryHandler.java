@@ -245,13 +245,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             entity.setContent(new ByteArrayInputStream(("{\"error\" : \"Could not parse the algorithms properly.\"}").getBytes()));
             response.setStatusCode(HttpStatus.SC_BAD_REQUEST);
             response.setEntity(entity);
-        }catch (IOException | AlgorithmsException | ComposerException e) {
-            log.error(e);
-            BasicHttpEntity entity = new BasicHttpEntity();
-            entity.setContent(new ByteArrayInputStream(("{\"error\" : \"" + e.getMessage() + "\"}").getBytes()));
-            response.setStatusCode(HttpStatus.SC_BAD_REQUEST);
-            response.setEntity(entity);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error(e);
             BasicHttpEntity entity = new BasicHttpEntity();
             entity.setContent(new ByteArrayInputStream(("{\"error\" : \"" + e.getMessage() + "\"}").getBytes()));

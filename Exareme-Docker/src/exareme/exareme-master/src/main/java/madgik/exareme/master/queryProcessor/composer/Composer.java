@@ -73,7 +73,7 @@ public class Composer {
         StringBuilder builder = new StringBuilder();
         boolean whereAdded = false;
         if (variables.isEmpty())
-            builder.append("select * from (" + ComposerConstants.getDBTablename() + ")");
+            builder.append("select * from (" + ComposerConstants.getDBDataTablename() + ")");
         else {
             builder.append("select ");
             for (String variable : variables) {
@@ -81,7 +81,7 @@ public class Composer {
                 builder.append(",");
             }
             builder.deleteCharAt(builder.lastIndexOf(","));
-            builder.append(" from (" + ComposerConstants.getDBTablename() + ")");
+            builder.append(" from (" + ComposerConstants.getDBDataTablename() + ")");
             if (!"".equals(filters)) {
                 builder.append(" where " + filters);
                 whereAdded = true;

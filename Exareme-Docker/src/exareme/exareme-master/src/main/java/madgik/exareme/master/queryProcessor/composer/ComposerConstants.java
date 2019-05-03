@@ -33,11 +33,11 @@ public class ComposerConstants {
         return AdpProperties.getGatewayProperties().getString("db.path");
     }
 
-    public static String getDBTablename() {
-        return AdpProperties.getGatewayProperties().getString("db.tablename");
+    public static String getDBDataTablename() {
+        return AdpProperties.getGatewayProperties().getString("db.tablename.data");
     }
 
-    public static String getMetadataDirectory() {
-        return AdpProperties.getGatewayProperties().getString("metadata.path");
+    public static String getDBMetadataTablename() {
+        return AdpProperties.getGatewayProperties().getString("db.tablename.metadata");
     }
 }

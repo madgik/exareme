@@ -16,8 +16,6 @@ import java.nio.channels.ReadableByteChannel;
 /**
  * TODO flush output before suspend
  *
- * @author alex
- * @since 0.1
  */
 public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncContentProducer {
 
@@ -43,7 +41,7 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
     public void produceContent(ContentEncoder encoder, IOControl ioctrl)
             throws IOException {
 
-        if (queryStatus.hasFinished() == false && queryStatus.hasError() == false) {
+        if (!queryStatus.hasFinished() && !queryStatus.hasError()) {
 
             if (l == null) {
 
@@ -54,10 +52,8 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
             return;
         }
 
-        if (queryStatus.hasError() == false) {
-
+        if (!queryStatus.hasError()) {
             if (channel == null) {
-
                 channel = Channels.newChannel(queryStatus.getResult(format));
             }
             channel.read(buffer);
@@ -66,97 +62,82 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
             final boolean buffering = this.buffer.hasRemaining();
             this.buffer.compact();
             if (i < 1 && !buffering) {
-
                 encoder.complete();
                 close();
             }
         } else {
-            log.trace("|" + queryStatus.getError().toString() + "|");
-            if (queryStatus.getError().toString().contains("\n" +
-                    "Operator VARIABLE:")) {
+            log.trace("|" + queryStatus.getError() + "|");
+            if (queryStatus.getError().contains("\n" + "Operator VARIABLE:")) {
                 String result = "{\"Error\":\"Please provide a variable that exists.\"}";
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();
-            } else if (queryStatus.getError().toString().contains("\n" +
-                    "Operator DATASET:")) {
+            } else if (queryStatus.getError().contains("\n" + "Operator DATASET:")) {
                 String result = "{\"Error\":\"Please provide a dataset that exists.\"}";
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();
-            } else if (queryStatus.getError().toString().contains("\n" +
-                    "Operator NULLTABLE:")) {
+            } else if (queryStatus.getError().contains("\n" + "Operator NULLTABLE:")) {
                 String result = "{\"Error\":\"The input you provided gives an empty table. Please check your input.\"}";
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();
-            } else if (queryStatus.getError().toString().matches("java.rmi.RemoteException: Containers:.*not responding")) {
+            } else if (queryStatus.getError().matches("java.rmi.RemoteException: Containers:.*not responding")) {
                 String result = "{\"Error\":\"One or more containers are not responding. Please inform your system administrator\"}";
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();
-            } else if (queryStatus.getError().toString().contains("\n" +
-                    "Operator TYPE:")) {
+            } else if (queryStatus.getError().contains("\n" + "Operator TYPE:")) {
                 String result = "{\"Error\":\"Each variable's type must be Real,Integer or Float.\"}";
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();
-            } else if (queryStatus.getError().toString().contains("\n" +
-                    "Operator FILTER:")) {
+            } else if (queryStatus.getError().contains("\n" + "Operator FILTER:")) {
                 String result = "{\"Error\":\"Privacy issues.\"}";
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();
-            } else if (queryStatus.getError().toString().contains("\n" +   //YES
-                    "Operator MINIMUMREC:")) {
+            } else if (queryStatus.getError().contains("\n" + "Operator MINIMUMREC:")) {
                 String result = "{\"Error\":\"Privacy issues.Less than 10 patients.\"}";
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();
-            } else if (queryStatus.getError().toString().contains("\n" +       //YES
-                    "Operator LARGEBUCKET:")) {
+            } else if (queryStatus.getError().contains("\n" + "Operator LARGEBUCKET:")) {
                 String result = "{\"Error\":\"Bucket size too big.\"}";
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();
-            } else if (queryStatus.getError().toString().contains("\n" +       //YES
-                    "Operator EMPTYFIELD:")) {
+            } else if (queryStatus.getError().contains("\n" + "Operator EMPTYFIELD:")) {
                 String result = "{\"Error\":\"Fields should not be empty. Please provide a name.\"}";
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();
-            } else if (queryStatus.getError().toString().contains("\n" +        //YES
-                    "Operator EMPTYSET:")) {
+            } else if (queryStatus.getError().contains("\n" + "Operator EMPTYSET:")) {
                 String result = "{\"Error\":\"Dataset should not be empty. Please provide one or more dataset(s).\"}";
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();
-            } else if (queryStatus.getError().toString().contains("\n" +       //YES
-                    "Operator TYPEBUCKET:")) {
+            } else if (queryStatus.getError().contains("\n" + "Operator TYPEBUCKET:")) {
                 String result = "{\"Error\":\"Bucket field should be type: Integer.\"}";
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();
-            } else if (queryStatus.getError().toString().contains("\n" +       //YES
-                    "Operator TYPEY:")) {
+            } else if (queryStatus.getError().contains("\n" + "Operator TYPEY:")) {
                 String result = "{\"Error\":\"Dependent variable should not be type text. Please provide type: Real,Integer or Float.\"}";
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();
-            } else if (queryStatus.getError().toString().contains("\n" +       //YES
-                    "Operator TYPEHISTOGRAM:")) {
+            } else if (queryStatus.getError().contains("\n" + "Operator TYPEHISTOGRAM:")) {
                 String result = "{\"Error\":\"First variable should be type: Real,Integer or Float. Second variable should be empty or type: Text.\"}";
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();
-            } else if (queryStatus.getError().toString().contains("\n" +       //YES
-                    "Operator TYPECOLUMNS:")) {
+            } else if (queryStatus.getError().contains("\n" + "Operator TYPECOLUMNS:")) {
                 String result = "{\"Error\":\"Column's type should not be Text. Please provide type: Real,Integer and(or) Float.\"}";
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();
-            } else if (queryStatus.getError().toString().contains("\n" +   //YES
-                    "Operator TYPEK:")) {
+            } else if (queryStatus.getError().contains("\n" + "Operator TYPEK:")) {
                 String result = "{\"Error\":\"K should be type: Integer.\"}";
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();

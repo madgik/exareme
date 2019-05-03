@@ -73,9 +73,13 @@ public class IterationsHandlerDFLUtilsTest {
         // termination_condition template file.
         algorithmName = SELECT_OK_ITERATIVE;
         algorithmProperties = Algorithms.getInstance().getAlgorithmProperties(algorithmName);
-        algorithmProperties.mergeAlgorithmParametersWithInputContent(
-                IterationsTestGenericUtils.prepareParameterProperties(
-                algorithmName, "true", "2"));
+        try {
+            algorithmProperties.mergeAlgorithmParametersWithInputContent(
+                    IterationsTestGenericUtils.prepareParameterProperties(
+                            algorithmName, "true", "2"));
+        }catch(Exception e){
+            fail("mergeAlgorithmParametersWithInputContent should not throw Exception.");
+        }
 
         // Mimicking IterationsHandler first steps:
         String algorithmKey = IterationsTestGenericUtils.generateAlgorithmKey(algorithmProperties);
@@ -106,9 +110,14 @@ public class IterationsHandlerDFLUtilsTest {
         // termination_condition template file.
         algorithmName = SAMPLE_ITERATIVE;
         algorithmProperties = Algorithms.getInstance().getAlgorithmProperties(algorithmName);
-        algorithmProperties.mergeAlgorithmParametersWithInputContent(
-                IterationsTestGenericUtils.prepareParameterProperties(
-                        algorithmName, "false", "2"));
+
+        try {
+            algorithmProperties.mergeAlgorithmParametersWithInputContent(
+                    IterationsTestGenericUtils.prepareParameterProperties(
+                            algorithmName, "false", "2"));
+        }catch(Exception e){
+            fail("mergeAlgorithmParametersWithInputContent should not throw Exception.");
+        }
 
         // Mimicking IterationsHandler first steps:
         algorithmKey = IterationsTestGenericUtils.generateAlgorithmKey(algorithmProperties);
@@ -143,9 +152,14 @@ public class IterationsHandlerDFLUtilsTest {
         // [Ensure termination condition under its required directory exists]
         algorithmName = SELECT_OK_ITERATIVE_ERRONEOUS_TERM_COND;
         algorithmProperties = Algorithms.getInstance().getAlgorithmProperties(algorithmName);
-        algorithmProperties.mergeAlgorithmParametersWithInputContent(
-                IterationsTestGenericUtils.prepareParameterProperties(
-                        algorithmName, "false", "2"));
+
+        try {
+            algorithmProperties.mergeAlgorithmParametersWithInputContent(
+                    IterationsTestGenericUtils.prepareParameterProperties(
+                            algorithmName, "false", "2"));
+        }catch(Exception e){
+            fail("mergeAlgorithmParametersWithInputContent should not throw Exception.");
+        }
 
         // Mimicking IterationsHandler first steps:
         String algorithmKey = IterationsTestGenericUtils.generateAlgorithmKey(algorithmProperties);

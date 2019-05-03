@@ -75,6 +75,7 @@ public class AlgorithmProperties {
     public String getResponseContentType() {
         return responseContentType;
     }
+
     /**
      * Returns the value of the parameter provided
      * If it doesn't exist null is returned.
@@ -99,12 +100,13 @@ public class AlgorithmProperties {
      * @throws AlgorithmsException when algorithm's properties do not match the inputContent
      */
     public void mergeAlgorithmParametersWithInputContent(HashMap<String, String> inputContent)
-            throws AlgorithmsException {
+            throws AlgorithmsException, VariablesMetadataException {
 
         for (ParameterProperties parameterProperties : this.getParameters()) {
             String value = inputContent.get(parameterProperties.getName());
             if (value != null) {
-                checkAlgorithmParameterValue(value, parameterProperties);
+                validateAlgorithmParameterValueType(value, parameterProperties);
+                validateAlgorithmParameterType(value, parameterProperties);
             } else {            // if value is null
                 if (parameterProperties.getValueNotBlank()) {
                     throw new AlgorithmsException(
@@ -117,12 +119,50 @@ public class AlgorithmProperties {
     }
 
     /**
+     * Checks if the parameter type has proper values.
+     * If the type is 'column' then the parameters columnValueType and columnValueCategorical
+     * should match with the values in the metadata for that specific column.
+     *
+     * @param value               the value of the parameter
+     * @param parameterProperties the type of the value
+     */
+    private static void validateAlgorithmParameterType(
+            String value,
+            ParameterProperties parameterProperties
+    ) throws AlgorithmsException, VariablesMetadataException {
+        String[] values = value.split(",");
+
+        if (parameterProperties.getType().equals(ParameterProperties.ParameterType.column)) {
+            VariablesMetadata metadata = VariablesMetadata.getInstance();
+            for (String curValue : values) {
+                if (!metadata.columnExists(curValue)) {
+                    throw new AlgorithmsException("Column: " + curValue + " does not exist.");
+                }
+
+                String allowedSQLTypeValues = parameterProperties.getColumnValuesSQLType();
+                String columnValuesSQLType = metadata.getColumnValuesSQLType(curValue);
+                if (!allowedSQLTypeValues.contains(columnValuesSQLType)){
+                    throw new AlgorithmsException("Column " + curValue +
+                            " does not have one of the allowed SQL Types " + allowedSQLTypeValues + ".");
+                }
+
+                String allowedCategoricalValues = parameterProperties.getColumnValuesCategorical();
+                String columnValuesCategorical = metadata.getColumnValuesCategorical(curValue);
+                if (!allowedCategoricalValues.contains(columnValuesCategorical)){
+                    throw new AlgorithmsException("Column " + curValue +
+                            " does not have one of the allowed Categorical values " + allowedCategoricalValues + ".");
+                }
+            }
+        }
+    }
+
+    /**
      * Checks if the parameterValue has the correct type
      *
      * @param value               the value of the parameter
      * @param parameterProperties the type of the value
      */
-    private static void checkAlgorithmParameterValue(
+    private static void validateAlgorithmParameterValueType(
             String value,
             ParameterProperties parameterProperties
     ) throws AlgorithmsException {

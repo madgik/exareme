@@ -4,6 +4,8 @@ public class ParameterProperties {
     private String name;
     private String desc;
     private ParameterType type;
+    private String columnValuesSQLType;
+    private String columnValuesCategorical;
     private String value;
     private Boolean valueNotBlank;
     private Boolean valueMultiple;
@@ -35,6 +37,12 @@ public class ParameterProperties {
         }
         if (type == null) {
             throw new AlgorithmsException("The parameter field 'type' was not initialized in the properties.json file");
+        }else if(type.equals(ParameterType.column)){
+            if (columnValuesSQLType == null){
+                throw new AlgorithmsException("The parameter field 'columnValuesSQLType' was not initialized in the properties.json file");
+            }else if (columnValuesCategorical == null){
+                throw new AlgorithmsException("The parameter field 'columnValuesCategorical' was not initialized in the properties.json file");
+            }
         }
         if (value == null) {
             throw new AlgorithmsException("The parameter field 'value' was not initialized in the properties.json file");
@@ -74,6 +82,14 @@ public class ParameterProperties {
         this.type = type;
     }
 
+    public String getColumnValuesSQLType() {
+        return columnValuesSQLType;
+    }
+
+    public String getColumnValuesCategorical() {
+        return columnValuesCategorical;
+    }
+
     public String getValue() {
         return value;
     }
@@ -86,23 +102,11 @@ public class ParameterProperties {
         return valueNotBlank;
     }
 
-    public void setValueNotBlank(Boolean valueNotBlank) {
-        this.valueNotBlank = valueNotBlank;
-    }
-
     public Boolean getValueMultiple() {
         return valueMultiple;
     }
 
-    public void setValueMultiple(Boolean valueMultiple) {
-        this.valueMultiple = valueMultiple;
-    }
-
     public ParameterValueType getValueType() {
         return valueType;
-    }
-
-    public void setValueType(ParameterValueType valueType) {
-        this.valueType = valueType;
     }
 }
