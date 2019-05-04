@@ -13,6 +13,7 @@ public class ParameterProperties {
 
     public enum ParameterType {
         column,                // used for selecting specific columns from the database
+        formula,               // used for parsig the input as a formula of R, '+ - * : 0' are allowed.
         filter,                // used for filtering on the database input
         dataset,               // used for choosing database input
         other                  // for any other reason
@@ -37,7 +38,7 @@ public class ParameterProperties {
         }
         if (type == null) {
             throw new AlgorithmsException("The parameter field 'type' was not initialized in the properties.json file");
-        }else if(type.equals(ParameterType.column)){
+        }else if(type.equals(ParameterType.column) || type.equals(ParameterType.formula)){
             if (columnValuesSQLType == null){
                 throw new AlgorithmsException("The parameter field 'columnValuesSQLType' was not initialized in the properties.json file");
             }else if (columnValuesCategorical == null){

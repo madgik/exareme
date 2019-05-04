@@ -52,8 +52,11 @@ public class Composer {
         for (ParameterProperties parameter : algorithmProperties.getParameters()) {
             if (parameter.getValue().equals(""))
                 continue;
+
             if (parameter.getType() == ParameterProperties.ParameterType.column) {
-                variables.addAll(Arrays.asList(parameter.getValue().split("[,+*]")));
+                variables.addAll(Arrays.asList(parameter.getValue().split("[,]")));
+            }else if (parameter.getType() == ParameterProperties.ParameterType.formula) {
+                variables.addAll(Arrays.asList(parameter.getValue().split("[+\\-*:0]+")));
             } else if (parameter.getType() == ParameterProperties.ParameterType.filter) {
                 SqlQueryBuilderFactory sqlQueryBuilderFactory = new SqlQueryBuilderFactory();
                 SqlBuilder sqlBuilder = sqlQueryBuilderFactory.builder();

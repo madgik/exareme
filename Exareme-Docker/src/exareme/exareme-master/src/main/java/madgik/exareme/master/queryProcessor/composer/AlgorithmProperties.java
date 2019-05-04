@@ -119,39 +119,55 @@ public class AlgorithmProperties {
     }
 
     /**
-     * Checks if the parameter type has proper values.
-     * If the type is 'column' then the parameters columnValueType and columnValueCategorical
-     * should match with the values in the metadata for that specific column.
+     * Checks if the given input has acceptable values for that specific parameter.
      *
-     * @param value               the value of the parameter
-     * @param parameterProperties the type of the value
+     * @param value               the value given as input
+     * @param parameterProperties the rules that the value should follow
      */
     private static void validateAlgorithmParameterType(
             String value,
             ParameterProperties parameterProperties
     ) throws AlgorithmsException, VariablesMetadataException {
-        String[] values = value.split(",");
 
         if (parameterProperties.getType().equals(ParameterProperties.ParameterType.column)) {
-            VariablesMetadata metadata = VariablesMetadata.getInstance();
-            for (String curValue : values) {
-                if (!metadata.columnExists(curValue)) {
-                    throw new AlgorithmsException("Column: " + curValue + " does not exist.");
-                }
+            String[] values = value.split(",");
+            validateCDEVariables(values, parameterProperties);
+        } else if (parameterProperties.getType().equals(ParameterProperties.ParameterType.formula)) {
+            String[] values = value.split("[+\\-*:0]+");
+            validateCDEVariables(values, parameterProperties);
+        }
+    }
 
-                String allowedSQLTypeValues = parameterProperties.getColumnValuesSQLType();
-                String columnValuesSQLType = metadata.getColumnValuesSQLType(curValue);
-                if (!allowedSQLTypeValues.contains(columnValuesSQLType)){
-                    throw new AlgorithmsException("Column " + curValue +
-                            " does not have one of the allowed SQL Types " + allowedSQLTypeValues + ".");
-                }
+    /**
+     * The given CDE variables must have proper SQL_Type and Categorical values in order to match with
+     * the parameter property's columnValueType and columnValueCategorical.
+     * The information about the CDEs are taken from the metadata.
+     *
+     * @param variables           a list with the variables
+     * @param parameterProperties the rules that the variables should follow
+     */
+    private static void validateCDEVariables(
+            String[] variables,
+            ParameterProperties parameterProperties
+    ) throws AlgorithmsException, VariablesMetadataException {
+        VariablesMetadata metadata = VariablesMetadata.getInstance();
+        for (String curValue : variables) {
+            if (!metadata.columnExists(curValue)) {
+                throw new AlgorithmsException("The CDE " + curValue + " does not exist.");
+            }
 
-                String allowedCategoricalValues = parameterProperties.getColumnValuesCategorical();
-                String columnValuesCategorical = metadata.getColumnValuesCategorical(curValue);
-                if (!allowedCategoricalValues.contains(columnValuesCategorical)){
-                    throw new AlgorithmsException("Column " + curValue +
-                            " does not have one of the allowed Categorical values " + allowedCategoricalValues + ".");
-                }
+            String allowedSQLTypeValues = parameterProperties.getColumnValuesSQLType();
+            String columnValuesSQLType = metadata.getColumnValuesSQLType(curValue);
+            if (!allowedSQLTypeValues.contains(columnValuesSQLType)) {
+                throw new AlgorithmsException("The CDE " + curValue +
+                        " does not have one of the allowed SQL Types '" + allowedSQLTypeValues + "'.");
+            }
+
+            String allowedCategoricalValues = parameterProperties.getColumnValuesCategorical();
+            String columnValuesCategorical = metadata.getColumnValuesCategorical(curValue);
+            if (!allowedCategoricalValues.contains(columnValuesCategorical)) {
+                throw new AlgorithmsException("The CDE " + curValue +
+                        " does not have one of the allowed Categorical values '" + allowedCategoricalValues + "'.");
             }
         }
     }

@@ -53,7 +53,7 @@ public class VariablesMetadata {
             Class.forName("org.sqlite.JDBC");
             Connection c = DriverManager.getConnection("jdbc:sqlite:" + databasePath);
             c.setAutoCommit(false);
-            log.error("Opened database successfully");
+            log.debug("Opened database successfully");
 
             Statement stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM " + metadataTablename + ";");
@@ -64,9 +64,6 @@ public class VariablesMetadata {
                 int categorical = rs.getInt("categorical");
 
                 variablesMetadata.put(code, new VariableProperties(sql_type, categorical));
-                log.error("code :" + code);
-                log.error("sql_type :" + sql_type);
-                log.error("categorical :" + categorical);
             }
             rs.close();
             stmt.close();
@@ -74,7 +71,7 @@ public class VariablesMetadata {
         } catch (Exception e) {
             throw new VariablesMetadataException("Could not load variables metadata. Error: " + e.getMessage());
         }
-        log.error("Metadata loaded successfully");
+        log.debug("Metadata loaded successfully");
     }
 
     public Boolean columnExists(String code){
