@@ -74,9 +74,19 @@ def simplified_formula(formula):
                 removefromnewschema.append(formulaList[f])
 
     newschema2 = [x for x in newschema1 if x not in  removefromnewschema]
+    #print newschema2
 
     return newschema2
 
+
+
+
+def reorderFactors(schema):
+    newschema =[]
+    for i in xrange(0,max([x.count(":") for x in schema])+1):
+        newschema += [x for x in schema if x.count(":")==i]
+        print newschema
+    return newschema
 
 
 
@@ -92,7 +102,9 @@ class create_simplified_formulas:
         else:
             self.type = 3; # Den paizei rolo to noumero. Epistrefei mono mia formula. Xrhsimopoieitai se LR
     def final(self):
-        newschema2=simplified_formula(self.formula)
+        newschema = simplified_formula(self.formula)
+        newschema2 = reorderFactors(newschema)
+
         # print newschema2
         yield ('no','formula')
 
@@ -275,7 +287,7 @@ class sumofsquares:
             totalVariables = re.split('\+',self.ModelVariables[self.maxNo])
             totalVariables=[x for x in totalVariables if x] # remove nulls elements of the list
 
-            for i in xrange(self.minNo,self.maxNo-1):
+            for i in xrange(self.minNo,self.maxNo):
                 nowVariables = re.split('\+',self.ModelVariables[i])
                 nowVariables=[x for x in nowVariables if x] # remove nulls elements of the list
                 missingitem = [item for item in totalVariables if item not in nowVariables]
@@ -295,6 +307,7 @@ class anovastatistics:
         self.meansquare = dict()
         self.rows = dict()
         self.SStotal = 0
+        self.dfTotal = 0;
 
     def step(self, *args):
         no = int(args[0])
@@ -302,13 +315,12 @@ class anovastatistics:
         self.sumofsquares[modelvariables] = float(args[2])
         self.rows[no]= modelvariables
         self.metadata = json.loads(args[3])
-        print self.metadata
         metadata = dict()
         for pair in self.metadata:
             metadata[str(pair[0])]= re.split(',',str(pair[1]))
-        print metadata
         N = int(args[4])
-        self.SStotal += float(args[2])
+        if modelvariables != 'intercept':
+            self.SStotal += float(args[2])
 
         #1. df Computation
         if modelvariables not in ['residuals'] and modelvariables not in ['intercept']:
@@ -318,11 +330,13 @@ class anovastatistics:
             for c in colNamesWithValsList:
                 # print modelvariables
                 self.df[modelvariables] = self.df[modelvariables] * (len(metadata[c])-1)
+            self.dfTotal = self.dfTotal + self.df[modelvariables]
         elif modelvariables in ['residuals']:
-            self.df[modelvariables] = 1;
-            for c in metadata:
-                self.df[modelvariables] = self.df[modelvariables] * len(metadata[c])
-            self.df[modelvariables] = N - self.df[modelvariables]
+            self.df[modelvariables] = N; #pairnei timh sto final . Edw to arxikopoiw
+            # self.df[modelvariables] = 1;
+            # for c in metadata:
+            #     self.df[modelvariables] = self.df[modelvariables] * len(metadata[c])
+            # self.df[modelvariables] = N - self.df[modelvariables]
         elif modelvariables in ['intercept']:
             self.df[modelvariables] = 1
 
@@ -330,12 +344,16 @@ class anovastatistics:
         self.meansquare[modelvariables] =  self.sumofsquares[modelvariables] / self.df[modelvariables]
 
     def final(self):
+        # print str(self.df['residuals']), str(self.dfTotal)
         yield ('no','modelvariables', 'sumofsquares', 'df', 'meansquare',"f","p","etasquared","partetasquared", "omegasquared")
+
+        self.df['residuals'] =  self.df['residuals'] - self.dfTotal - 1
+        self.meansquare['residuals'] =  self.sumofsquares['residuals'] / self.df['residuals']
+
         for c in xrange(len(self.rows)):
             key = self.rows[c]
             F = self.meansquare[key]/self.meansquare['residuals']
             P = stats.f.sf(F,self.df[key],self.df['residuals'])
-            # print self.sumofsquares[key],self.SStotal, self.sumofsquares[key] / self.SStotal
             etasquared = self.sumofsquares[key] / self.SStotal
             # print etasquared
             partetasquared = self.sumofsquares[key]/(self.sumofsquares[key]+self.sumofsquares['residuals'])

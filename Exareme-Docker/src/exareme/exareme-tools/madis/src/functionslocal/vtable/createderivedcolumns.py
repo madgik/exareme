@@ -5,7 +5,7 @@ import re
 registered=True
 
 
-class createderivedcolumns(functions.vtable.vtbase.VT):
+class createderivedcolumns(functions.vtable.vtbase.VT): #uses + and : for multiplication
     def VTiter(self, *parsedArgs,**envars):
         largs, dictargs = self.full_parse(parsedArgs)
 
@@ -13,76 +13,47 @@ class createderivedcolumns(functions.vtable.vtbase.VT):
             raise functions.OperatorError(__name__.rsplit('.')[-1],"No query argument ")
         query = dictargs['query']
 
-        if 'derivedcolumns' not in dictargs:
-            raise functions.OperatorError(__name__.rsplit('.')[-1],"No derivedcolumns ")
-        derivedcolumns = str(dictargs['derivedcolumns'])
-        derivedcolumns = re.split(',',derivedcolumns)
-        derivedcolumns1 =[]
+        if 'newSchema' not in dictargs: # einai to neo sxhma pou tha exei o pinakas.
+            raise functions.OperatorError(__name__.rsplit('.')[-1],"No newSchema ")
+        newSchema = str(dictargs['newSchema'])
+        newSchema = re.split(',',newSchema)
 
-        for d in xrange(len(derivedcolumns)):
-            if ":" in derivedcolumns[d]:
-                element = re.split(":",derivedcolumns[d])
-            else:
-                element = [derivedcolumns[d]]
 
-            item=[]
-            for e in xrange(len(element)):
-                # print element[e]
-                if "(" in str(element[e]):
-                    A=re.split("\(",element[e])
-                    colname = A[0]
-                    colval = A[1][:-1]
-                    # print colname,colval
-                else:
-                    # print "aaa"
-                    colname = element[0]
-                    colval = None
-                item.append([colname,colval])
-            # print "item",item
-            derivedcolumns1.append(item)
+        newSchema1 =""
+        for i in xrange(len(newSchema)):
+            newSchema1 += newSchema[i]+","
+        newSchema1=newSchema1[:-1]
+        yield ([newSchema1],)
 
-        # print "derivedcolumns1", derivedcolumns1
+
+
         cur = envars['db'].cursor()
         c=cur.execute(query)
-        schema = cur.getdescriptionsafe()
-
-        schemaold =[]
-        for i in xrange(len(schema)):
-            schemaold.append(str(schema[i][0]))
-        print "schemaold" ,schemaold
+        currentSchema1 = cur.getdescriptionsafe()
+        currentSchema =[str(x[0]) for x in currentSchema1]
 
 
-        print "newschema", derivedcolumns
-        newschema =""
-        for i in xrange(len(derivedcolumns)):
-            newschema += derivedcolumns[i]+","
-        newschema=newschema[:-1]
-        yield ([newschema],)
         for myrow in c:
+            myrowresult =""
+            for d in xrange(len(newSchema)):
+                colval = 1.0
+                if ":" in newSchema[d]:
+                    elements = re.split(":",newSchema[d])
+                else:
+                    elements = [newSchema[d]]
+                item=[]
+                for e in xrange(len(elements)):
+                    colname = elements[e]
+
+                    myindex = currentSchema.index(str(colname))
+                    colval = colval * float(myrow[myindex])
+                myrowresult+=str(colval)+","
             # print myrow
-            myrowresult = ""
-            for d in xrange(len(derivedcolumns1)):
-                newcolnameval = derivedcolumns1[d]
-                # print "A",newcolnameval
-                result = 1
-                for i in xrange(len(newcolnameval)):
-                     colname = newcolnameval[i][0]
-                     colval = newcolnameval[i][1]
-                     # print "bb",colname,colval
-                     if str(colname) in schemaold:
-                        myindex = schemaold.index(str(colname))
-                        if colval is not None and str(myrow[myindex]) != str(colval):
-                            result = 0
-                        elif colval is None:
-                            result = myrow[myindex]
-                     elif str(colname)=='intercept':
-                         result = 1
-                myrowresult+= str(result) +","
+            # print newSchema
+            # print "result", myrowresult
 
 
-            yield (myrowresult[:-1],)
-
-
+            yield tuple([myrowresult[0:-1]],)
 
 
 
