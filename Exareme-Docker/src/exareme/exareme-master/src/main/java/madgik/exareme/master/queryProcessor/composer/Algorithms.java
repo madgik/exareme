@@ -1,6 +1,7 @@
 package madgik.exareme.master.queryProcessor.composer;
 
 import com.google.gson.Gson;
+import madgik.exareme.master.queryProcessor.composer.Exceptions.AlgorithmsException;
 import org.apache.log4j.Logger;
 
 import java.io.*;

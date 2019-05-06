@@ -1,4 +1,4 @@
-package madgik.exareme.master.queryProcessor.composer;
+package madgik.exareme.master.queryProcessor.composer.Exceptions;
 
 public class ComposerException extends Exception {
     public ComposerException(String message) {

@@ -3,6 +3,7 @@ package madgik.exareme.master.queryProcessor.composer;
 import java.sql.*;
 import java.util.HashMap;
 
+import madgik.exareme.master.queryProcessor.composer.Exceptions.VariablesMetadataException;
 import org.apache.log4j.Logger;
 
 /**

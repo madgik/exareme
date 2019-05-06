@@ -5,7 +5,7 @@ import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.master.queryProcessor.composer.AlgorithmProperties;
 import madgik.exareme.master.queryProcessor.composer.Composer;
 import madgik.exareme.master.queryProcessor.composer.ComposerConstants;
-import madgik.exareme.master.queryProcessor.composer.ComposerException;
+import madgik.exareme.master.queryProcessor.composer.Exceptions.ComposerException;
 import madgik.exareme.utils.association.Pair;
 import madgik.exareme.utils.file.FileUtil;
 import org.apache.commons.io.FileUtils;

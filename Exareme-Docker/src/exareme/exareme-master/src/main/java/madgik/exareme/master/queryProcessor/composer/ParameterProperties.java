@@ -1,5 +1,7 @@
 package madgik.exareme.master.queryProcessor.composer;
 
+import madgik.exareme.master.queryProcessor.composer.Exceptions.AlgorithmsException;
+
 public class ParameterProperties {
     private String name;
     private String desc;

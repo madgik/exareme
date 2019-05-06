@@ -15,6 +15,7 @@ import madgik.exareme.master.engine.iterations.handler.IterationsHandler;
 import madgik.exareme.master.engine.iterations.handler.NIterativeAlgorithmResultEntity;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.master.gateway.ExaremeGatewayUtils;
+import madgik.exareme.master.gateway.async.handler.Exceptions.DatasetsException;
 import madgik.exareme.master.gateway.async.handler.entity.NQueryResultEntity;
 import madgik.exareme.master.queryProcessor.composer.*;
 import madgik.exareme.utils.net.NetUtil;
@@ -155,28 +156,28 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
 
             inputContent.put(name, value);
         }
-
-        Set<String> usedContainersIPs = getUsedContainers(usedDatasets, response);
-        if (usedContainersIPs == null) return;
-        ContainerProxy[] usedContainerProxies;
-        log.debug("Checking workers...");
-        if (!allWorkersRunning(response, usedContainersIPs)) return;
-
-        //Find container proxy of used containers (from IPs)
-        List<ContainerProxy> usedContainerProxiesList = new ArrayList<>();
-        for (ContainerProxy containerProxy : ArtRegistryLocator.getArtRegistryProxy().getContainers()) {
-            if (usedContainersIPs.contains(containerProxy.getEntityName().getIP())) {
-                usedContainerProxiesList.add(containerProxy);
-            }
-        }
-        usedContainerProxies = usedContainerProxiesList.toArray(new ContainerProxy[usedContainerProxiesList.size()]);
-
-        int numberOfContainers = usedContainerProxies.length;
-        log.debug("Containers: " + numberOfContainers);
-        log.debug("Containers: " + new Gson().toJson(usedContainersIPs));
-        String algorithmKey = algorithmName + "_" + System.currentTimeMillis();
-
         try {
+            Set<String> usedContainersIPs = getUsedContainers(usedDatasets, response);
+            if (usedContainersIPs == null) return;
+            ContainerProxy[] usedContainerProxies;
+            log.debug("Checking workers...");
+            if (!allWorkersRunning(response, usedContainersIPs)) return;
+
+            //Find container proxy of used containers (from IPs)
+            List<ContainerProxy> usedContainerProxiesList = new ArrayList<>();
+            for (ContainerProxy containerProxy : ArtRegistryLocator.getArtRegistryProxy().getContainers()) {
+                if (usedContainersIPs.contains(containerProxy.getEntityName().getIP())) {
+                    usedContainerProxiesList.add(containerProxy);
+                }
+            }
+            usedContainerProxies = usedContainerProxiesList.toArray(new ContainerProxy[usedContainerProxiesList.size()]);
+
+            int numberOfContainers = usedContainerProxies.length;
+            log.debug("Containers: " + numberOfContainers);
+            log.debug("Containers: " + new Gson().toJson(usedContainersIPs));
+            String algorithmKey = algorithmName + "_" + System.currentTimeMillis();
+
+
             String dfl;
             AdpDBClientQueryStatus queryStatus;
 
@@ -322,38 +323,38 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         return true;
     }
 
-    //Return null if dataset not found
-    private Set<String> getUsedContainers(String[] usedDatasets, HttpResponse response) throws RemoteException {
+    // Return null if dataset not found
+    private Set<String> getUsedContainers(String[] usedDatasets, HttpResponse response)
+            throws RemoteException, DatasetsException {
         try {
-            //if datasets are not defined run to all datasets
+            // If datasets are not defined run to all datasets
             if (usedDatasets == null || usedDatasets.length == 0) {
                 return allContainersIPs();
             }
 
-            //Generate dataset -> List<node IP> hashmap
+            // Generate dataset -> List<node IP> hashmap
             HashMap<String, List<String>> datasetToNodes = new HashMap<>();
-            //Find nodes with datasets defined at consul
+            // Find nodes with datasets defined at consul
             String nodesKeys = searchConsul("datasets/?keys");
             if (nodesKeys == null) return null;
             log.debug(nodesKeys);
             Gson gson = new Gson();
             String[] nodesKeysArray = gson.fromJson(nodesKeys, String[].class);
-            //For every node (with dataset...)
+            // For every node (with dataset...)
             for (String nodeKey : nodesKeysArray) {
-                //log.debug(searchConsul(nodeKey + "?raw"));
+                // log.debug(searchConsul(nodeKey + "?raw"));
                 String[] nodeDatasets = gson.fromJson(searchConsul(nodeKey + "?raw"), String[].class);
                 String nodeName = nodeKey.replace("datasets/", "");
-                //For every dataset of this node, add to hashmap
+                // For every dataset of this node, add to hashmap
                 for (String nodeDataset : nodeDatasets) {
                     if (!datasetToNodes.containsKey(nodeDataset)) {
                         datasetToNodes.put(nodeDataset, new ArrayList<String>());
                     }
                     datasetToNodes.get(nodeDataset).add(getNodeIP(nodeName));
                 }
-
             }
 
-            //Find IPs of used containers
+            // Find IPs of used containers
             Set<String> usedContainersIPs = new HashSet<>();
             usedContainersIPs.add(NetUtil.getIPv4()); //Always use master!
             List<String> notFoundDatasets = new ArrayList<>();
@@ -365,31 +366,25 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 }
             }
             if (!notFoundDatasets.isEmpty()) {
-                returnNotFoundError(response, notFoundDatasets);
-                return null;
+                throw new DatasetsException(returnNotFoundError(notFoundDatasets));
             }
-
             return usedContainersIPs;
 
-        } catch (IOException e) {
+        } catch (IOException e) {       // TODO Should we hide this exception?
             log.error("Exception while contacting consul, running with all containers. " + e.getMessage());
             return allContainersIPs();
         }
     }
 
-    private void returnNotFoundError(HttpResponse response, List<String> notFoundDatasets) throws IOException {
+    private String returnNotFoundError(List<String> notFoundDatasets) {
         StringBuilder notFound = new StringBuilder();
-        BasicHttpEntity entity;
 
         for (String ds : notFoundDatasets) {
-            notFound.append(ds);
-            notFound.append(", ");
+            notFound.append(ds).append(", ");
         }
         String notFoundSring = notFound.toString();
         notFoundSring = notFoundSring.substring(0, notFoundSring.length() - 2);
-        log.debug("Dataset(s) " + notFoundSring + " not found!");
-        entity = getMessage(response, "Dataset(s) " + notFoundSring + " not found!");
-        response.setEntity(entity);
+        return "Dataset(s) " + notFoundSring + " not found!";
     }
 
     private Set<String> allContainersIPs() throws RemoteException {
