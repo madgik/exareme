@@ -114,7 +114,6 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         log.debug("Parsing content ...");
         String content = "";
         if (request instanceof HttpEntityEnclosingRequest) {
-
             log.debug("Streaming ...");
             HttpEntity entity = ((HttpEntityEnclosingRequest) request).getEntity();
             content = EntityUtils.toString(entity);
@@ -127,11 +126,9 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         }
 
         String algorithmName = uri.substring(uri.lastIndexOf('/') + 1);
-
-        boolean format = false;
         log.debug("Posting " + algorithmName + " ...\n");
-        String[] usedDatasets = null;
 
+        String[] usedDatasets = null;
         log.debug("All of the parameters: " + parameters);
         for (Map k : parameters) {
             String name = (String) k.get("name");
@@ -156,6 +153,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
 
             inputContent.put(name, value);
         }
+
         try {
             Set<String> usedContainersIPs = getUsedContainers(usedDatasets, response);
             if (usedContainersIPs == null) return;

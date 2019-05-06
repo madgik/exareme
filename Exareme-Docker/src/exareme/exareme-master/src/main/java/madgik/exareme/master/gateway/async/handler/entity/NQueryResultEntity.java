@@ -15,7 +15,6 @@ import java.nio.channels.ReadableByteChannel;
 
 /**
  * TODO flush output before suspend
- *
  */
 public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncContentProducer {
 
@@ -39,12 +38,10 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
 
     @Override
     public void produceContent(ContentEncoder encoder, IOControl ioctrl)
-            throws IOException{
+            throws IOException {
 
         if (!queryStatus.hasFinished() && !queryStatus.hasError()) {
-
             if (l == null) {
-
                 l = new NQueryStatusEntity.QueryStatusListener(ioctrl);
                 queryStatus.registerListener(l);
             }
@@ -73,7 +70,7 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
                 encoder.complete();
                 close();
             } else if (queryStatus.getError().matches("java.rmi.RemoteException: Containers:.*not responding")) {
-                String result = createErrorMessage("One or more containers are not responding. Please inform your system administrator,");
+                String result = createErrorMessage("One or more containers are not responding. Please inform the system administrator.");
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();
@@ -96,7 +93,7 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
         }
     }
 
-    public String createErrorMessage(String error){
+    private String createErrorMessage(String error) {
         return "{\"error\" : \"" + error + "\"}";
     }
 
