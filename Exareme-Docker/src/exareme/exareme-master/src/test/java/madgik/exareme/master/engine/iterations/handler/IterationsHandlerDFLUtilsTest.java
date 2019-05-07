@@ -6,7 +6,7 @@ import madgik.exareme.master.engine.iterations.exceptions.IterationsFatalExcepti
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.master.queryProcessor.composer.AlgorithmProperties;
 import madgik.exareme.master.queryProcessor.composer.Algorithms;
-import madgik.exareme.master.queryProcessor.composer.Exceptions.AlgorithmsException;
+import madgik.exareme.master.queryProcessor.composer.Exceptions.AlgorithmException;
 import madgik.exareme.utils.file.FileUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -66,7 +66,7 @@ public class IterationsHandlerDFLUtilsTest {
      */
     @Test
     public void ensureErrorIfTerminationCondQueryInconsistencyAmongPropertyAndTemplate()
-            throws IOException, AlgorithmsException {
+            throws IOException, AlgorithmException {
         // Preparation phase ----------------------
         // Testing with [condition_query_provided=false] with a provided condition query in
         // termination_condition template file.
@@ -146,7 +146,7 @@ public class IterationsHandlerDFLUtilsTest {
 
     @Test
     public void ensureIterativeAlgorithmTerminationConditionDirectoryFormat()
-            throws IOException, AlgorithmsException {
+            throws IOException, AlgorithmException {
         // Preparation phase ----------------------
         // [Ensure termination condition under its required directory exists]
         algorithmName = SELECT_OK_ITERATIVE_ERRONEOUS_TERM_COND;
@@ -190,7 +190,7 @@ public class IterationsHandlerDFLUtilsTest {
 
     @Test
     public void ensureGeneratedTemplateFilesMatchHandwrittenOnes()
-            throws Exception, AlgorithmsException {
+            throws Exception, AlgorithmException {
         // Preparation phase ----------------------
         algorithmName = SAMPLE_ITERATIVE;
         algorithmProperties = Algorithms.getInstance().getAlgorithmProperties(algorithmName);

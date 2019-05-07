@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import madgik.exareme.master.queryProcessor.composer.AlgorithmProperties;
 import madgik.exareme.master.queryProcessor.composer.Algorithms;
-import madgik.exareme.master.queryProcessor.composer.Exceptions.AlgorithmsException;
+import madgik.exareme.master.queryProcessor.composer.Exceptions.AlgorithmException;
 import org.apache.http.*;
 import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.entity.ContentType;
@@ -53,7 +53,7 @@ public class HttpAsyncMiningAlgorithmsHandler implements HttpAsyncRequestHandler
         try {
             algorithmsJSON = gson.toJson(Algorithms.getInstance().getAlgorithms(), AlgorithmProperties[].class);
             response.setEntity(new NStringEntity(algorithmsJSON));
-        } catch (AlgorithmsException e) {
+        } catch (AlgorithmException e) {
             log.error(e);
             BasicHttpEntity entity = new BasicHttpEntity();
             entity.setContent(new ByteArrayInputStream(("{\"error\" : \"" + e.getMessage() + "\"}").getBytes()));

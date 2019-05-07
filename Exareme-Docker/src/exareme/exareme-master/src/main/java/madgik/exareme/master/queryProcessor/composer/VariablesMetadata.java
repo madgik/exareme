@@ -17,8 +17,10 @@ public class VariablesMetadata {
     private class VariableProperties {
         String sql_type;
         String categorical;
+        String enumerations;
+        int enumerationsCount;
 
-        private VariableProperties(String sql_type, int categorical) throws VariablesMetadataException {
+        private VariableProperties(String sql_type, int categorical, String enumerations) throws VariablesMetadataException {
             this.sql_type = sql_type;
             if (categorical == 1)
                 this.categorical = "true";
@@ -26,6 +28,8 @@ public class VariablesMetadata {
                 this.categorical = "false";
             else
                 throw new VariablesMetadataException("Categorical values can be 0 or 1 in the metadata.");
+            this.enumerations = enumerations;
+            enumerationsCount = enumerations.split(",").length;
         }
 
         private String getSql_type() {
@@ -34,6 +38,10 @@ public class VariablesMetadata {
 
         private String getCategorical() {
             return categorical;
+        }
+
+        private int getEnumerationsCount() {
+            return enumerationsCount;
         }
     }
 
@@ -63,8 +71,11 @@ public class VariablesMetadata {
                 String code = rs.getString("code");
                 String sql_type = rs.getString("sql_type");
                 int categorical = rs.getInt("categorical");
+                String enumerations = rs.getString("enumerations");
+                if (enumerations == null)
+                    enumerations = "";
 
-                variablesMetadata.put(code, new VariableProperties(sql_type, categorical));
+                variablesMetadata.put(code, new VariableProperties(sql_type, categorical, enumerations));
             }
             rs.close();
             stmt.close();
@@ -75,7 +86,7 @@ public class VariablesMetadata {
         log.debug("Metadata loaded successfully");
     }
 
-    public Boolean columnExists(String code){
+    public Boolean columnExists(String code) {
         return variablesMetadata.containsKey(code);
     }
 
@@ -83,7 +94,11 @@ public class VariablesMetadata {
         return variablesMetadata.get(code).getSql_type();
     }
 
-    public String getColumnValuesCategorical(String code) {
+    public String getColumnValuesIsCategorical(String code) {
         return variablesMetadata.get(code).getCategorical();
+    }
+
+    public int getColumnValuesNumOfEnumerations(String code) {
+        return variablesMetadata.get(code).getEnumerationsCount();
     }
 }

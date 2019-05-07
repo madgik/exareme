@@ -1,6 +1,6 @@
 package madgik.exareme.master.queryProcessor.composer;
 
-import madgik.exareme.master.queryProcessor.composer.Exceptions.AlgorithmsException;
+import madgik.exareme.master.queryProcessor.composer.Exceptions.AlgorithmException;
 import madgik.exareme.master.queryProcessor.composer.Exceptions.VariablesMetadataException;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -32,15 +32,15 @@ public class AlgorithmProperties {
     public AlgorithmProperties() {
     }
 
-    public void validateAlgorithmPropertiesInitialization() throws AlgorithmsException {
+    public void validateAlgorithmPropertiesInitialization() throws AlgorithmException {
         if (name == null) {
-            throw new AlgorithmsException("The parameter field 'name' was not initialized in the properties.json file");
+            throw new AlgorithmException("The parameter field 'name' was not initialized in the properties.json file");
         }
         if (desc == null) {
-            throw new AlgorithmsException("The parameter field 'desc' was not initialized in the properties.json file");
+            throw new AlgorithmException("The parameter field 'desc' was not initialized in the properties.json file");
         }
         if (type == null) {
-            throw new AlgorithmsException("The parameter field 'type' was not initialized in the properties.json file");
+            throw new AlgorithmException("The parameter field 'type' was not initialized in the properties.json file");
         }
         for (ParameterProperties parameterProperties : parameters)
             parameterProperties.validateParameterPropertiesInitialization();
@@ -99,10 +99,10 @@ public class AlgorithmProperties {
      *
      * @param inputContent a HashMap with the properties from the request
      * @return the merge algorithm's properties
-     * @throws AlgorithmsException when algorithm's properties do not match the inputContent
+     * @throws AlgorithmException when algorithm's properties do not match the inputContent
      */
     public void mergeAlgorithmParametersWithInputContent(HashMap<String, String> inputContent)
-            throws AlgorithmsException, VariablesMetadataException {
+            throws AlgorithmException, VariablesMetadataException {
 
         for (ParameterProperties parameterProperties : this.getParameters()) {
             String value = inputContent.get(parameterProperties.getName());
@@ -111,7 +111,7 @@ public class AlgorithmProperties {
                 validateAlgorithmParameterType(value, parameterProperties);
             } else {            // if value is null
                 if (parameterProperties.getValueNotBlank()) {
-                    throw new AlgorithmsException(
+                    throw new AlgorithmException(
                             "The value of the parameter '" + parameterProperties.getName() + "' should not be blank.");
                 }
                 value = "";
@@ -129,7 +129,7 @@ public class AlgorithmProperties {
     private static void validateAlgorithmParameterType(
             String value,
             ParameterProperties parameterProperties
-    ) throws AlgorithmsException, VariablesMetadataException {
+    ) throws AlgorithmException, VariablesMetadataException {
 
         if (parameterProperties.getType().equals(ParameterProperties.ParameterType.column)) {
             String[] values = value.split(",");
@@ -151,25 +151,35 @@ public class AlgorithmProperties {
     private static void validateCDEVariables(
             String[] variables,
             ParameterProperties parameterProperties
-    ) throws AlgorithmsException, VariablesMetadataException {
+    ) throws AlgorithmException, VariablesMetadataException {
         VariablesMetadata metadata = VariablesMetadata.getInstance();
         for (String curValue : variables) {
             if (!metadata.columnExists(curValue)) {
-                throw new AlgorithmsException("The CDE " + curValue + " does not exist.");
+                throw new AlgorithmException("The CDE " + curValue + " does not exist.");
             }
 
             String allowedSQLTypeValues = parameterProperties.getColumnValuesSQLType();
             String columnValuesSQLType = metadata.getColumnValuesSQLType(curValue);
-            if (!allowedSQLTypeValues.contains(columnValuesSQLType)) {
-                throw new AlgorithmsException("The CDE " + curValue +
-                        " does not have one of the allowed SQL Types '" + allowedSQLTypeValues + "'.");
+            if (!allowedSQLTypeValues.contains(columnValuesSQLType) && !allowedSQLTypeValues.equals("")) {
+                throw new AlgorithmException("The CDE " + curValue +
+                        " does not have one of the allowed SQL Types '" + allowedSQLTypeValues + "' for the algorithm.");
             }
 
-            String allowedCategoricalValues = parameterProperties.getColumnValuesCategorical();
-            String columnValuesCategorical = metadata.getColumnValuesCategorical(curValue);
-            if (!allowedCategoricalValues.contains(columnValuesCategorical)) {
-                throw new AlgorithmsException("The CDE " + curValue +
-                        " does not have one of the allowed Categorical values '" + allowedCategoricalValues + "'.");
+            String allowedIsCategoricalValue = parameterProperties.getColumnValuesIsCategorical();
+            String columnValuesIsCategorical = metadata.getColumnValuesIsCategorical(curValue);
+            if (!allowedIsCategoricalValue.equals(columnValuesIsCategorical) && !allowedIsCategoricalValue.equals("")) {
+                throw new AlgorithmException("The CDE " + curValue +
+                        " does not match the categorical value '" + allowedIsCategoricalValue + "' specified for the algorithm.");
+            }
+
+            String allowedNumOfEnumerationsValue = parameterProperties.getColumnValuesNumOfEnumerations();
+            if (!allowedNumOfEnumerationsValue.equals("")) {
+                int numOfEnumerationsIntegerValue = Integer.parseInt(allowedNumOfEnumerationsValue);
+                int columnValuesNumOfEnumerations = metadata.getColumnValuesNumOfEnumerations(curValue);
+                if (columnValuesNumOfEnumerations != numOfEnumerationsIntegerValue) {
+                    throw new AlgorithmException("The CDE " + curValue +
+                            " does not match the numOfEnumerations value '" + allowedNumOfEnumerationsValue + "' specified for the algorithm.");
+                }
             }
         }
     }
@@ -183,19 +193,19 @@ public class AlgorithmProperties {
     private static void validateAlgorithmParameterValueType(
             String value,
             ParameterProperties parameterProperties
-    ) throws AlgorithmsException {
+    ) throws AlgorithmException {
         if (parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.real)) {
             try {
                 Double.parseDouble(value);
             } catch (NumberFormatException nfe) {
-                throw new AlgorithmsException(
+                throw new AlgorithmException(
                         "The value of the parameter '" + parameterProperties.getName() + "' should be a real number.");
             }
         } else if (parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.integer)) {
             try {
                 Integer.parseInt(value);
             } catch (NumberFormatException e) {
-                throw new AlgorithmsException(
+                throw new AlgorithmException(
                         "The value of the parameter '" + parameterProperties.getName() + "' should be an integer.");
             }
         } else if (parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.json)) {
@@ -205,14 +215,14 @@ public class AlgorithmProperties {
                 try {
                     new JSONArray(value);
                 } catch (JSONException ex1) {
-                    throw new AlgorithmsException(
+                    throw new AlgorithmException(
                             "The value of the parameter '"
                                     + parameterProperties.getName() + "' cannot be parsed into json.");
                 }
             }
         } else if (parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.string)) {
             if (!parameterProperties.getValueMultiple() && value.contains(",")) {
-                throw new AlgorithmsException(
+                throw new AlgorithmException(
                         "The value of the parameter '" + parameterProperties.getName()
                                 + "' should contain only one value.");
             }

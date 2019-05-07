@@ -1,13 +1,14 @@
 package madgik.exareme.master.queryProcessor.composer;
 
-import madgik.exareme.master.queryProcessor.composer.Exceptions.AlgorithmsException;
+import madgik.exareme.master.queryProcessor.composer.Exceptions.AlgorithmException;
 
 public class ParameterProperties {
     private String name;
     private String desc;
     private ParameterType type;
     private String columnValuesSQLType;
-    private String columnValuesCategorical;
+    private String columnValuesIsCategorical;
+    private String columnValuesNumOfEnumerations;
     private String value;
     private Boolean valueNotBlank;
     private Boolean valueMultiple;
@@ -31,33 +32,45 @@ public class ParameterProperties {
     public ParameterProperties() {
     }
 
-    public void validateParameterPropertiesInitialization() throws AlgorithmsException {
+    public void validateParameterPropertiesInitialization() throws AlgorithmException {
         if (name == null) {
-            throw new AlgorithmsException("The parameter field 'name' was not initialized in the properties.json file");
+            throw new AlgorithmException("The parameter field 'name' was not initialized in the properties.json file.");
         }
         if (desc == null) {
-            throw new AlgorithmsException("The parameter field 'desc' was not initialized in the properties.json file");
+            throw new AlgorithmException("The parameter field 'desc' was not initialized in the properties.json file.");
         }
         if (type == null) {
-            throw new AlgorithmsException("The parameter field 'type' was not initialized in the properties.json file");
-        }else if(type.equals(ParameterType.column) || type.equals(ParameterType.formula)){
-            if (columnValuesSQLType == null){
-                throw new AlgorithmsException("The parameter field 'columnValuesSQLType' was not initialized in the properties.json file");
-            }else if (columnValuesCategorical == null){
-                throw new AlgorithmsException("The parameter field 'columnValuesCategorical' was not initialized in the properties.json file");
+            throw new AlgorithmException("The parameter field 'type' was not initialized in the properties.json file.");
+        } else if (type.equals(ParameterType.column) || type.equals(ParameterType.formula)) {
+            if (columnValuesSQLType == null) {
+                throw new AlgorithmException("The parameter field 'columnValuesSQLType' was not initialized in the properties.json file.");
+            }
+
+            if (columnValuesIsCategorical == null) {
+                throw new AlgorithmException("The parameter field 'columnValuesIsCategorical' was not initialized in the properties.json file.");
+            }
+
+            if (columnValuesNumOfEnumerations == null) {
+                throw new AlgorithmException("The parameter field 'columnValuesNumOfEnumerations' was not initialized in the properties.json file.");
+            } else if (!columnValuesNumOfEnumerations.equals("")) {
+                try {
+                    Integer.parseInt(columnValuesNumOfEnumerations);
+                } catch (NumberFormatException e) {
+                    throw new AlgorithmException("The parameter field 'columnValuesNumOfEnumerations' cannot be parsed to an Integer.");
+                }
             }
         }
         if (value == null) {
-            throw new AlgorithmsException("The parameter field 'value' was not initialized in the properties.json file");
+            throw new AlgorithmException("The parameter field 'value' was not initialized in the properties.json file");
         }
         if (valueNotBlank == null) {
-            throw new AlgorithmsException("The parameter field 'valueNotBlank' was not initialized in the properties.json file");
+            throw new AlgorithmException("The parameter field 'valueNotBlank' was not initialized in the properties.json file");
         }
         if (valueMultiple == null) {
-            throw new AlgorithmsException("The parameter field 'valueMultiple' was not initialized in the properties.json file");
+            throw new AlgorithmException("The parameter field 'valueMultiple' was not initialized in the properties.json file");
         }
         if (valueType == null) {
-            throw new AlgorithmsException("The parameter field 'valueType' was not initialized in the properties.json file");
+            throw new AlgorithmException("The parameter field 'valueType' was not initialized in the properties.json file");
         }
     }
 
@@ -89,8 +102,12 @@ public class ParameterProperties {
         return columnValuesSQLType;
     }
 
-    public String getColumnValuesCategorical() {
-        return columnValuesCategorical;
+    public String getColumnValuesIsCategorical() {
+        return columnValuesIsCategorical;
+    }
+
+    public String getColumnValuesNumOfEnumerations() {
+        return columnValuesNumOfEnumerations;
     }
 
     public String getValue() {

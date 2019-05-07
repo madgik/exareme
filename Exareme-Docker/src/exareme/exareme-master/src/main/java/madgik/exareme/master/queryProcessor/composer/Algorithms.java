@@ -1,7 +1,7 @@
 package madgik.exareme.master.queryProcessor.composer;
 
 import com.google.gson.Gson;
-import madgik.exareme.master.queryProcessor.composer.Exceptions.AlgorithmsException;
+import madgik.exareme.master.queryProcessor.composer.Exceptions.AlgorithmException;
 import org.apache.log4j.Logger;
 
 import java.io.*;
@@ -17,7 +17,7 @@ public class Algorithms {
     private HashMap<String, AlgorithmProperties> algorithmsHashMap;
     private AlgorithmProperties[] algorithmsArray;
 
-    private Algorithms(String repoPath) throws IOException, AlgorithmsException {
+    private Algorithms(String repoPath) throws IOException, AlgorithmException {
         Gson gson = new Gson();
         File repoFile = new File(repoPath);
         if (!repoFile.exists()) throw new IOException("Unable to locate property file.");
@@ -42,7 +42,7 @@ public class Algorithms {
         algorithmsArray = currentAlgorithms.toArray(new AlgorithmProperties[0]);
     }
 
-    public static Algorithms getInstance() throws AlgorithmsException {
+    public static Algorithms getInstance() throws AlgorithmException {
         if (instance == null) {
             try {
                 instance = new Algorithms(ComposerConstants.getAlgorithmsFolderPath());
