@@ -44,7 +44,7 @@ public class Composer {
      * @param algorithmProperties the properties of the algorithm
      * @return a query for the local database
      */
-    private static String createLocalTableQuery(AlgorithmProperties algorithmProperties) throws ComposerException{
+    private static String createLocalTableQuery(AlgorithmProperties algorithmProperties) throws ComposerException {
         List<String> variables = new ArrayList<>();
         List<String> datasets = new ArrayList<>();
         String filters = "";
@@ -53,14 +53,17 @@ public class Composer {
                 continue;
 
             if (parameter.getType() == ParameterProperties.ParameterType.column) {
-                for(String variable: Arrays.asList(parameter.getValue().split("[,]"))){
-                    if(variables.contains(variable)){
+                for (String variable : Arrays.asList(parameter.getValue().split("[,]"))) {
+                    if (variables.contains(variable)) {
                         throw new ComposerException("Column '" + variable + "' was given twice as input. This is not allowed.");
                     }
                     variables.add(variable);
                 }
-            }else if (parameter.getType() == ParameterProperties.ParameterType.formula) {
-                variables.addAll(Arrays.asList(parameter.getValue().split("[+\\-*:0]+")));
+            } else if (parameter.getType() == ParameterProperties.ParameterType.formula) {
+                for (String variable : Arrays.asList(parameter.getValue().split("[+\\-*:]+"))) {
+                    if(!variable.equals("0"))
+                        variables.add(variable);
+                }
             } else if (parameter.getType() == ParameterProperties.ParameterType.filter) {
                 SqlQueryBuilderFactory sqlQueryBuilderFactory = new SqlQueryBuilderFactory();
                 SqlBuilder sqlBuilder = sqlQueryBuilderFactory.builder();
@@ -73,8 +76,8 @@ public class Composer {
                     e.printStackTrace();
                 }
             } else if (parameter.getType() == ParameterProperties.ParameterType.dataset) {
-                for(String dataset: Arrays.asList(parameter.getValue().split("[,]"))){
-                    if(datasets.contains(dataset)){
+                for (String dataset : Arrays.asList(parameter.getValue().split("[,]"))) {
+                    if (datasets.contains(dataset)) {
                         throw new ComposerException("Dataset '" + dataset + "' was given twice as input. This is not allowed.");
                     }
                     datasets.add(dataset);
@@ -128,7 +131,7 @@ public class Composer {
      *                           ContainerProxies.
      */
     public static String composeDFLScript(String qKey,
-                                   AlgorithmProperties algorithmProperties
+                                          AlgorithmProperties algorithmProperties
     ) throws ComposerException {
         try {
             return composeDFLScript(qKey, algorithmProperties,
