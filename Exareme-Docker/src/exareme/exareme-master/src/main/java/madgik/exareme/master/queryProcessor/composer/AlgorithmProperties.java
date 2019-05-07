@@ -155,21 +155,21 @@ public class AlgorithmProperties {
         VariablesMetadata metadata = VariablesMetadata.getInstance();
         for (String curValue : variables) {
             if (!metadata.columnExists(curValue)) {
-                throw new AlgorithmException("The CDE " + curValue + " does not exist.");
+                throw new AlgorithmException("The CDE '" + curValue + "' does not exist.");
             }
 
             String allowedSQLTypeValues = parameterProperties.getColumnValuesSQLType();
             String columnValuesSQLType = metadata.getColumnValuesSQLType(curValue);
             if (!allowedSQLTypeValues.contains(columnValuesSQLType) && !allowedSQLTypeValues.equals("")) {
-                throw new AlgorithmException("The CDE " + curValue +
-                        " does not have one of the allowed SQL Types '" + allowedSQLTypeValues + "' for the algorithm.");
+                throw new AlgorithmException("The CDE '" + curValue + "' does not have one of the allowed SQL Types '"
+                        + allowedSQLTypeValues + "' for the algorithm.");
             }
 
             String allowedIsCategoricalValue = parameterProperties.getColumnValuesIsCategorical();
             String columnValuesIsCategorical = metadata.getColumnValuesIsCategorical(curValue);
             if (!allowedIsCategoricalValue.equals(columnValuesIsCategorical) && !allowedIsCategoricalValue.equals("")) {
-                throw new AlgorithmException("The CDE " + curValue +
-                        " does not match the categorical value '" + allowedIsCategoricalValue + "' specified for the algorithm.");
+                throw new AlgorithmException("The CDE '" + curValue + "' does not match the categorical value '"
+                        + allowedIsCategoricalValue + "' specified for the algorithm.");
             }
 
             String allowedNumOfEnumerationsValue = parameterProperties.getColumnValuesNumOfEnumerations();
@@ -177,8 +177,8 @@ public class AlgorithmProperties {
                 int numOfEnumerationsIntegerValue = Integer.parseInt(allowedNumOfEnumerationsValue);
                 int columnValuesNumOfEnumerations = metadata.getColumnValuesNumOfEnumerations(curValue);
                 if (columnValuesNumOfEnumerations != numOfEnumerationsIntegerValue) {
-                    throw new AlgorithmException("The CDE " + curValue +
-                            " does not match the numOfEnumerations value '" + allowedNumOfEnumerationsValue + "' specified for the algorithm.");
+                    throw new AlgorithmException("The CDE '" + curValue + "' does not match the numOfEnumerations value '"
+                            + allowedNumOfEnumerationsValue + "' specified for the algorithm.");
                 }
             }
         }
