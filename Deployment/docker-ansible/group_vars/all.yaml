@@ -1,0 +1,20 @@
+REMOTE_USER: skarvoun
+BECOME_USER: skarvoun
+METADATA_PATH: "/home/sofiakar/Desktop/variablesMetadata.json"
+FOLDER_PATH: "/home/sofiakar/Desktop/sofia/0.MIP/exareme/Deployment/mip-federation"
+DESTINATION_PATH: "/home/skarvoun/"
+EXAREME_TAG: "permissions"
+
+
+EXAREME_IMAGE: "sofiakar/myexareme"
+EXAREME_KEYSTORE: "exareme-keystore:8500"
+DOCKER_PATH: "/root/exareme/datasets/"
+CHDIR: "/home/skarvoun/mip-federation/"
+
+PORTAINER_PORT: "9000"
+PORTAINER_IMAGE: "portainer/portainer"
+PORTAINER_VERSION: ":latest"
+PORTAINER_DATA: "/home/skarvoun/mip-federation/portainer"
+COMPOSE_PROJECT_NAME: "mip"
+
+

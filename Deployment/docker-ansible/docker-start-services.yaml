@@ -1,0 +1,8 @@
+---
+- hosts: manager
+  name: Start Services
+  remote_user: "{{ REMOTE_USER }}"
+  become: yes
+  become_user: "{{ BECOME_USER }}"
+  roles:
+   - start-services
