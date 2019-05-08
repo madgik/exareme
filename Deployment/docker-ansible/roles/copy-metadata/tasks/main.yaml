@@ -1,0 +1,8 @@
+- name: Copy metadata file
+  copy:
+    src: "{{ METADATA_PATH }}"
+    dest: "{{ example_path_for_metadata }}"
+    owner: "{{ BECOME_USER }}"
+    group: "{{ BECOME_USER }}"
+    mode: 0644
+#TODO dest will be local_path (where datasets.csv is located).The above is a test for not messing around with existing metadata.json. Make sure we all have the same version in metadata file
