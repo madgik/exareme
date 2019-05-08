@@ -22,6 +22,7 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
 
     private final AdpDBClientQueryStatus queryStatus;
     private final ByteBuffer buffer;
+    private final Integer FixedNumber = 11;
     private ReadableByteChannel channel;
     private NQueryStatusEntity.QueryStatusListener l;
     private DataSerialization format;
@@ -64,23 +65,15 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
             }
         } else {
             log.trace("|" + queryStatus.getError() + "|");
-            if (queryStatus.getError().contains("\n" + "Operator NULLTABLE:")) {
-                String result = createErrorMessage("The input you provided gives an empty table. Please check your input.");
-                encoder.write(ByteBuffer.wrap(result.getBytes()));
+            if (queryStatus.getError().contains("\n" + "Operator RAISEERROR:")) {
+                String result = queryStatus.getError();
+                result = result.substring(result.lastIndexOf("RAISEERROR:") + FixedNumber).replaceAll("\\s"," ");
+                encoder.write(ByteBuffer.wrap(createErrorMessage(result).getBytes()));
                 encoder.complete();
                 close();
-            } else if (queryStatus.getError().matches("java.rmi.RemoteException: Containers:.*not responding")) {
+            }
+            else if (queryStatus.getError().matches("java.rmi.RemoteException: Containers:.*not responding")) {
                 String result = createErrorMessage("One or more containers are not responding. Please inform the system administrator.");
-                encoder.write(ByteBuffer.wrap(result.getBytes()));
-                encoder.complete();
-                close();
-            } else if (queryStatus.getError().contains("\n" + "Operator PRIVACY:")) {
-                String result = createErrorMessage("Privacy issues. There are not enough patients.");
-                encoder.write(ByteBuffer.wrap(result.getBytes()));
-                encoder.complete();
-                close();
-            } else if (queryStatus.getError().contains("\n" + "Operator LARGEBUCKET:")) {
-                String result = createErrorMessage("Bucket size too big.");
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();
