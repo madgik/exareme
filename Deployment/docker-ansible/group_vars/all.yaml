@@ -1,5 +1,5 @@
-REMOTE_USER: skarvoun
-BECOME_USER: skarvoun
+REMOTE_USER: {{ username }}
+BECOME_USER: {{ username }}
 METADATA_PATH: "/home/sofiakar/Desktop/variablesMetadata.json"
 FOLDER_PATH: "/home/sofiakar/Desktop/sofia/0.MIP/exareme/Deployment/mip-federation"
 DESTINATION_PATH: "/home/skarvoun/"
