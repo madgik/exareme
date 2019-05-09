@@ -83,7 +83,7 @@ public class PhaseCompletionEventHandler extends IterationsEventHandler<PhaseCom
                     errMsg = "[" + ias.getCurrentExecutionPhase() + "-phase] query of "
                             + ias.toString() + " failed"
                             + (e != null ? ": " + e.getMessage() : ".");
-                    cleanupOnFailure(event.getAlgorithmKey(), null, log, errMsg);
+                    cleanupOnFailure(ias.getAlgorithmKey(), null, log, errMsg);
                     return;
                 }
 
