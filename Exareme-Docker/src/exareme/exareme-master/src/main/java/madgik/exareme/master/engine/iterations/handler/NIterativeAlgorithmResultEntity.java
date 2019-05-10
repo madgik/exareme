@@ -75,9 +75,16 @@ public class NIterativeAlgorithmResultEntity extends BasicHttpEntity
                         // Algorithm execution failed, notify the client.
                         // Overwrite channel with an InputStream containing error information.
                         // Beware...
-                        String errMsg = generateErrorMessage(iterativeAlgorithmState.getAlgorithmKey());
-                        channel = Channels.newChannel(
-                                new ByteArrayInputStream(errMsg.getBytes(StandardCharsets.UTF_8)));
+                        String result = iterativeAlgorithmState.getAlgorithmError();    //Catch whatever error coming from UDFs
+                        if (result.contains("\n" + "Operator RAISEERROR:")) {
+                            result = result.substring(result.lastIndexOf("RAISEERROR:") + "RAISEERROR:".length()).replaceAll("\\s", " ");
+                            channel = Channels.newChannel(
+                                    new ByteArrayInputStream(createErrorMessage(result).getBytes(StandardCharsets.UTF_8)));
+                        } else{     //Generate a default Message
+                            String defaultMsg = generateErrorMessage(iterativeAlgorithmState.getAlgorithmKey());
+                            channel = Channels.newChannel(
+                                    new ByteArrayInputStream(defaultMsg.getBytes(StandardCharsets.UTF_8)));
+                        }
                         channel.read(buffer);
                         buffer.flip();
                         encoder.write(buffer);
@@ -133,6 +140,9 @@ public class NIterativeAlgorithmResultEntity extends BasicHttpEntity
         return false;
     }
 
+    private String createErrorMessage(String error) {
+        return "{\"error\" : \"" + error + "\"}";
+    }
     /**
      * Generates a JSON response that contains the error and a description.
      *

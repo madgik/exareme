@@ -22,7 +22,6 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
 
     private final AdpDBClientQueryStatus queryStatus;
     private final ByteBuffer buffer;
-    private final Integer FixedNumber = 11;
     private ReadableByteChannel channel;
     private NQueryStatusEntity.QueryStatusListener l;
     private DataSerialization format;
@@ -67,7 +66,7 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
             log.trace("|" + queryStatus.getError() + "|");
             if (queryStatus.getError().contains("\n" + "Operator RAISEERROR:")) {
                 String result = queryStatus.getError();
-                result = result.substring(result.lastIndexOf("RAISEERROR:") + FixedNumber).replaceAll("\\s"," ");
+                result = result.substring(result.lastIndexOf("RAISEERROR:") + "RAISEERROR:".length()).replaceAll("\\s"," ");
                 encoder.write(ByteBuffer.wrap(createErrorMessage(result).getBytes()));
                 encoder.complete();
                 close();
