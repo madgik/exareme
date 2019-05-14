@@ -56,7 +56,7 @@ def addGroupVariablesToList(groupMetadata, metadataList):
                 enumerations = []
                 for enumeration in variable['enumerations']:
                     enumerations.append(str(enumeration['code']))
-                variableDictionary['enumerations'] = ', '.join(enumerations)
+                variableDictionary['enumerations'] = ','.join(enumerations)
 
             else:
                 variableDictionary['enumerations'] = 'null'
