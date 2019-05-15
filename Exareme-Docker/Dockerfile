@@ -1,5 +1,5 @@
 FROM alpine:3.6
-MAINTAINER Sofia Karvouni <karvoun@di.uoa.gr>
+MAINTAINER Sofia Karvounari <karvoun@di.uoa.gr>
 
 # Here we install GNU libc (aka glibc) and set C.UTF-8 locale as default.
 RUN ALPINE_GLIBC_BASE_URL="https://github.com/sgerrand/alpine-pkg-glibc/releases/download" && \
@@ -94,6 +94,7 @@ ADD src/mip-algorithms /root/mip-algorithms
 ADD files/java.sh /etc/profile.d/java.sh
 RUN chmod 755 /etc/profile.d/java.sh
 ADD files/root /root
+RUN chmod -R 755 /root/exareme/
 
 EXPOSE 9090
 EXPOSE 22

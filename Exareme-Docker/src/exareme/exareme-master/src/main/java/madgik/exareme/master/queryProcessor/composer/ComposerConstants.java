@@ -1,10 +1,8 @@
 package madgik.exareme.master.queryProcessor.composer;
 
+import madgik.exareme.utils.properties.AdpProperties;
 import org.apache.log4j.Logger;
 
-/**
- * @author alex
- */
 public class ComposerConstants {
     private static final Logger log = Logger.getLogger(ComposerConstants.class);
 
@@ -23,4 +21,23 @@ public class ComposerConstants {
     public static final String curStatePKLKey = "cur_state_pkl";
     public static final String prevStatePKLKey = "prev_state_pkl";
 
+    public static String getAlgorithmsFolderPath() {
+        return AdpProperties.getGatewayProperties().getString("algorithms.path");
+    }
+
+    public static String getAlgorithmFolderPath(String algorithmName) {
+        return getAlgorithmsFolderPath() + algorithmName;
+    }
+
+    public static String getDatasetDBDirectory() {
+        return AdpProperties.getGatewayProperties().getString("db.path");
+    }
+
+    public static String getDBDataTablename() {
+        return AdpProperties.getGatewayProperties().getString("db.tablename.data");
+    }
+
+    public static String getDBMetadataTablename() {
+        return AdpProperties.getGatewayProperties().getString("db.tablename.metadata");
+    }
 }

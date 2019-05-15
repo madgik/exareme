@@ -1,38 +1,31 @@
 package madgik.exareme.master.gateway.async.handler;
 
-import madgik.exareme.master.queryProcessor.composer.Composer;
-import org.apache.http.HttpException;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
-import org.apache.http.UnsupportedHttpVersionException;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import madgik.exareme.master.queryProcessor.composer.AlgorithmProperties;
+import madgik.exareme.master.queryProcessor.composer.Algorithms;
+import madgik.exareme.master.queryProcessor.composer.Exceptions.AlgorithmException;
+import org.apache.http.*;
+import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.nio.entity.NStringEntity;
 import org.apache.http.nio.protocol.*;
 import org.apache.http.protocol.HttpContext;
 import org.apache.log4j.Logger;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Locale;
 
-/**
- * Mining  Handler
- *
- * @author alex
- * @since 0.1
- */
 public class HttpAsyncMiningAlgorithmsHandler implements HttpAsyncRequestHandler<HttpRequest> {
-
     private static final Logger log = Logger.getLogger(HttpAsyncMiningAlgorithmsHandler.class);
-
-    private static final Composer composer = Composer.getInstance();
 
     public HttpAsyncMiningAlgorithmsHandler() {
     }
 
     @Override
-    public HttpAsyncRequestConsumer<HttpRequest> processRequest(HttpRequest request,
-                                                                HttpContext context) throws HttpException, IOException {
-
+    public HttpAsyncRequestConsumer<HttpRequest> processRequest(HttpRequest request, HttpContext context)
+    {
         return new BasicAsyncRequestConsumer();
     }
 
@@ -55,7 +48,18 @@ public class HttpAsyncMiningAlgorithmsHandler implements HttpAsyncRequestHandler
         if (!"GET".equals(method)) {
             throw new UnsupportedHttpVersionException(method + "not supported.");
         }
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String algorithmsJSON = null;
+        try {
+            algorithmsJSON = gson.toJson(Algorithms.getInstance().getAlgorithms(), AlgorithmProperties[].class);
+            response.setEntity(new NStringEntity(algorithmsJSON));
+        } catch (AlgorithmException e) {
+            log.error(e);
+            BasicHttpEntity entity = new BasicHttpEntity();
+            entity.setContent(new ByteArrayInputStream(("{\"error\" : \"" + e.getMessage() + "\"}").getBytes()));
+            response.setStatusCode(HttpStatus.SC_BAD_REQUEST);
+            response.setEntity(entity);
+        }
 
-        response.setEntity(new NStringEntity(composer.getAlgorithms()));
     }
 }

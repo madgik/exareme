@@ -1,0 +1,45 @@
+{
+	"name": "LINEAR_REGRESSION",
+	"desc": "",
+	"type": "multiple_local_global",
+	"parameters": [{
+			"name": "x",
+			"desc": "The right part of the linear predictor function, that contains the indepedent variables in an equation supporting the symbols +, :, * , R notation.",
+			"type": "formula",
+			"columnValuesSQLType": "",
+			"columnValuesIsCategorical": "true",
+			"columnValuesNumOfEnumerations": "",
+			"value": "adnicategory*apoe4+subjectage+minimentalstate+gender",
+			"valueNotBlank": true,
+			"valueMultiple": true,
+			"valueType": "string"
+		}, {
+			"name": "y",
+			"desc": "The left part of the linear predictor function, that contains the dependent variable.",
+			"type": "column",
+			"columnValuesSQLType": "real,integer",
+			"columnValuesIsCategorical": "",
+			"columnValuesNumOfEnumerations": "",
+			"value": "av45",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "string"
+		}, {
+			"name": "dataset",
+			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed.",
+			"type": "dataset",
+			"value": "adni,ppmi",
+			"valueNotBlank": true,
+			"valueMultiple": true,
+			"valueType": "string"
+		}, {
+			"name": "filter",
+			"desc": "",
+			"type": "filter",
+			"value": "",
+			"valueNotBlank": false,
+			"valueMultiple": true,
+			"valueType": "string"
+		}
+	]
+}

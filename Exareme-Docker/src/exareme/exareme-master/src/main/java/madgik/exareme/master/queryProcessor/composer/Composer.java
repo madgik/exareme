@@ -1,7 +1,5 @@
 package madgik.exareme.master.queryProcessor.composer;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.itfsw.query.builder.SqlQueryBuilderFactory;
 import com.itfsw.query.builder.support.builder.SqlBuilder;
 import com.itfsw.query.builder.support.model.result.SqlQueryResult;
@@ -9,9 +7,8 @@ import madgik.exareme.common.consts.HBPConstants;
 import madgik.exareme.master.engine.iterations.handler.IterationsConstants;
 import madgik.exareme.master.engine.iterations.handler.IterationsHandlerDFLUtils;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
-import madgik.exareme.master.queryProcessor.composer.Algorithms.AlgorithmProperties.ParameterProperties;
+import madgik.exareme.master.queryProcessor.composer.Exceptions.ComposerException;
 import madgik.exareme.utils.file.FileUtil;
-import madgik.exareme.utils.properties.AdpProperties;
 import madgik.exareme.worker.art.registry.ArtRegistryLocator;
 import org.apache.log4j.Logger;
 
@@ -19,9 +16,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static madgik.exareme.master.engine.iterations.handler.IterationsConstants.iterationsParameterIterDBKey;
 import static madgik.exareme.master.engine.iterations.handler.IterationsConstants.terminationConditionTemplateSQLFilename;
@@ -34,48 +29,13 @@ import static madgik.exareme.master.engine.iterations.state.IterativeAlgorithmSt
  * the local algorithm properties.json files.
  */
 public class Composer {
-
     private static final Logger log = Logger.getLogger(Composer.class);
-    private static final Composer instance = new Composer();
 
-    // The directory where the algorithms' SQL scripts are
-    private static String algorithmsFolderPath;
-    private static String DATASET_DB_DIRECTORY;
-    private static String DB_TABLENAME;
-    private static String METADATA_DIRECTORY;
-
-    private static Algorithms algorithms;
-    private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
-    static {
-        algorithmsFolderPath = AdpProperties.getGatewayProperties().getString("algorithms.path");
-        DATASET_DB_DIRECTORY = AdpProperties.getGatewayProperties().getString("db.path");
-        DB_TABLENAME = AdpProperties.getGatewayProperties().getString("db.tablename");
-        METADATA_DIRECTORY = AdpProperties.getGatewayProperties().getString("metadata.path");
-        try {
-            algorithms = Algorithms.createAlgorithms(algorithmsFolderPath);
-        } catch (IOException e) {
-            log.error("Unable to locate repository properties (*.json).", e);
-        }
-    }
-
-    public static Composer getInstance() {
-        return instance;
-    }
-
-    public String getAlgorithmFolderPath(String algorithmName) {
-        return algorithmsFolderPath + algorithmName;
-    }
-
-    public String getIterativeAlgorithmFolderPath(
+    private static String getIterativeAlgorithmFolderPath(
             String algorithmName,
             IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase,
             int iteration) {
-        return getAlgorithmFolderPath(algorithmName) + "/" + iterativeAlgorithmPhase.name() + "/" + iteration;
-    }
-
-    public String getAlgorithms() {
-        return gson.toJson(algorithms.getAlgorithms(), Algorithms.AlgorithmProperties[].class);
+        return ComposerConstants.getAlgorithmFolderPath(algorithmName) + "/" + iterativeAlgorithmPhase.name() + "/" + iteration;
     }
 
     /**
@@ -84,16 +44,27 @@ public class Composer {
      * @param algorithmProperties the properties of the algorithm
      * @return a query for the local database
      */
-    public String createLocalTableQuery(Algorithms.AlgorithmProperties algorithmProperties) {
+    private static String createLocalTableQuery(AlgorithmProperties algorithmProperties) throws ComposerException {
         List<String> variables = new ArrayList<>();
         List<String> datasets = new ArrayList<>();
         String filters = "";
         for (ParameterProperties parameter : algorithmProperties.getParameters()) {
             if (parameter.getValue().equals(""))
                 continue;
+
             if (parameter.getType() == ParameterProperties.ParameterType.column) {
-                variables.addAll(Arrays.asList(parameter.getValue().split("[,+*]")));
-            } else if (parameter.getType() == Algorithms.AlgorithmProperties.ParameterProperties.ParameterType.filter) {
+                for (String variable : Arrays.asList(parameter.getValue().split("[,]"))) {
+                    if (variables.contains(variable)) {
+                        throw new ComposerException("Column '" + variable + "' was given twice as input. This is not allowed.");
+                    }
+                    variables.add(variable);
+                }
+            } else if (parameter.getType() == ParameterProperties.ParameterType.formula) {
+                for (String variable : Arrays.asList(parameter.getValue().split("[+\\-*:]+"))) {
+                    if(!variable.equals("0"))
+                        variables.add(variable);
+                }
+            } else if (parameter.getType() == ParameterProperties.ParameterType.filter) {
                 SqlQueryBuilderFactory sqlQueryBuilderFactory = new SqlQueryBuilderFactory();
                 SqlBuilder sqlBuilder = sqlQueryBuilderFactory.builder();
                 try {   // build query
@@ -104,15 +75,20 @@ public class Composer {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            } else if (parameter.getType() == Algorithms.AlgorithmProperties.ParameterProperties.ParameterType.dataset) {
-                datasets.addAll(Arrays.asList(parameter.getValue().split("[,]")));
+            } else if (parameter.getType() == ParameterProperties.ParameterType.dataset) {
+                for (String dataset : Arrays.asList(parameter.getValue().split("[,]"))) {
+                    if (datasets.contains(dataset)) {
+                        throw new ComposerException("Dataset '" + dataset + "' was given twice as input. This is not allowed.");
+                    }
+                    datasets.add(dataset);
+                }
             }
         }
 
         StringBuilder builder = new StringBuilder();
         boolean whereAdded = false;
         if (variables.isEmpty())
-            builder.append("select * from (" + DB_TABLENAME + ")");
+            builder.append("select * from (" + ComposerConstants.getDBDataTablename() + ")");
         else {
             builder.append("select ");
             for (String variable : variables) {
@@ -120,7 +96,7 @@ public class Composer {
                 builder.append(",");
             }
             builder.deleteCharAt(builder.lastIndexOf(","));
-            builder.append(" from (" + DB_TABLENAME + ")");
+            builder.append(" from (" + ComposerConstants.getDBDataTablename() + ")");
             if (!"".equals(filters)) {
                 builder.append(" where " + filters);
                 whereAdded = true;
@@ -154,8 +130,8 @@ public class Composer {
      *                           supported or finally, if this method could not retrieve
      *                           ContainerProxies.
      */
-    public String composeDFLScript(String qKey,
-                                   Algorithms.AlgorithmProperties algorithmProperties
+    public static String composeDFLScript(String qKey,
+                                          AlgorithmProperties algorithmProperties
     ) throws ComposerException {
         try {
             return composeDFLScript(qKey, algorithmProperties,
@@ -176,9 +152,9 @@ public class Composer {
      *                           supported or finally, if this method could not retrieve
      *                           ContainerProxies.
      */
-    public String composeDFLScript(
+    public static String composeDFLScript(
             String algorithmKey,
-            Algorithms.AlgorithmProperties algorithmProperties,
+            AlgorithmProperties algorithmProperties,
             int numberOfWorkers
     ) throws ComposerException {
         // Assigning the proper identifier for the defaultDB
@@ -190,7 +166,7 @@ public class Composer {
         }
         String algorithmName = algorithmProperties.getName();
         String defaultDBFilePath = HBPConstants.DEMO_DB_WORKING_DIRECTORY + dbIdentifier + "_defaultDB.db";
-        String inputLocalDB = DATASET_DB_DIRECTORY;
+        String inputLocalDB = ComposerConstants.getDatasetDBDirectory();
         String dbQuery = createLocalTableQuery(algorithmProperties);
         // Escaping double quotes for python algorithms because they are needed elsewhere
         String pythonDBQuery = dbQuery.replace("\"", "\\\"");
@@ -247,7 +223,7 @@ public class Composer {
      * @param algorithmParameters the parameters of the algorithm provided
      * @return an ExaDFL script that Exareme will use to run the query
      */
-    private String composeLocalAlgorithmsDFLScript(
+    private static String composeLocalAlgorithmsDFLScript(
             String algorithmName,
             String inputLocalDB,
             String dbQuery,
@@ -256,8 +232,8 @@ public class Composer {
             ParameterProperties[] algorithmParameters
     ) {
         StringBuilder dflScript = new StringBuilder();
-        String localScriptPath = getAlgorithmFolderPath(algorithmName) + "/local.template.sql";
-        String algorithmFolderPath = getAlgorithmFolderPath(algorithmName);
+        String localScriptPath = ComposerConstants.getAlgorithmFolderPath(algorithmName) + "/local.template.sql";
+        String algorithmFolderPath = ComposerConstants.getAlgorithmFolderPath(algorithmName);
 
         dflScript.append("distributed create table " + outputGlobalTbl + " as external \n");
         dflScript.append(String.format("select * from (\n  execnselect 'path:%s' ", algorithmFolderPath));
@@ -285,7 +261,7 @@ public class Composer {
      * @param algorithmParameters the parameters of the algorithm provided
      * @return an ExaDFL script that Exareme will use to run the query
      */
-    private String composeLocalGlobalAlgorithmsDFLScript(
+    private static String composeLocalGlobalAlgorithmsDFLScript(
             String algorithmName,
             String dbIdentifier,
             String inputLocalDB,
@@ -296,9 +272,9 @@ public class Composer {
     ) {
         StringBuilder dflScript = new StringBuilder();
 
-        String localScriptPath = getAlgorithmFolderPath(algorithmName) + "/local.template.sql";
-        String globalScriptPath = getAlgorithmFolderPath(algorithmName) + "/global.template.sql";
-        String algorithmFolderPath = getAlgorithmFolderPath(algorithmName);
+        String localScriptPath = ComposerConstants.getAlgorithmFolderPath(algorithmName) + "/local.template.sql";
+        String globalScriptPath = ComposerConstants.getAlgorithmFolderPath(algorithmName) + "/global.template.sql";
+        String algorithmFolderPath = ComposerConstants.getAlgorithmFolderPath(algorithmName);
 
         // Format local
         dflScript.append("distributed create temporary table output_local_tbl as virtual \n");
@@ -348,7 +324,7 @@ public class Composer {
      * @param algorithmParameters the parameters of the algorithm provided
      * @return an ExaDFL script that Exareme will use to run the query
      */
-    private String composeMultipleLocalGlobalAlgorithmsDFLScript(
+    private static String composeMultipleLocalGlobalAlgorithmsDFLScript(
             String algorithmName,
             String inputLocalDB,
             String dbQuery,
@@ -358,7 +334,7 @@ public class Composer {
     ) {
         StringBuilder dflScript = new StringBuilder();
 
-        String algorithmFolderPath = getAlgorithmFolderPath(algorithmName);
+        String algorithmFolderPath = ComposerConstants.getAlgorithmFolderPath(algorithmName);
         File[] listFiles = new File(algorithmFolderPath).listFiles(new FileFilter() {
             @Override
             public boolean accept(File pathname) {
@@ -434,7 +410,7 @@ public class Composer {
      * @param numberOfWorkers     the number of workers that the algorithm is going to run on
      * @return an ExaDFL script that Exareme will use to run the query
      */
-    private String composePipelineAlgorithmsDFLScript(
+    private static String composePipelineAlgorithmsDFLScript(
             String algorithmName,
             String inputLocalDB,
             String dbQuery,
@@ -444,10 +420,10 @@ public class Composer {
             int numberOfWorkers
     ) {
         StringBuilder dflScript = new StringBuilder();
-        String localScriptPath = getAlgorithmFolderPath(algorithmName) + "/local.template.sql";
-        String localUpdateScriptPath = getAlgorithmFolderPath(algorithmName) + "/localupdate.template.sql";
-        String globalScriptPath = getAlgorithmFolderPath(algorithmName) + "/global.template.sql";
-        String algorithmFolderPath = getAlgorithmFolderPath(algorithmName);
+        String localScriptPath = ComposerConstants.getAlgorithmFolderPath(algorithmName) + "/local.template.sql";
+        String localUpdateScriptPath = ComposerConstants.getAlgorithmFolderPath(algorithmName) + "/localupdate.template.sql";
+        String globalScriptPath = ComposerConstants.getAlgorithmFolderPath(algorithmName) + "/global.template.sql";
+        String algorithmFolderPath = ComposerConstants.getAlgorithmFolderPath(algorithmName);
         String outputLocalTbl = "output_local_tbl_" + 0;
         String prevOutputLocalTbl;
 
@@ -510,9 +486,9 @@ public class Composer {
      * @param iterativeAlgorithmPhase the phase of the iteration
      * @return an ExaDFL script that Exareme will use to run the query
      */
-    public String composeIterativeAlgorithmsDFLScript(
+    public static String composeIterativeAlgorithmsDFLScript(
             String algorithmKey,
-            Algorithms.AlgorithmProperties algorithmProperties,
+            AlgorithmProperties algorithmProperties,
             IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase
     ) throws ComposerException {
         String dbIdentifier = algorithmProperties.getParameterValue(ComposerConstants.dbIdentifierKey);
@@ -520,7 +496,7 @@ public class Composer {
             dbIdentifier = algorithmKey;
         String algorithmName = algorithmProperties.getName();
         String defaultDBFileName = HBPConstants.DEMO_DB_WORKING_DIRECTORY + dbIdentifier + "_defaultDB.db";
-        String inputLocalDB = DATASET_DB_DIRECTORY;
+        String inputLocalDB = ComposerConstants.getDatasetDBDirectory();
         String dbQuery = createLocalTableQuery(algorithmProperties);
         ParameterProperties[] algorithmParameters = algorithmProperties.getParameters();
 
@@ -639,7 +615,7 @@ public class Composer {
      * @param algorithmParameters the parameters of the algorithm
      * @return
      */
-    private String composePythonLocalAlgorithmsDFLScript(
+    private static String composePythonLocalAlgorithmsDFLScript(
             String algorithmName,
             String inputLocalDB,
             String dbQuery,
@@ -647,7 +623,7 @@ public class Composer {
             ParameterProperties[] algorithmParameters
     ) {
         StringBuilder dflScript = new StringBuilder();
-        String localPythonScriptPath = getAlgorithmFolderPath(algorithmName) + "/local.py";
+        String localPythonScriptPath = ComposerConstants.getAlgorithmFolderPath(algorithmName) + "/local.py";
 
         // Format local
         dflScript.append("distributed create table " + outputGlobalTbl + " as external \n");
@@ -673,7 +649,7 @@ public class Composer {
      * @param algorithmParameters the parameters of the algorithm
      * @return
      */
-    private String composePythonLocalGlobalAlgorithmsDFLScript(
+    private static String composePythonLocalGlobalAlgorithmsDFLScript(
             String algorithmName,
             String algorithmKey,
             String inputLocalDB,
@@ -682,8 +658,8 @@ public class Composer {
             ParameterProperties[] algorithmParameters
     ) {
         StringBuilder dflScript = new StringBuilder();
-        String localPythonScriptPath = getAlgorithmFolderPath(algorithmName) + "/local.py";
-        String globalPythonScriptPath = getAlgorithmFolderPath(algorithmName) + "/global.py";
+        String localPythonScriptPath = ComposerConstants.getAlgorithmFolderPath(algorithmName) + "/local.py";
+        String globalPythonScriptPath = ComposerConstants.getAlgorithmFolderPath(algorithmName) + "/global.py";
         String transferDBFilePath = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey + "/transfer.db";
 
         // Format local
@@ -726,7 +702,7 @@ public class Composer {
      * @param algorithmParameters the parameters of the algorithm
      * @return
      */
-    private String composePythonMultipleLocalGlobalAlgorithmsDFLScript(
+    private static String composePythonMultipleLocalGlobalAlgorithmsDFLScript(
             String algorithmName,
             String algorithmKey,
             String inputLocalDB,
@@ -736,7 +712,7 @@ public class Composer {
     ) {
         StringBuilder dflScript = new StringBuilder();
 
-        String algorithmFolderPath = getAlgorithmFolderPath(algorithmName);
+        String algorithmFolderPath = ComposerConstants.getAlgorithmFolderPath(algorithmName);
         File[] listFiles = new File(algorithmFolderPath).listFiles(new FileFilter() {
             @Override
             public boolean accept(File pathname) {
