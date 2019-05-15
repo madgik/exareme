@@ -1,0 +1,65 @@
+{
+	"name": "HOLD_OUT_VALIDATION",
+	"desc": "Hold Out Validation",
+	"type": "local_global",
+	"status": "enabled",
+	"vtype": "",
+	"parameters": [{
+			"name": "dataset",
+			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed.",
+			"type": "dataset",
+			"value": "eleni",
+			"valueNotBlank": true,
+			"valueMultiple": true,
+			"valueType": "string"
+		}, {
+			"name": "columns",
+			"desc": "",
+			"type": "column",
+			"value": "outlook,temperature,humidity,windy",
+			"valueNotBlank": true,
+			"valueMultiple": true,
+			"valueType": "string"
+		}, {
+			"name": "classname",
+			"desc": "",
+			"type": "column",
+			"value": "play",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "string"
+		}, {
+			"name": "test_size",
+			"desc": "",
+			"type": "other",
+			"value": "0.25",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "real"
+		}, {
+			"name": "train_size",
+			"desc": "",
+			"type": "other",
+			"value": "",
+			"valueNotBlank": false,
+			"valueMultiple": false,
+			"valueType": "real"
+		}, {
+			"name": "random_state",
+			"desc": "",
+			"type": "other",
+			"value": "",
+			"valueNotBlank": false,
+			"valueMultiple": false,
+			"valueType": "real"
+		}, {
+			"name": "shuffle",
+			"desc": "",
+			"type": "other",
+			"value": "True",
+			"valueNotBlank": false,
+			"valueMultiple": false,
+			"valueType": "string"
+		}
+	]
+}

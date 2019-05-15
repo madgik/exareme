@@ -1,0 +1,49 @@
+{
+	"name": "CROSS_VALIDATION_K_FOLD",
+	"desc": "Cross Validation K Fold",
+	"type": "local_global",
+	"status": "enabled",
+	"vtype": "",
+	"parameters": [{
+			"name": "dataset",
+			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed.",
+			"type": "dataset",
+			"value": "eleni",
+			"valueNotBlank": true,
+			"valueMultiple": true,
+			"valueType": "string"
+		}, {
+			"name": "columns",
+			"desc": "",
+			"type": "column",
+			"value": "outlook,temperature,humidity,windy",
+			"valueNotBlank": true,
+			"valueMultiple": true,
+			"valueType": "string"
+		}, {
+			"name": "classname",
+			"desc": "",
+			"type": "column",
+			"value": "play",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "string"
+		}, {
+			"name": "kfold",
+			"desc": "",
+			"type": "other",
+			"value": "3",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "integer"
+		}, {
+			"name": "dbIdentifier",
+			"desc": "Predefined value for the dbIdentifier",
+			"type": "other",
+			"value": "",
+			"valueNotBlank": false,
+			"valueMultiple": false,
+			"valueType": "string"
+		}
+	]
+}
