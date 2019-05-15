@@ -42,6 +42,417 @@
 			"sql_type": "text",
 			"type": "polynominal",
 			"categorical": true
+		},
+		{
+			"code": "ANOVA_pp",
+			"description": "",
+			"minValue":0,
+			"maxValue":180,
+			"label": "pp",
+			"methodology": "Testing_ANOVA",
+			"sql_type": "integer",
+			"type": "",
+			"categorical": false
+		},
+		{
+			"code": "ANOVA_var_I1",
+			"description": "",
+			"enumerations": [{
+					"code": 0,
+					"label": 0
+				}, {
+					"code": 1,
+					"label": 1
+				}, {
+					"code": 2,
+					"label": 2
+				}
+			],
+			"label": "var_I1",
+			"methodology": "Testing_ANOVA",
+			"sql_type": "integer",
+			"type": "polynominal",
+			"categorical": true
+		},
+		{
+			"code": "ANOVA_var_I2",
+			"description": "",
+			"enumerations": [{
+					"code": 0,
+					"label": 0
+				}, {
+					"code": 1,
+					"label": 1
+				}, {
+					"code": 2,
+					"label": 2
+				}
+			],
+			"label": "var_I2",
+			"methodology": "Testing_ANOVA",
+			"sql_type": "integer",
+			"type": "polynominal",
+			"categorical": true
+		},
+		{
+			"code": "ANOVA_var_I3",
+			"description": "",
+			"enumerations": [{
+					"code": 0,
+					"label": 0
+				}, {
+					"code": 1,
+					"label": 1
+				}
+			],
+			"label": "var_I3",
+			"methodology": "Testing_ANOVA",
+			"sql_type": "integer",
+			"type": "binominal",
+			"categorical": true
+		},
+		{
+			"code": "ANOVA_var_D",
+			"description": "",
+			"minValue":2,
+			"maxValue":131,
+			"label": "var_D",
+			"methodology": "Testing_ANOVA",
+			"sql_type": "integer",
+			"type": "",
+			"categorical": false
+		},
+		{
+			"code": "ANOVA_lefthippocampus",
+			"description": "",
+			"label": "Left Hippocampus",
+			"methodology": "Testing_ANOVA",
+			"sql_type": "real",
+			"type": "",
+			"categorical": false,
+			"units": "cm3"
+		},
+		{
+			"code": "ANOVA_alzheimerbroadcategory",
+			"description": "",
+			"enumerations": [{
+					"code": "AD",
+					"label": "Alzheimer''s disease"
+				}, {
+					"code": "CN",
+					"label": "Cognitively Normal"
+				}, {
+					"code": "Other",
+					"label": "Other"
+				}
+			],
+			"label": "Alzheimer Broad Category",
+			"methodology": "Testing_ANOVA",
+			"sql_type": "text",
+			"type": "polynominal",
+			"categorical": true
+		},
+		{
+			"code": "ANOVA_gender",
+			"description": "Gender of the patient - Sex assigned at birth",
+			"enumerations": [{
+					"code": "M",
+					"label": "Male"
+				}, {
+					"code": "F",
+					"label": "Female"
+				}
+			],
+			"label": "Gender",
+			"length": 1,
+			"methodology": "Testing_ANOVA",
+			"sql_type": "text",
+			"type": "binominal",
+			"categorical": true
+		},
+		{
+			"code": "ANOVA_agegroup",
+			"description": "Age Group",
+			"enumerations": [{
+					"code": "-50y",
+					"label": "-50y"
+				}, {
+					"code": "50-59y",
+					"label": "50-59y"
+				}, {
+					"code": "60-69y",
+					"label": "60-69y"
+				}, {
+					"code": "70-79y",
+					"label": "70-79y"
+				}, {
+					"code": "+80y",
+					"label": "+80y"
+				}
+			],
+			"label": "Age Group",
+			"methodology": "Testing_ANOVA",
+			"sql_type": "text",
+			"type": "polynominal",
+			"categorical": true
+		},
+		{
+			"code": "CL_age",
+			"description": "",
+			"enumerations": [{
+					"code": "young",
+					"label": "young"
+				}, {
+					"code": "pre-presbyopic",
+					"label": "pre-presbyopic"
+				}, {
+					"code": "presbyopic",
+					"label": "presbyopic"
+				}
+			],
+			"label": "CL_age",
+			"methodology": "Testing_ID3",
+			"sql_type": "text",
+			"type": "polynominal",
+			"categorical": true
+		},
+		{
+			"code": "CL_spectacle_prescrip",
+			"description": "",
+			"enumerations": [{
+					"code": "myope",
+					"label": "myope"
+				}, {
+					"code": "hypermetrope",
+					"label": "hypermetrope"
+				}
+			],
+			"label": "CL_spectacle_prescrip",
+			"methodology": "Testing_ID3",
+			"sql_type": "text",
+			"type": "binominal",
+			"categorical": true
+		},
+		{
+			"code": "CL_astigmatism",
+			"description": "",
+			"enumerations": [{
+					"code": "no",
+					"label": "no"
+				}, {
+					"code": "yes",
+					"label": "yes"
+				}
+			],
+			"label": "CL_astigmatism",
+			"methodology": "Testing_ID3",
+			"sql_type": "text",
+			"type": "binominal",
+			"categorical": true
+		},
+		{
+			"code": "CL_tear_prod_rate",
+			"description": "",
+			"enumerations": [{
+					"code": "reduced",
+					"label": "reduced"
+				}, {
+					"code": "normal",
+					"label": "normal"
+				}
+			],
+			"label": "CL_tear_prod_rate",
+			"methodology": "Testing_ID3",
+			"sql_type": "text",
+			"type": "binominal",
+			"categorical": true
+		},
+		{
+			"code": "CL_contact_lenses",
+			"description": "",
+			"enumerations": [{
+					"code": "none",
+					"label": "none"
+				}, {
+					"code": "soft",
+					"label": "soft"
+				},
+				{
+					"code": "hard",
+					"label": "hard"
+				}
+			],
+			"label": "CL_contact_lenses",
+			"methodology": "Testing_ID3",
+			"sql_type": "text",
+			"type": "polynominal",
+			"categorical": true
+		},
+		{
+			"code": "car_buying",
+			"description": "",
+			"enumerations": [{
+					"code": "vhigh",
+					"label": "vhigh"
+				},
+				{
+					"code": "high",
+					"label": "high"
+				}, 
+				{
+					"code": "med",
+					"label": "med"
+				},
+				{
+					"code": "low",
+					"label": "low"
+				}
+			],
+			"label": "car_buying",
+			"methodology": "Testing_ID3",
+			"sql_type": "text",
+			"type": "polynominal",
+			"categorical": true
+		},
+		{
+			"code": "car_maint",
+			"description": "",
+			"enumerations": [{
+					"code": "vhigh",
+					"label": "vhigh"
+				},
+				{
+					"code": "high",
+					"label": "high"
+				}, 
+				{
+					"code": "med",
+					"label": "med"
+				},
+				{
+					"code": "low",
+					"label": "low"
+				}
+			],
+			"label": "car_maint",
+			"methodology": "Testing_ID3",
+			"sql_type": "text",
+			"type": "polynominal",
+			"categorical": true
+		},
+		{
+			"code": "car_doors",
+			"description": "",
+			"enumerations": [{
+					"code": "2",
+					"label": "2"
+				},
+				{
+					"code": "3",
+					"label": "3"
+				}, 
+				{
+					"code": "4",
+					"label": "4"
+				}
+			],
+			"label": "car_doors",
+			"methodology": "Testing_ID3",
+			"sql_type": "text",
+			"type": "polynominal",
+			"categorical": true
+		},
+		{
+			"code": "car_persons",
+			"description": "",
+			"enumerations": [{
+					"code": "2",
+					"label": "2"
+				},
+				{
+					"code": "more", 
+					"label": "more"
+				}, 
+				{
+					"code": "4",
+					"label": "4"
+				}
+			],
+			"label": "car_persons",
+			"methodology": "Testing_ID3",
+			"sql_type": "text",
+			"type": "polynominal",
+			"categorical": true
+		},
+		{
+			"code": "car_lug_boot",
+			"description": "",
+			"enumerations": [{
+					"code": "small",
+					"label": "small"
+				},
+				{
+					"code": "med", 
+					"label": "med"
+				}, 
+				{
+					"code": "big",
+					"label": "big"
+				}
+			],
+			"label": "car_lug_boot",
+			"methodology": "Testing_ID3",
+			"sql_type": "text",
+			"type": "polynominal",
+			"categorical": true
+		},
+		{
+			"code": "car_safety",
+			"description": "",
+			"enumerations": [{
+					"code": "low",
+					"label": "low"
+				},
+				{
+					"code": "med", 
+					"label": "med"
+				}, 
+				{
+					"code": "high",
+					"label": "high"
+				}
+			],
+			"label": "car_safety",
+			"methodology": "Testing_ID3",
+			"sql_type": "text",
+			"type": "polynominal",
+			"categorical": true
+		},
+		{
+			"code": "car_class",
+			"description": "",
+			"enumerations": [{
+					"code": "unacc",
+					"label": "unacc"
+				},
+				{
+					"code": "acc", 
+					"label": "acc"
+				}, 
+				{
+					"code": "vgood",
+					"label": "vgood"
+				},
+				{
+					"code": "good",
+					"label": "good"
+				}
+			],
+			"label": "car_class",
+			"methodology": "Testing_ID3",
+			"sql_type": "text",
+			"type": "polynominal",
+			"categorical": true
 		}
 	],
 	"code": "root",
@@ -1508,6 +1919,81 @@
 						}, {
 							"code": "5",
 							"label": "5"
+						}, {
+							"code": "6",
+							"label": "6"
+						}, {
+							"code": "7",
+							"label": "7"
+						}, {
+							"code": "8",
+							"label": "8"
+						}, {
+							"code": "9",
+							"label": "9"
+						}, {
+							"code": "10",
+							"label": "10"
+						}, {
+							"code": "11",
+							"label": "11"
+						}, {
+							"code": "12",
+							"label": "12"
+						}, {
+							"code": "13",
+							"label": "13"
+						}, {
+							"code": "14",
+							"label": "14"
+						}, {
+							"code": "15",
+							"label": "15"
+						}, {
+							"code": "16",
+							"label": "16"
+						}, {
+							"code": "17",
+							"label": "17"
+						}, {
+							"code": "18",
+							"label": "18"
+						}, {
+							"code": "19",
+							"label": "19"
+						}, {
+							"code": "20",
+							"label": "20"
+						}, {
+							"code": "21",
+							"label": "21"
+						}, {
+							"code": "22",
+							"label": "22"
+						}, {
+							"code": "23",
+							"label": "23"
+						}, {
+							"code": "24",
+							"label": "24"
+						}, {
+							"code": "25",
+							"label": "25"
+						}, {
+							"code": "26",
+							"label": "26"
+						}, {
+							"code": "27",
+							"label": "27"
+						}, {
+							"code": "28",
+							"label": "28"
+						}, {
+							"code": "29",
+							"label": "29"
+						}, {
+							"code": "30",
+							"label": "30"
 						}
 					],
 					"maxValue": 30,
