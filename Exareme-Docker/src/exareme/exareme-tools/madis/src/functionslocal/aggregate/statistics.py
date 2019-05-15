@@ -10,6 +10,7 @@ except ImportError:
 __docformat__ = 'reStructuredText en'
 
 
+
 class gramian:
     registered = True  # Value to define db operator
 
@@ -76,7 +77,6 @@ class gramian:
                 yield skeys[i], skeys[j], lres[l] + vals[i] * vals[j], lreccount
 
                 l += 1
-
 
 class fmult:
     """
