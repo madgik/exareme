@@ -41,7 +41,7 @@ def main():
     parser.add_argument('-cur_state_pkl', required=True, help='Path to the pickle file holding the current state.')
     parser.add_argument('-input_local_DB', required=True, help='Path to local db.')
     parser.add_argument('-db_query', required=True, help='Query to be executed on local db.')
-    args = parser.parse_args()
+    args, unknown = parser.parse_known_args()
     fname_cur_state = path.abspath(args.cur_state_pkl)
     fname_loc_db = path.abspath(args.input_local_DB)
     query = args.db_query

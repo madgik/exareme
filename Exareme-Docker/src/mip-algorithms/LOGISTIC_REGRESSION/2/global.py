@@ -41,7 +41,7 @@ def main():
                         help='Path to the pickle file holding the current state.')
     parser.add_argument('-local_step_dbs', required=True,
                         help='Path to db holding local step results.')
-    args = parser.parse_args()
+    args, unknown = parser.parse_known_args()
     fname_cur_state = path.abspath(args.cur_state_pkl)
     local_dbs = path.abspath(args.local_step_dbs)
 
