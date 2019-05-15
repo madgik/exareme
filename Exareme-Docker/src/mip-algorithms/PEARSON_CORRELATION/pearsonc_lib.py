@@ -11,10 +11,9 @@ from algorithm_utils import TransferData
 
 # Set the data class that will transfer the data between local-global
 class PearsonCorrelationLocalDT(TransferData):
-
     def __init__(self, args):
         if len(args) != 8:
-            raise ValueError('illegal argument')
+            raise ValueError('Illegal number of arguments.')
         self.nn = args[0]
         self.sx = args[1]
         self.sy = args[2]
@@ -32,6 +31,8 @@ class PearsonCorrelationLocalDT(TransferData):
         )
 
     def __add__(self, other):
+        assert self.schema_X == other.schema_X, 'Local schema_X do not agree.'
+        assert self.schema_Y == other.schema_Y, 'Local schema_Y do not agree.'
         result = PearsonCorrelationLocalDT((
             self.nn + other.nn,
             self.sx + other.sx,
