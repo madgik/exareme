@@ -6,8 +6,8 @@ from os import path
 from argparse import ArgumentParser
 import numpy as np
 
-sys.path.append(path.dirname(path.dirname(path.abspath(__file__))) + '/utils/')
-sys.path.append(path.dirname(path.dirname(path.abspath(__file__))) + '/LOGISTIC_REGRESSION/')
+sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/utils/')
+sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/LOGISTIC_REGRESSION/')
 
 from algorithm_utils import StateData
 from log_regr_lib import LogRegrIter_Loc2Glob_TD, LogRegrIter_Glob2Loc_TD
