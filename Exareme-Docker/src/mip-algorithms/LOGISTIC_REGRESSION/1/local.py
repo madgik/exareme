@@ -4,6 +4,8 @@ from __future__ import print_function
 import sys
 import sqlite3
 from os import path
+import os
+import errno
 from argparse import ArgumentParser
 
 import numpy as np
@@ -72,6 +74,12 @@ def main():
     # Run algorithm local step
     local_state, local_out = logregr_local_init(local_in=local_in)
     # Save local state
+    if not os.path.exists(os.path.dirname(fname_cur_state)):
+        try:
+            os.makedirs(os.path.dirname(fname_cur_state))
+        except OSError as exc:  # Guard against race condition
+            if exc.errno != errno.EEXIST:
+                raise
     local_state.save(fname=fname_cur_state)
     # Transfer local output (should be the last command)
     local_out.transfer()

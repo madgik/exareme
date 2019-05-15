@@ -3,6 +3,8 @@ from __future__ import print_function
 
 import sys
 from os import path
+import os
+import errno
 from argparse import ArgumentParser
 import numpy as np
 from scipy.special import expit
@@ -66,6 +68,12 @@ def main():
     # Run algorithm local iteration step
     local_state, local_out = logregr_local_iter(local_state=local_state, local_in=global_out)
     # Save local state
+    if not os.path.exists(os.path.dirname(fname_cur_state)):
+        try:
+            os.makedirs(os.path.dirname(fname_cur_state))
+        except OSError as exc:  # Guard against race condition
+            if exc.errno != errno.EEXIST:
+                raise
     local_state.save(fname=fname_cur_state)
     # Return
     local_out.transfer()
