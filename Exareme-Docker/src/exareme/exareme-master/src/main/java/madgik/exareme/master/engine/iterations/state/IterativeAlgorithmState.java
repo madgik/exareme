@@ -593,7 +593,7 @@ public class IterativeAlgorithmState {
      */
     public void releaseLock() {
         lock.unlock();
-        if (lock.isLocked()) {
+        if (lock.isHeldByCurrentThread()) {
             // Unlikely to happen except for programming error.
             log.warn(Thread.currentThread().getId() + ": Lock counter > 1, releasing all locks");
             while (lock.isLocked())
