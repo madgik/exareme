@@ -1,0 +1,224 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Grammar
+
+Rule 0     S' -> expression
+Rule 1     expression -> expression PLUS term
+Rule 2     expression -> term
+Rule 3     term -> term COLON factor
+Rule 4     term -> term STAR factor
+Rule 5     term -> factor
+Rule 6     factor -> LPAREN expression RPAREN
+Rule 7     factor -> VAR
+Rule 8     factor -> NUMBER
+
+Terminals, with rules where they appear
+
+COLON                : 3
+LPAREN               : 6
+NUMBER               : 8
+PLUS                 : 1
+RPAREN               : 6
+STAR                 : 4
+VAR                  : 7
+error                : 
+
+Nonterminals, with rules where they appear
+
+expression           : 1 6 0
+factor               : 3 4 5
+term                 : 1 2 3 4
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . expression
+    (1) expression -> . expression PLUS term
+    (2) expression -> . term
+    (3) term -> . term COLON factor
+    (4) term -> . term STAR factor
+    (5) term -> . factor
+    (6) factor -> . LPAREN expression RPAREN
+    (7) factor -> . VAR
+    (8) factor -> . NUMBER
+
+    LPAREN          shift and go to state 3
+    VAR             shift and go to state 5
+    NUMBER          shift and go to state 2
+
+    term                           shift and go to state 1
+    expression                     shift and go to state 6
+    factor                         shift and go to state 4
+
+state 1
+
+    (2) expression -> term .
+    (3) term -> term . COLON factor
+    (4) term -> term . STAR factor
+
+    RPAREN          reduce using rule 2 (expression -> term .)
+    PLUS            reduce using rule 2 (expression -> term .)
+    $end            reduce using rule 2 (expression -> term .)
+    COLON           shift and go to state 8
+    STAR            shift and go to state 7
+
+
+state 2
+
+    (8) factor -> NUMBER .
+
+    COLON           reduce using rule 8 (factor -> NUMBER .)
+    STAR            reduce using rule 8 (factor -> NUMBER .)
+    PLUS            reduce using rule 8 (factor -> NUMBER .)
+    $end            reduce using rule 8 (factor -> NUMBER .)
+    RPAREN          reduce using rule 8 (factor -> NUMBER .)
+
+
+state 3
+
+    (6) factor -> LPAREN . expression RPAREN
+    (1) expression -> . expression PLUS term
+    (2) expression -> . term
+    (3) term -> . term COLON factor
+    (4) term -> . term STAR factor
+    (5) term -> . factor
+    (6) factor -> . LPAREN expression RPAREN
+    (7) factor -> . VAR
+    (8) factor -> . NUMBER
+
+    LPAREN          shift and go to state 3
+    VAR             shift and go to state 5
+    NUMBER          shift and go to state 2
+
+    term                           shift and go to state 1
+    expression                     shift and go to state 9
+    factor                         shift and go to state 4
+
+state 4
+
+    (5) term -> factor .
+
+    COLON           reduce using rule 5 (term -> factor .)
+    STAR            reduce using rule 5 (term -> factor .)
+    RPAREN          reduce using rule 5 (term -> factor .)
+    PLUS            reduce using rule 5 (term -> factor .)
+    $end            reduce using rule 5 (term -> factor .)
+
+
+state 5
+
+    (7) factor -> VAR .
+
+    COLON           reduce using rule 7 (factor -> VAR .)
+    STAR            reduce using rule 7 (factor -> VAR .)
+    PLUS            reduce using rule 7 (factor -> VAR .)
+    $end            reduce using rule 7 (factor -> VAR .)
+    RPAREN          reduce using rule 7 (factor -> VAR .)
+
+
+state 6
+
+    (0) S' -> expression .
+    (1) expression -> expression . PLUS term
+
+    PLUS            shift and go to state 10
+
+
+state 7
+
+    (4) term -> term STAR . factor
+    (6) factor -> . LPAREN expression RPAREN
+    (7) factor -> . VAR
+    (8) factor -> . NUMBER
+
+    LPAREN          shift and go to state 3
+    VAR             shift and go to state 5
+    NUMBER          shift and go to state 2
+
+    factor                         shift and go to state 11
+
+state 8
+
+    (3) term -> term COLON . factor
+    (6) factor -> . LPAREN expression RPAREN
+    (7) factor -> . VAR
+    (8) factor -> . NUMBER
+
+    LPAREN          shift and go to state 3
+    VAR             shift and go to state 5
+    NUMBER          shift and go to state 2
+
+    factor                         shift and go to state 12
+
+state 9
+
+    (6) factor -> LPAREN expression . RPAREN
+    (1) expression -> expression . PLUS term
+
+    RPAREN          shift and go to state 13
+    PLUS            shift and go to state 10
+
+
+state 10
+
+    (1) expression -> expression PLUS . term
+    (3) term -> . term COLON factor
+    (4) term -> . term STAR factor
+    (5) term -> . factor
+    (6) factor -> . LPAREN expression RPAREN
+    (7) factor -> . VAR
+    (8) factor -> . NUMBER
+
+    LPAREN          shift and go to state 3
+    VAR             shift and go to state 5
+    NUMBER          shift and go to state 2
+
+    term                           shift and go to state 14
+    factor                         shift and go to state 4
+
+state 11
+
+    (4) term -> term STAR factor .
+
+    COLON           reduce using rule 4 (term -> term STAR factor .)
+    STAR            reduce using rule 4 (term -> term STAR factor .)
+    RPAREN          reduce using rule 4 (term -> term STAR factor .)
+    PLUS            reduce using rule 4 (term -> term STAR factor .)
+    $end            reduce using rule 4 (term -> term STAR factor .)
+
+
+state 12
+
+    (3) term -> term COLON factor .
+
+    COLON           reduce using rule 3 (term -> term COLON factor .)
+    STAR            reduce using rule 3 (term -> term COLON factor .)
+    RPAREN          reduce using rule 3 (term -> term COLON factor .)
+    PLUS            reduce using rule 3 (term -> term COLON factor .)
+    $end            reduce using rule 3 (term -> term COLON factor .)
+
+
+state 13
+
+    (6) factor -> LPAREN expression RPAREN .
+
+    COLON           reduce using rule 6 (factor -> LPAREN expression RPAREN .)
+    STAR            reduce using rule 6 (factor -> LPAREN expression RPAREN .)
+    PLUS            reduce using rule 6 (factor -> LPAREN expression RPAREN .)
+    $end            reduce using rule 6 (factor -> LPAREN expression RPAREN .)
+    RPAREN          reduce using rule 6 (factor -> LPAREN expression RPAREN .)
+
+
+state 14
+
+    (1) expression -> expression PLUS term .
+    (3) term -> term . COLON factor
+    (4) term -> term . STAR factor
+
+    RPAREN          reduce using rule 1 (expression -> expression PLUS term .)
+    PLUS            reduce using rule 1 (expression -> expression PLUS term .)
+    $end            reduce using rule 1 (expression -> expression PLUS term .)
+    COLON           shift and go to state 8
+    STAR            shift and go to state 7
+

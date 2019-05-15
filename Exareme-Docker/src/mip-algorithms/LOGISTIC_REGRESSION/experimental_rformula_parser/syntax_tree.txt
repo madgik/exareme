@@ -1,0 +1,1 @@
+"{PLUS: {x, {PLUS: {{PLUS: {{PLUS: {{PLUS: {{PLUS: {a, b }}, {PLUS: {a, b }} }}, {COLON: {{PLUS: {a, b }}, {PLUS: {a, b }} }} }}, {PLUS: {a, b }} }}, {COLON: {{PLUS: {{PLUS: {{PLUS: {a, b }}, {PLUS: {a, b }} }}, {COLON: {{PLUS: {a, b }}, {PLUS: {a, b }} }} }}, {PLUS: {a, b }} }} }} }}"
