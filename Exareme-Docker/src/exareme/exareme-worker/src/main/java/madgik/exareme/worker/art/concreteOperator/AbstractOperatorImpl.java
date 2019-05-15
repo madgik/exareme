@@ -164,7 +164,7 @@ public abstract class AbstractOperatorImpl {
                 getExceptionManager().reportException("", exception);
                 log.debug(
                         "exception in abstract op" + exception.getMessage() + " " + this.opname + " ");
-                exception.printStackTrace();
+                //  exception.printStackTrace();
             } catch (Exception e) {
 
                 getExceptionManager().reportException("Exit", e);
