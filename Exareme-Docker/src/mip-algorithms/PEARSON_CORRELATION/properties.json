@@ -1,0 +1,37 @@
+{
+	"name": "PEARSON_CORRELATION",
+	"desc": "Calculates a Pearson correlation coefficient and the p-value for testing non-correlation.",
+	"type": "python_local_global",
+	"parameters": [{
+			"name": "X",
+			"desc": "A list of variables from database. The variable should be Real, Float, Integer. It cannot be empty. The length of the list should match Υ",
+			"type": "column",
+			"columnValuesSQLType": "",
+			"columnValuesIsCategorical": "",
+			"columnValuesNumOfEnumerations": "",
+			"value": "leftaccumbensarea, leftacgganteriorcingulategyrus, leftainsanteriorinsula",
+			"valueNotBlank": true,
+			"valueMultiple": true,
+			"valueType": "string"
+		}, {
+			"name": "Y",
+			"desc": "A list of variables from database. The variable should be Real, Float, Integer. It cannot be empty. The length of the list should match Χ",
+			"type": "column",
+			"columnValuesSQLType": "",
+			"columnValuesIsCategorical": "",
+			"columnValuesNumOfEnumerations": "",
+			"value": "rightaccumbensarea, rightacgganteriorcingulategyrus, rightainsanteriorinsula",
+			"valueNotBlank": true,
+			"valueMultiple": true,
+			"valueType": "string"
+		}, {
+			"name": "dataset",
+			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty",
+			"type": "dataset",
+			"value": "adni",
+			"valueNotBlank": true,
+			"valueMultiple": true,
+			"valueType": "string"
+		}
+	]
+}
