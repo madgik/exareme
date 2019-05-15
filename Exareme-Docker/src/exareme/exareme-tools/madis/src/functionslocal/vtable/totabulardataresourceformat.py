@@ -1,6 +1,7 @@
 import setpath
 import functions
 import json
+import re
 registered=True
 
 
@@ -13,6 +14,16 @@ class totabulardataresourceformat(functions.vtable.vtbase.VT):
             raise functions.OperatorError(__name__.rsplit('.')[-1],"No query argument ")
         query = dictargs['query']
 
+        if 'title' not in dictargs:
+            raise functions.OperatorError(__name__.rsplit('.')[-1],"No title argument ")
+        title = dictargs['title']
+
+        if 'types' not in dictargs:
+            raise functions.OperatorError(__name__.rsplit('.')[-1],"No types argument ")
+        types = dictargs['types']
+        typeslist = re.split(",",types)
+        typeslist = [x for x in typeslist if x] # remove nulls elements of the list
+
         cur = envars['db'].cursor()
         c=cur.execute(query)
         schema = cur.getdescriptionsafe()
@@ -21,7 +32,7 @@ class totabulardataresourceformat(functions.vtable.vtbase.VT):
             raise functions.OperatorError(__name__.rsplit('.')[-1],"Empty table")
         # print schema
 
-        myresult= "{\"resources\": [{ \"name\": \"Cluster Centers Computed by K-means\",\"profile\": \"tabular-data-resource\",\"data\": [ ["
+        myresult= "{\"resources\": [{ \"name\": \""+str(title)+"\",\"profile\": \"tabular-data-resource\",\"data\": [ ["
 
         for i in xrange(len(schema)):
             myresult += "\"" + str(schema[i][0]) +"\","
@@ -30,15 +41,18 @@ class totabulardataresourceformat(functions.vtable.vtbase.VT):
         for myrow in c:
             myresult += "["
             for i in xrange(len(myrow)):
-                if str(myrow[i]).isdigit():
-                    myresult +=str(myrow[i])+','
+                print str(typeslist[i])
+                if str(typeslist[i]) != 'text':
+                    if myrow[i] is not None:
+                        myresult +=str(myrow[i])+','
                 else:
-                    myresult +="\"" + str(myrow[i])+"\""+','
+                    if myrow[i] is not None:
+                        myresult +="\"" + str(myrow[i])+"\""+','
             myresult = myresult[:-1]+ "],"
         myresult = myresult[:-1]+ "], \"schema\":  { \"fields\": ["
 
         for i in xrange(len(schema)):
-             myresult += "{\"name\": \"" + str(schema[i][0]) +"\",\"type\": \"number\"},"
+             myresult += "{\"name\": \"" + str(schema[i][0]) +"\",\"type\": \""+str(typeslist[i])+"\"},"
         myresult =myresult[:-1] +" ]}}]}"
 
         # print "myresult", myresult

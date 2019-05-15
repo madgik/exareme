@@ -15,25 +15,21 @@ def createColumnList(variablesMetadataPath):
     variablesMetadata = open(variablesMetadataPath)
     metadataJSON = json.load(variablesMetadata)
 
-    metadataDictionary = []
-    metadataDictionary = addGroupVariablesToList(metadataJSON,
-            metadataDictionary)
-    metadataDictionary.sort()
-    metadataDictionary.insert(0, 'subjectcode')
-    metadataDictionary.insert(0, 'row_id')
-    metadataDictionary.insert(0, 'rid')
-    return metadataDictionary
+    metadataList = []
+    metadataList = addGroupVariablesToList(metadataJSON, metadataList)
+    metadataList.sort()
+    metadataList.insert(0, 'subjectcode')
+    return metadataList
 
 
-def addGroupVariablesToList(groupMetadata, metadataDictionary):
+def addGroupVariablesToList(groupMetadata, metadataList):
     if 'variables' in groupMetadata:
         for variable in groupMetadata['variables']:
-            metadataDictionary.append(variable['code'])
+            metadataList.append(variable['code'])
     if 'groups' in groupMetadata:
         for group in groupMetadata['groups']:
-            metadataDictionary = addGroupVariablesToList(group,
-                    metadataDictionary)
-    return metadataDictionary
+            metadataList = addGroupVariablesToList(group, metadataList)
+    return metadataList
 
 
 def headerToDict(header):
@@ -43,11 +39,23 @@ def headerToDict(header):
     return dict
 
 
-def harmonizeRow(headerDict, row, columnList):
+def checkCSVHeadersExistInMetadata(headerDict, harmonisedColumnList):
+    for column in headerDict:
+        if column not in harmonisedColumnList:
+            raise ValueError('Column ' + column
+                             + ' does not exist in the metadata.')
+
+
+def harmonizeRow(
+    headerDict,
+    row,
+    columnList,
+    subjectcode,
+    ):
     harmonisedRow = [''] * len(columnList)
     for (idx, column) in enumerate(columnList):
         columnLocation = headerDict.get(column)
-        if columnLocation:
+        if columnLocation != None:
             harmonisedRow[idx] = row[headerDict[column]]
     return harmonisedRow
 
@@ -68,7 +76,8 @@ def main():
 
     # Create the list with all the columns
 
-    harmonisedColumnList = createColumnList(os.path.abspath(args.metadataPath))
+    harmonisedColumnList = \
+        createColumnList(os.path.abspath(args.metadataPath))
 
     # Create the csv's that are going to be filled with the data
 
@@ -98,14 +107,20 @@ def main():
                                 dialect='excel')
             print ('Splitting file: ' + filePath)
             headerDict = headerToDict(next(reader))
-            for row in reader:
-                harmonizedRow = harmonizeRow(headerDict, row,
-                        harmonisedColumnList)
 
-                # Define the rid for the row in the specific csv
+            # TODO Check if every column in the header exists in the metadata
+
+            checkCSVHeadersExistInMetadata(headerDict,
+                    harmonisedColumnList)
+
+            for row in reader:
+
+                # Define the subjectcode for the row in the specific csv
 
                 destinationFile = totalRowsCounter % args.pieces
-                harmonizedRow[0] = rowsCounters[destinationFile]
+                harmonizedRow = harmonizeRow(headerDict, row,
+                        harmonisedColumnList,
+                        rowsCounters[destinationFile])
                 writers[destinationFile].writerow(harmonizedRow)
 
                 # Increasing the counters

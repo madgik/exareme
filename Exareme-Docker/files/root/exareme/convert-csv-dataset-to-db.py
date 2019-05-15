@@ -18,8 +18,6 @@ def createMetadataDictionary(variablesMetadataPath):
     metadataJSON = json.load(variablesMetadata)
 
     metadataDictionary = {}
-    metadataDictionary['rid'] = 'integer'
-    metadataDictionary['row_id'] = 'text'
     metadataDictionary['subjectcode'] = 'text'
     metadataDictionary = addGroupVariablesToDictionary(metadataJSON,
             metadataDictionary)
@@ -58,7 +56,7 @@ def addGroupVariablesToList(groupMetadata, metadataList):
                 enumerations = []
                 for enumeration in variable['enumerations']:
                     enumerations.append(str(enumeration['code']))
-                variableDictionary['enumerations'] = ', '.join(enumerations)
+                variableDictionary['enumerations'] = ','.join(enumerations)
 
             else:
                 variableDictionary['enumerations'] = 'null'
@@ -108,7 +106,7 @@ def main():
     csvReader = csv.reader(csvFile)
     csvHeader = next(csvReader)
     rid = csvHeader[0]
-    createDataTableQuery += ' ' + rid + ' INTEGER PRIMARY KEY ASC'
+    createDataTableQuery += ' ' + rid + ' TEXT'
     for column in csvHeader[1:]:
         columnType = variablesTypesDict[column]
         createDataTableQuery += ', ' + column + ' ' + columnType
@@ -127,9 +125,8 @@ def main():
     columnsQuery = 'INSERT INTO DATA (' + columnsString + ') VALUES ('
 
     for row in csvReader:
-        insertRowQuery = columnsQuery + row[0] + ",'" + row[1] + "','" \
-            + row[2] + "'"
-        for (value, column) in zip(row[3:], csvHeader[3:]):
+        insertRowQuery = columnsQuery + "'" + row[0] + "'"
+        for (value, column) in zip(row[1:], csvHeader[1:]):
             if variablesTypesDict[column] == 'text':
                 insertRowQuery += ", '" + value + "'"
             elif value == '':

@@ -12,7 +12,7 @@ except ImportError:
 __docformat__ = 'reStructuredText en'
 
 
-class modelformulae:
+class modelformulaeold:
     # '+','*',':'
 
     registered = True  # Value to define db operator
@@ -114,6 +114,5 @@ if not ('.' in __name__):
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
-        import doctest
 
-        doctest.testmod()
+
