@@ -128,6 +128,11 @@ public class NIterativeAlgorithmResultEntity extends BasicHttpEntity
         iterativeAlgorithmState = null;
     }
 
+    @Override
+    public boolean isRepeatable() {
+        return false;
+    }
+
     /**
      * Generates a JSON response that contains the error and a description.
      *
