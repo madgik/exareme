@@ -42,7 +42,7 @@ def main():
     local_dbs = path.abspath(args.local_step_dbs)
 
     # Load local nodes output
-    local_out = LogRegrInit_Loc2Glob_TD.load(local_dbs)
+    local_out = LogRegrInit_Loc2Glob_TD.load(local_dbs, step_type='global')
     # Run algorithm global step
     global_state, global_out = logregr_global_init(global_in=local_out)
     # Save global state

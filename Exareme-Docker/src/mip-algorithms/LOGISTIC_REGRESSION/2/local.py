@@ -64,7 +64,7 @@ def main():
     # Load local state
     local_state = StateData.load(fname_cur_state).get_data()
     # Load global node output
-    global_out = LogRegrIter_Glob2Loc_TD.load(global_db)
+    global_out = LogRegrIter_Glob2Loc_TD.load(global_db, step_type='local')
     # Run algorithm local iteration step
     local_state, local_out = logregr_local_iter(local_state=local_state, local_in=global_out)
     # Save local state
