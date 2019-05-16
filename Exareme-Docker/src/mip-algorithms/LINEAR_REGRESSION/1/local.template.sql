@@ -1,103 +1,56 @@
-requirevars 'defaultDB' 'input_local_tbl' 'input_local_metadata' 'x' 'y' 'dataset';
--- To input_local_metadata einai ena table ths morfhs:  columnname, type, values (in case of categorical)
 
+------------------Input for testing
 ------------------------------------------------------------------------------
--------------------------------------------------Input for testing LR in madis
-hidden var 'csvfileofinputlocaltbl' 'DATASETS FROM SGA1/uoa_flattable.csv';
-hidden var 'input_local_tbl' 'table1';
-hidden var 'input_local_metadata'  'metadata_tbl';
-hidden var 'defaultDB' defaultDB_LR;
-hidden var 'y' 'av45';
-hidden var 'x' 'adnicategory*apoe4+subjectage+minimentalstate+gender';
-hidden var 'dataset' 'adni';
+--Test 1
+drop table if exists inputdata;
+create table inputdata as
+   select alzheimerbroadcategory,lefthippocampus
+   from (file header:t '/home/eleni/Desktop/HBP/exareme/Exareme-Docker/src/mip-algorithms/unit_tests/datasets/CSVs/desd-synthdata.csv');
 
--- Import dataset
-drop table if exists table1;
-create table table1 as
-select * from (file header:t '%{csvfileofinputlocaltbl}');
+var 'x' 'alzheimerbroadcategory' ;
+var 'y' 'lefthippocampus';
+var 'defaultDB' 'defaultDB';
+var 'input_local_DB' 'datasets.db';
 
--- Import input_local_metadata
-drop table if exists metadata_tbl;
-create table metadata_tbl ('columnname', 'type', 'sql_type', 'enumerations', 'minValue', 'maxValue');
-insert into metadata_tbl select 'av45', 'real', null, null,null, null;
-insert into metadata_tbl select 'adnicategory' ,'polynominal', null, 'AD,MCI,CN',null, null;
-insert into metadata_tbl select 'apoe4', 'polynominal' , 'int','0,1,2',null, null;
-insert into metadata_tbl select 'subjectage' ,'real', null, null, 0, 130;
-insert into metadata_tbl select 'minimentalstate' ,'integer',null, null, 0, 30;
-insert into metadata_tbl select 'gender', 'binominal', null,'M,F', null, null;
-insert into metadata_tbl select 'dataset' ,'polynominal', null, 'adni,ppmi,edsd', null,null;
---TODO
--------------------------------------------------------- End input for testing
-------------------------------------------------------------------------------
+attach 'datasets.db' as 'db';
+
+
+-- .s inputdata;
+-- .s inputmetadata;
+------------------ End input for testing
+-----------------------------------------------------------------------------
+-- to y = real, x = equation of + - * 1 0
+
+requirevars 'defaultDB' 'input_local_DB' 'db_query' 'x' 'y';
 attach database '%{defaultDB}' as defaultDB;
+attach database '%{input_local_DB}' as localDB;
 
--------
-drop table if exists datasets;
-create table datasets as
-select strsplitv('%{dataset}','delimiter:,') as d;
+var 'xnames' from
+select group_concat(xname) as  xname from
+(select distinct xname from (select strsplitv(regexpr("\+|\:|\*|\-",'%{x}',"+") ,'delimiter:+') as xname) where xname!=0);
 
-drop table if exists xvariables;
-create table xvariables as
-select strsplitv(regexpr("\+|\:|\*|\-",'%{x}',"+") ,'delimiter:+') as xname;
+--Read dataset
+--drop table if exists inputdata;
+--create table inputdata as select * from (%{db_query});
 
-var 'xnames' from select group_concat(xname) as  xname from (select xname from xvariables);
+-- Delete patients with null values (val is null or val = '' or val = 'NA'). Cast values of columns using cast function.
+var 'nullCondition' from select create_complex_query(""," ? is not null and ? <>'NA' and ? <>'' ", "and" , "" , '%{xnames},%{y}');
+var 'cast_xnames' from select create_complex_query("","tonumber(?) as ?", "," , "" , '%{xnames}');--TODO!!!!
+drop table if exists defaultDB.localinputtblflat;
+create table defaultDB.localinputtblflat as
+select %{cast_xnames}, tonumber(%{y}) as '%{y}', cast(1.0 as real) as intercept --TODO!!!!
+from inputdata where %{nullCondition};
 
---1. Keep only the correct columns of the table : x,y, dataset
-drop table if exists localinputtbl_1;
-create table localinputtbl_1 as select %{xnames}, %{y}, dataset from %{input_local_tbl};
-
---2. Cast values of columns using tonumber function. Keep the rows of the correct dataset.
-var 'udf_xnames' from select create_complex_query("","tonumber(?) as ?", "," , "" , '%{xnames}');
-drop table if exists localinputtbl_2;
-create table localinputtbl_2 as
-select %{udf_xnames}, tonumber(%{y}) as %{y} from localinputtbl_1  --TODO . Do not use tonumber but do cast based on the metadata
-where dataset in (select * from datasets);
-
---3.  Delete patients with null values (val is null or val = '' or val = 'NA')
-var 'null_vals' from select create_complex_query("","? is null or ?='NA' or ?=''", "or" , "" , '%{xnames}');
-delete from localinputtbl_2 where %{null_vals};
-
-
-
---TODO:  CHECK PRIVACY k-AGGREGATION
-
------------------------------------------------------------------
--- Create input dataset for LR, that is input_local_tbl_LR_Final
--- A. Dummy code of categorical variables
-var 'categoricalcolumns' from select jdictgroup(columnname,enumerations) as metadata from (select distinct columnname, enumerations
-      from (select columnname, enumerations, tonumber(val) as val
-            from (select columnname, enumerations, strsplitv(enumerations,'dialect:csv') as val
-                  from %{input_local_metadata}
-                  where (type is 'polynominal' or type is'binominal') and columnname <> 'dataset'))
-            where typeof(val) ='text');
-
-drop table if exists input_local_tbl_LR;
-create table input_local_tbl_LR as
-dummycoding  metadata:%{categoricalcolumns} select * from localinputtbl_2;
-
--- B. Model Formulae
-drop table if exists defaultDB.input_local_tbl_LR_Final;
-create table defaultDB.input_local_tbl_LR_Final as
-modelFormulae formula:%{x} select * from input_local_tbl_LR;
+drop table if exists defaultDB.partialmetadatatbl;
+create table defaultDB.partialmetadatatbl (code text,categorical int, enumerations text);
+var 'metadata' from select create_complex_query("","  insert into  defaultDB.partialmetadatatbl
+                                                      select code,categorical,enumerations from
+                                                      (select '?' as code, group_concat(vals) as enumerations
+                                                      from (select distinct ? as vals from defaultDB.localinputtblflat where '?' in
+                                                          (select code from metadata where code='?' and categorical=1))),
+                                                      (select code as code1,categorical from metadata) where code=code1
+                                                       ;", "" , "" , '%{xnames},%{y}');
+%{metadata};
 
 
-
-
-var 'colnames' from select jmergeregexp(jgroup(colname)) from (select colname from localinputtbl group by colname having count(distinct val)=1); --NEW
-drop table if exists defaultDB.deletedcolumns; --NEW
-create table defaultDB.deletedcolumns as setschema 'colname'
-select distinct colname from defaultDB.input_local_tbl_LR_Final where regexprmatches('%{colnames}' ,colname); --NEW
-
-delete from  defaultDB.input_local_tbl_LR_Final --NEW
-where colname in (select * from defaultDB.deletedcolumns); --NEW
-
-insert into defaultDB.input_local_tbl_LR_Final
-select rid,colname,val from input_local_tbl_LR where colname = '%{y}';
---
-insert into defaultDB.input_local_tbl_LR_Final
-select distinct rid as rid,'(Intercept)' as colname, 1.0 as val from input_local_tbl_LR;
-
---
-
-select colname, FSUM(val) as S1, count(val) as N from defaultDB.input_local_tbl_LR_Final
-group by colname;
+select * from defaultDB.partialmetadatatbl;
