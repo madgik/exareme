@@ -1,7 +1,7 @@
 {
-  "name": "LOGISTIC REGRESSION",
+  "name": "LOGISTIC_REGRESSION",
   "desc": "Binary Logistic Regression without regularization using Newton-Raphson method",
-  "type": "multiple_local_global",
+  "type": "python_multiple_local_global",
   "status": "enabled",
   "parameters": [
     {
