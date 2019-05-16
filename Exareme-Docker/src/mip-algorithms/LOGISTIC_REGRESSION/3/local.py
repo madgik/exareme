@@ -18,7 +18,7 @@ from log_regr_lib import LogRegrIter_Loc2Glob_TD, LogRegrIter_Glob2Loc_TD
 
 def logregr_local_iter(local_state, local_in):
     # Unpack local state
-    X, Y = local_state
+    X, Y = local_state['X'], local_state['Y']
     # Unpack local input
     coeff = local_in.get_data()
 
@@ -53,16 +53,20 @@ def logregr_local_iter(local_state, local_in):
 def main():
     # Parse arguments
     parser = ArgumentParser()
-    parser.add_argument('-s', '-cur_state_pkl', required=True,
+    parser.add_argument('-cur_state_pkl', required=True,
                         help='Path to the pickle file holding the current state.')
+    parser.add_argument('-prev_state_pkl', required=True,
+                        help='Path to the pickle file holding the previous state.')
     parser.add_argument('-global_step_db', required=True,
                         help='Path to db holding global step results.')
     args, unknown = parser.parse_known_args()
+    # raise ValueError(args)
     fname_cur_state = path.abspath(args.cur_state_pkl)
+    fname_prev_state = path.abspath(args.prev_state_pkl)
     global_db = path.abspath(args.global_step_db)
 
     # Load local state
-    local_state = StateData.load(fname_cur_state).get_data()
+    local_state = StateData.load(fname_prev_state).data
     # Load global node output
     global_out = LogRegrIter_Glob2Loc_TD.load(global_db, step_type='local')
     # Run algorithm local iteration step
@@ -71,7 +75,7 @@ def main():
     if not os.path.exists(os.path.dirname(fname_cur_state)):
         try:
             os.makedirs(os.path.dirname(fname_cur_state))
-        except OSError as exc:  # Guard against race condition
+        except OSError as exc:  #  Guard against race condition
             if exc.errno != errno.EEXIST:
                 raise
     local_state.save(fname=fname_cur_state)

@@ -20,14 +20,17 @@ from log_regr_lib import LogRegrInit_Loc2Glob_TD
 def logregr_local_init(local_in):
     # Unpack local input
     X, Y, schema_X, schema_Y = local_in
+    n_obs = len(Y)
+    n_cols = len(X[0]) + 1 # Add one for the intercept
+    # Create dictionary for categories in Y
     y_val_dict = {
         sorted(set(Y))[0]: 0,
         sorted(set(Y))[1]: 1
     }
-    Y = np.array([y_val_dict[yi] for yi in Y], dtype=np.int)
+    Y = np.array([y_val_dict[yi] for yi in Y], dtype=np.uint8)
+    # Add 1's column in X to account for intercept term
+    X = np.insert(X, obj=0, values=np.ones(n_obs), axis=1)
 
-    n_obs = len(Y)
-    n_cols = len(X[0])
 
     # Pack state and results
     local_state = StateData(X=X, Y=Y)
