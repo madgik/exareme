@@ -727,9 +727,9 @@ public class Composer {
             String localScriptPath = currentIterationAlgorithmFolderPath + "/local.py";
             String globalScriptPath = currentIterationAlgorithmFolderPath + "/global.py";
             String localTransferDBFilePath = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey
-                    + "/" + (iteration - 1) + "/local_transfer.db";
+                    + "/" + (iteration - 1) + "/local/transfer.db";
             String globalTransferDBFilePath = HBPConstants.DEMO_DB_WORKING_DIRECTORY
-                    + algorithmKey + "/" + iteration + "/global_transfer.db";
+                    + algorithmKey + "/" + iteration + "/global/transfer.db";
             String localStatePKLFile = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey
                     + "/" + iteration + "/local_state.pkl";
             String prevLocalStatePKLFile = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey
