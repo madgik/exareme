@@ -11,6 +11,7 @@ import numpy.ma as ma
 
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))) + '/utils/')
 
+from algorithm_utils import query_with_privacy
 from pearsonc_lib import PearsonCorrelationLocalDT
 
 
@@ -103,12 +104,9 @@ def main():
                 schema_Y.append(args_Y[j])
 
     # Read data and split between X and Y matrices according to schemata
-    conn = sqlite3.connect(fname_loc_db)
-    cur = conn.cursor()
-    cur.execute(query)
-    schema = [description[0] for description in cur.description]
+    schema, data = query_with_privacy(fname_db=fname_loc_db, query=query)
     try:
-        data = np.array(cur.fetchall(), dtype=np.float64)
+        data = np.array(data, dtype=np.float64)
     except ValueError:
         print('Values in X and Y must be numbers or blanks')
     idx_X = [schema.index(v) for v in schema_X if v in schema]

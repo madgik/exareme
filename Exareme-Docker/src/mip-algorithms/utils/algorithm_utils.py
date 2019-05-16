@@ -3,6 +3,8 @@ import pickle
 import codecs
 import base64
 
+PRIVACY_MAGIC_NUMBER = 10
+
 
 class TransferData():
     def __add__(self, other):
@@ -26,6 +28,17 @@ class TransferData():
 
     def transfer(self):
         print codecs.encode(pickle.dumps(self), 'ascii')
+
+
+def query_with_privacy(fname_db, query):
+    conn = sqlite3.connect(fname_db)
+    cur = conn.cursor()
+    cur.execute(query)
+    schema = [description[0] for description in cur.description]
+    data = cur.fetchall()
+    if len(data) < PRIVACY_MAGIC_NUMBER:
+        raise ValueError('Query results in illegal number of datapoints.')
+    return schema, data
 
 
 def get_parameters(argv):
