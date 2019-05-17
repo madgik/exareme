@@ -75,7 +75,7 @@ def main():
     if not os.path.exists(os.path.dirname(fname_cur_state)):
         try:
             os.makedirs(os.path.dirname(fname_cur_state))
-        except OSError as exc:  #  Guard against race condition
+        except OSError as exc:  # Guard against race condition
             if exc.errno != errno.EEXIST:
                 raise
     local_state.save(fname=fname_cur_state)

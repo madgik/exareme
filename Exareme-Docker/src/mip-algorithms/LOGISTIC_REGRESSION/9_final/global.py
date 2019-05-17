@@ -17,7 +17,6 @@ from algorithm_utils import StateData, set_algorithms_output_data
 from log_regr_lib import LogRegrFinal_Loc2Glob_TD
 
 
-
 def logregr_global_final(global_state, global_in):
     # Unpack global state
     n_obs = global_state['n_obs']
@@ -61,23 +60,28 @@ def logregr_global_final(global_state, global_in):
 
     # Write output to JSON
     global_out = json.dumps(
-        {
-            'result': {
-                'Covariates': list(schema_X),
-                'Coefficients': list(coeff),
-                'SE': list(stderr),
-                'z scores': list(z_scores),
-                'p values': list(p_values),
-                'Lower C.I.': list(lci),
-                'Upper C.I.': list(rci),
-                'Model degrees of freedom': df_mod,
-                'Residual degrees of freedom': df_resid,
-                'Log-likelihood': ll,
-                'Null model log-likelihood': ll0,
-                'AIC': aic,
-                'BIC': bic
+            {
+                'result': {
+                    'Covariates'                 : [
+                        {
+                            'Name'       : schema_X[i],
+                            'Coefficient': coeff[i],
+                            'std.err.'   : stderr[i],
+                            'z score'    : z_scores[i],
+                            'p value'    : p_values[i],
+                            'Lower C.I.' : lci[i],
+                            'Upper C.I.' : rci[i]
+                        }
+                        for i in range(len(schema_X))
+                    ],
+                    'Model degrees of freedom'   : df_mod,
+                    'Residual degrees of freedom': df_resid,
+                    'Log-likelihood'             : ll,
+                    'Null model log-likelihood'  : ll0,
+                    'AIC'                        : aic,
+                    'BIC'                        : bic
+                }
             }
-        }
     )
 
     return global_out

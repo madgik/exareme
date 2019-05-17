@@ -21,8 +21,8 @@ def logregr_local_init(local_in):
     # Unpack local input
     X, Y, schema_X, schema_Y = local_in
     n_obs = len(Y)
-    n_cols = len(X[0]) + 1 # Add one for the intercept
-    schema_X = ['Intercept', schema_X]
+    n_cols = len(X[0]) + 1  # Add one for the intercept
+    schema_X.insert(0, 'Intercept')
     # Create dictionary for categories in Y
     y_val_dict = {
         sorted(set(Y))[0]: 0,
@@ -31,7 +31,6 @@ def logregr_local_init(local_in):
     Y = np.array([y_val_dict[yi] for yi in Y], dtype=np.uint8)
     # Add 1's column in X to account for intercept term
     X = np.insert(X, obj=0, values=np.ones(n_obs), axis=1)
-
 
     # Pack state and results
     local_state = StateData(X=X, Y=Y)
