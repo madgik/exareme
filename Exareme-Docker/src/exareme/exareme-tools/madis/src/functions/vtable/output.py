@@ -166,6 +166,8 @@ def outputData(diter, schema, connection, *args, **formatArgs):
     where = autoext(where, formatArgs['mode'], type2ext)
     filename, ext = os.path.splitext(os.path.basename(where))
     fullpath = os.path.split(where)[0]
+    if not os.path.exists(fullpath):
+        os.makedirs(fullpath)
 
     if not (formatArgs['mode'] == 'db' or (formatArgs['mode'] == 'json' and 'split' in formatArgs)):
         fileIter = getoutput(where, append, formatArgs['compression'], formatArgs['compressiontype'])
