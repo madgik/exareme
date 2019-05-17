@@ -13,10 +13,10 @@ sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/LOGISTIC_REGRESSION/')
 
 from algorithm_utils import StateData
-from log_regr_lib import LogRegrIter_Loc2Glob_TD, LogRegrIter_Glob2Loc_TD
+from log_regr_lib import LogRegrIter_Loc2Glob_TD, LogRegrIter_Glob2Loc_TD, LogRegrFinal_Loc2Glob_TD
 
 
-def logregr_local_iter(local_state, local_in):
+def logregr_local_final(local_state, local_in):
     # Unpack local state
     X, Y = local_state['X'], local_state['Y']
     # Unpack local input
@@ -43,11 +43,13 @@ def logregr_local_iter(local_state, local_in):
     # Log-likelihood
     ls1, ls2 = np.log(s), np.log(1 - s)
     ll = np.dot(Y, ls1) + np.dot(1 - Y, ls2)
+    # Y sum
+    ysum = np.sum(Y)
+
 
     # Pack state and results
-    local_state = StateData(X=X, Y=Y)
-    local_out = LogRegrIter_Loc2Glob_TD(ll, grad, hess)
-    return local_state, local_out
+    local_out = LogRegrFinal_Loc2Glob_TD(ll, grad, hess, ysum)
+    return local_out
 
 
 def main():
@@ -60,8 +62,6 @@ def main():
     parser.add_argument('-global_step_db', required=True,
                         help='Path to db holding global step results.')
     args, unknown = parser.parse_known_args()
-    # raise ValueError(args)
-    fname_cur_state = path.abspath(args.cur_state_pkl)
     fname_prev_state = path.abspath(args.prev_state_pkl)
     global_db = path.abspath(args.global_step_db)
 
@@ -70,15 +70,8 @@ def main():
     # Load global node output
     global_out = LogRegrIter_Glob2Loc_TD.load(global_db)
     # Run algorithm local iteration step
-    local_state, local_out = logregr_local_iter(local_state=local_state, local_in=global_out)
-    # Save local state
-    if not os.path.exists(os.path.dirname(fname_cur_state)):
-        try:
-            os.makedirs(os.path.dirname(fname_cur_state))
-        except OSError as exc:  #  Guard against race condition
-            if exc.errno != errno.EEXIST:
-                raise
-    local_state.save(fname=fname_cur_state)
+    local_out = logregr_local_final(local_state=local_state, local_in=global_out)
+
     # Return
     local_out.transfer()
 

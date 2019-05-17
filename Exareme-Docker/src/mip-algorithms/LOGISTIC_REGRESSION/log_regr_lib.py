@@ -64,3 +64,26 @@ class LogRegrIter_Glob2Loc_TD(TransferData):
 
     def get_data(self):
         return self.coeffs
+
+
+class LogRegrFinal_Loc2Glob_TD(TransferData):
+    def __init__(self, *args):
+        if len(args) != 4:
+            raise ValueError('Illegal number of arguments.')
+        self.ll = args[0]
+        self.gradient = args[1]
+        self.hessian = args[2]
+        self.ysum = args[3]
+
+    def get_data(self):
+        return self.ll, self.gradient, self.hessian, self.ysum
+
+    def __add__(self, other):
+        assert len(self.gradient) == len(other.gradient), "Local gradient sizes do not agree."
+        assert self.hessian.shape == other.hessian.shape, "Local Hessian sizes do not agree."
+        return LogRegrIter_Loc2Glob_TD((
+            self.ll + other.ll,
+            self.gradient + other.gradient,
+            self.hessian + other.hessian,
+            self.ysum + other.ysum
+        ))

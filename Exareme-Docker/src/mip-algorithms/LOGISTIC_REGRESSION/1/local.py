@@ -22,6 +22,7 @@ def logregr_local_init(local_in):
     X, Y, schema_X, schema_Y = local_in
     n_obs = len(Y)
     n_cols = len(X[0]) + 1 # Add one for the intercept
+    schema_X = ['Intercept', schema_X]
     # Create dictionary for categories in Y
     y_val_dict = {
         sorted(set(Y))[0]: 0,

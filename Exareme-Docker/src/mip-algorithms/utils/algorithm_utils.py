@@ -8,14 +8,12 @@ class TransferData(object):
         raise NotImplementedError('The __add__ method should be implemented by the child class.')
 
     @classmethod
-    def load(cls, inputDB, step_type):
+    def load(cls, inputDB):
         conn = sqlite3.connect(inputDB)
         cur = conn.cursor()
 
-        if step_type == 'local':
-            cur.execute('SELECT results FROM local_transfer')
-        elif step_type == 'global':
-            cur.execute('SELECT results FROM global_transfer')
+        cur.execute('SELECT results FROM transfer')
+
 
         first = True
         for row in cur:

@@ -59,7 +59,7 @@ def main():
     # Load global state
     global_state = StateData.load(fname_prev_state).data
     # Load local nodes output
-    local_out = LogRegrIter_Loc2Glob_TD.load(local_dbs, step_type='global')
+    local_out = LogRegrIter_Loc2Glob_TD.load(local_dbs)
     # Run algorithm global step
     global_state, global_out = logregr_global_iter(global_state=global_state, global_in=local_out)
     # Save global state
