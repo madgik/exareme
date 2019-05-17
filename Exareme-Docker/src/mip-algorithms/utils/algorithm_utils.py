@@ -10,9 +10,10 @@ class TransferData(object):
     @classmethod
     def load(cls, inputDB):
         conn = sqlite3.connect(inputDB)
+
         cur = conn.cursor()
 
-        cur.execute('SELECT results FROM transfer')
+        cur.execute('SELECT result FROM transfer')
 
 
         first = True

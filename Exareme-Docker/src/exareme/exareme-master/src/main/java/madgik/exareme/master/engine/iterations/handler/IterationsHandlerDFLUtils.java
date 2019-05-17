@@ -390,8 +390,7 @@ public class IterationsHandlerDFLUtils {
         String iterativePhaseOutputTblName =
                 IterationsConstants.iterationsOutputTblPrefix + "_" + algorithmKey + "_" + iterativePhase.name();
         if (iterativePhase.equals(IterativeAlgorithmState.IterativeAlgorithmPhasesModel.step) ||
-                iterativePhase.equals(
-                        termination_condition))
+                iterativePhase.equals(termination_condition))
             return "${" + iterativePhaseOutputTblName + "}";
         else
             return iterativePhaseOutputTblName;

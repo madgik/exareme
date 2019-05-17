@@ -7,16 +7,16 @@ from argparse import ArgumentParser
 
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/utils/')
 
-from algorithm_utils import StateData
+from algorithm_utils import StateData, set_algorithms_output_data
 
 PREC = 1e-7
 
-def termintation_condition(global_state):
+def termination_condition(global_state):
     delta = global_state['delta']
     if delta < PREC:
-        sys.exit(1)
+        set_algorithms_output_data('STOP')
     else:
-        sys.exit(0)
+        set_algorithms_output_data('CONTINUE')
 
 def main():
     # Parse arguments
@@ -27,7 +27,7 @@ def main():
     fname_prev_state = path.abspath(args.prev_state_pkl)
 
     global_state = StateData.load(fname_prev_state).data
-    termintation_condition(global_state)
+    termination_condition(global_state)
 
 if __name__ == '__main__':
     main()

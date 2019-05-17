@@ -8,6 +8,7 @@ import madgik.exareme.master.engine.iterations.scheduler.exceptions.IterationsSc
 import madgik.exareme.master.engine.iterations.state.IterationsStateManager;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.master.engine.iterations.state.exceptions.IterationsStateFatalException;
+import madgik.exareme.master.queryProcessor.composer.AlgorithmProperties;
 import madgik.exareme.utils.eventProcessor.EventProcessor;
 import org.apache.log4j.Logger;
 
@@ -98,6 +99,7 @@ public class PhaseCompletionEventHandler extends IterationsEventHandler<PhaseCom
                         // Increment #iterations, submit termination condition query & update current
                         // execution phase.
                         ias.incrementIterationsNumber();
+
                         errMsg = "Failed to submit [terminationCondition-phase] query of "
                                 + ias.toString() + ".";
                         queryStatus = submitQueryAndUpdateExecutionPhase(ias, termination_condition);
@@ -108,15 +110,33 @@ public class PhaseCompletionEventHandler extends IterationsEventHandler<PhaseCom
                         // If set to true, then submit finalize query, otherwise submit a step query.
                         errMsg = "Failed to read termination condition value for "
                                 + ias.toString() + ".";
-                        boolean shouldContinue = ias.readTerminationConditionValue();
+
+                        boolean shouldContinue;
+                        if (ias.getAlgorithmType().equals(AlgorithmProperties.AlgorithmType.iterative)) {
+                            shouldContinue = ias.readTerminationConditionValue()
+                                    && (ias.getCurrentIterationsNumber() < ias.getMaxIterationsNumber());
+                        } else if (ias.getAlgorithmType().equals(AlgorithmProperties.AlgorithmType.python_iterative)) {
+                            String terminationPhaseResponse = ias.readTerminationConditionScriptOutput();
+                            if(terminationPhaseResponse.contains("STOP")){
+                                shouldContinue = false;
+                            }else if(terminationPhaseResponse.contains("CONTINUE")){
+                                shouldContinue = true;
+                            }else{
+                                String errorMessage = "Termination Condition Phase did not have proper response: " +
+                                        terminationPhaseResponse;
+                                throw new IterationsStateFatalException(errorMessage,ias.getAlgorithmKey());
+                            }
+                        } else {
+                            throw new IterationsStateFatalException("Only allowed for iterative algorithms", ias.getAlgorithmKey());
+                        }
+
                         String terminationConditionOutput =
                                 ias.readTerminationConditionScriptOutput();
-                        if (log.isDebugEnabled())
-                            log.debug(ias.toString() + ": termination_condition["
-                                    + (ias.getCurrentIterationsNumber() - 1) + "] output: "
-                                    + "\n" + terminationConditionOutput);
-                        if (shouldContinue &&
-                                (ias.getCurrentIterationsNumber() < ias.getMaxIterationsNumber())) {
+                        log.debug(ias.toString() + ": termination_condition["
+                                + (ias.getCurrentIterationsNumber() - 1) + "] output: "
+                                + "\n" + terminationConditionOutput);
+
+                        if (shouldContinue) {
                             errMsg = "Failed to submit [step-phase] query of "
                                     + ias.toString() + ".";
                             queryStatus = submitQueryAndUpdateExecutionPhase(ias, step);

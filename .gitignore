@@ -6,6 +6,9 @@
 ## .pyc files
 *.pyc
 
+# Python
+__init__.py
+
 ## Directory-based project format:
 .idea/
 # if you remove the above rule, at least ignore the following:
@@ -51,4 +54,6 @@ crashlytics-build.properties
 
 # Mac related
 *.DS_Store
+
+
 

@@ -60,7 +60,7 @@ class CallPythonScriptVT(vtbase.VT):
         if command is None:
             raise functions.OperatorError(__name__.rsplit('.')[-1], "No command argument found")
 
-        yield [('results', 'text')]
+        yield [('result', 'text')]
 
         child = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 

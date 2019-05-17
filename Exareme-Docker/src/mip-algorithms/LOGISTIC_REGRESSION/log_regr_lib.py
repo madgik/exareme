@@ -24,15 +24,15 @@ class LogRegrInit_Loc2Glob_TD(TransferData):
     def __add__(self, other):
         assert self.n_cols == other.n_cols, "Local n_cols do not agree."
         assert self.y_val_dict == other.y_val_dict, "Local y_val_dict do not agree."
-        assert self.schema_X == other.X_schema, "Local schema_X do not agree."
-        assert self.schema_Y == other.Y_schema, "Local schema_Y do not agree."
-        return LogRegrInit_Loc2Glob_TD((
+        assert self.schema_X == other.schema_X, "Local schema_X do not agree."
+        assert self.schema_Y == other.schema_Y, "Local schema_Y do not agree."
+        return LogRegrInit_Loc2Glob_TD(		# Fixed due to getting illegal arguments
             self.n_obs + other.n_obs,
             self.n_cols,
             self.y_val_dict,
             self.schema_X,
             self.schema_Y
-        ))
+        )
 
 
 class LogRegrIter_Loc2Glob_TD(TransferData):
@@ -49,11 +49,11 @@ class LogRegrIter_Loc2Glob_TD(TransferData):
     def __add__(self, other):
         assert len(self.gradient) == len(other.gradient), "Local gradient sizes do not agree."
         assert self.hessian.shape == other.hessian.shape, "Local Hessian sizes do not agree."
-        return LogRegrIter_Loc2Glob_TD((
+        return LogRegrIter_Loc2Glob_TD(		# Fixed due to getting illegal arguments
             self.ll + other.ll,
             self.gradient + other.gradient,
             self.hessian + other.hessian
-        ))
+        )
 
 
 class LogRegrIter_Glob2Loc_TD(TransferData):
@@ -81,9 +81,9 @@ class LogRegrFinal_Loc2Glob_TD(TransferData):
     def __add__(self, other):
         assert len(self.gradient) == len(other.gradient), "Local gradient sizes do not agree."
         assert self.hessian.shape == other.hessian.shape, "Local Hessian sizes do not agree."
-        return LogRegrIter_Loc2Glob_TD((
+        return LogRegrFinal_Loc2Glob_TD(		# Fixed due to getting illegal arguments
             self.ll + other.ll,
             self.gradient + other.gradient,
             self.hessian + other.hessian,
             self.ysum + other.ysum
-        ))
+        )

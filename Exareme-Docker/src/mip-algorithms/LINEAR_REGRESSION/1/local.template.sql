@@ -104,7 +104,7 @@ select colname from (select colname, typeof(val) as t from localinputtbl group b
 -- B. Model Formulae
 drop table if exists defaultDB.input_local_tbl_LR_Final;
 create table defaultDB.input_local_tbl_LR_Final as setschema 'rid , colname, val'
-select modelFormulae(rid,colname,val, "%{x}") from input_local_tbl_LR group by rid;
+select modelformulaeold(rid,colname,val, "%{x}") from input_local_tbl_LR group by rid;
 
 var 'colnames' from select jmergeregexp(jgroup(colname)) from (select colname from localinputtbl group by colname having count(distinct val)=1); --NEW
 drop table if exists defaultDB.deletedcolumns; --NEW

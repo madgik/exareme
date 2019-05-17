@@ -10,8 +10,8 @@ import numpy as np
 import json
 import scipy.stats as st
 
-sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/utils/')
-sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/LOGISTIC_REGRESSION/')
+sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) + '/utils/')
+sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) + '/LOGISTIC_REGRESSION/')
 
 from algorithm_utils import StateData, set_algorithms_output_data
 from log_regr_lib import LogRegrFinal_Loc2Glob_TD
