@@ -45,7 +45,7 @@ class categoricalcoding(functions.vtable.vtbase.VT):
                     newcolvals = metadata[colname].split(',')
                     newcolvals.sort()
 
-                    for v in xrange(1,len(newcolvals)):
+                    for v in xrange(0,len(newcolvals)):
                         newcolval =newcolvals[v]
                         print newcolval
                         newSchema.append(str(colname) + '(' + str(newcolval) + ')')

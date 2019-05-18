@@ -163,18 +163,20 @@ class modelvariables:
         self.formula = str(args[0])
         self.metadata = json.loads(args[1])
         # print self.formula
-        # print self.metadata
+        print "self.metadata", self.metadata
 
     def final(self):
         newschema2=simplified_formula(self.formula)
         newschema2 = list(set(newschema2)) #keep unique elements
         metadata = dict()
+        referencevalue =dict()
         for pair in self.metadata:
             metadata[str(pair[0])]= re.split(',',str(pair[1]))
+            referencevalue[str(pair[0])]= str(pair[2])
 
         newschema3 =[]
         # print "schema", newschema2
-        # convert newschema2 to dummy varriables
+        # convert newschema2 to dummy variables
         for elements in newschema2:
             elements1 =elements
             elements = re.split(':',elements)
@@ -183,9 +185,14 @@ class modelvariables:
             for el in xrange(len(elements)):
                 # print "el",elements[el]
                 if elements[el] in metadata.keys():
+                    print "MM", referencevalue[elements[el]]
                     new_el=[list(x) for x in list(itertools.product([elements[el]],metadata[elements[el]]))]
-                    # print "A", new_el
-                    new_el =[str(x[0])+'('+str(x[1] +')') for x in new_el[1:]]
+                    # print "A",
+                    for x in new_el:
+                        if x[1] == referencevalue[elements[el]]:
+                            new_el.pop(new_el.index(x))
+                    # print "B",new_el
+                    new_el =[str(x[0])+'('+str(x[1] +')') for x in new_el]
                     # print new_el
                     new_elements.append(new_el)
                 else:

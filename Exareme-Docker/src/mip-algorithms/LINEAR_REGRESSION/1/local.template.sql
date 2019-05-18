@@ -4,14 +4,14 @@
 --Test 1
 drop table if exists inputdata;
 create table inputdata as
-   select alzheimerbroadcategory,lefthippocampus
+   select *
    from (file header:t '/home/eleni/Desktop/HBP/exareme/Exareme-Docker/src/mip-algorithms/unit_tests/datasets/CSVs/desd-synthdata.csv');
 
-var 'x' 'alzheimerbroadcategory' ;
+var 'x' 'alzheimerbroadcategory+righthippocampus+gender' ;
 var 'y' 'lefthippocampus';
 var 'defaultDB' 'defaultDB';
 var 'input_local_DB' 'datasets.db';
-
+var 'referencevalues' '[{"name":"alzheimerbroadcategory","val":"Other"}]';
 attach 'datasets.db' as 'db';
 
 
@@ -21,7 +21,7 @@ attach 'datasets.db' as 'db';
 -----------------------------------------------------------------------------
 -- to y = real, x = equation of + - * 1 0
 
-requirevars 'defaultDB' 'input_local_DB' 'db_query' 'x' 'y';
+requirevars 'defaultDB' 'input_local_DB' 'db_query' 'x' 'y' 'referencevalues';
 attach database '%{defaultDB}' as defaultDB;
 attach database '%{input_local_DB}' as localDB;
 

@@ -11,17 +11,21 @@ insert into defaultDB.algorithmparameters select 'outputformat' , '%{outputforma
 insert into defaultDB.algorithmparameters select 'dataset' , '%{dataset}' ;
 
 drop table if exists defaultDB.metadatatbl;
-create table defaultDB.metadatatbl as
-select code, categorical,group_concat(vals) as enumerations from
-(select code, categorical,vals from (select code, categorical,strsplitv(enumerations ,'delimiter:,') as vals
-from %{input_global_tbl} where categorical=1) group by code,vals) group by code;
+create table defaultDB.metadatatbl (code text, categorical int, enumerations text, referencevalue text);
 insert into defaultDB.metadatatbl
-select distinct code, categorical,enumerations from  %{input_global_tbl} where categorical=0;
+select definereferencevalues(code, categorical,enumerations,'%{referencevalues}') from
+(select code, categorical, group_concat(vals) as enumerations, null
+                        from (select code, categorical,vals
+                              from (select code, categorical,strsplitv(enumerations ,'delimiter:,') as vals
+                                    from %{input_global_tbl} where categorical=1) group by code,vals  )
+                        group by code);
+insert into defaultDB.metadatatbl select distinct code, categorical,enumerations, null from  %{input_global_tbl} where categorical=0;
+
 
 
 drop table if exists defaultDB.regressiontbls;
-create table  defaultDB.regressiontbls (tablename text,formula text, code text, categorical int,enumerations text);
-insert into defaultDB.regressiontbls select "simplifiedformula", formula,  null, null ,null from (select create_simplified_formulas('%{x}',4));
-insert into defaultDB.regressiontbls select "metadatatbl" ,         null,  code, categorical, enumerations  from defaultDB.metadatatbl;
+create table  defaultDB.regressiontbls (tablename text,formula text, code text, categorical int,enumerations text,referencevalue text);
+insert into defaultDB.regressiontbls select "simplifiedformula", formula,  null, null ,null ,null from (select create_simplified_formulas('%{x}',4));
+insert into defaultDB.regressiontbls select "metadatatbl" ,         null,  code, categorical, enumerations,referencevalue  from defaultDB.metadatatbl;
 
 select * from defaultDB.regressiontbls;

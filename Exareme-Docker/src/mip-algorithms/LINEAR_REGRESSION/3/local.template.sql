@@ -1,20 +1,52 @@
 requirevars 'defaultDB' 'prv_output_global_tbl' 'y';
 attach database '%{defaultDB}' as defaultDB;
 
---E. Compute statistics For Estimators ( standardError ,  tvalue  , p value )
+var 'prv_output_global_tbl' 'defaultDB.globalcoefficientsandstatistics'; -- statistics & coefficients
+
 --E1. Compute residuals y-ypredictive = Y-sum(X(i)*estimate(i)) (Local Layer)
+var 'a' from select tabletojson(attr1,estimate,"attr1,estimate") from %{prv_output_global_tbl} where tablename ="coefficients";
+
 drop table if exists defaultDB.residuals;
 create table defaultDB.residuals as
-select rid1, observed_value - predicted_value as e
-from ( select rid as rid1, sum(val*estimate) as predicted_value
-       from defaultDB.input_local_tbl_LR_Final, %{prv_output_global_tbl}
-       where colname = attr1
-       group by rid ),
-     ( select rid as rid2, val as observed_value
-        from defaultDB.input_local_tbl_LR_Final
-       where colname = "%{y}" )
-where rid1=rid2;
+select * from (residualscomputation coefficients:%{a} y:%{y} select * from defaultDB.input_local_tbl_LR_Final);
 
-select min(e) as min_e, max(e) as max_e , sum(e) as sum_e,sum(e*e) as sum_ee, count(e) as counte from defaultDB.residuals;
+var 'grandmean' from select mean as mean_observed_value from %{prv_output_global_tbl} where tablename ="statistics" and colname = '%{y}';
 
---select rowid as rid1,e from defaultDB.residuals;
+var 'rows' from setschema 'c1' select count(*) from defaultDB.input_local_tbl_LR_Final ;
+var 'cols' from setschema 'c1' select count(*)-1 from (select strsplitv(schema,'delimiter:,')
+                                                     from (getschema select * from defaultdb.input_local_tbl_lr_final));
+
+var 'mine' from select min(val) from defaultDB.residuals;
+var 'maxe' from select max(val) from defaultDB.residuals;
+var 'sume' from select sum(val) from defaultDB.residuals;
+
+var 'sse' from select sum(val*val) from defaultDB.residuals;
+var 'sst' from select sum( (%{y}-%{grandmean})*(%{y}-%{grandmean})) from defaultdb.localinputtblflat;
+
+
+drop table if exists defaultDB.localLRresults;
+create table defaultDB.localLRresults as
+select  '%{rows}' as rows, '%{cols}' as cols,
+        '%{mine}' as mine, '%{maxe}' as maxe,'%{sume}' as sume,
+        '%{sst}' as sst,'%{sse}' as sse ;
+
+select * from defaultDB.localLRresults;
+
+
+
+
+
+
+
+--  var 'prv_output_global_tbl' 'defaultDB.globalcoefficientsandstatistics';
+--
+-- --E. Compute statistics For Estimators ( standardError ,  tvalue  , p value )
+-- --E1. Compute residuals y-ypredictive = Y-sum(X(i)*estimate(i)) (Local Layer)
+-- var 'coefficients' from select tabletojson(attr1,estimate,"colname,estimate") from %{prv_output_global_tbl} where tablename ="coefficients";
+--
+-- drop table if exists defaultDB.partialresiduals;
+-- create table defaultDB.partialresiduals as
+-- select min_e,max_e,sum_e,sum_ee, counte from (residuals coefficients:%{coefficients} dependentvariable:%{y} select * from defaultdb.localinputtblflatcategoricalencoding);
+--
+--
+-- select * from defaultDB.partialresiduals;
