@@ -2,7 +2,7 @@ package madgik.exareme.master.engine.iterations;
 
 import madgik.exareme.common.consts.HBPConstants;
 import madgik.exareme.master.engine.iterations.handler.IterationsConstants;
-import madgik.exareme.master.queryProcessor.composer.Algorithms;
+import madgik.exareme.master.queryProcessor.composer.AlgorithmProperties;
 import madgik.exareme.master.queryProcessor.composer.Composer;
 import madgik.exareme.master.queryProcessor.composer.ComposerConstants;
 import madgik.exareme.utils.properties.AdpProperties;
@@ -85,9 +85,6 @@ public class IterationsTestGenericUtils {
         File algorithmsDevDirectory = new File(ALGORITHMS_DEV_DIRECTORY);
         gatewayProperties.setStringProperty("algorithms.path",
                 algorithmsDevDirectory.getCanonicalPath() + "/");
-
-        // Initialization of Composer must occur AFTER our overwriting of the demo repo. path prop.
-        Composer.getInstance();
     }
 
     /**
@@ -113,7 +110,7 @@ public class IterationsTestGenericUtils {
      * @param algorithmProperties the algorithm's properties object
      * @return a unique algorithm key.
      */
-    public static String generateAlgorithmKey(Algorithms.AlgorithmProperties algorithmProperties) {
+    public static String generateAlgorithmKey(AlgorithmProperties algorithmProperties) {
         return algorithmProperties.getName() + "_" + String.valueOf(System.currentTimeMillis());
     }
 }

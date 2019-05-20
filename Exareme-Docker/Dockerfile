@@ -94,6 +94,7 @@ ADD src/mip-algorithms /root/mip-algorithms
 ADD files/java.sh /etc/profile.d/java.sh
 RUN chmod 755 /etc/profile.d/java.sh
 ADD files/root /root
+RUN chmod -R 755 /root/exareme/
 
 EXPOSE 9090
 EXPOSE 22

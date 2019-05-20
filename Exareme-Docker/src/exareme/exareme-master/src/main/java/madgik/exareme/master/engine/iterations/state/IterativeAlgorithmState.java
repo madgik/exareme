@@ -7,7 +7,7 @@ import madgik.exareme.master.client.AdpDBClientQueryStatus;
 import madgik.exareme.master.engine.iterations.handler.IterationsConstants;
 import madgik.exareme.master.engine.iterations.handler.IterationsHandlerDFLUtils;
 import madgik.exareme.master.engine.iterations.state.exceptions.IterationsStateFatalException;
-import madgik.exareme.master.queryProcessor.composer.Algorithms;
+import madgik.exareme.master.queryProcessor.composer.AlgorithmProperties;
 import org.apache.commons.lang3.text.StrSubstitutor;
 import org.apache.http.nio.IOControl;
 import org.apache.log4j.Logger;
@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static madgik.exareme.common.consts.HBPConstants.DEMO_ALGORITHMS_WORKING_DIRECTORY;
 import static madgik.exareme.master.engine.iterations.handler.IterationsConstants.*;
 
 /**
@@ -46,7 +45,7 @@ public class IterativeAlgorithmState {
 
     // Fields -----------------------------------------------------------------------------------
     private String algorithmKey;
-    private Algorithms.AlgorithmProperties algorithmProperties;
+    private AlgorithmProperties algorithmProperties;
     private String[] dflScripts;
     private final String iterationsDBPath;
 
@@ -110,7 +109,7 @@ public class IterativeAlgorithmState {
      */
     public IterativeAlgorithmState(
             String algorithmKey,
-            Algorithms.AlgorithmProperties algorithmProperties,
+            AlgorithmProperties algorithmProperties,
             AdpDBClient adpDBClient) {
 
         this.algorithmKey = algorithmKey;
@@ -594,7 +593,7 @@ public class IterativeAlgorithmState {
      */
     public void releaseLock() {
         lock.unlock();
-        if (lock.isLocked()) {
+        if (lock.isHeldByCurrentThread()) {
             // Unlikely to happen except for programming error.
             log.warn(Thread.currentThread().getId() + ": Lock counter > 1, releasing all locks");
             while (lock.isLocked())
