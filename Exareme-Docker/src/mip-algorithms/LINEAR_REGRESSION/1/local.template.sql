@@ -1,4 +1,5 @@
 
+<<<<<<< HEAD
 ------------------Input for testing
 ------------------------------------------------------------------------------
 --Test 1
@@ -14,12 +15,6 @@
 -- var 'referencevalues' '[{"name":"alzheimerbroadcategory","val":"Other"}]';
 -- attach 'datasets.db' as 'db';
 
-
--- .s inputdata;
--- .s inputmetadata;
------------------- End input for testing
------------------------------------------------------------------------------
--- to y = real, x = equation of + - * 1 0
 
 requirevars 'defaultDB' 'input_local_DB' 'db_query' 'x' 'y' 'referencevalues';
 attach database '%{defaultDB}' as defaultDB;
