@@ -1,8 +1,0 @@
----
-- hosts: manager
-  name: Stop Services
-  remote_user: "{{ REMOTE_USER }}"
-  become: yes
-  become_user: "{{ BECOME_USER }}"
-  roles:
-   - stop-services
