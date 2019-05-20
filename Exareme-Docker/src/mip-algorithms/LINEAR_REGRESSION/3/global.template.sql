@@ -1,7 +1,7 @@
 requirevars 'defaultDB' 'input_global_tbl' ;
 attach database '%{defaultDB}' as defaultDB;
 
-var 'input_global_tbl' 'defaultDB.localLRresults';
+--var 'input_global_tbl' 'defaultDB.localLRresults';
 
 -- Merge Local Results
 hidden var 'rows' from select sum(rows) from %{input_global_tbl};

@@ -1,7 +1,7 @@
 requirevars 'defaultDB' 'prv_output_global_tbl' 'x' 'y';
 attach database '%{defaultDB}' as defaultDB;
 
-var 'prv_output_global_tbl' 'defaultDB.regressiontbls';
+--var 'prv_output_global_tbl' 'defaultDB.regressiontbls';
 var 'encodingparameter' 'dummycoding';
 
 var 'formula' from select formula from %{prv_output_global_tbl} where tablename ='simplifiedformula';

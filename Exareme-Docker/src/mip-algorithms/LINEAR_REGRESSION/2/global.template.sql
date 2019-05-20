@@ -1,7 +1,7 @@
 requirevars 'defaultDB' 'input_global_tbl' 'y';
 attach database '%{defaultDB}' as defaultDB;
 
-var 'input_global_tbl' 'defaultDB.localgramianandstatistics';
+--var 'input_global_tbl' 'defaultDB.localgramianandstatistics';
 
 drop table if exists gramian;
 create table gramian as

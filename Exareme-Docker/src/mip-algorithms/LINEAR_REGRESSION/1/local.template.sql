@@ -2,17 +2,17 @@
 ------------------Input for testing
 ------------------------------------------------------------------------------
 --Test 1
-drop table if exists inputdata;
-create table inputdata as
-   select *
-   from (file header:t '/home/eleni/Desktop/HBP/exareme/Exareme-Docker/src/mip-algorithms/unit_tests/datasets/CSVs/desd-synthdata.csv');
-
-var 'x' 'alzheimerbroadcategory+righthippocampus+gender' ;
-var 'y' 'lefthippocampus';
-var 'defaultDB' 'defaultDB';
-var 'input_local_DB' 'datasets.db';
-var 'referencevalues' '[{"name":"alzheimerbroadcategory","val":"Other"}]';
-attach 'datasets.db' as 'db';
+-- drop table if exists inputdata;
+-- create table inputdata as
+--    select *
+--    from (file header:t '/home/eleni/Desktop/HBP/exareme/Exareme-Docker/src/mip-algorithms/unit_tests/datasets/CSVs/desd-synthdata.csv');
+--
+-- var 'x' 'alzheimerbroadcategory+righthippocampus+gender' ;
+-- var 'y' 'lefthippocampus';
+-- var 'defaultDB' 'defaultDB';
+-- var 'input_local_DB' 'datasets.db';
+-- var 'referencevalues' '[{"name":"alzheimerbroadcategory","val":"Other"}]';
+-- attach 'datasets.db' as 'db';
 
 
 -- .s inputdata;
@@ -30,8 +30,8 @@ select group_concat(xname) as  xname from
 (select distinct xname from (select strsplitv(regexpr("\+|\:|\*|\-",'%{x}',"+") ,'delimiter:+') as xname) where xname!=0);
 
 --Read dataset
---drop table if exists inputdata;
---create table inputdata as select * from (%{db_query});
+drop table if exists inputdata;
+create table inputdata as select * from (%{db_query});
 
 -- Delete patients with null values (val is null or val = '' or val = 'NA'). Cast values of columns using cast function.
 var 'nullCondition' from select create_complex_query(""," ? is not null and ? <>'NA' and ? <>'' ", "and" , "" , '%{xnames},%{y}');

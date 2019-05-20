@@ -1,7 +1,7 @@
 requirevars 'defaultDB' 'prv_output_global_tbl' 'y';
 attach database '%{defaultDB}' as defaultDB;
 
-var 'prv_output_global_tbl' 'defaultDB.globalcoefficientsandstatistics'; -- statistics & coefficients
+--var 'prv_output_global_tbl' 'defaultDB.globalcoefficientsandstatistics'; -- statistics & coefficients
 
 --E1. Compute residuals y-ypredictive = Y-sum(X(i)*estimate(i)) (Local Layer)
 var 'a' from select tabletojson(attr1,estimate,"attr1,estimate") from %{prv_output_global_tbl} where tablename ="coefficients";

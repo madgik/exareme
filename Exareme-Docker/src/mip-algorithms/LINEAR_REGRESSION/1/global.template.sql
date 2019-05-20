@@ -1,7 +1,7 @@
 requirevars 'defaultDB' 'input_global_tbl' 'dataset' 'x' 'y' 'outputformat';
 attach database '%{defaultDB}' as defaultDB;
 
-var 'input_global_tbl' 'defaultDB.partialmetadatatbl';
+--var 'input_global_tbl' 'defaultDB.partialmetadatatbl';
 
 drop table if exists defaultDB.algorithmparameters; --used for testing !!!
 create table defaultDB.algorithmparameters (name,val);
