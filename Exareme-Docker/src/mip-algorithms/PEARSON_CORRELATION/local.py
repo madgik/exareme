@@ -2,7 +2,6 @@ from __future__ import division
 from __future__ import print_function
 
 import sys
-import sqlite3
 from os import path
 from argparse import ArgumentParser
 
@@ -105,10 +104,7 @@ def main():
 
     # Read data and split between X and Y matrices according to schemata
     schema, data = query_with_privacy(fname_db=fname_loc_db, query=query)
-    try:
-        data = np.array(data, dtype=np.float64)
-    except ValueError:
-        print('Values in X and Y must be numbers or blanks')
+    data = np.array(data, dtype=np.float64)
     idx_X = [schema.index(v) for v in schema_X if v in schema]
     idx_Y = [schema.index(v) for v in schema_Y if v in schema]
     X = data[:, idx_X]

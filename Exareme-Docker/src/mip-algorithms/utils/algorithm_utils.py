@@ -1,9 +1,10 @@
 import sqlite3
 import pickle
 import codecs
-import base64
 
-PRIVACY_MAGIC_NUMBER = 10
+__PRIVACY_MAGIC_NUMBER = 10
+P_VALUE_CUTOFF = 0.001
+P_VALUE_CUTOFF_STR = '< ' + str(P_VALUE_CUTOFF)
 
 
 class TransferData():
@@ -36,8 +37,8 @@ def query_with_privacy(fname_db, query):
     cur.execute(query)
     schema = [description[0] for description in cur.description]
     data = cur.fetchall()
-    if len(data) < PRIVACY_MAGIC_NUMBER:
-        raise ValueError('Query results in illegal number of datapoints.')
+    if len(data) < __PRIVACY_MAGIC_NUMBER:
+        raise PrivacyError('Query results in illegal number of datapoints.')
     return schema, data
 
 
@@ -54,3 +55,13 @@ def get_parameters(argv):
 
 def set_algorithms_output_data(data):
     print data
+
+
+class PrivacyError(Exception):
+    def __init__(self, message):
+        super(PrivacyError, self).__init__(message)
+
+
+class ExaremeError(Exception):
+    def __init__(self, message):
+        super(ExaremeError, self).__init__(message)
