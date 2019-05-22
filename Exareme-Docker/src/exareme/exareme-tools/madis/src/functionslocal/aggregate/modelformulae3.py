@@ -113,30 +113,27 @@ class create_simplified_formulas:
             for i in xrange(len(newschema2)):
                 result += "+" + str(newschema2[i])
                 yield (str(i), result[1:],)
-        elif self.type ==2:
-            # print newschema2
+        elif self.type == 2:
+            print "1", newschema2
             for i in xrange(len(newschema2)):
-                leveli = newschema2[i].count(":")
                 result =""
+                FactorA = re.split(':',str(newschema2[i]))
+                FactorA= [x for x in FactorA if x] # remove nulls elements of the list
+                print FactorA
                 for j in xrange(len(newschema2)):
-                     levelj = newschema2[j].count(":")
-                     if levelj<=leveli and str(newschema2[j])!= str(newschema2[i]):
+                    FactorB = re.split(':',str(newschema2[j]))
+                    FactorB = [x for x in FactorB if x] # remove nulls elements of the list
+                    print "B",FactorB
+                    no = 0
+                    for k in FactorA:
+                        for l in FactorB:
+                            if k==l:
+                                no = no +1
+                    if no != len(FactorA) :
                         result += "+" + str(newschema2[j])
-                yield (str(i), result[1:],)
+                yield (str(i*2), result[1:],)
+                yield (str(i*2+1), result[1:] + "+" + newschema2[i])
 
-            resultold = ""
-            k=0
-            for i in xrange(len(newschema2)):
-                leveli = newschema2[i].count(":")
-                result =""
-                for j in xrange(len(newschema2)):
-                     levelj = newschema2[j].count(":")
-                     if levelj<=leveli:
-                        result += "+" + str(newschema2[j])
-                if resultold != result:
-                    yield (str(len(newschema2)+k), result[1:],)
-                    resultold =result
-                    k+=1
         elif self.type == 3:
             for i in xrange(len(newschema2)):
                 result=""
@@ -265,23 +262,20 @@ class sumofsquares:
                 ModelVariables = re.split('\+',self.ModelVariables[i])
                 yield i, ModelVariables[-1], self.SumOfSquares[i] -self.SumOfSquares[i-1]
 
-        elif self.type ==2:
-            totalFormulaElements = self.ModelVariables[self.maxNo]
-            totalFormulaElements=re.split("\+",totalFormulaElements)
-            totalFormulaElements = [x for x in totalFormulaElements if x] # remove nulls elements of the list
-
-            for i in xrange(self.minNo,len(totalFormulaElements)):
+        elif self.type == 2:
+            no = 0
+            for i in xrange(self.minNo,self.maxNo,2):
+                print self.SumOfSquares[i+1],self.SumOfSquares[i]
                 nowVariables = re.split('\+',self.ModelVariables[i])
                 nowVariables=[x for x in nowVariables if x] # remove nulls elements of the list
-                # print "NOW",nowVariables
-                for j in xrange(len(totalFormulaElements),self.maxNo+1):
-                    nowVariablesTotalGroup = re.split('\+',self.ModelVariables[j])
-                    nowVariablesTotalGroup=[x for x in nowVariablesTotalGroup if x] # remove nulls elements of the list
-                    # print nowVariables, nowVariablesTotalGroup
-                    missingitem = [item for item in nowVariablesTotalGroup if item not in nowVariables]
-                    if len(missingitem)==1:
-                        # print self.SumOfSquares[j], self.SumOfSquares[i]
-                        yield i, missingitem[0], self.SumOfSquares[j]-self.SumOfSquares[i]
+
+                nowVariablesTotalGroup = re.split('\+',self.ModelVariables[i+1])
+                nowVariablesTotalGroup=[x for x in nowVariablesTotalGroup if x] # remove nulls elements of the list
+                missingitem = [item for item in nowVariablesTotalGroup if item not in nowVariables]
+
+                if len(missingitem)==1:
+                    yield no, missingitem[0], self.SumOfSquares[i+1]-self.SumOfSquares[i]
+                    no = no + 1
 
         elif self.type == 3:
             totalVariables = re.split('\+',self.ModelVariables[self.maxNo])
@@ -293,6 +287,7 @@ class sumofsquares:
                 missingitem = [item for item in totalVariables if item not in nowVariables]
 
                 yield i, missingitem[0], self.SumOfSquares[self.maxNo]-self.SumOfSquares[i]
+
 
 
 # no modelvariables, sumofsquares, '%{metadata}', N )  from sumofsquares

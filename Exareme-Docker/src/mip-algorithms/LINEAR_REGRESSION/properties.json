@@ -9,7 +9,7 @@
 			"columnValuesSQLType": "",
 			"columnValuesIsCategorical": "true",
 			"columnValuesNumOfEnumerations": "",
-			"value": "adnicategory*apoe4+subjectage+minimentalstate+gender",
+			"value": "adnicategory*apoe4+subjectage+gender",
 			"valueNotBlank": true,
 			"valueMultiple": true,
 			"valueType": "string"
