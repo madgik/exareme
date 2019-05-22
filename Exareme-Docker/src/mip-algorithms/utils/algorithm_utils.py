@@ -18,7 +18,7 @@ class TransferData():
     def load(cls, inputDB):
         conn = sqlite3.connect(inputDB)
         cur = conn.cursor()
-        cur.execute('SELECT result FROM transfer')
+        cur.execute('SELECT data FROM transfer')
         first = True
         result = None
         for row in cur:
