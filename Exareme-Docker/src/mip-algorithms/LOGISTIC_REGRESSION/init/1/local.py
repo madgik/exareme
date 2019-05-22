@@ -14,7 +14,7 @@ sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath
 sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) +
                 '/LOGISTIC_REGRESSION/')
 
-from algorithm_utils import StateData
+from algorithm_utils import StateData, query_with_privacy
 from log_regr_lib import LogRegrInit_Loc2Glob_TD
 
 
@@ -59,11 +59,7 @@ def main():
     schema_Y = args.Y.strip()
 
     # Get data from local DB
-    conn = sqlite3.connect(fname_loc_db)
-    cur = conn.cursor()
-    cur.execute(query)
-    schema = [description[0] for description in cur.description]
-    data = cur.fetchall()
+    schema, data = query_with_privacy(fname_db=fname_loc_db, query=query)
     idx_X = [schema.index(v) for v in schema_X if v in schema]
     idx_Y = schema.index(schema_Y)
     try:

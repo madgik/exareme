@@ -14,7 +14,7 @@ sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath
 sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) +
                 '/LOGISTIC_REGRESSION/')
 
-from algorithm_utils import StateData, set_algorithms_output_data
+from algorithm_utils import StateData, set_algorithms_output_data, ExaremeError, P_VALUE_CUTOFF, P_VALUE_CUTOFF_STR
 from log_regr_lib import LogRegrFinal_Loc2Glob_TD
 
 
@@ -60,31 +60,32 @@ def logregr_global_final(global_state, global_in):
     bic = np.log(n_obs) * n_cols - 2 * ll
 
     # Write output to JSON
-    global_out = json.dumps(
-            {
-                'result': {
-                    'Covariates'                 : [
-                        {
-                            'Name'       : schema_X[i],
-                            'Coefficient': coeff[i],
-                            'std.err.'   : stderr[i],
-                            'z score'    : z_scores[i],
-                            'p value'    : p_values[i],
-                            'Lower C.I.' : lci[i],
-                            'Upper C.I.' : rci[i]
-                        }
-                        for i in range(len(schema_X))
-                    ],
-                    'Model degrees of freedom'   : df_mod,
-                    'Residual degrees of freedom': df_resid,
-                    'Log-likelihood'             : ll,
-                    'Null model log-likelihood'  : ll0,
-                    'AIC'                        : aic,
-                    'BIC'                        : bic
+    result = {
+        'result': {
+            'Covariates'                 : [
+                {
+                    'Name'       : schema_X[i],
+                    'Coefficient': coeff[i],
+                    'std.err.'   : stderr[i],
+                    'z score'    : z_scores[i],
+                    'p value'    : p_values[i] if p_values[i] >= P_VALUE_CUTOFF else P_VALUE_CUTOFF_STR,
+                    'Lower C.I.' : lci[i],
+                    'Upper C.I.' : rci[i]
                 }
-            }
-    )
-
+                for i in range(len(schema_X))
+            ],
+            'Model degrees of freedom'   : df_mod,
+            'Residual degrees of freedom': df_resid,
+            'Log-likelihood'             : ll,
+            'Null model log-likelihood'  : ll0,
+            'AIC'                        : aic,
+            'BIC'                        : bic
+        }
+    }
+    try:
+        global_out = json.dumps(result, allow_nan=False)
+    except ValueError:
+        raise ExaremeError('Result contains NaNs.')
     return global_out
 
 
