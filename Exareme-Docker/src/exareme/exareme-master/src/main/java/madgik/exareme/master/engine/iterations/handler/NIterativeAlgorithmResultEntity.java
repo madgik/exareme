@@ -76,11 +76,24 @@ public class NIterativeAlgorithmResultEntity extends BasicHttpEntity
                         // Overwrite channel with an InputStream containing error information.
                         // Beware...
                         String result = iterativeAlgorithmState.getAlgorithmError();    //Catch whatever error coming from UDFs
-                        if (result.contains("\n" + "Operator RAISEERROR:")) {
-                            result = result.substring(result.lastIndexOf("RAISEERROR:") + "RAISEERROR:".length()).replaceAll("\\s", " ");
+                        if (result.contains("\n" + "Operator EXAREMEERROR:")) {
+                            result = result.substring(result.lastIndexOf("EXAREMEERROR:") + "EXAREMEERROR:".length()).replaceAll("\\s", " ");
                             channel = Channels.newChannel(
                                     new ByteArrayInputStream(createErrorMessage(result).getBytes(StandardCharsets.UTF_8)));
-                        } else{     //Generate a default Message
+                        }
+                        else if (result.contains("\n" + "Operator PRIVACYERROR:")) {
+                            String privacyResult = createErrorMessage("The data you provided can not generate a result for the selected Experiment.");
+                            encoder.write(ByteBuffer.wrap(privacyResult.getBytes()));
+                            encoder.complete();
+                            close();
+                        }
+                        else if (result.matches("java.rmi.RemoteException: Containers:.*not responding")) {
+                            String privacyResult = createErrorMessage("One or more containers are not responding. Please inform the system administrator.");
+                            encoder.write(ByteBuffer.wrap(privacyResult.getBytes()));
+                            encoder.complete();
+                            close();
+                        }
+                        else{     //Generate a default Message
                             String defaultMsg = generateErrorMessage(iterativeAlgorithmState.getAlgorithmKey());
                             channel = Channels.newChannel(
                                     new ByteArrayInputStream(defaultMsg.getBytes(StandardCharsets.UTF_8)));

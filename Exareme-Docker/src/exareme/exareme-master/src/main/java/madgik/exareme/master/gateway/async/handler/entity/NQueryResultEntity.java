@@ -64,10 +64,16 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
             }
         } else {
             log.trace("|" + queryStatus.getError() + "|");
-            if (queryStatus.getError().contains("\n" + "Operator RAISEERROR:")) {
+            if (queryStatus.getError().contains("\n" + "Operator EXAREMEERROR:")) {
                 String result = queryStatus.getError();
-                result = result.substring(result.lastIndexOf("RAISEERROR:") + "RAISEERROR:".length()).replaceAll("\\s"," ");
+                result = result.substring(result.lastIndexOf("EXAREMEERROR:") + "EXAREMEERROR:".length()).replaceAll("\\s"," ");
                 encoder.write(ByteBuffer.wrap(createErrorMessage(result).getBytes()));
+                encoder.complete();
+                close();
+            }
+            else if (queryStatus.getError().contains("\n" + "Operator PRIVACYERROR:")) {
+                String result = createErrorMessage("The data you provided can not generate a result for the selected Experiment.");
+                encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();
             }
