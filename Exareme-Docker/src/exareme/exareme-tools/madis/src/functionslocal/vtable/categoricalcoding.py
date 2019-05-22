@@ -8,6 +8,7 @@ import re
 registered=True
 
 # Onehot (or dummy) coding for categorical features, produces one feature per category, each binary. http://contrib.scikit-learn.org/categorical-encoding/onehot.html
+# https://www.statsmodels.org/dev/contrasts.html
 
 class categoricalcoding(functions.vtable.vtbase.VT):
     def VTiter(self, *parsedArgs,**envars):
@@ -27,7 +28,7 @@ class categoricalcoding(functions.vtable.vtbase.VT):
         metadata =dict()
         for key in metadata1:
             metadata[str(key)]=str(metadata1[key])
-        print metadata
+        # print metadata
 
         cur = envars['db'].cursor()
         c=cur.execute(query)
@@ -40,14 +41,15 @@ class categoricalcoding(functions.vtable.vtbase.VT):
             for i in xrange(len(myrow)):
                 colname = str(currentSchema[i][0])
                 colval = myrow[i]
-                # print colname,colval
-                if colname in metadata.keys():
-                    newcolvals = metadata[colname].split(',')
-                    newcolvals.sort()
 
+                if colname in metadata.keys():
+                    print colname,colval
+                    newcolvals = metadata[colname].split(',')
+                    nvals =len(newcolvals)
+                    print nvals
+                    # newcolvals.sort()
                     for v in xrange(0,len(newcolvals)):
                         newcolval =newcolvals[v]
-                        print newcolval
                         newSchema.append(str(colname) + '(' + str(newcolval) + ')')
                         if encodingcategory =='dummycoding':
                             if str(colval) == str(newcolval):
@@ -61,6 +63,13 @@ class categoricalcoding(functions.vtable.vtbase.VT):
                                newrow.append(-1)
                             else:
                                 newrow.append(0)
+                        elif encodingcategory =='simplecoding':
+                            if str(colval) == str(newcolval):
+                               newrow.append(1.0 - 1.0/nvals)
+                            else:
+                                newrow.append(0.0 - 1.0/nvals)
+
+
                 else: # gia mh categorical columns:
                     newSchema.append(str(colname))
                     newrow.append(colval)

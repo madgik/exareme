@@ -2,12 +2,14 @@ import json
 
 def definereferencevalues(*args):
 
+    yield ("code", "categorical","enumerations","referencevalue")
+
     code = str(args[0])
     categorical = int(str(1))
     enumerations = str(args[2])
     referencevalues = json.loads(args[3])
 
-    yield ("code", "categorical","enumerations","referencevalue")
+
 
     defined = 0
     if categorical ==1:
