@@ -1,50 +1,19 @@
 # coding: utf-8
 import functions
 
+def raiserror(*args):
 
-def vars(*args):
-    """
-    *args is what the query: "var 'valExists' from select case when (select exists (select colname from
-    tempinputlocaltbl1 where colname='%{variable}'))=0 then 0 else 1 end;" returns
-    """
-
-    if args[0] == "0":
-        raise functions.OperatorError("VARIABLE", "")
-    else:
-        return 1
+    raise functions.OperatorError("EXAREMEERROR", "error ypu have somthg wrong")
 
 
-vars.registered = True
+raiserror.registered = True
+
+def privacyerror(*args):
+
+    raise functions.OperatorError("PRIVACYERROR","")
 
 
-def emptyfield(*args):
-    """
-    *args is what the query: "var 'valExists' from select case when (select exists (select colname from
-    tempinputlocaltbl1 where colname='%{variable}'))=0 then 0 else 1 end;" returns
-    """
-
-    if args[0] == "0":
-        raise functions.OperatorError("EMPTYFIELD", "")
-    else:
-        return 1
-
-
-emptyfield.registered = True
-
-
-def emptyset(*args):
-    """
-    *args is what the query: "var 'valExists' from select case when (select exists (select colname from
-    tempinputlocaltbl1 where colname='%{variable}'))=0 then 0 else 1 end;" returns
-    """
-
-    if args[0] == "0":
-        raise functions.OperatorError("EMPTYSET", "")
-    else:
-        return 1
-
-
-emptyset.registered = True
+privacyerror.registered = True
 
 if not ('.' in __name__):
     """
