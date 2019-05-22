@@ -31,22 +31,3 @@ select  '%{rows}' as rows, '%{cols}' as cols,
         '%{sst}' as sst,'%{sse}' as sse ;
 
 select * from defaultDB.localLRresults;
-
-
-
-
-
-
-
---  var 'prv_output_global_tbl' 'defaultDB.globalcoefficientsandstatistics';
---
--- --E. Compute statistics For Estimators ( standardError ,  tvalue  , p value )
--- --E1. Compute residuals y-ypredictive = Y-sum(X(i)*estimate(i)) (Local Layer)
--- var 'coefficients' from select tabletojson(attr1,estimate,"colname,estimate") from %{prv_output_global_tbl} where tablename ="coefficients";
---
--- drop table if exists defaultDB.partialresiduals;
--- create table defaultDB.partialresiduals as
--- select min_e,max_e,sum_e,sum_ee, counte from (residuals coefficients:%{coefficients} dependentvariable:%{y} select * from defaultdb.localinputtblflatcategoricalencoding);
---
---
--- select * from defaultDB.partialresiduals;

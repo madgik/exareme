@@ -1,5 +1,4 @@
 
-<<<<<<< HEAD
 ------------------Input for testing
 ------------------------------------------------------------------------------
 --Test 1
@@ -8,15 +7,15 @@
 --    select *
 --    from (file header:t '/home/eleni/Desktop/HBP/exareme/Exareme-Docker/src/mip-algorithms/unit_tests/datasets/CSVs/desd-synthdata.csv');
 --
--- var 'x' 'alzheimerbroadcategory+righthippocampus+gender' ;
+-- var 'x' 'alzheimerbroadcategory' ;
 -- var 'y' 'lefthippocampus';
--- var 'defaultDB' 'defaultDB';
+-- var 'defaultDB' 'defaultDB2';
 -- var 'input_local_DB' 'datasets.db';
--- var 'referencevalues' '[{"name":"alzheimerbroadcategory","val":"Other"}]';
+-- var 'referencevalues' '[]';
+-- var 'encodingparameter' 'simplecoding';
 -- attach 'datasets.db' as 'db';
 
-
-requirevars 'defaultDB' 'input_local_DB' 'db_query' 'x' 'y' 'referencevalues';
+requirevars 'defaultDB' 'input_local_DB' 'db_query' 'x' 'y' 'referencevalues' 'encodingparameter';
 attach database '%{defaultDB}' as defaultDB;
 attach database '%{input_local_DB}' as localDB;
 

@@ -1,24 +1,25 @@
-requirevars 'defaultDB' 'input_global_tbl' 'dataset' 'x' 'y' 'outputformat';
+requirevars 'defaultDB' 'input_global_tbl' 'dataset' 'x' 'y';
 attach database '%{defaultDB}' as defaultDB;
 
---var 'input_global_tbl' 'defaultDB.partialmetadatatbl';
+-- var 'input_global_tbl' 'defaultDB.partialmetadatatbl';
 
 drop table if exists defaultDB.algorithmparameters; --used for testing !!!
 create table defaultDB.algorithmparameters (name,val);
 insert into defaultDB.algorithmparameters select 'x' , '%{x}' ;
 insert into defaultDB.algorithmparameters select 'y' , '%{y}' ;
-insert into defaultDB.algorithmparameters select 'outputformat' , '%{outputformat}' ;
 insert into defaultDB.algorithmparameters select 'dataset' , '%{dataset}' ;
 
 drop table if exists defaultDB.metadatatbl;
 create table defaultDB.metadatatbl (code text, categorical int, enumerations text, referencevalue text);
 insert into defaultDB.metadatatbl
+select * from (
+setschema 'code,categorical,enumerations,referencevalue'
 select definereferencevalues(code, categorical,enumerations,'%{referencevalues}') from
 (select code, categorical, group_concat(vals) as enumerations, null
                         from (select code, categorical,vals
                               from (select code, categorical,strsplitv(enumerations ,'delimiter:,') as vals
                                     from %{input_global_tbl} where categorical=1) group by code,vals  )
-                        group by code);
+                        group by code));
 insert into defaultDB.metadatatbl select distinct code, categorical,enumerations, null from  %{input_global_tbl} where categorical=0;
 
 

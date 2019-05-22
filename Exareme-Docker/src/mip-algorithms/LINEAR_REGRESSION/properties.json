@@ -35,6 +35,15 @@
       "valueMultiple": false,
       "valueType": "json"
     },
+		{
+      "name": "encodingparameter",
+      "desc": "Encoding parameter. It can be one of the following:dummycoding,sumscoding,simplecoding",
+      "type": "other",
+      "value": "dummycoding",
+      "valueNotBlank": true,
+      "valueMultiple": false,
+      "valueType": "string"
+    },
      {
 			"name": "dataset",
 			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty.",
@@ -50,14 +59,6 @@
 			"value": "",
 			"valueNotBlank": false,
 			"valueMultiple": true,
-			"valueType": "string"
-		}, {
-			"name": "outputformat",
-			"desc": "pfa",
-			"type": "other",
-			"value": "pfa",
-			"valueNotBlank": true,
-			"valueMultiple": false,
 			"valueType": "string"
 		}
 	]

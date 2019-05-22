@@ -1,5 +1,21 @@
 {
 	"variables": [{
+			"code": "neurogenerativescategories",
+			"description": "",
+			"enumerations": [{
+					"code": "AD",
+					"label": "AD"
+				}, {
+					"code": "MCI",
+					"label": "MCI"
+				}
+			],
+			"label": "neurogenerativescategories",
+			"methodology": "Testing",
+			"sql_type": "text",
+			"type": "binominal",
+			"categorical": true
+		},{
 			"code": "ANOVA_pp",
 			"description": "",
 			"minValue": 0,

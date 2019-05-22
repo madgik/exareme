@@ -1,8 +1,7 @@
-requirevars 'defaultDB' 'prv_output_global_tbl' 'x' 'y';
+requirevars 'defaultDB' 'prv_output_global_tbl' 'x' 'y' 'encodingparameter';
 attach database '%{defaultDB}' as defaultDB;
 
 --var 'prv_output_global_tbl' 'defaultDB.regressiontbls';
-var 'encodingparameter' 'dummycoding';
 
 var 'formula' from select formula from %{prv_output_global_tbl} where tablename ='simplifiedformula';
 var 'categoricalmetadata' from select jdictgroup(code,enumerations) from %{prv_output_global_tbl} where tablename ='metadatatbl' and categorical = 1;
