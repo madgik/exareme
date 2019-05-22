@@ -44,13 +44,23 @@ def logregr_local_final(local_state, local_in):
     # Log-likelihood
     ls1, ls2 = np.log(s), np.log(1 - s)
     ll = np.dot(Y, ls1) + np.dot(1 - Y, ls2)
-    # Y sum
-    ysum = np.sum(Y)
-
+    # sum Y, sum Y**2, SS_res
+    y_sum = np.sum(Y)
+    y_sqsum = np.sum(np.dot(Y, Y))
+    yhat = [predict(x, coeff) for x in X]
+    ssres = np.sum(np.dot(Y - yhat, Y - yhat))
 
     # Pack state and results
-    local_out = LogRegrFinal_Loc2Glob_TD(ll, grad, hess, ysum)
+    local_out = LogRegrFinal_Loc2Glob_TD(ll, grad, hess, y_sum, y_sqsum, ssres)
     return local_out
+
+
+def predict(x, coeff, threshold=0.5):  # TODO Verify
+    prob = expit(
+            np.dot(x, coeff)
+    )
+    yhat = 1 if prob >= threshold else 0
+    return yhat
 
 
 def main():

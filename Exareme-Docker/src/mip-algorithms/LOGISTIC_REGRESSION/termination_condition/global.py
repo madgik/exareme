@@ -6,10 +6,12 @@ from os import path
 from argparse import ArgumentParser
 
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/utils/')
+sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) +
+                '/LOGISTIC_REGRESSION/')
 
 from algorithm_utils import StateData, set_algorithms_output_data
+from log_regr_lib import PREC
 
-PREC = 1e-7
 
 def termination_condition(global_state):
     delta = global_state['delta']
@@ -17,6 +19,7 @@ def termination_condition(global_state):
         set_algorithms_output_data('STOP')
     else:
         set_algorithms_output_data('CONTINUE')
+
 
 def main():
     # Parse arguments
@@ -28,6 +31,7 @@ def main():
 
     global_state = StateData.load(fname_prev_state).data
     termination_condition(global_state)
+
 
 if __name__ == '__main__':
     main()

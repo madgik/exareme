@@ -27,7 +27,7 @@ def logregr_global_final(global_state, global_in):
     schema_X = global_state['schema_X']
     schema_Y = global_state['schema_Y']
     # Unpack global input
-    ll, grad, hess, ysum = global_in.get_data()
+    ll, grad, hess, y_sum, y_sqsum, ssres = global_in.get_data()
 
     # Output summary
     # stderr
@@ -52,12 +52,18 @@ def logregr_global_final(global_state, global_in):
     df_mod = n_cols - 1
     df_resid = n_obs - df_mod - 1
     # Null model log-likelihood
-    ymean = ysum / n_obs
-    ll0 = ysum * np.log(ymean) + (n_obs - ysum) * np.log(1.0 - ymean)
+    y_mean = y_sum / n_obs
+    ll0 = y_sum * np.log(y_mean) + (n_obs - y_sum) * np.log(1.0 - y_mean)
     # AIC
     aic = 2 * n_cols - 2 * ll
     # BIC
     bic = np.log(n_obs) * n_cols - 2 * ll
+    # R^2 etc.
+    sstot = y_sqsum - n_obs * y_mean * y_mean
+    r2 = 1 - ssres / sstot
+    r2_adj = 1 - (1 - r2) * (n_obs - 1) / (n_obs - n_cols - 1)
+    r2_mcf = 1.0 - ll / ll0
+    r2_cs = 1 - np.exp(-ll0 * 2 * r2_mcf / n_obs)
 
     # Write output to JSON
     result = {
@@ -79,7 +85,11 @@ def logregr_global_final(global_state, global_in):
             'Log-likelihood'             : ll,
             'Null model log-likelihood'  : ll0,
             'AIC'                        : aic,
-            'BIC'                        : bic
+            'BIC'                        : bic,
+            'R^2'                        : r2,
+            'Adjusted R^2'               : r2_adj,
+            'McFadden pseudo-R^2'        : r2_mcf,
+            'Cox-Snell pseudo-R^2'       : r2_cs
         }
     }
     try:

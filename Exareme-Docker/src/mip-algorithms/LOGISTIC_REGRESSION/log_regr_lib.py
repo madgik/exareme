@@ -7,6 +7,8 @@ from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))) + '/utils/')
 from algorithm_utils import TransferData
 
+PREC = 1e-7  # Precission used in termination_condition
+
 
 class LogRegrInit_Loc2Glob_TD(TransferData):
     def __init__(self, *args):
@@ -68,15 +70,18 @@ class LogRegrIter_Glob2Loc_TD(TransferData):
 
 class LogRegrFinal_Loc2Glob_TD(TransferData):
     def __init__(self, *args):
-        if len(args) != 4:
+        if len(args) != 6:
             raise ValueError('Illegal number of arguments.')
         self.ll = args[0]
         self.gradient = args[1]
         self.hessian = args[2]
-        self.ysum = args[3]
+        self.y_sum = args[3]
+        self.y_sqsum = args[4]
+        self.ssres = args[5]
 
     def get_data(self):
-        return self.ll, self.gradient, self.hessian, self.ysum
+        return self.ll, self.gradient, self.hessian, \
+               self.y_sum, self.y_sqsum, self.ssres
 
     def __add__(self, other):
         assert len(self.gradient) == len(other.gradient), "Local gradient sizes do not agree."
@@ -85,5 +90,7 @@ class LogRegrFinal_Loc2Glob_TD(TransferData):
                 self.ll + other.ll,
                 self.gradient + other.gradient,
                 self.hessian + other.hessian,
-                self.ysum + other.ysum
+                self.y_sum + other.y_sum,
+                self.y_sqsum + other.y_sqsum,
+                self.ssres + other.ssres
         )
