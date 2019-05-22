@@ -1,4 +1,4 @@
-requirevars 'defaultDB' 'input_local_tbl' 'dataset' 'columns' 'classname' 'test_size' 'train_size' 'random_state' 'shuffle';
+requirevars 'defaultDB' 'input_local_DB' 'db_query' 'dataset' 'columns' 'classname' 'test_size' 'train_size' 'random_state' 'shuffle';
 
 --'Dataset_BayesNaive_CategoricalValues.csv' -- 'datasetforTestingBayesNaiveNullInput.csv'
 --var 'columns' 'outlook,temperature,humidity,windy,column1,column2';
@@ -17,6 +17,7 @@ requirevars 'defaultDB' 'input_local_tbl' 'dataset' 'columns' 'classname' 'test_
 --var 'alpha' 1;
 
 attach database '%{defaultDB}' as defaultDB;
+attach database '%{input_local_DB}' as localDB;
 
 var 'min_k_data_aggregation' 5;
 
@@ -46,8 +47,7 @@ select 'classname' as variablename, '%{classname}' as val;
 
 drop table if exists table1;
 create table table1 as
-select rid,colname, tonumber(val) as val from (toeav select * from %{input_local_tbl})
-where colname in (select * from columnsTBL) or colname = '%{classname}' or colname = 'dataset';
+select rid,colname, tonumber(val) as val from (toeav %{db_query});
 
 --Keep only patients of the correct dataset & delete the rows which are colname = 'dataset'
 drop table if exists table2;

@@ -1,10 +1,13 @@
-requirevars 'defaultDB' 'input_local_tbl' 'dataset' 'columns' 'classname' 'kfold';
+requirevars 'defaultDB' 'input_local_DB' 'db_query' 'dataset' 'columns' 'classname' 'kfold';
 
 --'Dataset_BayesNaive_CategoricalValues.csv' -- 'datasetforTestingBayesNaiveNullInput.csv'
---var 'columns' 'outlook,temperature,humidity,windy,column1,column2';
+--var 'columns' 'outlook,temperature,humidity,windy';
 --var 'classname' 'play';
 --var 'kfold' 3;
---var 'dataset' 'adni';
+--var 'dataset' 'naiveBayes';
+--var 'input_local_DB' '/root/exareme/datasets/datasets.db' ;
+--var 'db_query' 'select outlook,temperature,humidity,windy,play from (data) where  ( dataset IN ("naiveBayes"))';
+--var 'defaultDB' '/tmp/demo/db/TEST.db';
 
 -- 'Iris_dataset'
 --var 'defaultDB' 'defaultDB';
@@ -14,6 +17,7 @@ requirevars 'defaultDB' 'input_local_tbl' 'dataset' 'columns' 'classname' 'kfold
 --var 'alpha' 1;
 
 attach database '%{defaultDB}' as defaultDB;
+attach database '%{input_local_DB}' as localDB;
 
 var 'min_k_data_aggregation' 5;
 
@@ -43,23 +47,14 @@ select 'classname' as variablename, '%{classname}' as val;
 
 drop table if exists table1;
 create table table1 as
-select rid,colname, tonumber(val) as val from (toeav select * from %{input_local_tbl})
-where colname in (select * from columnsTBL) or colname = '%{classname}' or colname = 'dataset';
-
---Keep only patients of the correct dataset & delete the rows which are colname = 'dataset'
-drop table if exists table2;
-create table table2 as
-select rid, colname, val
-from table1
-where rid in (select distinct rid from table1 where colname ='dataset' and val in (select * from datasetsTBL));
-delete from table2 where colname = 'dataset';
+select rid,colname, tonumber(val) as val from (toeav %{db_query});
 
 -- Delete patients with null values
 drop table if exists table3;
 create table table3 as
 select rid, colname, val
-from table2
-where rid not in (select distinct rid from table2 where val is null or val = '' or val = 'NA');
+from table1
+where rid not in (select distinct rid from table1 where val is null or val = '' or val = 'NA');
 
 drop table if exists defaultDB.lala;
 create table defaultDB.lala as 
@@ -88,8 +83,8 @@ vartypebucket '%{kfoldtype}';
 --select typeof(tonumber('%{kfold}')) ='integer' as typeint;
 
 -- Check the type of "classname"  -- TODO SOFIA:  If the result of the query is 0 then wrong type "classname"
-var 'classnametype' from select case when (select categorical from defaultDB.local_variablesdatatype_Existing where colname1 = '%{classname}') = 'Yes' then 1 else 0 end;
-varclassnametype '%{classnametype}';
+-- var 'classnametype' from select case when (select categorical from defaultDB.local_variablesdatatype_Existing where colname1 = '%{classname}') = 'Yes' then 1 else 0 end;
+-- varclassnametype '%{classnametype}';
 -----------------------------------------------------------------------------------------------------------------
 -- Add two new columns: "idofset","classval"
 -- "idofset" is used in order to split dataset in training and test datasets.
@@ -100,6 +95,7 @@ from table3  as h,
   (sklearnkfold splits:%{kfold} select distinct rid from table3) as kfold,
   (select rid, val from table3 where colname = var('classname')) as c
 where h.rid = c.rid and kfold.rid =h.rid;
+
 
 --Check that initial dataset conatins more than "min_k_data_aggregation" rows
 var 'containsmorethantheminimumrecords' select count(distinct(rid))>= %{min_k_data_aggregation} from defaultDB.local_inputTBL then 1 else 0;  -- TODO SOfia: Prepei na epistrefei 1 gia na sunexizei to nosokomeio
