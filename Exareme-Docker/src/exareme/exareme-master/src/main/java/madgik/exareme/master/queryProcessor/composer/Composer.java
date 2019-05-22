@@ -160,10 +160,17 @@ public class Composer {
         // Assigning the proper identifier for the defaultDB
         //      if the dbIdentifier is provided as a parameter or not
         String dbIdentifier = algorithmProperties.getParameterValue(ComposerConstants.dbIdentifierKey);
-        if (dbIdentifier == null || dbIdentifier.equals("")) {
+
+        // If the algorithm does not have a dbIdentifier parameter we assign the algorithmKey as the identifier
+        if (dbIdentifier == null)
             dbIdentifier = algorithmKey;
-            algorithmProperties.setParameterValue(ComposerConstants.dbIdentifierKey,dbIdentifier);
+
+        // If the algorithm has a dbIdentifier parameter but is blank, we set is to the algorithmKey
+        if (dbIdentifier.equals("")) {
+            dbIdentifier = algorithmKey;
+            algorithmProperties.setParameterValue(ComposerConstants.dbIdentifierKey, dbIdentifier);
         }
+
         String algorithmName = algorithmProperties.getName();
         String defaultDBFilePath = HBPConstants.DEMO_DB_WORKING_DIRECTORY + dbIdentifier + "_defaultDB.db";
         String inputLocalDB = ComposerConstants.getDatasetDBDirectory();
