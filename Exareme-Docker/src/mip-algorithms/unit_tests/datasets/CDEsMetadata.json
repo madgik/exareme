@@ -1,5 +1,89 @@
 {
 	"variables": [{
+			"code": "column1",
+			"description": "",
+			"label": "pp",
+			"methodology": "Testing_ANOVA",
+			"sql_type": "real",
+			"type": "",
+			"categorical": false
+		}, {
+			"code": "play",
+			"description": "",
+			"label": "pp",
+			"methodology": "Testing_ANOVA",
+			"sql_type": "text",
+			"type": "",
+			"categorical": true,
+			"enumerations": [{
+					"code": "yes"
+				}, {
+					"code": "no"
+				}
+			]
+		}, {
+			"code": "windy",
+			"description": "",
+			"label": "pp",
+			"methodology": "Testing_ANOVA",
+			"sql_type": "text",
+			"type": "",
+			"categorical": true,
+			"enumerations": [{
+					"code": "FALSE"
+				}, {
+					"code": "TRUE"
+				}
+			]
+		}, {
+			"code": "humidity",
+			"description": "",
+			"label": "pp",
+			"methodology": "Testing_ANOVA",
+			"sql_type": "text",
+			"type": "",
+			"categorical": true,
+			"enumerations": [{
+					"code": "high"
+				}, {
+					"code": "normal"
+				}, {
+					"code": "low"
+				}
+			]
+		}, {
+			"code": "temperature",
+			"description": "",
+			"label": "pp",
+			"methodology": "Testing_ANOVA",
+			"sql_type": "text",
+			"type": "",
+			"categorical": true,
+			"enumerations": [{
+					"code": "hot"
+				}, {
+					"code": "mild"
+				}, {
+					"code": "cool"
+				}
+			]
+		}, {
+			"code": "outlook",
+			"description": "",
+			"label": "pp",
+			"methodology": "Testing_ANOVA",
+			"sql_type": "text",
+			"type": "",
+			"categorical": true,
+			"enumerations": [{
+					"code": "sunny"
+				}, {
+					"code": "overcast"
+				}, {
+					"code": "rainy"
+				}
+			]
+		}, {
 			"code": "ANOVA_pp",
 			"description": "",
 			"minValue": 0,
