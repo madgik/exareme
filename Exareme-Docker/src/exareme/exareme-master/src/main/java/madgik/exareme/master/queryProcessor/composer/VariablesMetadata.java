@@ -70,7 +70,7 @@ public class VariablesMetadata {
             while (rs.next()) {
                 String code = rs.getString("code");
                 String sql_type = rs.getString("sql_type");
-                int categorical = rs.getInt("categorical");
+                int categorical = rs.getInt("isCategorical");
                 String enumerations = rs.getString("enumerations");
                 if (enumerations == null)
                     enumerations = "";
