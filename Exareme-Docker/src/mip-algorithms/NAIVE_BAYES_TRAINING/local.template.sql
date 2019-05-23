@@ -1,18 +1,19 @@
-requirevars 'defaultDB' 'iterationNumber';
+requirevars 'defaultDB' 'iterationNumber' 'x' 'y';
 -- The iterationNumber shows the id of the testing dataset.
 attach database '%{defaultDB}' as defaultDB;
 
 var 'iterationNumber' 0;
 
---Training Dataset that has one more column: classval
+
+--Training Dataset
 drop table if exists defaultDB.local_trainingset;
 create table defaultDB.local_trainingset as
-select * from defaultDB.local_inputTBL where idofset <> %{iterationNumber};
+select * from defaultdb.localinputtblflat where idofset <> %{iterationNumber};
 
 --var 'file' from select  'Trainingset'||%{iterationNumber}||'.csv';
 --output '%{file}' header:t select * from defaultDB.local_trainingsetplusclassval;
 
-var 'categoricalcolumns' from select strjoin('?');
+var 'categoricalcolumns' from select strjoin(code) wher categorical=1;
 var 'non_categoricalcolumns';
 
 --For each categorical column x: segment the data by the distinct values of each column, and by the class values, and then count the rows.
@@ -35,3 +36,6 @@ where colname in (select colname1 from defaultDB.local_variablesdatatype_Existin
 group by colname,classval;
 
 select * from defaultDB.local_counts;
+
+
+cast(%{y} as real) -

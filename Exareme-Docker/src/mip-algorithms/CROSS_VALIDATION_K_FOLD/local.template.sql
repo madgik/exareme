@@ -20,6 +20,7 @@ attach 'datasets.db' as localDB;
 --var 'kfold' 2;
 --var 'alpha' 1;
 
+
 -------------------------------------------------------------------------------------
 requirevars 'defaultDB' 'input_local_DB' 'db_query' 'x' 'y' 'kfold'; -- y = classname
 attach database '%{defaultDB}' as defaultDB;
@@ -43,14 +44,10 @@ drop table if exists defaultDB.localinputtblflat;
 create table defaultDB.localinputtblflat as
 select %{x},%{y}, kfold.idofset as idofset
 from inputdata2  as h, (sklearnkfold splits:%{kfold} select rowid from inputdata2) as kfold
-where kfold.rid =h.rowid;
+where kfold.rid = h.rowid;
 
 drop table if exists defaultDB.metadatatbl;
 create table defaultDB.metadatatbl as
 select * from metadata where code in (select strsplitv('%{x}','delimiter:,')) or code ='%{y}';
-
--- --Check that initial dataset conatins more than "min_k_data_aggregation" rows
--- var 'containsmorethantheminimumrecords' select count(distinct(rid))>= %{min_k_data_aggregation} from defaultDB.local_inputTBL then 1 else 0;  -- TODO SOfia: Prepei na epistrefei 1 gia na sunexizei to nosokomeio
--- varminimumrec '${containsmorethantheminimumrecords}';
 
 select * from defaultDB.metadatatbl;
