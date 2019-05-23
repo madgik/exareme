@@ -76,13 +76,13 @@ public class NIterativeAlgorithmResultEntity extends BasicHttpEntity
                         // Overwrite channel with an InputStream containing error information.
                         // Beware...
                         String result = iterativeAlgorithmState.getAlgorithmError();    //Catch whatever error coming from UDFs
-                        if (result.contains("\n" + "Operator EXAREMEERROR:")) {
-                            result = result.substring(result.lastIndexOf("EXAREMEERROR:") + "EXAREMEERROR:".length()).replaceAll("\\s", " ");
+                        if (result.contains("ExaremeError:")) {
+                            result = result.substring(result.lastIndexOf("ExaremeError:") + "ExaremeError:".length()).replaceAll("\\s", " ");
                             channel = Channels.newChannel(
                                     new ByteArrayInputStream(createErrorMessage(result).getBytes(StandardCharsets.UTF_8)));
                         }
-                        else if (result.contains("\n" + "Operator PRIVACYERROR:")) {
-                            String privacyResult = createErrorMessage("The data you provided can not generate a result for the selected Experiment.");
+                        else if (result.contains("PrivacyError")) {
+                            String privacyResult = createErrorMessage("The Experiment could not run with the input provided because there are insufficient data.");
                             encoder.write(ByteBuffer.wrap(privacyResult.getBytes()));
                             encoder.complete();
                             close();

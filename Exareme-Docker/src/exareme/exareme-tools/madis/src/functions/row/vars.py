@@ -3,14 +3,14 @@ import functions
 
 def raiserror(*args):
 
-    raise functions.OperatorError("EXAREMEERROR", "error ypu have somthg wrong")
+    raise functions.OperatorError("ExaremeError", "error ypu have somthg wrong")
 
 
 raiserror.registered = True
 
 def privacyerror(*args):
 
-    raise functions.OperatorError("PRIVACYERROR","")
+    raise functions.OperatorError("PrivacyError","")
 
 
 privacyerror.registered = True

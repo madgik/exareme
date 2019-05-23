@@ -20,6 +20,9 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
 
     private static final Logger log = Logger.getLogger(NQueryResultEntity.class);
 
+    public boolean containsIgnoreCase(String str, String subString) {
+        return str.toLowerCase().contains(subString.toLowerCase());
+    }
     private final AdpDBClientQueryStatus queryStatus;
     private final ByteBuffer buffer;
     private ReadableByteChannel channel;
@@ -35,6 +38,7 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
         l = null;
         format = ds;
     }
+
 
     @Override
     public void produceContent(ContentEncoder encoder, IOControl ioctrl)
@@ -64,15 +68,15 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
             }
         } else {
             log.trace("|" + queryStatus.getError() + "|");
-            if (queryStatus.getError().contains("\n" + "Operator EXAREMEERROR:")) {
+            if (queryStatus.getError().contains("ExaremeError:")) {
                 String result = queryStatus.getError();
-                result = result.substring(result.lastIndexOf("EXAREMEERROR:") + "EXAREMEERROR:".length()).replaceAll("\\s"," ");
+                result = result.substring(result.lastIndexOf("ExaremeError:") + "ExaremeError:".length()).replaceAll("\\s"," ");
                 encoder.write(ByteBuffer.wrap(createErrorMessage(result).getBytes()));
                 encoder.complete();
                 close();
             }
-            else if (queryStatus.getError().contains("\n" + "Operator PRIVACYERROR:")) {
-                String result = createErrorMessage("The data you provided can not generate a result for the selected Experiment.");
+            else if (queryStatus.getError().contains("PrivacyError")) {
+                String result = createErrorMessage("The Experiment could not run with the input provided because there are insufficient data.");
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();
