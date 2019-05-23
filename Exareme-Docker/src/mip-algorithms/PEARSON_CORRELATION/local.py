@@ -79,8 +79,6 @@ def main():
     args, unknown = parser.parse_known_args()
     query = args.db_query
     fname_loc_db = path.abspath(args.input_local_DB)
-    if True:
-        raise ExaremeError('Field X must be non empty.')
     if args.X == '':
         raise ExaremeError('Field X must be non empty.')
     args_X = list(
