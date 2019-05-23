@@ -1684,7 +1684,7 @@
 			"label": "Diagnosis"
 		}, {
 			"variables": [{
-					"isCategorical": true,
+					"isCategorical": false,
 					"minValue": 0,
 					"code": "minimentalstate",
 					"maxValue": 30,
