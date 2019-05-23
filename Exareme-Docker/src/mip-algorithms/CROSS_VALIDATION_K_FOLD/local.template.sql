@@ -1,104 +1,56 @@
-requirevars 'defaultDB' 'input_local_DB' 'db_query' 'dataset' 'columns' 'classname' 'kfold';
 
---'Dataset_BayesNaive_CategoricalValues.csv' -- 'datasetforTestingBayesNaiveNullInput.csv'
---var 'columns' 'outlook,temperature,humidity,windy';
---var 'classname' 'play';
---var 'kfold' 3;
---var 'dataset' 'naiveBayes';
---var 'input_local_DB' '/root/exareme/datasets/datasets.db' ;
---var 'db_query' 'select outlook,temperature,humidity,windy,play from (data) where  ( dataset IN ("naiveBayes"))';
---var 'defaultDB' '/tmp/demo/db/TEST.db';
+------------------Input for testing
+------------------------------------------------------------------------------
+--Test 1
+drop table if exists inputdata;
+create table inputdata as
+   select *
+   from (file header:t '/home/eleni/Desktop/HBP/exareme/Exareme-Docker/src/mip-algorithms/unit_tests/datasets/CSVs/Naive/BayesNaiveTestDataset.csv');
+
+var 'x' 'outlook,temperature,humidity,windy';
+var 'y' 'play';
+var 'kfold' 3;
+var 'defaultDB' 'mydefaultDB.db';
+attach 'datasets.db' as localDB;
 
 -- 'Iris_dataset'
 --var 'defaultDB' 'defaultDB';
---var 'columns' 'SepalLength,SepalWidth,PetalLength,PetalWidth';
---var 'classname' 'Species';
+--var 'columns' 'Sepal_Length,Sepal_Width,Petal_Length,Petal_Width';
+--var 'classname' 'class';
 --var 'kfold' 2;
 --var 'alpha' 1;
 
+-------------------------------------------------------------------------------------
+requirevars 'defaultDB' 'input_local_DB' 'db_query' 'x' 'y' 'kfold'; -- y = classname
 attach database '%{defaultDB}' as defaultDB;
-attach database '%{input_local_DB}' as localDB;
+--attach database '%{input_local_DB}' as localDB;
 
-var 'min_k_data_aggregation' 5;
+--var 'min_k_data_aggregation' 5;
 
----------------------------------------------------------------------------------------------------------------------
---Dataset names
-drop table if exists datasetsTBL;
-create table datasetsTBL as
-select strsplitv('%{dataset}','delimiter:,') as dataset;
+--Read dataset
+--drop table if exists inputdata;
+--create table inputdata as select * from (%{db_query});
 
---Column names
-drop table if exists columnsTBL;
-create table columnsTBL as
-select strsplitv('%{columns}','delimiter:,') as col;
+-- Delete patients with null values (val is null or val = '' or val = 'NA'). Cast values of columns using cast function.
+var 'nullCondition' from select create_complex_query(""," ? is not null and ? <>'NA' and ? <>'' ", "and" , "" , '%{x},%{y}');
+var 'cast_x' from select create_complex_query("","tonumber(?) as ?", "," , "" , '%{x}');--TODO!!!!
+drop table if exists inputdata2;
+create table inputdata2 as
+select %{cast_x}, tonumber(%{y}) as '%{y}' from inputdata where %{nullCondition};
 
---------------------------------------------------------------------------------------------------------------------------
-drop table if exists defaultDB.local_inputvariables; --contains the names of classname
-create table defaultDB.local_inputvariables as
-select 'classname' as variablename, '%{classname}' as val;
+-- Add a new column: "idofset". It is used in order to split dataset in training and test datasets.
+drop table if exists defaultDB.localinputtblflat;
+create table defaultDB.localinputtblflat as
+select %{x},%{y}, kfold.idofset as idofset
+from inputdata2  as h, (sklearnkfold splits:%{kfold} select rowid from inputdata2) as kfold
+where kfold.rid =h.rowid;
 
+drop table if exists defaultDB.metadatatbl;
+create table defaultDB.metadatatbl as
+select * from metadata where code in (select strsplitv('%{x}','delimiter:,')) or code ='%{y}';
 
---Import dataset for testing in madis and select specific datasets and columns
---drop table if exists table1;
---create table table1 as
---select rid, key as colname,  tonumber(val) as val
---from ( select rid, jdictsplitv(cjdict) from (file toj:1 header:t 'Dataset_BayesNaive_Real&CategoricalValues.csv'))
---where colname in (select * from columnsTBL) or colname = '%{classname}' or colname = 'dataset';
+-- --Check that initial dataset conatins more than "min_k_data_aggregation" rows
+-- var 'containsmorethantheminimumrecords' select count(distinct(rid))>= %{min_k_data_aggregation} from defaultDB.local_inputTBL then 1 else 0;  -- TODO SOfia: Prepei na epistrefei 1 gia na sunexizei to nosokomeio
+-- varminimumrec '${containsmorethantheminimumrecords}';
 
-drop table if exists table1;
-create table table1 as
-select rid,colname, tonumber(val) as val from (toeav %{db_query});
-
--- Delete patients with null values
-drop table if exists table3;
-create table table3 as
-select rid, colname, val
-from table1
-where rid not in (select distinct rid from table1 where val is null or val = '' or val = 'NA');
-
-drop table if exists defaultDB.lala;
-create table defaultDB.lala as 
-select * from table3;
-
---------------------------------------------------------------------------------------------------------------
---Define the type of the "columns" & "classname"  -- TODO:  We should read the type of variables from a metadata file.
-drop table if exists defaultDB.local_variablesdatatype_Existing;
-create table defaultDB.local_variablesdatatype_Existing as
-select colname1, type,
-       case when type <> 'real' and uniquevalues <= 30 then 'Yes' else 'No' end as categorical
-	   from
-      (select colname as colname1, count (distinct val) as uniquevalues from table3 group by colname),
-      (select distinct colname as colname2, typeof(val) as type from table3 group by colname)
-where colname1=colname2;
-
---Check if kfold is empty
-var 'kfoldisempty' from select case when (select '%{kfold}')='' then 0 else 1 end;
-emptyfield '%{kfold}';
-
---Check if kfold is integer
-var 'kfoldtype' from select case when (select typeof(tonumber('%{kfold}'))) = 'integer' then 1 else 0 end;
-vartypebucket '%{kfoldtype}';
-
---Check the type of the "kfold" -- TODO SOFIA:  If the result of the query is 0 then wrong type "kfold"
---select typeof(tonumber('%{kfold}')) ='integer' as typeint;
-
--- Check the type of "classname"  -- TODO SOFIA:  If the result of the query is 0 then wrong type "classname"
--- var 'classnametype' from select case when (select categorical from defaultDB.local_variablesdatatype_Existing where colname1 = '%{classname}') = 'Yes' then 1 else 0 end;
--- varclassnametype '%{classnametype}';
------------------------------------------------------------------------------------------------------------------
--- Add two new columns: "idofset","classval"
--- "idofset" is used in order to split dataset in training and test datasets.
-drop table if exists defaultDB.local_inputTBL;
-create table defaultDB.local_inputTBL as
-select h.rid as rid, h.colname as colname, h.val as val , kfold.idofset as idofset,  c.val as classval
-from table3  as h,
-  (sklearnkfold splits:%{kfold} select distinct rid from table3) as kfold,
-  (select rid, val from table3 where colname = var('classname')) as c
-where h.rid = c.rid and kfold.rid =h.rid;
-
-
---Check that initial dataset conatins more than "min_k_data_aggregation" rows
-var 'containsmorethantheminimumrecords' select count(distinct(rid))>= %{min_k_data_aggregation} from defaultDB.local_inputTBL then 1 else 0;  -- TODO SOfia: Prepei na epistrefei 1 gia na sunexizei to nosokomeio
-varminimumrec '${containsmorethantheminimumrecords}';
-
-select * from defaultDB.local_variablesdatatype_Existing;
+select * from defaultDB.metadatatbl;

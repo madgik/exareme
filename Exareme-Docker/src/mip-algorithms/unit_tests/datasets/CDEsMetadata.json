@@ -1,5 +1,67 @@
 {
 	"variables": [{
+			"code": "Sepal_Length",
+			"description": "",
+			"label": "Left Hippocampus",
+			"methodology": "Testing",
+			"sql_type": "real",
+			"type": "",
+			"categorical": false,
+			"units": "cm3"
+		},
+		{
+			"code": "Sepal_Width",
+			"description": "",
+			"label": "Left Hippocampus",
+			"methodology": "Testing",
+			"sql_type": "real",
+			"type": "",
+			"categorical": false,
+			"units": "cm3"
+		},
+		{
+			"code": "Petal_Length",
+			"description": "",
+			"label": "Left Hippocampus",
+			"methodology": "Testing_Kmeans",
+			"sql_type": "real",
+			"type": "",
+			"categorical": false,
+			"units": "cm3"
+		},
+		{
+			"code": "Petal_Width",
+			"description": "",
+			"label": "Left Hippocampus",
+			"methodology": "Testing_Kmeans",
+			"sql_type": "real",
+			"type": "",
+			"categorical": false,
+			"units": "cm3"
+		},
+		{
+			"code": "Species",
+			"description": "",
+			"enumerations": [{
+					"code": "setosa",
+					"label": "setosa"
+				},
+				{
+					"code": "versicolor", 
+					"label": "versicolor"
+				}, 
+				{
+					"code": "virginica",
+					"label": "virginica"
+				}
+			],
+			"label": "Species",
+			"methodology": "Testing",
+			"sql_type": "text",
+			"type": "polynominal",
+			"categorical": true
+	},
+	{
 			"code": "column1",
 			"description": "",
 			"label": "pp",
@@ -295,6 +357,13 @@
 				}, {
 					"code": "ppmi",
 					"label": "PPMI"
+				},{
+					"code": "playtennis",
+					"label": "playtennis"
+				}
+				,{
+					"code": "Iris",
+					"label": "Iris"
 				}
 			],
 			"label": "Dataset",
