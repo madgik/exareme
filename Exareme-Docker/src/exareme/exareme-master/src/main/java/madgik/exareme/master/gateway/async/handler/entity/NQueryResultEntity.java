@@ -19,10 +19,7 @@ import java.nio.channels.ReadableByteChannel;
 public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncContentProducer {
 
     private static final Logger log = Logger.getLogger(NQueryResultEntity.class);
-
-    public boolean containsIgnoreCase(String str, String subString) {
-        return str.toLowerCase().contains(subString.toLowerCase());
-    }
+    
     private final AdpDBClientQueryStatus queryStatus;
     private final ByteBuffer buffer;
     private ReadableByteChannel channel;
