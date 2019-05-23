@@ -1700,7 +1700,7 @@
 			"label": "Diagnosis"
 		}, {
 			"variables": [{
-					"isCategorical": true,
+					"isCategorical": false,
 					"minValue": 0,
 					"code": "minimentalstate",
 					"maxValue": 30,
@@ -2029,8 +2029,6 @@
 					"type": "polynominal",
 					"methodology": "mip-cde"
 				}, {
-					"isCategorical": false,
-					"minValue": 0,
 					"code": "subjectage",
 					"description": "Exact age of the subject, for datasets that allow such precision.",
 					"label": "Exact age",
@@ -2040,7 +2038,7 @@
 					"minValue": 0,
 					"sql_type": "integer",
 					"type": "",
-					"categorical": false,
+					"isCategorical": false,
 					"units": "months"
 				}, {
 					"isCategorical": false,
