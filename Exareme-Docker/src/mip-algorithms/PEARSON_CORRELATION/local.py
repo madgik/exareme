@@ -10,7 +10,7 @@ import numpy.ma as ma
 
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))) + '/utils/')
 
-from algorithm_utils import query_with_privacy
+from algorithm_utils import query_with_privacy, ExaremeError
 from pearsonc_lib import PearsonCorrelationLocalDT
 
 
@@ -35,7 +35,7 @@ def pearsonr_local(local_in):
     # Unpack data
     X, Y, schema_X, schema_Y = local_in
     n_obs, n_cols = len(X), len(X[0])
-    assert (len(Y), len(Y[0])) == (n_obs, n_cols), 'Matrices X and Y should have the same size'
+    assert (len(Y), len(Y[0])) == (n_obs, n_cols), 'Matrices X and Y should have the same size.'
 
     # Create output schema forming x, y variable pairs
     schema_out = [None] * (n_cols)
@@ -79,6 +79,10 @@ def main():
     args, unknown = parser.parse_known_args()
     query = args.db_query
     fname_loc_db = path.abspath(args.input_local_DB)
+    if True:
+        raise ExaremeError('Field X must be non empty.')
+    if args.X == '':
+        raise ExaremeError('Field X must be non empty.')
     args_X = list(
             args.X
                 .replace(' ', '')

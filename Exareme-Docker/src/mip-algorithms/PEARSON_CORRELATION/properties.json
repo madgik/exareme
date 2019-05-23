@@ -1,50 +1,50 @@
 {
-  "name": "PEARSON_CORRELATION",
-  "desc": "Calculates a Pearson correlation coefficient and the p-value for testing non-correlation.",
-  "type": "python_local_global",
-  "status": "enabled",
-  "parameters": [
-    {
-      "name": "X",
-      "desc": "A list of variables from database. The variable should be Real, Float, Integer. It cannot be empty.",
-      "type": "column",
-      "columnValuesSQLType": "real, integer",
-      "columnValuesIsCategorical": "false",
-      "columnValuesNumOfEnumerations": "",
-      "value": "leftaccumbensarea, leftacgganteriorcingulategyrus, leftainsanteriorinsula",
-      "valueNotBlank": true,
-      "valueMultiple": true,
-      "valueType": "string"
-    },
-    {
-      "name": "Y",
-      "desc": "A list of variables from database. The variable should be Real, Float, Integer. It can be empty.",
-      "type": "column",
-      "columnValuesSQLType": "real, integer",
-      "columnValuesIsCategorical": "false",
-      "columnValuesNumOfEnumerations": "",
-      "value": "rightaccumbensarea, rightacgganteriorcingulategyrus, rightainsanteriorinsula",
-      "valueNotBlank": false,
-      "valueMultiple": true,
-      "valueType": "string"
-    },
-    {
-      "name": "dataset",
-      "desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty",
-      "type": "dataset",
-      "value": "adni",
-      "valueNotBlank": true,
-      "valueMultiple": true,
-      "valueType": "string"
-    },
-    {
-      "name": "filter",
-      "desc": "",
-      "type": "filter",
-      "value": "",
-      "valueNotBlank": false,
-      "valueMultiple": true,
-      "valueType": "string"
-    }
-  ]
+    "name": "PEARSON_CORRELATION",
+    "desc": "Calculates a Pearson correlation coefficient and the p-value for testing non-correlation.",
+    "type": "python_local_global",
+    "status": "enabled",
+    "parameters": [
+        {
+            "name": "X",
+            "desc": "A list of variables from database. The variable should be Real, Float, Integer. It cannot be empty.",
+            "type": "column",
+            "columnValuesSQLType": "real, integer",
+            "columnValuesIsCategorical": "false",
+            "columnValuesNumOfEnumerations": "",
+            "value": "leftaccumbensarea, leftacgganteriorcingulategyrus, leftainsanteriorinsula",
+            "valueNotBlank": true,
+            "valueMultiple": true,
+            "valueType": "string"
+        },
+        {
+            "name": "Y",
+            "desc": "A list of variables from database. The variable should be Real, Float, Integer. It can be empty.",
+            "type": "column",
+            "columnValuesSQLType": "real, integer",
+            "columnValuesIsCategorical": "false",
+            "columnValuesNumOfEnumerations": "",
+            "value": "rightaccumbensarea, rightacgganteriorcingulategyrus, rightainsanteriorinsula",
+            "valueNotBlank": false,
+            "valueMultiple": true,
+            "valueType": "string"
+        },
+        {
+            "name": "dataset",
+            "desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty",
+            "type": "dataset",
+            "value": "adni",
+            "valueNotBlank": true,
+            "valueMultiple": true,
+            "valueType": "string"
+        },
+        {
+            "name": "filter",
+            "desc": "",
+            "type": "filter",
+            "value": "",
+            "valueNotBlank": false,
+            "valueMultiple": true,
+            "valueType": "string"
+        }
+    ]
 }

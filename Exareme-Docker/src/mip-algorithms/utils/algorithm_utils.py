@@ -1,3 +1,6 @@
+from __future__ import division
+from __future__ import print_function
+
 import sqlite3
 import pickle
 import codecs
@@ -28,7 +31,7 @@ class TransferData():
         return result
 
     def transfer(self):
-        print codecs.encode(pickle.dumps(self), 'ascii')
+        print(codecs.encode(pickle.dumps(self), 'ascii'))
 
 
 def query_with_privacy(fname_db, query):
@@ -54,7 +57,7 @@ def get_parameters(argv):
 
 
 def set_algorithms_output_data(data):
-    print data
+    print(data)
 
 
 class PrivacyError(Exception):

@@ -77,8 +77,9 @@ def pearsonr_global(global_in):
     try:
         global_out = json.dumps({'result': result_list}, allow_nan=False)
     except ValueError:
-        raise ExaremeError('Result contains NaNs.')
-    return global_out
+        print('Result contains NaNs.')
+    else:
+        return global_out
 
 
 def main():
