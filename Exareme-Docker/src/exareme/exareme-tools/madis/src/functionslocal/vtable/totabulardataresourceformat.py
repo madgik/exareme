@@ -41,13 +41,13 @@ class totabulardataresourceformat(functions.vtable.vtbase.VT):
         for myrow in c:
             myresult += "["
             for i in xrange(len(myrow)):
-                print str(typeslist[i])
+                # print str(typeslist[i])
                 if str(typeslist[i]) != 'text':
-                    if myrow[i] is not None:
-                        myresult +=str(myrow[i])+','
+                    # if myrow[i] is not None: --LR MODIFICATION
+                    myresult +=str(myrow[i])+','
                 else:
-                    if myrow[i] is not None:
-                        myresult +="\"" + str(myrow[i])+"\""+','
+                    # if myrow[i] is not None: --LR MODIFICATION
+                    myresult +="\"" + str(myrow[i])+"\""+','
             myresult = myresult[:-1]+ "],"
         myresult = myresult[:-1]+ "], \"schema\":  { \"fields\": ["
 

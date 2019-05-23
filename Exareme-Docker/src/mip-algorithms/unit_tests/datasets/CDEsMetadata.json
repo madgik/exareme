@@ -1,5 +1,21 @@
 {
 	"variables": [{
+			"code": "neurogenerativescategories",
+			"description": "",
+			"enumerations": [{
+					"code": "AD",
+					"label": "AD"
+				}, {
+					"code": "MCI",
+					"label": "MCI"
+				}
+			],
+			"label": "neurogenerativescategories",
+			"methodology": "Testing",
+			"sql_type": "text",
+			"type": "binominal",
+			"isCategorical": true
+		},{
 			"code": "ANOVA_pp",
 			"description": "",
 			"minValue": 0,
@@ -2013,16 +2029,17 @@
 					"type": "polynominal",
 					"methodology": "mip-cde"
 				}, {
-					"isCategorical": false,
-					"minValue": 0,
 					"code": "subjectage",
+					"description": "Exact age of the subject, for datasets that allow such precision.",
+					"label": "Exact age",
+					"length": 2,
 					"maxValue": 11,
-					"sql_type": "real",
-					"description": "Exact age of the subject  for datasets that allow such precision.",
-					"label": "SubjectAge",
-					"units": "months",
-					"type": "real",
-					"methodology": "mip-cde"
+					"methodology": "mip-cde",
+					"minValue": 0,
+					"sql_type": "integer",
+					"type": "",
+					"isCategorical": false,
+					"units": "months"
 				}, {
 					"isCategorical": false,
 					"minValue": 0,
