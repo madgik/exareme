@@ -1,54 +1,58 @@
 {
-	"name": "LINEAR_REGRESSION",
-	"desc": "LINEAR REGRESSION",
-	"type": "multiple_local_global",
+	"name": "ANOVA",
+	"desc": "ANOVA",
+	"type": "iterative",
 	"parameters": [{
+			"name": "iterations_max_number",
+			"desc": "",
+			"type": "other",
+			"value": "",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "integer"
+		}, {
+			"name": "iterations_condition_query_provided",
+			"desc": "",
+			"type": "other",
+			"value": "true",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "string"
+		}, {
 			"name": "x",
 			"desc": "The right part of the linear predictor function, that contains the indepedent variables in an equation supporting the symbols +, :, * , R notation.The independent variables are variables of the input dataset.",
 			"type": "formula",
-			"columnValuesSQLType": "real,integer,text",
-			"columnValuesIsCategorical": "",
+			"columnValuesSQLType": "",
+			"columnValuesIsCategorical": "true",
 			"columnValuesNumOfEnumerations": "",
-			"value": "alzheimerbroadcategory+righthippocampus+gender",
+			"value": "ANOVA_var_I1*ANOVA_var_I2*ANOVA_var_I3",
 			"valueNotBlank": true,
 			"valueMultiple": true,
 			"valueType": "string"
-		},
-		 {
+		}, {
 			"name": "y",
 			"desc": "The left part of the linear predictor function, that contains the dependent variable.The dependent variable is a variable of the input dataset.",
 			"type": "column",
 			"columnValuesSQLType": "real,integer",
 			"columnValuesIsCategorical": "",
 			"columnValuesNumOfEnumerations": "",
-			"value": "lefthippocampus",
+			"value": "ANOVA_var_D",
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "string"
-		},
-    {
-      "name": "referencevalues",
-      "desc": "Reference values ",
-      "type": "other",
-      "value": "[{\"name\":\"alzheimerbroadcategory\",\"val\":\"Other\"}]",
-      "valueNotBlank": true,
-      "valueMultiple": false,
-      "valueType": "json"
-    },
-		{
-      "name": "encodingparameter",
-      "desc": "Encoding parameter. It can be one of the following:dummycoding,sumscoding,simplecoding",
-      "type": "other",
-      "value": "dummycoding",
-      "valueNotBlank": true,
-      "valueMultiple": false,
-      "valueType": "string"
-    },
-     {
+		}, {
+			"name": "type",
+			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty.",
+			"type": "other",
+			"value": "2",
+			"valueNotBlank": true,
+			"valueMultiple": true,
+			"valueType": "string"
+		}, {
 			"name": "dataset",
 			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty.",
 			"type": "dataset",
-			"value": "desd-synthdata",
+			"value": "ANOVA_Balanced_with_inter_V1V2",
 			"valueNotBlank": true,
 			"valueMultiple": true,
 			"valueType": "string"
@@ -59,6 +63,15 @@
 			"value": "",
 			"valueNotBlank": false,
 			"valueMultiple": true,
+			"valueType": "string"
+		}, {
+
+			"name": "outputformat",
+			"desc": "pfa",
+			"type": "other",
+			"value": "pfa",
+			"valueNotBlank": true,
+			"valueMultiple": false,
 			"valueType": "string"
 		}
 	]
