@@ -3,9 +3,9 @@
 ------------------------------------------------------------------------------
 --Test 1
 -- drop table if exists inputdata;
-create table inputdata as
-   select *
-   from (file header:t '/home/eleni/Desktop/HBP/exareme/Exareme-Docker/src/mip-algorithms/unit_tests/datasets/CSVs/desd-synthdata.csv');
+--create table inputdata as
+--   select *
+--   from (file header:t '/home/eleni/Desktop/HBP/exareme/Exareme-Docker/src/mip-algorithms/unit_tests/datasets/CSVs/desd-synthdata.csv');
 --
 -- var 'x' 'alzheimerbroadcategory' ;
 -- var 'y' 'lefthippocampus';
