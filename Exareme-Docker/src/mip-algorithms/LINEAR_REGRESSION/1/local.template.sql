@@ -57,8 +57,8 @@ var 'metadata' from select create_complex_query("","  insert into  defaultDB.par
                                                       select code,categorical,enumerations from
                                                       (select '?' as code, group_concat(vals) as enumerations
                                                       from (select distinct ? as vals from defaultDB.localinputtblflat where '?' in
-                                                          (select code from metadata where code='?' and categorical=1))),
-                                                      (select code as code1,categorical from metadata) where code=code1
+                                                          (select code from metadata where code='?' and isCategorical=1))),
+                                                      (select code as code1,isCategorical as categorical from metadata) where code=code1
                                                        ;", "" , "" , '%{xnames},%{y}');
 %{metadata};
 
