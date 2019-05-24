@@ -42,8 +42,8 @@ def logregr_local_init(local_in):
 def main():
     # Parse arguments
     parser = ArgumentParser()
-    parser.add_argument('-X', required=True, help='Variable names in X, comma separated.')
-    parser.add_argument('-Y', required=True, help='Variable names in Y, comma separated.')
+    parser.add_argument('-x', required=True, help='Variable names in x, comma separated.')
+    parser.add_argument('-y', required=True, help='Variable names in y, comma separated.')
     parser.add_argument('-cur_state_pkl', required=True, help='Path to the pickle file holding the current state.')
     parser.add_argument('-input_local_DB', required=True, help='Path to local db.')
     parser.add_argument('-db_query', required=True, help='Query to be executed on local db.')
@@ -52,11 +52,11 @@ def main():
     fname_loc_db = path.abspath(args.input_local_DB)
     query = args.db_query
     schema_X = list(set(
-            args.X
+            args.x
                 .replace(' ', '')
                 .split(',')
     ))
-    schema_Y = args.Y.strip()
+    schema_Y = args.y.strip()
 
     # Get data from local DB
     schema, data = query_with_privacy(fname_db=fname_loc_db, query=query)

@@ -27,7 +27,7 @@ def logregr_global_final(global_state, global_in):
     schema_X = global_state['schema_X']
     schema_Y = global_state['schema_Y']
     # Unpack global input
-    ll, grad, hess, y_sum, y_sqsum, ssres = global_in.get_data()
+    ll, grad, hess, y_sum, y_sqsum, ssres, posneg, FP_rate_frac, TP_rate_frac = global_in.get_data()
 
     # Output summary
     # stderr
@@ -41,7 +41,7 @@ def logregr_global_final(global_state, global_in):
     # p-values
     z_to_p = lambda z: st.norm.sf(abs(z)) * 2
     p_values = z_to_p(z_scores)
-    # Confidence intervals
+    # Confidence intervals for 95%
     lci = np.array(
             [st.norm.ppf(0.025, loc=coeff[i], scale=stderr[i]) for i in range(len(coeff))]
     )
@@ -59,11 +59,28 @@ def logregr_global_final(global_state, global_in):
     # BIC
     bic = np.log(n_obs) * n_cols - 2 * ll
     # R^2 etc.
-    sstot = y_sqsum - n_obs * y_mean * y_mean
+    sstot = n_obs * y_mean * (1 - y_mean) # Using binomial variable variance formula
     r2 = 1 - ssres / sstot
     r2_adj = 1 - (1 - r2) * (n_obs - 1) / (n_obs - n_cols - 1)
-    r2_mcf = 1.0 - ll / ll0
+    r2_mcf = 1 - ll / ll0
     r2_cs = 1 - np.exp(-ll0 * 2 * r2_mcf / n_obs)
+    # Confusion matrix etc.
+    TP, TN, FP, FN = posneg['TP'], posneg['TN'], posneg['FP'], posneg['FN']
+    confusion_mat = [[TP, FP], [FN, TP]]
+    accuracy = (TP + TN) / n_obs
+    precision = TP / (TP + FP)
+    recall = TP / (TP + FN)
+    F1 = 2 * (precision * recall) / (precision + recall)
+    # ROC curve
+    FP_rate = [fpr[0] / fpr[1] for fpr in FP_rate_frac]
+    TP_rate = [tpr[0] / tpr[1] for tpr in TP_rate_frac]
+    AUC = 0.0
+    for t in range(1, len(FP_rate)):
+        AUC += 0.5 * (FP_rate[t] - FP_rate[t - 1]) * (TP_rate[t] + TP_rate[t - 1])
+    gini = 2 * AUC - 1
+    # F-statistic
+    F_stat = ((sstot - ssres) / n_cols) / (ssres / (n_obs - n_cols - 1))
+    # raise ValueError(sstot, ssres, n_obs, n_cols, F_stat, y_mean, y_sqsum, y_sum)
 
     # Write output to JSON
     result = {
@@ -89,7 +106,16 @@ def logregr_global_final(global_state, global_in):
             'R^2'                        : r2,
             'Adjusted R^2'               : r2_adj,
             'McFadden pseudo-R^2'        : r2_mcf,
-            'Cox-Snell pseudo-R^2'       : r2_cs
+            'Cox-Snell pseudo-R^2'       : r2_cs,
+            'Confusion matrix'           : confusion_mat,
+            'Accuracy'                   : accuracy,
+            'Precision'                  : precision,
+            'Recall'                     : recall,
+            'F1 score'                   : F1,
+            'ROC coordinates'            : list(zip(FP_rate, TP_rate)),
+            'AUC'                        : AUC,
+            'Gini coefficient'           : gini,
+            'F statistic'                : F_stat
         }
     }
     try:

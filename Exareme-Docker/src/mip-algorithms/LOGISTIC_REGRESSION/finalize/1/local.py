@@ -44,23 +44,51 @@ def logregr_local_final(local_state, local_in):
     # Log-likelihood
     ls1, ls2 = np.log(s), np.log(1 - s)
     ll = np.dot(Y, ls1) + np.dot(1 - Y, ls2)
-    # sum Y, sum Y**2, SS_res
+    # sum Y, sum Y**2, ssres (residual sum of squares), sstot (total sum of squares)
     y_sum = np.sum(Y)
-    y_sqsum = np.sum(np.dot(Y, Y))
-    yhat = [predict(x, coeff) for x in X]
-    ssres = np.sum(np.dot(Y - yhat, Y - yhat))
+    y_sqsum = y_sum # Because Y takes values in {0, 1}
+    yhat = np.array([predict(x, coeff) for x in X])
+    ssres = np.dot(Y - yhat, Y - yhat)
+    # True positives, false positives, etc.
+    posneg = {'TP': 0, 'FP': 0, 'TN': 0, 'FN': 0}
+    for yi, yhi in zip(Y, yhat):
+        if yi == yhi == 1:
+            posneg['TP'] += 1
+        elif yi == 0 and yhi == 1:
+            posneg['FP'] += 1
+        elif yi == 1 and yhi == 0:
+            posneg['FN'] += 1
+        elif yi == yhi == 0:
+            posneg['TN'] += 1
+    # ROC curve
+    FP_rate_frac = []
+    TP_rate_frac = []
+    for thres in np.linspace(1.0, 0.0, num=101):
+        TP, TN, FP, FN = 0, 0, 0, 0
+        yhat = np.array([predict(x, coeff, threshold=thres) for x in X])
+        for yi, yhi in zip(Y, yhat):
+            if yi == yhi == 1:
+                TP += 1
+            elif yi == 0 and yhi == 1:
+                FP += 1
+            elif yi == 1 and yhi == 0:
+                FN += 1
+            elif yi == yhi == 0:
+                TN += 1
+        FP_rate_frac.append((FP, TN + FP))
+        TP_rate_frac.append((TP, TP + FN))
+
 
     # Pack state and results
-    local_out = LogRegrFinal_Loc2Glob_TD(ll, grad, hess, y_sum, y_sqsum, ssres)
+    local_out = LogRegrFinal_Loc2Glob_TD(ll, grad, hess, y_sum, y_sqsum, ssres, posneg, FP_rate_frac, TP_rate_frac)
     return local_out
 
 
-def predict(x, coeff, threshold=0.5):  # TODO Verify
+def predict(x, coeff, threshold=0.5):  # TODO vectorize
     prob = expit(
             np.dot(x, coeff)
     )
-    yhat = 1 if prob >= threshold else 0
-    return yhat
+    return 1 if prob >= threshold else 0
 
 
 def main():
