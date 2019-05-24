@@ -18,9 +18,7 @@ class TransferData():
     def load(cls, inputDB):
         conn = sqlite3.connect(inputDB)
         cur = conn.cursor()
-
         cur.execute('SELECT results FROM transfer')
-
         first = True
         for row in cur:
             if first:

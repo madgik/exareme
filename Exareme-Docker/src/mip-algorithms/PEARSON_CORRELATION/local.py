@@ -72,17 +72,15 @@ def pearsonr_local(local_in):
 def main():
     # Parse arguments
     parser = ArgumentParser()
-    parser.add_argument('-X', required=True, help='Variable names in X, comma separated.')
-    parser.add_argument('-Y', required=True, help='Variable names in Y, comma separated.')
+    parser.add_argument('-x', required=True, help='Variable names in x, comma separated.')
+    parser.add_argument('-y', required=True, help='Variable names in y, comma separated.')
     parser.add_argument('-input_local_DB', required=True, help='Path to local db.')
     parser.add_argument('-db_query', required=True, help='Query to be executed on local db.')
     args, unknown = parser.parse_known_args()
     query = args.db_query
     fname_loc_db = path.abspath(args.input_local_DB)
-    if True:
-        raise ExaremeError('Field X must be non empty.')
     if args.X == '':
-        raise ExaremeError('Field X must be non empty.')
+        raise ExaremeError('Field x must be non empty.')
     args_X = list(
             args.X
                 .replace(' ', '')
