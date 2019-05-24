@@ -8,12 +8,12 @@
 			"name": "dataset",
 			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed.",
 			"type": "dataset",
-			"value": "eleni",
+			"value": "playtennis",
 			"valueNotBlank": true,
 			"valueMultiple": true,
 			"valueType": "string"
 		}, {
-			"name": "columns",
+			"name": "x",
 			"desc": "",
 			"type": "column",
 			"columnValuesSQLType": "",
@@ -24,8 +24,8 @@
 			"valueMultiple": true,
 			"valueType": "string"
 		}, {
-			"name": "classname",
-			"desc": "",
+			"name": "y",
+			"desc": "classname",
 			"type": "column",
 			"columnValuesSQLType": "",
 			"columnValuesIsCategorical": "",

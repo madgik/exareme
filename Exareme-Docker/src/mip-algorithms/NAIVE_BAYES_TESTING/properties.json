@@ -12,7 +12,8 @@
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "integer"
-		}, {
+		},
+			{
 			"name": "model",
 			"desc": "",
 			"type": "other",
@@ -25,6 +26,28 @@
 			"desc": "",
 			"type": "other",
 			"value": "",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "string"
+		}, {
+			"name": "x",
+			"desc": "",
+			"type": "column",
+			"columnValuesSQLType": "",
+			"columnValuesIsCategorical": "",
+			"columnValuesNumOfEnumerations": "",
+			"value": "outlook,temperature,humidity,windy",
+			"valueNotBlank": true,
+			"valueMultiple": true,
+			"valueType": "string"
+		}, {
+			"name": "y",
+			"desc": "classname",
+			"type": "column",
+			"columnValuesSQLType": "",
+			"columnValuesIsCategorical": "",
+			"columnValuesNumOfEnumerations": "",
+			"value": "play",
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "string"

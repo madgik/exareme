@@ -1,4 +1,4 @@
-requirevars 'input_global_tbl' 'defaultDB' 'iterationNumber';
+requirevars 'input_global_tbl' 'defaultDB' ;
 attach database '%{defaultDB}' as defaultDB;
 
 --var 'input_global_tbl' ' defaultDB.local_confusionmatrix';
@@ -17,7 +17,6 @@ select  iterationNumber, "confusion table", actualclass, predictedclass, null,nu
 --from (rconfusionmatrixtable select predictedclass,actualclass,val,noclasses
 --                            from defaultDB.global_oneconfusionmatrix,
 --							(select count(distinct predictedclass) as noclasses from defaultDB.global_oneconfusionmatrix) order by predictedclass);
-
 --select * from defaultDB.global_oneconfusionmatrix;
 
 select tabletojson(actualclass,predictedclass,val, "actualclass,predictedclass,val")  as componentresult

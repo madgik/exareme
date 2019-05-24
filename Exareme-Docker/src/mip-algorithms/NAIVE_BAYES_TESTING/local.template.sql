@@ -1,56 +1,58 @@
-requirevars  'defaultDB' 'model'  'iterationNumber' ;
+requirevars  'defaultDB' 'model' 'x' 'y' 'iterationNumber' ;
 attach database '%{defaultDB}' as defaultDB;
 
---var 'iterationNumber' 0;
---var 'model' from select tabletojson(colname,val,classval,average,sigma,probability, "colname,val,classval,average,sigma,probability")  as model from defaultdb.global_probabilities;
 
-var 'classname' from select val from defaultDB.local_inputvariables where  variablename = 'classname';
+-- var 'model'  '';
+-- var 'iterationNumber' 0;
+
+-- var 'model' from select tabletojson(colname,val,classval,average,sigma,probability, "colname,val,classval,average,sigma,probability")  as model from defaultdb.global_probabilities;
+-------------------
 
 drop table if exists defaultDB.local_probabilities;
-create table defaultDB.local_probabilities as  select jsontotable('%{model}');
+create table defaultDB.local_probabilities as  select colname,val,classval,average,sigma,probability from (select jsontotable('%{model}'));
 
 drop table if exists defaultDB.testingset;
 create table defaultDB.testingset as
-select rid,colname,val,idofset from defaultDB.local_inputTBL
-where idofset in (select %{iterationNumber});
+select rowid as rid ,%{x},%{y} from defaultdb.localinputtblflat where idofset in (select %{iterationNumber});
 
-var 'file' from select  'Testingset'||%{iterationNumber}||'.csv';
-output '%{file}' header:t fromeav select rid,colname,val from defaultDB.testingset;
+--var 'file' from select  'Testingset'||%{iterationNumber}||'.csv';
+--output '%{file}' header:t  select * from defaultDB.testingset;
 
 drop table if exists defaultDB.tempprobabilities;
-create table defaultDB.tempprobabilities as
---For the non categorical values: Compute probability density function for the normal distribution
-select rid,testing_table.colname,testing_table.val, probabilities_table.classval, normpdf(testing_table.val,average,sigma) as probability
-from defaultDB.testingset as testing_table ,defaultDB.local_probabilities as probabilities_table
-where probabilities_table.colname = testing_table.colname
-and probabilities_table.colname <> var('classname')
-and probabilities_table.colname in (select colname1 from defaultDB.local_variablesdatatype_Existing where categorical <> 'Yes')
-union
---For the categorical values:
-select testing_table.rid as rid ,testing_table.colname as colname ,testing_table.val as val, classval, probability
-from (select * from defaultDB.testingset
-               where colname <> var('classname')
-			   and   colname in (select colname1
-			                     from defaultDB.local_variablesdatatype_Existing
-								 where categorical ='Yes')) as testing_table,
-	defaultDB.local_probabilities as probabilities_table
-where probabilities_table.colname = testing_table.colname and probabilities_table.val = testing_table.val
-union
---For the colname="classname"
-select rid,colname,val,classval,probability from
-((select distinct rid from defaultDB.testingset)
- cross join
-(select * from defaultDB.local_probabilities as probabilities_table where colname = var('classname')));
+create table defaultDB.tempprobabilities (rid,colname,val,classval,probability) ;
+--Compute probability density function for the normal distribution (For the non categorical values)
 
---select * from defaultDB.tempprobabilities order by rid, classval;
+var 'computeprobabilities' from select create_complex_query("","
+  insert into defaultDB.tempprobabilities
+  select rid, '?' as colname, ? as val, classval, normpdf(?,average,sigma) as probability
+  from defaultDB.testingset ,defaultDB.local_probabilities
+  where colname in (select code from defaultDB.localmetadatatbl where categorical = 0) and colname ='?'; ", "" , "" , '%{x}');
+%{computeprobabilities};
+--
+--For the categorical values
+var 'computeprobabilities' from select create_complex_query("","
+insert into defaultDB.tempprobabilities
+select rid, colname, ? as val ,classval, probability from
+(select rid, ?, %{y} from defaultDB.testingset),
+(select colname,val,classval, probability from defaultDB.local_probabilities where colname ='?')
+where colname in (select code from defaultDB.localmetadatatbl where categorical = 1) and colname='?' and val = ? order by rid;", "" , "" , '%{x}');
+%{computeprobabilities};
+
+--For the classname
+insert into defaultDB.tempprobabilities
+select rid,colname,val,classval,probability from
+(select rid from defaultDB.testingset),
+(select * from defaultDB.local_probabilities as probabilities_table where colname = '%{y}');
+
 
 drop table if exists defaultDB.tempposteriorprobability; -- Mono ton arithmith ypologizw. Arkei gia na kanw thn sugkrish
 create table defaultDB.tempposteriorprobability as
-select rid,classval,FMULT(probability) as probability
+select rid,classval as classval,FMULT(probability) as probability
 from defaultDB.tempprobabilities
 group by rid,classval;
 
-drop table if exists defaultDB.posteriorprobability; -- Mono ton arithmith ypologizw. Arkei gia na kanw thn sugkrish
+
+drop table if exists defaultDB.posteriorprobability; --Normalize results
 create table defaultDB.posteriorprobability as
 select rid,classval,probability/totalprobability as probability
 from defaultDB.tempposteriorprobability,
@@ -65,21 +67,21 @@ drop table if exists defaultDB.local_predictions;
 create table defaultDB.local_predictions as
 select %{iterationNumber}, testingtable.val as actualclass, bayesnaiveresults.classval as predictedclass --, bayesnaiveresults.rid as rid
 from (select rid,classval,max(probability) from defaultDB.posteriorprobability group by rid) as bayesnaiveresults,
-	 (select * from defaultDB.testingset where colname = var('classname')) as testingtable
+	 (select rid, %{y} as val from defaultDB.testingset ) as testingtable
 where bayesnaiveresults.rid=testingtable.rid;
 
 
 drop table if exists defaultDB.local_tempconfusionmatrix;
 create table defaultDB.local_tempconfusionmatrix as
 select %{iterationNumber} as iterationNumber , val1 as actualclass,val2 as predictedclass, 0 as val from
-(select distinct val as val1 from defaultDB.local_probabilities where colname = var('classname')),
-(select distinct val as val2 from defaultDB.local_probabilities where colname = var('classname'));
+(select distinct val as val1 from defaultDB.local_probabilities where colname ='%{y}'),
+(select distinct val as val2 from defaultDB.local_probabilities where colname = '%{y}');
 
 insert into defaultDB.local_tempconfusionmatrix
 select %{iterationNumber} as iterationNumber,actualclass,predictedclass,count(*) as val
 from ( select bayesnaiveresults.rid,testingtable.val as actualclass, bayesnaiveresults.classval as predictedclass, 1 as val
        from (select rid,classval,max(probability) from defaultDB.posteriorprobability group by rid) as bayesnaiveresults,
-		    (select * from defaultDB.testingset where colname = var('classname')) as testingtable
+		    (select rid, %{y} as val from defaultDB.testingset ) as testingtable
        where bayesnaiveresults.rid=testingtable.rid)
 group by actualclass,predictedclass;
 

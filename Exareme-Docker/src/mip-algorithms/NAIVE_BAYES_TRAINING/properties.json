@@ -6,7 +6,7 @@
 	"vtype": "",
 	"parameters": [{
 			"name": "iterationNumber",
-			"desc": "",
+			"desc": "The iterationNumber shows the id of the testing dataset.",
 			"type": "other",
 			"value": "0",
 			"valueNotBlank": true,
@@ -28,6 +28,30 @@
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "string"
-		}
+		},
+		{
+			"name": "x",
+			"desc": "",
+			"type": "column",
+			"columnValuesSQLType": "",
+			"columnValuesIsCategorical": "",
+			"columnValuesNumOfEnumerations": "",
+			"value": "outlook,temperature,humidity,windy",
+			"valueNotBlank": true,
+			"valueMultiple": true,
+			"valueType": "string"
+		},
+		{
+		 "name": "y",
+		 "desc": "classname",
+		 "type": "column",
+		 "columnValuesSQLType": "",
+		 "columnValuesIsCategorical": "",
+		 "columnValuesNumOfEnumerations": "",
+		 "value": "play",
+		 "valueNotBlank": true,
+		 "valueMultiple": false,
+		 "valueType": "string"
+	 }
 	]
 }

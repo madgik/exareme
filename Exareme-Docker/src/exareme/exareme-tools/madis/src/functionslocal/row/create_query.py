@@ -76,6 +76,9 @@ def create_complex_query(*args):
 
 
     columnnames = args[4]
+    if columnnames =='':
+        columnnames = "null"
+
     mycolumns = columnnames.split(",");
 
     lencolumns =  len(mycolumns);

@@ -1,17 +1,16 @@
-requirevars 'defaultDB' 'input_global_tbl' 'classname' 'dbIdentifier';
+requirevars 'defaultDB' 'input_global_tbl' 'dbIdentifier';
 
---var 'input_global_tbl' 'defaultDB.defaultDB';
+--var 'input_global_tbl' 'defaultDB.localmetadatatbl';
 
 attach database '%{defaultDB}' as defaultDB;
 
+drop table if exists defaultDB.globalmetadatatbl;
+create table defaultDB.globalmetadatatbl as
+select distinct code, categorical from %{input_global_tbl};
 
--- drop table if exists defaultDB.global_inputvariables; --contains the names of classname
--- create table defaultDB.global_inputvariables as
--- select 'classname' as variablename, '%{classname}' as val;
--
--- drop table if exists defaultDB.metadatatbl;
--- create table defaultDB.metadatatbl as
--- select distinct code, sql_type, categorical, enumerations, min, max from %{input_global_tbl};
+-- select code,categorical, group_concat(vals) as enumerations from
+-- (select code, categorical,vals from (select code, categorical, strsplitv(enumerations ,'delimiter:,') as vals
+-- from %{input_global_tbl}) group by code,vals) group by code;
 
 drop table if exists defaultDB.global_confusionmatrix;
 create table defaultDB.global_confusionmatrix (
@@ -22,5 +21,6 @@ predictedclass text,
 typestats text, --overall, by class , average
 statscolname text,
 val float);
+
 
 select jdict('dbIdentifier', '%{dbIdentifier}') as results;
