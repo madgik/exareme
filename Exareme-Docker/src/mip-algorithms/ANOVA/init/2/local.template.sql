@@ -6,6 +6,6 @@ drop table if exists defaultDB.localAnovatbl;
 create table defaultDB.localAnovatbl as select no ,formula , sst , ssregs , sse from %{prv_output_global_tbl} where tablename="globalAnovattbl";
 
 drop table if exists defaultDB.metadatatbl;
-create table defaultDB.metadatatbl as select code , enumerations from %{prv_output_global_tbl} where tablename="metadatatbl";
+create table defaultDB.metadatatbl as select code ,categorical, enumerations ,referencevalue from %{prv_output_global_tbl} where tablename="metadatatbl";
 
 select "ok";
