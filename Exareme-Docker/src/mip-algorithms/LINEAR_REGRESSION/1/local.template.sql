@@ -3,9 +3,9 @@
 ------------------------------------------------------------------------------
 --Test 1
 -- drop table if exists inputdata;
--- create table inputdata as
---    select *
---    from (file header:t '/home/eleni/Desktop/HBP/exareme/Exareme-Docker/src/mip-algorithms/unit_tests/datasets/CSVs/desd-synthdata.csv');
+create table inputdata as
+   select *
+   from (file header:t '/home/eleni/Desktop/HBP/exareme/Exareme-Docker/src/mip-algorithms/unit_tests/datasets/CSVs/desd-synthdata.csv');
 --
 -- var 'x' 'alzheimerbroadcategory' ;
 -- var 'y' 'lefthippocampus';
@@ -34,6 +34,12 @@ drop table if exists defaultDB.localinputtblflat;
 create table defaultDB.localinputtblflat as
 select %{cast_xnames}, tonumber(%{y}) as '%{y}', cast(1.0 as real) as intercept --TODO!!!!
 from inputdata where %{nullCondition};
+
+var 'privacy' from
+select privacychecking(no) from (select count(*) as no from defaultDB.localinputtblflat);
+
+
+
 
 drop table if exists defaultDB.partialmetadatatbl;
 create table defaultDB.partialmetadatatbl (code text,categorical int, enumerations text);
