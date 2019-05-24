@@ -52,6 +52,8 @@ create table defaultDB.localinputtblflat as
 select %{cast_xnames}, cast(%{y} as real) as '%{y}', cast(1.0 as real) as intercept
 from inputdata where %{nullCondition};
 
+var 'privacy' from select privacychecking(no) from (select count(*) as no from defaultDB.localinputtblflat);
+
 drop table if exists defaultDB.partialmetadatatbl;
 create table defaultDB.partialmetadatatbl (code text, enumerations text);
 var 'metadata' from select create_complex_query(""," insert into  defaultDB.partialmetadatatbl
