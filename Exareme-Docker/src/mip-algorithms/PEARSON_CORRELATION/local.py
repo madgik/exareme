@@ -82,12 +82,12 @@ def main():
     if args.X == '':
         raise ExaremeError('Field x must be non empty.')
     args_X = list(
-            args.X
+            args.x
                 .replace(' ', '')
                 .split(',')
     )
     args_Y = list(
-            args.Y
+            args.y
                 .replace(' ', '')
                 .split(',')
     )
