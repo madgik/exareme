@@ -8,10 +8,6 @@ drop table if exists defaultDB.globalmetadatatbl;
 create table defaultDB.globalmetadatatbl as
 select distinct code, categorical from %{input_global_tbl};
 
--- select code,categorical, group_concat(vals) as enumerations from
--- (select code, categorical,vals from (select code, categorical, strsplitv(enumerations ,'delimiter:,') as vals
--- from %{input_global_tbl}) group by code,vals) group by code;
-
 drop table if exists defaultDB.global_confusionmatrix;
 create table defaultDB.global_confusionmatrix (
 iterationNumber int,
