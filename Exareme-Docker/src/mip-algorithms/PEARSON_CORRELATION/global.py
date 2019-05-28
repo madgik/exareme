@@ -12,7 +12,7 @@ from argparse import ArgumentParser
 
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))) + '/utils/')
 
-from algorithm_utils import set_algorithms_output_data
+from algorithm_utils import set_algorithms_output_data, ExaremeError, P_VALUE_CUTOFF, P_VALUE_CUTOFF_STR
 from pearsonc_lib import PearsonCorrelationLocalDT
 
 
@@ -70,12 +70,16 @@ def pearsonr_global(global_in):
         result_list.append({
             'Variable pair'                  : schema_out[i],
             'Pearson correlation coefficient': r,
-            'p-value'                        : prob if prob >= 0.001 else '< 0.001',
+            'p-value'                        : prob if prob >= P_VALUE_CUTOFF else P_VALUE_CUTOFF_STR,
             'C.I. Lower'                     : ci_lo,
             'C.I. Upper'                     : ci_hi
         })
-    global_out = json.dumps({'result': result_list})
-    return global_out
+    try:
+        global_out = json.dumps({'result': result_list}, allow_nan=False)
+    except ValueError:
+        print('Result contains NaNs.')
+    else:
+        return global_out
 
 
 def main():

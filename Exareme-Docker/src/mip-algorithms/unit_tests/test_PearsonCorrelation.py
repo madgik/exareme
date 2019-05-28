@@ -5,7 +5,7 @@ import math
 
 # Required datasets: adni_9rows, adni, data_pr1, desd-synthdata
 
-endpointUrl = 'http://88.197.53.100:9090'
+endpointUrl = 'http://88.197.53.38:9090'
 
 
 def test_PearsonCorrlation_MIP_AlgoTesting_1():
@@ -23,11 +23,11 @@ def test_PearsonCorrlation_MIP_AlgoTesting_1():
 
     data = [
         {
-            "name" : "X",
+            "name" : "x",
             "value": "lefthippocampus"
         },
         {
-            "name" : "Y",
+            "name" : "y",
             "value": "righthippocampus"
         },
         {
@@ -65,11 +65,11 @@ def test_PearsonCorrlation_MIP_AlgoTesting_2():
 
     data = [
         {
-            "name" : "X",
+            "name" : "x",
             "value": "lefthippocampus"
         },
         {
-            "name" : "Y",
+            "name" : "y",
             "value": "opticchiasm"
         },
         {
@@ -107,11 +107,11 @@ def test_PearsonCorrlation_MIP_AlgoTesting_2p1():
 
     data = [
         {
-            "name" : "X",
+            "name" : "x",
             "value": "subjectageyears"
         },
         {
-            "name" : "Y",
+            "name" : "y",
             "value": "minimentalstate"
         },
         {
@@ -149,11 +149,11 @@ def test_PearsonCorrlation_MIP_AlgoTesting_3():
 
     data = [
         {
-            "name" : "X",
+            "name" : "x",
             "value": "subjectageyears"
         },
         {
-            "name" : "Y",
+            "name" : "y",
             "value": "opticchiasm"
         },
         {
@@ -191,11 +191,11 @@ def test_PearsonCorrlation_MIP_AlgoTesting_3p1():
 
     data = [
         {
-            "name" : "X",
+            "name" : "x",
             "value": "var1"
         },
         {
-            "name" : "Y",
+            "name" : "y",
             "value": "var2"
         },
         {
@@ -233,11 +233,11 @@ def test_PearsonCorrlation_MIP_AlgoTesting_3p2():
 
     data = [
         {
-            "name" : "X",
+            "name" : "x",
             "value": "var3"
         },
         {
-            "name" : "Y",
+            "name" : "y",
             "value": "var4"
         },
         {
@@ -285,11 +285,11 @@ def test_PearsonCorrlation_MIP_AlgoTesting_4():
 
     data = [
         {
-            "name" : "X",
+            "name" : "x",
             "value": "righthippocampus, lefthippocampus, leftententorhinalarea"
         },
         {
-            "name" : "Y",
+            "name" : "y",
             "value": ""
         },
         {
@@ -343,11 +343,11 @@ def test_PearsonCorrlation_MIP_AlgoTesting_5():
 
     data = [
         {
-            "name" : "X",
+            "name" : "x",
             "value": "righthippocampus, lefthippocampus, opticchiasm"
         },
         {
-            "name" : "Y",
+            "name" : "y",
             "value": ""
         },
         {
@@ -401,11 +401,11 @@ def test_PearsonCorrlation_MIP_AlgoTesting_6():
 
     data = [
         {
-            "name" : "X",
+            "name" : "x",
             "value": "lefthippocampus, subjectageyears, opticchiasm"
         },
         {
-            "name" : "Y",
+            "name" : "y",
             "value": ""
         },
         {
@@ -459,11 +459,11 @@ def test_PearsonCorrlation_MIP_AlgoTesting_7():
 
     data = [
         {
-            "name" : "X",
+            "name" : "x",
             "value": "subjectageyears, lefthippocampus, opticchiasm"
         },
         {
-            "name" : "Y",
+            "name" : "y",
             "value": ""
         },
         {

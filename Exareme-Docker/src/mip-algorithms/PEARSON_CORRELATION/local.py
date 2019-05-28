@@ -2,7 +2,6 @@ from __future__ import division
 from __future__ import print_function
 
 import sys
-import sqlite3
 from os import path
 from argparse import ArgumentParser
 
@@ -11,6 +10,7 @@ import numpy.ma as ma
 
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))) + '/utils/')
 
+from algorithm_utils import query_with_privacy, ExaremeError
 from pearsonc_lib import PearsonCorrelationLocalDT
 
 
@@ -35,7 +35,7 @@ def pearsonr_local(local_in):
     # Unpack data
     X, Y, schema_X, schema_Y = local_in
     n_obs, n_cols = len(X), len(X[0])
-    assert (len(Y), len(Y[0])) == (n_obs, n_cols), 'Matrices X and Y should have the same size'
+    assert (len(Y), len(Y[0])) == (n_obs, n_cols), 'Matrices X and Y should have the same size.'
 
     # Create output schema forming x, y variable pairs
     schema_out = [None] * (n_cols)
@@ -72,20 +72,22 @@ def pearsonr_local(local_in):
 def main():
     # Parse arguments
     parser = ArgumentParser()
-    parser.add_argument('-X', required=True, help='Variable names in X, comma separated.')
-    parser.add_argument('-Y', required=True, help='Variable names in Y, comma separated.')
+    parser.add_argument('-x', required=True, help='Variable names in x, comma separated.')
+    parser.add_argument('-y', required=True, help='Variable names in y, comma separated.')
     parser.add_argument('-input_local_DB', required=True, help='Path to local db.')
     parser.add_argument('-db_query', required=True, help='Query to be executed on local db.')
     args, unknown = parser.parse_known_args()
     query = args.db_query
     fname_loc_db = path.abspath(args.input_local_DB)
+    if args.x == '':
+        raise ExaremeError('Field x must be non empty.')
     args_X = list(
-            args.X
+            args.x
                 .replace(' ', '')
                 .split(',')
     )
     args_Y = list(
-            args.Y
+            args.y
                 .replace(' ', '')
                 .split(',')
     )
@@ -103,14 +105,8 @@ def main():
                 schema_Y.append(args_Y[j])
 
     # Read data and split between X and Y matrices according to schemata
-    conn = sqlite3.connect(fname_loc_db)
-    cur = conn.cursor()
-    cur.execute(query)
-    schema = [description[0] for description in cur.description]
-    try:
-        data = np.array(cur.fetchall(), dtype=np.float64)
-    except ValueError:
-        print('Values in X and Y must be numbers or blanks')
+    schema, data = query_with_privacy(fname_db=fname_loc_db, query=query)
+    data = np.array(data, dtype=np.float64)
     idx_X = [schema.index(v) for v in schema_X if v in schema]
     idx_Y = [schema.index(v) for v in schema_Y if v in schema]
     X = data[:, idx_X]

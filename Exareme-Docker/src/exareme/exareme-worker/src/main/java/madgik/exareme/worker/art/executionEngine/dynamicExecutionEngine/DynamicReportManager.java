@@ -70,7 +70,7 @@ public class DynamicReportManager extends EventSchedulerManipulator
         try {
             PlanEventScheduler eventScheduler = getSchedulerWiReportId(sessionID);
             eventScheduler.exception(operatorID, exception, time);
-            log.error("Operator error: " + sessionID, exception);
+            // log.error("Operator error: " + sessionID, exception);
         } finally {
             lock.unlock();
         }

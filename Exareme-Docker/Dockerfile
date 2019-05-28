@@ -1,5 +1,5 @@
 FROM alpine:3.6
-MAINTAINER Sofia Karvouni <karvoun@di.uoa.gr>
+MAINTAINER Sofia Karvounari <karvoun@di.uoa.gr>
 
 # Here we install GNU libc (aka glibc) and set C.UTF-8 locale as default.
 RUN ALPINE_GLIBC_BASE_URL="https://github.com/sgerrand/alpine-pkg-glibc/releases/download" && \
