@@ -1,0 +1,8 @@
+---
+- hosts: all
+  name: Copy metadata file to each node
+  remote_user: "{{ REMOTE_USER }}"
+  become: yes
+  become_user: "{{ BECOME_USER }}"
+  roles:
+   - copy-metadata

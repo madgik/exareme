@@ -16,7 +16,7 @@
 # DISCLAIM ANY LIABILITY OF ANY KIND FOR ANY DAMAGES WHATSOEVER RESULTING FROM THE
 # USE OF THIS SOFTWARE.
 
-version: '3'
+version: '3.2'
 
 networks:
   net-federation:
@@ -24,22 +24,12 @@ networks:
       name: mip-federation
 
 services:
-  exareme:
-    image: ${EXAREME_IMAGE}:${EXAREME_VERSION}
-    environment:
-      - CONSULURL=${EXAREME_KEYSTORE}
-      - NODE_NAME=${FEDERATION_NODE}
-      - RAWUSERNAME=${LDSM_USERNAME}
-      - RAWPASSWORD=${LDSM_PASSWORD}
-      - RAWHOST=${LDSM_HOST}
-      - RAWPORT=${LDSM_PORT}
-      - RAWDB=${LDSM_DB}
-      - RAWENDPOINT=${EXAREME_LDSM_ENDPOINT}
-      - RAWRESULTS=${EXAREME_LDSM_RESULTS}
-      - RAWDATAKEY=${EXAREME_LDSM_DATAKEY}
-      - MODE=${EXAREME_MODE}
-      - DOCKER_DATASETS_FOLDER=${DOCKER_DATASETS_FOLDER}
-      - DOCKER_METADATA_FOLDER=${DOCKER_DATASETS_FOLDER}
+  exareme-keystore:
+    image: ${CONSUL_IMAGE}:${CONSUL_VERSION}
+    image: progrium/consul
+    command:
+      - -server
+      - -bootstrap
     deploy:
       restart_policy:
         condition: on-failure
@@ -48,8 +38,38 @@ services:
         window: 120s
       placement:
         constraints:
-          - node.role == worker # Ensures we only start on worker nodes
+          - node.role == manager       # Ensures we only start on manager nodes
           - node.labels.name == ${FEDERATION_NODE}
+    networks:
+      - "net-federation" # Connect the docker container to the global network
+    ports:
+      - "8500:8500"
+
+  exareme-manager:
+    image: ${EXAREME_IMAGE}
+    environment:
+      - CONSULURL=${EXAREME_KEYSTORE}
+      - MASTER_FLAG=${FEDERATION_ROLE}
+      - NODE_NAME=${FEDERATION_NODE}
+      - DOCKER_DATASETS_FOLDER=${DOCKER_DATASETS_FOLDER}
+      - DOCKER_METADATA_FOLDER=${DOCKER_DATASETS_FOLDER}
+    depends_on:
+      - exareme-keystore
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+      placement:
+        constraints:
+          - node.role == manager # Ensures we only start on manager nodes
+          - node.labels.name == ${FEDERATION_NODE}
+    ports:
+      - target: 9090     # So that we can access the Exareme REST API / interface
+        published: 9090
+        protocol: tcp
+        mode: host
     networks:
       - "net-federation" # Connect the docker container to the global network
     volumes:

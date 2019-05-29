@@ -1,29 +1,22 @@
-***** In progress ***********
+Install Ansible
 
-Install Ansible in host machine
-```
 apt install python-setuptools -y
 easy_install pip
 pip install ansible
-```
-OR
-```
+
+H
 sudo apt-get install python-pip
 pip install ansible
-```
 
-All nodes should have python installed beforehand, so playbooks can run in every node
-```
+
+all nodes should have python installed
 sudo apt-get install python
-```
 
-Changes need to be done in order to run the playbooks. 
-```
+Step 1)
 Change: ansible_host,hostname,local_path from hosts.ini
 Change: REMOTE_USER,BECOME_USER,CHDIR (the path to mip-federation folder in your manager remote node),PORTAINER_DATA
 (the path to portainer folder in your manager remote node)
 METADATA_PATH the path to your local host where variablesMetadata.json exists
-FOLDER_PATH(where mip-federation is TODO pwd in ansible),DESTINATION_PATH (path in which mip-federation will be copied in the Remote Host that will be the Manager of Swarm and Master of Exareme)
 
 run :
 For every node to get the metadata file. You can run this playbook again when changes occur so every node to get the changes
@@ -41,4 +34,3 @@ ansible-playbook -i hosts.ini docker-stop-services.yaml -c paramiko --ask-pass -
 Or If you only want to stop exareme services and keep portainer running you can do so by:
 ansible-playbook -i hosts.ini docker-stop-services.yaml -c paramiko --ask-pass --ask-become-pass --skip-tags portainer -vvvv
 ansible-playbook -i hosts.ini docker-leave-swarm.yaml -c paramiko --ask-pass --ask-become-pass -vvvv
-```
