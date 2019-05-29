@@ -1,7 +1,0 @@
-- name: Copy metadata file
-  copy:
-    src: "{{ FOLDER_PATH }}"
-    dest: "{{ DESTINATION_PATH }}"
-    owner: "{{ BECOME_USER }}"
-    group: "{{ BECOME_USER }}"
-    mode: 0755

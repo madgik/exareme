@@ -1,8 +1,0 @@
----
-- hosts: all
-  name: Nodes Leave Swarm
-  remote_user: "{{ REMOTE_USER }}"
-  become: yes
-  become_user: "{{ BECOME_USER }}"
-  roles:
-   - swarm-leave

@@ -1,4 +1,0 @@
----
-- name: Leaving Swarm
-  shell: docker swarm leave -f
-  ignore_errors: true
