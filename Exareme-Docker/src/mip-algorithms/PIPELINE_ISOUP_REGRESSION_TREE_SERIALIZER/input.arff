@@ -1,7 +1,0 @@
-@attribute relation hour-weka.filters.unsupervised.attribute.Remove-R1-2
-
-@attribute "apoe4" numeric
-@attribute "subjectageyears" numeric
-@attribute "av45" numeric
-
-@data

@@ -1,3 +1,0 @@
-requirevars 'defaultDB';
-
-select "ok";
