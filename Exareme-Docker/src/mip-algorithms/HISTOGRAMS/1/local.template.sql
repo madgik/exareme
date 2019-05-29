@@ -16,7 +16,7 @@
 -----------------------------------------------------------------------------
 -- to x = real,integer,Text ,to y is text
 
-requirevars 'defaultDB' 'input_local_DB' 'db_query' 'x' 'y' 'dataset';
+requirevars 'defaultDB' 'input_local_DB' 'db_query' 'x' 'y' 'dataset' 'bins';
 attach database '%{defaultDB}' as defaultDB;
 attach database '%{input_local_DB}' as localDB;
 
@@ -33,7 +33,8 @@ drop table if exists defaultDB.localinputtblflat;
 create table defaultDB.localinputtblflat as
 select  %{cast_xnames} from inputdata where %{nullCondition};
 
-var 'privacy' from select privacychecking(no) from (select count(*)' as no from defaultDB.localinputtblflat);
+var 'privacy' from select privacychecking(no) from (select count(*) as no from defaultDB.localinputtblflat);
+var 'inputerrorchecking' from select histograms_inputerrorchecking(isCategorical,'%{bins}') from (select isCategorical from metadata where code='%{x}'); 
 
 drop table if exists defaultDB.partialmetadatatbl;
 create table defaultDB.partialmetadatatbl (code text,categorical int, enumerations text,minval real, maxval real, N int);

@@ -73,20 +73,22 @@ class highchartsbasiccolumn(functions.vtable.vtbase.VT):
         mydata = [x for x in c]
         bins = 0
         for c in mydata: bins = max(bins,int(c[1]))
-        categories =[0 for x in xrange(int(bins)+1)]
+        categories =[None for x in xrange(int(bins)+1)]
         categoriesstring =''
         for c in mydata:
             if c[2] is None:
-                categories[int(c[1])] = str(c[4]) + '-' + str(c[3])
-                categoriesstring+= "\""+ str(c[4]) + '-' + str(c[3])+"\","
+                if categories[int(c[1])] is None:
+                    categories[int(c[1])] = str(c[4]) + '-' + str(c[3])
+                    categoriesstring+= "\""+ str(c[4]) + '-' + str(c[3])+"\","
             else:
-                 categories[int(c[1])] = str(c[2])
-                 categoriesstring+= "\""+ str(c[2])+"\","
+                if categories[int(c[1])] is None:
+                    categories[int(c[1])] = str(c[2])
+                    categoriesstring+= "\""+ str(c[2])+"\","
 
         myresult =  "{ \"chart\": { \"type\": \"column\" },"
         if 'title' in dictargs:
             myresult +=  " \"title\": { \"text\": \"" + dictargs['title'] +"\"},"
-        myresult+= "\"xAxis\": { \"categories\": [" + categoriesstring[0:-1]  +" ], \"crosshair\": true }, \"yAxis\": { \"min\": 0, \"title\": { \"text\": \"" + dictargs['ytitle']+ "\" } },\
+        myresult+= "\"xAxis\": { \"categories\": [" + categoriesstring[0:-1]  +" ], \"crosshair\": True }, \"yAxis\": { \"min\": 0, \"title\": { \"text\": \"" + dictargs['ytitle']+ "\" } },\
                     \"tooltip\": { \"headerFormat\": \"<span style='font-size:10px'>{point.key}</span><table>\",\
                     \"pointFormat\": \"<tr><td style='color:{series.color};padding:0'>{series}: </td>\
                                            <td style='padding:0'><b>{point.y}</b></td></tr>\"},\
@@ -100,7 +102,7 @@ class highchartsbasiccolumn(functions.vtable.vtbase.VT):
             for i in xrange(len(categories)):
                 for c in mydata:
                     if  int(c[1])==i:
-                        myresult += str(c[5]) +","
+                        myresult += str(int(c[5])) +","
             myresult = myresult[0:-1] + "]},"
             myresult = myresult[0:-1]+"]}"
         else:
@@ -109,7 +111,7 @@ class highchartsbasiccolumn(functions.vtable.vtbase.VT):
                 for i in xrange(len(categories)):
                     for c in mydata:
                         if str(c[0])== name and int(c[1])==i:
-                            myresult += str(c[5]) +","
+                            myresult += str(int(c[5])) +","
                 myresult = myresult[0:-1] + "]},"
             myresult = myresult[0:-1]+"]}"
 

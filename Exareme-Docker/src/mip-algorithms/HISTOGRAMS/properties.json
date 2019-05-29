@@ -1,6 +1,6 @@
 {
-	"name": "HISTOGRAM",
-	"desc": "HISTOGRAM",
+	"name": "HISTOGRAMS",
+	"desc": "HISTOGRAMS",
 	"type": "multiple_local_global",
 	"parameters": [
      {

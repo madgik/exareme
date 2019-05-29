@@ -23,9 +23,6 @@ class histogram(functions.vtable.vtbase.VT):
             raise functions.OperatorError(__name__.rsplit('.')[-1],"No metadata ")
         metadata = json.loads(dictargs['metadata'])
 
-        if 'bins' not in dictargs:
-            raise functions.OperatorError(__name__.rsplit('.')[-1],"No bins ")
-        bins = dictargs['bins']
 
         for key in metadata[0]:
             if str(key) == 'code': code = str(metadata[0][key])
@@ -54,6 +51,9 @@ class histogram(functions.vtable.vtbase.VT):
                 yield (id, key, None, None, Hist[key])
                 id +=1
         elif categorical == 0:
+            if 'bins' not in dictargs:
+                raise functions.OperatorError(__name__.rsplit('.')[-1],"No bins ")
+            bins = dictargs['bins']
             data =[x for x in c]
             hist, bin_edges = scipy.histogram(data, int(bins), (minval,maxval))
             print len(hist), len(bin_edges)
