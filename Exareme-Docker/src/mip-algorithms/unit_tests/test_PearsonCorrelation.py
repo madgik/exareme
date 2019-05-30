@@ -5,7 +5,7 @@ import math
 
 # Required datasets: adni_9rows, adni, data_pr1, desd-synthdata
 
-endpointUrl = 'http://88.197.53.38:9090'
+endpointUrl = 'http://88.197.53.100:9090'
 
 
 def test_PearsonCorrlation_MIP_AlgoTesting_1():

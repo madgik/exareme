@@ -5,8 +5,7 @@ import math
 from decimal import *
 
 
-#url='http://88.197.53.100:9090/mining/query/HISTOGRAMS'
-url='http://localhost:9090/mining/query/HISTOGRAMS'
+url='http://88.197.53.100:9090/mining/query/HISTOGRAMS'
 
 
 def test_Histogram_1():
@@ -227,9 +226,30 @@ def test_Histogram_5():
     check_valuesofbins(result['series'],corr_counts,10)
 
 
+def test_Privacy_Error_HISTOGRAMS():
+    """
+    
+    """
+
+    logging.info("---------- TEST : Algorithms for Privacy Error")
+
+    data = [{"name": "x","value": "subjectageyears"},
+            {"name": "y","value": ""},
+			{"name": "bins","value": "4"},
+            {"name": "dataset","value": "adni_9rows"},
+            {"name": "filter","value": ""}
+           ]
+
+    headers = {'Content-type': 'application/json', "Accept": "text/plain"}
+    r = requests.post(url, data=json.dumps(data), headers=headers)
+
+    result = json.loads(r.text)
+
+    check_result(r.text)
 
 
-
+def check_result(result):
+    assert result == "{\"error\" : \"The Experiment could not run with the input provided because there are insufficient data.\"}"
 
 
 def check_rangesofbinsDiscreteVariable(bins,corr_bins):
