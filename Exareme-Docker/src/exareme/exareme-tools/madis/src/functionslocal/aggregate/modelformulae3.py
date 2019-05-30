@@ -162,58 +162,56 @@ class modelvariables:
     def step(self, *args):
         self.formula = str(args[0])
         self.metadata = json.loads(args[1])
-        # print self.formula
-        # print self.metadata
+        # print "self.metadata", self.metadata
 
     def final(self):
         newschema2=simplified_formula(self.formula)
         newschema2 = list(set(newschema2)) #keep unique elements
         metadata = dict()
+        referencevalue =dict()
         for pair in self.metadata:
             metadata[str(pair[0])]= re.split(',',str(pair[1]))
-
+            referencevalue[str(pair[0])]= str(pair[2])
         newschema3 =[]
         # print "schema", newschema2
-        # convert newschema2 to dummy varriables
+        # convert newschema2 to dummy variables
         for elements in newschema2:
             elements1 =elements
             elements = re.split(':',elements)
-            # print "elements containing : are:", elements
-            new_elements =[] # einai mia lista apo listes
+            new_elements = [] # einai mia lista apo listes
             for el in xrange(len(elements)):
-                # print "el",elements[el]
                 if elements[el] in metadata.keys():
                     new_el=[list(x) for x in list(itertools.product([elements[el]],metadata[elements[el]]))]
-                    # print "A", new_el
-                    new_el =[str(x[0])+'('+str(x[1] +')') for x in new_el[1:]]
-                    # print new_el
+                    for x in new_el:
+                        if x[1] == referencevalue[elements[el]]:
+                            new_el.pop(new_el.index(x))
+                    new_el =[str(x[0])+'('+str(x[1] +')') for x in new_el]
                     new_elements.append(new_el)
                 else:
-                     new_elements.append(elements[el])
-            # print "BB" ,new_elements
+                     new_elements.append([elements[el]])
             if len(new_elements)==1:
+                # print "AAAA",new_elements
                 if isinstance(new_elements[0],list):
+                    # print "ok"
                     for item in new_elements[0]:
                         newschema3.append([elements1,item])
                 else:
                      newschema3.append([elements1,new_elements[0]])
-                # print "newschema","length 1",newschema3
+                # print newschema3
             else:
+                # print new_elements
                 while len(new_elements)>1: #  Do Product operation when len(new_elements)>1
+                    # print "BBB"
                     el1 = new_elements.pop(0)
                     el2 = new_elements.pop(0)
                     new_el=[list(x) for x in list(itertools.product(el1,el2))]
-                    # print "eleni", new_el
                     new_el =[str(x[0])+':'+str(x[1]) for x in new_el]
-                    # print "eleni2", new_el
                     new_elements.insert(0,new_el) # einai mia lista apo listes
-                    # print "eleni3",new_elements
-                # print "cc", new_elements
                 for item in  new_elements[0]:
+                    # print "CCCC"
                     newschema3.append([elements1,item])
-
-        # print "newschema",newschema3
         yield ('modelcolnames','modelcolnamesdummycodded',)
+
         for element in newschema3:
             yield (element[0], element[1] ,)
 

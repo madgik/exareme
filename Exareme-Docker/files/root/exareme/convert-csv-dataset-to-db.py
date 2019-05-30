@@ -51,11 +51,11 @@ def addGroupVariablesToList(groupMetadata, metadataList):
             variableDictionary = {}
             variableDictionary['code'] = variable['code']
             variableDictionary['sql_type'] = variable['sql_type']
-            variableDictionary['categorical'] = '1' if variable['categorical'] else '0'
+            variableDictionary['isCategorical'] = '1' if variable['isCategorical'] else '0'
             if 'enumerations' in variable: 
                 enumerations = []
                 for enumeration in variable['enumerations']:
-                    enumerations.append(str(enumeration['code']))
+                    enumerations.append(unicode(enumeration['code']))
                 variableDictionary['enumerations'] = ','.join(enumerations)
 
             else:
@@ -146,7 +146,7 @@ def main():
     createMetadataTableQuery = 'CREATE TABLE METADATA('
     createMetadataTableQuery += ' code TEXT PRIMARY KEY ASC'
     createMetadataTableQuery += ', sql_type TEXT'
-    createMetadataTableQuery += ', categorical INTEGER'
+    createMetadataTableQuery += ', isCategorical INTEGER'
     createMetadataTableQuery += ', enumerations TEXT'
     createMetadataTableQuery += ', min INTEGER'
     createMetadataTableQuery += ', max INTEGER)'
@@ -156,13 +156,13 @@ def main():
     cur.execute(createMetadataTableQuery)
 
     # Add data to the metadata table		TODO
-    columnsQuery = 'INSERT INTO METADATA (code, sql_type, categorical, enumerations, min, max) VALUES ('
+    columnsQuery = 'INSERT INTO METADATA (code, sql_type, isCategorical, enumerations, min, max) VALUES ('
 
     for variable in metadataList:
         insertVariableQuery = columnsQuery
         insertVariableQuery += "'" + variable['code'] + "'"
         insertVariableQuery += ", '" + variable['sql_type'] + "'"
-        insertVariableQuery += ", '" + variable['categorical'] + "'"
+        insertVariableQuery += ", '" + variable['isCategorical'] + "'"
         insertVariableQuery += ", '" + variable['enumerations'] + "'"
         insertVariableQuery += ", '" + variable['min'] + "'"
         insertVariableQuery += ", '" + variable['max'] + "'"

@@ -47,11 +47,17 @@ class jsontotable:
         self.dlist = []
         self.i = 0
 
+
     def step(self, *args):
+
         self.jsondata = json.loads(args[0])
+        if len(args)==2:
+            self.schema = str(args[1]).split(',')
 
     def final(self):
         init = True
+        if len(self.jsondata)==0:
+            yield tuple(self.schema,)
         for x in self.jsondata:
             if init is True:
                 colnames = []

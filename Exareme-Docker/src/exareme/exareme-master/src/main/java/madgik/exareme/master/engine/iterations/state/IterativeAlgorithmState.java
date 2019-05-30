@@ -68,6 +68,8 @@ public class IterativeAlgorithmState {
     private Boolean algorithmCompleted;
     // Set to true to signify necessity for error response.
     private Boolean algorithmHasError;
+    //Message when error occured.
+    private String algorithmError;
     // Query status of finalize phase, to be used for obtaining response data.
     private AdpDBClientQueryStatus adpDBClientFinalizeQueryStatus;
 
@@ -124,6 +126,7 @@ public class IterativeAlgorithmState {
         algorithmCompleted = null;
         algorithmHasError = false;
         currentExecutionPhase = null;
+        algorithmError = null;
         stepPhaseOutputTblVariableName =
                 IterationsHandlerDFLUtils.getStepPhaseOutputTblVariableName(algorithmKey);
         termConditionPhaseOutputTblVariableName =
@@ -500,6 +503,7 @@ public class IterativeAlgorithmState {
             throw new IterationsStateFatalException(errMsg, algorithmKey);
         }
         algorithmCompleted = true;
+
         ioctrl.requestOutput();
     }
 
@@ -509,10 +513,11 @@ public class IterativeAlgorithmState {
      * response</b>.
      * <p><b>Must be called with the lock of this instance acquired.</b><br>
      */
-    public void signifyAlgorithmError() {
+    public void signifyAlgorithmError(String result) {
         ensureAcquiredLock();
         algorithmCompleted = false;
         algorithmHasError = true;
+        setAlgorithmError(result);
         ioctrl.requestOutput();
     }
 
@@ -532,6 +537,16 @@ public class IterativeAlgorithmState {
     public Boolean getAlgorithmHasError() {
         ensureAcquiredLock();
         return algorithmHasError;
+    }
+
+    public String getAlgorithmError(){
+        ensureAcquiredLock();
+        return algorithmError;
+    }
+
+    public void setAlgorithmError(String result){
+        ensureAcquiredLock();
+        this.algorithmError = result;
     }
 
     /**

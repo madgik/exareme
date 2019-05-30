@@ -1,0 +1,5 @@
+# intellij
+.idea
+
+# macos
+*.DS_Store

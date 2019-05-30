@@ -119,7 +119,7 @@ class MadisError(Exception):
 
 class OperatorError(MadisError):
     def __init__(self,opname,msg):
-        self.msg="Operator %s: %s" %(mstr(opname.upper()),mstr(msg))
+        self.msg="Operator %s: %s" %(mstr(opname),mstr(msg))
 
 class DynamicSchemaWithEmptyResultError(MadisError):
     def __init__(self,opname):

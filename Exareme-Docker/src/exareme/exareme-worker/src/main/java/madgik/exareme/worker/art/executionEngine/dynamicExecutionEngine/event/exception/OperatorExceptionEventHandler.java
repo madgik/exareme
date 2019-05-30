@@ -47,7 +47,7 @@ public class OperatorExceptionEventHandler
             state.getStatistics().error.add(opName);
         }
         OperatorGroup group = activeOperator.operatorGroup;
-        log.error("Exception: ", event.exception);
+        // log.error("Exception: ", event.exception);
         int errorCnt = group.setError(activeOperator.operatorEntity, event.exception);
         // If is the first error - stop execution of the group
         HashMap<String, ContainerJobsEvent> jobsMap = new HashMap<String, ContainerJobsEvent>();
