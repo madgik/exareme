@@ -8,10 +8,18 @@ def privacychecking(*args):
     else:
         return "OK"
 
-
-
-
 privacychecking.registered = True
+
+
+def kmeans_inputerrorchecking(centers,k):
+    if (centers == '' and k == '') or (centers != '' and k != ''):
+        raise functions.OperatorError("ExaremeError", "Only one of the following two parameters should be empty/have value: Centers or k")
+    else:
+        return "OK"
+
+kmeans_inputerrorchecking.registered = True
+
+
 
 if not ('.' in __name__):
     """
