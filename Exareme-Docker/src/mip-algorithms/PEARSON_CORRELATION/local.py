@@ -1,3 +1,4 @@
+# Forward compatibility
 from __future__ import division
 from __future__ import print_function
 
@@ -10,7 +11,7 @@ import numpy.ma as ma
 
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))) + '/utils/')
 
-from algorithm_utils import query_with_privacy, ExaremeError
+from algorithm_utils import query_with_privacy, ExaremeError, PrivacyError, PRIVACY_MAGIC_NUMBER
 from pearsonc_lib import PearsonCorrelationLocalDT
 
 
@@ -33,14 +34,9 @@ def pearsonr_local(local_in):
        Object holding the computed statistics as well as schema_X, schema_Y do be transferred to the master node.
     """
     # Unpack data
-    X, Y, schema_X, schema_Y = local_in
+    X, Y, schema_X, schema_Y, correlmatr_row_names, correlmatr_col_names = local_in
     n_obs, n_cols = len(X), len(X[0])
     assert (len(Y), len(Y[0])) == (n_obs, n_cols), 'Matrices X and Y should have the same size.'
-
-    # Create output schema forming x, y variable pairs
-    schema_out = [None] * (n_cols)
-    for i in xrange(n_cols):
-        schema_out[i] = schema_X[i] + '_' + schema_Y[i]
 
     # Init statistics
     nn = np.empty(n_cols, dtype=np.int)
@@ -59,12 +55,15 @@ def pearsonr_local(local_in):
         ym = ma.masked_array(y, mask=mask)
         # Compute local statistics
         nn[i] = n_obs - sum(mask)
+        if nn[i] < PRIVACY_MAGIC_NUMBER:
+            raise PrivacyError('Removing missing values results in illegal number of datapoints in local db.')
         sx[i] = xm.filled(0).sum()
         sy[i] = ym.filled(0).sum()
         sxx[i] = (xm.filled(0) * xm.filled(0)).sum()
         sxy[i] = (xm.filled(0) * ym.filled(0)).sum()
         syy[i] = (ym.filled(0) * ym.filled(0)).sum()
-        local_out = PearsonCorrelationLocalDT((nn, sx, sy, sxx, sxy, syy, schema_X, schema_Y))
+        local_out = PearsonCorrelationLocalDT(
+                (nn, sx, sy, sxx, sxy, syy, schema_X, schema_Y, correlmatr_row_names, correlmatr_col_names))
 
     return local_out
 
@@ -91,18 +90,22 @@ def main():
                 .replace(' ', '')
                 .split(',')
     )
-    # Populate schemata, treating cases Y=empty and Y=not empty accordingly (R function `cor` is imitated)
+    # Populate schemata, treating cases Y=empty and Y=not empty accordingly (behaviour of R function `cor`)
     schema_X, schema_Y = [], []
     if args_Y == ['']:
-        for i in range(len(args_X)):
-            for j in range(i + 1, len(args_X)):
+        for i in xrange(len(args_X)):
+            for j in xrange(i + 1, len(args_X)):
                 schema_X.append(args_X[i])
                 schema_Y.append(args_X[j])
+        correlmatr_row_names = args_X
+        correlmatr_col_names = args_X
     else:
-        for i in range(len(args_X)):
-            for j in range(len(args_Y)):
+        for i in xrange(len(args_X)):
+            for j in xrange(len(args_Y)):
                 schema_X.append(args_X[i])
                 schema_Y.append(args_Y[j])
+        correlmatr_col_names = args_X
+        correlmatr_row_names = args_Y
 
     # Read data and split between X and Y matrices according to schemata
     schema, data = query_with_privacy(fname_db=fname_loc_db, query=query)
@@ -111,7 +114,7 @@ def main():
     idx_Y = [schema.index(v) for v in schema_Y if v in schema]
     X = data[:, idx_X]
     Y = data[:, idx_Y]
-    local_in = X, Y, schema_X, schema_Y
+    local_in = X, Y, schema_X, schema_Y, correlmatr_row_names, correlmatr_col_names
 
     # Run algorithm local step
     local_out = pearsonr_local(local_in=local_in)
