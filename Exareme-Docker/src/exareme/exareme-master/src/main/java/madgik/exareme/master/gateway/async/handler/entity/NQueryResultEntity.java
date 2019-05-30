@@ -19,7 +19,7 @@ import java.nio.channels.ReadableByteChannel;
 public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncContentProducer {
 
     private static final Logger log = Logger.getLogger(NQueryResultEntity.class);
-
+    
     private final AdpDBClientQueryStatus queryStatus;
     private final ByteBuffer buffer;
     private ReadableByteChannel channel;
@@ -35,6 +35,7 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
         l = null;
         format = ds;
     }
+
 
     @Override
     public void produceContent(ContentEncoder encoder, IOControl ioctrl)
@@ -64,23 +65,21 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
             }
         } else {
             log.trace("|" + queryStatus.getError() + "|");
-            if (queryStatus.getError().contains("\n" + "Operator NULLTABLE:")) {
-                String result = createErrorMessage("The input you provided gives an empty table. Please check your input.");
+            if (queryStatus.getError().contains("ExaremeError:")) {
+                String result = queryStatus.getError();
+                result = result.substring(result.lastIndexOf("ExaremeError:") + "ExaremeError:".length()).replaceAll("\\s"," ");
+                encoder.write(ByteBuffer.wrap(createErrorMessage(result).getBytes()));
+                encoder.complete();
+                close();
+            }
+            else if (queryStatus.getError().contains("PrivacyError")) {
+                String result = createErrorMessage("The Experiment could not run with the input provided because there are insufficient data.");
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();
-            } else if (queryStatus.getError().matches("java.rmi.RemoteException: Containers:.*not responding")) {
+            }
+            else if (queryStatus.getError().matches("java.rmi.RemoteException: Containers:.*not responding")) {
                 String result = createErrorMessage("One or more containers are not responding. Please inform the system administrator.");
-                encoder.write(ByteBuffer.wrap(result.getBytes()));
-                encoder.complete();
-                close();
-            } else if (queryStatus.getError().contains("\n" + "Operator PRIVACY:")) {
-                String result = createErrorMessage("Privacy issues. There are not enough patients.");
-                encoder.write(ByteBuffer.wrap(result.getBytes()));
-                encoder.complete();
-                close();
-            } else if (queryStatus.getError().contains("\n" + "Operator LARGEBUCKET:")) {
-                String result = createErrorMessage("Bucket size too big.");
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();

@@ -113,30 +113,27 @@ class create_simplified_formulas:
             for i in xrange(len(newschema2)):
                 result += "+" + str(newschema2[i])
                 yield (str(i), result[1:],)
-        elif self.type ==2:
-            # print newschema2
+        elif self.type == 2:
+            print "1", newschema2
             for i in xrange(len(newschema2)):
-                leveli = newschema2[i].count(":")
                 result =""
+                FactorA = re.split(':',str(newschema2[i]))
+                FactorA= [x for x in FactorA if x] # remove nulls elements of the list
+                print FactorA
                 for j in xrange(len(newschema2)):
-                     levelj = newschema2[j].count(":")
-                     if levelj<=leveli and str(newschema2[j])!= str(newschema2[i]):
+                    FactorB = re.split(':',str(newschema2[j]))
+                    FactorB = [x for x in FactorB if x] # remove nulls elements of the list
+                    print "B",FactorB
+                    no = 0
+                    for k in FactorA:
+                        for l in FactorB:
+                            if k==l:
+                                no = no +1
+                    if no != len(FactorA) :
                         result += "+" + str(newschema2[j])
-                yield (str(i), result[1:],)
+                yield (str(i*2), result[1:],)
+                yield (str(i*2+1), result[1:] + "+" + newschema2[i])
 
-            resultold = ""
-            k=0
-            for i in xrange(len(newschema2)):
-                leveli = newschema2[i].count(":")
-                result =""
-                for j in xrange(len(newschema2)):
-                     levelj = newschema2[j].count(":")
-                     if levelj<=leveli:
-                        result += "+" + str(newschema2[j])
-                if resultold != result:
-                    yield (str(len(newschema2)+k), result[1:],)
-                    resultold =result
-                    k+=1
         elif self.type == 3:
             for i in xrange(len(newschema2)):
                 result=""
@@ -165,58 +162,56 @@ class modelvariables:
     def step(self, *args):
         self.formula = str(args[0])
         self.metadata = json.loads(args[1])
-        # print self.formula
-        # print self.metadata
+        # print "self.metadata", self.metadata
 
     def final(self):
         newschema2=simplified_formula(self.formula)
         newschema2 = list(set(newschema2)) #keep unique elements
         metadata = dict()
+        referencevalue =dict()
         for pair in self.metadata:
             metadata[str(pair[0])]= re.split(',',str(pair[1]))
-
+            referencevalue[str(pair[0])]= str(pair[2])
         newschema3 =[]
         # print "schema", newschema2
-        # convert newschema2 to dummy varriables
+        # convert newschema2 to dummy variables
         for elements in newschema2:
             elements1 =elements
             elements = re.split(':',elements)
-            # print "elements containing : are:", elements
-            new_elements =[] # einai mia lista apo listes
+            new_elements = [] # einai mia lista apo listes
             for el in xrange(len(elements)):
-                # print "el",elements[el]
                 if elements[el] in metadata.keys():
                     new_el=[list(x) for x in list(itertools.product([elements[el]],metadata[elements[el]]))]
-                    # print "A", new_el
-                    new_el =[str(x[0])+'('+str(x[1] +')') for x in new_el[1:]]
-                    # print new_el
+                    for x in new_el:
+                        if x[1] == referencevalue[elements[el]]:
+                            new_el.pop(new_el.index(x))
+                    new_el =[str(x[0])+'('+str(x[1] +')') for x in new_el]
                     new_elements.append(new_el)
                 else:
-                     new_elements.append(elements[el])
-            # print "BB" ,new_elements
+                     new_elements.append([elements[el]])
             if len(new_elements)==1:
+                # print "AAAA",new_elements
                 if isinstance(new_elements[0],list):
+                    # print "ok"
                     for item in new_elements[0]:
                         newschema3.append([elements1,item])
                 else:
                      newschema3.append([elements1,new_elements[0]])
-                # print "newschema","length 1",newschema3
+                # print newschema3
             else:
+                # print new_elements
                 while len(new_elements)>1: #  Do Product operation when len(new_elements)>1
+                    # print "BBB"
                     el1 = new_elements.pop(0)
                     el2 = new_elements.pop(0)
                     new_el=[list(x) for x in list(itertools.product(el1,el2))]
-                    # print "eleni", new_el
                     new_el =[str(x[0])+':'+str(x[1]) for x in new_el]
-                    # print "eleni2", new_el
                     new_elements.insert(0,new_el) # einai mia lista apo listes
-                    # print "eleni3",new_elements
-                # print "cc", new_elements
                 for item in  new_elements[0]:
+                    # print "CCCC"
                     newschema3.append([elements1,item])
-
-        # print "newschema",newschema3
         yield ('modelcolnames','modelcolnamesdummycodded',)
+
         for element in newschema3:
             yield (element[0], element[1] ,)
 
@@ -265,23 +260,20 @@ class sumofsquares:
                 ModelVariables = re.split('\+',self.ModelVariables[i])
                 yield i, ModelVariables[-1], self.SumOfSquares[i] -self.SumOfSquares[i-1]
 
-        elif self.type ==2:
-            totalFormulaElements = self.ModelVariables[self.maxNo]
-            totalFormulaElements=re.split("\+",totalFormulaElements)
-            totalFormulaElements = [x for x in totalFormulaElements if x] # remove nulls elements of the list
-
-            for i in xrange(self.minNo,len(totalFormulaElements)):
+        elif self.type == 2:
+            no = 0
+            for i in xrange(self.minNo,self.maxNo,2):
+                print self.SumOfSquares[i+1],self.SumOfSquares[i]
                 nowVariables = re.split('\+',self.ModelVariables[i])
                 nowVariables=[x for x in nowVariables if x] # remove nulls elements of the list
-                # print "NOW",nowVariables
-                for j in xrange(len(totalFormulaElements),self.maxNo+1):
-                    nowVariablesTotalGroup = re.split('\+',self.ModelVariables[j])
-                    nowVariablesTotalGroup=[x for x in nowVariablesTotalGroup if x] # remove nulls elements of the list
-                    # print nowVariables, nowVariablesTotalGroup
-                    missingitem = [item for item in nowVariablesTotalGroup if item not in nowVariables]
-                    if len(missingitem)==1:
-                        # print self.SumOfSquares[j], self.SumOfSquares[i]
-                        yield i, missingitem[0], self.SumOfSquares[j]-self.SumOfSquares[i]
+
+                nowVariablesTotalGroup = re.split('\+',self.ModelVariables[i+1])
+                nowVariablesTotalGroup=[x for x in nowVariablesTotalGroup if x] # remove nulls elements of the list
+                missingitem = [item for item in nowVariablesTotalGroup if item not in nowVariables]
+
+                if len(missingitem)==1:
+                    yield no, missingitem[0], self.SumOfSquares[i+1]-self.SumOfSquares[i]
+                    no = no + 1
 
         elif self.type == 3:
             totalVariables = re.split('\+',self.ModelVariables[self.maxNo])
@@ -293,6 +285,7 @@ class sumofsquares:
                 missingitem = [item for item in totalVariables if item not in nowVariables]
 
                 yield i, missingitem[0], self.SumOfSquares[self.maxNo]-self.SumOfSquares[i]
+
 
 
 # no modelvariables, sumofsquares, '%{metadata}', N )  from sumofsquares

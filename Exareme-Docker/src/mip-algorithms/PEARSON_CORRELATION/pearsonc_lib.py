@@ -6,15 +6,14 @@ from os import path
 
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))) + '/utils/')
 
-from algorithm_utils import TransferData
+from algorithm_utils import TransferData, ExaremeError
 
 
 # Set the data class that will transfer the data between local-global
 class PearsonCorrelationLocalDT(TransferData):
-
     def __init__(self, args):
         if len(args) != 8:
-            raise ValueError('illegal argument')
+            raise ExaremeError('Illegal number of arguments.')
         self.nn = args[0]
         self.sx = args[1]
         self.sy = args[2]
@@ -32,6 +31,10 @@ class PearsonCorrelationLocalDT(TransferData):
         )
 
     def __add__(self, other):
+        if self.schema_X != other.schema_X:
+            raise ExaremeError("Local schema_X's do not agree.")
+        if self.schema_Y != other.schema_Y:
+            raise ExaremeError("Local schema_Y's do not agree.")
         result = PearsonCorrelationLocalDT((
             self.nn + other.nn,
             self.sx + other.sx,
