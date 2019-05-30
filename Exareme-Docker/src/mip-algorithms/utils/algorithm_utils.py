@@ -5,7 +5,7 @@ import sqlite3
 import pickle
 import codecs
 
-__PRIVACY_MAGIC_NUMBER = 10
+PRIVACY_MAGIC_NUMBER = 10
 P_VALUE_CUTOFF = 0.001
 P_VALUE_CUTOFF_STR = '< ' + str(P_VALUE_CUTOFF)
 
@@ -38,7 +38,7 @@ def query_with_privacy(fname_db, query):
     cur.execute(query)
     schema = [description[0] for description in cur.description]
     data = cur.fetchall()
-    if len(data) < __PRIVACY_MAGIC_NUMBER:
+    if len(data) < PRIVACY_MAGIC_NUMBER:
         raise PrivacyError('Query results in illegal number of datapoints.')
     return schema, data
 

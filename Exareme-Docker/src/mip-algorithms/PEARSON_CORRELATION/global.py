@@ -12,7 +12,7 @@ from argparse import ArgumentParser
 
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))) + '/utils/')
 
-from algorithm_utils import set_algorithms_output_data, P_VALUE_CUTOFF, P_VALUE_CUTOFF_STR
+from algorithm_utils import set_algorithms_output_data, ExaremeError, P_VALUE_CUTOFF, P_VALUE_CUTOFF_STR
 from pearsonc_lib import PearsonCorrelationLocalDT
 
 
@@ -46,8 +46,7 @@ def pearsonr_global(global_in):
         schema_out[i] = schema_X[i] + ' ~ ' + schema_Y[i]
         # Compute pearson correlation coefficient and p-value
         if nn[i] == 0:
-            r[i] = None
-            prob[i] = None
+            raise ExaremeError('The variables chosen do not contain any datapoints.')
         else:
             d = (math.sqrt(nn[i] * sxx[i] - sx[i] * sx[i]) * math.sqrt(nn[i] * syy[i] - sy[i] * sy[i]))
             if d == 0:
@@ -118,7 +117,7 @@ def pearsonr_global(global_in):
     for i, varx in enumerate(correlmatr_col_names):
         for j, vary in enumerate(correlmatr_row_names):
             if varx == vary:
-                correlmatr_data.append([i, j, 1.0])
+                corr = 1.0
             else:
                 if varx + ' ~ ' + vary in schema_out:
                     idx = schema_out.index(varx + ' ~ ' + vary)
@@ -126,7 +125,13 @@ def pearsonr_global(global_in):
                     idx = schema_out.index(vary + ' ~ ' + varx)
                 else:
                     raise ValueError('Variable names do not agree.')
-                correlmatr_data.append([i, j, round(r[idx], 4)])
+                corr = r[idx]
+            correlmatr_data.append({
+                'x'    : i,
+                'y'    : j,
+                'value': round(corr, 4),
+                'name' : varx + ' ~ ' + vary
+            })
     hichart_correl_matr = {
         'chart'    : {
             'type'           : 'heatmap',
@@ -162,7 +167,9 @@ def pearsonr_global(global_in):
             'symbolHeight' : 280
         },
         'tooltip'  : {
-            'enabled': False
+            'headerFormat': '',
+            'pointFormat' : '<b>{point.name}: {point.value}</b>',
+            'enabled'     : True
         },
         'series'   : [{
             'name'       : 'coefficients',

@@ -1,3 +1,4 @@
+# Forward compatibility
 from __future__ import division
 from __future__ import print_function
 
@@ -10,7 +11,7 @@ import numpy.ma as ma
 
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))) + '/utils/')
 
-from algorithm_utils import query_with_privacy, ExaremeError
+from algorithm_utils import query_with_privacy, ExaremeError, PrivacyError, PRIVACY_MAGIC_NUMBER
 from pearsonc_lib import PearsonCorrelationLocalDT
 
 
@@ -54,6 +55,8 @@ def pearsonr_local(local_in):
         ym = ma.masked_array(y, mask=mask)
         # Compute local statistics
         nn[i] = n_obs - sum(mask)
+        if nn[i] < PRIVACY_MAGIC_NUMBER:
+            raise PrivacyError('Removing missing values results in illegal number of datapoints in local db.')
         sx[i] = xm.filled(0).sum()
         sy[i] = ym.filled(0).sum()
         sxx[i] = (xm.filled(0) * xm.filled(0)).sum()
@@ -90,15 +93,15 @@ def main():
     # Populate schemata, treating cases Y=empty and Y=not empty accordingly (behaviour of R function `cor`)
     schema_X, schema_Y = [], []
     if args_Y == ['']:
-        for i in range(len(args_X)):
-            for j in range(i + 1, len(args_X)):
+        for i in xrange(len(args_X)):
+            for j in xrange(i + 1, len(args_X)):
                 schema_X.append(args_X[i])
                 schema_Y.append(args_X[j])
         correlmatr_row_names = args_X
         correlmatr_col_names = args_X
     else:
-        for i in range(len(args_X)):
-            for j in range(len(args_Y)):
+        for i in xrange(len(args_X)):
+            for j in xrange(len(args_Y)):
                 schema_X.append(args_X[i])
                 schema_Y.append(args_Y[j])
         correlmatr_col_names = args_X
