@@ -44,6 +44,8 @@ create table defaultDB.localinputtbl as
 select %{castcolumnsandclassname}
 from inputdata where %{nullCondition};
 
+var 'privacy' from select privacychecking(no) from (select count(*) as no from defaultDB.localinputtbl);
+
 -- Initialize data needed for executing ID3
 drop table if exists defaultDB.localinputtblcurrent;
 create table defaultDB.localinputtblcurrent as
