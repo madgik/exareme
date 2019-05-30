@@ -1,0 +1,57 @@
+{
+	"name": "HISTOGRAMS",
+	"desc": "HISTOGRAMS",
+	"type": "multiple_local_global",
+	"parameters": [
+     {
+      "name": "x",
+      "desc": "variable1",
+      "type": "column",
+      "columnValuesSQLType": "real,integer,text",
+      "columnValuesIsCategorical": "",
+      "columnValuesNumOfEnumerations": "",
+      "value": "lefthippocampus",
+      "valueNotBlank": true,
+      "valueMultiple": false,
+      "valueType": "string"
+    },
+		 {
+			"name": "y",
+			"desc": "variable2",
+			"type": "column",
+			"columnValuesSQLType": "text,integer",
+			"columnValuesIsCategorical": "true",
+			"columnValuesNumOfEnumerations": "",
+			"value": "gender",
+			"valueNotBlank": false,
+			"valueMultiple": false,
+			"valueType": "string"
+		},
+    {
+  				"name": "bins",
+  				"desc": "bins",
+  				"type": "other",
+  				"value": "50",
+  				"valueNotBlank": false,
+  				"valueMultiple": false,
+  				"valueType": "integer"
+    },
+     {
+			"name": "dataset",
+			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty.",
+			"type": "dataset",
+			"value": "desd-synthdata",
+			"valueNotBlank": true,
+			"valueMultiple": true,
+			"valueType": "string"
+		}, {
+			"name": "filter",
+			"desc": "",
+			"type": "filter",
+			"value": "",
+			"valueNotBlank": false,
+			"valueMultiple": true,
+			"valueType": "string"
+		}
+	]
+}

@@ -8,10 +8,20 @@ def privacychecking(*args):
     else:
         return "OK"
 
-
-
-
 privacychecking.registered = True
+
+
+
+
+def histograms_inputerrorchecking(xisCategorical,bins):
+    if xisCategorical == 1 and bins != '':
+        raise functions.OperatorError("ExaremeError", "Bins parameter should be empty when x is categorical")
+    else:
+        return "OK"
+
+histograms_inputerrorchecking.registered = True
+
+
 
 if not ('.' in __name__):
     """
