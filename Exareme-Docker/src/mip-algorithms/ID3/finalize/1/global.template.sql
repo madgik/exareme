@@ -1,8 +1,8 @@
 requirevars 'defaultDB' 'outputformat' ;
 attach database '%{defaultDB}' as defaultDB;
 
-update defaultDB.globaltree set nextnode = "-"  where nextnode ="-";
-update defaultDB.globaltree set leafval = "-"  where leafval ="?";
+update defaultDB.globaltree set nextnode = ""  where nextnode ="-";
+update defaultDB.globaltree set leafval = ""  where leafval ="?";
 
 drop table if exists defaultDB.id3resultl;
 create table defaultDB.id3resultl ('result') ;

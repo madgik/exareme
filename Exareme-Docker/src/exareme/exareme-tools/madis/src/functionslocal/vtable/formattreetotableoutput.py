@@ -27,19 +27,19 @@ class formattreetotableoutput(functions.vtable.vtbase.VT):
             set1=[]
             set2=[]
             for node in nodestoinsert:
-                if node[3]=="-":
+                if node[3]=="":
                     set1.append(node)
                     set1 = sorted(set1, key=lambda (colname,colval,nextnode,leafval):(colval,leafval))
                 else :
                     set2.append(node)
                     set2 = sorted(set2, key=lambda (colname,colval,nextnode,leafval):(colval,nextnode))
-            print "AA",nodestoinsert
-            print "Set1",set1
-            print "Set2",set2
+            # print "AA",nodestoinsert
+            # print "Set1",set1
+            # print "Set2",set2
             nodestoinsert= set2 + set1
-            print "BB",nodestoinsert
+            # print "BB",nodestoinsert
 
-            print nodestoinsert
+            # print nodestoinsert
             indexi = 0
             levelsi = 0
             for i in xrange(len(resulttable)):
@@ -50,7 +50,7 @@ class formattreetotableoutput(functions.vtable.vtbase.VT):
                 resulttable.insert(i + indexi+1, [level,levelsi,nodestoinsert[i][0],nodestoinsert[i][1],nodestoinsert[i][2],nodestoinsert[i][3]])
 
         yield [('no',),('result',),]
-        print resulttable
+        # print resulttable
         for i in xrange(len(resulttable)):
             result =""
             for j in xrange(resulttable[i][1]):

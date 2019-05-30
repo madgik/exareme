@@ -57,8 +57,8 @@ class treetojson(functions.vtable.vtbase.VT):
             level = int(myrow[0]) #currentlevel
             nodestoinsert = ast.literal_eval(myrow[1]) #nodes of the level at hand. It is a dice
             for i in nodestoinsert:
-                if str(i['leafval']) =="-": i.pop('leafval')
-                if str(i['childnodes'])=="-": i.pop('childnodes')
+                if str(i['leafval']) =="": i.pop('leafval')
+                if str(i['childnodes'])=="": i.pop('childnodes')
 
             if init is True:
                 for k in nodestoinsert:
