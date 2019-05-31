@@ -302,19 +302,19 @@
 			"code": "Iris_Species",
 			"description": "",
 			"enumerations": [{
-					"code": "setosa",
-					"label": "setosa"
+					"code": "Iris-setosa",
+					"label": "Iris-setosa"
 				},
 				{
-					"code": "versicolor",
-					"label": "versicolor"
+					"code": "Iris-versicolor",
+					"label": "Iris-versicolor"
 				},
 				{
-					"code": "virginica",
-					"label": "virginica"
+					"code": "Iris-virginica",
+					"label": "Iris-virginica"
 				}
 			],
-			"label": "Iris_class",
+			"label": "Iris_Species",
 			"methodology": "Testing_Kmeans",
 			"sql_type": "text",
 			"type": "polynominal",
