@@ -19,7 +19,7 @@
 			"columnValuesSQLType": "",
 			"columnValuesIsCategorical": "",
 			"columnValuesNumOfEnumerations": "",
-			"value": "outlook,temperature,humidity,windy",
+			"value": "car_buying,car_maint,car_doors,car_persons,car_lug_boot,car_safety",
 			"valueNotBlank": true,
 			"valueMultiple": true,
 			"valueType": "string"
@@ -30,7 +30,7 @@
 			"columnValuesSQLType": "",
 			"columnValuesIsCategorical": "",
 			"columnValuesNumOfEnumerations": "",
-			"value": "play",
+			"value": "car_class",
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "string"

@@ -1,112 +1,171 @@
 {
 	"variables": [
 		{
-				"code": "Species",
-				"description": "",
-				"enumerations": [{
-						"code": "setosa",
-						"label": "setosa"
-					},
-					{
-						"code": "versicolor",
-						"label": "versicolor"
-					},
-					{
-						"code": "virginica",
-						"label": "virginica"
-					}
-				],
-				"label": "Species",
-				"methodology": "Testing",
-				"sql_type": "text",
-				"type": "polynominal",
-				"isCategorical": true
+					"code": "car_buying",
+					"description": "",
+					"enumerations": [{
+							"code": "vhigh",
+							"label": "vhigh"
+						},
+						{
+							"code": "high",
+							"label": "high"
+						},
+						{
+							"code": "med",
+							"label": "med"
+						},
+						{
+							"code": "low",
+							"label": "low"
+						}
+					],
+					"label": "car_buying",
+					"methodology": "Testing_ID3",
+					"sql_type": "text",
+					"type": "polynominal",
+					"isCategorical": true
+				},
+				{
+					"code": "car_maint",
+					"description": "",
+					"enumerations": [{
+							"code": "vhigh",
+							"label": "vhigh"
+						},
+						{
+							"code": "high",
+							"label": "high"
+						},
+						{
+							"code": "med",
+							"label": "med"
+						},
+						{
+							"code": "low",
+							"label": "low"
+						}
+					],
+					"label": "car_maint",
+					"methodology": "Testing_ID3",
+					"sql_type": "text",
+					"type": "polynominal",
+					"isCategorical": true
+				},
+				{
+					"code": "car_doors",
+					"description": "",
+					"enumerations": [{
+							"code": "2",
+							"label": "2"
+						},
+						{
+							"code": "3",
+							"label": "3"
+						},
+						{
+							"code": "4",
+							"label": "4"
+						}
+					],
+					"label": "car_doors",
+					"methodology": "Testing_ID3",
+					"sql_type": "text",
+					"type": "polynominal",
+					"isCategorical": true
+				},
+				{
+					"code": "car_persons",
+					"description": "",
+					"enumerations": [{
+							"code": "2",
+							"label": "2"
+						},
+						{
+							"code": "more",
+							"label": "more"
+						},
+						{
+							"code": "4",
+							"label": "4"
+						}
+					],
+					"label": "car_persons",
+					"methodology": "Testing_ID3",
+					"sql_type": "text",
+					"type": "polynominal",
+					"isCategorical": true
+				},
+				{
+					"code": "car_lug_boot",
+					"description": "",
+					"enumerations": [{
+							"code": "small",
+							"label": "small"
+						},
+						{
+							"code": "med",
+							"label": "med"
+						},
+						{
+							"code": "big",
+							"label": "big"
+						}
+					],
+					"label": "car_lug_boot",
+					"methodology": "Testing_ID3",
+					"sql_type": "text",
+					"type": "polynominal",
+					"isCategorical": true
+				},
+				{
+					"code": "car_safety",
+					"description": "",
+					"enumerations": [{
+							"code": "low",
+							"label": "low"
+						},
+						{
+							"code": "med",
+							"label": "med"
+						},
+						{
+							"code": "high",
+							"label": "high"
+						}
+					],
+					"label": "car_safety",
+					"methodology": "Testing_ID3",
+					"sql_type": "text",
+					"type": "polynominal",
+					"isCategorical": true
+				},
+				{
+					"code": "car_class",
+					"description": "",
+					"enumerations": [{
+							"code": "unacc",
+							"label": "unacc"
+						},
+						{
+							"code": "acc",
+							"label": "acc"
+						},
+						{
+							"code": "vgood",
+							"label": "vgood"
+						},
+						{
+							"code": "good",
+							"label": "good"
+						}
+					],
+					"label": "car_class",
+					"methodology": "Testing_ID3",
+					"sql_type": "text",
+					"type": "polynominal",
+					"isCategorical": true
 		},
-		{
-				"code": "column1",
-				"description": "",
-				"label": "pp",
-				"methodology": "Testing_ANOVA",
-				"sql_type": "real",
-				"type": "",
-				"isCategorical": false
-			}, {
-				"code": "play",
-				"description": "",
-				"label": "pp",
-				"methodology": "Testing_ANOVA",
-				"sql_type": "text",
-				"type": "",
-				"isCategorical": true,
-				"enumerations": [{
-						"code": "yes"
-					}, {
-						"code": "no"
-					}
-				]
-			}, {
-				"code": "windy",
-				"description": "",
-				"label": "pp",
-				"methodology": "Testing_ANOVA",
-				"sql_type": "text",
-				"type": "",
-				"isCategorical": true,
-				"enumerations": [{
-						"code": "FALSE"
-					}, {
-						"code": "TRUE"
-					}
-				]
-			}, {
-				"code": "humidity",
-				"description": "",
-				"label": "pp",
-				"methodology": "Testing_ANOVA",
-				"sql_type": "text",
-				"type": "",
-				"isCategorical": true,
-				"enumerations": [{
-						"code": "high"
-					}, {
-						"code": "normal"
-					}, {
-						"code": "low"
-					}
-				]
-			}, {
-				"code": "temperature",
-				"description": "",
-				"label": "pp",
-				"methodology": "Testing_ANOVA",
-				"sql_type": "text",
-				"type": "",
-				"isCategorical": true,
-				"enumerations": [{
-						"code": "hot"
-					}, {
-						"code": "mild"
-					}, {
-						"code": "cool"
-					}
-				]
-			}, {
-				"code": "outlook",
-				"description": "",
-				"label": "pp",
-				"methodology": "Testing_ANOVA",
-				"sql_type": "text",
-				"type": "",
-				"isCategorical": true,
-				"enumerations": [{
-						"code": "sunny"
-					}, {
-						"code": "overcast"
-					}, {
-						"code": "rainy"
-					}
-				]
-			}, 
 		{
 			"code": "ANOVA_pp",
 			"description": "",
