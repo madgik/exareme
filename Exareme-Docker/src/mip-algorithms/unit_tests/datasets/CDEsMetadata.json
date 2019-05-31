@@ -299,7 +299,7 @@
 			"units": "cm3"
 		},
 		{
-			"code": "Iris_class",
+			"code": "Iris_Species",
 			"description": "",
 			"enumerations": [{
 					"code": "Iris-setosa",
@@ -314,7 +314,7 @@
 					"label": "Iris-virginica"
 				}
 			],
-			"label": "Iris_class",
+			"label": "Iris_Species",
 			"methodology": "Testing_Kmeans",
 			"sql_type": "text",
 			"type": "polynominal",
