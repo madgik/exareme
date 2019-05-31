@@ -9,8 +9,8 @@ select  iterationNumber, actualclass, predictedclass, sum(val) as val
 from %{input_global_tbl}
 group by actualclass,predictedclass;
 
-insert into defaultDB.global_confusionmatrix
-select  iterationNumber, "confusion table", actualclass, predictedclass, null,null, val from defaultDB.global_oneconfusionmatrix;
+--insert into defaultDB.global_confusionmatrix
+--select  iterationNumber, "confusion table", actualclass, predictedclass, null,null, val from defaultDB.global_oneconfusionmatrix;
 
 --insert into defaultDB.global_confusionmatrix
 --select %{iterationNumber}, "statistics", null,null,typestats,statscolname, statsval

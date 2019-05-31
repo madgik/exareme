@@ -1,4 +1,4 @@
-requirevars 'defaultDB' 'iterationNumber' 'y';
+requirevars 'defaultDB' 'iterationNumber' 'x' 'y';
 attach database '%{defaultDB}' as defaultDB;
 
 --var 'iterationNumber' 0;
@@ -6,7 +6,7 @@ attach database '%{defaultDB}' as defaultDB;
 --Training Dataset
 drop table if exists defaultDB.local_trainingset;
 create table defaultDB.local_trainingset as
-select * from defaultdb.localinputtblflat where idofset <> %{iterationNumber};
+select %{x},%{y} from defaultdb.localinputtblflat where idofset <> %{iterationNumber};
 
 --var 'file' from select  'Trainingset'||%{iterationNumber}||'.csv';
 --output '%{file}' header:t select * from defaultDB.local_trainingset;

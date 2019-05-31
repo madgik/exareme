@@ -4,7 +4,6 @@ attach database '%{defaultDB}' as defaultDB;
 
 -- var 'model'  '';
 -- var 'iterationNumber' 0;
-
 -- var 'model' from select tabletojson(colname,val,classval,average,sigma,probability, "colname,val,classval,average,sigma,probability")  as model from defaultdb.global_probabilities;
 -------------------
 
@@ -44,13 +43,11 @@ select rid,colname,val,classval,probability from
 (select rid from defaultDB.testingset),
 (select * from defaultDB.local_probabilities as probabilities_table where colname = '%{y}');
 
-
 drop table if exists defaultDB.tempposteriorprobability; -- Mono ton arithmith ypologizw. Arkei gia na kanw thn sugkrish
 create table defaultDB.tempposteriorprobability as
 select rid,classval as classval,FMULT(probability) as probability
 from defaultDB.tempprobabilities
 group by rid,classval;
-
 
 drop table if exists defaultDB.posteriorprobability; --Normalize results
 create table defaultDB.posteriorprobability as

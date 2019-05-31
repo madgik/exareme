@@ -21,9 +21,6 @@
 --var 'alpha' 1;
 -------------------------------------------------------------------------------------
 
-
-
-
 requirevars 'defaultDB' 'input_local_DB' 'db_query' 'x' 'y' 'kfold'; -- y = classname
 attach database '%{defaultDB}' as defaultDB;
 attach database '%{input_local_DB}' as localDB;
