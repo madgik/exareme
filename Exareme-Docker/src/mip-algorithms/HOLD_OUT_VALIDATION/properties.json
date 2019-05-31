@@ -8,7 +8,7 @@
 			"name": "dataset",
 			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed.",
 			"type": "dataset",
-			"value": "eleni",
+			"value": "car",
 			"valueNotBlank": true,
 			"valueMultiple": true,
 			"valueType": "string"

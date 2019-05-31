@@ -12,9 +12,9 @@ url3='http://192.168.90.138:9090/mining/query/NAIVE_BAYES_TESTING'
 def test_NAIVEBAYES_1():
     logging.info("---------- TEST : NAIVE BAYES :PLAYTENNIS DATASET  ")
     #CROSS VALIDATION
-    data1 =[{"name": "dataset","value": "playtennis"},
-            {"name": "x", "value": "outlook,temperature,humidity,windy"},
-            {"name": "y", "value": "play"},
+    data1 =[{"name": "dataset","value": "car"},
+            {"name": "x", "value": " car_buying,car_maint,car_doors,car_persons,car_lug_boot,car_safety"},
+            {"name": "y", "value": "car_class"},
             {"name": "kfold","value": "3"},
             {"name": "dbIdentifier","value": ""}]
 
@@ -26,8 +26,8 @@ def test_NAIVEBAYES_1():
     #NAIVE BAYES TRAINING
     data2 =[{"name": "iterationNumber","value": "0"},
             {"name": "alpha","value": "0.1"},
-            {"name": "x", "value": "outlook,temperature,humidity,windy"},
-            {"name": "y", "value": "play"}]
+            {"name": "x", "value": " car_buying,car_maint,car_doors,car_persons,car_lug_boot,car_safety"},
+            {"name": "y", "value": "car_class"}]
     data2.append({"name": "dbIdentifier","value":result1['dbIdentifier'] })
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
@@ -35,58 +35,56 @@ def test_NAIVEBAYES_1():
     trainingResult = json.loads(r.text)
     print (r.text)
 
-    # > classifier$tables
-    # $outlook
-    #      outlook
-    # Y       overcast      rainy      sunny
-    #   no  0.03030303 0.63636364 0.33333333
-    #   yes 0.49206349 0.17460317 0.33333333
-    #
-    # $temperature
-    #      temperature
-    # Y           cool        hot       mild
-    #   no  0.33333333 0.03030303 0.63636364
-    #   yes 0.33333333 0.17460317 0.49206349
-    #
-    # $humidity
-    #      humidity
-    # Y          high    normal
-    #   no  0.6562500 0.3437500
-    #   yes 0.1774194 0.8225806
-    #
-    # $windy
-    #      windy
-    # Y         FALSE      TRUE
-    #   no  0.3437500 0.6562500
-    #   yes 0.6612903 0.3387097
+    $car_buying
+       car_buying
+Y              high         low         med
+  acc   0.331149689 0.291844088 0.377006223
+  good  0.001443001 0.665223665 0.333333333
+  unacc 0.262301977 0.361839338 0.375858685
+  vgood 0.001531394 0.598774885 0.399693721
 
-     # >  classifier$apriori
-     #    Y
-     # no yes
-     #  3   6
+$car_maint
+       car_maint
+Y              high         low         med       vhigh
+  acc   0.321218075 0.183693517 0.259004584 0.236083824
+  good  0.001440922 0.664265130 0.332853026 0.001440922
+  unacc 0.248247827 0.274880852 0.274880852 0.201990468
+  vgood 0.200305810 0.399082569 0.399082569 0.001529052
 
-    corr_trainingResult= [  {'colname': 'outlook', 'val':'overcast', 'classval': 'no', 'probability': 0.03030303},
-                            {'colname': 'outlook', 'val':'rainy', 'classval': 'no', 'probability':  0.63636364},
-                            {'colname': 'outlook', 'val':'sunny', 'classval': 'no', 'probability': 0.33333333},
-                            {'colname': 'outlook', 'val':'overcast', 'classval': 'yes', 'probability':  0.49206349},
-                            {'colname': 'outlook', 'val':'rainy', 'classval': 'yes', 'probability':  0.17460317},
-                            {'colname': 'outlook', 'val':'sunny', 'classval': 'yes', 'probability': 0.33333333},
-                            {'colname': 'temperature', 'val':'cool', 'classval': 'no', 'probability': 0.33333333},
-                            {'colname': 'temperature', 'val':'hot', 'classval': 'no', 'probability': 0.03030303},
-                            {'colname': 'temperature', 'val':'mild', 'classval': 'no', 'probability': 0.63636364},
-                            {'colname': 'temperature', 'val':'cool', 'classval': 'yes', 'probability': 0.33333333},
-                            {'colname': 'temperature', 'val':'hot', 'classval': 'yes', 'probability':  0.17460317},
-                            {'colname': 'temperature', 'val':'mild', 'classval': 'yes', 'probability': 0.49206349},
-                            {'colname': 'humidity', 'val':'high', 'classval': 'no', 'probability': 0.6562500},
-                            {'colname': 'humidity', 'val':'normal', 'classval': 'no', 'probability': 0.3437500},
-                            {'colname': 'humidity', 'val':'high', 'classval': 'yes', 'probability':  0.1774194},
-                            {'colname': 'humidity', 'val':'normal', 'classval': 'yes', 'probability': 0.8225806},
-                            {'colname': 'windy', 'val':'FALSE', 'classval': 'no', 'probability': 0.3437500},
-                            {'colname': 'windy', 'val':'TRUE', 'classval': 'no', 'probability': 0.6562500},
-                            {'colname': 'windy', 'val':'FALSE', 'classval': 'yes', 'probability': 0.6612903},
-                            {'colname': 'windy', 'val':'TRUE', 'classval': 'yes', 'probability': 0.3387097},
-                            {'colname': 'play', 'val':'no', 'classval': 'no', 'probability':3.0/9.0},
-                            {'colname': 'play', 'val':'yes', 'classval': 'yes', 'probability':6.0/9.0}]
+$car_doors
+       car_doors
+Y               2         3         4     5more
+  acc   0.1967911 0.2655534 0.2688278 0.2688278
+  good  0.2175793 0.2608069 0.2608069 0.2608069
+  unacc 0.2594617 0.2440426 0.2482478 0.2482478
+  vgood 0.1544343 0.2308869 0.3073394 0.3073394
+
+$car_persons
+       car_persons
+Y                  2            4         more
+  acc   0.0003275467 0.5178512938 0.4818211595
+  good  0.0014430014 0.5209235209 0.4776334776
+  unacc 0.5300714987 0.2286555447 0.2412729567
+  vgood 0.0015313936 0.4609494640 0.5375191424
+
+$car_lug_boot
+       car_lug_boot
+Y               big         med       small
+  acc   0.354077956 0.350802489 0.295119555
+  good  0.347763348 0.347763348 0.304473304
+  unacc 0.297350343 0.319781298 0.382868358
+  vgood 0.614088821 0.384379786 0.001531394
+
+$car_safety
+       car_safety
+Y               high          low          med
+  acc   0.5014739600 0.0003275467 0.4981984933
+  good  0.4343434343 0.0014430014 0.5642135642
+  unacc 0.1908033086 0.5384831067 0.2707135847
+  vgood 0.9969372129 0.0015313936 0.0015313936
+
+
+    corr_trainingResult= []
 
     check_trainingresult(trainingResult['results'],corr_trainingResult)
 
@@ -94,8 +92,8 @@ def test_NAIVEBAYES_1():
     #NAIVE BAYES TESTING
     data3 =[{"name": "iterationNumber","value": "0"},
             {"name": "alpha","value": "0.1"},
-            {"name": "x", "value": "outlook,temperature,humidity,windy"},
-            {"name": "y", "value": "play"},
+            {"name": "x", "value": " car_buying,car_maint,car_doors,car_persons,car_lug_boot,car_safety"},
+            {"name": "y", "value": "car_class"},
             {"name": "kfold","value": "3"}]
     data3.append({"name": "dbIdentifier","value":trainingResult['dbIdentifier'] })
     data3.append({"name": "model","value": json.dumps(trainingResult['results']) })

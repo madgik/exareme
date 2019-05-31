@@ -1,8 +1,8 @@
 requirevars 'defaultDB' 'input_global_tbl' 'y' 'alpha' 'dbIdentifier';
 attach database '%{defaultDB}' as defaultDB;
 
--- var 'input_global_tbl' 'defaultDB.local_counts';
--- var 'alpha' 0.1;
+--var 'input_global_tbl' 'defaultDB.local_counts';
+--var 'alpha' 0.1;
 
 --------------------------------------------------------------------------------------------------------
 -- Merge local_counts

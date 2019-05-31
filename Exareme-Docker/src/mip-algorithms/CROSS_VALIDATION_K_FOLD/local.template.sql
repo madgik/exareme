@@ -2,23 +2,17 @@
 ------------------Input for testing
 ------------------------------------------------------------------------------
 --Test 1
--- var 'x' 'outlook,temperature,humidity,windy,column1';
--- var 'y' 'play';
+-- var 'x' 'car_buying,car_maint,car_doors,car_persons,car_lug_boot,car_safety';
+-- var 'y' 'car_class';
 -- var 'kfold' 3;
 -- var 'defaultDB' 'mydefaultDB2.db';
 -- attach 'datasets.db' as localDB;
 --
 -- drop table if exists inputdata;
 -- create table inputdata as
---    select %{x},%{y}
---    from (file header:t '/home/eleni/Desktop/HBP/exareme/Exareme-Docker/src/mip-algorithms/unit_tests/datasets/CSVs/Naive/BayesNaiveTestDataset.csv');
+-- select %{x},%{y}
+-- from (file header:t '/home/eleni/Desktop/HBP/exareme/Exareme-Docker/src/mip-algorithms/unit_tests/datasets/CSVs/car.csv');
 
--- Test 2 'Iris_dataset'
---var 'defaultDB' 'defaultDB';
---var 'columns' 'Sepal_Length,Sepal_Width,Petal_Length,Petal_Width';
---var 'classname' 'class';
---var 'kfold' 2;
---var 'alpha' 1;
 -------------------------------------------------------------------------------------
 
 requirevars 'defaultDB' 'input_local_DB' 'db_query' 'x' 'y' 'kfold'; -- y = classname
@@ -45,6 +39,6 @@ where kfold.rid = h.rowid;
 
 drop table if exists defaultDB.localmetadatatbl;
 create table defaultDB.localmetadatatbl as
-select code, categorical from metadata where code in (select strsplitv('%{x}','delimiter:,')) or code ='%{y}';
+select code, isCategorical as categorical from metadata where code in (select strsplitv('%{x}','delimiter:,')) or code ='%{y}';
 
 select * from defaultDB.localmetadatatbl;

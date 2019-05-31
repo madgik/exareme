@@ -1,7 +1,6 @@
 requirevars  'defaultDB' 'model' 'x' 'y' 'iterationNumber' ;
 attach database '%{defaultDB}' as defaultDB;
 
-
 -- var 'model'  '';
 -- var 'iterationNumber' 0;
 -- var 'model' from select tabletojson(colname,val,classval,average,sigma,probability, "colname,val,classval,average,sigma,probability")  as model from defaultdb.global_probabilities;
