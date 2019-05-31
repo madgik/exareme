@@ -5,7 +5,7 @@ from time import time as t
 import math
 
 
-url='http://localhost:9090/mining/query/KMEANS'
+url='http://88.197.53.38:9090/mining/query/KMEANS'
 
 
 def test_KMEANS_1():
@@ -25,7 +25,6 @@ def test_KMEANS_1():
         ]
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
     r = requests.post(url,data=json.dumps(data),headers=headers)
-    print (r.text)
     result = json.loads(r.text)
 
 
@@ -64,7 +63,6 @@ def test_KMEANS_2():
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
     r = requests.post(url,data=json.dumps(data),headers=headers)
-    print (r.text)
     result = json.loads(r.text)
 
     # result ={"resources":[{"name":"KMEANS_TABLE","profile":"tabular-data-resource","data":[["cluster id","rightpallidum","leftpallidum","lefthippocampus","righthippocampus","number of points"],[1.0,1.16975764706,1.17013882353,2.04674117647,2.33005,34.0],[2.0,1.45123097345,1.44481637168,2.61178185841,2.8066039823,226.0],[3.0,1.63644254545,1.62866181818,3.26815854545,3.48492,275.0],[4.0,1.78926969697,1.76314848485,3.69845454545,3.93534242424,66.0],[5.0,1.47848721003,1.46940445141,2.97324451411,3.16225297806,319.0]],"schema":{"fields":[{"name":"cluster id","type":"int"},{"name":"rightpallidum","type":"real"},{"name":"leftpallidum","type":"real"},{"name":"lefthippocampus","type":"real"},{"name":"righthippocampus","type":"real"},{"name":"number of points","type":"int"}]}}]}
@@ -111,12 +109,11 @@ def test_KMEANS_Privacy():
             {   "name": "outputformat", "value": "pfa" }
         ]
 
-        headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-        r = requests.post(url,data=json.dumps(data),headers=headers)
-        print (r.text)
-        result = json.loads(r.text)
+    headers = {'Content-type': 'application/json', "Accept": "text/plain"}
+    r = requests.post(url,data=json.dumps(data),headers=headers)
+    result = json.loads(r.text)
 
-        check_privacy_result(r.text)
+    check_privacy_result(r.text)
 
 
 
