@@ -2,10 +2,15 @@
 - name: Get Hostname For Each Node
   shell: docker node ls --format '{{ "{{" }}.Hostname{{ "}}" }}'
   register: hostName
+  tags:
+   - labels
+
 
 - name:  Add Label Name To Each Node
   shell: docker node update --label-add name={{ item }} {{ item }}
   with_items: 
    - "{{ hostName.stdout_lines }}"
+  tags:
+  - labels
 
 
