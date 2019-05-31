@@ -5,7 +5,7 @@ import math
 from decimal import *
 
 
-url='http://88.197.53.100:9090/mining/query/HISTOGRAMS'
+endpointUrl='http://88.197.53.38:9090/mining/query/HISTOGRAMS'
 
 
 def test_Histogram_1():
@@ -18,7 +18,7 @@ def test_Histogram_1():
             {"name": "filter", "value": ""}]
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(url,data=json.dumps(data),headers=headers)
+    r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
     result = json.loads(r.text)
     print (r.text)
 
@@ -66,7 +66,7 @@ def test_Histogram_2():
             {"name": "filter", "value": ""}]
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(url,data=json.dumps(data),headers=headers)
+    r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
     result = json.loads(r.text)
     print (r.text)
 
@@ -119,7 +119,7 @@ def test_Histogram_3():
             {"name": "filter", "value": ""}]
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(url,data=json.dumps(data),headers=headers)
+    r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
     result = json.loads(r.text)
     print (r.text)
     '''
@@ -180,7 +180,7 @@ def test_Histogram_4():
             {"name": "filter", "value": ""}]
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(url,data=json.dumps(data),headers=headers)
+    r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
     result = json.loads(r.text)
     print (r.text)
     '''
@@ -209,7 +209,7 @@ def test_Histogram_5():
             {"name": "filter", "value": ""}]
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(url,data=json.dumps(data),headers=headers)
+    r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
     result = json.loads(r.text)
     print (r.text)
 
@@ -226,29 +226,28 @@ def test_Histogram_5():
     check_valuesofbins(result['series'],corr_counts,10)
 
 
-def test_Privacy_Error_HISTOGRAMS():
+
+def test_Histogram_Privacy():
     """
     
     """
 
     logging.info("---------- TEST : Algorithms for Privacy Error")
 
-    data = [{"name": "x","value": "subjectageyears"},
-            {"name": "y","value": ""},
-			{"name": "bins","value": "4"},
-            {"name": "dataset","value": "adni_9rows"},
-            {"name": "filter","value": ""}
-           ]
+    data = [{ "name": "x", "value": "alzheimerbroadcategory"},
+            {"name": "y", "value": "gender"},
+            {"name": "bins", "value": ""},
+            {"name": "dataset", "value": "adni_9rows"},
+            {"name": "filter", "value": ""}]
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(url, data=json.dumps(data), headers=headers)
+    r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
 
     result = json.loads(r.text)
 
-    check_result(r.text)
+    check_privacy_result(r.text)
 
-
-def check_result(result):
+def check_privacy_result(result):
     assert result == "{\"error\" : \"The Experiment could not run with the input provided because there are insufficient data.\"}"
 
 
