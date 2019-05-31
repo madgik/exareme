@@ -57,3 +57,9 @@ crashlytics-build.properties
 
 
 
+=======
+# intellij
+.idea
+
+# macos
+*.DS_Store

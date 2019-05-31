@@ -75,9 +75,29 @@ public class NIterativeAlgorithmResultEntity extends BasicHttpEntity
                         // Algorithm execution failed, notify the client.
                         // Overwrite channel with an InputStream containing error information.
                         // Beware...
-                        String errMsg = generateErrorMessage(iterativeAlgorithmState.getAlgorithmKey());
-                        channel = Channels.newChannel(
-                                new ByteArrayInputStream(errMsg.getBytes(StandardCharsets.UTF_8)));
+                        String result = iterativeAlgorithmState.getAlgorithmError();    //Catch whatever error coming from UDFs
+                        if (result.contains("ExaremeError:")) {
+                            result = result.substring(result.lastIndexOf("ExaremeError:") + "ExaremeError:".length()).replaceAll("\\s", " ");
+                            channel = Channels.newChannel(
+                                    new ByteArrayInputStream(createErrorMessage(result).getBytes(StandardCharsets.UTF_8)));
+                        }
+                        else if (result.contains("PrivacyError")) {
+                            String privacyResult = createErrorMessage("The Experiment could not run with the input provided because there are insufficient data.");
+                            encoder.write(ByteBuffer.wrap(privacyResult.getBytes()));
+                            encoder.complete();
+                            close();
+                        }
+                        else if (result.matches("java.rmi.RemoteException: Containers:.*not responding")) {
+                            String privacyResult = createErrorMessage("One or more containers are not responding. Please inform the system administrator.");
+                            encoder.write(ByteBuffer.wrap(privacyResult.getBytes()));
+                            encoder.complete();
+                            close();
+                        }
+                        else{     //Generate a default Message
+                            String defaultMsg = generateErrorMessage(iterativeAlgorithmState.getAlgorithmKey());
+                            channel = Channels.newChannel(
+                                    new ByteArrayInputStream(defaultMsg.getBytes(StandardCharsets.UTF_8)));
+                        }
                         channel.read(buffer);
                         buffer.flip();
                         encoder.write(buffer);
@@ -133,6 +153,9 @@ public class NIterativeAlgorithmResultEntity extends BasicHttpEntity
         return false;
     }
 
+    private String createErrorMessage(String error) {
+        return "{\"error\" : \"" + error + "\"}";
+    }
     /**
      * Generates a JSON response that contains the error and a description.
      *

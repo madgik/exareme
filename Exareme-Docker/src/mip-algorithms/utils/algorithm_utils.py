@@ -33,6 +33,17 @@ class TransferData():
         print(codecs.encode(pickle.dumps(self), 'ascii'))
 
 
+def query_with_privacy(fname_db, query):
+    conn = sqlite3.connect(fname_db)
+    cur = conn.cursor()
+    cur.execute(query)
+    schema = [description[0] for description in cur.description]
+    data = cur.fetchall()
+    if len(data) < PRIVACY_MAGIC_NUMBER:
+        raise PrivacyError('Query results in illegal number of datapoints.')
+    return schema, data
+
+
 class StateData(object):  # TODO Call save in constructor to simplify algorithm code??
 
     def __init__(self, **kwargs):
