@@ -1,4 +1,4 @@
-,alzheimerbroadcategory,leftententorhinalarea,rightententorhinalarea,lefthippocampus,righthippocampus,dataset,subjectcode
+,alzheimerbroadcategory_logreg_test,leftententorhinalarea_logreg_test,rightententorhinalarea_logreg_test,lefthippocampus_logreg_test,righthippocampus_logreg_test,dataset,subjectcode
 1,CN,1.6504,1.79898,2.91412,3.17941,data_logisticRegression,1
 2,AD,1.48144,1.62703,3.09945,3.28936,data_logisticRegression,2
 3,AD,1.34952,1.28782,2.39808,2.48784,data_logisticRegression,3
