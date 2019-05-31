@@ -28,11 +28,11 @@ def test_LogisticRegression():
     data = [
         {
             "name" : "X",
-            "value": "leftententorhinalarea, rightententorhinalarea, lefthippocampus, righthippocampus"
+            "value": "leftententorhinalarea_logreg_test, rightententorhinalarea_logreg_test, lefthippocampus_logreg_test, righthippocampus_logreg_test"
         },
         {
             "name" : "Y",
-            "value": "alzheimerbroadcategory"
+            "value": "alzheimerbroadcategory_logreg_test"
         },
         {
             "name" : "dataset",
@@ -55,25 +55,25 @@ def test_LogisticRegression():
         'z value'    : -8.634,
         'p value'    : '< 0.01'
     }, {
-        'name'       : 'leftententorhinalarea',
+        'name'       : 'leftententorhinalarea_logreg_test',
         'coefficient': 1.355,
         'std.err.'   : 1.432,
         'z value'    : 0.946,
         'p value'    : 0.343976
     }, {
-        'name'       : 'rightententorhinalarea',
+        'name'       : 'rightententorhinalarea_logreg_test',
         'coefficient': 4.973,
         'std.err.'   : 1.403,
         'z value'    : 3.545,
         'p value'    : '< 0.01'
     }, {
-        'name'       : 'lefthippocampus',
+        'name'       : 'lefthippocampus_logreg_test',
         'coefficient': 2.711,
         'std.err.'   : 1.115,
         'z value'    : 2.432,
         'p value'    : '0.015013'
     }, {
-        'name'       : 'righthippocampus',
+        'name'       : 'righthippocampus_logreg_test',
         'coefficient': -2.729,
         'std.err.'   : 1.031,
         'z value'    : -2.646,
