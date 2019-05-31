@@ -47,4 +47,5 @@
     DOCKER_DATASETS_FOLDER: "{{ DOCKER_PATH }}"
     LOCAL_DATASETS_FOLDER: "{{ hostvars[item]['local_path'] }}"
   with_items: "{{ groups['workers'] }}"
-
+  ignore_errors: true
+  tags: workers
