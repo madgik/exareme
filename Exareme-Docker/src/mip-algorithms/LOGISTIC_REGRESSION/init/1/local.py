@@ -23,7 +23,7 @@ def logregr_local_init(local_in):
     X, Y, schema_X, schema_Y = local_in
     n_obs = len(Y)
     n_cols = len(X[0]) + 1  # Add one for the intercept
-    schema_X.insert(0, 'Intercept')
+    schema_X.insert(0, '(Intercept)')
     # Create dictionary for categories in Y
     y_val_dict = {
         sorted(set(Y))[0]: 0,
@@ -65,10 +65,11 @@ def main():
     try:
         X = np.array([[x for idx, x in enumerate(row) if idx in idx_X] for row in data], dtype=np.float64)
     except ValueError:
-        print('Values in X and Y must be numbers')
+        print('Values in X must be numbers')
 
     Y = [data[i][idx_Y] for i in range(len(data))]
-    assert len(set(Y)) == 2, "Y vector should only contain 2 distinct values"
+    assert len(set(Y) - {None, ''}) == 2, "Y vector should only contain 2 distinct values, and possibly None or " \
+                                          "empty strings"
 
     local_in = X, Y, schema_X, schema_Y
     # Run algorithm local step

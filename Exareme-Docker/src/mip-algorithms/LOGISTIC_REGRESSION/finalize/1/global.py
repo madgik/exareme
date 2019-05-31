@@ -86,7 +86,7 @@ def logregr_global_final(global_state, global_in):
     raw_data = {
         'Covariates'                 : [
             {
-                'Name'       : schema_X[i],
+                'Variable'       : schema_X[i],
                 'Coefficient': coeff[i],
                 'std.err.'   : stderr[i],
                 'z score'    : z_scores[i],
@@ -154,122 +154,104 @@ def logregr_global_final(global_state, global_in):
     ]
     # Tabular summary 2
     tabular_data_summary2 = [["model degrees of freedom", "residual degrees of freedom",
-                                 "log-likelihood", "null model log-likelihood", "AIC", "BIC",
-                                 "R^2", "adjusted R^2", "McFadden pseudo-R^2", "Cox-Snell pseudo-R^2", "F statistic"]]
+                              "log-likelihood", "null model log-likelihood", "AIC", "BIC",
+                              "R^2", "adjusted R^2", "McFadden pseudo-R^2", "Cox-Snell pseudo-R^2", "F statistic"]]
     tabular_data_summary2.append([df_mod, df_resid, ll, ll0, aic, bic, r2, r2_adj, r2_mcf, r2_cs, F_stat])
     tabular_data_summary2_schema_fields = [{"name": name, "type": "number"} for name in tabular_data_summary2[0]]
     # Highchart ROC
-    # TODO include <script src="https://code.highcharts.com/highcharts.js"></script>
-    #              <script src="https://code.highcharts.com/modules/series-label.js"></script>
     highchart_roc = {
-        "chart" : {
+        "chart"  : {
             "type"    : "area",
             "zoomType": "xy"
         },
-        "title" : {
+        "title"  : {
             "text": "ROC"
         },
-        "xAxis" : {
+        "xAxis"  : {
             "min"  : -0.05,
             "max"  : 1.05,
             "title": {
                 "text": "False Positive Rate"
             }
         },
-        "yAxis" : {
+        "yAxis"  : {
             "title": {
                 "text": "True Positive Rate"
             }
         },
-        "legend": {
+        "legend" : {
             "enabled": False
         },
-        "series": [{
+        "series" : [{
             "useHTML": True,
             "name"   : "AUC " + str(AUC) + "<br/>Gini Coefficient " + str(gini),
             "label"  : {
                 "onArea": True
             },
             "data"   : list(zip(FP_rate, TP_rate))
-        }]
+        }],
+        'tooltip': {
+            'enabled'     : True,
+            'headerFormat': '',
+            'pointFormat' : '{point.x}, {point.y}'
+        }
     }
     # Highchart confusion matrix
-    # TODO include <script src="https://code.highcharts.com/highcharts.js"></script>
-    #              <script src="https://code.highcharts.com/modules/heatmap.js"></script>
-    #              <script src="https://code.highcharts.com/modules/exporting.js"></script>
     highchart_conf_matr = {
 
-        "chart"      : {
+        "chart"    : {
             "type": "heatmap",
 
         },
-        "plotOptions": {
-            "series": {
-                "dataLabels": {
-                    "inside": True
-                }
-            }
-        },
-
-        "title"      : {
+        "title"    : {
             "useHTML": True,
             "text"   : "Confusion Matrix<br/><center><font size='2'>Binary categories:<br/>" +
                        " ".join([key + ' :' + str(y_val_dict[key]) for key in list(y_val_dict.keys())]) +
                        "</font></center>"
         },
-
-        "xAxis"      : {
+        "xAxis"    : {
             "categories": ["Condition Positives", "Condition Negatives"]
         },
-
-        "yAxis"      : {
+        "yAxis"    : {
             "categories": ["Prediction Negatives", "Prediction Positives"],
             "title"     : "null"
         },
-
-        "colorAxis"  : {
+        "colorAxis": {
             "min"     : 0,
             "minColor": "#FFFFFF",
             "maxColor": "#6699ff"
         },
-
-        "legend"     : {
-            "enabled"      : False,
-            "align"        : 'right',
-            "layout"       : 'vertical',
-            "margin"       : 0,
-            "verticalAlign": 'top',
-            "y"            : 25,
-            "symbolHeight" : 280
+        "legend"   : {
+            "enabled": False,
         },
-        "tooltip"    : {
+        "tooltip"  : {
             "enabled": False
         },
-        "series"     : [{
+        "series"   : [{
             "dataLabels" : [{
-                "format" : '{point.name} {point.value}',
+                "format" : '{point.name}: {point.value}',
                 "enabled": True,
                 "color"  : '#333333'
             }],
             "name"       : 'Confusion Matrix',
             "borderWidth": 1,
             "data"       : [{
-                "name" : 'TP',
+                "name" : 'True Positives',
                 "x"    : 0,
                 "y"    : 1,
                 "value": TP
             }, {
-                "name" : 'FP',
+                "name" : 'False Positives',
                 "x"    : 1,
                 "y"    : 1,
                 "value": FP
             }, {
-                "name" : 'FN',
+                "name" : 'False Negatives',
                 "x"    : 0,
                 "y"    : 0,
                 "value": FN
             }, {
-                "name" : 'TN',
+                "name" : 'True Negatives',
                 "x"    : 1,
                 "y"    : 0,
                 "value": TN
