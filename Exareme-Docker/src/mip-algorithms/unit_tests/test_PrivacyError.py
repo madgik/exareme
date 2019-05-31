@@ -4,7 +4,7 @@ import logging
 
 # Required datasets: adni_9rows
 
-endpointUrl = 'http://88.197.53.38:9090'
+endpointUrl = 'http://88.197.53.100:9090'
 
 def test_Privacy_Error_PEARSON_CORRELATION():
     """
@@ -71,28 +71,6 @@ def test_Privacy_Error_LINEAR_REGRESSION():
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
     r = requests.post(endpointUrl + '/mining/query/LINEAR_REGRESSION', data=json.dumps(data), headers=headers)
-
-    result = json.loads(r.text)
-
-    check_result(r.text)
-
-
-def test_Privacy_Error_VARIABLES_HISTOGRAM():
-    """
-    
-    """
-
-    logging.info("---------- TEST : Algorithms for Privacy Error")
-
-    data = [{"name": "column1","value": "subjectageyears"},
-            {"name": "column2","value": ""},
-	    {"name": "nobuckets","value": "4"},
-            {"name": "dataset","value": "adni_9rows"},
-            {"name": "filter","value": ""}
-           ]
-
-    headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(endpointUrl + '/mining/query/VARIABLES_HISTOGRAM', data=json.dumps(data), headers=headers)
 
     result = json.loads(r.text)
 
