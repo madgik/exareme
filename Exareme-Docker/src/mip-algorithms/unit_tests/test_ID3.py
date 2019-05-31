@@ -3,7 +3,7 @@ import json
 import logging
 
 
-url='http://88.197.53.38:9090/mining/query/ID3'
+endpointUrl='http://88.197.53.100:9090/mining/query/ID3'
 
 def test_ID3_1():
     logging.info("---------- TEST : ID3 - Test using contact-lenses dataset  ")
@@ -19,7 +19,7 @@ def test_ID3_1():
         ]
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(url,data=json.dumps(data),headers=headers)
+    r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
     result = json.loads(r.text)
     print (result)
 
@@ -76,7 +76,7 @@ def test_ID3_Privacy():
         ]
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(url,data=json.dumps(data),headers=headers)
+    r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
     result = json.loads(r.text)
     print (result)
 

@@ -5,7 +5,7 @@ import math
 from decimal import *
 
 
-url='http://88.197.53.38:9090/mining/query/ANOVA'
+endpointUrl='http://88.197.53.100:9090/mining/query/ANOVA'
 
 
 def test_ANOVA_1():
@@ -23,7 +23,7 @@ def test_ANOVA_1():
         ]
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(url,data=json.dumps(data),headers=headers)
+    r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
     result = json.loads(r.text)
     print (r.text)
 
@@ -68,7 +68,7 @@ def test_ANOVA_2():
         ]
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(url,data=json.dumps(data),headers=headers)
+    r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
     result = json.loads(r.text)
     print (r.text)
 
@@ -117,7 +117,7 @@ def test_ANOVA_3():
         ]
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(url,data=json.dumps(data),headers=headers)
+    r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
     result = json.loads(r.text)
     print (r.text)
 
@@ -165,7 +165,7 @@ def test_ANOVA_4():
         ]
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(url,data=json.dumps(data),headers=headers)
+    r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
     result = json.loads(r.text)
     print (r.text)
 
@@ -209,7 +209,7 @@ def test_ANOVA_5():
         ]
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(url,data=json.dumps(data),headers=headers)
+    r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
     result = json.loads(r.text)
     print (r.text)
 
@@ -252,7 +252,7 @@ def test_ANOVA_6():
         ]
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(url,data=json.dumps(data),headers=headers)
+    r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
     result = json.loads(r.text)
     print (r.text)
 
@@ -296,7 +296,7 @@ def test_ANOVA_7():
         ]
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(url,data=json.dumps(data),headers=headers)
+    r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
     result = json.loads(r.text)
     print (r.text)
 
@@ -336,7 +336,7 @@ def test_ANOVA_8():
     ]
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(url,data=json.dumps(data),headers=headers)
+    r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
     result = json.loads(r.text)
     print (r.text)
 
@@ -371,7 +371,7 @@ def test_ANOVA_9():
     ]
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(url,data=json.dumps(data),headers=headers)
+    r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
     result = json.loads(r.text)
     print (r.text)
 
@@ -405,7 +405,7 @@ def test_ANOVA_10():
     ]
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(url,data=json.dumps(data),headers=headers)
+    r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
     result = json.loads(r.text)
     print (r.text)
 
@@ -443,7 +443,7 @@ def test_ANOVA_11():
     ]
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(url,data=json.dumps(data),headers=headers)
+    r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
     result = json.loads(r.text)
     print (r.text)
 
@@ -479,7 +479,7 @@ def test_ANOVA_12():
     ]
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(url,data=json.dumps(data),headers=headers)
+    r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
     result = json.loads(r.text)
     print (r.text)
 
@@ -524,7 +524,7 @@ def test_ANOVA_13():
     ]
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(url,data=json.dumps(data),headers=headers)
+    r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
     result = json.loads(r.text)
     print (r.text)
 
@@ -560,7 +560,7 @@ def test_ANOVA_14():
     ]
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(url,data=json.dumps(data),headers=headers)
+    r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
     result = json.loads(r.text)
     print (r.text)
 
@@ -601,7 +601,7 @@ def test_ANOVA_15():
     ]
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(url,data=json.dumps(data),headers=headers)
+    r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
     result = json.loads(r.text)
     print (r.text)
 
@@ -644,7 +644,7 @@ def test_ANOVA_16():
     ]
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(url,data=json.dumps(data),headers=headers)
+    r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
     result = json.loads(r.text)
     print (r.text)
 
@@ -689,7 +689,7 @@ def test_ANOVA_17():
     ]
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(url,data=json.dumps(data),headers=headers)
+    r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
     result = json.loads(r.text)
     print (r.text)
 
@@ -738,7 +738,7 @@ def test_ANOVA_Privacy():
           ]
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(url, data=json.dumps(data), headers=headers)
+    r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
 
     result = json.loads(r.text)
 
