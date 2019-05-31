@@ -1,4 +1,4 @@
-requirevars 'defaultDB' 'columns' 'k';
+requirevars 'defaultDB'  'k';
 attach database '%{defaultDB}' as defaultDB;
 
 

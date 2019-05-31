@@ -13,7 +13,7 @@ def test_KMEANS_1():
     data = [
             {   "name": "iterations_max_number", "value": "50" },
             {   "name": "iterations_condition_query_provided", "value": "true" },
-            {   "name": "columns", "value": "Iris_Sepal_Length,Iris_Sepal_Width,Iris_Petal_Length,Iris_Petal_Width" },
+            {   "name": "x", "value": "Iris_Sepal_Length,Iris_Sepal_Width,Iris_Petal_Length,Iris_Petal_Width" },
             {   "name": "k", "value":""},
             {   "name":"centers", "value": "[{\"clid\":1, \"Iris_Sepal_Length\":6.0, \"Iris_Sepal_Width\":2.5, \"Iris_Petal_Length\":4.0 ,\"Iris_Petal_Width\":1.5 },\
             {\"clid\":2, \"Iris_Sepal_Length\":5.0, \"Iris_Sepal_Width\":3.5, \"Iris_Petal_Length\":1.5 ,\"Iris_Petal_Width\":0.5},\
@@ -48,7 +48,7 @@ def test_KMEANS_2():
     data = [
             {   "name": "iterations_max_number", "value": "50" },
             {   "name": "iterations_condition_query_provided", "value": "true" },
-            {   "name": "columns", "value": "rightpallidum,leftpallidum,lefthippocampus,righthippocampus" },
+            {   "name": "x", "value": "rightpallidum,leftpallidum,lefthippocampus,righthippocampus" },
             {   "name": "k", "value":""},
             {   "name":"centers", "value": "[{\"clid\":1,\"rightpallidum\":0.2,\"leftpallidum\":0.5,\"lefthippocampus\":1.7,\"righthippocampus\":1.5},\
              {\"clid\":2,\"rightpallidum\":0.6,\"leftpallidum\":1.2,\"lefthippocampus\":2.5,\"righthippocampus\":2.0},\
@@ -85,6 +85,44 @@ def test_KMEANS_2():
     check_variable(result['resources'][0]['data'][3], [3,  1.636442545 ,1.628661818, 3.268158545,3.48492000039,275])
     check_variable(result['resources'][0]['data'][4], [4,1.789269697, 1.763148485, 3.698454545, 3.935342424,66])
     check_variable(result['resources'][0]['data'][5], [5, 1.478487210, 1.469404451 ,2.973244514, 3.162252978,319])
+
+
+
+def test_KMEANS_Privacy():
+    """
+
+    """
+
+    logging.info("---------- TEST : Algorithms for Privacy Error")
+
+    data = [
+            {   "name": "iterations_max_number", "value": "50" },
+            {   "name": "iterations_condition_query_provided", "value": "true" },
+            {   "name": "x", "value": "rightpallidum,leftpallidum,lefthippocampus,righthippocampus" },
+            {   "name": "k", "value":""},
+            {   "name":"centers", "value": "[{\"clid\":1,\"rightpallidum\":0.2,\"leftpallidum\":0.5,\"lefthippocampus\":1.7,\"righthippocampus\":1.5},\
+             {\"clid\":2,\"rightpallidum\":0.6,\"leftpallidum\":1.2,\"lefthippocampus\":2.5,\"righthippocampus\":2.0},\
+             {\"clid\":3,\"rightpallidum\":1.0,\"leftpallidum\":1.5,\"lefthippocampus\":3.9,\"righthippocampus\":2.5},\
+             {\"clid\":4,\"rightpallidum\":1.5,\"leftpallidum\":2.0,\"lefthippocampus\":4.0,\"righthippocampus\":3.0},\
+            { \"clid\":5,\"rightpallidum\":2.0,\"leftpallidum\":2.2,\"lefthippocampus\":2.3,\"righthippocampus\":4.0}]" },
+            {   "name": "dataset", "value": "adni_9rows" },
+            {   "name": "e", "value": "0.0001" },
+            {   "name": "filter", "value": "" },
+            {   "name": "outputformat", "value": "pfa" }
+        ]
+
+        headers = {'Content-type': 'application/json', "Accept": "text/plain"}
+        r = requests.post(url,data=json.dumps(data),headers=headers)
+        print (r.text)
+        result = json.loads(r.text)
+
+        check_privacy_result(r.text)
+
+
+
+def check_privacy_result(result):
+    assert result == "{\"error\" : \"The Experiment could not run with the input provided because there are insufficient data.\"}"
+
 
 def check_variablename(exareme_result,corr_result):
      for i in range(len(corr_result)):

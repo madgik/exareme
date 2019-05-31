@@ -21,8 +21,8 @@
 			"valueMultiple": false,
 			"valueType": "string"
 		}, {
-			"name": "columns",
-			"desc": "columns value",
+			"name": "x",
+			"desc": "column names",
 			"type": "column",
 			"columnValuesSQLType": "real,integer",
 		 	"columnValuesIsCategorical": "",

@@ -102,7 +102,7 @@
 				{
 					"code": "high",
 					"label": "high"
-				}, 
+				},
 				{
 					"code": "med",
 					"label": "med"
@@ -128,7 +128,7 @@
 				{
 					"code": "high",
 					"label": "high"
-				}, 
+				},
 				{
 					"code": "med",
 					"label": "med"
@@ -154,7 +154,7 @@
 				{
 					"code": "3",
 					"label": "3"
-				}, 
+				},
 				{
 					"code": "4",
 					"label": "4"
@@ -174,9 +174,9 @@
 					"label": "2"
 				},
 				{
-					"code": "more", 
+					"code": "more",
 					"label": "more"
-				}, 
+				},
 				{
 					"code": "4",
 					"label": "4"
@@ -196,9 +196,9 @@
 					"label": "small"
 				},
 				{
-					"code": "med", 
+					"code": "med",
 					"label": "med"
-				}, 
+				},
 				{
 					"code": "big",
 					"label": "big"
@@ -218,9 +218,9 @@
 					"label": "low"
 				},
 				{
-					"code": "med", 
+					"code": "med",
 					"label": "med"
-				}, 
+				},
 				{
 					"code": "high",
 					"label": "high"
@@ -240,9 +240,9 @@
 					"label": "unacc"
 				},
 				{
-					"code": "acc", 
+					"code": "acc",
 					"label": "acc"
-				}, 
+				},
 				{
 					"code": "vgood",
 					"label": "vgood"
@@ -299,19 +299,19 @@
 			"units": "cm3"
 		},
 		{
-			"code": "Iris_class",
+			"code": "Iris_Species",
 			"description": "",
 			"enumerations": [{
-					"code": "Iris-setosa",
-					"label": "Iris-setosa"
+					"code": "setosa",
+					"label": "setosa"
 				},
 				{
-					"code": "Iris-versicolor", 
-					"label": "Iris-versicolor"
-				}, 
+					"code": "versicolor",
+					"label": "versicolor"
+				},
 				{
-					"code": "Iris-virginica",
-					"label": "Iris-virginica"
+					"code": "virginica",
+					"label": "virginica"
 				}
 			],
 			"label": "Iris_class",
@@ -320,7 +320,7 @@
 			"type": "polynominal",
 			"isCategorical": true
 	},
-	
+
 	{
 			"code": "ANOVA_pp",
 			"description": "",
