@@ -98,10 +98,10 @@ class LogRegrFinal_Loc2Glob_TD(TransferData):
                 self.y_sqsum + other.y_sqsum,
                 self.ssres + other.ssres,
                 {
-                    'TP': self.posneg['TP'] + other.confusion_mat['TP'],
-                    'FP': self.posneg['FP'] + other.confusion_mat['FP'],
-                    'TN': self.posneg['TN'] + other.confusion_mat['TN'],
-                    'FN': self.posneg['FN'] + other.confusion_mat['FN']
+                    'TP': self.posneg['TP'] + other.posneg['TP'],
+                    'FP': self.posneg['FP'] + other.posneg['FP'],
+                    'TN': self.posneg['TN'] + other.posneg['TN'],
+                    'FN': self.posneg['FN'] + other.posneg['FN']
                 },
                 [(s[0] + o[0], s[1] + o[1]) for s, o in zip(self.FP_rate_frac, other.FP_rate_frac)],
                 [(s[0] + o[0], s[1] + o[1]) for s, o in zip(self.TP_rate_frac, other.TP_rate_frac)]
