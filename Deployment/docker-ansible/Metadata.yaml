@@ -1,0 +1,16 @@
+---
+- hosts: manager
+  name: Copy metadata file to each node
+  remote_user: "{{ hostvars['manager1']['remote_user'] }}"
+  become: yes
+  become_user: "{{ hostvars['manager1']['become_user'] }}"
+  roles:
+   - copy-metadata
+
+- hosts: worker1
+  name: Copy metadata file to each node
+  remote_user: "{{ hostvars['worker1']['remote_user'] }}"
+  become: yes
+  become_user: "{{ hostvars['worker1']['become_user'] }}"
+  roles:
+   - copy-metadata

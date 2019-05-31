@@ -7,14 +7,6 @@
   roles:
    - swarm-init
 
-- hosts: workers
-  name: Join Workers In Swarm
-  remote_user: "{{ REMOTE_USER }}"
-  become: yes
-  become_user: "{{ BECOME_USER }}"
-  roles:
-   - join-workers
-
 - hosts: manager
   name: Add Label In Nodes Of Swarm
   remote_user: "{{ REMOTE_USER }}"
