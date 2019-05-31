@@ -5,7 +5,7 @@ import math
 
 # Required datasets: data_logisticRegression.csv
 
-endpointUrl = 'http://88.197.53.100:9090'
+endpointUrl = 'http://88.197.53.52:9090'
 
 
 def test_LogisticRegression():
@@ -27,11 +27,11 @@ def test_LogisticRegression():
 
     data = [
         {
-            "name" : "X",
+            "name" : "x",
             "value": "leftententorhinalarea_logreg_test, rightententorhinalarea_logreg_test, lefthippocampus_logreg_test, righthippocampus_logreg_test"
         },
         {
-            "name" : "Y",
+            "name" : "y",
             "value": "alzheimerbroadcategory_logreg_test"
         },
         {
@@ -45,15 +45,15 @@ def test_LogisticRegression():
     ]
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(endpointUrl + '/mining/query/PEARSON_CORRELATION', data=json.dumps(data), headers=headers)
+    r = requests.post(endpointUrl + '/mining/query/LOGISTIC_REGRESSION', data=json.dumps(data), headers=headers)
     result = json.loads(r.text)
-
+    exareme_coeffs = result['result'][0]['data'][0]['Covariates']
     r_coeffs = [{
         'name'       : '(Intercept)',
         'coefficient': -8.850,
         'std.err.'   : 1.025,
         'z value'    : -8.634,
-        'p value'    : '< 0.01'
+        'p value'    : '< 0.001'
     }, {
         'name'       : 'leftententorhinalarea_logreg_test',
         'coefficient': 1.355,
@@ -65,27 +65,27 @@ def test_LogisticRegression():
         'coefficient': 4.973,
         'std.err.'   : 1.403,
         'z value'    : 3.545,
-        'p value'    : '< 0.01'
+        'p value'    : '< 0.001'
     }, {
         'name'       : 'lefthippocampus_logreg_test',
         'coefficient': 2.711,
         'std.err.'   : 1.115,
         'z value'    : 2.432,
-        'p value'    : '0.015013'
+        'p value'    : 0.015013
     }, {
         'name'       : 'righthippocampus_logreg_test',
         'coefficient': -2.729,
         'std.err.'   : 1.031,
         'z value'    : -2.646,
-        'p value'    : '< 0.01'
+        'p value'    : 0.008144
     }, ]
 
-    check_result(exareme_coeffs=result, r_coeffs=r_coeffs)
+    check_result(exareme_coeffs=exareme_coeffs, r_coeffs=r_coeffs)
 
 
 def check_result(exareme_coeffs, r_coeffs):
     for exa_coeff, r_coeff in zip(exareme_coeffs, r_coeffs):
-        assert exa_coeff['Name'] == r_coeff['name']
+        assert exa_coeff['Variable'] == r_coeff['name']
         assert math.isclose(exa_coeff['Coefficient'], r_coeff['coefficient'], rel_tol=1e-03)
         assert math.isclose(exa_coeff['std.err.'], r_coeff['std.err.'], rel_tol=1e-03)
         assert math.isclose(exa_coeff['z score'], r_coeff['z value'], rel_tol=1e-03)
