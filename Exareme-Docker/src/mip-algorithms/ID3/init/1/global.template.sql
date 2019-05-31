@@ -1,4 +1,4 @@
-requirevars 'defaultDB' 'input_global_tbl' 'classname' ;
+requirevars 'defaultDB' 'input_global_tbl' ;
 attach database '%{defaultDB}' as defaultDB;
 
 drop table if exists defaultdb.globaltree;

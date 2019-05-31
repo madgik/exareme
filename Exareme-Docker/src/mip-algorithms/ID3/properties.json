@@ -19,7 +19,7 @@
 					"valueMultiple": false,
 					"valueType": "string"
 				}, {
-					"name": "columns",
+					"name": "x",
 					"desc": "columns value",
 					"type": "column",
 					"columnValuesSQLType": "text,integer",
@@ -31,7 +31,7 @@
 					"valueType": "string"
 				},
 				{
-					"name": "classname",
+					"name": "y",
 					"desc": "class name",
 					"type": "column",
 					"columnValuesSQLType": "text,integer",

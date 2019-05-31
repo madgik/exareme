@@ -1,4 +1,4 @@
-requirevars 'defaultDB' 'input_global_tbl' 'classname' ;
+requirevars 'defaultDB' 'input_global_tbl' 'y' ;
 attach database '%{defaultDB}' as defaultDB;
 
 --var 'input_global_tbl' 'localcounts';
@@ -19,7 +19,7 @@ select colname, max(sumofentropies) from (
           from( select colname, val, sum(quantity) as n, sum(quantity * pyfun('math.log', quantity ,2)) as sumnlong
                 from defaultDB.globalcounts
                 group by colname, val )
-          where colname!=var('classname')
+          where colname!=var('y')
         )
     group by colname
 );

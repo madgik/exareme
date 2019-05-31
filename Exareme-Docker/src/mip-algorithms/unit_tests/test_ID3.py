@@ -11,8 +11,8 @@ def test_ID3_1():
     data = [
             {   "name": "iterations_max_number", "value": "20" },
             {   "name": "iterations_condition_query_provided", "value": "true" },
-            {   "name": "columns", "value": "CL_age,CL_spectacle_prescrip,CL_astigmatism,CL_tear_prod_rate"  },
-            {   "name": "classname", "value": "CL_contact_lenses" },
+            {   "name": "x", "value": "CL_age,CL_spectacle_prescrip,CL_astigmatism,CL_tear_prod_rate"  },
+            {   "name": "y", "value": "CL_contact_lenses" },
             {   "name": "dataset", "value": "contact-lenses" },
             {   "name": "filter", "value": "" },
             {   "name": "outputformat", "value": "wekaviewer" }
@@ -60,8 +60,35 @@ CL_tear_prod_rate = normal
 |  |  |  CL_age = young: hard'''
 
     check_variable(result,correctResult)
-def check_variable(exaremeResult, correctResult):
 
+
+def test_ID3_Privacy():
+    logging.info("---------- TEST : ID3 - Test using contact-lenses dataset  ")
+
+    data = [
+            {   "name": "iterations_max_number", "value": "20" },
+            {   "name": "iterations_condition_query_provided", "value": "true" },
+            {   "name": "x", "value": "CL_age,CL_spectacle_prescrip,CL_astigmatism,CL_tear_prod_rate"  },
+            {   "name": "y", "value": "CL_contact_lenses" },
+            {   "name": "dataset", "value": "contact-lenses" },
+            {   "name": "filter", "value": "{\"condition\": \"AND\", \"rules\": [{\"id\": \"CL_age\", \"field\": \"CL_age\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"Young\"}], \"valid\": true}" },
+            {   "name": "outputformat", "value": "wekaviewer" }
+        ]
+
+    headers = {'Content-type': 'application/json', "Accept": "text/plain"}
+    r = requests.post(url,data=json.dumps(data),headers=headers)
+    result = json.loads(r.text)
+    print (result)
+
+    check_privacy_result(r.text)
+
+
+
+def check_privacy_result(result):
+    assert result == "{\"error\" : \"The Experiment could not run with the input provided because there are insufficient data.\"}"
+
+
+def check_variable(exaremeResult, correctResult):
     exaremeresultfinal=""
     for i in range(len(exaremeResult)):
         exaremeresultfinal += str(exaremeResult[i]['result'])
@@ -509,4 +536,3 @@ def check_variable(exaremeResult, correctResult):
 #
 #
 #
-

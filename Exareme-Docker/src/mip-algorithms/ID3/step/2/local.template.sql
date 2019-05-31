@@ -1,4 +1,4 @@
-requirevars 'defaultDB' 'prv_output_global_tbl' 'classname';
+requirevars 'defaultDB' 'prv_output_global_tbl';
 attach database '%{defaultDB}' as defaultDB;
 
 --var 'prv_output_global_tbl' 'globalpathforsplittree';
