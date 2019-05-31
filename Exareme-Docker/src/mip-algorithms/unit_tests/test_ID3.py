@@ -3,7 +3,7 @@ import json
 import logging
 
 
-url='http://localhost:9090/mining/query/ID3'
+url='http://88.197.53.38:9090/mining/query/ID3'
 
 def test_ID3_1():
     logging.info("---------- TEST : ID3 - Test using contact-lenses dataset  ")
