@@ -2,6 +2,6 @@
   copy:
     src: "{{ METADATA_PATH }}"
     dest: "{{ local_path }}"
-    owner: "{{ BECOME_USER }}"
-    group: "{{ BECOME_USER }}"
+    owner: "{{ become_user }}"
+    group: "{{ become_user }}"
     mode: 0644
