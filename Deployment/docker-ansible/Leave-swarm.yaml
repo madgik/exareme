@@ -1,8 +1,17 @@
 ---
-- hosts: all
+- hosts: manager
   name: Nodes Leave Swarm
-  remote_user: "{{ REMOTE_USER }}"
+  remote_user: "{{ hostvars['manager1']['remote_user'] }}"
   become: yes
-  become_user: "{{ BECOME_USER }}"
+  become_user: "{{ hostvars['manager1']['become_user'] }}"
+  roles:
+   - swarm-leave
+
+
+- hosts: worker1
+  name: Nodes Leave Swarm
+  remote_user: "{{ hostvars['worker1']['remote_user'] }}"
+  become: yes
+  become_user: "{{ hostvars['worker1']['become_user'] }}"
   roles:
    - swarm-leave

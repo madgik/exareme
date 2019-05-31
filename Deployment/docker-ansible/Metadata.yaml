@@ -7,6 +7,8 @@
   roles:
    - copy-metadata
 
+
+
 - hosts: worker1
   name: Copy metadata file to each node
   remote_user: "{{ hostvars['worker1']['remote_user'] }}"

@@ -1,15 +1,11 @@
 - hosts: manager
   name: Get worker token
   remote_user: "{{ hostvars['manager1']['remote_user'] }}"
-  become: yes
-  become_user: "{{ hostvars['manager1']['become_user'] }}"
   roles:
    - worker-token
 
 - hosts: worker1
   name: Join Workers In Swarm
   remote_user: "{{ hostvars['worker1']['remote_user'] }}"
-  become: yes
-  become_user: "{{ hostvars['worker1']['become_user'] }}"
   roles:
    - join-workers
