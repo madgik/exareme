@@ -88,8 +88,8 @@
 : ${CONSUL_IMAGE:="progrium/consul"}
 : ${CONSUL_VERSION:="latest"}
 
-: ${EXAREME_IMAGE:="jassak/exareme"}
-: ${EXAREME_VERSION:="latest"}
+: ${EXAREME_IMAGE:="hbpmip/exareme"}
+: ${EXAREME_VERSION:="v20"}
 : ${EXAREME_ROLE:=""} # The default value is set to the federation node role (worker or manager)
 : ${EXAREME_KEYSTORE_PORT:="8500"}
 : ${EXAREME_KEYSTORE:="exareme-keystore:${EXAREME_KEYSTORE_PORT}"}
@@ -124,4 +124,4 @@
 : ${DOCKER_DATASETS_FOLDER:="/root/exareme/datasets"}
 
 # Host dataset folder
-: ${LOCAL_DATASETS_FOLDER:="/home/jassak/datasets/output/"}
+: ${LOCAL_DATASETS_FOLDER:="/path/to/dataset/folder"}
