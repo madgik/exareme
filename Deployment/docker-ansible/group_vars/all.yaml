@@ -1,10 +1,7 @@
-REMOTE_USER: {{ username }}
-BECOME_USER: {{ username }}
-METADATA_PATH: "/home/sofiakar/Desktop/variablesMetadata.json"
-FOLDER_PATH: "/home/sofiakar/Desktop/sofia/0.MIP/exareme/Deployment/mip-federation"
+METADATA_PATH: "/home/sofiakar/Desktop/sofia/0.MIP/exareme/Exareme-Docker/src/mip-algorithms/unit_tests/datasets/variablesMetadata.json"
+FOLDER_PATH: "/home/sofiakar/Desktop/sofia/0.MIP/exareme/Deployment/Compose-Files"
 DESTINATION_PATH: "/home/skarvoun/"
-EXAREME_TAG: "permissions"
-
+EXAREME_TAG: "histograms"
 
 EXAREME_IMAGE: "sofiakar/myexareme"
 EXAREME_KEYSTORE: "exareme-keystore:8500"

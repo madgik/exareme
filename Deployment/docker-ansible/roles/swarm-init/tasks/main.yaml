@@ -15,10 +15,6 @@
   shell: docker swarm join-token --quiet manager
   register: manager_token
 
-- name: Get The Worker join-token
-  shell: docker swarm join-token --quiet worker
-  register: worker_token
-
 - name: Create Swarm Network
   shell: >
         docker network create 
