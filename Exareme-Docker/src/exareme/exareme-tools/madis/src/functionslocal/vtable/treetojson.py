@@ -72,7 +72,7 @@ class treetojson(functions.vtable.vtbase.VT):
         # print "RESULT",resulttable
         yield [('result',),]
         # print str(resulttable)
-        yield [str(resulttable),]
+        yield [str(resulttable).replace("'","\""),]
 
 
 
