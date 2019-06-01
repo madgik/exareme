@@ -51,11 +51,11 @@ def main():
     fname_cur_state = path.abspath(args.cur_state_pkl)
     fname_loc_db = path.abspath(args.input_local_DB)
     query = args.db_query
-    schema_X = list(set(
+    schema_X = list(
             args.x
                 .replace(' ', '')
                 .split(',')
-    ))
+    )
     schema_Y = args.y.strip()
 
     # Get data from local DB
