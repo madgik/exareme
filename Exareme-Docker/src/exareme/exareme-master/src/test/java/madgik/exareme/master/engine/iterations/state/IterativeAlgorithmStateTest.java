@@ -60,29 +60,6 @@ public class IterativeAlgorithmStateTest {
     // Unit testing -----------------------------------------------------------------------------
     // Iterations control properties ------------
     @Test(expected = IterationsStateFatalException.class)
-    public void ensureExceptionOnMissingConditionQueryProperty() {
-        // Omit iterations termination condition query property.
-        PowerMockito.mock(AlgorithmProperties.class);
-        when(algorithmPropertiesMock.getParameterValue(IterationsConstants.iterationsPropertyMaximumNumber))
-                .thenReturn("3");
-        when(algorithmPropertiesMock.getType()).thenReturn(AlgorithmProperties.AlgorithmType.iterative);
-
-        new IterativeAlgorithmState(algorithmName, algorithmPropertiesMock, adpDBClient);
-    }
-
-    @Test(expected = IterationsStateFatalException.class)
-    public void ensureExceptionOnErroneousConditionQueryPropertyValue() {
-        // Have iterations termination condition query property with erroneous value
-        // (must be "true" / "false").
-        PowerMockito.mock(AlgorithmProperties.class);
-        when(algorithmPropertiesMock.getParameterValue(IterationsConstants.iterationsPropertyMaximumNumber))
-                .thenReturn("3");
-        when(algorithmPropertiesMock.getType()).thenReturn(AlgorithmProperties.AlgorithmType.iterative);
-
-        new IterativeAlgorithmState(algorithmName, algorithmPropertiesMock, adpDBClient);
-    }
-
-    @Test(expected = IterationsStateFatalException.class)
     public void ensureExceptionOnMissingIterationsMaxNumberProperty() {
         // Omit iterations maximum number property.
         PowerMockito.mock(AlgorithmProperties.class);
