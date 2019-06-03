@@ -1,17 +1,29 @@
+#Local Change here
 METADATA_PATH: "/home/sofiakar/Desktop/sofia/0.MIP/exareme/Exareme-Docker/src/mip-algorithms/unit_tests/datasets/variablesMetadata.json"
-FOLDER_PATH: "/home/sofiakar/Desktop/sofia/0.MIP/exareme/Deployment/Compose-Files"
-DESTINATION_PATH: "/home/skarvoun/"
-EXAREME_TAG: "histograms"
+COMPOSE_FILES_FOLDER_PATH: "/home/sofiakar/Desktop/sofia/0.MIP/exareme/Deployment/Compose-Files"
+#Remote Change here
+COMPOSE_FILES_REMOTE_PATH: "/home/skarvoun/Compose-Files/"
 
-EXAREME_IMAGE: "sofiakar/myexareme"
+
+###Nothing to change here
+
+#Exareme
+EXAREME_TAG: "v20.0"
+EXAREME_IMAGE: "hbpmip/exareme"
 EXAREME_KEYSTORE: "exareme-keystore:8500"
-DOCKER_PATH: "/root/exareme/datasets/"
-CHDIR: "/home/skarvoun/mip-federation/"
 
+#Exareme containers
+DOCKER_PATH: "/root/exareme/datasets/"
+
+#Portainer
 PORTAINER_PORT: "9000"
 PORTAINER_IMAGE: "portainer/portainer"
 PORTAINER_VERSION: ":latest"
-PORTAINER_DATA: "/home/skarvoun/mip-federation/portainer"
-COMPOSE_PROJECT_NAME: "mip"
+PORTAINER_DATA: "{{COMPOSE_FILES_REMOTE_PATH}}/portainer"
+
+
+
+
+
 
 

@@ -7,14 +7,14 @@
 - name: Run Exareme Master
   shell: docker stack deploy -c docker-compose-manager.yml {{ leader.stdout }}
   args:
-    chdir: "{{ CHDIR }}"
+    chdir: "{{ COMPOSE_FILES_REMOTE_PATH }}"
   environment:
     FEDERATION_NODE: "{{ leader.stdout }}"
     FEDERATION_ROLE: "master"
     EXAREME_IMAGE: "{{ EXAREME_IMAGE }}:{{ EXAREME_TAG }}"
     EXAREME_KEYSTORE: "{{ EXAREME_KEYSTORE }}"
     DOCKER_DATASETS_FOLDER: "{{ DOCKER_PATH }}"
-    LOCAL_DATASETS_FOLDER: "{{ local_path }}"
+    LOCAL_DATASETS_FOLDER: "{{ remote_data_path }}"
 
 - name: Run Portainer
   shell: >
@@ -30,7 +30,7 @@
          --detach=true \
          --mount type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
          --mount type=bind,src={{ PORTAINER_DATA }},dst=/data \
-         --name {{ COMPOSE_PROJECT_NAME }}_portainer \
+         --name mip_portainer \
          {{ PORTAINER_IMAGE }}{{ PORTAINER_VERSION }}
   tags:
     - portainer
@@ -39,13 +39,13 @@
 - name: Run Exareme Workers
   shell: docker stack deploy -c docker-compose-worker.yml {{ hostvars[item]['hostname'] }}
   args:
-    chdir: "{{ CHDIR }}"
+    chdir: "{{ COMPOSE_FILES_REMOTE_PATH }}"
   environment:
     FEDERATION_NODE: "{{ hostvars[item]['hostname'] }}"
     EXAREME_IMAGE: "{{ EXAREME_IMAGE }}:{{ EXAREME_TAG }}"
     EXAREME_KEYSTORE: "{{ EXAREME_KEYSTORE }}"
     DOCKER_DATASETS_FOLDER: "{{ DOCKER_PATH }}"
-    LOCAL_DATASETS_FOLDER: "{{ hostvars[item]['local_path'] }}"
+    LOCAL_DATASETS_FOLDER: "{{ hostvars[item]['remote_data_path'] }}"
   with_items: "{{ groups['workers'] }}"
   ignore_errors: true
   tags: workers

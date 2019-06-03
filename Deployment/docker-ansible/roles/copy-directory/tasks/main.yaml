@@ -1,7 +1,7 @@
 - name: Copy metadata file
   copy:
-    src: "{{ FOLDER_PATH }}"
-    dest: "{{ DESTINATION_PATH }}"
+    src: "{{ COMPOSE_FILES_FOLDER_PATH }}"
+    dest: "{{ destination_path }}"
     owner: "{{ become_user }}"
     group: "{{ become_user }}"
     mode: 0755

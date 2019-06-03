@@ -1,3 +1,12 @@
+ansible-playbook -i hosts.ini Init-swarm.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml
+
+[ansible-playbook -i hosts.ini Join-workers.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml
+ansible-playbook -i hosts.ini Init-swarm.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml --tags labels]
+
+
+ansible-playbook -i hosts.ini Leave-swarm.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml
+
+
 Install Ansible
 
 apt install python-setuptools -y
