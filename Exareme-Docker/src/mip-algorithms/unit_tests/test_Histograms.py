@@ -5,7 +5,7 @@ import math
 from decimal import *
 
 
-endpointUrl='http://88.197.53.38:9090/mining/query/HISTOGRAMS'
+endpointUrl='http://88.197.53.100:9090/mining/query/HISTOGRAMS'
 
 
 def test_Histogram_1():
@@ -228,13 +228,9 @@ def test_Histogram_5():
 
 
 def test_Histogram_Privacy():
-    """
-    
-    """
-
     logging.info("---------- TEST : Algorithms for Privacy Error")
 
-    data = [{ "name": "x", "value": "alzheimerbroadcategory"},
+    data = [{"name": "x", "value": "alzheimerbroadcategory"},
             {"name": "y", "value": "gender"},
             {"name": "bins", "value": ""},
             {"name": "dataset", "value": "adni_9rows"},

@@ -11,13 +11,14 @@ import madgik.exareme.master.engine.iterations.state.IterationsStateManager;
 import madgik.exareme.master.engine.iterations.state.IterationsStateManagerImpl;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.master.queryProcessor.composer.AlgorithmProperties;
-import madgik.exareme.master.queryProcessor.composer.Algorithms;
 import madgik.exareme.master.queryProcessor.composer.Composer;
+import madgik.exareme.master.queryProcessor.composer.Exceptions.ComposerException;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
 
+import static madgik.exareme.common.consts.HBPConstants.DEMO_ALGORITHMS_WORKING_DIRECTORY;
 import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerDFLUtils.copyAlgorithmTemplatesToDemoDirectory;
 
 /**
@@ -93,13 +94,42 @@ public class IterationsHandler {
         // Copy template files to algorithm's demo directory, prepare DFL scripts and then persist
         // them, as well.
 
-        // Copying algorithm's template files under demo directory, so that these are edited per
-        // algorithm's execution.
+        String dflScripts[];
         String demoCurrentAlgorithmDir =
-                copyAlgorithmTemplatesToDemoDirectory(algorithmProperties.getName(), algorithmKey);
+                DEMO_ALGORITHMS_WORKING_DIRECTORY + "/" + algorithmKey;
 
-        String dflScripts[] = IterationsHandlerDFLUtils.prepareDFLScripts(
-                demoCurrentAlgorithmDir, algorithmKey, algorithmProperties, iterativeAlgorithmState);
+        if (algorithmProperties.getType().equals(AlgorithmProperties.AlgorithmType.iterative)) {
+            // Copying algorithm's template files under demo directory, so that these are edited per
+            // algorithm's execution.
+            copyAlgorithmTemplatesToDemoDirectory(algorithmProperties.getName(), algorithmKey);
+
+            dflScripts = IterationsHandlerDFLUtils.prepareDFLScripts(
+                    demoCurrentAlgorithmDir, algorithmKey, algorithmProperties, iterativeAlgorithmState);
+
+        } else if (algorithmProperties.getType().equals(AlgorithmProperties.AlgorithmType.python_iterative)) {
+            // Python iterative algorithms need a smaller procedure. The algorithm files are not copied and modified.
+            dflScripts = new String[
+                    IterativeAlgorithmState.IterativeAlgorithmPhasesModel.values().length];
+
+            int dflScriptIdx = 0;
+            for (IterativeAlgorithmState.IterativeAlgorithmPhasesModel phase :
+                    IterativeAlgorithmState.IterativeAlgorithmPhasesModel.values()) {
+                try {
+                    dflScripts[dflScriptIdx++] = Composer.composePythonIterativeAlgorithmsDFLScript(
+                            algorithmKey, algorithmProperties, phase);
+
+                } catch (ComposerException e) {
+                    throw new IterationsFatalException("Composer failure to generate DFL script for phase: "
+                            + phase.name() + ".", e);
+                }
+            }
+        } else {
+            throw new IterationsFatalException("handleNewIterativeAlgorithmRequest wasn't called by iterative algorithm");
+        }
+
+        for (String dflScript : dflScripts) {
+            log.info("dfl: " + dflScript);
+        }
 
         try {
             for (IterativeAlgorithmState.IterativeAlgorithmPhasesModel phase :

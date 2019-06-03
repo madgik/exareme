@@ -166,6 +166,8 @@ def outputData(diter, schema, connection, *args, **formatArgs):
     where = autoext(where, formatArgs['mode'], type2ext)
     filename, ext = os.path.splitext(os.path.basename(where))
     fullpath = os.path.split(where)[0]
+    if not os.path.exists(fullpath):
+        os.makedirs(fullpath)
 
     if not (formatArgs['mode'] == 'db' or (formatArgs['mode'] == 'json' and 'split' in formatArgs)):
         fileIter = getoutput(where, append, formatArgs['compression'], formatArgs['compressiontype'])
@@ -258,6 +260,8 @@ def outputData(diter, schema, connection, *args, **formatArgs):
             def createdb(where, tname, schema, page_size=16384):
                 c = apsw.Connection(where)
                 cursor = c.cursor()
+                if not append:
+                    cursor.execute('DROP TABLE IF EXISTS ' + tname)
                 list(cursor.execute('pragma page_size=' + str(
                     page_size) + ';pragma cache_size=-1000;pragma legacy_file_format=false;pragma synchronous=0;pragma journal_mode=OFF;PRAGMA locking_mode = EXCLUSIVE'))
                 if orderby:

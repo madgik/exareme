@@ -5,7 +5,7 @@ import math
 from decimal import *
 
 
-endpointUrl='http://88.197.53.38:9090/mining/query/LINEAR_REGRESSION'
+endpointUrl='http://88.197.53.100:9090/mining/query/LINEAR_REGRESSION'
 
 def test_LinearRegression_1_1_dummycoding():
     logging.info("---------- TEST 1.1: Linear Regression, one categorical regressor,dummycoding")
@@ -2153,7 +2153,7 @@ def test_LinearRegression_Privacy():
 
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(endpointUrl + '/mining/query/LINEAR_REGRESSION', data=json.dumps(data), headers=headers)
+    r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
 
     result = json.loads(r.text)
 

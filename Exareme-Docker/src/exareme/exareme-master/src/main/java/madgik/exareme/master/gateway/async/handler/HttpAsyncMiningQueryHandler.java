@@ -195,8 +195,8 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             }
 
             // Bypass direct composer call in case of iterative algorithm.
-            if (algorithmProperties.getType() ==
-                    AlgorithmProperties.AlgorithmType.iterative) {
+            if (algorithmProperties.getType().equals(AlgorithmProperties.AlgorithmType.iterative) ||
+                    algorithmProperties.getType().equals(AlgorithmProperties.AlgorithmType.python_iterative)) {
 
                 final IterativeAlgorithmState iterativeAlgorithmState =
                         iterationsHandler.handleNewIterativeAlgorithmRequest(
