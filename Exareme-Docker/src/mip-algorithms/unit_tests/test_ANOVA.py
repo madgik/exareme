@@ -5,7 +5,7 @@ import math
 from decimal import *
 
 
-endpointUrl='http://88.197.53.100:9090/mining/query/ANOVA'
+endpointUrl='http://localhost:9090/mining/query/ANOVA'
 
 
 def test_ANOVA_1():
@@ -16,7 +16,7 @@ def test_ANOVA_1():
             {   "name": "iterations_condition_query_provided", "value": "true" },
             {   "name": "x", "value": "ANOVA_var_I1*ANOVA_var_I2*ANOVA_var_I3" },
             {   "name": "y", "value": "ANOVA_var_D" },
-            {   "name": "type", "value": "1" },
+            {   "name": "sstype", "value": "1" },
             {   "name": "dataset", "value": "ANOVA_Balanced_with_inter_V1V2" },
             {   "name": "filter", "value": "" },
             {   "name": "outputformat", "value": "pfa" }
@@ -61,7 +61,7 @@ def test_ANOVA_2():
             {   "name": "iterations_condition_query_provided", "value": "true" },
             {   "name": "x", "value": "ANOVA_var_I1*ANOVA_var_I2*ANOVA_var_I3" },
             {   "name": "y", "value": "ANOVA_var_D" },
-            {   "name": "type", "value": "2" },
+            {   "name": "sstype", "value": "2" },
             {   "name": "dataset", "value": "ANOVA_Balanced_with_inter_V1V2" },
             {   "name": "filter", "value": "" },
             {   "name": "outputformat", "value": "pfa" }
@@ -110,7 +110,7 @@ def test_ANOVA_3():
             {   "name": "iterations_condition_query_provided", "value": "true" },
             {   "name": "x", "value": "ANOVA_var_I1*ANOVA_var_I2*ANOVA_var_I3" },
             {   "name": "y", "value": "ANOVA_var_D" },
-            {   "name": "type", "value": "3" },
+            {   "name": "sstype", "value": "3" },
             {   "name": "dataset", "value": "ANOVA_Balanced_with_inter_V1V2" },
             {   "name": "filter", "value": "" },
             {   "name": "outputformat", "value": "pfa" }
@@ -158,7 +158,7 @@ def test_ANOVA_4():
             {   "name": "iterations_condition_query_provided", "value": "true" },
             {   "name": "x", "value": "ANOVA_var_I1*ANOVA_var_I2*ANOVA_var_I3" },
             {   "name": "y", "value": "ANOVA_var_D" },
-            {   "name": "type", "value": "1" },
+            {   "name": "sstype", "value": "1" },
             {   "name": "dataset", "value": "ANOVA_UnBalanced_with_inter_V1V2" },
             {   "name": "filter", "value": "" },
             {   "name": "outputformat", "value": "pfa" }
@@ -202,7 +202,7 @@ def test_ANOVA_5():
             {   "name": "iterations_condition_query_provided", "value": "true" },
             {   "name": "x", "value": "ANOVA_var_I1*ANOVA_var_I2*ANOVA_var_I3" },
             {   "name": "y", "value": "ANOVA_var_D" },
-            {   "name": "type", "value": "2" },
+            {   "name": "sstype", "value": "2" },
             {   "name": "dataset", "value": "ANOVA_UnBalanced_with_inter_V1V2" },
             {   "name": "filter", "value": "" },
             {   "name": "outputformat", "value": "pfa" }
@@ -245,7 +245,7 @@ def test_ANOVA_6():
             {   "name": "iterations_condition_query_provided", "value": "true" },
             {   "name": "x", "value": "ANOVA_var_I1*ANOVA_var_I2*ANOVA_var_I3" },
             {   "name": "y", "value": "ANOVA_var_D" },
-            {   "name": "type", "value": "3" },
+            {   "name": "sstype", "value": "3" },
             {   "name": "dataset", "value": "ANOVA_UnBalanced_with_inter_V1V2" },
             {   "name": "filter", "value": "" },
             {   "name": "outputformat", "value": "pfa" }
@@ -289,7 +289,7 @@ def test_ANOVA_7():
             {   "name": "iterations_condition_query_provided", "value": "true" },
             {   "name": "x", "value": "ANOVA_var_I1+ANOVA_var_I2+ANOVA_var_I3" },
             {   "name": "y", "value": "ANOVA_var_D" },
-            {   "name": "type", "value": "3" },
+            {   "name": "sstype", "value": "3" },
             {   "name": "dataset", "value": "ANOVA_UnBalanced_with_inter_V1V2" },
             {   "name": "filter", "value": "" },
             {   "name": "outputformat", "value": "pfa" }
@@ -329,7 +329,7 @@ def test_ANOVA_8():
         {   "name": "iterations_condition_query_provided", "value": "true" },
         {   "name": "x", "value": "ANOVA_alzheimerbroadcategory+ANOVA_gender" },
         {   "name": "y", "value": "ANOVA_lefthippocampus" },
-        {   "name": "type", "value": "3" },
+        {   "name": "sstype", "value": "3" },
         {   "name": "dataset", "value": "ANOVA_dataset1,ANOVA_dataset2,ANOVA_dataset3" },
         {   "name": "filter", "value": "" },
         {   "name": "outputformat", "value": "pfa" }
@@ -364,7 +364,7 @@ def test_ANOVA_9():
         {   "name": "iterations_condition_query_provided", "value": "true" },
         {   "name": "x", "value": "ANOVA_alzheimerbroadcategory+ANOVA_gender" },
         {   "name": "y", "value": "ANOVA_lefthippocampus" },
-        {   "name": "type", "value": "2" },
+        {   "name": "sstype", "value": "2" },
         {   "name": "dataset", "value": "ANOVA_dataset1,ANOVA_dataset2,ANOVA_dataset3" },
         {   "name": "filter", "value": "" },
         {   "name": "outputformat", "value": "pfa" }
@@ -398,7 +398,7 @@ def test_ANOVA_10():
         {   "name": "iterations_condition_query_provided", "value": "true" },
         {   "name": "x", "value": "ANOVA_alzheimerbroadcategory*ANOVA_gender" },
         {   "name": "y", "value": "ANOVA_lefthippocampus" },
-        {   "name": "type", "value": "3" },
+        {   "name": "sstype", "value": "3" },
         {   "name": "dataset", "value": "ANOVA_dataset1,ANOVA_dataset2,ANOVA_dataset3" },
         {   "name": "filter", "value": "" },
         {   "name": "outputformat", "value": "pfa" }
@@ -436,7 +436,7 @@ def test_ANOVA_11():
         {   "name": "iterations_condition_query_provided", "value": "true" },
         {   "name": "x", "value": "ANOVA_alzheimerbroadcategory*ANOVA_gender" },
         {   "name": "y", "value": "ANOVA_lefthippocampus" },
-        {   "name": "type", "value": "2" },
+        {   "name": "sstype", "value": "2" },
         {   "name": "dataset", "value": "ANOVA_dataset1,ANOVA_dataset2,ANOVA_dataset3" },
         {   "name": "filter", "value": "" },
         {   "name": "outputformat", "value": "pfa" }
@@ -472,7 +472,7 @@ def test_ANOVA_12():
         {   "name": "iterations_condition_query_provided", "value": "true" },
         {   "name": "x", "value": "ANOVA_alzheimerbroadcategory+ANOVA_gender+ANOVA_agegroup" },
         {   "name": "y", "value": "ANOVA_lefthippocampus" },
-        {   "name": "type", "value": "3" },
+        {   "name": "sstype", "value": "3" },
         {   "name": "dataset", "value": "ANOVA_dataset1,ANOVA_dataset2,ANOVA_dataset3" },
         {   "name": "filter", "value": "" },
         {   "name": "outputformat", "value": "pfa" }
@@ -517,7 +517,7 @@ def test_ANOVA_13():
         {   "name": "iterations_condition_query_provided", "value": "true" },
         {   "name": "x", "value": "ANOVA_alzheimerbroadcategory+ANOVA_gender+ANOVA_agegroup" },
         {   "name": "y", "value": "ANOVA_lefthippocampus" },
-        {   "name": "type", "value": "2" },
+        {   "name": "sstype", "value": "2" },
         {   "name": "dataset", "value": "ANOVA_dataset1,ANOVA_dataset2,ANOVA_dataset3" },
         {   "name": "filter", "value": "" },
         {   "name": "outputformat", "value": "pfa" }
@@ -553,7 +553,7 @@ def test_ANOVA_14():
         {   "name": "iterations_condition_query_provided", "value": "true" },
         {   "name": "x", "value": "ANOVA_alzheimerbroadcategory*ANOVA_gender+ANOVA_agegroup" },
         {   "name": "y", "value": "ANOVA_lefthippocampus" },
-        {   "name": "type", "value": "3" },
+        {   "name": "sstype", "value": "3" },
         {   "name": "dataset", "value": "ANOVA_dataset1,ANOVA_dataset2,ANOVA_dataset3" },
         {   "name": "filter", "value": "" },
         {   "name": "outputformat", "value": "pfa" }
@@ -594,7 +594,7 @@ def test_ANOVA_15():
         {   "name": "iterations_condition_query_provided", "value": "true" },
         {   "name": "x", "value": "ANOVA_alzheimerbroadcategory*ANOVA_gender+ANOVA_agegroup" },
         {   "name": "y", "value": "ANOVA_lefthippocampus" },
-        {   "name": "type", "value": "2" },
+        {   "name": "sstype", "value": "2" },
         {   "name": "dataset", "value": "ANOVA_dataset1,ANOVA_dataset2,ANOVA_dataset3" },
         {   "name": "filter", "value": "" },
         {   "name": "outputformat", "value": "pfa" }
@@ -637,7 +637,7 @@ def test_ANOVA_16():
         {   "name": "iterations_condition_query_provided", "value": "true" },
         {   "name": "x", "value": "ANOVA_alzheimerbroadcategory*ANOVA_gender*ANOVA_agegroup" },
         {   "name": "y", "value": "ANOVA_lefthippocampus" },
-        {   "name": "type", "value": "3" },
+        {   "name": "sstype", "value": "3" },
         {   "name": "dataset", "value": "ANOVA_dataset1,ANOVA_dataset2,ANOVA_dataset3" },
         {   "name": "filter", "value": "" },
         {   "name": "outputformat", "value": "pfa" }
@@ -682,7 +682,7 @@ def test_ANOVA_17():
         {   "name": "iterations_condition_query_provided", "value": "true" },
         {   "name": "x", "value": "ANOVA_alzheimerbroadcategory*ANOVA_gender*ANOVA_agegroup" },
         {   "name": "y", "value": "ANOVA_lefthippocampus" },
-        {   "name": "type", "value": "2" },
+        {   "name": "sstype", "value": "2" },
         {   "name": "dataset", "value": "ANOVA_dataset1,ANOVA_dataset2,ANOVA_dataset3" },
         {   "name": "filter", "value": "" },
         {   "name": "outputformat", "value": "pfa" }
@@ -721,7 +721,7 @@ def test_ANOVA_17():
 
 def test_ANOVA_Privacy():
     """
-    
+
     """
 
     logging.info("---------- TEST : Algorithms for Privacy Error")
@@ -731,7 +731,7 @@ def test_ANOVA_Privacy():
             {   "name": "iterations_condition_query_provided", "value": "true" },
             {   "name": "x", "value": "ANOVA_var_I1*ANOVA_var_I2*ANOVA_var_I3" },
             {   "name": "y", "value": "ANOVA_var_D" },
-            {   "name": "type", "value": "1" },
+            {   "name": "sstype", "value": "1" },
             {   "name": "dataset", "value": "adni_9rows" },
             {   "name": "filter", "value": "" },
             {   "name": "outputformat", "value": "pfa" }

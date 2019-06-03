@@ -1,7 +1,7 @@
 requirevars 'defaultDB' 'input_global_tbl' 'dataset' 'x' 'y' 'sstype' 'outputformat';
 attach database '%{defaultDB}' as defaultDB;
 
-var 'input_global_tbl' 'defaultDB.partialmetadatatbl';
+var 'input_global_tbl' 'defaultDB.partialmetadatatbl' 'iterations_max_number';
 
 drop table if exists defaultDB.algorithmparameters; --used for testing !!!
 create table defaultDB.algorithmparameters (name,val);
@@ -30,6 +30,7 @@ create table defaultDB.globalAnovatbl (no int,formula text, sst real, ssregs rea
 insert into defaultDB.globalAnovatbl
 select * from (select create_simplified_formulas('%{x}',%{sstype}), null ,null,  null) ;--where  formula!='intercept';
 
+var 'EH_IterationsMaxNumber' from  select maxnumberofiterations_errorhandling(%{iterations_max_number},no) from (select count(*) as no from  defaultDB.globalAnovatbl);
 
 drop table if exists globalresult;
 create table globalresult (tablename text,no int,formula text, sst real, ssregs real, sse real,code text, categorical int, enumerations text, referencevalue text);
