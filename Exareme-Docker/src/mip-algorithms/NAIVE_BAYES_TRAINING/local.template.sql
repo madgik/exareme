@@ -1,7 +1,7 @@
 requirevars 'defaultDB' 'iterationNumber' 'x' 'y';
 attach database '%{defaultDB}' as defaultDB;
 
---var 'iterationNumber' 0;
+var 'iterationNumber' 0;
 
 --Training Dataset
 drop table if exists defaultDB.local_trainingset;

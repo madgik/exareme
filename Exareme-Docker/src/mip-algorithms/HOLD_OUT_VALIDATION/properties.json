@@ -13,7 +13,7 @@
 			"valueMultiple": true,
 			"valueType": "string"
 		}, {
-			"name": "columns",
+			"name": "x",
 			"desc": "",
 			"type": "column",
 			"columnValuesSQLType": "",
@@ -24,7 +24,7 @@
 			"valueMultiple": true,
 			"valueType": "string"
 		}, {
-			"name": "classname",
+			"name": "y",
 			"desc": "",
 			"type": "column",
 			"columnValuesSQLType": "",
@@ -63,6 +63,14 @@
 			"desc": "",
 			"type": "other",
 			"value": "True",
+			"valueNotBlank": false,
+			"valueMultiple": false,
+			"valueType": "string"
+		}, {
+			"name": "dbIdentifier",
+			"desc": "Predefined value for the dbIdentifier",
+			"type": "other",
+			"value": "",
 			"valueNotBlank": false,
 			"valueMultiple": false,
 			"valueType": "string"
