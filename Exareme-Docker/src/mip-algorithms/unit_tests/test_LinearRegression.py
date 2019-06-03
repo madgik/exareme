@@ -5,7 +5,7 @@ import math
 from decimal import *
 
 
-endpointUrl='http://88.197.53.100:9090/mining/query/LINEAR_REGRESSION'
+endpointUrl='http://88.197.53.38:9090/mining/query/LINEAR_REGRESSION'
 
 def test_LinearRegression_1_1_dummycoding():
     logging.info("---------- TEST 1.1: Linear Regression, one categorical regressor,dummycoding")
@@ -446,7 +446,7 @@ def test_LinearRegression_1_3_simplecoding():
                                                      36.92, 7, 710 )
 
 
-def test_LinearRegression_1_3b():
+def test_LinearRegression_1_3b_dummycoding():
     logging.info("---------- TEST 1.3b: Linear Regression, three categorical regressors with all interaction, dummycoding")
 
     data = [{ "name": "x",	"value": "alzheimerbroadcategory*gender*agegroup"},
@@ -582,7 +582,7 @@ def test_LinearRegression_1_3b():
                                                  9.973, 29, 688 )
 
 
-def test_LinearRegression_1_3b():
+def test_LinearRegression_1_3b_simplecoding():
     logging.info("---------- TEST 1.3b: Linear Regression, three categorical regressors with all interaction, simplecoding")
 
     data = [{ "name": "x",	"value": "alzheimerbroadcategory*gender*agegroup"},
