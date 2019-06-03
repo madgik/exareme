@@ -53,7 +53,7 @@ public class IterationsHandlerTest {
         algorithmProperties = Algorithms.getInstance().getAlgorithmProperties(algorithmName);
         algorithmProperties.mergeAlgorithmParametersWithInputContent(
                 IterationsTestGenericUtils.prepareParameterProperties(
-                        algorithmName, "true", "2"));
+                        algorithmName,  "2"));
 
     }
 

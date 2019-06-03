@@ -11,14 +11,6 @@
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "integer"
-		}, {
-			"name": "iterations_condition_query_provided",
-			"desc": "Defines if a termination query is provided, or otherwise iterations_count will be solely used.",
-			"type": "other",
-			"value": "true",
-			"valueNotBlank": true,
-			"valueMultiple": false,
-			"valueType": "string"
 		}
 	]
 }
