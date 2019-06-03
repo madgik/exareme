@@ -63,8 +63,6 @@ public class IterativeAlgorithmStateTest {
     public void ensureExceptionOnMissingConditionQueryProperty() {
         // Omit iterations termination condition query property.
         PowerMockito.mock(AlgorithmProperties.class);
-        when(algorithmPropertiesMock.getParameterValue(IterationsConstants.iterationsPropertyConditionQueryProvided))
-                .thenReturn(null);
         when(algorithmPropertiesMock.getParameterValue(IterationsConstants.iterationsPropertyMaximumNumber))
                 .thenReturn("3");
         when(algorithmPropertiesMock.getType()).thenReturn(AlgorithmProperties.AlgorithmType.iterative);
@@ -77,8 +75,6 @@ public class IterativeAlgorithmStateTest {
         // Have iterations termination condition query property with erroneous value
         // (must be "true" / "false").
         PowerMockito.mock(AlgorithmProperties.class);
-        when(algorithmPropertiesMock.getParameterValue(IterationsConstants.iterationsPropertyConditionQueryProvided))
-                .thenReturn("yes");
         when(algorithmPropertiesMock.getParameterValue(IterationsConstants.iterationsPropertyMaximumNumber))
                 .thenReturn("3");
         when(algorithmPropertiesMock.getType()).thenReturn(AlgorithmProperties.AlgorithmType.iterative);
@@ -90,8 +86,6 @@ public class IterativeAlgorithmStateTest {
     public void ensureExceptionOnMissingIterationsMaxNumberProperty() {
         // Omit iterations maximum number property.
         PowerMockito.mock(AlgorithmProperties.class);
-        when(algorithmPropertiesMock.getParameterValue(IterationsConstants.iterationsPropertyConditionQueryProvided))
-                .thenReturn("true");
         when(algorithmPropertiesMock.getParameterValue(IterationsConstants.iterationsPropertyMaximumNumber))
                 .thenReturn(null);
         when(algorithmPropertiesMock.getType()).thenReturn(AlgorithmProperties.AlgorithmType.iterative);
@@ -103,8 +97,6 @@ public class IterativeAlgorithmStateTest {
     public void ensureExceptionOnErroneousIterationsMaxNumberPropertyValue() {
         // Have condition query property with erroneous value (must be a Long)
         PowerMockito.mock(AlgorithmProperties.class);
-        when(algorithmPropertiesMock.getParameterValue(IterationsConstants.iterationsPropertyConditionQueryProvided))
-                .thenReturn("true");
         when(algorithmPropertiesMock.getParameterValue(IterationsConstants.iterationsPropertyMaximumNumber))
                 .thenReturn("X");
         when(algorithmPropertiesMock.getType()).thenReturn(AlgorithmProperties.AlgorithmType.iterative);
@@ -117,8 +109,6 @@ public class IterativeAlgorithmStateTest {
     public void ensureThatIncrementIterNumberIsForced() {
         // Correct algorithm parameters
         PowerMockito.mock(AlgorithmProperties.class);
-        when(algorithmPropertiesMock.getParameterValue(IterationsConstants.iterationsPropertyConditionQueryProvided))
-                .thenReturn("true");
         when(algorithmPropertiesMock.getParameterValue(IterationsConstants.iterationsPropertyMaximumNumber))
                 .thenReturn("3");
         when(algorithmPropertiesMock.getType()).thenReturn(AlgorithmProperties.AlgorithmType.iterative);

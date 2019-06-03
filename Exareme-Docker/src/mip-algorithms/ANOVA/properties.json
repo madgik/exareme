@@ -11,14 +11,6 @@
 			"valueMultiple": false,
 			"valueType": "integer"
 		}, {
-			"name": "iterations_condition_query_provided",
-			"desc": "",
-			"type": "other",
-			"value": "true",
-			"valueNotBlank": true,
-			"valueMultiple": false,
-			"valueType": "string"
-		}, {
 			"name": "x",
 			"desc": "The right part of the linear predictor function, that contains the indepedent variables in an equation supporting the symbols +, :, * , R notation.The independent variables are variables of the input dataset.",
 			"type": "formula",

@@ -40,10 +40,6 @@ public class IterationsTestGenericUtils {
             String algorithmName, String iterationsPropertyConditionQueryProvided,
             String iterationsMaximumNumber) {
         HashMap<String, String> inputContent = new HashMap<String, String>();
-        if (iterationsPropertyConditionQueryProvided != null)
-            inputContent.put(
-                    IterationsConstants.iterationsPropertyConditionQueryProvided,
-                    iterationsPropertyConditionQueryProvided);
         if (iterationsMaximumNumber != null)
             inputContent.put(
                     IterationsConstants.iterationsPropertyMaximumNumber,
