@@ -13,7 +13,6 @@ def test_ANOVA_1():
 
     data = [
             {   "name": "iterations_max_number", "value": "20" },
-            {   "name": "iterations_condition_query_provided", "value": "true" },
             {   "name": "x", "value": "ANOVA_var_I1*ANOVA_var_I2*ANOVA_var_I3" },
             {   "name": "y", "value": "ANOVA_var_D" },
             {   "name": "type", "value": "1" },
@@ -58,7 +57,6 @@ def test_ANOVA_2():
 
     data = [
             {   "name": "iterations_max_number", "value": "20" },
-            {   "name": "iterations_condition_query_provided", "value": "true" },
             {   "name": "x", "value": "ANOVA_var_I1*ANOVA_var_I2*ANOVA_var_I3" },
             {   "name": "y", "value": "ANOVA_var_D" },
             {   "name": "type", "value": "2" },
@@ -107,7 +105,6 @@ def test_ANOVA_3():
 
     data = [
             {   "name": "iterations_max_number", "value": "20" },
-            {   "name": "iterations_condition_query_provided", "value": "true" },
             {   "name": "x", "value": "ANOVA_var_I1*ANOVA_var_I2*ANOVA_var_I3" },
             {   "name": "y", "value": "ANOVA_var_D" },
             {   "name": "type", "value": "3" },
@@ -155,7 +152,6 @@ def test_ANOVA_4():
 
     data = [
             {   "name": "iterations_max_number", "value": "20" },
-            {   "name": "iterations_condition_query_provided", "value": "true" },
             {   "name": "x", "value": "ANOVA_var_I1*ANOVA_var_I2*ANOVA_var_I3" },
             {   "name": "y", "value": "ANOVA_var_D" },
             {   "name": "type", "value": "1" },
@@ -199,7 +195,6 @@ def test_ANOVA_5():
 
     data = [
             {   "name": "iterations_max_number", "value": "20" },
-            {   "name": "iterations_condition_query_provided", "value": "true" },
             {   "name": "x", "value": "ANOVA_var_I1*ANOVA_var_I2*ANOVA_var_I3" },
             {   "name": "y", "value": "ANOVA_var_D" },
             {   "name": "type", "value": "2" },
@@ -242,7 +237,6 @@ def test_ANOVA_6():
 
     data = [
             {   "name": "iterations_max_number", "value": "20" },
-            {   "name": "iterations_condition_query_provided", "value": "true" },
             {   "name": "x", "value": "ANOVA_var_I1*ANOVA_var_I2*ANOVA_var_I3" },
             {   "name": "y", "value": "ANOVA_var_D" },
             {   "name": "type", "value": "3" },
@@ -286,7 +280,6 @@ def test_ANOVA_7():
 
     data = [
             {   "name": "iterations_max_number", "value": "20" },
-            {   "name": "iterations_condition_query_provided", "value": "true" },
             {   "name": "x", "value": "ANOVA_var_I1+ANOVA_var_I2+ANOVA_var_I3" },
             {   "name": "y", "value": "ANOVA_var_D" },
             {   "name": "type", "value": "3" },
@@ -326,7 +319,6 @@ def test_ANOVA_8():
 
     data = [
         {   "name": "iterations_max_number", "value": "20" },
-        {   "name": "iterations_condition_query_provided", "value": "true" },
         {   "name": "x", "value": "ANOVA_alzheimerbroadcategory+ANOVA_gender" },
         {   "name": "y", "value": "ANOVA_lefthippocampus" },
         {   "name": "type", "value": "3" },
@@ -361,7 +353,6 @@ def test_ANOVA_9():
 
     data = [
         {   "name": "iterations_max_number", "value": "20" },
-        {   "name": "iterations_condition_query_provided", "value": "true" },
         {   "name": "x", "value": "ANOVA_alzheimerbroadcategory+ANOVA_gender" },
         {   "name": "y", "value": "ANOVA_lefthippocampus" },
         {   "name": "type", "value": "2" },
@@ -395,7 +386,6 @@ def test_ANOVA_10():
 
     data = [
         {   "name": "iterations_max_number", "value": "20" },
-        {   "name": "iterations_condition_query_provided", "value": "true" },
         {   "name": "x", "value": "ANOVA_alzheimerbroadcategory*ANOVA_gender" },
         {   "name": "y", "value": "ANOVA_lefthippocampus" },
         {   "name": "type", "value": "3" },
@@ -433,7 +423,6 @@ def test_ANOVA_11():
 
     data = [
         {   "name": "iterations_max_number", "value": "20" },
-        {   "name": "iterations_condition_query_provided", "value": "true" },
         {   "name": "x", "value": "ANOVA_alzheimerbroadcategory*ANOVA_gender" },
         {   "name": "y", "value": "ANOVA_lefthippocampus" },
         {   "name": "type", "value": "2" },
@@ -469,7 +458,6 @@ def test_ANOVA_12():
 
     data = [
         {   "name": "iterations_max_number", "value": "20" },
-        {   "name": "iterations_condition_query_provided", "value": "true" },
         {   "name": "x", "value": "ANOVA_alzheimerbroadcategory+ANOVA_gender+ANOVA_agegroup" },
         {   "name": "y", "value": "ANOVA_lefthippocampus" },
         {   "name": "type", "value": "3" },
@@ -550,7 +538,6 @@ def test_ANOVA_14():
 
     data = [
         {   "name": "iterations_max_number", "value": "20" },
-        {   "name": "iterations_condition_query_provided", "value": "true" },
         {   "name": "x", "value": "ANOVA_alzheimerbroadcategory*ANOVA_gender+ANOVA_agegroup" },
         {   "name": "y", "value": "ANOVA_lefthippocampus" },
         {   "name": "type", "value": "3" },
@@ -591,7 +578,6 @@ def test_ANOVA_15():
 
     data = [
         {   "name": "iterations_max_number", "value": "20" },
-        {   "name": "iterations_condition_query_provided", "value": "true" },
         {   "name": "x", "value": "ANOVA_alzheimerbroadcategory*ANOVA_gender+ANOVA_agegroup" },
         {   "name": "y", "value": "ANOVA_lefthippocampus" },
         {   "name": "type", "value": "2" },
@@ -634,7 +620,6 @@ def test_ANOVA_16():
 
     data = [
         {   "name": "iterations_max_number", "value": "20" },
-        {   "name": "iterations_condition_query_provided", "value": "true" },
         {   "name": "x", "value": "ANOVA_alzheimerbroadcategory*ANOVA_gender*ANOVA_agegroup" },
         {   "name": "y", "value": "ANOVA_lefthippocampus" },
         {   "name": "type", "value": "3" },
@@ -679,7 +664,6 @@ def test_ANOVA_17():
 
     data = [
         {   "name": "iterations_max_number", "value": "20" },
-        {   "name": "iterations_condition_query_provided", "value": "true" },
         {   "name": "x", "value": "ANOVA_alzheimerbroadcategory*ANOVA_gender*ANOVA_agegroup" },
         {   "name": "y", "value": "ANOVA_lefthippocampus" },
         {   "name": "type", "value": "2" },
@@ -728,7 +712,6 @@ def test_ANOVA_Privacy():
 
     data = [
             {   "name": "iterations_max_number", "value": "20" },
-            {   "name": "iterations_condition_query_provided", "value": "true" },
             {   "name": "x", "value": "ANOVA_var_I1*ANOVA_var_I2*ANOVA_var_I3" },
             {   "name": "y", "value": "ANOVA_var_D" },
             {   "name": "type", "value": "1" },

@@ -56,7 +56,6 @@ public class IterativeAlgorithmState {
     final private String stepPhaseOutputTblVariableName;
     final private String termConditionPhaseOutputTblVariableName;
     // Iterations control-plane related fields [properties.json] --------------------------------
-    private Boolean conditionQueryProvided;
     private Long maxIterationsNumber;
 
     // Iterations control-plane related fields [STATE] ------------------------------------------
@@ -156,25 +155,6 @@ public class IterativeAlgorithmState {
      * the {@code IterationsStateManager}.
      */
     private void setUpPropertyFields() {
-        // Ensure conditionQueryProvided is provided in properties.json, then ensure its value is
-        // true/false and finally, set the corresponding field.
-        final String iterationsConditionQueryProvidedValue =
-                algorithmProperties.getParameterValue(iterationsPropertyConditionQueryProvided);
-        if (iterationsConditionQueryProvidedValue == null) {
-            throw new IterationsStateFatalException("AlgorithmProperty \""
-                    + iterationsPropertyConditionQueryProvided
-                    + "\": is required [accepting: \"true/false\"]", null);
-        }
-        if (iterationsConditionQueryProvidedValue.equals(String.valueOf(true)))
-            conditionQueryProvided = true;
-        else if (iterationsConditionQueryProvidedValue.equals(String.valueOf(false)))
-            conditionQueryProvided = false;
-        else
-            throw new IterationsStateFatalException("AlgorithmProperty \""
-                    + iterationsPropertyConditionQueryProvided
-                    + "\": Expected \"true/false\", found: "
-                    + iterationsConditionQueryProvidedValue, null);
-
         // Ensure maxIterationsNumber is provided in properties.json, them ensure its value is
         // true/false and finally, set the corresponding field.
         final String iterationsMaxNumberVal =
@@ -206,10 +186,6 @@ public class IterativeAlgorithmState {
 
     public void setAlgorithmKey(String algorithmKey) {
         this.algorithmKey = algorithmKey;
-    }
-
-    public Boolean getConditionQueryProvided() {
-        return conditionQueryProvided;
     }
 
     public void setDflScripts(String[] dflScripts) {
