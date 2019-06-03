@@ -1987,6 +1987,7 @@ def test_LinearRegression_3_4b_simplecoding():
     print (r.text)
     result = json.loads(r.text)
 
+
 ##
 ## Call:
 ## lm(formula = lefthippocampus ~ alzheimerbroadcategory * gender *
@@ -2134,6 +2135,32 @@ def test_LinearRegression_3_4b_simplecoding():
                                         0.3104 , 694,
                                         0.3954,  0.3753,
                                         19.73 , 23 , 694   )
+
+def test_LinearRegression_Privacy():
+    """
+    
+    """
+
+    logging.info("---------- TEST : Algorithms for Privacy Error")
+
+    data = [{ "name": "x",	"value": "alzheimerbroadcategory+gender"},
+            { "name": "y",  "value": "lefthippocampus"},
+            { "name": "referencevalues", "value": "[{\"name\":\"alzheimerbroadcategory\",\"val\":\"AD\"},{\"name\":\"gender\",\"val\":\"M\"}]"},
+            { "name": "encodingparameter", "value": "dummycoding"},
+            {"name": "dataset", "value": "adni_9rows"},
+            {"name": "filter", "value": ""}
+           ]
+
+
+    headers = {'Content-type': 'application/json', "Accept": "text/plain"}
+    r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+
+    result = json.loads(r.text)
+
+    check_privacy_result(r.text)
+
+def check_privacy_result(result):
+    assert result == "{\"error\" : \"The Experiment could not run with the input provided because there are insufficient data.\"}"
 
 
 

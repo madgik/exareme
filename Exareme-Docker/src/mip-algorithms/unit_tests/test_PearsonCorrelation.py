@@ -5,7 +5,7 @@ import math
 
 # Required datasets: adni_9rows, adni, data_pr1, desd-synthdata
 
-endpointUrl = 'http://88.197.53.52:9090'
+endpointUrl = 'http://88.197.53.100:9090/mining/query/PEARSON_CORRELATION'
 
 
 def test_PearsonCorrlation_MIP_AlgoTesting_1():
@@ -41,7 +41,7 @@ def test_PearsonCorrlation_MIP_AlgoTesting_1():
     ]
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(endpointUrl + '/mining/query/PEARSON_CORRELATION', data=json.dumps(data), headers=headers)
+    r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
 
     result = json.loads(r.text)
 
@@ -83,7 +83,7 @@ def test_PearsonCorrlation_MIP_AlgoTesting_2():
     ]
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(endpointUrl + '/mining/query/PEARSON_CORRELATION', data=json.dumps(data), headers=headers)
+    r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
 
     result = json.loads(r.text)
 
@@ -125,7 +125,7 @@ def test_PearsonCorrlation_MIP_AlgoTesting_2p1():
     ]
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(endpointUrl + '/mining/query/PEARSON_CORRELATION', data=json.dumps(data), headers=headers)
+    r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
 
     result = json.loads(r.text)
 
@@ -167,7 +167,7 @@ def test_PearsonCorrlation_MIP_AlgoTesting_3():
     ]
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(endpointUrl + '/mining/query/PEARSON_CORRELATION', data=json.dumps(data), headers=headers)
+    r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
 
     result = json.loads(r.text)
 
@@ -209,7 +209,7 @@ def test_PearsonCorrlation_MIP_AlgoTesting_3p1():
     ]
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(endpointUrl + '/mining/query/PEARSON_CORRELATION', data=json.dumps(data), headers=headers)
+    r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
 
     result = json.loads(r.text)
 
@@ -251,7 +251,7 @@ def test_PearsonCorrlation_MIP_AlgoTesting_3p2():
     ]
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(endpointUrl + '/mining/query/PEARSON_CORRELATION', data=json.dumps(data), headers=headers)
+    r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
 
     result = json.loads(r.text)
 
@@ -303,7 +303,7 @@ def test_PearsonCorrlation_MIP_AlgoTesting_4():
     ]
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(endpointUrl + '/mining/query/PEARSON_CORRELATION', data=json.dumps(data), headers=headers)
+    r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
 
     result = json.loads(r.text)
 
@@ -361,7 +361,7 @@ def test_PearsonCorrlation_MIP_AlgoTesting_5():
     ]
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(endpointUrl + '/mining/query/PEARSON_CORRELATION', data=json.dumps(data), headers=headers)
+    r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
 
     result = json.loads(r.text)
 
@@ -419,7 +419,7 @@ def test_PearsonCorrlation_MIP_AlgoTesting_6():
     ]
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(endpointUrl + '/mining/query/PEARSON_CORRELATION', data=json.dumps(data), headers=headers)
+    r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
 
     result = json.loads(r.text)
 
@@ -477,7 +477,7 @@ def test_PearsonCorrlation_MIP_AlgoTesting_7():
     ]
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(endpointUrl + '/mining/query/PEARSON_CORRELATION', data=json.dumps(data), headers=headers)
+    r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
 
     result = json.loads(r.text)
 
@@ -490,6 +490,26 @@ def test_PearsonCorrlation_MIP_AlgoTesting_7():
     check_result(
             result['result'][0]['data'][2], 'lefthippocampus ~ opticchiasm', 0.202, '< 0.001', 0.130, 0.271
     )
+
+def test_PearsonCorrlation_Privacy():
+
+    logging.info("---------- TEST : Algorithms for Privacy Error")
+
+    data = [{"name" : "x","value": "lefthippocampus"},
+            {"name" : "y","value": "righthippocampus"},
+            {"name" : "dataset","value": "adni_9rows"},
+            {"name" : "filter","value": ""},
+    	  ]
+
+    headers = {'Content-type': 'application/json', "Accept": "text/plain"}
+    r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+
+    result = json.loads(r.text)
+
+    check_privacy_result(r.text)
+
+def check_privacy_result(result):
+    assert result == "{\"error\" : \"The Experiment could not run with the input provided because there are insufficient data.\"}"
 
 
 def check_result(my_result, r_var_pair, r_corr, r_pval, r_ci_lo, r_ci_hi):

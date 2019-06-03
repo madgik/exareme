@@ -11,6 +11,7 @@ import madgik.exareme.master.engine.iterations.handler.IterationsConstants;
 import madgik.exareme.master.engine.iterations.state.exceptions.IterationsStateFatalException;
 import madgik.exareme.master.queryProcessor.composer.AlgorithmProperties;
 import madgik.exareme.master.queryProcessor.composer.Algorithms;
+import madgik.exareme.worker.art.executionEngine.dynamicExecutionEngine.Algorithm;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -66,6 +67,7 @@ public class IterativeAlgorithmStateTest {
                 .thenReturn(null);
         when(algorithmPropertiesMock.getParameterValue(IterationsConstants.iterationsPropertyMaximumNumber))
                 .thenReturn("3");
+        when(algorithmPropertiesMock.getType()).thenReturn(AlgorithmProperties.AlgorithmType.iterative);
 
         new IterativeAlgorithmState(algorithmName, algorithmPropertiesMock, adpDBClient);
     }
@@ -79,6 +81,7 @@ public class IterativeAlgorithmStateTest {
                 .thenReturn("yes");
         when(algorithmPropertiesMock.getParameterValue(IterationsConstants.iterationsPropertyMaximumNumber))
                 .thenReturn("3");
+        when(algorithmPropertiesMock.getType()).thenReturn(AlgorithmProperties.AlgorithmType.iterative);
 
         new IterativeAlgorithmState(algorithmName, algorithmPropertiesMock, adpDBClient);
     }
@@ -91,6 +94,7 @@ public class IterativeAlgorithmStateTest {
                 .thenReturn("true");
         when(algorithmPropertiesMock.getParameterValue(IterationsConstants.iterationsPropertyMaximumNumber))
                 .thenReturn(null);
+        when(algorithmPropertiesMock.getType()).thenReturn(AlgorithmProperties.AlgorithmType.iterative);
 
         new IterativeAlgorithmState(algorithmName, algorithmPropertiesMock, adpDBClient);
     }
@@ -103,6 +107,7 @@ public class IterativeAlgorithmStateTest {
                 .thenReturn("true");
         when(algorithmPropertiesMock.getParameterValue(IterationsConstants.iterationsPropertyMaximumNumber))
                 .thenReturn("X");
+        when(algorithmPropertiesMock.getType()).thenReturn(AlgorithmProperties.AlgorithmType.iterative);
 
         new IterativeAlgorithmState(algorithmName, algorithmPropertiesMock, adpDBClient);
     }
@@ -116,6 +121,7 @@ public class IterativeAlgorithmStateTest {
                 .thenReturn("true");
         when(algorithmPropertiesMock.getParameterValue(IterationsConstants.iterationsPropertyMaximumNumber))
                 .thenReturn("3");
+        when(algorithmPropertiesMock.getType()).thenReturn(AlgorithmProperties.AlgorithmType.iterative);
 
         IterativeAlgorithmState ias =
                 new IterativeAlgorithmState(algorithmName, algorithmPropertiesMock, adpDBClient);

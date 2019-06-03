@@ -115,17 +115,22 @@ public class IterativeAlgorithmState {
             AdpDBClient adpDBClient) {
 
         this.algorithmKey = algorithmKey;
-        iterationsDBPath =
-                HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey + "/"
-                        + IterationsConstants.iterationsParameterIterDBValueSuffix;
         this.adpDBClient = adpDBClient;
         this.algorithmProperties = algorithmProperties;
-        setUpPropertyFields();
 
         // State related fields initialization
         algorithmCompleted = null;
         algorithmHasError = false;
         currentExecutionPhase = null;
+
+        if (algorithmProperties.getType().equals(AlgorithmProperties.AlgorithmType.iterative)) {
+            iterationsDBPath =
+                    HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey + "/"
+                            + IterationsConstants.iterationsParameterIterDBValueSuffix;
+            setUpPropertyFields();
+        }else{
+            iterationsDBPath = "";
+        }
         algorithmError = null;
         stepPhaseOutputTblVariableName =
                 IterationsHandlerDFLUtils.getStepPhaseOutputTblVariableName(algorithmKey);
@@ -267,17 +272,18 @@ public class IterativeAlgorithmState {
                 dflVariablesMap.put(IterationsConstants.previousPhaseOutputTblVariableName,
                         currentStepOutputTblName);
                 break;
+
             case termination_condition:
                 dflVariablesMap.put(
                         termConditionPhaseOutputTblVariableName,
                         generateTermCondPhaseCurrentOutputTbl());
-
                 dflScript = StrSubstitutor.replace(dflScripts[phase.ordinal()], dflVariablesMap);
-
                 break;
+
             case finalize:
                 dflScript = StrSubstitutor.replace(dflScripts[phase.ordinal()], dflVariablesMap);
                 break;
+
             default:
                 releaseLock();
                 throw new IterationsStateFatalException("IterativePhase: \"" + phase.name()
@@ -371,6 +377,7 @@ public class IterativeAlgorithmState {
             iterations number is changed to float format (e.g. "0.0", "1.0").
         2.  Using the previousIterationsNumber since we want to read what has been already executed.
          */
+
         String terminationConditionTblName =
                 IterationsConstants.iterationsOutputTblPrefix
                         + "_" + algorithmKey.toLowerCase()
@@ -425,6 +432,10 @@ public class IterativeAlgorithmState {
     }
 
     // Execution phase [Getters/Setters] --------------------------------------------------------
+
+    public AlgorithmProperties.AlgorithmType getAlgorithmType() {
+        return algorithmProperties.getType();
+    }
 
     /**
      * Retrieves the already created {@link AdpDBClient} for a new query submission.

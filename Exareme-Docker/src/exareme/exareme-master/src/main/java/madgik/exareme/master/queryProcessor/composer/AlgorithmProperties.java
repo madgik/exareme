@@ -27,7 +27,8 @@ public class AlgorithmProperties {
         iterative,                  // exec iterative algorithm
         python_local,                   // exec python based local algorithm
         python_local_global,            // exec python based local global algorithm
-        python_multiple_local_global    // exec python based multiple local global algorithm
+        python_multiple_local_global,    // exec python based multiple local global algorithm
+        python_iterative                 // exec python based iterative algorithm
     }
 
     public AlgorithmProperties() {

@@ -20,6 +20,7 @@ class TransferData():
         cur = conn.cursor()
         cur.execute('SELECT data FROM transfer')
         first = True
+        result = None
         for row in cur:
             if first:
                 result = pickle.loads(codecs.decode(row[0], 'ascii'))
@@ -43,15 +44,41 @@ def query_with_privacy(fname_db, query):
     return schema, data
 
 
-def get_parameters(argv):
-    opts = {}
-    while argv:
-        if argv[0][0] == '-':
-            opts[argv[0]] = argv[1]
-            argv = argv[2:]
-        else:
-            argv = argv[1:]
-    return opts
+class StateData(object):  # TODO Call save in constructor to simplify algorithm code??
+
+    def __init__(self, **kwargs):
+        self.data = kwargs
+
+    def get_data(self):
+        return self.data
+
+    def save(self, fname, pickle_protocol=2):
+        with open(fname, 'wb') as file:
+            try:
+                pickle.dump(self, file, protocol=pickle_protocol)
+            except pickle.PicklingError:
+                print('Unpicklable object.')
+
+    @classmethod
+    def load(cls, fname):
+        with open(fname, 'rb') as file:
+            try:
+                obj = pickle.load(file)
+            except pickle.UnpicklingError:
+                print('Cannot unpickle.')
+                return
+        return obj
+
+
+def query_with_privacy(fname_db, query):
+    conn = sqlite3.connect(fname_db)
+    cur = conn.cursor()
+    cur.execute(query)
+    schema = [description[0] for description in cur.description]
+    data = cur.fetchall()
+    if len(data) < PRIVACY_MAGIC_NUMBER:
+        raise PrivacyError('Query violates privacy constraint.')
+    return schema, data
 
 
 def set_algorithms_output_data(data):
