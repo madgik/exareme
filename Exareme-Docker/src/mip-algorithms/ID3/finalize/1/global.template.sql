@@ -1,5 +1,7 @@
-requirevars 'defaultDB' 'outputformat' ;
+requirevars 'defaultDB' 'outputformat' 'iterations_max_number';
 attach database '%{defaultDB}' as defaultDB;
+
+var 'EH_IterationsMaxNumber' from  select maxnumberofiterations_errorhandling(0,no) from (select count(nextnode) as no from defaultdb.globaltree where nextnode='?');
 
 update defaultDB.globaltree set nextnode = ""  where nextnode ="-";
 update defaultDB.globaltree set leafval = ""  where leafval ="?";

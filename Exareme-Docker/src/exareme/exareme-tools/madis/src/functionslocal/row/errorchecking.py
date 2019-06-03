@@ -11,6 +11,16 @@ def privacychecking(*args):
 privacychecking.registered = True
 
 
+def maxnumberofiterations_errorhandling(maxnumberofiterations,no): # For most of the iterative algorithms
+    if maxnumberofiterations< no:
+        raise functions.OperatorError("ExaremeError", "Please increase the max number of iterations")
+    else:
+        return "OK"
+
+maxnumberofiterations_errorhandling.registered = True
+
+
+
 def kmeans_inputerrorchecking(centers,k):
     if (centers == '' and k == '') or (centers != '' and k != ''):
         raise functions.OperatorError("ExaremeError", "Only one of the following two parameters should be empty/have value: Centers or k")
