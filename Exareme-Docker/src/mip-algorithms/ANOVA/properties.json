@@ -4,7 +4,7 @@
 	"type": "iterative",
 	"parameters": [{
 			"name": "iterations_max_number",
-			"desc": "",
+			"desc": "Maximum number of iterations",
 			"type": "other",
 			"value": "",
 			"valueNotBlank": true,
@@ -41,13 +41,13 @@
 			"valueMultiple": false,
 			"valueType": "string"
 		}, {
-			"name": "type",
-			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty.",
+			"name": "sstype",
+			"desc": "Type of sum of squares to use. It can be 1 or 2 or 3.",
 			"type": "other",
 			"value": "2",
 			"valueNotBlank": true,
 			"valueMultiple": true,
-			"valueType": "string"
+			"valueType": "integer"
 		}, {
 			"name": "dataset",
 			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty.",
