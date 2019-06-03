@@ -99,19 +99,19 @@ ansible-playbook -i hosts.ini Start-services.yaml -c paramiko  --ask-vault-pass 
 ```
 If you want to exclude Portainer service from running, you need to add --skip-tags portainer in the command
 ```
-ansible-playbook -i hosts.ini docker-start-services.yaml -c paramiko --ask-pass --ask-become-pass --skip-tags portainer -vvvv
+ansible-playbook -i hosts.ini docker-start-services.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml --skip-tags portainer -vvvv
 ```
 6) If you want to stop all services:
 ```
-ansible-playbook -i hosts.ini Stop-services -c paramiko -ask-vault-pass -e@vault_file.yaml  -vvvv
+ansible-playbook -i hosts.ini Stop-services -c paramiko --ask-vault-pass -e@vault_file.yaml  -vvvv
 ```
 
 Or If you only want to stop portainer you can do so by:
 ```
-ansible-playbook -i hosts.ini docker-stop-services.yaml -c paramiko --ask-pass --ask-become-pass --skip-tags exareme -vvvv
+ansible-playbook -i hosts.ini docker-stop-services.yaml -c paramiko -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv --skip-tags exareme -vvvv
 ```
 Or If you only want to stop Exareme services you can do so by:
 ```
-ansible-playbook -i hosts.ini docker-stop-services.yaml -c paramiko --ask-pass --ask-become-pass --tags exareme -vvvv
+ansible-playbook -i hosts.ini docker-stop-services.yaml -c paramiko -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv --tags exareme -vvvv
 ```
 
