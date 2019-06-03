@@ -1,0 +1,10 @@
+manager1_become_user: username
+manager1_remote_user: username
+manager1_become_pass: password
+manager1_ssh_pass: password
+
+worker1_become_user: username
+worker1_remote_user: username
+worker1_become_pass: password
+worker1_ssh_pass: password
+
