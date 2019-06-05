@@ -70,17 +70,6 @@ class StateData(object):  # TODO Call save in constructor to simplify algorithm 
         return obj
 
 
-def query_with_privacy(fname_db, query):
-    conn = sqlite3.connect(fname_db)
-    cur = conn.cursor()
-    cur.execute(query)
-    schema = [description[0] for description in cur.description]
-    data = cur.fetchall()
-    if len(data) < PRIVACY_MAGIC_NUMBER:
-        raise PrivacyError('Query violates privacy constraint.')
-    return schema, data
-
-
 def set_algorithms_output_data(data):
     print(data)
 

@@ -67,9 +67,15 @@ def main():
     except ValueError:
         print('Values in X must be numbers')
 
-    Y = [data[i][idx_Y] for i in range(len(data))]
-    assert len(set(Y) - {None, ''}) == 2, "Y vector should only contain 2 distinct values, and possibly None or " \
+    Y = np.array([data[i][idx_Y] for i in range(len(data))])
+    assert len(set(Y) - {''}) == 2, "Y vector should only contain 2 distinct values, and possibly None or " \
                                           "empty strings"
+
+    # Remove rows with missing values
+    mask_Y = [y is '' for y in Y]
+    mask_X = np.isnan(X).any(axis=1)
+    mask = np.logical_or(mask_X, mask_Y)
+    X, Y = X[~mask], Y[~mask]
 
     local_in = X, Y, schema_X, schema_Y
     # Run algorithm local step
