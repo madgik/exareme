@@ -1,7 +1,7 @@
 requirevars 'defaultDB' 'prv_output_global_tbl';
 attach database '%{defaultDB}' as defaultDB;
 
-var 'prv_output_global_tbl' 'defaultDB.globalstatistics';
+-- var 'prv_output_global_tbl' 'defaultDB.globalstatistics';
 
 var 'groupvar1' from select distinct groupval from defaultDB.globalstatistics limit 1;
 var 'groupvar2' from select distinct groupval from defaultDB.globalstatistics limit 2 offset 1;

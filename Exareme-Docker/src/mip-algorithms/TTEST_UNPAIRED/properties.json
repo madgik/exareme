@@ -26,6 +26,15 @@
 				"valueMultiple": true,
 				"valueType": "string"
 			},
+			{
+				"name": "ylevels",
+				"desc": "Distinct values of y",
+				"type": "other",
+				"value": "M,F",
+				"valueNotBlank": true,
+				"valueMultiple": true,
+				"valueType": "string"
+			},
 		{
         "name": "hypothesis",
         "desc": "'different' (default), 'greaterthan' or 'lessthan', the alternative hypothesis; different to testValue, greater than testValue, and less than testValue respectively ",

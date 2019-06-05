@@ -3,16 +3,20 @@
 -- hidden var 'defaultDB' defaultDB_TTEST;
 -- hidden var 'x' 'subjectage,righthippocampus,lefthippocampus';
 -- hidden var 'y' 'gender';
+-- var 'ylevels' 'M,F';
 -- hidden var 'outputformat' 'pfa';
---
+-- hidden var 'effectsize' 1;
+-- hidden var 'ci'  0;
+-- hidden var 'meandiff'  0;
+-- hidden var 'hypothesis'  0;
 -- var 'input_local_DB' 'datasets.db';
 --
 -- drop table if exists inputdata;
 -- create table inputdata as
 -- select %{x},%{y}
 -- from (file header:t '/home/eleni/Desktop/HBP/exareme/Exareme-Docker/src/mip-algorithms/unit_tests/datasets/CSVs/desd-synthdata.csv');
-
---http://www.sthda.com/english/wiki/t-test-formula
+--
+-- --http://www.sthda.com/english/wiki/t-test-formula
 
 
 ------------------ End input for testing
@@ -43,6 +47,10 @@ where ? is not null and ? <>'NA' and ? <>'' group by %{y};" , "" , "" , '%{x}');
 drop table if exists defaultDB.localstatistics;
 create table defaultDB.localstatistics (colname text, groupval text, S1 real, S2 real, N int);
 %{localstats};
+
+drop table if exists defaultDB.privacychecking; -- For error handling
+create table defaultDB.privacychecking as
+select privacychecking(N) from defaultDB.localstatistics;
 
 select * from defaultDB.localstatistics;
 

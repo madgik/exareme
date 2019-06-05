@@ -1,7 +1,7 @@
 requirevars 'defaultDB' 'input_global_tbl' 'testvalue' 'hypothesis' 'effectsize' 'ci' 'meandiff';
 attach database '%{defaultDB}' as defaultDB;
 
---var 'input_global_tbl' 'defaultDB.localstatistics';
+var 'input_global_tbl' 'defaultDB.localstatistics';
 
 drop table if exists defaultDB.globalstatistics;
 create table  defaultDB.globalstatistics as
@@ -15,21 +15,15 @@ create table defaultDB.globalttestresult as
 select * from (t_test testvalue:%{testvalue} effectsize:%{effectsize} ci:%{ci} meandiff:%{meandiff} hypothesis:%{hypothesis}
                select * from  defaultDB.globalstatistics);
 
--- var 'resultschema' from select * from (getschema outputformat:1 select * from defaultDB.globalstatistics);
+var 'resultschema' from select outputschema from defaultDB.globalttestresult limit 1;
+var 'typesofresults' from select create_complex_query("","real" , "," , "" , '%{resultschema}');
+var 'typesofresults2' from select strreplace(mystring) from (select 'text,real,int,'||'%{typesofresults}' as mystring);
 
 
 drop table if exists defaultDB.ttestresultvisual;
 create table defaultDB.ttestresultvisual as
 setschema 'result'
-select * from (totabulardataresourceformat title:ONE_SAMPLE_T_TEST_TABLE types:text,real,int,real,real,real,real,real,real
-               select * from defaultDB.globalttestresult);
+select * from (totabulardataresourceformat title:ONE_SAMPLE_T_TEST_TABLE types:%{typesofresults2}
+               select colname,statistics,df,%{resultschema} from defaultDB.globalttestresult);
 
 select * from defaultDB.ttestresultvisual;
---
--- --Independent T-tests
--- select colnameA, (meanA-meanB) / sqroot(std*std/nA +std*std/nB)
---
---
--- select colnameA,
--- (select colname as colnameA, mean as meanA, std as stdA, n as nA from defaultDB.globalstatistics where group ='F')
--- (select colname as colnameB, mean as meanB, std as stdB, n as nB from defaultDB.globalstatistics where group ='M')

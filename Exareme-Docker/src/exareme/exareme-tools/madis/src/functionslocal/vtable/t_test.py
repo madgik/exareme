@@ -40,6 +40,7 @@ class t_test(functions.vtable.vtbase.VT):
             raise functions.OperatorError(__name__.rsplit('.')[-1],"Empty table")
 
         outputschema = [['colname'],['statistics'],['df'],['p']]
+        outputschemaString='p'
         init = True
         for myrow in c:
 
@@ -56,7 +57,9 @@ class t_test(functions.vtable.vtbase.VT):
 
             if effectsize == 1:
                 cohen_value = (mean - float(testvalue))  / (math.sqrt((std*std)))
-                if init ==True: outputschema.append(['Cohen\'s d'])
+                if init ==True:
+                    outputschema.append(['Cohens_d'])
+                    outputschemaString+=',Cohens_d'
                 result.append(cohen_value)
 
             if ci == 1:
@@ -64,18 +67,25 @@ class t_test(functions.vtable.vtbase.VT):
                 h = std_error * stats.t.ppf((1- confidence) / 2, df)
                 LowerConfidence = min((mean - float(testvalue)) - h,(mean - float(testvalue)) + h)
                 UpperConfidence = max((mean - float(testvalue)) - h,(mean - float(testvalue)) + h)
-                if init ==True: outputschema.append(['Lower'])
-                if init ==True: outputschema.append(['Upper'])
+                if init ==True:
+                    outputschema.append(['Lower'])
+                    outputschema.append(['Upper'])
+                    outputschemaString+=',Lower'
+                    outputschemaString+=',Upper'
                 result.append(LowerConfidence)
                 result.append(UpperConfidence)
 
             if meandiff == 1:
                 meandiff_value =  mean - float(testvalue)
-                if init ==True: outputschema.append(["Mean difference"])
+                if init ==True:
+                    outputschema.append(["Meandifference"])
+                    outputschemaString+=',Meandifference'
                 result.append(meandiff_value)
 
             if init == True:
+                outputschema.append(["outputschema"])
                 yield outputschema
+            result.append(outputschemaString)
             yield result
             init = False
 
@@ -98,4 +108,4 @@ if not ('.' in __name__):
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
-        doctest.tesdoctest.tes
+        doctest.tes
