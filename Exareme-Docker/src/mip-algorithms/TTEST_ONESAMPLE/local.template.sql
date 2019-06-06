@@ -1,19 +1,19 @@
-------------------Input for testing
-------------------------------------------------------------------------------
-hidden var 'defaultDB' defaultDB_TTEST;
-hidden var 'x' 'righthippocampus,lefthippocampus';
-hidden var 'outputformat' 'pfa';
-hidden var 'testvalue' 3.0;
-hidden var 'effectsize' 1;
-hidden var 'ci'  0;
-hidden var 'meandiff'  0;
-hidden var 'hypothesis'  0;
-
-
-drop table if exists inputdata;
-create table inputdata as
-select %{x}
-from (file header:t '/home/eleni/Desktop/HBP/exareme/Exareme-Docker/src/mip-algorithms/unit_tests/datasets/CSVs/desd-synthdata.csv');
+-- ------------------Input for testing
+-- ------------------------------------------------------------------------------
+-- hidden var 'defaultDB' defaultDB_TTEST;
+-- hidden var 'x' 'righthippocampus,lefthippocampus';
+-- hidden var 'outputformat' 'pfa';
+-- hidden var 'testvalue' 3.0;
+-- hidden var 'effectsize' 1;
+-- hidden var 'ci'  0;
+-- hidden var 'meandiff'  0;
+-- hidden var 'hypothesis'  'different';
+--
+--
+-- drop table if exists inputdata;
+-- create table inputdata as
+-- select %{x}
+-- from (file header:t '/home/eleni/Desktop/HBP/exareme/Exareme-Docker/src/mip-algorithms/unit_tests/datasets/CSVs/desd-synthdata.csv');
 
 --http://www.sthda.com/english/wiki/t-test-formula
 
@@ -27,8 +27,8 @@ attach database '%{defaultDB}' as defaultDB;
 attach database '%{input_local_DB}' as localDB;
 
 --Read dataset
---drop table if exists inputdata;
---create table inputdata as select * from (%{db_query});
+drop table if exists inputdata;
+create table inputdata as select * from (%{db_query});
 
 -- Cast values of columns using cast function.
 var 'cast_x' from select create_complex_query("","tonumber(?) as ?", "," , "" , '%{x}');

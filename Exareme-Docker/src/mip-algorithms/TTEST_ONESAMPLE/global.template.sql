@@ -1,7 +1,7 @@
 requirevars 'defaultDB' 'input_global_tbl' 'testvalue' 'hypothesis' 'effectsize' 'ci' 'meandiff';
 attach database '%{defaultDB}' as defaultDB;
 
-var 'input_global_tbl' 'defaultDB.localstatistics';
+--var 'input_global_tbl' 'defaultDB.localstatistics';
 
 drop table if exists defaultDB.globalstatistics;
 create table  defaultDB.globalstatistics as
@@ -18,7 +18,6 @@ select * from (t_test testvalue:%{testvalue} effectsize:%{effectsize} ci:%{ci} m
 var 'resultschema' from select outputschema from defaultDB.globalttestresult limit 1;
 var 'typesofresults' from select create_complex_query("","real" , "," , "" , '%{resultschema}');
 var 'typesofresults2' from select strreplace(mystring) from (select 'text,real,int,'||'%{typesofresults}' as mystring);
-
 
 drop table if exists defaultDB.ttestresultvisual;
 create table defaultDB.ttestresultvisual as

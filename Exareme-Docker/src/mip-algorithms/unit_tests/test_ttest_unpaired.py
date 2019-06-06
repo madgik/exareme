@@ -168,6 +168,7 @@ def test_UnpairedTtest__Privacy():
 
     check_privacy_result(r.text)
 
+
 def check_privacy_result(result):
     assert result == "{\"error\" : \"The Experiment could not run with the input provided because there are insufficient data.\"}"
 
@@ -180,7 +181,21 @@ def check_result(exareme_result,corr_result):
     assert (str(exareme_result[0])==str(corr_result[0]))
     for i in range(1,len(corr_result)-1):
         print (exareme_result[i], corr_result[i])
-        if type(corr_result[i]) is str:
-            assert (exareme_result[i] <= float(corr_result[i].replace('< ','0')))
+        if str(corr_result[i]) == '-Inf' or str(corr_result[i]) == '+Inf':
+            assert (str(exareme_result[i]) == str(corr_result[i]))
+        elif str(corr_result[i]) == '< .001':
+            assert (exareme_result[i] <= float(0.001))
         else:
             assert (math.isclose(exareme_result[i],corr_result[i],rel_tol=0,abs_tol=10**(-abs(Decimal(str(corr_result[i])).as_tuple().exponent))))
+
+
+#
+# def check_result(exareme_result,corr_result):
+#     print (exareme_result[0], corr_result[0])
+#     assert (str(exareme_result[0])==str(corr_result[0]))
+#     for i in range(1,len(corr_result)-1):
+#         print (exareme_result[i], corr_result[i])
+#         if type(corr_result[i]) is str:
+#             assert (exareme_result[i] <= float(corr_result[i].replace('< ','0')))
+#         else:
+#             assert (math.isclose(exareme_result[i],corr_result[i],rel_tol=0,abs_tol=10**(-abs(Decimal(str(corr_result[i])).as_tuple().exponent))))
