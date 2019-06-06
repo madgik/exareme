@@ -12,7 +12,7 @@ group by colname);
 
 drop table if exists defaultDB.globalttestresult;
 create table defaultDB.globalttestresult as
-select * from (t_test testvalue:%{testvalue} effectsize:%{effectsize} ci:%{ci} meandiff:%{meandiff} hypothesis:%{hypothesis}
+select * from (ttest_onesample testvalue:%{testvalue} effectsize:%{effectsize} ci:%{ci} meandiff:%{meandiff} hypothesis:%{hypothesis}
                select * from  defaultDB.globalstatistics);
 
 var 'resultschema' from select outputschema from defaultDB.globalttestresult limit 1;

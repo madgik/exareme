@@ -8,7 +8,7 @@ registered=True
 
 
 
-class t_test_unpaired(functions.vtable.vtbase.VT):
+class ttest_independent(functions.vtable.vtbase.VT):
     def VTiter(self, *parsedArgs,**envars):
         largs, dictargs = self.full_parse(parsedArgs)
 
@@ -47,15 +47,13 @@ class t_test_unpaired(functions.vtable.vtbase.VT):
         if len(schema)==0:
             raise functions.OperatorError(__name__.rsplit('.')[-1],"Empty table")
 
-        outputschema = [['colname'],['df'],['statistics']]
-        outputschemaString ='statistics'
+        outputschema = [['colname'],['statistics'],['df']]
         init = True
         mydata = [myrow for myrow in c]
 
         for mycolname in colnames:
             print "a",mycolname
             for myrow in mydata:
-
                 if str(myrow[0]) == mycolname:
                     if str(myrow[1]) == str(ylevels[0]):
                         colnameA = str(myrow[0])
@@ -73,27 +71,14 @@ class t_test_unpaired(functions.vtable.vtbase.VT):
             df = NA + NB - 2
             std_error = (sseA+sseB) / df
             t_value =  (meanA - meanB) / math.sqrt(std_error/NA + std_error/NB)
-            result = [colnameA,df,t_value]
+            result = [colnameA,t_value,df]
 
-
-            if  hypothesis == 'oneGreater':
-                 p_value =  stats.t.cdf(-abs(t_value), df)
-                 if init ==True:
-                     outputschema.append(['p_value'])
-                     outputschemaString+=',p_value'
-                 result.append(p_value)
-            elif hypothesis == 'different':
-                p_value =  2 * stats.t.cdf(-abs(t_value), df)
-                if init ==True:
-                    outputschema.append(['p_value'])
-                    outputschemaString+=',p_value'
-                result.append(p_value)
-            elif hypothesis == 'twoGreater':
-                p_value =  1- stats.t.cdf(-abs(t_value), df)
-                if init ==True:
-                    outputschema.append(['p_value'])
-                    outputschemaString+=',p_value'
-                result.append(p_value)
+            if init == True:
+                outputschema.append(["Hypothesis"])
+                outputschemaString = 'Hypothesis'
+            if hypothesis == 'different': result.append(2.0 * (1.0-stats.t.cdf(abs(t_value), df)))
+            elif hypothesis == 'twoGreater': result.append(stats.t.cdf(t_value, df))
+            elif hypothesis == 'oneGreater': result.append(1.0- stats.t.cdf(t_value, df))
 
             if meandiff == 1:
                 if init ==True:
@@ -104,19 +89,21 @@ class t_test_unpaired(functions.vtable.vtbase.VT):
                 result.append(meanA-meanB)
                 result.append(math.sqrt(std_error*(1.0/NA+1.0/NB)))
 
-
             if ci == 1:
-                confidence = 0.95
-                h = math.sqrt(std_error/NA + std_error/NB) * stats.t.ppf((1 + confidence) / 2, NA + NB - 1)
-                LowerConfidence = min((meanA - meanB) - h,(meanA - meanB) + h)
-                UpperConfidence = max((meanA - meanB) - h,(meanA - meanB) + h)
-                if init ==True:
+                if hypothesis == 'different':
+                    LowerConfidence, UpperConfidence = stats.t.interval(0.95, df, meanA - meanB, math.sqrt(std_error/NA + std_error/NB) )
+                elif hypothesis == 'twoGreater':
+                    _, UpperConfidence = stats.t.interval(0.90, df, meanA - meanB, math.sqrt(std_error/NA + std_error/NB) )
+                    LowerConfidence = '-Inf'
+                elif hypothesis == 'oneGreater':
+                    UpperConfidence = 'Inf'
+                    LowerConfidence, _ = stats.t.interval(0.90, df, meanA - meanB, math.sqrt(std_error/NA + std_error/NB) )
+                if init == True:
                     outputschema.append(['Lower'])
                     outputschema.append(['Upper'])
-                    outputschemaString+=',Lower,Upper'
+                    outputschemaString += ',Lower,Upper'
                 result.append(LowerConfidence)
                 result.append(UpperConfidence)
-
 
             if effectsize == 1:
                 cohen_value = (meanA - meanB)  / (math.sqrt((sseA+sseB)/(NA+NB-2.0)))
@@ -135,7 +122,7 @@ class t_test_unpaired(functions.vtable.vtbase.VT):
 
 
 def Source():
-    return functions.vtable.vtbase.VTGenerator(t_test_unpaired)
+    return functions.vtable.vtbase.VTGenerator(ttest_independent)
 
 
 if not ('.' in __name__):

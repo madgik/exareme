@@ -8,7 +8,7 @@ from scipy import stats
 registered = True
 
 
-class t_test(functions.vtable.vtbase.VT):
+class ttest_onesample(functions.vtable.vtbase.VT):
     def VTiter(self, *parsedArgs, **envars):
         largs, dictargs = self.full_parse(parsedArgs)
 
@@ -103,7 +103,7 @@ class t_test(functions.vtable.vtbase.VT):
 
 
 def Source():
-    return functions.vtable.vtbase.VTGenerator(t_test)
+    return functions.vtable.vtbase.VTGenerator(ttest_onesample)
 
 
 if not ('.' in __name__):

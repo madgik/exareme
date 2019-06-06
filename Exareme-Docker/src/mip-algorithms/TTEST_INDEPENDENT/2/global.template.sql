@@ -14,18 +14,18 @@ var 'ylevels1' from select case when '%{ylevels}'<>'' then '%{ylevels}' else '%{
 
 drop table if exists defaultDB.globalttestresult;
 create table defaultDB.globalttestresult as
-select * from (t_test_unpaired colnames:%{x}  ylevels:%{ylevels1} effectsize:%{effectsize} ci:%{ci} meandiff:%{meandiff} hypothesis:%{hypothesis}
+select * from (ttest_independent colnames:%{x}  ylevels:%{ylevels1} effectsize:%{effectsize} ci:%{ci} meandiff:%{meandiff} hypothesis:%{hypothesis}
                select colname, groupval, mean, std,  Ntotal,sse from  defaultDB.globalstatistics2 order by colname,groupval);
 
-var 'resultschema' from select outputschema from globalttestresult limit 1;
+var 'resultschema' from select outputschema from defaultDB.globalttestresult limit 1;
 var 'typesofresults' from select create_complex_query("","real" , "," , "" , '%{resultschema}');
-var 'typesofresults2' from select strreplace(mystring) from (select 'text,int,'||'%{typesofresults}' as mystring);
+var 'typesofresults2' from select strreplace(mystring) from (select 'text,real,int,'||'%{typesofresults}' as mystring);
 
 
 drop table if exists defaultDB.ttestresultvisual;
 create table defaultDB.ttestresultvisual as
 
-select * from (totabulardataresourceformat title:UNPAIRED_TEST_TABLE types:%{typesofresults2}
-              select colname,df,%{resultschema} from defaultDB.globalttestresult);
+select * from (totabulardataresourceformat title:INDEPENDENT_TEST_TABLE types:%{typesofresults2}
+              select colname,statistics,df,%{resultschema} from defaultDB.globalttestresult);
 
 select * from defaultDB.ttestresultvisual;

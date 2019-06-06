@@ -1,6 +1,6 @@
 {
-	"name": "TTEST_UNPAIRED",
-	"desc": "TTEST_UNPAIRED",
+	"name": "TTEST_INDEPENDENT",
+	"desc": "TTEST_INDEPENDENT",
 	"type": "multiple_local_global",
 	"parameters": [{
 			"name": "x",
