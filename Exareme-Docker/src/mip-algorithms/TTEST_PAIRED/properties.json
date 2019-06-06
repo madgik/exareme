@@ -1,45 +1,23 @@
 {
-	"name": "TTEST_INDEPENDENT",
-	"desc": "TTEST_INDEPENDENT",
-	"type": "multiple_local_global",
+	"name": "TTEST_PAIRED",
+	"desc": "TTEST_PAIRED",
+	"type": "local_global",
 	"parameters": [{
 			"name": "x",
-			"desc": "A vector of strings naming the variables of interest in data",
-				"type": "column",
+			"desc": "A vector of strings (i.e. 'x1a-x1b,x2a-x2b' naming the pairs of interest in data. Here x1a,x1b is first pair, and x2a,x2b is the second pair",
+				"type": "formula",
 				"columnValuesSQLType": "real,integer",
 				"columnValuesIsCategorical": "",
 				"columnValuesNumOfEnumerations": "",
-				"value": "subjectage,righthippocampus,lefthippocampus",
+				"value": "righthippocampus,lefthippocampus",
 				"valueNotBlank": true,
 				"valueMultiple": true,
 				"valueType": "string"
-		},
-		{
-				"name": "y",
-				"desc": "The grouping variable with two levels ",
-				"type": "column",
-				"columnValuesSQLType": "",
-				"columnValuesIsCategorical": "true",
-				"columnValuesNumOfEnumerations": "",
-				"value": "gender",
-				"valueNotBlank": true,
-				"valueMultiple": true,
-				"valueType": "string"
-			},
-			{
-				"name": "ylevels",
-				"desc": "Distinct values of y",
-				"type": "other",
-				"value": "M,F",
-				"valueNotBlank": true,
-				"valueMultiple": true,
-				"valueType": "string"
-			},
-		{
+		}, {
         "name": "hypothesis",
-        "desc": "'different' (default), 'greaterthan' or 'lessthan', the alternative hypothesis; group 1 different to group 2, group 1 greater than group 2, and group 1 less than group 1 respectively ",
+        "desc": "'different' (default), 'greaterthan' or 'lessthan',the alternative hypothesis; measure 1 different to measure 2, measure 1 greater than measure 2, and measure 1 less than measure 2 respectively  ",
         "type": "other",
-        "value": "greaterthan",
+        "value": "different",
         "valueNotBlank": true,
         "valueMultiple": false,
         "valueType": "string"
@@ -64,13 +42,22 @@
       },
       {
         "name": "meandiff",
-        "desc": "1 or 0 (default), provide means and standard deviations ",
+        "desc": "1 or 0 (default), provide means  ",
         "type": "other",
         "value": "1",
         "valueNotBlank": true,
         "valueMultiple": false,
         "valueType": "integer"
       },
+			{
+				"name": "sediff",
+				"desc": "1 or 0 (default), provide standard deviations ",
+				"type": "other",
+				"value": "1",
+				"valueNotBlank": true,
+				"valueMultiple": false,
+				"valueType": "integer"
+			},
      {
 			"name": "dataset",
 			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty.",

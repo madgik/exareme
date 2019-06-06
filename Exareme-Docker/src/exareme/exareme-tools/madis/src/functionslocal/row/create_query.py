@@ -65,32 +65,40 @@ import json
 # create_complex_query1.registered = True
 
 
+
+
+
 def create_complex_query(*args):
 
 #init,step,delimeter,final,columnsnames
-
+    print "argslen", len(args)
     init = args[0]
     step = args[1]
     delimeter =  args[2]
     final = args[3]
 
+    columnnamesA = args[4]
+    if columnnamesA =='': columnnamesA = "null"
+    mycolumnsA = columnnamesA.split(",");
 
-    columnnames = args[4]
-    mycolumns = columnnames.split(",");
-
-    lencolumns =  len(mycolumns);
-    # print init
-    # print columnnames
+    if len(args)==6:
+        columnnamesB = args[5]
+        mycolumnsB = columnnamesB.split(",");
+        print mycolumnsB
 
     query = init
-    i = 1
-    for col in mycolumns:
-        istep=step.replace("?", col)
-        if i < lencolumns:
+
+    for i in xrange(len(mycolumnsA)):
+        if len(args)==6:
+            istep=step.replace("??", mycolumnsB[i])
+            istep=istep.replace("?", mycolumnsA[i])
+        else:
+            istep=step.replace("?", mycolumnsA[i])
+
+        if i < len(mycolumnsA)-1:
             query=query +' ' + istep + ' ' + delimeter;
         else:
             query=query +' ' + istep
-        i = i+1;
 
     query = query + ' ' + final;
 
@@ -99,6 +107,7 @@ def create_complex_query(*args):
 
 
 create_complex_query.registered = True
+
 
 
 

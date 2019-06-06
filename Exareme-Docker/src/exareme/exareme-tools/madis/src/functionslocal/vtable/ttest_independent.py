@@ -77,8 +77,8 @@ class ttest_independent(functions.vtable.vtbase.VT):
                 outputschema.append(["Hypothesis"])
                 outputschemaString = 'Hypothesis'
             if hypothesis == 'different': result.append(2.0 * (1.0-stats.t.cdf(abs(t_value), df)))
-            elif hypothesis == 'twoGreater': result.append(stats.t.cdf(t_value, df))
-            elif hypothesis == 'oneGreater': result.append(1.0- stats.t.cdf(t_value, df))
+            elif hypothesis == 'lessthan': result.append(stats.t.cdf(t_value, df))
+            elif hypothesis == 'greaterthan': result.append(1.0- stats.t.cdf(t_value, df))
 
             if meandiff == 1:
                 if init ==True:
@@ -92,12 +92,13 @@ class ttest_independent(functions.vtable.vtbase.VT):
             if ci == 1:
                 if hypothesis == 'different':
                     LowerConfidence, UpperConfidence = stats.t.interval(0.95, df, meanA - meanB, math.sqrt(std_error/NA + std_error/NB) )
-                elif hypothesis == 'twoGreater':
+                elif hypothesis == 'lessthan':
                     _, UpperConfidence = stats.t.interval(0.90, df, meanA - meanB, math.sqrt(std_error/NA + std_error/NB) )
                     LowerConfidence = '-Inf'
-                elif hypothesis == 'oneGreater':
+                elif hypothesis == 'greaterthan':
                     UpperConfidence = 'Inf'
                     LowerConfidence, _ = stats.t.interval(0.90, df, meanA - meanB, math.sqrt(std_error/NA + std_error/NB) )
+
                 if init == True:
                     outputschema.append(['Lower'])
                     outputschema.append(['Upper'])

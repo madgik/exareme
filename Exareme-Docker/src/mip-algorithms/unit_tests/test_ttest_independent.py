@@ -9,7 +9,7 @@ endpointUrl='http://localhost:9090/mining/query/TTEST_INDEPENDENT'
 
 
 def test_UnpairedTtest_1a():
-    logging.info("---------- TEST 1: We check if the means are different (M,FM). ")
+    logging.info("---------- TEST 1: We check if the means are different (M,F). ")
 
     data = [{"name": "x", "value": "lefthippocampus"},
             {"name": "y", "value": "gender"    },
@@ -77,7 +77,7 @@ def test_UnpairedTtest_2():
     data = [{"name": "x", "value": "lefthippocampus"},
             {"name": "y", "value": "gender"    },
             {"name": "ylevels",  "value": "M,F"},
-            {"name": "hypothesis", "value": "oneGreater"},
+            {"name": "hypothesis", "value": "greaterthan"},
             {"name": "effectsize", "value": "1" },
             {"name": "ci","value": "1"  },
             {"name": "meandiff", "value": "1"  },
@@ -114,7 +114,7 @@ def test_UnpairedTtest_3():
     data = [{"name": "x", "value": "lefthippocampus"},
             {"name": "y", "value": "gender"    },
             {"name": "ylevels",  "value": "F,M"},
-            {"name": "hypothesis", "value": "twoGreater"},
+            {"name": "hypothesis", "value": "lessthan"},
             {"name": "effectsize", "value": "1" },
             {"name": "ci","value": "1"  },
             {"name": "meandiff", "value": "1"  },
@@ -152,7 +152,7 @@ def test_UnpairedTtest__Privacy():
     data = [{"name": "x", "value": "lefthippocampus"},
             {"name": "y", "value": "gender"    },
             {"name": "ylevels",  "value": "F,M"},
-            {"name": "hypothesis", "value": "twoGreater"},
+            {"name": "hypothesis", "value": "lessthan"},
             {"name": "effectsize", "value": "1" },
             {"name": "ci","value": "1"  },
             {"name": "meandiff", "value": "1"  },

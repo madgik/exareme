@@ -19,6 +19,7 @@ class ttest_onesample(functions.vtable.vtbase.VT):
         effectsize = 0
         ci = 0
         meandiff = 0
+        sediff = 0
         hypothesis = 'different'
 
         if 'testvalue' in dictargs:
@@ -31,7 +32,10 @@ class ttest_onesample(functions.vtable.vtbase.VT):
             ci = int(dictargs['ci'])
 
         if 'meandiff' in dictargs:
-            meandiff = int(dictargs['ci'])
+            meandiff = int(dictargs['meandiff'])
+
+        if 'sediff' in dictargs:
+            sediff = int(dictargs['sediff'])
 
         if 'hypothesis' in dictargs:
             hypothesis = str(dictargs['hypothesis'])
@@ -52,6 +56,7 @@ class ttest_onesample(functions.vtable.vtbase.VT):
             mean = float(myrow[1])
             std = float(myrow[2])
             N = int(myrow[3])
+
             std_error = std / (math.sqrt(N))
             t_value = (mean - float(testvalue)) / std_error
             df = N - 1
@@ -70,6 +75,12 @@ class ttest_onesample(functions.vtable.vtbase.VT):
                     outputschema.append(["Meandifference"])
                     outputschemaString += ',Meandifference'
                 result.append(meandiff_value)
+
+            if sediff == 1:
+                if init == True:
+                    outputschema.append(["SEdifference"])
+                    outputschemaString+=',SEdifference'
+                result.append(std_error)
 
             if ci == 1:
                 if hypothesis == 'different':
@@ -96,6 +107,7 @@ class ttest_onesample(functions.vtable.vtbase.VT):
 
             if init == True:
                 outputschema.append(["outputschema"])
+                print outputschema
                 yield outputschema
             result.append(outputschemaString)
             yield result

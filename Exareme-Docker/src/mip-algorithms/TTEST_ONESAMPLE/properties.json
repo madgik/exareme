@@ -20,10 +20,10 @@
 			"value": "3.0",
 			"valueNotBlank": true,
 			"valueMultiple": false,
-			"valueType": "string"
+			"valueType": "real"
 		}, {
         "name": "hypothesis",
-        "desc": "'dt' (default), 'gt' or 'lt', the alternative hypothesis; different to testValue, greater than testValue, and less than testValue respectively ",
+        "desc": "'different' (default), 'greaterthan' or 'lessthan', the alternative hypothesis; different to testValue, greater than testValue, and less than testValue respectively ",
         "type": "other",
         "value": "dt",
         "valueNotBlank": true,
@@ -37,7 +37,7 @@
         "value": "1",
         "valueNotBlank": true,
         "valueMultiple": false,
-        "valueType": "string"
+        "valueType": "integer"
       },
       {
         "name": "ci",
@@ -46,7 +46,7 @@
         "value": "1",
         "valueNotBlank": true,
         "valueMultiple": false,
-        "valueType": "string"
+        "valueType": "integer"
       },
       {
         "name": "meandiff",
@@ -55,7 +55,7 @@
         "value": "1",
         "valueNotBlank": true,
         "valueMultiple": false,
-        "valueType": "string"
+        "valueType": "integer"
       },
      {
 			"name": "dataset",

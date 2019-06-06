@@ -1,7 +1,7 @@
-requirevars 'defaultDB' 'input_global_tbl' 'testvalue' 'hypothesis' 'effectsize' 'ci' 'meandiff';
+requirevars 'defaultDB' 'input_global_tbl' 'hypothesis' 'effectsize' 'ci' 'meandiff' 'sediff';
 attach database '%{defaultDB}' as defaultDB;
 
---var 'input_global_tbl' 'defaultDB.localstatistics';
+var 'input_global_tbl' 'defaultDB.localstatistics';
 
 drop table if exists defaultDB.globalstatistics;
 create table  defaultDB.globalstatistics as
@@ -11,9 +11,9 @@ from %{input_global_tbl}
 group by colname);
 
 drop table if exists defaultDB.globalttestresult;
-create table  defaultDB.globalttestresult as
-select * from (ttest_onesample testvalue:%{testvalue} effectsize:%{effectsize} ci:%{ci} meandiff:%{meandiff} hypothesis:%{hypothesis} sediff:0
-               select * from   defaultDB.globalstatistics);
+create table defaultDB.globalttestresult as
+select * from (ttest_onesample testvalue:0 effectsize:%{effectsize} ci:%{ci} meandiff:%{meandiff} sediff:%{sediff} hypothesis:%{hypothesis}
+               select * from  defaultDB.globalstatistics);
 
 var 'resultschema' from select outputschema from defaultDB.globalttestresult limit 1;
 var 'typesofresults' from select create_complex_query("","real" , "," , "" , '%{resultschema}');
