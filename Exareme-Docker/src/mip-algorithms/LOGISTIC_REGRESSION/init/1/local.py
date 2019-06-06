@@ -18,6 +18,11 @@ from algorithm_utils import StateData, query_with_privacy
 from log_regr_lib import LogRegrInit_Loc2Glob_TD
 
 
+# TODO try except -> add raise
+# TODO move directory existence check within `StateData.save()` method (logistic and Pearson)
+# TODO add max_iter to termination condition
+
+
 def logregr_local_init(local_in):
     # Unpack local input
     X, Y, schema_X, schema_Y = local_in
@@ -66,10 +71,17 @@ def main():
         X = np.array([[x for idx, x in enumerate(row) if idx in idx_X] for row in data], dtype=np.float64)
     except ValueError:
         print('Values in X must be numbers')
+        raise
 
-    Y = [data[i][idx_Y] for i in range(len(data))]
-    assert len(set(Y) - {None, ''}) == 2, "Y vector should only contain 2 distinct values, and possibly None or " \
-                                          "empty strings"
+    Y = np.array([data[i][idx_Y] for i in range(len(data))])
+    assert len(set(Y) - {''}) == 2, "Y vector should only contain 2 distinct values, and possibly None or " \
+                                    "empty strings"
+
+    # Remove rows with missing values
+    mask_Y = [y is '' for y in Y]
+    mask_X = np.isnan(X).any(axis=1)
+    mask = np.logical_or(mask_X, mask_Y)
+    X, Y = X[~mask], Y[~mask]
 
     local_in = X, Y, schema_X, schema_Y
     # Run algorithm local step
