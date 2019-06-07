@@ -4,55 +4,52 @@
 	"type": "multiple_local_global",
 	"status": "enabled",
 	"vtype": "",
-	"parameters": [
-	  {
-				"name": "x",
-				"desc": "",
-				"type": "column",
-				"columnValuesSQLType": "",
-				"columnValuesIsCategorical": "",
-				"columnValuesNumOfEnumerations": "",
-				"value": "righthippocampus,lefthippocampus",
-				"valueNotBlank": true,
-				"valueMultiple": true,
-				"valueType": "string"
-			}, {
-				"name": "y",
-				"desc": "classname",
-				"type": "column",
-				"columnValuesSQLType": "",
-				"columnValuesIsCategorical": "true",
-				"columnValuesNumOfEnumerations": "",
-				"value": "alzheimerbroadcategory",
-				"valueNotBlank": true,
-				"valueMultiple": false,
-				"valueType": "string"
-			},{
-				"name": "alpha",
-				"desc": "",
-				"type": "other",
-				"value": "0.1",
-				"valueNotBlank": true,
-				"valueMultiple": false,
-				"valueType": "real"
-			},
-			{
-			 "name": "dataset",
-			 "desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty.",
-			 "type": "dataset",
-			 "value": "desd-synthdata",
-			 "valueNotBlank": true,
-			 "valueMultiple": true,
-			 "valueType": "string"
-		 },
-		 {
-			 "name": "filter",
-			 "desc": "",
-			 "type": "filter",
-			 "value": "",
-			 "valueNotBlank": false,
-			 "valueMultiple": true,
-			 "valueType": "string"
-		 }
+	"parameters": [{
+			"name": "x",
+			"desc": "",
+			"type": "column",
+			"columnValuesSQLType": "",
+			"columnValuesIsCategorical": "",
+			"columnValuesNumOfEnumerations": "",
+			"value": "righthippocampus,lefthippocampus",
+			"valueNotBlank": true,
+			"valueMultiple": true,
+			"valueType": "string"
+		}, {
+			"name": "y",
+			"desc": "classname",
+			"type": "column",
+			"columnValuesSQLType": "",
+			"columnValuesIsCategorical": "true",
+			"columnValuesNumOfEnumerations": "",
+			"value": "alzheimerbroadcategory",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "string"
+		}, {
+			"name": "alpha",
+			"desc": "",
+			"type": "other",
+			"value": "0.1",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "real"
+		}, {
+			"name": "dataset",
+			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty.",
+			"type": "dataset",
+			"value": "desd-synthdata",
+			"valueNotBlank": true,
+			"valueMultiple": true,
+			"valueType": "string"
+		}, {
+			"name": "filter",
+			"desc": "",
+			"type": "filter",
+			"value": "",
+			"valueNotBlank": false,
+			"valueMultiple": true,
+			"valueType": "string"
+		}
 	]
 }

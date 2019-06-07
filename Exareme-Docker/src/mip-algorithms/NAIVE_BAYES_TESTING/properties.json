@@ -12,8 +12,7 @@
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "integer"
-		},
-			{
+		}, {
 			"name": "model",
 			"desc": "",
 			"type": "other",
@@ -30,27 +29,27 @@
 			"valueMultiple": false,
 			"valueType": "string"
 		}, {
- 				"name": "x",
- 				"desc": "",
- 				"type": "column",
- 				"columnValuesSQLType": "",
- 				"columnValuesIsCategorical": "",
- 				"columnValuesNumOfEnumerations": "",
- 				"value": "righthippocampus,lefthippocampus",
- 				"valueNotBlank": true,
- 				"valueMultiple": true,
- 				"valueType": "string"
- 			}, {
- 				"name": "y",
- 				"desc": "classname",
- 				"type": "column",
- 				"columnValuesSQLType": "",
- 				"columnValuesIsCategorical": "true",
- 				"columnValuesNumOfEnumerations": "",
- 				"value": "alzheimerbroadcategory",
- 				"valueNotBlank": true,
- 				"valueMultiple": false,
- 				"valueType": "string"
- 			}
+			"name": "x",
+			"desc": "",
+			"type": "column",
+			"columnValuesSQLType": "",
+			"columnValuesIsCategorical": "",
+			"columnValuesNumOfEnumerations": "",
+			"value": "righthippocampus,lefthippocampus",
+			"valueNotBlank": true,
+			"valueMultiple": true,
+			"valueType": "string"
+		}, {
+			"name": "y",
+			"desc": "classname",
+			"type": "column",
+			"columnValuesSQLType": "",
+			"columnValuesIsCategorical": "true",
+			"columnValuesNumOfEnumerations": "",
+			"value": "alzheimerbroadcategory",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "string"
+		}
 	]
 }
