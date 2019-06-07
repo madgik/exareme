@@ -8,7 +8,7 @@
 			"name": "dataset",
 			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed.",
 			"type": "dataset",
-			"value": "car",
+			"value": "desd-synthdata",
 			"valueNotBlank": true,
 			"valueMultiple": true,
 			"valueType": "string"
@@ -19,18 +19,18 @@
 			"columnValuesSQLType": "",
 			"columnValuesIsCategorical": "",
 			"columnValuesNumOfEnumerations": "",
-			"value": "car_buying,car_maint,car_doors,car_persons,car_lug_boot,car_safety",
+			"value": "righthippocampus,lefthippocampus",
 			"valueNotBlank": true,
 			"valueMultiple": true,
 			"valueType": "string"
 		}, {
 			"name": "y",
-			"desc": "",
+			"desc": "classname",
 			"type": "column",
 			"columnValuesSQLType": "",
-			"columnValuesIsCategorical": "",
+			"columnValuesIsCategorical": "true",
 			"columnValuesNumOfEnumerations": "",
-			"value": "car_class",
+			"value": "alzheimerbroadcategory",
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "string"
@@ -62,7 +62,7 @@
 			"name": "shuffle",
 			"desc": "",
 			"type": "other",
-			"value": "True",
+			"value": "",
 			"valueNotBlank": false,
 			"valueMultiple": false,
 			"valueType": "string"
