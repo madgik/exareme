@@ -1,7 +1,7 @@
 requirevars 'defaultDB' 'input_global_tbl' 'hypothesis' 'effectsize' 'ci' 'meandiff' 'sediff';
 attach database '%{defaultDB}' as defaultDB;
 
-var 'input_global_tbl' 'defaultDB.localstatistics';
+--var 'input_global_tbl' 'defaultDB.localstatistics';
 
 drop table if exists defaultDB.globalstatistics;
 create table  defaultDB.globalstatistics as

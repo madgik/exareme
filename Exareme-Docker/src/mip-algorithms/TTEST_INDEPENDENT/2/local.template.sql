@@ -3,8 +3,8 @@ attach database '%{defaultDB}' as defaultDB;
 
 -- var 'prv_output_global_tbl' 'defaultDB.globalstatistics';
 
-var 'groupvar1' from select distinct groupval from defaultDB.globalstatistics limit 1;
-var 'groupvar2' from select distinct groupval from defaultDB.globalstatistics limit 2 offset 1;
+var 'groupvar1' from select distinct groupval from %{prv_output_global_tbl} limit 1;
+var 'groupvar2' from select distinct groupval from %{prv_output_global_tbl} limit 2 offset 1;
 
 var 'localstats1' from select create_complex_query("","
 insert into defaultDB.localstatistics2
