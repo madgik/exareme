@@ -4,10 +4,10 @@ import logging
 import math
 from decimal import *
 
-url2='http://localhost:9090/mining/query/NAIVE_BAYES_TRAINING_SIMPLE'
+url2='http://88.197.53.38:9090/mining/query/NAIVE_BAYES_TRAINING_STANDALONE'
 
 def test_NAIVEBAYES_1():
-    logging.info("---------- TEST : NAIVE BAYES SIMPLE  ")
+    logging.info("---------- TEST : NAIVE BAYES STANDALONE  ")
     #CROSS VALIDATION
 
     #NAIVE BAYES TRAINING
@@ -80,6 +80,29 @@ def test_NAIVEBAYES_1():
 
     for result1 in trainingResult['resources'][0]['data'][1:]:
         check_trainingresult(result1,corr_trainingResult)
+
+def test_NAIVEBAYES_Privacy():
+    """
+
+    """
+
+    logging.info("---------- TEST : Algorithms for Privacy Error")
+
+    data = [{"name": "dataset","value": "adni_9rows"},
+            {"name": "alpha","value": "0.1"},
+            {"name": "x", "value": "lefthippocampus,righthippocampus,leftententorhinalarea,rightententorhinalarea"},
+            {"name": "y", "value": "alzheimerbroadcategory"},
+            {"name": "filter",  "value": ""}]
+    headers = {'Content-type': 'application/json', "Accept": "text/plain"}
+    r = requests.post(url2, data=json.dumps(data), headers=headers)
+
+    result = json.loads(r.text)
+
+    check_privacy_result(r.text)
+
+def check_privacy_result(result):
+    assert result == "{\"error\" : \"The Experiment could not run with the input provided because there are insufficient data.\"}"
+
 
 
 

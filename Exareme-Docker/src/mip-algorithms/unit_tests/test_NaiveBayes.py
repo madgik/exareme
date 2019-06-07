@@ -5,9 +5,9 @@ import math
 from decimal import *
 
 
-url1='http://192.168.90.138:9090/mining/query/CROSS_VALIDATION_K_FOLD'
-url2='http://192.168.90.138:9090/mining/query/NAIVE_BAYES_TRAINING'
-url3='http://192.168.90.138:9090/mining/query/NAIVE_BAYES_TESTING'
+url1='http://88.197.53.38:9090/mining/query/CROSS_VALIDATION_K_FOLD'
+url2='http://88.197.53.38:9090/mining/query/NAIVE_BAYES_TRAINING'
+url3='http://88.197.53.38:9090/mining/query/NAIVE_BAYES_TESTING'
 
 def test_NAIVEBAYES_1():
     logging.info("---------- TEST : NAIVE BAYES :CATEGORICAL DATASET  ")
@@ -139,7 +139,6 @@ def test_NAIVEBAYES_1():
 
     for result1 in testingResult:
         check_testingresult(result1,corr_testingResult)
-
 
 
 
