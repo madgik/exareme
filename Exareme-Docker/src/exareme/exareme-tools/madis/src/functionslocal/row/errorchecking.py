@@ -13,7 +13,7 @@ privacychecking.registered = True
 
 def maxnumberofiterations_errorhandling(maxnumberofiterations,no): # For most of the iterative algorithms
     if maxnumberofiterations< no:
-        raise functions.OperatorError("ExaremeError", "Please increase the max number of iterations")
+        raise functions.OperatorError("ExaremeError", "The algorithm could not complete in the max number of iterations given. Please increase the iterations_max_number and try again.")
     else:
         return "OK"
 
