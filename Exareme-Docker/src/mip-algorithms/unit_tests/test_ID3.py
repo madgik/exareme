@@ -3,14 +3,13 @@ import json
 import logging
 
 
-endpointUrl='http://88.197.53.100:9090/mining/query/ID3'
+endpointUrl='http://localhost:9090/mining/query/ID3'
 
 def test_ID3_1():
     logging.info("---------- TEST : ID3 - Test using contact-lenses dataset  ")
 
     data = [
             {   "name": "iterations_max_number", "value": "20" },
-            {   "name": "iterations_condition_query_provided", "value": "true" },
             {   "name": "x", "value": "CL_age,CL_spectacle_prescrip,CL_astigmatism,CL_tear_prod_rate"  },
             {   "name": "y", "value": "CL_contact_lenses" },
             {   "name": "dataset", "value": "contact-lenses" },
@@ -67,7 +66,6 @@ def test_ID3_Privacy():
 
     data = [
             {   "name": "iterations_max_number", "value": "20" },
-            {   "name": "iterations_condition_query_provided", "value": "true" },
             {   "name": "x", "value": "CL_age,CL_spectacle_prescrip,CL_astigmatism,CL_tear_prod_rate"  },
             {   "name": "y", "value": "CL_contact_lenses" },
             {   "name": "dataset", "value": "contact-lenses" },
@@ -103,7 +101,6 @@ def check_variable(exaremeResult, correctResult):
 #
 #     data = [
 #             {   "name": "iterations_max_number", "value": "500" },
-#             {   "name": "iterations_condition_query_provided", "value": "true" },
 #             {   "name": "columns", "value": "car_buying, car_maint,car_doors,car_persons,car_lug_boot,car_safety"},
 #             {   "name": "classname", "value": "car_class" },
 #             {   "name": "dataset", "value": "car" },

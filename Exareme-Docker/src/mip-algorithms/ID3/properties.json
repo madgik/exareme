@@ -3,46 +3,36 @@
 	"desc": "ID3",
 	"type": "iterative",
 	"parameters": [{
-					"name": "iterations_max_number",
-					"desc": "",
-					"type": "other",
-					"value": "",
-					"valueNotBlank": true,
-					"valueMultiple": false,
-					"valueType": "integer"
-				}, {
-					"name": "iterations_condition_query_provided",
-					"desc": "",
-					"type": "other",
-					"value": "true",
-					"valueNotBlank": true,
-					"valueMultiple": false,
-					"valueType": "string"
-				}, {
-					"name": "x",
-					"desc": "columns value",
-					"type": "column",
-					"columnValuesSQLType": "text,integer",
-					"columnValuesIsCategorical": "true",
-					"columnValuesNumOfEnumerations": "",
-					"value": "CL_age,CL_spectacle_prescrip,CL_astigmatism,CL_tear_prod_rate",
-					"valueNotBlank": true,
-					"valueMultiple": true,
-					"valueType": "string"
-				},
-				{
-					"name": "y",
-					"desc": "class name",
-					"type": "column",
-					"columnValuesSQLType": "text,integer",
-					"columnValuesIsCategorical": "true",
-					"columnValuesNumOfEnumerations": "",
-					"value": "CL_contact_lenses",
-					"valueNotBlank": true,
-					"valueMultiple": false,
-					"valueType": "string"
-				},
-		{
+			"name": "iterations_max_number",
+			"desc": "",
+			"type": "other",
+			"value": "",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "integer"
+		}, {
+			"name": "x",
+			"desc": "columns value",
+			"type": "column",
+			"columnValuesSQLType": "text,integer",
+			"columnValuesIsCategorical": "true",
+			"columnValuesNumOfEnumerations": "",
+			"value": "CL_age,CL_spectacle_prescrip,CL_astigmatism,CL_tear_prod_rate",
+			"valueNotBlank": true,
+			"valueMultiple": true,
+			"valueType": "string"
+		}, {
+			"name": "y",
+			"desc": "class name",
+			"type": "column",
+			"columnValuesSQLType": "text,integer",
+			"columnValuesIsCategorical": "true",
+			"columnValuesNumOfEnumerations": "",
+			"value": "CL_contact_lenses",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "string"
+		}, {
 			"name": "dataset",
 			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty.",
 			"type": "dataset",
@@ -50,8 +40,7 @@
 			"valueNotBlank": true,
 			"valueMultiple": true,
 			"valueType": "string"
-		},
-		{
+		}, {
 			"name": "filter",
 			"desc": "",
 			"type": "filter",
@@ -68,6 +57,6 @@
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "string"
-}
+		}
 	]
 }

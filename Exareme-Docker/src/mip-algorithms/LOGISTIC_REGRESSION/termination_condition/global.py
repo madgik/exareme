@@ -10,12 +10,13 @@ sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))
                 '/LOGISTIC_REGRESSION/')
 
 from algorithm_utils import StateData, set_algorithms_output_data
-from log_regr_lib import PREC
+from log_regr_lib import PREC, MAX_ITER
 
 
 def termination_condition(global_state):
     delta = global_state['delta']
-    if delta < PREC:
+    iter = global_state['iter']
+    if delta < PREC or iter > MAX_ITER:
         set_algorithms_output_data('STOP')
     else:
         set_algorithms_output_data('CONTINUE')

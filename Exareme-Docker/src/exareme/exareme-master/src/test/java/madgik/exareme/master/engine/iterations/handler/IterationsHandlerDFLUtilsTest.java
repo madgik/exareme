@@ -75,8 +75,8 @@ public class IterationsHandlerDFLUtilsTest {
         try {
             algorithmProperties.mergeAlgorithmParametersWithInputContent(
                     IterationsTestGenericUtils.prepareParameterProperties(
-                            algorithmName, "true", "2"));
-        }catch(Exception e){
+                            algorithmName, "2"));
+        } catch (Exception e) {
             fail("mergeAlgorithmParametersWithInputContent should not throw Exception.");
         }
 
@@ -88,18 +88,6 @@ public class IterationsHandlerDFLUtilsTest {
         // Run prepareDFLScripts
         String algorithmDemoDestinationDirectory =
                 copyAlgorithmTemplatesToDemoDirectory(algorithmProperties.getName(), algorithmKey);
-
-        try {
-            IterationsHandlerDFLUtils.prepareDFLScripts(algorithmDemoDestinationDirectory,
-                    algorithmKey, algorithmProperties, iterativeAlgorithmState);
-            fail("IterationsHandlerDFLUtils.prepareDFLScripts should fail, since condition query " +
-                    "property is set to true, while a termination condition query is NOT provided.");
-        } catch (IterationsFatalException e) {
-            // This is what we want - but we specifically need a ConditionQueryProvided related error.
-            if (!e.getMessage().contains("ConditionQueryProvided"))
-                fail("Should have received \"ConditionQueryProvided\" related exception.\n" +
-                        "Received [" + e.getCause() + "]: " + e.getMessage());
-        }
 
         // Remove generated files
         FileUtils.deleteDirectory(new File(
@@ -113,8 +101,8 @@ public class IterationsHandlerDFLUtilsTest {
         try {
             algorithmProperties.mergeAlgorithmParametersWithInputContent(
                     IterationsTestGenericUtils.prepareParameterProperties(
-                            algorithmName, "false", "2"));
-        }catch(Exception e){
+                            algorithmName, "2"));
+        } catch (Exception e) {
             fail("mergeAlgorithmParametersWithInputContent should not throw Exception.");
         }
 
@@ -126,18 +114,6 @@ public class IterationsHandlerDFLUtilsTest {
         // Run prepareDFLScripts
         algorithmDemoDestinationDirectory =
                 copyAlgorithmTemplatesToDemoDirectory(algorithmProperties.getName(), algorithmKey);
-
-        try {
-            IterationsHandlerDFLUtils.prepareDFLScripts(algorithmDemoDestinationDirectory,
-                    algorithmKey, algorithmProperties, iterativeAlgorithmState);
-            fail("IterationsHandlerDFLUtils.prepareDFLScripts should fail, since condition query " +
-                    "property is set to false, while a termination condition query is provided.");
-        } catch (IterationsFatalException e) {
-            // This is what we want - but we specifically need a ConditionQueryProvided related error.
-            if (!e.getMessage().contains("ConditionQueryProvided"))
-                fail("Should have received \"ConditionQueryProvided\" related exception\n" +
-                        "Received: [" + e.getCause() + "]: " + e.getMessage());
-        }
 
         // Remove generated files
         FileUtils.deleteDirectory(new File(
@@ -155,8 +131,8 @@ public class IterationsHandlerDFLUtilsTest {
         try {
             algorithmProperties.mergeAlgorithmParametersWithInputContent(
                     IterationsTestGenericUtils.prepareParameterProperties(
-                            algorithmName, "false", "2"));
-        }catch(Exception e){
+                            algorithmName, "2"));
+        } catch (Exception e) {
             fail("mergeAlgorithmParametersWithInputContent should not throw Exception.");
         }
 
@@ -196,7 +172,7 @@ public class IterationsHandlerDFLUtilsTest {
         algorithmProperties = Algorithms.getInstance().getAlgorithmProperties(algorithmName);
         algorithmProperties.mergeAlgorithmParametersWithInputContent(
                 IterationsTestGenericUtils.prepareParameterProperties(
-                        algorithmName, "true", "2"));
+                        algorithmName, "2"));
 
         // Mimicking IterationsHandler first steps:
         String algorithmKey = IterationsTestGenericUtils.generateAlgorithmKey(algorithmProperties);

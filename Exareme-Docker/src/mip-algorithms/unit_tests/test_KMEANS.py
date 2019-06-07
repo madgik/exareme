@@ -12,7 +12,6 @@ def test_KMEANS_1():
     logging.info("---------- TEST : KMEANS - Iris dataset  & 4 variables, 3 clusters")
     data = [
             {   "name": "iterations_max_number", "value": "50" },
-            {   "name": "iterations_condition_query_provided", "value": "true" },
             {   "name": "x", "value": "Iris_Sepal_Length,Iris_Sepal_Width,Iris_Petal_Length,Iris_Petal_Width" },
             {   "name": "k", "value":""},
             {   "name":"centers", "value": "[{\"clid\":1, \"Iris_Sepal_Length\":6.0, \"Iris_Sepal_Width\":2.5, \"Iris_Petal_Length\":4.0 ,\"Iris_Petal_Width\":1.5 },\
@@ -46,7 +45,6 @@ def test_KMEANS_2():
     logging.info("---------- TEST : KMEANS - desd-synthdata   & 4 variables,  5 clusters")
     data = [
             {   "name": "iterations_max_number", "value": "50" },
-            {   "name": "iterations_condition_query_provided", "value": "true" },
             {   "name": "x", "value": "rightpallidum,leftpallidum,lefthippocampus,righthippocampus" },
             {   "name": "k", "value":""},
             {   "name":"centers", "value": "[{\"clid\":1,\"rightpallidum\":0.2,\"leftpallidum\":0.5,\"lefthippocampus\":1.7,\"righthippocampus\":1.5},\
@@ -92,7 +90,6 @@ def test_KMEANS_Privacy():
 
     data = [
             {   "name": "iterations_max_number", "value": "50" },
-            {   "name": "iterations_condition_query_provided", "value": "true" },
             {   "name": "x", "value": "rightpallidum,leftpallidum,lefthippocampus,righthippocampus" },
             {   "name": "k", "value":""},
             {   "name":"centers", "value": "[{\"clid\":1,\"rightpallidum\":0.2,\"leftpallidum\":0.5,\"lefthippocampus\":1.7,\"righthippocampus\":1.5},\

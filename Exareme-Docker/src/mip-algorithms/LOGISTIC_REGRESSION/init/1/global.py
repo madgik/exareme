@@ -25,9 +25,10 @@ def logregr_global_init(global_in):
     # Init vars
     ll = - 2 * n_obs * np.log(2)
     coeff = np.zeros(n_cols)
+    iter = 0
 
     # Pack state and results
-    global_state = StateData(n_obs=n_obs, n_cols=n_cols, ll=ll, coeff=coeff,
+    global_state = StateData(n_obs=n_obs, n_cols=n_cols, ll=ll, coeff=coeff, iter=iter,
                              y_val_dict=y_val_dict, schema_X=schema_X, schema_Y=schema_Y)
     global_out = LogRegrIter_Glob2Loc_TD(coeff)
 
