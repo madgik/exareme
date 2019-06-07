@@ -12,7 +12,6 @@ class traintestsplit(functions.vtable.vtbase.VT):
         largs, dictargs = self.full_parse(parsedArgs)
 
         # get arguments
-
         if 'test_size' in dictargs:
             if dictargs['test_size'] != "None":
                 if '.' not in str(dictargs['test_size']):
@@ -64,7 +63,7 @@ class traintestsplit(functions.vtable.vtbase.VT):
         c = cur.execute(query)
 
         for r in c:
-            if r[0].isdigit():
+            if str(r[0]).isdigit():
                 self.data.append(r[0])
             else:
                 self.data.append(str(r[0]))
@@ -81,16 +80,16 @@ class traintestsplit(functions.vtable.vtbase.VT):
                                                                 train_size=self.train_size,
                                                                 random_state=self.random_state)
 
-        except ValueError as e:
-            yield (-1, str(e))
-
-        finally:
             # print X_train
             # print X_test
             # print y_train
             # print y_test
             for i in X_train: yield (i, 'Train')
             for i in X_test: yield (i, 'Test')
+        except ValueError as e:
+            yield (-1, str(e))
+
+
 
 
 def Source():

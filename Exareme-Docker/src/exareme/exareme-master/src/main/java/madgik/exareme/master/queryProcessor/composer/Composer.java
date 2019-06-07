@@ -153,8 +153,17 @@ public class Composer {
         // Assigning the proper identifier for the defaultDB
         //      if the dbIdentifier is provided as a parameter or not
         String dbIdentifier = algorithmProperties.getParameterValue(ComposerConstants.dbIdentifierKey);
+
+        // If the algorithm does not have a dbIdentifier parameter we assign the algorithmKey as the identifier
         if (dbIdentifier == null)
             dbIdentifier = algorithmKey;
+
+        // If the algorithm has a dbIdentifier parameter but is blank, we set is to the algorithmKey
+        if (dbIdentifier.equals("")) {
+            dbIdentifier = algorithmKey;
+            algorithmProperties.setParameterValue(ComposerConstants.dbIdentifierKey, dbIdentifier);
+        }
+
         String algorithmName = algorithmProperties.getName();
         String defaultDBFilePath = HBPConstants.DEMO_DB_WORKING_DIRECTORY + dbIdentifier + "_defaultDB.db";
         String inputLocalDB = ComposerConstants.getDatasetDBDirectory();
@@ -171,8 +180,8 @@ public class Composer {
                         defaultDBFilePath, algorithmProperties.getParameters());
                 break;
             case local_global:
-                dflScript = composeLocalGlobalAlgorithmsDFLScript(algorithmName, inputLocalDB, dbQuery, outputGlobalTbl,
-                        defaultDBFilePath, algorithmProperties.getParameters());
+                dflScript = composeLocalGlobalAlgorithmsDFLScript(algorithmName, dbIdentifier, inputLocalDB, dbQuery,
+                        outputGlobalTbl, defaultDBFilePath, algorithmProperties.getParameters());
                 break;
             case multiple_local_global:
                 dflScript = composeMultipleLocalGlobalAlgorithmsDFLScript(algorithmName, inputLocalDB, dbQuery, outputGlobalTbl,
@@ -246,7 +255,8 @@ public class Composer {
      * Returns an exaDFL script for the algorithms of type local_global
      *
      * @param algorithmName       the name of the algorithm
-     * @param inputLocalDB        the location of the local database
+     * @param dbIdentifier        the identifier of the local database
+     * @param inputLocalDB       the query to read from the local table
      * @param dbQuery             the query to execute on the database
      * @param outputGlobalTbl     the table where the output is going to be printed
      * @param defaultDBFileName   the name of the local db that the SQL scripts are going to use
@@ -255,6 +265,7 @@ public class Composer {
      */
     private static String composeLocalGlobalAlgorithmsDFLScript(
             String algorithmName,
+            String dbIdentifier,
             String inputLocalDB,
             String dbQuery,
             String outputGlobalTbl,

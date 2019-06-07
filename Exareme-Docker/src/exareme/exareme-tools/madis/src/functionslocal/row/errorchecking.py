@@ -10,6 +10,22 @@ def privacychecking(*args):
 
 privacychecking.registered = True
 
+def holdoutvalidation_inputerrorchecking1(train_size, test_size):
+    if train_size=='' and  test_size =='' :
+        raise functions.OperatorError("ExaremeError", "Train_size and test_size should not be both empty")
+    else:
+        return "OK"
+
+holdoutvalidation_inputerrorchecking1.registered = True
+
+
+def holdoutvalidation_inputerrorchecking2(train_size, test_size):
+    if train_size + test_size > 1:
+        raise functions.OperatorError("ExaremeError", "Train_size + test_size should be less or equal to 1.0 ")
+    else:
+        return "OK"
+
+holdoutvalidation_inputerrorchecking2.registered = True
 
 def maxnumberofiterations_errorhandling(maxnumberofiterations,no): # For most of the iterative algorithms
     if maxnumberofiterations< no:

@@ -105,8 +105,8 @@ def main():
     csvFile = open(csvFilePath, 'r')
     csvReader = csv.reader(csvFile)
     csvHeader = next(csvReader)
-    rid = csvHeader[0]
-    createDataTableQuery += ' ' + rid + ' TEXT'
+    subjectcode = csvHeader[0]
+    createDataTableQuery += ' ' + subjectcode + ' TEXT'
     for column in csvHeader[1:]:
         columnType = variablesTypesDict[column]
         createDataTableQuery += ', ' + column + ' ' + columnType
@@ -134,7 +134,10 @@ def main():
             else:
                 insertRowQuery += ', ' + value
         insertRowQuery += ');'
-        cur.execute(insertRowQuery)
+        try:
+            cur.execute(insertRowQuery)
+        except:
+            raise ValueError('Row: ' + str(row) + ', Query: ' + str(insertRowQuery))
 
     # Transform the metadata JSON to a list
     metadataList = createMetadataList(variablesMetadataPath)
