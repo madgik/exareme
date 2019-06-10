@@ -666,7 +666,7 @@ public class Composer {
         String transferDBFilePath = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey + "/transfer.db";
 
         // Format local
-        dflScript.append("distributed create temporary table output_local_tbl as virtual \n");
+        dflScript.append("distributed create temporary table input_global_tbl to 1 as virtual \n");
         dflScript.append("select * from (\n  call_python_script 'python " + localPythonScriptPath + " ");
         for (ParameterProperties parameter : algorithmParameters) {
             dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue()));
@@ -676,8 +676,8 @@ public class Composer {
         dflScript.append("'\n);\n");
 
         // Format union
-        dflScript.append("\ndistributed create temporary table input_global_tbl to 1 as  \n");
-        dflScript.append("select * from output_local_tbl;\n");
+        //dflScript.append("\ndistributed create temporary table input_global_tbl to 1 as  \n");
+       // dflScript.append("select * from output_local_tbl;\n");
 
         // Format global
         dflScript.append(String
