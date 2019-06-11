@@ -3,8 +3,6 @@ from __future__ import print_function
 
 import sys
 from os import path
-import os
-import errno
 from argparse import ArgumentParser
 import numpy as np
 
@@ -51,12 +49,6 @@ def main():
     # Run algorithm global step
     global_state, global_out = logregr_global_init(global_in=local_out)
     # Save global state
-    if not os.path.exists(os.path.dirname(fname_cur_state)):
-        try:
-            os.makedirs(os.path.dirname(fname_cur_state))
-        except OSError as exc:  # Guard against race condition
-            if exc.errno != errno.EEXIST:
-                raise
     global_state.save(fname=fname_cur_state)
     # Return the algorithm's output
     global_out.transfer()

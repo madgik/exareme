@@ -18,11 +18,6 @@ from algorithm_utils import StateData, query_with_privacy
 from log_regr_lib import LogRegrInit_Loc2Glob_TD
 
 
-# TODO try except -> add raise
-# TODO move directory existence check within `StateData.save()` method (logistic and Pearson)
-# TODO add max_iter to termination condition
-
-
 def logregr_local_init(local_in):
     # Unpack local input
     X, Y, schema_X, schema_Y = local_in
@@ -87,12 +82,6 @@ def main():
     # Run algorithm local step
     local_state, local_out = logregr_local_init(local_in=local_in)
     # Save local state
-    if not os.path.exists(os.path.dirname(fname_cur_state)):
-        try:
-            os.makedirs(os.path.dirname(fname_cur_state))
-        except OSError as exc:  # Guard against race condition
-            if exc.errno != errno.EEXIST:
-                raise
     local_state.save(fname=fname_cur_state)
     # Transfer local output (should be the last command)
     local_out.transfer()

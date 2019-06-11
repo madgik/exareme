@@ -3,8 +3,6 @@ from __future__ import print_function
 
 import sys
 from os import path
-import os
-import errno
 from argparse import ArgumentParser
 import numpy as np
 from scipy.special import expit
@@ -106,7 +104,6 @@ def main():
     global_out = LogRegrIter_Glob2Loc_TD.load(global_db)
     # Run algorithm local iteration step
     local_out = logregr_local_final(local_state=local_state, local_in=global_out)
-
     # Return
     local_out.transfer()
 
