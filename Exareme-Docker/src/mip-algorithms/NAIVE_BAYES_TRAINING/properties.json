@@ -50,6 +50,14 @@
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "string"
+		}, {
+			"name": "dataset",
+			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty.",
+			"type": "dataset",
+			"value": "adni",
+			"valueNotBlank": true,
+			"valueMultiple": true,
+			"valueType": "string"
 		}
 	]
 }
