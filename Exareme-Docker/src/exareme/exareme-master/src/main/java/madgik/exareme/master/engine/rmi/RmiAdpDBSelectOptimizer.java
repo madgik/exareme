@@ -593,7 +593,7 @@ public class RmiAdpDBSelectOptimizer {
             case cartesian_product: {
                 int[] idxs = new int[inputs.size()];
                 CartesianProduct product = new CartesianProduct(idxs);
-                for (int i = 0; i < inputs.size(); i++) {
+                for (int i = 0; i < inputs.size(); i++) {ψ
                     product.setLimit(i, inputs.get(i).length);
                 }
                 int oPart = 0;

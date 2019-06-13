@@ -5,9 +5,9 @@ import math
 from decimal import *
 
 
-url1='http://88.197.53.38:9090/mining/query/CROSS_VALIDATION_K_FOLD'
-url2='http://88.197.53.38:9090/mining/query/NAIVE_BAYES_TRAINING'
-url3='http://88.197.53.38:9090/mining/query/NAIVE_BAYES_TESTING'
+url1='http://88.197.53.100:9090/mining/query/CROSS_VALIDATION_K_FOLD'
+url2='http://88.197.53.100:9090/mining/query/NAIVE_BAYES_TRAINING'
+url3='http://88.197.53.100:9090/mining/query/NAIVE_BAYES_TESTING'
 
 def test_NAIVEBAYES_1():
     logging.info("---------- TEST : NAIVE BAYES :CATEGORICAL DATASET  ")
@@ -27,6 +27,7 @@ def test_NAIVEBAYES_1():
     #NAIVE BAYES TRAINING
     data2 =[{"name": "iterationNumber","value": "0"},
             {"name": "alpha","value": "0.1"},
+            {"name": "dataset","value": "car"},
             {"name": "x", "value": "car_buying,car_maint,car_doors,car_persons,car_lug_boot,car_safety"},
             {"name": "y", "value": "car_class"}]
     data2.append({"name": "dbIdentifier","value":result1['dbIdentifier'] })
@@ -99,6 +100,7 @@ def test_NAIVEBAYES_1():
     #NAIVE BAYES TESTING
     data3 =[{"name": "iterationNumber","value": "0"},
             {"name": "alpha","value": "0.1"},
+            {"name": "dataset","value": "car"},
             {"name": "x", "value": "car_buying,car_maint,car_doors,car_persons,car_lug_boot,car_safety"},
             {"name": "y", "value": "car_class"},
             {"name": "kfold","value": "3"}]
