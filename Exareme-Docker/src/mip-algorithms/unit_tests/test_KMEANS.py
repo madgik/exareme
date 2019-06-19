@@ -5,7 +5,7 @@ from time import time as t
 import math
 
 
-endpointUrl='http://88.197.53.38:9090/mining/query/KMEANS'
+endpointUrl='http://88.197.53.100:9090/mining/query/KMEANS'
 
 
 def test_KMEANS_1():

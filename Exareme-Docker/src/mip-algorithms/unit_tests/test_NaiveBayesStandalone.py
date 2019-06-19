@@ -4,7 +4,7 @@ import logging
 import math
 from decimal import *
 
-url2='http://88.197.53.38:9090/mining/query/NAIVE_BAYES_TRAINING_STANDALONE'
+url2='http://88.197.53.100:9090/mining/query/NAIVE_BAYES_TRAINING_STANDALONE'
 
 def test_NAIVEBAYES_1():
     logging.info("---------- TEST : NAIVE BAYES STANDALONE  ")
