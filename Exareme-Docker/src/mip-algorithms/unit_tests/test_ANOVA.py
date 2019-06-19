@@ -5,7 +5,7 @@ import math
 from decimal import *
 
 
-endpointUrl='http://88.197.53.38:9090/mining/query/ANOVA'
+endpointUrl='http://88.197.53.100:9090/mining/query/ANOVA'
 
 
 def test_ANOVA_1():
