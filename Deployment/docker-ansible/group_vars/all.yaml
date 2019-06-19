@@ -1,9 +1,8 @@
-#Local Change here
-METADATA_PATH: "/home/sofiakar/Desktop/sofia/0.MIP/exareme/Exareme-Docker/src/mip-algorithms/unit_tests/datasets/variablesMetadata.json"
-COMPOSE_FILES_FOLDER_PATH: "/home/sofiakar/Desktop/sofia/0.MIP/exareme/Deployment/Compose-Files"
-#Remote Change here
-COMPOSE_FILES_REMOTE_PATH: "/home/skarvoun/Compose-Files/"
+#Change here
 
+#Local
+METADATA_PATH: "/home/sofiakar/Desktop/sofia/0.MIP/exareme/Exareme-Docker/src/mip-algorithms/unit_tests/datasets/variablesMetadata.json"
+COMPOSE_FILES_LOCAL_PATH: "/home/sofiakar/Desktop/sofia/0.MIP/exareme/Deployment/Compose-Files"
 
 ###Nothing to change here
 
