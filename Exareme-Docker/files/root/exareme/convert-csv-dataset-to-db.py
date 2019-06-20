@@ -27,6 +27,8 @@ def createMetadataDictionary(variablesMetadataPath):
 def addGroupVariablesToDictionary(groupMetadata, metadataDictionary):
     if 'variables' in groupMetadata:
         for variable in groupMetadata['variables']:
+            if 'sql_type' not in variable:
+                raise ValueError('The variable "' + variable['code'] + '" does not contain the sql_type field in the metadata.')
             metadataDictionary[variable['code']] = variable['sql_type']
     if 'groups' in groupMetadata:
         for group in groupMetadata['groups']:
@@ -50,8 +52,14 @@ def addGroupVariablesToList(groupMetadata, metadataList):
         for variable in groupMetadata['variables']:
             variableDictionary = {}
             variableDictionary['code'] = variable['code']
+            if 'sql_type' not in variable:
+                raise ValueError('The variable "' + variable['code'] + '" does not contain the sql_type field in the metadata.')
             variableDictionary['sql_type'] = variable['sql_type']
+            if 'isCategorical' not in variable:
+                raise ValueError('The variable "' + variable['code'] + '" does not contain the isCategorical field in the metadata.')
             variableDictionary['isCategorical'] = '1' if variable['isCategorical'] else '0'
+            if variable['isCategorical'] and 'enumerations' not in variable:
+                raise ValueError('The variable "' + variable['code'] + '" does not contain enumerations even though it is categorical.')
             if 'enumerations' in variable: 
                 enumerations = []
                 for enumeration in variable['enumerations']:
@@ -108,6 +116,8 @@ def main():
     subjectcode = csvHeader[0]
     createDataTableQuery += ' ' + subjectcode + ' TEXT'
     for column in csvHeader[1:]:
+        if column not in variablesTypesDict:
+            raise ValueError('Column: "' + column + '" does not exist in the metadata file provided.')
         columnType = variablesTypesDict[column]
         createDataTableQuery += ', ' + column + ' ' + columnType
     createDataTableQuery += ')'
