@@ -10,7 +10,7 @@
   with_items: 
   - "{{ nodeStacks.stdout_lines }}"
   args:
-    chdir: "{{ COMPOSE_FILES_REMOTE_PATH }}"
+    chdir: "{{ compose_files_remote_path }}"
   tags:
     - exareme
 

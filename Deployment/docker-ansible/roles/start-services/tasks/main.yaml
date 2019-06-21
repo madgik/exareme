@@ -7,7 +7,7 @@
 - name: Run Exareme Master
   shell: docker stack deploy -c docker-compose-manager.yml {{ leader.stdout }}
   args:
-    chdir: "{{ COMPOSE_FILES_REMOTE_PATH }}"
+    chdir: "{{ compose_files_remote_path }}/Compose-Files/"
   environment:
     FEDERATION_NODE: "{{ leader.stdout }}"
     FEDERATION_ROLE: "master"
@@ -35,11 +35,10 @@
   tags:
     - portainer
 
-#TODO ignore errors if no worker exists
 - name: Run Exareme Workers
   shell: docker stack deploy -c docker-compose-worker.yml {{ hostvars[item]['hostname'] }}
   args:
-    chdir: "{{ COMPOSE_FILES_REMOTE_PATH }}"
+    chdir: "{{ compose_files_remote_path }}/Compose-Files/"
   environment:
     FEDERATION_NODE: "{{ hostvars[item]['hostname'] }}"
     EXAREME_IMAGE: "{{ EXAREME_IMAGE }}:{{ EXAREME_TAG }}"
