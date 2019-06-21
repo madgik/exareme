@@ -1,23 +1,16 @@
-INTSALLATIONS
+Installations
 
 Install Ansible in host machine:
 
-```
-apt install python-setuptools -y
-easy_install pip
-pip install ansible
-```
+```apt install python-setuptools -y```
+```easy_install pip```
+```pip install ansible```
 or
-
-```
-sudo apt-get install python-pip
-pip install ansible
-```
+```sudo apt-get install python-pip```
+```pip install ansible```
 
 All nodes should have python installed beforehand, in order for playbooks to run in every node:
-```
-   sudo apt-get install python
-```
+```sudo apt-get install python```
 
 ```PROJECT STRUCTURE```
 
