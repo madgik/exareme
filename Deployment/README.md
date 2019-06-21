@@ -1,17 +1,17 @@
-```INTSALLATIONS```
+INTSALLATIONS
 
 Install Ansible in host machine:
 
 ```
-   apt install python-setuptools -y
-   easy_install pip
-   pip install ansible
+apt install python-setuptools -y
+easy_install pip
+pip install ansible
 ```
 or
 
 ```
-   sudo apt-get install python-pip
-   pip install ansible
+sudo apt-get install python-pip
+pip install ansible
 ```
 
 All nodes should have python installed beforehand, in order for playbooks to run in every node:
@@ -20,6 +20,7 @@ All nodes should have python installed beforehand, in order for playbooks to run
 ```
 
 ```PROJECT STRUCTURE```
+
 In the Deployment folder you can find 2 additional folders. 
    The first one "Compose-Files" contains 2 docker-compose.yml files which are needed in order to docker deploy the services in the right nodes [manager/workers]. With procedure we provide, the folder will be copied in the correct remote host. 
    The second folder contains the group_vars, the host file, playbooks and roles in order to deploy via ansible.
