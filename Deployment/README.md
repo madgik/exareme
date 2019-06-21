@@ -36,9 +36,13 @@ In order to run the scripts with your own customized variables, you need to make
 
 Changes you need to make is fill in the ```METADATA_LOCAL_PATH``` value, and ```COMPOSE_FILES_LOCAL_PATH```:
 
-```#Local [refers to your HOST machine from which you will run your playbooks]```
-```METADATA_LOCAL_PATH: "Local absolute path to variablesMetadata.json file" (this may not be needed)```
-```COMPOSE_FILES_LOCAL_PATH: "Local absolute path to /Compose-Files. Relative path should be ~/Compose-files but ansible does not work with relative paths."```
+```
+   #Local [refers to your HOST machine from which you will run your playbooks]
+   METADATA_LOCAL_PATH: "Local_absolute_path_to_CDEsMetadata.json_file" (this may not be needed)
+   
+  COMPOSE_FILES_LOCAL_PATH: "Local_absolute_path_to_/Compose-Files_Relative_path_should_be_~/Compose-files_but_ansible_does_not_work_with_relative_paths."
+
+ ```
 
 2) Changes in ```hosts.ini```
 
