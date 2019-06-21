@@ -1,19 +1,21 @@
-Installations
+```Installations```
 
 Install Ansible in host machine:
 
-```
-apt install python-setuptools -y
-easy_install pip
-pip install ansible 
-```
+```apt install python-setuptools -y```
+
+```easy_install pip```
+
+```pip install ansible```
 
 or
+
 ```sudo apt-get install python-pip```
 
 ```pip install ansible```
 
 All nodes should have python installed beforehand, in order for playbooks to run in every node:
+
 ```sudo apt-get install python```
 
 ```PROJECT STRUCTURE```
@@ -22,22 +24,21 @@ In the Deployment folder you can find 2 additional folders.
    The first one "Compose-Files" contains 2 docker-compose.yml files which are needed in order to docker deploy the services in the right nodes [manager/workers]. With procedure we provide, the folder will be copied in the correct remote host. 
    The second folder contains the group_vars, the host file, playbooks and roles in order to deploy via ansible.
 
-```INITIALIZE VARIABLES```
+```Initialize variables```
+
 In order to run the scripts with your own customized variables, you need to make some changes.
 
 1) Changes in ```group_vars/all.yaml```
-```
-   cd docker-ansible/group_vars
-   vi all.yaml
-```
+
+```cd docker-ansible/group_vars```
+
+```vi all.yaml```
+
 Changes you need to make is fill in the ```METADATA_LOCAL_PATH``` value, and ```COMPOSE_FILES_LOCAL_PATH```:
 
-```
-   #Local [refers to your HOST machine from which you will run your playbooks]
-   METADATA_LOCAL_PATH: "Local absolute path to variablesMetadata.json file" (this may not be needed)
-   
-   COMPOSE_FILES_LOCAL_PATH: "Local absolute path to /Compose-Files. Relative path should be ~/Compose-files but ansible does not work with relative paths."
-```
+```#Local [refers to your HOST machine from which you will run your playbooks]```
+```METADATA_LOCAL_PATH: "Local absolute path to variablesMetadata.json file" (this may not be needed)```
+```COMPOSE_FILES_LOCAL_PATH: "Local absolute path to /Compose-Files. Relative path should be ~/Compose-files but ansible does not work with relative paths."```
 
 2) Changes in ```hosts.ini```
 
@@ -62,6 +63,7 @@ The structure in hosts.ini file is the following:
    name_of_worker2_node: variable1
    etc..
 ```
+
 You can see that there are 2 main categories. The first one is ```[manager]```, the second one is ```[workers]```. This demo is only tested with one (1) manager node and one (1) worker. You can always add more than one at each category following the template in hosts.ini.
 
 The changes you should make regarding the [master] node are the following: (keep in mind that ```manager1``` is just a name and if you wish you can change it to whatever you like But make sure you change it Everywhere in the file)
