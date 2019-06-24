@@ -126,7 +126,8 @@ Here you will add
    worker2_become_pass: your_password
    worker2_ssh_pass: your_password
 ```
-all in plaintext. If you have more than 2 workers, you will add those too by adding ```workerN_``` in front of each variable where N the increased number.
+all in plaintext. If you have more than 2 workers, you will add those too by adding ```workerN_``` in front of each variable where N the increased number. 
+[Keep in mind that your password can be anything you want But ansible has a special character for comments ```#``` . If your password contains that specific character ansible will take the characters next to it as comments.]
 When you exit you can see that vault_file.yaml is encrypted with all your sensitive informations in there.
 
 If you want to edit the file you can do so whenever by
