@@ -135,11 +135,11 @@ If you want to edit the file you can do so whenever by
 Place your vault password and edit the file.
 
 
-### Deploy everything
+## Deploy everything
 
 Since we made the changes needed, we are ready for the deployment. Go inside the ```Docker-Ansible``` folder.
 
-#### Copy Metadata File [Optional]
+### Copy Metadata File [Optional]
 
 If your remote machines do not have the Metadata file available you can simply copy your file from your Host machine into the Remote machines. 
 Keep in mind that you need to place the Metadata file inside the Metadata folder with name: ```variablesMetadata.json```.
@@ -200,6 +200,6 @@ Or If you only want to stop Exareme services you can do so by:
 
 ```ansible-playbook -i hosts.ini Stop-Services -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv --tags exareme -vvvv```
 
-### Test that everything is up and running [In process]
+## Test that everything is up and running [In process]
 If all went well, everything should be deployed! Check your Manager node of Swarm by 
 ```docker node ls ``` to see if you have the proper nodes and ```docker inspect ID_of_a_node``` to see if the label name has a value. You can also check the Portainer to see if all services are up and running.
