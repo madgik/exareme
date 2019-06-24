@@ -11,10 +11,6 @@
   when: swarm_status.rc != 0
   run_once: true
 
-- name: Get The Manager join-token
-  shell: docker swarm join-token --quiet manager
-  register: manager_token
-
 - name: Create Swarm Network
   shell: >
         docker network create 

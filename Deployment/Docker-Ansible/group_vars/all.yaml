@@ -16,7 +16,7 @@ DOCKER_PATH: "/root/exareme/datasets/"
 PORTAINER_PORT: "9000"
 PORTAINER_IMAGE: "portainer/portainer"
 PORTAINER_VERSION: ":latest"
-PORTAINER_DATA: "{{hostvars['manager1']['compose_files_remote_path']}}portainer"
+PORTAINER_DATA: "{{hostvars['master']['compose_files_remote_path']}}portainer"
 
 
 

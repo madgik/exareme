@@ -1,5 +1,0 @@
----
-- name: Join Worker Nodes In Swarm
-  shell: docker swarm join --token {{ hostvars['manager1']['worker_token']['stdout'] }} {{ hostvars['manager1']['ansible_host'] }}:2377 
-  remote_user: "{{ hostvars['worker1']['remote_user'] }}"
-  register: join

@@ -47,4 +47,3 @@
     LOCAL_DATASETS_FOLDER: "{{ hostvars[item]['remote_data_path'] }}"
   with_items: "{{ groups['workers'] }}"
   ignore_errors: true
-  tags: workers

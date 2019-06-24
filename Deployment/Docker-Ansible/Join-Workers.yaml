@@ -1,0 +1,24 @@
+---
+- hosts: manager
+  name: Get worker token
+  remote_user: "{{ hostvars['master']['remote_user'] }}"
+  roles:
+   - worker-token
+
+- hosts: '{{ my_host }}'
+  name: Join Workers In Swarm
+  remote_user: "{{ hostvars[my_host]['remote_user'] }}"
+  roles:
+   - join-workers
+  vars:
+    my_host: "{{ lookup('env', 'my_host') }}"
+    my_name: "{{ hostvars[my_host]['hostname'] }}"
+
+- hosts: manager
+  name: Add label to worker node
+  remote_user: "{{ hostvars['master']['remote_user'] }}"
+  roles:
+   - add-worker-label
+  vars:
+   my_host: "{{ lookup('env', 'my_host') }}"
+   my_name: "{{ hostvars[my_host]['hostname'] }}"

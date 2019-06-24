@@ -1,0 +1,10 @@
+---
+- hosts: '{{ my_host }}'
+  name: Nodes Leave Swarm
+  remote_user: "{{ hostvars[my_host]['remote_user'] }}"
+  become: yes
+  become_user: "{{ hostvars[my_host]['become_user'] }}"
+  roles:
+   - swarm-leave
+  vars:
+    my_host: "{{ lookup('env', 'my_host') }}"
