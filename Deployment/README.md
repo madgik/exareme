@@ -144,33 +144,49 @@ Place your vault password and edit the file.
 
 Since we made the changes needed, we are ready for the deployment. Go inside the ```docker-ansible``` folder.
 
-If your remote machines do not have the Metadata file available you can simply copy your file from your Host machine into the Remote machines by simply doing:
-[Notice that every time you run a playbook you will need to place your ansible-vault password.]
-
-```ansible-playbook -i hosts.ini Metadata.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv``` 
+#### Copy Metadata File [Optional]
+If your remote machines do not have the Metadata file available you can simply copy your file from your Host machine into the Remote machines. 
 Keep in mind that you need to place the Metadata file inside the Metadata folder with name: ```variablesMetadata.json```.
 
+[Notice that every time you run a playbook you will need to place your ansible-vault password.]
+
+For the master:
+```ansible-playbook -i hosts.ini Metadata-Master.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv``` 
+
+For worker1:
+```ansible-playbook -i hosts.ini Metadata-Worker.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=worker1"``` 
+Same thing for each worker.
+
+### Swarm Initialization
 For the initialization of Swarm you have to run:
 
-```ansible-playbook -i hosts.ini Init-swarm.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv```
+```ansible-playbook -i hosts.ini Init-Swarm.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv```
 
-If you have worker node[s] available:
+### Join Workers
+If you have worker node[s] available you should do the following for each worker:
 
-``` ansible-playbook -i hosts.ini Join-workers.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv```
+``` ansible-playbook -i hosts.ini Join-Workers.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=worker1"```
 
-and then
-```ansible-playbook -i hosts.ini Init-swarm.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv --tags labels``` 
+### Start Exareme Services
+Next thing would be to run Exareme services and Portainer service. Mind that if you already have available workers, Exareme service will run for each worker. If not, the deployment of Exareme in the worker nodes will be bypassed.
 
-in order for worker node[s] to have label names since only tasks with tags ```labels``` will run. 
-
-Next thing would be to run Exareme services and Portainer service
-
-```ansible-playbook -i hosts.ini Start-services.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv```
+```ansible-playbook -i hosts.ini Start-Exareme.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv```
 
 If you want to exclude Portainer service from running, you need to add ```--skip-tags portainer``` in the command, meening:
 
-```ansible-playbook -i hosts.ini Start-services.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml --skip-tags portainer -vvvv```
+```ansible-playbook -i hosts.ini Start-Services.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml --skip-tags portainer -vvvv```
 
+### Start Exareme Workers at any time
+If at some point you have to add a new worker node you should:
+1) [Optional] Copy the Metadata file:
+```ansible-playbook -i hosts.ini Metadata-Worker.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=workerN"``` 
+
+2) Join the particular worker by replacing workerN with the appropriate name: 
+``` ansible-playbook -i hosts.ini Join-Workers.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=workerN"```
+
+3) Start Exareme for the particular worker by replacing workerN with the appropriate name: ``` ansible-playbook -i hosts.ini Start-Exareme-Worker.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=workerN"```
+
+### Stop Exareme Services
 If you want to stop all services:
 
 ```ansible-playbook -i hosts.ini Stop-services -c paramiko --ask-vault-pass -e@vault_file.yaml  -vvvv```
@@ -183,5 +199,6 @@ Or If you only want to stop Exareme services you can do so by:
 
 ```ansible-playbook -i hosts.ini Stop-services -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv --tags exareme -vvvv```
 
+### Test that everything is up and running [In process]
 If all went well, everything should be deployed! Check your Manager node of Swarm by 
 ```docker node ls ``` to see if you have the proper nodes and ```docker inspect ID_of_a_node``` to see if the label name has a value. You can also check the Portainer to see if all services are up and running.
