@@ -1,6 +1,6 @@
 - name: Copy metadata file
   copy:
-    src: "{{ COMPOSE_FILES_LOCAL_PATH }}"
+    src: ../Compose-Files
     dest: "{{ compose_files_remote_path }}"
     owner: "{{ become_user }}"
     group: "{{ become_user }}"

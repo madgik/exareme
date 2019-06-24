@@ -1,0 +1,2383 @@
+{
+	"variables": [{
+			"code": "ANOVA_pp",
+			"description": "",
+			"minValue": 0,
+			"maxValue": 180,
+			"label": "pp",
+			"methodology": "Testing_ANOVA",
+			"sql_type": "int",
+			"type": "",
+			"isCategorical": false
+		}, {
+			"code": "ANOVA_var_I1",
+			"description": "",
+			"enumerations": [{
+					"code": 0,
+					"label": 0
+				}, {
+					"code": 1,
+					"label": 1
+				}, {
+					"code": 2,
+					"label": 2
+				}
+			],
+			"label": "var_I1",
+			"methodology": "Testing_ANOVA",
+			"sql_type": "int",
+			"type": "polynominal",
+			"isCategorical": true
+		}, {
+			"code": "ANOVA_var_I2",
+			"description": "",
+			"enumerations": [{
+					"code": 0,
+					"label": 0
+				}, {
+					"code": 1,
+					"label": 1
+				}, {
+					"code": 2,
+					"label": 2
+				}
+			],
+			"label": "var_I2",
+			"methodology": "Testing_ANOVA",
+			"sql_type": "int",
+			"type": "polynominal",
+			"isCategorical": true
+		}, {
+			"code": "ANOVA_var_I3",
+			"description": "",
+			"enumerations": [{
+					"code": 0,
+					"label": 0
+				}, {
+					"code": 1,
+					"label": 1
+				}
+			],
+			"label": "var_I3",
+			"methodology": "Testing_ANOVA",
+			"sql_type": "int",
+			"type": "binominal",
+			"isCategorical": true
+		}, {
+			"code": "ANOVA_var_D",
+			"description": "",
+			"minValue": 2,
+			"maxValue": 131,
+			"label": "var_D",
+			"methodology": "Testing_ANOVA",
+			"sql_type": "int",
+			"type": "",
+			"isCategorical": false
+		}, {
+			"code": "ANOVA_lefthippocampus",
+			"description": "",
+			"label": "Left Hippocampus",
+			"methodology": "Testing_ANOVA",
+			"sql_type": "real",
+			"type": "",
+			"isCategorical": false,
+			"units": "cm3"
+		}, {
+			"code": "ANOVA_alzheimerbroadcategory",
+			"description": "",
+			"enumerations": [{
+					"code": "AD",
+					"label": "Alzheimer''s disease"
+				}, {
+					"code": "CN",
+					"label": "Cognitively Normal"
+				}, {
+					"code": "Other",
+					"label": "Other"
+				}
+			],
+			"label": "Alzheimer Broad Category",
+			"methodology": "Testing_ANOVA",
+			"sql_type": "text",
+			"type": "polynominal",
+			"isCategorical": true
+		}, {
+			"code": "ANOVA_gender",
+			"description": "Gender of the patient - Sex assigned at birth",
+			"enumerations": [{
+					"code": "M",
+					"label": "Male"
+				}, {
+					"code": "F",
+					"label": "Female"
+				}
+			],
+			"label": "Gender",
+			"length": 1,
+			"methodology": "Testing_ANOVA",
+			"sql_type": "text",
+			"type": "binominal",
+			"isCategorical": true
+		}, {
+			"code": "ANOVA_agegroup",
+			"description": "Age Group",
+			"enumerations": [{
+					"code": "-50y",
+					"label": "-50y"
+				}, {
+					"code": "50-59y",
+					"label": "50-59y"
+				}, {
+					"code": "60-69y",
+					"label": "60-69y"
+				}, {
+					"code": "70-79y",
+					"label": "70-79y"
+				}, {
+					"code": "+80y",
+					"label": "+80y"
+				}
+			],
+			"label": "Age Group",
+			"methodology": "Testing_ANOVA",
+			"sql_type": "text",
+			"type": "polynominal",
+			"isCategorical": true
+		}, {
+			"code": "var1",
+			"description": "Synthetic variable for testing purposes.",
+			"label": "",
+			"methodology": "",
+			"sql_type": "real",
+			"type": "",
+			"isCategorical": false
+		}, {
+			"code": "var2",
+			"description": "Synthetic variable for testing purposes.",
+			"label": "",
+			"methodology": "",
+			"sql_type": "real",
+			"type": "",
+			"isCategorical": false
+		}, {
+			"code": "var3",
+			"description": "Synthetic variable for testing purposes.",
+			"label": "",
+			"methodology": "",
+			"sql_type": "real",
+			"type": "",
+			"isCategorical": false
+		}, {
+			"code": "var4",
+			"description": "Synthetic variable for testing purposes.",
+			"label": "",
+			"methodology": "",
+			"sql_type": "real",
+			"type": "",
+			"isCategorical": false
+		}, {
+			"isCategorical": false,
+			"code": "dataset",
+			"sql_type": "text",
+			"description": "Variable used to differentiate datasets",
+			"label": "Dataset",
+			"units": "",
+			"type": "text",
+			"methodology": "mip-cde"
+		}
+	],
+	"code": "root",
+	"groups": [{
+			"variables": [{
+					"isCategorical": false,
+					"code": "av45",
+					"sql_type": "real",
+					"description": "AV45 Average AV45 SUVR of frontal  anterior cingulate  precuneus  and parietal cortex\\nrelative to the cerebellum",
+					"label": "AV45",
+					"units": "",
+					"type": "real",
+					"methodology": "adni-merge"
+				}, {
+					"isCategorical": false,
+					"code": "fdg",
+					"sql_type": "real",
+					"description": "Average FDG-PET of angular  temporal  and posterior cingulate. Most important hypometabolic regions that are indicative of pathological metabolic change in MCI and AD.",
+					"label": "FDG-PET",
+					"units": "",
+					"type": "real",
+					"methodology": "adni-merge"
+				}, {
+					"isCategorical": false,
+					"code": "pib",
+					"sql_type": "real",
+					"description": "Average PIB SUVR of frontal cortex  anterior cingulate  precuneus cortex  and parietal cortex.",
+					"label": "PIB",
+					"units": "",
+					"type": "real",
+					"methodology": "adni-merge"
+				}
+			],
+			"code": "pet",
+			"label": "PET - Positron Emission Tomography"
+		}, {
+			"variables": [{
+					"isCategorical": false,
+					"code": "brainstem",
+					"sql_type": "real",
+					"description": "Brainstem volume",
+					"label": "Brainstem",
+					"units": "cm3",
+					"type": "real",
+					"methodology": "lren-nmm-volumes"
+				}, {
+					"isCategorical": false,
+					"code": "tiv",
+					"sql_type": "real",
+					"description": "Total intra-cranial volume",
+					"label": "TIV",
+					"units": "cm3",
+					"type": "real",
+					"methodology": "lren-nmm-volumes"
+				}
+			],
+			"code": "brain_anatomy",
+			"groups": [{
+					"variables": [{
+							"isCategorical": false,
+							"code": "_3rdventricle",
+							"sql_type": "real",
+							"description": "",
+							"label": "3rd Ventricle",
+							"units": "cm3",
+							"type": "real",
+							"methodology": "lren-nmm-volumes"
+						}, {
+							"isCategorical": false,
+							"code": "_4thventricle",
+							"sql_type": "real",
+							"description": "",
+							"label": "4th Ventricle",
+							"units": "cm3",
+							"type": "real",
+							"methodology": "lren-nmm-volumes"
+						}, {
+							"isCategorical": false,
+							"code": "csfglobal",
+							"sql_type": "real",
+							"description": "",
+							"label": "CSF global",
+							"units": "cm3",
+							"type": "real",
+							"methodology": "lren-nmm-volumes"
+						}, {
+							"isCategorical": false,
+							"code": "leftinflatvent",
+							"sql_type": "real",
+							"description": "",
+							"label": "Left inferior lateral ventricle",
+							"units": "cm3",
+							"type": "real",
+							"methodology": "lren-nmm-volumes"
+						}, {
+							"isCategorical": false,
+							"code": "leftlateralventricle",
+							"sql_type": "real",
+							"description": "",
+							"label": "Left lateral ventricle",
+							"units": "cm3",
+							"type": "real",
+							"methodology": "lren-nmm-volumes"
+						}, {
+							"isCategorical": false,
+							"code": "rightinflatvent",
+							"sql_type": "real",
+							"description": "",
+							"label": "Right inferior lateral ventricle",
+							"units": "cm3",
+							"type": "real",
+							"methodology": "lren-nmm-volumes"
+						}, {
+							"isCategorical": false,
+							"code": "rightlateralventricle",
+							"sql_type": "real",
+							"description": "",
+							"label": "Right lateral ventricle",
+							"units": "cm3",
+							"type": "real",
+							"methodology": "lren-nmm-volumes"
+						}
+					],
+					"code": "csf_volume",
+					"label": "CSF volume"
+				}, {
+					"code": "grey_matter_volume",
+					"groups": [{
+							"variables": [{
+									"isCategorical": false,
+									"code": "cerebellarvermallobulesiv",
+									"sql_type": "real",
+									"description": "",
+									"label": "Cerebellar Vermal Lobules I-V",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "cerebellarvermallobulesviiix",
+									"sql_type": "real",
+									"description": "",
+									"label": "Cerebellar Vermal Lobules VIII-X",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "cerebellarvermallobulesvivii",
+									"sql_type": "real",
+									"description": "",
+									"label": "Cerebellar Vermal Lobules VI-VII",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "leftcerebellumexterior",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left Cerebellum Exterior",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightcerebellumexterior",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right Cerebellum Exterior",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}
+							],
+							"code": "cerebellum",
+							"label": "Cerebellum"
+						}, {
+							"code": "cerebral_nuclei",
+							"groups": [{
+									"variables": [{
+											"isCategorical": false,
+											"code": "leftamygdala",
+											"sql_type": "real",
+											"description": "",
+											"label": "Left Amygdala",
+											"units": "cm3",
+											"type": "real",
+											"methodology": "lren-nmm-volumes"
+										}, {
+											"isCategorical": false,
+											"code": "rightamygdala",
+											"sql_type": "real",
+											"description": "",
+											"label": "Right Amygdala",
+											"units": "cm3",
+											"type": "real",
+											"methodology": "lren-nmm-volumes"
+										}
+									],
+									"code": "amygdala",
+									"label": "Amygdala"
+								}, {
+									"variables": [{
+											"isCategorical": false,
+											"code": "leftaccumbensarea",
+											"sql_type": "real",
+											"description": "",
+											"label": "Left Accumbens Area",
+											"units": "cm3",
+											"type": "real",
+											"methodology": "lren-nmm-volumes"
+										}, {
+											"isCategorical": false,
+											"code": "leftbasalforebrain",
+											"sql_type": "real",
+											"description": "",
+											"label": "Left Basal Forebrain",
+											"units": "cm3",
+											"type": "real",
+											"methodology": "lren-nmm-volumes"
+										}, {
+											"isCategorical": false,
+											"code": "leftcaudate",
+											"sql_type": "real",
+											"description": "",
+											"label": "Left Caudate",
+											"units": "cm3",
+											"type": "real",
+											"methodology": "lren-nmm-volumes"
+										}, {
+											"isCategorical": false,
+											"code": "leftpallidum",
+											"sql_type": "real",
+											"description": "",
+											"label": "Left Pallidum",
+											"units": "cm3",
+											"type": "real",
+											"methodology": "lren-nmm-volumes"
+										}, {
+											"isCategorical": false,
+											"code": "leftputamen",
+											"sql_type": "real",
+											"description": "",
+											"label": "Left Putamen",
+											"units": "cm3",
+											"type": "real",
+											"methodology": "lren-nmm-volumes"
+										}, {
+											"isCategorical": false,
+											"code": "rightaccumbensarea",
+											"sql_type": "real",
+											"description": "",
+											"label": "Right Accumbens Area",
+											"units": "cm3",
+											"type": "real",
+											"methodology": "lren-nmm-volumes"
+										}, {
+											"isCategorical": false,
+											"code": "rightbasalforebrain",
+											"sql_type": "real",
+											"description": "",
+											"label": "Right Basal Forebrain",
+											"units": "cm3",
+											"type": "real",
+											"methodology": "lren-nmm-volumes"
+										}, {
+											"isCategorical": false,
+											"code": "rightcaudate",
+											"sql_type": "real",
+											"description": "",
+											"label": "Right Caudate",
+											"units": "cm3",
+											"type": "real",
+											"methodology": "lren-nmm-volumes"
+										}, {
+											"isCategorical": false,
+											"code": "rightpallidum",
+											"sql_type": "real",
+											"description": "",
+											"label": "Right Pallidum",
+											"units": "cm3",
+											"type": "real",
+											"methodology": "lren-nmm-volumes"
+										}, {
+											"isCategorical": false,
+											"code": "rightputamen",
+											"sql_type": "real",
+											"description": "",
+											"label": "Right Putamen",
+											"units": "cm3",
+											"type": "real",
+											"methodology": "lren-nmm-volumes"
+										}
+									],
+									"code": "basal_ganglia",
+									"label": "Basal Ganglia"
+								}
+							],
+							"label": "Cerebral nuclei"
+						}, {
+							"variables": [{
+									"isCategorical": false,
+									"code": "leftventraldc",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left Ventral DC",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightventraldc",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right Ventral DC",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}
+							],
+							"code": "diencephalon",
+							"label": "Diencephalon"
+						}, {
+							"variables": [{
+									"isCategorical": false,
+									"code": "leftaorganteriororbitalgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left anterior orbital gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "leftcocentraloperculum",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left central operculum",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "leftfofrontaloperculum",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left frontal operculum",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "leftfrpfrontalpole",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left frontal pole",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "leftgregyrusrectus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left gyrus rectus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "leftlorglateralorbitalgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left lateral orbital gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "leftmfcmedialfrontalcortex",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left medial frontal cortex",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "leftmfgmiddlefrontalgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left middle frontal gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "leftmorgmedialorbitalgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left medial orbital gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "leftmprgprecentralgyrusmedialsegment",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left precentral gyrus medial segment",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "leftmsfgsuperiorfrontalgyrusmedialsegment",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left superior frontal gyrus medial segment",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "leftopifgopercularpartoftheinferiorfrontalgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left opercular part of the inferior frontal gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "leftorifgorbitalpartoftheinferiorfrontalgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left orbital part of the inferior frontal gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "leftpoparietaloperculum",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left parietal operculum",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "leftporgposteriororbitalgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left posterior orbital gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "leftprgprecentralgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left precentral gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "leftscasubcallosalarea",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left subcallosal area",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "leftsfgsuperiorfrontalgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left superior frontal gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "leftsmcsupplementarymotorcortex",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left supplementary motor cortex",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "lefttrifgtriangularpartoftheinferiorfrontalgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left triangular part of the inferior frontal gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightaorganteriororbitalgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right anterior orbital gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightcocentraloperculum",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right central operculum",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightfofrontaloperculum",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right frontal operculum",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightfrpfrontalpole",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right frontal pole",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightgregyrusrectus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right gyrus rectus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightlorglateralorbitalgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right lateral orbital gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightmfcmedialfrontalcortex",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right medial frontal cortex",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightmfgmiddlefrontalgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right middle frontal gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightmorgmedialorbitalgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right medial orbital gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightmprgprecentralgyrusmedialsegment",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right precentral gyrus medial segment",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightmsfgsuperiorfrontalgyrusmedialsegment",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right superior frontal gyrus medial segment",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightopifgopercularpartoftheinferiorfrontalgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right opercular part of the inferior frontal gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightorifgorbitalpartoftheinferiorfrontalgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right orbital part of the inferior frontal gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightpoparietaloperculum",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right parietal operculum",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightporgposteriororbitalgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right posterior orbital gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightprgprecentralgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right precentral gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightscasubcallosalarea",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right subcallosal area",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightsfgsuperiorfrontalgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right superior frontal gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightsmcsupplementarymotorcortex",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right supplementary motor cortex",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "righttrifgtriangularpartoftheinferiorfrontalgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right triangular part of the inferior frontal gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}
+							],
+							"code": "frontal",
+							"label": "Frontal"
+						}, {
+							"variables": [{
+									"isCategorical": false,
+									"code": "leftainsanteriorinsula",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left anterior insula",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "leftpinsposteriorinsula",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left posterior insula",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightainsanteriorinsula",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right anterior insula",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightpinsposteriorinsula",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right posterior insula",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}
+							],
+							"code": "insula",
+							"label": "Insula"
+						}, {
+							"variables": [{
+									"isCategorical": false,
+									"code": "leftacgganteriorcingulategyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left anterior cingulate gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "leftententorhinalarea",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left entorhinal area",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "lefthippocampus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left Hippocampus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "leftmcggmiddlecingulategyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left middle cingulate gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "leftpcggposteriorcingulategyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left posterior cingulate gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "leftphgparahippocampalgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left parahippocampal gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "leftthalamusproper",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left Thalamus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightacgganteriorcingulategyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right anterior cingulate gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightententorhinalarea",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right entorhinal area",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "righthippocampus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right Hippocampus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightmcggmiddlecingulategyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right middle cingulate gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightpcggposteriorcingulategyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right posterior cingulate gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightphgparahippocampalgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right parahippocampal gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightthalamusproper",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right Thalamus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}
+							],
+							"code": "limbic",
+							"label": "Limbic"
+						}, {
+							"variables": [{
+									"isCategorical": false,
+									"code": "leftcalccalcarinecortex",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left calcarine cortex",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "leftcuncuneus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left cuneus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "leftioginferioroccipitalgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left inferior occipital gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "leftliglingualgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left lingual gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "leftmogmiddleoccipitalgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left middle occipital gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "leftocpoccipitalpole",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left occipital pole",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "leftofugoccipitalfusiformgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left occipital fusiform gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "leftsogsuperioroccipitalgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left superior occipital gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightcalccalcarinecortex",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right calcarine cortex",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightcuncuneus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right cuneus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightioginferioroccipitalgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right inferior occipital gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightliglingualgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right lingual gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightmogmiddleoccipitalgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right middle occipital gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightocpoccipitalpole",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right occipital pole",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightofugoccipitalfusiformgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right occipital fusiform gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightsogsuperioroccipitalgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right superior occipital gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}
+							],
+							"code": "occipital",
+							"label": "Occipital"
+						}, {
+							"variables": [{
+									"isCategorical": false,
+									"code": "leftangangulargyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left angular gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "leftmpogpostcentralgyrusmedialsegment",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left postcentral gyrus medial segment",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "leftpcuprecuneus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left precuneus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "leftpogpostcentralgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left postcentral gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "leftsmgsupramarginalgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left supramarginal gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "leftsplsuperiorparietallobule",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left superior parietal lobule",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightangangulargyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right angular gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightmpogpostcentralgyrusmedialsegment",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right postcentral gyrus medial segment",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightpcuprecuneus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right precuneus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightpogpostcentralgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right postcentral gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightsmgsupramarginalgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right supramarginal gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightsplsuperiorparietallobule",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right superior parietal lobule",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}
+							],
+							"code": "parietal",
+							"label": "Parietal"
+						}, {
+							"variables": [{
+									"isCategorical": false,
+									"code": "leftfugfusiformgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left fusiform gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "leftitginferiortemporalgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left inferior temporal gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "leftmtgmiddletemporalgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left middle temporal gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "leftppplanumpolare",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left planum polare",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "leftptplanumtemporale",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left planum temporale",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "leftstgsuperiortemporalgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left superior temporal gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "lefttmptemporalpole",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left temporal pole",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "leftttgtransversetemporalgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Left transverse temporal gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightfugfusiformgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right fusiform gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightitginferiortemporalgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right inferior temporal gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightmtgmiddletemporalgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right middle temporal gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightppplanumpolare",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right planum polare",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightptplanumtemporale",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right planum temporale",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightstgsuperiortemporalgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right superior temporal gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "righttmptemporalpole",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right temporal pole",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}, {
+									"isCategorical": false,
+									"code": "rightttgtransversetemporalgyrus",
+									"sql_type": "real",
+									"description": "",
+									"label": "Right transverse temporal gyrus",
+									"units": "cm3",
+									"type": "real",
+									"methodology": "lren-nmm-volumes"
+								}
+							],
+							"code": "temporal",
+							"label": "Temporal"
+						}
+					],
+					"label": "Grey matter volume"
+				}, {
+					"variables": [{
+							"isCategorical": false,
+							"code": "leftcerebellumwhitematter",
+							"sql_type": "real",
+							"description": "",
+							"label": "Left Cerebellum White Matter",
+							"units": "cm3",
+							"type": "real",
+							"methodology": "lren-nmm-volumes"
+						}, {
+							"isCategorical": false,
+							"code": "leftcerebralwhitematter",
+							"sql_type": "real",
+							"description": "",
+							"label": "Left Cerebral White Matter",
+							"units": "cm3",
+							"type": "real",
+							"methodology": "lren-nmm-volumes"
+						}, {
+							"isCategorical": false,
+							"code": "opticchiasm",
+							"sql_type": "real",
+							"description": "",
+							"label": "Optic chiasm",
+							"units": "cm3",
+							"type": "real",
+							"methodology": "lren-nmm-volumes"
+						}, {
+							"isCategorical": false,
+							"code": "rightcerebellumwhitematter",
+							"sql_type": "real",
+							"description": "",
+							"label": "Right Cerebellum White Matter",
+							"units": "cm3",
+							"type": "real",
+							"methodology": "lren-nmm-volumes"
+						}, {
+							"isCategorical": false,
+							"code": "rightcerebralwhitematter",
+							"sql_type": "real",
+							"description": "",
+							"label": "Right Cerebral White Matter",
+							"units": "cm3",
+							"type": "real",
+							"methodology": "lren-nmm-volumes"
+						}
+					],
+					"code": "white_matter_volume",
+					"label": "White matter volume"
+				}
+			],
+			"label": "Brain Anatomy"
+		}, {
+			"variables": [{
+					"isCategorical": true,
+					"code": "alzheimerbroadcategory",
+					"sql_type": "text",
+					"description": "There will be two broad categories taken into account. Alzheimer s disease (AD) in which the diagnostic is 100% certain and <Other> comprising the rest of Alzheimer s related categories. The <Other> category refers to Alzheime s related diagnosis which origin can be traced to other pathology eg. vascular. In this category MCI diagnosis can also be found. In summary  all Alzheimer s related diagnosis that are not pure.",
+					"enumerations": [{
+							"code": "AD",
+							"label": "Alzheimer’s disease"
+						}, {
+							"code": "CN",
+							"label": "Cognitively Normal"
+						}, {
+							"code": "Other",
+							"label": "Other"
+						}, {
+							"code": "MCI",
+							"label": "Mild cognitive impairment"
+						}
+					],
+					"label": "Alzheimer Broad Category",
+					"units": "",
+					"type": "polynominal",
+					"methodology": "mip-cde"
+				}, {
+					"isCategorical": true,
+					"code": "neurodegenerativescategories",
+					"sql_type": "text",
+					"description": "There will be two broad categories taken into account. Parkinson s disease without disability or light disability: Without fluctuation of the effect. Dementia in Parkinson s disease",
+					"enumerations": [{
+							"code": "PD",
+							"label": "Parkinson’s disease"
+						}, {
+							"code": "AD",
+							"label": "Alzheimer’s disease"
+						}, {
+							"code": "HD",
+							"label": "Huntington’s disease\""
+						}, {
+							"code": "ALS",
+							"label": "Amyotrophic lateral sclerosis"
+						}, {
+							"code": "BD",
+							"label": "Batten disease"
+						}, {
+							"code": "MCI",
+							"label": "MCI"
+						}, {
+							"code": "LBD",
+							"label": "Lewy body dementia"
+						}, {
+							"code": "CJD",
+							"label": "Creutzfeldt Jakob disease"
+						}, {
+							"code": "FTD",
+							"label": "Frontotemporal dementia"
+						}, {
+							"code": "MS",
+							"label": "Multiple sclerosis"
+						}, {
+							"code": "CN",
+							"label": "Cognitively normal"
+						}
+					],
+					"label": "Neurodegeneratives categories",
+					"units": "",
+					"type": "polynominal",
+					"methodology": "mip-cde"
+				}, {
+					"isCategorical": true,
+					"code": "parkinsonbroadcategory",
+					"sql_type": "text",
+					"description": "There will be two broad categories taken into account. Parkinson s disease without disability or light disability: Without fluctuation of the effect. Dementia in Parkinson s disease",
+					"enumerations": [{
+							"code": "PD",
+							"label": "Dementia in Parkinson''s disease"
+						}, {
+							"code": "CN",
+							"label": "Healthy control"
+						}, {
+							"code": "Other",
+							"label": "Parkinson''s disease without disability or light disability: Without fluctuation of the effect"
+						}
+					],
+					"label": "Parkinson Broad Category",
+					"units": "",
+					"type": "polynominal",
+					"methodology": "mip-cde"
+				}
+			],
+			"code": "diagnosis",
+			"groups": [{
+					"variables": [{
+							"isCategorical": true,
+							"code": "adnicategory",
+							"sql_type": "text",
+							"description": "Terms aggregating illnesses into classes. Note that the diagnosis in this categories are given only for the ADNI data set.",
+							"enumerations": [{
+									"code": "AD",
+									"label": "Alzheimer’s Disease"
+								}, {
+									"code": "MCI",
+									"label": "Mild Cognitive Impairment"
+								}, {
+									"code": "CN",
+									"label": "Cognitively Normal"
+								}
+							],
+							"label": "ADNI category",
+							"units": "",
+							"type": "polynominal",
+							"methodology": "mip-cde"
+						}, {
+							"isCategorical": true,
+							"code": "edsdcategory",
+							"sql_type": "text",
+							"description": "Terms aggregating illnesses into classes. Note that the diagnosis in this categories are given only for the EDSD data set.",
+							"enumerations": [{
+									"code": "AD",
+									"label": "Alzheimer’s Disease"
+								}, {
+									"code": "MCI",
+									"label": "Mild Cognitive Impairment"
+								}, {
+									"code": "CN",
+									"label": "Cognitively Normal"
+								}
+							],
+							"label": "EDSD category",
+							"units": "",
+							"type": "polynominal",
+							"methodology": "mip-cde"
+						}, {
+							"isCategorical": true,
+							"code": "ppmicategory",
+							"sql_type": "text",
+							"description": "Terms aggregating the Parkinson s diseases into classes. For this instance the diagnosis given at enrollment is taken as the clinical diagnosis. Note that the diagnosis in this categories are given only for the PPMI data set.",
+							"enumerations": [{
+									"code": "PD",
+									"label": "Parkinson disease"
+								}, {
+									"code": "HC",
+									"label": "Healthy controls"
+								}, {
+									"code": "PRODROMA",
+									"label": "Prodromal"
+								}, {
+									"code": "GENPD”,”Genetic PD patients with a mutation (LRRK2",
+									"label": "GBA or SNCA)"
+								}, {
+									"code": "REGUN”,”Genetic Unaffected patients with a mutation (LRRK2",
+									"label": "GBA or SNCA)"
+								}, {
+									"code": "REGPD”,”Genetic registry PD subjects with a mutation (LRRK2, GBA",
+									"label": "or SNCA)"
+								}, {
+									"code": "REGUN”,”Genetic registry unaffected subjects with a mutation (LRRK2, GBA",
+									"label": "or SNCA)"
+								}
+							],
+							"label": "PPMI category",
+							"units": "",
+							"type": "polynominal",
+							"methodology": "mip-cde"
+						}
+					],
+					"code": "dataset_specific_diagnosis",
+					"label": "Dataset Specific Diagnosis"
+				}
+			],
+			"label": "Diagnosis"
+		}, {
+			"variables": [{
+					"isCategorical": false,
+					"minValue": 0,
+					"code": "minimentalstate",
+					"maxValue": 30,
+					"sql_type": "int",
+					"description": "The Mini Mental State Examination (MMSE) or Folstein test is a 30-point questionnaire that is used extensively in clinical and research settings to measure cognitive impairment. It is commonly used to screen for dementia.",
+					"enumerations": [{
+							"code": 0,
+							"label": 0
+						}, {
+							"code": 1,
+							"label": 1
+						}, {
+							"code": 2,
+							"label": 2
+						}, {
+							"code": 3,
+							"label": 3
+						}, {
+							"code": 4,
+							"label": 4
+						}, {
+							"code": 5,
+							"label": 5
+						}, {
+							"code": 6,
+							"label": 6
+						}, {
+							"code": 7,
+							"label": 7
+						}, {
+							"code": 8,
+							"label": 8
+						}, {
+							"code": 9,
+							"label": 9
+						}, {
+							"code": 10,
+							"label": 10
+						}, {
+							"code": 11,
+							"label": 11
+						}, {
+							"code": 12,
+							"label": 12
+						}, {
+							"code": 13,
+							"label": 13
+						}, {
+							"code": 14,
+							"label": 14
+						}, {
+							"code": 15,
+							"label": 15
+						}, {
+							"code": 16,
+							"label": 16
+						}, {
+							"code": 17,
+							"label": 17
+						}, {
+							"code": 18,
+							"label": 18
+						}, {
+							"code": 19,
+							"label": 19
+						}, {
+							"code": 20,
+							"label": 20
+						}, {
+							"code": 21,
+							"label": 21
+						}, {
+							"code": 22,
+							"label": 22
+						}, {
+							"code": 23,
+							"label": 23
+						}, {
+							"code": 24,
+							"label": 24
+						}, {
+							"code": 25,
+							"label": 25
+						}, {
+							"code": 26,
+							"label": 26
+						}, {
+							"code": 27,
+							"label": 27
+						}, {
+							"code": 28,
+							"label": 28
+						}, {
+							"code": 29,
+							"label": 29
+						}, {
+							"code": 30,
+							"label": 30
+						}
+					],
+					"label": "MMSE Total scores",
+					"units": "",
+					"type": "integer",
+					"methodology": "mip-cde"
+				}, {
+					"isCategorical": true,
+					"minValue": 0,
+					"code": "montrealcognitiveassessment",
+					"maxValue": 30,
+					"sql_type": "int",
+					"description": "The Montreal Cognitive Assessment (MoCA) was designed as a rapid screening instrument for mild cognitive dysfunction. It assesses different cognitive domains: attention and concentration  executive functions  memory  language  visuoconstructional skills  conceptual thinking  calculations  and orientation. MoCA Total Scores refer to the final count obtained by patients after the complete test is performed.",
+					"enumerations": [{
+							"code": 0,
+							"label": 0
+						}, {
+							"code": 1,
+							"label": 1
+						}, {
+							"code": 2,
+							"label": 2
+						}, {
+							"code": 3,
+							"label": 3
+						}, {
+							"code": 4,
+							"label": 4
+						}, {
+							"code": 5,
+							"label": 5
+						}, {
+							"code": 6,
+							"label": 6
+						}, {
+							"code": 7,
+							"label": 7
+						}, {
+							"code": 8,
+							"label": 8
+						}, {
+							"code": 9,
+							"label": 9
+						}, {
+							"code": 10,
+							"label": 10
+						}, {
+							"code": 11,
+							"label": 11
+						}, {
+							"code": 12,
+							"label": 12
+						}, {
+							"code": 13,
+							"label": 13
+						}, {
+							"code": 14,
+							"label": 14
+						}, {
+							"code": 15,
+							"label": 15
+						}, {
+							"code": 16,
+							"label": 16
+						}, {
+							"code": 17,
+							"label": 17
+						}, {
+							"code": 18,
+							"label": 18
+						}, {
+							"code": 19,
+							"label": 19
+						}, {
+							"code": 20,
+							"label": 20
+						}, {
+							"code": 21,
+							"label": 21
+						}, {
+							"code": 22,
+							"label": 22
+						}, {
+							"code": 23,
+							"label": 23
+						}, {
+							"code": 24,
+							"label": 24
+						}, {
+							"code": 25,
+							"label": 25
+						}, {
+							"code": 26,
+							"label": 26
+						}, {
+							"code": 27,
+							"label": 27
+						}, {
+							"code": 28,
+							"label": 28
+						}, {
+							"code": 29,
+							"label": 29
+						}, {
+							"code": 30,
+							"label": 30
+						}
+					],
+					"label": "MoCA Total",
+					"units": "",
+					"type": "integer",
+					"methodology": "mip-cde"
+				}
+			],
+			"code": "neuropsychology",
+			"groups": [{
+					"variables": [{
+							"isCategorical": true,
+							"minValue": 0,
+							"code": "updrshy",
+							"maxValue": 5,
+							"sql_type": "int",
+							"description": "The Hoehn and Yahr scale (HY) is a widely used clinical rating scale  which defines broad categories of motor function in Parkinson\\u2019s disease (PD). It captures typical patterns of progressive motor impairment.",
+							"enumerations": [{
+									"code": 0,
+									"label": 0
+								}, {
+									"code": 1,
+									"label": 1
+								}, {
+									"code": 2,
+									"label": 2
+								}, {
+									"code": 3,
+									"label": 3
+								}, {
+									"code": 4,
+									"label": 4
+								}, {
+									"code": 5,
+									"label": 5
+								}
+							],
+							"label": "UPDRS HY - Hoehn and Yahr scale",
+							"units": "",
+							"type": "integer",
+							"methodology": "mip-cde"
+						}, {
+							"isCategorical": false,
+							"minValue": 0,
+							"code": "updrstotal",
+							"maxValue": 172,
+							"sql_type": "int",
+							"description": "The unified Parkinson s disease rating scale (UPDRS) is used to follow the longitudinal course of Parkinson s disease. The UPD rating scale is the most commonly used scale in the clinical study of Parkinson s disease.",
+							"label": "UPDRS - Unified Parkinson Disease Rating Scale",
+							"units": "",
+							"type": "integer",
+							"methodology": "mip-cde"
+						}
+					],
+					"code": "updrs",
+					"label": "UPDRS"
+				}
+			],
+			"label": "Neuropsychology"
+		}, {
+			"variables": [{
+					"isCategorical": true,
+					"code": "agegroup",
+					"sql_type": "text",
+					"description": "",
+					"enumerations": [{
+							"code": "-50y",
+							"label": "-50y"
+						}, {
+							"code": "50-59y",
+							"label": "50-59y"
+						}, {
+							"code": "60-69y",
+							"label": "60-69y"
+						}, {
+							"code": "70-79y",
+							"label": "70-79y"
+						}, {
+							"code": "+80y",
+							"label": "+80y"
+						}
+					],
+					"label": "agegroup",
+					"units": "",
+					"type": "polynominal",
+					"methodology": "mip-cde"
+				}, {
+					"isCategorical": true,
+					"code": "gender",
+					"sql_type": "text",
+					"description": "Gender of the patient - Sex assigned at birth",
+					"enumerations": [{
+							"code": "M",
+							"label": "Male"
+						}, {
+							"code": "F",
+							"label": "Female"
+						}
+					],
+					"label": "Gender",
+					"units": "",
+					"type": "binominal",
+					"methodology": "mip-cde"
+				}, {
+					"isCategorical": true,
+					"code": "handedness",
+					"sql_type": "text",
+					"description": "Describes the tendency of the patient to use either the right or the left hand more naturally than the other.",
+					"enumerations": [{
+							"code": "R",
+							"label": "Right"
+						}, {
+							"code": "L",
+							"label": "Left"
+						}, {
+							"code": "A",
+							"label": "Ambidextrous"
+						}
+					],
+					"label": "Handedness",
+					"units": "",
+					"type": "polynominal",
+					"methodology": "mip-cde"
+				}, {
+					"code": "subjectage",
+					"description": "Exact age of the subject, for datasets that allow such precision.",
+					"label": "Exact age",
+					"length": 2,
+					"maxValue": 11,
+					"methodology": "mip-cde",
+					"minValue": 0,
+					"sql_type": "integer",
+					"type": "",
+					"isCategorical": false,
+					"units": "months"
+				}, {
+					"isCategorical": false,
+					"minValue": 0,
+					"code": "subjectageyears",
+					"maxValue": 130,
+					"sql_type": "int",
+					"description": "Subject age in years.",
+					"label": "Age Years",
+					"units": "years",
+					"type": "integer",
+					"methodology": "mip-cde"
+				}
+			],
+			"code": "demographics",
+			"label": "Demographics"
+		}, {
+			"code": "genetic",
+			"groups": [{
+					"variables": [{
+							"isCategorical": true,
+							"code": "apoe4",
+							"sql_type": "text",
+							"description": "Apolipoprotein E (APOE) e4 allele: is the strongest risk factor for Late Onset Alzheimer Disease (LOAD). At least one copy of APOE-e4 ",
+							"enumerations": [{
+									"code": "0",
+									"label": "0"
+								}, {
+									"code": "1",
+									"label": "1"
+								}, {
+									"code": "2",
+									"label": "2"
+								}
+							],
+							"label": "ApoE4",
+							"units": "",
+							"type": "polynominal",
+							"methodology": "adni-merge"
+						}, {
+							"isCategorical": true,
+							"code": "rs10498633_t",
+							"sql_type": "text",
+							"description": "",
+							"enumerations": [{
+									"code": "0",
+									"label": "0"
+								}, {
+									"code": "1",
+									"label": "1"
+								}, {
+									"code": "2",
+									"label": "2"
+								}
+							],
+							"label": "rs10498633_T",
+							"units": "",
+							"type": "polynominal",
+							"methodology": "lren-nmm-volumes"
+						}, {
+							"isCategorical": true,
+							"code": "rs11136000_t",
+							"sql_type": "text",
+							"description": "",
+							"enumerations": [{
+									"code": "0",
+									"label": "0"
+								}, {
+									"code": "1",
+									"label": "1"
+								}, {
+									"code": "2",
+									"label": "2"
+								}
+							],
+							"label": "rs11136000_T",
+							"units": "",
+							"type": "polynominal",
+							"methodology": "lren-nmm-volumes"
+						}, {
+							"isCategorical": true,
+							"code": "rs11767557_c",
+							"sql_type": "text",
+							"description": "",
+							"enumerations": [{
+									"code": "0",
+									"label": "0"
+								}, {
+									"code": "1",
+									"label": "1"
+								}, {
+									"code": "2",
+									"label": "2"
+								}
+							],
+							"label": "rs11767557_C",
+							"units": "",
+							"type": "polynominal",
+							"methodology": "lren-nmm-volumes"
+						}, {
+							"isCategorical": true,
+							"code": "rs1476679_c",
+							"sql_type": "text",
+							"description": "",
+							"enumerations": [{
+									"code": "0",
+									"label": "0"
+								}, {
+									"code": "1",
+									"label": "1"
+								}, {
+									"code": "2",
+									"label": "2"
+								}
+							],
+							"label": "rs1476679_C",
+							"units": "",
+							"type": "polynominal",
+							"methodology": "lren-nmm-volumes"
+						}, {
+							"isCategorical": true,
+							"code": "rs17125944_c",
+							"sql_type": "text",
+							"description": "",
+							"enumerations": [{
+									"code": "0",
+									"label": "0"
+								}, {
+									"code": "1",
+									"label": "1"
+								}, {
+									"code": "2",
+									"label": "2"
+								}
+							],
+							"label": "rs17125944_C",
+							"units": "",
+							"type": "polynominal",
+							"methodology": "lren-nmm-volumes"
+						}, {
+							"isCategorical": true,
+							"code": "rs190982_g",
+							"sql_type": "text",
+							"description": "",
+							"enumerations": [{
+									"code": "0",
+									"label": "0"
+								}, {
+									"code": "1",
+									"label": "1"
+								}, {
+									"code": "2",
+									"label": "2"
+								}
+							],
+							"label": "rs190982_G",
+							"units": "",
+							"type": "polynominal",
+							"methodology": "lren-nmm-volumes"
+						}, {
+							"isCategorical": true,
+							"code": "rs2718058_g",
+							"sql_type": "text",
+							"description": "",
+							"enumerations": [{
+									"code": "0",
+									"label": "0"
+								}, {
+									"code": "1",
+									"label": "1"
+								}, {
+									"code": "2",
+									"label": "2"
+								}
+							],
+							"label": "rs2718058_G",
+							"units": "",
+							"type": "polynominal",
+							"methodology": "lren-nmm-volumes"
+						}, {
+							"isCategorical": true,
+							"code": "rs3764650_g",
+							"sql_type": "text",
+							"description": "",
+							"enumerations": [{
+									"code": "0",
+									"label": "0"
+								}, {
+									"code": "1",
+									"label": "1"
+								}, {
+									"code": "2",
+									"label": "2"
+								}
+							],
+							"label": "rs3764650_G",
+							"units": "",
+							"type": "polynominal",
+							"methodology": "lren-nmm-volumes"
+						}, {
+							"isCategorical": true,
+							"code": "rs3818361_t",
+							"sql_type": "text",
+							"description": "",
+							"enumerations": [{
+									"code": "0",
+									"label": "0"
+								}, {
+									"code": "1",
+									"label": "1"
+								}, {
+									"code": "2",
+									"label": "2"
+								}
+							],
+							"label": "rs3818361_T",
+							"units": "",
+							"type": "polynominal",
+							"methodology": "lren-nmm-volumes"
+						}, {
+							"isCategorical": true,
+							"code": "rs3851179_a",
+							"sql_type": "text",
+							"description": "",
+							"enumerations": [{
+									"code": "0",
+									"label": "0"
+								}, {
+									"code": "1",
+									"label": "1"
+								}, {
+									"code": "2",
+									"label": "2"
+								}
+							],
+							"label": "rs3851179_A",
+							"units": "",
+							"type": "polynominal",
+							"methodology": "lren-nmm-volumes"
+						}, {
+							"isCategorical": true,
+							"code": "rs3865444_t",
+							"sql_type": "text",
+							"description": "",
+							"enumerations": [{
+									"code": "0",
+									"label": "0"
+								}, {
+									"code": "1",
+									"label": "1"
+								}, {
+									"code": "2",
+									"label": "2"
+								}
+							],
+							"label": "rs3865444_T",
+							"units": "",
+							"type": "polynominal",
+							"methodology": "lren-nmm-volumes"
+						}, {
+							"isCategorical": true,
+							"code": "rs610932_a",
+							"sql_type": "text",
+							"description": "",
+							"enumerations": [{
+									"code": "0",
+									"label": "0"
+								}, {
+									"code": "1",
+									"label": "1"
+								}, {
+									"code": "2",
+									"label": "2"
+								}
+							],
+							"label": "rs610932_A",
+							"units": "",
+							"type": "polynominal",
+							"methodology": "lren-nmm-volumes"
+						}, {
+							"isCategorical": true,
+							"code": "rs744373_c",
+							"sql_type": "text",
+							"description": "",
+							"enumerations": [{
+									"code": "0",
+									"label": "0"
+								}, {
+									"code": "1",
+									"label": "1"
+								}, {
+									"code": "2",
+									"label": "2"
+								}
+							],
+							"label": "rs744373_C",
+							"units": "",
+							"type": "polynominal",
+							"methodology": "lren-nmm-volumes"
+						}
+					],
+					"code": "polymorphism",
+					"label": "polymorphism"
+				}
+			],
+			"label": "Genetic"
+		}, {
+			"code": "proteome",
+			"description": "Protein biology as detected using routine lab chemistries in blood and cerebrospinal fluid specimens as well as in biopsy, measurement of protein-protein interactions, level of antibodies, auto-antibodies, etc.",
+			"groups": [{
+					"variables": [{
+							"isCategorical": false,
+							"code": "ab1_42",
+							"sql_type": "real",
+							"description": "A\\u03b2 is the main component of amyloid plaques (extracellular deposits found in the brains of patients with Alzheimer''s disease). Similar plaques appear in some variants of Lewy body dementia and in inclusion body myositis (a muscle disease), while A\\u03b2 can also form the aggregates that coat cerebral blood vessels in cerebral amyloid angiopathy. The plaques are composed of a tangle of regularly ordered fibrillar aggregates called amyloid fibers, a protein fold shared by other peptides such as the prions associated with protein misfolding diseases.",
+							"label": "Level of amyloid beta 1-42 peptides in cerebrospinal fluid",
+							"units": "",
+							"type": "real",
+							"methodology": "mip-cde"
+						}, {
+							"isCategorical": false,
+							"code": "ab1_40",
+							"sql_type": "real",
+							"description": "A\\u03b2 is the main component of amyloid plaques (extracellular deposits found in the brains of patients with Alzheimer''s disease). Similar plaques appear in some variants of Lewy body dementia and in inclusion body myositis (a muscle disease), while A\\u03b2 can also form the aggregates that coat cerebral blood vessels in cerebral amyloid angiopathy. The plaques are composed of a tangle of regularly ordered fibrillar aggregates called amyloid fibers, a protein fold shared by other peptides such as the prions associated with protein misfolding diseases.",
+							"label": "Level od amyloid beta 1-40 peptides ion cerebrospinal fluid",
+							"units": "",
+							"type": "real",
+							"methodology": "mip-cde"
+						}, {
+							"isCategorical": false,
+							"code": "t_tau",
+							"sql_type": "real",
+							"description": "Tau proteins (or \\u03c4 proteins) are proteins that stabilize microtubules. They are abundant in neurons of the central nervous system and are less common elsewhere, but are also expressed at very low levels in CNS astrocytes and oligodendrocytes. Pathologies and dementias of the nervous system such as Alzheimer''s disease and Parkinson''s disease are associated with tau proteins that have become defective and no longer stabilize microtubules properly.",
+							"label": "Total level of tau proteins in cerebrospinal fluid",
+							"units": "",
+							"type": "real",
+							"methodology": "mip-cde"
+						}, {
+							"isCategorical": false,
+							"code": "p_tau",
+							"sql_type": "real",
+							"description": "Hyperphosphorylation of the tau protein (tau inclusions, pTau) can result in the self-assembly of tangles of paired helical filaments and straight filaments, which are involved in the pathogenesis of Alzheimer''s disease, frontotemporal dementia, and other tauopathies.",
+							"label": "Level of phosphorylated tau proteins in cerebrospinal fluid",
+							"units": "",
+							"type": "real",
+							"methodology": "mip-cde"
+						}
+					],
+					"code": "csf_proteome",
+					"description": "Protein content of the cerebrospinal fluid",
+					"label": "Cerebrospinal fluid"
+				}
+			],
+			"label": "Entire set of proteins expressed by the patient''s organism at the time of the medical workup"
+		}
+	],
+	"label": "/"
+}

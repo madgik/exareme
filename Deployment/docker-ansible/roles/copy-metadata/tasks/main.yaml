@@ -1,6 +1,6 @@
 - name: Copy metadata file
   copy:
-    src: "{{ METADATA_PATH }}"
+    src: ../Metadata/variablesMetadata.json
     dest: "{{ remote_data_path }}"
     owner: "{{ become_user }}"
     group: "{{ become_user }}"

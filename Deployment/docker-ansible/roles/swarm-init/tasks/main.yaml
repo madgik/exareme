@@ -25,7 +25,3 @@
         --gateway=10.20.30.254 
         mip-federation
   register: swarm_network
-
-
-
-

@@ -1,6 +1,6 @@
 - hosts: manager
   name: Get worker token
-  remote_user: "{{ hostvars['manager1']['remote_user'] }}"
+  remote_user: "{{ hostvars['master']['remote_user'] }}"
   roles:
    - worker-token
 
