@@ -178,10 +178,10 @@ If you want to exclude Portainer service from running, you need to add ```--skip
 
 ### Start Exareme Workers at any time
 If at some point you have to add a new worker node you should:
-1)[Optional] Copy the Metadata file:
+1) [Optional] Copy the Metadata file:
 ```ansible-playbook -i hosts.ini Metadata-Worker.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=workerN"``` 
 
-2)Join the particular worker by replacing workerN with the appropriate name: 
+2) Join the particular worker by replacing workerN with the appropriate name: 
 ``` ansible-playbook -i hosts.ini Join-Workers.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=workerN"```
 
 3) Start Exareme for the particular worker by replacing workerN with the appropriate name: ``` ansible-playbook -i hosts.ini Start-Exareme-Worker.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=workerN"```
