@@ -64,6 +64,7 @@ worker2 become_user="{{worker2_become_user}}"
 worker2 ansible_become_pass="{{worker2_become_pass}}"
 worker2 ansible_ssh_pass="{{worker2_ssh_pass}}"
 ```
+[You can find the hostname of any machine by executing ```hostname```]
 
 You can see that there are 2 main categories. The first one is ```[manager]```, the second one is ```[workers]```.You can always add more workers following the template given above, a) by adding the name of the worker under [workers] and b) by creating a tag [worker3] with all the necessary variables below: 
 
