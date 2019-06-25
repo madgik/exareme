@@ -65,24 +65,19 @@ var chart = new Highcharts.Chart(container,{
             [0, 4, 9], [3, 5, 9], [6, 9, 1], [1, 9, 2]]
     }]
 });
-
-
 // Add mouse and touch events for rotation
 (function (H) {
     function dragStart(eStart) {
         eStart = chart.pointer.normalize(eStart);
-
         var posX = eStart.chartX,
             posY = eStart.chartY,
             alpha = chart.options.chart.options3d.alpha,
             beta = chart.options.chart.options3d.beta,
             sensitivity = 5,  // lower is more sensitive
             handlers = [];
-
         function drag(e) {
             // Get e.chartX and e.chartY
             e = chart.pointer.normalize(e);
-
             chart.update({
                 chart: {
                     options3d: {
@@ -92,7 +87,6 @@ var chart = new Highcharts.Chart(container,{
                 }
             }, undefined, undefined, false);
         }
-
         function unbindAll() {
             handlers.forEach(function (unbind) {
                 if (unbind) {
@@ -101,18 +95,14 @@ var chart = new Highcharts.Chart(container,{
             });
             handlers.length = 0;
         }
-
         handlers.push(H.addEvent(document, 'mousemove', drag));
         handlers.push(H.addEvent(document, 'touchmove', drag));
-
-
         handlers.push(H.addEvent(document, 'mouseup', unbindAll));
         handlers.push(H.addEvent(document, 'touchend', unbindAll));
     }
     H.addEvent(chart.container, 'mousedown', dragStart);
     H.addEvent(chart.container, 'touchstart', dragStart);
 }(Highcharts));
-
 '''
 
 class highchartscatter3d(functions.vtable.vtbase.VT):
@@ -126,31 +116,38 @@ class highchartscatter3d(functions.vtable.vtbase.VT):
         cur = envars['db'].cursor()
         c=cur.execute(query)
         schema = cur.getdescriptionsafe()
-
-        if len(schema)>3:
-            raise functions.OperatorError(__name__.rsplit('.')[-1],"Too many columns ")
-        # print schema
-        myresult = "{\"chart\": {\"margin\": 100, \"type\": \"scatter3d\", \"options3d\": {" \
-                           "\"enabled\": true, \"alpha\": 10, \"beta\": 30, \"depth\": 250," \
-                           "\"viewDistance\": 5, \"fitToPlot\": false," \
-                           "\"frame\": { \"bottom\": { \"size\": 1, \"color\": \"rgba(0,0,0,0.02)\" }," \
-                           "\"back\": { \"size\": 1, \"color\": \"rgba(0,0,0,0.04)\" }," \
-                           "\"side\": { \"size\": 1, \"color\": \"rgba(0,0,0,0.06)\" }}}},"
-        if 'title' in dictargs:
-            myresult +=  "\"title\": { \"text\": \" " + dictargs['title'] +"  \" },"
-        myresult+= "\"xAxis\": {\"gridLineWidth\": 1 , \"title\": {\"text\": \"x: " + schema[0][0] + "\",\"align\": \"middle\"}}," \
-                   "\"yAxis\": {\"gridLineWidth\": 1 , \"title\": {\"text\": \"y: " + schema[1][0]+ "\",\"align\": \"middle\"}}," \
-                    "\"zAxis\": {\"gridLineWidth\": 1 , \"title\": {\"text\": \"z: " + schema[2][0] + "\",\"align\": \"middle\"}}," \
-                    "\"legend\": { \"enabled\": false }," \
-                    "\"series\": [{" \
-                    "\"colorByPoint\": true,"\
-                    "\"data\": ["
-        for myrow in c:
-            myresult +=str(list(myrow))+','
-        myresult= myresult[:-1] + "],\"marker\": {\"radius\": 5}}]}"
-        # print "myresult", myresult
         yield [('highchartresult',)]
-        yield (myresult,)
+
+        mydata = ""
+        for myrow in c:
+            mydata +=str(list(myrow))+','
+
+        if mydata == "":
+            yield ("{}")
+        else:
+            if len(schema)>3:
+                raise functions.OperatorError(__name__.rsplit('.')[-1],"Too many columns ")
+            # print schema
+            myresult = "{\"chart\": {\"margin\": 100, \"type\": \"scatter3d\", \"options3d\": {" \
+                               "\"enabled\": true, \"alpha\": 10, \"beta\": 30, \"depth\": 250," \
+                               "\"viewDistance\": 5, \"fitToPlot\": false," \
+                               "\"frame\": { \"bottom\": { \"size\": 1, \"color\": \"rgba(0,0,0,0.02)\" }," \
+                               "\"back\": { \"size\": 1, \"color\": \"rgba(0,0,0,0.04)\" }," \
+                               "\"side\": { \"size\": 1, \"color\": \"rgba(0,0,0,0.06)\" }}}},"
+            if 'title' in dictargs:
+                myresult +=  "\"title\": { \"text\": \" " + dictargs['title'] +"  \" },"
+            myresult+= "\"xAxis\": {\"gridLineWidth\": 1 , \"title\": {\"text\": \"x: " + schema[0][0] + "\",\"align\": \"middle\"}}," \
+                       "\"yAxis\": {\"gridLineWidth\": 1 , \"title\": {\"text\": \"y: " + schema[1][0]+ "\",\"align\": \"middle\"}}," \
+                        "\"zAxis\": {\"gridLineWidth\": 1 , \"title\": {\"text\": \"z: " + schema[2][0] + "\",\"align\": \"middle\"}}," \
+                        "\"legend\": { \"enabled\": false }," \
+                        "\"series\": [{" \
+                        "\"colorByPoint\": true,"\
+                        "\"data\": ["
+
+            myresult += mydata
+            myresult= myresult[:-1] + "],\"marker\": {\"radius\": 5}}]}"
+            # print "myresult", myresult
+            yield (myresult,)
 
 def Source():
     return functions.vtable.vtbase.VTGenerator(highchartscatter3d)

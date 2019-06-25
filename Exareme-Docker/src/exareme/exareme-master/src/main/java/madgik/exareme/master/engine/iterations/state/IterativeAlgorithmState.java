@@ -56,7 +56,6 @@ public class IterativeAlgorithmState {
     final private String stepPhaseOutputTblVariableName;
     final private String termConditionPhaseOutputTblVariableName;
     // Iterations control-plane related fields [properties.json] --------------------------------
-    private Boolean conditionQueryProvided;
     private Long maxIterationsNumber;
 
     // Iterations control-plane related fields [STATE] ------------------------------------------
@@ -115,17 +114,22 @@ public class IterativeAlgorithmState {
             AdpDBClient adpDBClient) {
 
         this.algorithmKey = algorithmKey;
-        iterationsDBPath =
-                HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey + "/"
-                        + IterationsConstants.iterationsParameterIterDBValueSuffix;
         this.adpDBClient = adpDBClient;
         this.algorithmProperties = algorithmProperties;
-        setUpPropertyFields();
 
         // State related fields initialization
         algorithmCompleted = null;
         algorithmHasError = false;
         currentExecutionPhase = null;
+
+        if (algorithmProperties.getType().equals(AlgorithmProperties.AlgorithmType.iterative)) {
+            iterationsDBPath =
+                    HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey + "/"
+                            + IterationsConstants.iterationsParameterIterDBValueSuffix;
+            setUpPropertyFields();
+        }else{
+            iterationsDBPath = "";
+        }
         algorithmError = null;
         stepPhaseOutputTblVariableName =
                 IterationsHandlerDFLUtils.getStepPhaseOutputTblVariableName(algorithmKey);
@@ -151,25 +155,6 @@ public class IterativeAlgorithmState {
      * the {@code IterationsStateManager}.
      */
     private void setUpPropertyFields() {
-        // Ensure conditionQueryProvided is provided in properties.json, then ensure its value is
-        // true/false and finally, set the corresponding field.
-        final String iterationsConditionQueryProvidedValue =
-                algorithmProperties.getParameterValue(iterationsPropertyConditionQueryProvided);
-        if (iterationsConditionQueryProvidedValue == null) {
-            throw new IterationsStateFatalException("AlgorithmProperty \""
-                    + iterationsPropertyConditionQueryProvided
-                    + "\": is required [accepting: \"true/false\"]", null);
-        }
-        if (iterationsConditionQueryProvidedValue.equals(String.valueOf(true)))
-            conditionQueryProvided = true;
-        else if (iterationsConditionQueryProvidedValue.equals(String.valueOf(false)))
-            conditionQueryProvided = false;
-        else
-            throw new IterationsStateFatalException("AlgorithmProperty \""
-                    + iterationsPropertyConditionQueryProvided
-                    + "\": Expected \"true/false\", found: "
-                    + iterationsConditionQueryProvidedValue, null);
-
         // Ensure maxIterationsNumber is provided in properties.json, them ensure its value is
         // true/false and finally, set the corresponding field.
         final String iterationsMaxNumberVal =
@@ -201,10 +186,6 @@ public class IterativeAlgorithmState {
 
     public void setAlgorithmKey(String algorithmKey) {
         this.algorithmKey = algorithmKey;
-    }
-
-    public Boolean getConditionQueryProvided() {
-        return conditionQueryProvided;
     }
 
     public void setDflScripts(String[] dflScripts) {
@@ -267,17 +248,18 @@ public class IterativeAlgorithmState {
                 dflVariablesMap.put(IterationsConstants.previousPhaseOutputTblVariableName,
                         currentStepOutputTblName);
                 break;
+
             case termination_condition:
                 dflVariablesMap.put(
                         termConditionPhaseOutputTblVariableName,
                         generateTermCondPhaseCurrentOutputTbl());
-
                 dflScript = StrSubstitutor.replace(dflScripts[phase.ordinal()], dflVariablesMap);
-
                 break;
+
             case finalize:
                 dflScript = StrSubstitutor.replace(dflScripts[phase.ordinal()], dflVariablesMap);
                 break;
+
             default:
                 releaseLock();
                 throw new IterationsStateFatalException("IterativePhase: \"" + phase.name()
@@ -371,6 +353,7 @@ public class IterativeAlgorithmState {
             iterations number is changed to float format (e.g. "0.0", "1.0").
         2.  Using the previousIterationsNumber since we want to read what has been already executed.
          */
+
         String terminationConditionTblName =
                 IterationsConstants.iterationsOutputTblPrefix
                         + "_" + algorithmKey.toLowerCase()
@@ -425,6 +408,10 @@ public class IterativeAlgorithmState {
     }
 
     // Execution phase [Getters/Setters] --------------------------------------------------------
+
+    public AlgorithmProperties.AlgorithmType getAlgorithmType() {
+        return algorithmProperties.getType();
+    }
 
     /**
      * Retrieves the already created {@link AdpDBClient} for a new query submission.

@@ -1,4 +1,4 @@
-requirevars 'defaultDB' 'type' 'outputformat';
+requirevars 'defaultDB' 'sstype' 'outputformat';
 attach database '%{defaultDB}' as defaultDB;
 
 --var 'input_global_tbl' 'defaultDB.metadatatbl';
@@ -8,7 +8,7 @@ var 'metadata' from select jgroup(code,enumerations) from (select code ,enumerat
 
 drop table if exists defaultDB.sumofsquares;
 create table defaultDB.sumofsquares as
-select sumofsquares(no,formula,sst,ssregs,sse,%{type}) from defaultDB.globalAnovatbl;
+select sumofsquares(no,formula,sst,ssregs,sse,%{sstype}) from defaultDB.globalAnovatbl;
 
 var 'a' from select max(no) from defaultDB.sumofsquares;
 insert into defaultDB.sumofsquares

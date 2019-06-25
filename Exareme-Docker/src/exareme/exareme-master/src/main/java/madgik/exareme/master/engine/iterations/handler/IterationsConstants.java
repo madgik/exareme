@@ -22,7 +22,6 @@ public class IterationsConstants {
             + DBConstants.DB_FILE_EXTENSION;
 
     // Iterative algorithm properties -----------------------------------------------------------
-    public static final String iterationsPropertyConditionQueryProvided = "iterations_condition_query_provided";
     public static final String iterationsPropertyMaximumNumber = "iterations_max_number";
     // ------------------------------------------------------------------------------------------
 

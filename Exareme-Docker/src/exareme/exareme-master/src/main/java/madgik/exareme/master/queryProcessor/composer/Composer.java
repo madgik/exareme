@@ -31,13 +31,6 @@ import static madgik.exareme.master.engine.iterations.state.IterativeAlgorithmSt
 public class Composer {
     private static final Logger log = Logger.getLogger(Composer.class);
 
-    private static String getIterativeAlgorithmFolderPath(
-            String algorithmName,
-            IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase,
-            int iteration) {
-        return ComposerConstants.getAlgorithmFolderPath(algorithmName) + "/" + iterativeAlgorithmPhase.name() + "/" + iteration;
-    }
-
     /**
      * Creates the query that will run against the local dataset file to fetch the data
      *
@@ -61,7 +54,7 @@ public class Composer {
                 }
             } else if (parameter.getType() == ParameterProperties.ParameterType.formula) {
                 for (String variable : Arrays.asList(parameter.getValue().split("[+\\-*:]+"))) {
-                    if(!variable.equals("0"))
+                    if (!variable.equals("0"))
                         variables.add(variable);
                 }
             } else if (parameter.getType() == ParameterProperties.ParameterType.filter) {
@@ -160,8 +153,17 @@ public class Composer {
         // Assigning the proper identifier for the defaultDB
         //      if the dbIdentifier is provided as a parameter or not
         String dbIdentifier = algorithmProperties.getParameterValue(ComposerConstants.dbIdentifierKey);
+
+        // If the algorithm does not have a dbIdentifier parameter we assign the algorithmKey as the identifier
         if (dbIdentifier == null)
             dbIdentifier = algorithmKey;
+
+        // If the algorithm has a dbIdentifier parameter but is blank, we set is to the algorithmKey
+        if (dbIdentifier.equals("")) {
+            dbIdentifier = algorithmKey;
+            algorithmProperties.setParameterValue(ComposerConstants.dbIdentifierKey, dbIdentifier);
+        }
+
         String algorithmName = algorithmProperties.getName();
         String defaultDBFilePath = HBPConstants.DEMO_DB_WORKING_DIRECTORY + dbIdentifier + "_defaultDB.db";
         String inputLocalDB = ComposerConstants.getDatasetDBDirectory();
@@ -178,8 +180,8 @@ public class Composer {
                         defaultDBFilePath, algorithmProperties.getParameters());
                 break;
             case local_global:
-                dflScript = composeLocalGlobalAlgorithmsDFLScript(algorithmName, inputLocalDB, dbQuery, outputGlobalTbl,
-                        defaultDBFilePath, algorithmProperties.getParameters());
+                dflScript = composeLocalGlobalAlgorithmsDFLScript(algorithmName, inputLocalDB, dbQuery,
+                        outputGlobalTbl, defaultDBFilePath, algorithmProperties.getParameters());
                 break;
             case multiple_local_global:
                 dflScript = composeMultipleLocalGlobalAlgorithmsDFLScript(algorithmName, inputLocalDB, dbQuery, outputGlobalTbl,
@@ -203,6 +205,8 @@ public class Composer {
                 break;
             case iterative:
                 throw new ComposerException("Iterative Algorithms should not call composeDFLScripts");
+            case python_iterative:
+                throw new ComposerException("Python iterative Algorithms should not call composeDFLScripts");
             default:
                 throw new ComposerException("Unable to determine algorithm type.");
         }
@@ -251,7 +255,7 @@ public class Composer {
      * Returns an exaDFL script for the algorithms of type local_global
      *
      * @param algorithmName       the name of the algorithm
-     * @param inputLocalDB        the location of the local database
+     * @param inputLocalDB       the query to read from the local table
      * @param dbQuery             the query to execute on the database
      * @param outputGlobalTbl     the table where the output is going to be printed
      * @param defaultDBFileName   the name of the local db that the SQL scripts are going to use
@@ -273,7 +277,7 @@ public class Composer {
         String algorithmFolderPath = ComposerConstants.getAlgorithmFolderPath(algorithmName);
 
         // Format local
-        dflScript.append("distributed create temporary table output_local_tbl as virtual \n");
+        dflScript.append("distributed create temporary table input_global_tbl to 1 as virtual \n");
         dflScript.append(String.format("select * from (\n  execnselect 'path:%s' ", algorithmFolderPath));
         for (ParameterProperties parameter : algorithmParameters) {
             dflScript.append(String.format("'%s:%s' ", parameter.getName(), parameter.getValue()));
@@ -284,11 +288,6 @@ public class Composer {
 
         dflScript.append(String.format("\n  select filetext('%s')\n", localScriptPath));
         dflScript.append(");\n");
-
-        // Format union
-        dflScript
-                .append("\ndistributed create temporary table input_global_tbl to 1 as  \n");
-        dflScript.append("select * from output_local_tbl;\n");
 
         // Format global
         dflScript.append(String
@@ -342,7 +341,6 @@ public class Composer {
         // Iterating through all the local_global folders of the algorithm
         for (int iteration = 1; iteration <= listFiles.length; iteration++) {
             String inputGlobalTbl = "input_global_tbl_" + iteration;
-            String outputLocalTbl = "output_local_tbl_" + iteration;
             String tempOutputGlobalTbl = "output_global_tbl_" + iteration;
             String prevOutputGlobalTbl = "output_global_tbl_" + (iteration - 1);
             String currentIterationAlgorithmFolderPath = algorithmFolderPath + "/" + listFiles[iteration - 1].getName();
@@ -353,7 +351,7 @@ public class Composer {
             if (iteration > 1)
                 dflScript.append(String.format("using %s\n", prevOutputGlobalTbl));
             dflScript.append(String
-                    .format("distributed create temporary table %s as virtual \n", outputLocalTbl));
+                    .format("distributed create temporary table %s to 1 as virtual \n", inputGlobalTbl));
             dflScript.append(String.format("select * from (\n  execnselect 'path:%s' ",
                     currentIterationAlgorithmFolderPath));
             for (ParameterProperties parameter : algorithmParameters) {
@@ -366,10 +364,6 @@ public class Composer {
                 dflScript.append(String.format("'%s:%s' ", ComposerConstants.prevOutputGlobalTblKey, prevOutputGlobalTbl));
             dflScript.append(String.format("\n  select filetext('%s')\n", localScriptPath));
             dflScript.append(");\n");
-
-            // Format union
-            dflScript.append(String.format("\ndistributed create temporary table %s to 1 as \n", inputGlobalTbl));
-            dflScript.append(String.format("select * from %s;\n", outputLocalTbl));
 
             // Format global
             if (iteration != listFiles.length) {
@@ -487,6 +481,9 @@ public class Composer {
             AlgorithmProperties algorithmProperties,
             IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase
     ) throws ComposerException {
+        if (iterativeAlgorithmPhase == null)
+            throw new ComposerException("Unsupported iterative algorithm phase.");
+
         String dbIdentifier = algorithmProperties.getParameterValue(ComposerConstants.dbIdentifierKey);
         if (dbIdentifier == null)
             dbIdentifier = algorithmKey;
@@ -498,11 +495,8 @@ public class Composer {
 
         StringBuilder dflScript = new StringBuilder();
 
-        if (iterativeAlgorithmPhase == null)
-            throw new ComposerException("Unsupported iterative algorithm phase.");
-
         String algorithmFolderPath =
-                generateIterativeWorkingDirectoryString(algorithmKey, iterativeAlgorithmPhase);
+                generateIterativeWorkingDirectoryString(algorithmKey, true, iterativeAlgorithmPhase);
         String outputGlobalTbl = IterationsHandlerDFLUtils.generateIterativePhaseOutputTblName(
                 algorithmKey, iterativeAlgorithmPhase);
         String iterationsDBName = generateIterationsDBName(algorithmKey);
@@ -537,7 +531,6 @@ public class Composer {
 
         for (int iteration = 1; iteration <= listFiles.length; iteration++) {
             String inputGlobalTbl = "input_global_tbl_" + iteration;
-            String outputLocalTbl = "output_local_tbl_" + iteration;
             String tempOutputGlobalTbl = "output_global_tbl_" + iteration;
             String prevOutputGlobalTbl = "output_global_tbl_" + (iteration - 1);
             String localSQLScriptsPath =
@@ -548,17 +541,10 @@ public class Composer {
             String globalSQLScriptsPath = algorithmFolderPath + "/" + iteration;
             String globalScriptPath = globalSQLScriptsPath + "/global.template.sql";
 
-            if (iteration > 1) {
+            // format local
+            if (iteration > 1)
                 dflScript.append(String.format("using %s\n", prevOutputGlobalTbl));
-            } else if (iterativeAlgorithmPhase.equals(init)) {
-                // Create database directory
-                dflScript.append(String.format("distributed create temporary table createPathTempTable as virtual\n" +
-                                "select execprogram(null, 'mkdir', '-p', '%s') as C1;\n\n",
-                        HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey));
-                dflScript.append("using createPathTempTable\n");
-            }
-
-            dflScript.append(String.format("distributed create temporary table %s as virtual \n", outputLocalTbl));
+            dflScript.append(String.format("distributed create temporary table %s to 1 as virtual \n", inputGlobalTbl));
             dflScript.append(String.format("select * from (\n  execnselect 'path:%s' ", localSQLScriptsPath));
             for (ParameterProperties parameter : algorithmParameters) {
                 dflScript.append(String.format("'%s:%s' ", parameter.getName(), parameter.getValue()));
@@ -570,10 +556,6 @@ public class Composer {
                 dflScript.append(String.format("'%s:%s' ", ComposerConstants.prevOutputGlobalTblKey, prevOutputGlobalTbl));
             dflScript.append(String.format("\n  select filetext('%s')\n", localScriptPath));
             dflScript.append(");\n");
-
-            // format union
-            dflScript.append(String.format("\ndistributed create temporary table %s to 1 as \n", inputGlobalTbl));
-            dflScript.append(String.format("select * from %s;\n", outputLocalTbl));
 
             // format global
             if (iteration != listFiles.length) {
@@ -659,7 +641,7 @@ public class Composer {
         String transferDBFilePath = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey + "/transfer.db";
 
         // Format local
-        dflScript.append("distributed create temporary table output_local_tbl as virtual \n");
+        dflScript.append("distributed create temporary table input_global_tbl to 1 as virtual \n");
         dflScript.append("select * from (\n  call_python_script 'python " + localPythonScriptPath + " ");
         for (ParameterProperties parameter : algorithmParameters) {
             dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue()));
@@ -667,10 +649,6 @@ public class Composer {
         dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.inputLocalDBKey, inputLocalDB));
         dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.dbQueryKey, dbQuery));
         dflScript.append("'\n);\n");
-
-        // Format union
-        dflScript.append("\ndistributed create temporary table input_global_tbl to 1 as  \n");
-        dflScript.append("select * from output_local_tbl;\n");
 
         // Format global
         dflScript.append(String
@@ -720,16 +698,15 @@ public class Composer {
         // Iterating through all the local_global folders of the algorithm
         for (int iteration = 1; iteration <= listFiles.length; iteration++) {
             String inputGlobalTbl = "input_global_tbl_" + iteration;
-            String outputLocalTbl = "output_local_tbl_" + iteration;
             String prevOutputGlobalTbl = "output_global_tbl_" + (iteration - 1);
             String tempOutputGlobalTbl = "output_global_tbl_" + iteration;
             String currentIterationAlgorithmFolderPath = algorithmFolderPath + "/" + listFiles[iteration - 1].getName();
             String localScriptPath = currentIterationAlgorithmFolderPath + "/local.py";
             String globalScriptPath = currentIterationAlgorithmFolderPath + "/global.py";
             String localTransferDBFilePath = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey
-                    + "/" + iteration + "/local_transfer.db";
+                    + "/" + (iteration - 1) + "/local/transfer.db";
             String globalTransferDBFilePath = HBPConstants.DEMO_DB_WORKING_DIRECTORY
-                    + algorithmKey + "/" + iteration + "/global_transfer.db";
+                    + algorithmKey + "/" + iteration + "/global/transfer.db";
             String localStatePKLFile = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey
                     + "/" + iteration + "/local_state.pkl";
             String prevLocalStatePKLFile = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey
@@ -743,7 +720,7 @@ public class Composer {
             if (iteration > 1)
                 dflScript.append(String.format("using %s\n", prevOutputGlobalTbl));
             dflScript.append(String
-                    .format("distributed create temporary table %s as virtual \n", outputLocalTbl));
+                    .format("distributed create temporary table %s to 1 as virtual \n", inputGlobalTbl));
             dflScript.append("select * from (\n  call_python_script 'python " + localScriptPath + " ");
             for (ParameterProperties parameter : algorithmParameters) {
                 dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue()));
@@ -758,10 +735,6 @@ public class Composer {
                         localTransferDBFilePath, prevOutputGlobalTbl));
             } else
                 dflScript.append("'\n);\n");
-
-            // Format union
-            dflScript.append(String.format("\ndistributed create temporary table %s to 1 as \n", inputGlobalTbl));
-            dflScript.append(String.format("select * from %s;\n", outputLocalTbl));
 
             // Format global
             if (iteration != listFiles.length) {
@@ -783,9 +756,184 @@ public class Composer {
             if (iteration > 1) {
                 dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.prevStatePKLKey, prevGlobalStatePKLFile));
             }
+            dflScript.append(String.format("' select * from (output '%s' select * from %s)\n);\n",
+                    globalTransferDBFilePath, inputGlobalTbl));
+        }
+        return dflScript.toString();
+
+    }
+
+    /**
+     * Returns an exaDFL script for the algorithms of type python_iterative
+     *
+     * @param algorithmKey            the key of the specific algorithm
+     * @param algorithmProperties     the properties of the algorithm
+     * @param iterativeAlgorithmPhase the phase of the iteration
+     * @return
+     */
+    public static String composePythonIterativeAlgorithmsDFLScript(
+            String algorithmKey,
+            AlgorithmProperties algorithmProperties,
+            IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase
+    ) throws ComposerException {
+
+        if (iterativeAlgorithmPhase == null)
+            throw new ComposerException("Unsupported iterative algorithm phase.");
+
+        String algorithmName = algorithmProperties.getName();
+        String inputLocalDB = ComposerConstants.getDatasetDBDirectory();
+        String dbQuery = createLocalTableQuery(algorithmProperties);
+        // Escaping double quotes for python algorithms because they are needed elsewhere
+        dbQuery = dbQuery.replace("\"", "\\\"");
+        ParameterProperties[] algorithmParameters = algorithmProperties.getParameters();
+        String algorithmFolderPath = generateIterativeWorkingDirectoryString(
+                algorithmName, false, iterativeAlgorithmPhase);
+        String outputGlobalTbl = IterationsHandlerDFLUtils.generateIterativePhaseOutputTblName(
+                algorithmKey,iterativeAlgorithmPhase);
+        StringBuilder dflScript = new StringBuilder();
+
+        if (iterativeAlgorithmPhase.equals(termination_condition)) {
+            String globalScriptPath = algorithmFolderPath + "/global.py";
+            String prevGlobalStatePKLFile = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey + "/phase_global_state.pkl";
+
+            dflScript.append("distributed create table " + outputGlobalTbl + " as external \n");
+            dflScript.append("select * from (\n  call_python_script 'python " + globalScriptPath + " ");
+            dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.prevStatePKLKey, prevGlobalStatePKLFile));
+            dflScript.append("'\n);\n");
+
+            return dflScript.toString();
+        }
+
+        // The iteration works like multiple_local_global in the init,step,finalize steps
+        File[] listFiles = new File(algorithmFolderPath).listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File pathname) {
+                return pathname.isDirectory();
+            }
+        });
+        Arrays.sort(listFiles);
+
+        // Iterating through all the local_global folders of the algorithm
+        for (int iteration = 1; iteration <= listFiles.length; iteration++) {
+            String inputGlobalTbl = "input_global_tbl_" + iteration;
+            String tempOutputGlobalTbl = "output_global_tbl_" + iteration;
+            String prevOutputGlobalTbl = "output_global_tbl_" + (iteration - 1);
+            String currentIterationAlgorithmFolderPath =
+                    getIterativeAlgorithmFolderPath(algorithmName, iterativeAlgorithmPhase, iteration);
+            String localScriptPath = currentIterationAlgorithmFolderPath + "/local.py";
+            String globalScriptPath = currentIterationAlgorithmFolderPath + "/global.py";
+
+            // Initializing prev and cur states between phases and iterations
+            String prevLocalStatePKLFile;
+            String prevGlobalStatePKLFile;
+            String localStatePKLFile;
+            String globalStatePKLFile;
+            if (iteration == 1 && iteration == listFiles.length) {
+                prevLocalStatePKLFile = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey + "/phase_local_state.pkl";
+                prevGlobalStatePKLFile = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey + "/phase_global_state.pkl";
+                localStatePKLFile = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey + "/phase_local_state.pkl";
+                globalStatePKLFile = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey + "/phase_global_state.pkl";
+            } else if (iteration == 1) {
+                prevLocalStatePKLFile = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey + "/phase_local_state.pkl";
+                prevGlobalStatePKLFile = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey + "/phase_global_state.pkl";
+                localStatePKLFile = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey
+                        + "/" + iterativeAlgorithmPhase.name() + "/" + iteration + "/local_state.pkl";
+                globalStatePKLFile = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey
+                        + "/" + iterativeAlgorithmPhase.name() + "/" + iteration + "/global_state.pkl";
+            } else if (iteration == listFiles.length) {
+                prevLocalStatePKLFile = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey
+                        + "/" + iterativeAlgorithmPhase.name() + "/" + (iteration - 1) + "/local_state.pkl";
+                prevGlobalStatePKLFile = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey
+                        + "/" + iterativeAlgorithmPhase.name() + "/" + (iteration - 1) + "/global_state.pkl";
+                localStatePKLFile = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey + "/phase_local_state.pkl";
+                globalStatePKLFile = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey + "/phase_global_state.pkl";
+            } else {
+                prevLocalStatePKLFile = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey
+                        + "/" + iterativeAlgorithmPhase.name() + "/" + (iteration - 1) + "/local_state.pkl";
+                prevGlobalStatePKLFile = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey
+                        + "/" + iterativeAlgorithmPhase.name() + "/" + (iteration - 1) + "/global_state.pkl";
+                localStatePKLFile = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey
+                        + "/" + iterativeAlgorithmPhase.name() + "/" + iteration + "/local_state.pkl";
+                globalStatePKLFile = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey
+                        + "/" + iterativeAlgorithmPhase.name() + "/" + iteration + "/global_state.pkl";
+            }
+            String localTransferDBFilePath = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey
+                    + "/" + (iteration - 1) + "/local/transfer.db";
+            String globalTransferDBFilePath = HBPConstants.DEMO_DB_WORKING_DIRECTORY
+                    + algorithmKey + "/" + iteration + "/global/transfer.db";
+            String phaseChangeTransferDBFilePath = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey
+                    + "/phase_change/transfer.db";
+
+            // Format local
+            if (iteration > 1)
+                dflScript.append(String.format("using %s\n", prevOutputGlobalTbl));
+            dflScript.append(String
+                    .format("distributed create temporary table %s to 1 as virtual \n", inputGlobalTbl));
+            dflScript.append("select * from (\n  call_python_script 'python " + localScriptPath + " ");
+            for (ParameterProperties parameter : algorithmParameters) {
+                dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue()));
+            }
+            dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.inputLocalDBKey, inputLocalDB));
+            dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.dbQueryKey, dbQuery));
+            dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.curStatePKLKey, localStatePKLFile));
+            if (iteration > 1) {
+                dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.prevStatePKLKey, prevLocalStatePKLFile));
+                dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.globalDBKey, localTransferDBFilePath));
+                dflScript.append(String.format("' select * from (output '%s' select * from %s)\n);\n",
+                        localTransferDBFilePath, prevOutputGlobalTbl));
+            } else if (!iterativeAlgorithmPhase.equals(init)) {
+                dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.prevStatePKLKey, prevLocalStatePKLFile));
+                dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.globalDBKey, phaseChangeTransferDBFilePath));
+                dflScript.append("'\n);\n");
+            } else {
+                dflScript.append("'\n);\n");
+            }
+
+            // Format global
+            // If this is the last iteration of finalize, print the result from global.py
+            // and don't create virtual last table with phase
+            if((iteration == listFiles.length) && iterativeAlgorithmPhase.equals(finalize)) {
+                dflScript.append(String.format("\nusing %s \ndistributed create table %s as external \n",
+                        inputGlobalTbl, outputGlobalTbl));
+
+                dflScript.append("select * from (\n  call_python_script 'python " + globalScriptPath + " ");
+                for (ParameterProperties parameter : algorithmParameters) {
+                    dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue()));
+                }
+                dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.localDBsKey, globalTransferDBFilePath));
+                dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.curStatePKLKey, globalStatePKLFile));
+                dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.prevStatePKLKey, prevGlobalStatePKLFile));
+                dflScript.append(
+                        String.format("' select * from (output '%s' select * from %s)\n);\n",
+                                globalTransferDBFilePath, inputGlobalTbl));
+                return dflScript.toString();
+            }
+
+            dflScript.append(String.format("\nusing %s \ndistributed create temporary table %s as external \n",
+                    inputGlobalTbl, tempOutputGlobalTbl));
+
+            dflScript.append("select * from (\n  call_python_script 'python " + globalScriptPath + " ");
+            for (ParameterProperties parameter : algorithmParameters) {
+                dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue()));
+            }
+            dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.localDBsKey, globalTransferDBFilePath));
+            dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.curStatePKLKey, globalStatePKLFile));
+            if (iteration > 1 || !iterativeAlgorithmPhase.equals(init)) {
+                dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.prevStatePKLKey, prevGlobalStatePKLFile));
+            }
             dflScript.append(
                     String.format("' select * from (output '%s' select * from %s)\n);\n", globalTransferDBFilePath, inputGlobalTbl));
+
+            if (iteration == listFiles.length) {
+                dflScript.append(String
+                        .format("\nusing %s \ndistributed create table %s as virtual \n",
+                                tempOutputGlobalTbl, outputGlobalTbl));
+                dflScript.append(
+                        String.format("select * from (\n  output '%s' select * from %s\n);\n",
+                                phaseChangeTransferDBFilePath, tempOutputGlobalTbl));
+            }
         }
+
         return dflScript.toString();
 
     }
@@ -798,37 +946,52 @@ public class Composer {
      * The sql scripts are modified and saved on the demo working directory.
      * If the iterativeAlgorithmPhase is null it returns the directory of the algorithms
      *
-     * @param algorithmKey            is the identifier of the algorithm
+     * @param algorithmIdentifier     is the identifier of the algorithm (key or name)
+     * @param demoDirectory           the script are in the demo directory or not?
      * @param iterativeAlgorithmPhase the phase of the iterative algorithm
      * @return the directory where the iterative algorithm's sql scripts are
      * @throws ComposerException if the iterativeAlgorithmPhase is not proper
      */
     private static String generateIterativeWorkingDirectoryString(
-            String algorithmKey,
+            String algorithmIdentifier,
+            Boolean demoDirectory,
             IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase
     ) throws ComposerException {
-        String iterativeAlgorithmsFolderPath = HBPConstants.DEMO_ALGORITHMS_WORKING_DIRECTORY;
+
+        String algorithmsFolderPath;
+        if (demoDirectory)
+            algorithmsFolderPath = HBPConstants.DEMO_ALGORITHMS_WORKING_DIRECTORY;
+        else
+            algorithmsFolderPath = ComposerConstants.getAlgorithmsFolderPath();
+
         if (iterativeAlgorithmPhase == null)
-            return iterativeAlgorithmsFolderPath;
+            return algorithmsFolderPath;
 
         String algorithmPhaseWorkingDir;
         switch (iterativeAlgorithmPhase) {
             case init:
-                algorithmPhaseWorkingDir = iterativeAlgorithmsFolderPath + "/" + algorithmKey + "/" + init.name();
+                algorithmPhaseWorkingDir = algorithmsFolderPath + "/" + algorithmIdentifier + "/" + init.name();
                 break;
             case step:
-                algorithmPhaseWorkingDir = iterativeAlgorithmsFolderPath + "/" + algorithmKey + "/" + step.name();
+                algorithmPhaseWorkingDir = algorithmsFolderPath + "/" + algorithmIdentifier + "/" + step.name();
                 break;
             case termination_condition:
-                algorithmPhaseWorkingDir = iterativeAlgorithmsFolderPath + "/" + algorithmKey + "/" + termination_condition.name();
+                algorithmPhaseWorkingDir = algorithmsFolderPath + "/" + algorithmIdentifier + "/" + termination_condition.name();
                 break;
             case finalize:
-                algorithmPhaseWorkingDir = iterativeAlgorithmsFolderPath + "/" + algorithmKey + "/" + finalize.name();
+                algorithmPhaseWorkingDir = algorithmsFolderPath + "/" + algorithmIdentifier + "/" + finalize.name();
                 break;
             default:
                 throw new ComposerException("Unsupported iterative algorithm case.");
         }
         return algorithmPhaseWorkingDir;
+    }
+
+    private static String getIterativeAlgorithmFolderPath(
+            String algorithmName,
+            IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase,
+            int iteration) {
+        return ComposerConstants.getAlgorithmFolderPath(algorithmName) + "/" + iterativeAlgorithmPhase.name() + "/" + iteration;
     }
 
     /**

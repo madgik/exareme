@@ -30,7 +30,7 @@ class sklearnkfold(functions.vtable.vtbase.VT):
         c = cur.execute(query)
 
         for r in c:
-            if r[0].isdigit():
+            if str(r[0]).isdigit():
                 self.data.append(r[0])
             else:
                 self.data.append(str(r[0]))
@@ -42,16 +42,16 @@ class sklearnkfold(functions.vtable.vtbase.VT):
 
         kf = KFold(self.n_splits)
         kf.get_n_splits(X)
-        # print"KF", kf
+        print"KF", kf
 
         try:
-            for train_index, test_index in kf.split(X):
+            #for train_index, test_index in kf.split(X):
                 # print("TRAIN:", train_index ,"TEST:", test_index)
-                j = 0
-                for train_index, test_index in kf.split(X):
-                    for k in test_index:
-                        yield (self.data[k], j)
-                    j += 1
+            j = 0
+            for train_index, test_index in kf.split(X):
+                for k in test_index:
+                    yield (self.data[k], j)
+                j += 1
         except:
             yield (-1, "Cannot have number of splits greater than the number of samples")
 

@@ -195,17 +195,6 @@ public class IterationsHandlerDFLUtils {
                     throw new IterationsFatalException(
                             "Failed to read original SQL template file.", e);
                 }
-                if (iterativeAlgorithmState.getConditionQueryProvided() &&
-                        !originalScriptLines.contains("update"))
-                    throw new IterationsFatalException(
-                            "ConditionQueryProvided is set to true " +
-                                    "in properties file, but no condition query has been provided.");
-                else if (!iterativeAlgorithmState.getConditionQueryProvided() &&
-                        originalScriptLines.contains("update"))
-                    throw new IterationsFatalException(
-                            "ConditionQueryProvided is set to false " +
-                                    "in properties file, but a condition query has been provided.");
-
                 // Prepare requireVars String for termination condition template SQL.
                 String requiredVarsTermCondition = IterationsHandlerDFLUtils.generateRequireVarsString(
                         new String[]{
@@ -221,13 +210,8 @@ public class IterationsHandlerDFLUtils {
                 final Pair<String, SQLUpdateLocation> requireVarsIterationsDBUpdate = sqlUpdates.remove(1);
                 sqlUpdates.add(1, requireConditionPhaseVars);
 
-                // Generate condition query depending on whether an algorithm-specific
-                // condition query has been provided.
-                String conditionQuery;
-                if (!iterativeAlgorithmState.getConditionQueryProvided())
-                    conditionQuery = IterationsConstants.checkMaxIterationsCondition;
-                else
-                    conditionQuery = IterationsConstants.checkBothConditionTypes;
+                // Generate condition query
+                String conditionQuery = IterationsConstants.checkBothConditionTypes;
                 sqlUpdates.add(new Pair<>(
                         conditionQuery,
                         IterationsHandlerDFLUtils.SQLUpdateLocation.suffix
@@ -390,8 +374,7 @@ public class IterationsHandlerDFLUtils {
         String iterativePhaseOutputTblName =
                 IterationsConstants.iterationsOutputTblPrefix + "_" + algorithmKey + "_" + iterativePhase.name();
         if (iterativePhase.equals(IterativeAlgorithmState.IterativeAlgorithmPhasesModel.step) ||
-                iterativePhase.equals(
-                        termination_condition))
+                iterativePhase.equals(termination_condition))
             return "${" + iterativePhaseOutputTblName + "}";
         else
             return iterativePhaseOutputTblName;

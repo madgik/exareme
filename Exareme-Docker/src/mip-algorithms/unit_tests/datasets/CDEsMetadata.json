@@ -1,5 +1,344 @@
 {
 	"variables": [{
+			"code": "alzheimerbroadcategory_logreg_test",
+			"description": "",
+			"enumerations": [{
+					"code": "CN",
+					"label": "CN"
+				}, {
+					"code": "AD",
+					"label": "AD"
+				}
+			],
+			"label": "alzheimerbroadcategory_logreg_test",
+			"methodology": "Testing_LogisticRegression",
+			"sql_type": "text",
+			"type": "polynominal",
+			"isCategorical": true
+		}, {
+			"code": "leftententorhinalarea_logreg_test",
+			"description": "",
+			"label": "leftententorhinalarea_logreg_test",
+			"methodology": "Testing_LogisticRegression",
+			"sql_type": "real",
+			"isCategorical": false
+		}, {
+			"code": "rightententorhinalarea_logreg_test",
+			"description": "",
+			"label": "rightententorhinalarea_logreg_test",
+			"methodology": "Testing_LogisticRegression",
+			"sql_type": "real",
+			"isCategorical": false
+		}, {
+			"code": "lefthippocampus_logreg_test",
+			"description": "",
+			"label": "lefthippocampus_logreg_test",
+			"methodology": "Testing_LogisticRegression",
+			"sql_type": "real",
+			"isCategorical": false
+		}, {
+			"code": "righthippocampus_logreg_test",
+			"description": "",
+			"label": "righthippocampus_logreg_test",
+			"methodology": "Testing_LogisticRegression",
+			"sql_type": "real",
+			"isCategorical": false
+		}, {
+			"code": "CL_age",
+			"description": "",
+			"enumerations": [{
+					"code": "young",
+					"label": "young"
+				}, {
+					"code": "pre-presbyopic",
+					"label": "pre-presbyopic"
+				}, {
+					"code": "presbyopic",
+					"label": "presbyopic"
+				}
+			],
+			"label": "CL_age",
+			"methodology": "Testing_ID3",
+			"sql_type": "text",
+			"type": "polynominal",
+			"isCategorical": true
+		}, {
+			"code": "CL_spectacle_prescrip",
+			"description": "",
+			"enumerations": [{
+					"code": "myope",
+					"label": "myope"
+				}, {
+					"code": "hypermetrope",
+					"label": "hypermetrope"
+				}
+			],
+			"label": "CL_spectacle_prescrip",
+			"methodology": "Testing_ID3",
+			"sql_type": "text",
+			"type": "binominal",
+			"isCategorical": true
+		}, {
+			"code": "CL_astigmatism",
+			"description": "",
+			"enumerations": [{
+					"code": "no",
+					"label": "no"
+				}, {
+					"code": "yes",
+					"label": "yes"
+				}
+			],
+			"label": "CL_astigmatism",
+			"methodology": "Testing_ID3",
+			"sql_type": "text",
+			"type": "binominal",
+			"isCategorical": true
+		}, {
+			"code": "CL_tear_prod_rate",
+			"description": "",
+			"enumerations": [{
+					"code": "reduced",
+					"label": "reduced"
+				}, {
+					"code": "normal",
+					"label": "normal"
+				}
+			],
+			"label": "CL_tear_prod_rate",
+			"methodology": "Testing_ID3",
+			"sql_type": "text",
+			"type": "binominal",
+			"isCategorical": true
+		}, {
+			"code": "CL_contact_lenses",
+			"description": "",
+			"enumerations": [{
+					"code": "none",
+					"label": "none"
+				}, {
+					"code": "soft",
+					"label": "soft"
+				}, {
+					"code": "hard",
+					"label": "hard"
+				}
+			],
+			"label": "CL_contact_lenses",
+			"methodology": "Testing_ID3",
+			"sql_type": "text",
+			"type": "polynominal",
+			"isCategorical": true
+		},
+		{
+			"code": "car_id",
+			"description": "",
+			"minValue": "",
+			"maxValue":"",
+			"label": "pp",
+			"methodology": "Testing",
+			"sql_type": "int",
+			"type": "",
+			"isCategorical": false
+		},
+		{
+			"code": "car_buying",
+			"description": "",
+			"enumerations": [{
+					"code": "vhigh",
+					"label": "vhigh"
+				}, {
+					"code": "high",
+					"label": "high"
+				}, {
+					"code": "med",
+					"label": "med"
+				}, {
+					"code": "low",
+					"label": "low"
+				}
+			],
+			"label": "car_buying",
+			"methodology": "Testing_ID3",
+			"sql_type": "text",
+			"type": "polynominal",
+			"isCategorical": true
+		}, {
+			"code": "car_maint",
+			"description": "",
+			"enumerations": [{
+					"code": "vhigh",
+					"label": "vhigh"
+				}, {
+					"code": "high",
+					"label": "high"
+				}, {
+					"code": "med",
+					"label": "med"
+				}, {
+					"code": "low",
+					"label": "low"
+				}
+			],
+			"label": "car_maint",
+			"methodology": "Testing_ID3",
+			"sql_type": "text",
+			"type": "polynominal",
+			"isCategorical": true
+		}, {
+			"code": "car_doors",
+			"description": "",
+			"enumerations": [{
+					"code": "2",
+					"label": "2"
+				}, {
+					"code": "3",
+					"label": "3"
+				}, {
+					"code": "4",
+					"label": "4"
+				}
+			],
+			"label": "car_doors",
+			"methodology": "Testing_ID3",
+			"sql_type": "text",
+			"type": "polynominal",
+			"isCategorical": true
+		}, {
+			"code": "car_persons",
+			"description": "",
+			"enumerations": [{
+					"code": "2",
+					"label": "2"
+				}, {
+					"code": "more",
+					"label": "more"
+				}, {
+					"code": "4",
+					"label": "4"
+				}
+			],
+			"label": "car_persons",
+			"methodology": "Testing_ID3",
+			"sql_type": "text",
+			"type": "polynominal",
+			"isCategorical": true
+		}, {
+			"code": "car_lug_boot",
+			"description": "",
+			"enumerations": [{
+					"code": "small",
+					"label": "small"
+				}, {
+					"code": "med",
+					"label": "med"
+				}, {
+					"code": "big",
+					"label": "big"
+				}
+			],
+			"label": "car_lug_boot",
+			"methodology": "Testing_ID3",
+			"sql_type": "text",
+			"type": "polynominal",
+			"isCategorical": true
+		}, {
+			"code": "car_safety",
+			"description": "",
+			"enumerations": [{
+					"code": "low",
+					"label": "low"
+				}, {
+					"code": "med",
+					"label": "med"
+				}, {
+					"code": "high",
+					"label": "high"
+				}
+			],
+			"label": "car_safety",
+			"methodology": "Testing_ID3",
+			"sql_type": "text",
+			"type": "polynominal",
+			"isCategorical": true
+		}, {
+			"code": "car_class",
+			"description": "",
+			"enumerations": [{
+					"code": "unacc",
+					"label": "unacc"
+				}, {
+					"code": "acc",
+					"label": "acc"
+				}, {
+					"code": "vgood",
+					"label": "vgood"
+				}, {
+					"code": "good",
+					"label": "good"
+				}
+			],
+			"label": "car_class",
+			"methodology": "Testing_ID3",
+			"sql_type": "text",
+			"type": "polynominal",
+			"isCategorical": true
+		}, {
+			"code": "Iris_Sepal_Length",
+			"description": "",
+			"label": "Left Hippocampus",
+			"methodology": "Testing_Kmeans",
+			"sql_type": "real",
+			"type": "",
+			"isCategorical": false,
+			"units": "cm3"
+		}, {
+			"code": "Iris_Sepal_Width",
+			"description": "",
+			"label": "Left Hippocampus",
+			"methodology": "Testing_Kmeans",
+			"sql_type": "real",
+			"type": "",
+			"isCategorical": false,
+			"units": "cm3"
+		}, {
+			"code": "Iris_Petal_Length",
+			"description": "",
+			"label": "Left Hippocampus",
+			"methodology": "Testing_Kmeans",
+			"sql_type": "real",
+			"type": "",
+			"isCategorical": false,
+			"units": "cm3"
+		}, {
+			"code": "Iris_Petal_Width",
+			"description": "",
+			"label": "Left Hippocampus",
+			"methodology": "Testing_Kmeans",
+			"sql_type": "real",
+			"type": "",
+			"isCategorical": false,
+			"units": "cm3"
+		}, {
+			"code": "Iris_Species",
+			"description": "",
+			"enumerations": [{
+					"code": "Iris-setosa",
+					"label": "Iris-setosa"
+				}, {
+					"code": "Iris-versicolor",
+					"label": "Iris-versicolor"
+				}, {
+					"code": "Iris-virginica",
+					"label": "Iris-virginica"
+				}
+			],
+			"label": "Iris_Species",
+			"methodology": "Testing_Kmeans",
+			"sql_type": "text",
+			"type": "polynominal",
+			"isCategorical": true
+		}, {
 			"code": "ANOVA_pp",
 			"description": "",
 			"minValue": 0,
