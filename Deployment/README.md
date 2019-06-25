@@ -190,15 +190,15 @@ If at some point you have to add a new worker node you should:
 
 If you want to stop all services:
 
-```ansible-playbook -i hosts.ini Stop-Services -c paramiko --ask-vault-pass -e@vault_file.yaml  -vvvv```
+```ansible-playbook -i hosts.ini Stop-Services.yaml -c paramiko --ask-vault-pass -e@vault_file.yaml  -vvvv```
 
 Or If you only want to stop Portainer you can do so by:
 
-```ansible-playbook -i hosts.ini Stop-Services -c paramiko --ask-vault-pass -e@vault_file.yaml -vvvv --skip-tags exareme -vvvv```
+```ansible-playbook -i hosts.ini Stop-Services.yaml -c paramiko --ask-vault-pass -e@vault_file.yaml -vvvv --skip-tags exareme -vvvv```
 
 Or If you only want to stop Exareme services you can do so by:
 
-```ansible-playbook -i hosts.ini Stop-Services -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv --tags exareme -vvvv```
+```ansible-playbook -i hosts.ini Stop-Services.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv --tags exareme -vvvv```
 
 ## Test that everything is up and running [In process]
 If all went well, everything should be deployed! Check your Manager node of Swarm by 
