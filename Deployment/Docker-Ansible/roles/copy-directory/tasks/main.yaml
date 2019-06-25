@@ -1,4 +1,4 @@
-- name: Copy metadata file
+- name: Copy directory conatining docker-compose files
   copy:
     src: ../Compose-Files
     dest: "{{ compose_files_remote_path }}"
