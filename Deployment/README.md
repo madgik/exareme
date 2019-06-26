@@ -182,17 +182,6 @@ If you want to start only Portainer Service you need to:
 ```ansible-playbook -i hosts.ini Start-Exareme.yaml -c paramiko --ask-vault-pass -e@vault_file.yaml -vvvv --tags portainer
 ```
 
-### Start Exareme Workers at any time
-
-If at some point you have to add a new worker node you should:
-1) [Optional] Copy the Metadata file by replacing workerN with the appropriate name: :
-```ansible-playbook -i hosts.ini Metadata-Worker.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=workerN"``` 
-
-2) Join the particular worker by replacing workerN with the appropriate name: 
-``` ansible-playbook -i hosts.ini Join-Workers.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=workerN"``` 
-
-3) Start Exareme for the particular worker by replacing workerN with the appropriate name: ``` ansible-playbook -i hosts.ini Start-Exareme-Worker.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=workerN"```
-
 ### Stop Exareme Services
 
 If you want to stop all services:
@@ -207,6 +196,17 @@ Or If you only want to stop Exareme services you can do so by:
 
 ```ansible-playbook -i hosts.ini Stop-Services.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv --tags exareme -vvvv```
 
+### Add an Exareme Worker at any time
+
+If at some point you have to add a new worker node you should:
+1) [Optional] Copy the Metadata file manually or by replacing workerN with the appropriate name and execute the playbook:
+```ansible-playbook -i hosts.ini Metadata-Worker.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=workerN"``` 
+
+2) Join the particular worker by replacing workerN with the appropriate name: 
+``` ansible-playbook -i hosts.ini Join-Workers.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=workerN"``` 
+
+3) Start Exareme for the particular worker by replacing workerN with the appropriate name: ``` ansible-playbook -i hosts.ini Start-Exareme-Worker.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=workerN"```
+
 ## Test that everything is up and running [In process]
 If all went well, everything should be deployed! Check your Manager node of Swarm by 
 ```docker node ls ``` to see if you have the proper nodes and ```docker inspect ID_of_a_node``` to see if the label name has a value. You can also check the Portainer to see if all services are up and running.
@@ -214,9 +214,8 @@ If all went well, everything should be deployed! Check your Manager node of Swar
 ### Troubleshoot problems
 One minor problem you may face is:
 
-If you Start the Exareme Worker [without] first Join the Worker in the Swarm. You will get the above error message in the Task Details 
+If you Start the Exareme Worker [without] first Join the Worker in the Swarm. You will get the above Error message in the Task Details 
 ```Error message	no suitable node (1 node not available for new tasks; scheduling constraints not satisfied on 1 node)```
 
 [You can find the Task Details by clicking a service and scroll all the way down in the Tasks field. There you can click on the ID of the wishing Task] 
-
 
