@@ -1,22 +1,27 @@
-# Deployment of Exareme
+# Exareme Deployment Guide
 
-Here you will find all the informations needed in order to deploy Exareme in your environment via Ansible. Your Host machine is the one from which you run the ansible scripts. Remote machines are the Exareme nodes [master/workers]. 
+Here you will find all the informations needed in order to deploy Exareme in your environment via Ansible scripts. 
 
-# Installations
+We will refer to the machine from which you run the ansible scripts as Host and to the machines where you will install the Exareme nodes [master/workers] as Remote.
 
-Install Ansible in Host machine:
+# Requirements
+
+1) Install Ansible in Host machine:
 
 ```sudo apt install ansible```
 
-Install Python in all Remote hosts, in order for playbooks to run:
+2) Install Python in all Remote hosts, in order for playbooks to run:
 
 ```sudo apt-get install python```
 
+3) The csv containing the datasets should called datasets.csv and reside in a folder that we will refer to as ```data_path```. On that folder there should also be the CDEsMetadata.json file that you can put there manually or by following the instructions later on.
+
+
+# Preparation
+
 ## Initialize variables
 
-In order to run the scripts with your own customized variables, you need to make some changes.
-
-1) If you want to use your own Metadata file you can do it by copying it manually to your Remote machines in the correct folder where your data CSV are already stored or you can follow the instructions given below via ansible. If you choose the second way you have to copy the CDEsMetadata file inside ```Metadata``` folder and name it ```CDEsMetadata.json```. 
+1) If you are going to copy the CDEsMetadata.json file to the remote machines via ansible scripts you have to put the file inside the ```Metadata``` folder and name it ```CDEsMetadata.json```. 
 
 2) Changes in ```hosts.ini```
 
@@ -60,14 +65,18 @@ Here is an example of hosts.ini where we have 3 Remote machines, one [master] of
 ```
 [You can find the hostname of any machine by executing ```hostname``` in terminal]
 
-[Requirement: Mind that the variable ```data_path``` has as a value the path where your Data CSV and the Metadata file are stored in your Remote Host.]
+[Requirement: Mind that the variable ```data_path``` is the path where your Data CSV and the Metadata file are stored in your Remote Host.]
 
-You can see that there are 2 main categories. The first one is ```[manager]```, the second one is ```[workers]```.You can always add more workers following the template given above a) by adding the name of the worker under [workers] and b) by creating a tag [worker3] with all the necessary variables below: 
+You can see that there are 2 main categories. The first one is ```[manager]```, the second one is ```[workers]```.
+
+You can always add more workers following the template given above:
+a) by adding the name of the worker under [workers] and
+b) creating a tag [worker3] with all the necessary variables. For example: 
 
 ```
    worker3 ansible_host=Your_Remote_Machine_Host
    worker3 hostname=Your_Remote_Machine_Hostname
-   worker3 data_path=Your_Remote_Data_Path_where_CSV_data_and_Metadata_are_stored
+   worker3 data_path=Your_Remote_Data_Path_where_CSV_data_and_CDEsMetadata_are_stored
 
    worker3 remote_user="{{worker3_remote_user}}"
    worker3 become_user="{{worker3_become_user}}"
@@ -79,7 +88,7 @@ For consistency reasons we suggest you keep the names as shown above [master,wor
 
 ## Ansible-vault
 
-As you can also see in hosts.ini file we have some sensitive data like usernames and passwords in both master and workers. These lines ```MUST not change```.
+As you can also see in hosts.ini file we have some sensitive data like usernames and passwords in both master and workers. These lines ```MUST not be changed!```.
 
 ```
    master remote_user="{{master_remote_user}}"
@@ -128,7 +137,7 @@ Here you will add
    worker2_become_pass: your_password
    worker2_ssh_pass: your_password
 ```
-all in plaintext. If you have more than 2 workers, you will add those too by adding ```workerN_``` in front of each variable where N the increased number. 
+all in plaintext. If you have more than 2 workers, you will add those too by adding ```workerN_...``` in front of each variable where N the increased number. 
 [Keep in mind that your password can be anything you want But ansible has a special character for comments ```#``` . If your password contains that specific character ansible will take the characters next to it as comments.]
 When you exit you can see that vault_file.yaml is encrypted with all your sensitive informations in there.
 
@@ -137,14 +146,14 @@ If you want to edit the file you can do so whenever by
 Place your vault password and edit the file.
 
 
-## Deploy everything
+# Deployment
 
 Since we made the changes needed, we are ready for the deployment. Go inside the ```Docker-Ansible``` folder.
 
-### Copy Metadata File [Optional]
+### Copy the Metadata File [Optional]
 
 If your remote machines do not have the Metadata file available you can simply copy your file from your Host machine into the Remote machines. 
-Keep in mind that you need to place the Metadata file inside the Metadata folder with name: ```CDEsMetadata.json```.
+Keep in mind that you need to place the Metadata file inside the Metadata folder with name: ```variablesMetadata.json```.
 
 [Notice that every time you run a playbook you will need to place your ansible-vault password.]
 
@@ -152,8 +161,9 @@ For the master:
 ```ansible-playbook -i hosts.ini Metadata-Master.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv``` 
 
 For worker1:
-```ansible-playbook -i hosts.ini Metadata-Worker.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=worker1"``` 
-Same command for each worker by changing the value in ```my_host``` with your worker name.
+```ansible-playbook -i hosts.ini Metadata-Worker.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=worker1"```
+
+Same command for each worker by changing the value in ```my_host``` with your worker name (worker1,worker2,worker3).
 
 ### Swarm Initialization
 
@@ -163,13 +173,13 @@ For the initialization of Swarm you have to run:
 
 ### Join Workers
 
-If you have worker node[s] available you should do the following for each worker:
+If you have worker nodes available you should do the following for each worker:
 
 ``` ansible-playbook -i hosts.ini Join-Workers.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=worker1"``` by changing the value in ```my_host``` with your worker name.
 
 ### Start Exareme Services
 
-Next thing would be to run Exareme services and Portainer service. Mind that if you already have available workers, Exareme service will run for each worker. If not, the deployment of Exareme in the worker nodes will be bypassed.
+Next thing would be to run Exareme services and Portainer service. The Exareme services will run on all available exareme nodes (master,workers).
 
 ```ansible-playbook -i hosts.ini Start-Exareme.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv```
 
@@ -184,38 +194,39 @@ If you want to start only Portainer Service you need to:
 
 ### Stop Exareme Services
 
-If you want to stop all services:
-
-```ansible-playbook -i hosts.ini Stop-Services.yaml -c paramiko --ask-vault-pass -e@vault_file.yaml  -vvvv```
-
-Or If you only want to stop Portainer you can do so by:
-
-```ansible-playbook -i hosts.ini Stop-Services.yaml -c paramiko --ask-vault-pass -e@vault_file.yaml -vvvv --skip-tags exareme -vvvv```
-
-Or If you only want to stop Exareme services you can do so by:
+If you want to stop the Exareme services you can do so by:
 
 ```ansible-playbook -i hosts.ini Stop-Services.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv --tags exareme -vvvv```
 
-### Add an Exareme Worker at any time
+If you only want to stop the Portainer service you can do so by:
+
+```ansible-playbook -i hosts.ini Stop-Services.yaml -c paramiko --ask-vault-pass -e@vault_file.yaml -vvvv --skip-tags exareme -vvvv```
+
+If you want to stop all services (Exareme and portainer services):
+
+```ansible-playbook -i hosts.ini Stop-Services.yaml -c paramiko --ask-vault-pass -e@vault_file.yaml  -vvvv```
+
+
+### Add an Exareme Worker when the master is already running
 
 If at some point you have to add a new worker node you should:
-1) [Optional] Copy the Metadata file manually or by replacing workerN with the appropriate name and execute the playbook:
+1) [Optional] Copy the Metadata file by replacing workerN with the appropriate name: :
 ```ansible-playbook -i hosts.ini Metadata-Worker.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=workerN"``` 
 
 2) Join the particular worker by replacing workerN with the appropriate name: 
 ``` ansible-playbook -i hosts.ini Join-Workers.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=workerN"``` 
 
-3) Start Exareme for the particular worker by replacing workerN with the appropriate name: ``` ansible-playbook -i hosts.ini Start-Exareme-Worker.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=workerN"```
+3) Start the Exareme service for that particular worker by replacing workerN with the appropriate name: ``` ansible-playbook -i hosts.ini Start-Exareme-Worker.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=workerN"```
+
 
 ## Test that everything is up and running [In process]
 If all went well, everything should be deployed! Check your Manager node of Swarm by 
-```docker node ls ``` to see if you have the proper nodes and ```docker inspect ID_of_a_node``` to see if the label name has a value. You can also check the Portainer to see if all services are up and running.
+```docker node ls ``` to see if you have the proper nodes and ```docker inspect ID_of_a_node``` to see if the label name has a value. 
 
-### Troubleshoot problems
-One minor problem you may face is:
+You can also check the Portainer to see if all services are up and running by accessing the address manager_ip:9000 .
 
-If you Start the Exareme Worker [without] first Join the Worker in the Swarm. You will get the above Error message in the Task Details 
+
+### Troubleshooting
+1) If you Start the Exareme Worker [without] first Joining the Worker in the Swarm then: You will get the above Error message in the Task Details 
 ```Error message	no suitable node (1 node not available for new tasks; scheduling constraints not satisfied on 1 node)```
-
 [You can find the Task Details by clicking a service and scroll all the way down in the Tasks field. There you can click on the ID of the wishing Task] 
-
