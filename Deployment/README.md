@@ -210,3 +210,13 @@ Or If you only want to stop Exareme services you can do so by:
 ## Test that everything is up and running [In process]
 If all went well, everything should be deployed! Check your Manager node of Swarm by 
 ```docker node ls ``` to see if you have the proper nodes and ```docker inspect ID_of_a_node``` to see if the label name has a value. You can also check the Portainer to see if all services are up and running.
+
+### Troubleshoot problems
+One minor problem you may face is:
+
+If you Start the Exareme Worker [without] first Join the Worker in the Swarm. You will get the above error message in the Task Details 
+```Error message	no suitable node (1 node not available for new tasks; scheduling constraints not satisfied on 1 node)```
+
+[You can find the Task Details by clicking a service and scroll all the way down in the Tasks field. There you can click on the ID of the wishing Task] 
+
+
