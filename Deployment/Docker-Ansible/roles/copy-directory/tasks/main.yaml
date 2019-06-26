@@ -1,7 +1,7 @@
-- name: Copy directory conatining docker-compose files
+- name: Copy Directory Conatining docker-compose Files
   copy:
     src: ../Compose-Files
-    dest: "{{ compose_files_remote_path }}"
+    dest: "{{ home_path }}"
     owner: "{{ become_user }}"
     group: "{{ become_user }}"
     mode: 0755

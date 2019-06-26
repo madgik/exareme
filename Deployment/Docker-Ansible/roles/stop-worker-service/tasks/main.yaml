@@ -1,7 +1,7 @@
 - name: Stop Exareme Spesific Worker
   shell: docker stack rm {{ my_name }}
   args:
-    chdir: "{{ compose_files_remote_path }}Compose-Files/"
+    chdir: "{{ home_path }}Compose-Files/"
   environment:
     FEDERATION_NODE: "{{ hostvars[my_host]['hostname'] }}"
     EXAREME_IMAGE: "{{ EXAREME_IMAGE }}:{{ EXAREME_TAG }}"

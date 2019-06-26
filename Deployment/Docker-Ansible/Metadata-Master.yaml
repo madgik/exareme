@@ -1,6 +1,6 @@
 ---
 - hosts: manager
-  name: Copy metadata file to each node
+  name: Copy Metadata File To Master
   remote_user: "{{ hostvars['master']['remote_user'] }}"
   become: yes
   become_user: "{{ hostvars['master']['become_user'] }}"

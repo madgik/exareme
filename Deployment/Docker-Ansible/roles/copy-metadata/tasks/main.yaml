@@ -1,4 +1,4 @@
-- name: Copy metadata file
+- name: Copy File
   copy:
     src: ../Metadata/CDEsMetadata.json
     dest: "{{ data_path }}"

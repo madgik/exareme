@@ -1,6 +1,6 @@
 ---
 - hosts: '{{ my_host }}'
-  name: Copy metadata file to each node
+  name: Copy Metadata File To Worker
   remote_user: "{{ hostvars[my_host]['remote_user'] }}"
   become: yes
   become_user: "{{ hostvars[my_host]['become_user'] }}"
