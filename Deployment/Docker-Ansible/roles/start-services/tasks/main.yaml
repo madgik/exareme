@@ -7,14 +7,14 @@
 - name: Run Exareme Master
   shell: docker stack deploy -c docker-compose-manager.yml {{ leader.stdout }}
   args:
-    chdir: "{{ compose_files_remote_path }}/Compose-Files/"
+    chdir: "{{ compose_files_remote_path }}Compose-Files/"
   environment:
     FEDERATION_NODE: "{{ leader.stdout }}"
     FEDERATION_ROLE: "master"
     EXAREME_IMAGE: "{{ EXAREME_IMAGE }}:{{ EXAREME_TAG }}"
     EXAREME_KEYSTORE: "{{ EXAREME_KEYSTORE }}"
     DOCKER_DATASETS_FOLDER: "{{ DOCKER_PATH }}"
-    LOCAL_DATASETS_FOLDER: "{{ remote_data_path }}"
+    LOCAL_DATASETS_FOLDER: "{{ data_path }}"
 
 - name: Run Portainer
   shell: >
@@ -38,12 +38,12 @@
 - name: Run Exareme Workers
   shell: docker stack deploy -c docker-compose-worker.yml {{ hostvars[item]['hostname'] }}
   args:
-    chdir: "{{ compose_files_remote_path }}/Compose-Files/"
+    chdir: "{{ compose_files_remote_path }}Compose-Files/"
   environment:
     FEDERATION_NODE: "{{ hostvars[item]['hostname'] }}"
     EXAREME_IMAGE: "{{ EXAREME_IMAGE }}:{{ EXAREME_TAG }}"
     EXAREME_KEYSTORE: "{{ EXAREME_KEYSTORE }}"
     DOCKER_DATASETS_FOLDER: "{{ DOCKER_PATH }}"
-    LOCAL_DATASETS_FOLDER: "{{ hostvars[item]['remote_data_path'] }}"
+    LOCAL_DATASETS_FOLDER: "{{ hostvars[item]['data_path'] }}"
   with_items: "{{ groups['workers'] }}"
   ignore_errors: true

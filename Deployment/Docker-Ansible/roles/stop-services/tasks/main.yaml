@@ -17,6 +17,7 @@
 - name: Find Portainer ID
   shell: docker service ls --filter name=mip_portainer --format '{{ "{{" }}.ID{{ "}}" }}'
   register: portainer_id
+  ignore_errors: true
   tags:
     - portainer
 

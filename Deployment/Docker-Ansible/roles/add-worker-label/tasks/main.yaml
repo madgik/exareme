@@ -3,7 +3,7 @@
   shell: docker node ls -f "name={{ my_name }}" --format '{{ "{{" }}.Hostname{{ "}}" }}'
   register: hostName
 
-- name:  Add Label Name To Each Node
+- name:  Add Label Name To Worker Node
   shell: docker node update --label-add name={{ item }} {{ item }}
   with_items:
    - "{{ hostName.stdout_lines }}"
