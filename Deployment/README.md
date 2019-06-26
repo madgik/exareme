@@ -16,7 +16,7 @@ Install Python in all Remote hosts, in order for playbooks to run:
 
 In order to run the scripts with your own customized variables, you need to make some changes.
 
-1) If you want to use your own Metadata file you can do it by copying it manually to your Remote machines in the correct folder where your data CSV are already stored or you can follow the instructions given below via ansible. If you choose the second way you have to copy the CDEsMetadata file inside ```Metadata``` folder and name it ```variablesMetadata.json```. 
+1) If you want to use your own Metadata file you can do it by copying it manually to your Remote machines in the correct folder where your data CSV are already stored or you can follow the instructions given below via ansible. If you choose the second way you have to copy the CDEsMetadata file inside ```Metadata``` folder and name it ```CDEsMetadata.json```. 
 
 2) Changes in ```hosts.ini```
 
@@ -144,7 +144,7 @@ Since we made the changes needed, we are ready for the deployment. Go inside the
 ### Copy Metadata File [Optional]
 
 If your remote machines do not have the Metadata file available you can simply copy your file from your Host machine into the Remote machines. 
-Keep in mind that you need to place the Metadata file inside the Metadata folder with name: ```variablesMetadata.json```.
+Keep in mind that you need to place the Metadata file inside the Metadata folder with name: ```CDEsMetadata.json```.
 
 [Notice that every time you run a playbook you will need to place your ansible-vault password.]
 
