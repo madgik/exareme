@@ -16,7 +16,7 @@ Install Python in all Remote hosts, in order for playbooks to run:
 
 In order to run the scripts with your own customized variables, you need to make some changes.
 
-1) If you want to use your own Metadata file, you have to copy the file inside ```Metadata``` folder and name it ```variablesMetadata.json```.
+1) If you want to use your own Metadata file you can do it by copying it manually to your Remote machines in the correct folder where your data CSV are already stored or you can follow the instructions given below via ansible. If you choose the second way you have to copy the CDEsMetadata file inside ```Metadata``` folder and name it ```variablesMetadata.json```. 
 
 2) Changes in ```hosts.ini```
 
@@ -26,7 +26,7 @@ Here is an example of hosts.ini where we have 3 Remote machines, one [master] of
    [manager]
    master ansible_host=88.197.53.38
    master compose_files_remote_path=/home/exareme/
-   master remote_data_path=/home/exareme/data/
+   master data_path=/home/exareme/data/
 
    master remote_user="{{master_remote_user}}"
    master become_user="{{master_become_user}}"
@@ -40,7 +40,7 @@ Here is an example of hosts.ini where we have 3 Remote machines, one [master] of
    [worker1]
    worker1 ansible_host=88.197.53.44
    worker1 hostname=dl044
-   worker1 remote_data_path=/home/exareme/data/
+   worker1 data_path=/home/exareme/data/
 
    worker1 remote_user="{{worker1_remote_user}}"
    worker1 become_user="{{worker1_become_user}}"
@@ -51,7 +51,7 @@ Here is an example of hosts.ini where we have 3 Remote machines, one [master] of
    [worker2]
    worker2 ansible_host=88.197.53.100
    worker2 hostname=thanasis1
-   worker2 remote_data_path=/home/exareme/data/
+   worker2 data_path=/home/exareme/data/
 
    worker2 remote_user="{{worker2_remote_user}}"
    worker2 become_user="{{worker2_become_user}}"
@@ -60,12 +60,14 @@ Here is an example of hosts.ini where we have 3 Remote machines, one [master] of
 ```
 [You can find the hostname of any machine by executing ```hostname``` in terminal]
 
+[Requirement: Mind that the variable ```data_path``` has as a value the path where your Data CSV and the Metadata file are stored in your Remote Host.]
+
 You can see that there are 2 main categories. The first one is ```[manager]```, the second one is ```[workers]```.You can always add more workers following the template given above a) by adding the name of the worker under [workers] and b) by creating a tag [worker3] with all the necessary variables below: 
 
 ```
    worker3 ansible_host=Your_Remote_Machine_Host
    worker3 hostname=Your_Remote_Machine_Hostname
-   worker3 remote_data_path=Your_Remote_Data_Path
+   worker3 data_path=Your_Remote_Data_Path_where_CSV_data_and_Metadata_are_stored
 
    worker3 remote_user="{{worker3_remote_user}}"
    worker3 become_user="{{worker3_become_user}}"
@@ -74,6 +76,8 @@ You can see that there are 2 main categories. The first one is ```[manager]```, 
 ```
 
 For consistency reasons we suggest you keep the names as shown above [master,worker1,worker2..], and just increase the number after [worker] each time you add one.
+
+## Ansible-vault
 
 As you can also see in hosts.ini file we have some sensitive data like usernames and passwords in both master and workers. These lines ```MUST not change```.
 
@@ -100,8 +104,6 @@ As you can also see in hosts.ini file we have some sensitive data like usernames
 
 It is not a valid technique to just fill in your sensitive data there, so we will use ```Ansible-Vault```.
 Ansible-vault comes with the installation of ansible. Make sure you have it installed by ```ansible-vault --version```
-
-## Ansible-vault
 
 With ansible-vault we can have an encrypted file which will contain sensitive information like the ones shown above.
 
@@ -175,6 +177,11 @@ If you want to exclude Portainer service from running, you need to add ```--skip
 
 ```ansible-playbook -i hosts.ini Start-Services.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml --skip-tags portainer -vvvv```
 
+If you want to start only Portainer Service you need to:
+
+```ansible-playbook -i hosts.ini Start-Exareme.yaml -c paramiko --ask-vault-pass -e@vault_file.yaml -vvvv --tags portainer
+```
+
 ### Start Exareme Workers at any time
 
 If at some point you have to add a new worker node you should:
@@ -190,15 +197,15 @@ If at some point you have to add a new worker node you should:
 
 If you want to stop all services:
 
-```ansible-playbook -i hosts.ini Stop-Services -c paramiko --ask-vault-pass -e@vault_file.yaml  -vvvv```
+```ansible-playbook -i hosts.ini Stop-Services.yaml -c paramiko --ask-vault-pass -e@vault_file.yaml  -vvvv```
 
 Or If you only want to stop Portainer you can do so by:
 
-```ansible-playbook -i hosts.ini Stop-Services -c paramiko --ask-vault-pass -e@vault_file.yaml -vvvv --skip-tags exareme -vvvv```
+```ansible-playbook -i hosts.ini Stop-Services.yaml -c paramiko --ask-vault-pass -e@vault_file.yaml -vvvv --skip-tags exareme -vvvv```
 
 Or If you only want to stop Exareme services you can do so by:
 
-```ansible-playbook -i hosts.ini Stop-Services -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv --tags exareme -vvvv```
+```ansible-playbook -i hosts.ini Stop-Services.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv --tags exareme -vvvv```
 
 ## Test that everything is up and running [In process]
 If all went well, everything should be deployed! Check your Manager node of Swarm by 
