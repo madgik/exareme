@@ -218,9 +218,9 @@ If at some point you have to add a new worker node you should:
 
 3) Start the Exareme service for that particular worker by replacing workerN with the appropriate name: ``` ansible-playbook -i hosts.ini Start-Exareme-Worker.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=workerN"```
 
-### Stop AN Exareme Worker 
+### Stop ΟΝΕ Exareme Worker 
 
-If at some point you need to stop only one worker at a time you can do so by replacing workerN with the appropriate name: 
+If at some point you need to stop only one worker, you can do so by the following command replacing workerN with the appropriate identifier: 
 ``` ansible-playbook -i hosts.ini Stop-Exareme-Worker.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=workerN"```
 
 ## Test that everything is up and running 
@@ -240,13 +240,14 @@ The first time you launch Portainer you have to create a user.
 Fill in the ```Username```, ```Password```, ```Confirm Password``` fields and click ```Create user```. 
 [Mind that we create a folder called ```portainer``` in your ```home_path``` where the credentials you provided will be saved for the next times, until you delete the folder] 
 The next page ```Connect Portainer to the Docker environment you want to manage.``` will ask you to Connect Portainer to an Environment. Click the first option  ```Local``` and ```Connect```. 
-After that, you should click on your Local Swarm and navigate from the left menu. Go to your ```Services``` to check each service's logs. 
+After that, you should click on your Local Swarm and navigate from the left menu. 
+Go to your ```Services``` to check each service's logs and see if everything is running properly.
 
 ### Troubleshooting
 
 1) Under ```Services``` in the left menu check that all services has 1 replicas: ```replicated 1 / 1```. 
 
-If this is not the case for the Worker nodes, meening you get 0 replicas: ```replicated 0 / 1```, then it is possible that you started an Exareme Worker Before Joining that Worker in the Swarm. 
+If this is not the case for the Worker nodes, meening you get 0 replicas: ```replicated 0 / 1```, then it is possible that you started an Exareme Worker service before joining that Worker in the Swarm. 
 i) Stop the spesific Worker via:
 ``` ansible-playbook -i hosts.ini Stop-Exareme-Worker.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=workerN"``` , 
 ii) Join the spesific Worker in the Swarm via: 
