@@ -134,15 +134,20 @@ public class AlgorithmProperties {
 
         for (ParameterProperties parameterProperties : this.getParameters()) {
             String value = inputContent.get(parameterProperties.getName());
-            if (value != null) {
+            if (value != null && !value.equals("")) {
                 validateAlgorithmParameterValueType(value, parameterProperties);
                 validateAlgorithmParameterType(value, parameterProperties);
-            } else {            // if value is null
+            } else {            // if value not given or it is blank
                 if (parameterProperties.getValueNotBlank()) {
                     throw new AlgorithmException(
                             "The value of the parameter '" + parameterProperties.getName() + "' should not be blank.");
                 }
-                value = "";
+
+                if (parameterProperties.getDefaultValue() != null) {
+                    value = parameterProperties.getDefaultValue();
+                } else {
+                    value = "";
+                }
             }
             parameterProperties.setValue(value);
         }

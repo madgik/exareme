@@ -5,14 +5,6 @@
 	"status": "enabled",
 	"vtype": "clusterplot",
 	"parameters": [{
-			"name": "iterations_max_number",
-			"desc": "",
-			"type": "other",
-			"value": "2",
-			"valueNotBlank": false,
-			"valueMultiple": false,
-			"valueType": "integer"
-		}, {
 			"name": "x",
 			"desc": "column names",
 			"type": "column",
@@ -63,6 +55,15 @@
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "string"
+		}, {
+			"name": "iterations_max_number",
+			"desc": "",
+			"type": "other",
+			"value": "",
+			"defaultValue" : "20",
+			"valueNotBlank": false,
+			"valueMultiple": false,
+			"valueType": "integer"
 		}
 	]
 }

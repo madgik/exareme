@@ -10,6 +10,7 @@ public class ParameterProperties {
     private String columnValuesIsCategorical;
     private String columnValuesNumOfEnumerations;
     private String value;
+    private String defaultValue;
     private Boolean valueNotBlank;
     private Boolean valueMultiple;
     private ParameterValueType valueType;
@@ -116,6 +117,14 @@ public class ParameterProperties {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public String getDefaultValue() {
+        return defaultValue;
+    }
+
+    public void setDefaultValue(String value) {
+        this.defaultValue = defaultValue;
     }
 
     public Boolean getValueNotBlank() {
