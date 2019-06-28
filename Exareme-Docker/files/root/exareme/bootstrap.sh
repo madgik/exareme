@@ -132,5 +132,5 @@ python ./convert-csv-dataset-to-db.py --csvFilePath $DOCKER_DATASETS_FOLDER/data
 # Running something in foreground, otherwise the container will stop
 while true
 do
-   tail -f /var/log/exareme.log & wait ${!}
+   tail -f /var/log/exareme.log -f /var/log/exaremePythonAlgorithms.log
 done
