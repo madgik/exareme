@@ -129,6 +129,9 @@ rm -f $DOCKER_METADATA_FOLDER/datasets.db
 echo "Parsing the csv file in " $DOCKER_METADATA_FOLDER " to a db file. "
 python ./convert-csv-dataset-to-db.py --csvFilePath $DOCKER_DATASETS_FOLDER/datasets.csv --variablesMetadataPath $DOCKER_METADATA_FOLDER/variablesMetadata.json --outputDBAbsPath $DOCKER_METADATA_FOLDER/datasets.db
 
+# Creating the python log file
+echo "Exareme Python Algorithms log file created." > /var/log/exaremePythonAlgorithms.log
+
 # Running something in foreground, otherwise the container will stop
 while true
 do
