@@ -28,5 +28,5 @@ echo "BB"
         mkdir -p /tmp/exareme/var/log /tmp/exareme/var/run
         $EXAREME_JAVA -cp $EXAREME_ADMIN_CLASS_PATH \
           $EXAREME_ADMIN_OPTS $EXAREME_ADMIN_CLASS  \
-          $EXAREME_ADMIN_CLASS_ARGS > /tmp/exareme/var/log/$DESC.log 2>&1 & echo $! > /tmp/exareme/var/run/$DESC.pid
+          $EXAREME_ADMIN_CLASS_ARGS > /var/log/exareme.log 2>&1 & echo $! > /tmp/exareme/var/run/$DESC.pid
         echo "$DESC started."
