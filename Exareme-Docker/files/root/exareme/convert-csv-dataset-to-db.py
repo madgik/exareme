@@ -13,9 +13,9 @@ import json
 from argparse import ArgumentParser
 
 
-def createMetadataDictionary(variablesMetadataPath):
-    variablesMetadata = open(variablesMetadataPath)
-    metadataJSON = json.load(variablesMetadata)
+def createMetadataDictionary(CDEsMetadataPath):
+    CDEsMetadata = open(CDEsMetadataPath)
+    metadataJSON = json.load(CDEsMetadata)
 
     metadataDictionary = {}
     metadataDictionary['subjectcode'] = 'text'
@@ -37,9 +37,9 @@ def addGroupVariablesToDictionary(groupMetadata, metadataDictionary):
     return metadataDictionary
 
 
-def createMetadataList(variablesMetadataPath):
-    variablesMetadata = open(variablesMetadataPath)
-    metadataJSON = json.load(variablesMetadata)
+def createMetadataList(CDEsMetadataPath):
+    CDEsMetadata = open(CDEsMetadataPath)
+    metadataJSON = json.load(CDEsMetadata)
 
     metadataList = []
     metadataList = addGroupVariablesToList(metadataJSON,
@@ -91,7 +91,7 @@ def main():
     parser = ArgumentParser()
     parser.add_argument('-c', '--csvFilePath', required=True,
                         help='The folder of the csv dataset.')
-    parser.add_argument('-v', '--variablesMetadataPath', required=True,
+    parser.add_argument('-v', '--CDEsMetadataPath', required=True,
                         help='The folder of the metadata file.')
     parser.add_argument('-o', '--outputDBAbsPath', required=True,
                         help='The folder where the output db file is going to be.'
@@ -99,12 +99,12 @@ def main():
     args = parser.parse_args()
 
     csvFilePath = os.path.abspath(args.csvFilePath)
-    variablesMetadataPath = os.path.abspath(args.variablesMetadataPath)
+    CDEsMetadataPath = os.path.abspath(args.CDEsMetadataPath)
     outputDBAbsPath = args.outputDBAbsPath
 
     # Transform the metadata json into a column name -> column type dictionary
 
-    variablesTypesDict = createMetadataDictionary(variablesMetadataPath)
+    variablesTypesDict = createMetadataDictionary(CDEsMetadataPath)
 
     # Create the query for the sqlite data table
 
@@ -150,7 +150,7 @@ def main():
             raise ValueError('Row: ' + str(row) + ', Query: ' + str(insertRowQuery))
 
     # Transform the metadata JSON to a list
-    metadataList = createMetadataList(variablesMetadataPath)
+    metadataList = createMetadataList(CDEsMetadataPath)
 
     # Create the query for the metadata table
     createMetadataTableQuery = 'CREATE TABLE METADATA('
