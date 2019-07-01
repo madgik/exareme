@@ -78,6 +78,8 @@ if [ "$MASTER_FLAG" != "master" ]; then         #this is a worker
     MASTER_NAME=$(curl -s $CONSULURL/v1/kv/$EXAREME_MASTER_PATH/?keys | jq -r '.[]' | sed "s/$EXAREME_MASTER_PATH\///g")
     MY_IP=$(/sbin/ifconfig | grep "inet " | awk -F: '{print $2}' | grep '10.20' | awk '{print $1;}' | head -n 1)
     . ./start-worker.sh
+    sleep 1
+    ./exareme-admin.sh --status
     curl -X PUT -d @- $CONSULURL/v1/kv/$EXAREME_ACTIVE_WORKERS_PATH/$NODE_NAME <<< $MY_IP
     while [ ! -f /tmp/exareme/var/log/$DESC.log ]; do
         echo "Trying to connect worker with IP "$MY_IP" and name "$NODE_NAME" to master with IP "$MASTER_IP" and name "$MASTER_NAME"."
@@ -93,7 +95,16 @@ if [ "$MASTER_FLAG" != "master" ]; then         #this is a worker
         fi
     done
     echo -e "\nWorker with IP "$MY_IP" and name "$NODE_NAME" connected to master with IP "$MASTER_IP" and name "$MASTER_NAME"."
-
+     # Both Master and Worker should transform the csv to an sqlite db file
+    echo "Removing the previous datasets.db file if it still exists"
+    rm -f $DOCKER_METADATA_FOLDER/datasets.db
+    echo "Parsing the csv file in " $DOCKER_METADATA_FOLDER " to a db file. "
+    python ./convert-csv-dataset-to-db.py --csvFilePath $DOCKER_DATASETS_FOLDER/datasets.csv --variablesMetadataPath $DOCKER_METADATA_FOLDER/variablesMetadata.json --outputDBAbsPath $DOCKER_METADATA_FOLDER/datasets.db
+    ret=$?
+    if [ $ret -ne 0 ]; then
+         echo "Script exited with error." >&2
+         stop_exareme
+    fi
 #this is the master
 else
     DESC="exareme-master"
@@ -110,6 +121,7 @@ else
             echo "Master node with IP "$MY_IP" and name " $NODE_NAME" trying to re-boot..."
                 while [ ! -f /tmp/exareme/var/log/$DESC.log ]; do
             echo "Master node with IP "$MY_IP" and name " $NODE_NAME" re-booted..."
+            ./exareme-admin.sh --status
         done
         fi
     #Master just created
@@ -121,16 +133,17 @@ else
         done
     fi
     curl -X PUT -d @- $CONSULURL/v1/kv/$EXAREME_MASTER_PATH/$NODE_NAME <<< $MY_IP
+
+    # Both Master and Worker should transform the csv to an sqlite db file
+    echo "Removing the previous datasets.db file if it still exists"
+    rm -f $DOCKER_METADATA_FOLDER/datasets.db
+    echo "Parsing the csv file in " $DOCKER_METADATA_FOLDER " to a db file. "
+    python ./convert-csv-dataset-to-db.py --csvFilePath $DOCKER_DATASETS_FOLDER/datasets.csv --variablesMetadataPath $DOCKER_METADATA_FOLDER/variablesMetadata.json --outputDBAbsPath $DOCKER_METADATA_FOLDER/datasets.db
+    ret=$?
+    if [ $ret -ne 0 ]; then
+         echo "Script exited with error." >&2
+         stop_exareme
+    fi
 fi
 
-# Both Master and Worker should transform the csv to an sqlite db file
-echo "Removing the previous datasets.db file if it still exists"
-rm -f $DOCKER_METADATA_FOLDER/datasets.db
-echo "Parsing the csv file in " $DOCKER_METADATA_FOLDER " to a db file. "
-python ./convert-csv-dataset-to-db.py --csvFilePath $DOCKER_DATASETS_FOLDER/datasets.csv --variablesMetadataPath $DOCKER_METADATA_FOLDER/variablesMetadata.json --outputDBAbsPath $DOCKER_METADATA_FOLDER/datasets.db
 
-# Running something in foreground, otherwise the container will stop
-while true
-do
-   tail -f /tmp/exareme/var/log/$DESC.log & wait ${!}
-done

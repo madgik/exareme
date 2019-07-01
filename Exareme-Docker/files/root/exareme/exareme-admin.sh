@@ -21,7 +21,7 @@ echo "EXAREME HOME DIR : $EXAREME_HOME";
 #maybe simply pass MASTER_IP from bootstrap
 EXAREME_MASTER=`/sbin/ifconfig | grep "inet " | awk -F: '{print $2}'  | grep '10.20' | awk '{print $1;}' | head -n 1`;	#TODO 10.20 always?
 echo "EXAREME MASTER HOST : $EXAREME_MASTER";
-
+echo "EXAREME_USER: $EXAREME_USER";
 ####################################################################################################
 # parse command line arguments
 ####################################################################################################
@@ -107,7 +107,7 @@ function start_exareme(){               #starts exareme daemon
     echo $EXAREME_JAVA
     echo $EXAREME_ADMIN_CLASS
     mkdir -p /tmp/exareme/var/log /tmp/exareme/var/run
-        $EXAREME_JAVA -cp $EXAREME_ADMIN_CLASS_PATH \
+    $EXAREME_JAVA -cp $EXAREME_ADMIN_CLASS_PATH \
         $EXAREME_ADMIN_OPTS $EXAREME_ADMIN_CLASS > /tmp/exareme/var/log/$DESC.log 2>&1 & echo $! > /tmp/exareme/var/run/$DESC.pid    #-cp requires class path specification
     exit 0
 
