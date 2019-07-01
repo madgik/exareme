@@ -25,6 +25,19 @@ deleteKeysFromConsul () {
     fi
 }
 
+transformCsvToDB () {
+    # Both Master and Worker should transform the csv to an sqlite db file
+    echo "Removing the previous datasets.db file if it still exists"
+    rm -f $DOCKER_METADATA_FOLDER/datasets.db
+    echo "Parsing the csv file in " $DOCKER_METADATA_FOLDER " to a db file. "
+    python ./convert-csv-dataset-to-db.py --csvFilePath $DOCKER_DATASETS_FOLDER/datasets.csv --CDEsMetadataPath $DOCKER_METADATA_FOLDER/CDEsMetadata.json --outputDBAbsPath $DOCKER_METADATA_FOLDER/datasets.db
+	ret=$?
+    if [ $ret -ne 0 ]; then
+         echo "Script exited with error." >&2
+         exit 1
+    fi
+}
+
 # Setup signal handlers
 trap term_handler SIGTERM SIGKILL
 
@@ -73,14 +86,16 @@ if [ "$MASTER_FLAG" != "master" ]; then         #this is a worker
         echo "Waiting for master node to be initialized...."
         sleep 2
     done
-    ./set-local-datasets.sh
+
     MASTER_IP=$(curl -s $CONSULURL/v1/kv/$EXAREME_MASTER_PATH/$(curl -s $CONSULURL/v1/kv/$EXAREME_MASTER_PATH/?keys | jq -r '.[]' | sed "s/$EXAREME_MASTER_PATH\///g")?raw)
     MASTER_NAME=$(curl -s $CONSULURL/v1/kv/$EXAREME_MASTER_PATH/?keys | jq -r '.[]' | sed "s/$EXAREME_MASTER_PATH\///g")
     MY_IP=$(/sbin/ifconfig | grep "inet " | awk -F: '{print $2}' | grep '10.20' | awk '{print $1;}' | head -n 1)
+
+    transformCsvToDB
+
     . ./start-worker.sh
-    sleep 1
     ./exareme-admin.sh --status
-    curl -X PUT -d @- $CONSULURL/v1/kv/$EXAREME_ACTIVE_WORKERS_PATH/$NODE_NAME <<< $MY_IP
+
     while [ ! -f /tmp/exareme/var/log/$DESC.log ]; do
         echo "Trying to connect worker with IP "$MY_IP" and name "$NODE_NAME" to master with IP "$MASTER_IP" and name "$MASTER_NAME"."
     done
@@ -94,23 +109,19 @@ if [ "$MASTER_FLAG" != "master" ]; then         #this is a worker
            stop_exareme
         fi
     done
+    curl -X PUT -d @- $CONSULURL/v1/kv/$1/$NODE_NAME <<< $2
+    ./set-local-datasets.sh
     echo -e "\nWorker with IP "$MY_IP" and name "$NODE_NAME" connected to master with IP "$MASTER_IP" and name "$MASTER_NAME"."
-     # Both Master and Worker should transform the csv to an sqlite db file
-    echo "Removing the previous datasets.db file if it still exists"
-    rm -f $DOCKER_METADATA_FOLDER/datasets.db
-    echo "Parsing the csv file in " $DOCKER_METADATA_FOLDER " to a db file. "
-    python ./convert-csv-dataset-to-db.py --csvFilePath $DOCKER_DATASETS_FOLDER/datasets.csv --variablesMetadataPath $DOCKER_METADATA_FOLDER/variablesMetadata.json --outputDBAbsPath $DOCKER_METADATA_FOLDER/datasets.db
-    ret=$?
-    if [ $ret -ne 0 ]; then
-         echo "Script exited with error." >&2
-         stop_exareme
-    fi
+
 #this is the master
 else
     DESC="exareme-master"
     echo -n $NODE_NAME > /root/exareme/etc/exareme/name
-    ./set-local-datasets.sh
+
     MY_IP=$(/sbin/ifconfig | grep "inet " | awk -F: '{print $2}' | grep '10.20' | awk '{print $1;}' | head -n 1)
+
+    transformCsvToDB
+
     #Master re-booted
     if [ "$(curl -s -o  /dev/null -i -w "%{http_code}\n" ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/?keys)" = "200" ]; then
         if [ "$(curl -s -o  /dev/null -i -w "%{http_code}\n" ${CONSULURL}/v1/kv/${EXAREME_ACTIVE_WORKERS_PATH}/?keys)" = "200" ]; then  #workers connected to him
@@ -131,19 +142,15 @@ else
         while [ ! -f /tmp/exareme/var/log/$DESC.log ]; do
             echo "Initializing master node with IP "$MY_IP" and name " $NODE_NAME"..."
         done
+        ./exareme-admin.sh --status
     fi
-    curl -X PUT -d @- $CONSULURL/v1/kv/$EXAREME_MASTER_PATH/$NODE_NAME <<< $MY_IP
+    curl -X PUT -d @- $CONSULURL/v1/kv/$1/$NODE_NAME <<< $2
+    ./set-local-datasets.sh
 
-    # Both Master and Worker should transform the csv to an sqlite db file
-    echo "Removing the previous datasets.db file if it still exists"
-    rm -f $DOCKER_METADATA_FOLDER/datasets.db
-    echo "Parsing the csv file in " $DOCKER_METADATA_FOLDER " to a db file. "
-    python ./convert-csv-dataset-to-db.py --csvFilePath $DOCKER_DATASETS_FOLDER/datasets.csv --variablesMetadataPath $DOCKER_METADATA_FOLDER/variablesMetadata.json --outputDBAbsPath $DOCKER_METADATA_FOLDER/datasets.db
-    ret=$?
-    if [ $ret -ne 0 ]; then
-         echo "Script exited with error." >&2
-         stop_exareme
-    fi
 fi
 
-
+# Running something in foreground, otherwise the container will stop
+while true
+do
+    tail -f /tmp/exareme/var/log/$DESC.log & wait ${!}
+done
