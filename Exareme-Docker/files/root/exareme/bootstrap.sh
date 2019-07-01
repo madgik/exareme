@@ -9,10 +9,10 @@ stop_exareme () {
 	    kill -9 $( cat /tmp/exareme/var/run/*.pid)
         rm /tmp/exareme/var/run/*.pid
         echo "Stopped."
+        exit 1
     else
        echo "Already stopped, no action taken."
     fi
-    exit 1
 }
 
 deleteKeysFromConsul () {
@@ -109,7 +109,7 @@ if [ "$MASTER_FLAG" != "master" ]; then         #this is a worker
            stop_exareme
         fi
     done
-    curl -X PUT -d @- $CONSULURL/v1/kv/$1/$NODE_NAME <<< $2
+    curl -X PUT -d @- $CONSULURL/v1/kv/$EXAREME_ACTIVE_WORKERS_PATH/$NODE_NAME <<< $MY_IP
     ./set-local-datasets.sh
     echo -e "\nWorker with IP "$MY_IP" and name "$NODE_NAME" connected to master with IP "$MASTER_IP" and name "$MASTER_NAME"."
 
@@ -144,7 +144,7 @@ else
         done
         ./exareme-admin.sh --status
     fi
-    curl -X PUT -d @- $CONSULURL/v1/kv/$1/$NODE_NAME <<< $2
+    curl -X PUT -d @- $CONSULURL/v1/kv/$EXAREME_MASTER_PATH/$NODE_NAME <<< $MY_IP
     ./set-local-datasets.sh
 
 fi
