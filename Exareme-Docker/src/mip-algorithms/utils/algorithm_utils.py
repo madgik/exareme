@@ -4,6 +4,8 @@ from __future__ import print_function
 import sqlite3
 import pickle
 import codecs
+import os
+import errno
 
 PRIVACY_MAGIC_NUMBER = 10
 P_VALUE_CUTOFF = 0.001
@@ -53,9 +55,15 @@ class StateData(object):  # TODO Call save in constructor to simplify algorithm 
         return self.data
 
     def save(self, fname, pickle_protocol=2):
-        with open(fname, 'wb') as file:
+        if not os.path.exists(os.path.dirname(fname)):
             try:
-                pickle.dump(self, file, protocol=pickle_protocol)
+                os.makedirs(os.path.dirname(fname))
+            except OSError as exc:  # Guard against race condition
+                if exc.errno != errno.EEXIST:
+                    raise
+        with open(fname, 'wb') as f:
+            try:
+                pickle.dump(self, f, protocol=pickle_protocol)
             except pickle.PicklingError:
                 print('Unpicklable object.')
 
@@ -70,6 +78,14 @@ class StateData(object):  # TODO Call save in constructor to simplify algorithm 
         return obj
 
 
+class Global2Local_TD(TransferData):
+    def __init__(self, **kwargs):
+        self.data = kwargs
+
+    def get_data(self):
+        return self.data
+
+
 def set_algorithms_output_data(data):
     print(data)
 
@@ -82,3 +98,10 @@ class PrivacyError(Exception):
 class ExaremeError(Exception):
     def __init__(self, message):
         super(ExaremeError, self).__init__(message)
+
+
+def make_json_raw(**kwargs):
+    return {
+        "type": "application/json",
+        "data": kwargs
+    }
