@@ -56,15 +56,6 @@
 			"valueNotBlank": false,
 			"valueMultiple": true,
 			"valueType": "string"
-		}, {
-
-			"name": "outputformat",
-			"desc": "pfa",
-			"type": "other",
-			"value": "pfa",
-			"valueNotBlank": true,
-			"valueMultiple": false,
-			"valueType": "string"
 		}
 	]
 }

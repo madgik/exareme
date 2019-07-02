@@ -85,7 +85,8 @@ class highchartsbasiccolumn(functions.vtable.vtbase.VT):
                     categories[int(c[1])] = str(c[2])
                     categoriesstring+= "\""+ str(c[2])+"\","
 
-        myresult =  "{ \"chart\": { \"type\": \"column\" },"
+
+        myresult =  "{\"type\": \"application/vnd.highcharts+json\",\"data\":{ \"chart\": { \"type\": \"column\" },"
         if 'title' in dictargs:
             myresult +=  " \"title\": { \"text\": \"" + dictargs['title'] +"\"},"
         myresult+= "\"xAxis\": { \"categories\": [" + categoriesstring[0:-1]  +" ], \"crosshair\": True }, \"yAxis\": { \"min\": 0, \"title\": { \"text\": \"" + dictargs['ytitle']+ "\" } },\
@@ -97,7 +98,6 @@ class highchartsbasiccolumn(functions.vtable.vtbase.VT):
 
 
         if len(enumerations)==1 and enumerations[0] =='None':
-            print "AAAA",enumerations
             myresult += "{ \"name\": \""+"All"+"\", \"data\": ["
             for i in xrange(len(categories)):
                 for c in mydata:
@@ -113,7 +113,7 @@ class highchartsbasiccolumn(functions.vtable.vtbase.VT):
                         if str(c[0])== name and int(c[1])==i:
                             myresult += str(int(c[5])) +","
                 myresult = myresult[0:-1] + "]},"
-            myresult = myresult[0:-1]+"]}"
+            myresult = myresult[0:-1]+"]}}"
 
 
         yield [('highchartresult',)]

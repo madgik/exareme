@@ -18,59 +18,40 @@ hidden var 'sume' from select sum(sume) from %{input_global_tbl};
 hidden var 'dSigmaSq' from select case when %{rows} = %{cols} then 0 else  %{sse}/(%{rows}-%{cols}) end;
 
 --Compute for each estimate: standardError =sqroot(dSigmaSq*val) ,  tvalue = estimate/dSigmaSq , p value <-- 2*pt (-abs(t.value), df = length(data)-1)  (Global Layer)
-drop table if exists defaultDB.LRtotalresulttbl;
-create table defaultDB.LRtotalresulttbl (tablename text, predictor text, estimate real, stderror real, tvalue real, prvalue real,
-                                                      residualsmin real,residualsmax real,residualstandarderror real, degreesoffreedom int,
-                                                      rsquared real, adjustedR real,
-                                                      fstatistic real, noofvariables int);
-
 --Coefficients statistics
-insert into defaultDB.LRtotalresulttbl
-select "Model Coefficients" as tablename, attr as predictor, estimate, stderror,
-                               tvalue, 2*t_distribution_cdf(-abs(tvalue), %{rows} -%{cols}) as prvalue,
-       null, null, null, null, null, null, null, null
-from (  select attr, estimate, stderror, estimate/stderror as tvalue
-	from (	select coefficients.attr1 as attr,
-                       estimate,
-                       sqroot(var('dSigmaSq')*val)  as stderror,
-                       estimate/sqroot(var('dSigmaSq')*val) as tvalue
-		from defaultDB.coefficients, defaultDB.XTXinverted
-		where coefficients.attr1 = XTXinverted.attr1 and XTXinverted.attr1 = XTXinverted.attr2));
+drop table if exists defaultDB.LRtotalresulttbl;
+create table defaultDB.LRtotalresulttbl (predictor text, estimate real, stderror real, tvalue real, prvalue real);
 
---Residuals statistics
 insert into defaultDB.LRtotalresulttbl
-select "Residuals" , null, null, null, null, null,
-                    %{mine}, %{maxe},
-case when  %{rows} = %{cols} then 0 else sqroot(%{sse}/(%{rows} -%{cols})) end as residualstandarderror,
-           %{rows}-%{cols} as degreesoffreedom,
-           null, null, null, null;
+select attr as predictor, estimate, stderror, tvalue, 2*t_distribution_cdf(-abs(tvalue), %{rows} -%{cols}) as prvalue
+from ( select attr, estimate, stderror, estimate/stderror as tvalue
+	     from (	select coefficients.attr1 as attr,
+                     estimate,
+                     sqroot(var('dSigmaSq')*val)  as stderror,
+                    estimate/sqroot(var('dSigmaSq')*val) as tvalue
+		          from defaultDB.coefficients, defaultDB.XTXinverted
+		          where coefficients.attr1 = XTXinverted.attr1 and XTXinverted.attr1 = XTXinverted.attr2));
 
---Compute R^2 and adjustedR^2 (Global Layer)
+var 'tableResultCoefficients' from select * from (totabulardataresourceformat title:Coefficients types:text,real,real,real,real
+                            select predictor, estimate, stderror, tvalue, prvalue from defaultDB.LRtotalresulttbl);
+
+drop table if exists defaultDB.LRtotalresulttbl2;
+create table defaultDB.LRtotalresulttbl2 (name text, value real);
+
+insert into LRtotalresulttbl2 select `residual min`, %{mine};
+insert into LRtotalresulttbl2 select `residual max`, %{maxe};
+insert into LRtotalresulttbl2 select `residual standard error`, case when  %{rows} = %{cols} then 0 else sqroot(%{sse}/(%{rows} -%{cols})) end;
+insert into LRtotalresulttbl2 select `degrees of freedom`,  %{rows}-%{cols};
 var 'rsquared' from select 1- %{sse}/%{sst};
-insert into defaultDB.LRtotalresulttbl
-select "R squared", null, null, null, null, null,
-                    null, null, null, null,
-                   %{rsquared} as rsquared, 1 - %{sse}*(%{rows}-1) / (%{sst}*(%{rows}-%{cols})) as adjustedR ,
-                   null,null;
+insert into LRtotalresulttbl2 select `R squared`, %{rsquared};
+insert into LRtotalresulttbl2 select `adjusted R`, 1 - %{sse}*(%{rows}-1) / (%{sst}*(%{rows}-%{cols})) ;
+insert into LRtotalresulttbl2 select `f-statistic`,  %{rsquared} * (%{rows}-%{cols}) / ((1-%{rsquared})*(%{cols}-1)) ;
+insert into LRtotalresulttbl2 select `no of variables`, %{cols}-1  ;
 
---Compute F and F statistics (Global Layer)
-insert into defaultDB.LRtotalresulttbl
-select "F-statistics", null, null, null, null, null,
-                       null, null, null, %{rows}-%{cols} as degreesoffreedom,
-                       null, null,
-                       %{rsquared} * (%{rows}-%{cols}) / ((1-%{rsquared})*(%{cols}-1)) as fstatistic,
-                       %{cols}-1 as noofvariables;
+var 'tableResultStats' from select * from (totabulardataresourceformat title:Coefficients types:text,real
+                              select name,value from defaultDB.LRtotalresulttbl2);
 
-
-drop table if exists defaultDB.LRtotalresultvisual;
-create table defaultDB.LRtotalresultvisual as
-setschema 'result'
-select * from (totabulardataresourceformat title:LINEAR_REGRESSION_TABLE types:text,text,real,real,real,real,real,real,real,int,real,real,real,int
-               select * from defaultDB.LRtotalresulttbl);
-
-select * from defaultDB.LRtotalresultvisual;
-
-
+select "{\"result\": ["||'%{tableCoefficients}'||","||'%{tableResultStats}'||"]}";
 
 
 --------------------------------------------------------------------------------------------------------
