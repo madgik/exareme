@@ -10,7 +10,6 @@ import json
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/utils/')
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/PCA/')
 
-
 from algorithm_utils import StateData, set_algorithms_output_data, make_json_raw
 from lib import PCA2_Loc2Glob_DT
 
@@ -18,7 +17,6 @@ from lib import PCA2_Loc2Glob_DT
 def pca_global(global_in):
     # Unpack global input
     gramian, n_obs, schema_X = global_in.get_data()
-    raise ValueError(gramian)
     gramian = np.divide(gramian, n_obs - 1)
 
     eigen_vals, eigen_vecs = np.linalg.eig(gramian)

@@ -9,7 +9,6 @@ import numpy as np
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/utils/')
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/PCA/')
 
-
 from algorithm_utils import StateData, Global2Local_TD
 from lib import PCA2_Loc2Glob_DT
 
@@ -19,7 +18,7 @@ def pca_local(local_state, local_in):
     X, schema_X = local_state['X'], local_state['schema_X']
     # Unpack local input
     dt = local_in.get_data()
-    mean =  dt['mean']
+    mean = dt['mean']
 
     # Substract the mean of each variable
     n_obs = len(X)
@@ -27,7 +26,7 @@ def pca_local(local_state, local_in):
     gramian = np.dot(np.transpose(X), X)
 
     # Pack results
-    local_out = PCA2_Loc2Glob_DT(gramian, schema_X, n_obs)
+    local_out = PCA2_Loc2Glob_DT(gramian, n_obs, schema_X)
     return local_out
 
 

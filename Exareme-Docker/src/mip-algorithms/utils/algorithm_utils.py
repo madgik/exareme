@@ -6,6 +6,7 @@ import pickle
 import codecs
 import os
 import errno
+import numpy as np
 
 PRIVACY_MAGIC_NUMBER = 10
 P_VALUE_CUTOFF = 0.001
@@ -101,6 +102,9 @@ class ExaremeError(Exception):
 
 
 def make_json_raw(**kwargs):
+    for key, val in kwargs.items():
+        if type(val) == np.ndarray:
+            kwargs[key] = val.tolist()
     return {
         "type": "application/json",
         "data": kwargs
