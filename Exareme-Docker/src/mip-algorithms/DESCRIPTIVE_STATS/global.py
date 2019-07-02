@@ -31,15 +31,15 @@ def descr_stats_global(global_in):
     result_list = []
     for i in xrange(n_cols):
         result_list.append({
-            'Variable': schema_X[i],
-            'Mean': mean[i],
-            'Std.Err.': std[i],
+            'Variable'  : schema_X[i],
+            'Mean'      : mean[i],
+            'Std.Err.'  : std[i],
             'Upper C.I.': upper_ci[i],
             'Lower C.I.': lower_ci[i]
         })
 
     result = {
-        'result' : [
+        'result': [
             {
                 "type": "application/json",
                 "data": result_list

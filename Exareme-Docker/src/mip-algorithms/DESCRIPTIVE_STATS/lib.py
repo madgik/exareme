@@ -8,6 +8,7 @@ sys.path.append(path.dirname(path.dirname(path.abspath(__file__))) + '/utils/')
 
 from algorithm_utils import TransferData, ExaremeError
 
+
 class DescrStatsLocalDT(TransferData):
     def __init__(self, *args):
         if len(args) != 6:
