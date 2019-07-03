@@ -1,0 +1,63 @@
+{
+	"name": "NAIVE_BAYES_TESTING",
+	"desc": "BayesNaive_v3",
+	"type": "local_global",
+	"status": "enabled",
+	"vtype": "",
+	"parameters": [{
+			"name": "iterationNumber",
+			"desc": "",
+			"type": "other",
+			"value": "0",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "integer"
+		}, {
+			"name": "model",
+			"desc": "",
+			"type": "other",
+			"value": "",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "json"
+		}, {
+			"name": "dbIdentifier",
+			"desc": "",
+			"type": "other",
+			"value": "",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "string"
+		}, {
+			"name": "dataset",
+			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty.",
+			"type": "dataset",
+			"value": "adni",
+			"valueNotBlank": true,
+			"valueMultiple": true,
+			"valueType": "string"
+		}, {
+			"name": "x",
+			"desc": "",
+			"type": "column",
+			"columnValuesSQLType": "",
+			"columnValuesIsCategorical": "",
+			"columnValuesNumOfEnumerations": "",
+			"value": "righthippocampus,lefthippocampus",
+			"valueNotBlank": true,
+			"valueMultiple": true,
+			"valueType": "string"
+		}, {
+			"name": "y",
+			"desc": "classname",
+			"type": "column",
+			"columnValuesSQLType": "",
+			"columnValuesIsCategorical": "true",
+			"columnValuesNumOfEnumerations": "",
+			"value": "alzheimerbroadcategory",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "string"
+		}
+	]
+}

@@ -129,7 +129,19 @@
 			"sql_type": "text",
 			"type": "polynominal",
 			"isCategorical": true
-		}, {
+		},
+		{
+			"code": "car_id",
+			"description": "",
+			"minValue": "",
+			"maxValue":"",
+			"label": "pp",
+			"methodology": "Testing",
+			"sql_type": "int",
+			"type": "",
+			"isCategorical": false
+		},
+		{
 			"code": "car_buying",
 			"description": "",
 			"enumerations": [{

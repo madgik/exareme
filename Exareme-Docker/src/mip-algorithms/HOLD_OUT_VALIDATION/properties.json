@@ -1,0 +1,79 @@
+{
+	"name": "HOLD_OUT_VALIDATION",
+	"desc": "Hold Out Validation",
+	"type": "local_global",
+	"status": "enabled",
+	"vtype": "",
+	"parameters": [{
+			"name": "dataset",
+			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed.",
+			"type": "dataset",
+			"value": "desd-synthdata",
+			"valueNotBlank": true,
+			"valueMultiple": true,
+			"valueType": "string"
+		}, {
+			"name": "x",
+			"desc": "",
+			"type": "column",
+			"columnValuesSQLType": "",
+			"columnValuesIsCategorical": "",
+			"columnValuesNumOfEnumerations": "",
+			"value": "righthippocampus,lefthippocampus",
+			"valueNotBlank": true,
+			"valueMultiple": true,
+			"valueType": "string"
+		}, {
+			"name": "y",
+			"desc": "classname",
+			"type": "column",
+			"columnValuesSQLType": "",
+			"columnValuesIsCategorical": "true",
+			"columnValuesNumOfEnumerations": "",
+			"value": "alzheimerbroadcategory",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "string"
+		}, {
+			"name": "test_size",
+			"desc": "",
+			"type": "other",
+			"value": "0.25",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "real"
+		}, {
+			"name": "train_size",
+			"desc": "",
+			"type": "other",
+			"value": "",
+			"valueNotBlank": false,
+			"valueMultiple": false,
+			"valueType": "real"
+		}, {
+			"name": "random_state",
+			"desc": "",
+			"type": "other",
+			"value": "",
+			"valueNotBlank": false,
+			"valueMultiple": false,
+			"valueType": "real"
+		}, {
+			"name": "shuffle",
+			"desc": "",
+			"type": "other",
+			"value": "",
+			"valueNotBlank": false,
+			"valueMultiple": false,
+			"valueType": "string"
+		}, {
+			"name": "dbIdentifier",
+			"desc": "Predefined value for the dbIdentifier",
+			"type": "other",
+			"value": "",
+			"valueNotBlank": false,
+			"valueMultiple": false,
+			"valueType": "string"
+		}
+	]
+}
