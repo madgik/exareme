@@ -4,7 +4,6 @@
 -- hidden var 'defaultDB' defaultDB_ID3;
 -- hidden var 'columns' 'car_buying,car_maint,car_doors,car_persons,car_lug_boot,car_safety';
 -- var 'classname' 'car_class';
--- hidden var 'outputformat' 'json';
 --
 -- drop table if exists inputdata;
 -- create table inputdata as
@@ -20,7 +19,7 @@
 --k or centers should be null. Otherwise the algorithm should stop. The algorithm should stop if Var 'error' ==1 . TODO Sofia k>=2
 --var 'error' from  select case when tonumber(%{centersisempty}) + tonumber(%{kisempty}) =1 then 0 else 1 end;
 
-requirevars 'defaultDB' 'input_local_DB' 'db_query' 'x' 'y' 'dataset' 'outputformat';
+requirevars 'defaultDB' 'input_local_DB' 'db_query' 'x' 'y' 'dataset' ;
 attach database '%{defaultDB}' as defaultDB;
 attach database '%{input_local_DB}' as localDB;
 

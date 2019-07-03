@@ -3,7 +3,7 @@ import json
 import logging
 
 
-endpointUrl='http://88.197.53.100:9090/mining/query/ID3'
+endpointUrl='http://localhost:9090/mining/query/ID3'
 
 def test_ID3_1():
     logging.info("---------- TEST : ID3 - Test using contact-lenses dataset  ")
@@ -20,10 +20,7 @@ def test_ID3_1():
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
     r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
     result = json.loads(r.text)
-    print (result)
-
-    # Exareme Result
-    # result =[{'no': 0, 'result': 'CL_tear_prod_rate=reduced:none'}, {'no': 1, 'result': 'CL_tear_prod_rate=normal'}, {'no': 2, 'result': '|CL_astigmatism=no'}, {'no': 3, 'result': '||CL_age=pre-presbyopic:soft'}, {'no': 4, 'result': '||CL_age=young:soft'}, {'no': 5, 'result': '||CL_age=presbyopic'}, {'no': 6, 'result': '|||CL_spectacle_prescrip=hypermetrope:soft'}, {'no': 7, 'result': '|||CL_spectacle_prescrip=myope:none'}, {'no': 8, 'result': '|CL_astigmatism=yes'}, {'no': 9, 'result': '||CL_spectacle_prescrip=myope:hard'}, {'no': 10, 'result': '||CL_spectacle_prescrip=hypermetrope'}, {'no': 11, 'result': '|||CL_age=pre-presbyopic:none'}, {'no': 12, 'result': '|||CL_age=presbyopic:none'}, {'no': 13, 'result': '|||CL_age=young:hard'}]
+    print (result['result'][2]['data'])
 
 
     #  WEKA RESULT
@@ -58,7 +55,8 @@ CL_tear_prod_rate = normal
 |  |  |  CL_age = presbyopic: none
 |  |  |  CL_age = young: hard'''
 
-    check_variable(result,correctResult)
+
+    check_variable(result['result'][2]['data'],correctResult)
 
 
 def test_ID3_Privacy():
@@ -89,6 +87,7 @@ def check_privacy_result(result):
 def check_variable(exaremeResult, correctResult):
     exaremeresultfinal=""
     for i in range(len(exaremeResult)):
+
         exaremeresultfinal += str(exaremeResult[i]['result'])
     correctResult=str(correctResult)
     correctResult = correctResult.replace(' ','')

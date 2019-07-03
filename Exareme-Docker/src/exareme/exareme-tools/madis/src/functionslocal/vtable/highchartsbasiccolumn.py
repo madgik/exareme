@@ -104,7 +104,7 @@ class highchartsbasiccolumn(functions.vtable.vtbase.VT):
                     if  int(c[1])==i:
                         myresult += str(int(c[5])) +","
             myresult = myresult[0:-1] + "]},"
-            myresult = myresult[0:-1]+"]}"
+            myresult = myresult[0:-1]+"]}}"
         else:
             for name in enumerations: #AD,Other
                 myresult += "{ \"name\": \""+name+"\", \"data\": ["

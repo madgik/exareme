@@ -17,4 +17,5 @@ create table  defaultDB.privatehistresult as
 select grouping, id, val, minval, maxval, case when totalsum < %{minNumberOfData} then 0 else cast(totalsum as int) end as totalsum from defaultDB.histresult;
 
 var 'enumerations' from select enumerations from defaultDB.metadatatbl where code =='%{y}';
+
 highchartsbasiccolumn enumerations:%{enumerations} title:Histogram ytitle:Count select * from defaultDB.histresult;

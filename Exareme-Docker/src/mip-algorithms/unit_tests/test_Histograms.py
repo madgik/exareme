@@ -5,7 +5,7 @@ import math
 from decimal import *
 
 
-endpointUrl='http://88.197.53.100:9090/mining/query/HISTOGRAMS'
+endpointUrl='http://localhost:9090/mining/query/HISTOGRAMS'
 
 
 def test_Histogram_1():
@@ -39,8 +39,8 @@ def test_Histogram_1():
 
     corr_counts =[ {'name': 'All', 'data': [ 3 ,  0 ,  0  , 0  , 0,   0 ,  0 ,  0 ,  3 ,  1  ,10  , 8 ,  3,   9  ,24 , 43 , 29,  61, 107 , 82 , 91, 104,  81  ,61 , 79 , 31 , 42 ,24  , 6   ,8 ,  5 ,  0 ,  0  , 0  , 5]}]
 
-    check_rangesofbins(result['xAxis']['categories'],corr_bins)
-    check_valuesofbins(result['series'],corr_counts,10)
+    check_rangesofbins(result['data']['xAxis']['categories'],corr_bins)
+    check_valuesofbins(result['data']['series'],corr_counts,10)
 
 
 
@@ -81,8 +81,8 @@ def test_Histogram_2():
     corr_counts =[ {'name': 'M', 'data': [ 0 , 0  ,0  ,0 , 0,  0 , 0 , 0 , 0 , 3, 19, 12, 55, 51, 91, 61 ,56 ,29, 42 ,11, 11  ,0,  0 , 5]},
      {'name': 'F', 'data': [3 , 0,  0 , 0 , 0,  3,  5 ,14 , 4, 19, 38 ,34 ,83, 62, 65 ,72, 42 ,12, 14 , 2 , 2,  0 , 0  ,0]}]
 
-    check_rangesofbins(result['xAxis']['categories'],corr_bins)
-    check_valuesofbins(result['series'],corr_counts,10)
+    check_rangesofbins(result['data']['xAxis']['categories'],corr_bins)
+    check_valuesofbins(result['data']['series'],corr_counts,10)
 
 
 def test_Histogram_3():
@@ -123,8 +123,8 @@ def test_Histogram_3():
                    {'name': 'Other', 'data': [  1 , 0,  0,  0 , 0,  2,  2,  7, 13, 26, 25, 24 ,13, 16 , 8 , 5,  3 , 0 , 1]}]
 
 
-    check_rangesofbins(result['xAxis']['categories'],corr_bins)
-    check_valuesofbins(result['series'],corr_counts,10)
+    check_rangesofbins(result['data']['xAxis']['categories'],corr_bins)
+    check_valuesofbins(result['data']['series'],corr_counts,10)
 
 
 
@@ -154,8 +154,8 @@ def test_Histogram_4():
     corr_bins = ["Other","AD","CN"]
     corr_counts =[{'name': 'All', 'data': [146,274,298]}]
 
-    check_rangesofbinsDiscreteVariable(result['xAxis']['categories'],corr_bins)
-    check_valuesofbins(result['series'],corr_counts,10)
+    check_rangesofbinsDiscreteVariable(result['data']['xAxis']['categories'],corr_bins)
+    check_valuesofbins(result['data']['series'],corr_counts,10)
 
 
 
@@ -183,8 +183,8 @@ def test_Histogram_5():
     corr_counts =[{'name': 'F', 'data': [73,161,154]},
                   {'name': 'M', 'data': [73,113,144]}]
 
-    check_rangesofbinsDiscreteVariable(result['xAxis']['categories'],corr_bins)
-    check_valuesofbins(result['series'],corr_counts,10)
+    check_rangesofbinsDiscreteVariable(result['data']['xAxis']['categories'],corr_bins)
+    check_valuesofbins(result['data']['series'],corr_counts,10)
 
 
 
