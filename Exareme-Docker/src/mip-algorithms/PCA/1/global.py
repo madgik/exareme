@@ -2,8 +2,6 @@ from __future__ import division
 from __future__ import print_function
 
 import sys
-import math
-import json
 from os import path
 import numpy as np
 from argparse import ArgumentParser
@@ -11,9 +9,8 @@ from argparse import ArgumentParser
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/utils/')
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/PCA/')
 
-
-from algorithm_utils import Global2Local_TD, ExaremeError
-from lib import PCA1_Loc2Glob_DT
+from algorithm_utils import Global2Local_TD
+from lib import PCA1_Loc2Glob_TD
 
 
 def pca_global(global_in):
@@ -35,7 +32,7 @@ def main():
     args, unknown = parser.parse_known_args()
     local_dbs = path.abspath(args.local_step_dbs)
 
-    local_out = PCA1_Loc2Glob_DT.load(local_dbs)
+    local_out = PCA1_Loc2Glob_TD.load(local_dbs)
     # Run algorithm global step
     global_out = pca_global(global_in=local_out)
 

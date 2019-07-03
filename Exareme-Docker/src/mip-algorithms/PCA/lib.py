@@ -9,7 +9,7 @@ sys.path.append(path.dirname(path.dirname(path.abspath(__file__))) + '/utils/')
 from algorithm_utils import TransferData, ExaremeError
 
 
-class PCA1_Loc2Glob_DT(TransferData):
+class PCA1_Loc2Glob_TD(TransferData):
     def __init__(self, *args):
         if len(args) != 2:
             raise ExaremeError('Illegal number of arguments.')
@@ -20,13 +20,13 @@ class PCA1_Loc2Glob_DT(TransferData):
         return self.nn, self.sx
 
     def __add__(self, other):
-        return PCA1_Loc2Glob_DT(
-            self.nn + other.nn,
-            self.sx + other.sx,
+        return PCA1_Loc2Glob_TD(
+                self.nn + other.nn,
+                self.sx + other.sx,
         )
 
 
-class PCA2_Loc2Glob_DT(TransferData):
+class PCA2_Loc2Glob_TD(TransferData):
     def __init__(self, *args):
         if len(args) != 3:
             raise ExaremeError('Illegal number of arguments.')
@@ -38,8 +38,8 @@ class PCA2_Loc2Glob_DT(TransferData):
         return self.gramian, self.n_obs, self.schema_X
 
     def __add__(self, other):
-        return PCA2_Loc2Glob_DT(
-            self.gramian + other.gramian,
-            self.n_obs + other.n_obs,
-            self.schema_X,
+        return PCA2_Loc2Glob_TD(
+                self.gramian + other.gramian,
+                self.n_obs + other.n_obs,
+                self.schema_X,
         )

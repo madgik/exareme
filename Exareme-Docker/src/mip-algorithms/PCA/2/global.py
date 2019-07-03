@@ -10,16 +10,16 @@ import json
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/utils/')
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/PCA/')
 
-from algorithm_utils import StateData, set_algorithms_output_data, make_json_raw
-from lib import PCA2_Loc2Glob_DT
+from algorithm_utils import set_algorithms_output_data, make_json_raw
+from lib import PCA2_Loc2Glob_TD
 
 
 def pca_global(global_in):
     # Unpack global input
     gramian, n_obs, schema_X = global_in.get_data()
-    gramian = np.divide(gramian, n_obs - 1)
+    covar_matr = np.divide(gramian, n_obs - 1)
 
-    eigen_vals, eigen_vecs = np.linalg.eig(gramian)
+    eigen_vals, eigen_vecs = np.linalg.eig(covar_matr)
 
     result = make_json_raw(eigen_vals=eigen_vals, eigen_vecs=eigen_vecs)
     try:
@@ -38,7 +38,7 @@ def main():
     local_dbs = path.abspath(args.local_step_dbs)
 
     # Load local nodes output
-    local_out = PCA2_Loc2Glob_DT.load(local_dbs)
+    local_out = PCA2_Loc2Glob_TD.load(local_dbs)
     # Run algorithm global step
     global_out = pca_global(global_in=local_out)
     # Return the algorithm's output

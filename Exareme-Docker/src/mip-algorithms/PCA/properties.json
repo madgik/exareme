@@ -1,6 +1,6 @@
 {
     "name": "PCA",
-    "desc": "",
+    "desc": "Returns the eigenvalues and eigenvectors of the covariance matrix on centered data.",
     "type": "python_multiple_local_global",
     "status": "enabled",
     "parameters": [

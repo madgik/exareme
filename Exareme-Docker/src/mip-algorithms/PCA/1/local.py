@@ -12,9 +12,8 @@ import numpy.ma as ma
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/utils/')
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/PCA/')
 
-
 from algorithm_utils import StateData, query_with_privacy, ExaremeError, PrivacyError, PRIVACY_MAGIC_NUMBER
-from lib import PCA1_Loc2Glob_DT
+from lib import PCA1_Loc2Glob_TD
 
 
 def pca_local(local_in):
@@ -36,7 +35,7 @@ def pca_local(local_in):
         sx[i] = xm.sum()
 
         local_state = StateData(X=X, schema_X=schema_X)
-        local_out = PCA1_Loc2Glob_DT(nn, sx)
+        local_out = PCA1_Loc2Glob_TD(nn, sx)
 
     return local_state, local_out
 
@@ -55,9 +54,9 @@ def main():
     if args.x == '':
         raise ExaremeError('Field x must be non empty.')
     schema_X = list(
-        args.x
-            .replace(' ', '')
-            .split(',')
+            args.x
+                .replace(' ', '')
+                .split(',')
     )
     schema, data = query_with_privacy(fname_db=fname_loc_db, query=query)
     idx_X = [schema.index(v) for v in schema_X if v in schema]
