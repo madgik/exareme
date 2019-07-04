@@ -4,8 +4,10 @@ from __future__ import print_function
 import sqlite3
 import pickle
 import codecs
+import logging
 import os
 import errno
+
 
 PRIVACY_MAGIC_NUMBER = 10
 P_VALUE_CUTOFF = 0.001
@@ -75,6 +77,9 @@ class StateData(object):
                 print('Cannot unpickle.')
                 raise
         return obj
+
+def init_logger():
+    logging.basicConfig(filename='/var/log/exaremePythonAlgorithms.log')
 
 
 def set_algorithms_output_data(data):

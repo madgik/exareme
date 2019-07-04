@@ -798,6 +798,9 @@ public class Composer {
 
             dflScript.append("distributed create table " + outputGlobalTbl + " as external \n");
             dflScript.append("select * from (\n  call_python_script 'python " + globalScriptPath + " ");
+            for (ParameterProperties parameter : algorithmParameters) {
+                dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue()));
+            }
             dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.prevStatePKLKey, prevGlobalStatePKLFile));
             dflScript.append("'\n);\n");
 

@@ -8,7 +8,6 @@ sys.path.append(path.dirname(path.dirname(path.abspath(__file__))) + '/utils/')
 from algorithm_utils import TransferData
 
 PREC = 1e-7  # Precission used in termination_condition
-MAX_ITER = 20  # Maximum number of iterations
 
 
 class LogRegrInit_Loc2Glob_TD(TransferData):
