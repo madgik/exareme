@@ -5,6 +5,9 @@ import sqlite3
 import pickle
 import codecs
 import logging
+import os
+import errno
+
 
 PRIVACY_MAGIC_NUMBER = 10
 P_VALUE_CUTOFF = 0.001
@@ -45,8 +48,7 @@ def query_with_privacy(fname_db, query):
     return schema, data
 
 
-class StateData(object):  # TODO Call save in constructor to simplify algorithm code??
-
+class StateData(object):
     def __init__(self, **kwargs):
         self.data = kwargs
 
@@ -54,20 +56,26 @@ class StateData(object):  # TODO Call save in constructor to simplify algorithm 
         return self.data
 
     def save(self, fname, pickle_protocol=2):
-        with open(fname, 'wb') as file:
+        if not os.path.exists(os.path.dirname(fname)):
             try:
-                pickle.dump(self, file, protocol=pickle_protocol)
+                os.makedirs(os.path.dirname(fname))
+            except OSError as exc:  # Guard against race condition
+                if exc.errno != errno.EEXIST:
+                    raise
+        with open(fname, 'wb') as f:
+            try:
+                pickle.dump(self, f, protocol=pickle_protocol)
             except pickle.PicklingError:
                 print('Unpicklable object.')
 
     @classmethod
     def load(cls, fname):
-        with open(fname, 'rb') as file:
+        with open(fname, 'rb') as f:
             try:
-                obj = pickle.load(file)
+                obj = pickle.load(f)
             except pickle.UnpicklingError:
                 print('Cannot unpickle.')
-                return
+                raise
         return obj
 
 def init_logger():
