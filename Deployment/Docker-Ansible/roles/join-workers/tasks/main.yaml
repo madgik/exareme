@@ -2,4 +2,4 @@
 - name: Join Swarm
   shell: docker swarm join --token {{ hostvars['master']['worker_token']['stdout'] }} {{ hostvars['master']['ansible_host'] }}:2377
   register: join
-  ignore_errors: true
+  ignore_errors: true   #TODO check if it is part of THIS swarm or not
