@@ -67,7 +67,9 @@ def pearsonr_local(local_in):
 
     return local_out
 
+
 import logging
+
 
 def main():
     logging.basicConfig(filename='/var/log/exaremePythonAlgorithms.log')
