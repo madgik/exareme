@@ -72,8 +72,6 @@ import logging
 
 
 def main():
-    logging.basicConfig(filename='/var/log/exaremePythonAlgorithms.log')
-    logging.error('Inside main pearson!!')
     # Parse arguments
     parser = ArgumentParser()
     parser.add_argument('-x', required=True, help='Variable names in x, comma separated.')
