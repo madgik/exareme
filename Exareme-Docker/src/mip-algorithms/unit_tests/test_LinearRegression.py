@@ -5,8 +5,8 @@ import math
 from decimal import *
 
 
-endpointUrl='http://88.197.53.100:9090/mining/query/LINEAR_REGRESSION'
-endpointUrl='http://localhost:9090/mining/query/LINEAR_REGRESSION'
+endpointUrl='http://88.197.53.38:9090/mining/query/LINEAR_REGRESSION'
+endpointUrl='http://88.197.53.38:9090/mining/query/LINEAR_REGRESSION'
 
 def test_LinearRegression_1_1_dummycoding():
     logging.info("---------- TEST 1.1: Linear Regression, one categorical regressor,dummycoding")
