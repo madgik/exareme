@@ -9,7 +9,7 @@ stop_exareme () {
 	    kill -9 $( cat /tmp/exareme/var/run/*.pid)
         rm /tmp/exareme/var/run/*.pid
         echo "Stopped."
-        exit 1
+        exit 0
     else
        echo "Already stopped, no action taken."
     fi
