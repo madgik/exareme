@@ -32,7 +32,7 @@ public class PeriodicContainersStatusCheck {
     }
 
     public void addConainerToCheck(EntityName container) {
-        log.trace("Adding container to check: " + container);
+        log.debug("Adding container to check: " + container);
         containersToCheck.add(container);
     }
 

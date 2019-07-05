@@ -21,7 +21,6 @@ import madgik.exareme.master.queryProcessor.composer.AlgorithmProperties;
 import madgik.exareme.master.queryProcessor.composer.Algorithms;
 import madgik.exareme.master.queryProcessor.composer.Composer;
 import madgik.exareme.master.queryProcessor.composer.Exceptions.AlgorithmException;
-import madgik.exareme.utils.net.NetUtil;
 import madgik.exareme.worker.art.container.ContainerProxy;
 import madgik.exareme.worker.art.registry.ArtRegistryLocator;
 import org.apache.commons.io.Charsets;
@@ -48,9 +47,6 @@ import static madgik.exareme.master.gateway.GatewayConstants.COOKIE_ALGORITHM_EX
 public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<HttpRequest> {
 
     private static final Logger log = Logger.getLogger(HttpAsyncMiningQueryHandler.class);
-    private static final String msg =
-            "{ " + "\"schema\":[[\"error\",\"text\"]], " + "\"errors\":[[null]] " + "}\n";
-
     private static final String SET_COOKIE_HEADER_NAME = "Set-Cookie";
     private static final AdpDBManager manager = AdpDBManagerLocator.getDBManager();
     private static final IterationsHandler iterationsHandler = IterationsHandler.getInstance();
@@ -102,36 +98,99 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         httpExchange.submitResponse(new BasicAsyncResponseProducer(response));
     }
 
+    private HashMap <String,String[]> getDatasetsFromConsul() throws IOException {
+        Gson gson = new Gson();
+        HashMap <String,String[]> map = new HashMap<>();
+        String masterKey = searchConsul("master/?keys");
+        String[] masterKeysArray = gson.fromJson(masterKey, String[].class);
+
+        String masterName = masterKeysArray[0].replace("master/", "");
+        String masterIP = searchConsul("master/"+masterName+"?raw");
+        String datasetKey = searchConsul("datasets/"+masterName+"?raw");
+        String[] datasetKeysArray = gson.fromJson(datasetKey, String[].class);
+        map.put(masterIP,datasetKeysArray);
+
+        String workersKey = searchConsul("active_workers/?keys");
+        String[] workerKeysArray = gson.fromJson(workersKey, String[].class);
+        for(String worker: workerKeysArray){
+            String workerName = worker.replace("active_workers/", "");
+            String workerIP = searchConsul("active_workers/"+workerName+"?raw");
+            datasetKey = searchConsul("datasets/"+workerName+"?raw");
+            datasetKeysArray = gson.fromJson(datasetKey, String[].class);
+            map.put(workerIP,datasetKeysArray);
+        }
+        return map;
+    }
+
+    private  List<String> checkDatasets(HashMap <String,String[]> map, String[] usedDatasets) throws DatasetsException{
+        List<String> notFoundDatasets = new ArrayList<>();
+        List<String> nodesToBeChecked = new ArrayList<>();
+        Boolean flag;
+        for (String data: usedDatasets) {
+            Iterator entries = map.entrySet().iterator();
+            flag = false;
+            while (entries.hasNext()) {
+                Map.Entry entry = (Map.Entry) entries.next();
+                String IP = (String)entry.getKey();
+                String[] datasets = (String[]) entry.getValue();
+                if (Arrays.asList(datasets).contains(data)) {
+                    if(!nodesToBeChecked.contains(IP))
+                        nodesToBeChecked.add(IP);
+                    flag = true;
+                    continue;
+                }
+            }
+            if(!flag){
+                notFoundDatasets.add(data);
+            }
+        }
+        if(notFoundDatasets.size() !=0 ){
+            StringBuilder notFound = new StringBuilder();
+            for (String ds : notFoundDatasets)
+                notFound.append(ds).append(", ");
+            String notFoundSring = notFound.toString();
+            notFoundSring = notFoundSring.substring(0, notFoundSring.length() - 2);
+            throw new DatasetsException("Dataset(s) " + notFoundSring + " not found!");
+        }
+        return nodesToBeChecked;
+    }
+
+    private String preALgoExecutionChecks (HttpRequest request) throws UnsupportedHttpVersionException {
+        log.debug("Validate method ...");
+        RequestLine requestLine = request.getRequestLine();
+        String uri = requestLine.getUri();
+        String algorithmName = uri.substring(uri.lastIndexOf('/') + 1);
+        String method = requestLine.getMethod().toUpperCase(Locale.ENGLISH);
+
+        if (!"POST".equals(method)) {
+            throw new UnsupportedHttpVersionException(method + "not supported.");
+        }
+        log.debug("Posting " + algorithmName + " ...\n");
+        return algorithmName;
+    }
+
     // TODO Refactor as much as possible
     private void handleInternal(HttpRequest request, HttpResponse response, HttpContext context)
             throws HttpException, IOException {
 
-        log.debug("Validate method ...");
-        RequestLine requestLine = request.getRequestLine();
-        String uri = requestLine.getUri();
-        String method = requestLine.getMethod().toUpperCase(Locale.ENGLISH);
-        if (!"POST".equals(method)) {
-            throw new UnsupportedHttpVersionException(method + "not supported.");
-        }
+        //Check given method
+        String algorithmName = preALgoExecutionChecks(request);
 
+        //Get parameters of given algorithm
         log.debug("Parsing content ...");
-        String content = "";
+        HashMap<String, String> inputContent = new HashMap<String, String>();
+        List<Map> parameters = new ArrayList();
+        String content;
+        String[] usedDatasets = null;
+
         if (request instanceof HttpEntityEnclosingRequest) {
             log.debug("Streaming ...");
             HttpEntity entity = ((HttpEntityEnclosingRequest) request).getEntity();
             content = EntityUtils.toString(entity);
+            if (content != null && !content.isEmpty()) {
+                parameters = new Gson().fromJson(content, List.class);
+            }
         }
-
-        HashMap<String, String> inputContent = new HashMap<String, String>();
-        List<Map> parameters = new ArrayList();
-        if (content != null && !content.isEmpty()) {
-            parameters = new Gson().fromJson(content, List.class);
-        }
-
-        String algorithmName = uri.substring(uri.lastIndexOf('/') + 1);
-        log.debug("Posting " + algorithmName + " ...\n");
-
-        String[] usedDatasets = null;
         log.debug("All of the parameters: " + parameters);
         for (Map k : parameters) {
             String name = (String) k.get("name");
@@ -141,15 +200,11 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             log.debug("Parameter in the json: ");
             log.debug(name + " = " + value);
 
-            if (name.equals("filter"))
-                value = value.replaceAll("[^A-Za-z0-9,._*+><=&|(){}:\"\\[\\]]", "");
-            else
-                value = value.replaceAll("[^A-Za-z0-9,._*+():\\-{}\\\"\\[\\]]", "");    // ><=&| we no more need those for filtering
+            if (name.equals("filter")) value = value.replaceAll("[^A-Za-z0-9,._*+><=&|(){}:\"\\[\\]]", "");
+            else value = value.replaceAll("[^A-Za-z0-9,._*+():\\-{}\\\"\\[\\]]", "");    // ><=&| we no more need those for filtering
             value = value.replaceAll("\\s+", "");
 
-            if ("dataset".equals(name)) {
-                usedDatasets = value.split(",");
-            }
+            if ("dataset".equals(name)) usedDatasets = value.split(",");
 
             log.debug("Parameter after format: ");
             log.debug(name + " = " + value);
@@ -158,16 +213,25 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         }
 
         try {
-            Set<String> usedContainersIPs = getUsedContainers(usedDatasets, response);
-            if (usedContainersIPs == null) return;
-            ContainerProxy[] usedContainerProxies;
+
+            //Get datasets available in Consul.io for each node
+            HashMap <String,String[]> map = getDatasetsFromConsul();
+
+            //Check that datasets provided by user exist and retrieve nodes containing the existing datasets
+            List<String> nodesToBeChecked;
+            if(usedDatasets == null) nodesToBeChecked = allNodesIPs();
+            else nodesToBeChecked = checkDatasets(map,usedDatasets);
+
+            //Check that node containers are up and running properly
             log.debug("Checking workers...");
-            if (!allWorkersRunning(response, usedContainersIPs)) return;
+
+            if (!allNodesRunning(response,nodesToBeChecked)) return;
+            ContainerProxy[] usedContainerProxies;
 
             //Find container proxy of used containers (from IPs)
             List<ContainerProxy> usedContainerProxiesList = new ArrayList<>();
             for (ContainerProxy containerProxy : ArtRegistryLocator.getArtRegistryProxy().getContainers()) {
-                if (usedContainersIPs.contains(containerProxy.getEntityName().getIP())) {
+                if (nodesToBeChecked.contains(containerProxy.getEntityName().getIP())) {
                     usedContainerProxiesList.add(containerProxy);
                 }
             }
@@ -175,10 +239,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
 
             int numberOfContainers = usedContainerProxies.length;
             log.debug("Containers: " + numberOfContainers);
-            log.debug("Containers: " + new Gson().toJson(usedContainersIPs));
             String algorithmKey = algorithmName + "_" + System.currentTimeMillis();
-
-
             String dfl;
             AdpDBClientQueryStatus queryStatus;
 
@@ -259,7 +320,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         }
     }
 
-    private BasicHttpEntity getMessage(HttpResponse response, String message) throws IOException {
+    private void getMessage(HttpResponse response, String message) throws IOException {
         BasicHttpEntity entity = new BasicHttpEntity();
         String result = "{\"Error\":\"" + message + "\"}";
         byte[] contentBytes = result.getBytes(Charsets.UTF_8.name());
@@ -269,141 +330,50 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         entity.setChunked(false);
         response.setStatusCode(HttpStatus.SC_METHOD_FAILURE);
         response.setEntity(entity);
-        return entity;
     }
 
-    private boolean allWorkersRunning(HttpResponse response, Set<String> usedIPs) throws IOException {
-        Gson gson = new Gson();
-        List<String> nodeIPs = new ArrayList<>();
+    private boolean allNodesRunning(HttpResponse response, List<String> usedIPs) throws IOException {
         boolean containerResponded = false;
 
-        String master = searchConsul("master/?keys");
-        if (master == null) {        //if there is no master folder in Consul, return. Do not try to contact workers as there is no point since master is not running...
-            getMessage(response, "It seems that there is no master folder under Consul URL. Try to contact your administrator");
-            return false;
-        } else {
-            String[] masterPath = gson.fromJson(master, String[].class);
-            for (String masterName : masterPath) {
-                //log.debug(searchConsul(masterName + "?raw"));
-                nodeIPs.add(searchConsul(masterName + "?raw"));
+        for( String IP: usedIPs){
+            log.debug("Will check container with IP: " + IP);
+
+            if (IP != null && !usedIPs.contains(IP)) {
+                log.debug("Container not used, skipping");
+                continue;
             }
+            for (ContainerProxy containerProxy : ArtRegistryLocator.getArtRegistryProxy().getContainers()) {
+                if (containerProxy.getEntityName().getIP().equals(IP)) {
+                    try {
+                        ContainerProxy tmpContainerProxy = ArtRegistryLocator.getArtRegistryProxy()
+                                .lookupContainer(containerProxy.getEntityName());
+                        containerResponded = true;
 
-            String activeWorkers = searchConsul("active_workers/?keys");
-            if (activeWorkers != null) {      //maybe there is no worker folder in Consul because none workers are running. Continue
-                String[] activeWorkersPath = gson.fromJson(activeWorkers, String[].class);
+                        break;
+                    } catch (Exception e) {
+                        log.error("Container connection error: " + e);
+                        ArtRegistryLocator.getArtRegistryProxy()
+                                .removeContainer(containerProxy.getEntityName());
 
-                for (String workersName : activeWorkersPath) {
-                    //log.debug(searchConsul(workersName + "?raw"));
-                    nodeIPs.add(searchConsul(workersName + "?raw"));
-                }
-            }
-
-            for (String nodeIP : nodeIPs) {
-                log.debug("Will check container with IP: " + nodeIP);
-                if (usedIPs != null && !usedIPs.contains(nodeIP)) {
-                    log.debug("Container not used, skipping");
-                    continue;
-                }
-
-                for (ContainerProxy containerProxy : ArtRegistryLocator.getArtRegistryProxy().getContainers()) {
-                    if (containerProxy.getEntityName().getIP().equals(nodeIP)) {
-                        try {
-                            ContainerProxy tmpContainerProxy = ArtRegistryLocator.getArtRegistryProxy()
-                                    .lookupContainer(containerProxy.getEntityName());
-                            containerResponded = true;
-                            break;
-                        } catch (Exception e) {
-                            log.error("Container connection error: " + e);
-                        }
+                        containerResponded = false;
                     }
                 }
-                log.debug("Container responded: " + containerResponded);
-                if (!containerResponded) {
-                    getMessage(response, "Container with IP " + nodeIP + " is not responding. Please inform your system administrator");
-                    return false;
-                }
+            }
+            log.debug("Container responded: " + containerResponded);
+            if (!containerResponded) {
+                getMessage(response, "Container with IP " + IP + " is not responding. Please inform your system administrator");
+                return false;
             }
         }
         return true;
     }
 
-    // Return null if dataset not found
-    private Set<String> getUsedContainers(String[] usedDatasets, HttpResponse response)
-            throws RemoteException, DatasetsException {
-        try {
-            // If datasets are not defined run to all datasets
-            if (usedDatasets == null || usedDatasets.length == 0) {
-                return allContainersIPs();
-            }
-
-            // Generate dataset -> List<node IP> hashmap
-            HashMap<String, List<String>> datasetToNodes = new HashMap<>();
-            // Find nodes with datasets defined at consul
-            String nodesKeys = searchConsul("datasets/?keys");
-            if (nodesKeys == null) return null;
-            log.debug(nodesKeys);
-            Gson gson = new Gson();
-            String[] nodesKeysArray = gson.fromJson(nodesKeys, String[].class);
-            // For every node (with dataset...)
-            for (String nodeKey : nodesKeysArray) {
-                // log.debug(searchConsul(nodeKey + "?raw"));
-                String[] nodeDatasets = gson.fromJson(searchConsul(nodeKey + "?raw"), String[].class);
-                String nodeName = nodeKey.replace("datasets/", "");
-                // For every dataset of this node, add to hashmap
-                for (String nodeDataset : nodeDatasets) {
-                    if (!datasetToNodes.containsKey(nodeDataset)) {
-                        datasetToNodes.put(nodeDataset, new ArrayList<String>());
-                    }
-                    datasetToNodes.get(nodeDataset).add(getNodeIP(nodeName));
-                }
-            }
-
-            // Find IPs of used containers
-            Set<String> usedContainersIPs = new HashSet<>();
-            usedContainersIPs.add(NetUtil.getIPv4()); //Always use master!
-            List<String> notFoundDatasets = new ArrayList<>();
-            for (String dataset : usedDatasets) {
-                if (!datasetToNodes.containsKey(dataset)) {
-                    notFoundDatasets.add(dataset);
-                } else {
-                    usedContainersIPs.addAll(datasetToNodes.get(dataset));
-                }
-            }
-            if (!notFoundDatasets.isEmpty()) {
-                throw new DatasetsException(returnNotFoundError(notFoundDatasets));
-            }
-            return usedContainersIPs;
-
-        } catch (IOException e) {       // TODO Should we hide this exception?
-            log.error("Exception while contacting consul, running with all containers. " + e.getMessage());
-            return allContainersIPs();
-        }
-    }
-
-    private String returnNotFoundError(List<String> notFoundDatasets) {
-        StringBuilder notFound = new StringBuilder();
-
-        for (String ds : notFoundDatasets) {
-            notFound.append(ds).append(", ");
-        }
-        String notFoundSring = notFound.toString();
-        notFoundSring = notFoundSring.substring(0, notFoundSring.length() - 2);
-        return "Dataset(s) " + notFoundSring + " not found!";
-    }
-
-    private Set<String> allContainersIPs() throws RemoteException {
-        Set<String> allIPs = new HashSet<>();
+    private List<String> allNodesIPs() throws RemoteException {
+        List<String> allIPs = new ArrayList<>();
         for (ContainerProxy containerProxy : ArtRegistryLocator.getArtRegistryProxy().getContainers()) {
             allIPs.add(containerProxy.getEntityName().getIP());
         }
         return allIPs;
-    }
-
-    private String getNodeIP(String name) throws IOException {
-        if (searchConsul("active_workers/" + name + "?raw") == null) {
-            return searchConsul("master/" + name + "?raw");
-        } else
-            return searchConsul("active_workers/" + name + "?raw");
     }
 
     private String searchConsul(String query) throws IOException {
