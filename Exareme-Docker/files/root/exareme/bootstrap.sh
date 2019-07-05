@@ -79,10 +79,10 @@ if [ "$MASTER_FLAG" != "master" ]; then         #this is a worker
     MY_IP=$(/sbin/ifconfig | grep "inet " | awk -F: '{print $2}' | grep '10.20' | awk '{print $1;}' | head -n 1)
     . ./start-worker.sh
     curl -X PUT -d @- $CONSULURL/v1/kv/$EXAREME_ACTIVE_WORKERS_PATH/$NODE_NAME <<< $MY_IP
-    while [ ! -f /tmp/exareme/var/log/$DESC.log ]; do
+    while [ ! -f /var/log/exareme.log ]; do
         echo "Trying to connect worker with IP "$MY_IP" and name "$NODE_NAME" to master with IP "$MASTER_IP" and name "$MASTER_NAME"."
     done
-    tail -f /tmp/exareme/var/log/$DESC.log | while read LOGLINE
+    tail -f /var/log/exareme.log | while read LOGLINE
     do
         [[ "${LOGLINE}" == *"Worker node started."* ]] && pkill -P $$ tail
         echo " Waiting to establish connection for worker with IP "$MY_IP" with master's IP "$MASTER_IP" and name "$MASTER_NAME".."
@@ -108,7 +108,7 @@ else
         else
             ./exareme-admin.sh --start
             echo "Master node with IP "$MY_IP" and name " $NODE_NAME" trying to re-boot..."
-                while [ ! -f /tmp/exareme/var/log/$DESC.log ]; do
+                while [ ! -f /var/log/exareme.log ]; do
             echo "Master node with IP "$MY_IP" and name " $NODE_NAME" re-booted..."
         done
         fi
@@ -116,7 +116,7 @@ else
     else
         ./exareme-admin.sh --start
         echo "Initializing master node with IP "$MY_IP" and name " $NODE_NAME"..."
-        while [ ! -f /tmp/exareme/var/log/$DESC.log ]; do
+        while [ ! -f /var/log/exareme.log ]; do
             echo "Initializing master node with IP "$MY_IP" and name " $NODE_NAME"..."
         done
     fi
@@ -129,8 +129,11 @@ rm -f $DOCKER_METADATA_FOLDER/datasets.db
 echo "Parsing the csv file in " $DOCKER_METADATA_FOLDER " to a db file. "
 python ./convert-csv-dataset-to-db.py --csvFilePath $DOCKER_DATASETS_FOLDER/datasets.csv --variablesMetadataPath $DOCKER_METADATA_FOLDER/variablesMetadata.json --outputDBAbsPath $DOCKER_METADATA_FOLDER/datasets.db
 
+# Creating the python log file
+echo "Exareme Python Algorithms log file created." > /var/log/exaremePythonAlgorithms.log
+
 # Running something in foreground, otherwise the container will stop
 while true
 do
-   tail -f /tmp/exareme/var/log/$DESC.log & wait ${!}
+   tail -f /var/log/exareme.log -f /var/log/exaremePythonAlgorithms.log
 done
