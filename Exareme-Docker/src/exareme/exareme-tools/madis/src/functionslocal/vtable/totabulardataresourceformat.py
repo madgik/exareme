@@ -32,7 +32,7 @@ class totabulardataresourceformat(functions.vtable.vtbase.VT):
             raise functions.OperatorError(__name__.rsplit('.')[-1],"Empty table")
         # print schema
 
-        myresult= "{\"resources\": [{ \"name\": \""+str(title)+"\",\"profile\": \"tabular-data-resource\",\"data\": [ ["
+        myresult= "{\"data\": [{ \"name\": \""+str(title)+"\",\"profile\": \"tabular-data-resource\",\"data\": [ ["
 
         for i in xrange(len(schema)):
             myresult += "\"" + str(schema[i][0]) +"\","
@@ -53,7 +53,7 @@ class totabulardataresourceformat(functions.vtable.vtbase.VT):
 
         for i in xrange(len(schema)):
              myresult += "{\"name\": \"" + str(schema[i][0]) +"\",\"type\": \""+str(typeslist[i])+"\"},"
-        myresult =myresult[:-1] +" ]}}]}"
+        myresult =myresult[:-1] +" ]}}],\"type\":\"application/vnd.dataresource+json\"}"
 
         # print "myresult", myresult
         yield [('tabulardataresourceresult',)]

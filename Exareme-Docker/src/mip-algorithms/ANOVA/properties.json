@@ -48,14 +48,7 @@
 			"valueNotBlank": false,
 			"valueMultiple": true,
 			"valueType": "string"
-		}, {
-			"name": "outputformat",
-			"desc": "pfa",
-			"type": "other",
-			"value": "pfa",
-			"valueNotBlank": true,
-			"valueMultiple": false,
-			"valueType": "string"
+
 		}, {
 			"name": "iterations_max_number",
 			"desc": "Maximum number of iterations",
@@ -65,6 +58,7 @@
 			"valueNotBlank": false,
 			"valueMultiple": false,
 			"valueType": "integer"
+
 		}
 	]
 }

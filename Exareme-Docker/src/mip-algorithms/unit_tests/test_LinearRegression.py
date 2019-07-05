@@ -5,7 +5,8 @@ import math
 from decimal import *
 
 
-endpointUrl='http://88.197.53.100:9090/mining/query/LINEAR_REGRESSION'
+endpointUrl='http://88.197.53.38:9090/mining/query/LINEAR_REGRESSION'
+endpointUrl='http://88.197.53.38:9090/mining/query/LINEAR_REGRESSION'
 
 def test_LinearRegression_1_1_dummycoding():
     logging.info("---------- TEST 1.1: Linear Regression, one categorical regressor,dummycoding")
@@ -45,13 +46,13 @@ def test_LinearRegression_1_1_dummycoding():
     ## F-statistic: 48.03 on 2 and 715 DF,  p-value: < 2.2e-16
     """
 
-    check_variables(result['resources'][0]['data'],[['intercept', 2.82834, 0.02231, 126.774, '< 2e-16'],
+    check_variables(result,[['intercept', 2.82834, 0.02231, 126.774, '< 2e-16'],
                                                     ['alzheimerbroadcategory(CN)', 0.30049 , 0.03091, 9.722 , '< 2e-16'],
                                                     ['alzheimerbroadcategory(Other)', 0.11394, 0.03784, 3.011, 0.00269]],
                                                     -1.52364, 1.32307,
                                                      0.3693, 715,
                                                      0.1184,  0.116,
-                                                     48.03 , 2 , 715 )
+                                                     48.03 , 2 )
 
 
 def test_LinearRegression_1_1_simplecoding():
@@ -93,13 +94,13 @@ def test_LinearRegression_1_1_simplecoding():
     ## F-statistic: 48.03 on 2 and 715 DF,  p-value: < 2.2e-16
     """
 
-    check_variables(result['resources'][0]['data'],[['intercept', 2.96648,  0.01449, 204.734 , '< 2e-16'],
+    check_variables(result,[['intercept', 2.96648,  0.01449, 204.734 , '< 2e-16'],
                                                     ['alzheimerbroadcategory(CN)', 0.30049 , 0.03091, 9.722 , '< 2e-16'],
                                                     ['alzheimerbroadcategory(Other)', 0.11394, 0.03784, 3.011, 0.00269]],
                                                     -1.52364, 1.32307,
                                                      0.3693, 715,
                                                      0.1184,  0.116,
-                                                     48.03 , 2 , 715 )
+                                                     48.03 , 2  )
 
 
 def test_LinearRegression_1_2_dummycoding():
@@ -143,14 +144,14 @@ def test_LinearRegression_1_2_dummycoding():
     ## F-statistic: 77.45 on 3 and 714 DF,  p-value: < 2.2e-16
     """
 
-    check_variables(result['resources'][0]['data'],[['intercept', 2.99378,  0.02558, 117.051,'< 2e-16'],
+    check_variables(result,[['intercept', 2.99378,  0.02558, 117.051,'< 2e-16'],
                                                     ['alzheimerbroadcategory(CN)', 0.28055,    0.02867,   9.785, '< 2e-16'],
                                                     ['alzheimerbroadcategory(Other)', 0.08928,    0.03510,   2.543,   0.0112],
                                                     ['gender(F)',  -0.28157,  0.02567, -10.967,   '<2e-16']],
                                                     -1.40751, 1.17756,
                                                      0.3419, 714,
                                                      0.2455,  0.2424,
-                                                     77.45, 3, 714 )
+                                                     77.45, 3 )
 
 
 def test_LinearRegression_1_2_simplecoding():
@@ -195,14 +196,14 @@ def test_LinearRegression_1_2_simplecoding():
     ## F-statistic: 77.45 on 3 and 714 DF,  p-value: < 2.2e-16
     """
 
-    check_variables(result['resources'][0]['data'],[['intercept', 2.97628,  0.01344, 221.392 ,  '<2e-16'],
+    check_variables(result,[['intercept', 2.97628,  0.01344, 221.392 ,  '<2e-16'],
                                                     ['alzheimerbroadcategory(CN)', 0.28055,    0.02867,   9.785, '< 2e-16'],
                                                     ['alzheimerbroadcategory(Other)', 0.08928,    0.03510,   2.543,   0.0112],
                                                     ['gender(F)',  -0.28157,  0.02567, -10.967,   '<2e-16']],
                                                     -1.40751, 1.17756,
                                                      0.3419, 714,
                                                      0.2455,  0.2424,
-                                                     77.45, 3, 714 )
+                                                     77.45, 3 )
 
 
 def test_LinearRegression_1_2b_dummycoding():
@@ -254,7 +255,7 @@ def test_LinearRegression_1_2b_dummycoding():
     ## F-statistic: 49.62 on 5 and 712 DF,  p-value: < 2.2e-16
     """
 
-    check_variables(result['resources'][0]['data'],[['intercept' , 3.0609673, 0.0319307,  95.863 , '< 2e-16'],
+    check_variables(result,[['intercept' , 3.0609673, 0.0319307,  95.863 , '< 2e-16'],
                                                     ['alzheimerbroadcategory(CN)' , 0.1715202,  0.0426573 ,  4.021, 6.42e-05],
                                                     ['alzheimerbroadcategory(Other)', 0.0006588 , 0.0509686 ,  0.013, 0.989691],
                                                     ['gender(F)' , -0.3959083,  0.0416553,  -9.504,  '< 2e-16'],
@@ -263,7 +264,7 @@ def test_LinearRegression_1_2b_dummycoding():
                                                     -1.36036, 1.21941,
                                                      0.3394, 712,
                                                      0.2584,  0.2532,
-                                                     49.62, 5, 712 )
+                                                     49.62, 5)
 
 def test_LinearRegression_1_2b_simplecoding():
     logging.info("---------- TEST 1.2b: Linear Regression, two categorical regressors with interaction,simplecoding")
@@ -315,7 +316,7 @@ def test_LinearRegression_1_2b_simplecoding():
     ## F-statistic: 49.62 on 5 and 712 DF,  p-value: < 2.2e-16
     """
 
-    check_variables(result['resources'][0]['data'],[['intercept' ,  2.97916,  0.01337, 222.745 , '< 2e-16'],
+    check_variables(result,[['intercept' ,  2.97916,  0.01337, 222.745 , '< 2e-16'],
                                                     ['alzheimerbroadcategory(CN)' ,  0.26918,    0.02865 ,  9.395,  '< 2e-16'],
                                                     ['alzheimerbroadcategory(Other)', 0.07926 ,   0.03497 ,  2.267, 0.023712],
                                                     ['gender(F)' , -0.27840 ,   0.02675, -10.408,  '< 2e-16'],
@@ -324,7 +325,7 @@ def test_LinearRegression_1_2b_simplecoding():
                                                     -1.36036, 1.21941,
                                                      0.3394, 712,
                                                      0.2584,  0.2532,
-                                                     49.62, 5, 712 )
+                                                     49.62, 5 )
 
 def test_LinearRegression_1_3_dummycoding():
     logging.info("---------- TEST 1.3: Linear Regression, three categorical regressors without interaction, dummycoding")
@@ -370,7 +371,7 @@ def test_LinearRegression_1_3_dummycoding():
     ## F-statistic: 36.92 on 7 and 710 DF,  p-value: < 2.2e-16
     """
 
-    check_variables(result['resources'][0]['data'],[['intercept' ,   2.87843   , 0.04135 , 69.620 , '< 2e-16'],
+    check_variables(result,[['intercept' ,   2.87843   , 0.04135 , 69.620 , '< 2e-16'],
                                                     ['alzheimerbroadcategory(CN)' ,  0.25596  ,  0.02896 ,  8.840,  '< 2e-16'],
                                                     ['alzheimerbroadcategory(Other)', 0.08630  ,  0.03472 ,  2.486, 0.013157],
                                                     ['gender(F)' ,  -0.27103 ,0.02559, -10.591, '< 2e-16'],
@@ -381,7 +382,7 @@ def test_LinearRegression_1_3_dummycoding():
                                                     -1.46845, 1.15176,
                                                      0.338, 710,
                                                      0.2669,  0.2596,
-                                                     36.92, 7, 710 )
+                                                     36.92, 7)
 
 
 
@@ -432,7 +433,7 @@ def test_LinearRegression_1_3_simplecoding():
 
     """
 
-    check_variables(result['resources'][0]['data'],[['intercept' ,    2.99828 ,   0.02178 ,137.664, '< 2e-16'],
+    check_variables(result,[['intercept' ,    2.99828 ,   0.02178 ,137.664, '< 2e-16'],
                                                     ['alzheimerbroadcategory(CN)' ,  0.25596 ,   0.02896 ,  8.840 , '< 2e-16'],
                                                     ['alzheimerbroadcategory(Other)', 0.08630  ,  0.03472 ,  2.486, 0.013157],
                                                     ['gender(F)' ,  -0.27103 ,0.02559, -10.591, '< 2e-16'],
@@ -443,7 +444,7 @@ def test_LinearRegression_1_3_simplecoding():
                                                     -1.46845, 1.15176,
                                                      0.338, 710,
                                                      0.2669,  0.2596,
-                                                     36.92, 7, 710 )
+                                                     36.92, 7 )
 
 
 def test_LinearRegression_1_3b_dummycoding():
@@ -545,7 +546,7 @@ def test_LinearRegression_1_3b_dummycoding():
 
     """
 
-    check_variables(result['resources'][0]['data'],[
+    check_variables(result,[
                                                 ['intercept', 3.06347, 0.08687, 35.266, '< 2e-16'],
                                                 ['alzheimerbroadcategory(CN)', 0.03273, 0.21278, 0.154, 0.8778],
                                                 ['alzheimerbroadcategory(Other)', -0.15429, 0.13735, -1.123, 0.2617],
@@ -579,7 +580,7 @@ def test_LinearRegression_1_3b_dummycoding():
                                                 -1.45766 ,  1.13691 ,
                                                  0.3364 , 688 ,
                                                  0.296,    0.2663 ,
-                                                 9.973, 29, 688 )
+                                                 9.973, 29 )
 
 
 def test_LinearRegression_1_3b_simplecoding():
@@ -681,7 +682,7 @@ def test_LinearRegression_1_3b_simplecoding():
     ## F-statistic: 9.973 on 29 and 688 DF,  p-value: < 2.2e-16
     """
 
-    check_variables(result['resources'][0]['data'],[
+    check_variables(result,[
                                                 ['intercept', 3.006351, 0.023648, 127.131,  '< 2e-16'],
                                                 ['alzheimerbroadcategory(CN)', 0.239318, 0.053689, 4.457, 9.68e-06],
                                                 ['alzheimerbroadcategory(Other)', 0.142799, 0.058245, 2.452, 0.01447],
@@ -715,7 +716,7 @@ def test_LinearRegression_1_3b_simplecoding():
                                                 -1.45766, 1.13691,
                                                  0.3364, 688,
                                                  0.296,  0.2663,
-                                                 9.973, 29, 688 )
+                                                 9.973, 29 )
 
 
 def test_LinearRegression_2_1():
@@ -755,12 +756,12 @@ def test_LinearRegression_2_1():
     ## F-statistic:  0.37 on 1 and 918 DF,  p-value: 0.5431
 
 
-    check_variables(result['resources'][0]['data'],[['intercept',  2.96477 ,   0.04400 , 67.374 ,  '<2e-16'],
+    check_variables(result,[['intercept',  2.96477 ,   0.04400 , 67.374 ,  '<2e-16'],
                                                     ['csfglobal', 0.01593 ,   0.02619 ,  0.608  ,  0.543]],
                                                     -1.69464,  1.46764,
                                                     0.3876, 918,
                                                     0.0004029,    -0.000686,
-                                                    0.37, 1, 918 )
+                                                    0.37, 1 )
 
 def test_LinearRegression_2_2():
 
@@ -800,13 +801,13 @@ def test_LinearRegression_2_2():
     ## Multiple R-squared:  0.1903, Adjusted R-squared:  0.188
     ## F-statistic: 81.68 on 2 and 695 DF,  p-value: < 2.2e-16
 
-    check_variables(result['resources'][0]['data'],[['intercept',   1.645543,   0.129362,   12.72,  '< 2e-16'],
+    check_variables(result,[['intercept',   1.645543,   0.129362,   12.72,  '< 2e-16'],
                                                     ['opticchiasm',  7.427069,   1.476556,    5.03, 6.25e-07],
                                                     ['minimentalstate', 0.030139 ,  0.002659 ,  11.34,  '< 2e-16']],
                                                     -1.62609, 1.38595,
                                                     0.3564, 695,
                                                     0.1903, 0.188 ,
-                                                    81.68, 2, 695 )
+                                                    81.68, 2 )
 
 def test_LinearRegression_2_2b():
 
@@ -847,14 +848,14 @@ def test_LinearRegression_2_2b():
     ## Multiple R-squared:  0.2037, Adjusted R-squared:  0.2003
     ## F-statistic: 59.18 on 3 and 694 DF,  p-value: < 2.2e-16
 
-    check_variables(result['resources'][0]['data'],[['intercept',   3.49805 ,   0.55712 ,  6.279 ,6.02e-10],
+    check_variables(result,[['intercept',   3.49805 ,   0.55712 ,  6.279 ,6.02e-10],
                                                     ['opticchiasm',  -16.54326  ,  7.16625  ,-2.308,  0.02126],
                                                     ['minimentalstate',-0.04449  ,  0.02200 ,-2.022 , 0.04352 ],
                                                     ['opticchiasm:minimentalstate',0.96392 ,   0.28209,   3.417,  0.00067]],
                                                     -1.58391,  1.38060 ,
                                                      0.3537 , 694,
                                                      0.2037,  0.2003 ,
-                                                    59.18, 3, 694 )
+                                                    59.18, 3 )
 
 def test_LinearRegression_2_3():
     logging.info("---------- TEST 2_3: Linear Regression, three continuous regressors without interaction")
@@ -895,14 +896,14 @@ def test_LinearRegression_2_3():
 ## F-statistic:  62.1 on 3 and 694 DF,  p-value: < 2.2e-16
 
 
-    check_variables(result['resources'][0]['data'],[['intercept',     2.184586 ,  0.178338,  12.250 , '< 2e-16'],
+    check_variables(result,[['intercept',     2.184586 ,  0.178338,  12.250 , '< 2e-16'],
                                                     ['opticchiasm',   7.423747 ,  1.458042 ,  5.092 , 4.58e-07],
                                                     ['minimentalstate',0.028308,   0.002659,  10.645,  '< 2e-16' ],
                                                     ['subjectage',      -0.006997,   0.001615 , -4.332, 1.70e-05]],
                                                     -1.66457,   1.31721,
                                                      0.3519 , 694,
                                                      0.2116,  0.2082 ,
-                                                     62.1, 3, 694 )
+                                                     62.1, 3 )
 
 
 
@@ -957,7 +958,7 @@ def test_LinearRegression_2_3b():
     ## F-statistic: 29.03 on 7 and 690 DF,  p-value: < 2.2e-16
 
 
-    check_variables(result['resources'][0]['data'],[['intercept', 6.937203, 4.962343, 1.398, 0.163],
+    check_variables(result,[['intercept', 6.937203, 4.962343, 1.398, 0.163],
                                                     ['opticchiasm', -45.51143, 61.441696, -0.741, 0.459],
                                                     ['minimentalstate', -0.190837, 0.193514, -0.986, 0.324],
                                                     ['subjectage', -0.046558, 0.067219, -0.693, 0.489],
@@ -968,7 +969,7 @@ def test_LinearRegression_2_3b():
                                                         -1.63052,    1.31591,
                                                          0.3494 , 690,
                                                          0.2275,  0.2196 ,
-                                                         29.03, 7, 690 )
+                                                         29.03, 7 )
 
 
 
@@ -1014,14 +1015,14 @@ def test_LinearRegression_3_1_dummycoding():
     ## F-statistic: 39.46 on 3 and 714 DF,  p-value: < 2.2e-16
 
 
-    check_variables(result['resources'][0]['data'],[['intercept', 3.352625, 0.119861, 27.971, '< 2e-16'],
+    check_variables(result,[['intercept', 3.352625, 0.119861, 27.971, '< 2e-16'],
                                                     ['alzheimerbroadcategory(CN)', 0.278972, 0.030892, 9.031, '< 2e-16'],
                                                     ['alzheimerbroadcategory(Other)', 0.110462, 0.03736, 2.957, 0.00321],
                                                     ['subjectage', -0.00731, 0.001643, -4.45, 0.00000996]],
                                                         -1.59471,  1.31007,
                                                         0.3645  , 714,
                                                          0.1422,   0.1386 ,
-                                                         39.46, 3, 714 )
+                                                         39.46, 3 )
 
 def test_LinearRegression_3_1():
     logging.info("---------- TEST 3_1: Linear Regression, one categorical and one continuous regressors without interaction, simplecoding")
@@ -1062,14 +1063,14 @@ def test_LinearRegression_3_1():
     ## F-statistic: 39.46 on 3 and 714 DF,  p-value: < 2.2e-16
 
 
-    check_variables(result['resources'][0]['data'],[['intercept', 3.482436,   0.116826 , 29.809, '< 2e-16'],
+    check_variables(result,[['intercept', 3.482436,   0.116826 , 29.809, '< 2e-16'],
                                                     ['alzheimerbroadcategory(CN)',  0.278972  , 0.030892 ,  9.031,  '< 2e-16'],
                                                     ['alzheimerbroadcategory(Other)',  0.110462 ,  0.037360  , 2.957,  0.00321],
                                                     ['subjectage', -0.007310,   0.001643 , -4.450, 9.96e-06]],
                                                         -1.59471,  1.31007,
                                                          0.3645 , 714,
                                                          0.1422,   0.1386 ,
-                                                         39.46, 3, 714 )
+                                                         39.46, 3 )
 
 
 def test_LinearRegression_3_1b_dummycoding():
@@ -1120,7 +1121,7 @@ def test_LinearRegression_3_1b_dummycoding():
     ## F-statistic: 24.08 on 5 and 712 DF,  p-value: < 2.2e-16
 
 
-    check_variables(result['resources'][0]['data'],[['intercept', 3.413748, 0.178705, 19.103, '< 2e-16'],
+    check_variables(result,[['intercept', 3.413748, 0.178705, 19.103, '< 2e-16'],
                                                     ['alzheimerbroadcategory(CN)', -0.003409, 0.268905, -0.013, 0.98989],
                                                     ['alzheimerbroadcategory(Other)', 0.243866, 0.300298, 0.812, 0.41702],
                                                     ['subjectage', -0.008162, 0.002473, -3.301, 0.00101],
@@ -1129,7 +1130,7 @@ def test_LinearRegression_3_1b_dummycoding():
                                                     -1.60299, 1.31579,
                                                     0.3645  , 712,
                                                     0.1446,    0.1386 ,
-                                                    24.08, 5, 712 )
+                                                    24.08, 5 )
 
 
 def test_LinearRegression_3_1b_simplecoding():
@@ -1179,7 +1180,7 @@ def test_LinearRegression_3_1b_simplecoding():
     ## Multiple R-squared:  0.1446, Adjusted R-squared:  0.1386
     ## F-statistic: 24.08 on 5 and 712 DF,  p-value: < 2.2e-16
 
-    check_variables(result['resources'][0]['data'],[['intercept',  3.493901 ,  0.120440,  29.009, '< 2e-16'],
+    check_variables(result,[['intercept',  3.493901 ,  0.120440,  29.009, '< 2e-16'],
                                                     ['alzheimerbroadcategory(CN)',   -0.003409,   0.268905 , -0.013, 0.990],
                                                     ['alzheimerbroadcategory(Other)',  0.243866 ,  0.300298,   0.812 , 0.417 ],
                                                     ['subjectage',  -0.007432,   0.001695 , -4.385, 1.33e-05],
@@ -1188,7 +1189,7 @@ def test_LinearRegression_3_1b_simplecoding():
                                                     -1.60299, 1.31579,
                                                     0.3645  , 712,
                                                     0.1446,    0.1386 ,
-                                                    24.08, 5, 712 )
+                                                    24.08, 5)
 
 def test_LinearRegression_3_2_dummycoding():
     logging.info("---------- TEST 3_2: Linear Regression, one categorical and two continuous regressors without interaction, dummycoding")
@@ -1230,7 +1231,7 @@ def test_LinearRegression_3_2_dummycoding():
     ## F-statistic: 39.18 on 4 and 713 DF,  p-value: < 2.2e-16
 
 
-    check_variables(result['resources'][0]['data'],[['intercept', 2.702473, 0.162956, 16.584, '< 2e-16'],
+    check_variables(result,[['intercept', 2.702473, 0.162956, 16.584, '< 2e-16'],
                                                     ['alzheimerbroadcategory(CN)', 0.275037, 0.030229, 9.098, '< 2e-16'],
                                                     ['alzheimerbroadcategory(Other)', 0.100981, 0.036587, 2.76, 0.00593],
                                                     ['subjectage', -0.007268, 0.001607, -4.522, 7.17e-06],
@@ -1238,7 +1239,7 @@ def test_LinearRegression_3_2_dummycoding():
                                                     -1.6497 , 1.2904,
                                                      0.3566  , 713,
                                                     0.1802,   0.1756 ,
-                                                    39.18, 4, 713 )
+                                                    39.18, 4 )
 
 def test_LinearRegression_3_2_simplecoding():
     logging.info("---------- TEST 3_2: Linear Regression, one categorical and two continuous regressors without interaction, simplecoding")
@@ -1280,7 +1281,7 @@ def test_LinearRegression_3_2_simplecoding():
     ## F-statistic: 39.18 on 4 and 713 DF,  p-value: < 2.2e-16
 
 
-    check_variables(result['resources'][0]['data'],[['intercept', 2.827812 ,  0.161381,  17.523 , '< 2e-16' ],
+    check_variables(result,[['intercept', 2.827812 ,  0.161381,  17.523 , '< 2e-16' ],
                                                     ['alzheimerbroadcategory(CN)',  0.275037 ,  0.030229 ,  9.098,  '< 2e-16'],
                                                     ['alzheimerbroadcategory(Other)',  0.100981 ,  0.036587 ,  2.760,  0.00593],
                                                     ['subjectage',  -0.007268 ,  0.001607 , -4.522, 7.17e-06],
@@ -1288,7 +1289,7 @@ def test_LinearRegression_3_2_simplecoding():
                                                     -1.6497 , 1.2904 ,
                                                     0.3566  , 713,
                                                     0.1802,   0.1756 ,
-                                                    39.18, 4, 713 )
+                                                    39.18, 4 )
 
 
 def test_LinearRegression_3_2b_dummycoding():
@@ -1350,7 +1351,7 @@ def test_LinearRegression_3_2b_dummycoding():
     ## Multiple R-squared:  0.1964, Adjusted R-squared:  0.1839
     ## F-statistic: 15.68 on 11 and 706 DF,  p-value: < 2.2e-16
 
-    check_variables(result['resources'][0]['data'],[['intercept', 5.30663, 1.77059, 2.997, 0.00282],
+    check_variables(result,[['intercept', 5.30663, 1.77059, 2.997, 0.00282],
                                                     ['alzheimerbroadcategory(CN)', -6.77061, 2.61187, -2.592, 0.00973],
                                                     ['alzheimerbroadcategory(Other)', -3.38758, 2.37645, -1.425, 0.15446],
                                                     ['subjectage', -0.03876, 0.02435, -1.592, 0.11193],
@@ -1365,7 +1366,7 @@ def test_LinearRegression_3_2b_dummycoding():
                                                     -1.6050,  1.2876,
                                                     0.3548 , 706,
                                                      0.1964,   0.1839,
-                                                    15.68, 11, 706 )
+                                                    15.68, 11 )
 
 def test_LinearRegression_3_2b_simplecoding():
     logging.info("---------- TEST 3_2b: Linear Regression, one categorical and two continuous regressors with interaction, simplecoding")
@@ -1426,7 +1427,7 @@ def test_LinearRegression_3_2b_simplecoding():
     ## Multiple R-squared:  0.1964, Adjusted R-squared:  0.1839
     ## F-statistic: 15.68 on 11 and 706 DF,  p-value: < 2.2e-16
 
-    check_variables(result['resources'][0]['data'],[['intercept', 1.92057, 1.018408, 1.886, 0.05972],
+    check_variables(result,[['intercept', 1.92057, 1.018408, 1.886, 0.05972],
                                                     ['alzheimerbroadcategory(CN)', -6.770608, 2.611869, -2.592, 0.00973],
                                                     ['alzheimerbroadcategory(Other)', -3.387583, 2.376449, -1.425, 0.15446],
                                                     ['subjectage', 0.005808, 0.014408, 0.403, 0.68697],
@@ -1441,7 +1442,7 @@ def test_LinearRegression_3_2b_simplecoding():
                                                     -1.6050 ,  1.2876,
                                                     0.3548, 706,
                                                      0.1964,   0.1839,
-                                                    15.68, 11, 706 )
+                                                    15.68, 11 )
 
 def test_LinearRegression_3_3_dummycoding():
     logging.info("---------- TEST 3_3: Linear Regression, two categorical and one continuous regressors without interaction, dummycoding")
@@ -1482,7 +1483,7 @@ def test_LinearRegression_3_3_dummycoding():
     ## Multiple R-squared:  0.2636, Adjusted R-squared:  0.2595
     ## F-statistic: 63.82 on 4 and 713 DF,  p-value: < 2.2e-16
 
-    check_variables(result['resources'][0]['data'],[['intercept', 3.44844, 0.111483, 30.932, '< 2e-16'],
+    check_variables(result,[['intercept', 3.44844, 0.111483, 30.932, '< 2e-16'],
                                                     ['alzheimerbroadcategory(CN)', 0.262168, 0.028684, 9.14, '< 2e-16'],
                                                     ['alzheimerbroadcategory(Other)', 0.086758, 0.034708, 2.5, 0.0127],
                                                     ['gender(F)', -0.275638, 0.025422, -10.843, '< 2e-16'],
@@ -1490,7 +1491,7 @@ def test_LinearRegression_3_3_dummycoding():
                                                     -1.47206 ,  1.16927 ,
                                                     0.338 , 713,
                                                      0.2636, 0.2595 ,
-                                                    63.82 , 4, 713 )
+                                                    63.82 , 4 )
 
 def test_LinearRegression_3_3_simplecoding():
     logging.info("---------- TEST 3_3: Linear Regression, two categorical and one continuous regressors without interaction, simplecoding")
@@ -1533,7 +1534,7 @@ def test_LinearRegression_3_3_simplecoding():
     ## F-statistic: 63.82 on 4 and 713 DF,  p-value: < 2.2e-16
 
 
-    check_variables(result['resources'][0]['data'],[['intercept',  3.426930 ,  0.108440 , 31.602 , '< 2e-16'],
+    check_variables(result,[['intercept',  3.426930 ,  0.108440 , 31.602 , '< 2e-16'],
                                                     ['alzheimerbroadcategory(CN)',  0.262168 ,  0.028684 ,  9.140 , '< 2e-16'],
                                                     ['alzheimerbroadcategory(Other)', 0.086758 ,  0.034708 ,  2.500 ,  0.0127],
                                                     ['gender(F)',  -0.275638   ,0.025422, -10.843, '< 2e-16'],
@@ -1541,7 +1542,7 @@ def test_LinearRegression_3_3_simplecoding():
                                                     -1.47206 ,  1.16927 ,
                                                     0.338 , 713,
                                                      0.2636, 0.2595 ,
-                                                    63.82 , 4, 713 )
+                                                    63.82 , 4 )
 
 def test_LinearRegression_3_3b_dummycoding():
     logging.info("---------- TEST 3_3b: Linear Regression,two categorical and one continuous regressors with interaction, dummycoding")
@@ -1603,7 +1604,7 @@ def test_LinearRegression_3_3b_dummycoding():
     ## F-statistic: 24.87 on 11 and 706 DF,  p-value: < 2.2e-16
 
 
-    check_variables(result['resources'][0]['data'],[['intercept', 3.134865, 0.259613, 12.075, '<2e-16'],
+    check_variables(result,[['intercept', 3.134865, 0.259613, 12.075, '<2e-16'],
                                                     ['alzheimerbroadcategory(CN)', 0.654476, 0.399613, 1.638, 0.1019],
                                                     ['alzheimerbroadcategory(Other)', 0.719213, 0.416986, 1.725, 0.085],
                                                     ['gender(F)', 0.103668, 0.338214, 0.307, 0.7593],
@@ -1618,7 +1619,7 @@ def test_LinearRegression_3_3b_dummycoding():
                                                     -1.44523,  1.20267,
                                                      0.336 , 706 ,
                                                      0.2793,   0.268,
-                                                    24.87 , 11 , 706 )
+                                                    24.87 , 11  )
 
 
 
@@ -1683,7 +1684,7 @@ def test_LinearRegression_3_3b_simplecoding():
     ## F-statistic: 24.87 on 11 and 706 DF,  p-value: < 2.2e-16
 
 
-    check_variables(result['resources'][0]['data'],[['intercept', 3.4331498, 0.1131706, 30.336, '< 2e-16'],
+    check_variables(result,[['intercept', 3.4331498, 0.1131706, 30.336, '< 2e-16'],
                                                     ['alzheimerbroadcategory(CN)', 0.313025, 0.2555937, 1.225, 0.2211],
                                                     ['alzheimerbroadcategory(Other)', 0.4263286, 0.2802449, 1.521, 0.1286],
                                                     ['gender(F)', -0.3192223, 0.2263412, -1.41, 0.1589],
@@ -1698,7 +1699,7 @@ def test_LinearRegression_3_3b_simplecoding():
                                                     -1.44523 , 1.20267 ,
                                                      0.336 , 706 ,
                                                      0.2793,   0.268,
-                                                    24.87 , 11 , 706 )
+                                                    24.87 , 11  )
 
 def test_LinearRegression_3_4_dummycoding():
     logging.info("---------- TEST 3_4: Linear Regression, two categorical and two continuous regressors without interaction, dummycoding")
@@ -1741,7 +1742,7 @@ def test_LinearRegression_3_4_dummycoding():
     ## F-statistic: 83.32 on 5 and 712 DF,  p-value: < 2.2e-16
 
 
-    check_variables(result['resources'][0]['data'],[['intercept', 1.704301, 0.132787, 12.835, '< 2e-16'],
+    check_variables(result,[['intercept', 1.704301, 0.132787, 12.835, '< 2e-16'],
                                                     ['alzheimerbroadcategory(CN)', 0.237044, 0.026534, 8.934, '< 2e-16'],
                                                     ['alzheimerbroadcategory(Other)', 0.069473, 0.032191, 2.158, 0.0313],
                                                     ['gender(F)', -0.155941, 0.025874, -6.027, 2.68e-09],
@@ -1750,7 +1751,7 @@ def test_LinearRegression_3_4_dummycoding():
                                                         -1.5051 ,  1.1121 ,
                                                          0.3131 , 712 ,
                                                          0.3691,  0.3647 ,
-                                                        83.32 , 5,712  )
+                                                        83.32 , 5  )
 
 def test_LinearRegression_3_4_simplecoding():
     logging.info("---------- TEST 3_4: Linear Regression, two categorical and two continuous regressors without interaction, simplecoding")
@@ -1794,7 +1795,7 @@ def test_LinearRegression_3_4_simplecoding():
     ## F-statistic: 83.32 on 5 and 712 DF,  p-value: < 2.2e-16
 
 
-    check_variables(result['resources'][0]['data'],[['intercept', 1.728503, 0.127729, 13.533, '< 2e-16'],
+    check_variables(result,[['intercept', 1.728503, 0.127729, 13.533, '< 2e-16'],
                                                     ['alzheimerbroadcategory(CN)', 0.237044, 0.026534, 8.934, '< 2e-16'],
                                                     ['alzheimerbroadcategory(Other)', 0.069473, 0.032191, 2.158, 0.0313],
                                                     ['gender(F)', -0.155941, 0.025874, -6.027, 2.68e-09],
@@ -1803,7 +1804,7 @@ def test_LinearRegression_3_4_simplecoding():
                                                     -1.5051 ,  1.1121 ,
                                                          0.3131 , 712 ,
                                                          0.3691,  0.3647 ,
-                                                        83.32 , 5,712  )
+                                                        83.32 , 5 )
 
 
 
@@ -1942,7 +1943,7 @@ def test_LinearRegression_3_4b_dummycoding():
 ## F-statistic: 19.73 on 23 and 694 DF,  p-value: < 2.2e-16
 
 
-    check_variables(result['resources'][0]['data'],[['intercept', 5.83179, 2.068664, 2.819, 0.00495],
+    check_variables(result,[['intercept', 5.83179, 2.068664, 2.819, 0.00495],
                                             ['alzheimerbroadcategory(CN)', 0.105328, 3.399301, 0.031, 0.97529],
                                             ['alzheimerbroadcategory(Other)', -3.470934, 3.599137, -0.964, 0.33519],
                                             ['gender(F)', -4.793523, 2.92749, -1.637, 0.102],
@@ -1969,7 +1970,7 @@ def test_LinearRegression_3_4b_dummycoding():
                                             -1.42916,  1.16310 ,
                                             0.3104 , 694,
                                             0.3954,  0.3753,
-                                            19.73 , 23 , 694   )
+                                            19.73 , 23  )
 
 def test_LinearRegression_3_4b_simplecoding():
     logging.info("---------- TEST 3_4b: Linear Regression, two categorical and two continuous regressors with interaction,simplecoding")
@@ -2107,7 +2108,7 @@ def test_LinearRegression_3_4b_simplecoding():
 ## F-statistic: 19.73 on 23 and 694 DF,  p-value: < 2.2e-16
 
 
-    check_variables(result['resources'][0]['data'],[['intercept', 3.76685, 1.04674, 3.599, 0.000343],
+    check_variables(result,[['intercept', 3.76685, 1.04674, 3.599, 0.000343],
                                                 ['alzheimerbroadcategory(CN)', 1.95292, 2.38521, 0.819, 0.413204],
                                                 ['alzheimerbroadcategory(Other)', -0.95745, 2.51283, -0.381, 0.703303],
                                                 ['gender(F)', -1.88614, 2.09348, -0.901, 0.367924],
@@ -2134,7 +2135,7 @@ def test_LinearRegression_3_4b_simplecoding():
                                         -1.42916 ,  1.16310 ,
                                         0.3104 , 694,
                                         0.3954,  0.3753,
-                                        19.73 , 23 , 694   )
+                                        19.73 , 23  )
 
 def test_LinearRegression_Privacy():
     """
@@ -2164,40 +2165,53 @@ def check_privacy_result(result):
 
 
 
-def check_variables(variable_data,corr_coeff_data,
+def check_variables(result,corr_coeff_data,
                         corr_residualsmin, corr_residualsmax, corr_residualstandarderror,corr_degreesoffreedom,
                         corr_rsquared, corr_adjustedR,
-                        corr_fstatistic,  corr_noofvariables,corr_degreesoffreedom2):
+                        corr_fstatistic,  corr_noofvariables):
+
+    coefficients_data = result['result'][0]['data'][0]['data'][1:]
+    # print (coefficients_data)
+    # print (corr_coeff_data)
     noofcoefficient = 0
-    for c in variable_data:
-        if c[0] == 'Model Coefficients':
-            noofcoefficient = noofcoefficient + 1
-            exist_corr_c = False
-            for corr_c in corr_coeff_data:
-                if c[1] == corr_c[0]:
-                    exist_corr_c = True
-                    assert math.isclose(float(c[2]),corr_c[1],rel_tol=0,abs_tol=10**(-abs(Decimal(str(corr_c[1])).as_tuple().exponent)))
-                    assert math.isclose(float(c[3]),corr_c[2],rel_tol=0,abs_tol=10**(-abs(Decimal(str(corr_c[2])).as_tuple().exponent)))
-                    assert math.isclose(float(c[4]),corr_c[3],rel_tol=0,abs_tol=10**(-abs(Decimal(str(corr_c[3])).as_tuple().exponent)))
-                    if type(corr_c[4]) is str:
-                        corr_c[4].replace(' ','')
-                        assert (float(c[5]) < float(corr_c[4].replace('<','')))
-                    else:
-                        assert (math.isclose(float(c[5]),corr_c[4],rel_tol=0,abs_tol=10**(-abs(Decimal(str(corr_c[4])).as_tuple().exponent))))
-            assert exist_corr_c==True
-        elif c[0] == 'Residuals':
-            assert math.isclose(float(c[6]),corr_residualsmin,rel_tol=0,abs_tol=10**(-abs(Decimal(str(corr_residualsmin)).as_tuple().exponent)))
-            assert math.isclose(float(c[7]),corr_residualsmax,rel_tol=0,abs_tol=10**(-abs(Decimal(str(corr_residualsmax)).as_tuple().exponent)))
-            assert math.isclose(float(c[8]),corr_residualstandarderror,rel_tol=0,abs_tol=10**(-abs(Decimal(str(corr_residualstandarderror)).as_tuple().exponent)))
-            assert int(c[9])==corr_degreesoffreedom
+    for c in coefficients_data:
+        noofcoefficient = noofcoefficient + 1
+        exist_corr_c = False
+        for corr_c in corr_coeff_data:
+            # print (c[0],corr_c[0])
+            if c[0] == corr_c[0]:
+                exist_corr_c = True
+                assert math.isclose(float(c[1]),corr_c[1],rel_tol=0,abs_tol=10**(-abs(Decimal(str(corr_c[1])).as_tuple().exponent)))
+                assert math.isclose(float(c[2]),corr_c[2],rel_tol=0,abs_tol=10**(-abs(Decimal(str(corr_c[2])).as_tuple().exponent)))
+                assert math.isclose(float(c[3]),corr_c[3],rel_tol=0,abs_tol=10**(-abs(Decimal(str(corr_c[3])).as_tuple().exponent)))
+                if type(corr_c[4]) is str:
+                    corr_c[4].replace(' ','')
+                    assert (float(c[4]) < float(corr_c[4].replace('<','')))
+                else:
+                    assert (math.isclose(float(c[4]),corr_c[4],rel_tol=0,abs_tol=10**(-abs(Decimal(str(corr_c[4])).as_tuple().exponent))))
+        # print (c)
+        assert exist_corr_c==True
+    assert noofcoefficient == len(corr_coeff_data)
+
+    coefficients_data = result['result'][1]['data'][0]['data'][1:]
+    print (coefficients_data)
+    for c in coefficients_data:
+        if c[0] =='residual min':
+            assert math.isclose(float(c[1]),corr_residualsmin,rel_tol=0,abs_tol=10**(-abs(Decimal(str(corr_residualsmin)).as_tuple().exponent)))
+        elif c[0] =='residual max':
+            assert math.isclose(float(c[1]),corr_residualsmax,rel_tol=0,abs_tol=10**(-abs(Decimal(str(corr_residualsmax)).as_tuple().exponent)))
+        elif c[0] =='residual standard error':
+            assert math.isclose(float(c[1]),corr_residualstandarderror,rel_tol=0,abs_tol=10**(-abs(Decimal(str(corr_residualstandarderror)).as_tuple().exponent)))
+        elif c[0] == 'degrees of freedom':
+            assert int(c[1])==corr_degreesoffreedom
         elif c[0] =='R squared':
-            assert math.isclose(float(c[10]),corr_rsquared,rel_tol=0,abs_tol=10**(-abs(Decimal(str(corr_rsquared)).as_tuple().exponent)))
-            assert math.isclose(float(c[11]),corr_adjustedR,rel_tol=0,abs_tol=10**(-abs(Decimal(str(corr_adjustedR)).as_tuple().exponent)))
-        elif c[0] == 'F-statistics':
-            assert int(c[9])==corr_degreesoffreedom2
-            assert math.isclose(float(c[12]),corr_fstatistic,rel_tol=0,abs_tol=10**(-abs(Decimal(str(corr_fstatistic)).as_tuple().exponent)))
-            assert math.isclose(float(c[13]),corr_noofvariables,rel_tol=0,abs_tol=10**(-abs(Decimal(str(corr_noofvariables)).as_tuple().exponent)))
+            assert math.isclose(float(c[1]),corr_rsquared,rel_tol=0,abs_tol=10**(-abs(Decimal(str(corr_rsquared)).as_tuple().exponent)))
+        elif c[0] =='adjusted R':
+            assert math.isclose(float(c[1]),corr_adjustedR,rel_tol=0,abs_tol=10**(-abs(Decimal(str(corr_adjustedR)).as_tuple().exponent)))
+        elif c[0] == 'f-statistic':
+            assert math.isclose(float(c[1]),corr_fstatistic,rel_tol=0,abs_tol=10**(-abs(Decimal(str(corr_fstatistic)).as_tuple().exponent)))
+        elif c[0] == 'no of variables':
+            assert math.isclose(float(c[1]),corr_noofvariables,rel_tol=0,abs_tol=10**(-abs(Decimal(str(corr_noofvariables)).as_tuple().exponent)))
         else:
-            if c[0]!='tablename':
-                assert False
-    assert noofcoefficient== len (corr_coeff_data)
+            assert False
+

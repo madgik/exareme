@@ -1,4 +1,4 @@
-requirevars 'defaultDB' 'sstype' 'outputformat';
+requirevars 'defaultDB' 'sstype';
 attach database '%{defaultDB}' as defaultDB;
 
 --var 'input_global_tbl' 'defaultDB.metadatatbl';
@@ -31,7 +31,7 @@ set `f`= null,`p`= null,`eta squared`= null,`part eta squared`= null, `omega squ
 drop table if exists defaultDB.ANOVAresult;
 create table defaultDB.ANOVAresult as
 setschema 'result'
-select * from (totabulardataresourceformat title:ANOVA_TABLE types:text,number,number,number,number,number,number,number,number
-                select * from defaultDB.globalresult where `model variables` <> 'intercept') where '%{outputformat}'= 'pfa';
+select * from (totabulardataresourceformat title:ANOVA types:text,number,number,number,number,number,number,number,number
+                select * from defaultDB.globalresult where `model variables` <> 'intercept');
 
 select * from defaultDB.ANOVAresult;
