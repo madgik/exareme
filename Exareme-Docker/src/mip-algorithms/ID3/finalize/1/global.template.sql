@@ -3,8 +3,8 @@ attach database '%{defaultDB}' as defaultDB;
 
 var 'EH_IterationsMaxNumber' from  select maxnumberofiterations_errorhandling(0,no) from (select count(nextnode) as no from defaultdb.globaltree where nextnode='?');
 
-update defaultDB.globaltree set nextnode = ""  where nextnode ="-";
-update defaultDB.globaltree set leafval = ""  where leafval ="?";
+update defaultDB.globaltree set nextnode = ""  where nextnode ="-" or nextnode is null;
+update defaultDB.globaltree set leafval = ""  where leafval ="?"  or leafval = '';
 
 drop table if exists defaultDB.id3resultl;
 create table defaultDB.id3resultl ('result') ;
