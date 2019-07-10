@@ -117,6 +117,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         HashMap inputContent = getAlgoParameters(request);
         if(!inputContent.isEmpty()) {
             datasets = (String) inputContent.get("dataset");
+            //Get datasets provided by user
             usedDatasets = datasets.split(",");
         }
 
@@ -379,57 +380,68 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         response.setEntity(entity);
     }
 
-    private boolean nodesRunning(HttpResponse response, List<String> usedIPs) throws IOException {
+    private boolean nodesRunning(HttpResponse response, List<String> usedIPs) throws Exception {
 
-        for( String IP: usedIPs){
-            log.debug("Will check container with IP: " + IP);
-
-            if (IP != null && !usedIPs.contains(IP)) {
-                log.debug("Container not used, skipping");
-                continue;
-            }
-            for (ContainerProxy containerProxy : ArtRegistryLocator.getArtRegistryProxy().getContainers()) {
-                if (containerProxy.getEntityName().getIP().equals(IP)) {
-                    try {
-                        ContainerProxy tmpContainerProxy = ArtRegistryLocator.getArtRegistryProxy().lookupContainer(containerProxy.getEntityName());
-                        }
-                    catch (Exception e) {
-                        HashMap names = getNamesOfActiveNodes();
-                        String name = (String) names.get(IP);
-
-                        log.error("Container connection error: " + e);
-                        ArtRegistryLocator.getArtRegistryProxy().removeContainer(containerProxy.getEntityName());
-                        log.error("Removed contaier");
-
-                        response.setStatusCode(HttpStatus.SC_OK);
-                        NStringEntity entity = new NStringEntity("{\"success\":\"Worker removed successfully\"}", ContentType.create("application/json", "UTF-8"));
-                        response.setEntity(entity);
-
-                        log.debug("Worker removed successfully");
-                        log.debug("It seems that node[" + name + "," + IP + "] you try to check is not part of the registry. Deleting it from Consul....");
-
-                        deleteFromConsul("datasets/" + name);
-                        deleteFromConsul("active_workers/" + name);
-
-                        HashMap<String, String[]> map = getDatasetsFromConsul();
-                        Iterator<Map.Entry<String, String[]>> entries = map.entrySet().iterator();
-                        String existingDatasetsSring = null;
-                        while (entries.hasNext()) {
-                            Map.Entry<String, String[]> entry = entries.next();
-                            String[] datasets = entry.getValue();
-                            StringBuilder existingDatasets = new StringBuilder();
-                            for (String data : datasets) {
-                                existingDatasets.append(data).append(", ");
-                                existingDatasetsSring = existingDatasets.toString();
-                                existingDatasetsSring = existingDatasetsSring.substring(0, existingDatasetsSring.length() - 2);
-                            }
-                        }
-                        getMessage(response, "Container with IP " + IP + " is not responding. You can re-run the experiment using dataset(s): \n" + existingDatasetsSring);
-                        break;
-                    }
+        //Check if usedIPs exist in RegistryIPs
+        List<String> notContainerProxy = new ArrayList<>();
+        ContainerProxy[] containerProxy = ArtRegistryLocator.getArtRegistryProxy().getContainers();
+        for (String IP : usedIPs) {
+            boolean flag = false;
+            for (ContainerProxy containers : containerProxy) {
+                log.error("Conteiner in registry: "+containers.getEntityName().getIP());
+                if (containers.getEntityName().getIP().contains(IP)) {     //exists in RegistryIPs
+                    flag = true;
+                    break;
                 }
-                else{
-                    log.error("ever come here?");
+            }
+            if (!flag) {                  //IP is not in the Registry
+                notContainerProxy.add(IP);
+            }
+        }
+
+        if (notContainerProxy.size() != 0) {
+            HashMap names = getNamesOfActiveNodes();
+            String existingDatasetsSring;
+            StringBuilder notFoundIPs = new StringBuilder();
+            StringBuilder existingDatasets = new StringBuilder();
+            for (String ip : notContainerProxy) {
+                String name = (String) names.get(ip);
+                log.debug("It seems that node[" + name + "," + ip + "] you try to check is not part of the registry. Deleting it from Consul....");
+                 deleteFromConsul("datasets/" + name);
+                 deleteFromConsul("active_workers/" + name);
+
+                HashMap<String, String[]> map = getDatasetsFromConsul();
+                Iterator<Map.Entry<String, String[]>> entries = map.entrySet().iterator();
+
+                while (entries.hasNext()) {
+                    Map.Entry<String, String[]> entry = entries.next();
+                    String[] datasets = entry.getValue();
+                    for (String data : datasets)
+                        existingDatasets.append(data).append(", ");
+                }
+                notFoundIPs.append(ip).append(", ");
+            }
+            existingDatasetsSring = existingDatasets.toString();
+            existingDatasetsSring = existingDatasetsSring.substring(0, existingDatasetsSring.length() - 2);
+            String notFoundStringIPs = notFoundIPs.toString();
+            notFoundStringIPs = notFoundStringIPs.substring(0, notFoundStringIPs.length() - 2);
+            log.error("Container with IP(s) " + notFoundStringIPs + " are not responding. You can re-run the experiment using dataset(s): \n" + existingDatasetsSring);
+            throw new Exception("Container with IP(s) " + notFoundStringIPs + " are not responding. You can re-run the experiment using dataset(s):" + existingDatasetsSring);
+        }
+
+
+        //check if container itself is running ..still todo
+        for (String IP : usedIPs) {
+            log.debug("Will check container with IP: " + IP);
+            for (ContainerProxy containers : containerProxy) {
+                if (containers.getEntityName().getIP().equals(IP)) {
+                    try {
+                        ContainerProxy tmpContainerProxy = ArtRegistryLocator.getArtRegistryProxy().lookupContainer(containers.getEntityName());
+
+                        break;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
