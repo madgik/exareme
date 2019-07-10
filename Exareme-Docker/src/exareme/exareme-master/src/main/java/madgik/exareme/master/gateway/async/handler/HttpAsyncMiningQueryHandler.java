@@ -399,34 +399,36 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             }
         }
 
-        if (notContainerProxy.size() != 0) {
+        if (notContainerProxy.size() != 0) {    //If there are IPs that are not in Exareme registry
             HashMap names = getNamesOfActiveNodes();
             String existingDatasetsSring;
+            String notFoundStringIPs;
             StringBuilder notFoundIPs = new StringBuilder();
             StringBuilder existingDatasets = new StringBuilder();
             for (String ip : notContainerProxy) {
                 String name = (String) names.get(ip);
                 log.debug("It seems that node[" + name + "," + ip + "] you try to check is not part of the registry. Deleting it from Consul....");
-                 deleteFromConsul("datasets/" + name);
-                 deleteFromConsul("active_workers/" + name);
 
+                 //Delete datasets and IP of the node
+                deleteFromConsul("datasets/" + name);
+                deleteFromConsul("active_workers/" + name);
+
+                //Get Datasets exist in other nodes
                 HashMap<String, String[]> map = getDatasetsFromConsul();
-                Iterator<Map.Entry<String, String[]>> entries = map.entrySet().iterator();
-
-                while (entries.hasNext()) {
-                    Map.Entry<String, String[]> entry = entries.next();
+                for (Iterator<Map.Entry<String, String[]>> iterator = map.entrySet().iterator(); iterator.hasNext(); ) {
+                    Map.Entry<String, String[]> entry = iterator.next();
                     String[] datasets = entry.getValue();
                     for (String data : datasets)
-                        existingDatasets.append(data).append(", ");
+                        existingDatasets.append(data).append(", ");     //proper error message showing what datasets the user could use
                 }
-                notFoundIPs.append(ip).append(", ");
+                notFoundIPs.append(ip).append(", ");                    //proper error message showing what nodes(IPs) had issues
             }
             existingDatasetsSring = existingDatasets.toString();
             existingDatasetsSring = existingDatasetsSring.substring(0, existingDatasetsSring.length() - 2);
-            String notFoundStringIPs = notFoundIPs.toString();
+            notFoundStringIPs = notFoundIPs.toString();
             notFoundStringIPs = notFoundStringIPs.substring(0, notFoundStringIPs.length() - 2);
-            log.error("Container with IP(s) " + notFoundStringIPs + " are not responding. You can re-run the experiment using dataset(s): \n" + existingDatasetsSring);
-            throw new Exception("Container with IP(s) " + notFoundStringIPs + " are not responding. You can re-run the experiment using dataset(s):" + existingDatasetsSring);
+            throw new Exception("Container with IP(s) " + notFoundStringIPs + " are not responding. Until the issue is fixed, you can re-run the experiment using one or more dataset(s):" +
+                     existingDatasetsSring); //todo change notFoundStringIPs with notFoundStringNames
         }
 
 
