@@ -53,6 +53,9 @@ services:
       - NODE_NAME=${FEDERATION_NODE}
       - DOCKER_DATASETS_FOLDER=${DOCKER_DATASETS_FOLDER}
       - DOCKER_METADATA_FOLDER=${DOCKER_DATASETS_FOLDER}
+      - EXAREME_ACTIVE_WORKERS_PATH=active_workers
+      - EXAREME_MASTER_PATH=master
+      - DATASETS=datasets
     depends_on:
       - exareme-keystore
     deploy:
