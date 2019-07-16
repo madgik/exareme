@@ -15,17 +15,14 @@ import madgik.exareme.master.engine.iterations.handler.IterationsHandler;
 import madgik.exareme.master.engine.iterations.handler.NIterativeAlgorithmResultEntity;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.master.gateway.ExaremeGatewayUtils;
-import madgik.exareme.master.gateway.async.HttpAsyncExaremeGateway;
 import madgik.exareme.master.gateway.async.handler.Exceptions.DatasetsException;
 import madgik.exareme.master.gateway.async.handler.entity.NQueryResultEntity;
-import madgik.exareme.master.gateway.control.handler.HttpAsyncRemoveWorkerHandler;
 import madgik.exareme.master.queryProcessor.composer.AlgorithmProperties;
 import madgik.exareme.master.queryProcessor.composer.Algorithms;
 import madgik.exareme.master.queryProcessor.composer.Composer;
 import madgik.exareme.master.queryProcessor.composer.Exceptions.AlgorithmException;
 import madgik.exareme.worker.art.container.ContainerProxy;
 import madgik.exareme.worker.art.registry.ArtRegistryLocator;
-import org.apache.commons.io.Charsets;
 import org.apache.http.*;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
@@ -34,10 +31,7 @@ import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.nio.DefaultHttpServerIODispatch;
-import org.apache.http.nio.entity.NStringEntity;
 import org.apache.http.nio.protocol.*;
-import org.apache.http.nio.reactor.IOEventDispatch;
 import org.apache.http.protocol.*;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
@@ -114,10 +108,10 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         String algorithmName = preALgoExecutionChecks(request);
 
         //Get parameters of given algorithm
-        HashMap inputContent = getAlgoParameters(request);
+        HashMap<String, String> inputContent = getAlgoParameters(request);
         if(inputContent != null) {
             if (inputContent.containsKey("dataset")) {
-                datasets = (String) inputContent.get("dataset");
+                datasets = inputContent.get("dataset");
                 //Get datasets provided by user
                 usedDatasets = datasets.split(",");
             }
@@ -393,14 +387,14 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         }
 
         if (notContainerProxy.size() != 0) {    //If there are IPs that are not in Exareme registry
-            HashMap names = getNamesOfActiveNodes();
+            HashMap<String, String> names = getNamesOfActiveNodes();
             String existingDatasetsSring;
             String nodesNotFound;
-            List datasetsFound = new ArrayList();
+            List<String> datasetsFound = new ArrayList<>();
             StringBuilder nodes = new StringBuilder();
             StringBuilder datasets = new StringBuilder();
             for (String ip : notContainerProxy) {
-                String name = (String) names.get(ip);
+                String name = names.get(ip);
                 log.debug("It seems that node[" + name + "," + ip + "] you try to check is not part of the registry. Deleting it from Consul....");
 
                  //Delete datasets and IP of the node
@@ -409,8 +403,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
 
                 //Get Datasets exist in other nodes
                 HashMap<String, String[]> map = getDatasetsFromConsul();
-                for (Iterator<Map.Entry<String, String[]>> iterator = map.entrySet().iterator(); iterator.hasNext(); ) {
-                    Map.Entry<String, String[]> entry = iterator.next();
+                for (Map.Entry<String, String[]> entry : map.entrySet()) {
                     String[] getDatasets = entry.getValue();
                     for (String data : getDatasets) {
                         if (!datasetsFound.contains(data)) {
