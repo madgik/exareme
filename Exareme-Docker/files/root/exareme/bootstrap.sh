@@ -1,8 +1,26 @@
 #!/usr/bin/env bash
 
-EXAREME_ACTIVE_WORKERS_PATH="active_workers"
-EXAREME_MASTER_PATH="master"
-DATASETS="datasets"
+if [[ -z "${EXAREME_ACTIVE_WORKERS_PATH}" ]]; then
+  echo "Environmental variable 'active_workers' not initialized in docker-compose.yaml files. Exiting..."
+  exit 1
+else
+  EXAREME_ACTIVE_WORKERS_PATH=${EXAREME_ACTIVE_WORKERS_PATH}
+fi
+
+if [[ -z "${EXAREME_MASTER_PATH}" ]]; then
+  echo "Environmental variable 'master' not initialized in docker-compose.yaml files. Exiting..."
+  exit 1
+
+else
+  EXAREME_MASTER_PATH=${EXAREME_MASTER_PATH}
+fi
+
+if [[ -z "${DATASETS}" ]]; then
+  echo "Environmental variable 'datasets' not initialized in docker-compose.yaml files. Exiting..."
+  exit 1
+else
+  DATASETS=${DATASETS}
+fi
 
 stop_exareme () {
     if [ -f /tmp/exareme/var/run/*.pid ]; then
@@ -16,7 +34,6 @@ stop_exareme () {
 }
 
 deleteKeysFromConsul () {
-    DATASETS="datasets"
     if [ "$(curl -s -o  /dev/null -i -w "%{http_code}\n" ${CONSULURL}/v1/kv/${DATASETS}/${NODE_NAME}?keys)" = "200" ]; then
         curl -X DELETE $CONSULURL/v1/kv/$DATASETS/$NODE_NAME
     fi
@@ -82,6 +99,9 @@ crond
 if [ "$MASTER_FLAG" != "master" ]; then         #this is a worker
     DESC="exareme-worker"
     echo -n $NODE_NAME > /root/exareme/etc/exareme/name
+
+    # something to know if the node can access consul or not
+
     while [ "$(curl -s -o  /dev/null -i -w "%{http_code}\n" ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/?keys)" != "200" ]; do
         echo "Waiting for master node to be initialized...."
         sleep 2
