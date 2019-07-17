@@ -12,9 +12,7 @@ except ImportError:
 class tabletojson:
     """
     .. function:: tabletojson
-
     Example:
-
     """
     registered = True  # Value to define db operator
 
@@ -22,19 +20,25 @@ class tabletojson:
         self.d = {}
         self.dlist = []
         self.i = 0
+        self.addtype = False
 
     def step(self, *args):
         if self.i == 0:
-            self.colnames = str(args[-1]).split(',')
+            self.colnames = str(args[-2]).split(',')
+            self.addtype = int(args[-1])
 
-        for j in xrange(len(args) - 1):
+        for j in xrange(len(args) - 2):
             # print self.colnames[j],args[j]
             self.d[self.colnames[j]] = args[j]
         self.dlist.append(self.d.copy())
         self.i = self.i + 1
 
     def final(self):
-        json_result = json.dumps(self.dlist)
+        if self.addtype == 1:
+            dlist = { "type": "application/json", "data": self.dlist }
+        else:
+            dlist = self.dlist
+        json_result = json.dumps(dlist)
         json_result= json_result.replace(' ','')
         return json_result
 
