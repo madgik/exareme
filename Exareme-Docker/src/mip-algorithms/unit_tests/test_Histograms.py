@@ -11,7 +11,7 @@ import rpy2.robjects as robjects
 
 endpointUrl='http://localhost:9090/mining/query/HISTOGRAMS'
 folderPath = 'R_scripts'
-file ='Histograms.R'
+file ='Histograms.Rmd'
 
 
 class TestHistogram(unittest.TestCase):
@@ -22,7 +22,7 @@ class TestHistogram(unittest.TestCase):
         #Execute R script
         self.Test1Result, self.Test2Result, self.Test3Result, self.Test4Result, self.Test5Result = robjects.r(data)
 
-    
+
     def test_Histogram_1(self):
         logging.info("---------- TEST 1: Histogram of right ententorhinal area ")
         data = [{ "name": "x", "value": "rightententorhinalarea"},
@@ -135,39 +135,6 @@ def resultsComparison(jsonExaremeResult, jsonRResult):
                             assert int(exaremejson[i][grouping]) == 0
                         print("KEY3:", key, exaremejson[i][grouping],jsonRResult[d][key])
 
-    # assert(1==2)
-
-
 
 if __name__ == '__main__':
     unittest.main()
-
-
-def check_rangesofbinsDiscreteVariable(bins,corr_bins):
-    assert len(bins)==len(corr_bins)
-    for i in range(len(bins)):
-        assert str(bins[i])==str(corr_bins[i])
-
-def check_rangesofbins(bins,corr_bins):
-    assert len(bins)==len(corr_bins)
-    for i in range(len(bins)):
-        A = bins[i].split("-")
-        B = corr_bins[i].split(" - ")
-        # print (A[0],B[0])
-        # print (A[1],B[1])
-        assert math.isclose(float(A[0]),float(B[0]),rel_tol=0,abs_tol=10**(-abs(Decimal(str(B[0])).as_tuple().exponent)))
-        assert math.isclose(float(A[1]),float(B[1]),rel_tol=0,abs_tol=10**(-abs(Decimal(str(B[1])).as_tuple().exponent)))
-
-
-def check_valuesofbins(counts,corr_counts,minNumberOfData):
-
-    for i in range(len(counts)):
-        for j in range(len(corr_counts)):
-            if counts[i]['name']==corr_counts[j]['name']:
-                for k in range(len(counts[i]['data'])):
-                    if int(corr_counts[j]['data'][k]) >= minNumberOfData:
-                        assert int(counts[i]['data'][k]) == int(corr_counts[j]['data'][k])
-                        print (counts[i]['data'][k],corr_counts[j]['data'][k])
-                    else:
-                        assert int(counts[i]['data'][k]) == int(corr_counts[j]['data'][k]) #0
-                        print (corr_counts[j]['data'][k])

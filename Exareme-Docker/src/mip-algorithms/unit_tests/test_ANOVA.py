@@ -11,7 +11,7 @@ import rpy2.robjects as robjects
 
 endpointUrl='http://localhost:9090/mining/query/ANOVA'
 folderPath = 'R_scripts'
-file ='ANOVA.R'
+file ='ANOVA.Rmd'
 
 
 

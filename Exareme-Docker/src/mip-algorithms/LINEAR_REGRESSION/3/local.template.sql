@@ -5,7 +5,7 @@ attach database '%{defaultDB}' as defaultDB;
 
 --E1. Compute residuals y-ypredictive = Y-sum(X(i)*estimate(i)) (Local Layer)
 
-var 'a' from select tabletojson(attr1,estimate,"attr1,estimate") from %{prv_output_global_tbl} where tablename ="coefficients";
+var 'a' from select tabletojson(attr1,estimate,"attr1,estimate",0) from %{prv_output_global_tbl} where tablename ="coefficients";
 
 drop table if exists defaultDB.residuals;
 create table defaultDB.residuals as

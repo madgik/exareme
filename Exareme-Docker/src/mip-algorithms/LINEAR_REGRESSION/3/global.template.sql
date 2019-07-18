@@ -38,26 +38,33 @@ var 'tableResultCoefficients' from select * from (totabulardataresourceformat ti
 drop table if exists defaultDB.LRtotalresulttbl2;
 create table defaultDB.LRtotalresulttbl2 (name text, value real);
 
-insert into LRtotalresulttbl2 select "residual min", %{mine};
-insert into LRtotalresulttbl2 select "residual max", %{maxe};
-insert into LRtotalresulttbl2 select "residual standard error", case when  %{rows} = %{cols} then 0 else sqroot(%{sse}/(%{rows} -%{cols})) end;
-insert into LRtotalresulttbl2 select "degrees of freedom",  %{rows}-%{cols};
+insert into defaultDB.LRtotalresulttbl2 select "residual_min", %{mine};
+insert into defaultDB.LRtotalresulttbl2 select "residual_max", %{maxe};
+insert into defaultDB.LRtotalresulttbl2 select "residual_standard_error", case when  %{rows} = %{cols} then 0 else sqroot(%{sse}/(%{rows} -%{cols})) end;
+insert into defaultDB.LRtotalresulttbl2 select "degrees_of_freedom",  %{rows}-%{cols};
 var 'rsquared' from select 1- %{sse}/%{sst};
-insert into LRtotalresulttbl2 select "R squared", %{rsquared};
-insert into LRtotalresulttbl2 select "adjusted R", 1 - %{sse}*(%{rows}-1) / (%{sst}*(%{rows}-%{cols})) ;
-insert into LRtotalresulttbl2 select "f-statistic",  %{rsquared} * (%{rows}-%{cols}) / ((1-%{rsquared})*(%{cols}-1)) ;
-insert into LRtotalresulttbl2 select "no of variables", %{cols}-1  ;
+insert into defaultDB.LRtotalresulttbl2 select "R-squared", %{rsquared};
+insert into defaultDB.LRtotalresulttbl2 select "adjusted-R", 1 - %{sse}*(%{rows}-1) / (%{sst}*(%{rows}-%{cols})) ;
+insert into defaultDB.LRtotalresulttbl2 select "f-statistic",  %{rsquared} * (%{rows}-%{cols}) / ((1-%{rsquared})*(%{cols}-1)) ;
+insert into defaultDB.LRtotalresulttbl2 select "variables_number", %{cols}-1  ;
 
 var 'tableResultStats' from select * from (totabulardataresourceformat title:Coefficients types:text,real
                               select name,value from defaultDB.LRtotalresulttbl2);
 
+var 'resultjson' from select '{ "type": "application/json", "data": ' || val ||'}' from (
+select jdict("coefficients", val1,"statistics",val2)  as val from
+(select tabletojson( predictor, estimate, stderror, tvalue, prvalue, "predictor,estimate,stderror,tvalue,prvalue",0) as val1 from defaultDB.LRtotalresulttbl),
+(select tabletojson( name, value, "name,value",0) as val2 from defaultDB.LRtotalresulttbl2));
 
 --drop table if exists defaultDB.aa;
 --create table defaultDB.aa as select '%{tableResultCoefficients}';
 --insert into defaultDB.aa select '%{tableResultStats}';
 --insert into defaultDB.aa select '{"result": ['||'%{tableResultCoefficients}'||','||'%{tableResultStats}'||']}';
 
-select '{"result": ['||'%{tableResultCoefficients}'||','||'%{tableResultStats}'||']}';
+-- drop table if exists defaultDB.lala;
+-- create table defaultDB.lala as
+select '{"result": [' || '%{resultjson}' || ',' || '%{tableResultCoefficients}' || ',' || '%{tableResultStats}' || ']}';
 
+-- select * from defaultDB.lala;
 
 --------------------------------------------------------------------------------------------------------
