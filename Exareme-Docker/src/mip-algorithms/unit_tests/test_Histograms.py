@@ -9,7 +9,7 @@ from decimal import *
 from rpy2.robjects.packages import importr
 import rpy2.robjects as robjects
 
-endpointUrl='http://localhost:9090/mining/query/HISTOGRAMS'
+endpointUrl='http://88.197.53.100:9090/mining/query/HISTOGRAMS'
 folderPath = 'R_scripts'
 file ='Histograms.Rmd'
 
