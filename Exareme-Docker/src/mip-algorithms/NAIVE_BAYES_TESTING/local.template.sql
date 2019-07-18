@@ -3,7 +3,7 @@ attach database '%{defaultDB}' as defaultDB;
 
 -- var 'model'  '';
 -- var 'iterationNumber' 0;
--- var 'model' from select tabletojson(colname,val,classval,average,sigma,probability, "colname,val,classval,average,sigma,probability")  as model from defaultdb.global_probabilities;
+-- var 'model' from select tabletojson(colname,val,classval,average,sigma,probability, "colname,val,classval,average,sigma,probability",0)  as model from defaultdb.global_probabilities;
 -------------------
 
 drop table if exists defaultDB.local_probabilities;
