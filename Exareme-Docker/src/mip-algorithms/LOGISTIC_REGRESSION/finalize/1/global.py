@@ -3,8 +3,6 @@ from __future__ import print_function
 
 import sys
 from os import path
-import os
-import errno
 from argparse import ArgumentParser
 import numpy as np
 import json
@@ -86,7 +84,7 @@ def logregr_global_final(global_state, global_in):
     raw_data = {
         'Covariates'                 : [
             {
-                'Variable'       : schema_X[i],
+                'Variable'   : schema_X[i],
                 'Coefficient': coeff[i],
                 'std.err.'   : stderr[i],
                 'z score'    : z_scores[i],

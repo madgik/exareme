@@ -2,62 +2,63 @@ import setpath
 import functions
 import json
 import re
-registered=True
 
+registered = True
 
 
 class totabulardataresourceformat(functions.vtable.vtbase.VT):
-    def VTiter(self, *parsedArgs,**envars):
+    def VTiter(self, *parsedArgs, **envars):
         largs, dictargs = self.full_parse(parsedArgs)
 
         if 'query' not in dictargs:
-            raise functions.OperatorError(__name__.rsplit('.')[-1],"No query argument ")
+            raise functions.OperatorError(__name__.rsplit('.')[-1], "No query argument ")
         query = dictargs['query']
 
         if 'title' not in dictargs:
-            raise functions.OperatorError(__name__.rsplit('.')[-1],"No title argument ")
+            raise functions.OperatorError(__name__.rsplit('.')[-1], "No title argument ")
         title = dictargs['title']
 
         if 'types' not in dictargs:
-            raise functions.OperatorError(__name__.rsplit('.')[-1],"No types argument ")
+            raise functions.OperatorError(__name__.rsplit('.')[-1], "No types argument ")
         types = dictargs['types']
-        typeslist = re.split(",",types)
-        typeslist = [x for x in typeslist if x] # remove nulls elements of the list
+        typeslist = re.split(",", types)
+        typeslist = [x for x in typeslist if x]  # remove nulls elements of the list
 
         cur = envars['db'].cursor()
-        c=cur.execute(query)
+        c = cur.execute(query)
         schema = cur.getdescriptionsafe()
 
-        if len(schema)==0:
-            raise functions.OperatorError(__name__.rsplit('.')[-1],"Empty table")
-        # print schema
+        if len(schema) == 0:
+            raise functions.OperatorError(__name__.rsplit('.')[-1], "Empty table")
+        else:
+            myschema = []
+            for i in xrange(len(schema)):
+                myschema.append({
+                    'name': schema[i][0],
+                    'type': str(typeslist[i])
+                })
 
-        myresult= "{\"resources\": [{ \"name\": \""+str(title)+"\",\"profile\": \"tabular-data-resource\",\"data\": [ ["
-
-        for i in xrange(len(schema)):
-            myresult += "\"" + str(schema[i][0]) +"\","
-        myresult = myresult[:-1] +" ],"
-
+        mydata = []
         for myrow in c:
-            myresult += "["
-            for i in xrange(len(myrow)):
-                # print str(typeslist[i])
-                if str(typeslist[i]) != 'text':
-                    # if myrow[i] is not None: --LR MODIFICATION
-                    myresult +=str(myrow[i])+','
-                else:
-                    # if myrow[i] is not None: --LR MODIFICATION
-                    myresult +="\"" + str(myrow[i])+"\""+','
-            myresult = myresult[:-1]+ "],"
-        myresult = myresult[:-1]+ "], \"schema\":  { \"fields\": ["
+            mydata.append(myrow)
 
-        for i in xrange(len(schema)):
-             myresult += "{\"name\": \"" + str(schema[i][0]) +"\",\"type\": \""+str(typeslist[i])+"\"},"
-        myresult =myresult[:-1] +" ]}}]}"
+        myresult = {
+            "type": "application/vnd.dataresource+json",
+            "data": [
+                {"name": str(title),
+                 "profile": "tabular-data-resource",
+                 "data": mydata,
+                 "schema": {
+                     "fields": myschema
+                 }
+                 }
+            ]
+        }
+        myjsonresult = json.dumps(myresult)
 
-        # print "myresult", myresult
         yield [('tabulardataresourceresult',)]
-        yield (myresult,)
+        yield (myjsonresult,)
+
 
 def Source():
     return functions.vtable.vtbase.VTGenerator(totabulardataresourceformat)
@@ -71,9 +72,11 @@ if not ('.' in __name__):
     import sys
     import setpath
     from functions import *
+
     testfunction()
     if __name__ == "__main__":
         reload(sys)
         sys.setdefaultencoding('utf-8')
         import doctest
+
         doctest.tesdoctest.tes

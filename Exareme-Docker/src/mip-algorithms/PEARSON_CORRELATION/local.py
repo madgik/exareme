@@ -68,6 +68,9 @@ def pearsonr_local(local_in):
     return local_out
 
 
+import logging
+
+
 def main():
     # Parse arguments
     parser = ArgumentParser()
