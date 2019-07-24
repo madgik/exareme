@@ -60,10 +60,9 @@ public abstract class RmiObjectProxy<T> implements ObjectProxy<T> {
             } catch (Exception e) {
                 log.error("Cannot connect to " +
                         regEntityName.getIP() + ":" + regEntityName.getPort() + " ...", e);
-                if (getRetryPolicy().getRetryTimesPolicy().retry(e, tries) == false) {
+                if (!getRetryPolicy().getRetryTimesPolicy().retry(e, tries)) {
                     break;
                 }
-
                 try {
                     Thread.sleep(getRetryPolicy().getRetryTimeInterval().getTime(tries));
                 } catch (Exception ee) {
@@ -109,14 +108,14 @@ public abstract class RmiObjectProxy<T> implements ObjectProxy<T> {
                         if (containerProxy.getEntityName().getIP().equals(regEntityName.getIP())) {
                             //If exists, remove it from Exareme's registry
                             ArtRegistryLocator.getArtRegistryProxy().removeContainer(containerProxy.getEntityName());
-                            log.debug("Worker node:[" + name + "," + regEntityName.getIP() + "]" + " removed successfully from Exareme's registry");
+                            log.info("Worker node:[" + name + "," + regEntityName.getIP() + "]" + " removed successfully from Exareme's registry");
 
                             //If exist in Consul[Key-Value store], delete infos regarding that Exareme node from there
                             if (name != null) {
                                 try {
                                     deleteFromConsul(System.getenv("DATASETS") + "/" + name);
                                     deleteFromConsul(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/" + name);
-                                    log.debug("Worker node:[" + name + "," + regEntityName.getIP() + "]" + "removed from Consul key-value store");
+                                    log.info("Worker node:[" + name + "," + regEntityName.getIP() + "]" + " removed from Consul key-value store");
                                 } catch (IOException E) {
                                     throw new RemoteException("Can not contact Consul Key value Store");
                                 }
@@ -125,7 +124,7 @@ public abstract class RmiObjectProxy<T> implements ObjectProxy<T> {
                         }
                     }
                 }
-                throw new RemoteException("There was an error with some of the workers. The user need to be informed"); //TODO catch the error
+                throw new RemoteException("There was an error with worker "+ "[" + name + "," + regEntityName.getIP() + "].");
             }
         }
         return remoteObject;

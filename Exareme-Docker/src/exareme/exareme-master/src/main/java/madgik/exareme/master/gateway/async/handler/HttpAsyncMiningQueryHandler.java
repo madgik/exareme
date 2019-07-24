@@ -425,7 +425,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
 
         //If IPs are in Exareme's registry
         for (String IP : nodesToBeChecked) {
-            log.debug("Will check container with IP: " + IP+"in order to see if a connection can be established..");       //check that a connection with the Exareme node can be established
+            log.debug("Will check container with IP: " + IP+" in order to see if a connection can be established..");       //check that a connection with the Exareme node can be established
             for (ContainerProxy containers : containerProxy) {
                 if (containers.getEntityName().getIP().equals(IP)) {
                     try {
@@ -433,7 +433,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                         break;
                     }
                     catch (RemoteException e){
-                        log.error("I do not think so");
+                        //TODO we need to catch the RemoteException here. The fix in NQueryResultEntity.java is temporal
                     }
                 }
             }
