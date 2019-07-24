@@ -99,9 +99,14 @@ crond
 if [ "$MASTER_FLAG" != "master" ]; then         #this is a worker
     DESC="exareme-worker"
     echo -n $NODE_NAME > /root/exareme/etc/exareme/name
+    MY_IP=$(/sbin/ifconfig | grep "inet " | awk -F: '{print $2}' | grep '10.20' | awk '{print $1;}' | head -n 1)
 
-    # something to know if the node can access consul or not
-
+    echo -n "Worker node [ "$NODE_NAME","$MY_IP"] trying to connect with Consul key-value store"
+    if [[curl -s -o  /dev/null -i -w "%{http_code}\n" ${CONSULURL}/v1/status/leader != "200"]]; then
+        echo -n "Connection with Consul key-value store can not be established..Exiting"
+        exit 1
+    fi
+    echo "Waiting for master node to be initialized...."
     while [ "$(curl -s -o  /dev/null -i -w "%{http_code}\n" ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/?keys)" != "200" ]; do
         echo "Waiting for master node to be initialized...."
         sleep 2
@@ -109,29 +114,27 @@ if [ "$MASTER_FLAG" != "master" ]; then         #this is a worker
 
     MASTER_IP=$(curl -s $CONSULURL/v1/kv/$EXAREME_MASTER_PATH/$(curl -s $CONSULURL/v1/kv/$EXAREME_MASTER_PATH/?keys | jq -r '.[]' | sed "s/$EXAREME_MASTER_PATH\///g")?raw)
     MASTER_NAME=$(curl -s $CONSULURL/v1/kv/$EXAREME_MASTER_PATH/?keys | jq -r '.[]' | sed "s/$EXAREME_MASTER_PATH\///g")
-    MY_IP=$(/sbin/ifconfig | grep "inet " | awk -F: '{print $2}' | grep '10.20' | awk '{print $1;}' | head -n 1)
 
     transformCsvToDB
 
     . ./start-worker.sh
-    ./exareme-admin.sh --status
 
-    while [ ! -f /tmp/exareme/var/log/$DESC.log ]; do
-        echo "Trying to connect worker with IP "$MY_IP" and name "$NODE_NAME" to master with IP "$MASTER_IP" and name "$MASTER_NAME"."
-    done
-    tail -f /tmp/exareme/var/log/$DESC.log | while read LOGLINE
-    do
-        [[ "${LOGLINE}" == *"Worker node started."* ]] && pkill -P $$ tail
-        echo " Waiting to establish connection for worker with IP "$MY_IP" with master's IP "$MASTER_IP" and name "$MASTER_NAME".."
-        sleep 2
-        if [[ "${LOGLINE}" == *"Cannot connect to"* ]]; then
-            echo "Can not establish connection with master node. Is master node running? Terminating worker node "$NODE_NAME"..."
-           stop_exareme
-        fi
-    done
-    curl -X PUT -d @- $CONSULURL/v1/kv/$EXAREME_ACTIVE_WORKERS_PATH/$NODE_NAME <<< $MY_IP
-    ./set-local-datasets.sh
-    echo -e "\nWorker with IP "$MY_IP" and name "$NODE_NAME" connected to master with IP "$MASTER_IP" and name "$MASTER_NAME"."
+    #while [ ! -f /tmp/exareme/var/log/$DESC.log ]; do
+    #    echo "Trying to connect worker with IP "$MY_IP" and name "$NODE_NAME" to master with IP "$MASTER_IP" and name "$MASTER_NAME"."
+    #done
+    #tail -f /tmp/exareme/var/log/$DESC.log | while read LOGLINE
+    #do
+    #    [[ "${LOGLINE}" == *"Worker node started."* ]] && pkill -P $$ tail
+    #    echo " Waiting to establish connection for worker with IP "$MY_IP" with master's IP "$MASTER_IP" and name "$MASTER_NAME".."
+    #    sleep 2
+    #    if [[ "${LOGLINE}" == *"Cannot connect to"* ]]; then
+    #        echo "Can not establish connection with master node. Is master node running? Terminating worker node "$NODE_NAME"..."
+    #       stop_exareme
+    #    fi
+    #done
+    #curl -X PUT -d @- $CONSULURL/v1/kv/$EXAREME_ACTIVE_WORKERS_PATH/$NODE_NAME <<< $MY_IP
+    #./set-local-datasets.sh
+    #echo -e "\nWorker with IP "$MY_IP" and name "$NODE_NAME" connected to master with IP "$MASTER_IP" and name "$MASTER_NAME"."
 
 #this is the master
 else
