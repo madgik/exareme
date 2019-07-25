@@ -17,26 +17,20 @@ EXAREME_ADMIN_JMX_PORT=10000
                 -Djava.security.egd=file:///dev/urandom "
 
 DESC="exareme-worker"
-            EXAREME_ADMIN_CLASS=$EXAREME_ADMIN_WORKER_CLASS
-            EXAREME_ADMIN_CLASS_ARGS=$MASTER_IP
+EXAREME_ADMIN_CLASS=$EXAREME_ADMIN_WORKER_CLASS
+EXAREME_ADMIN_CLASS_ARGS=$MASTER_IP
 echo "BB"
 echo $EXAREME_ADMIN_CLASS_PATH
 echo $EXAREME_JAVA
 echo $EXAREME_ADMIN_CLASS
 echo $EXAREME_ADMIN_CLASS_ARGS
 echo "CC"
+
 mkdir -p /tmp/exareme/var/log /tmp/exareme/var/run
+
 $EXAREME_JAVA -cp $EXAREME_ADMIN_CLASS_PATH \
 $EXAREME_ADMIN_OPTS $EXAREME_ADMIN_CLASS  \
 $EXAREME_ADMIN_CLASS_ARGS > /tmp/exareme/var/log/$DESC.log 2>&1 & echo $! > /tmp/exareme/var/run/$DESC.pid
 
-exitValue=$?
-
-if [ $exitValue != 0 ]
-then
-exit $exitValue
-else
-echo "all good"
-fi
 
 echo "$DESC started."
