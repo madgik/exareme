@@ -9,6 +9,8 @@ import madgik.exareme.worker.art.manager.ArtManagerProperties;
 import madgik.exareme.worker.art.security.DevelopmentContainerSecurityManager;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import java.rmi.RemoteException;
+
 
 public class StartWorker {
 
@@ -35,11 +37,22 @@ public class StartWorker {
                 new ArtManagerProperties(NetUtil.getIPv4(), registryPort, dataTransferPort));
         log.debug("Manager created!");
 
-        manager.getRegistryManager().connectToRegistry(
-                new EntityName("ArtRegistry", masterRegistryIP, registryPort, dataTransferPort));
+        try {
+            manager.getRegistryManager().connectToRegistry(
+                    new EntityName("ArtRegistry", masterRegistryIP, registryPort, dataTransferPort));
+
+        }catch (RemoteException e){
+            throw new RemoteException("Worker node ["+NetUtil.getIPv4()+"] is unable to connect with Exareme's registry. [Master's IP:"+masterRegistryIP+"]");
+        }
+
         log.debug("Connected to registry!");
 
-        manager.getContainerManager().startContainer();
+        try {
+            manager.getContainerManager().startContainer();
+
+        }catch (RemoteException e){
+            throw new RemoteException("Worker node ["+NetUtil.getIPv4()+"] is unable to start container.");
+        }
         log.debug("Container started!");
 
         //        for (ContainerProxy containerProxy : ArtRegistryLocator.getArtRegistryProxy()
