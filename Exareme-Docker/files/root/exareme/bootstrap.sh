@@ -49,7 +49,7 @@ deleteKeysFromConsul () {
 #CSVs to DB
 transformCsvToDB () {
     # Both Master and Worker should transform the csv to an sqlite db file
-    echo -e "\nRemoving the previous datasets.db file if it still exists"
+    echo "Removing the previous datasets.db file if it still exists"
     rm -f ${DOCKER_METADATA_FOLDER}/datasets.db
     echo -e "\nParsing the csv file in " ${DOCKER_METADATA_FOLDER} " to a db file. "
     python ./convert-csv-dataset-to-db.py --csvFilePath ${DOCKER_DATASETS_FOLDER}/datasets.csv --CDEsMetadataPath ${DOCKER_METADATA_FOLDER}/CDEsMetadata.json --outputDBAbsPath $DOCKER_METADATA_FOLDER/datasets.db
@@ -105,8 +105,8 @@ if [[ "${MASTER_FLAG}" != "master" ]]; then
     #Wait until Consul [key-value store] is up and running
     while [[ "$(curl -s ${CONSULURL}/v1/health/state/passing | jq -r '.[].Status')" != "passing" ]]; do
         echo -e "\nWorker node["${NODE_NAME}","${MY_IP}"] trying to connect with Consul[key-value store]"
-        n+=1
         sleep 2
+        n+=1
         #After 4 attempts-Show error
         if [[ ${n} -ge 5 ]]; then
             echo -e "\nConsul[key-value store] may not be initialized or Worker node["${NODE_NAME}","${MY_IP}"] can not contact Consul[key-value store]"
@@ -115,15 +115,13 @@ if [[ "${MASTER_FLAG}" != "master" ]]; then
     done
 
     #Try retrieve Master's IP from Consul[key-value store]
-    n=0
     echo -e "Retrieving Master's info from Consul[key-value store]"
+    n=0
     while [[ "$(curl -s -o  /dev/null -i -w "%{http_code}\n" ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/?keys)" != "200" ]]; do
-        echo -e "Retrieving Master's info from Consul[key-value store]"
-        n+=1
         sleep 5
-        if [[ ${n} -ge 5 ]]; then
-            echo -e "\nIs Master node initialized? Check Master's logs. Worker node["${NODE_NAME}","${MY_IP}"] exiting..."
-            exit 1
+        echo -e "Retrieving Master's info from Consul[key-value store]"
+        if [[ ${n} -ge 30 ]]; then
+            echo "Is Master node initialized? Check Master's logs. Terminating Worker node["${NODE_NAME}","${MY_IP}"]"
         fi
     done
 
@@ -148,8 +146,6 @@ if [[ "${MASTER_FLAG}" != "master" ]]; then
 
         #Java's exception in StartWorker.java
         if [[ "${LOGLINE}" == *"java.rmi.RemoteException"* ]]; then
-            echo ${LOGLINE}
-            echo -e "\nWorker node ["${MY_IP}","${NODE_NAME}"] is unable to connect with Exareme's registry. Is Master node running? Terminating Worker node["${MY_IP}","${NODE_NAME}"]"
             exit 1  #Simple exit 1. Exareme is not up yet
         fi
     done
@@ -174,7 +170,6 @@ else
     while [[ "$(curl -s ${CONSULURL}/v1/health/state/passing | jq -r '.[].Status')" != "passing" ]]; do
         echo -e "\nMaster node["${NODE_NAME}","${MY_IP}"] trying to connect with Consul[key-value store]"
         n+=1
-        sleep 2
         #After 4 attempts-Show error
         if [[ ${n} -ge 5 ]]; then
             echo -e "\nConsul[key-value store] may not be initialized or Master node["${NODE_NAME}","${MY_IP}"] can not contact Consul[key-value store]"
@@ -212,11 +207,9 @@ else
         do
             [[ "${LOGLINE}" == *"Master node started."* ]] && pkill -P $$ tail
             echo "Master node["${MY_IP}","${NODE_NAME}"] initialized.."
-            sleep 2
 
             #Java's exception in StartMaster.java
             if [[ "${LOGLINE}" == *"java.rmi.RemoteException"* ]]; then
-                echo -e "\Master node["${MY_IP}","${NODE_NAME}"] is unable to (.....)"
                 exit 1  #Simple exit 1. Exareme is not up yet
             fi
         done

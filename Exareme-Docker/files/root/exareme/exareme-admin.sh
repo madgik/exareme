@@ -78,7 +78,7 @@ if [[ -n "$1" ]]; then echo -e "Unresolved arguments:\n--> $1" ; exit 1; fi
 # validate  command line arguments
 ####################################################################################################
 #echo "Validating command line argumetns..."
-if [-z ${EXAREME_ADMIN} ]; then
+if [[ -z ${EXAREME_ADMIN} ]]; then
     echo "Please provide one of the OPTIONS."
     echo "Use -h|--help to check available options."
     exit 1;
