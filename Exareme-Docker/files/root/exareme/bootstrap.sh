@@ -111,7 +111,6 @@ if [[ "${MASTER_FLAG}" != "master" ]]; then
             echo -e "\nConsul[key-value store] may not be initialized or Worker node["${NODE_NAME}","${MY_IP}"] can not contact Consul[key-value store]"
             exit 1  #Simple exit 1. Exareme is not up yet
         fi
-        sleep 2
     done
 
     #Try retrieve Master's IP from Consul[key-value store]
@@ -120,11 +119,11 @@ if [[ "${MASTER_FLAG}" != "master" ]]; then
     while [[ "$(curl -s -o  /dev/null -i -w "%{http_code}\n" ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/?keys)" != "200" ]]; do
         echo -e "Retrieving Master's info from Consul[key-value store]"
         n+=1
+        sleep 2
         if [[ ${n} -ge 5 ]]; then
             echo -e "\nIs Master node initialized? Check Master's logs. Worker node["${NODE_NAME}","${MY_IP}"] exiting..."
             exit 1
         fi
-        sleep 2
     done
 
     #Get Master's IP/Name from Consul[key-value store]
@@ -138,13 +137,13 @@ if [[ "${MASTER_FLAG}" != "master" ]]; then
 
     while [[ ! -f /tmp/exareme/var/log/${DESC}.log ]]; do
         echo "Worker node["${MY_IP}","${NODE_NAME}]" trying to connect with Master node["${MASTER_IP}","${MASTER_NAME}"]"
-        sleep 2
+        sleep 1
     done
     tail -f /tmp/exareme/var/log/${DESC}.log | while read LOGLINE
     do
         [[ "${LOGLINE}" == *"Worker node started."* ]] && pkill -P $$ tail
         echo "Waiting to establish connection for Worker node["${MY_IP}","${NODE_NAME}"] with Master node["${MASTER_IP}","${MASTER_NAME}"]"
-        sleep 2
+        sleep 1
 
         #Java's exception in StartWorker.java
         if [[ "${LOGLINE}" == *"Worker node ["*"] is unable to connect with Exareme's registry."* ]]; then
@@ -184,7 +183,6 @@ else
             echo -e "\nConsul[key-value store] may not be initialized or Master node["${NODE_NAME}","${MY_IP}"] can not contact Consul[key-value store]"
             exit 1  #Simple exit 1. Exareme is not up yet
         fi
-        sleep 2
     done
 
     #CSVs to DB
@@ -212,13 +210,12 @@ else
 
         while [[ ! -f /tmp/exareme/var/log/${DESC}.log ]]; do
             echo "Initializing Master node["${MY_IP}","${NODE_NAME}"]"
-            sleep 2
         done
         tail -f /tmp/exareme/var/log/${DESC}.log | while read LOGLINE
         do
             [[ "${LOGLINE}" == *"Master node started."* ]] && pkill -P $$ tail
             echo "Master node["${MY_IP}","${NODE_NAME}"] initialized.."
-            sleep 2
+            sleep 1
 
             #Java's exception in StartMaster.java
             if [[ "${LOGLINE}" == *"is unable to"* ]]; then
