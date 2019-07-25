@@ -120,7 +120,7 @@ if [[ "${MASTER_FLAG}" != "master" ]]; then
     while [[ "$(curl -s -o  /dev/null -i -w "%{http_code}\n" ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/?keys)" != "200" ]]; do
         echo -e "Retrieving Master's info from Consul[key-value store]"
         n+=1
-        sleep 2
+        sleep 5
         if [[ ${n} -ge 5 ]]; then
             echo -e "\nIs Master node initialized? Check Master's logs. Worker node["${NODE_NAME}","${MY_IP}"] exiting..."
             exit 1
@@ -212,7 +212,7 @@ else
         do
             [[ "${LOGLINE}" == *"Master node started."* ]] && pkill -P $$ tail
             echo "Master node["${MY_IP}","${NODE_NAME}"] initialized.."
-            sleep 1
+            sleep 2
 
             #Java's exception in StartMaster.java
             if [[ "${LOGLINE}" == *"java.rmi.RemoteException"* ]]; then
