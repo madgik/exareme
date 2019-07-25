@@ -116,9 +116,9 @@ if [[ "${MASTER_FLAG}" != "master" ]]; then
 
     #Try retrieve Master's IP from Consul[key-value store]
     n=0
-    echo -e "\nWaiting for Master node to be initialized...."
+    echo -e "Retrieving Master's info from Consul[key-value store]"
     while [[ "$(curl -s -o  /dev/null -i -w "%{http_code}\n" ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/?keys)" != "200" ]]; do
-        echo -e "\nWaiting for Master node to be initialized...."
+        echo -e "Retrieving Master's info from Consul[key-value store]"
         n+=1
         if [[ ${n} -ge 5 ]]; then
             echo -e "\nIs Master node initialized? Check Master's logs. Worker node["${NODE_NAME}","${MY_IP}"] exiting..."
@@ -143,8 +143,8 @@ if [[ "${MASTER_FLAG}" != "master" ]]; then
     tail -f /tmp/exareme/var/log/${DESC}.log | while read LOGLINE
     do
         [[ "${LOGLINE}" == *"Worker node started."* ]] && pkill -P $$ tail
-        echo " Waiting to establish connection for Worker node["${MY_IP}","${NODE_NAME}"] with Master node["${MASTER_IP}","${MASTER_NAME}"]"
-        sleep 5
+        echo "Waiting to establish connection for Worker node["${MY_IP}","${NODE_NAME}"] with Master node["${MASTER_IP}","${MASTER_NAME}"]"
+        sleep 2
 
         #Java's exception in StartWorker.java
         if [[ "${LOGLINE}" == *"Worker node ["*"] is unable to connect with Exareme's registry."* ]]; then

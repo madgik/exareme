@@ -397,7 +397,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             StringBuilder datasets = new StringBuilder();
             for (String ip : notContainerProxy) {       //maybe more than one Exareme nodes
                 String name = names.get(ip);
-                log.debug("It seems that node[" + name + "," + ip + "] you are trying to check is not part of Exareme's registry. Deleting it from Consul....");
+                log.info("It seems that node[" + name + "," + ip + "] you are trying to check is not part of Exareme's registry. Deleting it from Consul....");
 
                  //Delete datasets and IP of the node
                 deleteFromConsul(System.getenv("DATASETS")+"/" + name);

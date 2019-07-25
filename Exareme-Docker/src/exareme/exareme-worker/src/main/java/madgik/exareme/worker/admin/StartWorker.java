@@ -60,7 +60,7 @@ public class StartWorker {
         //            log.debug(containerProxy.getEntityName().getName());
         //        }
 
-        log.info("Worker node started.");
+        System.out.println("Worker node started.");
         System.gc();
     }
 }
