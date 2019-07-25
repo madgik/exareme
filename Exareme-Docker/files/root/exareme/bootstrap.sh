@@ -148,6 +148,7 @@ if [[ "${MASTER_FLAG}" != "master" ]]; then
 
         #Java's exception in StartWorker.java
         if [[ "${LOGLINE}" == *"Worker node ["*"] is unable to connect with Exareme's registry."* ]]; then
+            echo ${LOGLINE}
             echo -e "\nWorker node ["${MY_IP}","${NODE_NAME}"] is unable to connect with Exareme's registry. Is Master node running? Terminating Worker node["${MY_IP}","${NODE_NAME}"]"
             exit 1  #Simple exit 1. Exareme is not up yet
         fi
@@ -203,14 +204,32 @@ else
             echo "Master node["$MY_IP"," $NODE_NAME"] re-booted..."
         done
         fi
+
     #Master node just created
     else
         ./exareme-admin.sh --start
         echo "Initializing Master node["${MY_IP}","${NODE_NAME}"]"
+
         while [[ ! -f /tmp/exareme/var/log/${DESC}.log ]]; do
-            echo "Initializing Master node["${MY_IP}"," ${NODE_NAME}"]"
+            echo "Initializing Master node["${MY_IP}","${NODE_NAME}"]"
+            sleep 2
         done
+        tail -f /tmp/exareme/var/log/${DESC}.log | while read LOGLINE
+        do
+            [[ "${LOGLINE}" == *"Master node started."* ]] && pkill -P $$ tail
+            echo "Master node["${MY_IP}","${NODE_NAME}"] initialized.."
+            sleep 2
+
+            #Java's exception in StartMaster.java
+            if [[ "${LOGLINE}" == *"is unable to"* ]]; then
+                echo -e "\Master node["${MY_IP}","${NODE_NAME}"] is unable to (.....)"
+                exit 1  #Simple exit 1. Exareme is not up yet
+            fi
+        done
+
+
     fi
+    echo "Master node["${MY_IP}","${NODE_NAME}"] initialized"
     curl -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/${NODE_NAME} <<< ${MY_IP}
     ./set-local-datasets.sh
 
