@@ -106,6 +106,7 @@ if [[ "${MASTER_FLAG}" != "master" ]]; then
     while [[ "$(curl -s ${CONSULURL}/v1/health/state/passing | jq -r '.[].Status')" != "passing" ]]; do
         echo -e "\nWorker node["${NODE_NAME}","${MY_IP}"] trying to connect with Consul[key-value store]"
         n+=1
+        sleep 2
         #After 4 attempts-Show error
         if [[ ${n} -ge 5 ]]; then
             echo -e "\nConsul[key-value store] may not be initialized or Worker node["${NODE_NAME}","${MY_IP}"] can not contact Consul[key-value store]"
@@ -146,14 +147,9 @@ if [[ "${MASTER_FLAG}" != "master" ]]; then
         sleep 1
 
         #Java's exception in StartWorker.java
-        if [[ "${LOGLINE}" == *"Worker node ["*"] is unable to connect with Exareme's registry."* ]]; then
+        if [[ "${LOGLINE}" == *"java.rmi.RemoteException"* ]]; then
             echo ${LOGLINE}
             echo -e "\nWorker node ["${MY_IP}","${NODE_NAME}"] is unable to connect with Exareme's registry. Is Master node running? Terminating Worker node["${MY_IP}","${NODE_NAME}"]"
-            exit 1  #Simple exit 1. Exareme is not up yet
-        fi
-
-        if [[ "${LOGLINE}" == *"Worker node ["*"] is unable to start container."* ]]; then
-            echo -e "\nWorker node ["${MY_IP}","${NODE_NAME}"] is unable to start container"
             exit 1  #Simple exit 1. Exareme is not up yet
         fi
     done
@@ -178,6 +174,7 @@ else
     while [[ "$(curl -s ${CONSULURL}/v1/health/state/passing | jq -r '.[].Status')" != "passing" ]]; do
         echo -e "\nMaster node["${NODE_NAME}","${MY_IP}"] trying to connect with Consul[key-value store]"
         n+=1
+        sleep 2
         #After 4 attempts-Show error
         if [[ ${n} -ge 5 ]]; then
             echo -e "\nConsul[key-value store] may not be initialized or Master node["${NODE_NAME}","${MY_IP}"] can not contact Consul[key-value store]"
@@ -218,7 +215,7 @@ else
             sleep 1
 
             #Java's exception in StartMaster.java
-            if [[ "${LOGLINE}" == *"is unable to"* ]]; then
+            if [[ "${LOGLINE}" == *"java.rmi.RemoteException"* ]]; then
                 echo -e "\Master node["${MY_IP}","${NODE_NAME}"] is unable to (.....)"
                 exit 1  #Simple exit 1. Exareme is not up yet
             fi
