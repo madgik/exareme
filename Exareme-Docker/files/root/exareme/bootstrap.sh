@@ -89,10 +89,6 @@ if [ -z ${DOCKER_METADATA_FOLDER} ]; then echo "DOCKER_METADATA_FOLDER is unset"
 
 mkdir -p  /tmp/demo/db/
 
-while [ "$(curl -s ${CONSULURL}/v1/health/state/passing | jq -r '.[].Status')" != "passing" ]; do	#wait until CONSUL is up and running
-    sleep 2
-done
-
 echo '*/15  *  *  *  *    ./set-local-datasets.sh' >> /etc/crontabs/root
 crond
 
@@ -101,14 +97,31 @@ if [ "$MASTER_FLAG" != "master" ]; then         #this is a worker
     echo -n $NODE_NAME > /root/exareme/etc/exareme/name
     MY_IP=$(/sbin/ifconfig | grep "inet " | awk -F: '{print $2}' | grep '10.20' | awk '{print $1;}' | head -n 1)
 
-    echo -n "Worker node [ "$NODE_NAME","$MY_IP"] trying to connect with Consul key-value store"
-    if [[curl -s -o  /dev/null -i -w "%{http_code}\n" ${CONSULURL}/v1/status/leader != "200"]]; then
-        echo -n "Connection with Consul key-value store can not be established..Exiting"
-        exit 1
-    fi
-    echo "Waiting for master node to be initialized...."
+    echo -e "\nWorker node [ "$NODE_NAME","$MY_IP"] trying to connect with Consul key-value store"
+
+    n=0
+    while [ "$(curl -s ${CONSULURL}/v1/health/state/passing | jq -r '.[].Status')" != "passing" ]; do	#wait until CONSUL is up and running
+        echo -e "\nWaiting for Consul key-value store to be initialized"
+        if [ $n -ge 5 ]; then
+            echo -e "\nConsul key-value store may not be initialized or Worker node[ "$NODE_NAME","$MY_IP"] can not contact Consul key-value store"
+            exit 1
+        fi
+        sleep 2
+    done
+
+  #  if [ "$(curl -s -o  /dev/null -i -w "%{http_code}\n" ${CONSULURL}/v1/status/leader)" != "200)" ]; then
+  #      echo -e "\nConnection with Consul key-value store can not be established..Exiting"
+  #      exit 1
+  #  fi
+
+    n=0
+    echo -e "\nWaiting for master node to be initialized...."
     while [ "$(curl -s -o  /dev/null -i -w "%{http_code}\n" ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/?keys)" != "200" ]; do
-        echo "Waiting for master node to be initialized...."
+        echo -e "\nWaiting for master node to be initialized...."
+        if [ $n -ge 5 ]; then
+            echo -e "\nIs master node initialized? It seams not. Worker node[ "$NODE_NAME","$MY_IP"] exiting..."
+            exit 1
+        fi
         sleep 2
     done
 
@@ -143,6 +156,12 @@ else
 
     MY_IP=$(/sbin/ifconfig | grep "inet " | awk -F: '{print $2}' | grep '10.20' | awk '{print $1;}' | head -n 1)
 
+    echo -e "\nMaster node [ "$NODE_NAME","$MY_IP"] trying to connect with Consul key-value store"
+    while [ "$(curl -s ${CONSULURL}/v1/health/state/passing | jq -r '.[].Status')" != "passing" ]; do	#wait until CONSUL is up and running
+        echo -n "Waiting for Consul key-value store to be initialized"
+        sleep 2
+    done
+
     transformCsvToDB
 
     #Master re-booted
@@ -160,6 +179,7 @@ else
         fi
     #Master just created
     else
+        sleep 2
         ./exareme-admin.sh --start
         echo "Initializing master node with IP "$MY_IP" and name " $NODE_NAME"..."
         while [ ! -f /tmp/exareme/var/log/$DESC.log ]; do
@@ -167,6 +187,7 @@ else
         done
         ./exareme-admin.sh --status
     fi
+    sleep 100000
     curl -X PUT -d @- $CONSULURL/v1/kv/$EXAREME_MASTER_PATH/$NODE_NAME <<< $MY_IP
     ./set-local-datasets.sh
 
