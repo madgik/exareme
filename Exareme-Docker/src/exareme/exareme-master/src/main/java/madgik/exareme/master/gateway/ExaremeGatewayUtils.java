@@ -42,6 +42,7 @@ public class ExaremeGatewayUtils {
     // server
     public static final int GW_PORT;
     public static final int GW_CONTROL_PORT;
+    public static final int GW_CONTROL_PORT1;
     public static final int GW_BUFFERSIZE_KB;
     public static final boolean GW_NODELAY;
     public static final int GW_WAIT_TERM_SEC;
@@ -79,6 +80,7 @@ public class ExaremeGatewayUtils {
         GW_MODE = properties.getString("gateway.mode");
         GW_PORT = properties.getInt("gateway.port");
         GW_CONTROL_PORT = properties.getInt("gateway.controlPort");
+        GW_CONTROL_PORT1 = properties.getInt("gateway.controlPort1");
         GW_BUFFERSIZE_KB = properties.getInt("gateway.bufferSizeKB");
         GW_NODELAY = properties.getBoolean("gateway.noDelay");
         GW_WAIT_TERM_SEC = properties.getInt("gateway.waitForTerminationSec");
@@ -127,6 +129,7 @@ public class ExaremeGatewayUtils {
         log.trace("Gateway mode          :" + GW_MODE);
         log.trace("Listening port        :" + String.valueOf(GW_PORT));
         log.trace("Listening control port:" + String.valueOf(GW_CONTROL_PORT));
+        log.trace("Listening control port1:"+ String.valueOf(GW_CONTROL_PORT1));
         log.trace("Size of Buffer in KB  :" + String.valueOf(GW_BUFFERSIZE_KB));
         log.trace("TCP no delay          :" + String.valueOf(GW_NODELAY));
         log.trace("Shutdown wait in secs :" + String.valueOf(GW_WAIT_TERM_SEC));

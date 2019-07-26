@@ -77,7 +77,7 @@ if [[ "${MASTER_FLAG}" != "master" ]]; then   #worker
         MY_IP=$(/sbin/ifconfig | grep "inet " | awk -F: '{print $2}' | grep '10.20' | awk '{print $1;}' | head -n 1)
         MASTER_IP=$(curl -s ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/$(curl -s ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/?keys | jq -r '.[]' | sed "s/${EXAREME_MASTER_PATH}\///g")?raw)
         #Delete worker from master's registry
-        curl ${MASTER_IP}:9091/remove/worker?IP=${MY_IP}
+        curl ${MASTER_IP}:9091/remove/worker?IP=${MY_IP}        #TODO check if that was done?
     fi
     stop_exareme
 else                                      #master
@@ -150,6 +150,8 @@ if [[ "${MASTER_FLAG}" != "master" ]]; then
         fi
     done
 
+    curl ${MASTER_IP}:9092/check/worker?IP_MASTER=${MASTER_IP}?IP_WORKER=${MY_IP}
+
     echo -e "\nWorker node["${MY_IP}","${NODE_NAME}"] connected to Master node["${MASTER_IP}","${MASTER_NAME}"]"
     curl -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_ACTIVE_WORKERS_PATH}/${NODE_NAME} <<< ${MY_IP}
     ./set-local-datasets.sh
@@ -170,8 +172,8 @@ else
     while [[ "$(curl -s ${CONSULURL}/v1/health/state/passing | jq -r '.[].Status')" != "passing" ]]; do
         echo -e "\nMaster node["${NODE_NAME}","${MY_IP}"] trying to connect with Consul[key-value store]"
         n+=1
-        #After 4 attempts-Show error
-        if [[ ${n} -ge 5 ]]; then
+        #After 30 attempts-Show error
+        if [[ ${n} -ge 31 ]]; then
             echo -e "\nConsul[key-value store] may not be initialized or Master node["${NODE_NAME}","${MY_IP}"] can not contact Consul[key-value store]"
             exit 1  #Simple exit 1. Exareme is not up yet
         fi
@@ -206,7 +208,7 @@ else
         tail -f /tmp/exareme/var/log/${DESC}.log | while read LOGLINE
         do
             [[ "${LOGLINE}" == *"Master node started."* ]] && pkill -P $$ tail
-            echo "Master node["${MY_IP}","${NODE_NAME}"] initialized.."
+            echo "Initializing Master node["${MY_IP}","${NODE_NAME}"]"
 
             #Java's exception in StartMaster.java
             if [[ "${LOGLINE}" == *"java.rmi.RemoteException"* ]]; then
