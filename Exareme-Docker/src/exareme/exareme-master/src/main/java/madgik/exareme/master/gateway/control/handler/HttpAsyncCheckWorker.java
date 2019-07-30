@@ -68,7 +68,7 @@ public class HttpAsyncCheckWorker implements HttpAsyncRequestHandler<HttpRequest
         }
         AdpDBClientQueryStatus queryStatus;
         String IP_MASTER = null;
-        String IP_WORKER = null;        //?IP_MASTER=10.20.30.203&IP_WORKER=10.20.30.45
+        String IP_WORKER = null;
         DataSerialization ds = DataSerialization.summary;
 
         String[] getIPs = request.getRequestLine().getUri().split("\\?");
@@ -77,7 +77,7 @@ public class HttpAsyncCheckWorker implements HttpAsyncRequestHandler<HttpRequest
             IP_MASTER = getIPs[1].split("=")[1];
 
         if (getIPs[2].split("=")[0].equals("IP_WORKER"))
-            IP_WORKER = getIPs[1].split("=")[1];
+            IP_WORKER = getIPs[2].split("=")[1];
 
         log.debug("MASTER: " + IP_MASTER);
         log.debug("WORKER: " + IP_WORKER);

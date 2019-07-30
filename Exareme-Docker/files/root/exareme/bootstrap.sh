@@ -39,10 +39,10 @@ stop_exareme () {
 #Clean ups in Consul [key-value store]
 deleteKeysFromConsul () {
     if [[ "$(curl -s -o  /dev/null -i -w "%{http_code}\n" ${CONSULURL}/v1/kv/${DATASETS}/${NODE_NAME}?keys)" = "200" ]]; then
-        curl -X DELETE $CONSULURL/v1/kv/$DATASETS/$NODE_NAME
+        curl -s -X DELETE $CONSULURL/v1/kv/$DATASETS/$NODE_NAME
     fi
     if [[ "$(curl -s -o  /dev/null -i -w "%{http_code}\n" ${CONSULURL}/v1/kv/${1}/${NODE_NAME}?keys)" = "200" ]]; then
-        curl -X DELETE $CONSULURL/v1/kv/$1/$NODE_NAME
+        curl -s -X DELETE $CONSULURL/v1/kv/$1/$NODE_NAME
     fi
 }
 
@@ -51,7 +51,7 @@ transformCsvToDB () {
     # Both Master and Worker should transform the csv to an sqlite db file
     echo "Removing the previous datasets.db file if it still exists"
     rm -f ${DOCKER_METADATA_FOLDER}/datasets.db
-    echo -e "\nParsing the csv file in " ${DOCKER_METADATA_FOLDER} " to a db file. "
+    echo "Parsing the csv file in " ${DOCKER_METADATA_FOLDER} " to a db file. "
     python ./convert-csv-dataset-to-db.py --csvFilePath ${DOCKER_DATASETS_FOLDER}/datasets.csv --CDEsMetadataPath ${DOCKER_METADATA_FOLDER}/CDEsMetadata.json --outputDBAbsPath $DOCKER_METADATA_FOLDER/datasets.db
 	#Get the status code from previous command
 	py_script=$?
@@ -77,7 +77,7 @@ if [[ "${MASTER_FLAG}" != "master" ]]; then   #worker
         MY_IP=$(/sbin/ifconfig | grep "inet " | awk -F: '{print $2}' | grep '10.20' | awk '{print $1;}' | head -n 1)
         MASTER_IP=$(curl -s ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/$(curl -s ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/?keys | jq -r '.[]' | sed "s/${EXAREME_MASTER_PATH}\///g")?raw)
         #Delete worker from master's registry
-        curl ${MASTER_IP}:9091/remove/worker?IP=${MY_IP}        #TODO check if that was done?
+        curl -s ${MASTER_IP}:9091/remove/worker?IP=${MY_IP}        #TODO check if that was done?
     fi
     stop_exareme
 else                                      #master
@@ -150,11 +150,18 @@ if [[ "${MASTER_FLAG}" != "master" ]]; then
         fi
     done
 
-    curl ${MASTER_IP}:9092/check/worker?IP_MASTER=${MASTER_IP}?IP_WORKER=${MY_IP}
+    check="$(curl -s ${MASTER_IP}:9092/check/worker?IP_MASTER=${MASTER_IP}?IP_WORKER=${MY_IP})"
+    getNames="$( echo ${check} | jq '.[][].NodeName')"
 
-    echo -e "\nWorker node["${MY_IP}","${NODE_NAME}"] connected to Master node["${MASTER_IP}","${MASTER_NAME}"]"
-    curl -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_ACTIVE_WORKERS_PATH}/${NODE_NAME} <<< ${MY_IP}
-    ./set-local-datasets.sh
+    if [[ $getNames = *${NODE_NAME}* ]]; then
+        echo -e "\nWorker node["${MY_IP}","${NODE_NAME}"] connected to Master node["${MASTER_IP}","${MASTER_NAME}"]"
+        curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_ACTIVE_WORKERS_PATH}/${NODE_NAME} <<< ${MY_IP}
+        ./set-local-datasets.sh
+    else
+        echo "Worker node["${MY_IP}","${NODE_NAME}]" seams that is not connected with the Master's Registry.Exiting..."
+        exit 1
+    fi
+
 
 #This is the Master
 else
@@ -219,7 +226,7 @@ else
 
     fi
     echo "Master node["${MY_IP}","${NODE_NAME}"] initialized"
-    curl -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/${NODE_NAME} <<< ${MY_IP}
+    curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/${NODE_NAME} <<< ${MY_IP}
     ./set-local-datasets.sh
 
 fi
