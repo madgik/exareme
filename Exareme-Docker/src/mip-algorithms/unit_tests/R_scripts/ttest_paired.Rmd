@@ -1,0 +1,50 @@
+library(base)
+library(jsonlite)
+library(tidyverse)
+library(jmv)
+
+df_TT <- read_csv("../unit_tests/datasets/CSVs/desd-synthdata.csv",
+    col_types = cols(gender = col_factor(levels = c("M","F"))))
+
+## Test 2: paired samples T-Test
+Result <- ttestPS(
+  data = df_TT,
+  pairs = list(list(i1 = 'lefthippocampus', i2 = 'righthippocampus')),
+  effectSize = T,
+  hypothesis = 'different'
+)
+Test1Result <- toJSON(Result$ttest$asDF, na="string")
+
+Result <- ttestPS(
+  data = df_TT,
+  pairs = list(list(i1 = 'lefthippocampus', i2 = 'righthippocampus')),
+  effectSize = T,
+  hypothesis = 'different',
+  ci = T,
+  meanDiff = T
+)
+Test2Result <- toJSON(Result$ttest$asDF, na="string")
+
+
+Result <- ttestPS(
+  data = df_TT,
+  pairs = list(list(i1 = 'lefthippocampus', i2 = 'righthippocampus')),
+  effectSize = T,
+  hypothesis = 'oneGreater',
+  ci = T,
+  meanDiff = T
+)
+Test3Result <- toJSON(Result$ttest$asDF, na="string")
+
+
+Result <- ttestPS(
+  data = df_TT,
+  pairs = list(list(i1 = 'lefthippocampus', i2 = 'righthippocampus')),
+  effectSize = T,
+  hypothesis = 'twoGreater',
+  ci = T,
+  meanDiff = T
+)
+Test4Result <- toJSON(Result$ttest$asDF, na="string")
+
+return(c(Test1Result, Test2Result, Test3Result, Test4Result))

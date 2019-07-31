@@ -1,0 +1,78 @@
+{
+	"name": "TTEST_ONESAMPLE",
+	"desc": "TTEST_ONESAMPLE",
+	"type": "local_global",
+	"parameters": [{
+			"name": "x",
+			"desc": "A vector of strings naming the variables of interest in data",
+				"type": "column",
+				"columnValuesSQLType": "real,integer",
+				"columnValuesIsCategorical": "",
+				"columnValuesNumOfEnumerations": "",
+				"value": "righthippocampus,lefthippocampus",
+				"valueNotBlank": true,
+				"valueMultiple": true,
+				"valueType": "string"
+		}, {
+			"name": "testvalue",
+			"desc": "A number specifying the value of the null hypothesis",
+			"type": "other",
+			"value": "3.0",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "real"
+		}, {
+        "name": "hypothesis",
+        "desc": "'different' (default), 'greaterthan' or 'lessthan', the alternative hypothesis; different to testValue, greater than testValue, and less than testValue respectively ",
+        "type": "other",
+        "value": "dt",
+        "valueNotBlank": true,
+        "valueMultiple": false,
+        "valueType": "string"
+      },
+      {
+        "name": "effectsize",
+        "desc": "1 or 0 (default), provide Cohen's d effect sizes",
+        "type": "other",
+        "value": "1",
+        "valueNotBlank": true,
+        "valueMultiple": false,
+        "valueType": "integer"
+      },
+      {
+        "name": "ci",
+        "desc": "1 or 0 (default), provide confidence intervals for the mean difference",
+        "type": "other",
+        "value": "1",
+        "valueNotBlank": true,
+        "valueMultiple": false,
+        "valueType": "integer"
+      },
+      {
+        "name": "meandiff",
+        "desc": "1 or 0 (default), provide means and standard deviations ",
+        "type": "other",
+        "value": "1",
+        "valueNotBlank": true,
+        "valueMultiple": false,
+        "valueType": "integer"
+      },
+     {
+			"name": "dataset",
+			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty.",
+			"type": "dataset",
+			"value": "desd-synthdata",
+			"valueNotBlank": true,
+			"valueMultiple": true,
+			"valueType": "string"
+		}, {
+			"name": "filter",
+			"desc": "",
+			"type": "filter",
+			"value": "",
+			"valueNotBlank": false,
+			"valueMultiple": true,
+			"valueType": "string"
+		}
+	]
+}
