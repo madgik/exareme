@@ -14,6 +14,17 @@ simpleCodingContrast <- function(variable) {
   contrast
 }
 
+
+dummyCodingContrast <- function(variable) {
+  levelsVar <- levels(variable)
+  Nlevel <- length(levelsVar)
+  contrastTreatment<-contr.treatment(Nlevel)
+  contrast <- contrastTreatment
+  rownames(contrast) <- levelsVar
+  colnames(contrast) <-  levelsVar[-1]
+  contrast
+}
+
 #Load data "desd-synthdata.csv" and check number of rows = 1000.
 rawData <- read_csv("../unit_tests/datasets/CSVs/desd-synthdata.csv")
 
@@ -29,13 +40,13 @@ head(df_LR11)
 
 #Analysis with dummy coding contrast
 lmresult <- df_LR11 %>%
-  lm(formula = lefthippocampus~alzheimerbroadcategory)
+  lm(formula = lefthippocampus~alzheimerbroadcategory, contrasts = list(alzheimerbroadcategory = dummyCodingContrast(df_LR11$alzheimerbroadcategory)))
 ResultCoeff <-toJSON(as.data.table(summary(lmresult)$coefficients, keep.rownames=TRUE))
 ResultStats<- toJSON(as.data.table( matrix( c(summary(lmresult)$sigma, summary(lmresult)$df[2], summary(lmresult)$r.squared, summary(lmresult)$adj.r.squared,
                         summary(lmresult)$fstatistic[1], summary(lmresult)$fstatistic[2], min(summary(lmresult)$residuals), max(summary(lmresult)$residuals)),
                         ncol=8,byrow=TRUE,
                         dimnames = list ('',c("sigma","df", "r_squared", "adj_r_squared", "fstatistic","numdf", "minresiduals","maxresiduals")))))
-TotalResult= matrix(c("Test1.1.DC",ResultCoeff,ResultStats),ncol=3,byrow=TRUE,dimnames= list('',c("testname","ResultCoeff","ResultStats")))
+TotalResult= matrix(c("Test1.1.DC",ResultCoeff, ResultStats), ncol=3, byrow=TRUE, dimnames= list('',c("testname","ResultCoeff","ResultStats")))
 
 
 #Analysis with simple coding contrast
@@ -46,7 +57,7 @@ ResultStats<- toJSON(as.data.table( matrix( c(summary(lmresult)$sigma, summary(l
                         summary(lmresult)$fstatistic[1], summary(lmresult)$fstatistic[2], min(summary(lmresult)$residuals), max(summary(lmresult)$residuals)),
                         ncol=8,byrow=TRUE,
                         dimnames = list ('',c("sigma","df", "r_squared", "adj_r_squared", "fstatistic","numdf", "minresiduals","maxresiduals")))))
-TotalResult= rbind(TotalResult, c("Test1.1.SC",ResultCoeff,ResultStats))
+TotalResult= rbind(TotalResult, c("Test1.1.SC", ResultCoeff, ResultStats))
 
 
 ##-----------------------------------------------------------------------------------------------------------
@@ -60,12 +71,15 @@ df_LR12 <- rawData %>%
   mutate(alzheimerbroadcategory = relevel(alzheimerbroadcategory, ref = "AD")) %>%
   mutate(gender                 = factor(gender)) %>%
   mutate(gender                 = relevel(gender, ref = "M")) %>%
-  drop_na() 
+  drop_na()
 head(df_LR12)
 
 #Analysis with dummy coding contrast
 lmresult <- df_LR12 %>%
-  lm(formula = lefthippocampus ~ alzheimerbroadcategory + gender) 
+lm(formula = lefthippocampus~ alzheimerbroadcategory + gender,
+   contrasts = list(
+     alzheimerbroadcategory = dummyCodingContrast(df_LR12$alzheimerbroadcategory),
+     gender                 = dummyCodingContrast(df_LR12$gender)))
 ResultCoeff <-toJSON(as.data.table(summary(lmresult)$coefficients, keep.rownames=TRUE))
 ResultStats<- toJSON(as.data.table( matrix( c(summary(lmresult)$sigma, summary(lmresult)$df[2], summary(lmresult)$r.squared, summary(lmresult)$adj.r.squared,
                         summary(lmresult)$fstatistic[1], summary(lmresult)$fstatistic[2], min(summary(lmresult)$residuals), max(summary(lmresult)$residuals)),
@@ -93,7 +107,10 @@ TotalResult= rbind(TotalResult, c("Test1.2.SC",ResultCoeff,ResultStats))
 ### Test 1.2b: two categorical regressors with interaction
 # Analysis with dummy coding contrast
 lmresult <- df_LR12 %>%
-  lm(formula = lefthippocampus~alzheimerbroadcategory * gender) 
+  lm(formula = lefthippocampus~ alzheimerbroadcategory * gender,
+     contrasts = list(
+       alzheimerbroadcategory = dummyCodingContrast(df_LR12$alzheimerbroadcategory),
+       gender                 = dummyCodingContrast(df_LR12$gender)))
 ResultCoeff <-toJSON(as.data.table(summary(lmresult)$coefficients, keep.rownames=TRUE))
 ResultStats<- toJSON(as.data.table( matrix( c(summary(lmresult)$sigma, summary(lmresult)$df[2], summary(lmresult)$r.squared, summary(lmresult)$adj.r.squared,
                         summary(lmresult)$fstatistic[1], summary(lmresult)$fstatistic[2], min(summary(lmresult)$residuals), max(summary(lmresult)$residuals)),
@@ -130,13 +147,16 @@ df_LR13 <- rawData %>%
   mutate(gender                 = relevel(gender, ref = "M")) %>%
   mutate(agegroup               = factor(agegroup)) %>%
   mutate(agegroup               = relevel(agegroup, ref = "+80y")) %>%
-  drop_na() 
+  drop_na()
 head(df_LR13)
 
 # Analysis with dummy coding contrast
 lmresult <-df_LR13 %>%
   mutate(gender = relevel(gender, ref = "M")) %>%
-  lm(formula = lefthippocampus~alzheimerbroadcategory + gender + agegroup)
+  lm(formula = lefthippocampus~ alzheimerbroadcategory + gender + agegroup,
+     contrasts = list(alzheimerbroadcategory = dummyCodingContrast(df_LR13$alzheimerbroadcategory),
+                      gender = dummyCodingContrast(relevel(df_LR13$gender, ref = "M")),
+                      agegroup = dummyCodingContrast(df_LR13$agegroup)))
 ResultCoeff <-toJSON(as.data.table(summary(lmresult)$coefficients, keep.rownames=TRUE))
 ResultStats<- toJSON(as.data.table( matrix( c(summary(lmresult)$sigma, summary(lmresult)$df[2], summary(lmresult)$r.squared, summary(lmresult)$adj.r.squared,
                         summary(lmresult)$fstatistic[1], summary(lmresult)$fstatistic[2], min(summary(lmresult)$residuals), max(summary(lmresult)$residuals)),
@@ -151,28 +171,31 @@ lmresult <-df_LR13 %>%
   lm(formula = lefthippocampus~ alzheimerbroadcategory + gender + agegroup,
      contrasts = list(alzheimerbroadcategory = simpleCodingContrast(df_LR13$alzheimerbroadcategory),
                       gender = simpleCodingContrast(relevel(df_LR13$gender, ref = "M")),
-                      agegroup = simpleCodingContrast(df_LR13$agegroup))) 
+                      agegroup = simpleCodingContrast(df_LR13$agegroup)))
 ResultCoeff <-toJSON(as.data.table(summary(lmresult)$coefficients, keep.rownames=TRUE))
 ResultStats<- toJSON(as.data.table( matrix( c(summary(lmresult)$sigma, summary(lmresult)$df[2], summary(lmresult)$r.squared, summary(lmresult)$adj.r.squared,
                         summary(lmresult)$fstatistic[1], summary(lmresult)$fstatistic[2], min(summary(lmresult)$residuals), max(summary(lmresult)$residuals)),
                         ncol=8,byrow=TRUE,
                         dimnames = list ('',c("sigma","df", "r_squared", "adj_r_squared", "fstatistic","numdf", "minresiduals","maxresiduals")))))
 TotalResult= rbind(TotalResult, c("Test1.3.SC",ResultCoeff,ResultStats))
- 
+
 
 
 ### Test 1.3b: three categorical regressors with all interactions
 # Analysis with dummy coding contrast
 lmresult <-df_LR13 %>%
   mutate(gender = relevel(gender, ref = "M")) %>%
-  lm(formula = lefthippocampus~alzheimerbroadcategory * gender * agegroup) 
+  lm(formula = lefthippocampus~ alzheimerbroadcategory * gender * agegroup,
+     contrasts = list(alzheimerbroadcategory = dummyCodingContrast(df_LR13$alzheimerbroadcategory),
+                      gender = dummyCodingContrast(relevel(df_LR13$gender, ref = "M")),
+                      agegroup = dummyCodingContrast(df_LR13$agegroup)))
 ResultCoeff <-toJSON(as.data.table(summary(lmresult)$coefficients, keep.rownames=TRUE))
 ResultStats<- toJSON(as.data.table( matrix( c(summary(lmresult)$sigma, summary(lmresult)$df[2], summary(lmresult)$r.squared, summary(lmresult)$adj.r.squared,
                         summary(lmresult)$fstatistic[1], summary(lmresult)$fstatistic[2], min(summary(lmresult)$residuals), max(summary(lmresult)$residuals)),
                         ncol=8,byrow=TRUE,
                         dimnames = list ('',c("sigma","df", "r_squared", "adj_r_squared", "fstatistic","numdf", "minresiduals","maxresiduals")))))
 TotalResult= rbind(TotalResult, c("Test1.3b.DC",ResultCoeff,ResultStats))
- 
+
 
 
 # Analysis with simple coding contrast
@@ -181,24 +204,24 @@ lmresult <-df_LR13 %>%
   lm(formula = lefthippocampus~ alzheimerbroadcategory * gender * agegroup,
      contrasts = list(alzheimerbroadcategory = simpleCodingContrast(df_LR13$alzheimerbroadcategory),
                       gender = simpleCodingContrast(relevel(df_LR13$gender, ref = "M")),
-                      agegroup = simpleCodingContrast(df_LR13$agegroup))) 
+                      agegroup = simpleCodingContrast(df_LR13$agegroup)))
 ResultCoeff <-toJSON(as.data.table(summary(lmresult)$coefficients, keep.rownames=TRUE))
 ResultStats<- toJSON(as.data.table( matrix( c(summary(lmresult)$sigma, summary(lmresult)$df[2], summary(lmresult)$r.squared, summary(lmresult)$adj.r.squared,
                         summary(lmresult)$fstatistic[1], summary(lmresult)$fstatistic[2], min(summary(lmresult)$residuals), max(summary(lmresult)$residuals)),
                         ncol=8,byrow=TRUE,
                         dimnames = list ('',c("sigma","df", "r_squared", "adj_r_squared", "fstatistic","numdf", "minresiduals","maxresiduals")))))
 TotalResult= rbind(TotalResult, c("Test1.3b.SC",ResultCoeff,ResultStats))
- 
+
 
 
 ##-------------------------------------------------------------------------------------------------------------------------
 ## Test linear regression with continuous regressors
-### Test 2.1: one continuous regressor 
+### Test 2.1: one continuous regressor
 df_LR21 <- rawData %>%
   select(
     lefthippocampus,
     csfglobal) %>%
-  drop_na() 
+  drop_na()
 head(df_LR21)
 
 lmresult <-df_LR21 %>%
@@ -209,7 +232,7 @@ ResultStats<- toJSON(as.data.table( matrix( c(summary(lmresult)$sigma, summary(l
                         ncol=8,byrow=TRUE,
                         dimnames = list ('',c("sigma","df", "r_squared", "adj_r_squared", "fstatistic","numdf", "minresiduals","maxresiduals")))))
 TotalResult= rbind(TotalResult, c("Test2.1",ResultCoeff,ResultStats))
- 
+
 
 
 ### Test 2.2: two continuous regressors without interaction
@@ -218,7 +241,7 @@ df_LR22 <- rawData %>%
     lefthippocampus,
     opticchiasm,
     minimentalstate) %>%
-  drop_na() 
+  drop_na()
 head(df_LR22)
 
 lmresult <-df_LR22 %>%
@@ -229,7 +252,7 @@ ResultStats<- toJSON(as.data.table( matrix( c(summary(lmresult)$sigma, summary(l
                         ncol=8,byrow=TRUE,
                         dimnames = list ('',c("sigma","df", "r_squared", "adj_r_squared", "fstatistic","numdf", "minresiduals","maxresiduals")))))
 TotalResult= rbind(TotalResult, c("Test2.2",ResultCoeff,ResultStats))
- 
+
 
 
 ### Test 2.2b: two continuous regressors with interaction
@@ -241,7 +264,7 @@ ResultStats<- toJSON(as.data.table( matrix( c(summary(lmresult)$sigma, summary(l
                         ncol=8,byrow=TRUE,
                         dimnames = list ('',c("sigma","df", "r_squared", "adj_r_squared", "fstatistic","numdf", "minresiduals","maxresiduals")))))
 TotalResult= rbind(TotalResult, c("Test2.2b",ResultCoeff,ResultStats))
- 
+
 
 
 ### Test 2.3: three continuous regressors without interaction
@@ -251,7 +274,7 @@ df_LR23 <- rawData %>%
     opticchiasm,
     minimentalstate,
     subjectage) %>%
-  drop_na() 
+  drop_na()
 head(df_LR23)
 
 lmresult <-df_LR23 %>%
@@ -262,7 +285,7 @@ ResultStats<- toJSON(as.data.table( matrix( c(summary(lmresult)$sigma, summary(l
                         ncol=8,byrow=TRUE,
                         dimnames = list ('',c("sigma","df", "r_squared", "adj_r_squared", "fstatistic","numdf", "minresiduals","maxresiduals")))))
 TotalResult= rbind(TotalResult, c("Test2.3",ResultCoeff,ResultStats))
- 
+
 
 
 ### Test 2.3b: three continuous regressors with interaction
@@ -274,7 +297,7 @@ ResultStats<- toJSON(as.data.table( matrix( c(summary(lmresult)$sigma, summary(l
                         ncol=8,byrow=TRUE,
                         dimnames = list ('',c("sigma","df", "r_squared", "adj_r_squared", "fstatistic","numdf", "minresiduals","maxresiduals")))))
 TotalResult= rbind(TotalResult, c("Test2.3b",ResultCoeff,ResultStats))
- 
+
 
 
 ##------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -287,19 +310,21 @@ df_LR31 <- rawData %>%
     subjectage) %>%
   mutate(alzheimerbroadcategory = factor(alzheimerbroadcategory)) %>%
   mutate(alzheimerbroadcategory = relevel(alzheimerbroadcategory, ref = "AD")) %>%
-  drop_na() 
+  drop_na()
 head(df_LR31)
 
 #Analysis with dummy coding contrast
 lmresult <- df_LR31 %>%
-  lm(formula = lefthippocampus ~ alzheimerbroadcategory + subjectage)
+  lm(formula = lefthippocampus~ alzheimerbroadcategory + subjectage,
+     contrasts = list(
+       alzheimerbroadcategory = dummyCodingContrast(df_LR31$alzheimerbroadcategory)))
 ResultCoeff <-toJSON(as.data.table(summary(lmresult)$coefficients, keep.rownames=TRUE))
 ResultStats<- toJSON(as.data.table( matrix( c(summary(lmresult)$sigma, summary(lmresult)$df[2], summary(lmresult)$r.squared, summary(lmresult)$adj.r.squared,
                         summary(lmresult)$fstatistic[1], summary(lmresult)$fstatistic[2], min(summary(lmresult)$residuals), max(summary(lmresult)$residuals)),
                         ncol=8,byrow=TRUE,
                         dimnames = list ('',c("sigma","df", "r_squared", "adj_r_squared", "fstatistic","numdf", "minresiduals","maxresiduals")))))
 TotalResult= rbind(TotalResult, c("Test3.1.DC",ResultCoeff,ResultStats))
- 
+
 
 # Analysis with simple coding contrast
 lmresult <- df_LR31 %>%
@@ -312,19 +337,21 @@ ResultStats<- toJSON(as.data.table( matrix( c(summary(lmresult)$sigma, summary(l
                         ncol=8,byrow=TRUE,
                         dimnames = list ('',c("sigma","df", "r_squared", "adj_r_squared", "fstatistic","numdf", "minresiduals","maxresiduals")))))
 TotalResult= rbind(TotalResult, c("Test3.1.SC",ResultCoeff,ResultStats))
- 
- 
+
+
 ### Test 3.1b: one categorical and one continuous regressors with interaction
 # Analysis with dummy coding contrast
 lmresult <- df_LR31 %>%
-  lm(formula = lefthippocampus ~ alzheimerbroadcategory * subjectage)
+  lm(formula = lefthippocampus~ alzheimerbroadcategory * subjectage,
+     contrasts = list(
+       alzheimerbroadcategory = dummyCodingContrast(df_LR31$alzheimerbroadcategory)))
 ResultCoeff <-toJSON(as.data.table(summary(lmresult)$coefficients, keep.rownames=TRUE))
 ResultStats<- toJSON(as.data.table( matrix( c(summary(lmresult)$sigma, summary(lmresult)$df[2], summary(lmresult)$r.squared, summary(lmresult)$adj.r.squared,
                         summary(lmresult)$fstatistic[1], summary(lmresult)$fstatistic[2], min(summary(lmresult)$residuals), max(summary(lmresult)$residuals)),
                         ncol=8,byrow=TRUE,
                         dimnames = list ('',c("sigma","df", "r_squared", "adj_r_squared", "fstatistic","numdf", "minresiduals","maxresiduals")))))
 TotalResult= rbind(TotalResult, c("Test3.1b.DC",ResultCoeff,ResultStats))
- 
+
 #Analysis with simple coding contrast
 lmresult <- df_LR31 %>%
   lm(formula = lefthippocampus~ alzheimerbroadcategory * subjectage,
@@ -336,7 +363,7 @@ ResultStats<- toJSON(as.data.table( matrix( c(summary(lmresult)$sigma, summary(l
                         ncol=8,byrow=TRUE,
                         dimnames = list ('',c("sigma","df", "r_squared", "adj_r_squared", "fstatistic","numdf", "minresiduals","maxresiduals")))))
 TotalResult= rbind(TotalResult, c("Test3.1b.SC",ResultCoeff,ResultStats))
- 
+
 
 ### Test 3.2: one categorical and two continuous regressors without interaction
 df_LR32 <- rawData %>%
@@ -347,19 +374,21 @@ df_LR32 <- rawData %>%
     opticchiasm) %>%
   mutate(alzheimerbroadcategory = factor(alzheimerbroadcategory)) %>%
   mutate(alzheimerbroadcategory = relevel(alzheimerbroadcategory, ref = "AD")) %>%
-  drop_na() 
+  drop_na()
 head(df_LR32)
 
 # Analysis with dummy coding contrast
 lmresult <- df_LR32 %>%
-  lm(formula = lefthippocampus ~ alzheimerbroadcategory + subjectage + opticchiasm)
+  lm(formula = lefthippocampus ~ alzheimerbroadcategory + subjectage + opticchiasm,
+     contrasts = list(
+       alzheimerbroadcategory = dummyCodingContrast(df_LR31$alzheimerbroadcategory)))
 ResultCoeff <-toJSON(as.data.table(summary(lmresult)$coefficients, keep.rownames=TRUE))
 ResultStats<- toJSON(as.data.table( matrix( c(summary(lmresult)$sigma, summary(lmresult)$df[2], summary(lmresult)$r.squared, summary(lmresult)$adj.r.squared,
                         summary(lmresult)$fstatistic[1], summary(lmresult)$fstatistic[2], min(summary(lmresult)$residuals), max(summary(lmresult)$residuals)),
                         ncol=8,byrow=TRUE,
                         dimnames = list ('',c("sigma","df", "r_squared", "adj_r_squared", "fstatistic","numdf", "minresiduals","maxresiduals")))))
 TotalResult= rbind(TotalResult, c("Test3.2.DC",ResultCoeff,ResultStats))
- 
+
 
 # Analysis with simple coding contrast
 lmresult <- df_LR32 %>%
@@ -372,19 +401,21 @@ ResultStats<- toJSON(as.data.table( matrix( c(summary(lmresult)$sigma, summary(l
                         ncol=8,byrow=TRUE,
                         dimnames = list ('',c("sigma","df", "r_squared", "adj_r_squared", "fstatistic","numdf", "minresiduals","maxresiduals")))))
 TotalResult= rbind(TotalResult, c("Test3.2.SC",ResultCoeff,ResultStats))
- 
+
 
 ### Test 3.2b: one categorical and two continuous regressors with interaction
 # Analysis with dummy coding contrast
 lmresult <- df_LR32 %>%
-  lm(formula = lefthippocampus ~ alzheimerbroadcategory * subjectage * opticchiasm)
+  lm(formula = lefthippocampus ~ alzheimerbroadcategory * subjectage * opticchiasm,
+     contrasts = list(
+       alzheimerbroadcategory = dummyCodingContrast(df_LR31$alzheimerbroadcategory)))
 ResultCoeff <-toJSON(as.data.table(summary(lmresult)$coefficients, keep.rownames=TRUE))
 ResultStats<- toJSON(as.data.table( matrix( c(summary(lmresult)$sigma, summary(lmresult)$df[2], summary(lmresult)$r.squared, summary(lmresult)$adj.r.squared,
                         summary(lmresult)$fstatistic[1], summary(lmresult)$fstatistic[2], min(summary(lmresult)$residuals), max(summary(lmresult)$residuals)),
                         ncol=8,byrow=TRUE,
                         dimnames = list ('',c("sigma","df", "r_squared", "adj_r_squared", "fstatistic","numdf", "minresiduals","maxresiduals")))))
 TotalResult= rbind(TotalResult, c("Test3.2b.DC",ResultCoeff,ResultStats))
- 
+
 
 # Analysis with simple coding contrast
 lmresult <- df_LR32 %>%
@@ -397,7 +428,7 @@ ResultStats<- toJSON(as.data.table( matrix( c(summary(lmresult)$sigma, summary(l
                         ncol=8,byrow=TRUE,
                         dimnames = list ('',c("sigma","df", "r_squared", "adj_r_squared", "fstatistic","numdf", "minresiduals","maxresiduals")))))
 TotalResult= rbind(TotalResult, c("Test3.2b.SC",ResultCoeff,ResultStats))
- 
+
 ### Test 3.3: two categorical and one continuous regressors without interaction
 df_LR33 <- rawData %>%
   select(
@@ -409,20 +440,23 @@ df_LR33 <- rawData %>%
   mutate(alzheimerbroadcategory = relevel(alzheimerbroadcategory, ref = "AD")) %>%
   mutate(gender                 = factor(gender)) %>%
   mutate(gender                 = relevel(gender, ref = "M")) %>%
-  drop_na() 
+  drop_na()
 head(df_LR33)
 
 
 # Analysis with dummy coding contrast
 lmresult <- df_LR33 %>%
-  lm(formula = lefthippocampus ~ alzheimerbroadcategory + gender + subjectage)
+  lm(formula = lefthippocampus ~ alzheimerbroadcategory + gender + subjectage,
+     contrasts = list(
+       alzheimerbroadcategory = dummyCodingContrast(df_LR31$alzheimerbroadcategory),
+       gender                 = dummyCodingContrast(relevel(df_LR33$gender, ref = "M"))))
 ResultCoeff <-toJSON(as.data.table(summary(lmresult)$coefficients, keep.rownames=TRUE))
 ResultStats<- toJSON(as.data.table( matrix( c(summary(lmresult)$sigma, summary(lmresult)$df[2], summary(lmresult)$r.squared, summary(lmresult)$adj.r.squared,
                         summary(lmresult)$fstatistic[1], summary(lmresult)$fstatistic[2], min(summary(lmresult)$residuals), max(summary(lmresult)$residuals)),
                         ncol=8,byrow=TRUE,
                         dimnames = list ('',c("sigma","df", "r_squared", "adj_r_squared", "fstatistic","numdf", "minresiduals","maxresiduals")))))
 TotalResult= rbind(TotalResult, c("Test3.3.DC",ResultCoeff,ResultStats))
- 
+
 
 #Analysis with simple coding contrast
 lmresult <- df_LR33 %>%
@@ -436,19 +470,22 @@ ResultStats<- toJSON(as.data.table( matrix( c(summary(lmresult)$sigma, summary(l
                         ncol=8,byrow=TRUE,
                         dimnames = list ('',c("sigma","df", "r_squared", "adj_r_squared", "fstatistic","numdf", "minresiduals","maxresiduals")))))
 TotalResult= rbind(TotalResult, c("Test3.2.3.SC",ResultCoeff,ResultStats))
- 
+
 
 ### Test 3.3b: two categorical and one continuous regressors with interaction
 # Analysis with dummy coding contrast
 lmresult <- df_LR33 %>%
-  lm(formula = lefthippocampus ~ alzheimerbroadcategory * gender * subjectage)
+  lm(formula = lefthippocampus ~ alzheimerbroadcategory * gender * subjectage,
+     contrasts = list(
+       alzheimerbroadcategory = dummyCodingContrast(df_LR31$alzheimerbroadcategory),
+       gender                 = dummyCodingContrast(relevel(df_LR33$gender, ref = "M"))))
 ResultCoeff <-toJSON(as.data.table(summary(lmresult)$coefficients, keep.rownames=TRUE))
 ResultStats<- toJSON(as.data.table( matrix( c(summary(lmresult)$sigma, summary(lmresult)$df[2], summary(lmresult)$r.squared, summary(lmresult)$adj.r.squared,
                         summary(lmresult)$fstatistic[1], summary(lmresult)$fstatistic[2], min(summary(lmresult)$residuals), max(summary(lmresult)$residuals)),
                         ncol=8,byrow=TRUE,
                         dimnames = list ('',c("sigma","df", "r_squared", "adj_r_squared", "fstatistic","numdf", "minresiduals","maxresiduals")))))
 TotalResult= rbind(TotalResult, c("Test3.3b.DC",ResultCoeff,ResultStats))
-   
+
 
 # Analysis with simple coding contrast
 lmresult <- df_LR33 %>%
@@ -462,7 +499,7 @@ ResultStats<- toJSON(as.data.table( matrix( c(summary(lmresult)$sigma, summary(l
                         ncol=8,byrow=TRUE,
                         dimnames = list ('',c("sigma","df", "r_squared", "adj_r_squared", "fstatistic","numdf", "minresiduals","maxresiduals")))))
 TotalResult= rbind(TotalResult, c("Test3.3b.SC",ResultCoeff,ResultStats))
-   
+
 ### Test 3.4: two categorical and two continuous regressors without interaction
 df_LR34 <- rawData %>%
   select(
@@ -475,20 +512,23 @@ df_LR34 <- rawData %>%
   mutate(alzheimerbroadcategory = relevel(alzheimerbroadcategory, ref = "AD")) %>%
   mutate(gender                 = factor(gender)) %>%
   mutate(gender                 = relevel(gender, ref = "M")) %>%
-  drop_na() 
+  drop_na()
 head(df_LR34)
 
 
 # Analysis with dummy coding contrast
 lmresult <- df_LR34 %>%
-  lm(formula = lefthippocampus ~ alzheimerbroadcategory + gender + brainstem + opticchiasm)
+  lm(formula = lefthippocampus ~ alzheimerbroadcategory + gender + brainstem + opticchiasm,
+     contrasts = list(
+       alzheimerbroadcategory = dummyCodingContrast(df_LR31$alzheimerbroadcategory),
+       gender                 = dummyCodingContrast(relevel(df_LR33$gender, ref = "M"))))
 ResultCoeff <-toJSON(as.data.table(summary(lmresult)$coefficients, keep.rownames=TRUE))
 ResultStats<- toJSON(as.data.table( matrix( c(summary(lmresult)$sigma, summary(lmresult)$df[2], summary(lmresult)$r.squared, summary(lmresult)$adj.r.squared,
                         summary(lmresult)$fstatistic[1], summary(lmresult)$fstatistic[2], min(summary(lmresult)$residuals), max(summary(lmresult)$residuals)),
                         ncol=8,byrow=TRUE,
                         dimnames = list ('',c("sigma","df", "r_squared", "adj_r_squared", "fstatistic","numdf", "minresiduals","maxresiduals")))))
 TotalResult= rbind(TotalResult, c("Test3.4.DC",ResultCoeff,ResultStats))
-   
+
 
 # Analysis with simple coding contrast
 lmresult <- df_LR34 %>%
@@ -502,19 +542,22 @@ ResultStats<- toJSON(as.data.table( matrix( c(summary(lmresult)$sigma, summary(l
                         ncol=8,byrow=TRUE,
                         dimnames = list ('',c("sigma","df", "r_squared", "adj_r_squared", "fstatistic","numdf", "minresiduals","maxresiduals")))))
 TotalResult= rbind(TotalResult, c("Test3.4.SC",ResultCoeff,ResultStats))
-   
+
 
 ### Test 3.4b: two categorical and two continuous regressors with interaction
 # Analysis with dummy coding contrast
-lmresult <-df_LR34 %>%
-  lm(formula = lefthippocampus ~ alzheimerbroadcategory * gender * brainstem * opticchiasm)
+lmresult <- df_LR34 %>%
+  lm(formula = lefthippocampus ~ alzheimerbroadcategory * gender * brainstem * opticchiasm,
+     contrasts = list(
+       alzheimerbroadcategory = dummyCodingContrast(df_LR31$alzheimerbroadcategory),
+       gender                 = dummyCodingContrast(relevel(df_LR33$gender, ref = "M"))))
 ResultCoeff <-toJSON(as.data.table(summary(lmresult)$coefficients, keep.rownames=TRUE))
 ResultStats<- toJSON(as.data.table( matrix( c(summary(lmresult)$sigma, summary(lmresult)$df[2], summary(lmresult)$r.squared, summary(lmresult)$adj.r.squared,
                         summary(lmresult)$fstatistic[1], summary(lmresult)$fstatistic[2], min(summary(lmresult)$residuals), max(summary(lmresult)$residuals)),
                         ncol=8,byrow=TRUE,
                         dimnames = list ('',c("sigma","df", "r_squared", "adj_r_squared", "fstatistic","numdf", "minresiduals","maxresiduals")))))
 TotalResult= rbind(TotalResult, c("Test3.4b.DC",ResultCoeff,ResultStats))
-   
+
 
 # Analysis with simple coding contrast
 lmresult <- df_LR34 %>%
@@ -528,26 +571,6 @@ ResultStats<- toJSON(as.data.table( matrix( c(summary(lmresult)$sigma, summary(l
                         ncol=8,byrow=TRUE,
                         dimnames = list ('',c("sigma","df", "r_squared", "adj_r_squared", "fstatistic","numdf", "minresiduals","maxresiduals")))))
 TotalResult= rbind(TotalResult, c("Test3.4b.SC",ResultCoeff,ResultStats))
-   
 
 
 return (toJSON(TotalResult))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

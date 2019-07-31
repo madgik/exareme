@@ -1,5 +1,5 @@
 import functions
-
+import re
 
 def privacychecking(*args):
     minNumberOfData = 10
@@ -9,6 +9,30 @@ def privacychecking(*args):
         return "OK"
 
 privacychecking.registered = True
+
+
+def variabledistinctvalues_inputerrorchecking(nameofvariable, distinctvalues1, distinctvalues2): #ttestindependent
+    values1 = re.split(',',distinctvalues1)
+    values2 = re.split(',',distinctvalues2)
+    values1.sort()
+    values2.sort()
+
+    if len(values1)!= len(values2):
+        raise functions.OperatorError("ExaremeError", "Variable " + nameofvariable+ " should contain variable's distinct values")
+    for i in range(len(values1)):
+        if values1[i] != values2[i]:
+            raise functions.OperatorError("ExaremeError", "Variable " + nameofvariable+ " should contain variable's distinct values")
+    return "OK"
+
+variabledistinctvalues_inputerrorchecking.registered = True
+
+def variableshouldbebinary_inputerrorchecking(nameofvariable, numberdistictvalues): #ttestindependent
+    if numberdistictvalues == 2 :
+        return "OK"
+    else:
+        raise functions.OperatorError("ExaremeError", "Variable: " +nameofvariable+ " should be binary")
+variableshouldbebinary_inputerrorchecking.registered = True
+
 
 def holdoutvalidation_inputerrorchecking1(train_size, test_size):
     if train_size=='' and  test_size =='' :
