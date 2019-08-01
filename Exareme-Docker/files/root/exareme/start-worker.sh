@@ -17,6 +17,7 @@ EXAREME_ADMIN_OPTS="${EXAREME_JAVA_OPTS}  \
     -Djava.security.egd=file:///dev/urandom "
 
 DESC="exareme-worker"
+
 EXAREME_ADMIN_CLASS=${EXAREME_ADMIN_WORKER_CLASS}
 EXAREME_ADMIN_CLASS_ARGS=${MASTER_IP}
 

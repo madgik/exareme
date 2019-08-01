@@ -1,0 +1,79 @@
+{
+	"name": "TTEST_PAIRED",
+	"desc": "TTEST_PAIRED",
+	"type": "local_global",
+	"parameters": [{
+			"name": "x",
+			"desc": "A vector of strings (i.e. 'x1a-x1b,x2a-x2b' naming the pairs of interest in data. Here x1a,x1b is first pair, and x2a,x2b is the second pair",
+				"type": "formula",
+				"columnValuesSQLType": "real,integer",
+				"columnValuesIsCategorical": "",
+				"columnValuesNumOfEnumerations": "",
+				"value": "righthippocampus,lefthippocampus",
+				"valueNotBlank": true,
+				"valueMultiple": true,
+				"valueType": "string"
+		}, {
+        "name": "hypothesis",
+        "desc": "'different' (default), 'greaterthan' or 'lessthan',the alternative hypothesis; measure 1 different to measure 2, measure 1 greater than measure 2, and measure 1 less than measure 2 respectively  ",
+        "type": "other",
+        "value": "different",
+        "valueNotBlank": true,
+        "valueMultiple": false,
+        "valueType": "string"
+      },
+      {
+        "name": "effectsize",
+        "desc": "1 or 0 (default), provide Cohen's d effect sizes",
+        "type": "other",
+        "value": "1",
+        "valueNotBlank": true,
+        "valueMultiple": false,
+        "valueType": "integer"
+      },
+      {
+        "name": "ci",
+        "desc": "1 or 0 (default), provide confidence intervals for the mean difference",
+        "type": "other",
+        "value": "1",
+        "valueNotBlank": true,
+        "valueMultiple": false,
+        "valueType": "integer"
+      },
+      {
+        "name": "meandiff",
+        "desc": "1 or 0 (default), provide means  ",
+        "type": "other",
+        "value": "1",
+        "valueNotBlank": true,
+        "valueMultiple": false,
+        "valueType": "integer"
+      },
+			{
+				"name": "sediff",
+				"desc": "1 or 0 (default), provide standard deviations ",
+				"type": "other",
+				"value": "1",
+				"valueNotBlank": true,
+				"valueMultiple": false,
+				"valueType": "integer"
+			},
+     {
+			"name": "dataset",
+			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty.",
+			"type": "dataset",
+			"value": "desd-synthdata",
+			"valueNotBlank": true,
+			"valueMultiple": true,
+			"valueType": "string"
+		}, {
+			"name": "filter",
+			"desc": "",
+			"type": "filter",
+			"value": "",
+			"valueNotBlank": false,
+			"valueMultiple": true,
+			"valueType": "string"
+		}
+	]
+}

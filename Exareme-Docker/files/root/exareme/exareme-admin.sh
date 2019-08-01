@@ -109,8 +109,10 @@ function start_exareme(){               #Starts exareme daemon
     echo ${EXAREME_MASTER}
 
     mkdir -p /tmp/exareme/var/log /tmp/exareme/var/run
-    ${EXAREME_JAVA} -cp ${EXAREME_ADMIN_CLASS_PATH} \
-        ${EXAREME_ADMIN_OPTS} ${EXAREME_ADMIN_CLASS} > /tmp/exareme/var/log/${DESC}.log 2>&1 & echo $! > /tmp/exareme/var/run/${DESC}.pid    #-cp requires class path specification
+
+        $EXAREME_JAVA -cp $EXAREME_ADMIN_CLASS_PATH \
+        $EXAREME_ADMIN_OPTS $EXAREME_ADMIN_CLASS > /var/log/exareme.log 2>&1 & echo $! > /tmp/exareme/var/run/$DESC.pid    #-cp requires class path specification
+
     exit 0
 
 }

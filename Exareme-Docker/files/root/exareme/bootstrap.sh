@@ -133,7 +133,6 @@ if [[ "${MASTER_FLAG}" != "master" ]]; then
     transformCsvToDB
 
     . ./start-worker.sh
-
     while [[ ! -f /tmp/exareme/var/log/${DESC}.log ]]; do
         echo "Worker node["${MY_IP}","${NODE_NAME}]" trying to connect with Master node["${MASTER_IP}","${MASTER_NAME}"]"
         sleep 1
@@ -197,7 +196,7 @@ else
             echo ""
             #TODO check what if master restarts with different IP while workers are already connected to the master's registry with previous IP
         else
-            ./exareme-admin.sh --start
+            ./exareme-admin.sh --start.sh
             echo "Master node["${MY_IP}","$NODE_NAME"] trying to re-boot..."
                 while [[ ! -f /tmp/exareme/var/log/$DESC.log ]]; do
             echo "Master node["$MY_IP"," $NODE_NAME"] re-booted..."
@@ -235,8 +234,11 @@ fi
 echo '*/15  *  *  *  *    ./set-local-datasets.sh' >> /etc/crontabs/root
 crond
 
+# Creating the python log file
+echo "Exareme Python Algorithms log file created." > /var/log/exaremePythonAlgorithms.log
+
 # Running something in foreground, otherwise the container will stop
 while true
 do
-    tail -f /tmp/exareme/var/log/${DESC}.log & wait ${!}
+   tail -f /var/log/exareme.log -f /var/log/exaremePythonAlgorithms.log
 done

@@ -128,7 +128,7 @@ class highchartscatter3d(functions.vtable.vtbase.VT):
             if len(schema)>3:
                 raise functions.OperatorError(__name__.rsplit('.')[-1],"Too many columns ")
             # print schema
-            myresult = "{\"chart\": {\"margin\": 100, \"type\": \"scatter3d\", \"options3d\": {" \
+            myresult = "{\"type\": \"application/vnd.highcharts+json\",\"data\":{ \"chart\": {\"margin\": 100, \"type\": \"scatter3d\", \"options3d\": {" \
                                "\"enabled\": true, \"alpha\": 10, \"beta\": 30, \"depth\": 250," \
                                "\"viewDistance\": 5, \"fitToPlot\": false," \
                                "\"frame\": { \"bottom\": { \"size\": 1, \"color\": \"rgba(0,0,0,0.02)\" }," \
@@ -145,7 +145,7 @@ class highchartscatter3d(functions.vtable.vtbase.VT):
                         "\"data\": ["
 
             myresult += mydata
-            myresult= myresult[:-1] + "],\"marker\": {\"radius\": 5}}]}"
+            myresult= myresult[:-1] + "],\"marker\": {\"radius\": 5}}]}}"
             # print "myresult", myresult
             yield (myresult,)
 

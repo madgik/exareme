@@ -63,3 +63,7 @@ crashlytics-build.properties
 
 # macos
 *.DS_Store
+
+#R 
+.RData
+.Rhistory

@@ -19,5 +19,5 @@ group by actualclass,predictedclass;
 --							(select count(distinct predictedclass) as noclasses from defaultDB.global_oneconfusionmatrix) order by predictedclass);
 --select * from defaultDB.global_oneconfusionmatrix;
 
-select tabletojson(actualclass,predictedclass,val, "actualclass,predictedclass,val")  as componentresult
+select tabletojson(actualclass,predictedclass,val, "actualclass,predictedclass,val",0)  as componentresult
 from defaultdb.global_oneconfusionmatrix;
