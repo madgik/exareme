@@ -196,7 +196,7 @@ else
             echo ""
             #TODO check what if master restarts with different IP while workers are already connected to the master's registry with previous IP
         else
-            ./exareme-admin.sh --start.sh
+            ./exareme-admin.sh --start
             echo "Master node["${MY_IP}","$NODE_NAME"] trying to re-boot..."
                 while [[ ! -f /tmp/exareme/var/log/$DESC.log ]]; do
             echo "Master node["$MY_IP"," $NODE_NAME"] re-booted..."
