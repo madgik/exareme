@@ -82,5 +82,5 @@ and colname <> '%{y}';
 --select * from defaultDB.global_probabilities;
 
 select jdict('results', componentresult, 'dbIdentifier', '%{dbIdentifier}') as results
-from (select tabletojson(colname,val,classval,average,sigma,probability, "colname,val,classval,average,sigma,probability")  as componentresult
+from (select tabletojson(colname,val,classval,average,sigma,probability, "colname,val,classval,average,sigma,probability",0)  as componentresult
 from defaultdb.global_probabilities );
