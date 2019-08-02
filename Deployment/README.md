@@ -145,7 +145,7 @@ If you want to edit the file you can do so whenever by
 ```ansible-vault edit vault_file.yaml```
 Place your vault password and edit the file.
 
-###Pro Tip: Regarding Ansible-vault password. 
+### Pro Tip: Regarding Ansible-vault password. 
 (source https://docs.ansible.com/ansible/latest/user_guide/playbooks_vault.html)
 
 As mentioned before, each time you run a playbook you will need to enter your password.
@@ -167,23 +167,28 @@ You can either deploy everything via script or manually (look below).
 In order to deploy via script ```deploy.sh``` make sure that:
 
 a) Script has the right permissions to run
+
 b) If your remote machines do not have the Metadata file available you can simply copy your file from your Host machine into the Remote machines.
 Keep in mind that you need to place the Metadata file inside the Metadata folder with name: ```CDEsMetadata.json```.
+
 c) If you have workers available make sure you have their labels under [workers]. If you do not have any workers, there should be
 no label [workers] in order for script to run properly. #TODO automated in the near future
-d) You need a file ```~/.vault_pass.txt``` with your Ansible-vault password inside ```in a single line```, so playbooks will automatically
-run without asking you for the password.
+
+d) You need a file ```~/.vault_pass.txt``` with your Ansible-vault password inside ```in a single line```, so playbooks will automatically run without asking you for the password.
 
 The script contains:
 
 a)Select if you wish to: Copy Metadata file to [Master/Worker] nodes [y/n]
+
 b)Initialize Swarm/mip-federation network
+
 c)Join workers in Swarm
+
 d)Select if you wish to: Start Exareme with/without Portainer service [y/n]
 
 To run the script simply ```deploy.sh``` under Docker-Ansible folder
 
-# Deployment [manual]
+# Deployment [manually]
 
 Since we made the changes needed, we are ready for the deployment. Go inside the ```Docker-Ansible``` folder.
 
