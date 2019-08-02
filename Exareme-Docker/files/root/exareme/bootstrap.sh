@@ -106,7 +106,7 @@ if [[ "${MASTER_FLAG}" != "master" ]]; then
     while [[ "$(curl -s ${CONSULURL}/v1/health/state/passing | jq -r '.[].Status')" != "passing" ]]; do
         echo -e "\nWorker node["${NODE_NAME}","${MY_IP}"] trying to connect with Consul[key-value store]"
         sleep 2
-        n+=1
+        n=$((${n} + 1))
         #After 4 attempts-Show error
         if [[ ${n} -ge 5 ]]; then
             echo -e "\nConsul[key-value store] may not be initialized or Worker node["${NODE_NAME}","${MY_IP}"] can not contact Consul[key-value store]"
@@ -119,6 +119,7 @@ if [[ "${MASTER_FLAG}" != "master" ]]; then
     n=0
     while [[ "$(curl -s -o  /dev/null -i -w "%{http_code}\n" ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/?keys)" != "200" ]]; do
         sleep 5
+        n=$((${n} + 1))
         echo -e "Retrieving Master's info from Consul[key-value store]"
         if [[ ${n} -ge 30 ]]; then
             echo "Is Master node initialized? Check Master's logs. Terminating Worker node["${NODE_NAME}","${MY_IP}"]"
@@ -177,7 +178,7 @@ else
     #Wait until Consul [key-value store] is up and running
     while [[ "$(curl -s ${CONSULURL}/v1/health/state/passing | jq -r '.[].Status')" != "passing" ]]; do
         echo -e "\nMaster node["${NODE_NAME}","${MY_IP}"] trying to connect with Consul[key-value store]"
-        n+=1
+        n=$((${n} + 1))
         #After 30 attempts-Show error
         if [[ ${n} -ge 31 ]]; then
             echo -e "\nConsul[key-value store] may not be initialized or Master node["${NODE_NAME}","${MY_IP}"] can not contact Consul[key-value store]"
