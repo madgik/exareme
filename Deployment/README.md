@@ -161,8 +161,29 @@ The password should be a string stored as a single line in the file.
 
 If you are using a script instead of a flat file, ensure that it is marked as executable, and that the password is printed to standard output. If your script needs to prompt for data, prompts can be sent to standard error.
 
+# Deployment [script]
 
-# Deployment
+You can either deploy everything via script or manually (look below).
+In order to deploy via script ```deploy.sh``` make sure that:
+
+a) Script has the right permissions to run
+b) If your remote machines do not have the Metadata file available you can simply copy your file from your Host machine into the Remote machines.
+Keep in mind that you need to place the Metadata file inside the Metadata folder with name: ```CDEsMetadata.json```.
+c) If you have workers available make sure you have their labels under [workers]. If you do not have any workers, there should be
+no label [workers] in order for script to run properly. #TODO automated in the near future
+d) You need a file ```~/.vault_pass.txt``` with your Ansible-vault password inside ```in a single line```, so playbooks will automatically
+run without asking you for the password.
+
+The script contains:
+
+a)Select if you wish to: Copy Metadata file to [Master/Worker] nodes [y/n]
+b)Initialize Swarm/mip-federation network
+c)Join workers in Swarm
+d)Select if you wish to: Start Exareme with/without Portainer service [y/n]
+
+To run the script simply ```deploy.sh``` under Docker-Ansible folder
+
+# Deployment [manual]
 
 Since we made the changes needed, we are ready for the deployment. Go inside the ```Docker-Ansible``` folder.
 
