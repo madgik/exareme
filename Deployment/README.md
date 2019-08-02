@@ -145,6 +145,22 @@ If you want to edit the file you can do so whenever by
 ```ansible-vault edit vault_file.yaml```
 Place your vault password and edit the file.
 
+```Pro Tip: Regarding Ansible-vault password.```
+
+As mentioned before, each time you run a playbook you will need to enter your password.
+
+(source https://docs.ansible.com/ansible/latest/user_guide/playbooks_vault.html)
+Alternatively, ansible-vault password can be specified with a file or a script (the script version will require Ansible 1.7 or later). When using this flag, ensure permissions on the file are such that no one else can access your key and do not add your key to source control:
+examples:
+
+```ansible-playbook site.yml --vault-password-file ~/.vault_pass.txt```
+
+```ansible-playbook site.yml --vault-password-file ~/.vault_pass.py```
+
+The password should be a string stored as a single line in the file.
+
+If you are using a script instead of a flat file, ensure that it is marked as executable, and that the password is printed to standard output. If your script needs to prompt for data, prompts can be sent to standard error.
+
 
 # Deployment
 
