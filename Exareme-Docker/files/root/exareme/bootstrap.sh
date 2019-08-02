@@ -133,11 +133,11 @@ if [[ "${MASTER_FLAG}" != "master" ]]; then
     transformCsvToDB
 
     . ./start-worker.sh
-    while [[ ! -f /tmp/exareme/var/log/${DESC}.log ]]; do
+    while [[ ! -f /var/log/exareme.log ]]; do
         echo "Worker node["${MY_IP}","${NODE_NAME}]" trying to connect with Master node["${MASTER_IP}","${MASTER_NAME}"]"
         sleep 1
     done
-    tail -f /tmp/exareme/var/log/${DESC}.log | while read LOGLINE
+    tail -f /var/log/exareme.log | while read LOGLINE
     do
         [[ "${LOGLINE}" == *"Worker node started."* ]] && pkill -P $$ tail
         echo "Waiting to establish connection for Worker node["${MY_IP}","${NODE_NAME}"] with Master node["${MASTER_IP}","${MASTER_NAME}"]"
@@ -198,7 +198,7 @@ else
         else
             ./exareme-admin.sh --start
             echo "Master node["${MY_IP}","$NODE_NAME"] trying to re-boot..."
-                while [[ ! -f /tmp/exareme/var/log/$DESC.log ]]; do
+                while [[ ! -f /var/log/exareme.log ]]; do
             echo "Master node["$MY_IP"," $NODE_NAME"] re-booted..."
         done
         fi
@@ -208,10 +208,10 @@ else
         ./exareme-admin.sh --start
         echo "Initializing Master node["${MY_IP}","${NODE_NAME}"]"
 
-        while [[ ! -f /tmp/exareme/var/log/${DESC}.log ]]; do
+        while [[ ! -f /var/log/exareme.log ]]; do
             echo "Initializing Master node["${MY_IP}","${NODE_NAME}"]"
         done
-        tail -f /tmp/exareme/var/log/${DESC}.log | while read LOGLINE
+        tail -f /var/log/exareme.log | while read LOGLINE
         do
             [[ "${LOGLINE}" == *"Master node started."* ]] && pkill -P $$ tail
             echo "Initializing Master node["${MY_IP}","${NODE_NAME}"]"
