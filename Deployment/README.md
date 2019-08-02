@@ -188,8 +188,8 @@ If you want to exclude Portainer service from running, you need to add ```--skip
 ```ansible-playbook -i hosts.ini Start-Exareme.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml --skip-tags portainer -vvvv```
 
 If you want to start only Portainer Service you need to:
-
-```ansible-playbook -i hosts.ini Start-Exareme.yaml -c paramiko --ask-vault-pass -e@vault_file.yaml -vvvv --tags portainer
+```
+ansible-playbook -i hosts.ini Start-Exareme.yaml -c paramiko --ask-vault-pass -e@vault_file.yaml -vvvv --tags portainer
 ```
 
 ### Stop Services
