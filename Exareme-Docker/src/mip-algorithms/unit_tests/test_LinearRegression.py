@@ -10,7 +10,7 @@ import re
 from rpy2.robjects.packages import importr
 import rpy2.robjects as robjects
 
-endpointUrl='http://88.197.53.100:9090/mining/query/LINEAR_REGRESSION'
+endpointUrl='http://88.197.53.38:9090/mining/query/LINEAR_REGRESSION'
 folderPath = 'R_scripts'
 file ='LinearRegression.Rmd'
 
@@ -21,7 +21,7 @@ class TestLinearRegression(unittest.TestCase):
             data = myfile.read()
         #Execute R script
         self.RResults =  json.loads(str(robjects.r(data)))
-        # print (self.RResults)
+        print (self.RResults)
 
     def test_LinearRegression_1_1_dummycoding(self):
         logging.info("---------- TEST 1.1: Linear Regression, one categorical regressor,dummycoding")
@@ -36,7 +36,10 @@ class TestLinearRegression(unittest.TestCase):
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
         print (r.text)
         result = json.loads(r.text)
+
         resultsComparison(result['result'][0]['data']['coefficients'],result['result'][0]['data']['statistics'],  json.loads(self.RResults[0][1]),json.loads(self.RResults[0][2]))
+
+
 
     def test_LinearRegression_1_1_simplecoding(self):
         logging.info("---------- TEST 1.1: Linear Regression, one categorical regressor,simplecoding")
@@ -538,15 +541,20 @@ def resultsComparison(jsonExaremeResultCoeff, jsonExaremeResultStats, jsonRResul
             print (ExaremePredictor,RPredictor)
             if (ExaremePredictor == RPredictor):
                 exist_corr_c = True
+                print(ExaremePredictor ,RPredictor,'estimate',jsonExaremeResultCoeff[j]['estimate'],jsonRResultCoeff[i]['Estimate'])
                 assert math.isclose(float(jsonExaremeResultCoeff[j]['estimate']),jsonRResultCoeff[i]['Estimate'],rel_tol=0,abs_tol=10**(-abs(Decimal(str(jsonRResultCoeff[i]['Estimate'])).as_tuple().exponent)))
+                print('stderror')
                 assert math.isclose(float(jsonExaremeResultCoeff[j]['stderror']),jsonRResultCoeff[i]['Std. Error'],rel_tol=0,abs_tol=10**(-abs(Decimal(str(jsonRResultCoeff[i]['Std. Error'])).as_tuple().exponent)))
+                print('tvalue')
                 assert math.isclose(float(jsonExaremeResultCoeff[j]['tvalue']),jsonRResultCoeff[i]['t value'],rel_tol=0,abs_tol=10**(-abs(Decimal(str(jsonRResultCoeff[i]['t value'])).as_tuple().exponent)))
+                print('Pr')
                 if type(jsonRResultCoeff[i]['Pr(>|t|)']) is str:
                     # jsonRResultCoeff[i]['Pr(>|t|)'].replace(' ','')
+
                     assert (float(jsonExaremeResultCoeff[j]['prvalue']) < float(jsonRResultCoeff[i]['Pr(>|t|)'].replace('<','')))
                 else:
                     assert (math.isclose(float(jsonExaremeResultCoeff[j]['prvalue']),jsonRResultCoeff[i]['Pr(>|t|)'],rel_tol=0,abs_tol=10**(-abs(Decimal(str(jsonRResultCoeff[i]['Pr(>|t|)'])).as_tuple().exponent))))
-        # print (c)
+        print ('c')
         assert exist_corr_c==True
     assert noofcoefficient == len(jsonRResultCoeff)
 

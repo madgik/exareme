@@ -5,7 +5,6 @@ library(jsonlite)
 library(dplyr)
 library(tidyr)
 
-
 # LOAD BALANCED DATA
 rawDataB <- read_delim("../unit_tests/datasets/CSVs/data_ANOVA_Balanced_with_inter_V1V2.csv", ",") %>%
   mutate(
