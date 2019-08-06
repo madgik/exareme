@@ -168,23 +168,13 @@ In order to deploy via script ```deploy.sh``` make sure that:
 
 a) Script has the right permissions to run
 
-b) If your remote machines do not have the Metadata file available you can simply copy your file from your Host machine into the Remote machines.
-Keep in mind that you need to place the Metadata file inside the Metadata folder with name: ```CDEsMetadata.json```.
-
-c) If you have workers available make sure you have their labels under [workers]. If you do not have any workers, there should be
-no label [workers] in order for script to run properly. #TODO automated in the near future
-
-d) You need a file ```~/.vault_pass.txt``` with your Ansible-vault password inside ```in a single line```, so playbooks will automatically run without asking you for the password.
-
 The script contains:
 
-a)Select if you wish to: Copy Metadata file to [Master/Worker] nodes [y/n]
+a) Initialize Swarm/mip-federation network
 
-b)Initialize Swarm/mip-federation network
+b) Join workers in Swarm
 
-c)Join workers in Swarm
-
-d)Select if you wish to: Start Exareme with/without Portainer service [y/n]
+c) Select if you wish to: Start Exareme with/without Portainer service [y/n]
 
 To run the script simply ```deploy.sh``` under Docker-Ansible folder
 
