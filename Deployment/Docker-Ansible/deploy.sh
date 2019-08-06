@@ -83,7 +83,7 @@ echo "Ansible-vault gives you the simplicity of storing your Ansible password in
 Looking for file \"~/.vault_pass.txt\"... (It may be required to enter your sudo password..)\""
 
 if [[ -z $(sudo find ~/.vault_pass.txt) ]]; then
-    echo -e "\nNo such file \"~/.vault_pass.txt\".Do you want to create one now? [y/n]"
+    echo -e "\nNo such file \"~/.vault_pass.txt\". Do you want to create one now? [y/n]"
     flag=1
     password
 else
@@ -99,8 +99,8 @@ fi
 echo -e "\nInitializing Swarm..Initializing mip-federation network..Copying Compose-Files folder to Manager of Swarm..."
 sleep 1
 ansible_playbook_init=${ansible_playbook}"Init-Swarm.yaml"
-#${ansible_playbook_init}
-echo ${ansible_playbook_init}
+${ansible_playbook_init}
+
 ansible_playbook_code=$?
 #If status code != 0 an error has occurred
 if [[ ${ansible_playbook_code} -ne 0 ]]; then
@@ -122,8 +122,8 @@ while IFS= read -r line; do
             fi
             ansible_playbook_join+=${worker}
             flag=0
-            echo ${ansible_playbook_join}
-            #${ansible_playbook}
+            ${ansible_playbook_join}
+
             ansible_playbook_code=$?
             #If status code != 0 an error has occurred
             if [[ ${ansible_playbook_code} -ne 0 ]]; then
@@ -172,8 +172,8 @@ while true
 do
     if [[ "${answer}" == "y" ]]; then
         ansible_playbook_start=${ansible_playbook}"Start-Exareme.yaml"
-        #${ansible_playbook_start}
-        echo ${ansible_playbook_start}
+        ${ansible_playbook_start}
+
         ansible_playbook_code=$?
         #If status code != 0 an error has occurred
         if [[ ${ansible_playbook_code} -ne 0 ]]; then
@@ -184,8 +184,8 @@ do
         break
     elif [[ "${answer}" == "n" ]]; then
         ansible_playbook_start=${ansible_playbook}"Start-Exareme.yaml --skip-tags portainer"
-        #${ansible_playbook_start}
-        echo ${ansible_playbook_start}
+        ${ansible_playbook_start}
+
         ansible_playbook_code=$?
         #If status code != 0 an error has occurred
         if [[ ${ansible_playbook_code} -ne 0 ]]; then
