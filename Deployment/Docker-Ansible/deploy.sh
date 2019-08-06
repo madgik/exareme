@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-echo "Do you wish to copy Metadata file to Master node now? [y/n]. If [y] make sure you have the file \"CDEsMetadata.json\" inside Metadata folder"
+: 'echo "Do you wish to copy Metadata file to Master node now? [y/n]. If [y] make sure you have the file \"CDEsMetadata.json\" inside Metadata folder"
 read answer
 while true
 do
@@ -52,54 +52,115 @@ do
         read answer
     fi
 done
+'
+password () {
+    read answer
+    while true
+    do
+        if [[ "${answer}" == "y" ]]; then
+            echo "Type your Ansible password:"
+            read -s password
+            echo $password >> ~/.vault_pass.txt
+            ansible_playbook+="--vault-password-file ~/.vault_pass.txt "
+            break
+        elif [[ "${answer}" == "n" ]]; then
+            echo "You need to enter your Ansible password every single time ansible-playbooks ask for one."
+            sleep 1
+            ansible_playbook+="--ask-vault-pass "
+            break
+        else
+            echo "$answer is not a valid answer! Try again.. [y/n]"
+            read answer
+        fi
+    done
+}
+
+
+#Default ansible_playbook
+ansible_playbook="ansible-playbook -i hosts.ini -c paramiko -e@vault_file.yaml "
+
+echo "Ansible-vault gives you the simplicity of storing your Ansible password in a file. \
+Looking for file \"~/.vault_pass.txt file.....(It may be required to enter your sudo password..)\""
+
+if [[ -z $(sudo find ~/ -name "*.vault_pass.txt") ]]; then
+    echo "No such file \"~/.vault_pass.txt\".Do you want to create one now? [y/n]"
+    password
+else
+    if [[ -s $(sudo find ~/ -name "*.vault_pass.txt") ]]; then
+        echo "File exists and it is not empty! Moving on..."
+        ansible_playbook+="--vault-password-file ~/.vault_pass.txt "
+    else
+        echo "File is empty.. Do you want to store your Ansible password now?[y/n]"
+        password
+    fi
+fi
 
 echo -e "\nInitializing Swarm..Initializing mip-federation network..Copying Compose-Files folder to Manager of Swarm..."
 sleep 1
-ansible-playbook -i hosts.ini Init-Swarm.yaml -c paramiko --vault-password-file ~/.vault_pass.txt -e@vault_file.yaml
-ansible_playbook=$?
+ansible_playbook_init=${ansible_playbook}"Init-Swarm.yaml"
+#${ansible_playbook}
+echo ${ansible_playbook_init}
+ansible_playbook_code=$?
 #If status code != 0 an error has occurred
-if [[ ${ansible_playbook} -ne 0 ]]; then
+if [[ ${ansible_playbook_code} -ne 0 ]]; then
     echo "Playbook \"Init-Swarm.yaml\" exited with error." >&2
     exit 1
 fi
 
-echo -e "\nJoining worker nodes in Swarm.."
+echo -e "\nJoining worker nodes in Swarm..\n"
 while IFS= read -r line; do
-    if [[ "$line" = *"hostname="* ]]; then
-        worker=$(echo "$line" | cut -d'=' -f 1)
-        worker_name=$( echo "$line" | cut -d'=' -f 2)
-        ansible-playbook -i hosts.ini Join-Workers.yaml -c paramiko --vault-password-file ~/.vault_pass.txt -e@vault_file.yaml -e "my_host=${worker}"
-        ansible_playbook=$?
-        #If status code != 0 an error has occurred
-        if [[ ${ansible_playbook} -ne 0 ]]; then
-            echo "Playbook \"Join-Workers.yaml\" exited with error." >&2
-            exit 1
-        fi
-        echo -e "\n ${worker_name} is now part of the Swarm.."
-        sleep 1
+    if [[ "$line" = *"[workers]"* ]]; then
+        while IFS= read -r line; do
+            ansible_playbook_join=${ansible_playbook}"Join-Workers.yaml -e my_host="
+            worker=$(echo "$line")
+            if [[ -z "$line" ]]; then
+                continue
+            fi
+            if [[ "$line" = *"["* ]]; then
+                flag=1
+                break
+            fi
+            ansible_playbook_join+=${worker}
+            echo ${ansible_playbook_join}
+            #${ansible_playbook}
+            ansible_playbook_code=$?
+            #If status code != 0 an error has occurred
+            if [[ ${ansible_playbook_code} -ne 0 ]]; then
+                echo "Playbook \"Join-Workers.yaml\" exited with error." >&2
+                exit 1
+            fi
+            echo -e "\n${worker} is now part of the Swarm..\n"
+            sleep 1
+        done
+    fi
+    if [[ ${flag} == "1" ]]; then
+        break
     fi
 done < hosts.ini
-
 
 echo -e "\nStarting Exareme services...Do you wish to run Portainer service as well [y/n]?"
 read answer
 while true
 do
     if [[ "${answer}" == "y" ]]; then
-        ansible-playbook -i hosts.ini Start-Exareme.yaml -c paramiko --vault-password-file ~/.vault_pass.txt -e@vault_file.yaml
-        ansible_playbook=$?
+        ansible_playbook_start=${ansible_playbook}"Start-Exareme.yaml"
+        #${ansible_playbook_start}
+        echo ${ansible_playbook_start}
+        ansible_playbook_code=$?
         #If status code != 0 an error has occurred
-        if [[ ${ansible_playbook} -ne 0 ]]; then
+        if [[ ${ansible_playbook_code} -ne 0 ]]; then
             echo "Playbook \"Start-Exareme.yaml\" exited with error." >&2
             exit 1
         fi
         echo -e "\nExareme services, Portainer service are now running"
         break
     elif [[ "${answer}" == "n" ]]; then
-        ansible-playbook -i hosts.ini Start-Exareme.yaml -c paramiko --vault-password-file ~/.vault_pass.txt -e@vault_file.yaml --skip-tags portainer
-        ansible_playbook=$?
+        ansible_playbook_start=${ansible_playbook}"Start-Exareme.yaml --skip-tags portainer"
+        #${ansible_playbook_start}
+        echo ${ansible_playbook_start}
+        ansible_playbook_code=$?
         #If status code != 0 an error has occurred
-        if [[ ${ansible_playbook} -ne 0 ]]; then
+        if [[ ${ansible_playbook_code} -ne 0 ]]; then
             echo "Playbook \"Start-Exareme.yaml\" exited with error." >&2
             exit 1
         fi
