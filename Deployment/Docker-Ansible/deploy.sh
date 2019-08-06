@@ -80,13 +80,13 @@ password () {
 ansible_playbook="ansible-playbook -i hosts.ini -c paramiko -e@vault_file.yaml "
 
 echo "Ansible-vault gives you the simplicity of storing your Ansible password in a file. \
-Looking for file \"~/.vault_pass.txt file.....(It may be required to enter your sudo password..)\""
+Looking for file \"~/.vault_pass.txt\"... (It may be required to enter your sudo password..)\""
 
-if [[ -z $(sudo find ~/ -name "*.vault_pass.txt") ]]; then
+if [[ -z $(sudo find ~/.vault_pass.txt) ]]; then
     echo "No such file \"~/.vault_pass.txt\".Do you want to create one now? [y/n]"
     password
 else
-    if [[ -s $(sudo find ~/ -name "*.vault_pass.txt") ]]; then
+    if [[ -s $(sudo find ~/.vault_pass.txt) ]]; then
         echo "File exists and it is not empty! Moving on..."
         ansible_playbook+="--vault-password-file ~/.vault_pass.txt "
     else
@@ -98,7 +98,7 @@ fi
 echo -e "\nInitializing Swarm..Initializing mip-federation network..Copying Compose-Files folder to Manager of Swarm..."
 sleep 1
 ansible_playbook_init=${ansible_playbook}"Init-Swarm.yaml"
-#${ansible_playbook}
+#${ansible_playbook_init}
 echo ${ansible_playbook_init}
 ansible_playbook_code=$?
 #If status code != 0 an error has occurred
@@ -114,7 +114,7 @@ while IFS= read -r line; do
             ansible_playbook_join=${ansible_playbook}"Join-Workers.yaml -e my_host="
             worker=$(echo "$line")
             if [[ -z "$line" ]]; then
-                continue
+                continue        #If empty line continue..
             fi
             if [[ "$line" = *"["* ]]; then
                 flag=1
@@ -131,6 +131,35 @@ while IFS= read -r line; do
             fi
             echo -e "\n${worker} is now part of the Swarm..\n"
             sleep 1
+        done
+    else
+        echo -e "\nIt seems that no workers will join the Swarm. If you have workers \
+        make sure you included their names below label [workers], so Ansible will not Ignore them."
+        echo -e "\nContinue? [y/n]"
+
+        read answer
+        while true
+        do
+            if [[ "${answer}" == "y" ]]; then
+                echo "Continue without Workers.."
+                break
+            elif [[ "${answer}" == "n" ]]; then
+                echo "Exiting...(Leaving Swarm for Master node).."
+                ansible_playbook_leave=${ansible_playbook}"Leave-Master.yaml"
+
+                echo ${ansible_playbook_leave}
+                #${ansible_playbook_leave}
+                ansible_playbook_code=$?
+                #If status code != 0 an error has occurred
+                if [[ ${ansible_playbook_code} -ne 0 ]]; then
+                    echo "Playbook \"Leave-Master.yaml\" exited with error." >&2
+                    exit 1
+                fi
+                exit 1
+            else
+                echo "$answer is not a valid answer! Try again.. [y/n]"
+                read answer
+            fi
         done
     fi
     if [[ ${flag} == "1" ]]; then
