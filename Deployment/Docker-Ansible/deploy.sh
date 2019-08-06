@@ -150,8 +150,7 @@ make sure you included their names below label [workers], so Ansible will not Ig
             echo "Exiting...(Leaving Swarm for Master node).."
             ansible_playbook_leave=${ansible_playbook}"Leave-Master.yaml"
 
-            echo ${ansible_playbook_leave}
-            #${ansible_playbook_leave}
+            ${ansible_playbook_leave}
             ansible_playbook_code=$?
             #If status code != 0 an error has occurred
             if [[ ${ansible_playbook_code} -ne 0 ]]; then
