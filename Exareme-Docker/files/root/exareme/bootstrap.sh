@@ -54,7 +54,7 @@ transformCsvToDB () {
     echo "Parsing the csv file in " ${DOCKER_METADATA_FOLDER} " to a db file. "
     python ./convert-csv-dataset-to-db.py --csvFilePath ${DOCKER_DATASETS_FOLDER}/datasets.csv --CDEsMetadataPath ${DOCKER_METADATA_FOLDER}/CDEsMetadata.json --outputDBAbsPath $DOCKER_METADATA_FOLDER/datasets.db
 	#Get the status code from previous command
-	py_script=$?
+    py_script=$?
 	#If status code != 0 an error has occurred
     if [[ ${py_script} -ne 0 ]]; then
          echo "Script: \"convert-csv-dataset-to-db.py\" exited with error." >&2
@@ -96,7 +96,6 @@ mkdir -p  /tmp/demo/db/
 if [[ "${MASTER_FLAG}" != "master" ]]; then
 
     DESC="exareme-worker"
-    echo -n ${NODE_NAME} > /root/exareme/etc/exareme/name
     MY_IP=$(/sbin/ifconfig | grep "inet " | awk -F: '{print $2}' | grep '10.20' | awk '{print $1;}' | head -n 1)
 
     #Try accessing Consul[key-value store]
@@ -123,6 +122,7 @@ if [[ "${MASTER_FLAG}" != "master" ]]; then
         echo -e "Retrieving Master's info from Consul[key-value store]"
         if [[ ${n} -ge 30 ]]; then
             echo "Is Master node initialized? Check Master's logs. Terminating Worker node["${NODE_NAME}","${MY_IP}"]"
+            exit 1
         fi
     done
 
@@ -134,10 +134,12 @@ if [[ "${MASTER_FLAG}" != "master" ]]; then
     transformCsvToDB
 
     . ./start-worker.sh
+    echo "Worker node["${MY_IP}","${NODE_NAME}]" trying to connect with Master node["${MASTER_IP}","${MASTER_NAME}"]"
     while [[ ! -f /var/log/exareme.log ]]; do
         echo "Worker node["${MY_IP}","${NODE_NAME}]" trying to connect with Master node["${MASTER_IP}","${MASTER_NAME}"]"
         sleep 1
     done
+    echo "Waiting to establish connection for Worker node["${MY_IP}","${NODE_NAME}"] with Master node["${MASTER_IP}","${MASTER_NAME}"]"
     tail -f /var/log/exareme.log | while read LOGLINE
     do
         [[ "${LOGLINE}" == *"Worker node started."* ]] && pkill -P $$ tail
@@ -150,15 +152,25 @@ if [[ "${MASTER_FLAG}" != "master" ]]; then
         fi
     done
 
+    #Health check for Worker. LIST_DATASET algorithm execution
+    echo "Health check for Worker node["${MY_IP}","${NODE_NAME}"]"
     check="$(curl -s ${MASTER_IP}:9092/check/worker?IP_MASTER=${MASTER_IP}?IP_WORKER=${MY_IP})"
+
+    #error: Something went wrong could happen (it could be madis..)
+    if [[ $( echo ${check} | jq '.error') != null ]]; then
+        echo ${check} | jq '.error'
+        echo -e  "\nExiting.."
+        exit 1
+    fi
+
     getNames="$( echo ${check} | jq '.[][].NodeName')"
 
+    #Retrive result as json. If $NODE_NAME exists in result, the algorithm run in the specific node
     if [[ $getNames = *${NODE_NAME}* ]]; then
         echo -e "\nWorker node["${MY_IP}","${NODE_NAME}"] connected to Master node["${MASTER_IP}","${MASTER_NAME}"]"
         curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_ACTIVE_WORKERS_PATH}/${NODE_NAME} <<< ${MY_IP}
-        ./set-local-datasets.sh
     else
-        echo "Worker node["${MY_IP}","${NODE_NAME}]" seams that is not connected with the Master's Registry.Exiting..."
+        echo "Worker node["${MY_IP}","${NODE_NAME}]" seams that is not connected with the Master.Exiting..."
         exit 1
     fi
 
@@ -166,8 +178,6 @@ if [[ "${MASTER_FLAG}" != "master" ]]; then
 #This is the Master
 else
     DESC="exareme-master"
-    echo -n ${NODE_NAME} > /root/exareme/etc/exareme/name
-
     MY_IP=$(/sbin/ifconfig | grep "inet " | awk -F: '{print $2}' | grep '10.20' | awk '{print $1;}' | head -n 1)
 
     echo -e "\nMaster node["${NODE_NAME}","${MY_IP}"] trying to connect with Consul[key-value store]"
@@ -180,7 +190,7 @@ else
         echo -e "\nMaster node["${NODE_NAME}","${MY_IP}"] trying to connect with Consul[key-value store]"
         n=$((${n} + 1))
         #After 30 attempts-Show error
-        if [[ ${n} -ge 31 ]]; then
+        if [[ ${n} -ge 30 ]]; then
             echo -e "\nConsul[key-value store] may not be initialized or Master node["${NODE_NAME}","${MY_IP}"] can not contact Consul[key-value store]"
             exit 1  #Simple exit 1. Exareme is not up yet
         fi
@@ -199,9 +209,9 @@ else
         else
             ./exareme-admin.sh --start
             echo "Master node["${MY_IP}","$NODE_NAME"] trying to re-boot..."
-                while [[ ! -f /var/log/exareme.log ]]; do
-            echo "Master node["$MY_IP"," $NODE_NAME"] re-booted..."
-        done
+            while [[ ! -f /var/log/exareme.log ]]; do
+                echo "Master node["$MY_IP"," $NODE_NAME"] re-booted..."
+            done
         fi
 
     #Master node just created
@@ -212,6 +222,7 @@ else
         while [[ ! -f /var/log/exareme.log ]]; do
             echo "Initializing Master node["${MY_IP}","${NODE_NAME}"]"
         done
+        echo "Initializing Master node["${MY_IP}","${NODE_NAME}"]"
         tail -f /var/log/exareme.log | while read LOGLINE
         do
             [[ "${LOGLINE}" == *"Master node started."* ]] && pkill -P $$ tail
@@ -223,15 +234,30 @@ else
             fi
         done
 
+        #Health check for Master. LIST_DATASET algorithm execution
+        echo "Health check for Master node["${MY_IP}","${NODE_NAME}"]"
+        check="$(curl -s ${MY_IP}:9092/check/worker?IP_MASTER=${MY_IP}?IP_WORKER=${MY_IP})"     #Master has a Worker instance. So in this case IP_MASTER / IP_WORKER is the same
 
+        #error: Something went wrong could happen (it could be madis)
+        if [[ $( echo ${check} | jq '.error') != null ]]; then
+             echo ${check} | jq '.error'
+             echo "Exiting.."
+             exit 1
+        fi
+
+        getNames="$( echo ${check} | jq '.[][].NodeName')"
+        #Retrive result as json. If $NODE_NAME exists in result, the algorithm run in the specific node
+        if [[ $getNames = *${NODE_NAME}* ]]; then
+            echo -e "\nMaster node["${MY_IP}","${NODE_NAME}"] initialized"
+            curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/${NODE_NAME} <<< ${MY_IP}
+        else
+            echo "Master node["${MY_IP}","${NODE_NAME}]" seams that could not be initialized.Exiting..."
+            exit 1
+        fi
     fi
-    echo "Master node["${MY_IP}","${NODE_NAME}"] initialized"
-    curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/${NODE_NAME} <<< ${MY_IP}
-    ./set-local-datasets.sh
-
 fi
 
-#Both worker(s)/master will execute the command. At this point Consul [Key-value store] is up, running and everyone can access it
+#Both Worker(s)/Master will execute the command. At this point Consul [Key-value store] is up, running and everyone can access it
 echo '*/15  *  *  *  *    ./set-local-datasets.sh' >> /etc/crontabs/root
 crond
 

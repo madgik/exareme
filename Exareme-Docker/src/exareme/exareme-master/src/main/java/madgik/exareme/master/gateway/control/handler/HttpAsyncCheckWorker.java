@@ -20,21 +20,17 @@ import madgik.exareme.worker.art.container.ContainerProxy;
 import madgik.exareme.worker.art.registry.ArtRegistryLocator;
 import org.apache.http.*;
 import org.apache.http.entity.BasicHttpEntity;
-import org.apache.http.entity.ContentType;
-import org.apache.http.nio.entity.NStringEntity;
 import org.apache.http.nio.protocol.*;
 import org.apache.http.protocol.HttpContext;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
+
 public class HttpAsyncCheckWorker implements HttpAsyncRequestHandler<HttpRequest> {
     private static final Logger log = Logger.getLogger(madgik.exareme.master.gateway.control.handler.HttpAsyncCheckWorker.class);
     private static final AdpDBManager manager = AdpDBManagerLocator.getDBManager();
-
+    private static final String algorithmName = "LIST_DATASET";
     public HttpAsyncCheckWorker() {
         super();
     }
@@ -82,10 +78,13 @@ public class HttpAsyncCheckWorker implements HttpAsyncRequestHandler<HttpRequest
         log.debug("MASTER: " + IP_MASTER);
         log.debug("WORKER: " + IP_WORKER);
 
-        String algorithmKey = "LIST_DATASET" + "_" + System.currentTimeMillis();
+
+        //Execute LIST_DATASET for health checks in bootsrap.sh via "curl -s ${MASTER_IP}:9092/check/worker?IP_MASTER=${MY_IP}?IP_WORKER=${MY_IP}"
+        //Retrieve json result and check of the NODE_NAME of the node exist in the result.
+        String algorithmKey = algorithmName + "_" + System.currentTimeMillis();
         String dfl;
         HashMap<String, String> inputContent = new HashMap<>();
-        AlgorithmProperties algorithmProperties = Algorithms.getInstance().getAlgorithmProperties("LIST_DATASET");
+        AlgorithmProperties algorithmProperties = Algorithms.getInstance().getAlgorithmProperties(algorithmName);
 
         if (algorithmProperties == null)
             throw new AlgorithmException("The algorithm does not exist.");
@@ -115,10 +114,15 @@ public class HttpAsyncCheckWorker implements HttpAsyncRequestHandler<HttpRequest
         List<ContainerProxy> usedContainerProxiesList = new ArrayList<>();
         List<String> nodesToBeChecked = new ArrayList<>();
 
-
-        nodesToBeChecked.add(IP_MASTER);
-        nodesToBeChecked.add(IP_WORKER);
-
+        if (Objects.equals(IP_MASTER, IP_WORKER)){
+            log.debug("It seams like a health check for Master node["+IP_MASTER+"] only");
+            nodesToBeChecked.add(IP_MASTER);
+        }
+        else {
+            log.debug("It seams like a health check for Master node["+IP_MASTER+"] - Worker node["+IP_WORKER+"]");
+            nodesToBeChecked.add(IP_MASTER);
+            nodesToBeChecked.add(IP_WORKER);
+        }
 
         for (ContainerProxy containerProxy : ArtRegistryLocator.getArtRegistryProxy().getContainers()) {
             if (nodesToBeChecked.contains(containerProxy.getEntityName().getIP())) {
