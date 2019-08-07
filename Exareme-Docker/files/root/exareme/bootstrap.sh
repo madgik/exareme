@@ -189,6 +189,7 @@ else
     while [[ "$(curl -s ${CONSULURL}/v1/health/state/passing | jq -r '.[].Status')" != "passing" ]]; do
         echo -e "\nMaster node["${NODE_NAME}","${MY_IP}"] trying to connect with Consul[key-value store]"
         n=$((${n} + 1))
+        sleep 1
         #After 30 attempts-Show error
         if [[ ${n} -ge 30 ]]; then
             echo -e "\nConsul[key-value store] may not be initialized or Master node["${NODE_NAME}","${MY_IP}"] can not contact Consul[key-value store]"
