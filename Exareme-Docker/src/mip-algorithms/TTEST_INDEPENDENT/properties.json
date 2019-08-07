@@ -5,73 +5,66 @@
 	"parameters": [{
 			"name": "x",
 			"desc": "A vector of strings naming the variables of interest in data",
-				"type": "column",
-				"columnValuesSQLType": "real,integer",
-				"columnValuesIsCategorical": "",
-				"columnValuesNumOfEnumerations": "",
-				"value": "subjectage,righthippocampus,lefthippocampus",
-				"valueNotBlank": true,
-				"valueMultiple": true,
-				"valueType": "string"
-		},
-		{
-				"name": "y",
-				"desc": "The grouping variable with two levels ",
-				"type": "column",
-				"columnValuesSQLType": "",
-				"columnValuesIsCategorical": "true",
-				"columnValuesNumOfEnumerations": "",
-				"value": "gender",
-				"valueNotBlank": true,
-				"valueMultiple": true,
-				"valueType": "string"
-			},
-			{
-				"name": "ylevels",
-				"desc": "Distinct values of y",
-				"type": "other",
-				"value": "M,F",
-				"valueNotBlank": true,
-				"valueMultiple": true,
-				"valueType": "string"
-			},
-		{
-        "name": "hypothesis",
-        "desc": "'different' (default), 'greaterthan' or 'lessthan', the alternative hypothesis; group 1 different to group 2, group 1 greater than group 2, and group 1 less than group 1 respectively ",
-        "type": "other",
-        "value": "greaterthan",
-        "valueNotBlank": true,
-        "valueMultiple": false,
-        "valueType": "string"
-      },
-      {
-        "name": "effectsize",
-        "desc": "1 or 0 (default), provide Cohen's d effect sizes",
-        "type": "other",
-        "value": "1",
-        "valueNotBlank": true,
-        "valueMultiple": false,
-        "valueType": "integer"
-      },
-      {
-        "name": "ci",
-        "desc": "1 or 0 (default), provide confidence intervals for the mean difference",
-        "type": "other",
-        "value": "1",
-        "valueNotBlank": true,
-        "valueMultiple": false,
-        "valueType": "integer"
-      },
-      {
-        "name": "meandiff",
-        "desc": "1 or 0 (default), provide means and standard deviations ",
-        "type": "other",
-        "value": "1",
-        "valueNotBlank": true,
-        "valueMultiple": false,
-        "valueType": "integer"
-      },
-     {
+			"type": "column",
+			"columnValuesSQLType": "real,integer",
+			"columnValuesIsCategorical": "",
+			"columnValuesNumOfEnumerations": "",
+			"value": "subjectage,righthippocampus,lefthippocampus",
+			"valueNotBlank": true,
+			"valueMultiple": true,
+			"valueType": "string"
+		}, {
+			"name": "y",
+			"desc": "The grouping variable with two levels ",
+			"type": "column",
+			"columnValuesSQLType": "",
+			"columnValuesIsCategorical": "true",
+			"columnValuesNumOfEnumerations": "",
+			"value": "gender",
+			"valueNotBlank": true,
+			"valueMultiple": true,
+			"valueType": "string"
+		}, {
+			"name": "ylevels",
+			"desc": "Distinct values of y",
+			"type": "other",
+			"value": "M,F",
+			"valueNotBlank": true,
+			"valueMultiple": true,
+			"valueType": "string"
+		}, {
+			"name": "hypothesis",
+			"desc": "'different' (default), 'greaterthan' or 'lessthan', the alternative hypothesis; group 1 different to group 2, group 1 greater than group 2, and group 1 less than group 1 respectively ",
+			"type": "other",
+			"value": "greaterthan",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "string"
+		}, {
+			"name": "effectsize",
+			"desc": "1 or 0 (default), provide Cohen's d effect sizes",
+			"type": "other",
+			"value": "1",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "integer"
+		}, {
+			"name": "ci",
+			"desc": "1 or 0 (default), provide confidence intervals for the mean difference",
+			"type": "other",
+			"value": "1",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "integer"
+		}, {
+			"name": "meandiff",
+			"desc": "1 or 0 (default), provide means and standard deviations ",
+			"type": "other",
+			"value": "1",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "integer"
+		}, {
 			"name": "dataset",
 			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty.",
 			"type": "dataset",
