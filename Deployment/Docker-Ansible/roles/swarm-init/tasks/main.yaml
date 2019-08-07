@@ -14,7 +14,7 @@
 - name: Check If mip-federation Network Has Already Been Initialized
   shell: docker network inspect mip-federation
   register: network_status
-  ignore_error: true
+  ignore_errors: true
 
 - name: Create Swarm Network
   shell: >
