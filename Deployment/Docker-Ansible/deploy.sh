@@ -1,7 +1,4 @@
 #!/usr/bin/env bash
-
-export ANSIBLE_HOST_KEY_CHECKING=False      #avoid host key checking
-
 password () {
     read answer
     while true
@@ -24,13 +21,14 @@ password () {
     done
 }
 
-
+init_ansible_playbook () {
 #Default ansible_playbook
 ansible_playbook="ansible-playbook -i hosts.ini -c paramiko -e@vault_file.yaml "
 
-echo "Ansible-vault gives you the simplicity of storing your Ansible password in a file. \
+echo -e "\nAnsible-vault gives you the simplicity of storing your Ansible password in a file. \
 Looking for file \"~/.vault_pass.txt\"... (It may be required to enter your sudo password..)\""
 
+# --vault-password-file or --ask-vault-pass
 if [[ -z $(sudo find ~/.vault_pass.txt) ]]; then
     echo -e "\nNo such file \"~/.vault_pass.txt\". Do you want to create one now? [y/n]"
     flag=1
@@ -45,105 +43,33 @@ else
     fi
 fi
 
-echo -e "\nInitializing Swarm..Initializing mip-federation network..Copying Compose-Files folder to Manager of Swarm..."
-sleep 1
-ansible_playbook_init=${ansible_playbook}"Init-Swarm.yaml"
-${ansible_playbook_init}
+}
 
-ansible_playbook_code=$?
-#If status code != 0 an error has occurred
-if [[ ${ansible_playbook_code} -ne 0 ]]; then
-    echo "Playbook \"Init-Swarm.yaml\" exited with error." >&2
-    exit 1
-fi
+echo -e "Choose one of the below:\n"
+echo "1:Deploy everything"
+echo "2:Add a specific worker in an already initialized swarm"
+echo -e "3:Restart services\n"
 
-echo -e "\nJoining worker nodes in Swarm..\n"
-while IFS= read -r line; do
-    if [[ "$line" = *"[workers]"* ]]; then
-        while IFS= read -r line; do
-            ansible_playbook_join=${ansible_playbook}"Join-Workers.yaml -e my_host="
-            worker=$(echo "$line")
-            if [[ -z "$line" ]]; then
-                continue        #If empty line continue..
-            fi
-            if [[ "$line" = *"["* ]]; then
-                break
-            fi
-            ansible_playbook_join+=${worker}
-            flag=0
-            ${ansible_playbook_join}
-
-            ansible_playbook_code=$?
-            #If status code != 0 an error has occurred
-            if [[ ${ansible_playbook_code} -ne 0 ]]; then
-                echo "Playbook \"Join-Workers.yaml\" exited with error." >&2
-                exit 1
-            fi
-            echo -e "\n${worker} is now part of the Swarm..\n"
-            sleep 1
-        done
-    fi
-done < hosts.ini
-if [[ ${flag} != "0" ]]; then
-    echo -e "\nIt seems that no workers will join the Swarm. If you have workers \
-make sure you included their names below label [workers], so Ansible will not Ignore them."
-    echo -e "\nContinue? [y/n]"
-
-    read answer
-    while true
-    do
-        if [[ "${answer}" == "y" ]]; then
-            echo "Continue without Workers.."
-            break
-        elif [[ "${answer}" == "n" ]]; then
-            echo "Exiting...(Leaving Swarm for Master node).."
-            ansible_playbook_leave=${ansible_playbook}"Leave-Master.yaml"
-
-            ${ansible_playbook_leave}
-            ansible_playbook_code=$?
-            #If status code != 0 an error has occurred
-            if [[ ${ansible_playbook_code} -ne 0 ]]; then
-                echo "Playbook \"Leave-Master.yaml\" exited with error." >&2
-                exit 1
-            fi
-            exit 1
-        else
-            echo "$answer is not a valid answer! Try again.. [y/n]"
-            read answer
-        fi
-    done
-fi
-
-echo -e "\nStarting Exareme services...Do you wish to run Portainer service as well [y/n]?"
 read answer
 while true
 do
-    if [[ "${answer}" == "y" ]]; then
-        ansible_playbook_start=${ansible_playbook}"Start-Exareme.yaml"
-        ${ansible_playbook_start}
-
-        ansible_playbook_code=$?
-        #If status code != 0 an error has occurred
-        if [[ ${ansible_playbook_code} -ne 0 ]]; then
-            echo "Playbook \"Start-Exareme.yaml\" exited with error." >&2
-            exit 1
-        fi
-        echo -e "\nExareme services and Portainer service are now running"
-        break
-    elif [[ "${answer}" == "n" ]]; then
-        ansible_playbook_start=${ansible_playbook}"Start-Exareme.yaml --skip-tags portainer"
-        ${ansible_playbook_start}
-
-        ansible_playbook_code=$?
-        #If status code != 0 an error has occurred
-        if [[ ${ansible_playbook_code} -ne 0 ]]; then
-            echo "Playbook \"Start-Exareme.yaml\" exited with error." >&2
-            exit 1
-        fi
-        echo -e "\nExareme services are now running"
-        break
+    if [[ "${answer}" == "1" ]]; then
+        echo -e "\nYou choose to deploy everything.."
+        chmod 755 deploy_all.sh
+        . ./deploy_all.sh
+        exit 0
+    elif [[ "${answer}" == "2" ]]; then
+        echo -e "\nYou choose to add a specific worker in an already initialized swarm.."
+        chmod 755 add_worker.sh
+        . ./add_worker.sh
+        exit 0
+    elif [[ "${answer}" == "3" ]]; then
+         echo -e "\nYou choose to restart Services.."
+         chmod 755 restart.sh
+         . ./restart.sh
+         exit 0
     else
-        echo "$answer is not a valid answer! Try again.. [y/n]"
+        echo "$answer is not a valid answer! Try again.. [1/2/3"
         read answer
     fi
 done
