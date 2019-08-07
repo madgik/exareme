@@ -13,8 +13,9 @@ while true
 do
     if [[ "${answer}" == "1" ]]; then
         echo -e "\nYou choose to stop everything.."
+
         ansible_playbook_stop=${ansible_playbook}"Stop-Services.yaml"
-        echo ${ansible_playbook_stop}
+        ${ansible_playbook_stop}
         ansible_playbook_code=$?
         break
     elif [[ "${answer}" == "2" ]]; then
