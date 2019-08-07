@@ -1,7 +1,8 @@
-requirevars 'defaultDB' 'input_global_tbl' 'x' 'outputformat' ;
+requirevars 'defaultDB' 'input_global_tbl' 'x' ;
 attach database '%{defaultDB}' as defaultDB;
 
 --var 'input_global_tbl' 'defaultDB.kmeanslocalresult';
+--var  'x' "lefthippocampus,righthippocampus";
 
 var 'a' from select create_complex_query("clid, ","?_clval as ?,","","clpoints as noofpoints",'%{x}');
 drop table if exists defaultDB.kmeansglobalresult;
@@ -13,18 +14,11 @@ where clid1 = clid;
 
 var 'columntypes' from select strreplace(a) from (select create_complex_query("int,","real,","","int",'%{x}') as a);
 
-drop table if exists defaultDB.kmeansvisualization;
-create table defaultDB.kmeansvisualization ('result' text);
-
-insert into defaultDB.kmeansvisualization
-select * from (highchartbubble select %{x}, noofpoints  from defaultDB.kmeansglobalresult where '%{outputformat}'= 'highchart_bubble')
-where '%{outputformat}'= 'highchart_bubble'
-union
-select * from (highchartscatter3d select %{x}, noofpoints from defaultDB.kmeansglobalresult where '%{outputformat}'= 'highchart_bubble')
-where '%{outputformat}'= 'highchart_scatter3d'
-union
-select * from (totabulardataresourceformat title:KMEANS_TABLE types:%{columntypes} select clid as `cluster id`, %{x}, noofpoints as `number of points`
-from defaultDB.kmeansglobalresult) where '%{outputformat}'= 'pfa';
+var 'resulthighchartbubble' from select * from (highchartbubble title:KMEANS_OUTPUT select %{x}, noofpoints from defaultDB.kmeansglobalresult);
+var 'resulthighchartscatter3d' from select * from (highchartscatter3d title:KMEANS_OUTPUT select %{x} from defaultDB.kmeansglobalresult);
+var 'resultjson' from select tabletojson(clid,%{x},noofpoints, 'clid,%{x},clpoints', 1) from defaultDB.kmeansglobalresult;
+var 'resulttable' from select * from (totabulardataresourceformat title:Kmeans types:%{columntypes}
+                                      select clid as `cluster id`, %{x}, noofpoints as `number of points` from defaultDB.kmeansglobalresult);
 
 
-select * from defaultDB.kmeansvisualization;
+select '{"result": ['||'%{resultjson}'||','||'%{resulthighchartbubble}'||','||'%{resulthighchartscatter3d}'||','||'%{resulttable}'||']}';

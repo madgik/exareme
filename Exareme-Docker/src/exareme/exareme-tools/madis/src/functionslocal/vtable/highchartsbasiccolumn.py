@@ -66,6 +66,9 @@ class highchartsbasiccolumn(functions.vtable.vtbase.VT):
         enumerations = re.split(',',str(dictargs['enumerations']))
         enumerations = [x for x in enumerations if x] # remove nulls elements of the list
 
+        if 'title' not in dictargs:
+            raise functions.OperatorError(__name__.rsplit('.')[-1],"No title argument ")
+        
         cur = envars['db'].cursor()
         c=cur.execute(query)
         schema = cur.getdescriptionsafe()

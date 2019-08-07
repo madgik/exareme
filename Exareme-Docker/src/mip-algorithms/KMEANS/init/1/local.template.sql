@@ -1,22 +1,12 @@
 ------------------Input for testing
 ------------------------------------------------------------------------------
---
 -- hidden var 'defaultDB' defaultDB_KMEANS2;
--- hidden var 'columns' 'Iris_Sepal_Length,Iris_Sepal_Width,Iris_Petal_Length,Iris_Petal_Width';
+-- hidden var 'x' 'lefthippocampus,righthippocampus';
 -- var 'centers' '';
--- '[{"clid":1, "Iris_Sepal_Length":6.0, "Iris_Sepal_Width":2.5, "Iris_Petal_Length":4.0 ,"Iris_Petal_Width":1.5 },
--- {"clid":2, "Iris_Sepal_Length":5.0, "Iris_Sepal_Width":3.5, "Iris_Petal_Length":1.5 ,"Iris_Petal_Width":0.5},
--- {"clid":3, "Iris_Sepal_Length":6.5, "Iris_Sepal_Width":3.0, "Iris_Petal_Length":6.0 ,"Iris_Petal_Width":2.0}]';
---
--- var 'k' 3;
--- hidden var 'outputformat' 'pfa';
---
+-- var 'k' '';
 -- drop table if exists inputdata;
 -- create table inputdata as
---    select %{x}
---    from (file header:t '/home/eleni/Desktop/HBP/exareme/Exareme-Docker/src/mip-algorithms/KMEANS_accurate/iris.csv');
--- --where dataset = 'Iris';
---
+-- select %{x} from (file header:t '/home/eleni/Desktop/HBP/exareme/Exareme-Docker/src/mip-algorithms/unit_tests/datasets/CSVs/desd-synthdata.csv');
 -- select * from inputdata;
 
 ------------------ End input for testing
@@ -25,7 +15,7 @@
 --k or centers should be null. Otherwise the algorithm should stop. The algorithm should stop if Var 'error' ==1 . TODO Sofia k>=2
 --var 'error' from  select case when tonumber(%{centersisempty}) + tonumber(%{kisempty}) =1 then 0 else 1 end;
 
-requirevars 'defaultDB' 'input_local_DB' 'db_query' 'db_query' 'x' 'centers' 'k' 'dataset' 'outputformat';
+--requirevars 'defaultDB' 'input_local_DB' 'db_query' 'db_query' 'x' 'centers' 'k' 'dataset' ;
 attach database '%{defaultDB}' as defaultDB;
 attach database '%{input_local_DB}' as localDB;
 
@@ -34,14 +24,10 @@ drop table if exists inputdata;
 create table inputdata as
 select %{x} from (%{db_query});
 
--- drop table if exists defaultDB.lala;
--- create table defaultDB.lala as select * from inputdata;
-
 drop table if exists defaultDB.algorithmparameters; --used for testing !!!
 create table defaultDB.algorithmparameters (name,val);
 insert into defaultDB.algorithmparameters select 'centers' , '%{centers}' ;
 insert into defaultDB.algorithmparameters select 'columns' , '%{x}' ;
-insert into defaultDB.algorithmparameters select 'outputformat' , '%{outputformat}' ;
 insert into defaultDB.algorithmparameters select 'iterations' , 0 ;
 
 -- Delete patients with null values (val is null or val = '' or val = 'NA'). Cast values of columns using cast function.
@@ -52,8 +38,9 @@ create table defaultDB.localinputtbl as
 select cast(rowid as text) as rid, %{cast_x}
 from inputdata where %{nullCondition};
 
+var 'centersisempty' from select case when (select '%{centers}')='' or (select '%{centers}')='[]' or (select '%{centers}')='[{}]' or (select '%{centers}')='{}' then 1 else 0 end;
 var 'privacy' from select privacychecking(no) from (select count(*) as no from defaultDB.localinputtbl);
-var 'inputerrorchecking' from select kmeans_inputerrorchecking('%{centers}','%{k}');
+var 'inputerrorchecking' from select kmeans_inputerrorchecking('%{centersisempty}','%{k}');
 
 drop table if exists defaultDB.assignnearestcluster;
 create table defaultDB.assignnearestcluster(rid int primary key, clid int, mindist real);
@@ -62,8 +49,7 @@ var 'schema' from select create_complex_query("clid int, clN int,","?_clS real",
 var 'partialSums' from select create_complex_query("clid, count(*) as clN,", "sum(?) as ?_clS" , "," , '' ,'%{x}');
 var 'nulls' from select create_complex_query("null,null," , "null", ",","",'%{x}');
 
-var 'centersisempty' from select case when (select '%{centers}')='' then 1 else 0 end;
-var 'k' from select  case when  %{centersisempty}= 0 then 2 else tonumber(%{k}) end;
+var 'k' from select case when  %{centersisempty}= 0 then 2 else tonumber(%{k}) end;
 
 drop table if exists defaultDB.partialclustercenters;
 create table defaultDB.partialclustercenters (%{schema});
