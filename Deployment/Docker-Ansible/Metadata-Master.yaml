@@ -1,5 +1,5 @@
 ---
-- hosts: manager
+- hosts: master
   name: Copy Metadata File To Master
   remote_user: "{{ hostvars['master']['remote_user'] }}"
   become: yes

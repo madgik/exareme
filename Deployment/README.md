@@ -259,14 +259,14 @@ If at some point you need to stop only one worker, you can do so by the followin
 
 If all went well, everything should be deployed! 
 
-### Manager's terminal
+### Master's terminal
 
 Check your Manager node of Swarm by 
 ```docker node ls ``` to see if you have the proper nodes and ```docker inspect ID_Of_A_Node --pretty``` to see if under ```Labels``` key ```name ``` has a value. 
 
 ### Portainer
 
-You can also check the Portainer to see if all services are up and running by accessing the Address: ```Manager_IP:9000```.
+You can also check the Portainer to see if all services are up and running by accessing the Address: ```Manager_Of_Swarm_IP:9000```.
 
 The first time you launch Portainer you have to create a user. 
 Fill in the ```Username```, ```Password```, ```Confirm Password``` fields and click ```Create user```. 

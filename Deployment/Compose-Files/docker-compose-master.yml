@@ -45,7 +45,7 @@ services:
     ports:
       - "8500:8500"
 
-  exareme-manager:
+  exareme-master:
     image: ${EXAREME_IMAGE}
     environment:
       - CONSULURL=${EXAREME_KEYSTORE}
