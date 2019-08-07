@@ -28,7 +28,7 @@ We will refer to the machine from which you run the ansible scripts as Host and 
 Here is an example of hosts.ini where we have 3 Remote machines, one [master] of Exareme and two [workers] of Exareme.
 
 ```
-   [manager]
+   [master]
    master ansible_host=88.197.53.38
    master home_path=/home/exareme/
    master data_path=/home/exareme/data/
@@ -67,7 +67,7 @@ Here is an example of hosts.ini where we have 3 Remote machines, one [master] of
 
 [Requirement: Mind that the variable ```data_path``` is the path where your Data CSV and the Metadata file are stored in your Remote Host.]
 
-You can see that there are 2 main categories in hosts.ini file. The first one is ```[manager]```, the second one is ```[workers]```.
+You can see that there are 2 main categories in hosts.ini file. The first one is ```[master]```, the second one is ```[workers]```.
 
 You can always add more workers following the template given above:
 a) by adding the name of the worker under [workers] and
