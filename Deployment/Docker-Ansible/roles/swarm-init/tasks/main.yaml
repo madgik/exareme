@@ -12,7 +12,7 @@
   run_once: true
 
 - name: Check If mip-federation Network Has Already Been Initialized
-  shell: docker node inspect mip-federation
+  shell: docker network inspect mip-federation
   register: network_status
   ignore_error: true
 
