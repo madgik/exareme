@@ -11,6 +11,11 @@
   when: swarm_status.rc != 0
   run_once: true
 
+- name: Check If mip-federation Network Has Already Been Initialized
+  shell: docker node inspect mip-federation
+  register: network_status
+  ignore_error: true
+
 - name: Create Swarm Network
   shell: >
         docker network create 
@@ -21,3 +26,4 @@
         --gateway=10.20.30.254 
         mip-federation
   register: swarm_network
+  when: network_status.rc != 0
