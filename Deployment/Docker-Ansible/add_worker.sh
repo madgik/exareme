@@ -46,7 +46,9 @@ fi
 
 #Start specific worker Exareme node
 echo -e "\nStarting Exareme for worker node ${answer}"
-${ansible_playbook}"Start-Exareme-Worker.yaml -e "my_host=${answer}
+
+ansible_playbook_start=${ansible_playbook}"Start-Exareme-Worker.yaml -e my_host="${answer}
+${ansible_playbook_start}
 
 ansible_playbook_code=$?
 #If status code != 0 an error has occurred
