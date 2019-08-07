@@ -55,21 +55,21 @@ do
     if [[ "${answer}" == "1" ]]; then
         echo -e "\nYou choose to start everything.."
         ansible_playbook_start=${ansible_playbook}"Start-Exareme.yaml"
-        echo ${ansible_playbook_start}
+        ${ansible_playbook_start}
         ansible_playbook_code=$?
         break
     elif [[ "${answer}" == "2" ]]; then
         echo -e "\nYou choose to start Exareme services only.."
 
         ansible_playbook_start=${ansible_playbook}"Start-Exareme.yaml --skip-tags portainer"
-        echo ${ansible_playbook_start}
+        ${ansible_playbook_start}
         ansible_playbook_code=$?
         break
     elif [[ "${answer}" == "3" ]]; then
          echo -e "\nYou choose to start Portainer service only.."
 
         ansible_playbook_stop=${ansible_playbook}"Start-Exareme.yaml --skip-tags exareme"
-        echo ${ansible_playbook_start}
+        ${ansible_playbook_start}
         ansible_playbook_code=$?
         break
     else

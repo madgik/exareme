@@ -7,7 +7,7 @@ sleep 1
 
 #Init_swarm
 ansible_playbook_init=${ansible_playbook}"Init-Swarm.yaml"
-echo ${ansible_playbook_init}
+${ansible_playbook_init}
 
 ansible_playbook_code=$?
 #If status code != 0 an error has occurred
@@ -31,7 +31,7 @@ while IFS= read -r line; do
             fi
             ansible_playbook_join+=${worker}
             flag=0
-            echo ${ansible_playbook_join}
+            ${ansible_playbook_join}
 
             ansible_playbook_code=$?
             #If status code != 0 an error has occurred
@@ -81,7 +81,7 @@ while true
 do
     if [[ "${answer}" == "y" ]]; then
         ansible_playbook_start=${ansible_playbook}"Start-Exareme.yaml"
-        echo ${ansible_playbook_start}
+        ${ansible_playbook_start}
 
         ansible_playbook_code=$?
         #If status code != 0 an error has occurred
@@ -93,7 +93,7 @@ do
         break
     elif [[ "${answer}" == "n" ]]; then
         ansible_playbook_start=${ansible_playbook}"Start-Exareme.yaml --skip-tags portainer"
-        echo ${ansible_playbook_start}
+        ${ansible_playbook_start}
 
         ansible_playbook_code=$?
         #If status code != 0 an error has occurred

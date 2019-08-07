@@ -22,7 +22,7 @@ while IFS= read -r line; do
             fi
             ansible_playbook_join+=${worker}
             flag=0
-            echo ${ansible_playbook_join}
+            ${ansible_playbook_join}
 
             ansible_playbook_code=$?
             #If status code != 0 an error has occurred
@@ -46,7 +46,7 @@ fi
 
 #Start specific worker Exareme node
 echo -e "\nStarting Exareme for worker node ${answer}"
-echo ${ansible_playbook}"Start-Exareme-Worker.yaml -e "my_host=${answer}
+${ansible_playbook}"Start-Exareme-Worker.yaml -e "my_host=${answer}
 
 ansible_playbook_code=$?
 #If status code != 0 an error has occurred
