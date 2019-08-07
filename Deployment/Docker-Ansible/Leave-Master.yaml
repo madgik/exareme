@@ -1,5 +1,5 @@
 ---
-- hosts: manager
+- hosts: master
   name: Nodes Leave Swarm
   remote_user: "{{ hostvars['master']['remote_user'] }}"
   become: yes

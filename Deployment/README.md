@@ -28,7 +28,7 @@ We will refer to the machine from which you run the ansible scripts as Host and 
 Here is an example of hosts.ini where we have 3 Remote machines, one [master] of Exareme and two [workers] of Exareme.
 
 ```
-   [manager]
+   [master]
    master ansible_host=88.197.53.38
    master home_path=/home/exareme/
    master data_path=/home/exareme/data/
@@ -67,7 +67,7 @@ Here is an example of hosts.ini where we have 3 Remote machines, one [master] of
 
 [Requirement: Mind that the variable ```data_path``` is the path where your Data CSV and the Metadata file are stored in your Remote Host.]
 
-You can see that there are 2 main categories in hosts.ini file. The first one is ```[manager]```, the second one is ```[workers]```.
+You can see that there are 2 main categories in hosts.ini file. The first one is ```[master]```, the second one is ```[workers]```.
 
 You can always add more workers following the template given above:
 a) by adding the name of the worker under [workers] and
@@ -259,14 +259,14 @@ If at some point you need to stop only one worker, you can do so by the followin
 
 If all went well, everything should be deployed! 
 
-### Manager's terminal
+### Master's terminal
 
 Check your Manager node of Swarm by 
 ```docker node ls ``` to see if you have the proper nodes and ```docker inspect ID_Of_A_Node --pretty``` to see if under ```Labels``` key ```name ``` has a value. 
 
 ### Portainer
 
-You can also check the Portainer to see if all services are up and running by accessing the Address: ```Manager_IP:9000```.
+You can also check the Portainer to see if all services are up and running by accessing the Address: ```Manager_Of_Swarm_IP:9000```.
 
 The first time you launch Portainer you have to create a user. 
 Fill in the ```Username```, ```Password```, ```Confirm Password``` fields and click ```Create user```. 

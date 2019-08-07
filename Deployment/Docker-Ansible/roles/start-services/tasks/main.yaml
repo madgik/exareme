@@ -5,7 +5,7 @@
 
 #Todo if we have multiple masters and maybe leader.stdout -> leader.stdout_lines with_items?
 - name: Run Exareme Master
-  shell: docker stack deploy -c docker-compose-manager.yml {{ leader.stdout }}
+  shell: docker stack deploy -c docker-compose-master.yml {{ leader.stdout }}
   args:
     chdir: "{{ home_path }}Compose-Files/"
   environment:

@@ -1,58 +1,7 @@
 #!/usr/bin/env bash
 
-: 'echo "Do you wish to copy Metadata file to Master node now? [y/n]. If [y] make sure you have the file \"CDEsMetadata.json\" inside Metadata folder"
-read answer
-while true
-do
-    if [[ "${answer}" == "y" ]]; then
-        echo -e "\nCopying Metadata file to Master node.."
-        ansible-playbook -i hosts.ini Metadata-Master.yaml -c paramiko --vault-password-file ~/.vault_pass.txt -e@vault_file.yaml
-        ansible_playbook=$?
-        #If status code != 0 an error has occurred
-        if [[ ${ansible_playbook} -ne 0 ]]; then
-            echo "Playbook \"Metadata-Master.yaml\" exited with error." >&2
-            exit 1
-        fi
-        break
-    elif [[ "${answer}" == "n" ]]; then
-        echo -e "\nOK.Make sure you have the Metadata file \"CDEsMetadata.json\" under the correct data path in your Master node"
-        break
-    else
-        echo "$answer is not a valid answer! Try again.. [y/n]"
-        read answer
-    fi
-done
+export ANSIBLE_HOST_KEY_CHECKING=False      #avoid host key checking
 
-echo -e "\nDo you wish to copy Metadata file for Worker nodes now? [y/n]"
-read answer
-while true
-do
-    if [[ "${answer}" == "y" ]]; then
-        while IFS= read -r line; do
-            if [[ "$line" = *"hostname="* ]]; then
-                worker=$(echo "$line" | cut -d'=' -f 1)
-                worker_name=$( echo "$line" | cut -d'=' -f 2)
-
-                echo -e "\nCopying Metadata file to ${worker_name} node"
-                ansible-playbook -i hosts.ini Metadata-Master.yaml -c paramiko --vault-password-file ~/.vault_pass.txt -e@vault_file.yaml -e "my_host=${worker}"
-                ansible_playbook=$?
-                #If status code != 0 an error has occurred
-                if [[ ${ansible_playbook} -ne 0 ]]; then
-                    echo "Playbook \"Metadata-Master.yaml\" exited with error." >&2
-                    exit 1
-                fi
-            fi
-        done < hosts.ini
-        break
-    elif [[ "${answer}" == "n" ]]; then
-        echo "OK. Make sure you have the Metadata file \"CDEsMetadata.json\" under the correct data path in Worker nodes"
-        break
-    else
-        echo "$answer is not a valid answer! Try again.. [y/n]"
-        read answer
-    fi
-done
-'
 password () {
     read answer
     while true
@@ -91,7 +40,7 @@ else
         echo -e "\nFile exists and it is not empty! Moving on..."
         ansible_playbook+="--vault-password-file ~/.vault_pass.txt "
     else
-        echo -e "\nFile is empty.. Do you want to store your Ansible password now?[y/n]"
+        echo -e "\nFile is empty.. Do you want to store your Ansible password in a text file?[y/n]"
         password
     fi
 fi
@@ -179,7 +128,7 @@ do
             echo "Playbook \"Start-Exareme.yaml\" exited with error." >&2
             exit 1
         fi
-        echo -e "\nExareme services, Portainer service are now running"
+        echo -e "\nExareme services and Portainer service are now running"
         break
     elif [[ "${answer}" == "n" ]]; then
         ansible_playbook_start=${ansible_playbook}"Start-Exareme.yaml --skip-tags portainer"

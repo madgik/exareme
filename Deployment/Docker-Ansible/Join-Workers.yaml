@@ -1,5 +1,5 @@
 ---
-- hosts: manager
+- hosts: master
   name: Get Worker Token
   remote_user: "{{ hostvars['master']['remote_user'] }}"
   become: yes
@@ -18,7 +18,7 @@
     my_host: "{{ lookup('env', 'my_host') }}"
     my_name: "{{ hostvars[my_host]['hostname'] }}"
 
-- hosts: manager
+- hosts: master
   name: Add Label To Worker
   remote_user: "{{ hostvars['master']['remote_user'] }}"
   become: yes

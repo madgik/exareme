@@ -1,4 +1,4 @@
-- name: Copy Directory Conatining docker-compose Files
+- name: Copy Directory Containing docker-compose Files
   copy:
     src: ../Compose-Files
     dest: "{{ home_path }}"
