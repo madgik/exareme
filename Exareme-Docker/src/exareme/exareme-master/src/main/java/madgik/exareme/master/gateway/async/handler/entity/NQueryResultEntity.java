@@ -78,12 +78,19 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
                 encoder.complete();
                 close();
             }
-            else if (queryStatus.getError().matches("java.rmi.RemoteException: Containers:.*not responding")) {
+            else if (queryStatus.getError().contains("java.rmi.RemoteException")) {
                 String result = createErrorMessage("One or more containers are not responding. Please inform the system administrator.");
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();
-            } else {
+            }
+            else if(queryStatus.getError().contains("java.lang.IndexOutOfBoundsException:")){
+                String result = createErrorMessage("Something went wrong. Clean-ups were made, you may re-run your experiment. Please inform the system administrator though for fixing any remaining issue.");
+                encoder.write(ByteBuffer.wrap(result.getBytes()));
+                encoder.complete();
+                close();
+            }
+            else {
                 String result = createErrorMessage("Something went wrong. Please inform your system administrator to consult the logs.");
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();

@@ -77,7 +77,7 @@ public class HttpAsyncRemoveWorkerHandler implements HttpAsyncRequestHandler<Htt
                     NStringEntity entity = new NStringEntity("{\"success\":\"Worker removed successfully\"}",
                             ContentType.create("application/json", "UTF-8"));
                     response.setEntity(entity);
-                    log.debug("Worker removed successfully");
+                    log.debug("Worker removed successfully from the registry");
                     return;
                 }
 
