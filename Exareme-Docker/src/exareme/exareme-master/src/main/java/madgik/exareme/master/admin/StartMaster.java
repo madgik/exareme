@@ -13,6 +13,7 @@ import madgik.exareme.worker.art.security.DevelopmentContainerSecurityManager;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
+import java.rmi.RemoteException;
 import java.util.Map;
 
 public class StartMaster {
@@ -40,30 +41,59 @@ public class StartMaster {
         String logLevel = AdpProperties.getArtProps().getString("art.log.level");
         Logger.getRootLogger().setLevel(Level.toLevel(logLevel));
 
-        manager = ArtManagerFactory.createRmiArtManager(
-                new ArtManagerProperties(NetUtil.getIPv4(), registryPort, dataTransferPort));
+        try {
+            manager = ArtManagerFactory.createRmiArtManager(
+                    new ArtManagerProperties(NetUtil.getIPv4(), registryPort, dataTransferPort));
+        } catch (RemoteException e){
+            throw new RemoteException("\"Master node ["+NetUtil.getIPv4()+"] is unable to create Runtime manager.");
+        }
         log.debug("Runtime manager created!");
 
-        manager.getRegistryManager().startArtRegistry();
+        try {
+            manager.getRegistryManager().startArtRegistry();
+        }catch (RemoteException e){
+            throw new RemoteException("\"Master node ["+NetUtil.getIPv4()+"] is unable to start Exareme's Registry.");
+        }
         log.debug("Registry started!");
 
-        manager.getContainerManager().startContainer();
+        try {
+            manager.getContainerManager().startContainer();
+        }catch (RemoteException e){
+            throw new RemoteException("\"Master node ["+NetUtil.getIPv4()+"] is unable to start container.");
+        }
         log.debug("Container started!");
 
-        manager.getExecutionEngineManager().startExecutionEngine();
+        try {
+            manager.getExecutionEngineManager().startExecutionEngine();
+        }catch (RemoteException e){
+            throw new RemoteException("\"Master node ["+NetUtil.getIPv4()+"] is unable to start Execution engine.");
+        }
         log.debug("Execution engine started!");
 
+        try{
         manager.startGlobalQuantumClock();
+        }catch (RemoteException e){
+            throw new RemoteException("\"Master node ["+NetUtil.getIPv4()+"] is unable to start GlobalQuantumClock.");
+        }
         log.debug("Global quantum clock started");
 
+        try{
         dbManager = AdpDBManagerFactory.createRmiManager(manager);
+        }catch (RemoteException e){
+            throw new RemoteException("\"Master node ["+NetUtil.getIPv4()+"] is unable to create DB Manager.");
+        }
         log.debug("DB manager created");
 
+
         log.info("Starting gateway ...");
-        gateway = ExaremeGatewayFactory.createHttpServer(dbManager);
-        gateway.start();
+        try {
+            gateway = ExaremeGatewayFactory.createHttpServer(dbManager);
+            gateway.start();
+        }catch (RemoteException e){
+            throw new RemoteException("Gateway is unable to start.");
+        }
         log.debug("Gateway Started.");
 
-        log.info("Master node started.");
+        System.out.println("Master node started.");
     }
 }

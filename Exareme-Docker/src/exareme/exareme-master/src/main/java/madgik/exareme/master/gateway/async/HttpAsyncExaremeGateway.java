@@ -4,6 +4,7 @@ import madgik.exareme.master.engine.AdpDBManager;
 import madgik.exareme.master.gateway.ExaremeGateway;
 import madgik.exareme.master.gateway.ExaremeGatewayUtils;
 import madgik.exareme.master.gateway.async.handler.*;
+import madgik.exareme.master.gateway.control.handler.HttpAsyncCheckWorker;
 import madgik.exareme.master.gateway.control.handler.HttpAsyncRemoveWorkerHandler;
 import org.apache.http.config.ConnectionConfig;
 import org.apache.http.impl.nio.DefaultHttpServerIODispatch;
@@ -31,6 +32,7 @@ public class HttpAsyncExaremeGateway implements ExaremeGateway {
     private static final Logger log = Logger.getLogger(HttpAsyncExaremeGateway.class);
     private final AsyncHttpListener listener;
     private final AsyncHttpListener controlListener;
+    private final AsyncHttpListener controlListener1;
 
     public HttpAsyncExaremeGateway(AdpDBManager manager) throws Exception {
 
@@ -95,6 +97,31 @@ public class HttpAsyncExaremeGateway implements ExaremeGateway {
 
         this.controlListener = new AsyncHttpListener(ioReactorC, ioEventDispatchC);
 
+        //Control Listener
+        final IOReactorConfig reactorConfigC2 = IOReactorConfig.custom()
+                .setIoThreadCount(1)
+                .setSoKeepAlive(true)
+                .setSoReuseAddress(true)
+                .setTcpNoDelay(ExaremeGatewayUtils.GW_NODELAY)
+                .build();
+
+        final ListeningIOReactor ioReactorC2 = new DefaultListeningIOReactor(reactorConfigC2);
+        final HttpProcessor httpprocControl2 = new ImmutableHttpProcessor(
+                new ResponseDate(),
+                new ResponseServer("ExaremeControlGateway/0.1"),
+                new ResponseContent(),
+                new ResponseConnControl()
+        );
+
+        final UriHttpAsyncRequestHandlerMapper controlRegistry2 = new UriHttpAsyncRequestHandlerMapper();
+        controlRegistry2.register("/check/worker", new HttpAsyncCheckWorker());
+        final HttpAsyncService controlHandler2 = new HttpAsyncService(httpprocControl2, null, null,
+                controlRegistry2, null, null);
+
+        final IOEventDispatch ioEventDispatchC2 =
+                new DefaultHttpServerIODispatch(controlHandler2, connectionConfig);
+
+        this.controlListener1 = new AsyncHttpListener(ioReactorC2, ioEventDispatchC2);
     }
 
     @Override
@@ -113,9 +140,14 @@ public class HttpAsyncExaremeGateway implements ExaremeGateway {
         this.listener.start();
         this.listener.listen(new InetSocketAddress(ExaremeGatewayUtils.GW_PORT));
         log.trace("listens on " + ExaremeGatewayUtils.GW_PORT);
+
         this.controlListener.start();
         this.controlListener.listen(new InetSocketAddress(ExaremeGatewayUtils.GW_CONTROL_PORT));
         log.trace("Control listens on " + ExaremeGatewayUtils.GW_CONTROL_PORT);
+
+        this.controlListener1.start();
+        this.controlListener1.listen(new InetSocketAddress(ExaremeGatewayUtils.GW_CONTROL_PORT1));
+        log.trace("Control listens on " + ExaremeGatewayUtils.GW_CONTROL_PORT1);
     }
 
     @Override
@@ -147,6 +179,17 @@ public class HttpAsyncExaremeGateway implements ExaremeGateway {
         }
 
         if (this.controlListener.getException() != null) {
+            log.error("Gateway exception.", this.listener.getException());
+        }
+
+        this.controlListener1.terminate();
+        try {
+            this.controlListener1.awaitTermination(ExaremeGatewayUtils.GW_WAIT_TERM_SEC * 1000);
+        } catch (final InterruptedException e) {
+            log.error("Unable to stop gateway.", e);
+        }
+
+        if (this.controlListener1.getException() != null) {
             log.error("Gateway exception.", this.listener.getException());
         }
     }

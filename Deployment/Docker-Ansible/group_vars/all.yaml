@@ -1,7 +1,7 @@
 # Exareme Tag
-EXAREME_TAG: "v20.2.0"
+EXAREME_TAG: "final"
 # Exareme Image
-EXAREME_IMAGE: "hbpmip/exareme"
+EXAREME_IMAGE: "sofiakar/myexareme"
 
 
 
