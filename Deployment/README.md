@@ -21,9 +21,7 @@ We will refer to the machine from which you run the ansible scripts as Host and 
 
 ## Initialize variables
 
-1) If you are going to copy the CDEsMetadata.json file to the remote machines via ansible scripts you have to put the file inside the ```Metadata``` folder and name it ```CDEsMetadata.json```. 
-
-2) Changes in ```hosts.ini```
+1) Changes in ```hosts.ini```
 
 Here is an example of hosts.ini where we have 3 Remote machines, one [master] of Exareme and two [workers] of Exareme.
 
@@ -65,7 +63,9 @@ Here is an example of hosts.ini where we have 3 Remote machines, one [master] of
 ```
 [You can find the hostname of any machine by executing ```hostname``` in terminal]
 
-[Requirement: Mind that the variable ```data_path``` is the path where your Data CSV and the Metadata file are stored in your Remote Host.]
+[Requirement1: Mind that the variable ```data_path``` is the path where your Data CSV and the Metadata file are stored in your Remote Host.]
+[Requirement2: Mind that the variable ```home_path``` is the path where ```Compose-Files``` will be stored in the master node. Compose-Files
+contains 2 docker-compose.yaml files for deploying the services. It can be Any path]
 
 You can see that there are 2 main categories in hosts.ini file. The first one is ```[master]```, the second one is ```[workers]```.
 
@@ -150,7 +150,7 @@ Place your vault password and edit the file.
 
 As mentioned before, each time you run a playbook you will need to enter your password.
 
-Alternatively, ansible-vault password can be specified with a file or a script (the script version will require Ansible 1.7 or later). When using this flag, ensure permissions on the file are such that no one else can access your key and do not add your key to source control:
+Alternatively, ansible-vault password can be specified with a file ```~/.vault_pass.txt``` or a script (the script version will require Ansible 1.7 or later). When using this flag, ensure permissions on the file are such that no one else can access your key and do not add your key to source control:
 examples:
 
 ```ansible-playbook site.yml --vault-password-file ~/.vault_pass.txt```
@@ -161,22 +161,13 @@ The password should be a string stored as a single line in the file.
 
 If you are using a script instead of a flat file, ensure that it is marked as executable, and that the password is printed to standard output. If your script needs to prompt for data, prompts can be sent to standard error.
 
+More guidance will be provided in that matter if you select to deploy via script (see below)
+
 # Deployment [script]
 
-You can either deploy everything via script or manually (look below).
-In order to deploy via script ```deploy.sh``` make sure that:
+You can either deploy everything via script or manually (see below).
 
-a) Script has the right permissions to run
-
-The script contains:
-
-a) Initialize Swarm/mip-federation network
-
-b) Join workers in Swarm
-
-c) Select if you wish to: Start Exareme with/without Portainer service [y/n]
-
-To run the script simply ```deploy.sh``` under Docker-Ansible folder
+To run the script simply ```deploy.sh``` under Docker-Ansible folder.
 
 # Deployment [manually]
 
@@ -226,7 +217,7 @@ ansible-playbook -i hosts.ini Start-Exareme.yaml -c paramiko --ask-vault-pass -e
 
 ### Stop Services
 
-If you want to stop Exareme services [master/workers] only you can do so by:
+If you want to stop Exareme services [master/workers] but no Portainer services, you can do so by:
 
 ```ansible-playbook -i hosts.ini Stop-Services.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv --tags exareme -vvvv```
 
