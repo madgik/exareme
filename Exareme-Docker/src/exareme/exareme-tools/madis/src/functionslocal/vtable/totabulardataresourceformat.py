@@ -44,7 +44,7 @@ class totabulardataresourceformat(functions.vtable.vtbase.VT):
 
         myresult = {
             "type": "application/vnd.dataresource+json",
-            "data": [
+            "data":
                 {"name": str(title),
                  "profile": "tabular-data-resource",
                  "data": mydata,
@@ -52,7 +52,6 @@ class totabulardataresourceformat(functions.vtable.vtbase.VT):
                      "fields": myschema
                  }
                  }
-            ]
         }
         myjsonresult = json.dumps(myresult)
 
