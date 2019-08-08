@@ -1,4 +1,4 @@
-export ANSIBLE_HOST_KEY_CHECKING=False      #avoid host key checking
+#!/usr/bin/env bash
 
 init_ansible_playbook
 

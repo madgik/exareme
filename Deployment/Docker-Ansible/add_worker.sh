@@ -3,7 +3,7 @@
 
 init_ansible_playbook
 
-echo -e "\nWhat is the name of the worker node you would like to join the Swarm?"
+echo -e "\nWhat is the name of the worker node, as given in the hosts.ini, you would like to join the Swarm?"
 read answer
 
 while IFS= read -r line; do

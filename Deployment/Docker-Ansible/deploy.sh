@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+
+export ANSIBLE_HOST_KEY_CHECKING=False      #avoid host key checking
+
 password () {
     read answer
     while true
@@ -54,17 +57,17 @@ read answer
 while true
 do
     if [[ "${answer}" == "1" ]]; then
-        echo -e "\nYou choose to deploy everything.."
+        echo -e "\nYou chose to deploy everything..."
         chmod 755 deploy_all.sh
         . ./deploy_all.sh
         exit 0
     elif [[ "${answer}" == "2" ]]; then
-        echo -e "\nYou choose to add a specific worker in an already initialized swarm.."
+        echo -e "\nYou chose to add a specific worker in an already initialized swarm.."
         chmod 755 add_worker.sh
         . ./add_worker.sh
         exit 0
     elif [[ "${answer}" == "3" ]]; then
-         echo -e "\nYou choose to restart Services.."
+         echo -e "\nYou chose to restart Services.."
          chmod 755 restart.sh
          . ./restart.sh
          exit 0
