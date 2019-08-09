@@ -1,8 +1,7 @@
 #!/bin/bash
 
-MADIS="/mnt/c/Users/Thanasis/Desktop/Madgik/exareme/Exareme-Docker/src/exareme/exareme-tools/madis/src/mterm.py"
-DOCKER_DATA_FOLDER="/mnt/c/Users/Thanasis/Desktop/Madgik/data"
 ALL_DATASETS=""
+MADIS="/root/exareme/lib/madis/src/mterm.py"
 
 for PATHOLOGY in $DOCKER_DATA_FOLDER/*	
 do
