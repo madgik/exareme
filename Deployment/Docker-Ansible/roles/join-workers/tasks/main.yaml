@@ -1,4 +1,8 @@
 ---
+- name: The node should not be part of a swarm
+  shell: docker swarm leave --force
+  ignore_errors: true
+
 - name: Join Swarm
   shell: docker swarm join --token {{ hostvars['master']['worker_token']['stdout'] }} {{ hostvars['master']['ansible_host'] }}:2377
   register: join

@@ -21,7 +21,7 @@ else
 fi
 if [ -z ${CONSULURL} ]; then echo "CONSULURL is unset"; exit; fi
 if [ -z ${NODE_NAME} ]; then echo "NODE_NAME is unset";exit;  fi
-if [ -z ${DOCKER_DATASETS_FOLDER} ]; then echo "DOCKER_DATASETS_FOLDER is unset"; exit; fi
+if [ -z ${DOCKER_DATA_FOLDER} ]; then echo "DOCKER_DATA_FOLDER is unset"; exit; fi
 if [ -z ${DOCKER_METADATA_FOLDER} ]; then echo "DOCKER_METADATA_FOLDER is unset"; exit; fi
 
 #Stop Exareme service
@@ -52,7 +52,7 @@ transformCsvToDB () {
     echo "Removing the previous datasets.db file if it still exists"
     rm -f ${DOCKER_METADATA_FOLDER}/datasets.db
     echo "Parsing the csv file in " ${DOCKER_METADATA_FOLDER} " to a db file. "
-    python ./convert-csv-dataset-to-db.py --csvFilePath ${DOCKER_DATASETS_FOLDER}/datasets.csv --CDEsMetadataPath ${DOCKER_METADATA_FOLDER}/CDEsMetadata.json --outputDBAbsPath $DOCKER_METADATA_FOLDER/datasets.db
+    python ./convert-csv-dataset-to-db.py --csvFilePath ${DOCKER_DATA_FOLDER}/datasets.csv --CDEsMetadataPath ${DOCKER_METADATA_FOLDER}/CDEsMetadata.json --outputDBAbsPath $DOCKER_METADATA_FOLDER/datasets.db
 	#Get the status code from previous command
     py_script=$?
 	#If status code != 0 an error has occurred
@@ -189,6 +189,7 @@ else
     while [[ "$(curl -s ${CONSULURL}/v1/health/state/passing | jq -r '.[].Status')" != "passing" ]]; do
         echo -e "\nMaster node["${NODE_NAME}","${MY_IP}"] trying to connect with Consul[key-value store]"
         n=$((${n} + 1))
+        sleep 1
         #After 30 attempts-Show error
         if [[ ${n} -ge 30 ]]; then
             echo -e "\nConsul[key-value store] may not be initialized or Master node["${NODE_NAME}","${MY_IP}"] can not contact Consul[key-value store]"

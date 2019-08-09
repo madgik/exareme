@@ -10,7 +10,7 @@ EXAREME_IMAGE: "sofiakar/myexareme"
 # Key-Value Store
 EXAREME_KEYSTORE: "exareme-keystore:8500"
 # Exareme db
-DOCKER_PATH: "/root/exareme/datasets/"
+DOCKER_DATA_FOLDER: "/root/exareme/datasets/"
 
 # Portainer
 PORTAINER_PORT: "9000"

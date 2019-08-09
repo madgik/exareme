@@ -14,16 +14,17 @@ We will refer to the machine from which you run the ansible scripts as Host and 
 
 ```sudo apt-get install python```
 
-3) The csv containing the datasets should called datasets.csv and reside in a folder that we will refer to as ```data_path```. On that folder there should also be the CDEsMetadata.json file that you can put there manually or by following the instructions later on.
-
+### Important
+In every node there should be a folder containing 2 files:
+1) the datasets.csv file with all the datasets combined and
+2) the CDEsMetadata.json file.
+We will refer to the path of that folder as ```data_path```. The ```data_path``` can be different across the nodes.
 
 # Preparation
 
 ## Initialize variables
 
-1) If you are going to copy the CDEsMetadata.json file to the remote machines via ansible scripts you have to put the file inside the ```Metadata``` folder and name it ```CDEsMetadata.json```. 
-
-2) Changes in ```hosts.ini```
+1) Changes in ```hosts.ini```
 
 Here is an example of hosts.ini where we have 3 Remote machines, one [master] of Exareme and two [workers] of Exareme.
 
@@ -65,7 +66,9 @@ Here is an example of hosts.ini where we have 3 Remote machines, one [master] of
 ```
 [You can find the hostname of any machine by executing ```hostname``` in terminal]
 
-[Requirement: Mind that the variable ```data_path``` is the path where your Data CSV and the Metadata file are stored in your Remote Host.]
+[Requirement1: Mind that the variable ```data_path``` is the path where your Data CSV and the Metadata file are stored in your Remote Host.]
+[Requirement2: Mind that the variable ```home_path``` is the path where ```Compose-Files``` will be stored in the master node. Compose-Files
+contains 2 docker-compose.yaml files for deploying the services. It can be Any path]
 
 You can see that there are 2 main categories in hosts.ini file. The first one is ```[master]```, the second one is ```[workers]```.
 
@@ -145,12 +148,12 @@ If you want to edit the file you can do so whenever by
 ```ansible-vault edit vault_file.yaml```
 Place your vault password and edit the file.
 
-### Pro Tip: Regarding Ansible-vault password. 
+### [Optional] Regarding Ansible-vault password. 
 (source https://docs.ansible.com/ansible/latest/user_guide/playbooks_vault.html)
 
 As mentioned before, each time you run a playbook you will need to enter your password.
 
-Alternatively, ansible-vault password can be specified with a file or a script (the script version will require Ansible 1.7 or later). When using this flag, ensure permissions on the file are such that no one else can access your key and do not add your key to source control:
+Alternatively, ansible-vault password can be specified with a file ```~/.vault_pass.txt``` or a script (the script version will require Ansible 1.7 or later). When using this flag, ensure permissions on the file are such that no one else can access your key and do not add your key to source control:
 examples:
 
 ```ansible-playbook site.yml --vault-password-file ~/.vault_pass.txt```
@@ -161,45 +164,19 @@ The password should be a string stored as a single line in the file.
 
 If you are using a script instead of a flat file, ensure that it is marked as executable, and that the password is printed to standard output. If your script needs to prompt for data, prompts can be sent to standard error.
 
-# Deployment [script]
+More guidance will be provided in that matter if you select to deploy via script (see below)
 
-You can either deploy everything via script or manually (look below).
-In order to deploy via script ```deploy.sh``` make sure that:
+# Deployment
 
-a) Script has the right permissions to run
+In the Docker-Ansible folder run the ```deploy.sh``` to start the deployment.
 
-The script contains:
+You will be prompted to provide any more information needed.
 
-a) Initialize Swarm/mip-federation network
-
-b) Join workers in Swarm
-
-c) Select if you wish to: Start Exareme with/without Portainer service [y/n]
-
-To run the script simply ```deploy.sh``` under Docker-Ansible folder
-
-# Deployment [manually]
-
-Since we made the changes needed, we are ready for the deployment. Go inside the ```Docker-Ansible``` folder.
-
-### Copy the Metadata File [Optional]
-
-If your remote machines do not have the Metadata file available you can simply copy your file from your Host machine into the Remote machines. 
-Keep in mind that you need to place the Metadata file inside the Metadata folder with name: ```CDEsMetadata.json```.
-
-[Notice that every time you run a playbook you will need to place your ansible-vault password.]
-
-For the master:
-```ansible-playbook -i hosts.ini Metadata-Master.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv``` 
-
-For worker1:
-```ansible-playbook -i hosts.ini Metadata-Worker.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=worker1"```
-
-Same command for each worker by changing the value in ```my_host``` with your worker name (worker1,worker2,worker3).
+# Deployment [Manual]
 
 ### Swarm Initialization
 
-For the initialization of Swarm you have to run:
+For the initialization of Swarm you have to run on the master node:
 
 ```ansible-playbook -i hosts.ini Init-Swarm.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv```
 
@@ -226,7 +203,7 @@ ansible-playbook -i hosts.ini Start-Exareme.yaml -c paramiko --ask-vault-pass -e
 
 ### Stop Services
 
-If you want to stop Exareme services [master/workers] only you can do so by:
+If you want to stop Exareme services [master/workers] but no Portainer services, you can do so by:
 
 ```ansible-playbook -i hosts.ini Stop-Services.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv --tags exareme -vvvv```
 
@@ -241,14 +218,13 @@ If you want to stop all services [Exareme master/Exareme workers/Portainer]:
 
 ### Add an Exareme Worker when the master is already running
 
-If at some point you have to add a new worker node you should:
-1) [Optional] Copy the Metadata file by replacing workerN with the appropriate name: :
-```ansible-playbook -i hosts.ini Metadata-Worker.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=workerN"``` 
+After inserting the nodes information in the hosts.ini and the ansible-vaut file you can run the ```deploy.sh``` script.
 
-2) Join the particular worker by replacing workerN with the appropriate name: 
+You can also do it manually with the following commands:
+1) Join the particular worker by replacing workerN with the appropriate name: 
 ``` ansible-playbook -i hosts.ini Join-Workers.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=workerN"``` 
 
-3) Start the Exareme service for that particular worker by replacing workerN with the appropriate name: ``` ansible-playbook -i hosts.ini Start-Exareme-Worker.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=workerN"```
+2) Start the Exareme service for that particular worker by replacing workerN with the appropriate name: ``` ansible-playbook -i hosts.ini Start-Exareme-Worker.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=workerN"```
 
 ### Stop ΟΝΕ Exareme Worker 
 

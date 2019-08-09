@@ -29,8 +29,8 @@ services:
     environment:
       - CONSULURL=${EXAREME_KEYSTORE}
       - NODE_NAME=${FEDERATION_NODE}
-      - DOCKER_DATASETS_FOLDER=${DOCKER_DATASETS_FOLDER}
-      - DOCKER_METADATA_FOLDER=${DOCKER_DATASETS_FOLDER}
+      - DOCKER_DATA_FOLDER=${DOCKER_DATA_FOLDER}
+      - DOCKER_METADATA_FOLDER=${DOCKER_DATA_FOLDER}
       - EXAREME_ACTIVE_WORKERS_PATH=active_workers
       - EXAREME_MASTER_PATH=master
       - DATASETS=datasets
@@ -47,4 +47,4 @@ services:
     networks:
       - "net-federation" # Connect the docker container to the global network
     volumes:
-      - ${LOCAL_DATASETS_FOLDER}:${DOCKER_DATASETS_FOLDER}
+      - ${LOCAL_DATASETS_FOLDER}:${DOCKER_DATA_FOLDER}
