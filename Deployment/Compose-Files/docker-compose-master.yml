@@ -70,7 +70,7 @@ services:
           - node.labels.name == ${FEDERATION_NODE}
     ports:
       - target: 9090     # So that we can access the Exareme REST API / interface
-        published: 9090f
+        published: 9090
         protocol: tcp
         mode: host
     networks:
