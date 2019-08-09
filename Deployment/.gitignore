@@ -3,3 +3,6 @@
 portainer
 postgres
 settings.local.*
+
+#Ansible
+*.retry
