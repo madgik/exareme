@@ -13,8 +13,8 @@
     FEDERATION_ROLE: "master"
     EXAREME_IMAGE: "{{ EXAREME_IMAGE }}:{{ EXAREME_TAG }}"
     EXAREME_KEYSTORE: "{{ EXAREME_KEYSTORE }}"
-    DOCKER_DATASETS_FOLDER: "{{ DOCKER_PATH }}"
-    LOCAL_DATASETS_FOLDER: "{{ data_path }}"
+    DOCKER_DATA_FOLDER: "{{ DOCKER_PATH }}"
+    LOCAL_DATA_FOLDER: "{{ data_path }}"
 
 - name: Run Portainer
   shell: >
@@ -43,7 +43,7 @@
     FEDERATION_NODE: "{{ hostvars[item]['hostname'] }}"
     EXAREME_IMAGE: "{{ EXAREME_IMAGE }}:{{ EXAREME_TAG }}"
     EXAREME_KEYSTORE: "{{ EXAREME_KEYSTORE }}"
-    DOCKER_DATASETS_FOLDER: "{{ DOCKER_PATH }}"
-    LOCAL_DATASETS_FOLDER: "{{ hostvars[item]['data_path'] }}"
+    DOCKER_DATA_FOLDER: "{{ DOCKER_PATH }}"
+    LOCAL_DATA_FOLDER: "{{ hostvars[item]['data_path'] }}"
   with_items: "{{ groups['workers'] }}"
   ignore_errors: true

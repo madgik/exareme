@@ -1,7 +1,7 @@
 # Exareme Tag
-EXAREME_TAG: "final"
+EXAREME_TAG: "latest"
 # Exareme Image
-EXAREME_IMAGE: "sofiakar/myexareme"
+EXAREME_IMAGE: "thanasulas/exareme"
 
 
 
@@ -9,8 +9,8 @@ EXAREME_IMAGE: "sofiakar/myexareme"
 
 # Key-Value Store
 EXAREME_KEYSTORE: "exareme-keystore:8500"
-# Exareme db
-DOCKER_PATH: "/root/exareme/datasets/"
+# Internal Exareme data path
+DOCKER_PATH: "/root/exareme/data/"
 
 # Portainer
 PORTAINER_PORT: "9000"

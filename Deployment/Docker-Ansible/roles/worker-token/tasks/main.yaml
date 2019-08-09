@@ -4,5 +4,5 @@
   register: worker_token
 
 - name: Remove node from the swarm that has the same hostname
-  shell: docker node rm {{ my_name }}
+  shell: docker node rm {{ my_name }} --force
   ignore_errors: true
