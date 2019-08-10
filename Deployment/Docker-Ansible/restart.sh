@@ -59,7 +59,7 @@ if [[ "${answer}" == "1" ]]; then
 elif [[ "${answer}" == "2" ]]; then
     echo -e "\nStarting Portainer services..."
 
-	ansible_playbook_stop=${ansible_playbook}"Start-Exareme.yaml --skip-tags exareme"
+	ansible_playbook_start=${ansible_playbook}"Start-Exareme.yaml --skip-tags exareme"
 	${ansible_playbook_start}
 	ansible_playbook_code=$?
 	
