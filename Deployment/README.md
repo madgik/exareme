@@ -14,6 +14,8 @@ We will refer to the machine from which you run the ansible scripts as Host and 
 
 ```sudo apt-get install python```
 
+3) Install Docker in all Remote hosts.
+
 ### Important
 In every node there should be a folder containing 2 files:
 1) the datasets.csv file with all the datasets combined and
@@ -125,20 +127,23 @@ It will ask for a vault-password that you will need to enter it each time you ru
 
 Here you will add
 ```
+# remote_user and ssh_pass will be user to login to the remote hostname
+# become_user and become_pass will be used to execute docker and other commands. Make sure that user has permission to run docker commands. You could use root if possible.
+
    master_remote_user: your_username
    master_become_user: your_username
-   master_become_pass: your_password
    master_ssh_pass: your_password
+   master_become_pass: your_password
    
-   worker1_become_user: your_username
    worker1_remote_user: your_username
-   worker1_become_pass: your_password
+   worker1_become_user: your_username
    worker1_ssh_pass: your_password
+   worker1_become_pass: your_password
    
-   worker2_become_user: your_username
    worker2_remote_user: your_username
-   worker2_become_pass: your_password
+   worker2_become_user: your_username
    worker2_ssh_pass: your_password
+   worker2_become_pass: your_password
 ```
 all in plaintext. If you have more than 2 workers, you will add those too by adding ```workerN_...``` in front of each variable where N the increased number. 
 [Keep in mind that your password can be anything you want But ansible has a special character for comments ```#``` . If your password contains that specific character ansible will take the characters next to it as comments.]
