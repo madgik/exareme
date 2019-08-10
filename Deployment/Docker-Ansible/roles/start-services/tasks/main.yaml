@@ -2,6 +2,8 @@
 - name: Find Leader
   shell: docker node ls -f "role=manager" --format '{{ "{{" }}.Hostname {{ "}}" }}'
   register: leader
+  tags:
+    - exareme
 
 #Todo if we have multiple masters and maybe leader.stdout -> leader.stdout_lines with_items?
 - name: Run Exareme Master
@@ -15,12 +17,20 @@
     EXAREME_KEYSTORE: "{{ EXAREME_KEYSTORE }}"
     DOCKER_DATA_FOLDER: "{{ DOCKER_DATA_FOLDER }}"
     LOCAL_DATASETS_FOLDER: "{{ data_path }}"
+  tags:
+    - exareme
 
 - name: Run Portainer
   shell: >
          test -d {{ PORTAINER_DATA }}
          || mkdir -p {{ PORTAINER_DATA }}
          || ( echo Failed to create {{ PORTAINER_DATA }}; exit 1 )
+
+- name: Remove Portainer Service if it already exists
+  shell: docker service rm mip_portainer
+  ignore_errors: true
+  tags:
+    - portainer
 
 - name: Run Portainer Service
   shell: >
@@ -47,3 +57,5 @@
     LOCAL_DATASETS_FOLDER: "{{ hostvars[item]['data_path'] }}"
   with_items: "{{ groups['workers'] }}"
   ignore_errors: true
+  tags:
+    - exareme

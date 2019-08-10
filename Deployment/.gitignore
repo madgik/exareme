@@ -5,4 +5,4 @@ postgres
 settings.local.*
 
 #Ansible
-*.retry
+*.retry 

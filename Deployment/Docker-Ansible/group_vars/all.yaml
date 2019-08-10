@@ -1,7 +1,7 @@
 # Exareme Tag
-EXAREME_TAG: "v20.2.0"
+EXAREME_TAG: "latest"
 # Exareme Image
-EXAREME_IMAGE: "hbpmip/exareme"
+EXAREME_IMAGE: "thanasulas/exareme"
 
 
 
@@ -10,7 +10,7 @@ EXAREME_IMAGE: "hbpmip/exareme"
 # Key-Value Store
 EXAREME_KEYSTORE: "exareme-keystore:8500"
 # Internal Exareme data path
-DOCKER_DATA_FOLDER: "/root/exareme/data"
+DOCKER_DATA_FOLDER: "/root/exareme/data/"
 
 # Portainer
 PORTAINER_PORT: "9000"

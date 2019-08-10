@@ -2,35 +2,38 @@
 
 init_ansible_playbook
 
-echo -e "\nChoose one of the options:"
-echo "If you want to stop Exareme services ALONG with Portainer service press 1"
-echo "If you want to stop Exareme services ONLY press 2"
-echo "If you want to stop Portainer service ONLY press 3"
+echo -e "\nChoose one of the options [ 1-2-3 ] :"
+echo "1. Restart Exareme"
+echo "2. Restart Portainer"
+echo "3. Restart Exareme and Portainer"
 
 
 read answer
 while true
 do
     if [[ "${answer}" == "1" ]]; then
-        echo -e "\nYou choose to stop everything.."
-
-        ansible_playbook_stop=${ansible_playbook}"Stop-Services.yaml"
-        ${ansible_playbook_stop}
-        ansible_playbook_code=$?
-        break
-    elif [[ "${answer}" == "2" ]]; then
-        echo -e "\nYou choose to stop Exareme services only.."
+        echo -e "\nStopping Exareme services..."
 
         ansible_playbook_stop=${ansible_playbook}"Stop-Services.yaml --skip-tags portainer"
         ${ansible_playbook_stop}
         ansible_playbook_code=$?
+		
         break
-    elif [[ "${answer}" == "3" ]]; then
-         echo -e "\nYou choose to stop Portainer service only.."
+    elif [[ "${answer}" == "2" ]]; then
+        echo -e "\nStopping Portainer services..."
 
         ansible_playbook_stop=${ansible_playbook}"Stop-Services.yaml --skip-tags exareme"
         ${ansible_playbook_stop}
         ansible_playbook_code=$?
+		
+        break
+    elif [[ "${answer}" == "3" ]]; then
+        echo -e "\nStopping all services..."
+		
+        ansible_playbook_stop=${ansible_playbook}"Stop-Services.yaml"
+        ${ansible_playbook_stop}
+        ansible_playbook_code=$?
+		
         break
     else
         echo "$answer is not a valid answer! Try again.. [1/2/3"
@@ -44,40 +47,34 @@ if [[ ${ansible_playbook_code} -ne 0 ]]; then
     exit 1
 fi
 
+if [[ "${answer}" == "1" ]]; then
+    echo -e "\nStarting Exareme services..."
 
-echo -e "\nChoose one of the options:"
-echo "If you want to start Exareme services ALONG with Portainer service press 1"
-echo "If you want to start Exareme services ONLY press 2"
-echo "If you want to start Portainer service ONLY press 3"
+	ansible_playbook_start=${ansible_playbook}"Start-Exareme.yaml --skip-tags portainer"
+	${ansible_playbook_start}
+	ansible_playbook_code=$?
+	
+	break
+	
+elif [[ "${answer}" == "2" ]]; then
+    echo -e "\nStarting Portainer services..."
 
-read answer
-while true
-do
-    if [[ "${answer}" == "1" ]]; then
-        echo -e "\nYou choose to start everything.."
-        ansible_playbook_start=${ansible_playbook}"Start-Exareme.yaml"
-        ${ansible_playbook_start}
-        ansible_playbook_code=$?
-        break
-    elif [[ "${answer}" == "2" ]]; then
-        echo -e "\nYou choose to start Exareme services only.."
-
-        ansible_playbook_start=${ansible_playbook}"Start-Exareme.yaml --skip-tags portainer"
-        ${ansible_playbook_start}
-        ansible_playbook_code=$?
-        break
-    elif [[ "${answer}" == "3" ]]; then
-         echo -e "\nYou choose to start Portainer service only.."
-
-        ansible_playbook_stop=${ansible_playbook}"Start-Exareme.yaml --skip-tags exareme"
-        ${ansible_playbook_start}
-        ansible_playbook_code=$?
-        break
-    else
-        echo "$answer is not a valid answer! Try again.. [1/2/3"
-        read answer
-    fi
-done
+	ansible_playbook_start=${ansible_playbook}"Start-Exareme.yaml --skip-tags exareme"
+	${ansible_playbook_start}
+	ansible_playbook_code=$?
+	
+	break
+	
+elif [[ "${answer}" == "3" ]]; then
+    echo -e "\nStarting all services..."
+	
+	ansible_playbook_start=${ansible_playbook}"Start-Exareme.yaml"
+	${ansible_playbook_start}
+	ansible_playbook_code=$?
+	
+	break
+	
+fi
 
 #If status code != 0 an error has occurred
 if [[ ${ansible_playbook_code} -ne 0 ]]; then
