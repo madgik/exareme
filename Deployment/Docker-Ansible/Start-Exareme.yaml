@@ -5,4 +5,5 @@
   become: yes
   become_user: "{{ hostvars['master']['become_user'] }}"
   roles:
+   - copy-directory
    - start-services
