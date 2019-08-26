@@ -27,3 +27,15 @@
         mip-federation
   register: swarm_network
   when: network_status.rc != 0
+
+- name: Check if there are already stacks that need to be removed
+  shell: docker stack ls --format '{{ "{{" }}.Name {{ "}}" }}'
+  register: stackName
+  ignore_errors: true
+
+- name:  Remove stacks
+  shell: docker stack rm {{ item }}
+  with_items:
+    - "{{ stackName.stdout_lines }}"
+  when: network_status.rc == 0
+
