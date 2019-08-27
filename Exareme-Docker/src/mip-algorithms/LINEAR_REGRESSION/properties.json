@@ -13,8 +13,7 @@
 			"valueNotBlank": true,
 			"valueMultiple": true,
 			"valueType": "string"
-		},
-		 {
+		}, {
 			"name": "y",
 			"desc": "The left part of the linear predictor function, that contains the dependent variable.The dependent variable is a variable of the input dataset.",
 			"type": "column",
@@ -25,26 +24,23 @@
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "string"
-		},
-    {
-      "name": "referencevalues",
-      "desc": "Reference values ",
-      "type": "other",
-      "value": "[{\"name\":\"alzheimerbroadcategory\",\"val\":\"Other\"}]",
-      "valueNotBlank": true,
-      "valueMultiple": false,
-      "valueType": "json"
-    },
-		{
-      "name": "encodingparameter",
-      "desc": "Encoding parameter. It can be one of the following:dummycoding,sumscoding,simplecoding",
-      "type": "other",
-      "value": "dummycoding",
-      "valueNotBlank": true,
-      "valueMultiple": false,
-      "valueType": "string"
-    },
-     {
+		}, {
+			"name": "referencevalues",
+			"desc": "Reference values ",
+			"type": "other",
+			"value": "[{\"name\":\"alzheimerbroadcategory\",\"val\":\"Other\"}]",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "json"
+		}, {
+			"name": "encodingparameter",
+			"desc": "Encoding parameter. It can be one of the following:dummycoding,sumscoding,simplecoding",
+			"type": "other",
+			"value": "dummycoding",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "string"
+		}, {
 			"name": "dataset",
 			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty.",
 			"type": "dataset",

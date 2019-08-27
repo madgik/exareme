@@ -9,7 +9,8 @@ EXAREME_IMAGE: "thanasulas/exareme"
 
 # Key-Value Store
 EXAREME_KEYSTORE: "exareme-keystore:8500"
-# Internal Exareme data path
+
+# Docker internal folder for the Exareme data
 DOCKER_DATA_FOLDER: "/root/exareme/data/"
 
 # Portainer

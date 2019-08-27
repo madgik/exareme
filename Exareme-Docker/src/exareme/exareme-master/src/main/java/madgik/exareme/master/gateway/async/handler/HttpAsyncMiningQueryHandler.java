@@ -21,6 +21,7 @@ import madgik.exareme.master.queryProcessor.composer.AlgorithmProperties;
 import madgik.exareme.master.queryProcessor.composer.Algorithms;
 import madgik.exareme.master.queryProcessor.composer.Composer;
 import madgik.exareme.master.queryProcessor.composer.Exceptions.AlgorithmException;
+import madgik.exareme.utils.net.NetUtil;
 import madgik.exareme.worker.art.container.ContainerProxy;
 import madgik.exareme.worker.art.registry.ArtRegistryLocator;
 import org.apache.http.*;
@@ -126,7 +127,10 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             List<String> nodesToBeChecked;
             if(userDatasets == null) nodesToBeChecked = allNodesIPs();          //If algorithm does not have 'datasets' as parameter  -> Get IP's from Exareme's registry TODO check if more
                 //TODO appropriate to get all the nodes from Consul, for consistency reasons
-            else nodesToBeChecked = checkDatasets(nodeDatasets,userDatasets);   //else -> get only the Exareme nodes containing datasets provided by user
+            else {          //else -> get only the Exareme nodes containing datasets provided by user
+                nodesToBeChecked = checkDatasets(nodeDatasets,userDatasets);
+                nodesToBeChecked.add(NetUtil.getIPv4());         //Always use master!
+            }
 
             //Check that node containers are up and running properly
             log.debug("Checking workers...");

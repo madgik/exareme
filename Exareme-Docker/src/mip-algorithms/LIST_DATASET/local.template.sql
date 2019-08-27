@@ -2,7 +2,7 @@ requirevars 'input_local_DB' 'db_query';
 
 attach database '%{input_local_DB}' as localDB;
 
-select execprogram(null, "/root/exareme/set-local-datasets.sh");
+-- select execprogram(null, "/root/exareme/set-local-datasets.sh");
 
 var 'a' from select count(distinct(rid)) as sum1 from (select distinct rid from (toeav %{db_query}));
 

@@ -5,9 +5,13 @@ MADIS="/root/exareme/lib/madis/src/mterm.py"
 
 for PATHOLOGY in $DOCKER_DATA_FOLDER/*	
 do
-	PATHOLOGY_DATASETS=$(echo "select distinct dataset from (file header:t  file:$PATHOLOGY/datasets.csv);" | $MADIS | sed '1d ; $d' ) 
-	
-	ALL_DATASETS+=" $PATHOLOGY_DATASETS"
+	if [ -f $PATHOLOGY/datasets.csv ]
+	then
+		PATHOLOGY_DATASETS=$(echo "select distinct dataset from (file header:t  file:$PATHOLOGY/datasets.csv);" | $MADIS | sed '1d ; $d' ) 
+		
+		ALL_DATASETS+=" $PATHOLOGY_DATASETS"
+	fi
+
 done
 
 

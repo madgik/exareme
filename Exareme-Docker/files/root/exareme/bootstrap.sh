@@ -22,7 +22,6 @@ fi
 if [ -z ${CONSULURL} ]; then echo "CONSULURL is unset"; exit; fi
 if [ -z ${NODE_NAME} ]; then echo "NODE_NAME is unset";exit;  fi
 if [ -z ${DOCKER_DATA_FOLDER} ]; then echo "DOCKER_DATA_FOLDER is unset"; exit; fi
-if [ -z ${DOCKER_METADATA_FOLDER} ]; then echo "DOCKER_METADATA_FOLDER is unset"; exit; fi
 
 #Stop Exareme service
 stop_exareme () {
@@ -48,11 +47,13 @@ deleteKeysFromConsul () {
 
 #CSVs to DB
 transformCsvToDB () {
-    # Both Master and Worker should transform the csv to an sqlite db file
-    echo "Removing the previous datasets.db file if it still exists"
-    rm -f ${DOCKER_METADATA_FOLDER}/datasets.db
-    echo "Parsing the csv file in " ${DOCKER_METADATA_FOLDER} " to a db file. "
-    python ./convert-csv-dataset-to-db.py --csvFilePath ${DOCKER_DATA_FOLDER}/datasets.csv --CDEsMetadataPath ${DOCKER_METADATA_FOLDER}/CDEsMetadata.json --outputDBAbsPath $DOCKER_METADATA_FOLDER/datasets.db
+    # Both Master and Worker should transform the csvs to sqlite db files
+	# Removing all previous .db files from the DOCKER_DATA_FOLDER
+	
+	# // TODO
+	
+    echo "Parsing the csv files in " ${DOCKER_DATA_FOLDER} " to db files. "
+    python ./convert-csv-dataset-to-db.py -f ${DOCKER_DATA_FOLDER} -t ${1}
 	#Get the status code from previous command
     py_script=$?
 	#If status code != 0 an error has occurred
@@ -131,7 +132,7 @@ if [[ "${MASTER_FLAG}" != "master" ]]; then
     MASTER_NAME=$(curl -s ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/?keys | jq -r '.[]' | sed "s/${EXAREME_MASTER_PATH}\///g")
 
     #CSVs to DB
-    transformCsvToDB
+    transformCsvToDB "worker"
 
     . ./start-worker.sh
     echo "Worker node["${MY_IP}","${NODE_NAME}]" trying to connect with Master node["${MASTER_IP}","${MASTER_NAME}"]"
@@ -152,28 +153,36 @@ if [[ "${MASTER_FLAG}" != "master" ]]; then
         fi
     done
 
+	echo "Running set-local-datasets."
+	./set-local-datasets.sh
+
     #Health check for Worker. LIST_DATASET algorithm execution
     echo "Health check for Worker node["${MY_IP}","${NODE_NAME}"]"
-    check="$(curl -s ${MASTER_IP}:9092/check/worker?IP_MASTER=${MASTER_IP}?IP_WORKER=${MY_IP})"
+    
+	# TODO Health Check Disabled
+	
+	#check="$(curl -s ${MASTER_IP}:9092/check/worker?IP_MASTER=${MASTER_IP}?IP_WORKER=${MY_IP})"
 
     #error: Something went wrong could happen (it could be madis..)
-    if [[ $( echo ${check} | jq '.error') != null ]]; then
-        echo ${check} | jq '.error'
-        echo -e  "\nExiting.."
-        exit 1
-    fi
+    #if [[ $( echo ${check} | jq '.error') != null ]]; then
+    #    echo ${check} | jq '.error'
+    #    echo -e  "\nExiting.."
+    #    exit 1
+    #fi
 
-    getNames="$( echo ${check} | jq '.[][].NodeName')"
+    #getNames="$( echo ${check} | jq '.[][].NodeName')"
 
-    #Retrive result as json. If $NODE_NAME exists in result, the algorithm run in the specific node
-    if [[ $getNames = *${NODE_NAME}* ]]; then
-        echo -e "\nWorker node["${MY_IP}","${NODE_NAME}"] connected to Master node["${MASTER_IP}","${MASTER_NAME}"]"
-        curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_ACTIVE_WORKERS_PATH}/${NODE_NAME} <<< ${MY_IP}
-    else
-        echo "Worker node["${MY_IP}","${NODE_NAME}]" seams that is not connected with the Master.Exiting..."
-        exit 1
-    fi
+    #Retrieve result as json. If $NODE_NAME exists in result, the algorithm run in the specific node
+    #if [[ $getNames = *${NODE_NAME}* ]]; then
+    #    echo -e "\nWorker node["${MY_IP}","${NODE_NAME}"] connected to Master node["${MASTER_IP}","${MASTER_NAME}"]"
+    #    curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_ACTIVE_WORKERS_PATH}/${NODE_NAME} <<< ${MY_IP}
+    #else
+    #    echo "Worker node["${MY_IP}","${NODE_NAME}]" seems that is not connected with the Master.Exiting..."
+    #    exit 1
+    #fi
 
+	echo -e "\nWorker node["${MY_IP}","${NODE_NAME}"] connected to Master node["${MASTER_IP}","${MASTER_NAME}"]"
+	curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_ACTIVE_WORKERS_PATH}/${NODE_NAME} <<< ${MY_IP}
 
 #This is the Master
 else
@@ -198,7 +207,7 @@ else
     done
 
     #CSVs to DB
-    transformCsvToDB
+    transformCsvToDB "master"
 
     #Master re-booted
     if [[ "$(curl -s -o  /dev/null -i -w "%{http_code}\n" ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/?keys)" = "200" ]]; then
@@ -235,26 +244,35 @@ else
             fi
         done
 
+        echo "Running set-local-datasets."
+        ./set-local-datasets.sh
+
         #Health check for Master. LIST_DATASET algorithm execution
         echo "Health check for Master node["${MY_IP}","${NODE_NAME}"]"
-        check="$(curl -s ${MY_IP}:9092/check/worker?IP_MASTER=${MY_IP}?IP_WORKER=${MY_IP})"     #Master has a Worker instance. So in this case IP_MASTER / IP_WORKER is the same
+		
+		# TODO Health Check Disabled
+
+        #check="$(curl -s ${MY_IP}:9092/check/worker?IP_MASTER=${MY_IP}?IP_WORKER=${MY_IP})"     #Master has a Worker instance. So in this case IP_MASTER / IP_WORKER is the same
 
         #error: Something went wrong could happen (it could be madis)
-        if [[ $( echo ${check} | jq '.error') != null ]]; then
-             echo ${check} | jq '.error'
-             echo "Exiting.."
-             exit 1
-        fi
+        #if [[ $( echo ${check} | jq '.error') != null ]]; then
+        #     echo ${check} | jq '.error'
+        #     echo "Exiting.."
+        #     exit 1
+        #fi
 
-        getNames="$( echo ${check} | jq '.[][].NodeName')"
-        #Retrive result as json. If $NODE_NAME exists in result, the algorithm run in the specific node
-        if [[ $getNames = *${NODE_NAME}* ]]; then
-            echo -e "\nMaster node["${MY_IP}","${NODE_NAME}"] initialized"
-            curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/${NODE_NAME} <<< ${MY_IP}
-        else
-            echo "Master node["${MY_IP}","${NODE_NAME}]" seams that could not be initialized.Exiting..."
-            exit 1
-        fi
+        #getNames="$( echo ${check} | jq '.[][].NodeName')"
+        #Retrieve result as json. If $NODE_NAME exists in result, the algorithm run in the specific node
+        #if [[ $getNames = *${NODE_NAME}* ]]; then
+        #    echo -e "\nMaster node["${MY_IP}","${NODE_NAME}"] initialized"
+        #    curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/${NODE_NAME} <<< ${MY_IP}
+        #else
+        #    echo "Master node["${MY_IP}","${NODE_NAME}]" seams that could not be initialized.Exiting..."
+        #    exit 1
+        #fi
+		
+        echo -e "\nMaster node["${MY_IP}","${NODE_NAME}"] initialized"
+        curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/${NODE_NAME} <<< ${MY_IP}
     fi
 fi
 
