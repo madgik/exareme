@@ -97,101 +97,114 @@ def main():
     args = parser.parse_args()
 
     pathologiesFolderPath = os.path.abspath(args.pathologiesFolderPath)
-	
-	# Get all pathologies
+    
+    # Get all pathologies
     pathologiesList = next(os.walk(pathologiesFolderPath))[1]
-	 
-	# Create the datasets db for each pathology
+     
+    # Create the datasets db for each pathology
     for pathologyName in pathologiesList:
-		csvFilePath = os.path.join(pathologiesFolderPath,pathologyName,"datasets.csv")
-		CDEsMetadataPath = os.path.join(pathologiesFolderPath,pathologyName,"CDEsMetadata.json")
-		outputDBAbsPath = os.path.join(pathologiesFolderPath,pathologyName,"datasets.db")
+        csvFilePath = os.path.join(pathologiesFolderPath,pathologyName,"datasets.csv")
+        CDEsMetadataPath = os.path.join(pathologiesFolderPath,pathologyName,"CDEsMetadata.json")
+        outputDBAbsPath = os.path.join(pathologiesFolderPath,pathologyName,"datasets.db")
 
-		# Transform the metadata json into a column name -> column type dictionary
+        # Transform the metadata json into a column name -> column type dictionary
 
-		variablesTypesDict = createMetadataDictionary(CDEsMetadataPath)
+        variablesTypesDict = createMetadataDictionary(CDEsMetadataPath)
 
-		# Connect to the database
-		con = sqlite3.connect(outputDBAbsPath)
-		cur = con.cursor()
+        # Connect to the database
+        con = sqlite3.connect(outputDBAbsPath)
+        cur = con.cursor()
 
-		if not os.path.isfile(csvFilePath) and args.nodeType != 'master':
-			raise IOError('The datasets.csv file does not exist for the ' + pathologyName + ' pathology')
-		
-		if os.path.isfile(csvFilePath):
-			# Create the query for the sqlite data table
+        if os.path.isfile(csvFilePath):
+            # Create the query for the sqlite data table
 
-			createDataTableQuery = 'CREATE TABLE DATA('
+            createDataTableQuery = 'CREATE TABLE DATA('
 
-			csvFile = open(csvFilePath, 'r')
-			csvReader = csv.reader(csvFile)
-			csvHeader = next(csvReader)
-			subjectcode = csvHeader[0]
-			createDataTableQuery += ' ' + subjectcode + ' TEXT'
-			for column in csvHeader[1:]:
-				if column not in variablesTypesDict:
-					raise ValueError('Column: "' + column + '" does not exist in the metadata file provided.')
-				columnType = variablesTypesDict[column]
-				createDataTableQuery += ', ' + column + ' ' + columnType
-			createDataTableQuery += ')'
+            csvFile = open(csvFilePath, 'r')
+            csvReader = csv.reader(csvFile)
+            csvHeader = next(csvReader)
+            subjectcode = csvHeader[0]
+            createDataTableQuery += ' ' + subjectcode + ' TEXT'
+            for column in csvHeader[1:]:
+                if column not in variablesTypesDict:
+                    raise ValueError('Column: "' + column + '" does not exist in the metadata file provided.')
+                columnType = variablesTypesDict[column]
+                createDataTableQuery += ', ' + column + ' ' + columnType
+            createDataTableQuery += ')'
 
-			# Create the data table
-			cur.execute('DROP TABLE IF EXISTS DATA')
-			cur.execute(createDataTableQuery)
+            # Create the data table
+            cur.execute('DROP TABLE IF EXISTS DATA')
+            cur.execute(createDataTableQuery)
 
-			# Add data
-			columnsString = csvHeader[0]
-			for column in csvHeader[1:]:
-				columnsString += ', ' + column
-			columnsQuery = 'INSERT INTO DATA (' + columnsString + ') VALUES ('
+            # Add data
+            columnsString = csvHeader[0]
+            for column in csvHeader[1:]:
+                columnsString += ', ' + column
+            columnsQuery = 'INSERT INTO DATA (' + columnsString + ') VALUES ('
 
-			for row in csvReader:
-				insertRowQuery = columnsQuery + "'" + row[0] + "'"
-				for (value, column) in zip(row[1:], csvHeader[1:]):
-					if variablesTypesDict[column] == 'text':
-						insertRowQuery += ", '" + value + "'"
-					elif value == '':
-						insertRowQuery += ', null'
-					else:
-						insertRowQuery += ', ' + value
-				insertRowQuery += ');'
-				try:
-					cur.execute(insertRowQuery)
-				except:
-					raise ValueError('Row: ' + str(row) + ', Query: ' + str(insertRowQuery))
+            for row in csvReader:
+                insertRowQuery = columnsQuery + "'" + row[0] + "'"
+                for (value, column) in zip(row[1:], csvHeader[1:]):
+                    if variablesTypesDict[column] == 'text':
+                        insertRowQuery += ", '" + value + "'"
+                    elif value == '':
+                        insertRowQuery += ', null'
+                    else:
+                        insertRowQuery += ', ' + value
+                insertRowQuery += ');'
+                try:
+                    cur.execute(insertRowQuery)
+                except:
+                    raise ValueError('Row: ' + str(row) + ', Query: ' + str(insertRowQuery))
+        else:           # If datasets.csv does not exist.
+            if args.nodeType == 'master':
+                # Create the query for the sqlite data table from the metadata
 
-		# Transform the metadata JSON to a list
-		metadataList = createMetadataList(CDEsMetadataPath)
+                createDataTableQuery = 'CREATE TABLE DATA('
+                for column, columnType in variablesTypesDict.iteritems():
+                    createDataTableQuery += column + ' ' + columnType + ', '
+                createDataTableQuery = createDataTableQuery[:-2]
+                createDataTableQuery += ')'
 
-		# Create the query for the metadata table
-		createMetadataTableQuery = 'CREATE TABLE METADATA('
-		createMetadataTableQuery += ' code TEXT PRIMARY KEY ASC'
-		createMetadataTableQuery += ', sql_type TEXT'
-		createMetadataTableQuery += ', isCategorical INTEGER'
-		createMetadataTableQuery += ', enumerations TEXT'
-		createMetadataTableQuery += ', min INTEGER'
-		createMetadataTableQuery += ', max INTEGER)'
+                # Create the data table
+                cur.execute('DROP TABLE IF EXISTS DATA')
+                cur.execute(createDataTableQuery)
+            else:
+                raise IOError('The datasets.csv file does not exist for the ' + pathologyName + ' pathology')
+        
+        
+        # Transform the metadata JSON to a list
+        metadataList = createMetadataList(CDEsMetadataPath)
 
-		# Create the metadata table
-		cur.execute('DROP TABLE IF EXISTS METADATA')
-		cur.execute(createMetadataTableQuery)
+        # Create the query for the metadata table
+        createMetadataTableQuery = 'CREATE TABLE METADATA('
+        createMetadataTableQuery += ' code TEXT PRIMARY KEY ASC'
+        createMetadataTableQuery += ', sql_type TEXT'
+        createMetadataTableQuery += ', isCategorical INTEGER'
+        createMetadataTableQuery += ', enumerations TEXT'
+        createMetadataTableQuery += ', min INTEGER'
+        createMetadataTableQuery += ', max INTEGER)'
 
-		# Add data to the metadata table		TODO
-		columnsQuery = 'INSERT INTO METADATA (code, sql_type, isCategorical, enumerations, min, max) VALUES ('
+        # Create the metadata table
+        cur.execute('DROP TABLE IF EXISTS METADATA')
+        cur.execute(createMetadataTableQuery)
 
-		for variable in metadataList:
-			insertVariableQuery = columnsQuery
-			insertVariableQuery += "'" + variable['code'] + "'"
-			insertVariableQuery += ", '" + variable['sql_type'] + "'"
-			insertVariableQuery += ", '" + variable['isCategorical'] + "'"
-			insertVariableQuery += ", '" + variable['enumerations'] + "'"
-			insertVariableQuery += ", '" + variable['min'] + "'"
-			insertVariableQuery += ", '" + variable['max'] + "'"
-			insertVariableQuery += ");"
-			cur.execute(insertVariableQuery)
+        # Add data to the metadata table        TODO
+        columnsQuery = 'INSERT INTO METADATA (code, sql_type, isCategorical, enumerations, min, max) VALUES ('
 
-		con.commit()
-		con.close()
+        for variable in metadataList:
+            insertVariableQuery = columnsQuery
+            insertVariableQuery += "'" + variable['code'] + "'"
+            insertVariableQuery += ", '" + variable['sql_type'] + "'"
+            insertVariableQuery += ", '" + variable['isCategorical'] + "'"
+            insertVariableQuery += ", '" + variable['enumerations'] + "'"
+            insertVariableQuery += ", '" + variable['min'] + "'"
+            insertVariableQuery += ", '" + variable['max'] + "'"
+            insertVariableQuery += ");"
+            cur.execute(insertVariableQuery)
+
+        con.commit()
+        con.close()
 
 
 
