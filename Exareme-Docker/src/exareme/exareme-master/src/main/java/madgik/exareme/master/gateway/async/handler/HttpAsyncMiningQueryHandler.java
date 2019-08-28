@@ -21,6 +21,7 @@ import madgik.exareme.master.queryProcessor.composer.AlgorithmProperties;
 import madgik.exareme.master.queryProcessor.composer.Algorithms;
 import madgik.exareme.master.queryProcessor.composer.Composer;
 import madgik.exareme.master.queryProcessor.composer.Exceptions.AlgorithmException;
+import madgik.exareme.utils.net.NetUtil;
 import madgik.exareme.worker.art.container.ContainerProxy;
 import madgik.exareme.worker.art.registry.ArtRegistryLocator;
 import org.apache.http.*;
@@ -135,6 +136,8 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             ContainerProxy[] usedContainerProxies;
 
             //Find container proxy of used containers (from IPs)
+            if (!nodesToBeChecked.contains(NetUtil.getIPv4()))      //Always use Master!
+                nodesToBeChecked.add(NetUtil.getIPv4());
             List<ContainerProxy> usedContainerProxiesList = new ArrayList<>();
             for (ContainerProxy containerProxy : ArtRegistryLocator.getArtRegistryProxy().getContainers()) {
                 if (nodesToBeChecked.contains(containerProxy.getEntityName().getIP())) {
