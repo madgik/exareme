@@ -949,8 +949,6 @@ public class Composer {
         String pathology = algorithmProperties.getParameterValue(ComposerConstants.getPathologyPropertyName());
         String datasetsDBName = ComposerConstants.getDatasetsDBName();
 
-        log.error("Line 954: " + Paths.get(dataPath,pathology,datasetsDBName).toString());
-
         return Paths.get(dataPath,pathology,datasetsDBName).toString();
     }
 

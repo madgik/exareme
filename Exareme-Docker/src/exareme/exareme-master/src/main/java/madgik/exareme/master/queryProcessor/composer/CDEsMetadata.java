@@ -127,9 +127,7 @@ public class CDEsMetadata {
 
         for(File pathology: pathologiesDirectory){
             String pathologyName = pathology.getName();
-            log.error("Line 130 " + pathologyName);
             File pathologyDatabase = new File(pathology.getAbsolutePath(), datasetsDBName);
-            log.error("Line 132 " + pathologyDatabase.getAbsolutePath());
 
             if(!pathologyDatabase.exists()) {
                 log.error("The '" + pathologyDatabase.getAbsolutePath() + "' file does not exist.");
