@@ -127,8 +127,8 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             if (userDatasets == null)
                 nodesToBeChecked = allNodesIPs();          //If algorithm does not have 'datasets' as parameter  -> Get IP's from Exareme's registry TODO check if more
                 //TODO appropriate to get all the nodes from Consul, for consistency reasons
-            else
-                nodesToBeChecked = checkDatasets(nodeDatasets, userDatasets);      //else -> get only the Exareme nodes containing datasets provided by user
+            else    //else -> get only the Exareme nodes containing datasets provided by user
+                nodesToBeChecked = checkDatasets(nodeDatasets, userDatasets);
 
             //Check that node containers are up and running properly
             log.debug("Checking workers...");
