@@ -30,7 +30,7 @@ import java.util.*;
 public class HttpAsyncCheckWorker implements HttpAsyncRequestHandler<HttpRequest> {
     private static final Logger log = Logger.getLogger(madgik.exareme.master.gateway.control.handler.HttpAsyncCheckWorker.class);
     private static final AdpDBManager manager = AdpDBManagerLocator.getDBManager();
-    private static final String algorithmName = "LIST_DATASET";
+    private static final String algorithmName = "HEALTH_CHECK";
     public HttpAsyncCheckWorker() {
         super();
     }

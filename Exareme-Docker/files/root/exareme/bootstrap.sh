@@ -163,14 +163,14 @@ if [[ "${MASTER_FLAG}" != "master" ]]; then
         exit 1
     fi
 
-    getNames="$( echo ${check} | jq '.[][].NodeName')"
+    getNames="$( echo ${check} | jq '.active_nodes')"
 
-    #Retrive result as json. If $NODE_NAME exists in result, the algorithm run in the specific node
+    #Retrieve result as json. If $NODE_NAME exists in result, the algorithm run in the specific node
     if [[ $getNames = *${NODE_NAME}* ]]; then
         echo -e "\nWorker node["${MY_IP}","${NODE_NAME}"] connected to Master node["${MASTER_IP}","${MASTER_NAME}"]"
         curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_ACTIVE_WORKERS_PATH}/${NODE_NAME} <<< ${MY_IP}
     else
-        echo "Worker node["${MY_IP}","${NODE_NAME}]" seams that is not connected with the Master.Exiting..."
+        echo "Worker node["${MY_IP}","${NODE_NAME}]" seems that is not connected with the Master.Exiting..."
         exit 1
     fi
 
@@ -234,6 +234,7 @@ else
                 exit 1  #Simple exit 1. Exareme is not up yet
             fi
         done
+	
 
         #Health check for Master. LIST_DATASET algorithm execution
         echo "Health check for Master node["${MY_IP}","${NODE_NAME}"]"
@@ -246,19 +247,20 @@ else
              exit 1
         fi
 
-        getNames="$( echo ${check} | jq '.[][].NodeName')"
-        #Retrive result as json. If $NODE_NAME exists in result, the algorithm run in the specific node
+        getNames="$( echo ${check} | jq '.active_nodes')"
+        #Retrieve result as json. If $NODE_NAME exists in result, the algorithm run in the specific node
         if [[ $getNames = *${NODE_NAME}* ]]; then
             echo -e "\nMaster node["${MY_IP}","${NODE_NAME}"] initialized"
             curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/${NODE_NAME} <<< ${MY_IP}
         else
-            echo "Master node["${MY_IP}","${NODE_NAME}]" seams that could not be initialized.Exiting..."
+            echo "Master node["${MY_IP}","${NODE_NAME}]" seems that could not be initialized.Exiting..."
             exit 1
         fi
     fi
 fi
 
 #Both Worker(s)/Master will execute the command. At this point Consul [Key-value store] is up, running and everyone can access it
+./set-local-datasets.sh
 echo '*/15  *  *  *  *    ./set-local-datasets.sh' >> /etc/crontabs/root
 crond
 
