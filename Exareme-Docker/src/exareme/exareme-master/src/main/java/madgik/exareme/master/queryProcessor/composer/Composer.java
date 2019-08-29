@@ -370,11 +370,11 @@ public class Composer {
             // Format global
             if (iteration != listFiles.length) {
                 dflScript.append(String.format(
-                        "\nusing %s \ndistributed create temporary table %s as external \n",
+                        "\nusing %s \ndistributed create temporary table %s as virtual \n",
                         inputGlobalTbl, tempOutputGlobalTbl));
             } else {
                 dflScript.append(String
-                        .format("\nusing %s \ndistributed create table %s as external \n",
+                        .format("\nusing %s \ndistributed create table %s as virtual \n",
                                 inputGlobalTbl, outputGlobalTbl));
             }
             dflScript.append(String.format("select * from (\n  execnselect 'path:%s' ",
