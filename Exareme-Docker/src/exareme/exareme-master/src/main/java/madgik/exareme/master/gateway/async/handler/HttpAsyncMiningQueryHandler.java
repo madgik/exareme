@@ -136,8 +136,6 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             ContainerProxy[] usedContainerProxies;
 
             //Find container proxy of used containers (from IPs)
-            if (!nodesToBeChecked.contains(NetUtil.getIPv4()))      //Always use Master!
-                nodesToBeChecked.add(NetUtil.getIPv4());
             List<ContainerProxy> usedContainerProxiesList = new ArrayList<>();
             for (ContainerProxy containerProxy : ArtRegistryLocator.getArtRegistryProxy().getContainers()) {
                 if (nodesToBeChecked.contains(containerProxy.getEntityName().getIP())) {
