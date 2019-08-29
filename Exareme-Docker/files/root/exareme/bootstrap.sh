@@ -49,8 +49,8 @@ deleteKeysFromConsul () {
 transformCsvToDB () {
     # Both Master and Worker should transform the csvs to sqlite db files
 	# Removing all previous .db files from the DOCKER_DATA_FOLDER
-	
-	# // TODO
+	echo "Deleting previous db files. "
+	rm -rf ${DOCKER_DATA_FOLDER}/**/*.db
 	
     echo "Parsing the csv files in " ${DOCKER_DATA_FOLDER} " to db files. "
     python ./convert-csv-dataset-to-db.py -f ${DOCKER_DATA_FOLDER} -t ${1}
