@@ -110,7 +110,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
 
         //Get parameters of given algorithm
         HashMap<String, String> inputContent = getAlgoParameters(request);
-        if(inputContent != null) {
+        if (inputContent != null) {
             if (inputContent.containsKey("dataset")) {
                 datasets = inputContent.get("dataset");
                 //Get datasets provided by user
@@ -121,13 +121,15 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         try {
 
             //Get datasets available in Consul[Key-Value store] for each Exareme node[master/workers]
-            HashMap <String,String[]> nodeDatasets = getDatasetsFromConsul();
+            HashMap<String, String[]> nodeDatasets = getDatasetsFromConsul();
 
             //Check that datasets provided by user exist and retrieve only the nodes containing the existing datasets
             List<String> nodesToBeChecked;
-            if(userDatasets == null) nodesToBeChecked = allNodesIPs();          //If algorithm does not have 'datasets' as parameter  -> Get IP's from Exareme's registry TODO check if more
+            if (userDatasets == null)
+                nodesToBeChecked = allNodesIPs();          //If algorithm does not have 'datasets' as parameter  -> Get IP's from Exareme's registry TODO check if more
                 //TODO appropriate to get all the nodes from Consul, for consistency reasons
-            else nodesToBeChecked = checkDatasets(nodeDatasets,userDatasets);   //else -> get only the Exareme nodes containing datasets provided by user
+            else
+                nodesToBeChecked = checkDatasets(nodeDatasets, userDatasets);   //else -> get only the Exareme nodes containing datasets provided by user
 
             //Check that node containers are up and running properly
             log.debug("Checking workers...");
@@ -136,8 +138,6 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             ContainerProxy[] usedContainerProxies;
 
             //Find container proxy of used containers (from IPs)
-            if (!nodesToBeChecked.contains(NetUtil.getIPv4()))      //Always use Master!
-                nodesToBeChecked.add(NetUtil.getIPv4());
             List<ContainerProxy> usedContainerProxiesList = new ArrayList<>();
             for (ContainerProxy containerProxy : ArtRegistryLocator.getArtRegistryProxy().getContainers()) {
                 if (nodesToBeChecked.contains(containerProxy.getEntityName().getIP())) {
@@ -229,62 +229,62 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         }
     }
 
-    private HashMap <String,String[]> getDatasetsFromConsul() throws IOException {
+    private HashMap<String, String[]> getDatasetsFromConsul() throws IOException {
         Gson gson = new Gson();
-        HashMap <String,String[]> nodeDatasets = new HashMap<>();
+        HashMap<String, String[]> nodeDatasets = new HashMap<>();
 
-        String masterKey = searchConsul(System.getenv("EXAREME_MASTER_PATH")+"/?keys");
+        String masterKey = searchConsul(System.getenv("EXAREME_MASTER_PATH") + "/?keys");
         String[] masterKeysArray = gson.fromJson(masterKey, String[].class);
 
-        String masterName = masterKeysArray[0].replace(System.getenv("EXAREME_MASTER_PATH")+"/", "");
-        String masterIP = searchConsul(System.getenv("EXAREME_MASTER_PATH")+"/"+masterName+"?raw");
-        String datasetKey = searchConsul(System.getenv("DATASETS")+"/"+masterName+"?raw");
+        String masterName = masterKeysArray[0].replace(System.getenv("EXAREME_MASTER_PATH") + "/", "");
+        String masterIP = searchConsul(System.getenv("EXAREME_MASTER_PATH") + "/" + masterName + "?raw");
+        String datasetKey = searchConsul(System.getenv("DATASETS") + "/" + masterName + "?raw");
         String[] datasetKeysArray = gson.fromJson(datasetKey, String[].class);
-        nodeDatasets.put(masterIP,datasetKeysArray);                 //Map Master IP-> Matser Datasets
+        nodeDatasets.put(masterIP, datasetKeysArray);                 //Map Master IP-> Matser Datasets
 
-        String workersKey = searchConsul(System.getenv("EXAREME_ACTIVE_WORKERS_PATH")+"/?keys");
+        String workersKey = searchConsul(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/?keys");
         if (workersKey == null)     //No workers running
             return nodeDatasets;             //return master's Datasets only
         String[] workerKeysArray = gson.fromJson(workersKey, String[].class);
         for (String worker : workerKeysArray) {
-            String workerName = worker.replace(System.getenv("EXAREME_ACTIVE_WORKERS_PATH")+"/", "");
-            String workerIP = searchConsul(System.getenv("EXAREME_ACTIVE_WORKERS_PATH")+"/" + workerName + "?raw");
-            datasetKey = searchConsul(System.getenv("DATASETS")+"/" + workerName + "?raw");
+            String workerName = worker.replace(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/", "");
+            String workerIP = searchConsul(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/" + workerName + "?raw");
+            datasetKey = searchConsul(System.getenv("DATASETS") + "/" + workerName + "?raw");
             datasetKeysArray = gson.fromJson(datasetKey, String[].class);
             nodeDatasets.put(workerIP, datasetKeysArray);        //Map Worker's IP-> Worker's Datasets
         }
         return nodeDatasets;
     }
 
-    private HashMap <String,String> getNamesOfActiveNodes() throws IOException {
+    private HashMap<String, String> getNamesOfActiveNodes() throws IOException {
         Gson gson = new Gson();
-        HashMap <String,String> nodeNames = new HashMap<>();
-        String masterKey = searchConsul(System.getenv("EXAREME_MASTER_PATH")+"/?keys");
+        HashMap<String, String> nodeNames = new HashMap<>();
+        String masterKey = searchConsul(System.getenv("EXAREME_MASTER_PATH") + "/?keys");
         String[] masterKeysArray = gson.fromJson(masterKey, String[].class);    //Map Master's IP-> Master's Name
 
-        String masterName = masterKeysArray[0].replace(System.getenv("EXAREME_MASTER_PATH")+"/", "");
-        String masterIP = searchConsul(System.getenv("EXAREME_MASTER_PATH")+"/"+masterName+"?raw");
-        nodeNames.put(masterIP,masterName);
+        String masterName = masterKeysArray[0].replace(System.getenv("EXAREME_MASTER_PATH") + "/", "");
+        String masterIP = searchConsul(System.getenv("EXAREME_MASTER_PATH") + "/" + masterName + "?raw");
+        nodeNames.put(masterIP, masterName);
 
-        String workersKey = searchConsul(System.getenv("EXAREME_ACTIVE_WORKERS_PATH")+"/?keys");
+        String workersKey = searchConsul(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/?keys");
         if (workersKey == null)             //No workers running
             return nodeNames;               //return master only
         String[] workerKeysArray = gson.fromJson(workersKey, String[].class);
-        for(String worker: workerKeysArray){
-            String workerName = worker.replace(System.getenv("EXAREME_ACTIVE_WORKERS_PATH")+"/", "");
-            String workerIP = searchConsul(System.getenv("EXAREME_ACTIVE_WORKERS_PATH")+"/"+workerName+"?raw");
-            nodeNames.put(workerIP,workerName);         //Map Worker's IP-> Worker's Datasets
+        for (String worker : workerKeysArray) {
+            String workerName = worker.replace(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/", "");
+            String workerIP = searchConsul(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/" + workerName + "?raw");
+            nodeNames.put(workerIP, workerName);         //Map Worker's IP-> Worker's Datasets
         }
         return nodeNames;
     }
 
-    private  List<String> checkDatasets(HashMap <String,String[]> nodeDatasets, String[] userDatasets) throws DatasetsException{
+    private List<String> checkDatasets(HashMap<String, String[]> nodeDatasets, String[] userDatasets) throws DatasetsException {
         List<String> notFoundDatasets = new ArrayList<>();
         List<String> nodesToBeChecked = new ArrayList<>();
         Boolean flag;
 
         //for every dataset provided by the user
-        for (String data: userDatasets) {
+        for (String data : userDatasets) {
             Iterator<Map.Entry<String, String[]>> entries = nodeDatasets.entrySet().iterator();
             flag = false;
             //for each Exareme node (master/workers)
@@ -295,19 +295,19 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 //if dataset exist in that Exareme node
                 if (Arrays.asList(datasets).contains(data)) {
                     //and Exareme node not already added to list nodesToBeChecked
-                    if(!nodesToBeChecked.contains(IP))
+                    if (!nodesToBeChecked.contains(IP))
                         nodesToBeChecked.add(IP);
                     flag = true;
                     continue;
                 }
             }
             //if flag=false then dataset(s) provided by user are not contained in ANY Exareme node
-            if(!flag){
+            if (!flag) {
                 notFoundDatasets.add(data);
             }
         }
         //if notFoundDatasets list is not empty, there are dataset(s) provided by user not contained in ANY Exareme node
-        if(notFoundDatasets.size() !=0 ){
+        if (notFoundDatasets.size() != 0) {
             StringBuilder notFound = new StringBuilder();
             for (String ds : notFoundDatasets)
                 notFound.append(ds).append(", ");
@@ -319,7 +319,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         return nodesToBeChecked;
     }
 
-    private String preALgoExecutionChecks (HttpRequest request) throws UnsupportedHttpVersionException {
+    private String preALgoExecutionChecks(HttpRequest request) throws UnsupportedHttpVersionException {
         log.debug("Validate method ...");
         RequestLine requestLine = request.getRequestLine();
         String uri = requestLine.getUri();
@@ -348,7 +348,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 parameters = new Gson().fromJson(content, List.class);
             }
         }
-        if(!parameters.isEmpty()) {
+        if (!parameters.isEmpty()) {
             log.debug("All of the parameters: " + parameters);
             for (Map k : parameters) {
                 String name = (String) k.get("name");
@@ -381,7 +381,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         for (String IP : nodesToBeChecked) {
             boolean flag = false;
             for (ContainerProxy containers : containerProxy) {
-                log.debug("Container in registry: "+containers.getEntityName().getIP());
+                log.debug("Container in registry: " + containers.getEntityName().getIP());
                 if (containers.getEntityName().getIP().contains(IP)) {                      //If IP exists in Exareme's Registry
                     flag = true;
                     break;
@@ -402,9 +402,9 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 String name = names.get(ip);
                 log.info("It seems that node[" + name + "," + ip + "] you are trying to check is not part of Exareme's registry. Deleting it from Consul....");
 
-                 //Delete datasets and IP of the node
-                deleteFromConsul(System.getenv("DATASETS")+"/" + name);
-                deleteFromConsul(System.getenv("EXAREME_ACTIVE_WORKERS_PATH")+"/" + name);
+                //Delete datasets and IP of the node
+                deleteFromConsul(System.getenv("DATASETS") + "/" + name);
+                deleteFromConsul(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/" + name);
 
                 //Get datasets exist in other nodes for showing appropriate message to user
                 HashMap<String, String[]> nodeDatasets = getDatasetsFromConsul();
@@ -423,19 +423,18 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             nodesNotFound = nodes.substring(0, nodes.length() - 2);
             throw new Exception("Node/(S) with name/(s) " + nodesNotFound + " is/(are) not responding." +
                     " Until the issue is fixed, you can re-run your Experiment using one or more dataset(s):" +
-                     existingDatasetsSring);
+                    existingDatasetsSring);
         }
 
         //If IPs are in Exareme's registry
         for (String IP : nodesToBeChecked) {
-            log.debug("Will check container with IP: " + IP+" in order to see if a connection can be established..");       //check that a connection with the Exareme node can be established
+            log.debug("Will check container with IP: " + IP + " in order to see if a connection can be established..");       //check that a connection with the Exareme node can be established
             for (ContainerProxy containers : containerProxy) {
                 if (containers.getEntityName().getIP().equals(IP)) {
                     try {
                         ContainerProxy tmpContainerProxy = ArtRegistryLocator.getArtRegistryProxy().lookupContainer(containers.getEntityName());
                         break;
-                    }
-                    catch (RemoteException e){
+                    } catch (RemoteException e) {
                         //TODO we need to catch the RemoteException here. The fix in NQueryResultEntity.java is temporal
                     }
                 }
@@ -467,7 +466,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             httpGet = new HttpGet(consulURL + "/v1/kv/" + query);
             log.debug("Running: " + httpGet.getURI());
             CloseableHttpResponse response = null;
-            if (httpGet.toString().contains(System.getenv("EXAREME_MASTER_PATH")+"/") || httpGet.toString().contains(System.getenv("DATASETS")+"/")) {    //if we can not contact : http://exareme-keystore:8500/v1/kv/master* or http://exareme-keystore:8500/v1/kv/datasets*
+            if (httpGet.toString().contains(System.getenv("EXAREME_MASTER_PATH") + "/") || httpGet.toString().contains(System.getenv("DATASETS") + "/")) {    //if we can not contact : http://exareme-keystore:8500/v1/kv/master* or http://exareme-keystore:8500/v1/kv/datasets*
                 try {   //then throw exception
                     response = httpclient.execute(httpGet);
                     if (response.getStatusLine().getStatusCode() != 200) {
@@ -479,7 +478,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                     response.close();
                 }
             }
-            if (httpGet.toString().contains(System.getenv("EXAREME_ACTIVE_WORKERS_PATH")+"/")) {    //if we can not contact : http://exareme-keystore:8500/v1/kv/active_workers*
+            if (httpGet.toString().contains(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/")) {    //if we can not contact : http://exareme-keystore:8500/v1/kv/active_workers*
                 try {   //then maybe there are no workers running
                     response = httpclient.execute(httpGet);
                     if (response.getStatusLine().getStatusCode() != 200) {
@@ -513,7 +512,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
 
         log.debug("Running: " + httpDelete.getURI());
         CloseableHttpResponse response = null;
-        if (httpDelete.toString().contains(System.getenv("EXAREME_ACTIVE_WORKERS_PATH")+"/") || httpDelete.toString().contains(System.getenv("DATASETS")+"/")) {    //if we can not contact : http://exareme-keystore:8500/v1/kv/master* or http://exareme-keystore:8500/v1/kv/datasets*
+        if (httpDelete.toString().contains(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/") || httpDelete.toString().contains(System.getenv("DATASETS") + "/")) {    //if we can not contact : http://exareme-keystore:8500/v1/kv/master* or http://exareme-keystore:8500/v1/kv/datasets*
             try {   //then throw exception
                 response = httpclient.execute(httpDelete);
                 if (response.getStatusLine().getStatusCode() != 200) {
