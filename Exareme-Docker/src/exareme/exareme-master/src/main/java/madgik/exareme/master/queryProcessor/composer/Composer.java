@@ -506,7 +506,7 @@ public class Composer {
 
         if (iterativeAlgorithmPhase.equals(termination_condition)) {
             // Format termination condition script.
-            dflScript.append(String.format("distributed create table %s as virtual \n", outputGlobalTbl));
+            dflScript.append(String.format("distributed create table %s as external \n", outputGlobalTbl));
             dflScript.append(
                     String.format("select * from (\n  execnselect 'path:%s' ", algorithmFolderPath));
             for (ParameterProperties parameter : algorithmParameters) {
@@ -563,11 +563,11 @@ public class Composer {
             // format global
             if (iteration != listFiles.length) {
                 dflScript.append(String.format(
-                        "\nusing %s \ndistributed create temporary table %s as virtual \n",
+                        "\nusing %s \ndistributed create temporary table %s as external \n",
                         inputGlobalTbl, tempOutputGlobalTbl));
             } else {
                 dflScript.append(String
-                        .format("\nusing %s \ndistributed create table %s as virtual \n",
+                        .format("\nusing %s \ndistributed create table %s as external \n",
                                 inputGlobalTbl, outputGlobalTbl));
             }
             dflScript.append(String.format("select * from (\n  execnselect 'path:%s' ",
@@ -799,7 +799,7 @@ public class Composer {
             String globalScriptPath = algorithmFolderPath + "/global.py";
             String prevGlobalStatePKLFile = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey + "/phase_global_state.pkl";
 
-            dflScript.append("distributed create table " + outputGlobalTbl + " as virtual \n");
+            dflScript.append("distributed create table " + outputGlobalTbl + " as external \n");
             dflScript.append("select * from (\n  call_python_script 'python " + globalScriptPath + " ");
             for (ParameterProperties parameter : algorithmParameters) {
                 dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue()));
@@ -899,7 +899,7 @@ public class Composer {
             // If this is the last iteration of finalize, print the result from global.py
             // and don't create virtual last table with phase
             if ((iteration == listFiles.length) && iterativeAlgorithmPhase.equals(finalize)) {
-                dflScript.append(String.format("\nusing %s \ndistributed create table %s as virtual \n",
+                dflScript.append(String.format("\nusing %s \ndistributed create table %s as external \n",
                         inputGlobalTbl, outputGlobalTbl));
 
                 dflScript.append("select * from (\n  call_python_script 'python " + globalScriptPath + " ");
@@ -915,7 +915,7 @@ public class Composer {
                 return dflScript.toString();
             }
 
-            dflScript.append(String.format("\nusing %s \ndistributed create temporary table %s as virtual \n",
+            dflScript.append(String.format("\nusing %s \ndistributed create temporary table %s as external \n",
                     inputGlobalTbl, tempOutputGlobalTbl));
 
             dflScript.append("select * from (\n  call_python_script 'python " + globalScriptPath + " ");
