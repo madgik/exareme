@@ -240,7 +240,7 @@ public class Composer {
         String localScriptPath = ComposerConstants.getAlgorithmFolderPath(algorithmName) + "/local.template.sql";
         String algorithmFolderPath = ComposerConstants.getAlgorithmFolderPath(algorithmName);
 
-        dflScript.append("distributed create table " + outputGlobalTbl + " as direct \n");
+        dflScript.append("distributed create table " + outputGlobalTbl + " as external \n");
         dflScript.append(String.format("select * from (\n  execnselect 'path:%s' ", algorithmFolderPath));
         for (ParameterProperties parameter : algorithmParameters) {
             dflScript.append(String.format("'%s:%s' ", parameter.getName(), parameter.getValue()));
@@ -607,7 +607,7 @@ public class Composer {
         String localPythonScriptPath = ComposerConstants.getAlgorithmFolderPath(algorithmName) + "/local.py";
 
         // Format local
-        dflScript.append("distributed create table " + outputGlobalTbl + " as direct \n");
+        dflScript.append("distributed create table " + outputGlobalTbl + " as external \n");
         dflScript.append("select * from (\n  call_python_script 'python " + localPythonScriptPath + " ");
         for (ParameterProperties parameter : algorithmParameters) {
             dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue()));
