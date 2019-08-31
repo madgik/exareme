@@ -166,8 +166,9 @@ if [[ "${MASTER_FLAG}" != "master" ]]; then
 		exit 1
 	fi
 
-	getNames="$( echo ${check} | jq '.active_nodes')"
 
+    getNames="$( echo ${check} | jq '.active_nodes')"	
+	
 	#Retrieve result as json. If $NODE_NAME exists in result, the algorithm run in the specific node
 	if [[ $getNames = *${NODE_NAME}* ]]; then
 		echo -e "\nWorker node["${MY_IP}","${NODE_NAME}"] connected to Master node["${MASTER_IP}","${MASTER_NAME}"]"
@@ -253,13 +254,14 @@ else
 			 exit 1
 		fi
 
-		getNames="$( echo ${check} | jq '.[][].NodeName')"
+        getNames="$( echo ${check} | jq '.active_nodes')"	
+		
 		#Retrieve result as json. If $NODE_NAME exists in result, the algorithm run in the specific node
 		if [[ $getNames = *${NODE_NAME}* ]]; then
 			echo -e "\nMaster node["${MY_IP}","${NODE_NAME}"] initialized"
 			curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/${NODE_NAME} <<< ${MY_IP}
 		else
-			echo "Master node["${MY_IP}","${NODE_NAME}]" seams that could not be initialized.Exiting..."
+			echo "Master node["${MY_IP}","${NODE_NAME}]" seems that could not be initialized.Exiting..."
 			exit 1
 		fi
 	fi

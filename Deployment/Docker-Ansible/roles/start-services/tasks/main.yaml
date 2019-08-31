@@ -16,7 +16,7 @@
     EXAREME_IMAGE: "{{ EXAREME_IMAGE }}:{{ EXAREME_TAG }}"
     EXAREME_KEYSTORE: "{{ EXAREME_KEYSTORE }}"
     DOCKER_DATA_FOLDER: "{{ DOCKER_DATA_FOLDER }}"
-    LOCAL_DATASETS_FOLDER: "{{ data_path }}"
+    LOCAL_DATA_FOLDER: "{{ data_path }}"
   tags:
     - exareme
 
@@ -54,7 +54,7 @@
     EXAREME_IMAGE: "{{ EXAREME_IMAGE }}:{{ EXAREME_TAG }}"
     EXAREME_KEYSTORE: "{{ EXAREME_KEYSTORE }}"
     DOCKER_DATA_FOLDER: "{{ DOCKER_DATA_FOLDER }}"
-    LOCAL_DATASETS_FOLDER: "{{ hostvars[item]['data_path'] }}"
+    LOCAL_DATA_FOLDER: "{{ hostvars[item]['data_path'] }}"
   with_items: "{{ groups['workers'] }}"
   ignore_errors: true
   tags:

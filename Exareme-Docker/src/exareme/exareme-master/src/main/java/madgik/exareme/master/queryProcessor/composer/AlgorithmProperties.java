@@ -134,9 +134,10 @@ public class AlgorithmProperties {
      */
     public void mergeAlgorithmParametersWithInputContent(HashMap<String, String> inputContent)
             throws AlgorithmException, CDEsMetadataException {
+        if(inputContent == null)
+            return;
 
         String pathology = inputContent.get(ComposerConstants.getPathologyPropertyName());
-        log.error("Line 139, The pathology of this algorithm is: " + pathology);
 
         for (ParameterProperties parameterProperties : this.getParameters()) {
             String value = inputContent.get(parameterProperties.getName());

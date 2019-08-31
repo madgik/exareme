@@ -169,7 +169,7 @@ public class Composer {
 
         String algorithmName = algorithmProperties.getName();
         String defaultDBFilePath = HBPConstants.DEMO_DB_WORKING_DIRECTORY + dbIdentifier + "_defaultDB.db";
-        String inputLocalDB = getPathologyDBPath(algorithmProperties);
+        String inputLocalDB = getDataPath(algorithmProperties);
         String dbQuery = createLocalTableQuery(algorithmProperties);
         // Escaping double quotes for python algorithms because they are needed elsewhere
         String pythonDBQuery = dbQuery.replace("\"", "\\\"");
@@ -492,7 +492,7 @@ public class Composer {
             dbIdentifier = algorithmKey;
         String algorithmName = algorithmProperties.getName();
         String defaultDBFileName = HBPConstants.DEMO_DB_WORKING_DIRECTORY + dbIdentifier + "_defaultDB.db";
-        String inputLocalDB = getPathologyDBPath(algorithmProperties);
+        String inputLocalDB = getDataPath(algorithmProperties);
         String dbQuery = createLocalTableQuery(algorithmProperties);
         ParameterProperties[] algorithmParameters = algorithmProperties.getParameters();
 
@@ -784,7 +784,7 @@ public class Composer {
             throw new ComposerException("Unsupported iterative algorithm phase.");
 
         String algorithmName = algorithmProperties.getName();
-        String inputLocalDB = getPathologyDBPath(algorithmProperties);
+        String inputLocalDB = getDataPath(algorithmProperties);
         String dbQuery = createLocalTableQuery(algorithmProperties);
         // Escaping double quotes for python algorithms because they are needed elsewhere
         dbQuery = dbQuery.replace("\"", "\\\"");
@@ -945,12 +945,22 @@ public class Composer {
     }
     // Utilities --------------------------------------------------------------------------------
 
-    private static String getPathologyDBPath(AlgorithmProperties algorithmProperties) {
+    /**
+     * Returns the path of the datasets.db file depending on the pathology.
+     * If the algorithm has no pathology defined then the folder with all the datasets is returned.
+     *
+     * @param algorithmProperties     the properties of the algorithm
+     * @return the path where the data are
+     */
+    private static String getDataPath(AlgorithmProperties algorithmProperties){
         String dataPath = ComposerConstants.getDataPath();
         String pathology = algorithmProperties.getParameterValue(ComposerConstants.getPathologyPropertyName());
-        String datasetsDBName = ComposerConstants.getDatasetsDBName();
 
-        return Paths.get(dataPath, pathology, datasetsDBName).toString();
+        if(pathology == null)
+            return Paths.get(dataPath).toString();
+
+        String datasetsDBName = ComposerConstants.getDatasetsDBName();
+        return Paths.get(dataPath,pathology,datasetsDBName).toString();
     }
 
     /**

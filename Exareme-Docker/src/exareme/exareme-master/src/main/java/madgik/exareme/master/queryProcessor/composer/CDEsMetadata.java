@@ -141,7 +141,12 @@ public class CDEsMetadata {
         log.debug("Metadata loaded successfully");
     }
 
-    public PathologyCDEsMetadata getPathologyCDEsMetadata(String pathology){
+    public PathologyCDEsMetadata getPathologyCDEsMetadata(String pathology) throws CDEsMetadataException{
+        if(pathology == null) {
+            log.error("Cannot fetch the metadata of a null pathology.");
+            throw new CDEsMetadataException("There was an error loading the metadata. Please consult the administrator.");
+        }
+
         return cdesMetadata.get(pathology);
     }
 }
