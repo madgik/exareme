@@ -167,7 +167,7 @@ if [[ "${MASTER_FLAG}" != "master" ]]; then
 	fi
 
 
-    getNames="$( echo ${check} | jq '.active_nodes')"	
+	getNames="$( echo ${check} | jq '.active_nodes')"	
 	
 	#Retrieve result as json. If $NODE_NAME exists in result, the algorithm run in the specific node
 	if [[ $getNames = *${NODE_NAME}* ]]; then
@@ -255,7 +255,7 @@ else
 		fi
 
         getNames="$( echo ${check} | jq '.active_nodes')"	
-		
+	 	
 		#Retrieve result as json. If $NODE_NAME exists in result, the algorithm run in the specific node
 		if [[ $getNames = *${NODE_NAME}* ]]; then
 			echo -e "\nMaster node["${MY_IP}","${NODE_NAME}"] initialized"

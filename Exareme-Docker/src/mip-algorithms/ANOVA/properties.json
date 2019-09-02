@@ -57,16 +57,6 @@
 			"valueMultiple": true,
 			"valueType": "string"
 
-		}, {
-			"name": "iterations_max_number",
-			"desc": "Maximum number of iterations",
-			"type": "other",
-			"value": "",
-			"defaultValue" : "20",
-			"valueNotBlank": false,
-			"valueMultiple": false,
-			"valueType": "integer"
-
 		}
 	]
 }

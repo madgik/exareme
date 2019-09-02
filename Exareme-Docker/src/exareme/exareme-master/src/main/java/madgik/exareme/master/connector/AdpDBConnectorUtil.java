@@ -181,7 +181,7 @@ public class AdpDBConnectorUtil {
                                           DataSerialization ds,
                                           OutputStream out) throws RemoteException {
         try {
-            log.info("Local Table Part: " + tabName + "." + part + " ..." + alsoIncludeProps == null);
+            log.debug("Local Table Part: " + tabName + "." + part + " ..." + alsoIncludeProps);
             Gson g = new Gson();
             SQLDatabase db =
                     DBUtils.createEmbeddedSqliteDB(database + "/" + tabName + "." + part + ".db");

@@ -1,7 +1,6 @@
 package madgik.exareme.master.queryProcessor.composer;
 
 import madgik.exareme.utils.properties.AdpProperties;
-import org.apache.log4j.Logger;
 
 public class ComposerConstants {
     public static final String algorithmKey = "algorithm_key";

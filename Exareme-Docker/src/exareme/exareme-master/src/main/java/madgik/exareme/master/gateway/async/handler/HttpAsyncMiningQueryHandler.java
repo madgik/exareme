@@ -118,7 +118,6 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         }
 
         try {
-
             //Get datasets available in Consul[Key-Value store] for each Exareme node[master/workers]
             HashMap<String, String[]> nodeDatasets = getDatasetsFromConsul();
 
@@ -169,7 +168,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
 
                 final IterativeAlgorithmState iterativeAlgorithmState =
                         iterationsHandler.handleNewIterativeAlgorithmRequest(
-                                manager, algorithmKey, algorithmProperties);
+                                manager, algorithmKey, algorithmProperties, usedContainerProxies);
 
                 BasicHttpEntity entity = new NIterativeAlgorithmResultEntity(
                         iterativeAlgorithmState, ds, ExaremeGatewayUtils.RESPONSE_BUFFER_SIZE);
