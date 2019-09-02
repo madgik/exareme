@@ -9,7 +9,7 @@
 				"columnValuesSQLType": "real,integer",
 				"columnValuesIsCategorical": "",
 				"columnValuesNumOfEnumerations": "",
-				"value": "righthippocampus,lefthippocampus",
+				"value": "righthippocampus-lefthippocampus",
 				"valueNotBlank": true,
 				"valueMultiple": true,
 				"valueType": "string"

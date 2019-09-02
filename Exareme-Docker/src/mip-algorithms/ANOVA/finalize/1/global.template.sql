@@ -29,7 +29,7 @@ update defaultDB.globalresult
 set `f`= null,`p`= null,`eta squared`= null,`part eta squared`= null, `omega squared`= null where `model variables` =  'residuals';
 
 var 'resulttable' from
-select * from (totabulardataresourceformat title:ANOVA types:text,number,number,number,number,number,number,number,number
+select * from (totabulardataresourceformat types:text,number,number,number,number,number,number,number,number
                 select `model variables`, `sum of squares`,`Df`,`mean square`, `f`, `p`,`eta squared`, `part eta squared`, `omega squared`
                 from defaultDB.globalresult where `model variables` <> 'intercept' order by no);
 

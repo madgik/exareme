@@ -126,7 +126,7 @@ class highchartscatter3d(functions.vtable.vtbase.VT):
 
         if len(schema)!=3:
             myresult =  { "type": "application/vnd.highcharts+json",
-                        "data": [{ "chart": { "renderTo": 'container',
+                        "data": { "chart": { "renderTo": 'container',
                                             "margin": 100,
                                             "type": "scatter3d",
                                             "animation": "false",
@@ -136,11 +136,11 @@ class highchartscatter3d(functions.vtable.vtbase.VT):
                                                             "side": { "size": 1, "color": "rgba(0,0,0,0.06)" }}}},
                                             "title": { "text": dictargs['title'] },
                                             "subtitle": { "text": "The plot is empty as there are not three variables" }}
-                                            ]}
+                                }
 
         elif len(mydata)==0:
             myresult =  { "type": "application/vnd.highcharts+json",
-                        "data": [{ "chart": { "renderTo": 'container',
+                        "data": { "chart": { "renderTo": 'container',
                                             "margin": 100,
                                             "type": "scatter3d",
                                             "animation": "false",
@@ -150,7 +150,7 @@ class highchartscatter3d(functions.vtable.vtbase.VT):
                                                             "side": { "size": 1, "color": "rgba(0,0,0,0.06)" }}}},
                                             "title": { "text": dictargs['title'] },
                                             "subtitle": { "text": "The plot is empty as there are not data points" }}
-                                            ]}
+                                            }
 
 
 
@@ -160,7 +160,7 @@ class highchartscatter3d(functions.vtable.vtbase.VT):
 
         else:
             myresult ={ "type": "application/vnd.highcharts+json",
-                        "data": [{ "chart": { "renderTo": 'container',
+                        "data": { "chart": { "renderTo": 'container',
                                             "margin": 100,
                                             "type": "scatter3d",
                                             "animation": "false",
@@ -174,7 +174,7 @@ class highchartscatter3d(functions.vtable.vtbase.VT):
                                             "zAxis": {"gridLineWidth": 1 , "title": {"text": "z: " + str(schema[2][0]) + "","align": "middle"}},
                                             "series": [{"colorByPoint": "true",
                                                         "data": mydata ,
-                                                        "marker": {"radius": 5}}]}]}
+                                                        "marker": {"radius": 5}}]}}
 
         myjsonresult = json.dumps(myresult)
         yield [('highchartresult',)]

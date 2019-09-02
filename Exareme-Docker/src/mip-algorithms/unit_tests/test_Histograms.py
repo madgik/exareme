@@ -9,7 +9,7 @@ from decimal import *
 from rpy2.robjects.packages import importr
 import rpy2.robjects as robjects
 
-endpointUrl='http://88.197.53.38:9090/mining/query/HISTOGRAMS'
+endpointUrl='http://localhost:9090/mining/query/HISTOGRAMS'
 folderPath = 'R_scripts'
 file ='Histograms.Rmd'
 
@@ -35,6 +35,7 @@ class TestHistogram(unittest.TestCase):
         result = json.loads(r.text)
         print ("AAAA", r.text)
         print ("BBBB1", self.Test1Result)
+        print ("CCC",result['result'][0]['data'])
         resultsComparison(result['result'][0]['data'], json.loads(self.Test1Result))
 
 #

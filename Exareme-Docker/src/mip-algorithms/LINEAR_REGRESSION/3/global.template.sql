@@ -32,7 +32,7 @@ from ( select attr, estimate, stderror, estimate/stderror as tvalue
 		          from defaultDB.coefficients, defaultDB.XTXinverted
 		          where coefficients.attr1 = XTXinverted.attr1 and XTXinverted.attr1 = XTXinverted.attr2));
 
-var 'tableResultCoefficients' from select * from (totabulardataresourceformat title:Coefficients types:text,real,real,real,real
+var 'tableResultCoefficients' from select * from (totabulardataresourceformat title:COEFFICIENTS types:text,real,real,real,real
                             select predictor, estimate, stderror, tvalue, prvalue from defaultDB.LRtotalresulttbl);
 
 drop table if exists defaultDB.LRtotalresulttbl2;
@@ -48,7 +48,7 @@ insert into defaultDB.LRtotalresulttbl2 select "adjusted-R", 1 - %{sse}*(%{rows}
 insert into defaultDB.LRtotalresulttbl2 select "f-statistic",  %{rsquared} * (%{rows}-%{cols}) / ((1-%{rsquared})*(%{cols}-1)) ;
 insert into defaultDB.LRtotalresulttbl2 select "variables_number", %{cols}-1  ;
 
-var 'tableResultStats' from select * from (totabulardataresourceformat title:Coefficients types:text,real
+var 'tableResultStats' from select * from (totabulardataresourceformat title:STATISTICS types:text,real
                               select name,value from defaultDB.LRtotalresulttbl2);
 
 var 'resultjson' from select '{ "type": "application/json", "data": ' || val ||'}' from (

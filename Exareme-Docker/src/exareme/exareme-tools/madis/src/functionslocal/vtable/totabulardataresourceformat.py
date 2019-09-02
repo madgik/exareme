@@ -15,8 +15,9 @@ class totabulardataresourceformat(functions.vtable.vtbase.VT):
         query = dictargs['query']
 
         if 'title' not in dictargs:
-            raise functions.OperatorError(__name__.rsplit('.')[-1], "No title argument ")
-        title = dictargs['title']
+            title = ''
+        else:
+            title = dictargs['title']
 
         if 'types' not in dictargs:
             raise functions.OperatorError(__name__.rsplit('.')[-1], "No types argument ")

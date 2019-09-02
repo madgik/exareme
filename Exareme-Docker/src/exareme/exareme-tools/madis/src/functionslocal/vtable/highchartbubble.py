@@ -40,28 +40,28 @@ class highchartbubble(functions.vtable.vtbase.VT):
         if len(schema)!=3 or (len(schema)==3 and str(schema[2][0])!='noofpoints'):
             myresult =  {
                     "type" : "application/vnd.highcharts+json",
-                    "data" : [{ "chart" : { "type": "bubble",  "plotBorderWidth": 1, "zoomType": "xy"},
+                    "data" : { "chart" : { "type": "bubble",  "plotBorderWidth": 1, "zoomType": "xy"},
                                 "title" : { "text": str(dictargs['title']) },
                                 "subtitle":{"text":"The plot is empty as there are not two variables "}
-                    }]
+                    }
                 }
         elif len(mydata)==0:
             myresult =  {
                     "type" : "application/vnd.highcharts+json",
-                    "data" : [{ "chart" : { "type": "bubble",  "plotBorderWidth": 1, "zoomType": "xy"},
+                    "data" : { "chart" : { "type": "bubble",  "plotBorderWidth": 1, "zoomType": "xy"},
                                 "title" : { "text": str(dictargs['title']) },
                                 "subtitle":{"text":"The plot is empty as there are not data points"}
-                    }]
+                    }
                 }
         else:
             myresult =  {
                 "type" : "application/vnd.highcharts+json",
-                "data" : [{ "chart" : { "type": "bubble",  "plotBorderWidth": 1, "zoomType": "xy"},
+                "data" : { "chart" : { "type": "bubble",  "plotBorderWidth": 1, "zoomType": "xy"},
                             "title" : { "text": str(dictargs['title']) },
                             "xAxis" : { "gridLineWidth": 1, "title": {"text": str(schema[0][0]), "align":"middle" }},
                             "yAxis":  { "gridLineWidth": 1, "title": {"text": str(schema[1][0]), "align":"middle" }},
                             "series": [{ "data": mydata}]
-                }]
+                }
             }
 
         myjsonresult = json.dumps(myresult)
