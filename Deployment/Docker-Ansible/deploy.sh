@@ -9,7 +9,7 @@ password () {
         if [[ "${answer}" == "y" ]]; then
             echo "Type your Ansible password:"
             read -s password
-            echo $password >> ~/.vault_pass.txt
+            echo $password > ~/.vault_pass.txt
             ansible_playbook+="--vault-password-file ~/.vault_pass.txt "
             break
         elif [[ "${answer}" == "n" ]]; then
