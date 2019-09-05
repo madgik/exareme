@@ -25,24 +25,24 @@ The data folder should contain one folder for each pathology that it has dataset
 
 For example:
 
--> Data Folder
-----> Dementia
--------> datasets.csv
--------> CDEsMetadata.json
-----> Neuropathology
--------> datasets.csv
--------> CDEsMetadata.json
+-> Data Folder <br />
+------> Dementia <br />
+----------> datasets.csv <br />
+----------> CDEsMetadata.json <br />
+------> Neuropathology <br />
+----------> datasets.csv <br />
+----------> CDEsMetadata.json <br />
 
 The master node should have the CDEsMetadata.json for every pathology even if it doesn't contain a datasets.csv file.
 
 For example:
 
--> Data Folder
-----> Dementia
--------> datasets.csv
-----> Neuropathology
--------> datasets.csv
--------> CDEsMetadata.json
+-> Data Folder <br />
+------> Dementia <br />
+----------> datasets.csv <br />
+------> Neuropathology <br />
+----------> datasets.csv <br />
+----------> CDEsMetadata.json <br />
 
 # Preparation
 
