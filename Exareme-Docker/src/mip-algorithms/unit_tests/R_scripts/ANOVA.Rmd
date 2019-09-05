@@ -6,7 +6,7 @@ library(dplyr)
 library(tidyr)
 
 # LOAD BALANCED DATA
-rawDataB <- read_delim("../unit_tests/datasets/CSVs/data_ANOVA_Balanced_with_inter_V1V2.csv", ",") %>%
+rawDataB <- read_delim("../unit_tests/data/dementia/CSVs/data_ANOVA_Balanced_with_inter_V1V2.csv", ",") %>%
   mutate(
     var_I1 = as.factor(var_I1),
     var_I2 = as.factor(var_I2),
@@ -45,7 +45,7 @@ Test3Result <-toJSON(anovaResult$main$asDF)
 
 ####################################################################################################################################
 #IMPORT UNBALANCED DATA
-rawDataUB <- read_delim("../unit_tests/datasets/CSVs/data_ANOVA_Unbalanced_with_inter_V1V2.csv", ",")
+rawDataUB <- read_delim("../unit_tests/data/dementia/CSVs/data_ANOVA_Unbalanced_with_inter_V1V2.csv", ",")
 rawDataUB <- rawDataUB %>%
   mutate(
     var_I1 = as.factor(var_I1),
@@ -97,7 +97,7 @@ Test7Result <-toJSON(anovaResult$main$asDF)
 
 ####################################################################################################################################
 #With data similar to our target
-df0 <- read_csv("../unit_tests/datasets/CSVs/dataset_0.csv") %>%
+df0 <- read_csv("../unit_tests/data/dementia/CSVs/dataset_0.csv") %>%
   mutate(
     agegroup                = as.ordered(agegroup),
     alzheimerbroadcategory  = as.factor(alzheimerbroadcategory),

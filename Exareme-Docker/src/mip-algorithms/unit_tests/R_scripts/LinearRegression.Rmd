@@ -26,7 +26,7 @@ dummyCodingContrast <- function(variable) {
 }
 
 #Load data "desd-synthdata.csv" and check number of rows = 1000.
-rawData <- read_csv("../unit_tests/datasets/CSVs/desd-synthdata.csv")
+rawData <- read_csv("../unit_tests/data/dementia/CSVs/desd-synthdata.csv")
 
 ### Test 1.1: Test linear regression with one categorical regressor
 df_LR11 <- rawData %>%
