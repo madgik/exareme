@@ -39,7 +39,7 @@ For example:
 
 -> Data Folder <br />
 ------> Dementia <br />
-----------> datasets.csv <br />
+----------> CDEsMetadata.json <br />
 ------> Neuropathology <br />
 ----------> datasets.csv <br />
 ----------> CDEsMetadata.json <br />
