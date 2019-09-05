@@ -16,11 +16,33 @@ We will refer to the machine from which you run the ansible scripts as Host and 
 
 3) Install Docker in all Remote hosts.
 
-### Important
-In every node there should be a folder containing 2 files:
+### Important (Data Structure)
+In every node the DATA should follow a specific structure. We will refer to the path of the DATA folder as ```data_path```. The ```data_path``` can be different across the nodes.
+
+The data folder should contain one folder for each pathology that it has datasets for. Inside that folder there should be:
 1) the datasets.csv file with all the datasets combined and
-2) the CDEsMetadata.json file.
-We will refer to the path of that folder as ```data_path```. The ```data_path``` can be different across the nodes.
+2) the CDEsMetadata.json file for that specific pathology.
+
+For example:
+
+-> Data Folder
+----> Dementia
+-------> datasets.csv
+-------> CDEsMetadata.json
+----> Neuropathology
+-------> datasets.csv
+-------> CDEsMetadata.json
+
+The master node should have the CDEsMetadata.json for every pathology even if it doesn't contain a datasets.csv file.
+
+For example:
+
+-> Data Folder
+----> Dementia
+-------> datasets.csv
+----> Neuropathology
+-------> datasets.csv
+-------> CDEsMetadata.json
 
 # Preparation
 
