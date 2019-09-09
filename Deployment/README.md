@@ -16,7 +16,8 @@ We will refer to the machine from which you run the ansible scripts as Admin and
 Create a folder on each target machine containing 2 files:
 1) the datasets.csv file with all the datasets combined and
 2) the CDEsMetadata.json file.
-You can learn more about datasets.csv and CDEsMetadata.json in: Exareme-Docker/src/mip-algorithms/unit_tests/datasets/ReadMe
+You can learn more about datasets.csv and CDEsMetadata.json in: 
+```Exareme-Docker/src/mip-algorithms/unit_tests/datasets/ReadMe```
 
 We will refer to the path of that folder as ```data_path```. The ```data_path``` can be different across the target machines.
 
