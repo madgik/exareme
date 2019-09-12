@@ -6,5 +6,5 @@ select execprogram(null, "/root/exareme/set-local-datasets.sh");
 
 var 'a' from select count(distinct(rid)) as sum1 from (select distinct rid from (toeav %{db_query}));
 
-var 'b' from select execprogram(null,'cat','/root/exareme/etc/exareme/name');
+var 'b' from select getenv('NODE_NAME');
 select var('a') as sum1, val as val, var('b') as who from (select distinct val from (toeav %{db_query}) where colname = 'dataset') group by val;

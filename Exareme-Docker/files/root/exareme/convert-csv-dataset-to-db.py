@@ -13,9 +13,9 @@ import json
 from argparse import ArgumentParser
 
 
-def createMetadataDictionary(variablesMetadataPath):
-    variablesMetadata = open(variablesMetadataPath)
-    metadataJSON = json.load(variablesMetadata)
+def createMetadataDictionary(CDEsMetadataPath):
+    CDEsMetadata = open(CDEsMetadataPath)
+    metadataJSON = json.load(CDEsMetadata)
 
     metadataDictionary = {}
     metadataDictionary['subjectcode'] = 'text'
@@ -27,6 +27,8 @@ def createMetadataDictionary(variablesMetadataPath):
 def addGroupVariablesToDictionary(groupMetadata, metadataDictionary):
     if 'variables' in groupMetadata:
         for variable in groupMetadata['variables']:
+            if 'sql_type' not in variable:
+                raise ValueError('The variable "' + variable['code'] + '" does not contain the sql_type field in the metadata.')
             metadataDictionary[variable['code']] = variable['sql_type']
     if 'groups' in groupMetadata:
         for group in groupMetadata['groups']:
@@ -35,9 +37,9 @@ def addGroupVariablesToDictionary(groupMetadata, metadataDictionary):
     return metadataDictionary
 
 
-def createMetadataList(variablesMetadataPath):
-    variablesMetadata = open(variablesMetadataPath)
-    metadataJSON = json.load(variablesMetadata)
+def createMetadataList(CDEsMetadataPath):
+    CDEsMetadata = open(CDEsMetadataPath)
+    metadataJSON = json.load(CDEsMetadata)
 
     metadataList = []
     metadataList = addGroupVariablesToList(metadataJSON,
@@ -50,8 +52,14 @@ def addGroupVariablesToList(groupMetadata, metadataList):
         for variable in groupMetadata['variables']:
             variableDictionary = {}
             variableDictionary['code'] = variable['code']
+            if 'sql_type' not in variable:
+                raise ValueError('The variable "' + variable['code'] + '" does not contain the sql_type field in the metadata.')
             variableDictionary['sql_type'] = variable['sql_type']
+            if 'isCategorical' not in variable:
+                raise ValueError('The variable "' + variable['code'] + '" does not contain the isCategorical field in the metadata.')
             variableDictionary['isCategorical'] = '1' if variable['isCategorical'] else '0'
+            if variable['isCategorical'] and 'enumerations' not in variable:
+                raise ValueError('The variable "' + variable['code'] + '" does not contain enumerations even though it is categorical.')
             if 'enumerations' in variable: 
                 enumerations = []
                 for enumeration in variable['enumerations']:
@@ -83,7 +91,7 @@ def main():
     parser = ArgumentParser()
     parser.add_argument('-c', '--csvFilePath', required=True,
                         help='The folder of the csv dataset.')
-    parser.add_argument('-v', '--variablesMetadataPath', required=True,
+    parser.add_argument('-v', '--CDEsMetadataPath', required=True,
                         help='The folder of the metadata file.')
     parser.add_argument('-o', '--outputDBAbsPath', required=True,
                         help='The folder where the output db file is going to be.'
@@ -91,12 +99,12 @@ def main():
     args = parser.parse_args()
 
     csvFilePath = os.path.abspath(args.csvFilePath)
-    variablesMetadataPath = os.path.abspath(args.variablesMetadataPath)
+    CDEsMetadataPath = os.path.abspath(args.CDEsMetadataPath)
     outputDBAbsPath = args.outputDBAbsPath
 
     # Transform the metadata json into a column name -> column type dictionary
 
-    variablesTypesDict = createMetadataDictionary(variablesMetadataPath)
+    variablesTypesDict = createMetadataDictionary(CDEsMetadataPath)
 
     # Create the query for the sqlite data table
 
@@ -108,6 +116,8 @@ def main():
     subjectcode = csvHeader[0]
     createDataTableQuery += ' ' + subjectcode + ' TEXT'
     for column in csvHeader[1:]:
+        if column not in variablesTypesDict:
+            raise ValueError('Column: "' + column + '" does not exist in the metadata file provided.')
         columnType = variablesTypesDict[column]
         createDataTableQuery += ', ' + column + ' ' + columnType
     createDataTableQuery += ')'
@@ -140,7 +150,7 @@ def main():
             raise ValueError('Row: ' + str(row) + ', Query: ' + str(insertRowQuery))
 
     # Transform the metadata JSON to a list
-    metadataList = createMetadataList(variablesMetadataPath)
+    metadataList = createMetadataList(CDEsMetadataPath)
 
     # Create the query for the metadata table
     createMetadataTableQuery = 'CREATE TABLE METADATA('

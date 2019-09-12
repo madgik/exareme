@@ -1,0 +1,6 @@
+- name: Copy File
+  copy:
+    src: ../Metadata/CDEsMetadata.json
+    dest: "{{ data_path }}"
+    owner: "{{ become_user }}"
+    group: "{{ become_user }}"

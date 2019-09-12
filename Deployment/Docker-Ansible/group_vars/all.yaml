@@ -1,0 +1,26 @@
+# Exareme Tag
+EXAREME_TAG: "latest"
+# Exareme Image
+EXAREME_IMAGE: "thanasulas/exareme"
+
+
+
+## Nothing to change here  ##
+
+# Key-Value Store
+EXAREME_KEYSTORE: "exareme-keystore:8500"
+# Internal Exareme data path
+DOCKER_PATH: "/root/exareme/data/"
+
+# Portainer
+PORTAINER_PORT: "9000"
+PORTAINER_IMAGE: "portainer/portainer"
+PORTAINER_VERSION: ":latest"
+PORTAINER_DATA: "{{hostvars['master']['home_path']}}portainer"
+
+
+
+
+
+
+

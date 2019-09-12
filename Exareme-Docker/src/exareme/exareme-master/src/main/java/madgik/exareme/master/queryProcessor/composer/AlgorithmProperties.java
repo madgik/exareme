@@ -2,7 +2,7 @@ package madgik.exareme.master.queryProcessor.composer;
 
 import madgik.exareme.master.queryProcessor.composer.Exceptions.AlgorithmException;
 import madgik.exareme.master.queryProcessor.composer.Exceptions.ComposerException;
-import madgik.exareme.master.queryProcessor.composer.Exceptions.VariablesMetadataException;
+import madgik.exareme.master.queryProcessor.composer.Exceptions.CDEsMetadataException;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -130,7 +130,7 @@ public class AlgorithmProperties {
      * @throws AlgorithmException when algorithm's properties do not match the inputContent
      */
     public void mergeAlgorithmParametersWithInputContent(HashMap<String, String> inputContent)
-            throws AlgorithmException, VariablesMetadataException {
+            throws AlgorithmException, CDEsMetadataException {
 
         for (ParameterProperties parameterProperties : this.getParameters()) {
             String value = inputContent.get(parameterProperties.getName());
@@ -162,7 +162,7 @@ public class AlgorithmProperties {
     private static void validateAlgorithmParameterType(
             String value,
             ParameterProperties parameterProperties
-    ) throws AlgorithmException, VariablesMetadataException {
+    ) throws AlgorithmException, CDEsMetadataException {
 
         if (parameterProperties.getType().equals(ParameterProperties.ParameterType.column)) {
             String[] values = value.split(",");
@@ -184,8 +184,8 @@ public class AlgorithmProperties {
     private static void validateCDEVariables(
             String[] variables,
             ParameterProperties parameterProperties
-    ) throws AlgorithmException, VariablesMetadataException {
-        VariablesMetadata metadata = VariablesMetadata.getInstance();
+    ) throws AlgorithmException, CDEsMetadataException {
+        CDEsMetadata metadata = CDEsMetadata.getInstance();
         for (String curValue : variables) {
             if (!metadata.columnExists(curValue)) {
                 throw new AlgorithmException("The CDE '" + curValue + "' does not exist.");

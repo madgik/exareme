@@ -1,0 +1,7 @@
+{
+    "name": "HEALTH_CHECK",
+    "desc": "Algorithm used to test the health of the nodes.",
+    "type": "python_local_global",
+    "status": "enabled",
+    "parameters": []
+}
