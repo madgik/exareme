@@ -9,7 +9,7 @@ password () {
         if [[ "${answer}" == "y" ]]; then
             echo "Type your Ansible password:"
             read -s password
-            echo $password >> ~/.vault_pass.txt
+            echo $password > ~/.vault_pass.txt
             ansible_playbook+="--vault-password-file ~/.vault_pass.txt "
             break
         elif [[ "${answer}" == "n" ]]; then
@@ -29,7 +29,7 @@ init_ansible_playbook () {
 ansible_playbook="ansible-playbook -i hosts.ini -c paramiko -e@vault_file.yaml "
 
 echo -e "\nAnsible-vault gives you the simplicity of storing your Ansible password in a file. \
-Looking for file \"~/.vault_pass.txt\"... (It may be required to enter your sudo password..)\""
+Place the user's sudo password in this machine for looking file \"~/.vault_pass.txt\"...\""
 
 # --vault-password-file or --ask-vault-pass
 if [[ -z $(sudo find ~/.vault_pass.txt) ]]; then

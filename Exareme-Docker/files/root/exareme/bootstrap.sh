@@ -155,7 +155,7 @@ if [[ "${MASTER_FLAG}" != "master" ]]; then
 		fi
 	done
 
-	#Health check for Worker. LIST_DATASET algorithm execution
+	# Health check for Worker. HEALTH_CHECK algorithm execution
 	echo "Health check for Worker node["${MY_IP}","${NODE_NAME}"]"
 	check="$(curl -s ${MASTER_IP}:9092/check/worker?IP_MASTER=${MASTER_IP}?IP_WORKER=${MY_IP})"
 
@@ -166,9 +166,8 @@ if [[ "${MASTER_FLAG}" != "master" ]]; then
 		exit 1
 	fi
 
+	getNames="$( echo ${check} | jq '.active_nodes')"
 
-	getNames="$( echo ${check} | jq '.active_nodes')"	
-	
 	#Retrieve result as json. If $NODE_NAME exists in result, the algorithm run in the specific node
 	if [[ $getNames = *${NODE_NAME}* ]]; then
 		echo -e "\nWorker node["${MY_IP}","${NODE_NAME}"] connected to Master node["${MASTER_IP}","${MASTER_NAME}"]"
@@ -243,7 +242,7 @@ else
 		echo "Running set-local-datasets."
 		./set-local-datasets.sh
 
-		#Health check for Master. LIST_DATASET algorithm execution
+		# Health check for Master. HEALTH_CHECK algorithm execution
 		echo "Health check for Master node["${MY_IP}","${NODE_NAME}"]"
 		check="$(curl -s ${MY_IP}:9092/check/worker?IP_MASTER=${MY_IP}?IP_WORKER=${MY_IP})"	 #Master has a Worker instance. So in this case IP_MASTER / IP_WORKER is the same
 
@@ -254,8 +253,8 @@ else
 			 exit 1
 		fi
 
-        getNames="$( echo ${check} | jq '.active_nodes')"	
-	 	
+		getNames="$( echo ${check} | jq '.active_nodes')"
+
 		#Retrieve result as json. If $NODE_NAME exists in result, the algorithm run in the specific node
 		if [[ $getNames = *${NODE_NAME}* ]]; then
 			echo -e "\nMaster node["${MY_IP}","${NODE_NAME}"] initialized"

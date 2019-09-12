@@ -1,20 +1,16 @@
 # Exareme Deployment Guide
 
-Here you will find all the informations needed in order to deploy Exareme in your environment via Ansible scripts. 
+Here you will find all the information needed in order to deploy Exareme in your environment via Ansible scripts.
 
-We will refer to the machine from which you run the ansible scripts as Host and to the machines where you will install the Exareme nodes [master/workers] as Remote.
+We will refer to the machine from which you run the ansible scripts as Admin and to the machines where you will install the Exareme nodes [master/workers] as Target.
 
 # Requirements
 
-1) Install Ansible in Host machine:
+1) Install Ansible (version 2.0.0.2) in Admin machine.
 
-```sudo apt install ansible```
+2) Install Python (version 2.7) in all Target machines, in order for playbooks to run.
 
-2) Install Python in all Remote hosts, in order for playbooks to run:
-
-```sudo apt-get install python```
-
-3) Install Docker in all Remote hosts.
+3) Install Docker in all Target machines.
 
 ### Important (Data Structure)
 In every node the DATA should follow a specific structure. We will refer to the path of the DATA folder as ```data_path```. The ```data_path``` can be different across the nodes.
@@ -44,13 +40,14 @@ For example:
 ----------> datasets.csv <br />
 ----------> CDEsMetadata.json <br />
 
+
 # Preparation
 
 ## Initialize variables
 
-1) Changes in ```hosts.ini```
+1) Changes in ```Deployment/Docker-Ansible/hosts.ini```
 
-Here is an example of hosts.ini where we have 3 Remote machines, one [master] of Exareme and two [workers] of Exareme.
+Here is an example of hosts.ini where we have 3 Target machines, one [master] of Exareme and two [workers] of Exareme.
 
 ```
    [master]
@@ -90,9 +87,10 @@ Here is an example of hosts.ini where we have 3 Remote machines, one [master] of
 ```
 [You can find the hostname of any machine by executing ```hostname``` in terminal]
 
-[Requirement1: Mind that the variable ```data_path``` is the path where your Data CSV and the Metadata file are stored in your Remote Host.]
-[Requirement2: Mind that the variable ```home_path``` is the path where ```Compose-Files``` will be stored in the master node. Compose-Files
-contains 2 docker-compose.yaml files for deploying the services. It can be Any path]
+[Requirement1: Mind that the variable ```data_path``` is the path where your Data CSV (datasets.csv) and the Metadata file (CDEsMetadata.json)
+are stored in your Target machine.]
+[Requirement2: Mind that the variable ```home_path``` is the path where ```Deployment/Compose-Files/``` will be stored in the master node. Compose-Files
+contains 2 docker-compose.yaml files for deploying the services. The ```home_path``` can be Any path]
 
 You can see that there are 2 main categories in hosts.ini file. The first one is ```[master]```, the second one is ```[workers]```.
 
@@ -144,12 +142,12 @@ Ansible-vault comes with the installation of ansible. Make sure you have it inst
 With ansible-vault we can have an encrypted file which will contain sensitive information like the ones shown above.
 
 In order to create the file you need to
-```ansible-vault create vault_file.yaml``` inside ```Docker-Ansible``` folder.
+```ansible-vault create vault_file.yaml``` inside ```Deployment/Docker-Ansible/``` folder.
 It will ask for a vault-password that you will need to enter it each time you run a playbook. So keep it in mind.
 
 Here you will add
 ```
-# remote_user and ssh_pass will be user to login to the remote hostname
+# remote_user and ssh_pass will be user to login to the target hostname
 # become_user and become_pass will be used to execute docker and other commands. Make sure that user has permission to run docker commands. You could use root if possible.
 
    master_remote_user: your_username
@@ -169,7 +167,7 @@ Here you will add
 ```
 all in plaintext. If you have more than 2 workers, you will add those too by adding ```workerN_...``` in front of each variable where N the increased number. 
 [Keep in mind that your password can be anything you want But ansible has a special character for comments ```#``` . If your password contains that specific character ansible will take the characters next to it as comments.]
-When you exit you can see that vault_file.yaml is encrypted with all your sensitive informations in there.
+When you exit you can see that vault_file.yaml is encrypted with all your sensitive information in there.
 
 If you want to edit the file you can do so whenever by
 ```ansible-vault edit vault_file.yaml```
@@ -282,7 +280,7 @@ Go to your ```Services``` to check each service's logs and see if everything is 
 
 1) Under ```Services``` in the left menu check that all services has 1 replicas: ```replicated 1 / 1```. 
 
-If this is not the case for the Worker nodes, meening you get 0 replicas: ```replicated 0 / 1```, then it is possible that you started an Exareme Worker service before joining that Worker in the Swarm. 
+If this is not the case for the Worker nodes, meaning you get 0 replicas: ```replicated 0 / 1```, then it is possible that you started an Exareme Worker service before joining that Worker in the Swarm.
 i) Stop the spesific Worker via:
 ``` ansible-playbook -i hosts.ini Stop-Exareme-Worker.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=workerN"``` , 
 ii) Join the spesific Worker in the Swarm via: 
