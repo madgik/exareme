@@ -152,7 +152,7 @@ if [[ "${MASTER_FLAG}" != "master" ]]; then
         fi
     done
 
-    #Health check for Worker. LIST_DATASET algorithm execution
+    # Health check for Worker. HEALTH_CHECK algorithm execution.
     echo "Health check for Worker node["${MY_IP}","${NODE_NAME}"]"
     check="$(curl -s ${MASTER_IP}:9092/check/worker?IP_MASTER=${MASTER_IP}?IP_WORKER=${MY_IP})"
 
@@ -236,7 +236,7 @@ else
         done
 	
 
-        #Health check for Master. LIST_DATASET algorithm execution
+        # Health check for Worker. HEALTH_CHECK algorithm execution.
         echo "Health check for Master node["${MY_IP}","${NODE_NAME}"]"
         check="$(curl -s ${MY_IP}:9092/check/worker?IP_MASTER=${MY_IP}?IP_WORKER=${MY_IP})"     #Master has a Worker instance. So in this case IP_MASTER / IP_WORKER is the same
 
