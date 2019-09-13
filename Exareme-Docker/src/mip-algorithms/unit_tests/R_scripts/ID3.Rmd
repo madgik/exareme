@@ -1,0 +1,12 @@
+library(tidyverse)
+library(jsonlite)
+library(RWeka)
+mydata <-read.csv("../unit_tests/datasets/CSVs/contact_lenses.csv",header=T)
+## load the package
+WPM("load-package", "simpleEducationalLearningSchemes")
+## make classifier
+ID3 <- make_Weka_classifier("weka/classifiers/trees/Id3")
+## test it out.
+# ID3(`CL_contact_lenses` ~ CL_age+CL_spectacle_prescrip+CL_astigmatism+CL_tear_prod_rate, data = mydata)
+id3_model = id3_classifier( `CL_contact_lenses` ~ CL_age+CL_spectacle_prescrip+CL_astigmatism+CL_tear_prod_rate, data = mydata)
+id3_model

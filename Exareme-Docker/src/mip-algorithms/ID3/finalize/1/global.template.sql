@@ -14,12 +14,10 @@ select no  as `id`,colname as `colname`, colval as `edge`,nextnode as `childnode
 
 var 'jsonresult' from select * from (treetojson select no,tabletojson(no,colname,colval,nextnode,leafval,"id,colname,edge,childnodes,leafval",0) from defaultDB.globaltree
 group by no);
---where '%{outputformat}'= 'json';
 
 -- var 'wekaresult' from select tabletojson(no,result, "no,result") from
--- (formattreetotableoutput select no as id ,jgroup(jpack(colname,colval,nextnode,leafval)) as nodeinfo
+-- (formattreetotableoutput select no as id,jgroup(jpack(colname,colval,nextnode,leafval)) as nodeinfo
 -- from defaultDB.globaltree group by no order by id);
--- --where '%{outputformat}'= 'wekaviewer';
 
 insert into defaultDB.id3resultl
 select '{"result": [ %{pfaresult}, {"type": "application/json", "data": %{jsonresult}} ]}';
