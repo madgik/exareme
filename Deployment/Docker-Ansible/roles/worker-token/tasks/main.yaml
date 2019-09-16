@@ -1,0 +1,8 @@
+---
+- name: Get The Worker join-token
+  shell: docker swarm join-token --quiet worker
+  register: worker_token
+
+- name: Remove node from the swarm that has the same hostname
+  shell: docker node rm {{ my_name }} --force
+  ignore_errors: true

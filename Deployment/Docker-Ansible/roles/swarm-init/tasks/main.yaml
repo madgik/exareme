@@ -1,0 +1,41 @@
+---
+- name: Check If Swarm Has Already Been Initialized
+  shell: docker node ls
+  register: swarm_status
+  ignore_errors: true
+
+- name: Initialize Docker Swarm
+  shell: >
+        docker swarm init
+        --advertise-addr={{ ansible_host }}
+  when: swarm_status.rc != 0
+  run_once: true
+
+- name: Check If mip-federation Network Has Already Been Initialized
+  shell: docker network inspect mip-federation
+  register: network_status
+  ignore_errors: true
+
+- name: Create Swarm Network
+  shell: >
+        docker network create 
+        --driver=overlay 
+        --opt encrypted 
+        --subnet=10.20.30.0/24 
+        --ip-range=10.20.30.0/24 
+        --gateway=10.20.30.254 
+        mip-federation
+  register: swarm_network
+  when: network_status.rc != 0
+
+- name: Check if there are already stacks that need to be removed
+  shell: docker stack ls --format '{{ "{{" }}.Name {{ "}}" }}'
+  register: stackName
+  ignore_errors: true
+
+- name:  Remove stacks
+  shell: docker stack rm {{ item }}
+  with_items:
+    - "{{ stackName.stdout_lines }}"
+  when: network_status.rc == 0
+

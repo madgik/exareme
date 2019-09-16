@@ -5,14 +5,14 @@
 	"parameters": [{
 			"name": "x",
 			"desc": "A vector of strings naming the variables of interest in data",
-				"type": "column",
-				"columnValuesSQLType": "real,integer",
-				"columnValuesIsCategorical": "",
-				"columnValuesNumOfEnumerations": "",
-				"value": "righthippocampus,lefthippocampus",
-				"valueNotBlank": true,
-				"valueMultiple": true,
-				"valueType": "string"
+			"type": "column",
+			"columnValuesSQLType": "real,integer",
+			"columnValuesIsCategorical": "",
+			"columnValuesNumOfEnumerations": "",
+			"value": "righthippocampus,lefthippocampus",
+			"valueNotBlank": true,
+			"valueMultiple": true,
+			"valueType": "string"
 		}, {
 			"name": "testvalue",
 			"desc": "A number specifying the value of the null hypothesis",

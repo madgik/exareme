@@ -1,0 +1,10 @@
+---
+- name: Get Hostname For Master Node
+  shell: docker node ls -f "role=manager" --format '{{ "{{" }}.Hostname{{ "}}" }}'
+  register: hostName
+
+- name:  Add Label Name To Master Node
+  shell: docker node update --label-add name={{ item }} {{ item }}
+  with_items: 
+   - "{{ hostName.stdout_lines }}"
+

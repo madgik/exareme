@@ -237,7 +237,7 @@ public class Composer {
         String localScriptPath = ComposerConstants.getAlgorithmFolderPath(algorithmName) + "/local.template.sql";
         String algorithmFolderPath = ComposerConstants.getAlgorithmFolderPath(algorithmName);
 
-        dflScript.append("distributed create table " + outputGlobalTbl + " as external \n");
+        dflScript.append("distributed create table " + outputGlobalTbl + " as direct \n");
         dflScript.append(String.format("select * from (\n  execnselect 'path:%s' ", algorithmFolderPath));
         for (ParameterProperties parameter : algorithmParameters) {
             dflScript.append(String.format("'%s:%s' ", parameter.getName(), parameter.getValue()));
@@ -291,7 +291,7 @@ public class Composer {
 
         // Format global
         dflScript.append(String
-                .format("\nusing input_global_tbl \ndistributed create table %s as external \n",
+                .format("\nusing input_global_tbl \ndistributed create table %s as direct \n",
                         outputGlobalTbl));
         dflScript.append("select * \n");
         dflScript.append("from (\n");
@@ -368,11 +368,11 @@ public class Composer {
             // Format global
             if (iteration != listFiles.length) {
                 dflScript.append(String.format(
-                        "\nusing %s \ndistributed create temporary table %s as external \n",
+                        "\nusing %s \ndistributed create temporary table %s as direct \n",
                         inputGlobalTbl, tempOutputGlobalTbl));
             } else {
                 dflScript.append(String
-                        .format("\nusing %s \ndistributed create table %s as external \n",
+                        .format("\nusing %s \ndistributed create table %s as direct \n",
                                 inputGlobalTbl, outputGlobalTbl));
             }
             dflScript.append(String.format("select * from (\n  execnselect 'path:%s' ",
@@ -418,7 +418,7 @@ public class Composer {
         String prevOutputLocalTbl;
 
         dflScript.append(String.format(
-                "distributed create temporary table %s as remote \n", outputLocalTbl));
+                "distributed create temporary table %s as direct \n", outputLocalTbl));
         dflScript.append(String
                 .format("select * from (\n  execnselect 'path:%s' ", algorithmFolderPath));
         for (ParameterProperties parameter : algorithmParameters) {
@@ -435,7 +435,7 @@ public class Composer {
             outputLocalTbl = "output_local_tbl_" + iteration;
             prevOutputLocalTbl = "output_local_tbl_" + (iteration - 1);
 
-            dflScript.append(String.format("using %s distributed create temporary table %s as remote \n",
+            dflScript.append(String.format("using %s distributed create temporary table %s as direct \n",
                     prevOutputLocalTbl, outputLocalTbl));
             dflScript.append(String.format("select * from (\n  execnselect 'path:%s' ", algorithmFolderPath));
             for (ParameterProperties parameter : algorithmParameters) {
@@ -451,7 +451,7 @@ public class Composer {
         }
 
         prevOutputLocalTbl = "output_local_tbl_" + (numberOfWorkers - 1);
-        dflScript.append(String.format("using output_local_tbl_%d distributed create table %s as external ",
+        dflScript.append(String.format("using output_local_tbl_%d distributed create table %s as direct ",
                 (numberOfWorkers - 1), outputGlobalTbl));
         dflScript.append(String.format("select * from (\n  execnselect 'path:%s' ", algorithmFolderPath));
         for (ParameterProperties parameter : algorithmParameters) {
@@ -604,7 +604,7 @@ public class Composer {
         String localPythonScriptPath = ComposerConstants.getAlgorithmFolderPath(algorithmName) + "/local.py";
 
         // Format local
-        dflScript.append("distributed create table " + outputGlobalTbl + " as external \n");
+        dflScript.append("distributed create table " + outputGlobalTbl + " as direct \n");
         dflScript.append("select * from (\n  call_python_script 'python " + localPythonScriptPath + " ");
         for (ParameterProperties parameter : algorithmParameters) {
             dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue()));
@@ -652,7 +652,7 @@ public class Composer {
 
         // Format global
         dflScript.append(String
-                .format("\nusing input_global_tbl \ndistributed create table %s as external \n",
+                .format("\nusing input_global_tbl \ndistributed create table %s as direct \n",
                         outputGlobalTbl));
         dflScript.append("select * from (\n  call_python_script 'python " + globalPythonScriptPath + " ");
         for (ParameterProperties parameter : algorithmParameters) {
@@ -739,11 +739,11 @@ public class Composer {
             // Format global
             if (iteration != listFiles.length) {
                 dflScript.append(String.format(
-                        "\nusing %s \ndistributed create temporary table %s as external \n",
+                        "\nusing %s \ndistributed create temporary table %s as direct \n",
                         inputGlobalTbl, tempOutputGlobalTbl));
             } else {
                 dflScript.append(String
-                        .format("\nusing %s \ndistributed create table %s as external \n",
+                        .format("\nusing %s \ndistributed create table %s as direct \n",
                                 inputGlobalTbl, outputGlobalTbl));
             }
 

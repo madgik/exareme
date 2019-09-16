@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<service>
-  <short>docker-swarm-worker</short>
-  <description>Firewall configuration for a DockerSwarm worker node.</description>
-  <port protocol="tcp" port="7946"/>
-  <port protocol="udp" port="7946"/>
-  <port protocol="udp" port="4789"/>
-  <port protocol="esp" port=""/>
-</service>

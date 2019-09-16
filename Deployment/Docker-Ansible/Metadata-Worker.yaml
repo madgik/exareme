@@ -1,0 +1,10 @@
+---
+- hosts: '{{ my_host }}'
+  name: Copy Metadata File To Worker
+  remote_user: "{{ hostvars[my_host]['remote_user'] }}"
+  become: yes
+  become_user: "{{ hostvars[my_host]['become_user'] }}"
+  roles:
+   - copy-metadata
+  vars:
+    my_host: "{{ lookup('env', 'my_host') }}"

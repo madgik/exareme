@@ -1,0 +1,11 @@
+---
+- hosts: master
+  name: Stop spesific worker
+  remote_user: "{{ hostvars['master']['remote_user'] }}"
+  become: yes
+  become_user: "{{ hostvars['master']['become_user'] }}"
+  roles:
+   - stop-worker-service
+  vars:
+    my_host: "{{ lookup('env', 'my_host') }}"
+    my_name: "{{ hostvars[my_host]['hostname'] }}"
