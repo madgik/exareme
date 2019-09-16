@@ -12,7 +12,9 @@ We will refer to the machine from which you run the ansible scripts as Admin and
 
 3) Install Docker in all Target machines.
 
-### Important (Data Structure)
+# Preparation
+
+## Data Structure
 In every node the DATA should follow a specific structure. We will refer to the path of the DATA folder as ```data_path```. The ```data_path``` can be different across the nodes.
 
 The data folder should contain one folder for each pathology that it has datasets for. Inside that folder there should be:
@@ -41,11 +43,13 @@ For example:
 ----------> CDEsMetadata.json <br />
 
 
-# Preparation
+## Exareme Version
 
-## Initialize variables
+You can change the version of the Exareme that will be deployed by modifying ```Deployment/Docker-Ansible/group_vars/all.yaml```
 
-1) Changes in ```Deployment/Docker-Ansible/hosts.ini```
+## Initialize Hosts
+
+Go to the ```Deployment/Docker-Ansible/hosts.ini``` file and modify the variables accordingly.
 
 Here is an example of hosts.ini where we have 3 Target machines, one [master] of Exareme and two [workers] of Exareme.
 
@@ -141,7 +145,7 @@ Ansible-vault comes with the installation of ansible. Make sure you have it inst
 
 With ansible-vault we can have an encrypted file which will contain sensitive information like the ones shown above.
 
-In order to create the file you need to
+In order to create the file you need to run the command
 ```ansible-vault create vault_file.yaml``` inside ```Deployment/Docker-Ansible/``` folder.
 It will ask for a vault-password that you will need to enter it each time you run a playbook. So keep it in mind.
 
