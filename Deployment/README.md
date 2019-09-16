@@ -141,11 +141,11 @@ As you can also see in hosts.ini file we have some sensitive data like usernames
 ```
 
 It is not a valid technique to just fill in your sensitive data there, so we will use ```Ansible-Vault```.
-Ansible-vault comes with the installation of ansible. Make sure you have it installed by ```ansible-vault --version```
+Ansible-vault comes with the installation of ansible. Make sure you have it installed by running: ```ansible-vault --version```
 
 With ansible-vault we can have an encrypted file which will contain sensitive information like the ones shown above.
 
-In order to create the file you need to run the command
+In order to create the file you need to run 
 ```ansible-vault create vault_file.yaml``` inside ```Deployment/Docker-Ansible/``` folder.
 It will ask for a vault-password that you will need to enter it each time you run a playbook. So keep it in mind.
 
@@ -173,7 +173,7 @@ all in plaintext. If you have more than 2 workers, you will add those too by add
 [Keep in mind that your password can be anything you want But ansible has a special character for comments ```#``` . If your password contains that specific character ansible will take the characters next to it as comments.]
 When you exit you can see that vault_file.yaml is encrypted with all your sensitive information in there.
 
-If you want to edit the file you can do so whenever by
+If you want to edit the file you can do so whenever by running:
 ```ansible-vault edit vault_file.yaml```
 Place your vault password and edit the file.
 
