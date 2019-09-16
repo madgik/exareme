@@ -25,7 +25,7 @@
 			"methodology": "creactive",
 			"type": "polynominal",
 			"sql_type": "text",
-			"isCategorical": "true"
+			"isCategorical": true
 		}, {
 			"code": "gcsonadmission_motor",
 			"enumerations": [{
@@ -55,7 +55,7 @@
 			"methodology": "creactive",
 			"type": "polynominal",
 			"sql_type": "text",
-			"isCategorical": "true"
+			"isCategorical": true
 		}, {
 			"code": "gcsonadmission_verbal",
 			"enumerations": [{
@@ -82,7 +82,7 @@
 			"methodology": "creactive",
 			"type": "polynominal",
 			"sql_type": "text",
-			"isCategorical": "true"
+			"isCategorical": true
 		}, {
 			"code": "gcsonadmission",
 			"enumerations": [{
@@ -139,7 +139,7 @@
 			"methodology": "creactive",
 			"type": "polynominal",
 			"sql_type": "text",
-			"isCategorical": "true"
+			"isCategorical": true
 		}, {
 			"code": "pupilsonadmission",
 			"enumerations": [{
@@ -160,13 +160,14 @@
 			"methodology": "creactive",
 			"type": "polynominal",
 			"sql_type": "text",
-			"isCategorical": "true"
+			"isCategorical": true
 		}, {
 			"code": "extracranialtrauma",
 			"label": "Extracranial Trauma",
 			"methodology": "creactive",
+			"type": "integer",
 			"sql_type": "int",
-			"type": "integer"
+			"isCategorical": false
 		}, {
 			"code": "petechiae",
 			"enumerations": [{
@@ -181,7 +182,7 @@
 			"methodology": "creactive",
 			"type": "polynominal",
 			"sql_type": "text",
-			"isCategorical": "true"
+			"isCategorical": true
 		}, {
 			"code": "cistern",
 			"enumerations": [{
@@ -200,7 +201,7 @@
 			"toolTip": "Le cisterne perimesencefaliche sono gli spazi liquorali che circondano il mesencefalo.",
 			"type": "polynominal",
 			"sql_type": "text",
-			"isCategorical": "true"
+			"isCategorical": true
 		}, {
 			"code": "shift",
 			"enumerations": [{
@@ -216,7 +217,7 @@
 			"toolTip": "Midline shift refers to a the shift of the brain past the imaginary centre line dividing the brain into its two hemispheres.",
 			"type": "polynominal",
 			"sql_type": "text",
-			"isCategorical": "true"
+			"isCategorical": true
 		}, {
 			"code": "marshall",
 			"enumerations": [{
@@ -243,7 +244,7 @@
 			"methodology": "creactive",
 			"type": "polynominal",
 			"sql_type": "text",
-			"isCategorical": "true"
+			"isCategorical": true
 		}, {
 			"code": "notevacuatedhematoma",
 			"enumerations": [{
@@ -258,7 +259,7 @@
 			"methodology": "creactive",
 			"type": "polynominal",
 			"sql_type": "text",
-			"isCategorical": "true"
+			"isCategorical": true
 		}, {
 			"code": "traumaticsubarachnoidhemorr",
 			"enumerations": [{
@@ -274,7 +275,7 @@
 			"toolTip": "tSAH is blood distributed in the subarachnoid space. Its location can be very limited for example in the interpeduncular space or over the tentorium. Otherwise it can be found in the cortical sulcus or on the brain vault.",
 			"type": "polynominal",
 			"sql_type": "text",
-			"isCategorical": "true"
+			"isCategorical": true
 		}, {
 			"code": "epiduralhematoma",
 			"enumerations": [{
@@ -290,7 +291,7 @@
 			"toolTip": "Collection of blood between the dura mater and cranial theca, caused by fractures that can injure the middle meningeal artery or one of its branches. It may be associated with intracranial hypertension and cause coma, usually after a lucid interval. If promptly operated the prognosis is favourable.",
 			"type": "polynominal",
 			"sql_type": "text",
-			"isCategorical": "true"
+			"isCategorical": true
 		}, {
 			"code": "hypoxia",
 			"enumerations": [{
@@ -308,7 +309,7 @@
 			"methodology": "creactive",
 			"type": "polynominal",
 			"sql_type": "text",
-			"isCategorical": "true"
+			"isCategorical": true
 		}, {
 			"code": "hypotension",
 			"enumerations": [{
@@ -326,7 +327,7 @@
 			"methodology": "creactive",
 			"type": "polynominal",
 			"sql_type": "text",
-			"isCategorical": "true"
+			"isCategorical": true
 		}, {
 			"code": "glucose",
 			"label": "Blood glucose at ER (mg/dl)",
@@ -334,7 +335,7 @@
 			"toolTip": "The first blood glucose value before ICU admission",
 			"type": "real",
 			"sql_type": "real",
-			"isCategorical": "false"
+			"isCategorical": false
 		}, {
 			"code": "hb",
 			"label": "Hemoglobin ER (gr/dl)",
@@ -342,7 +343,7 @@
 			"toolTip": "The lowest hemoglobin value available before ICU admission",
 			"type": "real",
 			"sql_type": "real",
-			"isCategorical": "false"
+			"isCategorical": false
 		}, {
 			"code": "gose",
 			"enumerations": [{
@@ -375,21 +376,21 @@
 			"methodology": "creactive",
 			"type": "polynominal",
 			"sql_type": "text",
-			"isCategorical": "true"
+			"isCategorical": true
 		}, {
 			"code": "impact_prob_core_mortality",
 			"label": "Temporary Impact Probability",
 			"methodology": "creactive",
 			"type": "real",
 			"sql_type": "real",
-			"isCategorical": "false"
+			"isCategorical": false
 		}, {
 			"code": "Mortality",
 			"label": "Six Month Mortality",
 			"methodology": "creactive",
 			"sql_type": "integer",
 			"type": "integer",
-			"isCategorical": "false"
+			"isCategorical": false
 		}, {
 			"code": "dataset",
 			"description": "Variable used to differentiate datasets",
