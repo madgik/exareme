@@ -25,7 +25,7 @@
 			"name": "hypothesis",
 			"desc": "'different' (default), 'greaterthan' or 'lessthan', the alternative hypothesis; different to testValue, greater than testValue, and less than testValue respectively ",
 			"type": "other",
-			"value": "dt",
+			"value": "different",
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "string"
