@@ -31,7 +31,7 @@ def cb_global_init(global_in):
 
     # Pack state and results
     global_state = StateData(n_obs=n_obs, ll_dict=ll_dict, coeff_dict=coeff_dict, iter=iter,
-                             e_name=e_name, o_name=o_name)
+                             e_name=e_name, o_name=o_name, max_deg=max_deg)
     global_out = CBIter_Glob2Loc_TD(coeff_dict)
 
     return global_state, global_out

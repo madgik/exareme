@@ -33,6 +33,26 @@ class CBInit_Loc2Glob_TD(TransferData):
                 self.max_deg
         )
 
+class CBIter_Loc2Glob_TD(TransferData):
+    def __init__(self, *args):
+        if len(args) != 3:
+            raise ValueError('Illegal number of arguments.')
+        self.ll_dict = args[0]
+        self.grad_dict = args[1]
+        self.hess_dict = args[2]
+
+    def get_data(self):
+        return self.ll_dict, self.grad_dict, self.hess_dict
+
+    def __add__(self, other):
+        # assert len(self.gradient) == len(other.gradient), "Local gradient sizes do not agree."
+        # assert self.hessian.shape == other.hessian.shape, "Local Hessian sizes do not agree."
+        return CBIter_Loc2Glob_TD(
+                {deg: self.ll_dict[deg] + other.ll_dict[deg] for deg in range(1, len(self.ll_dict) + 1)},
+                {deg: self.grad_dict[deg] + other.grad_dict[deg] for deg in range(1, len(self.ll_dict) + 1)},
+                {deg: self.hess_dict[deg] + other.hess_dict[deg] for deg in range(1, len(self.ll_dict) + 1)},
+        )
+
 class CBIter_Glob2Loc_TD(TransferData):
     def __init__(self, *args):
         if len(args) != 1:
@@ -41,3 +61,23 @@ class CBIter_Glob2Loc_TD(TransferData):
 
     def get_data(self):
         return self.coeff_dict
+
+class CBFinal_Loc2Glob_TD(TransferData):
+    def __init__(self, *args):
+        if len(args) != 3:
+            raise ValueError('Illegal number of arguments.')
+        self.ll_dict = args[0]
+        self.grad_dict = args[1]
+        self.hess_dict = args[2]
+
+    def get_data(self):
+        return self.ll_dict, self.grad_dict, self.hess_dict
+
+    def __add__(self, other):
+        # assert len(self.gradient) == len(other.gradient), "Local gradient sizes do not agree."
+        # assert self.hessian.shape == other.hessian.shape, "Local Hessian sizes do not agree."
+        return CBIter_Loc2Glob_TD(
+                {deg: self.ll_dict[deg] + other.ll_dict[deg] for deg in range(1, len(self.ll_dict) + 1)},
+                {deg: self.grad_dict[deg] + other.grad_dict[deg] for deg in range(1, len(self.ll_dict) + 1)},
+                {deg: self.hess_dict[deg] + other.hess_dict[deg] for deg in range(1, len(self.ll_dict) + 1)},
+        )
