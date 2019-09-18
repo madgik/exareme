@@ -18,7 +18,8 @@ def test_ID3_1():
             {   "name": "y", "value": "CL_contact_lenses" },
             {   "name": "dataset", "value": "contact-lenses" },
             {   "name": "filter", "value": "" },
-            {   "name": "outputformat", "value": "wekaviewer" }
+            {   "name": "pathology","value":"dementia"}
+
         ]
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
     r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
@@ -59,7 +60,7 @@ def test_ID3_Privacy():
             {   "name": "y", "value": "CL_contact_lenses" },
             {   "name": "dataset", "value": "contact-lenses" },
             {   "name": "filter", "value": "{\"condition\": \"AND\", \"rules\": [{\"id\": \"CL_age\", \"field\": \"CL_age\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"Young\"}], \"valid\": true}" },
-            {   "name": "outputformat", "value": "wekaviewer" }
+            {   "name": "pathology","value":"dementia"}
         ]
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}

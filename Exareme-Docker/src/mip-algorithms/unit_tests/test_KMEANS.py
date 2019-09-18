@@ -34,7 +34,8 @@ class TestkMeans(unittest.TestCase):
                                                  {\"clid\":2,\"lefthippocampus\":2.5,\"righthippocampus\":2.0}]" },
                 {   "name": "dataset", "value": "desd-synthdata" },
                 {   "name": "e", "value": "0.0001" },
-                {   "name": "filter", "value": "" }
+                {   "name": "filter", "value": "" },
+                {   "name": "pathology","value":"dementia"}
             ]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
@@ -57,7 +58,8 @@ class TestkMeans(unittest.TestCase):
                                                      {\"clid\":4,\"rightpallidum\":1.5,\"leftpallidum\":2.0,\"lefthippocampus\":3.0}]" },
                     {   "name": "dataset", "value": "desd-synthdata" },
                     {   "name": "e", "value": "0.0001" },
-                    {   "name": "filter", "value": "" }
+                    {   "name": "filter", "value": "" },
+                    {   "name": "pathology","value":"dementia"}
                 ]
             headers = {'Content-type': 'application/json', "Accept": "text/plain"}
             r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
@@ -81,7 +83,8 @@ class TestkMeans(unittest.TestCase):
                                                 { \"clid\":5,\"rightpallidum\":2.0,\"leftpallidum\":2.2,\"lefthippocampus\":2.3,\"righthippocampus\":4.0}]" },
                 {   "name": "dataset", "value": "desd-synthdata" },
                 {   "name": "e", "value": "0.0001" },
-                {   "name": "filter", "value": "" }
+                {   "name": "filter", "value": "" },
+                {   "name": "pathology","value":"dementia"}
             ]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
@@ -105,7 +108,8 @@ class TestkMeans(unittest.TestCase):
                 { \"clid\":5,\"rightpallidum\":2.0,\"leftpallidum\":2.2,\"lefthippocampus\":2.3,\"righthippocampus\":4.0}]" },
                 {   "name": "dataset", "value": "adni_9rows" },
                 {   "name": "e", "value": "0.0001" },
-                {   "name": "filter", "value": "" }
+                {   "name": "filter", "value": "" },
+                {   "name": "pathology","value":"dementia"}
             ]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
