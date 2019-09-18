@@ -13,13 +13,13 @@ import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.master.queryProcessor.composer.AlgorithmProperties;
 import madgik.exareme.master.queryProcessor.composer.Composer;
 import madgik.exareme.master.queryProcessor.composer.Exceptions.ComposerException;
+import madgik.exareme.worker.art.container.ContainerProxy;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
 
 import static madgik.exareme.common.consts.HBPConstants.DEMO_ALGORITHMS_WORKING_DIRECTORY;
-import static madgik.exareme.master.engine.iterations.handler.IterationsHandlerDFLUtils.copyAlgorithmTemplatesToDemoDirectory;
 
 /**
  * Handles iteration requests
@@ -47,13 +47,14 @@ public class IterationsHandler {
     private IterationsStateManager iterationsStateManager = IterationsStateManagerImpl.getInstance();
     private IterationsScheduler iterationsScheduler = IterationsScheduler.getInstance();
 
+
     // Instance methods -------------------------------------------------------------------------
 
     /**
      * Submits a new iterative algorithm.
      *
-     * <p> Generates required DFL scripts and submits initial query, while returning the new
-     * algorithm's key. This can be used for status querying.
+     * <p> Generates required DFL scripts and submits initial query while returning the iterativeAlgorithmState.
+     * This can be used for status querying.
      *
      * @param adpDBManager        the AdpDBManager of the gateway
      * @param algorithmProperties the properties of this algorithm
@@ -64,19 +65,18 @@ public class IterationsHandler {
      */
     public IterativeAlgorithmState handleNewIterativeAlgorithmRequest(
             AdpDBManager adpDBManager, String algorithmKey,
-            AlgorithmProperties algorithmProperties) {
+            AlgorithmProperties algorithmProperties, ContainerProxy[] usedContainerProxies) {
 
-        // Generate the adpDBClient for this algorithm and a new
-        // IterativeAlgorithmState
-        String database = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey;
-        // -----------------------------------------
-        // Create AdpDBClient of iterative algorithm state (used for submitting all queries)
+        // Generate the AdpDBClient for this iterative algorithm that will be used to execute all the phases' queries
         AdpDBClient adpDBClient;
         try {
+            String database = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey;
             AdpDBClientProperties clientProperties =
                     new AdpDBClientProperties(database, "", "",
                             false, false, -1, 10);
+            clientProperties.setContainerProxies(usedContainerProxies);
             adpDBClient = AdpDBClientFactory.createDBClient(adpDBManager, clientProperties);
+
         } catch (RemoteException e) {
             String errMsg = "Failed to initialize " + AdpDBClient.class.getSimpleName()
                     + " for algorithm: " + algorithmKey;
@@ -86,54 +86,47 @@ public class IterationsHandler {
 
         log.debug("Created " + AdpDBClient.class.getSimpleName() + " for iterative algorithm: " + algorithmKey + ".");
 
+        // Generates the state for the iterative algorithm that will be used throughout the algorithm execution
         IterativeAlgorithmState iterativeAlgorithmState =
                 new IterativeAlgorithmState(algorithmKey, algorithmProperties, adpDBClient);
+
         log.debug("Created " + IterativeAlgorithmState.class.getSimpleName() + " for: "
                 + iterativeAlgorithmState.toString() + ".");
+
         // -----------------------------------------
-        // Copy template files to algorithm's demo directory, prepare DFL scripts and then persist
-        // them, as well.
-
-        String dflScripts[];
-        String demoCurrentAlgorithmDir =
-                DEMO_ALGORITHMS_WORKING_DIRECTORY + "/" + algorithmKey;
-
-        if (algorithmProperties.getType().equals(AlgorithmProperties.AlgorithmType.iterative)) {
-            // Copying algorithm's template files under demo directory, so that these are edited per
-            // algorithm's execution.
-            copyAlgorithmTemplatesToDemoDirectory(algorithmProperties.getName(), algorithmKey);
-
-            dflScripts = IterationsHandlerDFLUtils.prepareDFLScripts(
-                    demoCurrentAlgorithmDir, algorithmKey, algorithmProperties, iterativeAlgorithmState);
-
-        } else if (algorithmProperties.getType().equals(AlgorithmProperties.AlgorithmType.python_iterative)) {
-            // Python iterative algorithms need a smaller procedure. The algorithm files are not copied and modified.
-            dflScripts = new String[
-                    IterativeAlgorithmState.IterativeAlgorithmPhasesModel.values().length];
-
-            int dflScriptIdx = 0;
-            for (IterativeAlgorithmState.IterativeAlgorithmPhasesModel phase :
-                    IterativeAlgorithmState.IterativeAlgorithmPhasesModel.values()) {
-                try {
-                    dflScripts[dflScriptIdx++] = Composer.composePythonIterativeAlgorithmsDFLScript(
+        // Getting the dflScripts and replacing the name of the output table,
+        // that if left unchanged will throw the error "table already exists".
+        // Afterwards save the dflScripts on the demo directory.
+        String[] dflScripts = new String[
+                IterativeAlgorithmState.IterativeAlgorithmPhasesModel.values().length];
+        for (IterativeAlgorithmState.IterativeAlgorithmPhasesModel phase :
+                IterativeAlgorithmState.IterativeAlgorithmPhasesModel.values()) {
+            try {
+                if (algorithmProperties.getType() == AlgorithmProperties.AlgorithmType.python_iterative) {
+                    dflScripts[phase.ordinal()] = Composer.composePythonIterativeAlgorithmsDFLScript(
                             algorithmKey, algorithmProperties, phase);
-
-                } catch (ComposerException e) {
-                    throw new IterationsFatalException("Composer failure to generate DFL script for phase: "
-                            + phase.name() + ".", e);
+                } else if (algorithmProperties.getType() == AlgorithmProperties.AlgorithmType.iterative) {
+                    dflScripts[phase.ordinal()] = Composer.composeIterativeAlgorithmsDFLScript(
+                            algorithmKey, algorithmProperties, phase);
+                } else {
+                    throw new IterationsFatalException("Algorithm type should be iterative or python_iterative.");
                 }
+            } catch (ComposerException e) {
+                throw new IterationsFatalException("Composer failure to generate DFL script for phase: "
+                        + phase.name() + ".", e);
             }
-        } else {
-            throw new IterationsFatalException("handleNewIterativeAlgorithmRequest wasn't called by iterative algorithm");
         }
+        iterativeAlgorithmState.setDflScripts(dflScripts);
 
         for (String dflScript : dflScripts) {
-            log.info("dfl: " + dflScript);
+            log.info("Iterative algorithm dfl Scripts Generated: \n" + dflScript);
         }
 
         try {
             for (IterativeAlgorithmState.IterativeAlgorithmPhasesModel phase :
                     IterativeAlgorithmState.IterativeAlgorithmPhasesModel.values()) {
+                String demoCurrentAlgorithmDir =
+                        DEMO_ALGORITHMS_WORKING_DIRECTORY + "/" + algorithmKey;
                 Composer.persistDFLScriptToAlgorithmsDemoDirectory(
                         demoCurrentAlgorithmDir, dflScripts[phase.ordinal()], phase);
             }
@@ -141,12 +134,7 @@ public class IterationsHandler {
             log.error("Failed to persist DFL scripts for algorithm [" + algorithmKey + "]");
         }
 
-        iterativeAlgorithmState.setDflScripts(dflScripts);
-
-        log.debug("Generated DFL scripts for: " + iterativeAlgorithmState.toString());
-
-        // -----------------------------------------
-        // Only after DFL initialization, submit to IterationsStateManager and schedule it
+        // After DFL initialization, submit to IterationsStateManager and schedule it
         iterationsStateManager.submitIterativeAlgorithm(algorithmKey, iterativeAlgorithmState);
 
         /*

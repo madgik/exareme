@@ -9,6 +9,7 @@ import madgik.exareme.master.engine.iterations.state.IterationsStateManagerImpl;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.master.queryProcessor.composer.AlgorithmProperties;
 import madgik.exareme.master.queryProcessor.composer.Algorithms;
+import madgik.exareme.worker.art.registry.ArtRegistryLocator;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.junit.Before;
@@ -63,7 +64,8 @@ public class IterationsHandlerTest {
         String algorithmKey = IterationsTestGenericUtils.generateAlgorithmKey(algorithmProperties);
 
         final IterativeAlgorithmState ias = handler.handleNewIterativeAlgorithmRequest(
-                AdpDBManagerLocator.getDBManager(), algorithmKey, algorithmProperties);
+                AdpDBManagerLocator.getDBManager(), algorithmKey, algorithmProperties,
+                ArtRegistryLocator.getArtRegistryProxy().getContainers());
 
         final Map<String, IterativeAlgorithmState> iterativeAlgorithmMapping =
                 Whitebox.getInternalState(stateManager, "iterativeAlgorithmMapping");

@@ -35,6 +35,10 @@ def test_LogisticRegression():
             "value": "alzheimerbroadcategory_logreg_test"
         },
         {
+            "name": "pathology",
+            "value": "dementia"
+         },
+        {
             "name" : "dataset",
             "value": "data_logisticRegression"
         },
@@ -109,6 +113,11 @@ def test_LogisticRegression_MultipleDataset():
             "value": "alzheimerbroadcategory_logreg_test"
         },
         {
+            "name": "pathology",
+            "value": "dementia" 
+
+        },
+        {
             "name" : "dataset",
             "value": "data_logisticRegression, adni"
         },
@@ -168,6 +177,10 @@ def test_LogisticRegression_Privacy():
         {
             "name" : "y",
             "value": "alzheimerbroadcategory_logreg_test"
+        },
+        {
+            "name": "pathology",
+            "value": "dementia"
         },
         {
             "name" : "dataset",

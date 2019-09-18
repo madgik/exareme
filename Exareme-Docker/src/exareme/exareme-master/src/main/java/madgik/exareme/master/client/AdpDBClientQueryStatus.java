@@ -18,8 +18,6 @@ public interface AdpDBClientQueryStatus {
 
     String getStatus() throws RemoteException;
 
-    String getStatusIfChanged() throws RemoteException;
-
     boolean hasError() throws RemoteException;
 
     String getError() throws RemoteException;

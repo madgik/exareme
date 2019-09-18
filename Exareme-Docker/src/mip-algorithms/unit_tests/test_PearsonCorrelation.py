@@ -30,6 +30,9 @@ def test_PearsonCorrlation_MIP_AlgoTesting_1():
             "name" : "y",
             "value": "righthippocampus"
         },
+	{   "name": "pathology",
+ 	    "value":"dementia"
+	},
         {
             "name" : "dataset",
             "value": "desd-synthdata"
@@ -72,6 +75,9 @@ def test_PearsonCorrlation_MIP_AlgoTesting_2():
             "name" : "y",
             "value": "opticchiasm"
         },
+	{   "name": "pathology",
+	    "value":"dementia"
+	},
         {
             "name" : "dataset",
             "value": "desd-synthdata"
@@ -114,6 +120,9 @@ def test_PearsonCorrlation_MIP_AlgoTesting_2p1():
             "name" : "y",
             "value": "minimentalstate"
         },
+	{   "name": "pathology",
+	    "value":"dementia"
+	},
         {
             "name" : "dataset",
             "value": "desd-synthdata"
@@ -156,6 +165,9 @@ def test_PearsonCorrlation_MIP_AlgoTesting_3():
             "name" : "y",
             "value": "opticchiasm"
         },
+	{   "name": "pathology",
+	    "value":"dementia"
+	},
         {
             "name" : "dataset",
             "value": "desd-synthdata"
@@ -198,6 +210,9 @@ def test_PearsonCorrlation_MIP_AlgoTesting_3p1():
             "name" : "y",
             "value": "var2"
         },
+	{   "name": "pathology",
+	    "value":"dementia"
+	},
         {
             "name" : "dataset",
             "value": "data_pr1"
@@ -240,6 +255,9 @@ def test_PearsonCorrlation_MIP_AlgoTesting_3p2():
             "name" : "y",
             "value": "var4"
         },
+	{   "name": "pathology",
+	    "value":"dementia"
+	},
         {
             "name" : "dataset",
             "value": "data_pr1"
@@ -292,6 +310,9 @@ def test_PearsonCorrlation_MIP_AlgoTesting_4():
             "name" : "y",
             "value": ""
         },
+	{   "name": "pathology",
+	    "value":"dementia"
+	},
         {
             "name" : "dataset",
             "value": "desd-synthdata"
@@ -350,6 +371,9 @@ def test_PearsonCorrlation_MIP_AlgoTesting_5():
             "name" : "y",
             "value": ""
         },
+	{   "name": "pathology",
+	    "value":"dementia"
+	},
         {
             "name" : "dataset",
             "value": "desd-synthdata"
@@ -408,6 +432,9 @@ def test_PearsonCorrlation_MIP_AlgoTesting_6():
             "name" : "y",
             "value": ""
         },
+	{   "name": "pathology",
+	    "value":"dementia"
+	},
         {
             "name" : "dataset",
             "value": "desd-synthdata"
@@ -466,6 +493,9 @@ def test_PearsonCorrlation_MIP_AlgoTesting_7():
             "name" : "y",
             "value": ""
         },
+	{   "name": "pathology",
+	    "value":"dementia"
+	},
         {
             "name" : "dataset",
             "value": "desd-synthdata"
@@ -497,6 +527,7 @@ def test_PearsonCorrlation_Privacy():
 
     data = [{"name" : "x","value": "lefthippocampus"},
             {"name" : "y","value": "righthippocampus"},
+	    {   "name": "pathology","value":"dementia"},
             {"name" : "dataset","value": "adni_9rows"},
             {"name" : "filter","value": ""},
     	  ]

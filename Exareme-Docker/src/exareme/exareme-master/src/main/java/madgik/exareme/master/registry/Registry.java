@@ -158,7 +158,6 @@ public class Registry {
         } catch (SQLException ex) {
             log.error(ex.getMessage(), ex);
         }
-
     }
 
     public PhysicalTable removePhysicalTable(String name) {
