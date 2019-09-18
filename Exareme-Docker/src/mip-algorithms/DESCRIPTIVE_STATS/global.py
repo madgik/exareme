@@ -28,6 +28,21 @@ def descr_stats_global(global_in):
         # Raw data
         results = [{
             'Label'         : var_name,
+            'Count'         : count,
+            'Frequency'           : freqs
+        }]
+
+        schema = {
+            "fields": [
+                {"name": "Label", "type": "string"},
+                {"name": "Count", "type": "integer"},
+                {"name": "Frequencies", "type": "object"},
+            ]
+        }
+    else:
+        # Raw data
+        results = [{
+            'Label'         : var_name,
             'Count'         : nn,
             'Min'           : xmin,
             'Max'           : xmax,
@@ -49,21 +64,7 @@ def descr_stats_global(global_in):
                 {"name": "Mean - Std.Err", "type": "real"}
             ]
         }
-    else:
-        # Raw data
-        results = [{
-            'Label'         : var_name,
-            'Count'         : count,
-            'Frequency'           : freqs
-        }]
 
-        schema = {
-            "fields": [
-                {"name": "Label", "type": "string"},
-                {"name": "Count", "type": "integer"},
-                {"name": "Frequencies", "type": "object"},
-            ]
-        }
 
 
     result = {
