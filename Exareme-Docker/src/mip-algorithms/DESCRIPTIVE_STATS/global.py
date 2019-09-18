@@ -15,34 +15,46 @@ from lib import DescrStatsLocalDT
 
 
 def descr_stats_global(global_in):
-    nn, sx, sxx, xmin, xmax, schema_X = global_in.get_data()
-    n_cols = len(nn)
-    mean = np.empty(n_cols, dtype=np.float)
-    std = np.empty(n_cols, dtype=np.float)
-    upper_ci = np.empty(n_cols, dtype=np.float)
-    lower_ci = np.empty(n_cols, dtype=np.float)
-    for i in xrange(n_cols):
-        mean[i] = sx[i] / nn[i]
-        std[i] = (sxx[i] / nn[i] - mean[i] ** 2) ** 0.5
-        upper_ci[i] = mean[i] + std[i]
-        lower_ci[i] = mean[i] - std[i]
+    nn, sx, sxx, xmin, xmax, var_name = global_in.get_data()
+
+    mean = sx / nn
+    std = (sxx / nn - mean ** 2) ** 0.5
+    upper_ci = mean + std
+    lower_ci = mean - std
 
     # Raw data
-    result_list = []
-    for i in xrange(n_cols):
-        result_list.append({
-            'Variable'  : schema_X[i],
-            'Mean'      : mean[i],
-            'Std.Err.'  : std[i],
-            'Upper C.I.': upper_ci[i],
-            'Lower C.I.': lower_ci[i]
-        })
+    results = [{
+        'Label'         : var_name,
+        'Count'         : nn,
+        'Min'           : xmin,
+        'Max'           : xmax,
+        'Mean'          : mean,
+        'Std.Err.'      : std,
+        'Mean + Std.Err': upper_ci,
+        'Mean - Std.Err': lower_ci
+    }]
+
+    schema = {
+        "fields": [
+            {"name": "Label", "type": "string"},
+            {"name": "Count", "type": "integer"},
+            {"name": "Min", "type": "real"},
+            {"name": "Max", "type": "real"},
+            {"name": "Mean", "type": "real"},
+            {"name": "Std.Err.", "type": "real"},
+            {"name": "Mean + Std.Err", "type": "real"},
+            {"name": "Mean - Std.Err", "type": "real"}
+        ]
+    }
 
     result = {
         'result': [
             {
-                "type": "application/json",
-                "data": result_list
+                "type": "application/vnd.dataresource+json",
+                "data": {
+                    "data": results,
+                    "schema": schema
+                }
             }
         ]
     }

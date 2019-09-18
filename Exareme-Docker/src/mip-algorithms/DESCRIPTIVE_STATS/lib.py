@@ -18,10 +18,10 @@ class DescrStatsLocalDT(TransferData):
         self.sxx = args[2]
         self.xmin = args[3]
         self.xmax = args[4]
-        self.schema_X = args[5]
+        self.var_name = args[5]
 
     def get_data(self):
-        return self.nn, self.sx, self.sxx, self.xmin, self.xmax, self.schema_X
+        return self.nn, self.sx, self.sxx, self.xmin, self.xmax, self.var_name
 
     def __add__(self, other):
         return DescrStatsLocalDT(
@@ -30,5 +30,5 @@ class DescrStatsLocalDT(TransferData):
                 self.sxx + other.sxx,
                 min(self.xmin, other.xmin),
                 max(self.xmax, other.xmax),
-                self.schema_X,
+                self.var_name,
         )

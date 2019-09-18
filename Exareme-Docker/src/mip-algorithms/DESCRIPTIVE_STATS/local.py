@@ -17,29 +17,18 @@ from lib import DescrStatsLocalDT
 
 def descr_stats_local(local_in):
     # Unpack data
-    X, schema_X = local_in
-    n_obs, n_cols = len(X), len(X[0])
+    x, var_name = local_in
 
-    # Init statistics
-    nn = np.empty(n_cols, dtype=np.int)
-    sx = np.empty(n_cols, dtype=np.float)
-    sxx = np.empty(n_cols, dtype=np.float)
-    xmin = np.empty(n_cols, dtype=np.float)
-    xmax = np.empty(n_cols, dtype=np.float)
+    xm = np.ma.masked_invalid(x)
+    nn = xm.count()
+    if nn < PRIVACY_MAGIC_NUMBER:
+        raise PrivacyError('Removing missing values results in illegal number of datapoints in local db.')
+    sx = xm.sum()
+    sxx = (xm * xm).sum()
+    xmin = xm.min()
+    xmax = xm.max()
 
-    mask = [True in np.isnan(X[row, :]) for row in range(n_obs)]
-    for i in xrange(n_cols):
-        x = X[:, i]
-        xm = ma.masked_array(x, mask=mask)
-        nn[i] = n_obs - sum(mask)
-        if nn[i] < PRIVACY_MAGIC_NUMBER:
-            raise PrivacyError('Removing missing values results in illegal number of datapoints in local db.')
-        sx[i] = xm.sum()
-        sxx[i] = (xm * xm).sum()
-        xmin[i] = xm.min()
-        xmax[i] = xm.max()
-
-        local_out = DescrStatsLocalDT(nn, sx, sxx, xmin, xmax, schema_X)
+    local_out = DescrStatsLocalDT(nn, sx, sxx, xmin, xmax, var_name)
 
     return local_out
 
@@ -47,7 +36,7 @@ def descr_stats_local(local_in):
 def main():
     # Parse arguments
     parser = ArgumentParser()
-    parser.add_argument('-x', required=True, help='Variable names in x, comma separated.')
+    parser.add_argument('-x', required=True, help='Variable name.')
     parser.add_argument('-input_local_DB', required=True, help='Path to local db.')
     parser.add_argument('-db_query', required=True, help='Query to be executed on local db.')
     args, unknown = parser.parse_known_args()
@@ -55,16 +44,10 @@ def main():
     fname_loc_db = path.abspath(args.input_local_DB)
     if args.x == '':
         raise ExaremeError('Field x must be non empty.')
-    schema_X = list(
-            args.x
-                .replace(' ', '')
-                .split(',')
-    )
-    schema, data = query_with_privacy(fname_db=fname_loc_db, query=query)
-    idx_X = [schema.index(v) for v in schema_X if v in schema]
-    data = np.array(data, dtype=np.float64)
-    X = data[:, idx_X]
-    local_in = X, schema
+    var_name = args.x
+    _, data = query_with_privacy(fname_db=fname_loc_db, query=query)
+    x = np.array(data, dtype=np.float64)
+    local_in = x, var_name
 
     # Run algorithm local step
     local_out = descr_stats_local(local_in=local_in)

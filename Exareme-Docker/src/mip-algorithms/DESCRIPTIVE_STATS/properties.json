@@ -11,7 +11,7 @@
             "columnValuesSQLType": "real, integer",
             "columnValuesIsCategorical": "false",
             "columnValuesNumOfEnumerations": "",
-            "value": "leftaccumbensarea, leftacgganteriorcingulategyrus, leftainsanteriorinsula, rightaccumbensarea, rightacgganteriorcingulategyrus, rightainsanteriorinsula",
+            "value": "leftaccumbensarea",
             "valueNotBlank": true,
             "valueMultiple": true,
             "valueType": "string"
