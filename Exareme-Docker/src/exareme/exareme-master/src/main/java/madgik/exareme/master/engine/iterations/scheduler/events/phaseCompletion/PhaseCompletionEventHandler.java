@@ -8,10 +8,13 @@ import madgik.exareme.master.engine.iterations.scheduler.exceptions.IterationsSc
 import madgik.exareme.master.engine.iterations.state.IterationsStateManager;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.master.engine.iterations.state.exceptions.IterationsStateFatalException;
-import madgik.exareme.master.queryProcessor.composer.AlgorithmProperties;
 import madgik.exareme.utils.eventProcessor.EventProcessor;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.rmi.RemoteException;
 
 import static madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState.IterativeAlgorithmPhasesModel.*;
@@ -30,26 +33,22 @@ public class PhaseCompletionEventHandler extends IterationsEventHandler<PhaseCom
 
     /**
      * Handles a phase completion of an iterative algorithm.
-     *
-     * <p>Specifically, if:
-     * <ul>
-     * <li>init phase executed, then submit step phase</li>
-     * <li>step phase executed, then submit termination condition phase</li>
-     * <li>termination condition phase executed, then if iterations should continue submit
-     * termination condition phase, otherwise submit finalize phase</li>
-     * <li>finalize phase executed, then submit an algorithm completion event</li>
-     * </ul><br>
-     * <p>
-     * Before proceeding to submission, we ensure that the query executed has no errors. If it does,
-     * this is logged as an error and the algorithm's state is cleaned from
-     * {@link IterationsStateManager}.
+     * Specifically, if:
+     * - init phase executed, then submit step phase.
+     * - step phase executed, then submit termination condition phase.
+     * - termination condition phase executed, then if iterations should continue submit,
+     * otherwise submit finalize phase.
+     * - finalize phase executed, then submit an algorithm completion event.
+     * Before proceeding to submission, we ensure that the query executed has no errors. If it does
+     * it is logged as an error and the algorithm's state is cleaned from the IterationsStateManager.
      *
      * @throws RemoteException if submission of the query and registering of the listener fails
      */
     @Override
     public void handle(PhaseCompletionEvent event, EventProcessor proc) throws RemoteException {
-        IterativeAlgorithmState ias =
-                iterationsStateManager.getIterativeAlgorithm(event.getAdpDBQueryID());
+
+        IterativeAlgorithmState ias = iterationsStateManager.getIterativeAlgorithm(event.getAdpDBQueryID());
+
         if (ias == null) {
             // In this type of event, if the iterative algorithm state doesn't reside in
             // IterationsStateManager, then it might have been deleted due to an error after
@@ -68,11 +67,10 @@ public class PhaseCompletionEventHandler extends IterationsEventHandler<PhaseCom
                 log.debug("Lock was already acquired, exiting...");
                 return;
             }
-
             iterationsStateManager.removeQueryOfIterativeAlgorithm(event.getAdpDBQueryID());
+
             IterativeAlgorithmState.IterativeAlgorithmPhasesModel previousExecutionPhase =
                     ias.getCurrentExecutionPhase();
-
             try {
                 // Ensure success of previous query
                 // Prepare errMsg in case of RemoteException on hasError check.
@@ -88,6 +86,7 @@ public class PhaseCompletionEventHandler extends IterationsEventHandler<PhaseCom
                     return;
                 }
 
+                // If iteration phase finished successfully =>
                 switch (previousExecutionPhase) {
                     case init:
                         // Initial step phase execution
@@ -96,59 +95,44 @@ public class PhaseCompletionEventHandler extends IterationsEventHandler<PhaseCom
                         break;
 
                     case step:
-                        // Increment #iterations, submit termination condition query & update current
-                        // execution phase.
-                        ias.incrementIterationsNumber();
-
+                        // Increment iterationsNumber, submit termination condition query
+                        // & update current execution phase.
                         errMsg = "Failed to submit [terminationCondition-phase] query of "
                                 + ias.toString() + ".";
+
+                        ias.incrementIterationsNumber();
                         queryStatus = submitQueryAndUpdateExecutionPhase(ias, termination_condition);
                         break;
 
                     case termination_condition:
-                        // Read from iterationsDB table to check value of termination condition
-                        // If set to true, then submit finalize query, otherwise submit a step query.
-                        errMsg = "Failed to read termination condition value for "
-                                + ias.toString() + ".";
+                        // Check the output table of the step phase to see if the iterations should continue or not.
 
-                        boolean shouldContinue;
-                        if (ias.getAlgorithmType().equals(AlgorithmProperties.AlgorithmType.iterative)) {
-                            shouldContinue = ias.readTerminationConditionValue()
-                                    && (ias.getCurrentIterationsNumber() < ias.getMaxIterationsNumber());
-                        } else if (ias.getAlgorithmType().equals(AlgorithmProperties.AlgorithmType.python_iterative)) {
-                            String terminationPhaseResponse = ias.readTerminationConditionScriptOutput();
-                            if(terminationPhaseResponse.contains("STOP")){
-                                shouldContinue = false;
-                            }else if(terminationPhaseResponse.contains("CONTINUE")){
-                                shouldContinue = true;
-                            }else{
-                                String errorMessage = "Termination Condition Phase did not have proper response: " +
-                                        terminationPhaseResponse;
-                                throw new IterationsStateFatalException(errorMessage,ias.getAlgorithmKey());
-                            }
-                        } else {
-                            throw new IterationsStateFatalException("Only allowed for iterative algorithms", ias.getAlgorithmKey());
+                        String terminationConditionResult;
+                        try {
+                            InputStream previousResultStream = ias.getAdpDBClientQueryStatus().getResult();
+                            terminationConditionResult = IOUtils.toString(previousResultStream, StandardCharsets.UTF_8);
+                        } catch (IOException e) {
+                            throw new IterationsStateFatalException(
+                                    "Could not read the termination_condition result table.", ias.getAlgorithmKey());
                         }
+                        log.debug("Termination Condition result: " + terminationConditionResult);
 
-                        String terminationConditionOutput =
-                                ias.readTerminationConditionScriptOutput();
-                        log.debug(ias.toString() + ": termination_condition["
-                                + (ias.getCurrentIterationsNumber() - 1) + "] output: "
-                                + "\n" + terminationConditionOutput);
-
-                        if (shouldContinue) {
+                        if (terminationConditionResult.contains("STOP")) {
+                            errMsg = "Failed to submit [finalize-phase] query of "
+                                    + ias.toString() + ".";
+                            queryStatus = submitQueryAndUpdateExecutionPhase(ias, finalize);
+                        } else if (terminationConditionResult.contains("CONTINUE")) {
                             errMsg = "Failed to submit [step-phase] query of "
                                     + ias.toString() + ".";
                             queryStatus = submitQueryAndUpdateExecutionPhase(ias, step);
                         } else {
-                            queryStatus = submitQueryAndUpdateExecutionPhase(ias, finalize);
-                            errMsg = "Failed to submit [finalize-phase] query of "
-                                    + ias.toString() + ".";
-                            ias.setAdpDBClientFinalizeQueryStatus(queryStatus);
+                            log.error("STOP or CONTINUE should be included in the termination_condition output.");
+                            throw new IterationsStateFatalException("STOP or CONTINUE should be included in the termination_condition output.", ias.getAlgorithmKey());
                         }
                         break;
 
                     case finalize:
+                        // If finalize phase is finished, signal that the algorithm is completed.
                         iterationsDispatcher.submitAlgorithmTerminationEvent(ias.getAlgorithmKey());
                         break;
 
@@ -168,6 +152,7 @@ public class PhaseCompletionEventHandler extends IterationsEventHandler<PhaseCom
             if (queryStatus != null && !previousExecutionPhase.equals(finalize)) {
                 iterationsStateManager.submitQueryForIterativeAlgorithm(ias.getAlgorithmKey(),
                         queryStatus.getQueryID());
+                ias.setAdpDBClientQueryStatus(queryStatus);
                 updateLog(log, queryStatus, ias);
             }
         } finally {

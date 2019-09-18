@@ -28,17 +28,17 @@ class TestHistogram(unittest.TestCase):
         data = [{ "name": "x", "value": "rightententorhinalarea"},
                 {"name": "y", "value": ""},
                 {"name": "bins", "value": "35"},
+		{"name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter", "value": ""}]
+
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
         result = json.loads(r.text)
         print ("AAAA", r.text)
         print ("BBBB1", self.Test1Result)
-        print ("CCC",result['result'][0]['data'])
         resultsComparison(result['result'][0]['data'], json.loads(self.Test1Result))
 
-#
     def test_Histogram_2(self):
         logging.info("---------- TEST 2: Histogram of right ententorhinal area by gender ")
         data = [{ "name": "x", "value": "rightententorhinalarea"},

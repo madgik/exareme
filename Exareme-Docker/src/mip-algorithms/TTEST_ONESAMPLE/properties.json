@@ -22,42 +22,46 @@
 			"valueMultiple": false,
 			"valueType": "real"
 		}, {
-        "name": "hypothesis",
-        "desc": "'different' (default), 'greaterthan' or 'lessthan', the alternative hypothesis; different to testValue, greater than testValue, and less than testValue respectively ",
-        "type": "other",
-        "value": "different",
-        "valueNotBlank": true,
-        "valueMultiple": false,
-        "valueType": "string"
-      },
-      {
-        "name": "effectsize",
-        "desc": "1 or 0 (default), provide Cohen's d effect sizes",
-        "type": "other",
-        "value": "1",
-        "valueNotBlank": true,
-        "valueMultiple": false,
-        "valueType": "integer"
-      },
-      {
-        "name": "ci",
-        "desc": "1 or 0 (default), provide confidence intervals for the mean difference",
-        "type": "other",
-        "value": "1",
-        "valueNotBlank": true,
-        "valueMultiple": false,
-        "valueType": "integer"
-      },
-      {
-        "name": "meandiff",
-        "desc": "1 or 0 (default), provide means and standard deviations ",
-        "type": "other",
-        "value": "1",
-        "valueNotBlank": true,
-        "valueMultiple": false,
-        "valueType": "integer"
-      },
-     {
+			"name": "hypothesis",
+			"desc": "'different' (default), 'greaterthan' or 'lessthan', the alternative hypothesis; different to testValue, greater than testValue, and less than testValue respectively ",
+			"type": "other",
+			"value": "different",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "string"
+		}, {
+			"name": "effectsize",
+			"desc": "1 or 0 (default), provide Cohen's d effect sizes",
+			"type": "other",
+			"value": "1",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "integer"
+		}, {
+			"name": "ci",
+			"desc": "1 or 0 (default), provide confidence intervals for the mean difference",
+			"type": "other",
+			"value": "1",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "integer"
+		}, {
+			"name": "meandiff",
+			"desc": "1 or 0 (default), provide means and standard deviations ",
+			"type": "other",
+			"value": "1",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "integer"
+		}, {
+			"name": "pathology",
+			"desc": "The name of the pathology that the dataset belongs to.",
+			"type": "pathology",
+			"value": "dementia",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "string"
+		}, {
 			"name": "dataset",
 			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty.",
 			"type": "dataset",

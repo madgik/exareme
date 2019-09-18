@@ -29,6 +29,7 @@ class TestLinearRegression(unittest.TestCase):
     		    { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[{\"name\":\"alzheimerbroadcategory\",\"val\":\"AD\"}]"},
     	        { "name": "encodingparameter", "value": "dummycoding"},
+		{   "name": "pathology","value":"dementia"},
                 { "name": "dataset", "value": "desd-synthdata"},
     			{ "name": "filter", "value": ""}
                 ]
@@ -47,6 +48,7 @@ class TestLinearRegression(unittest.TestCase):
     		    { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[{\"name\":\"alzheimerbroadcategory\",\"val\":\"AD\"}]"},
     	        { "name": "encodingparameter", "value": "simplecoding"},
+		{   "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
     			{"name": "filter", "value": ""}
                 ]
@@ -63,6 +65,7 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[{\"name\":\"alzheimerbroadcategory\",\"val\":\"AD\"},{\"name\":\"gender\",\"val\":\"M\"}]"},
                 { "name": "encodingparameter", "value": "dummycoding"},
+		{   "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter", "value": ""}
                 ]
@@ -79,6 +82,7 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[{\"name\":\"alzheimerbroadcategory\",\"val\":\"AD\"},{\"name\":\"gender\",\"val\":\"M\"}]"},
                 { "name": "encodingparameter", "value": "simplecoding"},
+		{   "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter", "value": ""}
                 ]
@@ -95,6 +99,7 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[{\"name\":\"alzheimerbroadcategory\",\"val\":\"AD\"},{\"name\":\"gender\",\"val\":\"M\"}]"},
                 { "name": "encodingparameter", "value": "dummycoding"},
+		{   "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter", "value": ""}
                 ]
@@ -111,6 +116,7 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[{\"name\":\"alzheimerbroadcategory\",\"val\":\"AD\"},{\"name\":\"gender\",\"val\":\"M\"}]"},
                 { "name": "encodingparameter", "value": "simplecoding"},
+		{   "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter", "value": ""}
                 ]
@@ -127,6 +133,7 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[{\"name\":\"gender\",\"val\":\"M\"}]"},
                 { "name": "encodingparameter", "value": "dummycoding"},
+		{   "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter", "value": ""}
                 ]
@@ -143,6 +150,7 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[{\"name\":\"gender\",\"val\":\"M\"}]"},
                 { "name": "encodingparameter", "value": "simplecoding"},
+		{   "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter", "value": ""}
                 ]
@@ -159,6 +167,7 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[{\"name\":\"gender\",\"val\":\"M\"}]"},
                 { "name": "encodingparameter", "value": "dummycoding"},
+		{   "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter", "value": ""}
                 ]
@@ -175,6 +184,7 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[{\"name\":\"gender\",\"val\":\"M\"}]"},
                 { "name": "encodingparameter", "value": "simplecoding"},
+		{   "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter", "value": ""}
                 ]
@@ -190,6 +200,7 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[]"},
                 { "name": "encodingparameter", "value": "dummycoding"},
+		{   "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter", "value": ""}
                 ]
@@ -206,6 +217,7 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[]"},
                 { "name": "encodingparameter", "value": "dummycoding"},
+		{   "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter", "value": ""}
                 ]
@@ -221,6 +233,7 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[]"},
                 { "name": "encodingparameter", "value": "dummycoding"},
+		{   "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter", "value": ""}
                 ]
@@ -237,6 +250,7 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[]"},
                 { "name": "encodingparameter", "value": "dummycoding"},
+		{   "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter", "value": ""}
                 ]
@@ -252,6 +266,7 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[]"},
                 { "name": "encodingparameter", "value": "dummycoding"},
+		{   "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter", "value": ""}
                 ]
@@ -267,6 +282,7 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[]"},
                 { "name": "encodingparameter", "value": "dummycoding"},
+		{   "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter", "value": ""}
                 ]
@@ -282,6 +298,7 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[]"},
                 { "name": "encodingparameter", "value": "simplecoding"},
+		{   "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter", "value": ""}
                 ]
@@ -297,6 +314,7 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[]"},
                 { "name": "encodingparameter", "value": "dummycoding"},
+		{   "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter", "value": ""}
                 ]
@@ -313,6 +331,7 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[]"},
                 { "name": "encodingparameter", "value": "simplecoding"},
+		{   "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter", "value": ""}
                 ]
@@ -328,6 +347,7 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[]"},
                 { "name": "encodingparameter", "value": "dummycoding"},
+		{   "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter", "value": ""}
                 ]
@@ -343,6 +363,7 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[]"},
                 { "name": "encodingparameter", "value": "simplecoding"},
+		{   "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter", "value": ""}
                 ]
@@ -358,6 +379,7 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[]"},
                 { "name": "encodingparameter", "value": "dummycoding"},
+		{   "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter", "value": ""}
                 ]
@@ -374,6 +396,7 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[]"},
                 { "name": "encodingparameter", "value": "simplecoding"},
+		{   "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter", "value": ""}
                 ]
@@ -389,6 +412,7 @@ class TestLinearRegression(unittest.TestCase):
                     { "name": "y",  "value": "lefthippocampus"},
                     { "name": "referencevalues", "value": "[{\"name\":\"gender\",\"val\":\"M\"}]"},
                     { "name": "encodingparameter", "value": "dummycoding"},
+		    {   "name": "pathology","value":"dementia"},
                     {"name": "dataset", "value": "desd-synthdata"},
                     {"name": "filter", "value": ""}
                     ]
@@ -404,6 +428,7 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[{\"name\":\"gender\",\"val\":\"M\"}]"},
                 { "name": "encodingparameter", "value": "simplecoding"},
+		{   "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter", "value": ""}
                 ]
@@ -420,6 +445,7 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[{\"name\":\"gender\",\"val\":\"M\"}]"},
                 { "name": "encodingparameter", "value": "dummycoding"},
+		{   "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter", "value": ""}
                 ]
@@ -435,6 +461,7 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[{\"name\":\"gender\",\"val\":\"M\"}]"},
                 { "name": "encodingparameter", "value": "simplecoding"},
+		{   "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter", "value": ""}
                 ]
@@ -451,6 +478,7 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[{\"name\":\"gender\",\"val\":\"M\"}]"},
                 { "name": "encodingparameter", "value": "dummycoding"},
+		{   "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter", "value": ""}
                 ]
@@ -466,6 +494,7 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[{\"name\":\"gender\",\"val\":\"M\"}]"},
                 { "name": "encodingparameter", "value": "simplecoding"},
+		{   "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter", "value": ""}
                 ]
@@ -482,6 +511,7 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[{\"name\":\"gender\",\"val\":\"M\"}]"},
                 { "name": "encodingparameter", "value": "dummycoding"},
+		{   "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter", "value": ""}
                 ]
@@ -497,6 +527,7 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[{\"name\":\"gender\",\"val\":\"M\"}]"},
                 { "name": "encodingparameter", "value": "simplecoding"},
+		{   "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter", "value": ""}
                 ]
@@ -513,6 +544,7 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[{\"name\":\"alzheimerbroadcategory\",\"val\":\"AD\"},{\"name\":\"gender\",\"val\":\"M\"}]"},
                 { "name": "encodingparameter", "value": "dummycoding"},
+		{   "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "adni_9rows"},
                 {"name": "filter", "value": ""}
                ]

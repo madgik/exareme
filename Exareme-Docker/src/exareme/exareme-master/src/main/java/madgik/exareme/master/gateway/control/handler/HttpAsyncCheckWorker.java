@@ -10,9 +10,7 @@ import madgik.exareme.master.engine.AdpDBManager;
 import madgik.exareme.master.engine.AdpDBManagerLocator;
 import madgik.exareme.master.gateway.ExaremeGatewayUtils;
 import madgik.exareme.master.gateway.async.handler.entity.NQueryResultEntity;
-import madgik.exareme.master.queryProcessor.composer.AlgorithmProperties;
-import madgik.exareme.master.queryProcessor.composer.Algorithms;
-import madgik.exareme.master.queryProcessor.composer.Composer;
+import madgik.exareme.master.queryProcessor.composer.*;
 import madgik.exareme.master.queryProcessor.composer.Exceptions.AlgorithmException;
 import madgik.exareme.master.queryProcessor.composer.Exceptions.CDEsMetadataException;
 import madgik.exareme.master.queryProcessor.composer.Exceptions.ComposerException;
@@ -130,6 +128,7 @@ public class HttpAsyncCheckWorker implements HttpAsyncRequestHandler<HttpRequest
                 log.debug(containerProxy.getEntityName().getIP());
             }
         }
+
 
         usedContainerProxies = usedContainerProxiesList.toArray(new ContainerProxy[usedContainerProxiesList.size()]);
 

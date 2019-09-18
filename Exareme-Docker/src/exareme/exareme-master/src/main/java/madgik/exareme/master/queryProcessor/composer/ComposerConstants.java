@@ -1,11 +1,8 @@
 package madgik.exareme.master.queryProcessor.composer;
 
 import madgik.exareme.utils.properties.AdpProperties;
-import org.apache.log4j.Logger;
 
 public class ComposerConstants {
-    private static final Logger log = Logger.getLogger(ComposerConstants.class);
-
     public static final String algorithmKey = "algorithm_key";
     public static final String inputLocalDBKey = "input_local_DB";
     public static final String dbQueryKey = "db_query";
@@ -29,8 +26,12 @@ public class ComposerConstants {
         return getAlgorithmsFolderPath() + algorithmName;
     }
 
-    public static String getDatasetDBDirectory() {
-        return AdpProperties.getGatewayProperties().getString("db.path");
+    public static String getDataPath() {
+        return AdpProperties.getGatewayProperties().getString("data.path");
+    }
+
+    public static String getDatasetsDBName() {
+        return AdpProperties.getGatewayProperties().getString("db.name");
     }
 
     public static String getDBDataTablename() {
@@ -39,5 +40,9 @@ public class ComposerConstants {
 
     public static String getDBMetadataTablename() {
         return AdpProperties.getGatewayProperties().getString("db.tablename.metadata");
+    }
+
+    public static String getPathologyPropertyName() {
+        return AdpProperties.getGatewayProperties().getString("pathology.property.name");
     }
 }

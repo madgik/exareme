@@ -33,6 +33,7 @@ class TestTTESTPaired(unittest.TestCase):
                 {"name": "ci","value": "0"  },
                 {"name": "meandiff", "value": "0"  },
                 {"name": "sediff", "value": "0"  },
+		{   "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter","value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
@@ -50,6 +51,7 @@ class TestTTESTPaired(unittest.TestCase):
                 {"name": "ci","value": "1"  },
                 {"name": "meandiff", "value": "1"  },
                 {"name": "sediff", "value": "1"  },
+		{   "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter","value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
@@ -67,6 +69,7 @@ class TestTTESTPaired(unittest.TestCase):
                 {"name": "ci","value": "1"  },
                 {"name": "meandiff", "value": "1"  },
                 {"name": "sediff", "value": "1"  },
+		{   "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter","value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
@@ -84,6 +87,7 @@ class TestTTESTPaired(unittest.TestCase):
                 {"name": "ci","value": "1"  },
                 {"name": "meandiff", "value": "1"  },
                 {"name": "sediff", "value": "1"  },
+		{   "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter","value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
@@ -100,6 +104,7 @@ class TestTTESTPaired(unittest.TestCase):
                     {"name": "ci","value": "1"  },
                     {"name": "meandiff", "value": "1"  },
                     {"name": "sediff", "value": "1"  },
+		    {   "name": "pathology","value":"dementia"},
                     {"name": "dataset", "value": "adni_9rows"},
                     {"name": "filter","value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
