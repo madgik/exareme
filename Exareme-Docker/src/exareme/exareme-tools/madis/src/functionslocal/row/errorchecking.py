@@ -1,5 +1,5 @@
 import functions
-
+import re
 
 def privacychecking(*args):
     minNumberOfData = 10
@@ -11,9 +11,49 @@ def privacychecking(*args):
 privacychecking.registered = True
 
 
+def variabledistinctvalues_inputerrorchecking(nameofvariable, distinctvalues1, distinctvalues2): #ttestindependent
+    values1 = re.split(',',distinctvalues1)
+    values2 = re.split(',',distinctvalues2)
+    values1.sort()
+    values2.sort()
+
+    if len(values1)!= len(values2):
+        raise functions.OperatorError("ExaremeError", "Variable " + nameofvariable+ " should contain variable's distinct values")
+    for i in range(len(values1)):
+        if values1[i] != values2[i]:
+            raise functions.OperatorError("ExaremeError", "Variable " + nameofvariable+ " should contain variable's distinct values")
+    return "OK"
+
+variabledistinctvalues_inputerrorchecking.registered = True
+
+def variableshouldbebinary_inputerrorchecking(nameofvariable, numberdistictvalues): #ttestindependent
+    if numberdistictvalues == 2 :
+        return "OK"
+    else:
+        raise functions.OperatorError("ExaremeError", "Variable: " +nameofvariable+ " should be binary")
+variableshouldbebinary_inputerrorchecking.registered = True
+
+
+def holdoutvalidation_inputerrorchecking1(train_size, test_size):
+    if train_size=='' and  test_size =='' :
+        raise functions.OperatorError("ExaremeError", "Train_size and test_size should not be both empty")
+    else:
+        return "OK"
+
+holdoutvalidation_inputerrorchecking1.registered = True
+
+
+def holdoutvalidation_inputerrorchecking2(train_size, test_size):
+    if train_size + test_size > 1:
+        raise functions.OperatorError("ExaremeError", "Train_size + test_size should be less or equal to 1.0 ")
+    else:
+        return "OK"
+
+holdoutvalidation_inputerrorchecking2.registered = True
+
 def maxnumberofiterations_errorhandling(maxnumberofiterations,no): # For most of the iterative algorithms
     if maxnumberofiterations< no:
-        raise functions.OperatorError("ExaremeError", "Please increase the max number of iterations")
+        raise functions.OperatorError("ExaremeError", "The algorithm could not complete in the max number of iterations given. Please increase the iterations_max_number and try again.")
     else:
         return "OK"
 

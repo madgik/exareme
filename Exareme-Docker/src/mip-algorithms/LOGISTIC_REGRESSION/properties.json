@@ -45,6 +45,16 @@
             "valueNotBlank": false,
             "valueMultiple": true,
             "valueType": "string"
+        },
+        {
+            "name": "max_iter",
+            "desc": "Maximum number of iterations. Must be a positive integer.",
+            "type": "other",
+            "value": "",
+            "defaultValue": "20",
+            "valueNotBlank": false,
+            "valueMultiple": false,
+            "valueType": "integer"
         }
     ]
 }

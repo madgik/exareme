@@ -1,7 +1,8 @@
 package madgik.exareme.master.queryProcessor.composer;
 
 import madgik.exareme.master.queryProcessor.composer.Exceptions.AlgorithmException;
-import madgik.exareme.master.queryProcessor.composer.Exceptions.VariablesMetadataException;
+import madgik.exareme.master.queryProcessor.composer.Exceptions.ComposerException;
+import madgik.exareme.master.queryProcessor.composer.Exceptions.CDEsMetadataException;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -23,7 +24,7 @@ public class AlgorithmProperties {
         pipeline,                   // exec local on each endpoint
         local_global,               // exec global over the union of local results
         multiple_local_global,      // exec sequentially multiple local_global
-        iterative,                   // exec iterative algorithm
+        iterative,                  // exec iterative algorithm
         python_local,                   // exec python based local algorithm
         python_local_global,            // exec python based local global algorithm
         python_multiple_local_global,    // exec python based multiple local global algorithm
@@ -95,6 +96,32 @@ public class AlgorithmProperties {
     }
 
     /**
+     * Changes the value of an algorithm parameter
+     * to the given value
+     *
+     * @param parameterName     the name of a parameter
+     * @param newParameterValue the new value of the parameter
+     * @return true if it was changed, false otherwise
+     */
+    public void setParameterValue(String parameterName, String newParameterValue) throws ComposerException {
+        String allowedDynamicParameters = ComposerConstants.dbIdentifierKey;
+
+        // Not all parameters are allowed to be changed.
+        // This is a safety check
+        if (!allowedDynamicParameters.contains(parameterName)) {
+            throw new ComposerException("The value of the parameter " + parameterName + " should not be set manually.");
+        }
+
+        for (ParameterProperties parameter : parameters) {
+            if (parameter.getName().equals(parameterName)) {
+                parameter.setValue(newParameterValue);
+                return;
+            }
+        }
+        throw new ComposerException("The parameter " + parameterName + " does not exist.");
+    }
+
+    /**
      * Gets the AlgorithmProperties from the cached Algorithms.
      * Merges the default algorithm properties with the parameters given in the HashMap.
      *
@@ -103,19 +130,24 @@ public class AlgorithmProperties {
      * @throws AlgorithmException when algorithm's properties do not match the inputContent
      */
     public void mergeAlgorithmParametersWithInputContent(HashMap<String, String> inputContent)
-            throws AlgorithmException, VariablesMetadataException {
+            throws AlgorithmException, CDEsMetadataException {
 
         for (ParameterProperties parameterProperties : this.getParameters()) {
             String value = inputContent.get(parameterProperties.getName());
-            if (value != null) {
+            if (value != null && !value.equals("")) {
                 validateAlgorithmParameterValueType(value, parameterProperties);
                 validateAlgorithmParameterType(value, parameterProperties);
-            } else {            // if value is null
+            } else {            // if value not given or it is blank
                 if (parameterProperties.getValueNotBlank()) {
                     throw new AlgorithmException(
                             "The value of the parameter '" + parameterProperties.getName() + "' should not be blank.");
                 }
-                value = "";
+
+                if (parameterProperties.getDefaultValue() != null) {
+                    value = parameterProperties.getDefaultValue();
+                } else {
+                    value = "";
+                }
             }
             parameterProperties.setValue(value);
         }
@@ -130,7 +162,7 @@ public class AlgorithmProperties {
     private static void validateAlgorithmParameterType(
             String value,
             ParameterProperties parameterProperties
-    ) throws AlgorithmException, VariablesMetadataException {
+    ) throws AlgorithmException, CDEsMetadataException {
 
         if (parameterProperties.getType().equals(ParameterProperties.ParameterType.column)) {
             String[] values = value.split(",");
@@ -152,8 +184,8 @@ public class AlgorithmProperties {
     private static void validateCDEVariables(
             String[] variables,
             ParameterProperties parameterProperties
-    ) throws AlgorithmException, VariablesMetadataException {
-        VariablesMetadata metadata = VariablesMetadata.getInstance();
+    ) throws AlgorithmException, CDEsMetadataException {
+        CDEsMetadata metadata = CDEsMetadata.getInstance();
         for (String curValue : variables) {
             if (!metadata.columnExists(curValue)) {
                 throw new AlgorithmException("The CDE '" + curValue + "' does not exist.");

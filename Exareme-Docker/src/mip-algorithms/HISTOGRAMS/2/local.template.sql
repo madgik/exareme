@@ -3,7 +3,7 @@ attach database '%{defaultDB}' as defaultDB;
 
 --var 'prv_output_global_tbl' 'defaultDB.metadatatbl';
 
-var 'x_metadata' from select tabletojson(code,categorical,enumerations,minval,maxval,N,"code,categorical,enumerations,minval,maxval,N") from %{prv_output_global_tbl} where code =='%{x}';
+var 'x_metadata' from select tabletojson(code,categorical,enumerations,minval,maxval,N,"code,categorical,enumerations,minval,maxval,N",0) from %{prv_output_global_tbl} where code =='%{x}';
 var 'enumerations' from select enumerations from %{prv_output_global_tbl} where code =='%{y}';
 
 drop table if exists defaultDB.partialhistogramresults;

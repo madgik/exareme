@@ -3,14 +3,6 @@
 	"desc": "ANOVA",
 	"type": "iterative",
 	"parameters": [{
-			"name": "iterations_max_number",
-			"desc": "Maximum number of iterations",
-			"type": "other",
-			"value": "",
-			"valueNotBlank": true,
-			"valueMultiple": false,
-			"valueType": "integer"
-		}, {
 			"name": "x",
 			"desc": "The right part of the linear predictor function, that contains the indepedent variables in an equation supporting the symbols +, :, * , R notation.The independent variables are variables of the input dataset.",
 			"type": "formula",
@@ -56,15 +48,17 @@
 			"valueNotBlank": false,
 			"valueMultiple": true,
 			"valueType": "string"
-		}, {
 
-			"name": "outputformat",
-			"desc": "pfa",
+		}, {
+			"name": "iterations_max_number",
+			"desc": "Maximum number of iterations",
 			"type": "other",
-			"value": "pfa",
-			"valueNotBlank": true,
+			"value": "",
+			"defaultValue" : "20",
+			"valueNotBlank": false,
 			"valueMultiple": false,
-			"valueType": "string"
+			"valueType": "integer"
+
 		}
 	]
 }

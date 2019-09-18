@@ -1,0 +1,61 @@
+---
+- name: Find Leader
+  shell: docker node ls -f "role=manager" --format '{{ "{{" }}.Hostname {{ "}}" }}'
+  register: leader
+  tags:
+    - exareme
+
+#Todo if we have multiple masters and maybe leader.stdout -> leader.stdout_lines with_items?
+- name: Run Exareme Master
+  shell: docker stack deploy -c docker-compose-master.yml {{ leader.stdout }}
+  args:
+    chdir: "{{ home_path }}Compose-Files/"
+  environment:
+    FEDERATION_NODE: "{{ leader.stdout }}"
+    FEDERATION_ROLE: "master"
+    EXAREME_IMAGE: "{{ EXAREME_IMAGE }}:{{ EXAREME_TAG }}"
+    EXAREME_KEYSTORE: "{{ EXAREME_KEYSTORE }}"
+    DOCKER_DATA_FOLDER: "{{ DOCKER_PATH }}"
+    LOCAL_DATA_FOLDER: "{{ data_path }}"
+  tags:
+    - exareme
+
+- name: Run Portainer
+  shell: >
+         test -d {{ PORTAINER_DATA }}
+         || mkdir -p {{ PORTAINER_DATA }}
+         || ( echo Failed to create {{ PORTAINER_DATA }}; exit 1 )
+
+- name: Remove Portainer Service if it already exists
+  shell: docker service rm mip_portainer
+  ignore_errors: true
+  tags:
+    - portainer
+
+- name: Run Portainer Service
+  shell: >
+         docker service create \
+         --publish mode=host,target={{ PORTAINER_PORT }},published=9000 \
+         --constraint 'node.role == manager' \
+         --detach=true \
+         --mount type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
+         --mount type=bind,src={{ PORTAINER_DATA }},dst=/data \
+         --name mip_portainer \
+         {{ PORTAINER_IMAGE }}{{ PORTAINER_VERSION }}
+  tags:
+    - portainer
+
+- name: Run Exareme Workers
+  shell: docker stack deploy -c docker-compose-worker.yml {{ hostvars[item]['hostname'] }}
+  args:
+    chdir: "{{ home_path }}Compose-Files/"
+  environment:
+    FEDERATION_NODE: "{{ hostvars[item]['hostname'] }}"
+    EXAREME_IMAGE: "{{ EXAREME_IMAGE }}:{{ EXAREME_TAG }}"
+    EXAREME_KEYSTORE: "{{ EXAREME_KEYSTORE }}"
+    DOCKER_DATA_FOLDER: "{{ DOCKER_PATH }}"
+    LOCAL_DATA_FOLDER: "{{ hostvars[item]['data_path'] }}"
+  with_items: "{{ groups['workers'] }}"
+  ignore_errors: true
+  tags:
+    - exareme

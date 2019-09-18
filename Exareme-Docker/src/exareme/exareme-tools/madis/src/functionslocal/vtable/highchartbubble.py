@@ -39,14 +39,14 @@ class highchartbubble(functions.vtable.vtbase.VT):
             if len(schema)>3:
                 raise functions.OperatorError(__name__.rsplit('.')[-1],"Too many columns ")
             # print schema
-            myresult =  "{\"chart\":{\"type\": \"bubble\",\"plotBorderWidth\": 1,\"zoomType\": \"xy\"},"
+            myresult =  "{\"type\": \"application/vnd.highcharts+json\",\"data\":{ \"chart\": {\"type\": \"bubble\",\"plotBorderWidth\": 1,\"zoomType\": \"xy\"},"
             if 'title' in dictargs:
                 myresult +=  "\"title\": { \"text\": \" " + dictargs['title'] +"  \" },"
             myresult+= "\"xAxis\": {\"gridLineWidth\": 1 , \"title\": {\"text\": \"x: " + schema[0][0] + "\",\"align\": \"middle\"}}," \
                        "\"yAxis\": {\"gridLineWidth\": 1 , \"title\": {\"text\": \"y: " + schema[1][0]+ "\",\"align\": \"middle\"}}," \
                         "\"series\":[{\"name\": \"clusters\",\"data\": ["
             myresult += mydata
-            myresult = myresult[:-1]+ "]}]}"
+            myresult = myresult[:-1]+ "]}]}}"
 
 
             yield (myresult,)

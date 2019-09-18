@@ -12,7 +12,6 @@
 -- hidden var 'y' 'ANOVA_var_D';
 -- hidden var 'x' 'ANOVA_var_I1+ANOVA_var_I2+ANOVA_var_I3+0';
 -- var 'type' 2;
--- hidden var 'outputformat' 'pfa';
 
 -- Test2
 -- drop table if exists inputdata;

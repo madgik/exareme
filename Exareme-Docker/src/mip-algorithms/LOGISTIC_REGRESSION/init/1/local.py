@@ -66,21 +66,22 @@ def main():
         X = np.array([[x for idx, x in enumerate(row) if idx in idx_X] for row in data], dtype=np.float64)
     except ValueError:
         print('Values in X must be numbers')
+        raise
 
-    Y = [data[i][idx_Y] for i in range(len(data))]
-    assert len(set(Y) - {None, ''}) == 2, "Y vector should only contain 2 distinct values, and possibly None or " \
-                                          "empty strings"
+    Y = np.array([data[i][idx_Y] for i in range(len(data))])
+    assert len(set(Y) - {''}) == 2, "Y vector should only contain 2 distinct values, and possibly None or " \
+                                    "empty strings"
+
+    # Remove rows with missing values
+    mask_Y = [y is '' for y in Y]
+    mask_X = np.isnan(X).any(axis=1)
+    mask = np.logical_or(mask_X, mask_Y)
+    X, Y = X[~mask], Y[~mask]
 
     local_in = X, Y, schema_X, schema_Y
     # Run algorithm local step
     local_state, local_out = logregr_local_init(local_in=local_in)
     # Save local state
-    if not os.path.exists(os.path.dirname(fname_cur_state)):
-        try:
-            os.makedirs(os.path.dirname(fname_cur_state))
-        except OSError as exc:  # Guard against race condition
-            if exc.errno != errno.EEXIST:
-                raise
     local_state.save(fname=fname_cur_state)
     # Transfer local output (should be the last command)
     local_out.transfer()

@@ -1,0 +1,32 @@
+---
+- hosts: master
+  name: Get Worker Token
+  remote_user: "{{ hostvars['master']['remote_user'] }}"
+  become: yes
+  become_user: "{{ hostvars['master']['become_user'] }}"
+  roles:
+   - worker-token
+  vars:
+    my_name: "{{ hostvars[my_host]['hostname'] }}"
+
+- hosts: '{{ my_host }}'
+  name: Join Worker In Swarm
+  remote_user: "{{ hostvars[my_host]['remote_user'] }}"
+  become: yes
+  become_user: "{{ hostvars[my_host]['become_user'] }}"
+  roles:
+   - join-workers
+  vars:
+    my_host: "{{ lookup('env', 'my_host') }}"
+    my_name: "{{ hostvars[my_host]['hostname'] }}"
+
+- hosts: master
+  name: Add Label To Worker
+  remote_user: "{{ hostvars['master']['remote_user'] }}"
+  become: yes
+  become_user: "{{ hostvars['master']['become_user'] }}"
+  roles:
+   - add-worker-label
+  vars:
+   my_host: "{{ lookup('env', 'my_host') }}"
+   my_name: "{{ hostvars[my_host]['hostname'] }}"

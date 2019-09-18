@@ -1,4 +1,4 @@
-requirevars 'defaultDB' 'input_global_tbl' 'dataset' 'x' 'y' 'sstype' 'outputformat';
+requirevars 'defaultDB' 'input_global_tbl' 'dataset' 'x' 'y' 'sstype';
 attach database '%{defaultDB}' as defaultDB;
 
 var 'input_global_tbl' 'defaultDB.partialmetadatatbl' 'iterations_max_number';
@@ -8,7 +8,6 @@ create table defaultDB.algorithmparameters (name,val);
 insert into defaultDB.algorithmparameters select 'x' , '%{x}' ;
 insert into defaultDB.algorithmparameters select 'y' , '%{y}' ;
 insert into defaultDB.algorithmparameters select 'type' , '%{sstype}' ;
-insert into defaultDB.algorithmparameters select 'outputformat' , '%{outputformat}' ;
 insert into defaultDB.algorithmparameters select 'dataset' , '%{dataset}' ;
 
 var 'referencevalues' '[]';

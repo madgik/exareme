@@ -153,8 +153,17 @@ public class Composer {
         // Assigning the proper identifier for the defaultDB
         //      if the dbIdentifier is provided as a parameter or not
         String dbIdentifier = algorithmProperties.getParameterValue(ComposerConstants.dbIdentifierKey);
+
+        // If the algorithm does not have a dbIdentifier parameter we assign the algorithmKey as the identifier
         if (dbIdentifier == null)
             dbIdentifier = algorithmKey;
+
+        // If the algorithm has a dbIdentifier parameter but is blank, we set is to the algorithmKey
+        if (dbIdentifier.equals("")) {
+            dbIdentifier = algorithmKey;
+            algorithmProperties.setParameterValue(ComposerConstants.dbIdentifierKey, dbIdentifier);
+        }
+
         String algorithmName = algorithmProperties.getName();
         String defaultDBFilePath = HBPConstants.DEMO_DB_WORKING_DIRECTORY + dbIdentifier + "_defaultDB.db";
         String inputLocalDB = ComposerConstants.getDatasetDBDirectory();
@@ -171,8 +180,8 @@ public class Composer {
                         defaultDBFilePath, algorithmProperties.getParameters());
                 break;
             case local_global:
-                dflScript = composeLocalGlobalAlgorithmsDFLScript(algorithmName, inputLocalDB, dbQuery, outputGlobalTbl,
-                        defaultDBFilePath, algorithmProperties.getParameters());
+                dflScript = composeLocalGlobalAlgorithmsDFLScript(algorithmName, inputLocalDB, dbQuery,
+                        outputGlobalTbl, defaultDBFilePath, algorithmProperties.getParameters());
                 break;
             case multiple_local_global:
                 dflScript = composeMultipleLocalGlobalAlgorithmsDFLScript(algorithmName, inputLocalDB, dbQuery, outputGlobalTbl,
@@ -228,7 +237,7 @@ public class Composer {
         String localScriptPath = ComposerConstants.getAlgorithmFolderPath(algorithmName) + "/local.template.sql";
         String algorithmFolderPath = ComposerConstants.getAlgorithmFolderPath(algorithmName);
 
-        dflScript.append("distributed create table " + outputGlobalTbl + " as external \n");
+        dflScript.append("distributed create table " + outputGlobalTbl + " as direct \n");
         dflScript.append(String.format("select * from (\n  execnselect 'path:%s' ", algorithmFolderPath));
         for (ParameterProperties parameter : algorithmParameters) {
             dflScript.append(String.format("'%s:%s' ", parameter.getName(), parameter.getValue()));
@@ -246,7 +255,7 @@ public class Composer {
      * Returns an exaDFL script for the algorithms of type local_global
      *
      * @param algorithmName       the name of the algorithm
-     * @param inputLocalDB        the location of the local database
+     * @param inputLocalDB       the query to read from the local table
      * @param dbQuery             the query to execute on the database
      * @param outputGlobalTbl     the table where the output is going to be printed
      * @param defaultDBFileName   the name of the local db that the SQL scripts are going to use
@@ -268,7 +277,7 @@ public class Composer {
         String algorithmFolderPath = ComposerConstants.getAlgorithmFolderPath(algorithmName);
 
         // Format local
-        dflScript.append("distributed create temporary table output_local_tbl as virtual \n");
+        dflScript.append("distributed create temporary table input_global_tbl to 1 as virtual \n");
         dflScript.append(String.format("select * from (\n  execnselect 'path:%s' ", algorithmFolderPath));
         for (ParameterProperties parameter : algorithmParameters) {
             dflScript.append(String.format("'%s:%s' ", parameter.getName(), parameter.getValue()));
@@ -280,14 +289,9 @@ public class Composer {
         dflScript.append(String.format("\n  select filetext('%s')\n", localScriptPath));
         dflScript.append(");\n");
 
-        // Format union
-        dflScript
-                .append("\ndistributed create temporary table input_global_tbl to 1 as  \n");
-        dflScript.append("select * from output_local_tbl;\n");
-
         // Format global
         dflScript.append(String
-                .format("\nusing input_global_tbl \ndistributed create table %s as external \n",
+                .format("\nusing input_global_tbl \ndistributed create table %s as direct \n",
                         outputGlobalTbl));
         dflScript.append("select * \n");
         dflScript.append("from (\n");
@@ -337,7 +341,6 @@ public class Composer {
         // Iterating through all the local_global folders of the algorithm
         for (int iteration = 1; iteration <= listFiles.length; iteration++) {
             String inputGlobalTbl = "input_global_tbl_" + iteration;
-            String outputLocalTbl = "output_local_tbl_" + iteration;
             String tempOutputGlobalTbl = "output_global_tbl_" + iteration;
             String prevOutputGlobalTbl = "output_global_tbl_" + (iteration - 1);
             String currentIterationAlgorithmFolderPath = algorithmFolderPath + "/" + listFiles[iteration - 1].getName();
@@ -348,7 +351,7 @@ public class Composer {
             if (iteration > 1)
                 dflScript.append(String.format("using %s\n", prevOutputGlobalTbl));
             dflScript.append(String
-                    .format("distributed create temporary table %s as virtual \n", outputLocalTbl));
+                    .format("distributed create temporary table %s to 1 as virtual \n", inputGlobalTbl));
             dflScript.append(String.format("select * from (\n  execnselect 'path:%s' ",
                     currentIterationAlgorithmFolderPath));
             for (ParameterProperties parameter : algorithmParameters) {
@@ -362,18 +365,14 @@ public class Composer {
             dflScript.append(String.format("\n  select filetext('%s')\n", localScriptPath));
             dflScript.append(");\n");
 
-            // Format union
-            dflScript.append(String.format("\ndistributed create temporary table %s to 1 as \n", inputGlobalTbl));
-            dflScript.append(String.format("select * from %s;\n", outputLocalTbl));
-
             // Format global
             if (iteration != listFiles.length) {
                 dflScript.append(String.format(
-                        "\nusing %s \ndistributed create temporary table %s as external \n",
+                        "\nusing %s \ndistributed create temporary table %s as direct \n",
                         inputGlobalTbl, tempOutputGlobalTbl));
             } else {
                 dflScript.append(String
-                        .format("\nusing %s \ndistributed create table %s as external \n",
+                        .format("\nusing %s \ndistributed create table %s as direct \n",
                                 inputGlobalTbl, outputGlobalTbl));
             }
             dflScript.append(String.format("select * from (\n  execnselect 'path:%s' ",
@@ -419,7 +418,7 @@ public class Composer {
         String prevOutputLocalTbl;
 
         dflScript.append(String.format(
-                "distributed create temporary table %s as remote \n", outputLocalTbl));
+                "distributed create temporary table %s as direct \n", outputLocalTbl));
         dflScript.append(String
                 .format("select * from (\n  execnselect 'path:%s' ", algorithmFolderPath));
         for (ParameterProperties parameter : algorithmParameters) {
@@ -436,7 +435,7 @@ public class Composer {
             outputLocalTbl = "output_local_tbl_" + iteration;
             prevOutputLocalTbl = "output_local_tbl_" + (iteration - 1);
 
-            dflScript.append(String.format("using %s distributed create temporary table %s as remote \n",
+            dflScript.append(String.format("using %s distributed create temporary table %s as direct \n",
                     prevOutputLocalTbl, outputLocalTbl));
             dflScript.append(String.format("select * from (\n  execnselect 'path:%s' ", algorithmFolderPath));
             for (ParameterProperties parameter : algorithmParameters) {
@@ -452,7 +451,7 @@ public class Composer {
         }
 
         prevOutputLocalTbl = "output_local_tbl_" + (numberOfWorkers - 1);
-        dflScript.append(String.format("using output_local_tbl_%d distributed create table %s as external ",
+        dflScript.append(String.format("using output_local_tbl_%d distributed create table %s as direct ",
                 (numberOfWorkers - 1), outputGlobalTbl));
         dflScript.append(String.format("select * from (\n  execnselect 'path:%s' ", algorithmFolderPath));
         for (ParameterProperties parameter : algorithmParameters) {
@@ -532,7 +531,6 @@ public class Composer {
 
         for (int iteration = 1; iteration <= listFiles.length; iteration++) {
             String inputGlobalTbl = "input_global_tbl_" + iteration;
-            String outputLocalTbl = "output_local_tbl_" + iteration;
             String tempOutputGlobalTbl = "output_global_tbl_" + iteration;
             String prevOutputGlobalTbl = "output_global_tbl_" + (iteration - 1);
             String localSQLScriptsPath =
@@ -544,17 +542,9 @@ public class Composer {
             String globalScriptPath = globalSQLScriptsPath + "/global.template.sql";
 
             // format local
-            if (iteration > 1) {
+            if (iteration > 1)
                 dflScript.append(String.format("using %s\n", prevOutputGlobalTbl));
-            } else if (iterativeAlgorithmPhase.equals(init)) {      // TODO Remove??
-                // Create database directory
-                dflScript.append(String.format("distributed create temporary table createPathTempTable as virtual\n" +
-                                "select execprogram(null, 'mkdir', '-p', '%s') as C1;\n\n",
-                        HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey));
-                dflScript.append("using createPathTempTable\n");
-            }
-
-            dflScript.append(String.format("distributed create temporary table %s as virtual \n", outputLocalTbl));
+            dflScript.append(String.format("distributed create temporary table %s to 1 as virtual \n", inputGlobalTbl));
             dflScript.append(String.format("select * from (\n  execnselect 'path:%s' ", localSQLScriptsPath));
             for (ParameterProperties parameter : algorithmParameters) {
                 dflScript.append(String.format("'%s:%s' ", parameter.getName(), parameter.getValue()));
@@ -566,10 +556,6 @@ public class Composer {
                 dflScript.append(String.format("'%s:%s' ", ComposerConstants.prevOutputGlobalTblKey, prevOutputGlobalTbl));
             dflScript.append(String.format("\n  select filetext('%s')\n", localScriptPath));
             dflScript.append(");\n");
-
-            // format union
-            dflScript.append(String.format("\ndistributed create temporary table %s to 1 as \n", inputGlobalTbl));
-            dflScript.append(String.format("select * from %s;\n", outputLocalTbl));
 
             // format global
             if (iteration != listFiles.length) {
@@ -618,7 +604,7 @@ public class Composer {
         String localPythonScriptPath = ComposerConstants.getAlgorithmFolderPath(algorithmName) + "/local.py";
 
         // Format local
-        dflScript.append("distributed create table " + outputGlobalTbl + " as external \n");
+        dflScript.append("distributed create table " + outputGlobalTbl + " as direct \n");
         dflScript.append("select * from (\n  call_python_script 'python " + localPythonScriptPath + " ");
         for (ParameterProperties parameter : algorithmParameters) {
             dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue()));
@@ -655,7 +641,7 @@ public class Composer {
         String transferDBFilePath = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey + "/transfer.db";
 
         // Format local
-        dflScript.append("distributed create temporary table output_local_tbl as virtual \n");
+        dflScript.append("distributed create temporary table input_global_tbl to 1 as virtual \n");
         dflScript.append("select * from (\n  call_python_script 'python " + localPythonScriptPath + " ");
         for (ParameterProperties parameter : algorithmParameters) {
             dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue()));
@@ -664,13 +650,9 @@ public class Composer {
         dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.dbQueryKey, dbQuery));
         dflScript.append("'\n);\n");
 
-        // Format union
-        dflScript.append("\ndistributed create temporary table input_global_tbl to 1 as  \n");
-        dflScript.append("select * from output_local_tbl;\n");
-
         // Format global
         dflScript.append(String
-                .format("\nusing input_global_tbl \ndistributed create table %s as external \n",
+                .format("\nusing input_global_tbl \ndistributed create table %s as direct \n",
                         outputGlobalTbl));
         dflScript.append("select * from (\n  call_python_script 'python " + globalPythonScriptPath + " ");
         for (ParameterProperties parameter : algorithmParameters) {
@@ -716,7 +698,6 @@ public class Composer {
         // Iterating through all the local_global folders of the algorithm
         for (int iteration = 1; iteration <= listFiles.length; iteration++) {
             String inputGlobalTbl = "input_global_tbl_" + iteration;
-            String outputLocalTbl = "output_local_tbl_" + iteration;
             String prevOutputGlobalTbl = "output_global_tbl_" + (iteration - 1);
             String tempOutputGlobalTbl = "output_global_tbl_" + iteration;
             String currentIterationAlgorithmFolderPath = algorithmFolderPath + "/" + listFiles[iteration - 1].getName();
@@ -739,7 +720,7 @@ public class Composer {
             if (iteration > 1)
                 dflScript.append(String.format("using %s\n", prevOutputGlobalTbl));
             dflScript.append(String
-                    .format("distributed create temporary table %s as virtual \n", outputLocalTbl));
+                    .format("distributed create temporary table %s to 1 as virtual \n", inputGlobalTbl));
             dflScript.append("select * from (\n  call_python_script 'python " + localScriptPath + " ");
             for (ParameterProperties parameter : algorithmParameters) {
                 dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue()));
@@ -755,18 +736,14 @@ public class Composer {
             } else
                 dflScript.append("'\n);\n");
 
-            // Format union
-            dflScript.append(String.format("\ndistributed create temporary table %s to 1 as \n", inputGlobalTbl));
-            dflScript.append(String.format("select * from %s;\n", outputLocalTbl));
-
             // Format global
             if (iteration != listFiles.length) {
                 dflScript.append(String.format(
-                        "\nusing %s \ndistributed create temporary table %s as external \n",
+                        "\nusing %s \ndistributed create temporary table %s as direct \n",
                         inputGlobalTbl, tempOutputGlobalTbl));
             } else {
                 dflScript.append(String
-                        .format("\nusing %s \ndistributed create table %s as external \n",
+                        .format("\nusing %s \ndistributed create table %s as direct \n",
                                 inputGlobalTbl, outputGlobalTbl));
             }
 
@@ -821,6 +798,9 @@ public class Composer {
 
             dflScript.append("distributed create table " + outputGlobalTbl + " as external \n");
             dflScript.append("select * from (\n  call_python_script 'python " + globalScriptPath + " ");
+            for (ParameterProperties parameter : algorithmParameters) {
+                dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue()));
+            }
             dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.prevStatePKLKey, prevGlobalStatePKLFile));
             dflScript.append("'\n);\n");
 
@@ -839,7 +819,6 @@ public class Composer {
         // Iterating through all the local_global folders of the algorithm
         for (int iteration = 1; iteration <= listFiles.length; iteration++) {
             String inputGlobalTbl = "input_global_tbl_" + iteration;
-            String outputLocalTbl = "output_local_tbl_" + iteration;
             String tempOutputGlobalTbl = "output_global_tbl_" + iteration;
             String prevOutputGlobalTbl = "output_global_tbl_" + (iteration - 1);
             String currentIterationAlgorithmFolderPath =
@@ -892,7 +871,7 @@ public class Composer {
             if (iteration > 1)
                 dflScript.append(String.format("using %s\n", prevOutputGlobalTbl));
             dflScript.append(String
-                    .format("distributed create temporary table %s as virtual \n", outputLocalTbl));
+                    .format("distributed create temporary table %s to 1 as virtual \n", inputGlobalTbl));
             dflScript.append("select * from (\n  call_python_script 'python " + localScriptPath + " ");
             for (ParameterProperties parameter : algorithmParameters) {
                 dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue()));
@@ -912,10 +891,6 @@ public class Composer {
             } else {
                 dflScript.append("'\n);\n");
             }
-
-            // Format union
-            dflScript.append(String.format("\ndistributed create temporary table %s to 1 as \n", inputGlobalTbl));
-            dflScript.append(String.format("select * from %s;\n", outputLocalTbl));
 
             // Format global
             // If this is the last iteration of finalize, print the result from global.py

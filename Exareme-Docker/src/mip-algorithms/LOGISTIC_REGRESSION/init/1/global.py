@@ -3,8 +3,6 @@ from __future__ import print_function
 
 import sys
 from os import path
-import os
-import errno
 from argparse import ArgumentParser
 import numpy as np
 
@@ -25,9 +23,10 @@ def logregr_global_init(global_in):
     # Init vars
     ll = - 2 * n_obs * np.log(2)
     coeff = np.zeros(n_cols)
+    iter = 0
 
     # Pack state and results
-    global_state = StateData(n_obs=n_obs, n_cols=n_cols, ll=ll, coeff=coeff,
+    global_state = StateData(n_obs=n_obs, n_cols=n_cols, ll=ll, coeff=coeff, iter=iter,
                              y_val_dict=y_val_dict, schema_X=schema_X, schema_Y=schema_Y)
     global_out = LogRegrIter_Glob2Loc_TD(coeff)
 
@@ -50,12 +49,6 @@ def main():
     # Run algorithm global step
     global_state, global_out = logregr_global_init(global_in=local_out)
     # Save global state
-    if not os.path.exists(os.path.dirname(fname_cur_state)):
-        try:
-            os.makedirs(os.path.dirname(fname_cur_state))
-        except OSError as exc:  # Guard against race condition
-            if exc.errno != errno.EEXIST:
-                raise
     global_state.save(fname=fname_cur_state)
     # Return the algorithm's output
     global_out.transfer()

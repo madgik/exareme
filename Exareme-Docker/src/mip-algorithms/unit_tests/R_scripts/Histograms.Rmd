@@ -1,0 +1,199 @@
+library(tidyverse)
+library(jsonlite)
+
+rawData <- read_csv("../unit_tests/datasets/CSVs/desd-synthdata.csv")
+df_ <- rawData %>%
+  select(
+    gender, alzheimerbroadcategory,
+    agegroup, minimentalstate,
+    lefthippocampus, righthippocampus,
+    leftententorhinalarea, rightententorhinalarea,
+    brainstem
+    )
+
+##TEST 1 - Histogram of right ententorhinal area
+df_H0 <- df_ %>%
+  select(rightententorhinalarea) %>%
+  drop_na()
+size_H0 <- 36
+delta <- (max(df_H0$rightententorhinalarea) - min(df_H0$rightententorhinalarea))/(size_H0)
+pl_H0 <- df_H0 %>%
+  ggplot(aes(x = rightententorhinalarea)) +
+  geom_histogram(boundary = min(df_H0$rightententorhinalarea), bins = size_H0) +
+  geom_vline(aes(xintercept = min(df_H0$rightententorhinalarea)), color = 'red') +
+  geom_vline(aes(xintercept = max(df_H0$rightententorhinalarea)), color = 'red') +
+  scale_x_continuous(breaks = seq(min(df_H0$rightententorhinalarea), max(df_H0$rightententorhinalarea), length.out = 3))
+result_H0 <- layer_data(pl_H0, 1)
+
+result_H0 <-  result_H0 %>%
+  select(y,xmin,xmax)
+Test1Result <-toJSON(result_H0)
+
+
+###TEST 2 - Histogram of right ententorhinal area by gender
+df_H1 <- df_ %>%
+  select( rightententorhinalarea,gender) %>%
+  drop_na()
+
+df_H1_M <- df_H1 %>%
+  filter(gender == "M") %>%
+  select(rightententorhinalarea)
+
+df_H1_W <- df_H1 %>%
+  filter(gender == "F") %>%
+  select(rightententorhinalarea)
+
+size_H1 <- 25
+
+pl_H1 <- df_H1 %>%
+  ggplot(aes(x = rightententorhinalarea, fill = gender)) +
+  geom_histogram(boundary = min(df_H1_W$rightententorhinalarea), bins = size_H1) +
+  geom_vline(data = df_H1_M, aes(xintercept = max(rightententorhinalarea)), color = 'blue') +
+  geom_vline(data = df_H1_W, aes(xintercept = min(rightententorhinalarea)), color = 'red') +
+    scale_x_continuous(breaks = seq(min(df_H1$rightententorhinalarea), max(df_H1$rightententorhinalarea), length.out = 3))
+
+result_H1 <- layer_data(pl_H1, 1) %>%
+  filter(group == 1) %>%
+  select(ymin, ymax, xmax, xmin)
+result_H1 <- result_H1 %>%
+  transmute(
+    y_M = ymin,
+    y_F = ymax - ymin,
+    xmax, xmin)
+
+Test2Result <-toJSON(result_H1)
+#result_H1$y_M
+#result_H1$y_F
+#sprintf("%0.7s - %0.7s", result_H1$xmax, result_H1$xmin)
+
+
+###Test 3 - Histogram of right ententorhinal area by alzheimer broad category
+
+df_H2 <- df_ %>%
+  select(
+    rightententorhinalarea,
+    alzheimerbroadcategory) %>%
+  drop_na()
+
+df_H2_AD <- df_H2 %>%
+  filter(alzheimerbroadcategory == "AD") %>%
+  select(rightententorhinalarea)
+
+df_H2_CN <- df_H2 %>%
+  filter(alzheimerbroadcategory == "CN") %>%
+  select(rightententorhinalarea)
+
+df_H2_Other <- df_H2 %>%
+  filter(alzheimerbroadcategory == "Other") %>%
+  select(rightententorhinalarea)
+
+size_H2 <- max(
+  nclass.FD(unlist(df_H2_AD)),
+  nclass.FD(unlist(df_H2_CN)),
+  nclass.FD(unlist(df_H2_Other))
+  ) +1 # 20
+
+pl_H2 <- df_H2 %>%
+  ggplot(aes(x = rightententorhinalarea, fill = alzheimerbroadcategory)) +
+  geom_histogram(boundary = min(df_H2$rightententorhinalarea), bins = size_H2) +
+  geom_vline(aes(xintercept = max(rightententorhinalarea)), color = 'blue') +
+  geom_vline(aes(xintercept = min(rightententorhinalarea)), color = 'red') +
+    scale_x_continuous(breaks = seq(min(df_H2$rightententorhinalarea), max(df_H2$rightententorhinalarea), length.out = 3))
+
+
+layer_H2 <- layer_data(pl_H2, 1)
+result_H2 <- layer_H2 %>%
+  filter(group == 3) %>%
+  transmute(y_Other = ymax - ymin)
+
+temp1 <- layer_H2 %>%
+  filter(group == 2) %>%
+  transmute(y_CN = ymax - ymin)
+
+temp2 <- layer_H2 %>%
+  filter(group == 1) %>%
+  transmute(y_AD = ymax - ymin, xmin, xmax)
+
+result_H2 <- cbind(result_H2, temp1, temp2)
+
+Test3Result <-toJSON(result_H2)
+
+
+#Test 4 - Discrete variable. Bar graph of alzheimer broad category
+df_H3 <- df_ %>%
+  select(
+    rightententorhinalarea,
+    alzheimerbroadcategory) %>%
+  drop_na()
+
+
+pl_H3 <- df_H3 %>%
+  ggplot(aes(x = alzheimerbroadcategory)) +
+  geom_bar( position=position_dodge())
+pl_H3
+
+layer_H3 <- layer_data(pl_H3, 1)
+
+temp1 <- layer_H3 %>%
+  filter(group == 1) %>%
+  transmute(y_AD = ymax - ymin)
+
+
+temp2 <- layer_H3 %>%
+  filter(group == 2) %>%
+  transmute(y_CN = ymax - ymin)
+
+temp3 <- layer_H3 %>%
+  filter(group == 3) %>%
+  transmute(y_Other = ymax - ymin)
+
+result_H3 <- cbind(temp1, temp2, temp3)
+Test4Result <-toJSON(result_H3)
+
+
+
+###Test 5 - Bar graph of alzheimer broad category by gender
+df_H4 <- df_ %>%
+  select(
+    rightententorhinalarea,
+    alzheimerbroadcategory,
+    gender) %>%
+  drop_na()
+
+
+pl_H4 <- df_H4 %>%
+  ggplot(aes(x = alzheimerbroadcategory, fill = gender)) +
+  geom_bar( position=position_dodge())
+pl_H4
+
+layer_H4 <- layer_data(pl_H4, 1)
+
+temp1 <- layer_H4 %>%
+  filter(group == 1) %>%
+  transmute(y_F_AD = ymax - ymin)
+
+temp2 <- layer_H4 %>%
+  filter(group == 2) %>%
+  transmute(y_M_AD = ymax - ymin)
+
+temp3 <- layer_H4 %>%
+  filter(group == 3) %>%
+  transmute(y_F_CN = ymax - ymin)
+
+temp4 <- layer_H4 %>%
+  filter(group == 4) %>%
+  transmute(y_M_CN = ymax - ymin)
+
+temp5 <- layer_H4 %>%
+  filter(group == 5) %>%
+  transmute(y_F_Other = ymax - ymin)
+
+temp6 <- layer_H4 %>%
+  filter(group == 6) %>%
+  transmute(y_M_Other = ymax - ymin)
+
+result_H4 <- cbind(temp1, temp2, temp3, temp4, temp5, temp6)
+Test5Result <-toJSON(result_H4)
+
+
+ return (c(Test1Result, Test2Result, Test3Result, Test4Result, Test5Result))

@@ -1,0 +1,10 @@
+---
+- hosts: master
+  name: Start Services
+  remote_user: "{{ hostvars['master']['remote_user'] }}"
+  become: yes
+  become_user: "{{ hostvars['master']['become_user'] }}"
+  vars:
+    my_host: "{{ lookup('env', 'my_host') }}"
+  roles:
+    - start-worker-service
