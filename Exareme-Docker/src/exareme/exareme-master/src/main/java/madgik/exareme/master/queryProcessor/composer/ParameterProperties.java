@@ -20,6 +20,7 @@ public class ParameterProperties {
         formula,               // used for parsig the input as a formula of R, '+ - * : 0' are allowed.
         filter,                // used for filtering on the database input
         dataset,               // used for choosing database input
+        pathology,             // used for specifying what database to use
         other                  // for any other reason
     }
 

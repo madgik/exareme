@@ -45,15 +45,19 @@ public class RmiAdpDBClientQueryStatus implements AdpDBClientQueryStatus {
         result = null;
     }
 
+
+    /**
+     * Checks if the query has finished or not by checking the AdpDBStatus.
+     * In case it is finished it saves that information to the finished variable.
+     **/
     @Override
     public boolean hasFinished() throws RemoteException {
-        if (finished) {
+        if (finished)
             return true;
-        }
-        if (status.hasFinished() == false && status.hasError() == false) {
+
+        if (!status.hasFinished() && !status.hasError())
             return false;
-        }
-        updateRegistry();
+
         finished = true;
         return true;
     }
@@ -67,16 +71,6 @@ public class RmiAdpDBClientQueryStatus implements AdpDBClientQueryStatus {
     public String getStatus() throws RemoteException {
         lastStatus = status.getStatistics().toString();
         return lastStatus;
-    }
-
-    @Override
-    public String getStatusIfChanged() throws RemoteException {
-        String currentStatus = status.getStatistics().toString();
-        if (!currentStatus.equals(lastStatus)) {
-            lastStatus = currentStatus;
-            return lastStatus;
-        }
-        return null;
     }
 
     @Override
@@ -113,20 +107,36 @@ public class RmiAdpDBClientQueryStatus implements AdpDBClientQueryStatus {
         return getResult(DataSerialization.ldjson);
     }
 
-
+    /**
+     *  Returns the result of a query.
+     *
+     *  It updates the registry first in order to bring the output of the table locally.
+     *  Then the result can be read from the result returned. If the registry is not
+     *  updated the result will have no data inside.
+     *
+     * @param ds is the format of the result
+     * @return  the result that is saved in the first, usually the only one, output table
+     * @throws RemoteException
+     */
     @Override
     public InputStream getResult(DataSerialization ds) throws RemoteException {
         if (result == null) {
-
+            updateRegistry();
             result = new RmiAdpDBClient(AdpDBManagerLocator.getDBManager(), properties)
                     .readTable(plan.getResultTables().get(0).getName(), ds);
         }
         return result;
     }
 
+    /**
+     * Fetches a table from the DBManager to the registry so it can be read afterwards.
+     * If the table is in a different node it will be fetched from there.
+     *
+     * @throws RemoteException
+     */
     private void updateRegistry() throws RemoteException {
-        if (status.hasError() == false) {
 
+        if (!status.hasError()) {
             // update registry
             HashMap<String, String> resultTablesSQLDef = new HashMap<>();
             // containers
@@ -144,19 +154,11 @@ public class RmiAdpDBClientQueryStatus implements AdpDBClientQueryStatus {
                 }
             }
 
-            //      log.debug(
-            //          ConsoleFactory.getDefaultStatisticsFormat().format(
-            //              status.getStatistics().getAdpEngineStatistics(),
-            //              plan.getGraph(),
-            //              RmiAdpDBSelectScheduler.runTimeParams
-            //          )
-            //      );
-
             // Adding result tables, indexes to schema.
             Registry registry = Registry.getInstance(properties.getDatabase());
             for (PhysicalTable resultTable : plan.getResultTables()) {
-                if (resultTable.getTable().hasSQLDefinition() == false) {
-                    if (resultTablesSQLDef.containsKey(resultTable.getName()) == false) {
+                if (!resultTable.getTable().hasSQLDefinition()) {
+                    if (!resultTablesSQLDef.containsKey(resultTable.getName())) {
                         throw new SemanticException(
                                 "Table definition not found: " + resultTable.getName());
                     }

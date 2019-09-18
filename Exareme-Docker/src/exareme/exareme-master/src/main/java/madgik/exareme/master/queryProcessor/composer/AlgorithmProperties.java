@@ -3,6 +3,7 @@ package madgik.exareme.master.queryProcessor.composer;
 import madgik.exareme.master.queryProcessor.composer.Exceptions.AlgorithmException;
 import madgik.exareme.master.queryProcessor.composer.Exceptions.ComposerException;
 import madgik.exareme.master.queryProcessor.composer.Exceptions.CDEsMetadataException;
+import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -13,6 +14,8 @@ import java.util.HashMap;
  * AlgorithmProperties contains all the information about the properties in each algorithm's properties.json file.
  */
 public class AlgorithmProperties {
+    private static final Logger log = Logger.getLogger(AlgorithmProperties.class);
+
     private String name;
     private String desc;
     private AlgorithmType type;
@@ -131,12 +134,16 @@ public class AlgorithmProperties {
      */
     public void mergeAlgorithmParametersWithInputContent(HashMap<String, String> inputContent)
             throws AlgorithmException, CDEsMetadataException {
+        if(inputContent == null)
+            return;
+
+        String pathology = inputContent.get(ComposerConstants.getPathologyPropertyName());
 
         for (ParameterProperties parameterProperties : this.getParameters()) {
             String value = inputContent.get(parameterProperties.getName());
             if (value != null && !value.equals("")) {
                 validateAlgorithmParameterValueType(value, parameterProperties);
-                validateAlgorithmParameterType(value, parameterProperties);
+                validateAlgorithmParameterType(value, parameterProperties, pathology);
             } else {            // if value not given or it is blank
                 if (parameterProperties.getValueNotBlank()) {
                     throw new AlgorithmException(
@@ -158,18 +165,20 @@ public class AlgorithmProperties {
      *
      * @param value               the value given as input
      * @param parameterProperties the rules that the value should follow
+     * @param pathology           the pathology that the algorithm will run on
      */
     private static void validateAlgorithmParameterType(
             String value,
-            ParameterProperties parameterProperties
+            ParameterProperties parameterProperties,
+            String pathology
     ) throws AlgorithmException, CDEsMetadataException {
 
         if (parameterProperties.getType().equals(ParameterProperties.ParameterType.column)) {
             String[] values = value.split(",");
-            validateCDEVariables(values, parameterProperties);
+            validateCDEVariables(values, parameterProperties, pathology);
         } else if (parameterProperties.getType().equals(ParameterProperties.ParameterType.formula)) {
             String[] values = value.split("[+\\-*:0]+");
-            validateCDEVariables(values, parameterProperties);
+            validateCDEVariables(values, parameterProperties, pathology);
         }
     }
 
@@ -180,12 +189,14 @@ public class AlgorithmProperties {
      *
      * @param variables           a list with the variables
      * @param parameterProperties the rules that the variables should follow
+     * @param pathology           the pathology that the algorithm will run on
      */
     private static void validateCDEVariables(
             String[] variables,
-            ParameterProperties parameterProperties
+            ParameterProperties parameterProperties,
+            String pathology
     ) throws AlgorithmException, CDEsMetadataException {
-        CDEsMetadata metadata = CDEsMetadata.getInstance();
+        CDEsMetadata.PathologyCDEsMetadata metadata = CDEsMetadata.getInstance().getPathologyCDEsMetadata(pathology);
         for (String curValue : variables) {
             if (!metadata.columnExists(curValue)) {
                 throw new AlgorithmException("The CDE '" + curValue + "' does not exist.");

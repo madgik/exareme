@@ -3,6 +3,7 @@ package madgik.exareme.master.engine.iterations.scheduler.events;
 import madgik.exareme.common.app.engine.AdpDBQueryID;
 import madgik.exareme.master.client.AdpDBClientQueryStatus;
 import madgik.exareme.master.engine.iterations.scheduler.IterationsDispatcher;
+import madgik.exareme.master.engine.iterations.scheduler.events.phaseCompletion.PhaseCompletionEventHandler;
 import madgik.exareme.master.engine.iterations.state.IterationsStateManager;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.utils.eventProcessor.EventHandler;
@@ -24,6 +25,8 @@ import java.rmi.RemoteException;
  */
 public abstract class IterationsEventHandler<T extends IterationsEvent>
         implements EventHandler<T> {
+    private static final Logger log = Logger.getLogger(IterationsEventHandler.class);
+
     protected IterationsStateManager iterationsStateManager;
     protected IterationsDispatcher iterationsDispatcher;
 
@@ -47,9 +50,14 @@ public abstract class IterationsEventHandler<T extends IterationsEvent>
             IterativeAlgorithmState.IterativeAlgorithmPhasesModel currentPhase)
             throws RemoteException {
 
+        String dflScript = ias.getDFLScript(currentPhase);
+
         AdpDBClientQueryStatus queryStatus = ias.getAdpDBClient().query(
                 ias.getAlgorithmKey(),
-                ias.getDFLScript(currentPhase));
+                dflScript);
+
+        log.info("New Iterative phase: " + currentPhase);
+        log.info("Executing Iterative DFL Script: " + dflScript);
 
         ias.setCurrentExecutionPhase(currentPhase);
 

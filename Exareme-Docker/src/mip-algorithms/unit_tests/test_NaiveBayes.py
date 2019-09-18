@@ -13,7 +13,8 @@ def test_NAIVEBAYES_1():
     logging.info("---------- TEST : NAIVE BAYES :CATEGORICAL DATASET  ")
     #CROSS VALIDATION
 
-    data1 =[{"name": "dataset","value": "car"},
+    data1 =[{   "name": "pathology","value":"dementia"},
+            {"name": "dataset","value": "car"},
             {"name": "x", "value": "car_buying,car_maint,car_doors,car_persons,car_lug_boot,car_safety"},
             {"name": "y", "value": "car_class"},
             {"name": "kfold","value": "3"},
@@ -25,7 +26,8 @@ def test_NAIVEBAYES_1():
     # print (r.text)
 
     #NAIVE BAYES TRAINING
-    data2 =[{"name": "iterationNumber","value": "0"},
+    data2 =[{   "name": "pathology","value":"dementia"},
+	    {"name": "iterationNumber","value": "0"},
             {"name": "alpha","value": "0.1"},
             {"name": "dataset","value": "car"},
             {"name": "x", "value": "car_buying,car_maint,car_doors,car_persons,car_lug_boot,car_safety"},
@@ -100,6 +102,7 @@ def test_NAIVEBAYES_1():
     #NAIVE BAYES TESTING
     data3 =[{"name": "iterationNumber","value": "0"},
             {"name": "alpha","value": "0.1"},
+	    {   "name": "pathology","value":"dementia"},
             {"name": "dataset","value": "car"},
             {"name": "x", "value": "car_buying,car_maint,car_doors,car_persons,car_lug_boot,car_safety"},
             {"name": "y", "value": "car_class"},

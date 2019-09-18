@@ -36,6 +36,7 @@ class TestTTESTIndependent(unittest.TestCase):
                 {"name": "effectsize", "value": "1" },
                 {"name": "ci","value": "0"  },
                 {"name": "meandiff", "value": "0"  },
+		{   "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter","value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
@@ -53,6 +54,7 @@ class TestTTESTIndependent(unittest.TestCase):
                 {"name": "effectsize", "value": "1" },
                 {"name": "ci","value": "1"  },
                 {"name": "meandiff", "value": "1"  },
+		{   "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter","value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
@@ -70,6 +72,7 @@ class TestTTESTIndependent(unittest.TestCase):
                 {"name": "effectsize", "value": "1" },
                 {"name": "ci","value": "1"  },
                 {"name": "meandiff", "value": "1"  },
+		{   "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter","value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
@@ -87,6 +90,7 @@ class TestTTESTIndependent(unittest.TestCase):
                 {"name": "effectsize", "value": "1" },
                 {"name": "ci","value": "1"  },
                 {"name": "meandiff", "value": "1"  },
+		{   "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter","value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
@@ -104,6 +108,7 @@ class TestTTESTIndependent(unittest.TestCase):
                 {"name": "effectsize", "value": "1" },
                 {"name": "ci","value": "1"  },
                 {"name": "meandiff", "value": "1"  },
+		{   "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "adni_9rows"},
                 {"name": "filter","value": ""}
                ]
