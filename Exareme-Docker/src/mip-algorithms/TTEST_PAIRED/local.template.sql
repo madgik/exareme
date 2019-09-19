@@ -18,11 +18,19 @@
 ------------------ End input for testing
 ------------------------------------------------------------------------------
 
-requirevars 'defaultDB' 'input_local_DB' 'db_query' 'x' ;
+requirevars 'defaultDB' 'input_local_DB' 'db_query' 'x' 'hypothesis' 'effectsize' 'ci' 'meandiff' 'sediff';
 --to x formula ths morfhs x1-x2
 
 attach database '%{defaultDB}' as defaultDB;
 attach database '%{input_local_DB}' as localDB;
+
+-- ErrorHandling
+select categoricalparameter_inputerrorchecking('hypothesis', '%{hypothesis}', 'different,greaterthan,lessthan');
+select categoricalparameter_inputerrorchecking('effectsize', '%{effectsize}', '0,1');
+select categoricalparameter_inputerrorchecking('ci', '%{ci}', '0,1');
+select categoricalparameter_inputerrorchecking('meandiff', '%{meandiff}', '0,1');
+select categoricalparameter_inputerrorchecking('sediff', '%{sediff}', '0,1');
+
 
 var 'xnames' from
 select group_concat(xname) as  xname from
