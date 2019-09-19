@@ -17,6 +17,7 @@ from lib import DescrStatsLocal_DT
 def descr_stats_global(global_in):
     if global_in.is_categorical:
         is_categorical, var_name, count, freqs = global_in.get_data()
+        freqs = {str(key): freqs[key] for key in freqs.keys()}
     else:
         is_categorical, var_name, nn, sx, sxx, xmin, xmax = global_in.get_data()
         mean = sx / nn

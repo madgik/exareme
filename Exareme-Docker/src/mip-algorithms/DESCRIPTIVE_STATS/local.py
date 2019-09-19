@@ -66,7 +66,7 @@ def main():
     is_categorical = cur.fetchall()[0][0]
     ##############################################################################################
     if is_categorical:
-        x = data
+        x = [d[0] for d in data]
     else:
         x = np.array(data, dtype=np.float64)
 

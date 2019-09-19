@@ -6,14 +6,14 @@
     "parameters": [
         {
             "name": "x",
-            "desc": "A list of variables from database. The variable should be Real, Integer. It cannot be empty",
+            "desc": "A list of variables from database. The variable should be Real, Integer or String. The variable can be either numerical or categorical. It cannot be empty",
             "type": "column",
-            "columnValuesSQLType": "real, integer",
-            "columnValuesIsCategorical": "false",
+            "columnValuesSQLType": "real, integer, text",
+            "columnValuesIsCategorical": "",
             "columnValuesNumOfEnumerations": "",
             "value": "leftaccumbensarea",
             "valueNotBlank": true,
-            "valueMultiple": true,
+            "valueMultiple": false,
             "valueType": "string"
         },
         {
@@ -36,12 +36,12 @@
         },
         {
             "name": "pathology",
-			"desc": "The name of the pathology that the dataset belongs to.",
-			"type": "pathology",
-			"value": "dementia",
-			"valueNotBlank": true,
-			"valueMultiple": false,
-			"valueType": "string"
+            "desc": "The name of the pathology that the dataset belongs to.",
+            "type": "pathology",
+            "value": "dementia",
+            "valueNotBlank": true,
+            "valueMultiple": false,
+            "valueType": "string"
         }
     ]
 }
