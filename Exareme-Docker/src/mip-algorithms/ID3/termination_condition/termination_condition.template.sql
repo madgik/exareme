@@ -8,7 +8,7 @@ attach database '%{defaultDB}' as defaultDB;
 -- select "ok";
 
 
-var 'returnValue' from select case when select ('?' in (select nextnode from defaultdb.globaltree)) then
+var 'returnValue' from select case when (select ('?' in (select nextnode from defaultdb.globaltree))) = 1 then
 '"CONTINUE"'
 else
 '"STOP"' end;
