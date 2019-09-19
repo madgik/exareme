@@ -6,6 +6,6 @@ settings.local.*
 
 #Ansible
 *.retry
-hosts.ini
 vault_file.yaml
+hosts.ini
 all.yaml

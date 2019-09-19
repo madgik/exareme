@@ -1,7 +1,7 @@
 # Exareme Tag
-EXAREME_TAG: "v21.0.0"
+EXAREME_TAG: "latest"
 # Exareme Image
-EXAREME_IMAGE: "hbpmip/exareme"
+EXAREME_IMAGE: "jassak/exareme"
 
 
 
