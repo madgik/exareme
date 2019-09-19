@@ -1,7 +1,7 @@
 library(tidyverse)
 library(jsonlite)
 library(RWeka)
-mydata <-read.csv("../unit_tests/datasets/CSVs/contact_lenses.csv",header=T)
+mydata <-read.csv("../unit_tests/data/dementia/CSVs/contact_lenses.csv",header=T)
 ## load the package
 WPM("load-package", "simpleEducationalLearningSchemes")
 ## make classifier

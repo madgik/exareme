@@ -9,7 +9,7 @@ from decimal import *
 from rpy2.robjects.packages import importr
 import rpy2.robjects as robjects
 
-endpointUrl='http://localhost:9090/mining/query/ANOVA'
+endpointUrl='http://88.197.53.38:9090/mining/query/ANOVA'
 folderPath = 'R_scripts'
 file ='ANOVA.Rmd'
 

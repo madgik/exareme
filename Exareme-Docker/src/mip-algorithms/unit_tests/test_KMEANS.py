@@ -11,7 +11,7 @@ from rpy2.robjects.packages import importr
 import rpy2.robjects as robjects
 
 
-endpointUrl='http://localhost:9090/mining/query/KMEANS'
+endpointUrl='http://88.197.53.23:9090/mining/query/KMEANS'
 folderPath = 'R_scripts'
 file ='kMeans.Rmd'
 
@@ -32,10 +32,10 @@ class TestkMeans(unittest.TestCase):
                 {   "name": "k", "value":""},
                 {   "name":"centers", "value": "[{\"clid\":1,\"lefthippocampus\":1.7,\"righthippocampus\":1.5},\
                                                  {\"clid\":2,\"lefthippocampus\":2.5,\"righthippocampus\":2.0}]" },
+                {   "name": "pathology","value":"dementia"},
                 {   "name": "dataset", "value": "desd-synthdata" },
                 {   "name": "e", "value": "0.0001" },
-                {   "name": "filter", "value": "" },
-                {   "name": "pathology","value":"dementia"}
+                {   "name": "filter", "value": "" }
             ]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
@@ -56,10 +56,10 @@ class TestkMeans(unittest.TestCase):
                                                      {\"clid\":2,\"rightpallidum\":0.6,\"leftpallidum\":1.2,\"lefthippocampus\":2.0},\
                                                      {\"clid\":3,\"rightpallidum\":1.0,\"leftpallidum\":3.9,\"lefthippocampus\":2.5},\
                                                      {\"clid\":4,\"rightpallidum\":1.5,\"leftpallidum\":2.0,\"lefthippocampus\":3.0}]" },
+                    {   "name": "pathology","value":"dementia"},
                     {   "name": "dataset", "value": "desd-synthdata" },
                     {   "name": "e", "value": "0.0001" },
-                    {   "name": "filter", "value": "" },
-                    {   "name": "pathology","value":"dementia"}
+                    {   "name": "filter", "value": "" }
                 ]
             headers = {'Content-type': 'application/json', "Accept": "text/plain"}
             r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
@@ -81,10 +81,10 @@ class TestkMeans(unittest.TestCase):
                                                  {\"clid\":3,\"rightpallidum\":1.0,\"leftpallidum\":1.5,\"lefthippocampus\":3.9,\"righthippocampus\":2.5},\
                                                  {\"clid\":4,\"rightpallidum\":1.5,\"leftpallidum\":2.0,\"lefthippocampus\":4.0,\"righthippocampus\":3.0},\
                                                 { \"clid\":5,\"rightpallidum\":2.0,\"leftpallidum\":2.2,\"lefthippocampus\":2.3,\"righthippocampus\":4.0}]" },
+                {   "name": "pathology","value":"dementia"},
                 {   "name": "dataset", "value": "desd-synthdata" },
                 {   "name": "e", "value": "0.0001" },
-                {   "name": "filter", "value": "" },
-                {   "name": "pathology","value":"dementia"}
+                {   "name": "filter", "value": "" }
             ]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
@@ -106,10 +106,10 @@ class TestkMeans(unittest.TestCase):
                  {\"clid\":3,\"rightpallidum\":1.0,\"leftpallidum\":1.5,\"lefthippocampus\":3.9,\"righthippocampus\":2.5},\
                  {\"clid\":4,\"rightpallidum\":1.5,\"leftpallidum\":2.0,\"lefthippocampus\":4.0,\"righthippocampus\":3.0},\
                 { \"clid\":5,\"rightpallidum\":2.0,\"leftpallidum\":2.2,\"lefthippocampus\":2.3,\"righthippocampus\":4.0}]" },
+                {   "name": "pathology","value":"dementia"},
                 {   "name": "dataset", "value": "adni_9rows" },
                 {   "name": "e", "value": "0.0001" },
-                {   "name": "filter", "value": "" },
-                {   "name": "pathology","value":"dementia"}
+                {   "name": "filter", "value": "" }
             ]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)

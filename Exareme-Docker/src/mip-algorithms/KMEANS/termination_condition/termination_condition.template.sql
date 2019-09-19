@@ -11,5 +11,12 @@ var 'maxdifference'  from  select max (diff) from (select %{c} from
 (select clid as clid_new, %{b} from defaultDB.clustercentersnew_global)
 where clid_old=clid_new);
 
-update iterationsDB.iterations_condition_check_result_tbl set iterations_condition_check_result = ( select  %{maxdifference}> %{e});
-select "ok";
+-- update iterationsDB.iterations_condition_check_result_tbl set iterations_condition_check_result = ( select  %{maxdifference}> %{e});
+-- select "ok";
+
+var 'returnValue' from select case when %{maxdifference}> %{e} then
+'"CONTINUE"'
+else
+'"STOP"' end;
+
+select %{returnValue};
