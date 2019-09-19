@@ -22,10 +22,17 @@
 ------------------ End input for testing
 ------------------------------------------------------------------------------
 
-requirevars 'defaultDB' 'input_local_DB' 'db_query' 'x' ;
+requirevars 'defaultDB' 'input_local_DB' 'db_query' 'x' 'hypothesis' 'effectsize' 'ci' 'meandiff';
 
 attach database '%{defaultDB}' as defaultDB;
 attach database '%{input_local_DB}' as localDB;
+
+-- ErrorHandling
+select categoricalparameter_inputerrorchecking('hypothesis', '%{hypothesis}', 'different,greaterthan,lessthan');
+select categoricalparameter_inputerrorchecking('effectsize', '%{effectsize}', '0,1');
+select categoricalparameter_inputerrorchecking('ci', '%{ci}', '0,1');
+select categoricalparameter_inputerrorchecking('meandiff', '%{meandiff}', '0,1');
+
 
 --Read dataset
 drop table if exists inputdata;

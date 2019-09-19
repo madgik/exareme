@@ -22,19 +22,22 @@ registered=True
 # --- [0|Column names ---
 # [1|currentnode [2|parentnode [3|colname [4|colval [5|nextnode [6|leafval
 
-def recursive_checkchilds(resulttable, nodestoinsert, level):
+def recursive_checkchilds(resulttable, nodestoinsert, level,colname):
 
     for i in xrange(len(resulttable)):
-        # print "CCC",level, resulttable[i]['currentnode']
+        #print "CCC",level,resulttable[i]
+
         if 'childnodes' in resulttable[i].keys():
             if str(resulttable[i]['childnodes'])== str(level):
                 for k in nodestoinsert:
                     k.pop('id')
-                resulttable[i]['childnodes']= nodestoinsert
+
+                resulttable[i]['childnodes']= [{"colname":colname, "childnodes":nodestoinsert}]
+                #resulttable[i]['childnodes']= nodestoinsert
                 # print "DDD",resulttable[i]['nextnode']
                 return
             elif "colname" in str(resulttable[i]['childnodes']): #is a dict containing childs
-                     recursive_checkchilds(resulttable[i]['childnodes'], nodestoinsert, level)
+                     recursive_checkchilds(resulttable[i]['childnodes'][0]['childnodes'], nodestoinsert, level,colname)
 
 
 class treetojson(functions.vtable.vtbase.VT):
@@ -59,20 +62,24 @@ class treetojson(functions.vtable.vtbase.VT):
             for i in nodestoinsert:
                 if str(i['leafval']) =="": i.pop('leafval')
                 if str(i['childnodes'])=="": i.pop('childnodes')
-
+                colname = i.pop('colname')
+                #resulttable = [{"colname":colname, "childnodes":nodestoinsert}]
             if init is True:
                 for k in nodestoinsert:
                     k.pop('id')
-                resulttable =  nodestoinsert
+                resulttable =  [{"colname":colname, "childnodes":nodestoinsert}]
                 init = False
             else:
-                # print "AA", resulttable
-                recursive_checkchilds(resulttable,nodestoinsert,level)
+                #print "AA", resulttable
+                recursive_checkchilds(resulttable[0]['childnodes'],nodestoinsert,level,colname)
+
 
         # print "RESULT",resulttable
         yield [('result',),]
         # print str(resulttable)
         yield [str(resulttable).replace("'","\""),]
+
+
 
 
 

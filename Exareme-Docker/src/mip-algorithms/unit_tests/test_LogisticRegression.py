@@ -5,7 +5,7 @@ import math
 
 # Required datasets: data_logisticRegression.csv
 
-endpointUrl = 'http://88.197.53.38:9090/mining/query/LOGISTIC_REGRESSION'
+endpointUrl = 'http://88.197.53.23:9090/mining/query/LOGISTIC_REGRESSION'
 
 
 def test_LogisticRegression():
@@ -51,7 +51,8 @@ def test_LogisticRegression():
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
     r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
     result = json.loads(r.text)
-    exareme_coeffs = result['result'][0]['data'][0]['Covariates']
+    print (result)
+    exareme_coeffs = result['result'][0]['data']['Covariates']
     r_coeffs = [{
         'name'       : '(Intercept)',
         'coefficient': -8.850,
@@ -114,7 +115,7 @@ def test_LogisticRegression_MultipleDataset():
         },
         {
             "name": "pathology",
-            "value": "dementia" 
+            "value": "dementia"
 
         },
         {
@@ -130,7 +131,7 @@ def test_LogisticRegression_MultipleDataset():
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
     r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
     result = json.loads(r.text)
-    exareme_coeffs = result['result'][0]['data'][0]['Covariates']
+    exareme_coeffs = result['result'][0]['data']['Covariates']
     r_coeffs = [{
         'name'       : '(Intercept)',
         'coefficient': -8.850,
