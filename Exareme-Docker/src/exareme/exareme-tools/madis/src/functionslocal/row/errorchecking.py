@@ -11,6 +11,13 @@ def privacychecking(*args):
 privacychecking.registered = True
 
 
+def categoricalparameter_inputerrorchecking(parameterName, parameterVal, domainVals):
+    values = re.split(',',domainVals)
+    if str(parameterVal) not in values:
+        raise functions.OperatorError("ExaremeError", "Incorrect parameter value. " + parameterName + "'value should be one of the following: " + domainVals)
+    return "OK"
+categoricalparameter_inputerrorchecking.registered = True
+
 def variabledistinctvalues_inputerrorchecking(nameofvariable, distinctvalues1, distinctvalues2): #ttestindependent
     values1 = re.split(',',distinctvalues1)
     values2 = re.split(',',distinctvalues2)

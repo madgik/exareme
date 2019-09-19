@@ -22,12 +22,18 @@
 ------------------ End input for testing
 ------------------------------------------------------------------------------
 
-requirevars 'defaultDB' 'input_local_DB' 'db_query' 'x' 'y' 'ylevels';
+requirevars 'defaultDB' 'input_local_DB' 'db_query' 'x' 'y' 'ylevels' 'hypothesis' 'effectsize' 'ci' 'meandiff';
 --x: a vector of strings naming the variables of interest in data
 --testValue: a number specifying the value of the null hypothesis
 
 attach database '%{defaultDB}' as defaultDB;
 attach database '%{input_local_DB}' as localDB;
+
+-- ErrorHandling
+select categoricalparameter_inputerrorchecking('hypothesis', '%{hypothesis}', 'different,greaterthan,lessthan');
+select categoricalparameter_inputerrorchecking('effectsize', '%{effectsize}', '0,1');
+select categoricalparameter_inputerrorchecking('ci', '%{ci}', '0,1');
+select categoricalparameter_inputerrorchecking('meandiff', '%{meandiff}', '0,1');
 
 --Read dataset
 drop table if exists inputdata;
