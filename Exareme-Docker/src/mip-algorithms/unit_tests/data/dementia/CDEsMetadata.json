@@ -12,14 +12,15 @@
 			],
 			"label": "alzheimerbroadcategory_logreg_test",
 			"methodology": "Testing_LogisticRegression",
-			"sql_type": "text",
 			"type": "polynominal",
+			"sql_type": "text",
 			"isCategorical": true
 		}, {
 			"code": "leftententorhinalarea_logreg_test",
 			"description": "",
 			"label": "leftententorhinalarea_logreg_test",
 			"methodology": "Testing_LogisticRegression",
+			"type": "real",
 			"sql_type": "real",
 			"isCategorical": false
 		}, {
@@ -27,6 +28,7 @@
 			"description": "",
 			"label": "rightententorhinalarea_logreg_test",
 			"methodology": "Testing_LogisticRegression",
+			"type": "real",
 			"sql_type": "real",
 			"isCategorical": false
 		}, {
@@ -34,6 +36,7 @@
 			"description": "",
 			"label": "lefthippocampus_logreg_test",
 			"methodology": "Testing_LogisticRegression",
+			"type": "real",
 			"sql_type": "real",
 			"isCategorical": false
 		}, {
@@ -41,6 +44,7 @@
 			"description": "",
 			"label": "righthippocampus_logreg_test",
 			"methodology": "Testing_LogisticRegression",
+			"type": "real",
 			"sql_type": "real",
 			"isCategorical": false
 		}, {
@@ -129,19 +133,17 @@
 			"sql_type": "text",
 			"type": "polynominal",
 			"isCategorical": true
-		},
-		{
+		}, {
 			"code": "car_id",
 			"description": "",
 			"minValue": "",
-			"maxValue":"",
-			"label": "pp",
+			"maxValue": "",
+			"label": "car_id",
 			"methodology": "Testing",
 			"sql_type": "int",
 			"type": "",
 			"isCategorical": false
-		},
-		{
+		}, {
 			"code": "car_buying",
 			"description": "",
 			"enumerations": [{
@@ -286,37 +288,37 @@
 		}, {
 			"code": "Iris_Sepal_Length",
 			"description": "",
-			"label": "Left Hippocampus",
+			"label": "Iris_Sepal_Length",
 			"methodology": "Testing_Kmeans",
 			"sql_type": "real",
-			"type": "",
+			"type": "real",
 			"isCategorical": false,
 			"units": "cm3"
 		}, {
 			"code": "Iris_Sepal_Width",
 			"description": "",
-			"label": "Left Hippocampus",
+			"label": "Iris_Sepal_Width",
 			"methodology": "Testing_Kmeans",
 			"sql_type": "real",
-			"type": "",
+			"type": "real",
 			"isCategorical": false,
 			"units": "cm3"
 		}, {
 			"code": "Iris_Petal_Length",
 			"description": "",
-			"label": "Left Hippocampus",
+			"label": "Iris_Petal_Length",
 			"methodology": "Testing_Kmeans",
 			"sql_type": "real",
-			"type": "",
+			"type": "real",
 			"isCategorical": false,
 			"units": "cm3"
 		}, {
 			"code": "Iris_Petal_Width",
 			"description": "",
-			"label": "Left Hippocampus",
+			"label": "Iris_Petal_Width",
 			"methodology": "Testing_Kmeans",
 			"sql_type": "real",
-			"type": "",
+			"type": "real",
 			"isCategorical": false,
 			"units": "cm3"
 		}, {
@@ -343,10 +345,10 @@
 			"description": "",
 			"minValue": 0,
 			"maxValue": 180,
-			"label": "pp",
+			"label": "ANOVA_pp",
 			"methodology": "Testing_ANOVA",
 			"sql_type": "int",
-			"type": "",
+			"type": "integer",
 			"isCategorical": false
 		}, {
 			"code": "ANOVA_var_I1",
@@ -362,7 +364,7 @@
 					"label": 2
 				}
 			],
-			"label": "var_I1",
+			"label": "ANOVA_var_I1",
 			"methodology": "Testing_ANOVA",
 			"sql_type": "int",
 			"type": "polynominal",
@@ -381,7 +383,7 @@
 					"label": 2
 				}
 			],
-			"label": "var_I2",
+			"label": "ANOVA_var_I2",
 			"methodology": "Testing_ANOVA",
 			"sql_type": "int",
 			"type": "polynominal",
@@ -397,7 +399,7 @@
 					"label": 1
 				}
 			],
-			"label": "var_I3",
+			"label": "ANOVA_var_I3",
 			"methodology": "Testing_ANOVA",
 			"sql_type": "int",
 			"type": "binominal",
@@ -407,18 +409,18 @@
 			"description": "",
 			"minValue": 2,
 			"maxValue": 131,
-			"label": "var_D",
+			"label": "ANOVA_var_D",
 			"methodology": "Testing_ANOVA",
 			"sql_type": "int",
-			"type": "",
+			"type": "integer",
 			"isCategorical": false
 		}, {
 			"code": "ANOVA_lefthippocampus",
 			"description": "",
-			"label": "Left Hippocampus",
+			"label": "ANOVA_lefthippocampus",
 			"methodology": "Testing_ANOVA",
 			"sql_type": "real",
-			"type": "",
+			"type": "real",
 			"isCategorical": false,
 			"units": "cm3"
 		}, {
@@ -435,7 +437,7 @@
 					"label": "Other"
 				}
 			],
-			"label": "Alzheimer Broad Category",
+			"label": "ANOVA_alzheimerbroadcategory",
 			"methodology": "Testing_ANOVA",
 			"sql_type": "text",
 			"type": "polynominal",
@@ -451,7 +453,7 @@
 					"label": "Female"
 				}
 			],
-			"label": "Gender",
+			"label": "ANOVA_gender",
 			"length": 1,
 			"methodology": "Testing_ANOVA",
 			"sql_type": "text",
@@ -477,7 +479,7 @@
 					"label": "+80y"
 				}
 			],
-			"label": "Age Group",
+			"label": "ANOVA_agegroup",
 			"methodology": "Testing_ANOVA",
 			"sql_type": "text",
 			"type": "polynominal",
@@ -485,34 +487,34 @@
 		}, {
 			"code": "var1",
 			"description": "Synthetic variable for testing purposes.",
-			"label": "",
+			"label": "var1",
 			"methodology": "",
 			"sql_type": "real",
-			"type": "",
+			"type": "real",
 			"isCategorical": false
 		}, {
 			"code": "var2",
 			"description": "Synthetic variable for testing purposes.",
-			"label": "",
+			"label": "var2",
 			"methodology": "",
 			"sql_type": "real",
-			"type": "",
+			"type": "real",
 			"isCategorical": false
 		}, {
 			"code": "var3",
 			"description": "Synthetic variable for testing purposes.",
-			"label": "",
+			"label": "var3",
 			"methodology": "",
 			"sql_type": "real",
-			"type": "",
+			"type": "real",
 			"isCategorical": false
 		}, {
 			"code": "var4",
 			"description": "Synthetic variable for testing purposes.",
-			"label": "",
+			"label": "var4",
 			"methodology": "",
 			"sql_type": "real",
-			"type": "",
+			"type": "real",
 			"isCategorical": false
 		}, {
 			"isCategorical": false,

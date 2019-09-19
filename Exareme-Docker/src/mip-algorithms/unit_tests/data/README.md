@@ -4,3 +4,6 @@ In that folder you will find a sub-folder called ```CSVs``` containing data for 
 In order for you to add a dataset in the whole process, you need to add it inside folder ```CSVs``` and add its metadata in CDEsMetadata.json
 
 The python script called ```splitCSVFiles.py``` will split the datasets in n datasets one for each node you have.
+
+The ```pathologies.json``` is used from the front end and it is created from the pathologies, their metadata and the datasets available.
+The creation of it could be automated in the future.
