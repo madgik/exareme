@@ -32,7 +32,7 @@ def descr_stats_local(local_in):
 
         local_out = DescrStatsLocal_DT(is_categorical, var_name, nn, sx, sxx, xmin, xmax)
     else:
-        cats = set(x) - {''}
+        cats = set(x) - {'', None}
         freqs = dict()
         for cat in cats:
             freqs[cat] = x.count(cat)
