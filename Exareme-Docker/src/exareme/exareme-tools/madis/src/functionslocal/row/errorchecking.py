@@ -61,8 +61,8 @@ maxnumberofiterations_errorhandling.registered = True
 
 
 
-def kmeans_inputerrorchecking(centers,k):
-    if (centers == '' and k == '') or (centers != '' and k != ''):
+def kmeans_inputerrorchecking(centersisempty,k):
+    if (int(centersisempty) == 1 and k == '') or (int(centersisempty)== 0 and k != ''):
         raise functions.OperatorError("ExaremeError", "Only one of the following two parameters should be empty/have value: Centers or k")
     else:
         return "OK"

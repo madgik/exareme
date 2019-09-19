@@ -15,8 +15,9 @@ class totabulardataresourceformat(functions.vtable.vtbase.VT):
         query = dictargs['query']
 
         if 'title' not in dictargs:
-            raise functions.OperatorError(__name__.rsplit('.')[-1], "No title argument ")
-        title = dictargs['title']
+            title = ''
+        else:
+            title = dictargs['title']
 
         if 'types' not in dictargs:
             raise functions.OperatorError(__name__.rsplit('.')[-1], "No types argument ")
@@ -44,7 +45,7 @@ class totabulardataresourceformat(functions.vtable.vtbase.VT):
 
         myresult = {
             "type": "application/vnd.dataresource+json",
-            "data": [
+            "data":
                 {"name": str(title),
                  "profile": "tabular-data-resource",
                  "data": mydata,
@@ -52,7 +53,6 @@ class totabulardataresourceformat(functions.vtable.vtbase.VT):
                      "fields": myschema
                  }
                  }
-            ]
         }
         myjsonresult = json.dumps(myresult)
 

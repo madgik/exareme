@@ -10,7 +10,7 @@ from rpy2.robjects.packages import importr
 import rpy2.robjects as robjects
 
 
-endpointUrl='http://88.197.53.38:9090/mining/query/TTEST_ONESAMPLE'
+endpointUrl='http://88.197.53.100:9090/mining/query/TTEST_ONESAMPLE'
 folderPath = 'R_scripts'
 file ='ttest_onesample.Rmd'
 
@@ -33,7 +33,7 @@ class TestTTESTOneSample(unittest.TestCase):
                 {"name": "effectsize", "value": "1" },
                 {"name": "ci","value": "1"  },
                 {"name": "meandiff", "value": "1"  },
-		{   "name": "pathology","value":"dementia"},
+                {"name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter","value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
@@ -50,7 +50,7 @@ class TestTTESTOneSample(unittest.TestCase):
                 {"name": "effectsize", "value": "1" },
                 {"name": "ci","value": "1"  },
                 {"name": "meandiff", "value": "1"  },
-		{   "name": "pathology","value":"dementia"},
+                {"name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter","value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
@@ -67,7 +67,7 @@ class TestTTESTOneSample(unittest.TestCase):
                 {"name": "effectsize", "value": "1" },
                 {"name": "ci","value": "1"  },
                 {"name": "meandiff", "value": "1"  },
-		{   "name": "pathology","value":"dementia"},
+                {"name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter","value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
@@ -84,7 +84,7 @@ class TestTTESTOneSample(unittest.TestCase):
                 {"name": "effectsize", "value": "0" },
                 {"name": "ci","value": "0"  },
                 {"name": "meandiff", "value": "0"  },
-		{   "name": "pathology","value":"dementia"},
+                {"name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter","value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
@@ -101,7 +101,7 @@ class TestTTESTOneSample(unittest.TestCase):
                     {"name": "effectsize", "value": "1" },
                     {"name": "ci","value": "1"  },
                     {"name": "meandiff", "value": "1"  },
-		    {   "name": "pathology","value":"dementia"},
+                    {"name": "pathology","value":"dementia"},
                     {"name": "dataset", "value": "adni_9rows"},
                     {"name": "filter","value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
