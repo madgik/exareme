@@ -8,3 +8,4 @@ settings.local.*
 *.retry
 hosts.ini
 vault_file.yaml
+all.yaml
