@@ -362,6 +362,7 @@ class TestANOVA(unittest.TestCase):
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
         result = json.loads(r.text)
+	print result
         check_privacy_result(r.text)
 
 def resultsComparison(jsonExaremeResult, jsonRResult):
@@ -383,7 +384,9 @@ def resultsComparison(jsonExaremeResult, jsonRResult):
 
 
 def check_privacy_result(result):
-    assert result == "{\"error\" : \"The Experiment could not run with the input provided because there are insufficient data.\"}"
+    assert result == "{\"result\" : [{\"data\":\"The Experiment could not run with the input provided because there are insufficient data.\",\"type\":\"text/plain+warning\"}]}"
+
+
 
 
 if __name__ == '__main__':

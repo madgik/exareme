@@ -540,7 +540,7 @@ def test_PearsonCorrlation_Privacy():
     check_privacy_result(r.text)
 
 def check_privacy_result(result):
-    assert result == "{\"error\" : \"The Experiment could not run with the input provided because there are insufficient data.\"}"
+    assert result == "{\"result\" : [{\"data\":\"The Experiment could not run with the input provided because there are insufficient data.\",\"type\":\"text/plain+warning\"}]}"
 
 
 def check_result(my_result, r_var_pair, r_corr, r_pval, r_ci_lo, r_ci_hi):
