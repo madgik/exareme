@@ -18,7 +18,7 @@ from lib import DescrStatsLocal_DT
 
 def descr_stats_local(local_in):
     # Unpack data
-    x, var_name, is_categorical = local_in
+    x, var_name, is_categorical, enums = local_in
 
     if not is_categorical:
         xm = np.ma.masked_invalid(x)
@@ -32,10 +32,9 @@ def descr_stats_local(local_in):
 
         local_out = DescrStatsLocal_DT(is_categorical, var_name, nn, sx, sxx, xmin, xmax)
     else:
-        cats = set(x) - {'', None}
         freqs = dict()
-        for cat in cats:
-            freqs[cat] = x.count(cat)
+        for enum in enums:
+            freqs[enum] = x.count(enum)
         count = sum(freqs.values())
 
         local_out = DescrStatsLocal_DT(is_categorical, var_name, count, freqs)
@@ -59,18 +58,23 @@ def main():
     var_name = args.x
     _, data = query_with_privacy(fname_db=fname_loc_db, query=query)
 
-    # Query metadata table to check if variable is categorical  (TODO rewrite this part correctly)
+    # Query metadata table for isCategorical and enumerations  (TODO rewrite this part correctly)
     conn = sqlite3.connect(fname_loc_db)
     cur = conn.cursor()
     cur.execute("select isCategorical from metadata where code = '" + var_name + "';")
     is_categorical = cur.fetchall()[0][0]
+    if is_categorical:
+        cur.execute("select enumerations from metadata where code = '" + var_name + "';")
+        enums = cur.fetchall()[0][0].split(',')
+    else:
+        enums = None
     ##############################################################################################
     if is_categorical:
         x = [d[0] for d in data]
     else:
         x = np.array(data, dtype=np.float64)
 
-    local_in = x, var_name, is_categorical
+    local_in = x, var_name, is_categorical, enums
 
     # Run algorithm local step
     local_out = descr_stats_local(local_in=local_in)
