@@ -362,7 +362,6 @@ class TestANOVA(unittest.TestCase):
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
         result = json.loads(r.text)
-	print result
         check_privacy_result(r.text)
 
 def resultsComparison(jsonExaremeResult, jsonRResult):
