@@ -73,7 +73,9 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
                 close();
             }
             else if (queryStatus.getError().contains("PrivacyError")) {
-                String result = createErrorMessage("The Experiment could not run with the input provided because there are insufficient data.");
+                String data ="The Experiment could not run with the input provided because there are insufficient data.";
+                String type ="text/plain+warning";
+                String result = defaultOutput(data,type);
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();
@@ -97,6 +99,9 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
                 close();
             }
         }
+    }
+    private String defaultOutput(String data, String type){
+        return "{\"result\" : [{\"data\":"+"\""+data+"\",\"type\":"+"\""+type+"\"}]}";
     }
 
     private String createErrorMessage(String error) {
