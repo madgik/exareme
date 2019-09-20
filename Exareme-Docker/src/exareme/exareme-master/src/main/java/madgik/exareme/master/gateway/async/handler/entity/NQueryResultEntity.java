@@ -66,7 +66,7 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
         } else {
             log.trace("|" + queryStatus.getError() + "|");
             if (queryStatus.getError().contains("ExaremeError:")) {
-                String data = queryStatus.getError().substring(result.lastIndexOf("ExaremeError:") + "ExaremeError:".length()).replaceAll("\\s"," ");
+                String data = queryStatus.getError().substring(queryStatus.getError().lastIndexOf("ExaremeError:") + "ExaremeError:".length()).replaceAll("\\s"," ");
                 String type = "text/plain+error";
                 String result = defaultOutputFormat(data,type);
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
@@ -82,7 +82,7 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
                 close();
             }
             else if (queryStatus.getError().contains("java.rmi.RemoteException")) {
-                String data = "One or more containers are not responding. Please inform the system administrator.");
+                String data = "One or more containers are not responding. Please inform the system administrator.";
                 String type = "text/plain+error";
                 String result = defaultOutputFormat(data,type);
                 encoder.write(ByteBuffer.wrap(result.getBytes()));

@@ -121,32 +121,32 @@ public class NIterativeAlgorithmResultEntity extends BasicHttpEntity
                 if (result.contains("ExaremeError:")) {
                     String data = result.substring(result.lastIndexOf("ExaremeError:") + "ExaremeError:".length()).replaceAll("\\s", " ");
                     String type = "text/plain+error";
-                    String result = defaultOutputFormat(data,type)
+                    String output = defaultOutputFormat(data,type);
                     channel = Channels.newChannel(
-                            new ByteArrayInputStream(result.getBytes(StandardCharsets.UTF_8)));
+                            new ByteArrayInputStream(output.getBytes(StandardCharsets.UTF_8)));
 
                 } else if (result.contains("PrivacyError")) {
                     String data = "The Experiment could not run with the input provided because there are insufficient data.";
                     String type = "text/plain+warning";
-                    String result = defaultOutputFormat(data,type);
+                    String output = defaultOutputFormat(data,type);
                     channel = Channels.newChannel(
-                            new ByteArrayInputStream(result.getBytes(StandardCharsets.UTF_8)));
+                            new ByteArrayInputStream(output.getBytes(StandardCharsets.UTF_8)));
 
                 } else if (result.matches("java.rmi.RemoteException: Containers:.*not responding")) {
                     String data = "One or more containers are not responding. Please inform the system administrator.";
                     String type = "text/plain+error";
-                    String result = defaultOutputFormat(data,type);
+                    String output = defaultOutputFormat(data,type);
                     channel = Channels.newChannel(
-                            new ByteArrayInputStream(result.getBytes(StandardCharsets.UTF_8)));
+                            new ByteArrayInputStream(output.getBytes(StandardCharsets.UTF_8)));
 
                 } else {   // Unexpected error
                     String data = "Something went wrong with the execution of algorithm: ["
                             + iterativeAlgorithmState.getAlgorithmKey()
                             + "]. Please inform your system administrator to consult the logs.";
                     String type = "text/plain+error";
-                    String result = defaultOutputFormat(data,type);
+                    String output = defaultOutputFormat(data,type);
                     channel = Channels.newChannel(
-                            new ByteArrayInputStream(result.getBytes(StandardCharsets.UTF_8)));
+                            new ByteArrayInputStream(output.getBytes(StandardCharsets.UTF_8)));
                 }
 
                 channel.read(buffer);
