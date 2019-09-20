@@ -6,7 +6,7 @@ import logging
 
 endpointUrl='http://88.197.53.38:9090/mining/query/TTEST_ONESAMPLE'
 
- def test_Histogram_Privacy(self):
+def test_Histogram_Privacy():
         logging.info("---------- TEST : Algorithms for Privacy Error")
         data = [{"name": "x", "value": "lefthippocampus,righthippocampus"},
                     {"name": "testvalue", "value": "3.0"    },
@@ -25,5 +25,7 @@ endpointUrl='http://88.197.53.38:9090/mining/query/TTEST_ONESAMPLE'
 
 
 def check_privacy_result(result):
-    assert result == assert result == "{\"result\" : [{\"data\":\" Incorrect parameter value. ci'value should be one of the following: 0,1 \",\"type\":\"text/plain+user_error\"}]}"
+    assert result == "{\"result\" : [{\"data\":\" Incorrect parameter value. ci\'value should be one of the following: 0,1 \",\"type\":\"text/plain+user_error\"}]}"
 
+if __name__ == '__main__':
+    unittest.main()
