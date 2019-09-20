@@ -13,67 +13,68 @@ def main():
     adni = pd.read_csv('../../unit_tests/data/dementia/CSVs/adni.csv')
 
     var_names = adni.axes[1]
+    dataset_idx = list(adni.axes[1]).index('dataset')
+    subjectcode_idx = list(adni.axes[1]).index('subjectcode')
     num_vars = len(var_names)
+    idx_range = list(range(num_vars))
+    idx_range.pop(dataset_idx)
+    idx_range.pop(subjectcode_idx)
     results = []
     num_tests = 0
-    while num_tests < 100:
-        ii = np.random.randint(1, num_vars)
+    var_idx = np.random.permutation(idx_range)[:115]
+    for ii in var_idx:
         x_name = var_names[ii]
-        if x_name == 'dataset':
-            break
         cur.execute("select isCategorical from metadata where code = '" + x_name + "';")
         is_categorical = cur.fetchall()[0][0]
         if is_categorical:
+            cur.execute("select enumerations from metadata where code = '" + x_name + "';")
+            enums = cur.fetchall()[0][0].split(',')
             x = adni[x_name]
             freqs = dict()
-            for val in x.unique():
-                if type(val) == str:
-                    f = x.where(x == val).count()
-                    freqs[val] = f
-                else:
-                    if not np.isnan(val):
-                        f = x.where(x == val).count()
-                        freqs[val] = f
+            if type(x[0]) != str:
+                x = [int(xi) if not np.isnan(xi) else xi for xi in x]
+                for enum in enums:
+                    freqs[enum] = x.count(enum)
+            else:
+                for enum in enums:
+                    f = x.where(x == enum).count()
+                    freqs[enum] = f
 
             if set([type(key) for key in freqs.keys()]) == {np.float64}:
                 freqs = {str(int(key)): int(freqs[key]) for key in freqs.keys()}
             else:
                 freqs = {str(key): int(freqs[key]) for key in freqs.keys()}
             count = sum(freqs.values())
-            if count > 0:
-                input_data = [
-                    {
-                        "name" : "x",
-                        "value": x_name
-                    },
-                    {
-                        "name" : "dataset",
-                        "value": "adni"
-                    },
-                    {
-                        "name" : "filter",
-                        "value": ""
-                    },
-                    {
-                        "name" : "pathology",
-                        "value": "dementia"
-                    }
-                ]
-                output_data = {
-                    'Label'    : x_name,
-                    'Count'    : int(count),
-                    'Frequency': freqs
+            input_data = [
+                {
+                    "name" : "x",
+                    "value": x_name
+                },
+                {
+                    "name" : "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name" : "filter",
+                    "value": ""
+                },
+                {
+                    "name" : "pathology",
+                    "value": "dementia"
                 }
-                results.append({
-                    "input" : input_data,
-                    "output": output_data
-                })
-                num_tests += 1
+            ]
+            output_data = {
+                'Label'    : x_name,
+                'Count'    : int(count),
+                'Frequency': freqs
+            }
+            results.append({
+                "input" : input_data,
+                "output": output_data
+            })
+            num_tests += 1
         else:
-            try:
-                xm = np.ma.masked_invalid(adni[x_name])
-            except:
-                pass
+            xm = np.ma.masked_invalid(adni[x_name])
             if False in xm.mask:
                 input_data = [
                     {
@@ -109,6 +110,7 @@ def main():
                 })
                 num_tests += 1
 
+    print(num_tests)
     results = {"results": results}
     with open('descr_stats_runs.json', 'w') as f:
         json.dump(results, f)
