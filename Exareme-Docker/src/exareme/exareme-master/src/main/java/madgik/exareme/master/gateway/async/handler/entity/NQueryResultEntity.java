@@ -25,6 +25,9 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
     private ReadableByteChannel channel;
     private NQueryStatusEntity.QueryStatusListener l;
     private DataSerialization format;
+    private final static String user_error = new String("text/plain+user_error");
+    private final static String error = new String("text/plain+error");
+    private final static String warning = new String("text/plain+warning");
 
     public NQueryResultEntity(AdpDBClientQueryStatus status, DataSerialization ds,
                               int bufferSize) {
@@ -67,7 +70,8 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
             log.trace("|" + queryStatus.getError() + "|");
             if (queryStatus.getError().contains("ExaremeError:")) {
                 String data = queryStatus.getError().substring(queryStatus.getError().lastIndexOf("ExaremeError:") + "ExaremeError:".length()).replaceAll("\\s"," ");
-                String type = "text/plain+error";
+                //type could be error, user_error, warning regarding the error occured along the process
+                String type = user_error;
                 String result = defaultOutputFormat(data,type);
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
@@ -75,7 +79,8 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
             }
             else if (queryStatus.getError().contains("PrivacyError")) {
                 String data = "The Experiment could not run with the input provided because there are insufficient data.";
-                String type = "text/plain+warning";
+                //type could be error, user_error, warning regarding the error occured along the process
+                String type = warning;
                 String result = defaultOutputFormat(data,type);
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
@@ -83,7 +88,8 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
             }
             else if (queryStatus.getError().contains("java.rmi.RemoteException")) {
                 String data = "One or more containers are not responding. Please inform the system administrator.";
-                String type = "text/plain+error";
+                //type could be error, user_error, warning regarding the error occured along the process
+                String type = error;
                 String result = defaultOutputFormat(data,type);
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
@@ -91,15 +97,17 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
             }
             else if(queryStatus.getError().contains("java.lang.IndexOutOfBoundsException:")){
                 String data = "Something went wrong. Clean-ups were made, you may re-run your experiment. Please inform the system administrator though for fixing any remaining issue.";
-                String type = "text/plain+error";
+                //type could be error, user_error, warning regarding the error occured along the process
+                String type = error;
                 String result = defaultOutputFormat(data,type);
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();
             }
             else {
-                String data="Something went wrong. Please inform your system administrator to consult the logs.";
-                String type ="text/plain+error";
+                String data = "Something went wrong. Please inform your system administrator to consult the logs.";
+                //type could be error, user_error, warning regarding the error occured along the process
+                String type = error;
                 String result = defaultOutputFormat(data,type);
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
