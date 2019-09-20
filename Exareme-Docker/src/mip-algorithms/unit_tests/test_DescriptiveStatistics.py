@@ -3,7 +3,7 @@ import json
 import requests
 import math
 
-endpointUrl = 'http://88.197.53.52:9090/mining/query/DESCRIPTIVE_STATS'
+endpointUrl = 'http://88.197.53.100:9090/mining/query/DESCRIPTIVE_STATS'
 
 
 def get_test_params():

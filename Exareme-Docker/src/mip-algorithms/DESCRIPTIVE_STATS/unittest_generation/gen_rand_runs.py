@@ -21,8 +21,9 @@ def main():
     idx_range.pop(subjectcode_idx)
     results = []
     num_tests = 0
-    var_idx = np.random.permutation(idx_range)[:115]
+    var_idx = np.random.permutation(idx_range)[:140]
     for ii in var_idx:
+        must_break = False
         x_name = var_names[ii]
         cur.execute("select isCategorical from metadata where code = '" + x_name + "';")
         is_categorical = cur.fetchall()[0][0]
@@ -31,48 +32,51 @@ def main():
             enums = cur.fetchall()[0][0].split(',')
             x = adni[x_name]
             freqs = dict()
-            if type(x[0]) != str:
-                x = [int(xi) if not np.isnan(xi) else xi for xi in x]
-                for enum in enums:
-                    freqs[enum] = x.count(enum)
-            else:
-                for enum in enums:
-                    f = x.where(x == enum).count()
-                    freqs[enum] = f
+            if False not in x.isna():
+                break
 
-            if set([type(key) for key in freqs.keys()]) == {np.float64}:
-                freqs = {str(int(key)): int(freqs[key]) for key in freqs.keys()}
-            else:
-                freqs = {str(key): int(freqs[key]) for key in freqs.keys()}
-            count = sum(freqs.values())
-            input_data = [
-                {
-                    "name" : "x",
-                    "value": x_name
-                },
-                {
-                    "name" : "dataset",
-                    "value": "adni"
-                },
-                {
-                    "name" : "filter",
-                    "value": ""
-                },
-                {
-                    "name" : "pathology",
-                    "value": "dementia"
+            for enum in enums:
+                try:
+                    f = x.where(x == enum).count()
+                except:
+                    must_break = True
+                    break
+                freqs[enum] = f
+            if not must_break:
+
+                if set([type(key) for key in freqs.keys()]) == {np.float64}:
+                    freqs = {str(int(key)): int(freqs[key]) for key in freqs.keys()}
+                else:
+                    freqs = {str(key): int(freqs[key]) for key in freqs.keys()}
+                count = sum(freqs.values())
+                input_data = [
+                    {
+                        "name" : "x",
+                        "value": x_name
+                    },
+                    {
+                        "name" : "dataset",
+                        "value": "adni"
+                    },
+                    {
+                        "name" : "filter",
+                        "value": ""
+                    },
+                    {
+                        "name" : "pathology",
+                        "value": "dementia"
+                    }
+                ]
+                output_data = {
+                    'Label'    : x_name,
+                    'Count'    : int(count),
+                    'Frequency': freqs
                 }
-            ]
-            output_data = {
-                'Label'    : x_name,
-                'Count'    : int(count),
-                'Frequency': freqs
-            }
-            results.append({
-                "input" : input_data,
-                "output": output_data
-            })
-            num_tests += 1
+                results.append({
+                    "input" : input_data,
+                    "output": output_data
+                })
+                num_tests += 1
         else:
             xm = np.ma.masked_invalid(adni[x_name])
             if False in xm.mask:
