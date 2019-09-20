@@ -66,46 +66,49 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
         } else {
             log.trace("|" + queryStatus.getError() + "|");
             if (queryStatus.getError().contains("ExaremeError:")) {
-                String result = queryStatus.getError();
-                result = result.substring(result.lastIndexOf("ExaremeError:") + "ExaremeError:".length()).replaceAll("\\s"," ");
-                encoder.write(ByteBuffer.wrap(createErrorMessage(result).getBytes()));
+                String data = queryStatus.getError().substring(result.lastIndexOf("ExaremeError:") + "ExaremeError:".length()).replaceAll("\\s"," ");
+                String type = "text/plain+error";
+                String result = defaultOutputFormat(data,type);
+                encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();
             }
             else if (queryStatus.getError().contains("PrivacyError")) {
-                String data ="The Experiment could not run with the input provided because there are insufficient data.";
-                String type ="text/plain+warning";
-                String result = defaultOutput(data,type);
+                String data = "The Experiment could not run with the input provided because there are insufficient data.";
+                String type = "text/plain+warning";
+                String result = defaultOutputFormat(data,type);
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();
             }
             else if (queryStatus.getError().contains("java.rmi.RemoteException")) {
-                String result = createErrorMessage("One or more containers are not responding. Please inform the system administrator.");
+                String data = "One or more containers are not responding. Please inform the system administrator.");
+                String type = "text/plain+error";
+                String result = defaultOutputFormat(data,type);
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();
             }
             else if(queryStatus.getError().contains("java.lang.IndexOutOfBoundsException:")){
-                String result = createErrorMessage("Something went wrong. Clean-ups were made, you may re-run your experiment. Please inform the system administrator though for fixing any remaining issue.");
+                String data = "Something went wrong. Clean-ups were made, you may re-run your experiment. Please inform the system administrator though for fixing any remaining issue.";
+                String type = "text/plain+error";
+                String result = defaultOutputFormat(data,type);
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();
             }
             else {
-                String result = createErrorMessage("Something went wrong. Please inform your system administrator to consult the logs.");
+                String data="Something went wrong. Please inform your system administrator to consult the logs.";
+                String type ="text/plain+error";
+                String result = defaultOutputFormat(data,type);
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();
             }
         }
     }
-    private String defaultOutput(String data, String type){
+    private String defaultOutputFormat(String data, String type){
         return "{\"result\" : [{\"data\":"+"\""+data+"\",\"type\":"+"\""+type+"\"}]}";
-    }
-
-    private String createErrorMessage(String error) {
-        return "{\"error\" : \"" + error + "\"}";
     }
 
     @Override
