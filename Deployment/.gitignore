@@ -5,4 +5,7 @@ postgres
 settings.local.*
 
 #Ansible
-*.retry 
+*.retry
+vault_file.yaml
+hosts.ini
+all.yaml
