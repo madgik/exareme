@@ -15,57 +15,60 @@ from lib import DescrStatsLocal_DT
 
 
 def descr_stats_global(global_in):
-    if global_in.is_categorical:
-        is_categorical, var_name, count, freqs = global_in.get_data()
-        freqs = {str(key): freqs[key] for key in freqs.keys()}
-    else:
-        is_categorical, var_name, nn, sx, sxx, xmin, xmax = global_in.get_data()
-        mean = sx / nn
-        std = (sxx / nn - mean ** 2) ** 0.5
-        upper_ci = mean + std
-        lower_ci = mean - std
+    transf_var_list, num_vars = global_in.get_data()
+    results = []
+    for var in transf_var_list:
 
-    if is_categorical:
-        # Raw data
-        results = [{
-            'Label'         : var_name,
-            'Count'         : count,
-            'Frequency'           : freqs
-        }]
+        if var.is_categorical:
+            is_categorical, var_name, count, freqs = var.get_data()
+            freqs = {str(key): freqs[key] for key in freqs.keys()}
+        else:
+            is_categorical, var_name, nn, sx, sxx, xmin, xmax = var.get_data()
+            mean = sx / nn
+            std = (sxx / nn - mean ** 2) ** 0.5
+            upper_ci = mean + std
+            lower_ci = mean - std
 
-        schema = {
-            "fields": [
-                {"name": "Label", "type": "string"},
-                {"name": "Count", "type": "integer"},
-                {"name": "Frequencies", "type": "object"},
-            ]
-        }
-    else:
-        # Raw data
-        results = [{
-            'Label'         : var_name,
-            'Count'         : nn,
-            'Min'           : xmin,
-            'Max'           : xmax,
-            'Mean'          : mean,
-            'Std.Err.'      : std,
-            'Mean + Std.Err': upper_ci,
-            'Mean - Std.Err': lower_ci
-        }]
+        if is_categorical:
+            # Raw data
+            results = [{
+                'Label'         : var_name,
+                'Count'         : count,
+                'Frequency'           : freqs
+            }]
 
-        schema = {
-            "fields": [
-                {"name": "Label", "type": "string"},
-                {"name": "Count", "type": "integer"},
-                {"name": "Min", "type": "real"},
-                {"name": "Max", "type": "real"},
-                {"name": "Mean", "type": "real"},
-                {"name": "Std.Err.", "type": "real"},
-                {"name": "Mean + Std.Err", "type": "real"},
-                {"name": "Mean - Std.Err", "type": "real"}
-            ]
-        }
+            schema = {
+                "fields": [
+                    {"name": "Label", "type": "string"},
+                    {"name": "Count", "type": "integer"},
+                    {"name": "Frequencies", "type": "object"},
+                ]
+            }
+        else:
+            # Raw data
+            results.append({
+                'Label'         : var_name,
+                'Count'         : nn,
+                'Min'           : xmin,
+                'Max'           : xmax,
+                'Mean'          : mean,
+                'Std.Err.'      : std,
+                'Mean + Std.Err': upper_ci,
+                'Mean - Std.Err': lower_ci
+            })
 
+    schema = {
+        "fields": [
+            {"name": "Label", "type": "string"},
+            {"name": "Count", "type": "integer"},
+            {"name": "Min", "type": "real"},
+            {"name": "Max", "type": "real"},
+            {"name": "Mean", "type": "real"},
+            {"name": "Std.Err.", "type": "real"},
+            {"name": "Mean + Std.Err", "type": "real"},
+            {"name": "Mean - Std.Err", "type": "real"}
+        ]
+    }
 
 
     result = {
