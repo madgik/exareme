@@ -46,6 +46,10 @@ public class NIterativeAlgorithmResultEntity extends BasicHttpEntity
         this.dataSerialization = dataSerialization;
     }
 
+    private final static String user_error = new String("text/plain+user_error");
+    private final static String error = new String("text/plain+error");
+    private final static String warning = new String("text/plain+warning");
+
 
     /**
      * @param encoder is used to save the output
@@ -119,27 +123,34 @@ public class NIterativeAlgorithmResultEntity extends BasicHttpEntity
                 // A PrivacyError is caused due to insufficient data.
                 String result = iterativeAlgorithmState.getAlgorithmError();
                 if (result.contains("ExaremeError:")) {
-                    result = result.substring(result.lastIndexOf("ExaremeError:") + "ExaremeError:".length()).replaceAll("\\s", " ");
+                    String data = result.substring(result.lastIndexOf("ExaremeError:") + "ExaremeError:".length()).replaceAll("\\s", " ");
+                    String type = user_error;
+                    String output = defaultOutputFormat(data,type);
                     channel = Channels.newChannel(
-                            new ByteArrayInputStream(createErrorMessage(result).getBytes(StandardCharsets.UTF_8)));
+                            new ByteArrayInputStream(output.getBytes(StandardCharsets.UTF_8)));
 
                 } else if (result.contains("PrivacyError")) {
-                    String privacyResult = createErrorMessage("The Experiment could not run with the input provided because there are insufficient data.");
+                    String data = "The Experiment could not run with the input provided because there are insufficient data.";
+                    String type = warning;
+                    String output = defaultOutputFormat(data,type);
                     channel = Channels.newChannel(
-                            new ByteArrayInputStream(privacyResult.getBytes(StandardCharsets.UTF_8)));
+                            new ByteArrayInputStream(output.getBytes(StandardCharsets.UTF_8)));
 
                 } else if (result.matches("java.rmi.RemoteException: Containers:.*not responding")) {
-                    String remoteExceptionResult = createErrorMessage("One or more containers are not responding. Please inform the system administrator.");
+                    String data = "One or more containers are not responding. Please inform the system administrator.";
+                    String type = error;
+                    String output = defaultOutputFormat(data,type);
                     channel = Channels.newChannel(
-                            new ByteArrayInputStream(remoteExceptionResult.getBytes(StandardCharsets.UTF_8)));
+                            new ByteArrayInputStream(output.getBytes(StandardCharsets.UTF_8)));
 
                 } else {   // Unexpected error
-                    String defaultMsg = createErrorMessage("Something went wrong with the execution of algorithm: ["
+                    String data = "Something went wrong with the execution of algorithm: ["
                             + iterativeAlgorithmState.getAlgorithmKey()
-                            + "]. Please inform your system administrator to consult the logs.");
-
+                            + "]. Please inform your system administrator to consult the logs.";
+                    String type = error;
+                    String output = defaultOutputFormat(data,type);
                     channel = Channels.newChannel(
-                            new ByteArrayInputStream(defaultMsg.getBytes(StandardCharsets.UTF_8)));
+                            new ByteArrayInputStream(output.getBytes(StandardCharsets.UTF_8)));
                 }
 
                 channel.read(buffer);
@@ -169,7 +180,7 @@ public class NIterativeAlgorithmResultEntity extends BasicHttpEntity
         return false;
     }
 
-    private String createErrorMessage(String error) {
-        return "{\"error\" : \"" + error + "\"}";
+    private String defaultOutputFormat(String data, String type){
+        return "{\"result\" : [{\"data\":"+"\""+data+"\",\"type\":"+"\""+type+"\"}]}";
     }
 }
