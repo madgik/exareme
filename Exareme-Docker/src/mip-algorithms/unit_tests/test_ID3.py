@@ -8,7 +8,7 @@ import re
 from decimal import *
 
 
-endpointUrl='http://88.197.53.23:9090/mining/query/ID3'
+endpointUrl='http://88.197.53.38:9090/mining/query/ID3'
 
 def test_ID3_1():
     logging.info("---------- TEST : ID3 - Test using contact-lenses dataset  ")
@@ -73,7 +73,7 @@ def test_ID3_Privacy():
 
 
 def check_privacy_result(result):
-    assert result == "{\"error\" : \"The Experiment could not run with the input provided because there are insufficient data.\"}"
+    assert result == "{\"result\" : [{\"data\":\"The Experiment could not run with the input provided because there are insufficient data.\",\"type\":\"text/plain+warning\"}]}"
 
 
 

@@ -1,7 +1,7 @@
 # Exareme Tag
-EXAREME_TAG: "latest"
+EXAREME_TAG: "outputFormat"
 # Exareme Image
-EXAREME_IMAGE: "jassak/exareme"
+EXAREME_IMAGE: "sofiakar/myexareme"
 
 
 

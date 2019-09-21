@@ -9,7 +9,7 @@ from decimal import *
 from rpy2.robjects.packages import importr
 import rpy2.robjects as robjects
 
-endpointUrl='http://88.197.53.23:9090/mining/query/ANOVA'
+endpointUrl='http://88.197.53.38:9090/mining/query/ANOVA'
 folderPath = 'R_scripts'
 file ='ANOVA.Rmd'
 
@@ -383,7 +383,9 @@ def resultsComparison(jsonExaremeResult, jsonRResult):
 
 
 def check_privacy_result(result):
-    assert result == "{\"error\" : \"The Experiment could not run with the input provided because there are insufficient data.\"}"
+    assert result == "{\"result\" : [{\"data\":\"The Experiment could not run with the input provided because there are insufficient data.\",\"type\":\"text/plain+warning\"}]}"
+
+
 
 
 if __name__ == '__main__':

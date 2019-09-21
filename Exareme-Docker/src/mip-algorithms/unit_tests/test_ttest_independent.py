@@ -9,7 +9,7 @@ from decimal import *
 from rpy2.robjects.packages import importr
 import rpy2.robjects as robjects
 
-endpointUrl='http://88.197.53.23:9090/mining/query/TTEST_INDEPENDENT'
+endpointUrl='http://88.197.53.38:9090/mining/query/TTEST_INDEPENDENT'
 folderPath = 'R_scripts'
 file ='ttest_independent.Rmd'
 
@@ -118,7 +118,7 @@ class TestTTESTIndependent(unittest.TestCase):
         check_privacy_result(r.text)
 
 def check_privacy_result(result):
-    assert result == "{\"error\" : \"The Experiment could not run with the input provided because there are insufficient data.\"}"
+    assert result == "{\"result\" : [{\"data\":\"The Experiment could not run with the input provided because there are insufficient data.\",\"type\":\"text/plain+warning\"}]}"
 
 
 def resultsComparison(data, jsonExaremeResult, jsonRResult):
