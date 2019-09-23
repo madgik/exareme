@@ -13,7 +13,7 @@
             "columnValuesNumOfEnumerations": "",
             "value": "leftaccumbensarea",
             "valueNotBlank": true,
-            "valueMultiple": false,
+            "valueMultiple": true,
             "valueType": "string"
         },
         {
