@@ -31,19 +31,18 @@ def descr_stats_global(global_in):
 
         if is_categorical:
             # Raw data
-            results = [{
+            results.append({
                 'Label'         : var_name,
                 'Count'         : count,
-                'Frequency'           : freqs
-            }]
+                'Min'           : "null",
+                'Max'           : "null",
+                'Mean'          : "null",
+                'Std.Err.'      : "null",
+                'Mean + Std.Err': "null",
+                'Mean - Std.Err': "null",
+                'Frequencies'           : freqs
+            })
 
-            schema = {
-                "fields": [
-                    {"name": "Label", "type": "string"},
-                    {"name": "Count", "type": "integer"},
-                    {"name": "Frequencies", "type": "object"},
-                ]
-            }
         else:
             # Raw data
             results.append({
@@ -54,7 +53,8 @@ def descr_stats_global(global_in):
                 'Mean'          : mean,
                 'Std.Err.'      : std,
                 'Mean + Std.Err': upper_ci,
-                'Mean - Std.Err': lower_ci
+                'Mean - Std.Err': lower_ci,
+                'Frequencies': "null"
             })
 
     schema = {
@@ -66,7 +66,8 @@ def descr_stats_global(global_in):
             {"name": "Mean", "type": "real"},
             {"name": "Std.Err.", "type": "real"},
             {"name": "Mean + Std.Err", "type": "real"},
-            {"name": "Mean - Std.Err", "type": "real"}
+            {"name": "Mean - Std.Err", "type": "real"},
+            {"name": "Frequencies", "type": "object"}
         ]
     }
 
@@ -82,6 +83,7 @@ def descr_stats_global(global_in):
             }
         ]
     }
+
 
     try:
         global_out = json.dumps(result, allow_nan=False)

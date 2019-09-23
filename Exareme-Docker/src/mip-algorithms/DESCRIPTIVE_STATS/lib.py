@@ -58,6 +58,8 @@ class TransferVariable(object):
     def get_data(self):
         if self.is_categorical:
             return self.is_categorical, self.var_name, self.count, self.freqs
+        else:
+            return self.is_categorical, self.var_name, self.nn, self.sx, self.sxx, self.xmin, self.xmax
 
 
 class Variable(object):

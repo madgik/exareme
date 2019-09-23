@@ -21,7 +21,7 @@ def descr_stats_local(local_in):
     var_list = local_in
     transf_var_list = []
     for i in xrange(len(var_list)):
-        x, var_name, is_categorical, enums = var_list[i].get_data()
+        var_name, x, is_categorical, enums = var_list[i].get_data()
 
         if not is_categorical:
             xm = np.ma.masked_invalid(x)
@@ -84,9 +84,13 @@ def main():
             enums = None
         ##############################################################################################
         if is_categorical:
-            x = [d[0] for d in data]
+            x = [d[idx] for d in data]
         else:
-            x = np.array(data, dtype=np.float64)
+
+            try:
+                x = np.array([d[idx] for d in data], dtype=np.float64)
+            except:
+                raise ValueError(schema, var_name, is_categorical, data, enums)
         var_list.append(Variable(var_name, x, is_categorical, enums))
 
     local_in = var_list
