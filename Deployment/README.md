@@ -45,7 +45,16 @@ For example:
 
 ## Exareme Version
 
-You can change the version of the Exareme that will be deployed by modifying ```Deployment/Docker-Ansible/group_vars/all.yaml```
+Go to the ```Deployment/Docker-Ansible/group_vars``` folder and create an ```exareme.yaml``` file.
+
+The file should contain the following lines, modify them depending on the version of exareme you want to deploy.
+
+```
+	# Exareme Tag
+	EXAREME_TAG: "latest"
+	# Exareme Image
+	EXAREME_IMAGE: "thanasulas/exareme"
+```
 
 ## Initialize Hosts
 
