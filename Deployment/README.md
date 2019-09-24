@@ -51,9 +51,9 @@ The file should contain the following lines, modify them depending on the versio
 
 ```
 	# Exareme Tag
-	EXAREME_TAG: "latest"
+	EXAREME_TAG: "v21.0.0"
 	# Exareme Image
-	EXAREME_IMAGE: "thanasulas/exareme"
+	EXAREME_IMAGE: "hbpmip/exareme"
 ```
 
 ## Initialize Hosts
