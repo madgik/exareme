@@ -34,12 +34,12 @@ def descr_stats_global(global_in):
             results.append({
                 'Label'         : var_name,
                 'Count'         : count,
-                'Min'           : "null",
-                'Max'           : "null",
-                'Mean'          : "null",
-                'Std.Err.'      : "null",
-                'Mean + Std.Err': "null",
-                'Mean - Std.Err': "null",
+                'Min'           : None,
+                'Max'           : None,
+                'Mean'          : None,
+                'Std.Err.'      : None,
+                'Mean + Std.Err': None,
+                'Mean - Std.Err': None,
                 'Frequencies'           : freqs
             })
 
@@ -54,7 +54,7 @@ def descr_stats_global(global_in):
                 'Std.Err.'      : std,
                 'Mean + Std.Err': upper_ci,
                 'Mean - Std.Err': lower_ci,
-                'Frequencies': "null"
+                'Frequencies': None
             })
 
     schema = {

@@ -51,6 +51,14 @@
 			"valueMultiple": false,
 			"valueType": "integer"
 		}, {
+			"name": "filter",
+			"desc": "",
+			"type": "filter",
+			"value": "",
+			"valueNotBlank": false,
+			"valueMultiple": true,
+			"valueType": "string"
+		},{
 			"name": "dbIdentifier",
 			"desc": "Predefined value for the dbIdentifier",
 			"type": "other",
