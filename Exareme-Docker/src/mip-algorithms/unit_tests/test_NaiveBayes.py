@@ -13,12 +13,13 @@ def test_NAIVEBAYES_1():
     logging.info("---------- TEST : NAIVE BAYES :CATEGORICAL DATASET  ")
     #CROSS VALIDATION
 
-    data1 =[{   "name": "pathology","value":"dementia"},
+    data1 =[{"name": "pathology","value":"dementia"},
             {"name": "dataset","value": "car"},
             {"name": "x", "value": "car_buying,car_maint,car_doors,car_persons,car_lug_boot,car_safety"},
             {"name": "y", "value": "car_class"},
             {"name": "kfold","value": "3"},
-            {"name": "dbIdentifier","value": ""}]
+            {"name": "dbIdentifier","value": ""},
+            { "name": "filter", "value": ""}]
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
     r = requests.post(url1,data=json.dumps(data1),headers=headers)
@@ -146,6 +147,27 @@ def test_NAIVEBAYES_1():
         check_testingresult(result1,corr_testingResult)
 
 
+def test_NAIVEBAYES_privacy():
+    logging.info("---------- TEST : NAIVE BAYES :CATEGORICAL DATASET  ")
+    #CROSS VALIDATION
+
+    data1 =[{"name": "pathology","value":"dementia"},
+            {"name": "dataset","value": "alzheimerbroadcategory"},
+            {"name": "x", "value": "righthippocampus,lefthippocampus"},
+            {"name": "y", "value": "desd-synthdata"},
+            {"name": "kfold","value": "100"},
+            {"name": "dbIdentifier","value": ""},
+            { "name": "filter", "value": ""}]
+
+    headers = {'Content-type': 'application/json', "Accept": "text/plain"}
+    r = requests.post(url1,data=json.dumps(data1),headers=headers)
+    result1 = json.loads(r.text)
+    return result1
+    check_privacy_result(r.text)
+
+
+def check_privacy_result(result):
+    assert result == "{\"error\" : \"The Experiment could not run with the input provided because there are insufficient data.\"}"
 
 
 def check_testingresult(myresult,corr_variable_data):
