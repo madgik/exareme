@@ -1,11 +1,4 @@
-# Exareme Tag
-EXAREME_TAG: "outputFormat"
-# Exareme Image
-EXAREME_IMAGE: "sofiakar/myexareme"
-
-
-
-## Nothing to change here  ##
+## DO NOT CHANGE  ##
 
 # Key-Value Store
 EXAREME_KEYSTORE: "exareme-keystore:8500"

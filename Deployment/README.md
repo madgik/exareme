@@ -49,7 +49,7 @@ You can change the version of the Exareme that will be deployed by modifying ```
 
 ## Initialize Hosts
 
-Go to the ```Deployment/Docker-Ansible/hosts.ini``` file and modify the variables accordingly.
+Go to the ```Deployment/Docker-Ansible/``` folder and create a ```hosts.ini``` file.
 
 Here is an example of hosts.ini where we have 3 Target machines, one [master] of Exareme and two [workers] of Exareme.
 
