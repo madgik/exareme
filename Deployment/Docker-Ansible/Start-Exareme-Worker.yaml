@@ -6,5 +6,7 @@
   become_user: "{{ hostvars['master']['become_user'] }}"
   vars:
     my_host: "{{ lookup('env', 'my_host') }}"
+  vars_files:
+    - groups_vars/exareme.yaml
   roles:
     - start-worker-service
