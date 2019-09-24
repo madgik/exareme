@@ -6,6 +6,6 @@ settings.local.*
 
 #Ansible
 *.retry
-Docker-Ansible/vault_file.yaml
-Docker-Ansible/hosts.ini
-Docker-Ansible/group_vars/exareme.yaml
+/Docker-Ansible/vault_file.yaml
+/Docker-Ansible/hosts.ini
+/Docker-Ansible/group_vars/exareme.yaml
