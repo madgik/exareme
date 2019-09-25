@@ -12,20 +12,53 @@ We will refer to the machine from which you run the ansible scripts as Admin and
 
 3) Install Docker in all Target machines.
 
-### Important
-Create a folder on each target machine containing 2 files:
-1) the datasets.csv file with all the datasets combined and
-2) the CDEsMetadata.json file.
-You can learn more about datasets.csv and CDEsMetadata.json in: 
-```Exareme-Docker/src/mip-algorithms/unit_tests/datasets/ReadMe```
-
-We will refer to the path of that folder as ```data_path```. The ```data_path``` can be different across the target machines.
-
 # Preparation
 
-## Initialize variables
+## Data Structure
+In every node the DATA should follow a specific structure. We will refer to the path of the DATA folder as ```data_path```. The ```data_path``` can be different across the nodes.
 
-1) Changes in ```Deployment/Docker-Ansible/hosts.ini```
+The data folder should contain one folder for each pathology that it has datasets for. Inside that folder there should be:
+1) the datasets.csv file with all the datasets combined and
+2) the CDEsMetadata.json file for that specific pathology.
+
+For example:
+
+-> Data Folder <br />
+------> Dementia <br />
+----------> datasets.csv <br />
+----------> CDEsMetadata.json <br />
+------> Neuropathology <br />
+----------> datasets.csv <br />
+----------> CDEsMetadata.json <br />
+
+The master node should have the CDEsMetadata.json for every pathology even if it doesn't contain a datasets.csv file.
+
+For example:
+
+-> Data Folder <br />
+------> Dementia <br />
+----------> CDEsMetadata.json <br />
+------> Neuropathology <br />
+----------> datasets.csv <br />
+----------> CDEsMetadata.json <br />
+
+
+## Exareme Version
+
+Go to the ```Deployment/Docker-Ansible/group_vars``` folder and create an ```exareme.yaml``` file.
+
+The file should contain the following lines, modify them depending on the version of exareme you want to deploy.
+
+```
+	# Exareme Tag
+	EXAREME_TAG: "v21.0.0"
+	# Exareme Image
+	EXAREME_IMAGE: "hbpmip/exareme"
+```
+
+## Initialize Hosts
+
+Go to the ```Deployment/Docker-Ansible/``` folder and create a ```hosts.ini``` file.
 
 Here is an example of hosts.ini where we have 3 Target machines, one [master] of Exareme and two [workers] of Exareme.
 
@@ -117,11 +150,11 @@ As you can also see in hosts.ini file we have some sensitive data like usernames
 ```
 
 It is not a valid technique to just fill in your sensitive data there, so we will use ```Ansible-Vault```.
-Ansible-vault comes with the installation of ansible. Make sure you have it installed by ```ansible-vault --version```
+Ansible-vault comes with the installation of ansible. Make sure you have it installed by running: ```ansible-vault --version```
 
 With ansible-vault we can have an encrypted file which will contain sensitive information like the ones shown above.
 
-In order to create the file you need to
+In order to create the file you need to run 
 ```ansible-vault create vault_file.yaml``` inside ```Deployment/Docker-Ansible/``` folder.
 It will ask for a vault-password that you will need to enter it each time you run a playbook. So keep it in mind.
 
@@ -149,7 +182,7 @@ all in plaintext. If you have more than 2 workers, you will add those too by add
 [Keep in mind that your password can be anything you want But ansible has a special character for comments ```#``` . If your password contains that specific character ansible will take the characters next to it as comments.]
 When you exit you can see that vault_file.yaml is encrypted with all your sensitive information in there.
 
-If you want to edit the file you can do so whenever by
+If you want to edit the file you can do so whenever by running:
 ```ansible-vault edit vault_file.yaml```
 Place your vault password and edit the file.
 

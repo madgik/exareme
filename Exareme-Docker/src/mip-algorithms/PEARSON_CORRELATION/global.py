@@ -192,16 +192,16 @@ def pearsonr_global(global_in):
             # Tabular data resource summary
             {
                 "type": "application/vnd.dataresource+json",
-                "data": [
+                "data":
                     {
                         "name"   : "Pearson correlation summary",
                         "profile": "tabular-data-resource",
-                        "data"   : tabular_data_summary,
+                        "data"   : tabular_data_summary[1:],
                         "schema" : {
                             "fields": tabular_data_summary_schema_fields
                         }
                     }
-                ]
+
             },
             # Highchart correlation matrix
             {

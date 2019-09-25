@@ -66,6 +66,9 @@ class highchartsbasiccolumn(functions.vtable.vtbase.VT):
         enumerations = re.split(',',str(dictargs['enumerations']))
         enumerations = [x for x in enumerations if x] # remove nulls elements of the list
 
+        if 'title' not in dictargs:
+            raise functions.OperatorError(__name__.rsplit('.')[-1],"No title argument ")
+
         cur = envars['db'].cursor()
         c=cur.execute(query)
         schema = cur.getdescriptionsafe()
@@ -108,7 +111,7 @@ class highchartsbasiccolumn(functions.vtable.vtbase.VT):
         b = '<tr><td style="color:{series.color};padding:0">{series.name}: </td><td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>'
         myresult =  {
             "type" : "application/vnd.highcharts+json",
-            "data" : [{ "chart" : { "type": "column" },
+            "data" : { "chart" : { "type": "column" },
                        "title" : { "text": str(dictargs['title']) },
                        "xAxis" : { "categories": categoriesList, "crosshair": True },
                        "yAxis":  { "min": 0, "title": { "text": str(dictargs['ytitle']) }},
@@ -118,7 +121,7 @@ class highchartsbasiccolumn(functions.vtable.vtbase.VT):
 
                        "plotOptions": { "column": { "pointPadding": 0.2, "borderWidth": 0} },
                        "series": mydatajson
-            }]
+            }
         }
 
         myjsonresult = json.dumps(myresult)

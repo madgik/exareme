@@ -1,0 +1,1449 @@
+{
+    "results": [
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftmpogpostcentralgyrusmedialsegment, rightpinsposteriorinsula, rightmtgmiddletemporalgyrus, leftttgtransversetemporalgyrus, rightfofrontaloperculum"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": ""
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                }
+            ],
+            "output": [
+                {
+                    "Label": "leftmpogpostcentralgyrusmedialsegment",
+                    "Count": 1066,
+                    "Min": 0.722792,
+                    "Max": 1.68537,
+                    "Mean": 1.123155246716698,
+                    "Std.Err.": 0.15408770735276348,
+                    "Mean + Std.Err": 1.2772429540694616,
+                    "Mean - Std.Err": 0.9690675393639346
+                },
+                {
+                    "Label": "rightpinsposteriorinsula",
+                    "Count": 1066,
+                    "Min": 1.58004,
+                    "Max": 3.35911,
+                    "Mean": 2.321149821763602,
+                    "Std.Err.": 0.2707037445104786,
+                    "Mean + Std.Err": 2.591853566274081,
+                    "Mean - Std.Err": 2.0504460772531234
+                },
+                {
+                    "Label": "rightmtgmiddletemporalgyrus",
+                    "Count": 1066,
+                    "Min": 8.461160000000001,
+                    "Max": 18.2963,
+                    "Mean": 13.409448189493434,
+                    "Std.Err.": 1.617661667535084,
+                    "Mean + Std.Err": 15.027109857028517,
+                    "Mean - Std.Err": 11.79178652195835
+                },
+                {
+                    "Label": "leftttgtransversetemporalgyrus",
+                    "Count": 1066,
+                    "Min": 0.9112319999999999,
+                    "Max": 2.41946,
+                    "Mean": 1.600134889305816,
+                    "Std.Err.": 0.2295097832585394,
+                    "Mean + Std.Err": 1.8296446725643554,
+                    "Mean - Std.Err": 1.3706251060472767
+                },
+                {
+                    "Label": "rightfofrontaloperculum",
+                    "Count": 1066,
+                    "Min": 1.27596,
+                    "Max": 2.7640700000000002,
+                    "Mean": 1.930838161350844,
+                    "Std.Err.": 0.20953342434115746,
+                    "Mean + Std.Err": 2.1403715856920016,
+                    "Mean - Std.Err": 1.7213047370096866
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightofugoccipitalfusiformgyrus, rightacgganteriorcingulategyrus, leftmfgmiddlefrontalgyrus, rightmprgprecentralgyrusmedialsegment, rightainsanteriorinsula"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": ""
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                }
+            ],
+            "output": [
+                {
+                    "Label": "rightofugoccipitalfusiformgyrus",
+                    "Count": 1066,
+                    "Min": 2.70356,
+                    "Max": 5.8586599999999995,
+                    "Mean": 4.1022503377110695,
+                    "Std.Err.": 0.46123713482516193,
+                    "Mean + Std.Err": 4.563487472536232,
+                    "Mean - Std.Err": 3.6410132028859077
+                },
+                {
+                    "Label": "rightacgganteriorcingulategyrus",
+                    "Count": 1066,
+                    "Min": 2.6671,
+                    "Max": 5.98526,
+                    "Mean": 4.0849491557223265,
+                    "Std.Err.": 0.5508801572738724,
+                    "Mean + Std.Err": 4.635829312996199,
+                    "Mean - Std.Err": 3.534068998448454
+                },
+                {
+                    "Label": "leftmfgmiddlefrontalgyrus",
+                    "Count": 1066,
+                    "Min": 11.3305,
+                    "Max": 27.3957,
+                    "Mean": 18.246442213883675,
+                    "Std.Err.": 2.0249006084612384,
+                    "Mean + Std.Err": 20.271342822344913,
+                    "Mean - Std.Err": 16.221541605422438
+                },
+                {
+                    "Label": "rightmprgprecentralgyrusmedialsegment",
+                    "Count": 1066,
+                    "Min": 1.6781700000000002,
+                    "Max": 4.45795,
+                    "Mean": 2.558070534709193,
+                    "Std.Err.": 0.33627176773888096,
+                    "Mean + Std.Err": 2.894342302448074,
+                    "Mean - Std.Err": 2.2217987669703123
+                },
+                {
+                    "Label": "rightainsanteriorinsula",
+                    "Count": 1066,
+                    "Min": 2.78153,
+                    "Max": 5.76227,
+                    "Mean": 4.031840337711069,
+                    "Std.Err.": 0.43137758286014055,
+                    "Mean + Std.Err": 4.46321792057121,
+                    "Mean - Std.Err": 3.6004627548509283
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightmfgmiddlefrontalgyrus, rightcalccalcarinecortex, subjectageyears, leftputamen, leftitginferiortemporalgyrus"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": ""
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                }
+            ],
+            "output": [
+                {
+                    "Label": "rightmfgmiddlefrontalgyrus",
+                    "Count": 1066,
+                    "Min": 11.3756,
+                    "Max": 25.9978,
+                    "Mean": 17.94282120075047,
+                    "Std.Err.": 2.0076441624411245,
+                    "Mean + Std.Err": 19.950465363191594,
+                    "Mean - Std.Err": 15.935177038309345
+                },
+                {
+                    "Label": "rightcalccalcarinecortex",
+                    "Count": 1066,
+                    "Min": 1.90772,
+                    "Max": 5.32945,
+                    "Mean": 3.245414540337711,
+                    "Std.Err.": 0.4827479842388805,
+                    "Mean + Std.Err": 3.7281625245765913,
+                    "Mean - Std.Err": 2.7626665560988304
+                },
+                {
+                    "Label": "subjectageyears",
+                    "Count": 1066,
+                    "Min": 55.0,
+                    "Max": 90.0,
+                    "Mean": 73.26078799249531,
+                    "Std.Err.": 7.358515439467152,
+                    "Mean + Std.Err": 80.61930343196246,
+                    "Mean - Std.Err": 65.90227255302815
+                },
+                {
+                    "Label": "leftputamen",
+                    "Count": 1066,
+                    "Min": 2.4163,
+                    "Max": 5.432169999999999,
+                    "Mean": 3.768494305816135,
+                    "Std.Err.": 0.43038902430689685,
+                    "Mean + Std.Err": 4.1988833301230315,
+                    "Mean - Std.Err": 3.3381052815092382
+                },
+                {
+                    "Label": "leftitginferiortemporalgyrus",
+                    "Count": 1066,
+                    "Min": 6.60284,
+                    "Max": 15.0442,
+                    "Mean": 10.539472242026266,
+                    "Std.Err.": 1.2464477332221122,
+                    "Mean + Std.Err": 11.785919975248378,
+                    "Mean - Std.Err": 9.293024508804153
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightmfcmedialfrontalcortex, leftorifgorbitalpartoftheinferiorfrontalgyrus, rightphgparahippocampalgyrus, leftgregyrusrectus, rightsogsuperioroccipitalgyrus"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": ""
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                }
+            ],
+            "output": [
+                {
+                    "Label": "rightmfcmedialfrontalcortex",
+                    "Count": 1066,
+                    "Min": 0.996768,
+                    "Max": 2.57231,
+                    "Mean": 1.7633175684803002,
+                    "Std.Err.": 0.22936387731645413,
+                    "Mean + Std.Err": 1.9926814457967543,
+                    "Mean - Std.Err": 1.533953691163846
+                },
+                {
+                    "Label": "leftorifgorbitalpartoftheinferiorfrontalgyrus",
+                    "Count": 1066,
+                    "Min": 0.814066,
+                    "Max": 2.10842,
+                    "Mean": 1.486154222326454,
+                    "Std.Err.": 0.1779659153916974,
+                    "Mean + Std.Err": 1.6641201377181516,
+                    "Mean - Std.Err": 1.3081883069347566
+                },
+                {
+                    "Label": "rightphgparahippocampalgyrus",
+                    "Count": 1066,
+                    "Min": 1.79738,
+                    "Max": 3.8724300000000005,
+                    "Mean": 2.8090392213883675,
+                    "Std.Err.": 0.30652409647764856,
+                    "Mean + Std.Err": 3.115563317866016,
+                    "Mean - Std.Err": 2.502515124910719
+                },
+                {
+                    "Label": "leftgregyrusrectus",
+                    "Count": 1066,
+                    "Min": 1.05756,
+                    "Max": 2.83963,
+                    "Mean": 2.04428638836773,
+                    "Std.Err.": 0.2255030276613227,
+                    "Mean + Std.Err": 2.269789416029053,
+                    "Mean - Std.Err": 1.8187833607064072
+                },
+                {
+                    "Label": "rightsogsuperioroccipitalgyrus",
+                    "Count": 1066,
+                    "Min": 2.72391,
+                    "Max": 6.34525,
+                    "Mean": 4.217742898686678,
+                    "Std.Err.": 0.5216031335827664,
+                    "Mean + Std.Err": 4.739346032269445,
+                    "Mean - Std.Err": 3.696139765103912
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "agegroup, leftsogsuperioroccipitalgyrus, rightventraldc, adnicategory, righttrifgtriangularpartoftheinferiorfrontalgyrus"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": ""
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                }
+            ],
+            "output": [
+                {
+                    "Label": "agegroup",
+                    "Count": 1066,
+                    "Frequencies": {
+                        "-50y": 0,
+                        "50-59y": 44,
+                        "60-69y": 255,
+                        "70-79y": 544,
+                        "+80y": 223
+                    }
+                },
+                {
+                    "Label": "leftsogsuperioroccipitalgyrus",
+                    "Count": 1066,
+                    "Min": 2.29083,
+                    "Max": 5.28127,
+                    "Mean": 3.5294413508442775,
+                    "Std.Err.": 0.4773200263968489,
+                    "Mean + Std.Err": 4.006761377241126,
+                    "Mean - Std.Err": 3.0521213244474286
+                },
+                {
+                    "Label": "rightventraldc",
+                    "Count": 1066,
+                    "Min": 3.39004,
+                    "Max": 6.11196,
+                    "Mean": 4.491214765478424,
+                    "Std.Err.": 0.4387194494339454,
+                    "Mean + Std.Err": 4.929934214912369,
+                    "Mean - Std.Err": 4.052495316044479
+                },
+                {
+                    "Label": "adnicategory",
+                    "Count": 1066,
+                    "Frequencies": {
+                        "AD": 222,
+                        "MCI": 576,
+                        "CN": 268
+                    }
+                },
+                {
+                    "Label": "righttrifgtriangularpartoftheinferiorfrontalgyrus",
+                    "Count": 1066,
+                    "Min": 2.20985,
+                    "Max": 5.03748,
+                    "Mean": 3.4812625891181987,
+                    "Std.Err.": 0.4019917601307224,
+                    "Mean + Std.Err": 3.8832543492489213,
+                    "Mean - Std.Err": 3.079270828987476
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightfrpfrontalpole, rightopifgopercularpartoftheinferiorfrontalgyrus, leftocpoccipitalpole, rightstgsuperiortemporalgyrus, rightpcuprecuneus"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": ""
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                }
+            ],
+            "output": [
+                {
+                    "Label": "rightfrpfrontalpole",
+                    "Count": 1066,
+                    "Min": 2.3839799999999998,
+                    "Max": 6.06206,
+                    "Mean": 3.7812333583489677,
+                    "Std.Err.": 0.4642375260732513,
+                    "Mean + Std.Err": 4.245470884422219,
+                    "Mean - Std.Err": 3.3169958322757163
+                },
+                {
+                    "Label": "rightopifgopercularpartoftheinferiorfrontalgyrus",
+                    "Count": 1066,
+                    "Min": 2.3012200000000003,
+                    "Max": 4.69298,
+                    "Mean": 3.342240909943715,
+                    "Std.Err.": 0.3779405889102081,
+                    "Mean + Std.Err": 3.720181498853923,
+                    "Mean - Std.Err": 2.964300321033507
+                },
+                {
+                    "Label": "leftocpoccipitalpole",
+                    "Count": 1066,
+                    "Min": 1.9861799999999998,
+                    "Max": 5.5306,
+                    "Mean": 3.3937569981238274,
+                    "Std.Err.": 0.5188582080692733,
+                    "Mean + Std.Err": 3.9126152061931005,
+                    "Mean - Std.Err": 2.874898790054554
+                },
+                {
+                    "Label": "rightstgsuperiortemporalgyrus",
+                    "Count": 1066,
+                    "Min": 4.7931099999999995,
+                    "Max": 10.0422,
+                    "Mean": 7.094850253283302,
+                    "Std.Err.": 0.8019897476870584,
+                    "Mean + Std.Err": 7.896840000970361,
+                    "Mean - Std.Err": 6.292860505596243
+                },
+                {
+                    "Label": "rightpcuprecuneus",
+                    "Count": 1066,
+                    "Min": 7.469710000000001,
+                    "Max": 15.0858,
+                    "Mean": 10.613455666041276,
+                    "Std.Err.": 1.1753691344481898,
+                    "Mean + Std.Err": 11.788824800489465,
+                    "Mean - Std.Err": 9.438086531593086
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightporgposteriororbitalgyrus, rightlorglateralorbitalgyrus, gender, leftioginferioroccipitalgyrus, leftangangulargyrus"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": ""
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                }
+            ],
+            "output": [
+                {
+                    "Label": "rightporgposteriororbitalgyrus",
+                    "Count": 1066,
+                    "Min": 1.36835,
+                    "Max": 3.11956,
+                    "Mean": 2.261621726078799,
+                    "Std.Err.": 0.23457101001852448,
+                    "Mean + Std.Err": 2.4961927360973237,
+                    "Mean - Std.Err": 2.0270507160602746
+                },
+                {
+                    "Label": "rightlorglateralorbitalgyrus",
+                    "Count": 1066,
+                    "Min": 1.36189,
+                    "Max": 3.2847199999999996,
+                    "Mean": 2.196675909943715,
+                    "Std.Err.": 0.24511864581779394,
+                    "Mean + Std.Err": 2.441794555761509,
+                    "Mean - Std.Err": 1.9515572641259211
+                },
+                {
+                    "Label": "gender",
+                    "Count": 1066,
+                    "Frequencies": {
+                        "M": 581,
+                        "F": 485
+                    }
+                },
+                {
+                    "Label": "leftioginferioroccipitalgyrus",
+                    "Count": 1066,
+                    "Min": 3.80891,
+                    "Max": 8.995330000000001,
+                    "Mean": 6.157853780487805,
+                    "Std.Err.": 0.7847283613836769,
+                    "Mean + Std.Err": 6.942582141871482,
+                    "Mean - Std.Err": 5.373125419104128
+                },
+                {
+                    "Label": "leftangangulargyrus",
+                    "Count": 1066,
+                    "Min": 5.7580599999999995,
+                    "Max": 12.5288,
+                    "Mean": 8.969901050656661,
+                    "Std.Err.": 1.0426153200456199,
+                    "Mean + Std.Err": 10.012516370702281,
+                    "Mean - Std.Err": 7.927285730611041
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftmogmiddleoccipitalgyrus, leftlorglateralorbitalgyrus, fdg, rightpoparietaloperculum, neurodegenerativescategories"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": ""
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                }
+            ],
+            "output": [
+                {
+                    "Label": "leftmogmiddleoccipitalgyrus",
+                    "Count": 1066,
+                    "Min": 3.94905,
+                    "Max": 8.756689999999999,
+                    "Mean": 6.010316988742964,
+                    "Std.Err.": 0.7503629241823329,
+                    "Mean + Std.Err": 6.760679912925298,
+                    "Mean - Std.Err": 5.259954064560631
+                },
+                {
+                    "Label": "leftlorglateralorbitalgyrus",
+                    "Count": 1066,
+                    "Min": 1.36195,
+                    "Max": 3.26841,
+                    "Mean": 2.3316048311444653,
+                    "Std.Err.": 0.2566013913643342,
+                    "Mean + Std.Err": 2.5882062225087994,
+                    "Mean - Std.Err": 2.075003439780131
+                },
+                {
+                    "Label": "fdg",
+                    "Count": 741,
+                    "Min": 3.49076,
+                    "Max": 8.535839999999999,
+                    "Mean": 6.109130769230769,
+                    "Std.Err.": 0.7732938241591447,
+                    "Mean + Std.Err": 6.8824245933899135,
+                    "Mean - Std.Err": 5.335836945071625
+                },
+                {
+                    "Label": "rightpoparietaloperculum",
+                    "Count": 1066,
+                    "Min": 1.30568,
+                    "Max": 3.3482300000000005,
+                    "Mean": 2.171240506566604,
+                    "Std.Err.": 0.3022182740642184,
+                    "Mean + Std.Err": 2.473458780630822,
+                    "Mean - Std.Err": 1.8690222325023855
+                },
+                {
+                    "Label": "neurodegenerativescategories",
+                    "Count": 798,
+                    "Frequencies": {
+                        "PD": 0,
+                        "AD": 222,
+                        "HD": 0,
+                        "ALS": 0,
+                        "BD": 0,
+                        "MCI": 576,
+                        "LBD": 0,
+                        "CJD": 0,
+                        "FTD": 0,
+                        "MS": 0,
+                        "CN": 0
+                    }
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftpogpostcentralgyrus, leftententorhinalarea, rightthalamusproper, rightocpoccipitalpole, subjectage"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": ""
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                }
+            ],
+            "output": [
+                {
+                    "Label": "leftpogpostcentralgyrus",
+                    "Count": 1066,
+                    "Min": 7.91538,
+                    "Max": 16.1517,
+                    "Mean": 11.565786660412758,
+                    "Std.Err.": 1.25106235387581,
+                    "Mean + Std.Err": 12.816849014288568,
+                    "Mean - Std.Err": 10.314724306536949
+                },
+                {
+                    "Label": "leftententorhinalarea",
+                    "Count": 1066,
+                    "Min": 0.835883,
+                    "Max": 2.17829,
+                    "Mean": 1.5315773855534707,
+                    "Std.Err.": 0.22336777175773062,
+                    "Mean + Std.Err": 1.7549451573112014,
+                    "Mean - Std.Err": 1.30820961379574
+                },
+                {
+                    "Label": "rightthalamusproper",
+                    "Count": 1066,
+                    "Min": 4.45451,
+                    "Max": 9.15485,
+                    "Mean": 6.649514183864916,
+                    "Std.Err.": 0.6630490084119282,
+                    "Mean + Std.Err": 7.312563192276844,
+                    "Mean - Std.Err": 5.986465175452988
+                },
+                {
+                    "Label": "rightocpoccipitalpole",
+                    "Count": 1066,
+                    "Min": 1.6907299999999998,
+                    "Max": 4.44937,
+                    "Mean": 2.905220497185741,
+                    "Std.Err.": 0.4570674402304281,
+                    "Mean + Std.Err": 3.362287937416169,
+                    "Mean - Std.Err": 2.448153056955313
+                },
+                {
+                    "Label": "subjectage",
+                    "Count": 1066,
+                    "Min": 55.0438,
+                    "Max": 90.9562,
+                    "Mean": 73.76832617260787,
+                    "Std.Err.": 7.356241818841965,
+                    "Mean + Std.Err": 81.12456799144984,
+                    "Mean - Std.Err": 66.4120843537659
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftcalccalcarinecortex, leftpinsposteriorinsula, leftscasubcallosalarea, leftpoparietaloperculum, leftporgposteriororbitalgyrus"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": ""
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                }
+            ],
+            "output": [
+                {
+                    "Label": "leftcalccalcarinecortex",
+                    "Count": 1066,
+                    "Min": 1.7670400000000002,
+                    "Max": 5.56209,
+                    "Mean": 3.156891848030019,
+                    "Std.Err.": 0.49015140614050995,
+                    "Mean + Std.Err": 3.647043254170529,
+                    "Mean - Std.Err": 2.666740441889509
+                },
+                {
+                    "Label": "leftpinsposteriorinsula",
+                    "Count": 1066,
+                    "Min": 1.6439,
+                    "Max": 3.3897699999999995,
+                    "Mean": 2.324148536585366,
+                    "Std.Err.": 0.2682227457856068,
+                    "Mean + Std.Err": 2.592371282370973,
+                    "Mean - Std.Err": 2.0559257907997592
+                },
+                {
+                    "Label": "leftscasubcallosalarea",
+                    "Count": 1066,
+                    "Min": 0.787747,
+                    "Max": 1.74043,
+                    "Mean": 1.2245391341463416,
+                    "Std.Err.": 0.14340775021634736,
+                    "Mean + Std.Err": 1.367946884362689,
+                    "Mean - Std.Err": 1.0811313839299943
+                },
+                {
+                    "Label": "leftpoparietaloperculum",
+                    "Count": 1066,
+                    "Min": 1.37284,
+                    "Max": 3.4858800000000003,
+                    "Mean": 2.370776726078799,
+                    "Std.Err.": 0.318366488112034,
+                    "Mean + Std.Err": 2.689143214190833,
+                    "Mean - Std.Err": 2.052410237966765
+                },
+                {
+                    "Label": "leftporgposteriororbitalgyrus",
+                    "Count": 1066,
+                    "Min": 1.40764,
+                    "Max": 3.37395,
+                    "Mean": 2.428203696060038,
+                    "Std.Err.": 0.25130321588754057,
+                    "Mean + Std.Err": 2.6795069119475787,
+                    "Mean - Std.Err": 2.176900480172497
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftmcggmiddlecingulategyrus, rightorifgorbitalpartoftheinferiorfrontalgyrus, righttmptemporalpole, leftphgparahippocampalgyrus, rightaccumbensarea"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": ""
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                }
+            ],
+            "output": [
+                {
+                    "Label": "leftmcggmiddlecingulategyrus",
+                    "Count": 1066,
+                    "Min": 2.9757,
+                    "Max": 9.56777,
+                    "Mean": 4.65232719512195,
+                    "Std.Err.": 0.5450559255266391,
+                    "Mean + Std.Err": 5.197383120648589,
+                    "Mean - Std.Err": 4.107271269595311
+                },
+                {
+                    "Label": "rightorifgorbitalpartoftheinferiorfrontalgyrus",
+                    "Count": 1066,
+                    "Min": 0.9409299999999999,
+                    "Max": 2.4162,
+                    "Mean": 1.5215018386491557,
+                    "Std.Err.": 0.1821357072069377,
+                    "Mean + Std.Err": 1.7036375458560933,
+                    "Mean - Std.Err": 1.339366131442218
+                },
+                {
+                    "Label": "righttmptemporalpole",
+                    "Count": 1066,
+                    "Min": 4.8971599999999995,
+                    "Max": 9.8447,
+                    "Mean": 7.526009559099436,
+                    "Std.Err.": 0.8586315481361512,
+                    "Mean + Std.Err": 8.384641107235588,
+                    "Mean - Std.Err": 6.667378010963285
+                },
+                {
+                    "Label": "leftphgparahippocampalgyrus",
+                    "Count": 1066,
+                    "Min": 2.10045,
+                    "Max": 4.05192,
+                    "Mean": 3.0322453752345213,
+                    "Std.Err.": 0.3212249572860051,
+                    "Mean + Std.Err": 3.3534703325205264,
+                    "Mean - Std.Err": 2.7110204179485162
+                },
+                {
+                    "Label": "rightaccumbensarea",
+                    "Count": 1066,
+                    "Min": 0.191923,
+                    "Max": 0.5494020000000001,
+                    "Mean": 0.373499712945591,
+                    "Std.Err.": 0.04811246648135466,
+                    "Mean + Std.Err": 0.4216121794269456,
+                    "Mean - Std.Err": 0.32538724646423633
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightsfgsuperiorfrontalgyrus, rightsplsuperiorparietallobule, rightfugfusiformgyrus, rightliglingualgyrus, rightitginferiortemporalgyrus"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": ""
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                }
+            ],
+            "output": [
+                {
+                    "Label": "rightsfgsuperiorfrontalgyrus",
+                    "Count": 1066,
+                    "Min": 8.28992,
+                    "Max": 19.739,
+                    "Mean": 14.327750356472796,
+                    "Std.Err.": 1.6031807556668083,
+                    "Mean + Std.Err": 15.930931112139604,
+                    "Mean - Std.Err": 12.724569600805989
+                },
+                {
+                    "Label": "rightsplsuperiorparietallobule",
+                    "Count": 1066,
+                    "Min": 7.1641699999999995,
+                    "Max": 15.5338,
+                    "Mean": 10.309862007504691,
+                    "Std.Err.": 1.184803678528433,
+                    "Mean + Std.Err": 11.494665686033123,
+                    "Mean - Std.Err": 9.125058328976259
+                },
+                {
+                    "Label": "rightfugfusiformgyrus",
+                    "Count": 1066,
+                    "Min": 4.3326199999999995,
+                    "Max": 9.38824,
+                    "Mean": 7.0878203752345215,
+                    "Std.Err.": 0.7849333309829819,
+                    "Mean + Std.Err": 7.8727537062175035,
+                    "Mean - Std.Err": 6.3028870442515395
+                },
+                {
+                    "Label": "rightliglingualgyrus",
+                    "Count": 1066,
+                    "Min": 5.4265099999999995,
+                    "Max": 11.4146,
+                    "Mean": 7.8966072138836765,
+                    "Std.Err.": 0.845726214559132,
+                    "Mean + Std.Err": 8.742333428442809,
+                    "Mean - Std.Err": 7.050880999324544
+                },
+                {
+                    "Label": "rightitginferiortemporalgyrus",
+                    "Count": 1066,
+                    "Min": 6.57371,
+                    "Max": 15.4582,
+                    "Mean": 10.878795225140713,
+                    "Std.Err.": 1.306976694559819,
+                    "Mean + Std.Err": 12.185771919700532,
+                    "Mean - Std.Err": 9.571818530580895
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightaorganteriororbitalgyrus, rightpcggposteriorcingulategyrus, rightcocentraloperculum, leftcuncuneus, rightioginferioroccipitalgyrus"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": ""
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                }
+            ],
+            "output": [
+                {
+                    "Label": "rightaorganteriororbitalgyrus",
+                    "Count": 1066,
+                    "Min": 0.886175,
+                    "Max": 2.4979299999999998,
+                    "Mean": 1.7091453555347094,
+                    "Std.Err.": 0.20978941721638594,
+                    "Mean + Std.Err": 1.9189347727510953,
+                    "Mean - Std.Err": 1.4993559383183235
+                },
+                {
+                    "Label": "rightpcggposteriorcingulategyrus",
+                    "Count": 1066,
+                    "Min": 2.66131,
+                    "Max": 5.84324,
+                    "Mean": 3.95838892120075,
+                    "Std.Err.": 0.44490196414202204,
+                    "Mean + Std.Err": 4.403290885342773,
+                    "Mean - Std.Err": 3.513486957058728
+                },
+                {
+                    "Label": "rightcocentraloperculum",
+                    "Count": 1066,
+                    "Min": 2.44188,
+                    "Max": 5.84437,
+                    "Mean": 3.917567598499062,
+                    "Std.Err.": 0.4410663147917231,
+                    "Mean + Std.Err": 4.3586339132907845,
+                    "Mean - Std.Err": 3.476501283707339
+                },
+                {
+                    "Label": "leftcuncuneus",
+                    "Count": 1066,
+                    "Min": 2.68598,
+                    "Max": 6.58102,
+                    "Mean": 4.469234643527205,
+                    "Std.Err.": 0.5949553586046415,
+                    "Mean + Std.Err": 5.064190002131847,
+                    "Mean - Std.Err": 3.8742792849225633
+                },
+                {
+                    "Label": "rightioginferioroccipitalgyrus",
+                    "Count": 1066,
+                    "Min": 4.04371,
+                    "Max": 9.78156,
+                    "Mean": 6.435696782363977,
+                    "Std.Err.": 0.7980419056942748,
+                    "Mean + Std.Err": 7.233738688058252,
+                    "Mean - Std.Err": 5.6376548766697026
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftmprgprecentralgyrusmedialsegment, rightgregyrusrectus, minimentalstate, rightscasubcallosalarea, leftfofrontaloperculum"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": ""
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                }
+            ],
+            "output": [
+                {
+                    "Label": "leftmprgprecentralgyrusmedialsegment",
+                    "Count": 1066,
+                    "Min": 1.7046299999999999,
+                    "Max": 5.41493,
+                    "Mean": 2.6104090431519698,
+                    "Std.Err.": 0.33857140895496274,
+                    "Mean + Std.Err": 2.9489804521069325,
+                    "Mean - Std.Err": 2.271837634197007
+                },
+                {
+                    "Label": "rightgregyrusrectus",
+                    "Count": 1066,
+                    "Min": 0.9932850000000001,
+                    "Max": 2.8819,
+                    "Mean": 2.026677575046904,
+                    "Std.Err.": 0.22752338888009435,
+                    "Mean + Std.Err": 2.2542009639269986,
+                    "Mean - Std.Err": 1.7991541861668099
+                },
+                {
+                    "Label": "minimentalstate",
+                    "Count": 1066,
+                    "Min": 19.0,
+                    "Max": 30.0,
+                    "Mean": 27.0140712945591,
+                    "Std.Err.": 2.7047988988272675,
+                    "Mean + Std.Err": 29.718870193386365,
+                    "Mean - Std.Err": 24.30927239573183
+                },
+                {
+                    "Label": "rightscasubcallosalarea",
+                    "Count": 1066,
+                    "Min": 0.7504609999999999,
+                    "Max": 1.7185,
+                    "Mean": 1.169283191369606,
+                    "Std.Err.": 0.14105999034953146,
+                    "Mean + Std.Err": 1.3103431817191376,
+                    "Mean - Std.Err": 1.0282232010200745
+                },
+                {
+                    "Label": "leftfofrontaloperculum",
+                    "Count": 1066,
+                    "Min": 1.31745,
+                    "Max": 2.73465,
+                    "Mean": 1.9391248874296434,
+                    "Std.Err.": 0.21018802550189902,
+                    "Mean + Std.Err": 2.1493129129315425,
+                    "Mean - Std.Err": 1.7289368619277443
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightppplanumpolare, lefttrifgtriangularpartoftheinferiorfrontalgyrus, leftaorganteriororbitalgyrus, leftaccumbensarea, leftventraldc"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": ""
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                }
+            ],
+            "output": [
+                {
+                    "Label": "rightppplanumpolare",
+                    "Count": 1066,
+                    "Min": 1.38045,
+                    "Max": 3.2982199999999997,
+                    "Mean": 2.0824456003752343,
+                    "Std.Err.": 0.23167027988755082,
+                    "Mean + Std.Err": 2.314115880262785,
+                    "Mean - Std.Err": 1.8507753204876836
+                },
+                {
+                    "Label": "lefttrifgtriangularpartoftheinferiorfrontalgyrus",
+                    "Count": 1066,
+                    "Min": 2.3624,
+                    "Max": 5.5606,
+                    "Mean": 3.7740550938086304,
+                    "Std.Err.": 0.43806971492745705,
+                    "Mean + Std.Err": 4.212124808736087,
+                    "Mean - Std.Err": 3.3359853788811735
+                },
+                {
+                    "Label": "leftaorganteriororbitalgyrus",
+                    "Count": 1066,
+                    "Min": 0.806233,
+                    "Max": 2.1394,
+                    "Mean": 1.505049607879925,
+                    "Std.Err.": 0.18600215608580606,
+                    "Mean + Std.Err": 1.691051763965731,
+                    "Mean - Std.Err": 1.3190474517941189
+                },
+                {
+                    "Label": "leftaccumbensarea",
+                    "Count": 1066,
+                    "Min": 0.201871,
+                    "Max": 0.596434,
+                    "Mean": 0.41064317166979364,
+                    "Std.Err.": 0.052231475486014554,
+                    "Mean + Std.Err": 0.46287464715580817,
+                    "Mean - Std.Err": 0.3584116961837791
+                },
+                {
+                    "Label": "leftventraldc",
+                    "Count": 1066,
+                    "Min": 3.49504,
+                    "Max": 6.1975,
+                    "Mean": 4.699205131332083,
+                    "Std.Err.": 0.4574875345090554,
+                    "Mean + Std.Err": 5.156692665841138,
+                    "Mean - Std.Err": 4.241717596823028
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "lefttmptemporalpole, leftcaudate, rightpogpostcentralgyrus, leftliglingualgyrus, rightententorhinalarea"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": ""
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                }
+            ],
+            "output": [
+                {
+                    "Label": "lefttmptemporalpole",
+                    "Count": 1066,
+                    "Min": 4.48517,
+                    "Max": 10.6873,
+                    "Mean": 7.29456274859287,
+                    "Std.Err.": 0.8720594802934314,
+                    "Mean + Std.Err": 8.166622228886302,
+                    "Mean - Std.Err": 6.4225032682994385
+                },
+                {
+                    "Label": "leftcaudate",
+                    "Count": 1066,
+                    "Min": 1.7558200000000002,
+                    "Max": 4.7246,
+                    "Mean": 2.955670018761726,
+                    "Std.Err.": 0.4011151752681437,
+                    "Mean + Std.Err": 3.35678519402987,
+                    "Mean - Std.Err": 2.554554843493582
+                },
+                {
+                    "Label": "rightpogpostcentralgyrus",
+                    "Count": 1066,
+                    "Min": 6.706760000000001,
+                    "Max": 15.5928,
+                    "Mean": 10.234999296435271,
+                    "Std.Err.": 1.1870549962638404,
+                    "Mean + Std.Err": 11.422054292699112,
+                    "Mean - Std.Err": 9.04794430017143
+                },
+                {
+                    "Label": "leftliglingualgyrus",
+                    "Count": 1066,
+                    "Min": 4.82775,
+                    "Max": 10.8338,
+                    "Mean": 7.350888358348968,
+                    "Std.Err.": 0.7827502155057652,
+                    "Mean + Std.Err": 8.133638573854732,
+                    "Mean - Std.Err": 6.568138142843202
+                },
+                {
+                    "Label": "rightententorhinalarea",
+                    "Count": 1066,
+                    "Min": 0.829982,
+                    "Max": 2.15938,
+                    "Mean": 1.5701255506566605,
+                    "Std.Err.": 0.2298483834961136,
+                    "Mean + Std.Err": 1.799973934152774,
+                    "Mean - Std.Err": 1.340277167160547
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftpcuprecuneus, leftofugoccipitalfusiformgyrus, leftcocentraloperculum, leftsmcsupplementarymotorcortex, alzheimerbroadcategory"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": ""
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                }
+            ],
+            "output": [
+                {
+                    "Label": "leftpcuprecuneus",
+                    "Count": 1066,
+                    "Min": 7.354830000000001,
+                    "Max": 14.5636,
+                    "Mean": 10.63535963414634,
+                    "Std.Err.": 1.1827991475897268,
+                    "Mean + Std.Err": 11.818158781736066,
+                    "Mean - Std.Err": 9.452560486556614
+                },
+                {
+                    "Label": "leftofugoccipitalfusiformgyrus",
+                    "Count": 1066,
+                    "Min": 2.5476,
+                    "Max": 5.99124,
+                    "Mean": 4.099366360225141,
+                    "Std.Err.": 0.4761898921750034,
+                    "Mean + Std.Err": 4.575556252400144,
+                    "Mean - Std.Err": 3.6231764680501377
+                },
+                {
+                    "Label": "leftcocentraloperculum",
+                    "Count": 1066,
+                    "Min": 2.69709,
+                    "Max": 6.04175,
+                    "Mean": 4.014155234521576,
+                    "Std.Err.": 0.4432623001185313,
+                    "Mean + Std.Err": 4.457417534640108,
+                    "Mean - Std.Err": 3.570892934403045
+                },
+                {
+                    "Label": "leftsmcsupplementarymotorcortex",
+                    "Count": 1066,
+                    "Min": 3.1147400000000003,
+                    "Max": 8.61715,
+                    "Mean": 5.281334296435271,
+                    "Std.Err.": 0.611515132434789,
+                    "Mean + Std.Err": 5.89284942887006,
+                    "Mean - Std.Err": 4.669819164000482
+                },
+                {
+                    "Label": "alzheimerbroadcategory",
+                    "Count": 1066,
+                    "Frequencies": {
+                        "AD": 222,
+                        "CN": 268,
+                        "Other": 576,
+                        "MCI": 0
+                    }
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftthalamusproper, rightputamen, leftsmgsupramarginalgyrus, leftptplanumtemporale, leftmfcmedialfrontalcortex"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": ""
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                }
+            ],
+            "output": [
+                {
+                    "Label": "leftthalamusproper",
+                    "Count": 1066,
+                    "Min": 4.3575099999999996,
+                    "Max": 9.16314,
+                    "Mean": 6.925020065666042,
+                    "Std.Err.": 0.6773755337814878,
+                    "Mean + Std.Err": 7.60239559944753,
+                    "Mean - Std.Err": 6.247644531884554
+                },
+                {
+                    "Label": "rightputamen",
+                    "Count": 1066,
+                    "Min": 2.53545,
+                    "Max": 5.3461,
+                    "Mean": 3.6878570075046904,
+                    "Std.Err.": 0.42335720794490567,
+                    "Mean + Std.Err": 4.111214215449596,
+                    "Mean - Std.Err": 3.264499799559785
+                },
+                {
+                    "Label": "leftsmgsupramarginalgyrus",
+                    "Count": 1066,
+                    "Min": 5.5913900000000005,
+                    "Max": 12.5257,
+                    "Mean": 8.70044994371482,
+                    "Std.Err.": 0.9718914054889177,
+                    "Mean + Std.Err": 9.67234134920374,
+                    "Mean - Std.Err": 7.728558538225903
+                },
+                {
+                    "Label": "leftptplanumtemporale",
+                    "Count": 1066,
+                    "Min": 1.16204,
+                    "Max": 3.21332,
+                    "Mean": 2.0093431332082554,
+                    "Std.Err.": 0.2956952293300181,
+                    "Mean + Std.Err": 2.3050383625382733,
+                    "Mean - Std.Err": 1.7136479038782373
+                },
+                {
+                    "Label": "leftmfcmedialfrontalcortex",
+                    "Count": 1066,
+                    "Min": 0.9673309999999999,
+                    "Max": 2.59496,
+                    "Mean": 1.7713095881801126,
+                    "Std.Err.": 0.2306036551963675,
+                    "Mean + Std.Err": 2.00191324337648,
+                    "Mean - Std.Err": 1.5407059329837451
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftppplanumpolare, lefthippocampus, rightmorgmedialorbitalgyrus, leftstgsuperiortemporalgyrus, rightmcggmiddlecingulategyrus"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": ""
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                }
+            ],
+            "output": [
+                {
+                    "Label": "leftppplanumpolare",
+                    "Count": 1066,
+                    "Min": 1.59984,
+                    "Max": 3.17503,
+                    "Mean": 2.2731951125703564,
+                    "Std.Err.": 0.2433934641151143,
+                    "Mean + Std.Err": 2.5165885766854705,
+                    "Mean - Std.Err": 2.0298016484552424
+                },
+                {
+                    "Label": "lefthippocampus",
+                    "Count": 1066,
+                    "Min": 1.82293,
+                    "Max": 3.97126,
+                    "Mean": 2.9310415666041276,
+                    "Std.Err.": 0.35241714390942924,
+                    "Mean + Std.Err": 3.283458710513557,
+                    "Mean - Std.Err": 2.5786244226946984
+                },
+                {
+                    "Label": "rightmorgmedialorbitalgyrus",
+                    "Count": 1066,
+                    "Min": 2.03675,
+                    "Max": 5.077380000000001,
+                    "Mean": 3.6809657598499066,
+                    "Std.Err.": 0.3786028684581283,
+                    "Mean + Std.Err": 4.0595686283080346,
+                    "Mean - Std.Err": 3.302362891391778
+                },
+                {
+                    "Label": "leftstgsuperiortemporalgyrus",
+                    "Count": 1066,
+                    "Min": 4.01336,
+                    "Max": 9.351510000000001,
+                    "Mean": 6.959202467166978,
+                    "Std.Err.": 0.8089432542357694,
+                    "Mean + Std.Err": 7.768145721402748,
+                    "Mean - Std.Err": 6.150259212931209
+                },
+                {
+                    "Label": "rightmcggmiddlecingulategyrus",
+                    "Count": 1066,
+                    "Min": 2.93644,
+                    "Max": 9.84033,
+                    "Mean": 4.549243236397749,
+                    "Std.Err.": 0.5525307189853361,
+                    "Mean + Std.Err": 5.101773955383085,
+                    "Mean - Std.Err": 3.996712517412413
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightpallidum, rightsmgsupramarginalgyrus, rightmpogpostcentralgyrusmedialsegment, leftmorgmedialorbitalgyrus, leftfugfusiformgyrus"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": ""
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                }
+            ],
+            "output": [
+                {
+                    "Label": "rightpallidum",
+                    "Count": 1066,
+                    "Min": 1.0347899999999999,
+                    "Max": 2.1373900000000003,
+                    "Mean": 1.514868067542214,
+                    "Std.Err.": 0.17500570272621724,
+                    "Mean + Std.Err": 1.6898737702684312,
+                    "Mean - Std.Err": 1.3398623648159966
+                },
+                {
+                    "Label": "rightsmgsupramarginalgyrus",
+                    "Count": 1066,
+                    "Min": 5.36295,
+                    "Max": 11.6158,
+                    "Mean": 7.828850440900563,
+                    "Std.Err.": 0.8652291714677743,
+                    "Mean + Std.Err": 8.694079612368338,
+                    "Mean - Std.Err": 6.963621269432789
+                },
+                {
+                    "Label": "rightmpogpostcentralgyrusmedialsegment",
+                    "Count": 1066,
+                    "Min": 0.694227,
+                    "Max": 1.64085,
+                    "Mean": 1.0772342045028143,
+                    "Std.Err.": 0.1524391533267087,
+                    "Mean + Std.Err": 1.229673357829523,
+                    "Mean - Std.Err": 0.9247950511761056
+                },
+                {
+                    "Label": "leftmorgmedialorbitalgyrus",
+                    "Count": 1066,
+                    "Min": 2.12127,
+                    "Max": 5.15446,
+                    "Mean": 3.8540236022514076,
+                    "Std.Err.": 0.3951044645601388,
+                    "Mean + Std.Err": 4.249128066811546,
+                    "Mean - Std.Err": 3.458919137691269
+                },
+                {
+                    "Label": "leftfugfusiformgyrus",
+                    "Count": 1066,
+                    "Min": 4.852180000000001,
+                    "Max": 9.46734,
+                    "Mean": 6.892707654784241,
+                    "Std.Err.": 0.7351510776019974,
+                    "Mean + Std.Err": 7.627858732386239,
+                    "Mean - Std.Err": 6.157556577182243
+                }
+            ]
+        }
+    ]
+}

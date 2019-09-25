@@ -33,6 +33,7 @@ class TestTTESTOneSample(unittest.TestCase):
                 {"name": "effectsize", "value": "1" },
                 {"name": "ci","value": "1"  },
                 {"name": "meandiff", "value": "1"  },
+                {"name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter","value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
@@ -49,6 +50,7 @@ class TestTTESTOneSample(unittest.TestCase):
                 {"name": "effectsize", "value": "1" },
                 {"name": "ci","value": "1"  },
                 {"name": "meandiff", "value": "1"  },
+                {"name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter","value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
@@ -65,6 +67,7 @@ class TestTTESTOneSample(unittest.TestCase):
                 {"name": "effectsize", "value": "1" },
                 {"name": "ci","value": "1"  },
                 {"name": "meandiff", "value": "1"  },
+                {"name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter","value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
@@ -81,6 +84,7 @@ class TestTTESTOneSample(unittest.TestCase):
                 {"name": "effectsize", "value": "0" },
                 {"name": "ci","value": "0"  },
                 {"name": "meandiff", "value": "0"  },
+                {"name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter","value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
@@ -97,6 +101,7 @@ class TestTTESTOneSample(unittest.TestCase):
                     {"name": "effectsize", "value": "1" },
                     {"name": "ci","value": "1"  },
                     {"name": "meandiff", "value": "1"  },
+                    {"name": "pathology","value":"dementia"},
                     {"name": "dataset", "value": "adni_9rows"},
                     {"name": "filter","value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
@@ -105,7 +110,7 @@ class TestTTESTOneSample(unittest.TestCase):
         check_privacy_result(r.text)
 
 def check_privacy_result(result):
-    assert result == "{\"error\" : \"The Experiment could not run with the input provided because there are insufficient data.\"}"
+    assert result == "{\"result\" : [{\"data\":\"The Experiment could not run with the input provided because there are insufficient data.\",\"type\":\"text/plain+warning\"}]}"
 
 
 def resultsComparison(data, jsonExaremeResult, jsonRResult):

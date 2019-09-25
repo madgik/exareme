@@ -5,6 +5,14 @@
 	"status": "enabled",
 	"vtype": "",
 	"parameters": [{
+			"name": "pathology",
+			"desc": "The name of the pathology that the dataset belongs to.",
+			"type": "pathology",
+			"value": "dementia",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "string"
+		}, {
 			"name": "dataset",
 			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed.",
 			"type": "dataset",
@@ -43,6 +51,14 @@
 			"valueMultiple": false,
 			"valueType": "integer"
 		}, {
+			"name": "filter",
+			"desc": "",
+			"type": "filter",
+			"value": "",
+			"valueNotBlank": false,
+			"valueMultiple": true,
+			"valueType": "string"
+		},{
 			"name": "dbIdentifier",
 			"desc": "Predefined value for the dbIdentifier",
 			"type": "other",

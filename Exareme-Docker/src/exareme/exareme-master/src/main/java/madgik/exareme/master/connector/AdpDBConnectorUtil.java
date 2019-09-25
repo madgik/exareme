@@ -4,6 +4,7 @@
 package madgik.exareme.master.connector;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import madgik.exareme.common.art.entity.EntityName;
 import madgik.exareme.common.schema.Partition;
@@ -181,8 +182,8 @@ public class AdpDBConnectorUtil {
                                           DataSerialization ds,
                                           OutputStream out) throws RemoteException {
         try {
-            log.info("Local Table Part: " + tabName + "." + part + " ..." + alsoIncludeProps == null);
-            Gson g = new Gson();
+            log.debug("Local Table Part: " + tabName + "." + part + " ..." + alsoIncludeProps);
+            Gson g = new GsonBuilder().serializeNulls().create();
             SQLDatabase db =
                     DBUtils.createEmbeddedSqliteDB(database + "/" + tabName + "." + part + ".db");
             ResultSet rs = db.executeAndGetResults("select * from " + tabName + ";");

@@ -36,6 +36,9 @@ attach database '%{input_local_DB}' as localDB;
 drop table if exists inputdata;
 create table inputdata as select * from (%{db_query});
 
+-- ErrorHandling
+select categoricalparameter_inputerrorchecking('encodingparameter', '%{encodingparameter}', 'dummycoding,sumscoding,simplecoding');
+
 var 'xnames' from
 select group_concat(xname) as  xname from
 (select distinct xname from (select strsplitv(regexpr("\+|\:|\*|\-",'%{x}',"+") ,'delimiter:+') as xname) where xname!=0);

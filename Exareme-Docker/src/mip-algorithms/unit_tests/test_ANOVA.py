@@ -45,6 +45,7 @@ class TestANOVA(unittest.TestCase):
                 {   "name": "x", "value": "ANOVA_var_I1*ANOVA_var_I2*ANOVA_var_I3" },
                 {   "name": "y", "value": "ANOVA_var_D" },
                 {   "name": "sstype", "value": "1" },
+                {   "name": "pathology","value":"dementia"},
                 {   "name": "dataset", "value": "ANOVA_Balanced_with_inter_V1V2" },
                 {   "name": "filter", "value": "" },
                 {   "name": "outputformat", "value": "pfa" }
@@ -62,6 +63,7 @@ class TestANOVA(unittest.TestCase):
                 {   "name": "x", "value": "ANOVA_var_I1*ANOVA_var_I2*ANOVA_var_I3" },
                 {   "name": "y", "value": "ANOVA_var_D" },
                 {   "name": "sstype", "value": "2" },
+		{   "name": "pathology","value":"dementia"},
                 {   "name": "dataset", "value": "ANOVA_Balanced_with_inter_V1V2" },
                 {   "name": "filter", "value": "" },
                 {   "name": "outputformat", "value": "pfa" }
@@ -79,6 +81,7 @@ class TestANOVA(unittest.TestCase):
                 {   "name": "x", "value": "ANOVA_var_I1*ANOVA_var_I2*ANOVA_var_I3" },
                 {   "name": "y", "value": "ANOVA_var_D" },
                 {   "name": "sstype", "value": "3" },
+		{   "name": "pathology","value":"dementia"},
                 {   "name": "dataset", "value": "ANOVA_Balanced_with_inter_V1V2" },
                 {   "name": "filter", "value": "" },
                 {   "name": "outputformat", "value": "pfa" }
@@ -96,6 +99,7 @@ class TestANOVA(unittest.TestCase):
                 {   "name": "x", "value": "ANOVA_var_I1*ANOVA_var_I2*ANOVA_var_I3" },
                 {   "name": "y", "value": "ANOVA_var_D" },
                 {   "name": "sstype", "value": "1" },
+		{   "name": "pathology","value":"dementia"},
                 {   "name": "dataset", "value": "ANOVA_UnBalanced_with_inter_V1V2" },
                 {   "name": "filter", "value": "" },
                 {   "name": "outputformat", "value": "pfa" }
@@ -113,6 +117,7 @@ class TestANOVA(unittest.TestCase):
                 {   "name": "x", "value": "ANOVA_var_I1*ANOVA_var_I2*ANOVA_var_I3" },
                 {   "name": "y", "value": "ANOVA_var_D" },
                 {   "name": "sstype", "value": "2" },
+		{   "name": "pathology","value":"dementia"},
                 {   "name": "dataset", "value": "ANOVA_UnBalanced_with_inter_V1V2" },
                 {   "name": "filter", "value": "" },
                 {   "name": "outputformat", "value": "pfa" }
@@ -130,6 +135,7 @@ class TestANOVA(unittest.TestCase):
                 {   "name": "x", "value": "ANOVA_var_I1*ANOVA_var_I2*ANOVA_var_I3" },
                 {   "name": "y", "value": "ANOVA_var_D" },
                 {   "name": "sstype", "value": "3" },
+		{   "name": "pathology","value":"dementia"},
                 {   "name": "dataset", "value": "ANOVA_UnBalanced_with_inter_V1V2" },
                 {   "name": "filter", "value": "" },
                 {   "name": "outputformat", "value": "pfa" }
@@ -147,6 +153,7 @@ class TestANOVA(unittest.TestCase):
                 {   "name": "x", "value": "ANOVA_var_I1+ANOVA_var_I2+ANOVA_var_I3" },
                 {   "name": "y", "value": "ANOVA_var_D" },
                 {   "name": "sstype", "value": "3" },
+		{   "name": "pathology","value":"dementia"},
                 {   "name": "dataset", "value": "ANOVA_UnBalanced_with_inter_V1V2" },
                 {   "name": "filter", "value": "" },
                 {   "name": "outputformat", "value": "pfa" }
@@ -164,6 +171,7 @@ class TestANOVA(unittest.TestCase):
             {   "name": "x", "value": "ANOVA_alzheimerbroadcategory+ANOVA_gender" },
             {   "name": "y", "value": "ANOVA_lefthippocampus" },
             {   "name": "sstype", "value": "3" },
+	    {   "name": "pathology","value":"dementia"},
             {   "name": "dataset", "value": "ANOVA_dataset1,ANOVA_dataset2,ANOVA_dataset3" },
             {   "name": "filter", "value": "" },
             {   "name": "outputformat", "value": "pfa" }
@@ -181,6 +189,7 @@ class TestANOVA(unittest.TestCase):
             {   "name": "x", "value": "ANOVA_alzheimerbroadcategory+ANOVA_gender" },
             {   "name": "y", "value": "ANOVA_lefthippocampus" },
             {   "name": "sstype", "value": "2" },
+	    {   "name": "pathology","value":"dementia"},
             {   "name": "dataset", "value": "ANOVA_dataset1,ANOVA_dataset2,ANOVA_dataset3" },
             {   "name": "filter", "value": "" },
             {   "name": "outputformat", "value": "pfa" }
@@ -198,6 +207,7 @@ class TestANOVA(unittest.TestCase):
             {   "name": "x", "value": "ANOVA_alzheimerbroadcategory*ANOVA_gender" },
             {   "name": "y", "value": "ANOVA_lefthippocampus" },
             {   "name": "sstype", "value": "3" },
+            {   "name": "pathology","value":"dementia"},
             {   "name": "dataset", "value": "ANOVA_dataset1,ANOVA_dataset2,ANOVA_dataset3" },
             {   "name": "filter", "value": "" },
             {   "name": "outputformat", "value": "pfa" }
@@ -215,6 +225,7 @@ class TestANOVA(unittest.TestCase):
             {   "name": "x", "value": "ANOVA_alzheimerbroadcategory*ANOVA_gender" },
             {   "name": "y", "value": "ANOVA_lefthippocampus" },
             {   "name": "sstype", "value": "2" },
+	    {   "name": "pathology","value":"dementia"},
             {   "name": "dataset", "value": "ANOVA_dataset1,ANOVA_dataset2,ANOVA_dataset3" },
             {   "name": "filter", "value": "" },
             {   "name": "outputformat", "value": "pfa" }
@@ -232,6 +243,7 @@ class TestANOVA(unittest.TestCase):
             {   "name": "x", "value": "ANOVA_alzheimerbroadcategory+ANOVA_gender+ANOVA_agegroup" },
             {   "name": "y", "value": "ANOVA_lefthippocampus" },
             {   "name": "sstype", "value": "3" },
+	    {   "name": "pathology","value":"dementia"},
             {   "name": "dataset", "value": "ANOVA_dataset1,ANOVA_dataset2,ANOVA_dataset3" },
             {   "name": "filter", "value": "" },
             {   "name": "outputformat", "value": "pfa" }
@@ -250,6 +262,7 @@ class TestANOVA(unittest.TestCase):
             {   "name": "x", "value": "ANOVA_alzheimerbroadcategory+ANOVA_gender+ANOVA_agegroup" },
             {   "name": "y", "value": "ANOVA_lefthippocampus" },
             {   "name": "sstype", "value": "2" },
+            {   "name": "pathology","value":"dementia"},
             {   "name": "dataset", "value": "ANOVA_dataset1,ANOVA_dataset2,ANOVA_dataset3" },
             {   "name": "filter", "value": "" },
             {   "name": "outputformat", "value": "pfa" }
@@ -267,6 +280,7 @@ class TestANOVA(unittest.TestCase):
             {   "name": "x", "value": "ANOVA_alzheimerbroadcategory*ANOVA_gender+ANOVA_agegroup" },
             {   "name": "y", "value": "ANOVA_lefthippocampus" },
             {   "name": "sstype", "value": "3" },
+	    {   "name": "pathology","value":"dementia"},
             {   "name": "dataset", "value": "ANOVA_dataset1,ANOVA_dataset2,ANOVA_dataset3" },
             {   "name": "filter", "value": "" },
             {   "name": "outputformat", "value": "pfa" }
@@ -284,6 +298,7 @@ class TestANOVA(unittest.TestCase):
             {   "name": "x", "value": "ANOVA_alzheimerbroadcategory*ANOVA_gender+ANOVA_agegroup" },
             {   "name": "y", "value": "ANOVA_lefthippocampus" },
             {   "name": "sstype", "value": "2" },
+	    {   "name": "pathology","value":"dementia"},
             {   "name": "dataset", "value": "ANOVA_dataset1,ANOVA_dataset2,ANOVA_dataset3" },
             {   "name": "filter", "value": "" },
             {   "name": "outputformat", "value": "pfa" }
@@ -301,6 +316,7 @@ class TestANOVA(unittest.TestCase):
             {   "name": "x", "value": "ANOVA_alzheimerbroadcategory*ANOVA_gender*ANOVA_agegroup" },
             {   "name": "y", "value": "ANOVA_lefthippocampus" },
             {   "name": "sstype", "value": "3" },
+	    {   "name": "pathology","value":"dementia"},
             {   "name": "dataset", "value": "ANOVA_dataset1,ANOVA_dataset2,ANOVA_dataset3" },
             {   "name": "filter", "value": "" },
             {   "name": "outputformat", "value": "pfa" }
@@ -318,6 +334,7 @@ class TestANOVA(unittest.TestCase):
             {   "name": "x", "value": "ANOVA_alzheimerbroadcategory*ANOVA_gender*ANOVA_agegroup" },
             {   "name": "y", "value": "ANOVA_lefthippocampus" },
             {   "name": "sstype", "value": "2" },
+ 	    {   "name": "pathology","value":"dementia"},
             {   "name": "dataset", "value": "ANOVA_dataset1,ANOVA_dataset2,ANOVA_dataset3" },
             {   "name": "filter", "value": "" },
             {   "name": "outputformat", "value": "pfa" }
@@ -336,6 +353,7 @@ class TestANOVA(unittest.TestCase):
                 {   "name": "x", "value": "ANOVA_var_I1*ANOVA_var_I2*ANOVA_var_I3" },
                 {   "name": "y", "value": "ANOVA_var_D" },
                 {   "name": "sstype", "value": "1" },
+	        {   "name": "pathology","value":"dementia"},
                 {   "name": "dataset", "value": "adni_9rows" },
                 {   "name": "filter", "value": "" },
                 {   "name": "outputformat", "value": "pfa" }
@@ -365,7 +383,9 @@ def resultsComparison(jsonExaremeResult, jsonRResult):
 
 
 def check_privacy_result(result):
-    assert result == "{\"error\" : \"The Experiment could not run with the input provided because there are insufficient data.\"}"
+    assert result == "{\"result\" : [{\"data\":\"The Experiment could not run with the input provided because there are insufficient data.\",\"type\":\"text/plain+warning\"}]}"
+
+
 
 
 if __name__ == '__main__':

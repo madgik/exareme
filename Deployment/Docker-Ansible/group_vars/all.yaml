@@ -1,16 +1,10 @@
-# Exareme Tag
-EXAREME_TAG: "latest"
-# Exareme Image
-EXAREME_IMAGE: "thanasulas/exareme"
-
-
-
-## Nothing to change here  ##
+## DO NOT CHANGE  ##
 
 # Key-Value Store
 EXAREME_KEYSTORE: "exareme-keystore:8500"
-# Internal Exareme data path
-DOCKER_PATH: "/root/exareme/data/"
+
+# Docker internal folder for the Exareme data
+DOCKER_DATA_FOLDER: "/root/exareme/data/"
 
 # Portainer
 PORTAINER_PORT: "9000"
