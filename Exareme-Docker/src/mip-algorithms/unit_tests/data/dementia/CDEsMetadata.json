@@ -1,5 +1,48 @@
 {
 	"variables": [{
+			"code": "centreCode",
+			"description": "",
+			"enumerations": [{
+					"code": "a",
+					"label": "a"
+				}, {
+					"code": "b",
+					"label": "b"
+				}, {
+					"code": "c",
+					"label": "c"
+				}
+			],
+			"label": "centreCode",
+			"methodology": "Testing_CalibrationBelt",
+			"type": "polynomial",
+			"sql_type": "text",
+			"isCategorical": true
+		},{
+			"code": "hospOutcomeLatest_RIC10",
+			"description": "",
+			"enumerations": [{
+					"code": 0,
+					"label": 0
+				}, {
+					"code": 1,
+					"label": 1
+				}
+			],
+			"label": "hospOutcomeLatest_RIC10",
+			"methodology": "Testing_CalibrationBelt",
+			"type": "binominal",
+			"sql_type": "integer",
+			"isCategorical": true
+		}, {
+			"code": "probGiViTI_2017_Complessiva",
+			"description": "",
+			"label": "probGiViTI_2017_Complessiva",
+			"methodology": "Testing_CalibrationBelt",
+			"type": "real",
+			"sql_type": "real",
+			"isCategorical": false
+		},{
 			"code": "alzheimerbroadcategory_logreg_test",
 			"description": "",
 			"enumerations": [{
@@ -15,7 +58,7 @@
 			"type": "polynominal",
 			"sql_type": "text",
 			"isCategorical": true
-		}, {
+		},{
 			"code": "leftententorhinalarea_logreg_test",
 			"description": "",
 			"label": "leftententorhinalarea_logreg_test",
