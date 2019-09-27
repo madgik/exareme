@@ -291,13 +291,12 @@ Go to your ```Services``` to check each service's logs and see if everything is 
 
 ### Troubleshooting
 
-1) Under ```Services``` in the left menu check that all services has 1 replicas: ```replicated 1 / 1```. 
-
-If this is not the case for the Worker nodes, meaning you get 0 replicas: ```replicated 0 / 1```, then it is possible that you started an Exareme Worker service before joining that Worker in the Swarm.
-i) Stop the specific Worker via:
-``` ansible-playbook -i hosts.ini Stop-Exareme-Worker.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=workerN"``` , 
-ii) Join the specific Worker in the Swarm via:
-``` ansible-playbook -i hosts.ini Join-Workers.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=workerN"```  
-iii) Start the specific Worker Node:
-``` ansible-playbook -i hosts.ini Start-Exareme-Worker.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=workerN"```
+1) Under ```Services``` in the left menu check that all services has 1 replicas: ```replicated 1 / 1```.<br/>
+    If this is not the case for the Worker nodes, meaning you get 0 replicas: ```replicated 0 / 1```, then it is possible that you started an Exareme Worker service before joining that Worker in the Swarm. In such case, do the following:
+    1) Stop the specific Worker via:
+        ``` ansible-playbook -i hosts.ini Stop-Exareme-Worker.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=workerN"``` , 
+    2) Join the specific Worker in the Swarm via:
+        ``` ansible-playbook -i hosts.ini Join-Workers.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=workerN"```  
+    3) Start the specific Worker Node:
+        ``` ansible-playbook -i hosts.ini Start-Exareme-Worker.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=workerN"```
 
