@@ -101,7 +101,7 @@ Here is an example of hosts.ini where we have 3 Target machines, one [master] of
 [You can find the hostname of any machine by executing ```hostname``` in terminal]
 
 [Requirement1: Mind that the variable ```data_path``` is the path where your Data CSV (datasets.csv) and the Metadata file (CDEsMetadata.json)
-are stored in your Target machine.]
+are stored in your Target machine.]<br/>
 [Requirement2: Mind that the variable ```home_path``` is the path where ```Deployment/Compose-Files/``` will be stored in the master node. Compose-Files
 contains 2 docker-compose.yaml files for deploying the services. The ```home_path``` can be Any path]
 
@@ -178,8 +178,8 @@ Here you will add
    worker2_ssh_pass: your_password
    worker2_become_pass: your_password
 ```
-all in plaintext. If you have more than 2 workers, you will add those too by adding ```workerN_...``` in front of each variable where N the increased number. 
-[Keep in mind that your password can be anything you want But ansible has a special character for comments ```#``` . If your password contains that specific character ansible will take the characters next to it as comments.]
+all in plaintext. If you have more than 2 workers, you will add those too by adding ```workerN_...``` in front of each variable where N the increased number.<br/>
+[Keep in mind that your password can be anything you want But ansible has a special character for comments ```#``` . If your password contains that specific character ansible will take the characters next to it as comments.]<br/>
 When you exit you can see that vault_file.yaml is encrypted with all your sensitive information in there.
 
 If you want to edit the file you can do so whenever by running:
@@ -230,7 +230,7 @@ Next thing would be to run Exareme services and Portainer service. The Exareme s
 
 ```ansible-playbook -i hosts.ini Start-Exareme.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv```
 
-If you want to exclude Portainer service from running, you need to add ```--skip-tags portainer``` in the command, meening:
+If you want to exclude Portainer service from running, you need to add ```--skip-tags portainer``` in the command, meaning:
 
 ```ansible-playbook -i hosts.ini Start-Exareme.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml --skip-tags portainer -vvvv```
 
@@ -256,7 +256,7 @@ If you want to stop all services [Exareme master/Exareme workers/Portainer]:
 
 ### Add an Exareme Worker when the master is already running
 
-After inserting the nodes information in the hosts.ini and the ansible-vaut file you can run the ```deploy.sh``` script.
+After inserting the nodes information in the hosts.ini and the ansible-vault file you can run the ```deploy.sh``` script.
 
 You can also do it manually with the following commands:
 1) Join the particular worker by replacing workerN with the appropriate name: 
@@ -283,9 +283,9 @@ Check your Manager node of Swarm by
 You can also check the Portainer to see if all services are up and running by accessing the Address: ```Manager_Of_Swarm_IP:9000```.
 
 The first time you launch Portainer you have to create a user. 
-Fill in the ```Username```, ```Password```, ```Confirm Password``` fields and click ```Create user```. 
-[Mind that we create a folder called ```portainer``` in your ```home_path``` where the credentials you provided will be saved for the next times, until you delete the folder] 
-The next page ```Connect Portainer to the Docker environment you want to manage.``` will ask you to Connect Portainer to an Environment. Click the first option  ```Local``` and ```Connect```. 
+Fill in the ```Username```, ```Password```, ```Confirm Password``` fields and click ```Create user```.<br/> 
+[Mind that we create a folder called ```portainer``` in your ```home_path``` where the credentials you provided will be saved for the next times, until you delete the folder]<br/> 
+The next page ```Connect Portainer to the Docker environment you want to manage.``` will ask you to Connect Portainer to an Environment. Click the first option  ```Local``` and ```Connect```.<br/> 
 After that, you should click on your Local Swarm and navigate from the left menu. 
 Go to your ```Services``` to check each service's logs and see if everything is running properly.
 
@@ -294,10 +294,10 @@ Go to your ```Services``` to check each service's logs and see if everything is 
 1) Under ```Services``` in the left menu check that all services has 1 replicas: ```replicated 1 / 1```. 
 
 If this is not the case for the Worker nodes, meaning you get 0 replicas: ```replicated 0 / 1```, then it is possible that you started an Exareme Worker service before joining that Worker in the Swarm.
-i) Stop the spesific Worker via:
+i) Stop the specific Worker via:
 ``` ansible-playbook -i hosts.ini Stop-Exareme-Worker.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=workerN"``` , 
-ii) Join the spesific Worker in the Swarm via: 
+ii) Join the specific Worker in the Swarm via:
 ``` ansible-playbook -i hosts.ini Join-Workers.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=workerN"```  
-iii) Start the spesific Worker Node: 
+iii) Start the specific Worker Node:
 ``` ansible-playbook -i hosts.ini Start-Exareme-Worker.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=workerN"```
 
