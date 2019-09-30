@@ -47,7 +47,7 @@ done < hosts.ini
 if [[ ${flag} != "0" ]]; then
     echo -e "\nIt seems that no workers will join the Swarm. If you have workers \
 make sure you included their names below label [workers], so Ansible will not Ignore them."
-    echo -e "\nContinue? [y/n]"
+    echo -e "\nContinue? [ y/n ]"
 
     read answer
     while true
@@ -68,14 +68,14 @@ make sure you included their names below label [workers], so Ansible will not Ig
             fi
             exit 1
         else
-            echo "$answer is not a valid answer! Try again.. [y/n]"
+            echo "$answer is not a valid answer! Try again.. [ y/n ]"
             read answer
         fi
     done
 fi
 
 #Start Exareme
-echo -e "\nStarting Exareme services...Do you wish to run Portainer service as well [y/n]?"
+echo -e "\nStarting Exareme services...Do you wish to run Portainer service as well [ y/n ]?"
 read answer
 while true
 do
@@ -104,7 +104,7 @@ do
         echo -e "\nExareme services are now running"
         break
     else
-        echo "$answer is not a valid answer! Try again.. [y/n]"
+        echo "$answer is not a valid answer! Try again.. [ y/n ]"
         read answer
     fi
 done

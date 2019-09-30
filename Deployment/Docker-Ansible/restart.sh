@@ -13,30 +13,18 @@ while true
 do
     if [[ "${answer}" == "1" ]]; then
         echo -e "\nStopping Exareme services..."
-
-        ansible_playbook_stop=${ansible_playbook}"Stop-Services.yaml --skip-tags portainer"
-        ${ansible_playbook_stop}
-        ansible_playbook_code=$?
-		
+        stop 1
         break
     elif [[ "${answer}" == "2" ]]; then
         echo -e "\nStopping Portainer services..."
-
-        ansible_playbook_stop=${ansible_playbook}"Stop-Services.yaml --skip-tags exareme"
-        ${ansible_playbook_stop}
-        ansible_playbook_code=$?
-		
+		stop 2
         break
     elif [[ "${answer}" == "3" ]]; then
         echo -e "\nStopping all services..."
-		
-        ansible_playbook_stop=${ansible_playbook}"Stop-Services.yaml"
-        ${ansible_playbook_stop}
-        ansible_playbook_code=$?
-		
+		stop 3
         break
     else
-        echo "$answer is not a valid answer! Try again.. [1/2/3"
+        echo "$answer is not a valid answer! Try again.. [ 1-2-3 ]"
         read answer
     fi
 done
@@ -53,8 +41,7 @@ if [[ "${answer}" == "1" ]]; then
 	ansible_playbook_start=${ansible_playbook}"Start-Exareme.yaml --skip-tags portainer"
 	${ansible_playbook_start}
 	ansible_playbook_code=$?
-	
-	break
+
 	
 elif [[ "${answer}" == "2" ]]; then
     echo -e "\nStarting Portainer services..."
@@ -62,18 +49,14 @@ elif [[ "${answer}" == "2" ]]; then
 	ansible_playbook_start=${ansible_playbook}"Start-Exareme.yaml --skip-tags exareme"
 	${ansible_playbook_start}
 	ansible_playbook_code=$?
-	
-	break
-	
+
 elif [[ "${answer}" == "3" ]]; then
     echo -e "\nStarting all services..."
 	
 	ansible_playbook_start=${ansible_playbook}"Start-Exareme.yaml"
 	${ansible_playbook_start}
 	ansible_playbook_code=$?
-	
-	break
-	
+
 fi
 
 #If status code != 0 an error has occurred
