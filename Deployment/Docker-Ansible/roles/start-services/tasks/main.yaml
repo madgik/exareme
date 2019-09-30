@@ -20,7 +20,7 @@
   tags:
     - exareme
 
-- name: Run Portainer
+- name: Portainer folder
   shell: >
          test -d {{ PORTAINER_DATA }}
          || mkdir -p {{ PORTAINER_DATA }}
