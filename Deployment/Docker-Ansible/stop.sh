@@ -5,7 +5,7 @@ init_ansible_playbook
 echo -e "\nChoose one of the options [ 1-2-3 ] :"
 echo "1. Stop Exareme"
 echo "2. Stop Portainer"
-echo "3. Stop Exareme and Portainer"
+echo -e "3. Stop Exareme and Portainer\n"
 
 read answer
 while true

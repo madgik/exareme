@@ -5,7 +5,7 @@ init_ansible_playbook
 echo -e "\nChoose one of the options [ 1-2-3 ] :"
 echo "1. Restart Exareme"
 echo "2. Restart Portainer"
-echo "3. Restart Exareme and Portainer"
+echo -e "3. Restart Exareme and Portainer\n"
 
 
 read answer
