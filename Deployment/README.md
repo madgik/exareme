@@ -50,10 +50,10 @@ Go to the ```Deployment/Docker-Ansible/group_vars``` folder and create an ```exa
 The file should contain the following lines, modify them depending on the version of exareme you want to deploy.
 
 ```
-	# Exareme Tag
-	EXAREME_TAG: "v21.0.0"
-	# Exareme Image
-	EXAREME_IMAGE: "hbpmip/exareme"
+# Exareme Tag
+EXAREME_TAG: "v21.0.0"
+# Exareme Image
+EXAREME_IMAGE: "hbpmip/exareme"
 ```
 
 ## Initialize Hosts
@@ -63,40 +63,40 @@ Go to the ```Deployment/Docker-Ansible/``` folder and create a ```hosts.ini``` f
 Here is an example of hosts.ini where we have 3 Target machines, one [master] of Exareme and two [workers] of Exareme.
 
 ```
-   [master]
-   master ansible_host=88.197.53.38
-   master home_path=/home/exareme/
-   master data_path=/home/exareme/data/
+[master]
+master ansible_host=88.197.53.38
+master home_path=/home/exareme/
+master data_path=/home/exareme/data/
 
-   master remote_user="{{master_remote_user}}"
-   master become_user="{{master_become_user}}"
-   master ansible_become_pass="{{master_become_pass}}"
-   master ansible_ssh_pass="{{master_ssh_pass}}"
+master remote_user="{{master_remote_user}}"
+master become_user="{{master_become_user}}"
+master ansible_become_pass="{{master_become_pass}}"
+master ansible_ssh_pass="{{master_ssh_pass}}"
 
-   [workers]
-   worker1
-   worker2
+[workers]
+worker1
+worker2
 
-   [worker1]
-   worker1 ansible_host=88.197.53.44
-   worker1 hostname=dl044
-   worker1 data_path=/home/exareme/data/
+[worker1]
+worker1 ansible_host=88.197.53.44
+worker1 hostname=dl044
+worker1 data_path=/home/exareme/data/
 
-   worker1 remote_user="{{worker1_remote_user}}"
-   worker1 become_user="{{worker1_become_user}}"
-   worker1 ansible_become_pass="{{worker1_become_pass}}"
-   worker1 ansible_ssh_pass="{{worker1_ssh_pass}}"
+worker1 remote_user="{{worker1_remote_user}}"
+worker1 become_user="{{worker1_become_user}}"
+worker1 ansible_become_pass="{{worker1_become_pass}}"
+worker1 ansible_ssh_pass="{{worker1_ssh_pass}}"
 
 
-   [worker2]
-   worker2 ansible_host=88.197.53.100
-   worker2 hostname=thanasis1
-   worker2 data_path=/home/exareme/data/
+[worker2]
+worker2 ansible_host=88.197.53.100
+worker2 hostname=thanasis1
+worker2 data_path=/home/exareme/data/
 
-   worker2 remote_user="{{worker2_remote_user}}"
-   worker2 become_user="{{worker2_become_user}}"
-   worker2 ansible_become_pass="{{worker2_become_pass}}"
-   worker2 ansible_ssh_pass="{{worker2_ssh_pass}}"
+worker2 remote_user="{{worker2_remote_user}}"
+worker2 become_user="{{worker2_become_user}}"
+worker2 ansible_become_pass="{{worker2_become_pass}}"
+worker2 ansible_ssh_pass="{{worker2_ssh_pass}}"
 ```
 [You can find the hostname of any machine by executing ```hostname``` in terminal]
 
@@ -163,20 +163,20 @@ Here you will add
 # remote_user and ssh_pass will be user to login to the target hostname
 # become_user and become_pass will be used to execute docker and other commands. Make sure that user has permission to run docker commands. You could use root if possible.
 
-   master_remote_user: your_username
-   master_become_user: your_username
-   master_ssh_pass: your_password
-   master_become_pass: your_password
+master_remote_user: your_username
+master_become_user: your_username
+master_ssh_pass: your_password
+master_become_pass: your_password
    
-   worker1_remote_user: your_username
-   worker1_become_user: your_username
-   worker1_ssh_pass: your_password
-   worker1_become_pass: your_password
+worker1_remote_user: your_username
+worker1_become_user: your_username
+worker1_ssh_pass: your_password
+worker1_become_pass: your_password
    
-   worker2_remote_user: your_username
-   worker2_become_user: your_username
-   worker2_ssh_pass: your_password
-   worker2_become_pass: your_password
+worker2_remote_user: your_username
+worker2_become_user: your_username
+worker2_ssh_pass: your_password
+worker2_become_pass: your_password
 ```
 all in plaintext. If you have more than 2 workers, you will add those too by adding ```workerN_...``` in front of each variable where N the increased number.<br/>
 [Keep in mind that your password can be anything you want But ansible has a special character for comments ```#``` . If your password contains that specific character ansible will take the characters next to it as comments.]<br/>
