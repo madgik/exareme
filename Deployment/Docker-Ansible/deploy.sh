@@ -79,7 +79,7 @@ fi
 echo -e "Choose one of the below:\n"
 echo "1:Deploy everything"
 echo "2:Add a specific worker in an already initialized swarm"
-echo "3:Restart services"
+echo "3:(Re)Start services"
 echo -e "4:Stop services\n"
 
 read answer
