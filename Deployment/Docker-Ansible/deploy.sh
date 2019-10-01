@@ -76,7 +76,12 @@ fi
 
 }
 
-echo -e "Choose one of the below:\n"
+#Check if group_vars/exareme.yaml exists
+chmod 777 ./checkFile.sh
+. ./checkFile.sh
+
+#Choose option to do next
+echo -e "\nChoose one of the below:\n"
 echo "1:Deploy everything"
 echo "2:Add a specific worker in an already initialized swarm"
 echo "3:(Re)Start services"
