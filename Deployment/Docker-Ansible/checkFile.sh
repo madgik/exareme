@@ -48,10 +48,10 @@ if [[ -f group_vars/exareme.yaml ]]; then
         elif [[ ${answer} == "n" ]]; then
             echo "Checking if EXAREME image: "\"${name}":"${tag}"\" exists."
             if docker_image_exists ${name} ${tag}; then
-                echo "Image exists. Continuing..."
+                echo "EXAREME image exists. Continuing..."
                 break
             else
-                echo "Image does not exist! EXAREME image name should have a format like: \"hbpmip/exareme\". EXAREME image tag should have a format like: \"latest\""
+                echo "EXAREME image does not exist! EXAREME image name should have a format like: \"hbpmip/exareme\". EXAREME image tag should have a format like: \"latest\""
                 updateFile
             fi
             break
