@@ -77,7 +77,7 @@ fi
 }
 
 
-chmod 755 scripts/checkFile.sh scripts/restart.sh scripts/deploy_all.sh scripts/add_worker.sh scripts/stop.sh scripts/hosts.sh
+chmod 755 scripts/exareme.sh scripts/restart.sh scripts/deploy_all.sh scripts/add_worker.sh scripts/stop.sh scripts/hosts.sh
 
 while true
 do
@@ -95,7 +95,7 @@ do
     while true
     do
         if [[ "${answer1}" == "1" ]]; then
-            . scripts/checkFile.sh
+            . scripts/exareme.sh
             break
         elif [[ "${answer1}" == "2" ]]; then
             echo -e "\nYou chose to create hosts.ini file..."
@@ -104,22 +104,26 @@ do
         elif [[ "${answer1}" == "3" ]]; then
             :
         elif [[ "${answer1}" == "4" ]]; then
-            . scripts/checkFile.sh
+            . scripts/exareme.sh
+            . scripts/hosts.sh
             echo -e "\nYou chose to deploy everything..."
             . scripts/deploy_all.sh
             break
         elif [[ "${answer1}" == "5" ]]; then
-            . scripts/checkFile.sh
+            . scripts/exareme.sh
+            . scripts/hosts.sh
             echo -e "\nYou chose to add a specific worker in an already initialized swarm.."
             . scripts/add_worker.sh
             break
         elif [[ "${answer1}" == "6" ]]; then
-            . scripts/checkFile.sh
+            . scripts/exareme.sh
+            . scripts/hosts.sh
             echo -e "\nYou chose to restart Services.."
             . scripts/restart.sh
             break
         elif [[ "${answer1}" == "7" ]]; then
             echo -e "\nYou chose to stop Services.."
+            . scripts/hosts.sh
             . scripts/stop.sh
             break
         elif [[ "${answer1}" == "8" ]]; then

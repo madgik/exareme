@@ -21,7 +21,7 @@ do
     echo -e "\nChecking if EXAREME image: "\"${name}":"${tag}\"" exists"
 
     if docker_image_exists ${name} ${tag}; then
-        echo -e "\nEXAREME Image exists. Continuing..."
+        echo "EXAREME Image exists. Continuing..."
         break
     else
         echo -e "\nEXAREME image does not exist! EXAREME image name should have a format like: \"hbpmip/exareme\". And EXAREME image tag should have a format like: \"latest\""
@@ -31,7 +31,7 @@ done
 }
 
 if [[ -f group_vars/exareme.yaml ]]; then
-    echo "File \"exareme.yaml\" seams that already exists."
+    echo -e "\nFile \"exareme.yaml\" seams that already exists."
     while read -r line1 ; do
         read -r line2
         name=$(echo "$line1" | cut -d ':' -d ' ' -d '"' -f 2 -d '"')
@@ -46,7 +46,7 @@ if [[ -f group_vars/exareme.yaml ]]; then
             updateFile
             break
         elif [[ ${answer} == "n" ]]; then
-            echo "Checking if EXAREME image: "\"${name}":"${tag}"\" exists."
+            echo -e "\nChecking if EXAREME image: "\"${name}":"${tag}"\" exists."
             if docker_image_exists ${name} ${tag}; then
                 echo "EXAREME image exists. Continuing..."
                 break
