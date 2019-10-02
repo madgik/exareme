@@ -10,21 +10,21 @@ do
     if [[ -f group_vars/exareme.yaml ]]; then
         rm -f group_vars/exareme.yaml
     fi
-    echo "Type your EXAREME image name:"
+    echo -e "\nType your EXAREME image name:"
     read name
     echo "EXAREME_IMAGE:" \"${name}\" >> group_vars/exareme.yaml
 
-    echo "Type your EXAREME image tag:"
+    echo -e "\nType your EXAREME image tag:"
     read tag
     echo "EXAREME_TAG:" \"${tag}\" >> group_vars/exareme.yaml
 
-    echo "Checking if EXAREME image: "\"${name}":"${tag}\"" exists"
+    echo -e "\nChecking if EXAREME image: "\"${name}":"${tag}\"" exists"
 
     if docker_image_exists ${name} ${tag}; then
-        echo "Image exists. Continuing..."
+        echo -e "\nEXAREME Image exists. Continuing..."
         break
     else
-        echo "Image does not exist! EXAREME image name should have a format like: \"hbpmip/exareme\". And EXAREME image tag should have a format like: \"latest\""
+        echo -e "\nEXAREME image does not exist! EXAREME image name should have a format like: \"hbpmip/exareme\". And EXAREME image tag should have a format like: \"latest\""
     fi
 done
 
@@ -61,7 +61,7 @@ if [[ -f group_vars/exareme.yaml ]]; then
         fi
     done
 else
-    echo "Creating file for Exareme image and Exareme tag.."
+    echo -e "\nCreating file for Exareme image and Exareme tag.."
     updateFile
 fi
 
