@@ -9,28 +9,35 @@ echo ${1}" ansible_ssh_pass=\"{{"${1}"_ssh_pass}}\"" >> hosts.ini
 }
 
 createFile () {
-    echo "Infos for target master and worker nodes are needed. What is the ansible host for target \"master\"? (expecting IP)"
+    echo -e "\nInfos for target master and worker nodes are needed. What is the ansible host for target \"master\"? (expecting IP)"
     read answer
     echo "[master]" >> hosts.ini
     echo "master ansible_host="${answer} >> hosts.ini  #check if what given is an IP
 
-    echo "What is the home path for target \"master\"?"
+    echo -e "\nWhat is the home path for target \"master\"?"
     read answer
+    #Check that path ends with /
+    if [[ "${answer: -1}"  != "/" ]]; then
+        answer=${answer}"/"
+    fi
     echo "master home_path="${answer} >> hosts.ini
 
-    echo "What is the data path for targer \"master\"?"
+    echo -e "\nWhat is the data path for targer \"master\"?"
     read answer
+    #Check that path ends with /
+    if [[ "${answer: -1}"  != "/" ]]; then
+        answer=${answer}"/"
+    fi
     echo "master data_path="${answer} >> hosts.ini
-
 
     usernamePassword "master"
 
-    echo "Are there any target \"worker\" nodes? [ y/n ]"
+    echo -e "\nAre there any target \"worker\" nodes? [ y/n ]"
     read answer
     while true
     do
         if [[ ${answer} == "y" ]]; then
-            echo "How many target \"worker\" nodes are there?"
+            echo -e "\nHow many target \"worker\" nodes are there?"
             read answer1
             #check if what the user gave is a number
             echo -e "\n[workers]" >> hosts.ini
@@ -45,17 +52,21 @@ createFile () {
             n=1
             while [[ ${worker} != 0 ]]
             do
-                echo "What is the ansible host for target \"worker\"? (expecting IP)"
+                echo -e "\nWhat is the ansible host for target \"worker\"? (expecting IP)"
                 read answer
                 echo -e "\n[worker"${n}"]" >> hosts.ini
                 echo "worker"${n} "ansible_host="${answer} >> hosts.ini  #check if what given is an IP
 
-                echo "What is the hostname for target \"worker\"${n}?"
+                echo -e "\nWhat is the hostname for target \"worker\"${n}?"
                 read answer
                 echo "worker"${n} "hostname="${answer} >> hosts.ini
 
-                echo "What is the data_path for target \"worker\"?"
+                echo -e "\nWhat is the data_path for target \"worker\"?"
                 read answer
+                #Check that path ends with /
+                if [[ "${answer: -1}"  != "/" ]]; then
+                    answer=${answer}"/"
+                fi
                 echo "worker"${n} "data_path="${answer} >> hosts.ini
 
                 usernamePassword "worker"${n}
@@ -76,7 +87,7 @@ createFile () {
 
 
 if [[ -f hosts.ini ]]; then
-    echo "hosts.ini file already exists. Do you wish to create it again? [ y/n]"
+    echo -e "\nhosts.ini file already exists. Do you wish to create it again? [ y/n]"
     read answer
     while true
     do
