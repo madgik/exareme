@@ -82,9 +82,9 @@ chmod 755 scripts/exareme.sh scripts/restart.sh scripts/deploy_all.sh scripts/ad
 while true
 do
     echo -e "Choose one of the below:\n"
-    echo "1:File \"exareme.yaml\" keeps EXAREME image info. Create file."
-    echo "2:Create hosts.ini file."
-    echo "3:Create vault_file.yaml."
+    echo "1:Change the exareme docker image version."
+    echo "2:Change the host machines' information."
+    echo "3:Change the host machines' private information."
     echo "4:Deploy everything."
     echo "5:Add a specific worker in an already initialized swarm."
     echo "6:(Re)Start services."

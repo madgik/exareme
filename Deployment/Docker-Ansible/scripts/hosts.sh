@@ -52,16 +52,16 @@ createFile () {
             n=1
             while [[ ${worker} != 0 ]]
             do
-                echo -e "\nWhat is the ansible host for target \"worker\"? (expecting IP)"
+                echo -e "\nWhat is the ansible host for target \"worker${n}\"? (expecting IP)"
                 read answer
                 echo -e "\n[worker"${n}"]" >> hosts.ini
                 echo "worker"${n} "ansible_host="${answer} >> hosts.ini  #check if what given is an IP
 
-                echo -e "\nWhat is the hostname for target \"worker\"${n}?"
+                echo -e "\nWhat is the hostname for target \"worker${n}\"?"
                 read answer
                 echo "worker"${n} "hostname="${answer} >> hosts.ini
 
-                echo -e "\nWhat is the data_path for target \"worker\"?"
+                echo -e "\nWhat is the data_path for target \"worker${n}\"?"
                 read answer
                 #Check that path ends with /
                 if [[ "${answer: -1}"  != "/" ]]; then
