@@ -76,42 +76,58 @@ fi
 
 }
 
-#Check if group_vars/exareme.yaml exists
-chmod 777 ./checkFile.sh
-. ./checkFile.sh
 
-#Choose option to do next
-echo -e "\nChoose one of the below:\n"
-echo "1:Deploy everything"
-echo "2:Add a specific worker in an already initialized swarm"
-echo "3:(Re)Start services"
-echo -e "4:Stop services\n"
+chmod 755 scripts/checkFile.sh scripts/restart.sh scripts/deploy_all.sh scripts/add_worker.sh scripts/stop.sh scripts/hosts.sh
 
-read answer
 while true
 do
-    if [[ "${answer}" == "1" ]]; then
-        echo -e "\nYou chose to deploy everything..."
-        chmod 755 deploy_all.sh
-        . ./deploy_all.sh
-        exit 0
-    elif [[ "${answer}" == "2" ]]; then
-        echo -e "\nYou chose to add a specific worker in an already initialized swarm.."
-        chmod 755 add_worker.sh
-        . ./add_worker.sh
-        exit 0
-    elif [[ "${answer}" == "3" ]]; then
-         echo -e "\nYou chose to restart Services.."
-         chmod 755 restart.sh
-         . ./restart.sh
-         exit 0
-    elif [[ "${answer}" == "4" ]]; then
-         echo -e "\nYou chose to stop Services.."
-         chmod 755 stop.sh
-         . ./stop.sh
-         exit 0
-    else
-        echo "$answer is not a valid answer! Try again.. [ 1-2-3 ]"
-        read answer
-    fi
+    echo -e "Choose one of the below:\n"
+    echo "1:File \"exareme.yaml\" keeps EXAREME image info. Create file."
+    echo "2:Create hosts.ini file."
+    echo "3:Create vault_file.yaml."
+    echo "4:Deploy everything."
+    echo "5:Add a specific worker in an already initialized swarm."
+    echo "6:(Re)Start services."
+    echo "7:Stop services."
+    echo -e "8:Exit.\n"
+
+    read answer1
+    while true
+    do
+        if [[ "${answer1}" == "1" ]]; then
+            . scripts/checkFile.sh
+            break
+        elif [[ "${answer1}" == "2" ]]; then
+            echo -e "\nYou chose to create hosts.ini file..."
+            . scripts/hosts.sh
+            break
+        elif [[ "${answer1}" == "3" ]]; then
+            :
+        elif [[ "${answer1}" == "4" ]]; then
+            . scripts/checkFile.sh
+            echo -e "\nYou chose to deploy everything..."
+            . scripts/deploy_all.sh
+            break
+        elif [[ "${answer1}" == "5" ]]; then
+            . scripts/checkFile.sh
+            echo -e "\nYou chose to add a specific worker in an already initialized swarm.."
+            . scripts/add_worker.sh
+            break
+        elif [[ "${answer1}" == "6" ]]; then
+            . scripts/checkFile.sh
+            echo -e "\nYou chose to restart Services.."
+            . scripts/restart.sh
+            break
+        elif [[ "${answer1}" == "7" ]]; then
+            echo -e "\nYou chose to stop Services.."
+            . scripts/stop.sh
+            break
+        elif [[ "${answer1}" == "8" ]]; then
+            echo -e "\nYou chose to Exit.."
+            exit 0
+        else
+            echo "$answer1 is not a valid answer! Try again.. [ 1-2-3-4-5-6-7-8 ]"
+            read answer1
+        fi
+    done
 done

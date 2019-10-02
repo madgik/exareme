@@ -31,7 +31,7 @@ done
 }
 
 if [[ -f group_vars/exareme.yaml ]]; then
-    echo "File \"exareme.yaml\" keeps EXAREME image info. It seams that the file already exists."
+    echo "File \"exareme.yaml\" seams that already exists."
     while read -r line1 ; do
         read -r line2
         name=$(echo "$line1" | cut -d ':' -d ' ' -d '"' -f 2 -d '"')
