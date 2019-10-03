@@ -27,9 +27,9 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
     private ReadableByteChannel channel;
     private NQueryStatusEntity.QueryStatusListener l;
     private DataSerialization format;
-    private final static String user_error = new String("text/plain+user_error");
-    private final static String error = new String("text/plain+error");
-    private final static String warning = new String("text/plain+warning");
+    private final static String user_error = "text/plain+user_error";
+    private final static String error = "text/plain+error";
+    private final static String warning = "text/plain+warning";
 
     public NQueryResultEntity(AdpDBClientQueryStatus status, DataSerialization ds,
                               int bufferSize) {
@@ -70,8 +70,8 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
             }
 
             try {
-                String algorithmResult = IOUtils.toString(queryStatus.getResult(), StandardCharsets.UTF_8);
-                log.info("Algorithm terminated. Result: \n " + algorithmResult);
+                String algorithmResult = IOUtils.toString(queryStatus.getResult(DataSerialization.summary), StandardCharsets.UTF_8);
+                log.info("Algorithm " + queryStatus.getQueryID() + " terminated. Result: \n " + algorithmResult);
             } catch (IOException e) {
                 log.error("Could not read the algorithm result table." + queryStatus.getQueryID());
             }

@@ -147,7 +147,7 @@ public class IterationsHandler {
 
         iterationsScheduler.scheduleNewAlgorithm(algorithmKey);
 
-        log.info(iterativeAlgorithmState.toString() + " was submitted.");
+        log.debug(iterativeAlgorithmState.toString() + " was submitted.");
 
         return iterativeAlgorithmState;
     }
