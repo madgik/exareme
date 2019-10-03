@@ -77,21 +77,21 @@ fi
 }
 
 usernamePassword () {
-echo -e "\n"${1}" remote_user=\"{{"${1}"_remote_user}}\"" >> hosts.ini
-echo ${1}" become_user=\"{{"${1}"_become_user}}\"" >> hosts.ini
-echo ${1}" ansible_become_pass=\"{{"${1}"_become_pass}}\"" >> hosts.ini
-echo -e ${1}" ansible_ssh_pass=\"{{"${1}"_ssh_pass}}\"\n" >> hosts.ini
+echo -e "\n"${1}" remote_user=\"{{"${1}"_remote_user}}\"" >> ../hosts.ini
+echo ${1}" become_user=\"{{"${1}"_become_user}}\"" >> ../hosts.ini
+echo ${1}" ansible_become_pass=\"{{"${1}"_become_pass}}\"" >> ../hosts.ini
+echo -e ${1}" ansible_ssh_pass=\"{{"${1}"_ssh_pass}}\"\n" >> ../hosts.ini
 }
 
 infoWorker () {
 echo -e "\nWhat is the ansible host for target \"${1}\"? (expecting IP)"
 read answer
-echo -e "\n[${1}]" >> hosts.ini
-echo ${1} "ansible_host="${answer} >> hosts.ini  #check if what given is an IP
+echo -e "\n[${1}]" >> ../hosts.ini
+echo ${1} "ansible_host="${answer} >> ../hosts.ini  #check if what given is an IP
 
 echo -e "\nWhat is the hostname for target \"${1}\"?"
 read answer
-echo ${1} "hostname="${answer} >> hosts.ini
+echo ${1} "hostname="${answer} >> ../hosts.ini
 
 echo -e "\nWhat is the data_path for target \"${1}\"?"
 read answer
@@ -99,7 +99,7 @@ read answer
 if [[ "${answer: -1}"  != "/" ]]; then
         answer=${answer}"/"
 fi
-echo ${1} "data_path="${answer} >> hosts.ini
+echo ${1} "data_path="${answer} >> ../hosts.ini
 
 usernamePassword ${1}
 }
@@ -107,14 +107,14 @@ usernamePassword ${1}
 infoMaster () {
     echo -e "\nWhat is the ansible host for target \"master\"? (expecting IP)"
     read answer
-    echo "master ansible_host="${answer} >> hosts.ini  #check if what given is an IP
+    echo "master ansible_host="${answer} >> ../hosts.ini  #check if what given is an IP
     echo -e "\nWhat is the home path for target \"master\"?"
     read answer
     #Check that path ends with /
     if [[ "${answer: -1}"  != "/" ]]; then
         answer=${answer}"/"
     fi
-    echo "master home_path="${answer} >> hosts.ini
+    echo "master home_path="${answer} >> ../hosts.ini
 
     echo -e "\nWhat is the data path for targer \"master\"?"
     read answer
@@ -122,12 +122,12 @@ infoMaster () {
     if [[ "${answer: -1}"  != "/" ]]; then
         answer=${answer}"/"
     fi
-    echo "master data_path="${answer} >> hosts.ini
+    echo "master data_path="${answer} >> ../hosts.ini
     usernamePassword "master"
 }
 
 
-chmod 755 scripts/exareme.sh scripts/restart.sh scripts/deploy_all.sh scripts/add_worker.sh scripts/stop.sh scripts/hosts.sh
+chmod 755 *.sh
 
 while true
 do
@@ -145,36 +145,36 @@ do
     while true
     do
         if [[ "${answer1}" == "1" ]]; then
-            . scripts/exareme.sh
+            . ./exareme.sh
             break
         elif [[ "${answer1}" == "2" ]]; then
             echo -e "\nYou chose to create hosts.ini file..."
-            . scripts/hosts.sh
+            . ./hosts.sh
             break
         elif [[ "${answer1}" == "3" ]]; then
             :
         elif [[ "${answer1}" == "4" ]]; then
-            . scripts/exareme.sh
-            . scripts/hosts.sh
+            . ./exareme.sh
+            . ./hosts.sh
             echo -e "\nYou chose to deploy everything..."
-            . scripts/deploy_all.sh
+            . ./deploy_all.sh
             break
         elif [[ "${answer1}" == "5" ]]; then
-            . scripts/exareme.sh
-            . scripts/hosts.sh
+            . ./exareme.sh
+            . ./hosts.sh
             echo -e "\nYou chose to add a specific worker in an already initialized swarm.."
-            . scripts/add_worker.sh
+            . ./add_worker.sh
             break
         elif [[ "${answer1}" == "6" ]]; then
-            . scripts/exareme.sh
-            . scripts/hosts.sh
+            . ./exareme.sh
+            . ./hosts.sh
             echo -e "\nYou chose to restart Services.."
-            . scripts/restart.sh
+            . ./restart.sh
             break
         elif [[ "${answer1}" == "7" ]]; then
             echo -e "\nYou chose to stop Services.."
-            . scripts/hosts.sh
-            . scripts/stop.sh
+            . ./hosts.sh
+            . ./stop.sh
             break
         elif [[ "${answer1}" == "8" ]]; then
             echo -e "\nYou chose to Exit.."

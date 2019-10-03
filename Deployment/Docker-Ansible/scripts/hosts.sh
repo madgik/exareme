@@ -4,7 +4,7 @@
 createFile () {
     #Infos for target Master
     echo -e "\nInfos for target master and worker nodes are needed."
-    echo "[master]" >> hosts.ini
+    echo "[master]" >> ../hosts.ini
     infoMaster
 
     echo -e "\nAre there any target \"worker\" nodes? [ y/n ]"
@@ -19,7 +19,7 @@ createFile () {
             worker=1
             while [[ ${answer1} != 0 ]]
             do
-                echo "worker"${worker} >> hosts.ini
+                echo "worker"${worker} >> ../hosts.ini
                 worker=$[${worker}+1]
                 answer1=$[${answer1}-1]
             done
@@ -43,13 +43,13 @@ createFile () {
 
 }
 
-if [[ -s hosts.ini ]]; then             #if file is empty
+if [[ -s ../hosts.ini ]]; then             #if file is empty
     echo -e "\nhosts.ini file already exists. Do you wish to create it again? [ y/n]"
     read answer
     while true
     do
         if [[ ${answer} == "y" ]]; then
-            rm -f hosts.ini
+            rm -f ../hosts.ini
             createFile
             break
         elif [[ ${answer} == "n" ]]; then

@@ -43,7 +43,7 @@ while IFS= read -r line; do
             sleep 1
         done
     fi
-done < hosts.ini
+done < ../hosts.ini
 if [[ ${flag} != "0" ]]; then
     echo -e "\nIt seems that no workers will join the Swarm. If you have workers \
 make sure you included their names below label [workers], so Ansible will not Ignore them."
