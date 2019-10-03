@@ -76,6 +76,56 @@ fi
 
 }
 
+usernamePassword () {
+echo -e "\n"${1}" remote_user=\"{{"${1}"_remote_user}}\"" >> hosts.ini
+echo ${1}" become_user=\"{{"${1}"_become_user}}\"" >> hosts.ini
+echo ${1}" ansible_become_pass=\"{{"${1}"_become_pass}}\"" >> hosts.ini
+echo -e ${1}" ansible_ssh_pass=\"{{"${1}"_ssh_pass}}\"\n" >> hosts.ini
+}
+
+infoWorker () {
+echo -e "\nWhat is the ansible host for target \"${1}\"? (expecting IP)"
+read answer
+echo -e "\n[${1}]" >> hosts.ini
+echo ${1} "ansible_host="${answer} >> hosts.ini  #check if what given is an IP
+
+echo -e "\nWhat is the hostname for target \"${1}\"?"
+read answer
+echo ${1} "hostname="${answer} >> hosts.ini
+
+echo -e "\nWhat is the data_path for target \"${1}\"?"
+read answer
+#Check that path ends with /
+if [[ "${answer: -1}"  != "/" ]]; then
+        answer=${answer}"/"
+fi
+echo ${1} "data_path="${answer} >> hosts.ini
+
+usernamePassword ${1}
+}
+
+infoMaster () {
+    echo -e "\nWhat is the ansible host for target \"master\"? (expecting IP)"
+    read answer
+    echo "master ansible_host="${answer} >> hosts.ini  #check if what given is an IP
+    echo -e "\nWhat is the home path for target \"master\"?"
+    read answer
+    #Check that path ends with /
+    if [[ "${answer: -1}"  != "/" ]]; then
+        answer=${answer}"/"
+    fi
+    echo "master home_path="${answer} >> hosts.ini
+
+    echo -e "\nWhat is the data path for targer \"master\"?"
+    read answer
+    #Check that path ends with /
+    if [[ "${answer: -1}"  != "/" ]]; then
+        answer=${answer}"/"
+    fi
+    echo "master data_path="${answer} >> hosts.ini
+    usernamePassword "master"
+}
+
 
 chmod 755 scripts/exareme.sh scripts/restart.sh scripts/deploy_all.sh scripts/add_worker.sh scripts/stop.sh scripts/hosts.sh
 
