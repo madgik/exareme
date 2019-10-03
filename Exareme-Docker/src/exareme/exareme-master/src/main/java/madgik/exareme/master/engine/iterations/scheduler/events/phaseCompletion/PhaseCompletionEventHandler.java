@@ -134,6 +134,14 @@ public class PhaseCompletionEventHandler extends IterationsEventHandler<PhaseCom
                     case finalize:
                         // If finalize phase is finished, signal that the algorithm is completed.
                         iterationsDispatcher.submitAlgorithmTerminationEvent(ias.getAlgorithmKey());
+                        try {
+                            InputStream previousResultStream = ias.getAdpDBClientQueryStatus().getResult();
+                            terminationConditionResult = IOUtils.toString(previousResultStream, StandardCharsets.UTF_8);
+                            log.info("Algorithm terminated. Result: \n " + terminationConditionResult);
+                        } catch (IOException e) {
+                            throw new IterationsStateFatalException(
+                                    "Could not read the termination_condition result table.", ias.getAlgorithmKey());
+                        }
                         break;
 
                     default:

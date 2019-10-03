@@ -36,7 +36,7 @@ public class AdpDBNetReaderThread extends Thread {
     @Override
     public void run() {
         try {
-            log.info("table " + tabName);
+            log.debug("table " + tabName);
             Registry registry = Registry.getInstance(props.getDatabase());
             PhysicalTable table = registry.getSchema().getPhysicalTable(tabName);
             if (table == null) {

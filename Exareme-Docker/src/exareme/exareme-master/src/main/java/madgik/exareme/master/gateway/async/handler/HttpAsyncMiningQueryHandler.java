@@ -51,6 +51,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
     private static final AdpDBManager manager = AdpDBManagerLocator.getDBManager();
     private static final IterationsHandler iterationsHandler = IterationsHandler.getInstance();
     private static final String error = new String("text/plain+error");
+
     public HttpAsyncMiningQueryHandler() {
     }
 
@@ -197,6 +198,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 AdpDBClient dbClient =
                         AdpDBClientFactory.createDBClient(manager, clientProperties);
                 queryStatus = dbClient.query(algorithmKey, dfl);
+                log.info("Algorithm execution started. DFL Script: \n " + dfl);
                 BasicHttpEntity entity = new NQueryResultEntity(queryStatus, ds,
                         ExaremeGatewayUtils.RESPONSE_BUFFER_SIZE);
                 response.setStatusCode(HttpStatus.SC_OK);
@@ -211,7 +213,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             BasicHttpEntity entity = new BasicHttpEntity();
             String data = e.getMessage();
             String type = error;        //type could be error, user_error, warning regarding the error occured along the process
-            String result = defaultOutputFormat(data,type);
+            String result = defaultOutputFormat(data, type);
             entity.setContent(new ByteArrayInputStream(result.getBytes()));
             response.setStatusCode(HttpStatus.SC_BAD_REQUEST);
             response.setEntity(entity);
@@ -219,7 +221,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             log.error("Could not parse the algorithms properly.");
             String data = "Could not parse the algorithms properly.";
             String type = error;        //type could be error, user_error, warning regarding the error occured along the process
-            String result = defaultOutputFormat(data,type);
+            String result = defaultOutputFormat(data, type);
             BasicHttpEntity entity = new BasicHttpEntity();
             entity.setContent(new ByteArrayInputStream(result.getBytes()));
             response.setStatusCode(HttpStatus.SC_BAD_REQUEST);
@@ -228,7 +230,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             log.error(e);
             String data = e.getMessage();
             String type = error;        //type could be error, user_error, warning regarding the error occured along the process
-            String result = defaultOutputFormat(data,type);
+            String result = defaultOutputFormat(data, type);
             BasicHttpEntity entity = new BasicHttpEntity();
             entity.setContent(new ByteArrayInputStream(result.getBytes()));
             response.setStatusCode(HttpStatus.SC_BAD_REQUEST);
@@ -531,7 +533,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         }
     }
 
-    private String defaultOutputFormat(String data, String type){
-        return "{\"result\" : [{\"data\":"+"\""+data+"\",\"type\":"+"\""+type+"\"}]}";
+    private String defaultOutputFormat(String data, String type) {
+        return "{\"result\" : [{\"data\":" + "\"" + data + "\",\"type\":" + "\"" + type + "\"}]}";
     }
 }
