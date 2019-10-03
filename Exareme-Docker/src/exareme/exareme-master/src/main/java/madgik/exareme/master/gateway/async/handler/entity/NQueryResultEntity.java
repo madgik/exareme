@@ -69,13 +69,6 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
                 close();
             }
 
-            try {
-                String algorithmResult = IOUtils.toString(queryStatus.getResult(DataSerialization.summary), StandardCharsets.UTF_8);
-                log.info("Algorithm " + queryStatus.getQueryID() + " terminated. Result: \n " + algorithmResult);
-            } catch (IOException e) {
-                log.error("Could not read the algorithm result table." + queryStatus.getQueryID());
-            }
-
         } else {
             log.trace("|" + queryStatus.getError() + "|");
             if (queryStatus.getError().contains("ExaremeError:")) {

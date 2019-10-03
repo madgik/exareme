@@ -14,9 +14,12 @@ import madgik.exareme.master.engine.parser.SemanticException;
 import madgik.exareme.master.registry.Registry;
 import madgik.exareme.utils.chart.TimeFormat;
 import madgik.exareme.utils.chart.TimeUnit;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 
@@ -57,6 +60,13 @@ public class RmiAdpDBClientQueryStatus implements AdpDBClientQueryStatus {
 
         if (!status.hasFinished() && !status.hasError())
             return false;
+
+        try {
+            String algorithmResult = IOUtils.toString(getResult(DataSerialization.summary), StandardCharsets.UTF_8);
+            log.info("Algorithm with queryId" + getQueryID() + " terminated. Result: \n " + algorithmResult);
+        } catch (IOException e) {
+            log.error("Could not read the algorithm result table." + getQueryID());
+        }
 
         finished = true;
         return true;
@@ -108,23 +118,25 @@ public class RmiAdpDBClientQueryStatus implements AdpDBClientQueryStatus {
     }
 
     /**
-     *  Returns the result of a query.
-     *
-     *  It updates the registry first in order to bring the output of the table locally.
-     *  Then the result can be read from the result returned. If the registry is not
-     *  updated the result will have no data inside.
+     * Returns an InputStream with the result. Every time it returns a different stream
+     * so it can be called multiple times.
+     * It updates the registry first in order to bring the output of the table locally.
+     * Then the result can be read from the result returned. If the registry is not
+     * updated the result will have no data inside.
      *
      * @param ds is the format of the result
-     * @return  the result that is saved in the first, usually the only one, output table
+     * @return the result that is saved in the first, usually the only one, output table
      * @throws RemoteException
      */
     @Override
     public InputStream getResult(DataSerialization ds) throws RemoteException {
+
+        // The registry should be updated the 1st time we fetch a result stream.
         if (result == null) {
             updateRegistry();
-            result = new RmiAdpDBClient(AdpDBManagerLocator.getDBManager(), properties)
-                    .readTable(plan.getResultTables().get(0).getName(), ds);
         }
+        result = new RmiAdpDBClient(AdpDBManagerLocator.getDBManager(), properties)
+                .readTable(plan.getResultTables().get(0).getName(), ds);
         return result;
     }
 
@@ -165,7 +177,8 @@ public class RmiAdpDBClientQueryStatus implements AdpDBClientQueryStatus {
                     String sqlDef = resultTablesSQLDef.get(resultTable.getName());
                     resultTable.getTable().setSqlDefinition(sqlDef);
                 }
-                registry.addPhysicalTable(resultTable);
+                if (!registry.containsPhysicalTable(resultTable.getName()))
+                    registry.addPhysicalTable(resultTable);
             }
 
             for (Index index : plan.getBuildIndexes()) {

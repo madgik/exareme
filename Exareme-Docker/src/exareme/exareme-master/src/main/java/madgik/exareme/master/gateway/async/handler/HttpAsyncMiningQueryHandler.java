@@ -167,11 +167,11 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             if (algorithmProperties.getType().equals(AlgorithmProperties.AlgorithmType.iterative) ||
                     algorithmProperties.getType().equals(AlgorithmProperties.AlgorithmType.python_iterative)) {
 
-                log.info("Iterative algorithm " + algorithmKey + " execution started.");
-
                 final IterativeAlgorithmState iterativeAlgorithmState =
                         iterationsHandler.handleNewIterativeAlgorithmRequest(
                                 manager, algorithmKey, algorithmProperties, usedContainerProxies);
+
+                log.info("Iterative algorithm " + algorithmKey + " execution started.");
 
                 BasicHttpEntity entity = new NIterativeAlgorithmResultEntity(
                         iterativeAlgorithmState, ds, ExaremeGatewayUtils.RESPONSE_BUFFER_SIZE);
@@ -190,8 +190,6 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                     log.error(e);
                 }
 
-                log.info("Algorithm " + algorithmKey + " execution started. DFL Script: \n " + dfl);
-
                 AdpDBClientProperties clientProperties =
                         new AdpDBClientProperties(
                                 HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey,
@@ -201,6 +199,10 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 AdpDBClient dbClient =
                         AdpDBClientFactory.createDBClient(manager, clientProperties);
                 queryStatus = dbClient.query(algorithmKey, dfl);
+
+                log.info("Algorithm " + algorithmKey + " with queryID "
+                        + queryStatus.getQueryID() + " execution started. DFL Script: \n " + dfl);
+
                 BasicHttpEntity entity = new NQueryResultEntity(queryStatus, ds,
                         ExaremeGatewayUtils.RESPONSE_BUFFER_SIZE);
                 response.setStatusCode(HttpStatus.SC_OK);
