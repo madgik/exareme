@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 
+init_ansible_playbook
 
 joinWorker () {
+    ansible_playbook_join=${ansible_playbook}"Join-Workers.yaml -e my_host="
     ansible_playbook_join+=${1}
-    echo ${ansible_playbook_join}
 
+    echo ${ansible_playbook_join}
     ansible_playbook_code=$?
     #If status code != 0 an error has occurred
     if [[ ${ansible_playbook_code} -ne 0 ]]; then
@@ -41,7 +43,6 @@ while IFS= read -r line; do
     if [[ "$line" = *"[workers]"* ]]; then
         tagExist=1
         while IFS= read -r line; do
-            ansible_playbook_join=${ansible_playbook}"Join-Workers.yaml -e my_host="
             worker=$(echo "$line")
             if [[ ${workerName} != ${worker} ]]; then
                 continue
@@ -57,35 +58,33 @@ while IFS= read -r line; do
             startWorker ${worker}
         done
     fi
-done < hosts.ini
+done < ../hosts.ini
 #[workers] tag does not exist. Create everything
 if [[ ${tagExist} != "1" ]]; then
     flag=0
-    echo "It seams that no infos for ${workerName} exists.."
-    echo "[workers]" >> hosts.ini
-    echo ${workerName} >> hosts.ini
+    echo -e "\nIt seams that no infos for target [workers] exist.Updating hosts.ini file.."
+    echo "[workers]" >> ../hosts.ini
+    echo ${workerName} >> ../hosts.ini
     infoWorker ${workerName}
     joinWorker ${workerName}
     startWorker ${workerName}
 fi
 
-#[workers] tag exist.[name] tag for specific worker does not exist
+#[workers] tag exist.
 if [[ ${flag} != "0" ]]; then
-    echo -e "\nIt seems that no workers with name \"${workerName}\" exist in host.ini file..\
+    echo -e "\nIt seams that no infos for worker \"${workerName}\" exists..\
 Do you wish to add infos needed in order to add the worker now? [ y/n ]"
     read answer
     while true
     do
         if [[ ${answer} == y ]]; then
             echo "Update hosts.ini file"
-            chmod 755 scripts/updateHosts.sh
-            . scripts/updateHosts.sh
+            . ./updateHosts.sh
             joinWorker ${workerName}
             startWorker ${workerName}
             break
         elif [[ ${answer} == "n" ]]; then
-            echo -e "Make sure you included name \"${workerName}\" manually \
-below label [workers], so Ansible will not Ignore it.Exiting...\n"
+            echo -e "Make sure you include manually all the infos needed in hosts.ini file.Exiting...\n"
             sleep 2
             break
         else
