@@ -206,7 +206,7 @@ More guidance will be provided in that matter if you select to deploy via script
 
 # Deployment
 
-In the Docker-Ansible folder run the ```deploy.sh``` to start the deployment.
+Under Docker-Ansible/scripts/ folder run the ```deploy.sh``` to start the deployment.
 
 You will be prompted to provide any more information needed.
 
@@ -256,7 +256,8 @@ If you want to stop all services [Exareme master/Exareme workers/Portainer]:
 
 ### Add an Exareme Worker when the master is already running
 
-After inserting the nodes information in the hosts.ini and the ansible-vault file you can run the ```deploy.sh``` script.
+After inserting the nodes information in the hosts.ini and the ansible-vault file (under folder /Docker-Ansible/scripts/)
+you can run the ```deploy.sh``` script.
 
 You can also do it manually with the following commands:
 1) Join the particular worker by replacing workerN with the appropriate name: 
