@@ -3,20 +3,20 @@
 init_ansible_playbook
 
 n=0
+eof=0
 
-while IFS= read -r line; do
-    n=$[${n}+1]
-    if [[ "$line" = *"[workers]"* ]]; then
-        while IFS= read -r line; do
-            if [[ -z "$line" ]]; then
-                continue        #If empty line continue..
+while IFS= read -r line || [ -n "$line" ]; do
+    n=$[${n}+1]                                 #calculate number of lines so workerN will be written below [workers] tag
+    if [[ "$line" == *"[workers]"* ]]; then
+        while IFS= read -r line1 || [ -n "$line1" ]; do
+            if [[ -z "$line1" ]]; then
+                continue                        #If empty line do not calculate number of lines.continue..
             fi
             n=$[$n+1]
-            ansible_playbook_join=${ansible_playbook}"Join-Workers.yaml -e my_host="
-            worker=$(echo "$line")
-
-            if [[ "$line" == *"["* ]]; then
-                sed -i ${n}'i'${workerName} ../hosts.ini
+            worker=$(echo "$line1")
+            if [[ "$line1" == *"["* ]]; then    #file reached [workerN] tag
+                sed -i ${n}'i'${workerName} ../hosts.ini    #write workerN below [workers] tag
+                eof=1
                 break
             else
                 :
@@ -25,4 +25,10 @@ while IFS= read -r line; do
     fi
 done < ../hosts.ini
 
-infoWorker ${workerName}
+#if eof reached
+if [[ ${eof} != "1" ]]; then                #[workers] tag exist and eof right after tag
+    n=$[$n+1]
+    echo -e "\n" >> ../hosts.ini            #this is needed because sed can not write at eof
+    sed -i ${n}'i'${workerName} ../hosts.ini    #write workerN below [workers] tag
+    flag=1
+fi

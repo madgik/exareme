@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 
+tagExist=0
+workerExist=0
+
 init_ansible_playbook
 
+#Join worker in Swarm
 joinWorker () {
     ansible_playbook_join=${ansible_playbook}"Join-Workers.yaml -e my_host="
     ansible_playbook_join+=${1}
@@ -17,6 +21,7 @@ joinWorker () {
     sleep 1
 }
 
+#Start worker
 startWorker () {
 
     #Start specific worker Exareme node
@@ -36,50 +41,51 @@ startWorker () {
     echo -e "\nExareme service is now running.."
 }
 
-echo -e "\nWhat is the name of the worker node, as given in the hosts.ini, you would like to join the Swarm?"
+echo -e "\nWhat is the name of the worker node you would like to join the Swarm?"
 read workerName
 
-while IFS= read -r line; do
-    if [[ "$line" = *"[workers]"* ]]; then
-        tagExist=1
-        while IFS= read -r line; do
-            worker=$(echo "$line")
+while IFS= read -r line || [ -n "$line" ]; do
+    if [[ "$line" == *"[workers]"* ]]; then
+        tagExist=1                          #[workers] tag exists
+        while IFS= read -r line1 || [ -n "$line1" ]; do
+            worker=$(echo "$line1")
             if [[ ${workerName} != ${worker} ]]; then
                 continue
-            fi
-            if [[ -z "$line" ]]; then
-                continue        #If empty line continue..
-            fi
-            if [[ "$line" = *"["* ]]; then
+            else                            #workerN exists below [workers] tag
+                workerExist=1
+                joinWorker ${worker}
+                startWorker ${worker}
                 break
             fi
-            flag=0
-            joinWorker ${worker}
-            startWorker ${worker}
+            if [[ -z "$line1" ]]; then
+                continue                    #If empty line continue..
+            fi
         done
     fi
-done < ../hosts.ini
+done < ../hosts.ini; echo;
+
 #[workers] tag does not exist. Create everything
 if [[ ${tagExist} != "1" ]]; then
-    flag=0
+    workerExist=1
     echo -e "\nIt seams that no infos for target [workers] exist.Updating hosts.ini file.."
-    echo "[workers]" >> ../hosts.ini
+    echo -e "\n[workers]" >> ../hosts.ini
     echo ${workerName} >> ../hosts.ini
     infoWorker ${workerName}
     joinWorker ${workerName}
     startWorker ${workerName}
 fi
 
-#[workers] tag exist.
-if [[ ${flag} != "0" ]]; then
+#[workers] tag exist [workerN] tag does not exist
+if [[ ${workerExist} != "1" ]]; then
     echo -e "\nIt seams that no infos for worker \"${workerName}\" exists..\
 Do you wish to add infos needed in order to add the worker now? [ y/n ]"
     read answer
     while true
     do
         if [[ ${answer} == y ]]; then
-            echo "Update hosts.ini file"
+            echo "Updating hosts.ini file..."
             . ./updateHosts.sh
+            infoWorker ${workerName}
             joinWorker ${workerName}
             startWorker ${workerName}
             break
