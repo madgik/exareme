@@ -17,8 +17,7 @@ else
     fi
 fi
 
-
-
+#master infos
 masterInfos () {
 
     echo -e "\nWhat is the remote user for target \"master\""
@@ -40,7 +39,7 @@ masterInfos () {
     echo "master_become_pass:" ${become_pass} >> ../vault.yaml
 }
 
-
+#worker infos
 workerInfos () {
 
     echo -e "\nWhat is the remote user for target \"worker"${1}"\""
@@ -49,14 +48,14 @@ workerInfos () {
 
 
     echo -e "\nWhat is the password for remote user: "${remote_user}" for target \"worker"${1}"\""
-    read remote_pass
+    read -s remote_pass
 
     echo -e "\nWhat is the become user for target \"worker"${1}"\" (root if possible)"
     read become_user
     echo ${1}"_become_user:" ${become_user} >> ../vault.yaml
 
     echo -e "\nWhat is the password for become user: "${become_user}" for target \"worker"${1}"\""
-    read become_pass
+    read -s become_pass
 
     echo ${1}"_ssh_user:" ${remote_pass} >> ../vault.yaml
     echo ${1}"_become_pass:" ${become_pass} >> ../vault.yaml
@@ -66,12 +65,12 @@ workerInfos () {
 createFile () {
 
     masterInfos
-    ansible_vault="ansible-vault encrypt ../vault.yaml "${ansible_vault}
+    ansible_vault="ansible-vault encrypt ../vault.yaml "${ansible_vault}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
     ${ansible_vault}
 
     #If status code != 0 an error has occurred
     if [[ ${ansible_vault} -ne 0 ]]; then
-        echo "Encryption of file \"../vault.yaml\" exited with error. Removing file with sensitive information." >&2
+        echo "Encryption of file \"../vault.yaml\" exited with error. Removing file with sensitive information. Exiting.." >&2
         rm -rf ../vault.yaml
         exit 1
     fi

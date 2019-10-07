@@ -16,7 +16,7 @@ if [[ -z $(sudo find ~/.vault_pass.txt) ]]; then
     password
 else
     if [[ -s $(sudo find ~/.vault_pass.txt) ]]; then
-        echo -e "\nFile exists and it is not empty! Moving on..."
+        echo -e "\nFile for Ansible password exists and it is not empty! Moving on..."
         ansible_playbook+="--vault-password-file ~/.vault_pass.txt "
     else
         echo -e "\nFile is empty.. Do you want to store your Ansible password in a text file?[ y/n ]"
@@ -36,11 +36,13 @@ password () {
             read -s password
             echo $password > ~/.vault_pass.txt
             ansible_playbook+="--vault-password-file ~/.vault_pass.txt "
+            ansible_vault="--vault-password-file ~/.vault_pass.txt "
             break
         elif [[ "${answer}" == "n" ]]; then
             echo "You need to enter your Ansible password every single time ansible-playbooks ask for one."
             sleep 1
             ansible_playbook+="--ask-vault-pass "
+            ansible_vault="--ask-vault-pass "
             break
         else
             echo "$answer is not a valid answer! Try again.. [ y/n ]"

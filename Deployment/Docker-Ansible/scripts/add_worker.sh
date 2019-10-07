@@ -3,7 +3,7 @@
 tagExist=0
 workerExist=0
 
-init_ansible_playbook
+init_ansible_playbook   #TODO check if that is needed everywhere
 
 #Join worker in Swarm
 joinWorker () {
@@ -41,6 +41,7 @@ startWorker () {
     echo -e "\nExareme service is now running.."
 }
 
+#TODO check if infos in vault file exist for workerN
 echo -e "\nWhat is the name of the worker node you would like to join the Swarm?"
 read workerName
 
