@@ -86,7 +86,6 @@ public class Registry {
         try (Statement statement = regConn.createStatement()) {
             ResultSet rs = statement.executeQuery("SELECT * FROM sql;");
             while (rs.next()) {
-
                 sqlSchemaTables.add(rs.getString("sql_definition") + ";\n");
             }
         } catch (SQLException ex) {
@@ -98,7 +97,7 @@ public class Registry {
 
     public void addPhysicalTable(PhysicalTable table) {
         Gson gson = new Gson();
-        log.info("PhysicalTable Insert Into Registry: " + gson.toJson(table));
+        log.debug("PhysicalTable Insert Into Registry: " + gson.toJson(table));
 
         try (
                 PreparedStatement insertSqlStatemenet = regConn
