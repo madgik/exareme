@@ -57,7 +57,7 @@ public class ExecuteSelect extends AbstractMiMo {
             log.debug("Skip saving tables (" + dbOp.getQuery().getOutputTable().getTable().getName()
                     + ") ... ");
         }
-        log.info(state.toString());
+        log.debug(state.toString());
         exit(0, state.getExitMessage());
     }
 }
