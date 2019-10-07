@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-
+#Create hosts.ini file
 createFile () {
+
     #Infos for target Master
     echo -e "\nInfos for target master and worker nodes are needed."
     echo "[master]" >> ../hosts.ini
@@ -9,20 +10,25 @@ createFile () {
 
     echo -e "\nAre there any target \"worker\" nodes? [ y/n ]"
     read answer
+
     while true
     do
         if [[ ${answer} == "y" ]]; then
             echo -e "\nHow many target \"worker\" nodes are there?"
             read answer1
-            #check if what the user gave is a number
+            #TODO check if what the user gave is a number
             echo "[workers]" >> hosts.ini
             worker=1
+
+            #Construct worker1, worker2 .. workerN below [workers] tag
             while [[ ${answer1} != 0 ]]
             do
                 echo "worker"${worker} >> ../hosts.ini
                 worker=$[${worker}+1]
                 answer1=$[${answer1}-1]
             done
+
+            #For each worker1, worker2, .. workerN place infos in hosts.ini
             worker=$[${worker}-1]
             n=1
             while [[ ${worker} != 0 ]]
@@ -43,9 +49,10 @@ createFile () {
 
 }
 
-if [[ -s ../hosts.ini ]]; then             #if file is empty
+if [[ -s ../hosts.ini ]]; then                          #if file not empty
     echo -e "\nhosts.ini file already exists. Do you wish to create it again? [ y/n]"
     read answer
+
     while true
     do
         if [[ ${answer} == "y" ]]; then
@@ -61,7 +68,7 @@ if [[ -s ../hosts.ini ]]; then             #if file is empty
             read answer
         fi
     done
-else
+else                                            #If file empty, create it
     createFile
 fi
 

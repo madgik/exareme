@@ -2,6 +2,31 @@
 
 export ANSIBLE_HOST_KEY_CHECKING=False      #avoid host key checking
 
+#Default ansible_playbook
+init_ansible_playbook () {
+ansible_playbook="ansible-playbook -i hosts.ini -c paramiko -e@vault_file.yaml "
+
+echo -e "\nAnsible-vault gives you the simplicity of storing your Ansible password in a file. \
+Place the user's sudo password in this machine for looking file \"~/.vault_pass.txt\"...\""
+
+# --vault-password-file or --ask-vault-pass
+if [[ -z $(sudo find ~/.vault_pass.txt) ]]; then
+    echo -e "\nNo such file \"~/.vault_pass.txt\". Do you want to create one now? [ y/n ]"
+    flag=1
+    password
+else
+    if [[ -s $(sudo find ~/.vault_pass.txt) ]]; then
+        echo -e "\nFile exists and it is not empty! Moving on..."
+        ansible_playbook+="--vault-password-file ~/.vault_pass.txt "
+    else
+        echo -e "\nFile is empty.. Do you want to store your Ansible password in a text file?[ y/n ]"
+        password
+    fi
+fi
+
+}
+
+#choose --vault-password-file (if ~/.vault_pass.txt exists) or --ask-vault-pass (if ~/.vault_pass.txt not exists)
 password () {
     read answer
     while true
@@ -24,6 +49,7 @@ password () {
     done
 }
 
+#Stop Exareme Services
 stop () {
     if [[ ${1} == "1" ]]; then
         echo -e "\nStopping Exareme services..."
@@ -52,30 +78,7 @@ stop () {
     fi
 }
 
-init_ansible_playbook () {
-#Default ansible_playbook
-ansible_playbook="ansible-playbook -i hosts.ini -c paramiko -e@vault_file.yaml "
-
-echo -e "\nAnsible-vault gives you the simplicity of storing your Ansible password in a file. \
-Place the user's sudo password in this machine for looking file \"~/.vault_pass.txt\"...\""
-
-# --vault-password-file or --ask-vault-pass
-if [[ -z $(sudo find ~/.vault_pass.txt) ]]; then
-    echo -e "\nNo such file \"~/.vault_pass.txt\". Do you want to create one now? [ y/n ]"
-    flag=1
-    password
-else
-    if [[ -s $(sudo find ~/.vault_pass.txt) ]]; then
-        echo -e "\nFile exists and it is not empty! Moving on..."
-        ansible_playbook+="--vault-password-file ~/.vault_pass.txt "
-    else
-        echo -e "\nFile is empty.. Do you want to store your Ansible password in a text file?[ y/n ]"
-        password
-    fi
-fi
-
-}
-
+#Infos for username/password for hosts.ini & vault.yaml files
 usernamePassword () {
 echo -e "\n"${1}" remote_user=\"{{"${1}"_remote_user}}\"" >> ../hosts.ini
 echo ${1}" become_user=\"{{"${1}"_become_user}}\"" >> ../hosts.ini
@@ -83,11 +86,12 @@ echo ${1}" ansible_become_pass=\"{{"${1}"_become_pass}}\"" >> ../hosts.ini
 echo -e ${1}" ansible_ssh_pass=\"{{"${1}"_ssh_pass}}\"\n" >> ../hosts.ini
 }
 
+#Infos for target node "worker"
 infoWorker () {
 echo -e "\nWhat is the ansible host for target \"${1}\"? (expecting IP)"
 read answer
 echo -e "\n[${1}]" >> ../hosts.ini
-echo ${1} "ansible_host="${answer} >> ../hosts.ini  #check if what given is an IP
+echo ${1} "ansible_host="${answer} >> ../hosts.ini  #TODO check if what given is an IP
 
 echo -e "\nWhat is the hostname for target \"${1}\"?"
 read answer
@@ -104,6 +108,7 @@ echo ${1} "data_path="${answer} >> ../hosts.ini
 usernamePassword ${1}
 }
 
+#Infos for target node "master"
 infoMaster () {
     echo -e "\nWhat is the ansible host for target \"master\"? (expecting IP)"
     read answer
@@ -129,6 +134,7 @@ infoMaster () {
 
 chmod 755 *.sh
 
+#Main menu
 while true
 do
     echo -e "Choose one of the below:\n"
@@ -142,9 +148,11 @@ do
     echo -e "8:Exit.\n"
 
     read answer1
+
     while true
     do
         if [[ "${answer1}" == "1" ]]; then
+            echo -e "\nYou chose to change exareme docker image version..."
             . ./exareme.sh
             break
         elif [[ "${answer1}" == "2" ]]; then
@@ -152,7 +160,9 @@ do
             . ./hosts.sh
             break
         elif [[ "${answer1}" == "3" ]]; then
-            :
+            echo -e "\nYou chose to create vault.yaml file..."
+            . ./vault.sh
+            break
         elif [[ "${answer1}" == "4" ]]; then
             . ./exareme.sh
             . ./hosts.sh

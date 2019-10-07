@@ -10,6 +10,7 @@ ansible_playbook_init=${ansible_playbook}"Init-Swarm.yaml"
 ${ansible_playbook_init}
 
 ansible_playbook_code=$?
+
 #If status code != 0 an error has occurred
 if [[ ${ansible_playbook_code} -ne 0 ]]; then
     echo "Playbook \"Init-Swarm.yaml\" exited with error." >&2
@@ -61,6 +62,7 @@ make sure you included their names below label [workers], so Ansible will not Ig
 
             ${ansible_playbook_leave}
             ansible_playbook_code=$?
+
             #If status code != 0 an error has occurred
             if [[ ${ansible_playbook_code} -ne 0 ]]; then
                 echo "Playbook \"Leave-Master.yaml\" exited with error." >&2
@@ -84,6 +86,7 @@ do
         ${ansible_playbook_start}
 
         ansible_playbook_code=$?
+
         #If status code != 0 an error has occurred
         if [[ ${ansible_playbook_code} -ne 0 ]]; then
             echo "Playbook \"Start-Exareme.yaml\" exited with error." >&2
@@ -96,6 +99,7 @@ do
         ${ansible_playbook_start}
 
         ansible_playbook_code=$?
+
         #If status code != 0 an error has occurred
         if [[ ${ansible_playbook_code} -ne 0 ]]; then
             echo "Playbook \"Start-Exareme.yaml\" exited with error." >&2

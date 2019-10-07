@@ -7,17 +7,20 @@ echo "1. Restart Exareme"
 echo "2. Restart Portainer"
 echo -e "3. Restart Exareme and Portainer\n"
 
-
 read answer
+
 while true
 do
     if [[ "${answer}" == "1" ]]; then
+        #Stop EXAREME services
         stop 1
         break
     elif [[ "${answer}" == "2" ]]; then
+		#Stop EXAREME services
 		stop 2
         break
     elif [[ "${answer}" == "3" ]]; then
+		#Stop EXAREME services
 		stop 3
         break
     else

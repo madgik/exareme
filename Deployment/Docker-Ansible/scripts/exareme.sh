@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
 
+#Check if EXAREME image exists
 docker_image_exists() {
+    #TODO also check for local image... dev only
     curl -s -f https://index.docker.io/v1/repositories/$1/tags/$2 >/dev/null
 }
 
+#update exareme.yaml file
 updateFile () {
 while true
 do
@@ -40,6 +43,7 @@ if [[ -f ../group_vars/exareme.yaml ]]; then
     echo "EXAREME image that will be used is: "\"${name}":"${tag}\"
     echo "Do you wish to change EXAREME image?[ y/n ]"
     read answer
+
     while true
     do
         if [[ ${answer} == "y" ]]; then
@@ -50,7 +54,7 @@ if [[ -f ../group_vars/exareme.yaml ]]; then
             if docker_image_exists ${name} ${tag}; then
                 echo "EXAREME image exists. Continuing..."
                 break
-            else
+            else    #if EXAREME image that already exists in exareme.yaml file does not exist in docker hub, update exareme.yaml file
                 echo "EXAREME image does not exist! EXAREME image name should have a format like: \"hbpmip/exareme\". EXAREME image tag should have a format like: \"latest\""
                 updateFile
             fi
