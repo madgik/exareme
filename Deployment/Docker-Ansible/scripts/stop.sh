@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-init_ansible_playbook
-
 echo -e "\nChoose one of the options [ 1-2-3 ] :"
 echo "1. Stop Exareme"
 echo "2. Stop Portainer"

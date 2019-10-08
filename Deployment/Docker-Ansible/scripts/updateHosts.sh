@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 
-init_ansible_playbook
-
 n=0
 eof=0
 
-while IFS= read -r line || [ -n "$line" ]; do
+while IFS= read -r line || [[ -n "$line" ]]; do
     n=$[${n}+1]                                 #calculate number of lines so workerN will be written below [workers] tag
     if [[ "$line" == *"[workers]"* ]]; then
         while IFS= read -r line1 || [ -n "$line1" ]; do

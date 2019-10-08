@@ -36,12 +36,16 @@ password () {
             read -s password
             echo $password > ~/.vault_pass.txt
             ansible_playbook+="--vault-password-file ~/.vault_pass.txt "
+
+            #For encrypting/ decrypting vault.yaml file
             ansible_vault="--vault-password-file ~/.vault_pass.txt "
             break
         elif [[ "${answer}" == "n" ]]; then
             echo "You need to enter your Ansible password every single time ansible-playbooks ask for one."
             sleep 1
             ansible_playbook+="--ask-vault-pass "
+
+            #For encrypting/ decrypting vault.yaml file
             ansible_vault="--ask-vault-pass "
             break
         else
@@ -89,7 +93,7 @@ echo -e ${1}" ansible_ssh_pass=\"{{"${1}"_ssh_pass}}\"\n" >> ../hosts.ini
 }
 
 #Infos for target node "worker"
-infoWorker () {
+workerHostsInfo () {
 echo -e "\nWhat is the ansible host for target \"${1}\"? (expecting IP)"
 read answer
 echo -e "\n[${1}]" >> ../hosts.ini
@@ -111,7 +115,7 @@ usernamePassword ${1}
 }
 
 #Infos for target node "master"
-infoMaster () {
+masterHostsInfo () {
     echo -e "\nWhat is the ansible host for target \"master\"? (expecting IP)"
     read answer
     echo "master ansible_host="${answer} >> ../hosts.ini  #check if what given is an IP
@@ -131,6 +135,28 @@ infoMaster () {
     fi
     echo "master data_path="${answer} >> ../hosts.ini
     usernamePassword "master"
+}
+
+#worker infos
+workerVaultInfos () {
+
+    echo -e "\nWhat is the remote user for target \"${1}\""
+    read remote_user
+    echo ${1}"_remote_user:" ${remote_user} >> ../vault.yaml
+
+
+    echo -e "\nWhat is the password for remote user: "${remote_user}" for target \"${1}\""
+    read -s remote_pass
+
+    echo -e "\nWhat is the become user for target \"${1}\" (root if possible)"
+    read become_user
+    echo ${1}"_become_user:" ${become_user} >> ../vault.yaml
+
+    echo -e "\nWhat is the password for become user: "${become_user}" for target \"${1}\""
+    read -s become_pass
+
+    echo ${1}"_ssh_user:" ${remote_pass} >> ../vault.yaml
+    echo -e ${1}"_become_pass:" ${become_pass}"\n" >> ../vault.yaml
 }
 
 
@@ -168,24 +194,28 @@ do
         elif [[ "${answer1}" == "4" ]]; then
             . ./exareme.sh
             . ./hosts.sh
+            . ./vault.sh
             echo -e "\nYou chose to deploy everything..."
             . ./deploy_all.sh
             break
         elif [[ "${answer1}" == "5" ]]; then
             . ./exareme.sh
             . ./hosts.sh
+            . ./vault.sh
             echo -e "\nYou chose to add a specific worker in an already initialized swarm.."
             . ./add_worker.sh
             break
         elif [[ "${answer1}" == "6" ]]; then
             . ./exareme.sh
             . ./hosts.sh
+            . ./vault.sh
             echo -e "\nYou chose to restart Services.."
             . ./restart.sh
             break
         elif [[ "${answer1}" == "7" ]]; then
-            echo -e "\nYou chose to stop Services.."
             . ./hosts.sh
+            . ./vault.sh
+            echo -e "\nYou chose to stop Services.."
             . ./stop.sh
             break
         elif [[ "${answer1}" == "8" ]]; then

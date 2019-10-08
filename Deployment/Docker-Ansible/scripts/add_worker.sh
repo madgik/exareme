@@ -2,8 +2,9 @@
 
 tagExist=0
 workerExist=0
+workerVaultInfo=0
 
-init_ansible_playbook   #TODO check if that is needed everywhere
+init_ansible_playbook
 
 #Join worker in Swarm
 joinWorker () {
@@ -41,11 +42,39 @@ startWorker () {
     echo -e "\nExareme service is now running.."
 }
 
+#Check worker's vault info in vault.yaml file
+checkWorkerVaultInfos () {
+    echo -e "\nChecking if \"${1}'s\" vault infos exist in vault.yaml.."
+    ansible_vault="ansible-vault decrypt ../vault.yaml "${ansible_vault}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
+    echo ${ansible_vault}
+
+    ansible_playbook_code=$?
+    #If status code != 0 an error has occurred
+    if [[ ${ansible_playbook_code} -ne 0 ]]; then
+        echo "Decryption of file \"../vault.yaml\" exited with error. Exiting.." >&2
+        exit 1
+    fi
+    while IFS= read -r line || [[ -n "$line" ]]; do
+        if [[ "$line" == *${1}* ]]; then
+            echo "\"${1}'s\" vault infos exists.."
+            workerVaultInfo=1
+            break
+        else
+            workerVaultInfo=0
+        fi
+    done < ../vault.yaml
+
+    if [[ ${workerVaultInfo} != "1" ]]; then
+        echo "\"${1}'s\" vault infos does not exist..Updating vault.yaml file now.."
+        workerVaultInfos ${1}
+    fi
+}
+
 #TODO check if infos in vault file exist for workerN
 echo -e "\nWhat is the name of the worker node you would like to join the Swarm?"
 read workerName
 
-while IFS= read -r line || [ -n "$line" ]; do
+while IFS= read -r line || [[ -n "$line" ]]; do
     if [[ "$line" == *"[workers]"* ]]; then
         tagExist=1                          #[workers] tag exists
         while IFS= read -r line1 || [ -n "$line1" ]; do
@@ -67,11 +96,15 @@ done < ../hosts.ini; echo;
 
 #[workers] tag does not exist. Create everything
 if [[ ${tagExist} != "1" ]]; then
+    #Check if info for worker exist in vault.yaml file
+    checkWorkerVaultInfos ${workerName}
+
+    #Add worker in hosts.ini, join worker in Swarm, Start Exareme in worker
     workerExist=1
     echo -e "\nIt seams that no infos for target [workers] exist.Updating hosts.ini file.."
     echo -e "\n[workers]" >> ../hosts.ini
     echo ${workerName} >> ../hosts.ini
-    infoWorker ${workerName}
+    workerHostsInfo ${workerName}
     joinWorker ${workerName}
     startWorker ${workerName}
 fi
@@ -84,9 +117,13 @@ Do you wish to add infos needed in order to add the worker now? [ y/n ]"
     while true
     do
         if [[ ${answer} == y ]]; then
-            echo "Updating hosts.ini file..."
+            #Check if info for worker exist in vault.yaml file
+            checkWorkerVaultInfos ${workerName}
+
+            #Add worker in hosts.ini, join worker in Swarm, Start Exareme in worker
+            echo -e "\nUpdating hosts.ini file..."
             . ./updateHosts.sh
-            infoWorker ${workerName}
+            workerHostsInfo ${workerName}
             joinWorker ${workerName}
             startWorker ${workerName}
             break
