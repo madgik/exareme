@@ -1,6 +1,6 @@
 {
 	"name": "TTEST_PAIRED",
-	"desc": "TTEST_PAIRED",
+	"desc": "Student’s paired samples t-test",
 	"type": "local_global",
 	"parameters": [{
 			"name": "x",
@@ -15,7 +15,7 @@
 			"valueType": "string"
 		}, {
 			"name": "hypothesis",
-			"desc": "'different' (default), 'greaterthan' or 'lessthan',the alternative hypothesis; measure 1 different to measure 2, measure 1 greater than measure 2, and measure 1 less than measure 2 respectively  ",
+			"desc": "'different', 'greaterthan' or 'lessthan',the alternative hypothesis; measure 1 different to measure 2, measure 1 greater than measure 2, and measure 1 less than measure 2 respectively  ",
 			"type": "other",
 			"value": "different",
 			"valueNotBlank": true,
@@ -23,7 +23,7 @@
 			"valueType": "string"
 		}, {
 			"name": "effectsize",
-			"desc": "1 or 0 (default), provide Cohen's d effect sizes",
+			"desc": "1 or 0, provide Cohen's d effect sizes",
 			"type": "other",
 			"value": "1",
 			"valueNotBlank": true,
@@ -31,7 +31,7 @@
 			"valueType": "integer"
 		}, {
 			"name": "ci",
-			"desc": "1 or 0 (default), provide confidence intervals for the mean difference",
+			"desc": "1 or 0, provide confidence intervals for the mean difference",
 			"type": "other",
 			"value": "1",
 			"valueNotBlank": true,
@@ -39,7 +39,7 @@
 			"valueType": "integer"
 		}, {
 			"name": "meandiff",
-			"desc": "1 or 0 (default), provide means  ",
+			"desc": "1 or 0, provide means  ",
 			"type": "other",
 			"value": "1",
 			"valueNotBlank": true,
@@ -47,7 +47,7 @@
 			"valueType": "integer"
 		}, {
 			"name": "sediff",
-			"desc": "1 or 0 (default), provide standard deviations ",
+			"desc": "1 or 0, provide standard deviations ",
 			"type": "other",
 			"value": "1",
 			"valueNotBlank": true,

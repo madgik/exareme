@@ -1,6 +1,6 @@
 {
 	"name": "TTEST_ONESAMPLE",
-	"desc": "TTEST_ONESAMPLE",
+	"desc": "Student’s One-sample t-test",
 	"type": "local_global",
 	"parameters": [{
 			"name": "x",
@@ -23,7 +23,7 @@
 			"valueType": "real"
 		}, {
 			"name": "hypothesis",
-			"desc": "'different' (default), 'greaterthan' or 'lessthan', the alternative hypothesis; different to testValue, greater than testValue, and less than testValue respectively ",
+			"desc": "'different', 'greaterthan' or 'lessthan', the alternative hypothesis; different to testValue, greater than testValue, and less than testValue respectively ",
 			"type": "other",
 			"value": "different",
 			"valueNotBlank": true,
@@ -31,7 +31,7 @@
 			"valueType": "string"
 		}, {
 			"name": "effectsize",
-			"desc": "1 or 0 (default), provide Cohen's d effect sizes",
+			"desc": "1 or 0, provide Cohen's d effect sizes",
 			"type": "other",
 			"value": "1",
 			"valueNotBlank": true,
@@ -39,7 +39,7 @@
 			"valueType": "integer"
 		}, {
 			"name": "ci",
-			"desc": "1 or 0 (default), provide confidence intervals for the mean difference",
+			"desc": "1 or 0, provide confidence intervals for the mean difference",
 			"type": "other",
 			"value": "1",
 			"valueNotBlank": true,
@@ -47,7 +47,7 @@
 			"valueType": "integer"
 		}, {
 			"name": "meandiff",
-			"desc": "1 or 0 (default), provide means and standard deviations ",
+			"desc": "1 or 0, provide means and standard deviations ",
 			"type": "other",
 			"value": "1",
 			"valueNotBlank": true,
