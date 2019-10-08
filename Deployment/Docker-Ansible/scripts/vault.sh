@@ -81,7 +81,7 @@ createFile () {
 
 
     ansible_vault="ansible-vault encrypt ../vault.yaml "${ansible_vault}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
-    echo ${ansible_vault}
+    ${ansible_vault}
 
     ansible_playbook_code=$?
     #If status code != 0 an error has occurred

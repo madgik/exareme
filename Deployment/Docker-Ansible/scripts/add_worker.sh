@@ -11,7 +11,7 @@ joinWorker () {
     ansible_playbook_join=${ansible_playbook}"Join-Workers.yaml -e my_host="
     ansible_playbook_join+=${1}
 
-    echo ${ansible_playbook_join}
+    ${ansible_playbook_join}
     ansible_playbook_code=$?
     #If status code != 0 an error has occurred
     if [[ ${ansible_playbook_code} -ne 0 ]]; then
@@ -29,7 +29,7 @@ startWorker () {
     echo -e "\nStarting Exareme for worker node ${1}"
 
     ansible_playbook_start=${ansible_playbook}"Start-Exareme-Worker.yaml -e my_host="${1}
-    echo ${ansible_playbook_start}
+    ${ansible_playbook_start}
 
     ansible_playbook_code=$?
     #If status code != 0 an error has occurred
@@ -46,7 +46,7 @@ startWorker () {
 checkWorkerVaultInfos () {
     echo -e "\nChecking if \"${1}'s\" vault infos exist in vault.yaml.."
     ansible_vault="ansible-vault decrypt ../vault.yaml "${ansible_vault}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
-    echo ${ansible_vault}
+    ${ansible_vault}
 
     ansible_playbook_code=$?
     #If status code != 0 an error has occurred
