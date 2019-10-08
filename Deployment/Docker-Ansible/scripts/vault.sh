@@ -49,7 +49,16 @@ createFile () {
         if [[ ${answer} == "y" ]]; then
             echo -e "\nHow many target \"worker\" nodes are there?"
             read answer1
-            #TODO check if what the user gave is a number
+            #Check if what was given is a number
+            while true
+            do
+                if ! [[ "$answer1" =~ ^[0-9]+$ ]]; then
+                    echo "${answer1} is not a valid number! Try again.."
+                    read answer1
+                else
+                    break
+                fi
+            done
 
             #For each worker1, worker2, .. workerN place infos in hosts.ini
             worker=${answer1}

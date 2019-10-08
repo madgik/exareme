@@ -58,6 +58,9 @@ if [[ -f ../group_vars/exareme.yaml ]]; then
             if docker_image_exists ${name} ${tag}; then
                 echo "EXAREME image exists. Continuing..."
                 break
+            elif [[ "$(docker images -q ${name}:${tag} 2> /dev/null)" != "" ]]; then
+                echo "EXAREME Image exists. Continuing..."
+                break
             else    #if EXAREME image that already exists in exareme.yaml file does not exist in docker hub, update exareme.yaml file
                 echo "EXAREME image does not exist! EXAREME image name should have a format like: \"hbpmip/exareme\". EXAREME image tag should have a format like: \"latest\""
                 updateFile

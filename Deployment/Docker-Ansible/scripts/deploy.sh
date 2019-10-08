@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
+#TODO check what is happening when you give the wrong pass more than 3 times
 
 export ANSIBLE_HOST_KEY_CHECKING=False      #avoid host key checking
 
 #Default ansible_playbook
 init_ansible_playbook () {
-ansible_playbook="ansible-playbook -i hosts.ini -c paramiko -e@vault_file.yaml "
+ansible_playbook="ansible-playbook -i ../hosts.ini -c paramiko -e@vault_file.yaml "
 
 echo -e "\nAnsible-vault gives you the simplicity of storing your Ansible password in a file. \
 Place the user's sudo password in this machine for looking file \"~/.vault_pass.txt\"...\""
