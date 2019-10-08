@@ -2,7 +2,6 @@
 
 #Check if EXAREME image exists
 docker_image_exists() {
-    #TODO also check for local image... dev only
     curl -s -f https://index.docker.io/v1/repositories/$1/tags/$2 >/dev/null
 }
 
@@ -23,7 +22,12 @@ do
 
     echo -e "\nChecking if EXAREME image: "\"${name}":"${tag}\"" exists"
 
+    #docker image may exist in docker hub
     if docker_image_exists ${name} ${tag}; then
+        echo "EXAREME Image exists. Continuing..."
+        break
+    #or locally..
+    elif [[ "$(docker images -q ${name}:${tag} 2> /dev/null)" != "" ]]; then
         echo "EXAREME Image exists. Continuing..."
         break
     else
