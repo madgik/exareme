@@ -57,7 +57,7 @@ public abstract class IterationsEventHandler<T extends IterationsEvent>
                 dflScript);
 
         log.info("New Iterative phase: " + currentPhase);
-        log.info("Executing Iterative DFL Script: " + dflScript);
+        log.info("Executing Iterative DFL Script: \n" + dflScript);
 
         ias.setCurrentExecutionPhase(currentPhase);
 

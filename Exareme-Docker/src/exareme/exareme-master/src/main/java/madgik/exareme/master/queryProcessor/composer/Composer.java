@@ -111,7 +111,7 @@ public class Composer {
                 builder.append("))");
             }
 
-            log.info(builder.toString());
+            log.debug(builder.toString());
         }
         return builder.toString();
     }

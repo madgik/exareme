@@ -119,7 +119,7 @@ public class IterationsHandler {
         iterativeAlgorithmState.setDflScripts(dflScripts);
 
         for (String dflScript : dflScripts) {
-            log.info("Iterative algorithm dfl Scripts Generated: \n" + dflScript);
+            log.debug("Iterative algorithm dfl Scripts Generated: \n" + dflScript);
         }
 
         try {
@@ -147,7 +147,7 @@ public class IterationsHandler {
 
         iterationsScheduler.scheduleNewAlgorithm(algorithmKey);
 
-        log.info(iterativeAlgorithmState.toString() + " was submitted.");
+        log.debug(iterativeAlgorithmState.toString() + " was submitted.");
 
         return iterativeAlgorithmState;
     }

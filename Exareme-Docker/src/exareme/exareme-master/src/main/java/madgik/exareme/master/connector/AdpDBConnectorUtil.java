@@ -53,7 +53,7 @@ public class AdpDBConnectorUtil {
                                            Partition p,
                                            Map<String, Object> includeProps,
                                            OutputStream out) throws RemoteException {
-        log.info("Remote Table Part: " + p.getTable() + "." + p.getpNum() + " ...");
+        log.debug("Remote Table Part: " + p.getTable() + "." + p.getpNum() + " ...");
         ExecutionEngineProxy engine = ExecutionEngineLocator.getExecutionEngineProxy();
         ContainerProxy[] containerProxies =
                 ArtRegistryLocator.getArtRegistryProxy().getContainers();
