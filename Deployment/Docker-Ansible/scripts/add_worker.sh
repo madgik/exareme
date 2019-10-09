@@ -45,15 +45,17 @@ startWorker () {
 #Check worker's vault info in vault.yaml file
 checkWorkerVaultInfos () {
     echo -e "\nChecking if \"${1}'s\" vault infos exist in vault.yaml.."
-    ansible_vault="ansible-vault decrypt ../vault.yaml "${ansible_vault}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
-    ${ansible_vault}
+
+    ansible_vault_decrypt="ansible-vault decrypt ../vault.yaml "${ansible_vault}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
+    ${ansible_vault_decrypt}
 
     ansible_playbook_code=$?
     #If status code != 0 an error has occurred
     if [[ ${ansible_playbook_code} -ne 0 ]]; then
         echo "Decryption of file \"../vault.yaml\" exited with error. Exiting.." >&2
         exit 1
-    fi
+    fi  #TODO check what happens if script fails at right this point! vault.yaml decrypted
+
     while IFS= read -r line || [[ -n "$line" ]]; do
         if [[ "$line" == *${1}* ]]; then
             echo "\"${1}'s\" vault infos exists.."
@@ -64,13 +66,50 @@ checkWorkerVaultInfos () {
         fi
     done < ../vault.yaml
 
+    ansible_vault_encrypt="ansible-vault encrypt ../vault.yaml "${ansible_vault}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
+    ${ansible_vault_encrypt}
+
+    ansible_playbook_code=$?
+    #If status code != 0 an error has occurred
+    if [[ ${ansible_playbook_code} -ne 0 ]]; then
+         echo "Encryption of file \"../vault.yaml\" exited with error. Removing file with sensitive information. Exiting.." >&2
+         rm -rf ../vault.yaml
+         exit 1
+    fi
+
     if [[ ${workerVaultInfo} != "1" ]]; then
         echo "\"${1}'s\" vault infos does not exist..Updating vault.yaml file now.."
+
         workerVaultInfos ${1}
+        ansible_vault_decrypt="ansible-vault decrypt ../vault.yaml "${ansible_vault}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
+        ${ansible_vault_decrypt}
+
+        ansible_playbook_code=$?
+        #If status code != 0 an error has occurred
+        if [[ ${ansible_playbook_code} -ne 0 ]]; then
+            echo "Decryption of file \"../vault.yaml\" exited with error. Exiting.." >&2
+            exit 1
+        fi
+
+        echo -e "\n" >> ../vault.yaml
+        echo ${var_remote_user} >> ../vault.yaml
+        echo ${var_become_user} >> ../vault.yaml
+        echo ${ssh_user} >> ../vault.yaml
+        echo ${become_pass} >> ../vault.yaml
+
+        ansible_vault_encrypt="ansible-vault encrypt ../vault.yaml "${ansible_vault}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
+        ${ansible_vault_encrypt}
+
+        ansible_playbook_code=$?
+        #If status code != 0 an error has occurred
+        if [[ ${ansible_playbook_code} -ne 0 ]]; then
+            echo "Encryption of file \"../vault.yaml\" exited with error. Removing file with sensitive information. Exiting.." >&2
+            rm -rf ../vault.yaml
+            exit 1
+        fi
     fi
 }
 
-#TODO check if infos in vault file exist for workerN
 echo -e "\nWhat is the name of the worker node you would like to join the Swarm?"
 read workerName
 

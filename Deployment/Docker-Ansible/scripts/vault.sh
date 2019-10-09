@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+#TODO (not critical) create function for encryption Process
+
+workerVaultInfosFlag=1
+
 # --vault-password-file or --ask-vault-pass
 if [[ -z $(sudo find ~/.vault_pass.txt) ]]; then
     echo -e "\nNo such file \"~/.vault_pass.txt\" for storing Ansible password. Do you want to create one now? [ y/n ]"
@@ -18,29 +22,48 @@ fi
 #master infos
 masterVaultInfos () {
 
-    echo -e "\nWhat is the remote user for target \"master\""
+    echo -e "\nWhat is the remote user for target \"master\"?"
     read remote_user
-    echo "master_remote_user:" ${remote_user} >> ../vault.yaml
+    master_remote_user="master_remote_user: "${remote_user}
 
 
-    echo -e "\nWhat is the password for remote user: "${remote_user}" for target \"master\""
+    echo -e "\nWhat is the password for remote user:\"${remote_user}\" for target \"master\"?"
     read -s remote_pass
 
-    echo -e "\nWhat is the become user for target \"master\" (root if possible)"
+    echo -e "\nWhat is the become user for target \"master\"? (root if possible)"
     read become_user
-    echo "master_become_user:" ${become_user} >> ../vault.yaml
+    master_become_user="master_become_user: "${become_user}
 
-    echo -e "\nWhat is the password for become user: "${become_user}" for target \"master\""
+    echo -e "\nWhat is the password for become user:\"${become_user}\" for target \"master\"?"
     read -s become_pass
 
-    echo "master_ssh_user:" ${remote_pass} >> ../vault.yaml
-    echo -e "master_become_pass:" ${become_pass}"\n" >> ../vault.yaml
+    master_ssh_user="master_ssh_user: "${remote_pass}
+    master_become_pass="master_become_pass: "${become_pass}
+
 }
+
 
 #Create vault.yaml file
 createFile () {
 
     masterVaultInfos
+
+    echo ${master_remote_user} >> ../vault.yaml
+    echo ${master_become_user} >> ../vault.yaml
+    echo ${master_ssh_user} >> ../vault.yaml
+    echo ${master_become_pass} >> ../vault.yaml
+
+    ansible_vault_encrypt="ansible-vault encrypt ../vault.yaml "${ansible_vault}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
+    ${ansible_vault_encrypt}
+
+    ansible_playbook_code=$?
+    #If status code != 0 an error has occurred
+    if [[ ${ansible_playbook_code} -ne 0 ]]; then
+        echo "Encryption of file \"../vault.yaml\" exited with error. Removing file with sensitive information. Exiting.." >&2
+        rm -rf ../vault.yaml
+        exit 1
+    fi
+
     echo -e "\nAre there any target \"worker\" nodes? [ y/n ]"
     read answer
 
@@ -66,6 +89,35 @@ createFile () {
             while [[ ${worker} != 0 ]]
             do
                 workerVaultInfos "worker"${n}
+
+                #TODO (not critical) decrypt encrypt only once with dynamic variables
+                ansible_vault_decrypt="ansible-vault decrypt ../vault.yaml "${ansible_vault}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
+                ${ansible_vault_decrypt}
+
+                ansible_playbook_code=$?
+                #If status code != 0 an error has occurred
+                if [[ ${ansible_playbook_code} -ne 0 ]]; then
+                    echo "Decryption of file \"../vault.yaml\" exited with error.Exiting.." >&2
+                    exit 1
+                fi
+
+                echo -e "\n" >> ../vault.yaml
+                echo ${var_remote_user} >> ../vault.yaml
+                echo ${var_become_user} >> ../vault.yaml
+                echo ${ssh_user} >> ../vault.yaml
+                echo ${become_pass} >> ../vault.yaml
+
+                ansible_vault_encrypt="ansible-vault encrypt ../vault.yaml "${ansible_vault}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
+                ${ansible_vault_encrypt}
+
+                ansible_playbook_code=$?
+                #If status code != 0 an error has occurred
+                if [[ ${ansible_playbook_code} -ne 0 ]]; then
+                    echo "Encryption of file \"../vault.yaml\" exited with error. Removing file with sensitive information. Exiting.." >&2
+                    rm -rf ../vault.yaml
+                    exit 1
+                fi
+
                 n=$[${n}+1]
                 worker=$[${worker}-1]
             done
@@ -79,19 +131,7 @@ createFile () {
         fi
     done
 
-
-    ansible_vault="ansible-vault encrypt ../vault.yaml "${ansible_vault}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
-    ${ansible_vault}
-
-    ansible_playbook_code=$?
-    #If status code != 0 an error has occurred
-    if [[ ${ansible_playbook_code} -ne 0 ]]; then
-        echo "Encryption of file \"../vault.yaml\" exited with error. Removing file with sensitive information. Exiting.." >&2
-        rm -rf ../vault.yaml
-        exit 1
-    fi
-
-    echo -e "\nvault.yaml file created."
+    echo -e "\nvault.yaml file created.\n"
 }
 
 

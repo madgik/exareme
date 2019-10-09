@@ -97,8 +97,26 @@ echo -e ${1}" ansible_ssh_pass=\"{{"${1}"_ssh_pass}}\"\n" >> ../hosts.ini
 workerHostsInfo () {
 echo -e "\nWhat is the ansible host for target \"${1}\"? (expecting IP)"
 read answer
+
+while true
+do
+    if [[ ${answer} =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
+        for i in 1 2 3 4; do
+            if [ $(echo "$answer" | cut -d. -f$i) -gt 255 ]; then
+                echo "$answer" | cut -d. -f$i
+                echo -e "\n${answer} is not a valid IP. Try again.."
+                read answer
+            fi
+        done
+        break
+    else
+        echo -e "\n${answer} is not a valid IP. Try again.."
+        read answer
+    fi
+done
+
 echo -e "\n[${1}]" >> ../hosts.ini
-echo ${1} "ansible_host="${answer} >> ../hosts.ini  #TODO check if what given is an IP
+echo ${1} "ansible_host="${answer} >> ../hosts.ini
 
 echo -e "\nWhat is the hostname for target \"${1}\"?"
 read answer
@@ -119,7 +137,24 @@ usernamePassword ${1}
 masterHostsInfo () {
     echo -e "\nWhat is the ansible host for target \"master\"? (expecting IP)"
     read answer
-    echo "master ansible_host="${answer} >> ../hosts.ini  #check if what given is an IP
+    while true
+    do
+        if [[ ${answer} =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
+            for i in 1 2 3 4; do
+                if [ $(echo "$answer" | cut -d. -f$i) -gt 255 ]; then
+                    echo "$answer" | cut -d. -f$i
+                    echo -e "\n${answer} is not a valid IP. Try again.."
+                    read answer
+                fi
+            done
+            break
+        else
+            echo -e "\n${answer} is not a valid IP. Try again.."
+            read answer
+        fi
+    done
+
+    echo "master ansible_host="${answer} >> ../hosts.ini
     echo -e "\nWhat is the home path for target \"master\"?"
     read answer
     #Check that path ends with /
@@ -141,23 +176,22 @@ masterHostsInfo () {
 #worker infos
 workerVaultInfos () {
 
-    echo -e "\nWhat is the remote user for target \"${1}\""
+    echo -e "\nWhat is the remote user for target \"${1}\"?"
     read remote_user
-    echo ${1}"_remote_user:" ${remote_user} >> ../vault.yaml
+    var_remote_user=${1}"_remote_user: "${remote_user}
 
-
-    echo -e "\nWhat is the password for remote user: "${remote_user}" for target \"${1}\""
+    echo -e "\nWhat is the password for remote user:\"${remote_user}\" for target \"${1}\"?"
     read -s remote_pass
 
-    echo -e "\nWhat is the become user for target \"${1}\" (root if possible)"
+    echo -e "\nWhat is the become user for target \"${1}\"? (root if possible)"
     read become_user
-    echo ${1}"_become_user:" ${become_user} >> ../vault.yaml
+    var_become_user=${1}"_become_user: "${become_user}
 
-    echo -e "\nWhat is the password for become user: "${become_user}" for target \"${1}\""
+    echo -e "\nWhat is the password for become user:\"${become_user}\" for target \"${1}\"?"
     read -s become_pass
 
-    echo ${1}"_ssh_user:" ${remote_pass} >> ../vault.yaml
-    echo -e ${1}"_become_pass:" ${become_pass}"\n" >> ../vault.yaml
+    ssh_user=${1}"_ssh_user: "${remote_pass}
+    become_pass=${1}"_become_pass: "${become_pass}
 }
 
 
@@ -187,6 +221,7 @@ do
         elif [[ "${answer1}" == "2" ]]; then
             echo -e "\nYou chose to create hosts.ini file..."
             . ./hosts.sh
+            . ./vault.sh
             break
         elif [[ "${answer1}" == "3" ]]; then
             echo -e "\nYou chose to create vault.yaml file..."
