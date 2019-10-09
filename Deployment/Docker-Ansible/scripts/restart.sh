@@ -38,7 +38,7 @@ fi
 if [[ "${answer}" == "1" ]]; then
     echo -e "\nStarting Exareme services..."
 
-	ansible_playbook_start=${ansible_playbook}"Start-Exareme.yaml --skip-tags portainer"
+	ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml --skip-tags portainer"
 	${ansible_playbook_start}
 	ansible_playbook_code=$?
 
@@ -46,14 +46,14 @@ if [[ "${answer}" == "1" ]]; then
 elif [[ "${answer}" == "2" ]]; then
     echo -e "\nStarting Portainer services..."
 
-	ansible_playbook_start=${ansible_playbook}"Start-Exareme.yaml --skip-tags exareme"
+	ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml --skip-tags exareme"
 	${ansible_playbook_start}
 	ansible_playbook_code=$?
 
 elif [[ "${answer}" == "3" ]]; then
     echo -e "\nStarting all services..."
 	
-	ansible_playbook_start=${ansible_playbook}"Start-Exareme.yaml"
+	ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml"
 	${ansible_playbook_start}
 	ansible_playbook_code=$?
 

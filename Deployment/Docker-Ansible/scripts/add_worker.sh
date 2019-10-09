@@ -8,7 +8,7 @@ init_ansible_playbook
 
 #Join worker in Swarm
 joinWorker () {
-    ansible_playbook_join=${ansible_playbook}"Join-Workers.yaml -e my_host="
+    ansible_playbook_join=${ansible_playbook}"../Join-Workers.yaml -e my_host="
     ansible_playbook_join+=${1}
 
     ${ansible_playbook_join}
@@ -28,7 +28,7 @@ startWorker () {
     #Start specific worker Exareme node
     echo -e "\nStarting Exareme for worker node ${1}"
 
-    ansible_playbook_start=${ansible_playbook}"Start-Exareme-Worker.yaml -e my_host="${1}
+    ansible_playbook_start=${ansible_playbook}"../Start-Exareme-Worker.yaml -e my_host="${1}
     ${ansible_playbook_start}
 
     ansible_playbook_code=$?

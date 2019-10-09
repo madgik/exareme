@@ -5,7 +5,7 @@ export ANSIBLE_HOST_KEY_CHECKING=False      #avoid host key checking
 
 #Default ansible_playbook
 init_ansible_playbook () {
-ansible_playbook="ansible-playbook -i ../hosts.ini -c paramiko -e@vault_file.yaml "
+ansible_playbook="ansible-playbook -i ../hosts.ini -c paramiko -e@../vault.yaml "
 
 echo -e "\nAnsible-vault gives you the simplicity of storing your Ansible password in a file. \
 Place the user's sudo password in this machine for looking file \"~/.vault_pass.txt\"...\""
@@ -61,21 +61,21 @@ stop () {
     if [[ ${1} == "1" ]]; then
         echo -e "\nStopping Exareme services..."
 
-        ansible_playbook_stop=${ansible_playbook}"Stop-Services.yaml --skip-tags portainer"
+        ansible_playbook_stop=${ansible_playbook}"../Stop-Services.yaml --skip-tags portainer"
         ${ansible_playbook_stop}
         ansible_playbook_code=$?
 
     elif [[ ${1} == "2" ]]; then
         echo -e "\nStopping Portainer services..."
 
-        ansible_playbook_stop=${ansible_playbook}"Stop-Services.yaml --skip-tags exareme"
+        ansible_playbook_stop=${ansible_playbook}"../Stop-Services.yaml --skip-tags exareme"
         ${ansible_playbook_stop}
         ansible_playbook_code=$?
 
     elif [[ ${1} == "3" ]]; then
         echo -e "\nStopping all services..."
 
-        ansible_playbook_stop=${ansible_playbook}"Stop-Services.yaml"
+        ansible_playbook_stop=${ansible_playbook}"../Stop-Services.yaml"
         ${ansible_playbook_stop}
         ansible_playbook_code=$?
 
