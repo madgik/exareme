@@ -3,7 +3,7 @@
 	"desc": "Student’s Independent samples t-test",
 	"type": "multiple_local_global",
 	"parameters": [{
-			"name": "x",
+			"name": "y",
 			"desc": "A vector of strings naming the variables of interest in data",
 			"type": "column",
 			"columnValuesSQLType": "real,integer",
@@ -14,7 +14,7 @@
 			"valueMultiple": true,
 			"valueType": "string"
 		}, {
-			"name": "y",
+			"name": "x",
 			"desc": "The grouping variable with two levels",
 			"type": "column",
 			"columnValuesSQLType": "",
@@ -25,8 +25,8 @@
 			"valueMultiple": true,
 			"valueType": "string"
 		}, {
-			"name": "ylevels",
-			"desc": "Distinct values of y",
+			"name": "xlevels",
+			"desc": "Distinct values of the grouping variable",
 			"type": "other",
 			"value": "M,F",
 			"valueNotBlank": true,

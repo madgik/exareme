@@ -5,7 +5,7 @@
 	"status": "enabled",
 	"vtype": "clusterplot",
 	"parameters": [{
-			"name": "x",
+			"name": "y",
 			"desc": "It is a list of variables from database. The variable should be Real or Integer. The variable can be either numerical or categorical. It cannot be empty",
 			"type": "column",
 			"columnValuesSQLType": "real,integer",

@@ -27,7 +27,7 @@ class TestTTESTOneSample(unittest.TestCase):
 
     def test_onesamplettest_1(self):
         logging.info("---------- TEST 1: we compare the mean of the left and right hippocampus volumes separetely, with a reference value 3. ")
-        data = [{"name": "x", "value": "lefthippocampus,righthippocampus"},
+        data = [{"name": "y", "value": "lefthippocampus,righthippocampus"},
                 {"name": "testvalue", "value": "3.0"    },
                 {"name": "hypothesis", "value": "lessthan"},
                 {"name": "effectsize", "value": "1" },
@@ -44,7 +44,7 @@ class TestTTESTOneSample(unittest.TestCase):
 
     def test_onesamplettest_2(self):
         logging.info("---------- TEST 1: we compare the mean of the left and right hippocampus volumes separetely, with a reference value 3. ")
-        data = [{"name": "x", "value": "lefthippocampus,righthippocampus"},
+        data = [{"name": "y", "value": "lefthippocampus,righthippocampus"},
                 {"name": "testvalue", "value": "3.0"    },
                 {"name": "hypothesis", "value": "different"},
                 {"name": "effectsize", "value": "1" },
@@ -61,7 +61,7 @@ class TestTTESTOneSample(unittest.TestCase):
 
     def test_onesamplettest_3(self):
         logging.info("---------- TEST 1: we compare the mean of the left and right hippocampus volumes separetely, with a reference value 3. ")
-        data = [{"name": "x", "value": "lefthippocampus,righthippocampus"},
+        data = [{"name": "y", "value": "lefthippocampus,righthippocampus"},
                 {"name": "testvalue", "value": "3.0"    },
                 {"name": "hypothesis", "value": "greaterthan"},
                 {"name": "effectsize", "value": "1" },
@@ -78,7 +78,7 @@ class TestTTESTOneSample(unittest.TestCase):
 
     def test_onesamplettest_4(self):
         logging.info("---------- TEST 1: we compare the mean of the left and right hippocampus volumes separetely, with a reference value 3. ")
-        data = [{"name": "x", "value": "lefthippocampus,righthippocampus"},
+        data = [{"name": "y", "value": "lefthippocampus,righthippocampus"},
                 {"name": "testvalue", "value": "3.0"    },
                 {"name": "hypothesis", "value": "different"},
                 {"name": "effectsize", "value": "0" },
@@ -95,7 +95,7 @@ class TestTTESTOneSample(unittest.TestCase):
 
     def test_onesamplettest_Privacy(self):
         logging.info("---------- TEST : Algorithms for Privacy Error")
-        data = [{"name": "x", "value": "lefthippocampus,righthippocampus"},
+        data = [{"name": "y", "value": "lefthippocampus,righthippocampus"},
                     {"name": "testvalue", "value": "3.0"    },
                     {"name": "hypothesis", "value": "different"},
                     {"name": "effectsize", "value": "1" },

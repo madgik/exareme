@@ -3,7 +3,7 @@
 	"desc": "Student’s One-sample t-test",
 	"type": "local_global",
 	"parameters": [{
-			"name": "x",
+			"name": "y",
 			"desc": "A vector of strings naming the variables of interest in data",
 			"type": "column",
 			"columnValuesSQLType": "real,integer",

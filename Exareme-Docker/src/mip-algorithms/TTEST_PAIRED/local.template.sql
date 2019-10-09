@@ -18,12 +18,13 @@
 ------------------ End input for testing
 ------------------------------------------------------------------------------
 
-requirevars 'defaultDB' 'input_local_DB' 'db_query' 'x' 'hypothesis' 'effectsize' 'ci' 'meandiff' 'sediff';
+requirevars 'defaultDB' 'input_local_DB' 'db_query' 'y' 'hypothesis' 'effectsize' 'ci' 'meandiff' 'sediff';
 --to x formula ths morfhs x1-x2
 
 attach database '%{defaultDB}' as defaultDB;
 attach database '%{input_local_DB}' as localDB;
 
+var 'x' '%{y}';
 -- ErrorHandling
 select categoricalparameter_inputerrorchecking('hypothesis', '%{hypothesis}', 'different,greaterthan,lessthan');
 select categoricalparameter_inputerrorchecking('effectsize', '%{effectsize}', '0,1');
