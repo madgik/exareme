@@ -190,7 +190,7 @@ workerVaultInfos () {
     echo -e "\nWhat is the password for become user:\"${become_user}\" for target \"${1}\"?"
     read -s become_pass
 
-    ssh_user=${1}"_ssh_user: "${remote_pass}
+    ssh_pass=${1}"_ssh_pass: "${remote_pass}
     become_pass=${1}"_become_pass: "${become_pass}
 }
 

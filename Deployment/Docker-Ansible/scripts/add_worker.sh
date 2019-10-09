@@ -94,7 +94,7 @@ checkWorkerVaultInfos () {
         echo -e "\n" >> ../vault.yaml
         echo ${var_remote_user} >> ../vault.yaml
         echo ${var_become_user} >> ../vault.yaml
-        echo ${ssh_user} >> ../vault.yaml
+        echo ${ssh_pass} >> ../vault.yaml
         echo ${become_pass} >> ../vault.yaml
 
         ansible_vault_encrypt="ansible-vault encrypt ../vault.yaml "${ansible_vault}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists

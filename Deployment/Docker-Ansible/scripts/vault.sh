@@ -104,7 +104,7 @@ createFile () {
                 echo -e "\n" >> ../vault.yaml
                 echo ${var_remote_user} >> ../vault.yaml
                 echo ${var_become_user} >> ../vault.yaml
-                echo ${ssh_user} >> ../vault.yaml
+                echo ${ssh_pass} >> ../vault.yaml
                 echo ${become_pass} >> ../vault.yaml
 
                 ansible_vault_encrypt="ansible-vault encrypt ../vault.yaml "${ansible_vault}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
@@ -146,7 +146,7 @@ if [[ -s ../vault.yaml ]]; then                          #if file not empty
             createFile
             break
         elif [[ ${answer} == "n" ]]; then
-            echo -e "Existing file for holding private information for target machines's will be used. (vault.yaml)Continuing..\n"
+            echo -e "Existing file for holding private information for target machines's will be used (vault.yaml).Continuing..\n"
             sleep 1
             break
         else

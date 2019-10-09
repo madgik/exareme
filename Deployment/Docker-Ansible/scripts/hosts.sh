@@ -70,7 +70,7 @@ if [[ -s ../hosts.ini ]]; then                          #if file not empty
             createFile
             break
         elif [[ ${answer} == "n" ]]; then
-            echo -e "Existing file for holding information for target machines' will be used. (hosts.ini)Continuing..\n"
+            echo -e "Existing file for holding information for target machines' will be used (hosts.ini).Continuing..\n"
             sleep 1
             break
         else
