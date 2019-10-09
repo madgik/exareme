@@ -19,7 +19,7 @@ def main():
     
     datasets = {}
     # Get a list of the pathologies in the data folder
-    pathologies = listdir(dbs_path)
+    pathologies = next(os.walk(dbs_path))[1]
     
     # Get the datasets for each pathology
     for pathology in pathologies:

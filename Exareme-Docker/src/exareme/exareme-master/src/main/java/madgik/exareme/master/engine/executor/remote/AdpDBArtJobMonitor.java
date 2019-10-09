@@ -70,10 +70,11 @@ public class AdpDBArtJobMonitor implements Runnable {
                     log.info("--+ error");
                 }
                 if (updateProgressStatistics) {
-                    log.info("Update listeners ...");
+                    log.info("Session is running...");
+                    log.debug("Update listeners ...");
                     synchronized (listeners) {
                         for (AdpDBQueryListener l : listeners) {
-                            log.info(status.toString());
+                            log.debug(status.toString());
                             l.statusChanged(queryID, status);
                         }
                     }
