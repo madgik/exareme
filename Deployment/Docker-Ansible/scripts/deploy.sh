@@ -3,6 +3,7 @@
 
 export ANSIBLE_HOST_KEY_CHECKING=False      #avoid host key checking
 
+
 #Default ansible_playbook
 init_ansible_playbook () {
 ansible_playbook="ansible-playbook -i ../hosts.ini -c paramiko -e@../vault.yaml "
@@ -26,6 +27,9 @@ else
 fi
 
 }
+
+#Call the function so ansible_playbook gets a value
+init_ansible_playbook
 
 #choose --vault-password-file (if ~/.vault_pass.txt exists) or --ask-vault-pass (if ~/.vault_pass.txt not exists)
 password () {
