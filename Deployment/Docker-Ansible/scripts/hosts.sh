@@ -60,7 +60,7 @@ createFile () {
 }
 
 if [[ -s ../hosts.ini ]]; then                          #if file not empty
-    echo -e "\nhosts.ini file already exists. Do you wish to create it again? [ y/n]"
+    echo -e "\nInformation for target machines' already exist (hosts.ini). Do you wish to create it again? [ y/n]"
     read answer
 
     while true
@@ -79,7 +79,7 @@ if [[ -s ../hosts.ini ]]; then                          #if file not empty
         fi
     done
 else                                            #If file empty, create it
-    echo -e "\nhosts.ini file does not exist. Creating it now.."
+    echo -e "\nInformation for target machines' does not exist. Creating file (hosts.ini) now.."
     createFile
 fi
 

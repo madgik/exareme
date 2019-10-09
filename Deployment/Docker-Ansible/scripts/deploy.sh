@@ -202,8 +202,8 @@ while true
 do
     echo -e "Choose one of the below:\n"
     echo "1:Change the exareme docker image version."
-    echo "2:Change the host machines' information."
-    echo "3:Change the host machines' private information."
+    echo "2:Change the target machines' information."
+    echo "3:Change the target machines' private information."
     echo "4:Deploy everything."
     echo "5:Add a specific worker in an already initialized swarm."
     echo "6:(Re)Start services."
@@ -219,12 +219,12 @@ do
             . ./exareme.sh
             break
         elif [[ "${answer1}" == "2" ]]; then
-            echo -e "\nYou chose to create hosts.ini file..."
+            echo -e "\nYou chose to create file for target machines' information (hosts.ini)...."
             . ./hosts.sh
             . ./vault.sh
             break
         elif [[ "${answer1}" == "3" ]]; then
-            echo -e "\nYou chose to create vault.yaml file..."
+            echo -e "\nYou chose to create the file for holding private information for target machines's..(vault.yaml)"
             . ./vault.sh
             break
         elif [[ "${answer1}" == "4" ]]; then

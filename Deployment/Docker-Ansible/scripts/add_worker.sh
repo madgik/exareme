@@ -78,7 +78,7 @@ checkWorkerVaultInfos () {
     fi
 
     if [[ ${workerVaultInfo} != "1" ]]; then
-        echo "\"${1}'s\" vault infos does not exist..Updating vault.yaml file now.."
+        echo "\"${1}'s\" vault infos does not exist..Updating file for holding private information for target machines's now.. (vault.yaml)"
 
         workerVaultInfos ${1}
         ansible_vault_decrypt="ansible-vault decrypt ../vault.yaml "${ansible_vault}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
@@ -140,7 +140,7 @@ if [[ ${tagExist} != "1" ]]; then
 
     #Add worker in hosts.ini, join worker in Swarm, Start Exareme in worker
     workerExist=1
-    echo -e "\nIt seams that no infos for target [workers] exist.Updating hosts.ini file.."
+    echo -e "\nIt seams that no infos for target [workers] exist.Updating target machines' information (hosts.ini)..."
     echo -e "\n[workers]" >> ../hosts.ini
     echo ${workerName} >> ../hosts.ini
     workerHostsInfo ${workerName}
@@ -160,14 +160,14 @@ Do you wish to add infos needed in order to add the worker now? [ y/n ]"
             checkWorkerVaultInfos ${workerName}
 
             #Add worker in hosts.ini, join worker in Swarm, Start Exareme in worker
-            echo -e "\nUpdating hosts.ini file..."
+            echo -e "\nUpdating target machines' information (hosts.ini)...."
             . ./updateHosts.sh
             workerHostsInfo ${workerName}
             joinWorker ${workerName}
             startWorker ${workerName}
             break
         elif [[ ${answer} == "n" ]]; then
-            echo -e "Make sure you include manually all the infos needed in hosts.ini file.Exiting...\n"
+            echo -e "Make sure you include manually all the infos needed in target machines' information (hosts.ini)..Exiting...\n"
             sleep 2
             break
         else
