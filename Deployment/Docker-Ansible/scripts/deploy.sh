@@ -37,19 +37,19 @@ init_ansible_playbook () {
 ansible_playbook="ansible-playbook -i ../hosts.ini -c paramiko -e@../vault.yaml "
 
 echo -e "\nAnsible-vault gives you the simplicity of storing your Ansible password in a file. \
-Place the user's sudo password in this machine for looking file \"~/.vault_pass.txt\"...\""
+Place \"$USER's\" sudo password for looking file \"~/.vault_pass.txt\"\" (if needed)"
 
 # --vault-password-file or --ask-vault-pass
 if [[ -z $(sudo find ~/.vault_pass.txt) ]]; then
-    echo -e "\nNo such file \"~/.vault_pass.txt\". Do you want to create one now? [ y/n ]"
+    echo -e "No such file \"~/.vault_pass.txt\". Do you want to create one now? [ y/n ]"
     flag=1
     password
 else
     if [[ -s $(sudo find ~/.vault_pass.txt) ]]; then
-        echo -e "\nFile for Ansible password exists and it is not empty! Moving on..."
+        echo -e "File for storing Ansible password exists and it is not empty! Moving on...\n"
         ansible_playbook+="--vault-password-file ~/.vault_pass.txt "
     else
-        echo -e "\nFile is empty.. Do you want to store your Ansible password in a text file?[ y/n ]"
+        echo "File is empty.. Do you want to store your Ansible password in a text file?[ y/n ]"
         password
     fi
 fi
@@ -205,13 +205,12 @@ while true
 do
     echo -e "Choose one of the below:\n"
     echo "1:Change the exareme docker image version."
-    echo "2:Change the target machines' information."
-    echo "3:Change the target machines' private information."
-    echo "4:Deploy everything."
-    echo "5:Add a specific worker in an already initialized swarm."
-    echo "6:(Re)Start services."
-    echo "7:Stop services."
-    echo -e "8:Exit.\n"
+    echo "2:Create the target machines' information (hosts.ini, vault.yaml)."
+    echo "3:Deploy everything."
+    echo "4:Add a specific worker in an already initialized swarm."
+    echo "5:(Re)Start services."
+    echo "6:Stop services."
+    echo -e "7:Exit.\n"
 
     read answer1
 
@@ -222,46 +221,66 @@ do
             . ./exareme.sh
             break
         elif [[ "${answer1}" == "2" ]]; then
-            echo -e "\nYou chose to create file for target machines' information (hosts.ini)...."
+            echo -e "\nYou chose to create file for target machines' information (hosts.ini, vault.yaml)...."
             . ./hosts.sh
             . ./vault.sh
             break
         elif [[ "${answer1}" == "3" ]]; then
-            echo -e "\nYou chose to create the file for holding private information for target machines's..(vault.yaml)"
-            . ./vault.sh
-            break
-        elif [[ "${answer1}" == "4" ]]; then
             . ./exareme.sh
-            . ./hosts.sh
-            . ./vault.sh
+            if [[ ! -s ../hosts.ini ]]; then
+                echo -e "\nFile for holding information for target machines' does not exist (hosts.ini). Creating it now.."
+                . ./hosts.sh
+            fi
+            if [[ ! -s ../vault.yaml ]]; then
+                echo -e "\nFile for holding private information for target machines' does not exist (vault.yaml). Creating it now.."
+                . ./vault.sh
+            fi
             echo -e "\nYou chose to deploy everything..."
             . ./deploy_all.sh
             break
-        elif [[ "${answer1}" == "5" ]]; then
+        elif [[ "${answer1}" == "4" ]]; then
             . ./exareme.sh
-            . ./hosts.sh
-            . ./vault.sh
+            if [[ ! -s ../hosts.ini ]]; then
+                echo -e "\nFile for holding information for target machines' does not exist (hosts.ini). Creating it now.."
+                . ./hosts.sh
+            fi
+            if [[ ! -s ../vault.yaml ]]; then
+                echo -e "\nFile for holding private information for target machines' does not exist (vault.yaml). Creating it now.."
+                . ./vault.sh
+            fi
             echo -e "\nYou chose to add a specific worker in an already initialized swarm.."
             . ./add_worker.sh
             break
-        elif [[ "${answer1}" == "6" ]]; then
+        elif [[ "${answer1}" == "5" ]]; then
             . ./exareme.sh
-            . ./hosts.sh
-            . ./vault.sh
+            if [[ ! -s ../hosts.ini ]]; then
+                echo -e "\nFile for holding information for target machines' does not exist (hosts.ini). Creating it now.."
+                . ./hosts.sh
+            fi
+            if [[ ! -s ../vault.yaml ]]; then
+                echo -e "\nFile for holding private information for target machines' does not exist (vault.yaml). Creating it now.."
+                . ./vault.sh
+            fi
             echo -e "\nYou chose to restart Services.."
             . ./restart.sh
             break
-        elif [[ "${answer1}" == "7" ]]; then
-            . ./hosts.sh
-            . ./vault.sh
+        elif [[ "${answer1}" == "6" ]]; then
+            if [[ ! -s ../hosts.ini ]]; then
+                echo -e "\nFile for holding information for target machines' does not exist (hosts.ini). Creating it now.."
+                . ./hosts.sh
+            fi
+            if [[ ! -s ../vault.yaml ]]; then
+                echo -e "\nFile for holding private information for target machines' does not exist (vault.yaml). Creating it now.."
+                . ./vault.sh
+            fi
             echo -e "\nYou chose to stop Services.."
             . ./stop.sh
             break
-        elif [[ "${answer1}" == "8" ]]; then
+        elif [[ "${answer1}" == "7" ]]; then
             echo -e "\nYou chose to Exit.."
             exit 0
         else
-            echo "$answer1 is not a valid answer! Try again.. [ 1-2-3-4-5-6-7-8 ]"
+            echo "$answer1 is not a valid answer! Try again.. [ 1-2-3-4-5-6-7 ]"
             read answer1
         fi
     done

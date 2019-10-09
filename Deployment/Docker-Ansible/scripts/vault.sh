@@ -134,27 +134,11 @@ createFile () {
     echo -e "\nFile for holding private information for target machines's created (vault.yaml).\n"
 }
 
-
 if [[ -s ../vault.yaml ]]; then                          #if file not empty
-    echo -e "\nFile for holding private information for target machines's already exists (vault.yaml). Do you wish to create it again? [ y/n]"
-    read answer
-
-    while true
-    do
-        if [[ ${answer} == "y" ]]; then
-            rm -f ../vault.yaml
-            createFile
-            break
-        elif [[ ${answer} == "n" ]]; then
-            echo -e "Existing file for holding private information for target machines's will be used (vault.yaml).Continuing..\n"
-            sleep 1
-            break
-        else
-            echo ${answer}" is not a valid answer! Try again.. [ y/n ]"
-            read answer
-        fi
-    done
-else                                            #If file empty, create it
-    echo -e "\nFile for holding private information for target machines's does not exist.(vault.yaml) Creating it now.."
-    createFile
+    rm -f ../vault.yaml
+else
+    :
 fi
+
+echo -e "\nPrivate information for target machines' are needed (vault.yaml)."
+createFile
