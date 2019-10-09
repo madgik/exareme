@@ -51,18 +51,29 @@ while read -r line1 ; do
     tag=$(echo "$line2" | cut -d ':' -d ' ' -d '"' -f 2 -d '"')
 done < exareme.yaml
 
+#Remove services if already existed
+if [[ $(docker service ls | grep ${name}"_exareme-keystore") != '' ]]; then
+    docker service rm ${name}"_exareme-keystore"
+fi
+
+if [[ $(docker service ls | grep ${name}"_exareme-master") != '' ]]; then
+    docker service rm ${name}"_exareme-master"
+fi
+
 env FEDERATION_NODE=${name} FEDERATION_ROLE=${FEDERATION_ROLE} EXAREME_IMAGE=${imageName}":"${tag} \
 EXAREME_KEYSTORE=${EXAREME_KEYSTORE} DOCKER_DATA_FOLDER=${DOCKER_DATA_FOLDER} \
 LOCAL_DATA_FOLDER=${LOCAL_DATA_FOLDER} \
 docker stack deploy -c docker-compose-master.yml ${name}
 
-#TODO remove service if already exists
 echo -e "\nDo you wish to run Portainer service? [ y/n ]"
 read answer
 
 while true
 do
     if [[ ${answer} == "y" ]];then
+        if [[ $(docker service ls | grep mip_portainer) != '' ]]; then
+            docker service rm mip_portainer
+        fi
         . ./portainer.sh
         break
     elif [[ ${answer} == "n" ]]; then
