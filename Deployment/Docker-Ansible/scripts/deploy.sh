@@ -3,34 +3,6 @@
 
 export ANSIBLE_HOST_KEY_CHECKING=False      #avoid host key checking
 
-
-#Default ansible_playbook
-init_ansible_playbook () {
-ansible_playbook="ansible-playbook -i ../hosts.ini -c paramiko -e@../vault.yaml "
-
-echo -e "\nAnsible-vault gives you the simplicity of storing your Ansible password in a file. \
-Place the user's sudo password in this machine for looking file \"~/.vault_pass.txt\"...\""
-
-# --vault-password-file or --ask-vault-pass
-if [[ -z $(sudo find ~/.vault_pass.txt) ]]; then
-    echo -e "\nNo such file \"~/.vault_pass.txt\". Do you want to create one now? [ y/n ]"
-    flag=1
-    password
-else
-    if [[ -s $(sudo find ~/.vault_pass.txt) ]]; then
-        echo -e "\nFile for Ansible password exists and it is not empty! Moving on..."
-        ansible_playbook+="--vault-password-file ~/.vault_pass.txt "
-    else
-        echo -e "\nFile is empty.. Do you want to store your Ansible password in a text file?[ y/n ]"
-        password
-    fi
-fi
-
-}
-
-#Call the function so ansible_playbook gets a value
-init_ansible_playbook
-
 #choose --vault-password-file (if ~/.vault_pass.txt exists) or --ask-vault-pass (if ~/.vault_pass.txt not exists)
 password () {
     read answer
@@ -59,6 +31,33 @@ password () {
         fi
     done
 }
+
+#Default ansible_playbook
+init_ansible_playbook () {
+ansible_playbook="ansible-playbook -i ../hosts.ini -c paramiko -e@../vault.yaml "
+
+echo -e "\nAnsible-vault gives you the simplicity of storing your Ansible password in a file. \
+Place the user's sudo password in this machine for looking file \"~/.vault_pass.txt\"...\""
+
+# --vault-password-file or --ask-vault-pass
+if [[ -z $(sudo find ~/.vault_pass.txt) ]]; then
+    echo -e "\nNo such file \"~/.vault_pass.txt\". Do you want to create one now? [ y/n ]"
+    flag=1
+    password
+else
+    if [[ -s $(sudo find ~/.vault_pass.txt) ]]; then
+        echo -e "\nFile for Ansible password exists and it is not empty! Moving on..."
+        ansible_playbook+="--vault-password-file ~/.vault_pass.txt "
+    else
+        echo -e "\nFile is empty.. Do you want to store your Ansible password in a text file?[ y/n ]"
+        password
+    fi
+fi
+
+}
+
+#Call the function so ansible_playbook gets a value
+init_ansible_playbook
 
 #Stop Exareme Services
 stop () {
