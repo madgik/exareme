@@ -37,7 +37,7 @@ masterVaultInfos () {
     echo -e "\nWhat is the password for become user:\"${become_user}\" for target \"master\"?"
     read -s become_pass
 
-    master_ssh_user="master_ssh_user: "${remote_pass}
+    master_ssh_pass="master_ssh_pass: "${remote_pass}
     master_become_pass="master_become_pass: "${become_pass}
 
 }
@@ -50,7 +50,7 @@ createFile () {
 
     echo ${master_remote_user} >> ../vault.yaml
     echo ${master_become_user} >> ../vault.yaml
-    echo ${master_ssh_user} >> ../vault.yaml
+    echo ${master_ssh_pass} >> ../vault.yaml
     echo ${master_become_pass} >> ../vault.yaml
 
     ansible_vault_encrypt="ansible-vault encrypt ../vault.yaml "${ansible_vault}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
