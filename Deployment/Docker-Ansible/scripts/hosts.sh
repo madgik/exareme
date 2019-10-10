@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Infos for username/password for hosts.ini & vault.yaml files
+# Information for username/password for hosts.ini & vault.yaml files
 usernamePassword () {
 	echo -e "\n"${1}" remote_user=\"{{"${1}"_remote_user}}\"" >> ../hosts.ini
 	echo ${1}" become_user=\"{{"${1}"_become_user}}\"" >> ../hosts.ini
@@ -112,7 +112,7 @@ workerVaultInfos () {
 # (Re)Initialize hosts.ini file
 createFile () {
 
-    # Infos for target Master
+    # Information for target Master
     echo -e "\nInformation for target machines' are needed (hosts.ini)."
     echo "[master]" >> ../hosts.ini
     masterHostsInfo

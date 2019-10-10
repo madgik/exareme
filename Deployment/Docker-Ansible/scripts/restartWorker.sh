@@ -38,7 +38,6 @@ startWorker () {
     echo -e "\nExareme service is now running.."
 }
 
-
 echo -e "\nWhat is the name of the worker node on which you want to start Exareme?"
 read workerName
 
