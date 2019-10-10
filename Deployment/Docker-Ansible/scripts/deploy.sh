@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 # Including functions only
-source $(./vault.sh include-only)
-source $(./hosts.sh include-only)
-source $(./stop.sh include-only)
+source ./vault.sh include-only
+source ./hosts.sh include-only
+source ./stop.sh include-only
 
 # TODO check what is happening when you give the wrong pass more than 3 times
 
@@ -15,8 +15,7 @@ init_ansible_playbook () {
 
 	ansible_playbook="ansible-playbook -i ../hosts.ini -c paramiko -e@../vault.yaml "
 
-	provide_vault_password
-
+	get_vault_authentication
 }
 
 init_ansible_playbook

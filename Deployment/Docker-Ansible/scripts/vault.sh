@@ -8,10 +8,11 @@
 # If the user doesn't want to, add the --ask-vault-pass parameter to the ansible calls.
 get_vault_authentication () {
 	if [[ -s $(sudo find ~/.vault_pass.txt) ]]; then
-		echo -e "\nAnsible password exists in the vault_pass file. Moving on..."
+		echo -e "\nAn ansible password exists in the vault_pass file. Moving on..."
 		ansible_vault_authentication="--vault-password-file ~/.vault_pass.txt "
 	else
-		echo -e "\nDo you want to store your Ansible Vault Password in a text file, so that it's not required every time?[ y/n ]"
+		echo -e "\nIn order for the installation scripts to run an ansible vault file needs to be created. /
+		Do you want to store your Ansible Vault Password in a text file, so that it's not required every time?[ y/n ]"
 		read answer
 		while true
 		do
@@ -159,7 +160,7 @@ createFile () {
 
 # If include-only flag is given don't execute the script
 if [ "$1" == "include-only" ]; then
-  exit 0;
+  return
 fi
 
 
