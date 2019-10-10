@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-#TODO (not critical) create function for encryption Process
+# TODO (not critical) create function for encryption Process
 
 
 # Check if vault_pass file exists. 
@@ -81,7 +81,7 @@ createFile () {
     ${ansible_vault_encrypt}
 
     ansible_playbook_code=$?
-    #If status code != 0 an error has occurred
+    # If status code != 0 an error has occurred
     if [[ ${ansible_playbook_code} -ne 0 ]]; then
         echo "Encryption of file \"../vault.yaml\" exited with error. Removing file with sensitive information. Exiting.." >&2
         rm -rf ../vault.yaml
@@ -96,7 +96,7 @@ createFile () {
         if [[ ${answer} == "y" ]]; then
             echo -e "\nHow many target \"worker\" nodes are there?"
             read answer1
-            #Check if what was given is a number
+            # Check if what was given is a number
             while true
             do
                 if ! [[ "$answer1" =~ ^[0-9]+$ ]]; then
@@ -107,19 +107,19 @@ createFile () {
                 fi
             done
 
-            #For each worker1, worker2, .. workerN place infos in hosts.ini
+            # For each worker1, worker2, .. workerN place information in hosts.ini
             worker=${answer1}
             n=1
             while [[ ${worker} != 0 ]]
             do
                 workerVaultInfos "worker"${n}
 
-                #TODO (not critical) decrypt encrypt only once with dynamic variables
+                # TODO (not critical) decrypt encrypt only once with dynamic variables
                 ansible_vault_decrypt="ansible-vault decrypt ../vault.yaml "${ansible_vault_authentication}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
                 ${ansible_vault_decrypt}
 
                 ansible_playbook_code=$?
-                #If status code != 0 an error has occurred
+                # If status code != 0 an error has occurred
                 if [[ ${ansible_playbook_code} -ne 0 ]]; then
                     echo "Decryption of file \"../vault.yaml\" exited with error.Exiting.." >&2
                     exit 1
@@ -135,7 +135,7 @@ createFile () {
                 ${ansible_vault_encrypt}
 
                 ansible_playbook_code=$?
-                #If status code != 0 an error has occurred
+                # If status code != 0 an error has occurred
                 if [[ ${ansible_playbook_code} -ne 0 ]]; then
                     echo "Encryption of file \"../vault.yaml\" exited with error. Removing file with sensitive information. Exiting.." >&2
                     rm -rf ../vault.yaml
