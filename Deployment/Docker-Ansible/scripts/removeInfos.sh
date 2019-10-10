@@ -5,25 +5,25 @@ init_ansible_playbook
 workerStop=0
 
 echo -e "\nYou chose to remove all the necessary info for a specific worker. Place here the IP of the worker: "
-read answer
+read IP
 while true
 do
-    if [[ ${answer} =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
+    if [[ ${IP} =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
         for i in 1 2 3 4; do
-            if [[ $(echo "$answer" | cut -d. -f$i) -gt 255 ]]; then
-                echo "$answer" | cut -d. -f$i
-                echo -e "\n${answer} is not a valid IP. Try again.."
-                read answer
+            if [[ $(echo "IP" | cut -d. -f$i) -gt 255 ]]; then
+                echo "IP" | cut -d. -f$i
+                echo -e "\n${IP} is not a valid IP. Try again.."
+                read IP
             fi
         done
         break
     else
-        echo -e "\n${answer} is not a valid IP. Try again.."
-        read answer
+        echo -e "\n${IP} is not a valid IP. Try again.."
+        read IP
     fi
 done
 
-echo "If an Exareme service is running in target worker with IP ${answer} it WILL be stopped. Do you want to continue? [ y/n ]"
+echo "If an Exareme service is running in target worker with IP ${IP} it WILL be stopped. Do you want to continue? [ y/n ]"
 read answer
 
 while true
@@ -32,7 +32,7 @@ do
         while IFS= read -r line || [[ -n "$line" ]]; do
             if [[ ${line} == *"ansible_host"* ]]; then
                 ip=$(echo "$line" | cut -d '=' -f 2)
-                if [[ ${ip} == ${answer} ]]; then
+                if [[ ${ip} == ${IP} ]]; then
                     workerStop=1
                     name=$(echo "$line" | cut -d ' ' -f 1)
                     break
