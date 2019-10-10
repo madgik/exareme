@@ -14,7 +14,7 @@ export ANSIBLE_HOST_KEY_CHECKING=False      #avoid host key checking
 init_ansible_playbook () {
 
 	ansible_playbook="ansible-playbook -i ../hosts.ini -c paramiko -e@../vault.yaml "
-
+	
 	get_vault_authentication
 }
 

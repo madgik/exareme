@@ -10,6 +10,7 @@ get_vault_authentication () {
 	if [[ -s $(sudo find ~/.vault_pass.txt) ]]; then
 		echo -e "\nAn ansible password exists in the vault_pass file. Moving on..."
 		ansible_vault_authentication="--vault-password-file ~/.vault_pass.txt "
+		ansible_playbook+="--vault-password-file ~/.vault_pass.txt "
 	else
 		echo -e "\nIn order for the installation scripts to run an ansible vault file needs to be created. /
 		Do you want to store your Ansible Vault Password in a text file, so that it's not required every time?[ y/n ]"
@@ -22,7 +23,7 @@ get_vault_authentication () {
 				echo $password > ~/.vault_pass.txt
 				ansible_playbook+="--vault-password-file ~/.vault_pass.txt "
 
-				#For encrypting/ decrypting vault.yaml file
+				# For encrypting/ decrypting vault.yaml file
 				ansible_vault_authentication="--vault-password-file ~/.vault_pass.txt "
 				break
 			elif [[ "${answer}" == "n" ]]; then
