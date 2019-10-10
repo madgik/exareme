@@ -23,7 +23,7 @@ while IFS= read -r line || [[ -n "$line" ]]; do
     fi
 done < ../hosts.ini
 
-#if eof reached
+# Ιf eof reached
 if [[ ${eof} != "1" ]]; then                #[workers] tag exist and eof right after tag
     n=$[$n+1]
     echo -e "\n" >> ../hosts.ini            #this is needed because sed can not write at eof

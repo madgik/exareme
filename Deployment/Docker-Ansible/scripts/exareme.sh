@@ -1,44 +1,42 @@
 #!/usr/bin/env bash
 
-#Check if EXAREME image exists
+# Check if EXAREME image exists
 docker_image_exists() {
     curl -s -f https://index.docker.io/v1/repositories/$1/tags/$2 >/dev/null
 }
 
-#update exareme.yaml file
-updateFile () {
-while true
-do
-    if [[ -f ../group_vars/exareme.yaml ]]; then
-        rm -f ../group_vars/exareme.yaml
-    fi
-    echo -e "\nType your EXAREME image name:"
-    read name
-    echo "EXAREME_IMAGE:" \"${name}\" >> ../group_vars/exareme.yaml
+# Update exareme.yaml file
+resetExaremeFile () {
+	while true
+	do
+		if [[ -f ../group_vars/exareme.yaml ]]; then
+			rm -f ../group_vars/exareme.yaml
+		fi
+		echo -e "\nType your EXAREME image name:"
+		read name
+		echo "EXAREME_IMAGE:" \"${name}\" >> ../group_vars/exareme.yaml
 
-    echo -e "\nType your EXAREME image tag:"
-    read tag
-    echo "EXAREME_TAG:" \"${tag}\" >> ../group_vars/exareme.yaml
+		echo -e "\nType your EXAREME image tag:"
+		read tag
+		echo "EXAREME_TAG:" \"${tag}\" >> ../group_vars/exareme.yaml
 
-    echo -e "\nChecking if EXAREME image: "\"${name}":"${tag}\"" exists"
+		echo -e "\nChecking if EXAREME image: "\"${name}":"${tag}\"" exists"
 
-    #docker image may exist in docker hub
-    if docker_image_exists ${name} ${tag}; then
-        echo "EXAREME Image exists. Continuing..."
-        break
-    #or locally..
-    elif [[ "$(docker images -q ${name}:${tag} 2> /dev/null)" != "" ]]; then
-        echo "EXAREME Image exists. Continuing..."
-        break
-    else
-        echo -e "\nEXAREME image does not exist! EXAREME image name should have a format like: \"hbpmip/exareme\". And EXAREME image tag should have a format like: \"latest\""
-    fi
-done
-
+		# Docker image may exist in docker hub or locally.
+		if [docker_image_exists ${name} ${tag}] || 
+			[[ "$(docker images -q ${name}:${tag} 2> /dev/null)" != "" ]]; then
+			echo "EXAREME Image exists. Continuing..."
+			break
+		else
+			echo -e "\nEXAREME image does not exist! EXAREME image name should have a format like: \"hbpmip/exareme\". And EXAREME image tag should have a format like: \"latest\""
+		fi
+	done
 }
 
+
+
 if [[ -f ../group_vars/exareme.yaml ]]; then
-    echo -e "\nFile \"exareme.yaml\" seams that already exists."
+    echo -e "\n The file with the exareme docker image information (\"exareme.yaml\") exists."
     while read -r line1 ; do
         read -r line2
         name=$(echo "$line1" | cut -d ':' -d ' ' -d '"' -f 2 -d '"')
@@ -51,20 +49,9 @@ if [[ -f ../group_vars/exareme.yaml ]]; then
     while true
     do
         if [[ ${answer} == "y" ]]; then
-            updateFile
+            resetExaremeFile
             break
         elif [[ ${answer} == "n" ]]; then
-            echo -e "\nChecking if EXAREME image: "\"${name}":"${tag}"\" exists."
-            if docker_image_exists ${name} ${tag}; then
-                echo "EXAREME image exists. Continuing..."
-                break
-            elif [[ "$(docker images -q ${name}:${tag} 2> /dev/null)" != "" ]]; then
-                echo "EXAREME Image exists. Continuing..."
-                break
-            else    #if EXAREME image that already exists in exareme.yaml file does not exist in docker hub, update exareme.yaml file
-                echo "EXAREME image does not exist! EXAREME image name should have a format like: \"hbpmip/exareme\". EXAREME image tag should have a format like: \"latest\""
-                updateFile
-            fi
             break
         else
             echo "$answer is not a valid answer! Try again.. [ y/n ]"
@@ -72,8 +59,8 @@ if [[ -f ../group_vars/exareme.yaml ]]; then
         fi
     done
 else
-    echo -e "\nCreating file for Exareme image and Exareme tag.."
-    updateFile
+    echo -e "\nCreating file for Exareme docker image information..."
+    resetExaremeFile
 fi
 
 sleep 2

@@ -46,7 +46,7 @@ startWorker () {
 checkWorkerVaultInfos () {
     echo -e "\nChecking if \"${1}'s\" vault infos exist in vault.yaml.."
 
-    ansible_vault_decrypt="ansible-vault decrypt ../vault.yaml "${ansible_vault}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
+    ansible_vault_decrypt="ansible-vault decrypt ../vault.yaml "${ansible_vault_authentication}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
     ${ansible_vault_decrypt}
 
     ansible_playbook_code=$?
@@ -66,7 +66,7 @@ checkWorkerVaultInfos () {
         fi
     done < ../vault.yaml
 
-    ansible_vault_encrypt="ansible-vault encrypt ../vault.yaml "${ansible_vault}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
+    ansible_vault_encrypt="ansible-vault encrypt ../vault.yaml "${ansible_vault_authentication}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
     ${ansible_vault_encrypt}
 
     ansible_playbook_code=$?
@@ -78,10 +78,10 @@ checkWorkerVaultInfos () {
     fi
 
     if [[ ${workerVaultInfo} != "1" ]]; then
-        echo "\"${1}'s\" vault infos does not exist..Updating file for holding private information for target machines's now.. (vault.yaml)"
+        echo "\"${1}'s\" vault infos does not exist. Updating file for holding private information for target machines's now.. (vault.yaml)"
 
         workerVaultInfos ${1}
-        ansible_vault_decrypt="ansible-vault decrypt ../vault.yaml "${ansible_vault}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
+        ansible_vault_decrypt="ansible-vault decrypt ../vault.yaml "${ansible_vault_authentication}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
         ${ansible_vault_decrypt}
 
         ansible_playbook_code=$?
@@ -97,7 +97,7 @@ checkWorkerVaultInfos () {
         echo ${ssh_pass} >> ../vault.yaml
         echo ${become_pass} >> ../vault.yaml
 
-        ansible_vault_encrypt="ansible-vault encrypt ../vault.yaml "${ansible_vault}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
+        ansible_vault_encrypt="ansible-vault encrypt ../vault.yaml "${ansible_vault_authentication}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
         ${ansible_vault_encrypt}
 
         ansible_playbook_code=$?
@@ -140,7 +140,7 @@ if [[ ${tagExist} != "1" ]]; then
 
     #Add worker in hosts.ini, join worker in Swarm, Start Exareme in worker
     workerExist=1
-    echo -e "\nIt seams that no infos for target [workers] exist.Updating target machines' information (hosts.ini)..."
+    echo -e "\nIt seems that no infos for target [workers] exist. Updating target machines' information (hosts.ini)..."
     echo -e "\n[workers]" >> ../hosts.ini
     echo ${workerName} >> ../hosts.ini
     workerHostsInfo ${workerName}
@@ -150,7 +150,7 @@ fi
 
 #[workers] tag exist [workerN] tag does not exist
 if [[ ${workerExist} != "1" ]]; then
-    echo -e "\nIt seams that no infos for worker \"${workerName}\" exists..\
+    echo -e "\nIt seems that no infos for worker \"${workerName}\" exists..\
 Do you wish to add infos needed in order to add the worker now? [ y/n ]"
     read answer
     while true

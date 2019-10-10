@@ -2,24 +2,46 @@
 
 #TODO (not critical) create function for encryption Process
 
-workerVaultInfosFlag=1
 
-# --vault-password-file or --ask-vault-pass
-if [[ -z $(sudo find ~/.vault_pass.txt) ]]; then
-    echo -e "\nNo such file \"~/.vault_pass.txt\" for storing Ansible password. Do you want to create one now? [ y/n ]"
-    flag=1
-    password
-else
-    if [[ -s $(sudo find ~/.vault_pass.txt) ]]; then
-        echo -e "\nFile for storing Ansible password exists and it is not empty! Moving on..."
-        ansible_vault="--vault-password-file ~/.vault_pass.txt "
-    else
-        echo -e "\nFile is empty.. Do you want to store your Ansible password in a text file?[ y/n ]"
-        password
-    fi
-fi
+# Check if vault_pass file exists. 
+# If it doesn't ask the user to provide it.
+# If the user doesn't want to, add the --ask-vault-pass parameter to the ansible calls.
+get_vault_authentication () {
+	if [[ -s $(sudo find ~/.vault_pass.txt) ]]; then
+		echo -e "\nAnsible password exists in the vault_pass file. Moving on..."
+		ansible_vault_authentication="--vault-password-file ~/.vault_pass.txt "
+	else
+		echo -e "\nDo you want to store your Ansible Vault Password in a text file, so that it's not required every time?[ y/n ]"
+		read answer
+		while true
+		do
+			if [[ "${answer}" == "y" ]]; then
+				echo "Type your Ansible password:"
+				read -s password
+				echo $password > ~/.vault_pass.txt
+				ansible_playbook+="--vault-password-file ~/.vault_pass.txt "
 
-#master infos
+				#For encrypting/ decrypting vault.yaml file
+				ansible_vault_authentication="--vault-password-file ~/.vault_pass.txt "
+				break
+			elif [[ "${answer}" == "n" ]]; then
+				echo "You need to enter your Ansible password every single time ansible-playbooks asks for one."
+				sleep 1
+				ansible_playbook+="--ask-vault-pass "
+
+				#For encrypting/ decrypting vault.yaml file
+				ansible_vault_authentication="--ask-vault-pass "
+				break
+			else
+				echo "$answer is not a valid answer! Try again.. [ y/n ]"
+				read answer
+			fi
+		done
+	fi
+}
+
+
+# Get master node information
 masterVaultInfos () {
 
     echo -e "\nWhat is the remote user for target \"master\"?"
@@ -43,7 +65,7 @@ masterVaultInfos () {
 }
 
 
-#Create vault.yaml file
+# Create vault.yaml file
 createFile () {
 
     masterVaultInfos
@@ -53,7 +75,7 @@ createFile () {
     echo ${master_ssh_pass} >> ../vault.yaml
     echo ${master_become_pass} >> ../vault.yaml
 
-    ansible_vault_encrypt="ansible-vault encrypt ../vault.yaml "${ansible_vault}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
+    ansible_vault_encrypt="ansible-vault encrypt ../vault.yaml "${ansible_vault_authentication}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
     ${ansible_vault_encrypt}
 
     ansible_playbook_code=$?
@@ -91,7 +113,7 @@ createFile () {
                 workerVaultInfos "worker"${n}
 
                 #TODO (not critical) decrypt encrypt only once with dynamic variables
-                ansible_vault_decrypt="ansible-vault decrypt ../vault.yaml "${ansible_vault}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
+                ansible_vault_decrypt="ansible-vault decrypt ../vault.yaml "${ansible_vault_authentication}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
                 ${ansible_vault_decrypt}
 
                 ansible_playbook_code=$?
@@ -107,7 +129,7 @@ createFile () {
                 echo ${ssh_pass} >> ../vault.yaml
                 echo ${become_pass} >> ../vault.yaml
 
-                ansible_vault_encrypt="ansible-vault encrypt ../vault.yaml "${ansible_vault}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
+                ansible_vault_encrypt="ansible-vault encrypt ../vault.yaml "${ansible_vault_authentication}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
                 ${ansible_vault_encrypt}
 
                 ansible_playbook_code=$?
@@ -134,11 +156,10 @@ createFile () {
     echo -e "\nFile for holding private information for target machines's created (vault.yaml).\n"
 }
 
+# Remove file if it already exists
 if [[ -s ../vault.yaml ]]; then                          #if file not empty
     rm -f ../vault.yaml
-else
-    :
 fi
 
-echo -e "\nPrivate information for target machines' are needed (vault.yaml)."
+echo -e "\nPlease provide the private information of the target machines (vault.yaml). The information will be encrypted."
 createFile

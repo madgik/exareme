@@ -2,21 +2,21 @@
 
 init_ansible_playbook
 
-echo -e "\nInitializing Swarm..Initializing mip-federation network..Copying Compose-Files folder to Manager of Swarm..."
+echo -e "\nInitializing Swarm, initializing mip-federation network, copying Compose-Files folder to Manager of Swarm..."
 sleep 1
 
-#Init_swarm
+# Init_swarm
 ansible_playbook_init=${ansible_playbook}"../Init-Swarm.yaml"
 ${ansible_playbook_init}
 
 ansible_playbook_code=$?
-#If status code != 0 an error has occurred
+# If status code != 0 an error has occurred
 if [[ ${ansible_playbook_code} -ne 0 ]]; then
     echo "Playbook \"Init-Swarm.yaml\" exited with error." >&2
     exit 1
 fi
 
-#Join_workers
+# Join_workers
 echo -e "\nJoining worker nodes in Swarm..\n"
 while IFS= read -r line; do
     if [[ "$line" = *"[workers]"* ]]; then
@@ -46,14 +46,14 @@ while IFS= read -r line; do
 done < ../hosts.ini
 if [[ ${flag} != "0" ]]; then
     echo -e "\nIt seems that no workers will join the Swarm. If you have workers \
-make sure you included their names below label [workers], so Ansible will not Ignore them."
+make sure you include them when initializing the exareme swarm target machines' information (hosts.ini, vault.yaml)."
     echo -e "\nContinue? [ y/n ]"
 
     read answer
     while true
     do
         if [[ "${answer}" == "y" ]]; then
-            echo "Continue without Workers.."
+            echo "Continuing without Workers.."
             break
         elif [[ "${answer}" == "n" ]]; then
             echo "Exiting...(Leaving Swarm for Master node).."
@@ -61,7 +61,7 @@ make sure you included their names below label [workers], so Ansible will not Ig
             ${ansible_playbook_leave}
 
             ansible_playbook_code=$?
-            #If status code != 0 an error has occurred
+            # If status code != 0 an error has occurred
             if [[ ${ansible_playbook_code} -ne 0 ]]; then
                 echo "Playbook \"Leave-Master.yaml\" exited with error." >&2
                 exit 1
