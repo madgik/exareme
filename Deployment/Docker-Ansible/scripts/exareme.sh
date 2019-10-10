@@ -23,8 +23,7 @@ resetExaremeFile () {
 		echo -e "\nChecking if EXAREME image: "\"${name}":"${tag}\"" exists"
 
 		# Docker image may exist in docker hub or locally.
-		if [docker_image_exists ${name} ${tag}] || 
-			[[ "$(docker images -q ${name}:${tag} 2> /dev/null)" != "" ]]; then
+		if [ "$docker_image_exists ${name} ${tag}" ] || [ "$docker images -q ${name}:${tag} 2> /dev/null)" != "" ]; then
 			echo "EXAREME Image exists. Continuing..."
 			break
 		else
@@ -63,5 +62,5 @@ else
     resetExaremeFile
 fi
 
-sleep 2
+sleep 1
 return

@@ -40,7 +40,7 @@ do
             fi
         done < ../hosts.ini
 
-    if [[ ${workerStop} == "1" ]]; then
+        if [[ ${workerStop} == "1" ]]; then
             # TODO check if Exareme service exists and then ask if you want to continue
             # Stop worker
             echo -e "\nStopping Exareme service (if exists) for worker \"${name}\" with IP \"${ip}\"..."
