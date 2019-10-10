@@ -212,7 +212,8 @@ do
     echo "4:Add a specific worker in an already initialized swarm."
     echo "5:(Re)Start services."
     echo "6:Stop services."
-    echo -e "7:Exit.\n"
+    echo "7:Stop specific worker target node."
+    echo -e "8:Exit.\n"
 
     read answer1
 
@@ -280,6 +281,32 @@ do
             . ./stop.sh
             break
         elif [[ "${answer1}" == "7" ]]; then
+            if [[ ! -s ../hosts.ini ]]; then
+                echo -e "\nFile for holding information for target machines' does not exist (hosts.ini). Creating it now.."
+                . ./hosts.sh
+            fi
+            if [[ ! -s ../vault.yaml ]]; then
+                echo -e "\nFile for holding private information for target machines' does not exist (vault.yaml). Creating it now.."
+                . ./vault.sh
+            fi
+            echo -e "\nYou chose to stop an Exareme service for a worker target node.."
+            . ./stopWorker.sh
+            break
+        elif [[ "${answer1}" == "8" ]]; then
+            if [[ ! -s ../hosts.ini ]]; then
+                echo -e "\nFile for holding information for target machines' does not exist (hosts.ini). Creating it now.."
+                . ./hosts.sh
+            fi
+            if [[ ! -s ../vault.yaml ]]; then
+                echo -e "\nFile for holding private information for target machines' does not exist (vault.yaml). Creating it now.."
+                . ./vault.sh
+            fi
+            echo -e "\nYou chose to stop an Exareme service for a worker target node.."
+            . ./removeInfos.sh
+            break
+            echo -e "\nYou chose to remove infos for worker node.."
+            break
+        elif [[ "${answer1}" == "9" ]]; then
             echo -e "\nYou chose to Exit.."
             exit 0
         else
