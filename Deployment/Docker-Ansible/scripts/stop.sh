@@ -29,6 +29,12 @@ stopExaremeService () {
     fi
 }
 
+# If include-only flag is given don't execute the script
+if [ "$1" == "include-only" ]; then
+  exit 0;
+fi
+
+
 echo -e "\nChoose one of the options [ 1-2-3 ] :"
 echo "1: Stop Exareme."
 echo "2: Stop Portainer."

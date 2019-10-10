@@ -156,6 +156,13 @@ createFile () {
     echo -e "\nFile for holding private information for target machines's created (vault.yaml).\n"
 }
 
+
+# If include-only flag is given don't execute the script
+if [ "$1" == "include-only" ]; then
+  exit 0;
+fi
+
+
 # Remove file if it already exists
 if [[ -s ../vault.yaml ]]; then                          #if file not empty
     rm -f ../vault.yaml

@@ -168,6 +168,13 @@ createFile () {
 
 }
 
+
+# If include-only flag is given don't execute the script
+if [ "$1" == "include-only" ]; then
+  exit 0;
+fi
+
+
 # Remove file if it already exists
 if [[ -s ../hosts.ini ]]; then
     rm -f ../hosts.ini

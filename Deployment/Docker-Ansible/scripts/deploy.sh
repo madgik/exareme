@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
-. ./vault.sh --source-only
-. ./hosts.sh --source-only
-. ./stop.sh --source-only
+# Including functions only
+source $(./vault.sh include-only)
+source $(./hosts.sh include-only)
+source $(./stop.sh include-only)
 
 # TODO check what is happening when you give the wrong pass more than 3 times
 
@@ -36,19 +37,6 @@ do
     echo "8: Add a new worker to the exareme swarm information files (hosts.ini, vault.yaml)."
 	echo "9: Remove a worker from the exareme swarm inforation files (hosts.ini, vault.yaml)."
     echo -e "10:Exit.\n"
-
-=======
-    echo -e "\nChoose one of the below:\n"
-    echo "1:Change the exareme docker image version."
-    echo "2:Create the target machines' information (hosts.ini, vault.yaml)."
-    echo "3:Deploy everything."
-    echo "4:Add a specific worker in an already initialized swarm."
-    echo "5:(Re)Start services."
-    echo "6:Stop services."
-    echo "7:Stop specific worker target node."
-    echo "8:Remove info for specific worker."
->>>>>>> bc8f7efc4a91803a223267563c2857f3de0a2e5b
-
 
     read answer1
 
