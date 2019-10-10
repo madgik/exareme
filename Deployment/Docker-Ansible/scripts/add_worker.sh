@@ -6,14 +6,14 @@ workerVaultInfo=0
 
 init_ansible_playbook
 
-#Join worker in Swarm
+# Join worker in Swarm
 joinWorker () {
     ansible_playbook_join=${ansible_playbook}"../Join-Workers.yaml -e my_host="
     ansible_playbook_join+=${1}
 
     ${ansible_playbook_join}
     ansible_playbook_code=$?
-    #If status code != 0 an error has occurred
+    # If status code != 0 an error has occurred
     if [[ ${ansible_playbook_code} -ne 0 ]]; then
         echo "Playbook \"Join-Workers.yaml\" exited with error." >&2
         exit 1
@@ -22,17 +22,17 @@ joinWorker () {
     sleep 1
 }
 
-#Start worker
+# Start worker
 startWorker () {
 
-    #Start specific worker Exareme node
+    # Start specific worker Exareme node
     echo -e "\nStarting Exareme for worker node ${1}"
 
     ansible_playbook_start=${ansible_playbook}"../Start-Exareme-Worker.yaml -e my_host="${1}
     ${ansible_playbook_start}
 
     ansible_playbook_code=$?
-    #If status code != 0 an error has occurred
+    # If status code != 0 an error has occurred
 
     if [[ ${ansible_playbook_code} -ne 0 ]]; then
         echo "Playbook \"Start-Exareme-Worker.yaml\" exited with error." >&2
@@ -42,7 +42,7 @@ startWorker () {
     echo -e "\nExareme service is now running.."
 }
 
-#Check worker's vault info in vault.yaml file
+# Check worker's vault info in vault.yaml file
 checkWorkerVaultInfos () {
     echo -e "\nChecking if \"${1}'s\" vault infos exist in vault.yaml.."
 
@@ -50,11 +50,11 @@ checkWorkerVaultInfos () {
     ${ansible_vault_decrypt}
 
     ansible_playbook_code=$?
-    #If status code != 0 an error has occurred
+    # If status code != 0 an error has occurred
     if [[ ${ansible_playbook_code} -ne 0 ]]; then
         echo "Decryption of file \"../vault.yaml\" exited with error. Exiting.." >&2
         exit 1
-    fi  #TODO check what happens if script fails at right this point! vault.yaml decrypted
+    fi  # TODO check what happens if script fails at right this point! vault.yaml decrypted
 
     while IFS= read -r line || [[ -n "$line" ]]; do
         if [[ "$line" == *${1}* ]]; then
@@ -70,7 +70,7 @@ checkWorkerVaultInfos () {
     ${ansible_vault_encrypt}
 
     ansible_playbook_code=$?
-    #If status code != 0 an error has occurred
+    # If status code != 0 an error has occurred
     if [[ ${ansible_playbook_code} -ne 0 ]]; then
          echo "Encryption of file \"../vault.yaml\" exited with error. Removing file with sensitive information. Exiting.." >&2
          rm -rf ../vault.yaml
@@ -85,7 +85,7 @@ checkWorkerVaultInfos () {
         ${ansible_vault_decrypt}
 
         ansible_playbook_code=$?
-        #If status code != 0 an error has occurred
+        # If status code != 0 an error has occurred
         if [[ ${ansible_playbook_code} -ne 0 ]]; then
             echo "Decryption of file \"../vault.yaml\" exited with error. Exiting.." >&2
             exit 1
@@ -101,7 +101,7 @@ checkWorkerVaultInfos () {
         ${ansible_vault_encrypt}
 
         ansible_playbook_code=$?
-        #If status code != 0 an error has occurred
+        # If status code != 0 an error has occurred
         if [[ ${ansible_playbook_code} -ne 0 ]]; then
             echo "Encryption of file \"../vault.yaml\" exited with error. Removing file with sensitive information. Exiting.." >&2
             rm -rf ../vault.yaml
@@ -110,7 +110,7 @@ checkWorkerVaultInfos () {
     fi
 }
 
-echo -e "\nWhat is the name of the worker node you would like to join the Swarm?"
+echo -e "\nWhat is the name of the worker node you would like to add to the exareme swarm information files?"
 read workerName
 
 while IFS= read -r line || [[ -n "$line" ]]; do
@@ -122,8 +122,6 @@ while IFS= read -r line || [[ -n "$line" ]]; do
                 continue
             else                            #workerN exists below [workers] tag
                 workerExist=1
-                joinWorker ${worker}
-                startWorker ${worker}
                 break
             fi
             if [[ -z "$line1" ]]; then
@@ -133,22 +131,21 @@ while IFS= read -r line || [[ -n "$line" ]]; do
     fi
 done < ../hosts.ini; echo;
 
-#[workers] tag does not exist. Create everything
+# [workers] tag does not exist. Create everything
 if [[ ${tagExist} != "1" ]]; then
-    #Check if info for worker exist in vault.yaml file
-    checkWorkerVaultInfos ${workerName}
 
-    #Add worker in hosts.ini, join worker in Swarm, Start Exareme in worker
+    # Add worker in hosts.ini file
     workerExist=1
     echo -e "\nIt seems that no infos for target [workers] exist. Updating target machines' information (hosts.ini)..."
     echo -e "\n[workers]" >> ../hosts.ini
     echo ${workerName} >> ../hosts.ini
     workerHostsInfo ${workerName}
-    joinWorker ${workerName}
-    startWorker ${workerName}
+	
+    # Check if information for worker exist in vault.yaml file
+    checkWorkerVaultInfos ${workerName}
 fi
 
-#[workers] tag exist [workerN] tag does not exist
+# [workers] tag exist [workerN] tag does not exist
 if [[ ${workerExist} != "1" ]]; then
     echo -e "\nIt seems that no infos for worker \"${workerName}\" exists..\
 Do you wish to add infos needed in order to add the worker now? [ y/n ]"
@@ -156,23 +153,24 @@ Do you wish to add infos needed in order to add the worker now? [ y/n ]"
     while true
     do
         if [[ ${answer} == y ]]; then
-            #Check if info for worker exist in vault.yaml file
-            checkWorkerVaultInfos ${workerName}
-
-            #Add worker in hosts.ini, join worker in Swarm, Start Exareme in worker
+            # Add worker in hosts.ini, join worker in Swarm, Start Exareme in worker
             echo -e "\nUpdating target machines' information (hosts.ini)...."
             . ./updateHosts.sh
             workerHostsInfo ${workerName}
-            joinWorker ${workerName}
-            startWorker ${workerName}
+						
+            # Check if info for worker exist in vault.yaml file
+            checkWorkerVaultInfos ${workerName}
             break
+			
         elif [[ ${answer} == "n" ]]; then
             echo -e "Make sure you include manually all the infos needed in target machines' information (hosts.ini)..Exiting...\n"
             sleep 2
             break
+			
         else
             echo "$answer is not a valid answer! Try again.. [ y/n ]"
             read answer
+			
         fi
     done
 fi

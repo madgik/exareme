@@ -63,7 +63,7 @@ do
             # Remove from vault.yaml
             echo -e "\nRemove private information for worker target machine with IP ${ip}\n"
 
-            ansible_vault_decrypt="ansible-vault decrypt ../vault.yaml "${ansible_vault}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
+            ansible_vault_decrypt="ansible-vault decrypt ../vault.yaml "${ansible_vault_authentication}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
             ${ansible_vault_decrypt}
 
             ansible_playbook_code=$?
@@ -76,7 +76,7 @@ do
             sed -i "/$name/ d" ../vault.yaml
 
 
-            ansible_vault_encrypt="ansible-vault encrypt ../vault.yaml "${ansible_vault}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
+            ansible_vault_encrypt="ansible-vault encrypt ../vault.yaml "${ansible_vault_authentication}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
             ${ansible_vault_encrypt}
 
             if [[ ${ansible_playbook_code} -ne 0 ]]; then
