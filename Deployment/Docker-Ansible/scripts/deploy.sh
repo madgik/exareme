@@ -228,7 +228,10 @@ do
             . ./vault.sh
             break
         elif [[ "${answer1}" == "3" ]]; then
-            . ./exareme.sh
+            if [[ ! -s ../group_vars/exareme.yaml ]]; then
+                echo -e "\nFile for holding exareme docker image version does not exist (exareme.yaml). Creating it now.."
+                . ./exareme.sh
+            fi
             if [[ ! -s ../hosts.ini ]]; then
                 echo -e "\nFile for holding information for target machines' does not exist (hosts.ini). Creating it now.."
                 . ./hosts.sh
@@ -241,7 +244,6 @@ do
             . ./deploy_all.sh
             break
         elif [[ "${answer1}" == "4" ]]; then
-            . ./exareme.sh
             if [[ ! -s ../hosts.ini ]]; then
                 echo -e "\nFile for holding information for target machines' does not exist (hosts.ini). Creating it now.."
                 . ./hosts.sh
@@ -254,7 +256,6 @@ do
             . ./add_worker.sh
             break
         elif [[ "${answer1}" == "5" ]]; then
-            . ./exareme.sh
             if [[ ! -s ../hosts.ini ]]; then
                 echo -e "\nFile for holding information for target machines' does not exist (hosts.ini). Creating it now.."
                 . ./hosts.sh
