@@ -305,8 +305,6 @@ do
             echo -e "\nYou chose to remove info for a specific workerg"
             . ./removeInfos.sh
             break
-            echo -e "\nYou chose to remove infos for worker node.."
-            break
         elif [[ "${answer1}" == "9" ]]; then
             echo -e "\nYou chose to Exit.."
             exit 0
