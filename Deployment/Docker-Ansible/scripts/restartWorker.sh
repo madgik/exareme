@@ -50,7 +50,7 @@ while IFS= read -r line || [[ -n "$line" ]]; do
             else                            #workerN exists in hosts.ini
 				joinWorker ${workerName}
 				startWorker ${workerName}
-                break
+                return
             fi
         done
 		echo -e "\nCould not find the worker. Did not start any service. You can add it from the menu."
