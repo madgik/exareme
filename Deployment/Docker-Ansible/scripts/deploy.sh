@@ -27,14 +27,28 @@ while true
 do
     echo -e "Choose one of the below:\n"
     echo "1: Deploy the exareme swarm and start services."
-    echo "2: (Re)Start services."
-	echo "3: (Re)Start service."
-    echo "4: Stop services."
-    echo "5: Stop service."
+    echo "2: (Re)Start all services."
+	echo "3: (Re)Start one service."
+    echo "4: Stop all services."
+    echo "5: Stop one service."
 	echo "6: Create or modify the exareme docker image version (exareme.yaml)."
     echo "7: (Re)Initialize the exareme swarm target machines' information (hosts.ini, vault.yaml)."
-    echo "8: Add a new worker to the exareme swarm information (hosts.ini, vault.yaml)."
-    echo -e "9:Exit.\n"
+    echo "8: Add a new worker to the exareme swarm information files (hosts.ini, vault.yaml)."
+	echo "9: Remove a worker from the exareme swarm inforation files (hosts.ini, vault.yaml)."
+    echo -e "10:Exit.\n"
+
+=======
+    echo -e "\nChoose one of the below:\n"
+    echo "1:Change the exareme docker image version."
+    echo "2:Create the target machines' information (hosts.ini, vault.yaml)."
+    echo "3:Deploy everything."
+    echo "4:Add a specific worker in an already initialized swarm."
+    echo "5:(Re)Start services."
+    echo "6:Stop services."
+    echo "7:Stop specific worker target node."
+    echo "8:Remove info for specific worker."
+>>>>>>> bc8f7efc4a91803a223267563c2857f3de0a2e5b
+
 
     read answer1
 
@@ -63,9 +77,9 @@ do
             . ./deploy_all.sh
             break
 		
-		# 2: (Re)Start services.
+		# 2: (Re)Start all services.
 		elif [[ "${answer1}" == "2" ]]; then
-            echo -e "\nYou chose to (re)start all services.."
+            echo -e "\nYou chose to (re)start all services..."
 
 			if [[ -f ../group_vars/exareme.yaml ]]; then
                 echo -e "\nFile for holding docker exareme image information does not exist. Please create it first (Option 6)."
@@ -86,9 +100,14 @@ do
             . ./restart.sh
             break
 		
-		# 4: Stop services.
+		# 3: (Re)Start one service.
+		elif [[ "${answer1}" == "3" ]]; then
+            echo -e "\nYou chose to (re)start one service but it is not implemented yet. Please, choose something else."
+			break
+		
+		# 4: Stop all services.
         elif [[ "${answer1}" == "4" ]]; then
-            echo -e "\nYou chose to stop all services.."
+            echo -e "\nYou chose to stop all services..."
 
 			if [[ -f ../group_vars/exareme.yaml ]]; then
                 echo -e "\nFile for holding docker exareme image information does not exist. Please create it first (Option 6)."
@@ -107,6 +126,23 @@ do
 
 			echo -e "\nAll neccessary files exist (hosts.ini, vault.yaml, exareme.yaml). Stoping..."
             . ./stop.sh
+            break
+			
+		# 5: Stop one service. 
+		elif [[ "${answer1}" == "5" ]]; then
+            echo -e "\nYou chose to stop one exareme service for a worker target node..."
+
+            if [[ ! -s ../hosts.ini ]]; then
+                echo -e "\nFile for holding target machines' information (hosts.ini) does not exist. Please create it first (Option 7)."
+				break
+            fi
+			
+            if [[ ! -s ../vault.yaml ]]; then
+                echo -e "\nFile for holding target machines' information (vault.yaml) does not exist. Please create it first (Option 7)."
+				break
+            fi
+			
+            . ./stopWorker.sh
             break
 			
 		# 6: Create or modify the exareme docker image version (exareme.yaml).
@@ -144,12 +180,28 @@ do
             . ./add_worker.sh
             break
 		
-		# 9:Exit.
+        # 9: Remove a worker from the exareme swarm inforation files (hosts.ini, vault.yaml).
         elif [[ "${answer1}" == "9" ]]; then
+		    echo -e "\nYou chose to remove a worker from the exareme swarm information."
+		
+            if [[ ! -s ../hosts.ini ]]; then
+                echo -e "\nFile for holding target machines' information (hosts.ini) does not exist. Please create it first (Option 7)."
+				break
+            fi
+			
+            if [[ ! -s ../vault.yaml ]]; then
+                echo -e "\nFile for holding target machines' information (vault.yaml) does not exist. Please create it first (Option 7)."
+				break
+            fi
+            . ./removeInfos.sh
+            break
+		
+		# 10:Exit.
+        elif [[ "${answer1}" == "10" ]]; then
             echo -e "\nYou chose to Exit.."
             exit 0
         else
-            echo "$answer1 is not a valid answer! Try again.. [ 1-2-3-4-5-6-7-8-9 ]"
+            echo "$answer1 is not a valid answer! Try again.. [ 1-2-3-4-5-6-7-8-9-10 ]"
             read answer1
         fi
     done
