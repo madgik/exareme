@@ -6,42 +6,6 @@ workerVaultInfo=0
 
 init_ansible_playbook
 
-# Join worker in Swarm
-joinWorker () {
-    ansible_playbook_join=${ansible_playbook}"../Join-Workers.yaml -e my_host="
-    ansible_playbook_join+=${1}
-
-    ${ansible_playbook_join}
-    ansible_playbook_code=$?
-    # If status code != 0 an error has occurred
-    if [[ ${ansible_playbook_code} -ne 0 ]]; then
-        echo "Playbook \"Join-Workers.yaml\" exited with error." >&2
-        exit 1
-    fi
-    echo -e "\n${1} is now part of the Swarm..\n"
-    sleep 1
-}
-
-# Start worker
-startWorker () {
-
-    # Start specific worker Exareme node
-    echo -e "\nStarting Exareme for worker node ${1}"
-
-    ansible_playbook_start=${ansible_playbook}"../Start-Exareme-Worker.yaml -e my_host="${1}
-    ${ansible_playbook_start}
-
-    ansible_playbook_code=$?
-    # If status code != 0 an error has occurred
-
-    if [[ ${ansible_playbook_code} -ne 0 ]]; then
-        echo "Playbook \"Start-Exareme-Worker.yaml\" exited with error." >&2
-        exit 1
-    fi
-
-    echo -e "\nExareme service is now running.."
-}
-
 # Check worker's vault info in vault.yaml file
 checkWorkerVaultInfos () {
     echo -e "\nChecking if \"${1}'s\" vault infos exist in vault.yaml.."

@@ -89,8 +89,26 @@ do
 		
 		# 3: (Re)Start one service.
 		elif [[ "${answer1}" == "3" ]]; then
-            echo -e "\nYou chose to (re)start one service but it is not implemented yet. Please, choose something else."
-			break
+            echo -e "\nYou chose to (re)start one service..."
+
+			if [[ ! -s ../group_vars/exareme.yaml ]]; then
+                echo -e "\nFile for holding docker exareme image information does not exist. Please create it first (Option 6)."
+				break
+			fi
+			
+            if [[ ! -s ../hosts.ini ]]; then
+                echo -e "\nFile for holding target machines' information (hosts.ini) does not exist. Please create it first (Option 7)."
+				break
+            fi
+			
+            if [[ ! -s ../vault.yaml ]]; then
+                echo -e "\nFile for holding target machines' information (vault.yaml) does not exist. Please create it first (Option 7)."
+				break
+            fi
+			
+			echo -e "\nAll neccessary files exist (hosts.ini, vault.yaml, exareme.yaml). Stoping..."
+            . ./restartWorker.sh
+            break
 		
 		# 4: Stop all services.
         elif [[ "${answer1}" == "4" ]]; then
@@ -180,7 +198,7 @@ do
                 echo -e "\nFile for holding target machines' information (vault.yaml) does not exist. Please create it first (Option 7)."
 				break
             fi
-            . ./removeInfos.sh
+            . ./remove_worker.sh
             break
 		
 		# 10:Exit.
