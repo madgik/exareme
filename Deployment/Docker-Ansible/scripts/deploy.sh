@@ -214,7 +214,7 @@ do
     echo "6:Stop services."
     echo "7:Stop specific worker target node."
     echo "8:Remove info for specific worker."
-    echo -e "9d:Exit.\n"
+    echo -e "9:Exit.\n"
 
     read answer1
 
@@ -302,7 +302,7 @@ do
                 echo -e "\nFile for holding private information for target machines' does not exist (vault.yaml). Creating it now.."
                 . ./vault.sh
             fi
-            echo -e "\nYou chose to stop an Exareme service for a worker target node.."
+            echo -e "\nYou chose to remove info for a specific workerg"
             . ./removeInfos.sh
             break
             echo -e "\nYou chose to remove infos for worker node.."
