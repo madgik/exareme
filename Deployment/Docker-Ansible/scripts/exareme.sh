@@ -35,7 +35,7 @@ resetExaremeFile () {
 
 
 if [[ -f ../group_vars/exareme.yaml ]]; then
-    echo -e "\n The file with the exareme docker image information (\"exareme.yaml\") exists."
+    echo -e "\nThe file with the exareme docker image information (\"exareme.yaml\") exists."
     while read -r line1 ; do
         read -r line2
         name=$(echo "$line1" | cut -d ':' -d ' ' -d '"' -f 2 -d '"')
