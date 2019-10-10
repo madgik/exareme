@@ -2,9 +2,3 @@
   shell: docker stack rm {{ my_name }}
   args:
     chdir: "{{ home_path }}Compose-Files/"
-  environment:
-    FEDERATION_NODE: "{{ hostvars[my_host]['hostname'] }}"
-    EXAREME_IMAGE: "{{ EXAREME_IMAGE }}:{{ EXAREME_TAG }}"
-    EXAREME_KEYSTORE: "{{ EXAREME_KEYSTORE }}"
-    DOCKER_DATA_FOLDER: "{{ DOCKER_DATA_FOLDER }}"
-    LOCAL_DATASETS_FOLDER: "{{ hostvars[my_host]['data_path'] }}"
