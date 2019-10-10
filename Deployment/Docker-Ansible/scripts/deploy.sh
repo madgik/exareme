@@ -48,6 +48,8 @@ else
     if [[ -s $(sudo find ~/.vault_pass.txt) ]]; then
         echo -e "File for storing Ansible password exists and it is not empty! Moving on...\n"
         ansible_playbook+="--vault-password-file ~/.vault_pass.txt "
+        #For encrypting/ decrypting vault.yaml file
+        ansible_vault="--vault-password-file ~/.vault_pass.txt "
     else
         echo "File is empty.. Do you want to store your Ansible password in a text file?[ y/n ]"
         password
