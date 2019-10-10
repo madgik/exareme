@@ -205,7 +205,7 @@ chmod 755 *.sh
 #Main menu
 while true
 do
-    echo -e "Choose one of the below:\n"
+    echo -e "\nChoose one of the below:\n"
     echo "1:Change the exareme docker image version."
     echo "2:Create the target machines' information (hosts.ini, vault.yaml)."
     echo "3:Deploy everything."

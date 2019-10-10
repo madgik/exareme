@@ -61,7 +61,7 @@ do
             sed -i "/$name/ d" ../hosts.ini
 
             #Remove from vault.yaml
-            echo -e "\nRemove private information for worker target machine with IP ${ip}"
+            echo -e "\nRemove private information for worker target machine with IP ${ip}\n"
 
             ansible_vault_decrypt="ansible-vault decrypt ../vault.yaml "${ansible_vault}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
             ${ansible_vault_decrypt}
@@ -86,7 +86,7 @@ do
             fi
             break
         else
-            echo "No worker with IP ${IP} found. None information will be removed."
+            echo -e "\nNo worker with IP ${IP} found. None information will be removed."
             break
         fi
     elif [[ ${answer} == "n" ]]; then
