@@ -86,7 +86,7 @@ do
             fi
             break
         else
-            echo "No worker with IP ${answer} found. None information will be removed."
+            echo "No worker with IP ${IP} found. None information will be removed."
             break
         fi
     elif [[ ${answer} == "n" ]]; then
