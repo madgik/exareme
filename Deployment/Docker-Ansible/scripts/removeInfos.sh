@@ -10,8 +10,8 @@ while true
 do
     if [[ ${IP} =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
         for i in 1 2 3 4; do
-            if [[ $(echo "IP" | cut -d. -f$i) -gt 255 ]]; then
-                echo "IP" | cut -d. -f$i
+            if [[ $(echo "${IP}" | cut -d. -f$i) -gt 255 ]]; then
+                echo "${IP}" | cut -d. -f$i
                 echo -e "\n${IP} is not a valid IP. Try again.."
                 read IP
             fi

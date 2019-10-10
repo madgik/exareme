@@ -213,7 +213,8 @@ do
     echo "5:(Re)Start services."
     echo "6:Stop services."
     echo "7:Stop specific worker target node."
-    echo -e "8:Exit.\n"
+    echo "8:Remove info for specific worker."
+    echo -e "9d:Exit.\n"
 
     read answer1
 
