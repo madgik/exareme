@@ -26,7 +26,7 @@ chmod 755 *.sh
 # Main menu
 while true
 do
-    echo -e "Choose one of the below:\n"
+    echo -e "\nChoose one of the below:"
     echo "1: Deploy the exareme swarm and start services."
     echo "2: (Re)Start all services."
 	echo "3: (Re)Start one service."
@@ -46,7 +46,7 @@ do
 		if [[ "${answer1}" == "1" ]]; then
 			echo -e "\nYou chose to deploy everything..."
 
-			if [[ -f ../group_vars/exareme.yaml ]]; then
+			if [[ ! -s ../group_vars/exareme.yaml ]]; then
                 echo -e "\nFile for holding docker exareme image information does not exist. Please create it first (Option 6)."
 				break
 			fi
@@ -69,7 +69,7 @@ do
 		elif [[ "${answer1}" == "2" ]]; then
             echo -e "\nYou chose to (re)start all services..."
 
-			if [[ -f ../group_vars/exareme.yaml ]]; then
+			if [[ ! -s ../group_vars/exareme.yaml ]]; then
                 echo -e "\nFile for holding docker exareme image information does not exist. Please create it first (Option 6)."
 				break
 			fi
@@ -97,7 +97,7 @@ do
         elif [[ "${answer1}" == "4" ]]; then
             echo -e "\nYou chose to stop all services..."
 
-			if [[ -f ../group_vars/exareme.yaml ]]; then
+			if [[ ! -s ../group_vars/exareme.yaml ]]; then
                 echo -e "\nFile for holding docker exareme image information does not exist. Please create it first (Option 6)."
 				break
 			fi
@@ -150,7 +150,7 @@ do
         elif [[ "${answer1}" == "8" ]]; then
             echo -e "\nYou chose to add a new worker to the exareme swarm information."
 
-			if [[ -f ../group_vars/exareme.yaml ]]; then
+			if [[ ! -s ../group_vars/exareme.yaml ]]; then
                 echo -e "\nFile for holding docker exareme image information does not exist. Please create it first (Option 6)."
 				break
 			fi
@@ -168,7 +168,7 @@ do
             . ./add_worker.sh
             break
 		
-        # 9: Remove a worker from the exareme swarm inforation files (hosts.ini, vault.yaml).
+        # 9: Remove a worker from the exareme swarm information files (hosts.ini, vault.yaml).
         elif [[ "${answer1}" == "9" ]]; then
 		    echo -e "\nYou chose to remove a worker from the exareme swarm information."
 		
