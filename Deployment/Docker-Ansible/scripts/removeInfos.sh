@@ -2,6 +2,8 @@
 
 init_ansible_playbook
 
+workerStop=0
+
 echo -e "\nYou chose to remove all the necessary info for a specific worker. Place here the IP of the worker: "
 read answer
 while true
@@ -21,7 +23,7 @@ do
     fi
 done
 
-echo "If an Exareme service is running in target worker ${name} with IP ${ip} it WILL be stopped. Do you want to continue? [ y/n ]"
+echo "If an Exareme service is running in target worker with IP ${answer} it WILL be stopped. Do you want to continue? [ y/n ]"
 read answer
 
 while true
@@ -38,7 +40,7 @@ do
             fi
         done < ../hosts.ini
 
-        if [[ ${workerStop} == "1" ]]; then
+    if [[ ${workerStop} == "1" ]]; then
             #TODO check if Exareme service exists and then ask if you want to continue
             #Stop worker
             echo -e "\nStopping Exareme service (if exists) for worker \"${name}\" with IP \"${ip}\"..."
@@ -82,8 +84,10 @@ do
                 rm -rf ../vault.yaml
                 exit 1
             fi
+            break
         else
             echo "No worker with IP ${answer} found. None information will be removed."
+            break
         fi
     elif [[ ${answer} == "n" ]]; then
         echo -e "\nNone information for worker ${name} with IP ${ip} will be removed.."
