@@ -72,7 +72,7 @@ if [[ -f exareme.yaml ]]; then
         fi
     done
 else
-    echo "Creating file for Exareme image and Exareme tag.."
+    echo -e "\nCreating file for Exareme image and Exareme tag.."
     updateFile
 fi
 
