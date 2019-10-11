@@ -23,7 +23,13 @@ fi
 LOCAL_DATA_FOLDER=${answer}
 
 chmod 755 *.sh
-. ./exareme.sh
+
+#Check if Exareme docker image exists in file
+if [[ -s ../Docker-Ansible/group_vars/exareme .yaml ]]; then
+    :
+else
+    . ./exareme.sh
+fi
 
 if [[ $(docker node ls | grep "Error") == '' ]]; then
     :
