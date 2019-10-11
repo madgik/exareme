@@ -4,7 +4,7 @@ test -d ${PORTAINER_DATA} \
         || sudo mkdir -p ${PORTAINER_DATA} \
         || ( echo Failed to create ${PORTAINER_DATA}; exit 1 )
 
-sudo gdocker service create \
+sudo docker service create \
 --publish mode=host,target=${PORTAINER_PORT},published=9000 \
 --constraint 'node.role == manager' \
 --detach=true --mount type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
