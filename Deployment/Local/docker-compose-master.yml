@@ -19,9 +19,9 @@
 version: '3.2'
 
 networks:
-  net-federation:
+  net-local:
     external:
-      name: mip-federation
+      name: mip-local
 
 services:
   exareme-keystore:
@@ -40,7 +40,7 @@ services:
           - node.role == manager       # Ensures we only start on manager nodes
           - node.labels.name == ${FEDERATION_NODE}
     networks:
-      - "net-federation" # Connect the docker container to the global network
+      - "net-local" # Connect the docker container to the global network
     ports:
       - "8500:8500"
 
@@ -73,6 +73,6 @@ services:
         protocol: tcp
         mode: host
     networks:
-      - "net-federation" # Connect the docker container to the global network
+      - "net-local" # Connect the docker container to the global network
     volumes:
       - ${LOCAL_DATA_FOLDER}:${DOCKER_DATA_FOLDER}
