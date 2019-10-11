@@ -32,7 +32,8 @@ else
 fi
 
 if [[ $(docker node ls | grep "Error") == '' ]]; then
-    :
+    echo -e "\nLeaving from previous Swarm.."
+    docker swarm leave -f
 else
     echo -e "\nInitialize Swarm.."
     docker swarm init --advertise-addr=$(wget http://ipinfo.io/ip -qO -)
