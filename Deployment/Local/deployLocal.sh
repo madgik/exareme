@@ -76,10 +76,10 @@ if [[ $(sudo docker service ls | grep ${name}"_exareme-master") != '' ]]; then
     sudo docker service rm ${name}"_exareme-master"
 fi
 
-env FEDERATION_NODE=${name} FEDERATION_ROLE=${FEDERATION_ROLE} EXAREME_IMAGE=${imageName}":"${tag} \
+sudo env FEDERATION_NODE=${name} FEDERATION_ROLE=${FEDERATION_ROLE} EXAREME_IMAGE=${imageName}":"${tag} \
 EXAREME_KEYSTORE=${EXAREME_KEYSTORE} DOCKER_DATA_FOLDER=${DOCKER_DATA_FOLDER} \
 LOCAL_DATA_FOLDER=${LOCAL_DATA_FOLDER} \
-sudo docker stack deploy -c docker-compose-master.yml ${name}
+docker stack deploy -c docker-compose-master.yml ${name}
 
 echo -e "\nDo you wish to run Portainer service? [ y/n ]"
 read answer
