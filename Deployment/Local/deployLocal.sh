@@ -26,23 +26,24 @@ else
     echo LOCAL_DATA_FOLDER=${answer} > dataPath.txt
 fi
 
-LOCAL_DATA_FOLDER=$(cat dataPath.txt | cut -d ':' -d ' ' -d '"' -f 2 -d '"')
+LOCAL_DATA_FOLDER=$(cat dataPath.txt | cut -d '=' -f 2)
+
 
 chmod 755 *.sh
 
 #Check if Exareme docker image exists in file
-if [[ -s .exareme.yaml ]]; then
+if [[ -s exareme.yaml ]]; then
     :
 else
     . ./exareme.sh
 fi
 
-if [[ $(docker node ls --quiet| grep "Error") == '' ]]; then
-    echo -e "\nLeaving from previous Swarm.."
-    docker swarm leave -f
+if [[ $(docker info | grep Swarm | grep inactive*) != '' ]]; then
     echo -e "\nInitialize Swarm.."
     docker swarm init --advertise-addr=$(wget http://ipinfo.io/ip -qO -)
 else
+    echo -e "\nLeaving from previous Swarm.."
+    docker swarm leave -f
     echo -e "\nInitialize Swarm.."
     docker swarm init --advertise-addr=$(wget http://ipinfo.io/ip -qO -)
 fi
