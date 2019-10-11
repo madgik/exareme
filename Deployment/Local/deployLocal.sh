@@ -38,19 +38,19 @@ else
     . ./exareme.sh
 fi
 
-if [[ $(docker info | grep Swarm | grep inactive*) != '' ]]; then
+if [[ $(sudo docker info | grep Swarm | grep inactive*) != '' ]]; then
     echo -e "\nInitialize Swarm.."
-    docker swarm init --advertise-addr=$(wget http://ipinfo.io/ip -qO -)
+    sudo docker swarm init --advertise-addr=$(wget http://ipinfo.io/ip -qO -)
 else
     echo -e "\nLeaving from previous Swarm.."
-    docker swarm leave -f
+    sudo docker swarm leave -f
     echo -e "\nInitialize Swarm.."
-    docker swarm init --advertise-addr=$(wget http://ipinfo.io/ip -qO -)
+    sudo docker swarm init --advertise-addr=$(wget http://ipinfo.io/ip -qO -)
 fi
 
-if [[ $(docker network ls | grep mip-local) == '' ]]; then
+if [[ $(sudo docker network ls | grep mip-local) == '' ]]; then
     echo -e "\nInitialize Network"
-    docker network create \
+    sudo docker network create \
             --driver=overlay --opt encrypted  --subnet=10.20.30.0/24  --ip-range=10.20.30.0/24 --gateway=10.20.30.254 mip-local
 fi
 
@@ -58,7 +58,7 @@ fi
 name=$(hostname)
 
 echo -e "\nUpdate label name for Swarm node "$name
-docker node update --label-add name=${name} ${name}
+sudo docker node update --label-add name=${name} ${name}
 echo -e "\n"
 
 while read -r line1 ; do
@@ -68,18 +68,18 @@ while read -r line1 ; do
 done < exareme.yaml
 
 #Remove services if already existed
-if [[ $(docker service ls | grep ${name}"_exareme-keystore") != '' ]]; then
-    docker service rm ${name}"_exareme-keystore"
+if [[ $(sudo docker service ls | grep ${name}"_exareme-keystore") != '' ]]; then
+    sudo docker service rm ${name}"_exareme-keystore"
 fi
 
-if [[ $(docker service ls | grep ${name}"_exareme-master") != '' ]]; then
-    docker service rm ${name}"_exareme-master"
+if [[ $(sudo docker service ls | grep ${name}"_exareme-master") != '' ]]; then
+    sudo docker service rm ${name}"_exareme-master"
 fi
 
 env FEDERATION_NODE=${name} FEDERATION_ROLE=${FEDERATION_ROLE} EXAREME_IMAGE=${imageName}":"${tag} \
 EXAREME_KEYSTORE=${EXAREME_KEYSTORE} DOCKER_DATA_FOLDER=${DOCKER_DATA_FOLDER} \
 LOCAL_DATA_FOLDER=${LOCAL_DATA_FOLDER} \
-docker stack deploy -c docker-compose-master.yml ${name}
+sudo docker stack deploy -c docker-compose-master.yml ${name}
 
 echo -e "\nDo you wish to run Portainer service? [ y/n ]"
 read answer
@@ -87,8 +87,8 @@ read answer
 while true
 do
     if [[ ${answer} == "y" ]];then
-        if [[ $(docker service ls | grep mip_portainer) != '' ]]; then
-            docker service rm mip_portainer
+        if [[ $(sudo docker service ls | grep mip_portainer) != '' ]]; then
+            sudo docker service rm mip_portainer
         fi
         . ./portainer.sh
         break
