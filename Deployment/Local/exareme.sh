@@ -9,16 +9,16 @@ docker_image_exists() {
 updateFile () {
 while true
 do
-    if [[ -f exareme.yaml ]]; then
-        rm -f exareme.yaml
+    if [[ -f ../Docker-Ansible/group_vars/exareme.yaml ]]; then
+        rm -f ../Docker-Ansible/group_vars/exareme.yaml
     fi
     echo -e "\nType your EXAREME image name:"
     read name
-    echo "EXAREME_IMAGE:" \"${name}\" >> exareme.yaml
+    echo "EXAREME_IMAGE:" \"${name}\" >> ../Docker-Ansible/group_vars/exareme.yaml
 
     echo -e "\nType your EXAREME image tag:"
     read tag
-    echo "EXAREME_TAG:" \"${tag}\" >> exareme.yaml
+    echo "EXAREME_TAG:" \"${tag}\" >> ../Docker-Ansible/group_vars/exareme.yaml
 
     echo -e "\nChecking if EXAREME image: "\"${name}":"${tag}\"" exists"
 
@@ -37,13 +37,13 @@ done
 
 }
 
-if [[ -f exareme.yaml ]]; then
+if [[ -f ../Docker-Ansible/group_vars/exareme.yaml ]]; then
     echo -e "\nFile \"exareme.yaml\" seams that already exists.\n"
     while read -r line1 ; do
         read -r line2
         name=$(echo "$line1" | cut -d ':' -d ' ' -d '"' -f 2 -d '"')
         tag=$(echo "$line2" | cut -d ':' -d ' ' -d '"' -f 2 -d '"')
-    done < exareme.yaml
+    done < ../Docker-Ansible/group_vars/exareme.yaml
     echo "EXAREME image that will be used is: "\"${name}":"${tag}\"
     echo "Do you wish to change EXAREME image?[ y/n ]"
     read answer
