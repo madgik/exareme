@@ -1,0 +1,66 @@
+# Local Exareme Deployment Guide
+
+Here you will find all the information needed in order to deploy Exareme in your environment via docker compose and shell scripts.
+
+# Requirement
+
+1) Install Docker in your machine.
+
+# Preparation
+
+## Data Structure
+In every node the DATA should follow a specific structure. We will refer to the path of the DATA folder as ```data_path```. The ```data_path``` can be different across the nodes.
+
+The data folder should contain one folder for each pathology that it has datasets for. Inside that folder there should be:
+1) the datasets.csv file with all the datasets combined and
+2) the CDEsMetadata.json file for that specific pathology.
+
+For example:
+
+-> Data Folder <br />
+------> Dementia <br />
+----------> datasets.csv <br />
+----------> CDEsMetadata.json <br />
+------> Neuropathology <br />
+----------> datasets.csv <br />
+----------> CDEsMetadata.json <br />
+
+The master node should have the CDEsMetadata.json for every pathology even if it doesn't contain a datasets.csv file.
+
+For example:
+
+-> Data Folder <br />
+------> Dementia <br />
+----------> CDEsMetadata.json <br />
+------> Neuropathology <br />
+----------> datasets.csv <br />
+----------> CDEsMetadata.json <br />
+
+
+## [Optional] Exareme Version 
+
+In the ```Local-Deployment/``` folder create an ```exareme.yaml``` file.
+
+The file should contain the following lines, modify them depending on the version of exareme you want to deploy.
+
+```
+EXAREME_IMAGE: "hbpmip/exareme"
+EXAREME_TAG: "v21.0.0"
+```
+
+## [Optional] Data path location
+
+In the ```Local-Deployment/``` folder create an ```dataPath.txt``` file.
+
+The file should contain the following line, modify it according to the place where your data are.
+
+```
+LOCAL_DATA_FOLDER=/home/user/data
+
+```
+
+# Deployment
+
+Run the ```deployLocal.sh``` to start the deployment.
+
+You will be prompted to provide any information needed.
