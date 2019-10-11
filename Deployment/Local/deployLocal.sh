@@ -13,14 +13,20 @@ PORTAINER_DATA=$pwd"/portainer"
 
 FEDERATION_ROLE="master"
 
-#TODO maybe write it in a file?
-echo "What is the data_path for host machine?"
-read answer
-#Check that path ends with /
-if [[ "${answer: -1}"  != "/" ]]; then
-        answer=${answer}"/"
+#Check if data_path exist
+if [[ -s dataPath.txt ]]; then
+    :
+else
+    echo "What is the data_path for host machine?"
+    read answer
+    #Check that path ends with /
+    if [[ "${answer: -1}"  != "/" ]]; then
+            answer=${answer}"/"
+    fi
+    echo LOCAL_DATA_FOLDER=${answer} > dataPath.txt
 fi
-LOCAL_DATA_FOLDER=${answer}
+
+LOCAL_DATA_FOLDER=$(cat dataPath.txt | cut -d ':' -d ' ' -d '"' -f 2 -d '"')
 
 chmod 755 *.sh
 
@@ -31,7 +37,7 @@ else
     . ./exareme.sh
 fi
 
-if [[ $(docker node ls | grep "Error") == '' ]]; then
+if [[ $(docker node ls --quiet| grep "Error") == '' ]]; then
     echo -e "\nLeaving from previous Swarm.."
     docker swarm leave -f
     echo -e "\nInitialize Swarm.."
