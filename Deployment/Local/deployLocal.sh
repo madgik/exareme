@@ -25,7 +25,7 @@ LOCAL_DATA_FOLDER=${answer}
 chmod 755 *.sh
 
 #Check if Exareme docker image exists in file
-if [[ -s ../Docker-Ansible/group_vars/exareme .yaml ]]; then
+if [[ -s ../Docker-Ansible/group_vars/exareme.yaml ]]; then
     :
 else
     . ./exareme.sh
@@ -34,6 +34,8 @@ fi
 if [[ $(docker node ls | grep "Error") == '' ]]; then
     echo -e "\nLeaving from previous Swarm.."
     docker swarm leave -f
+    echo -e "\nInitialize Swarm.."
+    docker swarm init --advertise-addr=$(wget http://ipinfo.io/ip -qO -)
 else
     echo -e "\nInitialize Swarm.."
     docker swarm init --advertise-addr=$(wget http://ipinfo.io/ip -qO -)
