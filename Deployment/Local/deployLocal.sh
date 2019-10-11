@@ -31,7 +31,7 @@ LOCAL_DATA_FOLDER=$(cat dataPath.txt | cut -d ':' -d ' ' -d '"' -f 2 -d '"')
 chmod 755 *.sh
 
 #Check if Exareme docker image exists in file
-if [[ -s ../Docker-Ansible/group_vars/exareme.yaml ]]; then
+if [[ -s .exareme.yaml ]]; then
     :
 else
     . ./exareme.sh
