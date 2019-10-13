@@ -1,0 +1,4 @@
+- name: Stop Exareme Spesific Worker
+  shell: docker stack rm {{ my_name }}
+  args:
+    chdir: "{{ home_path }}Compose-Files/"

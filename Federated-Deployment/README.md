@@ -1,4 +1,4 @@
-# Exareme Deployment Guide
+# Federated Exareme Deployment Guide
 
 Here you will find all the information needed in order to deploy Exareme in your environment via Ansible scripts.
 
@@ -43,22 +43,24 @@ For example:
 ----------> CDEsMetadata.json <br />
 
 
-## Exareme Version
+## [Optional] Initialize Exareme Version
 
-Go to the ```Deployment/Docker-Ansible/group_vars``` folder and create an ```exareme.yaml``` file.
+```This step can be done through the deploy script.```
+
+If you want to do it manually you can go to the ```Federated-Deployment/Docker-Ansible/group_vars``` folder and create an ```exareme.yaml``` file.
 
 The file should contain the following lines, modify them depending on the version of exareme you want to deploy.
 
 ```
-# Exareme Tag
-EXAREME_TAG: "v21.0.0"
-# Exareme Image
 EXAREME_IMAGE: "hbpmip/exareme"
+EXAREME_TAG: "v21.0.0"
 ```
 
-## Initialize Hosts
+## [Optional] Initialize Hosts
 
-Go to the ```Deployment/Docker-Ansible/``` folder and create a ```hosts.ini``` file.
+```This step can be done through the deploy script. If you have many nodes though it is easier to do it manually.```
+
+If you want to do it manually you can go to the ```Federated-Deployment/Docker-Ansible/``` folder and create a ```hosts.ini``` file.
 
 Here is an example of hosts.ini where we have 3 Target machines, one [master] of Exareme and two [workers] of Exareme.
 
@@ -102,7 +104,7 @@ worker2 ansible_ssh_pass="{{worker2_ssh_pass}}"
 
 [Requirement1: Mind that the variable ```data_path``` is the path where your Data CSV (datasets.csv) and the Metadata file (CDEsMetadata.json)
 are stored in your Target machine.]<br/>
-[Requirement2: Mind that the variable ```home_path``` is the path where ```Deployment/Compose-Files/``` will be stored in the master node. Compose-Files
+[Requirement2: Mind that the variable ```home_path``` is the path where ```Federated-Deployment/Compose-Files/``` will be stored in the master node. Compose-Files
 contains 2 docker-compose.yaml files for deploying the services. The ```home_path``` can be Any path]
 
 You can see that there are 2 main categories in hosts.ini file. The first one is ```[master]```, the second one is ```[workers]```.
@@ -124,7 +126,9 @@ b) creating a tag [worker3] with all the necessary variables. For example:
 
 For consistency reasons we suggest you keep the names as shown above [master,worker1,worker2..], and just increase the number after [worker] each time you add one.
 
-## Ansible-vault
+## [Optional] Ansible-vault
+
+```Just like the previous step this one can be done through the deploy script, too. If you have many nodes though it is easier to do it manually.```
 
 As you can also see in hosts.ini file we have some sensitive data like usernames and passwords in both master and workers. These lines ```MUST not be changed!```.
 
@@ -155,7 +159,7 @@ Ansible-vault comes with the installation of ansible. Make sure you have it inst
 With ansible-vault we can have an encrypted file which will contain sensitive information like the ones shown above.
 
 In order to create the file you need to run 
-```ansible-vault create vault_file.yaml``` inside ```Deployment/Docker-Ansible/``` folder.
+```ansible-vault create vault_file.yaml``` inside ```Federated-Deployment/Docker-Ansible/``` folder.
 It will ask for a vault-password that you will need to enter it each time you run a playbook. So keep it in mind.
 
 Here you will add
@@ -206,7 +210,7 @@ More guidance will be provided in that matter if you select to deploy via script
 
 # Deployment
 
-In the Docker-Ansible folder run the ```deploy.sh``` to start the deployment.
+Under Docker-Ansible/scripts/ folder run the ```deploy.sh``` to start the deployment.
 
 You will be prompted to provide any more information needed.
 
@@ -256,7 +260,8 @@ If you want to stop all services [Exareme master/Exareme workers/Portainer]:
 
 ### Add an Exareme Worker when the master is already running
 
-After inserting the nodes information in the hosts.ini and the ansible-vault file you can run the ```deploy.sh``` script.
+After inserting the nodes information in the hosts.ini and the ansible-vault file (under folder /Docker-Ansible/scripts/)
+you can run the ```deploy.sh``` script.
 
 You can also do it manually with the following commands:
 1) Join the particular worker by replacing workerN with the appropriate name: 
