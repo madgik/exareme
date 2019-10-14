@@ -23,4 +23,4 @@ def test_Histogram_Privacy():
 
 
 def check_privacy_result(result):
-    assert result == "{\"result\" : [{\"data\":\" Incorrect parameter value. sstype'value should be one of the following: 1,2,3 \",\"type\":\"text/plain+user_error\"}]}"
+    assert result == "{\"result\" : [{\"data\":\" Incorrect parameter value. \'sstype\' value should be one of the following: 1,2,3 \",\"type\":\"text/plain+user_error\"}]}"

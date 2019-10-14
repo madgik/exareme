@@ -14,7 +14,7 @@ privacychecking.registered = True
 def categoricalparameter_inputerrorchecking(parameterName, parameterVal, domainVals):
     values = re.split(',',domainVals)
     if str(parameterVal) not in values:
-        raise functions.OperatorError("ExaremeError", "Incorrect parameter value. " + parameterName + "'value should be one of the following: " + domainVals)
+        raise functions.OperatorError("ExaremeError", "Incorrect parameter value. '" + parameterName + "' value should be one of the following: " + domainVals)
     return "OK"
 categoricalparameter_inputerrorchecking.registered = True
 

@@ -25,7 +25,7 @@ def test_Histogram_Privacy():
 
 
 def check_privacy_result(result):
-    assert result == "{\"result\" : [{\"data\":\" Incorrect parameter value. ci\'value should be one of the following: 0,1 \",\"type\":\"text/plain+user_error\"}]}"
+    assert result == "{\"result\" : [{\"data\":\" Incorrect parameter value. \'ci\' value should be one of the following: 0,1 \",\"type\":\"text/plain+user_error\"}]}"
 
 if __name__ == '__main__':
     unittest.main()
