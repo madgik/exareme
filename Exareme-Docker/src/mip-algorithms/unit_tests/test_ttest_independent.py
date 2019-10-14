@@ -9,7 +9,7 @@ from decimal import *
 from rpy2.robjects.packages import importr
 import rpy2.robjects as robjects
 
-endpointUrl='http://88.197.53.38:9090/mining/query/TTEST_INDEPENDENT'
+endpointUrl='http://88.197.53.23:9090/mining/query/TTEST_INDEPENDENT'
 folderPath = 'R_scripts'
 file ='ttest_independent.Rmd'
 
@@ -29,9 +29,9 @@ class TestTTESTIndependent(unittest.TestCase):
 
     def test_UnpairedTtest_1a(self):
         logging.info("---------- TEST 1: We check if the means are different (M,F). ")
-        data = [{"name": "x", "value": "lefthippocampus"},
-                {"name": "y", "value": "gender"    },
-                {"name": "ylevels",  "value": "M,F"},
+        data = [{"name": "y", "value": "lefthippocampus"},
+                {"name": "x", "value": "gender"    },
+                {"name": "xlevels",  "value": "M,F"},
                 {"name": "hypothesis", "value": "different"},
                 {"name": "effectsize", "value": "1" },
                 {"name": "ci","value": "0"  },
@@ -47,9 +47,9 @@ class TestTTESTIndependent(unittest.TestCase):
 
     def test_UnpairedTtest_1b(self):
         logging.info("---------- TEST 1: We check if the means are different (F,M). ")
-        data = [{"name": "x", "value": "lefthippocampus"},
-                {"name": "y", "value": "gender"    },
-                {"name": "ylevels",  "value": "M,F"},
+        data = [{"name": "y", "value": "lefthippocampus"},
+                {"name": "x", "value": "gender"    },
+                {"name": "xlevels",  "value": "M,F"},
                 {"name": "hypothesis", "value": "different"},
                 {"name": "effectsize", "value": "1" },
                 {"name": "ci","value": "1"  },
@@ -65,9 +65,9 @@ class TestTTESTIndependent(unittest.TestCase):
 
     def test_UnpairedTtest_2(self):
         logging.info("---------- TEST 2: We check if the mean volumes are greater for men than for women. ")
-        data = [{"name": "x", "value": "lefthippocampus"},
-                {"name": "y", "value": "gender"    },
-                {"name": "ylevels",  "value": "M,F"},
+        data = [{"name": "y", "value": "lefthippocampus"},
+                {"name": "x", "value": "gender"    },
+                {"name": "xlevels",  "value": "M,F"},
                 {"name": "hypothesis", "value": "greaterthan"},
                 {"name": "effectsize", "value": "1" },
                 {"name": "ci","value": "1"  },
@@ -83,9 +83,9 @@ class TestTTESTIndependent(unittest.TestCase):
 
     def test_UnpairedTtest_3(self):
         logging.info("---------- TEST 3: twoGreater  ")
-        data = [{"name": "x", "value": "lefthippocampus"},
-                {"name": "y", "value": "gender"    },
-                {"name": "ylevels",  "value": "M,F"},
+        data = [{"name": "y", "value": "lefthippocampus"},
+                {"name": "x", "value": "gender"    },
+                {"name": "xlevels",  "value": "M,F"},
                 {"name": "hypothesis", "value": "lessthan"},
                 {"name": "effectsize", "value": "1" },
                 {"name": "ci","value": "1"  },
@@ -101,9 +101,9 @@ class TestTTESTIndependent(unittest.TestCase):
 
     def test_UnpairedTtest__Privacy(self):
         logging.info("---------- TEST : Algorithms for Privacy Error")
-        data = [{"name": "x", "value": "lefthippocampus"},
-                {"name": "y", "value": "gender"    },
-                {"name": "ylevels",  "value": "M,F"},
+        data = [{"name": "y", "value": "lefthippocampus"},
+                {"name": "x", "value": "gender"    },
+                {"name": "xlevels",  "value": "M,F"},
                 {"name": "hypothesis", "value": "lessthan"},
                 {"name": "effectsize", "value": "1" },
                 {"name": "ci","value": "1"  },

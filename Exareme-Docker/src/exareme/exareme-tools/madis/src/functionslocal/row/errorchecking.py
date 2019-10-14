@@ -58,13 +58,13 @@ def holdoutvalidation_inputerrorchecking2(train_size, test_size):
 
 holdoutvalidation_inputerrorchecking2.registered = True
 
-def maxnumberofiterations_errorhandling(maxnumberofiterations,no): # For most of the iterative algorithms
-    if maxnumberofiterations< no:
-        raise functions.OperatorError("ExaremeError", "The algorithm could not complete in the max number of iterations given. Please increase the iterations_max_number and try again.")
-    else:
-        return "OK"
-
-maxnumberofiterations_errorhandling.registered = True
+# def maxnumberofiterations_errorhandling(maxnumberofiterations,no): # For most of the iterative algorithms
+#     if maxnumberofiterations< no:
+#         raise functions.OperatorError("ExaremeError", "The algorithm could not complete in the max number of iterations given. Please increase the iterations_max_number and try again.")
+#     else:
+#         return "OK"
+#
+# maxnumberofiterations_errorhandling.registered = True
 
 
 

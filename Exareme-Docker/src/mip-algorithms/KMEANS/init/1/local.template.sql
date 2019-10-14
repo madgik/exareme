@@ -15,9 +15,11 @@
 --k or centers should be null. Otherwise the algorithm should stop. The algorithm should stop if Var 'error' ==1 . TODO Sofia k>=2
 --var 'error' from  select case when tonumber(%{centersisempty}) + tonumber(%{kisempty}) =1 then 0 else 1 end;
 
---requirevars 'defaultDB' 'input_local_DB' 'db_query' 'db_query' 'x' 'centers' 'k' 'dataset' ;
+requirevars 'defaultDB' 'input_local_DB' 'db_query' 'db_query' 'y' 'centers' 'k' 'dataset' ;
 attach database '%{defaultDB}' as defaultDB;
 attach database '%{input_local_DB}' as localDB;
+
+var 'x' '%{y}';
 
 --Read dataset
 drop table if exists inputdata;

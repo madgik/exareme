@@ -9,7 +9,7 @@ from decimal import *
 from rpy2.robjects.packages import importr
 import rpy2.robjects as robjects
 
-endpointUrl='http://88.197.53.38:9090/mining/query/HISTOGRAMS'
+endpointUrl='http://88.197.53.23:9090/mining/query/HISTOGRAMS'
 folderPath = 'R_scripts'
 file ='Histograms.Rmd'
 
@@ -28,7 +28,7 @@ class TestHistogram(unittest.TestCase):
         data = [{ "name": "x", "value": "rightententorhinalarea"},
                 {"name": "y", "value": ""},
                 {"name": "bins", "value": "35"},
-		{"name": "pathology","value":"dementia"},
+		        {"name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter", "value": ""}]
 
@@ -44,9 +44,10 @@ class TestHistogram(unittest.TestCase):
         data = [{ "name": "x", "value": "rightententorhinalarea"},
                 {"name": "y", "value": "gender"},
                 {"name": "bins", "value": "24"},
-                	{"name": "pathology","value":"dementia"},
+                {"name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter", "value": ""}]
+
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
         result = json.loads(r.text)
@@ -59,9 +60,10 @@ class TestHistogram(unittest.TestCase):
         data = [{ "name": "x", "value": "rightententorhinalarea"},
                 {"name": "y", "value": "alzheimerbroadcategory"},
                 {"name": "bins", "value": "19"},
-                	{"name": "pathology","value":"dementia"},
+                {"name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter", "value": ""}]
+
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
         result = json.loads(r.text)
@@ -73,9 +75,10 @@ class TestHistogram(unittest.TestCase):
         data = [{ "name": "x", "value": "alzheimerbroadcategory"},
                 {"name": "y", "value": ""},
                 {"name": "bins", "value": ""},
-                	{"name": "pathology","value":"dementia"},
+                {"name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter", "value": "{\"condition\": \"AND\", \"rules\": [{\"id\": \"rightententorhinalarea\",\"field\": \"rightententorhinalarea\",\"type\": \"double\", \"input\": \"number\", \"operator\": \"is_not_null\", \"value\": null}],\"valid\": true}"}]
+
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
         result = json.loads(r.text)
@@ -87,9 +90,10 @@ class TestHistogram(unittest.TestCase):
         data = [{ "name": "x", "value": "alzheimerbroadcategory"},
                 {"name": "y", "value": "gender"},
                 {"name": "bins", "value": ""},
-                	{"name": "pathology","value":"dementia"},
+                {"name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter", "value": "{\"condition\": \"AND\", \"rules\": [{\"id\": \"rightententorhinalarea\",\"field\": \"rightententorhinalarea\",\"type\": \"double\", \"input\": \"number\", \"operator\": \"is_not_null\", \"value\": null}],\"valid\": true}"}]
+
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
         result = json.loads(r.text)
@@ -102,9 +106,10 @@ class TestHistogram(unittest.TestCase):
         data = [{"name": "x", "value": "alzheimerbroadcategory"},
                 {"name": "y", "value": "gender"},
                 {"name": "bins", "value": ""},
-                	{"name": "pathology","value":"dementia"},
+                {"name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "adni_9rows"},
                 {"name": "filter", "value": ""}]
+
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
         result = json.loads(r.text)

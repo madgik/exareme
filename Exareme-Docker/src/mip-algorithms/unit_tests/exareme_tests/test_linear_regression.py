@@ -3,7 +3,7 @@ import os
 import json
 import logging
 
-endpointUrl='http://88.197.53.38:9090/mining/query/LINEAR_REGRESSION'
+endpointUrl='http://88.197.53.23:9090/mining/query/LINEAR_REGRESSION'
 
 def test_Histogram_Privacy():
         logging.info("---------- TEST : Algorithms for Privacy Error")
