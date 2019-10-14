@@ -6,7 +6,7 @@ import logging
 
 endpointUrl='http://88.197.53.100:9090/mining/query/TTEST_ONESAMPLE'
 
-def test_Histogram_Privacy():
+def test_TTEST_ONESAMPLE_Privacy():
         logging.info("---------- TEST : Algorithms for Privacy Error")
         data = [{"name": "y", "value": "lefthippocampus,righthippocampus"},
                     {"name": "testvalue", "value": "3.0"    },

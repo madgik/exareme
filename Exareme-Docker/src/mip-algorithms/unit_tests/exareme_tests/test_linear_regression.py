@@ -5,7 +5,7 @@ import logging
 
 endpointUrl='http://88.197.53.23:9090/mining/query/LINEAR_REGRESSION'
 
-def test_Histogram_Privacy():
+def test_LINEAR_REGRESSION_Privacy():
         logging.info("---------- TEST : Algorithms for Privacy Error")
         data = [{ "name": "x",	"value": "alzheimerbroadcategory+gender"},
                 { "name": "y",  "value": "lefthippocampus"},
