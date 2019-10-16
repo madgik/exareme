@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+#TODO change worker.88.197.53.44 to worker88_197_53_44, find a way to loop over [workers] nameTag [nameTag]
+
 # Including functions only
 source ./updateFiles.sh include-only
 
