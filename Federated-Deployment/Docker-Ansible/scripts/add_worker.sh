@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Including functions only
+source ./updateFiles.sh include-only
+
 tagExist=0
 workerExist=0
 workerVaultInfo=0
@@ -74,13 +77,16 @@ checkWorkerVaultInfos () {
     fi
 }
 
-echo -e "\nWhat is the name of the worker node you would like to add to the exareme swarm information files?"
-read workerName
+echo -e "\nWhat is the IP of the worker node you would like to add to the exareme swarm information files?"
+read workerIP
+
+checkIP workerIP
+workerName="worker"workerIP
 
 while IFS= read -r line || [[ -n "$line" ]]; do
     if [[ "$line" == *"[workers]"* ]]; then
         tagExist=1                          #[workers] tag exists
-        while IFS= read -r line1 || [ -n "$line1" ]; do
+        while IFS= read -r line1 || [[ -n "$line1" ]]; do
             worker=$(echo "$line1")
             if [[ ${workerName} != ${worker} ]]; then
                 continue
