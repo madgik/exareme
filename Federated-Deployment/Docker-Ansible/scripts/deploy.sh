@@ -159,7 +159,6 @@ do
         elif [[ "${answer1}" == "7" ]]; then
             echo -e "\nYou chose to (re)initialize the target machines' information (hosts.ini, vault.yaml)..."
             . ./hosts.sh
-            . ./vault.sh
             break
 		
 		# 8: Add a new worker to the exareme swarm information (hosts.ini, vault.yaml)."
