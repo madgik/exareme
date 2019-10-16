@@ -48,27 +48,32 @@ usernamePassword () {
 	echo -e ${1}" ansible_ssh_pass=\"{{"${1}"_ssh_pass}}\"\n" >> ../hosts.ini
 }
 
-# Get Worker Node Info
-workerHostsInfo () {
-	echo -e "\nWhat is the ansible host for target \"${1}\"? (expecting IP)"
-	read answer
+checkIP () {
 
-	while true
+    while true
 	do
-		if [[ ${answer} =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
+		if [[ ${1} =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
 			for i in 1 2 3 4; do
-				if [ $(echo "$answer" | cut -d. -f$i) -gt 255 ]; then
-					echo "$answer" | cut -d. -f$i
-					echo -e "\n${answer} is not a valid IP. Try again.."
+				if [[ $(echo "$1" | cut -d. -f$i) -gt 255 ]]; then
+					echo "$1" | cut -d. -f$i
+					echo -e "\n${1} is not a valid IP. Try again.."
 					read answer
 				fi
 			done
 			break
 		else
-			echo -e "\n${answer} is not a valid IP. Try again.."
+			echo -e "\n${1} is not a valid IP. Try again.."
 			read answer
 		fi
 	done
+
+}
+# Get Worker Node Info
+workerHostsInfo () {
+	echo -e "\nWhat is the ansible host for target \"${1}\"? (expecting IP)"
+	read answer
+
+	checkIP ${answer}
 
 	echo -e "\n[${1}]" >> ../hosts.ini
 	echo ${1} "ansible_host="${answer} >> ../hosts.ini
@@ -92,22 +97,8 @@ workerHostsInfo () {
 masterHostsInfo () {
     echo -e "\nWhat is the ansible host for target \"master\"? (expecting IP)"
     read answer
-    while true
-    do
-        if [[ ${answer} =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
-            for i in 1 2 3 4; do
-                if [[ $(echo "$answer" | cut -d. -f$i) -gt 255 ]]; then
-                    echo "$answer" | cut -d. -f$i
-                    echo -e "\n${answer} is not a valid IP. Try again.."
-                    read answer
-                fi
-            done
-            break
-        else
-            echo -e "\n${answer} is not a valid IP. Try again.."
-            read answer
-        fi
-    done
+
+    checkIP ${answer}
 
     echo "master ansible_host="${answer} >> ../hosts.ini
     echo -e "\nWhat is the home path for target \"master\"?"
@@ -262,12 +253,16 @@ createFiles () {
             done
 
             echo "[workers]" >> ../hosts.ini
-            worker=1
 
-            #Construct worker1, worker2 .. workerN below [workers] tag
+            worker=1
+            #Construct worker88.197.53.38, worker88.197.53.44 .. workerN below [workers] tag
             while [[ ${answer1} != 0 ]]
             do
-                echo "worker"${worker} >> ../hosts.ini
+                echo -e "\nWhat is the IP of the ${worker}st worker node?"
+                read answer
+                checkIP ${answer}
+
+                echo "worker"${answer} >> ../hosts.ini
                 worker=$[${worker}+1]
                 answer1=$[${answer1}-1]
             done

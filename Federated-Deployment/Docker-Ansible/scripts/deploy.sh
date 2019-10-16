@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
 # Including functions only
-source ./vault.sh include-only
-source updateFiles.sh include-only
+source ./updateFiles.sh include-only
 source ./stop.sh include-only
 
 # TODO check what is happening when you give the wrong pass more than 3 times
