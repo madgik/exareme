@@ -172,13 +172,8 @@ workerVaultInfos () {
     become_pass=${1}"_become_pass: "${become_pass}
 }
 
-# (Re)Initialize hosts.ini file
-createFiles () {
-
-    # Information for target Master
-    echo -e "\nInformation for master target machine are needed (hosts.ini)."
-    echo "[master]" >> ../hosts.ini
-    masterHostsInfo
+#Write master's target node vault Information
+writeMastersVaultInfo () {
 
     # Vault Information for target Master
     echo -e "\nVault Information for master target machine are needed (vault.yaml)."
@@ -199,7 +194,53 @@ createFiles () {
         rm -rf ../vault.yaml
         exit 1
     fi
-    ##########################################
+
+}
+
+#Write workers target node vault Information
+writeWorkersVaultInfo () {
+
+    workerVaultInfos "worker"${1}
+
+    # TODO (not critical) decrypt encrypt only once with dynamic variables
+    ansible_vault_decrypt="ansible-vault decrypt ../vault.yaml "${ansible_vault_authentication}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
+    ${ansible_vault_decrypt}
+
+    ansible_playbook_code=$?
+    # If status code != 0 an error has occurred
+    if [[ ${ansible_playbook_code} -ne 0 ]]; then
+        echo "Decryption of file \"../vault.yaml\" exited with error.Exiting.." >&2
+        exit 1
+    fi
+
+    echo -e "\n" >> ../vault.yaml
+    echo ${var_remote_user} >> ../vault.yaml
+    echo ${var_become_user} >> ../vault.yaml
+    echo ${ssh_pass} >> ../vault.yaml
+    echo ${become_pass} >> ../vault.yaml
+
+    ansible_vault_encrypt="ansible-vault encrypt ../vault.yaml "${ansible_vault_authentication}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
+    ${ansible_vault_encrypt}
+
+    ansible_playbook_code=$?
+    # If status code != 0 an error has occurred
+    if [[ ${ansible_playbook_code} -ne 0 ]]; then
+        echo "Encryption of file \"../vault.yaml\" exited with error. Removing file with sensitive information. Exiting.." >&2
+        rm -rf ../vault.yaml
+        exit 1
+    fi
+
+}
+
+# (Re)Initialize hosts.ini file
+createFiles () {
+
+    # Information for target Master
+    echo -e "\nInformation for master target machine are needed (hosts.ini)."
+    echo "[master]" >> ../hosts.ini
+    masterHostsInfo
+
+    writeMastersVaultInfo
 
     echo -e "\nAre there any target \"worker\" nodes? [ y/n ]"
     read answer
@@ -239,39 +280,9 @@ createFiles () {
                 echo -e "\nInformation for workers target machines' are needed (hosts.ini).."
                 workerHostsInfo "worker"${n}
 
-                #Vault
                 echo -e "\nVault Information for workers target machines' are needed (vault.yaml).."
-                workerVaultInfos "worker"${n}
+                writeWorkersVaultInfo ${n}
 
-                # TODO (not critical) decrypt encrypt only once with dynamic variables
-                ansible_vault_decrypt="ansible-vault decrypt ../vault.yaml "${ansible_vault_authentication}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
-                ${ansible_vault_decrypt}
-
-                ansible_playbook_code=$?
-                # If status code != 0 an error has occurred
-                if [[ ${ansible_playbook_code} -ne 0 ]]; then
-                    echo "Decryption of file \"../vault.yaml\" exited with error.Exiting.." >&2
-                    exit 1
-                fi
-
-                echo -e "\n" >> ../vault.yaml
-                echo ${var_remote_user} >> ../vault.yaml
-                echo ${var_become_user} >> ../vault.yaml
-                echo ${ssh_pass} >> ../vault.yaml
-                echo ${become_pass} >> ../vault.yaml
-
-                ansible_vault_encrypt="ansible-vault encrypt ../vault.yaml "${ansible_vault_authentication}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
-                ${ansible_vault_encrypt}
-
-                ansible_playbook_code=$?
-                # If status code != 0 an error has occurred
-                if [[ ${ansible_playbook_code} -ne 0 ]]; then
-                    echo "Encryption of file \"../vault.yaml\" exited with error. Removing file with sensitive information. Exiting.." >&2
-                    rm -rf ../vault.yaml
-                    exit 1
-                fi
-
-                ################################################################
                 n=$[${n}+1]
                 worker=$[${worker}-1]
             done

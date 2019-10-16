@@ -2,7 +2,7 @@
 
 # Including functions only
 source ./vault.sh include-only
-source ./hosts.sh include-only
+source updateFiles.sh include-only
 source ./stop.sh include-only
 
 # TODO check what is happening when you give the wrong pass more than 3 times
@@ -158,7 +158,7 @@ do
 		# 7: (Re)Initialize the exareme swarm target machines' information (hosts.ini, vault.yaml).
         elif [[ "${answer1}" == "7" ]]; then
             echo -e "\nYou chose to (re)initialize the target machines' information (hosts.ini, vault.yaml)..."
-            . ./hosts.sh
+            . updateFiles.sh
             break
 		
 		# 8: Add a new worker to the exareme swarm information (hosts.ini, vault.yaml)."
