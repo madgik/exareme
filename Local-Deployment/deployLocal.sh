@@ -9,7 +9,7 @@ DOCKER_DATA_FOLDER="/root/exareme/data/"
 PORTAINER_PORT="9000"
 PORTAINER_IMAGE="portainer/portainer"
 PORTAINER_VERSION=":latest"
-PORTAINER_DATA=$pwd"/portainer"
+PORTAINER_DATA=$PWD"/portainer"
 
 FEDERATION_ROLE="master"
 
@@ -44,6 +44,7 @@ if [[ $(sudo docker info | grep Swarm | grep inactive*) != '' ]]; then
 else
     echo -e "\nLeaving from previous Swarm.."
     sudo docker swarm leave -f
+    sleep 1
     echo -e "\nInitialize Swarm.."
     sudo docker swarm init --advertise-addr=$(wget http://ipinfo.io/ip -qO -)
 fi
