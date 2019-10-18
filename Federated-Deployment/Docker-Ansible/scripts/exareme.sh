@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+#TODO what if the user enters # in exareme.yaml. FIX that
 
 # Check if EXAREME image exists
 docker_image_exists() {
@@ -23,7 +24,7 @@ resetExaremeFile () {
 		echo -e "\nChecking if EXAREME image: "\"${name}":"${tag}\"" exists"
 
 		# Docker image may exist in docker hub or locally.
-		if [ "$docker_image_exists ${name} ${tag}" ] || [ "$docker images -q ${name}:${tag} 2> /dev/null)" != "" ]; then
+		if [[ "$docker_image_exists ${name} ${tag}" ]] || [[ "$docker images -q ${name}:${tag} 2> /dev/null)" != "" ]]; then
 			echo "EXAREME Image exists. Continuing..."
 			break
 		else

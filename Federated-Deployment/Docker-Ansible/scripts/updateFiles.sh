@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TODO (not critical) create function for encryption Process
-
+checked=0
 # Check if vault_pass file exists.
 # If it doesn't ask the user to provide it.
 # If the user doesn't want to, add the --ask-vault-pass parameter to the ansible calls.
@@ -70,19 +70,21 @@ checkIP () {
 }
 # Get Worker Node Info
 workerHostsInfo () {
-	echo -e "\nWhat is the ansible host for target \"${1}\"? (expecting IP)"
-	read answer
+	if [[ ${checked} == "0" ]]; then
+	    echo -e "\nWhat is the ansible host for target worker node? (expecting IP)"
+	    read answer
 
-	checkIP ${answer}
+	    checkIP ${answer}
+    fi
 
 	echo -e "\n[${1}]" >> ../hosts.ini
 	echo ${1} "ansible_host="${answer} >> ../hosts.ini
 
-	echo -e "\nWhat is the hostname for target \"${1}\"?"
+	echo -e "\nWhat is the hostname for target \"${2}\"?"
 	read answer
 	echo ${1} "hostname="${answer} >> ../hosts.ini
 
-	echo -e "\nWhat is the data_path for target \"${1}\"?"
+	echo -e "\nWhat is the data_path for target \"${2}\"?"
 	read answer
 	#Check that path ends with /
 	if [[ "${answer: -1}"  != "/" ]]; then
@@ -90,7 +92,7 @@ workerHostsInfo () {
 	fi
 	echo ${1} "data_path="${answer} >> ../hosts.ini
 
-	usernamePassword ${1}
+	usernamePassword ${2}
 }
 
 # Get Master Node Info
@@ -258,25 +260,16 @@ createFiles () {
             #Construct worker88.197.53.38, worker88.197.53.44 .. workerN below [workers] tag
             while [[ ${answer1} != 0 ]]
             do
-                echo -e "\nWhat is the IP of the ${worker}st worker node?"
+                echo -e "\nWhat is the ansible host for target worker node? (expecting IP)"
                 read answer
+
                 checkIP ${answer}
-
-                echo "worker"${answer} >> ../hosts.ini
-                worker=$[${worker}+1]
-                answer1=$[${answer1}-1]
-            done
-
-            #For each worker1, worker2, .. workerN place infos in hosts.ini
-            worker=$[${worker}-1]
-            n=1
-            while [[ ${worker} != 0 ]]
-            do
+                checked=1
                 echo -e "\nInformation for workers target machines' are needed (hosts.ini).."
-                workerHostsInfo "worker"${n}
+                workerHostsInfo ${workerIP} {workerName} ${checked}
 
                 echo -e "\nVault Information for workers target machines' are needed (vault.yaml).."
-                writeWorkersVaultInfo ${n}
+                writeWorkersVaultInfo {workerIP} {workerName}
 
                 n=$[${n}+1]
                 worker=$[${worker}-1]

@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-#TODO change worker.88.197.53.44 to worker88_197_53_44, find a way to loop over [workers] nameTag [nameTag]
-
 # Including functions only
 source ./updateFiles.sh include-only
 
@@ -13,7 +11,7 @@ init_ansible_playbook
 
 # Check worker's vault info in vault.yaml file
 checkWorkerVaultInfos () {
-    echo -e "\nChecking if \"${1}'s\" vault information exist in vault.yaml..."
+    echo -e "\nChecking if vault information for target worker node with IP:\"${1}'s\" exist in vault.yaml..."
 
     ansible_vault_decrypt="ansible-vault decrypt ../vault.yaml "${ansible_vault_authentication}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
     ${ansible_vault_decrypt}
@@ -26,8 +24,8 @@ checkWorkerVaultInfos () {
     fi  # TODO check what happens if script fails at right this point! vault.yaml decrypted
 
     while IFS= read -r line || [[ -n "$line" ]]; do
-        if [[ "$line" == *${1}* ]]; then
-            echo "\"${1}'s\" vault information exist..."
+        if [[ "$line" == *${2}* ]]; then
+            echo "\"${2}'s\" vault information exist..."
             workerVaultInfo=1
             break
         else
@@ -47,9 +45,9 @@ checkWorkerVaultInfos () {
     fi
 
     if [[ ${workerVaultInfo} != "1" ]]; then
-        echo "\"${1}'s\" vault information does not exist. Updating file for holding private information for target machines's now.. (vault.yaml)"
+        echo "Vault information for targer worker node with IP:\"${1}'s\" does not exist. Updating file for holding private information for target machines's now.. (vault.yaml)"
 
-        workerVaultInfos ${1}
+        workerVaultInfos ${2}
         ansible_vault_decrypt="ansible-vault decrypt ../vault.yaml "${ansible_vault_authentication}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
         ${ansible_vault_decrypt}
 
@@ -79,11 +77,11 @@ checkWorkerVaultInfos () {
     fi
 }
 
-echo -e "\nWhat is the IP of the worker node you would like to add to the exareme swarm information files?"
+echo -e "\nWhat is the IP of the target worker node you would like to add to the exareme swarm information files?"
 read workerIP
 
-checkIP workerIP
-workerName="worker"workerIP
+checkIP ${workerIP}
+workerName="worker"${workerIP}
 
 while IFS= read -r line || [[ -n "$line" ]]; do
     if [[ "$line" == *"[workers]"* ]]; then
@@ -111,7 +109,7 @@ if [[ ${tagExist} != "1" ]]; then
     echo -e "\nIt seems that no information for target [workers] exist. Updating target machines' information (hosts.ini)..."
     echo -e "\n[workers]" >> ../hosts.ini
     echo ${workerName} >> ../hosts.ini
-    workerHostsInfo ${workerName}
+    workerHostsInfo ${workerIP} ${workerName} ${checked}
 	
     # Check if information for worker exist in vault.yaml file
     checkWorkerVaultInfos ${workerName}
@@ -119,7 +117,7 @@ fi
 
 # [workers] tag exist [workerN] tag does not exist
 if [[ ${workerExist} != "1" ]]; then
-    echo -e "\nIt seems that no information for worker \"${workerName}\" exist. Do you wish to add the worker now? [ y/n ]"
+    echo -e "\nIt seems that no information for worker \"${workeIP}\" exist. Do you wish to add the worker now? [ y/n ]"
     read answer
     while true
     do
@@ -127,10 +125,10 @@ if [[ ${workerExist} != "1" ]]; then
             # Add worker in hosts.ini, join worker in Swarm, Start Exareme in worker
             echo -e "\nUpdating target machines' information (hosts.ini)...."
             . ./updateHosts.sh
-            workerHostsInfo ${workerName}
+            workerHostsInfo ${workerIP} ${workerName} ${checked}
 						
             # Check if info for worker exist in vault.yaml file
-            checkWorkerVaultInfos ${workerName}
+            checkWorkerVaultInfos ${workerIP} ${workerName}
             break
 			
         elif [[ ${answer} == "n" ]]; then
