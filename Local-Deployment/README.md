@@ -6,6 +6,14 @@ Here you will find all the information needed in order to deploy Exareme in your
 
 1) Install Docker in your machine.
 
+# Ports
+
+Make sure the following ports are available:
+
+```9090: for accessing Exareme```
+```(Optional): 8500 for accessing Consul Key Value Store```
+```(Optional): 9000 for accessing Portainer.io```
+
 # Preparation
 
 ## Data Structure
@@ -55,7 +63,7 @@ In the ```Local-Deployment/``` folder create an ```dataPath.txt``` file.
 The file should contain the following line, modify it according to the place where your data are.
 
 ```
-LOCAL_DATA_FOLDER=/home/user/data
+LOCAL_DATA_FOLDER=/home/user/data/
 
 ```
 
@@ -64,3 +72,11 @@ LOCAL_DATA_FOLDER=/home/user/data
 Run the ```deployLocal.sh``` to start the deployment.
 
 You will be prompted to provide any information needed.
+
+# Troubleshooting
+
+While ```sudo docker service ls```, if the services are Replicated 0/1:
+
+1) Check that you have enough space in your machine.
+
+2) If there is an ERROR, try ```sudo docker service ps --no-trunc NAME_or_ID_of_service``` to see the whole message.
