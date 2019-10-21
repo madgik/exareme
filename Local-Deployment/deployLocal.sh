@@ -9,7 +9,7 @@ DOCKER_DATA_FOLDER="/root/exareme/data/"
 PORTAINER_PORT="9000"
 PORTAINER_IMAGE="portainer/portainer"
 PORTAINER_VERSION=":latest"
-PORTAINER_DATA=$PWD"/portainer"
+PORTAINER_DATA=$(echo $PWD)"/portainer"
 
 FEDERATION_ROLE="master"
 
