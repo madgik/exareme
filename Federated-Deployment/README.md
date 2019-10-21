@@ -218,7 +218,7 @@ If you are using a script instead of a flat file, ensure that it is marked as ex
 
 More guidance will be provided in that matter if you select to deploy via script (see below)
 
-# Deployment by Hospital.
+# Deployment by Hospital
 
 In case when a Hospital ```can not/will not``` give the sensitive data like usernames and passwords (credentials) needed in order for Ansible to run, here is a workaround:
 
