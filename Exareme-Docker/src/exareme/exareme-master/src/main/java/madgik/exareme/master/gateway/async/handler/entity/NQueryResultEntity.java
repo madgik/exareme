@@ -76,6 +76,7 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
                 //type could be error, user_error, warning regarding the error occured along the process
                 String type = user_error;
                 String result = defaultOutputFormat(data, type);
+                logErrorMessage(result);
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();
@@ -84,6 +85,7 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
                 //type could be error, user_error, warning regarding the error occured along the process
                 String type = warning;
                 String result = defaultOutputFormat(data, type);
+                logErrorMessage(result);
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();
@@ -92,6 +94,7 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
                 //type could be error, user_error, warning regarding the error occured along the process
                 String type = error;
                 String result = defaultOutputFormat(data, type);
+                logErrorMessage(result);
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();
@@ -100,6 +103,7 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
                 //type could be error, user_error, warning regarding the error occured along the process
                 String type = error;
                 String result = defaultOutputFormat(data, type);
+                logErrorMessage(result);
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();
@@ -108,6 +112,7 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
                 //type could be error, user_error, warning regarding the error occured along the process
                 String type = error;
                 String result = defaultOutputFormat(data, type);
+                logErrorMessage(result);
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();
@@ -117,6 +122,10 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
 
     private String defaultOutputFormat(String data, String type) {
         return "{\"result\" : [{\"data\":" + "\"" + data + "\",\"type\":" + "\"" + type + "\"}]}";
+    }
+
+    private void logErrorMessage(String error){
+        log.info(error);
     }
 
     @Override
