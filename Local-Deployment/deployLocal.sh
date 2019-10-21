@@ -42,7 +42,7 @@ if [[ $(sudo docker info | grep Swarm | grep inactive*) != '' ]]; then
     echo -e "\nInitialize Swarm.."
     sudo docker swarm init --advertise-addr=$(wget http://ipinfo.io/ip -qO -)
 else
-    echo -e "\nLeaving from previous Swarm.."
+    echo -e "\nLeaving previous Swarm.."
     sudo docker swarm leave -f
     sleep 1
     echo -e "\nInitialize Swarm.."
