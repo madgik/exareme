@@ -11,8 +11,10 @@ Here you will find all the information needed in order to deploy Exareme in your
 Make sure the following ports are available:
 
 ```9090: for accessing Exareme```
-```(Optional): 8500 for accessing Consul Key Value Store```
-```(Optional): 9000 for accessing Portainer.io```
+
+```(Optional): 8500 for accessing Consul Key Value Store``` 
+
+```(Optional): 9000 for accessing Portainer.io``` 
 
 # Preparation
 
