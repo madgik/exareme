@@ -125,7 +125,7 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
     }
 
     private void logErrorMessage(String error){
-        log.info(error);
+        log.info("Algorithm exited with error and returned:\n " + error);
     }
 
     @Override
