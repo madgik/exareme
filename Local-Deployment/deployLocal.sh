@@ -9,7 +9,7 @@ DOCKER_DATA_FOLDER="/root/exareme/data/"
 PORTAINER_PORT="9000"
 PORTAINER_IMAGE="portainer/portainer"
 PORTAINER_VERSION=":latest"
-PORTAINER_DATA=$pwd"/portainer"
+PORTAINER_DATA=$(echo $PWD)"/portainer"
 
 FEDERATION_ROLE="master"
 
@@ -42,8 +42,9 @@ if [[ $(sudo docker info | grep Swarm | grep inactive*) != '' ]]; then
     echo -e "\nInitialize Swarm.."
     sudo docker swarm init --advertise-addr=$(wget http://ipinfo.io/ip -qO -)
 else
-    echo -e "\nLeaving from previous Swarm.."
+    echo -e "\nLeaving previous Swarm.."
     sudo docker swarm leave -f
+    sleep 1
     echo -e "\nInitialize Swarm.."
     sudo docker swarm init --advertise-addr=$(wget http://ipinfo.io/ip -qO -)
 fi
@@ -61,11 +62,25 @@ echo -e "\nUpdate label name for Swarm node "$name
 sudo docker node update --label-add name=${name} ${name}
 echo -e "\n"
 
-while read -r line1 ; do
-    read -r line2
-    imageName=$(echo "$line1" | cut -d ':' -d ' ' -d '"' -f 2 -d '"')
-    tag=$(echo "$line2" | cut -d ':' -d ' ' -d '"' -f 2 -d '"')
+#Read image from file exareme.yaml
+image=""
+while read -r line  ; do
+    if [[ ${line:0:1} == "#" ]] || [[ -z ${line} ]] ; then  #comment line or empty line, continue
+        continue
+    fi
+
+    image=$(echo ${image})$(echo "$line" | cut -d ':' -d ' ' -d '"' -f 2 -d '"')":"
+
 done < exareme.yaml
+
+#remove the last : from string
+image=${image:0:-1}
+
+#imageName the first half of string image
+imageName=$(echo "$image" | cut -d ':' -f 1)
+
+#tag the second half of string image
+tag=$(echo "$image" | cut -d ':' -f 2 )
 
 #Remove services if already existed
 if [[ $(sudo docker service ls | grep ${name}"_exareme-keystore") != '' ]]; then
