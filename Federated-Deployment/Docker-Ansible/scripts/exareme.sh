@@ -49,7 +49,7 @@ if [[ -f ../group_vars/exareme.yaml ]]; then
 
         image=$(echo ${image})$(echo "$line" | cut -d ':' -d ' ' -d '"' -f 2 -d '"')":"
 
-    done < exareme.yaml
+    done < ../group_vars/exareme.yaml
 
     #remove the last : from string
     image=${image:0:-1}
