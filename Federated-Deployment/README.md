@@ -12,6 +12,16 @@ We will refer to the machine from which you run the ansible scripts as Admin and
 
 3) Install Docker in all Target machines.
 
+# Ports
+
+Make sure the following ports are available:
+
+```9090: for accessing Exareme```
+
+```(Optional): 8500 for accessing Consul Key Value Store```
+
+```(Optional): 9000 for accessing Portainer.io```
+
 # Preparation
 
 ## Data Structure
@@ -53,7 +63,7 @@ The file should contain the following lines, modify them depending on the versio
 
 ```
 EXAREME_IMAGE: "hbpmip/exareme"
-EXAREME_TAG: "v21.0.0"
+EXAREME_TAG: "v21.1.0"
 ```
 
 ## [Optional] Initialize Hosts
@@ -297,7 +307,10 @@ Go to your ```Services``` to check each service's logs and see if everything is 
 ### Troubleshooting
 
 1) Under ```Services``` in the left menu check that all services has 1 replicas: ```replicated 1 / 1```.<br/>
-    If this is not the case for the Worker nodes, meaning you get 0 replicas: ```replicated 0 / 1```, then it is possible that you started an Exareme Worker service before joining that Worker in the Swarm. In such case, do the following:
+    1) Make sure you have enough space in your machine
+    2) Check the ERROR message by doing ```sudo docker service ps --no-trunc NAME_or_ID_of_service```
+
+    For worker instances of Exareme, if you get 0 replicas: ```replicated 0 / 1```, then it is possible that you started an Exareme Worker service before joining that Worker in the Swarm. In such case, do the following:
     1) Stop the specific Worker via:
         ``` ansible-playbook -i hosts.ini Stop-Exareme-Worker.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=workerN"``` , 
     2) Join the specific Worker in the Swarm via:
