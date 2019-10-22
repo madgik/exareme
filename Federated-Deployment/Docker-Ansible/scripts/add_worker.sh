@@ -11,7 +11,7 @@ init_ansible_playbook
 
 # Check worker's vault info in vault.yaml file
 checkWorkerVaultInfos () {
-    echo -e "\nChecking if vault information for target worker node with IP:\"${1}'s\" exist in vault.yaml..."
+    echo -e "\nChecking if vault information for target worker node with IP: \"${1}'s\" exist in vault.yaml..."
 
     ansible_vault_decrypt="ansible-vault decrypt ../vault.yaml "${ansible_vault_authentication}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
     ${ansible_vault_decrypt}
@@ -45,9 +45,9 @@ checkWorkerVaultInfos () {
     fi
 
     if [[ ${workerVaultInfo} != "1" ]]; then
-        echo "Vault information for targer worker node with IP:\"${1}'s\" does not exist. Updating file for holding private information for target machines's now.. (vault.yaml)"
+        echo -e "\nVault information for targer worker with IP: \"${1}'s\" does not exist.\nUpdating file for holding private information for target machines's now.. (vault.yaml)"
 
-        workerVaultInfos ${2}
+        workerVaultInfos ${1} ${2}
         ansible_vault_decrypt="ansible-vault decrypt ../vault.yaml "${ansible_vault_authentication}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
         ${ansible_vault_decrypt}
 
@@ -77,11 +77,13 @@ checkWorkerVaultInfos () {
     fi
 }
 
-echo -e "\nWhat is the IP of the target worker node you would like to add to the exareme swarm information files?"
-read workerIP
+echo -e "\nWhat is the IP of the target worker you would like to add to the exareme swarm information files?"
+read answer
 
-checkIP ${workerIP}
+checkIP ${answer}
+workerIP=${answer}
 workerName="worker"${workerIP}
+workerName=${workerName//./_}
 
 while IFS= read -r line || [[ -n "$line" ]]; do
     if [[ "$line" == *"[workers]"* ]]; then
@@ -109,15 +111,15 @@ if [[ ${tagExist} != "1" ]]; then
     echo -e "\nIt seems that no information for target [workers] exist. Updating target machines' information (hosts.ini)..."
     echo -e "\n[workers]" >> ../hosts.ini
     echo ${workerName} >> ../hosts.ini
-    workerHostsInfo ${workerIP} ${workerName} ${checked}
+    workerHostsInfo ${workerIP} ${workerName}
 	
-    # Check if information for worker exist in vault.yaml file
-    checkWorkerVaultInfos ${workerName}
+    # Check if info for worker exist in vault.yaml file
+    checkWorkerVaultInfos ${workerIP} ${workerName}
 fi
 
 # [workers] tag exist [workerN] tag does not exist
 if [[ ${workerExist} != "1" ]]; then
-    echo -e "\nIt seems that no information for worker \"${workeIP}\" exist. Do you wish to add the worker now? [ y/n ]"
+    echo -e "\nIt seems that no information for target worker with IP: \"${workerIP}\" exist. Do you wish to add the worker now? [ y/n ]"
     read answer
     while true
     do
@@ -125,7 +127,7 @@ if [[ ${workerExist} != "1" ]]; then
             # Add worker in hosts.ini, join worker in Swarm, Start Exareme in worker
             echo -e "\nUpdating target machines' information (hosts.ini)...."
             . ./updateHosts.sh
-            workerHostsInfo ${workerIP} ${workerName} ${checked}
+            workerHostsInfo ${workerIP} ${workerName}
 						
             # Check if info for worker exist in vault.yaml file
             checkWorkerVaultInfos ${workerIP} ${workerName}

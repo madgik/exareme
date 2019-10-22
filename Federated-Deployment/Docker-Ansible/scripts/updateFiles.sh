@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TODO (not critical) create function for encryption Process
-ipChecked=0
+
 # Check if vault_pass file exists.
 # If it doesn't ask the user to provide it.
 # If the user doesn't want to, add the --ask-vault-pass parameter to the ansible calls.
@@ -70,23 +70,15 @@ checkIP () {
 }
 # Get Worker Node Info
 workerHostsInfo () {
-	if [[ ${ipChecked} == "0" ]]; then
-	    echo -e "\nWhat is the ansible host for target worker node? (expecting IP)"
-	    read answer
-
-	    checkIP ${answer}
-    else
-        answer=${1}
-    fi
 
 	echo -e "\n[${2}]" >> ../hosts.ini
-	echo ${2} "ansible_host="${answer} >> ../hosts.ini
+	echo ${2} "ansible_host="${1} >> ../hosts.ini
 
-	echo -e "\nWhat is the hostname for target worker node with IP: \"${1}\"?"
+	echo -e "\nWhat is the hostname for target worker with IP: \"${1}\"?"
 	read answer
 	echo ${2} "hostname="${answer} >> ../hosts.ini
 
-	echo -e "\nWhat is the data_path for target worker node with IP: \"${1}\"?"
+	echo -e "\nWhat is the data_path for target worker with IP: \"${1}\"?"
 	read answer
 	#Check that path ends with /
 	if [[ "${answer: -1}"  != "/" ]]; then
@@ -149,18 +141,18 @@ masterVaultInfos () {
 # Get Worker Vault Info
 workerVaultInfos () {
 
-    echo -e "\nWhat is the remote user for target worker node with IP: \"${1}\"?"
+    echo -e "\nWhat is the remote user for target worker with IP: \"${1}\"?"
     read remote_user
     var_remote_user=${2}"_remote_user: "${remote_user}
 
-    echo -e "\nWhat is the password for remote user: \"${remote_user}\" for target worker node with IP: \"${1}\"?"
+    echo -e "\nWhat is the password for remote user: \"${remote_user}\" for target worker with IP: \"${1}\"?"
     read -s remote_pass
 
-    echo -e "\nWhat is the become user for target worker node with IP: \"${1}\"? (root if possible)"
+    echo -e "\nWhat is the become user for target worker with IP: \"${1}\"? (root if possible)"
     read become_user
     var_become_user=${2}"_become_user: "${become_user}
 
-    echo -e "\nWhat is the password for become user: \"${become_user}\" for target worker node with IP: \"${1}\"?"
+    echo -e "\nWhat is the password for become user: \"${become_user}\" for target worker with IP: \"${1}\"?"
     read -s become_pass
 
     ssh_pass=${2}"_ssh_pass: "${remote_pass}
@@ -170,8 +162,6 @@ workerVaultInfos () {
 #Write master's target node vault Information
 writeMastersVaultInfo () {
 
-    # Vault Information for target Master
-    echo -e "\nVault Information for master target machine are needed (vault.yaml)."
     masterVaultInfos
 
     echo ${master_remote_user} >> ../vault.yaml
@@ -231,19 +221,21 @@ writeWorkersVaultInfo () {
 createFiles () {
 
     # Information for target Master
-    echo -e "\nInformation for master target machine are needed (hosts.ini)."
+    echo -e "\nInformation for target \"master\" are needed (hosts.ini)."
     echo "[master]" >> ../hosts.ini
     masterHostsInfo
 
+    # Vault Information for target Master
+    echo -e "\nVault Information for target \"master\" are needed (vault.yaml)."
     writeMastersVaultInfo
 
-    echo -e "\nAre there any target \"worker\" nodes? [ y/n ]"
+    echo -e "\nAre there any target \"workers\"? [ y/n ]"
     read answer
 
     while true
     do
         if [[ ${answer} == "y" ]]; then
-            echo -e "\nHow many target \"worker\" nodes are there?"
+            echo -e "\nHow many target \"workers\" are there?"
             read answer1
             #Check if what was given is a number
             while true
@@ -257,14 +249,13 @@ createFiles () {
             done
 
             echo "[workers]" >> ../hosts.ini
-            echo -e "\nInformation for workers target machines' are needed (hosts.ini).."
 
+            echo -e "\nInformation for target \"worker(s)\" are needed (hosts.ini).."
             worker=${answer1}
             #Construct worker88.197.53.38, worker88.197.53.44 .. workerN below [workers] tag
             while [[ ${worker} != 0 ]]
             do
-
-                echo -e "\nWhat is the ansible host for target worker node? (expecting IP)"
+                echo -e "\nWhat is the ansible host for target \"worker\"? (expecting IP)"
                 read answer
 
                 checkIP ${answer}
@@ -276,11 +267,10 @@ createFiles () {
 
                 #Place workerX_X_X_X under [workers]
                 . ./updateHosts.sh
-                ipChecked=1
 
-                workerHostsInfo ${workerIP} ${workerName} ${ipChecked}
+                workerHostsInfo ${workerIP} ${workerName}
 
-                echo -e "\nVault Information for workers target machines' are needed (vault.yaml).."
+                echo -e "\nVault Information for target worker with IP: \"${workerIP}\" are needed (vault.yaml).."
                 writeWorkersVaultInfo ${workerIP} ${workerName}
 
                 workerName=""
