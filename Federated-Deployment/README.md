@@ -228,7 +228,7 @@ In case when a Hospital ```can not/will not``` give the sensitive data like user
 ```docker swarm join --token SWMTKN-1-22ya4cjf2c1aq4sbnypwkvs2z87wg2897xi35qvp1hs54s85of-doah1kp92psb8rqvbgshu7ro2 88.197.53.38:2377```
 (sudo if you do not have access to run docker commands)
 
-3)Inform the system administrator that the command run, so he/she can Start Exareme instance at the specific Hospital from the ```Manager node``` of Swarm.
+3) Inform the system administrator that the command run, so he/she can Start Exareme instance at the specific Hospital from the ```Manager node``` of Swarm.
 
 # Deployment
 
