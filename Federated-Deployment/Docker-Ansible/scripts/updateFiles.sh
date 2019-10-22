@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TODO (not critical) create function for encryption Process
-checked=0
+ipChecked=0
 # Check if vault_pass file exists.
 # If it doesn't ask the user to provide it.
 # If the user doesn't want to, add the --ask-vault-pass parameter to the ansible calls.
@@ -49,20 +49,20 @@ usernamePassword () {
 }
 
 checkIP () {
-
+    answer=${1}
     while true
 	do
-		if [[ ${1} =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
+		if [[ ${answer} =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
 			for i in 1 2 3 4; do
-				if [[ $(echo "$1" | cut -d. -f$i) -gt 255 ]]; then
-					echo "$1" | cut -d. -f$i
-					echo -e "\n${1} is not a valid IP. Try again.."
+				if [[ $(echo "${answer}" | cut -d. -f$i) -gt 255 ]]; then
+					echo "${answer}" | cut -d. -f$i
+					echo -e "\n${answer} is not a valid IP. Try again.."
 					read answer
 				fi
 			done
 			break
 		else
-			echo -e "\n${1} is not a valid IP. Try again.."
+			echo -e "\n${answer} is not a valid IP. Try again.."
 			read answer
 		fi
 	done
@@ -70,27 +70,29 @@ checkIP () {
 }
 # Get Worker Node Info
 workerHostsInfo () {
-	if [[ ${checked} == "0" ]]; then
+	if [[ ${ipChecked} == "0" ]]; then
 	    echo -e "\nWhat is the ansible host for target worker node? (expecting IP)"
 	    read answer
 
 	    checkIP ${answer}
+    else
+        answer=${1}
     fi
 
-	echo -e "\n[${1}]" >> ../hosts.ini
-	echo ${1} "ansible_host="${answer} >> ../hosts.ini
+	echo -e "\n[${2}]" >> ../hosts.ini
+	echo ${2} "ansible_host="${answer} >> ../hosts.ini
 
-	echo -e "\nWhat is the hostname for target \"${2}\"?"
+	echo -e "\nWhat is the hostname for target worker node with IP: \"${1}\"?"
 	read answer
-	echo ${1} "hostname="${answer} >> ../hosts.ini
+	echo ${2} "hostname="${answer} >> ../hosts.ini
 
-	echo -e "\nWhat is the data_path for target \"${2}\"?"
+	echo -e "\nWhat is the data_path for target worker node with IP: \"${1}\"?"
 	read answer
 	#Check that path ends with /
 	if [[ "${answer: -1}"  != "/" ]]; then
 			answer=${answer}"/"
 	fi
-	echo ${1} "data_path="${answer} >> ../hosts.ini
+	echo ${2} "data_path="${answer} >> ../hosts.ini
 
 	usernamePassword ${2}
 }
@@ -129,14 +131,14 @@ masterVaultInfos () {
     master_remote_user="master_remote_user: "${remote_user}
 
 
-    echo -e "\nWhat is the password for remote user:\"${remote_user}\" for target \"master\"?"
+    echo -e "\nWhat is the password for remote user: \"${remote_user}\" for target \"master\"?"
     read -s remote_pass
 
     echo -e "\nWhat is the become user for target \"master\"? (root if possible)"
     read become_user
     master_become_user="master_become_user: "${become_user}
 
-    echo -e "\nWhat is the password for become user:\"${become_user}\" for target \"master\"?"
+    echo -e "\nWhat is the password for become user: \"${become_user}\" for target \"master\"?"
     read -s become_pass
 
     master_ssh_pass="master_ssh_pass: "${remote_pass}
@@ -147,22 +149,22 @@ masterVaultInfos () {
 # Get Worker Vault Info
 workerVaultInfos () {
 
-    echo -e "\nWhat is the remote user for target \"${1}\"?"
+    echo -e "\nWhat is the remote user for target worker node with IP: \"${1}\"?"
     read remote_user
-    var_remote_user=${1}"_remote_user: "${remote_user}
+    var_remote_user=${2}"_remote_user: "${remote_user}
 
-    echo -e "\nWhat is the password for remote user:\"${remote_user}\" for target \"${1}\"?"
+    echo -e "\nWhat is the password for remote user: \"${remote_user}\" for target worker node with IP: \"${1}\"?"
     read -s remote_pass
 
-    echo -e "\nWhat is the become user for target \"${1}\"? (root if possible)"
+    echo -e "\nWhat is the become user for target worker node with IP: \"${1}\"? (root if possible)"
     read become_user
-    var_become_user=${1}"_become_user: "${become_user}
+    var_become_user=${2}"_become_user: "${become_user}
 
-    echo -e "\nWhat is the password for become user:\"${become_user}\" for target \"${1}\"?"
+    echo -e "\nWhat is the password for become user: \"${become_user}\" for target worker node with IP: \"${1}\"?"
     read -s become_pass
 
-    ssh_pass=${1}"_ssh_pass: "${remote_pass}
-    become_pass=${1}"_become_pass: "${become_pass}
+    ssh_pass=${2}"_ssh_pass: "${remote_pass}
+    become_pass=${2}"_become_pass: "${become_pass}
 }
 
 #Write master's target node vault Information
@@ -193,7 +195,7 @@ writeMastersVaultInfo () {
 #Write workers target node vault Information
 writeWorkersVaultInfo () {
 
-    workerVaultInfos "worker"${1}
+    workerVaultInfos ${1} ${2}      #IP , NAME
 
     # TODO (not critical) decrypt encrypt only once with dynamic variables
     ansible_vault_decrypt="ansible-vault decrypt ../vault.yaml "${ansible_vault_authentication}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
@@ -255,23 +257,33 @@ createFiles () {
             done
 
             echo "[workers]" >> ../hosts.ini
+            echo -e "\nInformation for workers target machines' are needed (hosts.ini).."
 
-            worker=1
+            worker=${answer1}
             #Construct worker88.197.53.38, worker88.197.53.44 .. workerN below [workers] tag
-            while [[ ${answer1} != 0 ]]
+            while [[ ${worker} != 0 ]]
             do
+
                 echo -e "\nWhat is the ansible host for target worker node? (expecting IP)"
                 read answer
 
                 checkIP ${answer}
-                checked=1
-                echo -e "\nInformation for workers target machines' are needed (hosts.ini).."
-                workerHostsInfo ${workerIP} {workerName} ${checked}
+                workerIP=${answer}
+
+                #Costruct workerX_X_X_X
+                workerName="worker"${workerIP}
+                workerName=${workerName//./_}     #replace all . with _
+
+                #Place workerX_X_X_X under [workers]
+                . ./updateHosts.sh
+                ipChecked=1
+
+                workerHostsInfo ${workerIP} ${workerName} ${ipChecked}
 
                 echo -e "\nVault Information for workers target machines' are needed (vault.yaml).."
-                writeWorkersVaultInfo {workerIP} {workerName}
+                writeWorkersVaultInfo ${workerIP} ${workerName}
 
-                n=$[${n}+1]
+                workerName=""
                 worker=$[${worker}-1]
             done
             break
