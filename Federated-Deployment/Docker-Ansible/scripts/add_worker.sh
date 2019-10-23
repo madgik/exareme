@@ -93,7 +93,7 @@ while IFS= read -r line || [[ -n "$line" ]]; do
             if [[ ${workerName} != ${worker} ]]; then
                 continue
             else                            #workerN exists below [workers] tag
-                workerExist=1
+                workerExist=1               #TODO message to the user? check if [workerX_X_X_X] exists as tag?
                 break
             fi
             if [[ -z "$line1" ]]; then
