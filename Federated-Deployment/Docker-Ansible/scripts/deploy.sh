@@ -4,7 +4,7 @@
 source ./updateFiles.sh include-only
 source ./stop.sh include-only
 
-# TODO check what is happening when you give the wrong pass more than 3 times
+# TODO check what is happening when you give the wrong $USER pass more than 3 times
 
 export ANSIBLE_HOST_KEY_CHECKING=False      #avoid host key checking
 

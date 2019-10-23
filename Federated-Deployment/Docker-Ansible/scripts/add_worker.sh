@@ -9,6 +9,22 @@ workerVaultInfo=0
 
 init_ansible_playbook
 
+# Join worker in Docker Swarm
+joinWorker () {
+
+    ansible_playbook_join=${ansible_playbook}"../Join-Workers.yaml -e my_host="${1}
+    ${ansible_playbook_join}
+
+    ansible_playbook_code=$?
+    #If status code != 0 an error has occurred
+    if [[ ${ansible_playbook_code} -ne 0 ]]; then
+        echo "Playbook \"Join-Workers.yaml\" exited with error." >&2
+        exit 1
+    fi
+    echo -e "\n${1} is now part of the Swarm..\n"
+    sleep 1
+}
+
 # Check worker's vault info in vault.yaml file
 checkWorkerVaultInfos () {
     echo -e "\nChecking if vault information for target worker node with IP: \"${1}'s\" exist in vault.yaml..."
@@ -93,7 +109,8 @@ while IFS= read -r line || [[ -n "$line" ]]; do
             if [[ ${workerName} != ${worker} ]]; then
                 continue
             else                            #workerN exists below [workers] tag
-                workerExist=1               #TODO message to the user? check if [workerX_X_X_X] exists as tag?
+                workerExist=1               #TODO check if [workerX_X_X_X] exists as tag?
+                echo -e "\nWorker with IP: \"workerIP\" already exists under [workers] tag."
                 break
             fi
             if [[ -z "$line1" ]]; then
@@ -115,6 +132,9 @@ if [[ ${tagExist} != "1" ]]; then
 	
     # Check if info for worker exist in vault.yaml file
     checkWorkerVaultInfos ${workerIP} ${workerName}
+
+    #Join worker in Swarm
+    joinWorker ${workerName}
 fi
 
 # [workers] tag exist [workerN] tag does not exist
@@ -131,6 +151,9 @@ if [[ ${workerExist} != "1" ]]; then
 						
             # Check if info for worker exist in vault.yaml file
             checkWorkerVaultInfos ${workerIP} ${workerName}
+
+            #Join worker in Swarm
+            joinWorker ${workerName}
             break
 			
         elif [[ ${answer} == "n" ]]; then
