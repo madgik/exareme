@@ -71,7 +71,7 @@ checkIP () {
 # Get Worker Node Info
 workerHostsInfo () {
 
-	echo -e "\n[${2}]" >> ../hosts.ini
+	echo "[${2}]" >> ../hosts.ini
 	echo ${2} "ansible_host="${1} >> ../hosts.ini
 
 	echo -e "\nWhat is the hostname for target worker with IP: \"${1}\"?"
@@ -251,9 +251,9 @@ createFiles () {
             echo "[workers]" >> ../hosts.ini
 
             echo -e "\nInformation for target \"worker(s)\" are needed (hosts.ini).."
-            worker=${answer1}
+            workerNum=${answer1}
             #Construct worker88.197.53.38, worker88.197.53.44 .. workerN below [workers] tag
-            while [[ ${worker} != 0 ]]
+            while [[ ${workerNum} != 0 ]]
             do
                 echo -e "\nWhat is the ansible host for target \"worker\"? (expecting IP)"
                 read answer
@@ -274,7 +274,7 @@ createFiles () {
                 writeWorkersVaultInfo ${workerIP} ${workerName}
 
                 workerName=""
-                worker=$[${worker}-1]
+                workerNum=$[${workerNum}-1]
             done
             break
 
