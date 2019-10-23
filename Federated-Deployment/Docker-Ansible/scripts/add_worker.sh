@@ -18,8 +18,9 @@ joinWorker () {
     ansible_playbook_code=$?
     #If status code != 0 an error has occurred
     if [[ ${ansible_playbook_code} -ne 0 ]]; then
-        echo "Playbook \"Join-Workers.yaml\" exited with error." >&2
-        exit 1
+        echo "Playbook \"Join-Workers.yaml\" exited with error. Try select 1 from main menu below to deploy the exareme swarm and start services.." >&2
+        sleep 1
+        break
     fi
     echo -e "\n${1} is now part of the Swarm..\n"
     sleep 1
@@ -134,6 +135,7 @@ if [[ ${tagExist} != "1" ]]; then
     checkWorkerVaultInfos ${workerIP} ${workerName}
 
     #Join worker in Swarm
+    echo -e "\nAdd worker with IP: \"${workerIP}\" in an already initialized Swarm.."
     joinWorker ${workerName}
 fi
 
@@ -153,6 +155,7 @@ if [[ ${workerExist} != "1" ]]; then
             checkWorkerVaultInfos ${workerIP} ${workerName}
 
             #Join worker in Swarm
+            echo -e "\nAdd worker with IP: \"${workerIP}\" in an already initialized Swarm.."
             joinWorker ${workerName}
             break
 			
