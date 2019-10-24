@@ -29,7 +29,10 @@
 			"desc": "Reference values of categorical dependent variables. It should be json. It can be empty.",
 			"type": "other",
 			"value": "[{\"name\":\"alzheimerbroadcategory\",\"val\":\"Other\"}]",
-			"valueNotBlank": true,
+			"min": null,
+			"max": null,
+			"enumerations": null,
+			"valueNotBlank": false,
 			"valueMultiple": false,
 			"valueType": "json"
 		}, {
@@ -37,6 +40,9 @@
 			"desc": "Encoding parameter. It can be one of the following:dummycoding,sumscoding,simplecoding",
 			"type": "other",
 			"value": "dummycoding",
+			"min": null,
+			"max": null,
+			"enumerations": ['dummycoding','sumscoding','simplecoding'],
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "string"

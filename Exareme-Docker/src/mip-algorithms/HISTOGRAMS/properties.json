@@ -29,6 +29,9 @@
 			"desc": "Number of bins",
 			"type": "other",
 			"value": "50",
+			"min": 1,
+			"max": null,
+			"enumerations": null,
 			"valueNotBlank": false,
 			"valueMultiple": false,
 			"valueType": "integer"

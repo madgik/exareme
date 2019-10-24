@@ -47,6 +47,9 @@
 			"desc": "",
 			"type": "other",
 			"value": "3",
+			"min": null,
+			"max": null,
+			"enumerations": null,
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "integer"
@@ -63,6 +66,9 @@
 			"desc": "Predefined value for the dbIdentifier",
 			"type": "other",
 			"value": "",
+			"min": null,
+			"max": null,
+			"enumerations": null,
 			"valueNotBlank": false,
 			"valueMultiple": false,
 			"valueType": "string"

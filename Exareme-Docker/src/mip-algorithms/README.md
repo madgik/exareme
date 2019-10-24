@@ -1,12 +1,12 @@
 <body class='markdown-preview' data-use-github-style><p><img src="https://sos-ch-dk-2.exo.io/public-website-production/img/HBP.png" alt="Human Brain Project logo"></p>
 <h1 id="medical-informatics-platform">Medical Informatics Platform</h1>
 <h1 id="data-mining-algorithms-algorithm-developer-s-manual">Data Mining Algorithms - Algorithm developer&#39;s manual</h1>
-<p>This is the repository containing all data mining algorithms for the <a href="https://www.humanbrainproject.eu/mip">Medical Informatics Platform</a> 
+<p>This is the repository containing all data mining algorithms for the <a href="https://www.humanbrainproject.eu/mip">Medical Informatics Platform</a>
 of <a href="https://www.humanbrainproject.eu/">Human Brain Project</a>, that are executed on <a href="https://www.exareme.org">Exareme</a>.</p>
 <h2 id="types-of-algorithm-workflows-currently-supported">Types of algorithm workflows currently supported</h2>
 <ul>
 <li><code>local</code> execution of an SQL script on master node only.</li>
-<li><code>local-global</code> execution of a <em>local</em> SQL script on <a href="http://madgik.github.io/exareme/architecture.html">worker nodes/containers</a>, 
+<li><code>local-global</code> execution of a <em>local</em> SQL script on <a href="http://madgik.github.io/exareme/architecture.html">worker nodes/containers</a>,
 which is followed by a <em>global</em> SQL script on global node.  </li>
 <li><code>multiple local-global</code> execution of a fixed (as in fixed number) sequences of <code>local-global</code> workflows.<br>Each <code>local_global</code> is executed according to the order appeared in the algorithm&#39;s directory structure.  </li>
 <li><p><code>iterative</code> execution of an iterative algorithm, which is expressed in four phases:  </p>
@@ -16,8 +16,8 @@ which is followed by a <em>global</em> SQL script on global node.  </li>
 <li><code>termination condition</code> (actually a <code>local</code>) and</li>
 <li><code>finalization</code> (actually a <code>multiple_local_global</code>)</li>
 </ol>
-<p>Firstly, <code>init</code> phase is executed, which is followed by a <em>pair</em> of <code>step</code> and <code>termination_condition</code> phases. 
-In each termination condition, the iterations module of execution engine reads the value of termination_condition related table and &quot;decides&quot; 
+<p>Firstly, <code>init</code> phase is executed, which is followed by a <em>pair</em> of <code>step</code> and <code>termination_condition</code> phases.
+In each termination condition, the iterations module of execution engine reads the value of termination_condition related table and &quot;decides&quot;
 whether to continue the iterative execution. If so, a <code>step</code> phase is resubmitted, otherwise the <code>finalize</code> phase of the algorithm is
 submitted.</p>
 </li>
@@ -33,11 +33,11 @@ submitted.</p>
 <li><code>local_global</code></li>
 <li><code>multiple_local_global</code></li>
 <li><code>iterative</code></li></ul>
-<li>parameters<br>These parameters are required for the algorithm to run and are provided by the user. The algorithms' SQL files require these variables as input. 
+<li>parameters<br>These parameters are required for the algorithm to run and are provided by the user. The algorithms' SQL files require these variables as input.
 The parameter has the following properties:<ul>
 <li><code>name</code> (String) </li>
 <li><code>desc</code> (String) Will be shown in the properties of the algorithm. </li>
-<li><code>type</code> Defines the type of the parameter. It can take the following values: 
+<li><code>type</code> Defines the type of the parameter. It can take the following values:
 <ol>
 <li><code>column</code> (Used for querying the columns of the database.)</li>
 <li><code>formula</code> (Same as the column type but is is parsed as a formula of R. Allowed characters are '+ - * : 0.' )</li>
@@ -48,12 +48,15 @@ The parameter has the following properties:<ul>
 </li>
 <li><code>columnValuesSQLType</code> (String) If type is column or formula then this is required. Specifies the possible types that the column can have. Allowed types 'text, integer, real'. They could be more than one in combination with a comma. Empty string means that there is no constraint. </li>
 <li><code>columnValuesIsCategorical</code> (String) If type is column or formula then this is required. Specifies the categorical type that the column can have. Allowed types 'true','false'. Empty string means that there is no constraint. </li>
-<li><code>columnValuesNumOfEnumerations</code> (String) If type is column or formula then this is required. Specifies the number of enumerations that the column can have. Example of possible values '1','2'. Empty string means that there is no constraint. </li>
+<li><code>enumerations</code> (List) Specifies the enumerations the parameter can have. Example of possible values [1, 2] or ['male','female']. </li>
+<li><code>min</code> (same as valueType) Specifies the min value the parameter can have. Example of possible values '1'. </li>
+<li><code>max</code> (same as valueType) Specifies the max value the parameter can have. Example of possible values '100'. </li>
+
 <li><code>value</code> (String) It is used as an example value. </li>
 <li><code>defaultValue</code> (String) If the parameter can be blank, then this value will be used if the user does not provide one. </li>
 <li><code>valueNotBlank</code> (Boolean) Defines if the value can be blank.</li>
 <li><code>valueMultiple</code> (Boolean) Defines if the parameter can have multiple values. </li>
-<li><code>valueType</code> Defines the type of the value. It can take the following values: 
+<li><code>valueType</code> Defines the type of the value. It can take the following values:
 <ol>
 <li><code>string</code></li>
 <li><code>integer</code></li>
@@ -90,22 +93,22 @@ by using the <code>input_local_tbl</code> variable.</li>
 <h3 id="every-template-file-must-have-output">Every template file must have output</h3>
 <p>It is required by the runtime engine that every <code>*.template.sql</code> file must have some output.<br>If this isn&#39;t applicable in a script file, simply write <code>select &quot;ok&quot;;</code> at the end.</p>
 <h3 id="algorithm-s-output-format">Algorithm&#39;s output format</h3>
-<p>The final results (i.e. the algorithm&#39;s output) <strong>must</strong> be formatted using 
+<p>The final results (i.e. the algorithm&#39;s output) <strong>must</strong> be formatted using
 <a href="http://madgik.github.io/madis/row.html?highlight=jdict#functions.row.jpacks.jdict"><code>jdict</code></a> UDF of <a href="http://madgik.github.io/madis/">madIS</a>.<br>  This converts the results to a <code>JSON</code> format.</p>
 <h3 id="specifics-pertaining-to-iterative-algorithms">Specifics pertaining to iterative algorithms</h3>
 <h4 id="regarding-context-sharing-among-iteration-execution-phases">Regarding context sharing among iteration execution phases</h4>
 <p>For sharing context among iteration execution phases, the <code>previous_phase_output_tbl</code> variable can be used. This follows the same convention
 as the one used for sharing context between <code>local</code> and <code>global</code> scripts. In other words, output of the previous iterative execution phase
-is &quot;forwarded&quot; as input to the next one (e.g. output of <code>step-1</code> is forwarded as input to <code>step-2</code> and output of <code>step-N</code> is forwarded 
+is &quot;forwarded&quot; as input to the next one (e.g. output of <code>step-1</code> is forwarded as input to <code>step-2</code> and output of <code>step-N</code> is forwarded
 as input to <code>finalize</code>).  </p>
 <h4 id="regarding-the-properties-file">Regarding the properties file</h4>
 <p>For all iterative algorithms (in the <code>parameters JSON array</code> of its properties file), the following property must be defined:  </p>
 <pre class="editor-colors lang-text"><div class="line"><span class="syntax--text syntax--plain"><span class="syntax--meta syntax--paragraph syntax--text"><span>-&nbsp;`iterations_max_number`&nbsp;&nbsp;&nbsp;</span></span></span></div><div class="line"><span class="syntax--text syntax--plain"><span>&nbsp;&nbsp;&nbsp;</span><span class="syntax--meta syntax--paragraph syntax--text"><span>The&nbsp;iterative&nbsp;algorithm&nbsp;will&nbsp;run&nbsp;at&nbsp;most&nbsp;`iterations_max_number`&nbsp;times.&nbsp;&nbsp;</span></span></span></div></pre><h4 id="regarding-iterations-logic-requirements">Regarding iterations logic requirements</h4>
-<p>The algorithm developer need not to worry about iterations control logic, such as setting up an iterations number counter, 
+<p>The algorithm developer need not to worry about iterations control logic, such as setting up an iterations number counter,
 or writing a query for ensuring that <code>iterations_number &lt; iterations_max_number</code>. This is all handled by the iterations module
 of Exareme.<br><strong>The only requirement imposed by the iterations module is the one mentioned below.</strong></p>
 <h4 id="regarding-iterations_condition_query-">Regarding <code>iterations_condition_query</code></h4>
-<p>If an iterative algorithm requires a termination condition that is not solely based on<br><code>iterations_number &lt; iterations_max_number</code> criterion, 
+<p>If an iterative algorithm requires a termination condition that is not solely based on<br><code>iterations_number &lt; iterations_max_number</code> criterion,
 the algorithm developer needs to write a query that abides by the following rules:  </p>
 <ul>
 <li><em>updating</em> <code>iterationsDB.iterations_condition_check_result_tbl</code> table, and specifically</li>

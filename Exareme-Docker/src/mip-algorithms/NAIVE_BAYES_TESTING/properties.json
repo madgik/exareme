@@ -31,6 +31,9 @@
 			"desc": "Training datasets have id != iteration number.",
 			"type": "other",
 			"value": "0",
+			"min": null,
+			"max": null,
+			"enumerations": null,
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "integer"
@@ -39,6 +42,9 @@
 			"desc": "Training model in json format. It cannot be empty",
 			"type": "other",
 			"value": "",
+			"min": null,
+			"max": null,
+			"enumerations": null,
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "json"
@@ -47,6 +53,9 @@
 			"desc": "Predefined value for the dbIdentifier",
 			"type": "other",
 			"value": "",
+			"min": null,
+			"max": null,
+			"enumerations": null,
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "string"

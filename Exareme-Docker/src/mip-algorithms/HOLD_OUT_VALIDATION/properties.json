@@ -47,6 +47,9 @@
 			"desc": "If float, should be between 0.0 and 1.0 and represent the proportion of the dataset to include in the test split. If int, represents the absolute number of test samples. If None, the value is set to the complement of the train size. If train_size is also None, it will be set to 0.25.",
 			"type": "other",
 			"value": "0.25",
+			"min": null,
+			"max": null,
+			"enumerations": null,
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "real"
@@ -55,6 +58,9 @@
 			"desc": "If float, should be between 0.0 and 1.0 and represent the proportion of the dataset to include in the train split. If int, represents the absolute number of train samples. If None, the value is automatically set to the complement of the test size.",
 			"type": "other",
 			"value": "",
+			"min": null,
+			"max": null,
+			"enumerations": null,
 			"valueNotBlank": false,
 			"valueMultiple": false,
 			"valueType": "real"
@@ -63,6 +69,9 @@
 			"desc": "It is the seed used by the random number generator; It can be empty",
 			"type": "other",
 			"value": "",
+			"min": null,
+			"max": null,
+			"enumerations": null,
 			"valueNotBlank": false,
 			"valueMultiple": false,
 			"valueType": "integer"
@@ -71,6 +80,9 @@
 			"desc": "Whether or not to shuffle the data before splitting. It can be True,False or None",
 			"type": "other",
 			"value": "False",
+			"min": null,
+			"max": null,
+			"enumerations": ['True','False','None'],
 			"valueNotBlank": false,
 			"valueMultiple": false,
 			"valueType": "string"
@@ -87,6 +99,9 @@
 			"desc": "Predefined value for the dbIdentifier",
 			"type": "other",
 			"value": "",
+			"min": null,
+			"max": null,
+			"enumerations": null,
 			"valueNotBlank": false,
 			"valueMultiple": false,
 			"valueType": "string"

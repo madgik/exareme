@@ -45,7 +45,8 @@ var 'cast_y' from select create_complex_query("","tonumber(?) as ?", "," , "" , 
 drop table if exists defaultDB.localinputtblflat;
 create table defaultDB.localinputtblflat as
 select %{cast_y}, cast(%{x} as text) as '%{x}' from inputdata
-where %{x} is not null and %{x}  <>'NA' and %{x}  <>'';
+where  %{x} is not null and %{x}  <>'NA' and %{x}  <>''
+       and  %{x} in (select strsplitv('%{xlevels}','delimiter:,'));
 
 --Independent or Unpaired T-test
 var 'localstats' from select create_complex_query("","insert into  defaultDB.localstatistics
@@ -60,9 +61,11 @@ create table defaultDB.localstatistics (colname text, groupval text, S1 real, S2
 --ErrorChecking
 select privacychecking(N) from defaultDB.localstatistics;
 select variableshouldbebinary_inputerrorchecking('%{x}', val)
-from (select count(distinct %{x}) as val from defaultDB.localinputtblflat);
+from (select count(distinct %{x}) as val from defaultDB.localinputtblflat)
+where '%{xlevels}' <> '';
 select variabledistinctvalues_inputerrorchecking('%{x}', val, '%{xlevels}')
-from (select group_concat(distinct %{x}) as val from defaultDB.localinputtblflat);
+from (select group_concat(distinct %{x}) as val from defaultDB.localinputtblflat)
+where '%{xlevels}' <> '';
 
 
 select * from defaultDB.localstatistics;
