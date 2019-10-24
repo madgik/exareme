@@ -222,20 +222,19 @@ More guidance will be provided in that matter if you select to deploy via script
 
 In case when a Hospital ```can not/will not``` give the sensitive data like usernames and passwords (credentials) needed in order for Ansible to run, here is a workaround:
 
-1) The Hospital must contact the system administrator so he/she handles the command needed in order for Hospital to be part of the Swarm as ```Worker node```.
-2) The Hospital must run the command ```docker swarm join --token <Swarm Token> <Master Node URL>:PORT``` given by the system administrator.
+1) The Hospital must contact the system administrator so he/she will handle the command needed in order for Hospital to be part of the Swarm as ```Worker node```.
+2) The Hospital must run the command ```docker swarm join --token <Swarm Token> <Master Node URL>:2377``` given by the system administrator.
 
 For example the command could look like this:
 
-```docker swarm join --token SWMTKN-1-22ya4cjf2c1aq4sbnypwkvs2z87wg2897xi35qvp1hs54s85of-doah1kp92psb8rqvbgshu7ro2 88.197.53.38:2377```
-(sudo if you do not have access to run docker commands)
+```(sudo) docker swarm join --token SWMTKN-1-22ya4cjf2c1aq4sbnypwkvs2z87wg2897xi35qvp1hs54s85of-doah1kp92psb8rqvbgshu7ro2 88.197.53.38:2377```
 
-The most stable and tested configuration is servers having a static public IP. If a node is behind a NAT, its local IP will be advertised by default and other nodes will not be able to contact it.
+If a node is behind a NAT, its local IP will be advertised by default and other nodes will not be able to contact it.<br/>
 **Note:** Non-static public IP should be fine for worker nodes, but this has not been tested.
 
 If the worker node is behind a NAT server, you must specify the Public IP to use to contact that Worker node from other nodes with:
 
- ```docker swarm join --advertise-addr <Public IP> --token <Swarm Token> <Master Node URL>```
+ ```docker swarm join --advertise-addr <Public IP> --token <Swarm Token> <Master Node URL>:2377```
 
 3) Inform the system administrator that the command run, so he/she can Start Exareme instance at the specific Hospital from the ```Manager node``` of Swarm.
 
@@ -339,7 +338,7 @@ If this is not the case, meaning you get ```replicated 0 / 1```, the service for
 
     From the Manager node of Swarm:
 
-    1) Check the ERROR message by doing ```sudo docker service ps --no-trunc NAME_or_ID_of_service``` from the Manager node of Swarm
+    1) Check the ERROR message by doing ```sudo docker service ps --no-trunc NAME_or_ID_of_service``` 
     2) If Worker node ```Manually``` joined the Swarm:
         - Make sure the node has actually joined the Swarm and that it is tagged with a proper name.
 
@@ -347,29 +346,30 @@ If this is not the case, meaning you get ```replicated 0 / 1```, the service for
 b) Check that all workers are seen by Exareme
 
 Connect to the Exareme test page at `http://localhost:9090/exa-view/index.html`.
-The algorithm \_LIST\_DATASET should show datasets for each pathology available at each node of the Federation.
+The algorithm LIST\_DATASET should show datasets for each pathology available at each node of the Federation.
 
 If a node's information is missing:
 
     From the specific node of Swarm:
 
-    1)Check the network configuration for this node. ```Obtaining the correct network configuration for each server that must join the Federation might not be straightforward.```
-
+    1) Check the network configuration for this node. ```Obtaining the correct network configuration for each server that must join the Federation might not be straightforward.```
+    2) Make sure the datasets and the CDEs are in the correct data path under ```pathology``` folder.
+    
     From the Manager node of Swarm:
 
-    1) Try to restart Exareme on all nodes.
-    2) If this does not solve the problem, check the logs and report the problem.
-
+    1) Check the logs and report them to Exareme expertise team.
+    
 c) Restart Exareme
 
-Simply restart all Exareme instances from the Manager node of Swarm under exareme/Federated-Deployment/Docker-Ansible/scripts/ folder run:
-
+In some cases a simple restart may be enough. From the Manager node of Swarm under exareme/Federated-Deployment/Docker-Ansible/scripts/ folder run:
 ```
 ./deploy.sh
 ```
 
 choose:
-```2. (Re)Start all services.```
+```
+2. (Re)Start all services.
+```
 
 and then choose one of the options given:
 ```
