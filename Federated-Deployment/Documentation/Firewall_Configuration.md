@@ -16,13 +16,13 @@ All management communication is done through TLS encrypted communications betwee
 
 The following ports and protocols are required to be open for the proper function of the Docker Swarm overlay network technology:
 
- * On **all** the Docker hosts which are part of the Swarm (federation):
+ * On **all** the Manager node of Swarm:
    * **TCP: 7946**
    * **UDP: 7946**
    * **UDP: 4789**
    * **Protocol 50 (ESP)**
 
- * **Only** on the Docker manager hosts of the Swarm (federation) :
+ * **Only** on the Worker nodes of the Swarm:
    * **TCP: 2377**
 
 ## UFW Configuration for the MIP
@@ -58,7 +58,7 @@ Specific public services provided by the MIP to the end-users will require their
 
 4. Docker Swarm ports for Manager nodes 
   
-   **The following is required only on the Docker Swarm manager computers.**
+   **The following is required only on the Manager node of Swarm.**
 
     ```sh
     $ sudo ufw allow 2377/tcp
@@ -74,7 +74,7 @@ Specific public services provided by the MIP to the end-users will require their
 
 6. Check the status
 
-    *The example below has been executed on a worker node of the federation.*
+    *The example below has been executed on a Worker node of the Swarm.*
 
     ```sh
     $ sudo ufw status
@@ -136,7 +136,7 @@ Specific public services provided by the MIP to the end-users will require their
 3. Docker Swarm ports
    Do one of the following, assuming you are in the folder containing this file. This installs and activate permanently the service profile.
    
-    * For worker nodes:
+    * For Worker nodes of Swarm:
 
     ```sh
     $ sudo cp docker-swarm-worker.xml /etc/firewalld/services/
@@ -144,7 +144,7 @@ Specific public services provided by the MIP to the end-users will require their
 	 success
     ```
 
-    * For Manager nodes 
+    * For Manager node of Swarm
    
     ```sh
     $ sudo cp docker-swarm-manager.xml /etc/firewalld/services/
@@ -161,13 +161,13 @@ Specific public services provided by the MIP to the end-users will require their
 
 5. Check the status
 
-    * For worker nodes:
+    * For Worker nodes of Swarm:
 
     ```sh
     $ sudo firewall-cmd --info-service=docker-swarm-worker
     ```
 
-    * For Manager nodes 
+    * For Manager node of Swarm
 
     ```sh
     $ sudo firewall-cmd --info-service=docker-swarm-manager
