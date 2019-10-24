@@ -1,4 +1,6 @@
-Note: This is a modified Documentation from previous work that had been done by DIAS-EPFL. Initial source can be found here: ```https://github.com/HBPMedical/mip-federation/tree/master/Documentation``` 
+Note: 
+This is a modified Documentation from previous work that had been done by DIAS-EPFL. 
+Initial source can be found here: (https://github.com/HBPMedical/mip-federation/tree/master/Documentation)
 
 In this document you will find the specifications that must be followed in order to have a Federation (Manager node) or be part of one (Worker nodes).
 
@@ -32,7 +34,7 @@ The Manager node of Swarm will host the following Federation elements:
 For Worker nodes of Swarm:
 
 - Each server dedicated to the Federation will have an internet access.
-- Each server dedicated to the Federation (or more accurately its Docker engine instance) will join the Docker Swarm. (```Manually``` by each Hospital if credentials for the server ```will not / can not``` be given to the administrators or ```Automatically``` by scripts run by administrators.).
+- Each server dedicated to the Federation (or more accurately its Docker engine instance) will join the Docker Swarm. (```Manually``` by each Hospital if credentials for the server ```will not/can not``` be given to the administrators or ```Automatically``` by scripts run by administrators.).
 - The Manager node of Swarm will remotely start an Exareme worker on the node.
 
 The software Exareme will expose federated analysis functionalities to the Web Portal. Exareme provides several algorithms that can be performed over the data distributed in multiple nodes. Exareme algorithms retrieve only aggregated results from each node (no individual patient data will leave the servers of the MIP partners). Exareme then combines the partial results in a statistically significant manner before returning results to the Web Portal.
