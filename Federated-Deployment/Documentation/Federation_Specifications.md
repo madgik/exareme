@@ -1,5 +1,5 @@
-Note: 
-This is a modified Documentation from previous work that had been done by DIAS-EPFL. 
+Note:</br>
+This is a modified Documentation from previous work that had been done by DIAS-EPFL.</br>
 Initial source can be found here: (https://github.com/HBPMedical/mip-federation/tree/master/Documentation)
 
 In this document you will find the specifications that must be followed in order to have a Federation (Manager node) or be part of one (Worker nodes).
