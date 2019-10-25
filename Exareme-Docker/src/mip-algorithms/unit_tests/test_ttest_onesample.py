@@ -10,7 +10,7 @@ from rpy2.robjects.packages import importr
 import rpy2.robjects as robjects
 
 
-endpointUrl='http://88.197.53.38:9090/mining/query/TTEST_ONESAMPLE'
+endpointUrl='http://88.197.53.23:9090/mining/query/TTEST_ONESAMPLE'
 folderPath = 'R_scripts'
 file ='ttest_onesample.Rmd'
 
@@ -27,7 +27,7 @@ class TestTTESTOneSample(unittest.TestCase):
 
     def test_onesamplettest_1(self):
         logging.info("---------- TEST 1: we compare the mean of the left and right hippocampus volumes separetely, with a reference value 3. ")
-        data = [{"name": "x", "value": "lefthippocampus,righthippocampus"},
+        data = [{"name": "y", "value": "lefthippocampus,righthippocampus"},
                 {"name": "testvalue", "value": "3.0"    },
                 {"name": "hypothesis", "value": "lessthan"},
                 {"name": "effectsize", "value": "1" },
@@ -44,7 +44,7 @@ class TestTTESTOneSample(unittest.TestCase):
 
     def test_onesamplettest_2(self):
         logging.info("---------- TEST 1: we compare the mean of the left and right hippocampus volumes separetely, with a reference value 3. ")
-        data = [{"name": "x", "value": "lefthippocampus,righthippocampus"},
+        data = [{"name": "y", "value": "lefthippocampus,righthippocampus"},
                 {"name": "testvalue", "value": "3.0"    },
                 {"name": "hypothesis", "value": "different"},
                 {"name": "effectsize", "value": "1" },
@@ -61,7 +61,7 @@ class TestTTESTOneSample(unittest.TestCase):
 
     def test_onesamplettest_3(self):
         logging.info("---------- TEST 1: we compare the mean of the left and right hippocampus volumes separetely, with a reference value 3. ")
-        data = [{"name": "x", "value": "lefthippocampus,righthippocampus"},
+        data = [{"name": "y", "value": "lefthippocampus,righthippocampus"},
                 {"name": "testvalue", "value": "3.0"    },
                 {"name": "hypothesis", "value": "greaterthan"},
                 {"name": "effectsize", "value": "1" },
@@ -78,7 +78,7 @@ class TestTTESTOneSample(unittest.TestCase):
 
     def test_onesamplettest_4(self):
         logging.info("---------- TEST 1: we compare the mean of the left and right hippocampus volumes separetely, with a reference value 3. ")
-        data = [{"name": "x", "value": "lefthippocampus,righthippocampus"},
+        data = [{"name": "y", "value": "lefthippocampus,righthippocampus"},
                 {"name": "testvalue", "value": "3.0"    },
                 {"name": "hypothesis", "value": "different"},
                 {"name": "effectsize", "value": "0" },
@@ -95,7 +95,7 @@ class TestTTESTOneSample(unittest.TestCase):
 
     def test_onesamplettest_Privacy(self):
         logging.info("---------- TEST : Algorithms for Privacy Error")
-        data = [{"name": "x", "value": "lefthippocampus,righthippocampus"},
+        data = [{"name": "y", "value": "lefthippocampus,righthippocampus"},
                     {"name": "testvalue", "value": "3.0"    },
                     {"name": "hypothesis", "value": "different"},
                     {"name": "effectsize", "value": "1" },

@@ -1,4 +1,4 @@
-<body class='markdown-preview' data-use-github-style><p><img src="https://www.humanbrainproject.eu/image/company_logo?img_id=10795&amp;t=1480587142258" alt="Human Brain Project logo"></p>
+<body class='markdown-preview' data-use-github-style><p><img src="https://sos-ch-dk-2.exo.io/public-website-production/img/HBP.png" alt="Human Brain Project logo"></p>
 <h1 id="medical-informatics-platform">Medical Informatics Platform</h1>
 <h1 id="data-mining-algorithms-algorithm-developer-s-manual">Data Mining Algorithms - Algorithm developer&#39;s manual</h1>
 <p>This is the repository containing all data mining algorithms for the <a href="https://www.humanbrainproject.eu/mip">Medical Informatics Platform</a> 

@@ -1,6 +1,6 @@
 {
 	"name": "ANOVA",
-	"desc": "ANOVA",
+	"desc": "Two-way analysis of variance (ANOVA)",
 	"type": "iterative",
 	"parameters": [{
 			"name": "x",
@@ -56,7 +56,6 @@
 			"valueNotBlank": false,
 			"valueMultiple": true,
 			"valueType": "string"
-
 		}
 	]
 }

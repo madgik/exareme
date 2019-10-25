@@ -9,7 +9,7 @@ from decimal import *
 from rpy2.robjects.packages import importr
 import rpy2.robjects as robjects
 
-endpointUrl='http://88.197.53.38:9090/mining/query/TTEST_PAIRED'
+endpointUrl='http://88.197.53.23:9090/mining/query/TTEST_PAIRED'
 folderPath = 'R_scripts'
 file ='ttest_paired.Rmd'
 
@@ -27,7 +27,7 @@ class TestTTESTPaired(unittest.TestCase):
 
     def test_pairedttest_1(self):
         logging.info("---------- TEST 1:  ")
-        data = [{"name": "x", "value": "lefthippocampus-righthippocampus"},
+        data = [{"name": "y", "value": "lefthippocampus-righthippocampus"},
                 {"name": "hypothesis", "value": "different"},
                 {"name": "effectsize", "value": "1" },
                 {"name": "ci","value": "0"  },
@@ -45,7 +45,7 @@ class TestTTESTPaired(unittest.TestCase):
 
     def test_pairedttest_2(self):
         logging.info("---------- TEST 2: ")
-        data = [{"name": "x", "value": "lefthippocampus-righthippocampus"},
+        data = [{"name": "y", "value": "lefthippocampus-righthippocampus"},
                 {"name": "hypothesis", "value": "different"},
                 {"name": "effectsize", "value": "1" },
                 {"name": "ci","value": "1"  },
@@ -63,7 +63,7 @@ class TestTTESTPaired(unittest.TestCase):
 
     def test_pairedttest_3(self):
         logging.info("---------- TEST 3: ")
-        data = [{"name": "x", "value": "lefthippocampus-righthippocampus"},
+        data = [{"name": "y", "value": "lefthippocampus-righthippocampus"},
                 {"name": "hypothesis", "value": "greaterthan"},
                 {"name": "effectsize", "value": "1" },
                 {"name": "ci","value": "1"  },
@@ -81,7 +81,7 @@ class TestTTESTPaired(unittest.TestCase):
 
     def test_pairedttest_4(self):
         logging.info("---------- TEST 4: ")
-        data = [{"name": "x", "value": "lefthippocampus-righthippocampus"},
+        data = [{"name": "y", "value": "lefthippocampus-righthippocampus"},
                 {"name": "hypothesis", "value": "lessthan"},
                 {"name": "effectsize", "value": "1" },
                 {"name": "ci","value": "1"  },
@@ -98,7 +98,7 @@ class TestTTESTPaired(unittest.TestCase):
 
     def test_pairedttest_Privacy(self):
         logging.info("---------- TEST : Algorithms for Privacy Error")
-        data = [{"name": "x", "value": "lefthippocampus-righthippocampus"},
+        data = [{"name": "y", "value": "lefthippocampus-righthippocampus"},
                     {"name": "hypothesis", "value": "different"},
                     {"name": "effectsize", "value": "1" },
                     {"name": "ci","value": "1"  },

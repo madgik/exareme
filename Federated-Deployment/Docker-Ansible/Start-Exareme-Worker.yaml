@@ -7,6 +7,6 @@
   vars:
     my_host: "{{ lookup('env', 'my_host') }}"
   vars_files:
-    - groups_vars/exareme.yaml
+    - group_vars/exareme.yaml
   roles:
     - start-worker-service

@@ -1,5 +1,5 @@
-- name: Stop Exareme Spesific Worker
-  shell: docker stack rm {{ my_name }}
+- name: Run Exareme Worker
+  shell: docker stack deploy -c docker-compose-worker.yml {{ hostvars[my_host]['hostname'] }}
   args:
     chdir: "{{ home_path }}Compose-Files/"
   environment:
@@ -7,4 +7,4 @@
     EXAREME_IMAGE: "{{ EXAREME_IMAGE }}:{{ EXAREME_TAG }}"
     EXAREME_KEYSTORE: "{{ EXAREME_KEYSTORE }}"
     DOCKER_DATA_FOLDER: "{{ DOCKER_DATA_FOLDER }}"
-    LOCAL_DATASETS_FOLDER: "{{ hostvars[my_host]['data_path'] }}"
+    LOCAL_DATA_FOLDER: "{{ hostvars[my_host]['data_path'] }}"
