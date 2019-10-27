@@ -20,7 +20,7 @@
 			"type": "column",
 			"columnValuesSQLType": "text, integer",
 			"columnValuesIsCategorical": "true",
-			"columnValuesNumOfEnumerations": "2",
+			"columnValuesNumOfEnumerations": "",
 			"value": "gender",
 			"valueNotBlank": true,
 			"valueMultiple": false,
