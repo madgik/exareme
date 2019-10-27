@@ -40,6 +40,10 @@ select categoricalparameter_inputerrorchecking('meandiff', '%{meandiff}', '0,1')
 drop table if exists inputdata;
 create table inputdata as select * from (%{db_query});
 
+drop table if exists defaultDB.lala;
+create table defaultDB.lala as select * from (%{db_query});
+
+
 -- Cast values of columns using cast function.
 var 'cast_y' from select create_complex_query("","tonumber(?) as ?", "," , "" , '%{y}');
 drop table if exists defaultDB.localinputtblflat;
@@ -59,7 +63,10 @@ create table defaultDB.localstatistics (colname text, groupval text, S1 real, S2
 -- drop table if exists defaultDB.privacychecking; -- For error handling
 -- create table defaultDB.privacychecking as
 --ErrorChecking
+select privacychecking(N) from (select count(*) as N from defaultDB.localinputtblflat);
 select privacychecking(N) from defaultDB.localstatistics;
+
+
 select variableshouldbebinary_inputerrorchecking('%{x}', val)
 from (select count(distinct %{x}) as val from defaultDB.localinputtblflat)
 where '%{xlevels}' <> '';

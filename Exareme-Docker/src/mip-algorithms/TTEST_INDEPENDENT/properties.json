@@ -29,7 +29,7 @@
 			"desc": "The two levels of the grouping variable (Order matters)",
 			"type": "other",
 			"value": "M,F",
-			"valueNotBlank": false,
+			"valueNotBlank": true,
 			"valueMultiple": true,
 			"valueType": "string"
 		}, {
