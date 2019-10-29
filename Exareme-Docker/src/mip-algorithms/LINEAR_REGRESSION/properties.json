@@ -26,7 +26,7 @@
 			"valueType": "string"
 		}, {
 			"name": "referencevalues",
-			"desc": "Reference values of categorical dependent variables. It should be json. It can be empty.",
+			"desc": "Reference values of categorical independent variables. It should be json. It can be empty.",
 			"type": "other",
 			"value": "[{\"name\":\"alzheimerbroadcategory\",\"val\":\"Other\"}]",
 			"min": null,
