@@ -118,9 +118,9 @@ contains 2 docker-compose.yaml files for deploying the services. The ```home_pat
 
 You can see that there are 2 main categories in hosts.ini file. The first one is ```[master]```, the second one is ```[workers]```.
 
-You can always add more workers following the template given above:
-a) by adding the name workerX of the worker under [workers] and
-b) creating a tag [workerX] with all the necessary variables.
+You can always add more workers following the template given above: </br>
+a) by adding the name workerX of the worker under [workers] and </br>
+b) creating a tag [workerX] with all the necessary variables. </br>
 X in the name ```workerX``` is a convention of the IP of the node where ```.``` are replaced with ```_```. For example:
 
 ```
