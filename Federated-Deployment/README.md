@@ -22,6 +22,11 @@ Make sure the following ports are available:
 
 ```(Optional): 9000 for accessing Portainer.io```
 
+# Documentation
+
+Make sure you have read the ```Federation_Specifications.md``` and ```Firewall_Configuration.md``` files exist under Documentation folder.
+The first doc sums up everything regarding Docker Swarm and the second one how to deal if a firewall exists in the Federation nodes.
+
 # Preparation
 
 ## Data Structure

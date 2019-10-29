@@ -37,7 +37,7 @@ For Worker nodes of Swarm:
 - Each server dedicated to the Federation (or more accurately its Docker engine instance) will join the Docker Swarm. (```Manually``` by each Hospital if credentials for the server ```will not/can not``` be given to the administrators or ```Automatically``` by scripts run by administrators.).
 - The Manager node of Swarm will remotely start an Exareme worker on the node.
 
-The software Exareme will expose federated analysis functionalities to the Web Portal. Exareme provides several algorithms that can be performed over the data distributed in multiple nodes. Exareme algorithms retrieve only aggregated results from each node (no individual patient data will leave the servers of the MIP partners). Exareme then combines the partial results in a statistically significant manner before returning results to the Web Portal.
+The software Exareme will expose federated analysis functionalities to the Web Portal. Exareme provides several algorithms that can be performed over the data distributed in multiple nodes. Exareme algorithms retrieve only aggregated results from each node (no individual patient data will leave the servers of the MIP partners). Exareme then combines the partial results to obtain a single global result to the Web Portal.
 
 ### Regarding Docker swarm
 
