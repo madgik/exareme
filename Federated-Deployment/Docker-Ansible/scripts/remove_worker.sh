@@ -73,8 +73,8 @@ do
                 exit 1
             fi
 
+            #TODO maybe try calculating which lines contains workerX and delete from...until. Under [workers] tag it should be one separate delete
             sed -i "/$name/ d" ../vault.yaml
-
 
             ansible_vault_encrypt="ansible-vault encrypt ../vault.yaml "${ansible_vault_authentication}    #--vault-password-file or --ask-vault-pass depending if  ~/.vault_pass.txt exists
             ${ansible_vault_encrypt}
