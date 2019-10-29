@@ -1,10 +1,32 @@
 {
 	"name": "NAIVE_BAYES_TRAINING",
-	"desc": "BayesNaive_v3",
+	"desc": "Naive Bayes clasiifier: Training phase",
 	"type": "local_global",
 	"status": "enabled",
 	"vtype": "",
-	"parameters": [{
+	"parameters": [ {
+		"name": "x",
+		"desc": "Independent variables: A list of variables from database. The variable should be Real, Integer or String. The variable can be either numerical or categorical. It cannot be empty",
+		"type": "column",
+		"columnValuesSQLType": "",
+		"columnValuesIsCategorical": "",
+		"columnValuesNumOfEnumerations": "",
+		"value": "righthippocampus,lefthippocampus",
+		"valueNotBlank": true,
+		"valueMultiple": true,
+		"valueType": "string"
+	}, {
+		"name": "y",
+		"desc": "Dependent variable: A variable form database. The variable should be Real, Integer or String. It should be categorical. It cannot be empty",
+		"type": "column",
+		"columnValuesSQLType": "",
+		"columnValuesIsCategorical": "true",
+		"columnValuesNumOfEnumerations": "",
+		"value": "alzheimerbroadcategory",
+		"valueNotBlank": true,
+		"valueMultiple": false,
+		"valueType": "string"
+	},{
 			"name": "iterationNumber",
 			"desc": "The iterationNumber shows the id of the testing dataset.",
 			"type": "other",
@@ -14,7 +36,7 @@
 			"valueType": "integer"
 		}, {
 			"name": "alpha",
-			"desc": "",
+			"desc": "alpha parameter",
 			"type": "other",
 			"value": "0.1",
 			"valueNotBlank": true,
@@ -22,7 +44,7 @@
 			"valueType": "real"
 		}, {
 			"name": "dbIdentifier",
-			"desc": "",
+			"desc": "Predefined value for the dbIdentifier",
 			"type": "other",
 			"value": "",
 			"valueNotBlank": true,
@@ -43,28 +65,6 @@
 			"value": "adni",
 			"valueNotBlank": true,
 			"valueMultiple": true,
-			"valueType": "string"
-		}, {
-			"name": "x",
-			"desc": "",
-			"type": "column",
-			"columnValuesSQLType": "",
-			"columnValuesIsCategorical": "",
-			"columnValuesNumOfEnumerations": "",
-			"value": "righthippocampus,lefthippocampus",
-			"valueNotBlank": true,
-			"valueMultiple": true,
-			"valueType": "string"
-		}, {
-			"name": "y",
-			"desc": "classname",
-			"type": "column",
-			"columnValuesSQLType": "",
-			"columnValuesIsCategorical": "true",
-			"columnValuesNumOfEnumerations": "",
-			"value": "alzheimerbroadcategory",
-			"valueNotBlank": true,
-			"valueMultiple": false,
 			"valueType": "string"
 		}
 	]

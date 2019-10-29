@@ -1,18 +1,10 @@
 {
 	"name": "ID3",
-	"desc": "ID3",
+	"desc": "Iterative Dichotomiser 3, used to generate a decision tree from a dataset",
 	"type": "iterative",
 	"parameters": [{
-			"name": "iterations_max_number",
-			"desc": "",
-			"type": "other",
-			"value": "",
-			"valueNotBlank": true,
-			"valueMultiple": false,
-			"valueType": "integer"
-		}, {
 			"name": "x",
-			"desc": "columns value",
+			"desc": "Independent variables: A list of categorical variables from database. It cannot be empty",
 			"type": "column",
 			"columnValuesSQLType": "text,integer",
 			"columnValuesIsCategorical": "true",
@@ -23,7 +15,7 @@
 			"valueType": "string"
 		}, {
 			"name": "y",
-			"desc": "class name",
+			"desc": "Dependent variable: A categorical variable from database. It cannot be empty  ",
 			"type": "column",
 			"columnValuesSQLType": "text,integer",
 			"columnValuesIsCategorical": "true",

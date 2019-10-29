@@ -1,6 +1,7 @@
-requirevars 'defaultDB' 'input_global_tbl' 'x' ;
+requirevars 'defaultDB' 'input_global_tbl' 'y' ;
 attach database '%{defaultDB}' as defaultDB;
 
+var 'x' '%{y}';
 --var 'input_global_tbl' 'defaultDB.partialclustercenters'; --DELETE
 
 drop table if exists defaultDB.clustercenters_global;

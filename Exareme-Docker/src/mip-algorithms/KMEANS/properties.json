@@ -5,8 +5,8 @@
 	"status": "enabled",
 	"vtype": "clusterplot",
 	"parameters": [{
-			"name": "x",
-			"desc": "column names",
+			"name": "y",
+			"desc": "It is a list of variables from database. The variable should be Real or Integer. The variable can be either numerical or categorical. It cannot be empty",
 			"type": "column",
 			"columnValuesSQLType": "real,integer",
 			"columnValuesIsCategorical": "",
@@ -17,7 +17,7 @@
 			"valueType": "string"
 		}, {
 			"name": "k",
-			"desc": "#centers",
+			"desc": "Number of centers",
 			"type": "other",
 			"value": "3",
 			"valueNotBlank": false,
@@ -25,13 +25,31 @@
 			"valueType": "integer"
 		}, {
 			"name": "centers",
-			"desc": "a set of initial (distinct) cluster centres",
+			"desc": "A set of initial (distinct) cluster centres",
 			"type": "other",
 			"value": "[{\"clid\":1,\"lefthippocampus\":1.7,\"righthippocampus\":1.5},{\"clid\":2,\"lefthippocampus\":2.5,\"righthippocampus\":2.0}]",
 			"valueNotBlank": false,
 			"valueMultiple": false,
 			"valueType": "json"
 		}, {
+			"name": "e",
+			"desc": "Number of error_value",
+			"type": "other",
+			"value": "0.01",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "real"
+		},
+		{
+			"name": "pathology",
+			"desc": "The name of the pathology that the dataset belongs to.",
+			"type": "pathology",
+			"value": "dementia",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "string"
+		},
+		{
 			"name": "dataset",
 			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty.",
 			"type": "dataset",
@@ -39,30 +57,24 @@
 			"valueNotBlank": true,
 			"valueMultiple": true,
 			"valueType": "string"
-		}, {
-			"name": "e",
-			"desc": "#error_value",
-			"type": "other",
-			"value": "0.01",
-			"valueNotBlank": true,
-			"valueMultiple": false,
-			"valueType": "real"
-		}, {
+		},
+		{
 			"name": "iterations_max_number",
 			"desc": "",
 			"type": "other",
 			"value": "",
-			"defaultValue" : "20",
+			"defaultValue" : "1000",
 			"valueNotBlank": false,
 			"valueMultiple": false,
 			"valueType": "integer"
-		}, {
-			"name": "pathology",
-			"desc": "The name of the pathology that the dataset belongs to.",
-			"type": "pathology",
-			"value": "dementia",
-			"valueNotBlank": true,
-			"valueMultiple": false,
+		},
+		{
+			"name": "filter",
+			"desc": "",
+			"type": "filter",
+			"value": "",
+			"valueNotBlank": false,
+			"valueMultiple": true,
 			"valueType": "string"
 		}
 	]

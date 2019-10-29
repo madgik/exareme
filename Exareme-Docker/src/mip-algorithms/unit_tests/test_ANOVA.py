@@ -9,7 +9,7 @@ from decimal import *
 from rpy2.robjects.packages import importr
 import rpy2.robjects as robjects
 
-endpointUrl='http://88.197.53.38:9090/mining/query/ANOVA'
+endpointUrl='http://88.197.53.23:9090/mining/query/ANOVA'
 folderPath = 'R_scripts'
 file ='ANOVA.Rmd'
 
@@ -41,14 +41,12 @@ class TestANOVA(unittest.TestCase):
     def test_ANOVA_1(self):
         logging.info("---------- TEST : ANOVA - Tests With Balanced data set(data_ANOVA_Balanced_with_inter_V1V2.csv) - Test the 3 main effects and all the interactions with type I ANOVA.  ")
         data = [
-                {   "name": "iterations_max_number", "value": "20" },
                 {   "name": "x", "value": "ANOVA_var_I1*ANOVA_var_I2*ANOVA_var_I3" },
                 {   "name": "y", "value": "ANOVA_var_D" },
                 {   "name": "sstype", "value": "1" },
                 {   "name": "pathology","value":"dementia"},
                 {   "name": "dataset", "value": "ANOVA_Balanced_with_inter_V1V2" },
-                {   "name": "filter", "value": "" },
-                {   "name": "outputformat", "value": "pfa" }
+                {   "name": "filter", "value": "" }
             ]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
@@ -59,14 +57,12 @@ class TestANOVA(unittest.TestCase):
     def test_ANOVA_2(self):
         logging.info("---------- TEST : ANOVA - Tests With Balanced data set(data_ANOVA_Balanced_with_inter_V1V2.csv) - Test the 3 main effects and all the interactions with type II ANOVA.  ")
         data = [
-                {   "name": "iterations_max_number", "value": "20" },
                 {   "name": "x", "value": "ANOVA_var_I1*ANOVA_var_I2*ANOVA_var_I3" },
                 {   "name": "y", "value": "ANOVA_var_D" },
                 {   "name": "sstype", "value": "2" },
-		{   "name": "pathology","value":"dementia"},
+		        {   "name": "pathology","value":"dementia"},
                 {   "name": "dataset", "value": "ANOVA_Balanced_with_inter_V1V2" },
-                {   "name": "filter", "value": "" },
-                {   "name": "outputformat", "value": "pfa" }
+                {   "name": "filter", "value": "" }
             ]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
@@ -77,14 +73,12 @@ class TestANOVA(unittest.TestCase):
     def test_ANOVA_3(self):
         logging.info("---------- TEST : ANOVA - Tests With Balanced data set(data_ANOVA_Balanced_with_inter_V1V2.csv) - Test the 3 main effects and all the interactions with type III ANOVA.  ")
         data = [
-                {   "name": "iterations_max_number", "value": "20" },
                 {   "name": "x", "value": "ANOVA_var_I1*ANOVA_var_I2*ANOVA_var_I3" },
                 {   "name": "y", "value": "ANOVA_var_D" },
                 {   "name": "sstype", "value": "3" },
-		{   "name": "pathology","value":"dementia"},
+		        {   "name": "pathology","value":"dementia"},
                 {   "name": "dataset", "value": "ANOVA_Balanced_with_inter_V1V2" },
-                {   "name": "filter", "value": "" },
-                {   "name": "outputformat", "value": "pfa" }
+                {   "name": "filter", "value": "" }
             ]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
@@ -95,14 +89,12 @@ class TestANOVA(unittest.TestCase):
     def test_ANOVA_4(self):
         logging.info("---------- TEST : ANOVA - Tests With Unbalanced data set(data_ANOVA_Unbalanced_with_inter_V1V2.csv) - Test the 3 main effects and all the interactions with type I ANOVA.  ")
         data = [
-                {   "name": "iterations_max_number", "value": "20" },
                 {   "name": "x", "value": "ANOVA_var_I1*ANOVA_var_I2*ANOVA_var_I3" },
                 {   "name": "y", "value": "ANOVA_var_D" },
                 {   "name": "sstype", "value": "1" },
-		{   "name": "pathology","value":"dementia"},
+		        {   "name": "pathology","value":"dementia"},
                 {   "name": "dataset", "value": "ANOVA_UnBalanced_with_inter_V1V2" },
-                {   "name": "filter", "value": "" },
-                {   "name": "outputformat", "value": "pfa" }
+                {   "name": "filter", "value": "" }
             ]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
@@ -113,14 +105,12 @@ class TestANOVA(unittest.TestCase):
     def test_ANOVA_5(self):
         logging.info("---------- TEST : ANOVA - Tests With Unbalanced data set(data_ANOVA_Unbalanced_with_inter_V1V2.csv) - Test the 3 main effects and all the interactions with type II ANOVA.  ")
         data = [
-                {   "name": "iterations_max_number", "value": "20" },
                 {   "name": "x", "value": "ANOVA_var_I1*ANOVA_var_I2*ANOVA_var_I3" },
                 {   "name": "y", "value": "ANOVA_var_D" },
                 {   "name": "sstype", "value": "2" },
-		{   "name": "pathology","value":"dementia"},
+		        {   "name": "pathology","value":"dementia"},
                 {   "name": "dataset", "value": "ANOVA_UnBalanced_with_inter_V1V2" },
-                {   "name": "filter", "value": "" },
-                {   "name": "outputformat", "value": "pfa" }
+                {   "name": "filter", "value": "" }
             ]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
@@ -131,14 +121,12 @@ class TestANOVA(unittest.TestCase):
     def test_ANOVA_6(self):
         logging.info("---------- TEST : ANOVA - Tests With Unbalanced data set(data_ANOVA_Unbalanced_with_inter_V1V2.csv) - Test the 3 main effects and all the interactions with type III ANOVA.  ")
         data = [
-                {   "name": "iterations_max_number", "value": "20" },
                 {   "name": "x", "value": "ANOVA_var_I1*ANOVA_var_I2*ANOVA_var_I3" },
                 {   "name": "y", "value": "ANOVA_var_D" },
                 {   "name": "sstype", "value": "3" },
-		{   "name": "pathology","value":"dementia"},
+		        {   "name": "pathology","value":"dementia"},
                 {   "name": "dataset", "value": "ANOVA_UnBalanced_with_inter_V1V2" },
-                {   "name": "filter", "value": "" },
-                {   "name": "outputformat", "value": "pfa" }
+                {   "name": "filter", "value": "" }
             ]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
@@ -149,14 +137,12 @@ class TestANOVA(unittest.TestCase):
     def test_ANOVA_7(self):
         logging.info("---------- TEST : ANOVA - Tests With Unbalanced data set(data_ANOVA_Unbalanced_with_inter_V1V2.csv) - Test the 3 main effects only with type III ANOVA.  ")
         data = [
-                {   "name": "iterations_max_number", "value": "20" },
                 {   "name": "x", "value": "ANOVA_var_I1+ANOVA_var_I2+ANOVA_var_I3" },
                 {   "name": "y", "value": "ANOVA_var_D" },
                 {   "name": "sstype", "value": "3" },
-		{   "name": "pathology","value":"dementia"},
+		        {   "name": "pathology","value":"dementia"},
                 {   "name": "dataset", "value": "ANOVA_UnBalanced_with_inter_V1V2" },
-                {   "name": "filter", "value": "" },
-                {   "name": "outputformat", "value": "pfa" }
+                {   "name": "filter", "value": "" }
             ]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
@@ -167,14 +153,12 @@ class TestANOVA(unittest.TestCase):
     def test_ANOVA_8(self):
         logging.info("---------- TEST : ANOVA - Tests With similar to our target data set(dataset_0.csv) - without interaction and 2 variables - type III ")
         data = [
-            {   "name": "iterations_max_number", "value": "20" },
-            {   "name": "x", "value": "ANOVA_alzheimerbroadcategory+ANOVA_gender" },
-            {   "name": "y", "value": "ANOVA_lefthippocampus" },
-            {   "name": "sstype", "value": "3" },
-	    {   "name": "pathology","value":"dementia"},
-            {   "name": "dataset", "value": "ANOVA_dataset1,ANOVA_dataset2,ANOVA_dataset3" },
-            {   "name": "filter", "value": "" },
-            {   "name": "outputformat", "value": "pfa" }
+                {   "name": "x", "value": "ANOVA_alzheimerbroadcategory+ANOVA_gender" },
+                {   "name": "y", "value": "ANOVA_lefthippocampus" },
+                {   "name": "sstype", "value": "3" },
+    	        {   "name": "pathology","value":"dementia"},
+                {   "name": "dataset", "value": "ANOVA_dataset1,ANOVA_dataset2,ANOVA_dataset3" },
+                {   "name": "filter", "value": "" }
         ]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
@@ -185,14 +169,12 @@ class TestANOVA(unittest.TestCase):
     def test_ANOVA_9(self):
         logging.info("---------- TEST : ANOVA - Tests With similar to our target data set(dataset_0.csv) - without interaction and 2 variables - type II")
         data = [
-            {   "name": "iterations_max_number", "value": "20" },
-            {   "name": "x", "value": "ANOVA_alzheimerbroadcategory+ANOVA_gender" },
-            {   "name": "y", "value": "ANOVA_lefthippocampus" },
-            {   "name": "sstype", "value": "2" },
-	    {   "name": "pathology","value":"dementia"},
-            {   "name": "dataset", "value": "ANOVA_dataset1,ANOVA_dataset2,ANOVA_dataset3" },
-            {   "name": "filter", "value": "" },
-            {   "name": "outputformat", "value": "pfa" }
+                {   "name": "x", "value": "ANOVA_alzheimerbroadcategory+ANOVA_gender" },
+                {   "name": "y", "value": "ANOVA_lefthippocampus" },
+                {   "name": "sstype", "value": "2" },
+    	        {   "name": "pathology","value":"dementia"},
+                {   "name": "dataset", "value": "ANOVA_dataset1,ANOVA_dataset2,ANOVA_dataset3" },
+                {   "name": "filter", "value": "" }
         ]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
@@ -203,14 +185,12 @@ class TestANOVA(unittest.TestCase):
     def test_ANOVA_10(self):
         logging.info("---------- TEST : ANOVA - Tests With similar to our target data set(dataset_0.csv) - with interaction and 2 variables - type III")
         data = [
-            {   "name": "iterations_max_number", "value": "20" },
-            {   "name": "x", "value": "ANOVA_alzheimerbroadcategory*ANOVA_gender" },
-            {   "name": "y", "value": "ANOVA_lefthippocampus" },
-            {   "name": "sstype", "value": "3" },
-            {   "name": "pathology","value":"dementia"},
-            {   "name": "dataset", "value": "ANOVA_dataset1,ANOVA_dataset2,ANOVA_dataset3" },
-            {   "name": "filter", "value": "" },
-            {   "name": "outputformat", "value": "pfa" }
+                {   "name": "x", "value": "ANOVA_alzheimerbroadcategory*ANOVA_gender" },
+                {   "name": "y", "value": "ANOVA_lefthippocampus" },
+                {   "name": "sstype", "value": "3" },
+                {   "name": "pathology","value":"dementia"},
+                {   "name": "dataset", "value": "ANOVA_dataset1,ANOVA_dataset2,ANOVA_dataset3" },
+                {   "name": "filter", "value": "" }
         ]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
@@ -221,14 +201,12 @@ class TestANOVA(unittest.TestCase):
     def test_ANOVA_11(self):
         logging.info("---------- TEST : ANOVA - Tests With similar to our target data set(dataset_0.csv) - with interaction and 2 variables - type II")
         data = [
-            {   "name": "iterations_max_number", "value": "20" },
-            {   "name": "x", "value": "ANOVA_alzheimerbroadcategory*ANOVA_gender" },
-            {   "name": "y", "value": "ANOVA_lefthippocampus" },
-            {   "name": "sstype", "value": "2" },
-	    {   "name": "pathology","value":"dementia"},
-            {   "name": "dataset", "value": "ANOVA_dataset1,ANOVA_dataset2,ANOVA_dataset3" },
-            {   "name": "filter", "value": "" },
-            {   "name": "outputformat", "value": "pfa" }
+                {   "name": "x", "value": "ANOVA_alzheimerbroadcategory*ANOVA_gender" },
+                {   "name": "y", "value": "ANOVA_lefthippocampus" },
+                {   "name": "sstype", "value": "2" },
+    	        {   "name": "pathology","value":"dementia"},
+                {   "name": "dataset", "value": "ANOVA_dataset1,ANOVA_dataset2,ANOVA_dataset3" },
+                {   "name": "filter", "value": "" }
         ]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
@@ -239,14 +217,12 @@ class TestANOVA(unittest.TestCase):
     def test_ANOVA_12(self):
         logging.info("---------- TEST : ANOVA - Tests With similar to our target data set(dataset_0.csv) - without interaction and 3 variables - type III")
         data = [
-            {   "name": "iterations_max_number", "value": "20" },
-            {   "name": "x", "value": "ANOVA_alzheimerbroadcategory+ANOVA_gender+ANOVA_agegroup" },
-            {   "name": "y", "value": "ANOVA_lefthippocampus" },
-            {   "name": "sstype", "value": "3" },
-	    {   "name": "pathology","value":"dementia"},
-            {   "name": "dataset", "value": "ANOVA_dataset1,ANOVA_dataset2,ANOVA_dataset3" },
-            {   "name": "filter", "value": "" },
-            {   "name": "outputformat", "value": "pfa" }
+                {   "name": "x", "value": "ANOVA_alzheimerbroadcategory+ANOVA_gender+ANOVA_agegroup" },
+                {   "name": "y", "value": "ANOVA_lefthippocampus" },
+                {   "name": "sstype", "value": "3" },
+    	        {   "name": "pathology","value":"dementia"},
+                {   "name": "dataset", "value": "ANOVA_dataset1,ANOVA_dataset2,ANOVA_dataset3" },
+                {   "name": "filter", "value": "" }
         ]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
@@ -257,15 +233,12 @@ class TestANOVA(unittest.TestCase):
     def test_ANOVA_13(self):
         logging.info("---------- TEST : ANOVA - Tests With similar to our target data set(dataset_0.csv) - without interaction and 3 variables - type II")
         data = [
-            {   "name": "iterations_max_number", "value": "20" },
-            {   "name": "iterations_condition_query_provided", "value": "true" },
-            {   "name": "x", "value": "ANOVA_alzheimerbroadcategory+ANOVA_gender+ANOVA_agegroup" },
-            {   "name": "y", "value": "ANOVA_lefthippocampus" },
-            {   "name": "sstype", "value": "2" },
-            {   "name": "pathology","value":"dementia"},
-            {   "name": "dataset", "value": "ANOVA_dataset1,ANOVA_dataset2,ANOVA_dataset3" },
-            {   "name": "filter", "value": "" },
-            {   "name": "outputformat", "value": "pfa" }
+                {   "name": "x", "value": "ANOVA_alzheimerbroadcategory+ANOVA_gender+ANOVA_agegroup" },
+                {   "name": "y", "value": "ANOVA_lefthippocampus" },
+                {   "name": "sstype", "value": "2" },
+                {   "name": "pathology","value":"dementia"},
+                {   "name": "dataset", "value": "ANOVA_dataset1,ANOVA_dataset2,ANOVA_dataset3" },
+                {   "name": "filter", "value": "" }
         ]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
@@ -276,14 +249,12 @@ class TestANOVA(unittest.TestCase):
     def test_ANOVA_14(self):
         logging.info("---------- TEST : ANOVA - Tests With similar to our target data set(dataset_0.csv) - with 1 interaction and 3 variables - type III")
         data = [
-            {   "name": "iterations_max_number", "value": "20" },
-            {   "name": "x", "value": "ANOVA_alzheimerbroadcategory*ANOVA_gender+ANOVA_agegroup" },
-            {   "name": "y", "value": "ANOVA_lefthippocampus" },
-            {   "name": "sstype", "value": "3" },
-	    {   "name": "pathology","value":"dementia"},
-            {   "name": "dataset", "value": "ANOVA_dataset1,ANOVA_dataset2,ANOVA_dataset3" },
-            {   "name": "filter", "value": "" },
-            {   "name": "outputformat", "value": "pfa" }
+                {   "name": "x", "value": "ANOVA_alzheimerbroadcategory*ANOVA_gender+ANOVA_agegroup" },
+                {   "name": "y", "value": "ANOVA_lefthippocampus" },
+                {   "name": "sstype", "value": "3" },
+    	        {   "name": "pathology","value":"dementia"},
+                {   "name": "dataset", "value": "ANOVA_dataset1,ANOVA_dataset2,ANOVA_dataset3" },
+                {   "name": "filter", "value": "" }
         ]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
@@ -294,14 +265,12 @@ class TestANOVA(unittest.TestCase):
     def test_ANOVA_15(self):
         logging.info("---------- TEST : ANOVA - Tests With similar to our target data set(dataset_0.csv) - with 1 interaction and 3 variables - type II")
         data = [
-            {   "name": "iterations_max_number", "value": "20" },
-            {   "name": "x", "value": "ANOVA_alzheimerbroadcategory*ANOVA_gender+ANOVA_agegroup" },
-            {   "name": "y", "value": "ANOVA_lefthippocampus" },
-            {   "name": "sstype", "value": "2" },
-	    {   "name": "pathology","value":"dementia"},
-            {   "name": "dataset", "value": "ANOVA_dataset1,ANOVA_dataset2,ANOVA_dataset3" },
-            {   "name": "filter", "value": "" },
-            {   "name": "outputformat", "value": "pfa" }
+                {   "name": "x", "value": "ANOVA_alzheimerbroadcategory*ANOVA_gender+ANOVA_agegroup" },
+                {   "name": "y", "value": "ANOVA_lefthippocampus" },
+                {   "name": "sstype", "value": "2" },
+    	        {   "name": "pathology","value":"dementia"},
+                {   "name": "dataset", "value": "ANOVA_dataset1,ANOVA_dataset2,ANOVA_dataset3" },
+                {   "name": "filter", "value": "" }
         ]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
@@ -312,14 +281,12 @@ class TestANOVA(unittest.TestCase):
     def test_ANOVA_16(self):
         logging.info("---------- TEST : ANOVA - Tests With similar to our target data set(dataset_0.csv) - with full interaction and 3 variables - type III")
         data = [
-            {   "name": "iterations_max_number", "value": "20" },
-            {   "name": "x", "value": "ANOVA_alzheimerbroadcategory*ANOVA_gender*ANOVA_agegroup" },
-            {   "name": "y", "value": "ANOVA_lefthippocampus" },
-            {   "name": "sstype", "value": "3" },
-	    {   "name": "pathology","value":"dementia"},
-            {   "name": "dataset", "value": "ANOVA_dataset1,ANOVA_dataset2,ANOVA_dataset3" },
-            {   "name": "filter", "value": "" },
-            {   "name": "outputformat", "value": "pfa" }
+                {   "name": "x", "value": "ANOVA_alzheimerbroadcategory*ANOVA_gender*ANOVA_agegroup" },
+                {   "name": "y", "value": "ANOVA_lefthippocampus" },
+                {   "name": "sstype", "value": "3" },
+    	        {   "name": "pathology","value":"dementia"},
+                {   "name": "dataset", "value": "ANOVA_dataset1,ANOVA_dataset2,ANOVA_dataset3" },
+                {   "name": "filter", "value": "" }
         ]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
@@ -330,14 +297,13 @@ class TestANOVA(unittest.TestCase):
     def test_ANOVA_17(self):
         logging.info("---------- TEST : ANOVA - Tests With similar to our target data set(dataset_0.csv) - with full interaction and 3 variables - type II")
         data = [
-            {   "name": "iterations_max_number", "value": "20" },
-            {   "name": "x", "value": "ANOVA_alzheimerbroadcategory*ANOVA_gender*ANOVA_agegroup" },
-            {   "name": "y", "value": "ANOVA_lefthippocampus" },
-            {   "name": "sstype", "value": "2" },
- 	    {   "name": "pathology","value":"dementia"},
-            {   "name": "dataset", "value": "ANOVA_dataset1,ANOVA_dataset2,ANOVA_dataset3" },
-            {   "name": "filter", "value": "" },
-            {   "name": "outputformat", "value": "pfa" }
+
+                {   "name": "x", "value": "ANOVA_alzheimerbroadcategory*ANOVA_gender*ANOVA_agegroup" },
+                {   "name": "y", "value": "ANOVA_lefthippocampus" },
+                {   "name": "sstype", "value": "2" },
+     	        {   "name": "pathology","value":"dementia"},
+                {   "name": "dataset", "value": "ANOVA_dataset1,ANOVA_dataset2,ANOVA_dataset3" },
+                {   "name": "filter", "value": "" }
         ]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
@@ -349,14 +315,12 @@ class TestANOVA(unittest.TestCase):
         logging.info("---------- TEST : Algorithms for Privacy Error")
 
         data = [
-                {   "name": "iterations_max_number", "value": "20" },
                 {   "name": "x", "value": "ANOVA_var_I1*ANOVA_var_I2*ANOVA_var_I3" },
                 {   "name": "y", "value": "ANOVA_var_D" },
                 {   "name": "sstype", "value": "1" },
-	        {   "name": "pathology","value":"dementia"},
+	            {   "name": "pathology","value":"dementia"},
                 {   "name": "dataset", "value": "adni_9rows" },
-                {   "name": "filter", "value": "" },
-                {   "name": "outputformat", "value": "pfa" }
+                {   "name": "filter", "value": "" }
               ]
 
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}

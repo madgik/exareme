@@ -1,5 +1,7 @@
-requirevars 'defaultDB' 'input_global_tbl' 'centers' 'x' ;
+requirevars 'defaultDB' 'input_global_tbl' 'centers' 'y' ;
 attach database '%{defaultDB}' as defaultDB;
+
+var 'x' '%{y}';
 
 --var 'input_global_tbl' 'defaultDB.partialclustercenters'; --DELETE
 var 'centersisempty' from select case when (select '%{centers}')='' or (select '%{centers}')='[]' or (select '%{centers}')='[{}]' or (select '%{centers}')='{}' then 1 else 0 end;
