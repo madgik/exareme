@@ -38,25 +38,6 @@ startWorker () {
     echo -e "\nExareme service is now running.."
 }
 
-echo -e "\nWhat is the name of the worker node on which you want to start Exareme?"
-read workerName
-
-while IFS= read -r line || [[ -n "$line" ]]; do
-    if [[ "$line" == *"[workers]"* ]]; then
-        while IFS= read -r line1 || [ -n "$line1" ]; do
-            worker=$(echo "$line1")
-            if [[ ${workerName} != ${worker} ]]; then
-                continue
-            else                            #workerN exists in hosts.ini
-				joinWorker ${workerName}
-				startWorker ${workerName}
-                return
-            fi
-        done
-		echo -e "\nCould not find the worker. Did not start any service. You can add it from the menu."
-    fi
-done < ../hosts.ini; echo;
-
 echo -e "\nWhat is the IP of the target worker node you would like to start Exareme?"
 read answer
 

@@ -104,7 +104,7 @@ do
 				break
             fi
 			
-			echo -e "\nAll neccessary files exist (hosts.ini, vault.yaml, exareme.yaml). Stoping..."
+			echo -e "\nAll neccessary files exist (hosts.ini, vault.yaml, exareme.yaml)."
             . ./restartWorker.sh
             break
 		
@@ -127,7 +127,7 @@ do
 				break
             fi
 
-			echo -e "\nAll neccessary files exist (hosts.ini, vault.yaml, exareme.yaml). Stoping..."
+			echo -e "\nAll neccessary files exist (hosts.ini, vault.yaml, exareme.yaml)."
             . ./stop.sh
             break
 			
