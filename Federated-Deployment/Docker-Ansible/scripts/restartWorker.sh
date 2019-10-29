@@ -56,3 +56,31 @@ while IFS= read -r line || [[ -n "$line" ]]; do
 		echo -e "\nCould not find the worker. Did not start any service. You can add it from the menu."
     fi
 done < ../hosts.ini; echo;
+
+echo -e "\nWhat is the IP of the target worker node you would like to start Exareme?"
+read answer
+
+checkIP ${answer}
+workerIP=${answer}
+workerName="worker"${workerIP}
+workerName=${workerName//./_}
+
+while IFS= read -r line || [[ -n "$line" ]]; do
+    if [[ "$line" == *"[workers]"* ]]; then
+        while IFS= read -r line1 || [[ -n "$line1" ]]; do
+            worker=$(echo "$line1")
+            if [[ ${workerName} != ${worker} ]]; then
+                continue
+            else                            #workerN exists below [workers] tag
+                joinWorker ${workerName}
+				startWorker ${workerName}
+                return
+            fi
+            if [[ -z "$line1" ]]; then
+                continue                    #If empty line continue..
+            fi
+        done
+        echo -e "\nCould not find worker with IP \"${workerIP}\" in hosts.ini. Did not start any service. YOu can add the target worker\
+node from the main menu or manually in hosts.ini file."
+    fi
+done < ../hosts.ini; echo;
