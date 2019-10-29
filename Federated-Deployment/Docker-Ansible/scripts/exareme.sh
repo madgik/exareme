@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-#TODO what if the user enters # in exareme.yaml. FIX that
 
 # Check if EXAREME image exists
 docker_image_exists() {
