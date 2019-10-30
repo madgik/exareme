@@ -1,4 +1,4 @@
-requirevars 'defaultDB' 'input_global_tbl' 'dataset' 'x' 'y';
+requirevars 'defaultDB' 'input_global_tbl' 'dataset' 'x' 'y' 'referencevalues';
 attach database '%{defaultDB}' as defaultDB;
 
 -- var 'input_global_tbl' 'defaultDB.partialmetadatatbl';
@@ -8,6 +8,8 @@ create table defaultDB.algorithmparameters (name,val);
 insert into defaultDB.algorithmparameters select 'x' , '%{x}' ;
 insert into defaultDB.algorithmparameters select 'y' , '%{y}' ;
 insert into defaultDB.algorithmparameters select 'dataset' , '%{dataset}' ;
+
+var 'referencevalues' from (select case when '%{referencevalues}'= '' then '[]' else '%{referencevalues}' end);
 
 drop table if exists defaultDB.metadatatbl;
 create table defaultDB.metadatatbl (code text, categorical int, enumerations text, referencevalue text);
