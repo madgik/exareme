@@ -18,6 +18,10 @@ Make sure the following ports are available:
 
 # Preparation
 
+## Clone the repository 
+
+Clone this repository on your local computer so you can use it to deploy exareme.
+
 ## Data Structure
 In every node the DATA should follow a specific structure. We will refer to the path of the DATA folder as ```data_path```. The ```data_path``` can be different across the nodes.
 
@@ -71,7 +75,7 @@ LOCAL_DATA_FOLDER=/home/user/data/
 
 # Deployment
 
-Run the ```deployLocal.sh``` to start the deployment.
+In the ```Local-Deployment/``` folder, run the ```deployLocal.sh``` to start the deployment.
 
 You will be prompted to provide any information needed.
 
