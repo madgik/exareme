@@ -5,7 +5,7 @@ import logging
 
 endpointUrl='http://88.197.53.38:9090/mining/query/ANOVA'
 
-def test_Histogram_Privacy():
+def test_ANOVA_Privacy():
         logging.info("---------- TEST : Algorithms for Privacy Error")
         data = [{   "name": "iterations_max_number", "value": "20" },
                 {   "name": "x", "value": "ANOVA_var_I1*ANOVA_var_I2*ANOVA_var_I3" },
@@ -23,4 +23,4 @@ def test_Histogram_Privacy():
 
 
 def check_privacy_result(result):
-    assert result == "{\"result\" : [{\"data\":\" Incorrect parameter value. sstype'value should be one of the following: 1,2,3 \",\"type\":\"text/plain+user_error\"}]}"
+    assert result == "{\"result\" : [{\"data\":\" Incorrect parameter value. \'sstype\' value should be one of the following: 1,2,3 \",\"type\":\"text/plain+user_error\"}]}"

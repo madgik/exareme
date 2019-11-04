@@ -1,6 +1,7 @@
-requirevars 'defaultDB' 'x' 'e';
+requirevars 'defaultDB' 'y' 'e';
 attach database '%{defaultDB}' as defaultDB;
 
+var 'x' '%{y}';
 --var 'e' 0.0001; --DELETE
 
 var 'a' from select create_complex_query('','?_clval as ?_old',',','','%{x}') ;

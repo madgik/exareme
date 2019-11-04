@@ -22,12 +22,13 @@
 ------------------ End input for testing
 ------------------------------------------------------------------------------
 
-requirevars 'defaultDB' 'input_local_DB' 'db_query' 'x' 'y' 'ylevels' 'hypothesis' 'effectsize' 'ci' 'meandiff';
+requirevars 'defaultDB' 'input_local_DB' 'db_query' 'x' 'y' 'xlevels' 'hypothesis' 'effectsize' 'ci' 'meandiff';
 --x: a vector of strings naming the variables of interest in data
 --testValue: a number specifying the value of the null hypothesis
 
 attach database '%{defaultDB}' as defaultDB;
 attach database '%{input_local_DB}' as localDB;
+
 
 -- ErrorHandling
 select categoricalparameter_inputerrorchecking('hypothesis', '%{hypothesis}', 'different,greaterthan,lessthan');
@@ -39,17 +40,22 @@ select categoricalparameter_inputerrorchecking('meandiff', '%{meandiff}', '0,1')
 drop table if exists inputdata;
 create table inputdata as select * from (%{db_query});
 
+drop table if exists defaultDB.lala;
+create table defaultDB.lala as select * from (%{db_query});
+
+
 -- Cast values of columns using cast function.
-var 'cast_x' from select create_complex_query("","tonumber(?) as ?", "," , "" , '%{x}');
+var 'cast_y' from select create_complex_query("","tonumber(?) as ?", "," , "" , '%{y}');
 drop table if exists defaultDB.localinputtblflat;
 create table defaultDB.localinputtblflat as
-select %{cast_x}, cast(%{y} as text) as '%{y}' from inputdata
-where %{y} is not null and %{y}  <>'NA' and %{y}  <>'';
+select %{cast_y}, cast(%{x} as text) as '%{x}' from inputdata
+where  %{x} is not null and %{x}  <>'NA' and %{x}  <>''
+       and  %{x} in (select strsplitv('%{xlevels}','delimiter:,'));
 
 --Independent or Unpaired T-test
 var 'localstats' from select create_complex_query("","insert into  defaultDB.localstatistics
-select '?' as colname, %{y} as groupval, sum(?) as S1, sum(?*?) as S2, count(?) as N from localinputtblflat
-where ? is not null and ? <>'NA' and ? <>'' group by %{y};" , "" , "" , '%{x}');
+select '?' as colname, %{x} as groupval, sum(?) as S1, sum(?*?) as S2, count(?) as N from localinputtblflat
+where ? is not null and ? <>'NA' and ? <>'' group by %{x};" , "" , "" , '%{y}');
 drop table if exists defaultDB.localstatistics;
 create table defaultDB.localstatistics (colname text, groupval text, S1 real, S2 real, N int);
 %{localstats};
@@ -57,11 +63,16 @@ create table defaultDB.localstatistics (colname text, groupval text, S1 real, S2
 -- drop table if exists defaultDB.privacychecking; -- For error handling
 -- create table defaultDB.privacychecking as
 --ErrorChecking
+select privacychecking(N) from (select count(*) as N from defaultDB.localinputtblflat);
 select privacychecking(N) from defaultDB.localstatistics;
-select variableshouldbebinary_inputerrorchecking('%{y}', val)
-from (select count(distinct %{y}) as val from defaultDB.localinputtblflat);
-select variabledistinctvalues_inputerrorchecking('%{y}', val, '%{ylevels}')
-from (select group_concat(distinct %{y}) as val from defaultDB.localinputtblflat);
+
+
+select variableshouldbebinary_inputerrorchecking('%{x}', val)
+from (select count(distinct %{x}) as val from defaultDB.localinputtblflat)
+where '%{xlevels}' <> '';
+select variabledistinctvalues_inputerrorchecking('%{x}', val, '%{xlevels}')
+from (select group_concat(distinct %{x}) as val from defaultDB.localinputtblflat)
+where '%{xlevels}' <> '';
 
 
 select * from defaultDB.localstatistics;

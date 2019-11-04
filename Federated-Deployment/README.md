@@ -1,4 +1,4 @@
-# Exareme Deployment Guide
+# Federated Exareme Deployment Guide
 
 Here you will find all the information needed in order to deploy Exareme in your environment via Ansible scripts.
 
@@ -11,6 +11,21 @@ We will refer to the machine from which you run the ansible scripts as Admin and
 2) Install Python (version 2.7) in all Target machines, in order for playbooks to run.
 
 3) Install Docker in all Target machines.
+
+# Ports
+
+Make sure the following ports are available:
+
+```9090: for accessing Exareme```
+
+```(Optional): 8500 for accessing Consul Key Value Store```
+
+```(Optional): 9000 for accessing Portainer.io```
+
+# Documentation
+
+Make sure you have read the ```Federation_Specifications.md``` and ```Firewall_Configuration.md``` files exist under Documentation folder.
+The first doc sums up everything regarding Docker Swarm and the second one how to deal if a firewall exists in the Federation nodes.
 
 # Preparation
 
@@ -43,66 +58,68 @@ For example:
 ----------> CDEsMetadata.json <br />
 
 
-## Exareme Version
+## [Optional] Initialize Exareme Version
 
-Go to the ```Deployment/Docker-Ansible/group_vars``` folder and create an ```exareme.yaml``` file.
+```This step can be done through the deploy script.```
+
+If you want to do it manually you can go to the ```Federated-Deployment/Docker-Ansible/group_vars``` folder and create an ```exareme.yaml``` file.
 
 The file should contain the following lines, modify them depending on the version of exareme you want to deploy.
 
 ```
-	# Exareme Tag
-	EXAREME_TAG: "v21.0.0"
-	# Exareme Image
-	EXAREME_IMAGE: "hbpmip/exareme"
+EXAREME_IMAGE: "hbpmip/exareme"
+EXAREME_TAG: "v21.1.0"
 ```
 
-## Initialize Hosts
+## [Optional] Initialize Hosts
 
-Go to the ```Deployment/Docker-Ansible/``` folder and create a ```hosts.ini``` file.
+```This step can be done through the deploy script. If you have many nodes though it is easier to do it manually.```
+
+If you want to do it manually you can go to the ```Federated-Deployment/Docker-Ansible/``` folder and create a ```hosts.ini``` file.
 
 Here is an example of hosts.ini where we have 3 Target machines, one [master] of Exareme and two [workers] of Exareme.
 
 ```
-   [master]
-   master ansible_host=88.197.53.38
-   master home_path=/home/exareme/
-   master data_path=/home/exareme/data/
+[master]
+master ansible_host=88.197.53.38
+master home_path=/home/exareme/
+master data_path=/home/exareme/data/
 
-   master remote_user="{{master_remote_user}}"
-   master become_user="{{master_become_user}}"
-   master ansible_become_pass="{{master_become_pass}}"
-   master ansible_ssh_pass="{{master_ssh_pass}}"
+master remote_user="{{master_remote_user}}"
+master become_user="{{master_become_user}}"
+master ansible_become_pass="{{master_become_pass}}"
+master ansible_ssh_pass="{{master_ssh_pass}}"
 
-   [workers]
-   worker1
-   worker2
+[workers]
+worker1
+worker2
 
-   [worker1]
-   worker1 ansible_host=88.197.53.44
-   worker1 hostname=dl044
-   worker1 data_path=/home/exareme/data/
+[worker1]
+worker1 ansible_host=88.197.53.44
+worker1 hostname=dl044
+worker1 data_path=/home/exareme/data/
 
-   worker1 remote_user="{{worker1_remote_user}}"
-   worker1 become_user="{{worker1_become_user}}"
-   worker1 ansible_become_pass="{{worker1_become_pass}}"
-   worker1 ansible_ssh_pass="{{worker1_ssh_pass}}"
+worker1 remote_user="{{worker1_remote_user}}"
+worker1 become_user="{{worker1_become_user}}"
+worker1 ansible_become_pass="{{worker1_become_pass}}"
+worker1 ansible_ssh_pass="{{worker1_ssh_pass}}"
 
 
-   [worker2]
-   worker2 ansible_host=88.197.53.100
-   worker2 hostname=thanasis1
-   worker2 data_path=/home/exareme/data/
+[worker2]
+worker2 ansible_host=88.197.53.100
+worker2 hostname=thanasis1
+worker2 data_path=/home/exareme/data/
 
-   worker2 remote_user="{{worker2_remote_user}}"
-   worker2 become_user="{{worker2_become_user}}"
-   worker2 ansible_become_pass="{{worker2_become_pass}}"
-   worker2 ansible_ssh_pass="{{worker2_ssh_pass}}"
+worker2 remote_user="{{worker2_remote_user}}"
+worker2 become_user="{{worker2_become_user}}"
+worker2 ansible_become_pass="{{worker2_become_pass}}"
+worker2 ansible_ssh_pass="{{worker2_ssh_pass}}"
 ```
 [You can find the hostname of any machine by executing ```hostname``` in terminal]
 
 [Requirement1: Mind that the variable ```data_path``` is the path where your Data CSV (datasets.csv) and the Metadata file (CDEsMetadata.json)
-are stored in your Target machine.]
-[Requirement2: Mind that the variable ```home_path``` is the path where ```Deployment/Compose-Files/``` will be stored in the master node. Compose-Files
+are stored in your Target machine.]<br/>
+[Requirement2: Mind that the variable ```home_path``` is the path where ```Federated-Deployment/Compose-Files/``` will be stored in the master node. Compose-Files
 contains 2 docker-compose.yaml files for deploying the services. The ```home_path``` can be Any path]
 
 You can see that there are 2 main categories in hosts.ini file. The first one is ```[master]```, the second one is ```[workers]```.
@@ -124,9 +141,11 @@ b) creating a tag [worker3] with all the necessary variables. For example:
 
 For consistency reasons we suggest you keep the names as shown above [master,worker1,worker2..], and just increase the number after [worker] each time you add one.
 
-## Ansible-vault
+## [Optional] Ansible-vault
 
-As you can also see in hosts.ini file we have some sensitive data like usernames and passwords in both master and workers. These lines ```MUST not be changed!```.
+```Just like the previous step this one can be done through the deploy script, too. If you have many nodes though it is easier to do it manually.```
+
+As you can also see in hosts.ini file we have some sensitive data like usernames and passwords (credentials) in both master and workers. These lines ```MUST not be changed!```.
 
 ```
    master remote_user="{{master_remote_user}}"
@@ -149,13 +168,13 @@ As you can also see in hosts.ini file we have some sensitive data like usernames
    worker2 ansible_ssh_pass="{{worker2_ssh_pass}}"
 ```
 
-It is not a valid technique to just fill in your sensitive data there, so we will use ```Ansible-Vault```.
+It is not a valid technique to just fill in your sensitive data (credentials) there, so we will use ```Ansible-Vault```.
 Ansible-vault comes with the installation of ansible. Make sure you have it installed by running: ```ansible-vault --version```
 
-With ansible-vault we can have an encrypted file which will contain sensitive information like the ones shown above.
+With ansible-vault we can have an encrypted file which will contain sensitive information (credentials) like the ones shown above.
 
 In order to create the file you need to run 
-```ansible-vault create vault_file.yaml``` inside ```Deployment/Docker-Ansible/``` folder.
+```ansible-vault create vault_file.yaml``` inside ```Federated-Deployment/Docker-Ansible/``` folder.
 It will ask for a vault-password that you will need to enter it each time you run a playbook. So keep it in mind.
 
 Here you will add
@@ -163,24 +182,24 @@ Here you will add
 # remote_user and ssh_pass will be user to login to the target hostname
 # become_user and become_pass will be used to execute docker and other commands. Make sure that user has permission to run docker commands. You could use root if possible.
 
-   master_remote_user: your_username
-   master_become_user: your_username
-   master_ssh_pass: your_password
-   master_become_pass: your_password
+master_remote_user: your_username
+master_become_user: your_username
+master_ssh_pass: your_password
+master_become_pass: your_password
    
-   worker1_remote_user: your_username
-   worker1_become_user: your_username
-   worker1_ssh_pass: your_password
-   worker1_become_pass: your_password
+worker1_remote_user: your_username
+worker1_become_user: your_username
+worker1_ssh_pass: your_password
+worker1_become_pass: your_password
    
-   worker2_remote_user: your_username
-   worker2_become_user: your_username
-   worker2_ssh_pass: your_password
-   worker2_become_pass: your_password
+worker2_remote_user: your_username
+worker2_become_user: your_username
+worker2_ssh_pass: your_password
+worker2_become_pass: your_password
 ```
-all in plaintext. If you have more than 2 workers, you will add those too by adding ```workerN_...``` in front of each variable where N the increased number. 
-[Keep in mind that your password can be anything you want But ansible has a special character for comments ```#``` . If your password contains that specific character ansible will take the characters next to it as comments.]
-When you exit you can see that vault_file.yaml is encrypted with all your sensitive information in there.
+all in plaintext. If you have more than 2 workers, you will add those too by adding ```workerN_...``` in front of each variable where N the increased number.<br/>
+[Keep in mind that your password can be anything you want But ansible has a special character for comments ```#``` . If your password contains that specific character ansible will take the characters next to it as comments.]<br/>
+When you exit you can see that vault_file.yaml is encrypted with all your sensitive information (credentials) in there.
 
 If you want to edit the file you can do so whenever by running:
 ```ansible-vault edit vault_file.yaml```
@@ -204,9 +223,29 @@ If you are using a script instead of a flat file, ensure that it is marked as ex
 
 More guidance will be provided in that matter if you select to deploy via script (see below)
 
+# Deployment by Hospital
+
+In case when a Hospital ```can not/will not``` give the sensitive data like usernames and passwords (credentials) needed in order for Ansible to run, here is a workaround:
+
+1) The Hospital must contact the system administrator so he/she will handle the command needed in order for Hospital to be part of the Swarm as ```Worker node```.
+2) The Hospital must run the command ```docker swarm join --token <Swarm Token> <Master Node URL>:2377``` given by the system administrator.
+
+For example the command could look like this:
+
+```(sudo) docker swarm join --token SWMTKN-1-22ya4cjf2c1aq4sbnypwkvs2z87wg2897xi35qvp1hs54s85of-doah1kp92psb8rqvbgshu7ro2 88.197.53.38:2377```
+
+If a node is behind a NAT, its local IP will be advertised by default and other nodes will not be able to contact it.<br/>
+**Note:** Non-static public IP should be fine for worker nodes, but this has not been tested.
+
+If the worker node is behind a NAT server, you must specify the Public IP to use to contact that Worker node from other nodes with:
+
+ ```docker swarm join --advertise-addr <Public IP> --token <Swarm Token> <Master Node URL>:2377```
+
+3) Inform the system administrator that the command run, so he/she can Start Exareme instance at the specific Hospital from the ```Manager node``` of Swarm.
+
 # Deployment
 
-In the Docker-Ansible folder run the ```deploy.sh``` to start the deployment.
+Under Docker-Ansible/scripts/ folder run the ```deploy.sh``` to start the deployment.
 
 You will be prompted to provide any more information needed.
 
@@ -230,7 +269,7 @@ Next thing would be to run Exareme services and Portainer service. The Exareme s
 
 ```ansible-playbook -i hosts.ini Start-Exareme.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv```
 
-If you want to exclude Portainer service from running, you need to add ```--skip-tags portainer``` in the command, meening:
+If you want to exclude Portainer service from running, you need to add ```--skip-tags portainer``` in the command, meaning:
 
 ```ansible-playbook -i hosts.ini Start-Exareme.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml --skip-tags portainer -vvvv```
 
@@ -256,7 +295,8 @@ If you want to stop all services [Exareme master/Exareme workers/Portainer]:
 
 ### Add an Exareme Worker when the master is already running
 
-After inserting the nodes information in the hosts.ini and the ansible-vaut file you can run the ```deploy.sh``` script.
+After inserting the nodes information in the hosts.ini and the ansible-vault file (under folder /Docker-Ansible/scripts/)
+you can run the ```deploy.sh``` script.
 
 You can also do it manually with the following commands:
 1) Join the particular worker by replacing workerN with the appropriate name: 
@@ -283,21 +323,62 @@ Check your Manager node of Swarm by
 You can also check the Portainer to see if all services are up and running by accessing the Address: ```Manager_Of_Swarm_IP:9000```.
 
 The first time you launch Portainer you have to create a user. 
-Fill in the ```Username```, ```Password```, ```Confirm Password``` fields and click ```Create user```. 
-[Mind that we create a folder called ```portainer``` in your ```home_path``` where the credentials you provided will be saved for the next times, until you delete the folder] 
-The next page ```Connect Portainer to the Docker environment you want to manage.``` will ask you to Connect Portainer to an Environment. Click the first option  ```Local``` and ```Connect```. 
+Fill in the ```Username```, ```Password```, ```Confirm Password``` fields and click ```Create user```.<br/> 
+[Mind that we create a folder called ```portainer``` in your ```home_path``` where the credentials you provided will be saved for the next times, until you delete the folder]<br/> 
+The next page ```Connect Portainer to the Docker environment you want to manage.``` will ask you to Connect Portainer to an Environment. Click the first option  ```Local``` and ```Connect```.<br/> 
 After that, you should click on your Local Swarm and navigate from the left menu. 
 Go to your ```Services``` to check each service's logs and see if everything is running properly.
 
 ### Troubleshooting
 
-1) Under ```Services``` in the left menu check that all services has 1 replicas: ```replicated 1 / 1```. 
+a) If Portainer service is launched:
 
-If this is not the case for the Worker nodes, meaning you get 0 replicas: ```replicated 0 / 1```, then it is possible that you started an Exareme Worker service before joining that Worker in the Swarm.
-i) Stop the spesific Worker via:
-``` ansible-playbook -i hosts.ini Stop-Exareme-Worker.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=workerN"``` , 
-ii) Join the spesific Worker in the Swarm via: 
-``` ansible-playbook -i hosts.ini Join-Workers.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=workerN"```  
-iii) Start the spesific Worker Node: 
-``` ansible-playbook -i hosts.ini Start-Exareme-Worker.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=workerN"```
+Under ```Services``` in the left menu check that all services has 1 replicas: ```replicated 1 / 1```.<br/>
 
+If this is not the case, meaning you get ```replicated 0 / 1```, the service for the specific node did not run:
+
+    From the specific node:
+
+    1) Make sure you have enough space on the specific node
+
+    From the Manager node of Swarm:
+
+    1) Check the ERROR message by doing ```sudo docker service ps --no-trunc NAME_or_ID_of_service``` 
+    2) If Worker node ```Manually``` joined the Swarm:
+        - Make sure the node has actually joined the Swarm and that it is tagged with a proper name.
+
+
+b) Check that all workers are seen by Exareme
+
+Connect to the Exareme test page at `http://localhost:9090/exa-view/index.html`.
+The algorithm LIST\_DATASET should show datasets for each pathology available at each node of the Federation.
+
+If a node's information is missing:
+
+    From the specific node of Swarm:
+
+    1) Check the network configuration for this node. ```Obtaining the correct network configuration for each server that must join the Federation might not be straightforward.```
+    2) Make sure the datasets and the CDEs are in the correct data path under ```pathology``` folder.
+    
+    From the Manager node of Swarm:
+
+    1) Check the logs and report them to Exareme expertise team.
+    
+c) Restart Exareme
+
+In some cases a simple restart may be enough. From the Manager node of Swarm under exareme/Federated-Deployment/Docker-Ansible/scripts/ folder run:
+```
+./deploy.sh
+```
+
+choose:
+```
+2. (Re)Start all services.
+```
+
+and then choose one of the options given:
+```
+1. Restart Exareme
+2. Restart Portainer
+3. Restart Exareme and Portainer
+```

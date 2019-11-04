@@ -12,19 +12,16 @@ endpointUrl='http://88.197.53.38:9090/mining/query/ID3'
 
 def test_ID3_1():
     logging.info("---------- TEST : ID3 - Test using contact-lenses dataset  ")
-    data = [
-            {   "name": "iterations_max_number", "value": "20" },
-            {   "name": "x", "value": "CL_age,CL_spectacle_prescrip,CL_astigmatism,CL_tear_prod_rate"  },
+    data = [{   "name": "x", "value": "CL_age,CL_spectacle_prescrip,CL_astigmatism,CL_tear_prod_rate"  },
             {   "name": "y", "value": "CL_contact_lenses" },
             {   "name": "dataset", "value": "contact-lenses" },
             {   "name": "filter", "value": "" },
-            {   "name": "pathology","value":"dementia"}
-
-        ]
+            {   "name": "pathology","value":"dementia"}]
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
     r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
     result = json.loads(r.text)
-    print (result['result'][1]['data'])
+
+    print (result['result'])
 
     resultR  = '''\
 CL_tear_prod_rate = reduced: none
@@ -47,6 +44,7 @@ CL_tear_prod_rate = normal
     treeR = json.dumps(tree)
     treeR = json.loads(treeR)
     print (treeR)
+    assert 1
     resultsComparison(result['result'][1]['data'], treeR)
 
 
@@ -54,14 +52,11 @@ CL_tear_prod_rate = normal
 def test_ID3_Privacy():
     logging.info("---------- TEST : ID3 - Test using contact-lenses dataset  ")
 
-    data = [
-            {   "name": "iterations_max_number", "value": "20" },
-            {   "name": "x", "value": "CL_age,CL_spectacle_prescrip,CL_astigmatism,CL_tear_prod_rate"  },
+    data = [{   "name": "x", "value": "CL_age,CL_spectacle_prescrip,CL_astigmatism,CL_tear_prod_rate"  },
             {   "name": "y", "value": "CL_contact_lenses" },
             {   "name": "dataset", "value": "contact-lenses" },
             {   "name": "filter", "value": "{\"condition\": \"AND\", \"rules\": [{\"id\": \"CL_age\", \"field\": \"CL_age\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"Young\"}], \"valid\": true}" },
-            {   "name": "pathology","value":"dementia"}
-        ]
+            {   "name": "pathology","value":"dementia"}]
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
     r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)

@@ -1,6 +1,6 @@
 {
 	"name": "CROSS_VALIDATION_K_FOLD",
-	"desc": "Cross Validation K Fold",
+	"desc": "K-Folds cross-validator",
 	"type": "local_global",
 	"status": "enabled",
 	"vtype": "",
@@ -22,7 +22,7 @@
 			"valueType": "string"
 		}, {
 			"name": "x",
-			"desc": "",
+			"desc": "Independent variables: A list of variables from database. The variable should be Real, Integer or String. The variable can be either numerical or categorical. It cannot be empty",
 			"type": "column",
 			"columnValuesSQLType": "",
 			"columnValuesIsCategorical": "",
@@ -33,7 +33,7 @@
 			"valueType": "string"
 		}, {
 			"name": "y",
-			"desc": "classname",
+			"desc": "Dependent variable: A variable form database. The variable should be Real, Integer or String. It should be categorical. It cannot be empty",
 			"type": "column",
 			"columnValuesSQLType": "",
 			"columnValuesIsCategorical": "true",
@@ -47,6 +47,9 @@
 			"desc": "",
 			"type": "other",
 			"value": "3",
+			"min": null,
+			"max": null,
+			"enumerations": null,
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "integer"
@@ -63,6 +66,9 @@
 			"desc": "Predefined value for the dbIdentifier",
 			"type": "other",
 			"value": "",
+			"min": null,
+			"max": null,
+			"enumerations": null,
 			"valueNotBlank": false,
 			"valueMultiple": false,
 			"valueType": "string"

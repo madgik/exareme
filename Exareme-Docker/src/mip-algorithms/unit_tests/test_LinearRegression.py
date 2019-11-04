@@ -29,10 +29,9 @@ class TestLinearRegression(unittest.TestCase):
     		    { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[{\"name\":\"alzheimerbroadcategory\",\"val\":\"AD\"}]"},
     	        { "name": "encodingparameter", "value": "dummycoding"},
-		{   "name": "pathology","value":"dementia"},
+		        {  "name": "pathology","value":"dementia"},
                 { "name": "dataset", "value": "desd-synthdata"},
-    			{ "name": "filter", "value": ""}
-                ]
+    			{ "name": "filter", "value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
         print (r.text)
@@ -48,10 +47,9 @@ class TestLinearRegression(unittest.TestCase):
     		    { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[{\"name\":\"alzheimerbroadcategory\",\"val\":\"AD\"}]"},
     	        { "name": "encodingparameter", "value": "simplecoding"},
-		{   "name": "pathology","value":"dementia"},
-                {"name": "dataset", "value": "desd-synthdata"},
-    			{"name": "filter", "value": ""}
-                ]
+		        { "name": "pathology","value":"dementia"},
+                { "name": "dataset", "value": "desd-synthdata"},
+    			{ "name": "filter", "value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
         print (r.text)
@@ -65,10 +63,9 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[{\"name\":\"alzheimerbroadcategory\",\"val\":\"AD\"},{\"name\":\"gender\",\"val\":\"M\"}]"},
                 { "name": "encodingparameter", "value": "dummycoding"},
-		{   "name": "pathology","value":"dementia"},
-                {"name": "dataset", "value": "desd-synthdata"},
-                {"name": "filter", "value": ""}
-                ]
+		        { "name": "pathology","value":"dementia"},
+                { "name": "dataset", "value": "desd-synthdata"},
+                { "name": "filter", "value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
         print (r.text)
@@ -82,9 +79,9 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[{\"name\":\"alzheimerbroadcategory\",\"val\":\"AD\"},{\"name\":\"gender\",\"val\":\"M\"}]"},
                 { "name": "encodingparameter", "value": "simplecoding"},
-		{   "name": "pathology","value":"dementia"},
-                {"name": "dataset", "value": "desd-synthdata"},
-                {"name": "filter", "value": ""}
+		        { "name": "pathology","value":"dementia"},
+                { "name": "dataset", "value": "desd-synthdata"},
+                { "name": "filter", "value": ""}
                 ]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
@@ -99,10 +96,9 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[{\"name\":\"alzheimerbroadcategory\",\"val\":\"AD\"},{\"name\":\"gender\",\"val\":\"M\"}]"},
                 { "name": "encodingparameter", "value": "dummycoding"},
-		{   "name": "pathology","value":"dementia"},
-                {"name": "dataset", "value": "desd-synthdata"},
-                {"name": "filter", "value": ""}
-                ]
+		        { "name": "pathology","value":"dementia"},
+                { "name": "dataset", "value": "desd-synthdata"},
+                { "name": "filter", "value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
         print (r.text)
@@ -116,10 +112,9 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[{\"name\":\"alzheimerbroadcategory\",\"val\":\"AD\"},{\"name\":\"gender\",\"val\":\"M\"}]"},
                 { "name": "encodingparameter", "value": "simplecoding"},
-		{   "name": "pathology","value":"dementia"},
-                {"name": "dataset", "value": "desd-synthdata"},
-                {"name": "filter", "value": ""}
-                ]
+		        { "name": "pathology","value":"dementia"},
+                { "name": "dataset", "value": "desd-synthdata"},
+                { "name": "filter", "value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
         print (r.text)
@@ -133,10 +128,9 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[{\"name\":\"gender\",\"val\":\"M\"}]"},
                 { "name": "encodingparameter", "value": "dummycoding"},
-		{   "name": "pathology","value":"dementia"},
-                {"name": "dataset", "value": "desd-synthdata"},
-                {"name": "filter", "value": ""}
-                ]
+		        { "name": "pathology","value":"dementia"},
+                { "name": "dataset", "value": "desd-synthdata"},
+                { "name": "filter", "value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
         print (r.text)
@@ -150,10 +144,9 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[{\"name\":\"gender\",\"val\":\"M\"}]"},
                 { "name": "encodingparameter", "value": "simplecoding"},
-		{   "name": "pathology","value":"dementia"},
-                {"name": "dataset", "value": "desd-synthdata"},
-                {"name": "filter", "value": ""}
-                ]
+		        { "name": "pathology","value":"dementia"},
+                { "name": "dataset", "value": "desd-synthdata"},
+                { "name": "filter", "value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
         print (r.text)
@@ -167,10 +160,9 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[{\"name\":\"gender\",\"val\":\"M\"}]"},
                 { "name": "encodingparameter", "value": "dummycoding"},
-		{   "name": "pathology","value":"dementia"},
-                {"name": "dataset", "value": "desd-synthdata"},
-                {"name": "filter", "value": ""}
-                ]
+		        { "name": "pathology","value":"dementia"},
+                { "name": "dataset", "value": "desd-synthdata"},
+                { "name": "filter", "value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
         print (r.text)
@@ -184,10 +176,9 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[{\"name\":\"gender\",\"val\":\"M\"}]"},
                 { "name": "encodingparameter", "value": "simplecoding"},
-		{   "name": "pathology","value":"dementia"},
-                {"name": "dataset", "value": "desd-synthdata"},
-                {"name": "filter", "value": ""}
-                ]
+		        { "name": "pathology","value":"dementia"},
+                { "name": "dataset", "value": "desd-synthdata"},
+                { "name": "filter", "value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
         print (r.text)
@@ -200,10 +191,9 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[]"},
                 { "name": "encodingparameter", "value": "dummycoding"},
-		{   "name": "pathology","value":"dementia"},
-                {"name": "dataset", "value": "desd-synthdata"},
-                {"name": "filter", "value": ""}
-                ]
+		        { "name": "pathology","value":"dementia"},
+                { "name": "dataset", "value": "desd-synthdata"},
+                { "name": "filter", "value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
         print (r.text)
@@ -217,10 +207,9 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[]"},
                 { "name": "encodingparameter", "value": "dummycoding"},
-		{   "name": "pathology","value":"dementia"},
-                {"name": "dataset", "value": "desd-synthdata"},
-                {"name": "filter", "value": ""}
-                ]
+		        { "name": "pathology","value":"dementia"},
+                { "name": "dataset", "value": "desd-synthdata"},
+                { "name": "filter", "value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
         print (r.text)
@@ -233,10 +222,9 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[]"},
                 { "name": "encodingparameter", "value": "dummycoding"},
-		{   "name": "pathology","value":"dementia"},
+		        { "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
-                {"name": "filter", "value": ""}
-                ]
+                {"name": "filter", "value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
         print (r.text)
@@ -250,10 +238,9 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[]"},
                 { "name": "encodingparameter", "value": "dummycoding"},
-		{   "name": "pathology","value":"dementia"},
+		        { "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
-                {"name": "filter", "value": ""}
-                ]
+                {"name": "filter", "value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
         print (r.text)
@@ -266,10 +253,9 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[]"},
                 { "name": "encodingparameter", "value": "dummycoding"},
-		{   "name": "pathology","value":"dementia"},
-                {"name": "dataset", "value": "desd-synthdata"},
-                {"name": "filter", "value": ""}
-                ]
+                { "name": "pathology","value":"dementia"},
+                { "name": "dataset", "value": "desd-synthdata"},
+                { "name": "filter", "value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
         print (r.text)
@@ -282,10 +268,9 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[]"},
                 { "name": "encodingparameter", "value": "dummycoding"},
-		{   "name": "pathology","value":"dementia"},
-                {"name": "dataset", "value": "desd-synthdata"},
-                {"name": "filter", "value": ""}
-                ]
+		        { "name": "pathology","value":"dementia"},
+                { "name": "dataset", "value": "desd-synthdata"},
+                { "name": "filter", "value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
         print (r.text)
@@ -298,10 +283,9 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[]"},
                 { "name": "encodingparameter", "value": "simplecoding"},
-		{   "name": "pathology","value":"dementia"},
-                {"name": "dataset", "value": "desd-synthdata"},
-                {"name": "filter", "value": ""}
-                ]
+		        { "name": "pathology","value":"dementia"},
+                { "name": "dataset", "value": "desd-synthdata"},
+                { "name": "filter", "value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
         print (r.text)
@@ -314,10 +298,9 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[]"},
                 { "name": "encodingparameter", "value": "dummycoding"},
-		{   "name": "pathology","value":"dementia"},
-                {"name": "dataset", "value": "desd-synthdata"},
-                {"name": "filter", "value": ""}
-                ]
+		        { "name": "pathology","value":"dementia"},
+                { "name": "dataset", "value": "desd-synthdata"},
+                { "name": "filter", "value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
         print (r.text)
@@ -331,10 +314,9 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[]"},
                 { "name": "encodingparameter", "value": "simplecoding"},
-		{   "name": "pathology","value":"dementia"},
-                {"name": "dataset", "value": "desd-synthdata"},
-                {"name": "filter", "value": ""}
-                ]
+		        { "name": "pathology","value":"dementia"},
+                { "name": "dataset", "value": "desd-synthdata"},
+                { "name": "filter", "value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
         print (r.text)
@@ -347,10 +329,9 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[]"},
                 { "name": "encodingparameter", "value": "dummycoding"},
-		{   "name": "pathology","value":"dementia"},
-                {"name": "dataset", "value": "desd-synthdata"},
-                {"name": "filter", "value": ""}
-                ]
+		        { "name": "pathology","value":"dementia"},
+                { "name": "dataset", "value": "desd-synthdata"},
+                { "name": "filter", "value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
         print (r.text)
@@ -363,10 +344,9 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[]"},
                 { "name": "encodingparameter", "value": "simplecoding"},
-		{   "name": "pathology","value":"dementia"},
-                {"name": "dataset", "value": "desd-synthdata"},
-                {"name": "filter", "value": ""}
-                ]
+		        { "name": "pathology","value":"dementia"},
+                { "name": "dataset", "value": "desd-synthdata"},
+                { "name": "filter", "value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
         print (r.text)
@@ -379,10 +359,9 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[]"},
                 { "name": "encodingparameter", "value": "dummycoding"},
-		{   "name": "pathology","value":"dementia"},
-                {"name": "dataset", "value": "desd-synthdata"},
-                {"name": "filter", "value": ""}
-                ]
+		        { "name": "pathology","value":"dementia"},
+                { "name": "dataset", "value": "desd-synthdata"},
+                { "name": "filter", "value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
         print (r.text)
@@ -396,10 +375,9 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[]"},
                 { "name": "encodingparameter", "value": "simplecoding"},
-		{   "name": "pathology","value":"dementia"},
-                {"name": "dataset", "value": "desd-synthdata"},
-                {"name": "filter", "value": ""}
-                ]
+		        { "name": "pathology","value":"dementia"},
+                { "name": "dataset", "value": "desd-synthdata"},
+                { "name": "filter", "value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
         print (r.text)
@@ -412,10 +390,9 @@ class TestLinearRegression(unittest.TestCase):
                     { "name": "y",  "value": "lefthippocampus"},
                     { "name": "referencevalues", "value": "[{\"name\":\"gender\",\"val\":\"M\"}]"},
                     { "name": "encodingparameter", "value": "dummycoding"},
-		    {   "name": "pathology","value":"dementia"},
-                    {"name": "dataset", "value": "desd-synthdata"},
-                    {"name": "filter", "value": ""}
-                    ]
+		            { "name": "pathology","value":"dementia"},
+                    { "name": "dataset", "value": "desd-synthdata"},
+                    { "name": "filter", "value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
         print (r.text)
@@ -428,10 +405,9 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[{\"name\":\"gender\",\"val\":\"M\"}]"},
                 { "name": "encodingparameter", "value": "simplecoding"},
-		{   "name": "pathology","value":"dementia"},
-                {"name": "dataset", "value": "desd-synthdata"},
-                {"name": "filter", "value": ""}
-                ]
+		        { "name": "pathology","value":"dementia"},
+                { "name": "dataset", "value": "desd-synthdata"},
+                { "name": "filter", "value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
         print (r.text)
@@ -445,10 +421,9 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[{\"name\":\"gender\",\"val\":\"M\"}]"},
                 { "name": "encodingparameter", "value": "dummycoding"},
-		{   "name": "pathology","value":"dementia"},
-                {"name": "dataset", "value": "desd-synthdata"},
-                {"name": "filter", "value": ""}
-                ]
+		        { "name": "pathology","value":"dementia"},
+                { "name": "dataset", "value": "desd-synthdata"},
+                { "name": "filter", "value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
         print (r.text)
@@ -461,10 +436,9 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[{\"name\":\"gender\",\"val\":\"M\"}]"},
                 { "name": "encodingparameter", "value": "simplecoding"},
-		{   "name": "pathology","value":"dementia"},
-                {"name": "dataset", "value": "desd-synthdata"},
-                {"name": "filter", "value": ""}
-                ]
+		        { "name": "pathology","value":"dementia"},
+                { "name": "dataset", "value": "desd-synthdata"},
+                { "name": "filter", "value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
         print (r.text)
@@ -478,10 +452,9 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[{\"name\":\"gender\",\"val\":\"M\"}]"},
                 { "name": "encodingparameter", "value": "dummycoding"},
-		{   "name": "pathology","value":"dementia"},
-                {"name": "dataset", "value": "desd-synthdata"},
-                {"name": "filter", "value": ""}
-                ]
+		        { "name": "pathology","value":"dementia"},
+                { "name": "dataset", "value": "desd-synthdata"},
+                { "name": "filter", "value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
         print (r.text)
@@ -494,10 +467,9 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[{\"name\":\"gender\",\"val\":\"M\"}]"},
                 { "name": "encodingparameter", "value": "simplecoding"},
-		{   "name": "pathology","value":"dementia"},
-                {"name": "dataset", "value": "desd-synthdata"},
-                {"name": "filter", "value": ""}
-                ]
+		        { "name": "pathology","value":"dementia"},
+                { "name": "dataset", "value": "desd-synthdata"},
+                { "name": "filter", "value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
         print (r.text)
@@ -511,10 +483,9 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[{\"name\":\"gender\",\"val\":\"M\"}]"},
                 { "name": "encodingparameter", "value": "dummycoding"},
-		{   "name": "pathology","value":"dementia"},
-                {"name": "dataset", "value": "desd-synthdata"},
-                {"name": "filter", "value": ""}
-                ]
+		        { "name": "pathology","value":"dementia"},
+                { "name": "dataset", "value": "desd-synthdata"},
+                { "name": "filter", "value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
         print (r.text)
@@ -527,10 +498,9 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[{\"name\":\"gender\",\"val\":\"M\"}]"},
                 { "name": "encodingparameter", "value": "simplecoding"},
-		{   "name": "pathology","value":"dementia"},
-                {"name": "dataset", "value": "desd-synthdata"},
-                {"name": "filter", "value": ""}
-                ]
+		        { "name": "pathology","value":"dementia"},
+                { "name": "dataset", "value": "desd-synthdata"},
+                { "name": "filter", "value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
         print (r.text)
@@ -544,10 +514,9 @@ class TestLinearRegression(unittest.TestCase):
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[{\"name\":\"alzheimerbroadcategory\",\"val\":\"AD\"},{\"name\":\"gender\",\"val\":\"M\"}]"},
                 { "name": "encodingparameter", "value": "dummycoding"},
-		{   "name": "pathology","value":"dementia"},
-                {"name": "dataset", "value": "adni_9rows"},
-                {"name": "filter", "value": ""}
-               ]
+		        { "name": "pathology","value":"dementia"},
+                { "name": "dataset", "value": "adni_9rows"},
+                { "name": "filter", "value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
         result = json.loads(r.text)
