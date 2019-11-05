@@ -26,7 +26,7 @@
 			"valueType": "string"
 		}, {
 			"name": "xlevels",
-			"desc": "Distinct values of the grouping variable",
+			"desc": "The two levels of the grouping variable (Order matters)",
 			"type": "other",
 			"value": "M,F",
 			"valueNotBlank": true,
@@ -37,6 +37,9 @@
 			"desc": "'different', 'greaterthan' or 'lessthan', the alternative hypothesis; group 1 different to group 2, group 1 greater than group 2, and group 1 less than group 1 respectively ",
 			"type": "other",
 			"value": "greaterthan",
+			"min": null,
+			"max": null,
+			"enumerations": ['different', 'greaterthan' , 'lessthan'],
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "string"
@@ -45,6 +48,9 @@
 			"desc": "1 or 0, provide Cohen's d effect sizes",
 			"type": "other",
 			"value": "1",
+			"min": null,
+			"max": null,
+			"enumerations": [0,1],
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "integer"
@@ -53,6 +59,9 @@
 			"desc": "1 or 0, provide confidence intervals for the mean difference",
 			"type": "other",
 			"value": "1",
+			"min": null,
+			"max": null,
+			"enumerations": [0,1],
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "integer"
@@ -61,6 +70,9 @@
 			"desc": "1 or 0, provide means and standard deviations ",
 			"type": "other",
 			"value": "1",
+			"min": null,
+			"max": null,
+			"enumerations": [0,1],
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "integer"

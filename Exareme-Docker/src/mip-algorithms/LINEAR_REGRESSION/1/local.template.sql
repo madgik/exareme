@@ -28,7 +28,7 @@
 -- attach 'datasets.db' as 'db';
 -- attach database '%{defaultDB}' as defaultDB;
 
-requirevars 'defaultDB' 'input_local_DB' 'db_query' 'x' 'y' 'referencevalues' 'encodingparameter';
+requirevars 'defaultDB' 'input_local_DB' 'db_query' 'x' 'y'  'encodingparameter';
 attach database '%{defaultDB}' as defaultDB;
 attach database '%{input_local_DB}' as localDB;
 

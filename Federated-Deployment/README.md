@@ -12,6 +12,21 @@ We will refer to the machine from which you run the ansible scripts as Admin and
 
 3) Install Docker in all Target machines.
 
+# Ports
+
+Make sure the following ports are available:
+
+```9090: for accessing Exareme```
+
+```(Optional): 8500 for accessing Consul Key Value Store```
+
+```(Optional): 9000 for accessing Portainer.io```
+
+# Documentation
+
+Make sure you have read the ```Federation_Specifications.md``` and ```Firewall_Configuration.md``` files exist under Documentation folder.
+The first doc sums up everything regarding Docker Swarm and the second one how to deal if a firewall exists in the Federation nodes.
+
 # Preparation
 
 ## Data Structure
@@ -53,7 +68,7 @@ The file should contain the following lines, modify them depending on the versio
 
 ```
 EXAREME_IMAGE: "hbpmip/exareme"
-EXAREME_TAG: "v21.0.0"
+EXAREME_TAG: "v21.1.0"
 ```
 
 ## [Optional] Initialize Hosts
@@ -130,7 +145,7 @@ For consistency reasons we suggest you keep the names as shown above [master,wor
 
 ```Just like the previous step this one can be done through the deploy script, too. If you have many nodes though it is easier to do it manually.```
 
-As you can also see in hosts.ini file we have some sensitive data like usernames and passwords in both master and workers. These lines ```MUST not be changed!```.
+As you can also see in hosts.ini file we have some sensitive data like usernames and passwords (credentials) in both master and workers. These lines ```MUST not be changed!```.
 
 ```
    master remote_user="{{master_remote_user}}"
@@ -153,10 +168,10 @@ As you can also see in hosts.ini file we have some sensitive data like usernames
    worker2 ansible_ssh_pass="{{worker2_ssh_pass}}"
 ```
 
-It is not a valid technique to just fill in your sensitive data there, so we will use ```Ansible-Vault```.
+It is not a valid technique to just fill in your sensitive data (credentials) there, so we will use ```Ansible-Vault```.
 Ansible-vault comes with the installation of ansible. Make sure you have it installed by running: ```ansible-vault --version```
 
-With ansible-vault we can have an encrypted file which will contain sensitive information like the ones shown above.
+With ansible-vault we can have an encrypted file which will contain sensitive information (credentials) like the ones shown above.
 
 In order to create the file you need to run 
 ```ansible-vault create vault_file.yaml``` inside ```Federated-Deployment/Docker-Ansible/``` folder.
@@ -184,7 +199,7 @@ worker2_become_pass: your_password
 ```
 all in plaintext. If you have more than 2 workers, you will add those too by adding ```workerN_...``` in front of each variable where N the increased number.<br/>
 [Keep in mind that your password can be anything you want But ansible has a special character for comments ```#``` . If your password contains that specific character ansible will take the characters next to it as comments.]<br/>
-When you exit you can see that vault_file.yaml is encrypted with all your sensitive information in there.
+When you exit you can see that vault_file.yaml is encrypted with all your sensitive information (credentials) in there.
 
 If you want to edit the file you can do so whenever by running:
 ```ansible-vault edit vault_file.yaml```
@@ -207,6 +222,26 @@ The password should be a string stored as a single line in the file.
 If you are using a script instead of a flat file, ensure that it is marked as executable, and that the password is printed to standard output. If your script needs to prompt for data, prompts can be sent to standard error.
 
 More guidance will be provided in that matter if you select to deploy via script (see below)
+
+# Deployment by Hospital
+
+In case when a Hospital ```can not/will not``` give the sensitive data like usernames and passwords (credentials) needed in order for Ansible to run, here is a workaround:
+
+1) The Hospital must contact the system administrator so he/she will handle the command needed in order for Hospital to be part of the Swarm as ```Worker node```.
+2) The Hospital must run the command ```docker swarm join --token <Swarm Token> <Master Node URL>:2377``` given by the system administrator.
+
+For example the command could look like this:
+
+```(sudo) docker swarm join --token SWMTKN-1-22ya4cjf2c1aq4sbnypwkvs2z87wg2897xi35qvp1hs54s85of-doah1kp92psb8rqvbgshu7ro2 88.197.53.38:2377```
+
+If a node is behind a NAT, its local IP will be advertised by default and other nodes will not be able to contact it.<br/>
+**Note:** Non-static public IP should be fine for worker nodes, but this has not been tested.
+
+If the worker node is behind a NAT server, you must specify the Public IP to use to contact that Worker node from other nodes with:
+
+ ```docker swarm join --advertise-addr <Public IP> --token <Swarm Token> <Master Node URL>:2377```
+
+3) Inform the system administrator that the command run, so he/she can Start Exareme instance at the specific Hospital from the ```Manager node``` of Swarm.
 
 # Deployment
 
@@ -296,12 +331,54 @@ Go to your ```Services``` to check each service's logs and see if everything is 
 
 ### Troubleshooting
 
-1) Under ```Services``` in the left menu check that all services has 1 replicas: ```replicated 1 / 1```.<br/>
-    If this is not the case for the Worker nodes, meaning you get 0 replicas: ```replicated 0 / 1```, then it is possible that you started an Exareme Worker service before joining that Worker in the Swarm. In such case, do the following:
-    1) Stop the specific Worker via:
-        ``` ansible-playbook -i hosts.ini Stop-Exareme-Worker.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=workerN"``` , 
-    2) Join the specific Worker in the Swarm via:
-        ``` ansible-playbook -i hosts.ini Join-Workers.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=workerN"```  
-    3) Start the specific Worker Node:
-        ``` ansible-playbook -i hosts.ini Start-Exareme-Worker.yaml -c paramiko  --ask-vault-pass -e@vault_file.yaml -vvvv -e "my_host=workerN"```
+a) If Portainer service is launched:
 
+Under ```Services``` in the left menu check that all services has 1 replicas: ```replicated 1 / 1```.<br/>
+
+If this is not the case, meaning you get ```replicated 0 / 1```, the service for the specific node did not run:
+
+    From the specific node:
+
+    1) Make sure you have enough space on the specific node
+
+    From the Manager node of Swarm:
+
+    1) Check the ERROR message by doing ```sudo docker service ps --no-trunc NAME_or_ID_of_service``` 
+    2) If Worker node ```Manually``` joined the Swarm:
+        - Make sure the node has actually joined the Swarm and that it is tagged with a proper name.
+
+
+b) Check that all workers are seen by Exareme
+
+Connect to the Exareme test page at `http://localhost:9090/exa-view/index.html`.
+The algorithm LIST\_DATASET should show datasets for each pathology available at each node of the Federation.
+
+If a node's information is missing:
+
+    From the specific node of Swarm:
+
+    1) Check the network configuration for this node. ```Obtaining the correct network configuration for each server that must join the Federation might not be straightforward.```
+    2) Make sure the datasets and the CDEs are in the correct data path under ```pathology``` folder.
+    
+    From the Manager node of Swarm:
+
+    1) Check the logs and report them to Exareme expertise team.
+    
+c) Restart Exareme
+
+In some cases a simple restart may be enough. From the Manager node of Swarm under exareme/Federated-Deployment/Docker-Ansible/scripts/ folder run:
+```
+./deploy.sh
+```
+
+choose:
+```
+2. (Re)Start all services.
+```
+
+and then choose one of the options given:
+```
+1. Restart Exareme
+2. Restart Portainer
+3. Restart Exareme and Portainer
+```
