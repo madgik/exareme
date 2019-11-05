@@ -6,7 +6,7 @@ from os import path
 from argparse import ArgumentParser
 
 import numpy as np
-from scipy.special import logit
+from scipy.special import logit, expit
 
 sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) + '/utils/')
 sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) +
@@ -14,6 +14,9 @@ sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath
 
 from algorithm_utils import StateData, query_with_privacy
 from cb_lib import CBInit_Loc2Glob_TD
+
+# Debug imports
+from functools import reduce
 
 def cb_local_init(local_in):
     # Unpack local input
@@ -50,8 +53,8 @@ def main():
     query = args.db_query
     e_name = args.e.strip()
     o_name = args.o.strip()
-    max_deg = args.max_deg
-    assert type(max_deg) == int and max_deg > 1, "Max deg should be an integer greater than 1."
+    max_deg = int(args.max_deg)
+    assert max_deg > 1, "Max deg should be greater than 1."
 
     # Get data from local DB
     schema, data = query_with_privacy(fname_db=fname_loc_db, query=query)
@@ -59,14 +62,14 @@ def main():
     idx_o = schema.index(o_name)
     e_vec = np.array([data[i][idx_e] for i in range(len(data))])
     o_vec = np.array([data[i][idx_o] for i in range(len(data))])
-    assert min(e_vec) >= 0. and max(e_vec) <= 1., "Variable e should take values only in [0, 1]"
-    assert set(o_vec) == {0, 1}, "Variable o should only contain values 0 and 1."
+    # assert min(e_vec) >= 0. and max(e_vec) <= 1., "Variable e should take values only in [0, 1]"
+    # assert set(o_vec) == {0, 1}, "Variable o should only contain values 0 and 1."
 
     # Remove rows with missing values
-    mask_e = [np.isnan(ei) for ei in e_vec]
-    mask_o = [np.isnan(oi) for oi in o_vec]
+    mask_e = [ei is None for ei in e_vec]
+    mask_o = [oi is None for oi in o_vec]
     mask = np.logical_or(mask_e, mask_o)
-    e_vec, o_vec = e_vec[~mask], o_vec[~mask]
+    e_vec, o_vec = np.array(e_vec[~mask], dtype=np.float64), np.array(o_vec[~mask], dtype=np.int8)
 
     local_in = e_vec, o_vec, e_name, o_name, max_deg
     # Run algorithm local step

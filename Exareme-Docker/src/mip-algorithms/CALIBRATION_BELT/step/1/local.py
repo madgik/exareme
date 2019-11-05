@@ -54,7 +54,7 @@ def cb_local_iter(local_state, local_in):
         ll_dict[deg] = ll
     # Pack state and results
     local_state = StateData(X_matrices=X_matrices, Y=Y, max_deg=max_deg)
-    local_out = CBIter_Loc2Glob_TD(ll_dict, grad_dict, hess_dict, max_deg)
+    local_out = CBIter_Loc2Glob_TD(ll_dict, grad_dict, hess_dict)
     return local_state, local_out
 
 

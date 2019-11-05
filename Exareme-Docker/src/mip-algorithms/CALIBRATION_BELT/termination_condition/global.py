@@ -5,8 +5,8 @@ import sys
 from os import path
 from argparse import ArgumentParser
 
-sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) + '/utils/')
-sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) +
+sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/utils/')
+sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) +
                 '/CALIBRATION_BELT/')
 
 
@@ -16,7 +16,8 @@ from cb_lib import PREC
 def termination_condition(global_state, max_iter):
     delta_dict = global_state['delta_dict']
     iter = global_state['iter']
-    if False not in [delta < PREC for delta in delta_dict.values()] or iter >= max_iter:
+    if reduce((lambda x, y: x and y), [delta < PREC for delta in delta_dict.values()]) or iter >= max_iter:
+    # if False not in [delta < PREC for delta in delta_dict.values()] or iter >= max_iter:
         set_algorithms_output_data('STOP')
     else:
         set_algorithms_output_data('CONTINUE')

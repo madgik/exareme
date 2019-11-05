@@ -1,6 +1,6 @@
 {
     "name": "CALIBRATION_BELT",
-    "desc": "Calibration Belt for Quality-of-Care Addeddment.",
+    "desc": "Calibration Belt for Quality-of-Care Assessment.",
     "type": "python_iterative",
     "status": "enabled",
     "parameters": [
@@ -8,9 +8,9 @@
             "name": "e",
             "desc": "Expected probability of dichotomous outcome.",
             "type": "column",
-            "columnValuesSQLType": "text, integer",
-            "columnValuesIsCategorical": "true",
-            "columnValuesNumOfEnumerations": "2",
+            "columnValuesSQLType": "real",
+            "columnValuesIsCategorical": "false",
+            "columnValuesNumOfEnumerations": "",
             "value": "probGiViTI_2017_Complessiva",
             "valueNotBlank": true,
             "valueMultiple": false,
@@ -31,10 +31,7 @@
         {
             "name": "max_deg",
             "desc": "Maximum degree of polynomial.",
-            "type": "column",
-            "columnValuesSQLType": "integer",
-            "columnValuesIsCategorical": "false",
-            "columnValuesNumOfEnumerations": "",
+            "type": "other",
             "value": "4",
             "valueNotBlank": true,
             "valueMultiple": false,
@@ -44,7 +41,7 @@
             "name": "dataset",
             "desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty",
             "type": "dataset",
-            "value": "adni",
+            "value": "cb_data",
             "valueNotBlank": true,
             "valueMultiple": true,
             "valueType": "string"
@@ -67,6 +64,15 @@
             "valueNotBlank": false,
             "valueMultiple": false,
             "valueType": "integer"
-        }
+        },
+        {
+			"name": "pathology",
+			"desc": "The name of the pathology that the dataset belongs to.",
+			"type": "pathology",
+			"value": "dementia",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "string"
+		}
     ]
 }
