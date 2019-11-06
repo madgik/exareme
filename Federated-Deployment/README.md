@@ -64,7 +64,7 @@ For example:
 
 If you want to do it manually you can go to the ```Federated-Deployment/Docker-Ansible/group_vars``` folder and create an ```exareme.yaml``` file.
 
-The file should contain the following lines, modify them depending on the version of exareme you want to deploy.
+The file should contain the following lines, modify them depending on the version of Exareme you want to deploy.
 
 ```
 EXAREME_IMAGE: "hbpmip/exareme"
@@ -91,55 +91,55 @@ master ansible_become_pass="{{master_become_pass}}"
 master ansible_ssh_pass="{{master_ssh_pass}}"
 
 [workers]
-worker1
-worker2
+worker88_197_53_44
+worker88_197_53_100
 
-[worker1]
-worker1 ansible_host=88.197.53.44
-worker1 hostname=dl044
-worker1 data_path=/home/exareme/data/
+[worker88_197_53_44]
+worker88_197_53_44 ansible_host=88.197.53.44
+worker88_197_53_44 hostname=dl044
+worker88_197_53_44 data_path=/home/exareme/data/
 
-worker1 remote_user="{{worker1_remote_user}}"
-worker1 become_user="{{worker1_become_user}}"
-worker1 ansible_become_pass="{{worker1_become_pass}}"
-worker1 ansible_ssh_pass="{{worker1_ssh_pass}}"
+worker88_197_53_44 remote_user="{{worker88_197_53_44_remote_user}}"
+worker88_197_53_44 become_user="{{worker88_197_53_44_become_user}}"
+worker88_197_53_44 ansible_become_pass="{{worker88_197_53_44_become_pass}}"
+worker88_197_53_44 ansible_ssh_pass="{{worker88_197_53_44_ssh_pass}}"
 
 
-[worker2]
-worker2 ansible_host=88.197.53.100
-worker2 hostname=thanasis1
-worker2 data_path=/home/exareme/data/
+[worker88_197_53_100]
+worker88_197_53_100 ansible_host=88.197.53.100
+worker88_197_53_100 hostname=thanasis1
+worker88_197_53_100 data_path=/home/exareme/data/
 
-worker2 remote_user="{{worker2_remote_user}}"
-worker2 become_user="{{worker2_become_user}}"
-worker2 ansible_become_pass="{{worker2_become_pass}}"
-worker2 ansible_ssh_pass="{{worker2_ssh_pass}}"
+worker88_197_53_100 remote_user="{{worker88_197_53_100_remote_user}}"
+worker88_197_53_100 become_user="{{worker88_197_53_100_become_user}}"
+worker88_197_53_100 ansible_become_pass="{{worker88_197_53_100_become_pass}}"
+worker88_197_53_100 ansible_ssh_pass="{{worker88_197_53_100_ssh_pass}}"
 ```
 [You can find the hostname of any machine by executing ```hostname``` in terminal]
 
-[Requirement1: Mind that the variable ```data_path``` is the path where your Data CSV (datasets.csv) and the Metadata file (CDEsMetadata.json)
-are stored in your Target machine.]<br/>
+[Requirement1: Mind that the variable ```data_path``` is the path where pathology folders are stored in your Target machine (Each Pathology folder includes the Data CSV (datasets.csv) and the Metadata file (CDEsMetadata.json))]<br/>
 [Requirement2: Mind that the variable ```home_path``` is the path where ```Federated-Deployment/Compose-Files/``` will be stored in the master node. Compose-Files
 contains 2 docker-compose.yaml files for deploying the services. The ```home_path``` can be Any path]
 
 You can see that there are 2 main categories in hosts.ini file. The first one is ```[master]```, the second one is ```[workers]```.
 
-You can always add more workers following the template given above:
-a) by adding the name of the worker under [workers] and
-b) creating a tag [worker3] with all the necessary variables. For example: 
+You can always add more workers following the template given above: </br>
+a) by adding the name workerX of the worker under [workers] and </br>
+b) creating a tag [workerX] with all the necessary variables. </br>
+X in the name ```workerX``` is a convention of the IP of the node where ```.``` are replaced with ```_```. For example:
 
 ```
-   worker3 ansible_host=Your_Remote_Machine_Host
-   worker3 hostname=Your_Remote_Machine_Hostname
-   worker3 data_path=Your_Remote_Data_Path_where_CSV_data_and_CDEsMetadata_are_stored
+   worker88_197_53_101 ansible_host=Your_Remote_Machine_Host
+   worker88_197_53_101 hostname=Your_Remote_Machine_Hostname
+   worker88_197_53_101 data_path=Your_Remote_Data_Path_where_CSV_data_and_CDEsMetadata_are_stored
 
-   worker3 remote_user="{{worker3_remote_user}}"
-   worker3 become_user="{{worker3_become_user}}"
-   worker3 ansible_become_pass="{{worker3_become_pass}}"
-   worker3 ansible_ssh_pass="{{worker3_ssh_pass}}"
+   worker88_197_53_101 remote_user="{{worker88_197_53_101_remote_user}}"
+   worker88_197_53_101 become_user="{{worker88_197_53_101_become_user}}"
+   worker88_197_53_101 ansible_become_pass="{{worker88_197_53_101_become_pass}}"
+   worker88_197_53_101 ansible_ssh_pass="{{worker88_197_53_101_ssh_pass}}"
 ```
 
-For consistency reasons we suggest you keep the names as shown above [master,worker1,worker2..], and just increase the number after [worker] each time you add one.
+For consistency reasons we suggest you keep the names of the workers following the workerX convention as described above.
 
 ## [Optional] Ansible-vault
 
@@ -155,17 +155,17 @@ As you can also see in hosts.ini file we have some sensitive data like usernames
    
    .......
    
-   worker1 remote_user="{{worker1_remote_user}}"
-   worker1 become_user="{{worker1_become_user}}"
-   worker1 ansible_become_pass="{{worker1_become_pass}}"
-   worker1 ansible_ssh_pass="{{worker1_ssh_pass}}"
+   worker88_197_53_44 remote_user="{{worker88_197_53_44_remote_user}}"
+   worker88_197_53_44 become_user="{{worker88_197_53_44_become_user}}"
+   worker88_197_53_44 ansible_become_pass="{{worker88_197_53_44_become_pass}}"
+   worker88_197_53_44 ansible_ssh_pass="{{worker88_197_53_44_ssh_pass}}"
    
    ......
    
-   worker2 remote_user="{{worker2_remote_user}}"
-   worker2 become_user="{{worker2_become_user}}"
-   worker2 ansible_become_pass="{{worker2_become_pass}}"
-   worker2 ansible_ssh_pass="{{worker2_ssh_pass}}"
+   worker88_197_53_100 remote_user="{{worker88_197_53_100_remote_user}}"
+   worker88_197_53_100 become_user="{{worker88_197_53_100_become_user}}"
+   worker88_197_53_100 ansible_become_pass="{{worker88_197_53_100_become_pass}}"
+   worker88_197_53_100 ansible_ssh_pass="{{worker88_197_53_100_ssh_pass}}"
 ```
 
 It is not a valid technique to just fill in your sensitive data (credentials) there, so we will use ```Ansible-Vault```.
@@ -187,17 +187,17 @@ master_become_user: your_username
 master_ssh_pass: your_password
 master_become_pass: your_password
    
-worker1_remote_user: your_username
-worker1_become_user: your_username
-worker1_ssh_pass: your_password
-worker1_become_pass: your_password
+worker88_197_53_44_remote_user: your_username
+worker88_197_53_44_become_user: your_username
+worker88_197_53_44_ssh_pass: your_password
+worker88_197_53_44_become_pass: your_password
    
-worker2_remote_user: your_username
-worker2_become_user: your_username
-worker2_ssh_pass: your_password
-worker2_become_pass: your_password
+worker88_197_53_100_remote_user: your_username
+worker88_197_53_100_become_user: your_username
+worker88_197_53_100_ssh_pass: your_password
+worker88_197_53_100_become_pass: your_password
 ```
-all in plaintext. If you have more than 2 workers, you will add those too by adding ```workerN_...``` in front of each variable where N the increased number.<br/>
+all in plaintext. If you have more than 2 workers, you will add those too by adding ```workerX_...``` in front of each variable where X is the IP of the node with ```.``` replaced by ```_```.<br/>
 [Keep in mind that your password can be anything you want But ansible has a special character for comments ```#``` . If your password contains that specific character ansible will take the characters next to it as comments.]<br/>
 When you exit you can see that vault_file.yaml is encrypted with all your sensitive information (credentials) in there.
 

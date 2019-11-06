@@ -30,7 +30,7 @@ stopExaremeService () {
 }
 
 # If include-only flag is given don't execute the script
-if [ "$1" == "include-only" ]; then
+if [[ "$1" == "include-only" ]]; then
   return
 fi
 
