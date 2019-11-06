@@ -6,7 +6,7 @@
 	"vtype": "",
 	"parameters": [{
 			"name": "x",
-			"desc": "",
+			"desc": "Independent variables: A list of variables from database. The variable should be Real, Integer or String. The variable can be either numerical or categorical. It cannot be empty",
 			"type": "column",
 			"columnValuesSQLType": "",
 			"columnValuesIsCategorical": "",
@@ -17,7 +17,7 @@
 			"valueType": "string"
 		}, {
 			"name": "y",
-			"desc": "classname",
+			"desc": "Dependent variable: A variable form database. The variable should be Real, Integer or String. It should be categorical. It cannot be empty",
 			"type": "column",
 			"columnValuesSQLType": "",
 			"columnValuesIsCategorical": "true",
@@ -28,7 +28,7 @@
 			"valueType": "string"
 		}, {
 			"name": "alpha",
-			"desc": "",
+			"desc": "alpha parameter",
 			"type": "other",
 			"value": "0.1",
 			"valueNotBlank": true,
