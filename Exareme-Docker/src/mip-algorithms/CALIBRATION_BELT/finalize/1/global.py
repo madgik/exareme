@@ -7,6 +7,7 @@ from argparse import ArgumentParser
 import numpy as np
 import json
 from scipy.stats import chi2
+from scipy.special import logit, expit
 
 sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) + '/utils/')
 sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) +
@@ -28,18 +29,11 @@ def cb_global_final(global_state, global_in):
     # Unpack global input
     ll_dict, grad_dict, hess_dict = global_in.get_data()
 
-    for deg in range(1, max_deg + 1):
-        # Compute new coefficients
-        coeff_dict[deg] = np.dot(
-                np.linalg.inv(hess_dict[deg]),
-                grad_dict[deg]
-        )
-
     # likelihood-ratio test
     D = 0
     model_deg = 1
-    q = 0.99
-    thres = chi2.ppf(q=q, df=1)
+    qlr = 0.99
+    thres = chi2.ppf(q=qlr, df=1)
     for deg in range(2, max_deg + 1):
         D = 2 * (ll_dict[deg] - ll_dict[deg - 1])
         if D > thres:
@@ -47,19 +41,54 @@ def cb_global_final(global_state, global_in):
         else:
             break
 
+    # Compute selected model coefficients, log-likelihood, grad and Hessian
+    hess = hess_dict[model_deg]
+    ll = ll_dict[model_deg]
+    grad = grad_dict[model_deg]
+    coeff = np.dot(
+            np.linalg.inv(hess),
+            grad
+    )
+    covar = np.linalg.inv(hess)
+
+    # Compute calibration curve
+    e_min, e_max = 0.01, 0.99  # TODO replace e_min and e_max values with actual ones
+    e = np.linspace(e_min, e_max, num=20)
+    ge = logit(e)
+    G = [np.ones(len(e))]
+    for d in range(1, len(coeff)):
+        G = np.append(G, [np.power(ge, d)], axis=0)
+    G = G.transpose()
+    p = expit(np.dot(G, coeff))
+    calib_curve = np.array([e, p]).transpose()
+
+    # Compute confidence intervals
+    qci1, qci2 = 0.8, 0.95
+    sig2gp = [np.dot(G[i], np.dot(covar, G[i])) for i in range(len(G))]
+    ci1 = np.sqrt(np.multiply(chi2.ppf(q=qci1, df=2), sig2gp))
+    ci2 = np.sqrt(np.multiply(chi2.ppf(q=qci2, df=2), sig2gp))
+    g_min1, g_max1 = np.dot(G, coeff) - ci1, np.dot(G, coeff) + ci1
+    g_min2, g_max2 = np.dot(G, coeff) - ci2, np.dot(G, coeff) + ci2
+    p_min1, p_max1 = expit(g_min1), expit(g_max1)
+    p_min2, p_max2 = expit(g_min2), expit(g_max2)
+    calib_belt1 = np.array([e, p_min1, p_max1]).transpose()
+    calib_belt2 = np.array([e, p_min2, p_max2]).transpose()
+
     # Format output data
     # JSON raw
     raw_data = {
-        'Model Parameters'      : [
+        'Model Parameters'      :
             {
-                'deg'           : deg,
-                'coeff'         : list(coeff_dict[deg]),
-                'log-likelihood': ll_dict[deg]
-            }
-            for deg in range(1, max_deg + 1)
-        ],
+                'Model degree'  : model_deg,
+                'coeff'         : coeff.tolist(),
+                'log-likelihood': ll,
+                'Hessian'       : hess.tolist(),
+                'Covariance matrix': covar.tolist()
+            },
         'Likelihood ration test': D,
-        'Model degree'          : model_deg
+        'Calibration curve'     : calib_curve.tolist(),
+        'Calibration belt 80%': calib_belt1.tolist(),
+        'Calibration belt 95%': calib_belt2.tolist()
     }
 
     # Write output to JSON
