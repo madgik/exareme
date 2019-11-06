@@ -20,7 +20,8 @@ class TestNaiveBayesStandalone(unittest.TestCase):
         with open (filePath, "r") as myfile:
             data = myfile.read()
         #Execute R script
-        self.Test1Result = json.loads(str(robjects.r(data)))
+        self.Test1Result, self.Test2Result= robjects.r(data)
+
 
     def test_NaiveBayesStandalone_1(self):
         logging.info("---------- TEST 1: Naive Bayes training ")
@@ -34,10 +35,28 @@ class TestNaiveBayesStandalone(unittest.TestCase):
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
         result = json.loads(r.text)
-        print ("AAAA", r.text)
+        # print ("AAAA", r.text)
         print ("BBBB1", self.Test1Result)
-        print (type(self.Test1Result))
-        resultsComparison( result['data']['data'], self.Test1Result[0],'alzheimerbroadcategory')
+        # print (type(self.Test1Result))
+        resultsComparison( result['data']['data'], json.loads(str(self.Test1Result))[0],'alzheimerbroadcategory')
+
+    def test_NaiveBayesStandalone_2(self):
+        logging.info("---------- TEST 2: Naive Bayes training ")
+        data = [{"name": "pathology","value":"dementia"},
+                {"name": "dataset","value": "desd-synthdata"},
+                {"name": "x", "value": "rightmtgmiddletemporalgyrus,leftttgtransversetemporalgyrus"},
+                {"name": "y", "value": "alzheimerbroadcategory"},
+                {"name": "alpha","value": "0.1"},
+                { "name": "filter", "value": ""}]
+
+        headers = {'Content-type': 'application/json', "Accept": "text/plain"}
+        r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
+        result = json.loads(r.text)
+        print ("AAAA", r.text)
+        print ("BBBB1", self.Test2Result)
+        # print (type(self.Test2Result))
+        resultsComparison( result['data']['data'],  json.loads(str(self.Test2Result))[0],'alzheimerbroadcategory')
+
 
     def test_NaiveBayesStandalone_Privacy(self):
         logging.info("---------- TEST : Algorithms for Privacy Error")
