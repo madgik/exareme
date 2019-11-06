@@ -15,6 +15,7 @@ sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath
 from algorithm_utils import StateData
 from cb_lib import CBIter_Loc2Glob_TD, CBIter_Glob2Loc_TD
 
+
 def cb_local_final(local_state, local_in):
     # Unpack local state
     X_matrices = local_state['X_matrices']
@@ -58,7 +59,6 @@ def cb_local_final(local_state, local_in):
     # Pack state and results
     local_out = CBIter_Loc2Glob_TD(ll_dict, grad_dict, hess_dict)
     return local_out
-
 
 
 def main():

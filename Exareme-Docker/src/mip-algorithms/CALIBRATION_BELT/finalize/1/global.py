@@ -6,6 +6,7 @@ from os import path
 from argparse import ArgumentParser
 import numpy as np
 import json
+from scipy.stats import chi2
 
 sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) + '/utils/')
 sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) +
@@ -27,7 +28,6 @@ def cb_global_final(global_state, global_in):
     # Unpack global input
     ll_dict, grad_dict, hess_dict = global_in.get_data()
 
-    delta_dict = dict()
     for deg in range(1, max_deg + 1):
         # Compute new coefficients
         coeff_dict[deg] = np.dot(
@@ -36,22 +36,30 @@ def cb_global_final(global_state, global_in):
         )
 
     # likelihood-ratio test
-    D = dict()
+    D = 0
+    model_deg = 1
+    q = 0.99
+    thres = chi2.ppf(q=q, df=1)
     for deg in range(2, max_deg + 1):
-        D[deg] = 2 * (ll_dict[deg] - ll_dict[deg - 1])
+        D = 2 * (ll_dict[deg] - ll_dict[deg - 1])
+        if D > thres:
+            model_deg = deg
+        else:
+            break
 
     # Format output data
     # JSON raw
     raw_data = {
-        'Model Parameters': [
+        'Model Parameters'      : [
             {
-                'deg'  : deg,
-                'coeff': list(coeff_dict[deg]),
+                'deg'           : deg,
+                'coeff'         : list(coeff_dict[deg]),
                 'log-likelihood': ll_dict[deg]
             }
             for deg in range(1, max_deg + 1)
         ],
-        'Likelihood ration test': D
+        'Likelihood ration test': D,
+        'Model degree'          : model_deg
     }
 
     # Write output to JSON

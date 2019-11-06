@@ -6,7 +6,7 @@ from os import path
 from argparse import ArgumentParser
 
 import numpy as np
-from scipy.special import logit, expit
+from scipy.special import logit
 
 sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) + '/utils/')
 sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) +
@@ -18,6 +18,7 @@ from cb_lib import CBInit_Loc2Glob_TD
 # Debug imports
 from functools import reduce
 
+
 def cb_local_init(local_in):
     # Unpack local input
     e_vec, o_vec, e_name, o_name, max_deg = local_in
@@ -26,8 +27,8 @@ def cb_local_init(local_in):
     ge_vec = logit(e_vec)
     X_matrices = dict()
     for deg in range(1, max_deg + 1):
-        X = [np.ones(len(e_vec))]
-        for d in range(1, deg+1):
+        X = [np.ones(len(e_vec))]  # TODO check if can change to numpy array
+        for d in range(1, deg + 1):
             X = np.append(X, [np.power(ge_vec, d)], axis=0)
         X_matrices[deg] = X.transpose()
     Y = o_vec
@@ -35,7 +36,6 @@ def cb_local_init(local_in):
     local_state = StateData(X_matrices=X_matrices, Y=Y, max_deg=max_deg)
     local_out = CBInit_Loc2Glob_TD(n_obs, e_name, o_name, max_deg)
     return local_state, local_out
-
 
 
 def main():

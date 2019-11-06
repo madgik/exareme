@@ -33,6 +33,7 @@ class CBInit_Loc2Glob_TD(TransferData):
                 self.max_deg
         )
 
+
 class CBIter_Loc2Glob_TD(TransferData):
     def __init__(self, *args):
         if len(args) != 3:
@@ -53,6 +54,7 @@ class CBIter_Loc2Glob_TD(TransferData):
                 {deg: self.hess_dict[deg] + other.hess_dict[deg] for deg in range(1, len(self.ll_dict) + 1)},
         )
 
+
 class CBIter_Glob2Loc_TD(TransferData):
     def __init__(self, *args):
         if len(args) != 1:
@@ -61,6 +63,7 @@ class CBIter_Glob2Loc_TD(TransferData):
 
     def get_data(self):
         return self.coeff_dict
+
 
 class CBFinal_Loc2Glob_TD(TransferData):
     def __init__(self, *args):
