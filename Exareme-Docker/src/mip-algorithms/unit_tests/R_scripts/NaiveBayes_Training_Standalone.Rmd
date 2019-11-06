@@ -1,0 +1,26 @@
+library(base)
+library(jsonlite)
+library(tidyverse)
+library(data.table)
+library(e1071)
+
+rawData <- read_csv("../unit_tests/data/dementia/CSVs/desd-synthdata.csv")
+
+## Test 1
+RawData1 <-rawData %>%
+  select(alzheimerbroadcategory,lefthippocampus, righthippocampus)%>%
+  drop_na()
+
+Result <- naiveBayes(alzheimerbroadcategory ~ lefthippocampus + righthippocampus, data = RawData1)
+#Test1Result <- toJSON(Result$tables, na="string")
+tables = toJSON(as.data.frame(Result$tables), na="string")
+apriori = toJSON(as.data.frame(Result$apriori/sum(Result$apriori)), na="string")
+independentvariablesNo = 2
+ResultsNumber = dim(Result$apriori) * (independentvariablesNo*2 +1 )
+totalResult= rbind(c("Test1", tables, apriori, ResultsNumber))
+
+
+
+
+
+return (toJSON(totalResult))

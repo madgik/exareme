@@ -1,6 +1,6 @@
 {
 	"name": "NAIVE_BAYES_TRAINING_STANDALONE",
-	"desc": "BayesNaive_training_for exareme",
+	"desc": "BayesNaive_training_for_exareme",
 	"type": "multiple_local_global",
 	"status": "enabled",
 	"vtype": "",
