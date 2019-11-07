@@ -131,7 +131,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 nodesToBeChecked = allNodesIPs();          //If algorithm does not have 'datasets' as parameter  -> Get IP's from Exareme's registry TODO check if more
                 //TODO appropriate to get all the nodes from Consul, for consistency reasons
             else    //else -> get only the Exareme nodes containing datasets provided by user
-                nodesToBeChecked = checkDatasets(nodeDatasets, userDatasets);
+                nodesToBeChecked = checkDatasets(nodeDatasets, userDatasets,pathology);
 
             //Check that node containers are up and running properly
             log.debug("Checking workers...");
@@ -294,7 +294,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         return nodeNames;
     }
 
-    private List<String> checkDatasets(HashMap<String, String[]> nodeDatasets, String[] userDatasets) throws DatasetsException {
+    private List<String> checkDatasets(HashMap<String, String[]> nodeDatasets, String[] userDatasets, String pathology) throws DatasetsException {
         List<String> notFoundDatasets = new ArrayList<>();
         List<String> nodesToBeChecked = new ArrayList<>();
         Boolean flag;
@@ -330,7 +330,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             String notFoundSring = notFound.toString();
             notFoundSring = notFoundSring.substring(0, notFoundSring.length() - 2);
             //Show appropriate error message to user
-            throw new DatasetsException("Dataset(s) " + notFoundSring + " not found!");
+            throw new DatasetsException("Dataset(s) " + notFoundSring + " not found for pathology " +pathology + "!");
         }
         return nodesToBeChecked;
     }
