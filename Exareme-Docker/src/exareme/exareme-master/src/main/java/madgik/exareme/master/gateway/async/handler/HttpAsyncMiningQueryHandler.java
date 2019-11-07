@@ -103,6 +103,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             throws HttpException, IOException {
 
         String datasets;
+        String pathology=null;
         String[] userDatasets = null;
 
         //Check given method
@@ -116,11 +117,13 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 //Get datasets provided by user
                 userDatasets = datasets.split(",");
             }
+            if(inputContent.containsKey("pathology"))
+                pathology = inputContent.get("pathology");
         }
 
         try {
             //Get datasets available in Consul[Key-Value store] for each Exareme node[master/workers]
-            HashMap<String, String[]> nodeDatasets = getDatasetsFromConsul();
+            HashMap<String, String[]> nodeDatasets = getDatasetsFromConsul(pathology);
 
             //Check that datasets provided by user exist and retrieve only the nodes containing the existing datasets
             List<String> nodesToBeChecked;
@@ -133,7 +136,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             //Check that node containers are up and running properly
             log.debug("Checking workers...");
 
-            if (!nodesRunning(nodesToBeChecked)) return;
+            if (!nodesRunning(nodesToBeChecked,pathology)) return;
             ContainerProxy[] usedContainerProxies;
 
             //Find container proxy of used containers (from IPs)
@@ -242,7 +245,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         }
     }
 
-    private HashMap<String, String[]> getDatasetsFromConsul() throws IOException {
+    private HashMap<String, String[]> getDatasetsFromConsul(String pathology) throws IOException {
         Gson gson = new Gson();
         HashMap<String, String[]> nodeDatasets = new HashMap<>();
 
@@ -251,7 +254,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
 
         String masterName = masterKeysArray[0].replace(System.getenv("EXAREME_MASTER_PATH") + "/", "");
         String masterIP = searchConsul(System.getenv("EXAREME_MASTER_PATH") + "/" + masterName + "?raw");
-        String datasetKey = searchConsul(System.getenv("DATA") + "/" + masterName + "?raw");
+        String datasetKey = searchConsul(System.getenv("DATA") + "/" + masterName + "/" + pathology +"?raw");
         String[] datasetKeysArray = gson.fromJson(datasetKey, String[].class);
         nodeDatasets.put(masterIP, datasetKeysArray);                 //Map Master IP-> Matser Datasets
 
@@ -261,7 +264,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         String[] workerKeysArray = gson.fromJson(workersKey, String[].class);
         for (String worker : workerKeysArray) {
             String workerName = worker.replace(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/", "");
-            String workerIP = searchConsul(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/" + workerName + "?raw");
+            String workerIP = searchConsul(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/" + workerName + "/" + pathology + "?raw");
             datasetKey = searchConsul(System.getenv("DATA") + "/" + workerName + "?raw");
             datasetKeysArray = gson.fromJson(datasetKey, String[].class);
             nodeDatasets.put(workerIP, datasetKeysArray);        //Map Worker's IP-> Worker's Datasets
@@ -386,7 +389,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         return null;
     }
 
-    private boolean nodesRunning(List<String> nodesToBeChecked) throws Exception {
+    private boolean nodesRunning(List<String> nodesToBeChecked, String pathology) throws Exception {
 
         //Check if IP's gotten from Consul[Key-Value store] exist in Exareme's Registry
         List<String> notContainerProxy = new ArrayList<>();
@@ -420,7 +423,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 deleteFromConsul(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/" + name);
 
                 //Get datasets exist in other nodes for showing appropriate message to user
-                HashMap<String, String[]> nodeDatasets = getDatasetsFromConsul();
+                HashMap<String, String[]> nodeDatasets = getDatasetsFromConsul(pathology);
                 for (Map.Entry<String, String[]> entry : nodeDatasets.entrySet()) {
                     String[] getDatasets = entry.getValue();
                     for (String data : getDatasets) {
