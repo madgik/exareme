@@ -265,7 +265,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         for (String worker : workerKeysArray) {
             String workerName = worker.replace(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/", "");
             String workerIP = searchConsul(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/" + workerName + "?raw");
-            datasetKey = (System.getenv("DATA") + "/" + workerName + "/" + pathology +  "?raw");
+            datasetKey = searchConsul(System.getenv("DATA") + "/" + workerName + "/" + pathology +  "?raw");
             datasetKeysArray = gson.fromJson(datasetKey, String[].class);
             nodeDatasets.put(workerIP, datasetKeysArray);        //Map Worker's IP-> Worker's Datasets
         }
