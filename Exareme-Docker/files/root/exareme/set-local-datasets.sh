@@ -11,7 +11,9 @@ do
 
 		PATHOLOGY_DATASETS=$(echo ${PATHOLOGY_DATASETS} | jq .[]  | sed 's/^\"//g ; s/\"$//g' | printf %s "$(cat)" | jq -R -c -s 'split("\n")')
 
-        curl -s -X PUT -d @- ${CONSULURL}/v1/kv/datasets/${NODE_NAME}/${PATHOLOGY} <<< ${PATHOLOGY_DATASETS}
+        pathology=$(basename ${PATHOLOGY})
+
+        curl -s -X PUT -d @- ${CONSULURL}/v1/kv/datasets/${NODE_NAME}/${pathology} <<< ${PATHOLOGY_DATASETS}
 
         PATHOLOGY_DATASETS=''
 	fi
