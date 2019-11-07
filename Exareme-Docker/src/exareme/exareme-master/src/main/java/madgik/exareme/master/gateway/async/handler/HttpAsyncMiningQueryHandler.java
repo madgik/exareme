@@ -251,7 +251,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
 
         String masterName = masterKeysArray[0].replace(System.getenv("EXAREME_MASTER_PATH") + "/", "");
         String masterIP = searchConsul(System.getenv("EXAREME_MASTER_PATH") + "/" + masterName + "?raw");
-        String datasetKey = searchConsul(System.getenv("DATASETS") + "/" + masterName + "?raw");
+        String datasetKey = searchConsul(System.getenv("DATA") + "/" + masterName + "?raw");
         String[] datasetKeysArray = gson.fromJson(datasetKey, String[].class);
         nodeDatasets.put(masterIP, datasetKeysArray);                 //Map Master IP-> Matser Datasets
 
@@ -262,7 +262,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         for (String worker : workerKeysArray) {
             String workerName = worker.replace(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/", "");
             String workerIP = searchConsul(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/" + workerName + "?raw");
-            datasetKey = searchConsul(System.getenv("DATASETS") + "/" + workerName + "?raw");
+            datasetKey = searchConsul(System.getenv("DATA") + "/" + workerName + "?raw");
             datasetKeysArray = gson.fromJson(datasetKey, String[].class);
             nodeDatasets.put(workerIP, datasetKeysArray);        //Map Worker's IP-> Worker's Datasets
         }
@@ -416,7 +416,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 log.info("It seems that node[" + name + "," + ip + "] you are trying to check is not part of Exareme's registry. Deleting it from Consul....");
 
                 //Delete datasets and IP of the node
-                deleteFromConsul(System.getenv("DATASETS") + "/" + name);
+                deleteFromConsul(System.getenv("DATA") + "/" + name);
                 deleteFromConsul(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/" + name);
 
                 //Get datasets exist in other nodes for showing appropriate message to user
@@ -479,7 +479,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             httpGet = new HttpGet(consulURL + "/v1/kv/" + query);
             log.debug("Running: " + httpGet.getURI());
             CloseableHttpResponse response = null;
-            if (httpGet.toString().contains(System.getenv("EXAREME_MASTER_PATH") + "/") || httpGet.toString().contains(System.getenv("DATASETS") + "/")) {    //if we can not contact : http://exareme-keystore:8500/v1/kv/master* or http://exareme-keystore:8500/v1/kv/datasets*
+            if (httpGet.toString().contains(System.getenv("EXAREME_MASTER_PATH") + "/") || httpGet.toString().contains(System.getenv("DATA") + "/")) {    //if we can not contact : http://exareme-keystore:8500/v1/kv/master* or http://exareme-keystore:8500/v1/kv/datasets*
                 try {   //then throw exception
                     response = httpclient.execute(httpGet);
                     if (response.getStatusLine().getStatusCode() != 200) {
@@ -525,7 +525,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
 
         log.debug("Running: " + httpDelete.getURI());
         CloseableHttpResponse response = null;
-        if (httpDelete.toString().contains(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/") || httpDelete.toString().contains(System.getenv("DATASETS") + "/")) {    //if we can not contact : http://exareme-keystore:8500/v1/kv/master* or http://exareme-keystore:8500/v1/kv/datasets*
+        if (httpDelete.toString().contains(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/") || httpDelete.toString().contains(System.getenv("DATA") + "/")) {    //if we can not contact : http://exareme-keystore:8500/v1/kv/master* or http://exareme-keystore:8500/v1/kv/datasets*
             try {   //then throw exception
                 response = httpclient.execute(httpDelete);
                 if (response.getStatusLine().getStatusCode() != 200) {
