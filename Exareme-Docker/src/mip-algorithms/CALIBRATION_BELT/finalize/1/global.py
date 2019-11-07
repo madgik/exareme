@@ -6,7 +6,8 @@ from os import path
 from argparse import ArgumentParser
 import numpy as np
 import json
-from scipy.stats import chi2
+from json import encoder
+from scipy.stats import chi2, norm
 from scipy.special import logit, expit
 
 sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) + '/utils/')
@@ -41,7 +42,7 @@ def cb_global_final(global_state, global_in):
         else:
             break
 
-    # Compute selected model coefficients, log-likelihood, grad and Hessian
+    # Compute selected model coefficients, log-likelihood, grad and Hessian, p-values, ...
     hess = hess_dict[model_deg]
     ll = ll_dict[model_deg]
     grad = grad_dict[model_deg]
@@ -50,6 +51,10 @@ def cb_global_final(global_state, global_in):
             grad
     )
     covar = np.linalg.inv(hess)
+    stderr = np.sqrt(np.diag(covar))
+    z_scores = np.divide(coeff, stderr)
+    z_to_p = lambda z: norm.sf(abs(z)) * 2
+    p_values = z_to_p(z_scores)
 
     # Compute calibration curve
     e_min, e_max = 0.01, 0.99  # TODO replace e_min and e_max values with actual ones
@@ -63,7 +68,7 @@ def cb_global_final(global_state, global_in):
     calib_curve = np.array([e, p]).transpose()
 
     # Compute confidence intervals
-    qci1, qci2 = 0.8, 0.95
+    qci1, qci2 = 0.8, 0.95  # TODO do not hard-code that
     sig2gp = [np.dot(G[i], np.dot(covar, G[i])) for i in range(len(G))]
     ci1 = np.sqrt(np.multiply(chi2.ppf(q=qci1, df=2), sig2gp))
     ci2 = np.sqrt(np.multiply(chi2.ppf(q=qci2, df=2), sig2gp))
@@ -85,10 +90,12 @@ def cb_global_final(global_state, global_in):
                 'Hessian'       : hess.tolist(),
                 'Covariance matrix': covar.tolist()
             },
+        'n_obs': n_obs,
         'Likelihood ration test': D,
         'Calibration curve'     : calib_curve.tolist(),
         'Calibration belt 80%': calib_belt1.tolist(),
-        'Calibration belt 95%': calib_belt2.tolist()
+        'Calibration belt 95%': calib_belt2.tolist(),
+        'p values': list(p_values)
     }
 
     # Write output to JSON
