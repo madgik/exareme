@@ -22,7 +22,7 @@
 			"columnValuesNumOfEnumerations": "",
 			"value": "gender",
 			"valueNotBlank": true,
-			"valueMultiple": true,
+			"valueMultiple": false,
 			"valueType": "string"
 		}, {
 			"name": "xlevels",
