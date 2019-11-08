@@ -4,7 +4,7 @@
 	"type": "iterative",
 	"parameters": [{
 			"name": "x",
-			"desc": "Independent variables: A list of categorical variables from database. It cannot be empty",
+			"desc": "Independent variables: A list of categorical variables from database.",
 			"type": "column",
 			"columnValuesSQLType": "text,integer",
 			"columnValuesIsCategorical": "true",
@@ -15,7 +15,7 @@
 			"valueType": "string"
 		}, {
 			"name": "y",
-			"desc": "Dependent variable: A categorical variable from database. It cannot be empty  ",
+			"desc": "Dependent variable: A categorical variable from database.",
 			"type": "column",
 			"columnValuesSQLType": "text,integer",
 			"columnValuesIsCategorical": "true",
@@ -26,7 +26,7 @@
 			"valueType": "string"
 		}, {
 			"name": "dataset",
-			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty.",
+			"desc": "The names of one or more datasets, in which the algorithm will be executed.",
 			"type": "dataset",
 			"value": "contact-lenses",
 			"valueNotBlank": true,
@@ -42,7 +42,7 @@
 			"valueType": "string"
 		},{
 			"name": "pathology",
-			"desc": "The name of the pathology that the dataset belongs to.",
+			"desc": "The name of the pathology in which the dataset belongs to.",
 			"type": "pathology",
 			"value": "dementia",
 			"valueNotBlank": true,

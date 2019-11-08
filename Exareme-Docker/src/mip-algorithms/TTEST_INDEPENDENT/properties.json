@@ -15,7 +15,7 @@
 			"valueType": "string"
 		}, {
 			"name": "x",
-			"desc": "The grouping variable with two levels",
+			"desc": "The grouping variable",
 			"type": "column",
 			"columnValuesSQLType": "",
 			"columnValuesIsCategorical": "true",
@@ -78,7 +78,7 @@
 			"valueType": "integer"
 		}, {
 			"name": "pathology",
-			"desc": "The name of the pathology that the dataset belongs to.",
+			"desc": "The name of the pathology in which the dataset belongs to.",
 			"type": "pathology",
 			"value": "dementia",
 			"valueNotBlank": true,
@@ -86,7 +86,7 @@
 			"valueType": "string"
 		}, {
 			"name": "dataset",
-			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty.",
+			"desc": "The names of one or more datasets, in which the algorithm will be executed.",
 			"type": "dataset",
 			"value": "desd-synthdata",
 			"valueNotBlank": true,
