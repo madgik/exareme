@@ -28,7 +28,7 @@
 			"valueType": "string"
 		}, {
 			"name": "alpha",
-			"desc": "Additive smoothing parameter (0 for no smoothing)"
+			"desc": "Additive smoothing parameter (0 for no smoothing)",
 			"type": "other",
 			"value": "0.1",
 			"valueNotBlank": true,
