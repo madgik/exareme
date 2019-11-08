@@ -256,7 +256,8 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         String masterIP = searchConsul(System.getenv("EXAREME_MASTER_PATH") + "/" + masterName + "?raw");
         String datasetKey = searchConsul(System.getenv("DATA") + "/" + masterName + "/" + pathology +"?raw");
         String[] datasetKeysArray = gson.fromJson(datasetKey, String[].class);
-        nodeDatasets.put(masterIP, datasetKeysArray);                 //Map Master IP-> Matser Datasets
+        if (datasetKeysArray != null)
+            nodeDatasets.put(masterIP, datasetKeysArray);                 //Map Master IP-> Matser Datasets
 
         String workersKey = searchConsul(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/?keys");
         if (workersKey == null)     //No workers running
@@ -267,7 +268,8 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             String workerIP = searchConsul(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/" + workerName + "?raw");
             datasetKey = searchConsul(System.getenv("DATA") + "/" + workerName + "/" + pathology +  "?raw");
             datasetKeysArray = gson.fromJson(datasetKey, String[].class);
-            nodeDatasets.put(workerIP, datasetKeysArray);        //Map Worker's IP-> Worker's Datasets
+            if (datasetKeysArray != null)
+                nodeDatasets.put(workerIP, datasetKeysArray);        //Map Worker's IP-> Worker's Datasets
         }
         return nodeDatasets;
     }
