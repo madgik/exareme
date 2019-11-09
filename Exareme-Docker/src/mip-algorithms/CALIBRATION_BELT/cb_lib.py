@@ -3,6 +3,8 @@ from __future__ import print_function
 
 import sys
 from os import path
+from itertools import groupby
+from operator import itemgetter
 
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))) + '/utils/')
 from algorithm_utils import TransferData
@@ -84,3 +86,25 @@ class CBFinal_Loc2Glob_TD(TransferData):
                 {deg: self.grad_dict[deg] + other.grad_dict[deg] for deg in range(1, len(self.ll_dict) + 1)},
                 {deg: self.hess_dict[deg] + other.hess_dict[deg] for deg in range(1, len(self.ll_dict) + 1)},
         )
+
+
+def find_relative_to_bisector(x, y, region_type):
+    assert len(x) == len(y), 'x and y must have the same length'
+    if region_type == 'over':
+        reg = [yi > xi for yi, xi in zip(y, x)]
+    elif region_type == 'under':
+        reg = [yi < xi for yi, xi in zip(y, x)]
+    else:
+        raise ValueError('region_type must either be `over` or `under`')
+    idxreg = [i for i, o in enumerate(reg) if o]
+    if len(idxreg) == 0:
+        return 'NEVER'
+    segs = ''
+    for k, g in groupby(enumerate(idxreg), lambda ix: ix[0] - ix[1]):
+        seg = list(map(itemgetter(1), g))
+        if x[seg[0]] != x[seg[-1]]:
+            segs += str(x[seg[0]]) + '-' + str(x[seg[-1]]) + ', '
+        else:
+            segs += str(x[seg[0]]) + ', '
+    segs = segs[:-2]
+    return segs

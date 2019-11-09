@@ -33,7 +33,7 @@ html_tail = """
               labels: [
                 {
                   point: { x: 100, y: 100 },
-                  text: "Polynomial degree: " + model_deg + " <br/>p-value: p_val <br/>n: " + n,
+                  text: "Polynomial degree: " + model_deg + " <br/>p-values: " + p_val + " <br/>n: " + n,
                   padding: 10,
                   shape: 'rect'
                 }
@@ -172,29 +172,20 @@ html_tail = """
 """
 
 
-def get_result():
-    data = [
-        {"name": "e", "value": "probGiViTI_2017_Complessiva"},
-        {"name": "o", "value": "hospOutcomeLatest_RIC10"},
-        {"name": "max_deg", "value": "4"},
-        {"name": "dataset", "value": "cb_data"},
-        {"name": "filter", "value": ""},
-        {"name": "max_iter", "value": "20"},
-        {"name": "pathology", "value": "dementia"}
-    ]
+def generate_html(data):
     r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
     result = json.loads(r.text)
     calib_curve = result['result'][0]['data'][0]['Calibration curve']
     calib_belt95 = result['result'][0]['data'][0]['Calibration belt 95%']
     calib_belt80 = result['result'][0]['data'][0]['Calibration belt 80%']
+    over_bisect80 = result['result'][0]['data'][0]['Over bisector 80%']
+    under_bisect80 = result['result'][0]['data'][0]['Under bisector 80%']
+    over_bisect95 = result['result'][0]['data'][0]['Over bisector 95%']
+    under_bisect95 = result['result'][0]['data'][0]['Under bisector 95%']
+    n_obs = result['result'][0]['data'][0]['n_obs']
     n_obs = result['result'][0]['data'][0]['n_obs']
     model_deg = result['result'][0]['data'][0]['Model Parameters']['Model degree']
     p_values = result['result'][0]['data'][0]['p values']
-    return calib_curve, calib_belt80, calib_belt95, n_obs, model_deg, p_values
-
-
-if __name__ == '__main__':
-    calib_curve, calib_belt80, calib_belt95, n_obs, model_deg, p_values = get_result()
     html_page = html_head \
                 + '\nvar curve = ' + str(calib_curve) + ';' \
                 + '\nvar ranges80 = ' + str(calib_belt80) + ';' \
@@ -202,11 +193,26 @@ if __name__ == '__main__':
                 + '\nvar model_deg = ' + str(int(model_deg)) + ';' \
                 + '\nvar n = ' + str(int(n_obs)) + ';' \
                 + '\nvar p_val = ' + str(p_values) + ';' \
-                + '\nvar under80 = ' + '\'NEVER\'' + ';' \
-                + '\nvar over80 = ' + '\'NEVER\'' + ';' \
-                + '\nvar under95 = ' + '\'NEVER\'' + ';' \
-                + '\nvar over95 = ' + '\'NEVER\'' + ';' \
+                + '\nvar under80 = ' + '\'' + under_bisect80 + '\'' + ';' \
+                + '\nvar over80 = ' + '\'' + over_bisect80 + '\'' + ';' \
+                + '\nvar under95 = ' + '\'' + under_bisect95 + '\'' + ';' \
+                + '\nvar over95 = ' + '\'' + over_bisect95 + '\'' + ';' \
                 + html_tail
-    # print(html_page)
+    return html_page
+
+if __name__ == '__main__':
+    data = [
+        {"name": "e", "value": "probGiViTI_2017_Complessiva"},
+        {"name": "o", "value": "hospOutcomeLatest_RIC10"},
+        {"name": "max_deg", "value": "4"},
+        {"name": "dataset", "value": "cb_data"},
+        # {"name": "filter", "value": ""},
+        {"name": "filter", "value": "{\"condition\": \"AND\", \"rules\": [{\"id\": \"centreCode\", \"field\": \"centreCode\", "
+                                    "\"type\": \"string\", \"input\": \"select\", \"operator\": \"equal\", "
+                                    "\"value\": \"a\"}], \"valid\": true }"},
+        {"name": "max_iter", "value": "20"},
+        {"name": "pathology", "value": "dementia"}
+    ]
+    html_page = generate_html(data)
     with open('calibration_belt.html', 'w') as f:
         f.write(html_page)

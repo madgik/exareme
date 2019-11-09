@@ -15,6 +15,7 @@ sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath
 from algorithm_utils import StateData
 from cb_lib import CBIter_Loc2Glob_TD, CBIter_Glob2Loc_TD
 
+
 def cb_local_iter(local_state, local_in):
     # Unpack local state
     X_matrices, Y, max_deg = local_state['X_matrices'], local_state['Y'], local_state['max_deg']

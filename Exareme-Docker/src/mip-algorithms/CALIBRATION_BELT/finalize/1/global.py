@@ -15,7 +15,7 @@ sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath
                 '/CALIBRATION_BELT/')
 
 from algorithm_utils import StateData, set_algorithms_output_data
-from cb_lib import CBIter_Loc2Glob_TD
+from cb_lib import CBIter_Loc2Glob_TD, find_relative_to_bisector
 
 
 def cb_global_final(global_state, global_in):
@@ -31,13 +31,13 @@ def cb_global_final(global_state, global_in):
     ll_dict, grad_dict, hess_dict = global_in.get_data()
 
     # likelihood-ratio test
-    D = 0
+    ddev = 0
     model_deg = 1
-    qlr = 0.99
+    qlr = 0.95
     thres = chi2.ppf(q=qlr, df=1)
     for deg in range(2, max_deg + 1):
-        D = 2 * (ll_dict[deg] - ll_dict[deg - 1])
-        if D > thres:
+        ddev = 2 * (ll_dict[deg] - ll_dict[deg - 1])
+        if ddev > thres:
             model_deg = deg
         else:
             break
@@ -58,7 +58,7 @@ def cb_global_final(global_state, global_in):
 
     # Compute calibration curve
     e_min, e_max = 0.01, 0.99  # TODO replace e_min and e_max values with actual ones
-    e = np.linspace(e_min, e_max, num=20)
+    e = np.linspace(e_min, e_max, num=100)
     ge = logit(e)
     G = [np.ones(len(e))]
     for d in range(1, len(coeff)):
@@ -79,23 +79,33 @@ def cb_global_final(global_state, global_in):
     calib_belt1 = np.array([e, p_min1, p_max1]).transpose()
     calib_belt2 = np.array([e, p_min2, p_max2]).transpose()
 
+    # Find regions relative to bisector
+    over_bisect1 = find_relative_to_bisector(np.around(e, 4), p_min1, 'over')
+    under_bisect1 = find_relative_to_bisector(np.around(e, 4), p_max1, 'under')
+    over_bisect2 = find_relative_to_bisector(np.around(e, 4), p_min2, 'over')
+    under_bisect2 = find_relative_to_bisector(np.around(e, 4), p_max2, 'under')
+
     # Format output data
     # JSON raw
     raw_data = {
-        'Model Parameters'      :
+        'Model Parameters'                              :
             {
-                'Model degree'  : model_deg,
-                'coeff'         : coeff.tolist(),
-                'log-likelihood': ll,
-                'Hessian'       : hess.tolist(),
+                'Model degree'     : model_deg,
+                'coeff'            : coeff.tolist(),
+                'log-likelihood'   : ll,
+                'Hessian'          : hess.tolist(),
                 'Covariance matrix': covar.tolist()
             },
-        'n_obs': n_obs,
-        'Likelihood ration test': D,
-        'Calibration curve'     : calib_curve.tolist(),
-        'Calibration belt 80%': calib_belt1.tolist(),
-        'Calibration belt 95%': calib_belt2.tolist(),
-        'p values': list(p_values)
+        'n_obs'                                         : n_obs,
+        'Likelihood ration test'                        : ddev,
+        'Calibration curve'                             : np.around(calib_curve, 4).tolist(),
+        'Calibration belt ' + str(int(qci1 * 100)) + '%': np.around(calib_belt1, 4).tolist(),
+        'Calibration belt ' + str(int(qci2 * 100)) + '%': np.around(calib_belt2, 4).tolist(),
+        'p values'                                      : np.around(p_values, 3).tolist(),
+        'Over bisector ' + str(int(qci1 * 100)) + '%'   : over_bisect1,
+        'Under bisector ' + str(int(qci1 * 100)) + '%'  : under_bisect1,
+        'Over bisector ' + str(int(qci2 * 100)) + '%'   : over_bisect2,
+        'Under bisector ' + str(int(qci2 * 100)) + '%'  : under_bisect2,
     }
 
     # Write output to JSON
