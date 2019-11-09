@@ -6,7 +6,6 @@ from os import path
 from argparse import ArgumentParser
 import numpy as np
 import json
-from json import encoder
 from scipy.stats import chi2, norm
 from scipy.special import logit, expit
 
@@ -15,7 +14,7 @@ sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath
                 '/CALIBRATION_BELT/')
 
 from algorithm_utils import StateData, set_algorithms_output_data
-from cb_lib import CBIter_Loc2Glob_TD, find_relative_to_bisector
+from cb_lib import CBFinal_Loc2Glob_TD, find_relative_to_bisector, givitiStatCdf
 
 
 def cb_global_final(global_state, global_in):
@@ -28,7 +27,7 @@ def cb_global_final(global_state, global_in):
     o_name = global_state['o_name']
     max_deg = global_state['max_deg']
     # Unpack global input
-    ll_dict, grad_dict, hess_dict = global_in.get_data()
+    ll_dict, grad_dict, hess_dict,  logLikBisector = global_in.get_data()
 
     # likelihood-ratio test
     ddev = 0
@@ -42,7 +41,7 @@ def cb_global_final(global_state, global_in):
         else:
             break
 
-    # Compute selected model coefficients, log-likelihood, grad and Hessian, p-values, ...
+    # Compute selected model coefficients, log-likelihood, grad and Hessian
     hess = hess_dict[model_deg]
     ll = ll_dict[model_deg]
     grad = grad_dict[model_deg]
@@ -51,10 +50,10 @@ def cb_global_final(global_state, global_in):
             grad
     )
     covar = np.linalg.inv(hess)
-    stderr = np.sqrt(np.diag(covar))
-    z_scores = np.divide(coeff, stderr)
-    z_to_p = lambda z: norm.sf(abs(z)) * 2
-    p_values = z_to_p(z_scores)
+
+    # Compute p value
+    calibrationStat = 2 * (ll - logLikBisector )
+    p_value = 1 - givitiStatCdf(calibrationStat, m=model_deg, devel='external', thres=0.95)
 
     # Compute calibration curve
     e_min, e_max = 0.01, 0.99  # TODO replace e_min and e_max values with actual ones
@@ -101,7 +100,7 @@ def cb_global_final(global_state, global_in):
         'Calibration curve'                             : np.around(calib_curve, 4).tolist(),
         'Calibration belt ' + str(int(qci1 * 100)) + '%': np.around(calib_belt1, 4).tolist(),
         'Calibration belt ' + str(int(qci2 * 100)) + '%': np.around(calib_belt2, 4).tolist(),
-        'p values'                                      : np.around(p_values, 3).tolist(),
+        'p values'                                      : np.around(p_value, 3),
         'Over bisector ' + str(int(qci1 * 100)) + '%'   : over_bisect1,
         'Under bisector ' + str(int(qci1 * 100)) + '%'  : under_bisect1,
         'Over bisector ' + str(int(qci2 * 100)) + '%'   : over_bisect2,
@@ -143,7 +142,7 @@ def main():
     # Load global state
     global_state = StateData.load(fname_prev_state).data
     # Load local nodes output
-    local_out = CBIter_Loc2Glob_TD.load(local_dbs)
+    local_out = CBFinal_Loc2Glob_TD.load(local_dbs)
     # Run algorithm global step
     global_out = cb_global_final(global_state=global_state, global_in=local_out)
     # Return the algorithm's output

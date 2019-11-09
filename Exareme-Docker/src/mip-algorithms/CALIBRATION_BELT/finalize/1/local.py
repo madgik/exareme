@@ -13,7 +13,7 @@ sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath
                 '/CALIBRATION_BELT/')
 
 from algorithm_utils import StateData
-from cb_lib import CBIter_Loc2Glob_TD, CBIter_Glob2Loc_TD
+from cb_lib import CBFinal_Loc2Glob_TD, CBIter_Glob2Loc_TD
 
 
 def cb_local_final(local_state, local_in):
@@ -56,8 +56,18 @@ def cb_local_final(local_state, local_in):
         ll = np.dot(Y, ls1) + np.dot(1 - Y, ls2)
         ll_dict[deg] = ll
 
+    # Compute partial log-likelihood on bisector, i.e. coeff = [0, 1] (needed for p-value calculation)
+    X = X_matrices[1]
+    coeff = np.array([0, 1])
+    # Auxiliary quantities
+    z = np.dot(X, coeff)
+    s = expit(z)
+    # Log-likelihood
+    ls1, ls2 = np.log(s), np.log(1 - s)
+    logLikBisector = np.dot(Y, ls1) + np.dot(1 - Y, ls2)
+
     # Pack state and results
-    local_out = CBIter_Loc2Glob_TD(ll_dict, grad_dict, hess_dict)
+    local_out = CBFinal_Loc2Glob_TD(ll_dict, grad_dict, hess_dict, logLikBisector)
     return local_out
 
 
