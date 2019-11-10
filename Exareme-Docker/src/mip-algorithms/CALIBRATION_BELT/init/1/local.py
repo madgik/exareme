@@ -15,9 +15,6 @@ sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath
 from algorithm_utils import StateData, query_with_privacy
 from cb_lib import CBInit_Loc2Glob_TD
 
-# Debug imports
-from functools import reduce
-
 
 def cb_local_init(local_in):
     # Unpack local input

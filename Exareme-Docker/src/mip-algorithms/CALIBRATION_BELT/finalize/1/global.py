@@ -27,7 +27,7 @@ def cb_global_final(global_state, global_in):
     o_name = global_state['o_name']
     max_deg = global_state['max_deg']
     # Unpack global input
-    ll_dict, grad_dict, hess_dict,  logLikBisector = global_in.get_data()
+    ll_dict, grad_dict, hess_dict, logLikBisector = global_in.get_data()
 
     # likelihood-ratio test
     ddev = 0
@@ -52,7 +52,7 @@ def cb_global_final(global_state, global_in):
     covar = np.linalg.inv(hess)
 
     # Compute p value
-    calibrationStat = 2 * (ll - logLikBisector )
+    calibrationStat = 2 * (ll - logLikBisector)
     p_value = 1 - givitiStatCdf(calibrationStat, m=model_deg, devel='external', thres=0.95)
 
     # Compute calibration curve
