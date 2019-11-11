@@ -3,7 +3,7 @@ import os
 import json
 import logging
 
-endpointUrl='http://88.197.53.38:9090/mining/query/ANOVA'
+endpointUrl='http://88.197.53.23:9090/mining/query/ANOVA'
 
 def test_ANOVA_Privacy():
         logging.info("---------- TEST : Algorithms for Privacy Error")

@@ -4,7 +4,7 @@
 	"type": "local_global",
 	"parameters": [{
 			"name": "y",
-			"desc": "A vector of strings (i.e. 'x1a-x1b,x2a-x2b' naming the pairs of interest in data. Here x1a,x1b is first pair, and x2a,x2b is the second pair",
+			"desc": "A vector of strings (i.e. 'x1a-x1b,x2a-x2b' naming the pairs of interest in data. Here x1a,x1b is first pair, and x2a,x2b is the second pair.",
 			"type": "formula",
 			"columnValuesSQLType": "real,integer",
 			"columnValuesIsCategorical": "",
@@ -15,7 +15,7 @@
 			"valueType": "string"
 		}, {
 			"name": "hypothesis",
-			"desc": "'different', 'greaterthan' or 'lessthan',the alternative hypothesis; measure 1 different to measure 2, measure 1 greater than measure 2, and measure 1 less than measure 2 respectively  ",
+			"desc": "'different', 'greaterthan' or 'lessthan',the alternative hypothesis; measure 1 different to measure 2, measure 1 greater than measure 2, and measure 1 less than measure 2 respectively.",
 			"type": "other",
 			"value": "different",
 			"min": null,
@@ -70,7 +70,7 @@
 			"valueType": "integer"
 		}, {
 			"name": "pathology",
-			"desc": "The name of the pathology that the dataset belongs to.",
+			"desc": "The name of the pathology in which the dataset belongs to.",
 			"type": "pathology",
 			"value": "dementia",
 			"valueNotBlank": true,
@@ -78,7 +78,7 @@
 			"valueType": "string"
 		}, {
 			"name": "dataset",
-			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty.",
+			"desc": "The names of one or more datasets, in which the algorithm will be executed.",
 			"type": "dataset",
 			"value": "desd-synthdata",
 			"valueNotBlank": true,

@@ -6,7 +6,7 @@
 	"vtype": "",
 	"parameters": [{
 		"name": "x",
-		"desc": "Independent variables: A list of variables from database. The variable should be Real, Integer or String. The variable can be either numerical or categorical. It cannot be empty",
+		"desc": "Independent variables: A list of variables from database.",
 		"type": "column",
 		"columnValuesSQLType": "",
 		"columnValuesIsCategorical": "",
@@ -17,7 +17,7 @@
 		"valueType": "string"
 	}, {
 		"name": "y",
-		"desc": "Dependent variable: A variable form database. The variable should be Real, Integer or String. It should be categorical. It cannot be empty",
+		"desc": "Dependent variable: A categorical variable form database.",
 		"type": "column",
 		"columnValuesSQLType": "",
 		"columnValuesIsCategorical": "true",
@@ -61,7 +61,7 @@
 			"valueType": "string"
 		}, {
 			"name": "pathology",
-			"desc": "The name of the pathology that the dataset belongs to.",
+			"desc": "The name of the pathology in which the dataset belongs to.",
 			"type": "pathology",
 			"value": "dementia",
 			"valueNotBlank": true,
@@ -69,7 +69,7 @@
 			"valueType": "string"
 		}, {
 			"name": "dataset",
-			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty.",
+			"desc": "The names of one or more datasets, in which the algorithm will be executed.",
 			"type": "dataset",
 			"value": "adni",
 			"valueNotBlank": true,
