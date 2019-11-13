@@ -12,6 +12,7 @@ import errno
 PRIVACY_MAGIC_NUMBER = 10
 P_VALUE_CUTOFF = 0.001
 P_VALUE_CUTOFF_STR = '< ' + str(P_VALUE_CUTOFF)
+MAX_ITER_LOGISTIC = 30
 
 
 class TransferData():

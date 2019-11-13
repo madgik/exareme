@@ -10,14 +10,13 @@ sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))
                 '/CALIBRATION_BELT/')
 
 
-from algorithm_utils import StateData, set_algorithms_output_data
+from algorithm_utils import StateData, set_algorithms_output_data, MAX_ITER_LOGISTIC
 from cb_lib import PREC
 
-def termination_condition(global_state, max_iter):
+def termination_condition(global_state):
     delta_dict = global_state['delta_dict']
     iter = global_state['iter']
-    if reduce((lambda x, y: x and y), [delta < PREC for delta in delta_dict.values()]) or iter >= max_iter:
-    # if False not in [delta < PREC for delta in delta_dict.values()] or iter >= max_iter:
+    if reduce((lambda x, y: x and y), [delta < PREC for delta in delta_dict.values()]) or iter >= MAX_ITER_LOGISTIC:
         set_algorithms_output_data('STOP')
     else:
         set_algorithms_output_data('CONTINUE')
@@ -28,13 +27,11 @@ def main():
     parser = ArgumentParser()
     parser.add_argument('-prev_state_pkl', required=True,
                         help='Path to the pickle file holding the previous state.')
-    parser.add_argument('-max_iter', type=int, required=True, help='Maximum number of iterations.')
     args, unknown = parser.parse_known_args()
     fname_prev_state = path.abspath(args.prev_state_pkl)
-    max_iter = args.max_iter
 
     global_state = StateData.load(fname_prev_state).data
-    termination_condition(global_state, max_iter)
+    termination_condition(global_state)
 
 
 if __name__ == '__main__':
