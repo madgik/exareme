@@ -33,7 +33,9 @@ html_tail = """
               labels: [
                 {
                   point: { x: 100, y: 100 },
-                  text: "Polynomial degree: " + model_deg + " <br/>p-values: " + p_val + " <br/>n: " + n,
+                  text: "Polynomial degree: " + model_deg + " <br/>Model selection significance level: " + thres +
+                  " <br/>p-value: " + p_val + 
+                  " <br/>n: " + n,
                   padding: 10,
                   shape: 'rect'
                 }
@@ -49,8 +51,8 @@ html_tail = """
               labels: [
                 {
                   point: { x: 400, y: 400 },
-                  text: "Confidence level: 80%<br/>Under the bisector: " + under80 + "<br/>Over the bisector: " + 
-                  over80,
+                  text: "Confidence level: " + cl1 + "<br/>Under the bisector: " + under1 + "<br/>Over the bisector: " 
+                  + over1,
                   padding: 10,
                   shape: 'rect'
                 }
@@ -66,8 +68,8 @@ html_tail = """
               labels: [
                 {
                   point: { x: 400, y: 465 },
-                  text: "Confidence level: 95%<br/>Under the bisector: " + under95 + "<br/>Over the bisector: " + 
-                  over95,
+                  text: "Confidence level: " + cl2 + "<br/>Under the bisector: " + under2 + "<br/>Over the bisector: " 
+                  + over2,
                   padding: 10,
                   shape: 'rect'
                 }
@@ -83,14 +85,14 @@ html_tail = """
 
           xAxis: {
             title: {
-              text: "Expected mortality"
+              text: "EXPECTED (" + e_name + ")"
             },
             visible: true
           },
 
           yAxis: {
             title: {
-              text: "Observed mortality"
+              text: "OBSERVED (" + o_name + ")"
             },
             visible: true
           },
@@ -104,7 +106,7 @@ html_tail = """
 
           series: [
             {
-              name: "Calibration curve",
+              name: "Observed mortality",
               data: curve,
               zIndex: 3,
               lineWidth: 3,
@@ -117,8 +119,8 @@ html_tail = """
               }
             },
             {
-              name: "Confidence level 95%",
-              data: ranges95,
+              name: "Confidence level " + cl2,
+              data: ranges2,
               type: "arearange",
               lineWidth: 0,
               linkedTo: ":previous",
@@ -129,8 +131,8 @@ html_tail = """
               }
             },
             {
-              name: "Confidence level 80%",
-              data: ranges80,
+              name: "Confidence level " + cl1,
+              data: ranges1,
               type: "arearange",
               lineWidth: 0,
               linkedTo: ":previous",
@@ -176,27 +178,36 @@ def generate_html(data):
     r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
     result = json.loads(r.text)
     calib_curve = result['result'][0]['data'][0]['Calibration curve']
-    calib_belt95 = result['result'][0]['data'][0]['Calibration belt 95%']
-    calib_belt80 = result['result'][0]['data'][0]['Calibration belt 80%']
-    over_bisect80 = result['result'][0]['data'][0]['Over bisector 80%']
-    under_bisect80 = result['result'][0]['data'][0]['Under bisector 80%']
-    over_bisect95 = result['result'][0]['data'][0]['Over bisector 95%']
-    under_bisect95 = result['result'][0]['data'][0]['Under bisector 95%']
-    n_obs = result['result'][0]['data'][0]['n_obs']
+    calib_belt1 = result['result'][0]['data'][0]['Calibration belt 1']
+    calib_belt2 = result['result'][0]['data'][0]['Calibration belt 2']
+    over_bisect1 = result['result'][0]['data'][0]['Over bisector 1']
+    under_bisect1 = result['result'][0]['data'][0]['Under bisector 1']
+    over_bisect2 = result['result'][0]['data'][0]['Over bisector 2']
+    under_bisect2 = result['result'][0]['data'][0]['Under bisector 2']
+    cl1 = result['result'][0]['data'][0]['Confidence level 1']
+    cl2 = result['result'][0]['data'][0]['Confidence level 2']
+    thres = result['result'][0]['data'][0]['Threshold']
     n_obs = result['result'][0]['data'][0]['n_obs']
     model_deg = result['result'][0]['data'][0]['Model Parameters']['Model degree']
     p_values = result['result'][0]['data'][0]['p values']
+    e_name = result['result'][0]['data'][0]['Expected name']
+    o_name = result['result'][0]['data'][0]['Observed name']
     html_page = html_head \
                 + '\nvar curve = ' + str(calib_curve) + ';' \
-                + '\nvar ranges80 = ' + str(calib_belt80) + ';' \
-                + '\nvar ranges95 = ' + str(calib_belt95) + ';' \
+                + '\nvar ranges1 = ' + str(calib_belt1) + ';' \
+                + '\nvar ranges2 = ' + str(calib_belt2) + ';' \
                 + '\nvar model_deg = ' + str(int(model_deg)) + ';' \
                 + '\nvar n = ' + str(int(n_obs)) + ';' \
                 + '\nvar p_val = ' + str(p_values) + ';' \
-                + '\nvar under80 = ' + '\'' + under_bisect80 + '\'' + ';' \
-                + '\nvar over80 = ' + '\'' + over_bisect80 + '\'' + ';' \
-                + '\nvar under95 = ' + '\'' + under_bisect95 + '\'' + ';' \
-                + '\nvar over95 = ' + '\'' + over_bisect95 + '\'' + ';' \
+                + '\nvar under1 = ' + '\'' + under_bisect1 + '\'' + ';' \
+                + '\nvar over1 = ' + '\'' + over_bisect1 + '\'' + ';' \
+                + '\nvar under2 = ' + '\'' + under_bisect2 + '\'' + ';' \
+                + '\nvar over2 = ' + '\'' + over_bisect2 + '\'' + ';' \
+                + '\nvar cl1 = ' + '\'' + cl1 + '\'' + ';' \
+                + '\nvar cl2 = ' + '\'' + cl2 + '\'' + ';' \
+                + '\nvar thres = ' + '\'' + thres + '\'' + ';' \
+                + '\nvar e_name = ' + '\'' + e_name + '\'' + ';' \
+                + '\nvar o_name = ' + '\'' + o_name + '\'' + ';' \
                 + html_tail
     return html_page
 
@@ -204,13 +215,15 @@ if __name__ == '__main__':
     data = [
         {"name": "e", "value": "probGiViTI_2017_Complessiva"},
         {"name": "o", "value": "hospOutcomeLatest_RIC10"},
+        {"name": "devel", "value": "external"},
         {"name": "max_deg", "value": "4"},
+        {"name": "confLevels", "value": "0.975, 0.5"},
+        {"name": "thres", "value": "0.95"},
         {"name": "dataset", "value": "cb_data"},
-        # {"name": "filter", "value": ""},
-        {"name": "filter", "value": "{\"condition\": \"AND\", \"rules\": [{\"id\": \"centreCode\", \"field\": \"centreCode\", "
-                                    "\"type\": \"string\", \"input\": \"select\", \"operator\": \"equal\", "
-                                    "\"value\": \"a\"}], \"valid\": true }"},
-        {"name": "max_iter", "value": "20"},
+        {"name": "filter", "value": ""},
+        # {"name": "filter", "value": "{\"condition\": \"AND\", \"rules\": [{\"id\": \"centreCode\", \"field\": \"centreCode\", "
+        #                             "\"type\": \"string\", \"input\": \"select\", \"operator\": \"equal\", "
+        #                             "\"value\": \"a\"}], \"valid\": true }"},
         {"name": "pathology", "value": "dementia"}
     ]
     html_page = generate_html(data)
