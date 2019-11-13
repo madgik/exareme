@@ -40,6 +40,8 @@ def main():
     parser = ArgumentParser()
     parser.add_argument('-e', required=True, help='Expected outcomes.')
     parser.add_argument('-o', required=True, help='Observed outcomes.')
+    # parser.add_argument('-devel', required=True,
+    #                     help='A character string specifying if the model has been fit on the same dataset under evaluation (internal) or if the model has been developed on an external sample (external).')
     parser.add_argument('-max_deg', required=True, help='Maximum degree of calibration curve.')
     parser.add_argument('-cur_state_pkl', required=True, help='Path to the pickle file holding the current state.')
     parser.add_argument('-input_local_DB', required=True, help='Path to local db.')
@@ -50,8 +52,13 @@ def main():
     query = args.db_query
     e_name = args.e.strip()
     o_name = args.o.strip()
+    # devel = args.devel.strip()
     max_deg = int(args.max_deg)
-    assert max_deg > 1, "Max deg should be greater than 1."
+    assert 1 < max_deg <= 4, "Max deg should be between 2 and 4 for `devel`=`external` or between 3 and 4 for " \
+                             "`devel`=`internal`."
+    # TODO implement devel cases (in local init: start_deg, in global final: p-value computation
+    # assert devel in {'internal', 'external'}
+    # start_deg = 1 if devel == 'external' else 2
 
     # Get data from local DB
     schema, data = query_with_privacy(fname_db=fname_loc_db, query=query)
@@ -59,14 +66,14 @@ def main():
     idx_o = schema.index(o_name)
     e_vec = np.array([data[i][idx_e] for i in range(len(data))])
     o_vec = np.array([data[i][idx_o] for i in range(len(data))])
-    # assert min(e_vec) >= 0. and max(e_vec) <= 1., "Variable e should take values only in [0, 1]"
-    # assert set(o_vec) == {0, 1}, "Variable o should only contain values 0 and 1."
 
     # Remove rows with missing values
     mask_e = [ei is None for ei in e_vec]
     mask_o = [oi is None for oi in o_vec]
     mask = np.logical_or(mask_e, mask_o)
     e_vec, o_vec = np.array(e_vec[~mask], dtype=np.float64), np.array(o_vec[~mask], dtype=np.int8)
+    assert min(e_vec) >= 0. and max(e_vec) <= 1., "Variable e should take values only in [0, 1]"
+    assert set(o_vec) == {0, 1}, "Variable o should only contain values 0 and 1."
 
     local_in = e_vec, o_vec, e_name, o_name, max_deg
     # Run algorithm local step
