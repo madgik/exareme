@@ -29,13 +29,49 @@
             "valueType": "string"
         },
         {
+            "name": "devel",
+            "desc": "A character string specifying if the model has been fit on the same dataset under evaluation (internal) or if the model has been developed on an external sample (external).",
+            "type": "other",
+            "value": "external",
+            "valueNotBlank": true,
+            "valueMultiple": false,
+            "valueType": "string",
+            "min": null,
+            "max": null,
+            "enumerations": ["internal", "external"]
+        },
+        {
             "name": "max_deg",
             "desc": "Maximum degree of polynomial.",
             "type": "other",
             "value": "4",
             "valueNotBlank": true,
             "valueMultiple": false,
-            "valueType": "integer"
+            "valueType": "integer",
+            "min": 1,
+            "max": 4,
+            "enumerations": null
+        },
+        {
+            "name": "confLevels",
+            "desc": "A pair of confidence levels for which the calibration belt will be computed.",
+            "type": "other",
+            "value": "0.80, 0.95",
+            "valueNotBlank": true,
+            "valueMultiple": true,
+            "valueType": "string"
+        },
+        {
+            "name": "thres",
+            "desc": "A numeric scalar between 0 and 1 representing the significance level adopted in the forward selection.",
+            "type": "other",
+            "value": "0.95",
+            "valueNotBlank": true,
+            "valueMultiple": false,
+            "valueType": "real",
+            "min": 0,
+            "max": 1,
+            "enumerations": null
         },
         {
             "name": "dataset",
@@ -54,16 +90,6 @@
             "valueNotBlank": false,
             "valueMultiple": true,
             "valueType": "string"
-        },
-        {
-            "name": "max_iter",
-            "desc": "Maximum number of iterations. Must be a positive integer.",
-            "type": "other",
-            "value": "",
-            "defaultValue": "20",
-            "valueNotBlank": false,
-            "valueMultiple": false,
-            "valueType": "integer"
         },
         {
 			"name": "pathology",
