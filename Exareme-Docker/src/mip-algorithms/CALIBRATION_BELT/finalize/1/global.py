@@ -28,6 +28,7 @@ def cb_global_final(global_state, global_in):
     max_deg = global_state['max_deg']
     cl = global_state['cl']
     thres = global_state['thes']
+    num_points = global_state['num_points']
     # Unpack global input
     ll_dict, grad_dict, hess_dict, logLikBisector = global_in.get_data()
 
@@ -58,7 +59,7 @@ def cb_global_final(global_state, global_in):
 
     # Compute calibration curve
     e_min, e_max = 0.01, 0.99  # TODO replace e_min and e_max values with actual ones
-    e = np.linspace(e_min, e_max, num=100)
+    e = np.linspace(e_min, e_max, num=num_points)
     ge = logit(e)
     G = [np.ones(len(e))]
     for d in range(1, len(coeff)):
@@ -145,11 +146,14 @@ def main():
                         help='A pair of confidence levels for which the calibration belt will be computed.')
     parser.add_argument('-thres', required=True,
                         help='A numeric scalar between 0 and 1 representing the significance level adopted in the forward selection.')
+    parser.add_argument('-num_points', required=True,
+                        help='A numeric scalar indicating the number of points to be considered to plot the calibration belt.')
     args, unknown = parser.parse_known_args()
     fname_prev_state = path.abspath(args.prev_state_pkl)
     local_dbs = path.abspath(args.local_step_dbs)
     confLevels = args.confLevels
     thres = args.thres
+    num_points = args.num_points
 
     # Checks for new args
     cl = tuple(sorted([float(cl) for cl in confLevels.split(',')]))
@@ -161,6 +165,7 @@ def main():
     global_state = StateData.load(fname_prev_state).data
     global_state['cl'] = cl
     global_state['thes'] = thres
+    global_state['num_points'] = num_points
     # Load local nodes output
     local_out = CBFinal_Loc2Glob_TD.load(local_dbs)
     # Run algorithm global step

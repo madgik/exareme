@@ -74,6 +74,18 @@
             "enumerations": null
         },
         {
+            "name": "num_points",
+            "desc": "A numeric scalar indicating the number of points to be considered to plot the calibration belt.",
+            "type": "other",
+            "value": "200",
+            "valueNotBlank": true,
+            "valueMultiple": false,
+            "valueType": "integer",
+            "min": 10,
+            "max": 200,
+            "enumerations": null
+        },
+        {
             "name": "dataset",
             "desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty",
             "type": "dataset",

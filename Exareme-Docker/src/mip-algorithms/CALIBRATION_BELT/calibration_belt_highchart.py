@@ -219,11 +219,12 @@ if __name__ == '__main__':
         {"name": "max_deg", "value": "4"},
         {"name": "confLevels", "value": "0.975, 0.5"},
         {"name": "thres", "value": "0.95"},
+        {"name": "num_points", "value": "200"},
         {"name": "dataset", "value": "cb_data"},
-        {"name": "filter", "value": ""},
-        # {"name": "filter", "value": "{\"condition\": \"AND\", \"rules\": [{\"id\": \"centreCode\", \"field\": \"centreCode\", "
-        #                             "\"type\": \"string\", \"input\": \"select\", \"operator\": \"equal\", "
-        #                             "\"value\": \"a\"}], \"valid\": true }"},
+        # {"name": "filter", "value": ""},
+        {"name": "filter", "value": "{\"condition\": \"AND\", \"rules\": [{\"id\": \"centreCode\", \"field\": \"centreCode\", "
+                                    "\"type\": \"string\", \"input\": \"select\", \"operator\": \"equal\", "
+                                    "\"value\": \"a\"}], \"valid\": true }"},
         {"name": "pathology", "value": "dementia"}
     ]
     html_page = generate_html(data)
