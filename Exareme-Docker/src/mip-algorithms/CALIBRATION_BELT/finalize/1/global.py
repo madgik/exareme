@@ -25,6 +25,7 @@ def cb_global_final(global_state, global_in):
     iter = global_state['iter']
     e_name = global_state['e_name']
     o_name = global_state['o_name']
+    devel = global_state['devel']
     max_deg = global_state['max_deg']
     cl = global_state['cl']
     thres = global_state['thes']
@@ -33,10 +34,15 @@ def cb_global_final(global_state, global_in):
     ll_dict, grad_dict, hess_dict, logLikBisector = global_in.get_data()
 
     # Perform likelihood-ratio test
+    if devel == 'external':
+        model_deg = 1
+    elif devel == 'internal':
+        model_deg = 2
+    else:
+        raise ValueError('devel should be `internal` or `external`')
     ddev = 0
-    model_deg = 1
     crit = chi2.ppf(q=thres, df=1)
-    for deg in range(2, max_deg + 1):
+    for deg in range(model_deg + 1, max_deg + 1):
         ddev = 2 * (ll_dict[deg] - ll_dict[deg - 1])
         if ddev > crit:
             model_deg = deg
@@ -55,7 +61,7 @@ def cb_global_final(global_state, global_in):
 
     # Compute p value
     calibrationStat = 2 * (ll - logLikBisector)
-    p_value = 1 - givitiStatCdf(calibrationStat, m=model_deg, devel='external', thres=thres)
+    p_value = 1 - givitiStatCdf(calibrationStat, m=model_deg, devel=devel, thres=thres)
 
     # Compute calibration curve
     e_min, e_max = 0.01, 0.99  # TODO replace e_min and e_max values with actual ones
@@ -142,6 +148,8 @@ def main():
                         help='Path to the pickle file holding the previous state.')
     parser.add_argument('-local_step_dbs', required=True,
                         help='Path to db holding local step results.')
+    parser.add_argument('-devel', required=True,
+                        help='A character string specifying if the model has been fit on the same dataset under evaluation (internal) or if the model has been developed on an external sample (external).')
     parser.add_argument('-confLevels', required=True,
                         help='A pair of confidence levels for which the calibration belt will be computed.')
     parser.add_argument('-thres', required=True,
@@ -151,6 +159,7 @@ def main():
     args, unknown = parser.parse_known_args()
     fname_prev_state = path.abspath(args.prev_state_pkl)
     local_dbs = path.abspath(args.local_step_dbs)
+    devel = args.devel.strip()
     confLevels = args.confLevels
     thres = args.thres
     num_points = args.num_points
@@ -160,12 +169,14 @@ def main():
     assert 0 <= cl[0] <= 1 and 0 <= cl[1] <= 1, 'cl should be a tuple of floats in [0, 1]'
     thres = float(thres)
     assert 0 <= thres <= 1, 'thres should be a float in [0, 1]'
+    assert devel in {'internal', 'external'}
 
     # Load global state and add new args
     global_state = StateData.load(fname_prev_state).data
     global_state['cl'] = cl
     global_state['thes'] = thres
     global_state['num_points'] = num_points
+    global_state['devel'] = devel
     # Load local nodes output
     local_out = CBFinal_Loc2Glob_TD.load(local_dbs)
     # Run algorithm global step

@@ -215,16 +215,16 @@ if __name__ == '__main__':
     data = [
         {"name": "e", "value": "probGiViTI_2017_Complessiva"},
         {"name": "o", "value": "hospOutcomeLatest_RIC10"},
-        {"name": "devel", "value": "external"},
+        {"name": "devel", "value": "internal"},
         {"name": "max_deg", "value": "4"},
-        {"name": "confLevels", "value": "0.975, 0.5"},
+        {"name": "confLevels", "value": "0.8, 0.95"},
         {"name": "thres", "value": "0.95"},
         {"name": "num_points", "value": "200"},
         {"name": "dataset", "value": "cb_data"},
-        # {"name": "filter", "value": ""},
-        {"name": "filter", "value": "{\"condition\": \"AND\", \"rules\": [{\"id\": \"centreCode\", \"field\": \"centreCode\", "
-                                    "\"type\": \"string\", \"input\": \"select\", \"operator\": \"equal\", "
-                                    "\"value\": \"a\"}], \"valid\": true }"},
+        {"name": "filter", "value": ""},
+        # {"name": "filter", "value": "{\"condition\": \"AND\", \"rules\": [{\"id\": \"centreCode\", \"field\": \"centreCode\", "
+        #                             "\"type\": \"string\", \"input\": \"select\", \"operator\": \"equal\", "
+        #                             "\"value\": \"a\"}], \"valid\": true }"},
         {"name": "pathology", "value": "dementia"}
     ]
     html_page = generate_html(data)
