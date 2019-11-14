@@ -125,12 +125,12 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         try {
             //Get datasets available in Consul[Key-Value store] for each Exareme node[master/workers]
             HashMap<String, String[]> nodeDatasets = null;
-            if (!pathology.isEmpty())
+            if (pathology != null)
                 nodeDatasets = getDatasetsFromConsul(pathology);
 
             //Check that datasets provided by user exist and retrieve only the nodes containing the existing datasets
             List<String> nodesToBeChecked;
-            if (userDatasets == null && pathology.isEmpty())
+            if (userDatasets == null && pathology == null)
                 nodesToBeChecked = allNodesIPs();          //If algorithm does not have 'datasets' as parameter  -> Get IP's from Exareme's registry TODO check if more
                 //TODO appropriate to get all the nodes from Consul, for consistency reasons
             else    //else -> get only the Exareme nodes containing datasets provided by user
