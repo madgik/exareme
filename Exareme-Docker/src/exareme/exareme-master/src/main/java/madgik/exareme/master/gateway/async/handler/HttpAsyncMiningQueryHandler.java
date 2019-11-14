@@ -257,18 +257,19 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         String masterName = masterKeysArray[0].replace(System.getenv("EXAREME_MASTER_PATH") + "/", "");
         String masterIP = searchConsul(System.getenv("EXAREME_MASTER_PATH") + "/" + masterName + "?raw");
 
-        String pathologyKey = searchConsul(System.getenv("DATA") + "/" + masterName + "/" + pathology +"?keys");
-        String[] pathologyKeyKeysArray = gson.fromJson(pathologyKey, String[].class);
-        if (pathologyKeyKeysArray != null) {
-            System.out.println(pathologyKeyKeysArray[0]);
-            pathologyNodes.add(pathologyKeyKeysArray[0]);                 //Add Master Pathology
+        if (pathology!=null) {
+            String pathologyKey = searchConsul(System.getenv("DATA") + "/" + masterName + "/" + pathology + "?keys");
+            String[] pathologyKeyKeysArray = gson.fromJson(pathologyKey, String[].class);
+            if (pathologyKeyKeysArray != null) {
+                System.out.println(pathologyKeyKeysArray[0]);
+                pathologyNodes.add(pathologyKeyKeysArray[0]);                 //Add Master Pathology
+            }
+
+            String datasetKey = searchConsul(System.getenv("DATA") + "/" + masterName + "/" + pathology + "?raw");
+            String[] datasetKeysArray = gson.fromJson(datasetKey, String[].class);
+            if (datasetKeysArray != null)
+                nodeDatasets.put(masterIP, datasetKeysArray);                 //Map Master IP-> Matser Datasets
         }
-
-        String datasetKey = searchConsul(System.getenv("DATA") + "/" + masterName + "/" + pathology +"?raw");
-        String[] datasetKeysArray = gson.fromJson(datasetKey, String[].class);
-        if (datasetKeysArray != null)
-            nodeDatasets.put(masterIP, datasetKeysArray);                 //Map Master IP-> Matser Datasets
-
         String workersKey = searchConsul(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/?keys");
         if (workersKey == null)     //No workers running
             return nodeDatasets;             //return master's Datasets only
@@ -277,21 +278,23 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             String workerName = worker.replace(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/", "");
             String workerIP = searchConsul(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/" + workerName + "?raw");
 
-            pathologyKey = searchConsul(System.getenv("DATA") + "/" + workerName + "/" + pathology +"?keys");
-            pathologyKeyKeysArray = gson.fromJson(pathologyKey, String[].class);
-            if (pathologyKeyKeysArray != null) {
-                System.out.println(pathologyKeyKeysArray[0]);
-                pathologyNodes.add(pathologyKeyKeysArray[0]);                 //Add worker Pathology
-            }
+            if (pathology!=null) {
+                String pathologyKey = searchConsul(System.getenv("DATA") + "/" + workerName + "/" + pathology + "?keys");
+                String[] pathologyKeyKeysArray = gson.fromJson(pathologyKey, String[].class);
+                if (pathologyKeyKeysArray != null) {
+                    System.out.println(pathologyKeyKeysArray[0]);
+                    pathologyNodes.add(pathologyKeyKeysArray[0]);                 //Add worker Pathology
+                }
 
-            datasetKey = searchConsul(System.getenv("DATA") + "/" + workerName + "/" + pathology +  "?raw");
-            datasetKeysArray = gson.fromJson(datasetKey, String[].class);
-            if (datasetKeysArray != null)
-                nodeDatasets.put(workerIP, datasetKeysArray);        //Map Worker's IP-> Worker's Datasets
+                String datasetKey = searchConsul(System.getenv("DATA") + "/" + workerName + "/" + pathology + "?raw");
+                String[] datasetKeysArray = gson.fromJson(datasetKey, String[].class);
+                if (datasetKeysArray != null)
+                    nodeDatasets.put(workerIP, datasetKeysArray);        //Map Worker's IP-> Worker's Datasets
+            }
         }
 
         if (pathologyNodes.isEmpty()){
-            throw new PathologyException("Pathology " + pathology + " not found !");
+            throw new PathologyException("Pathology " + pathology + " not found!");
         }
 
         return nodeDatasets;
