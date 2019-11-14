@@ -292,9 +292,10 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                     nodeDatasets.put(workerIP, datasetKeysArray);        //Map Worker's IP-> Worker's Datasets
             }
         }
-
-        if (pathologyNodes.isEmpty()){
-            throw new PathologyException("Pathology " + pathology + " not found!");
+        if (pathology!=null) {
+            if (pathologyNodes.isEmpty()) {
+                throw new PathologyException("Pathology " + pathology + " not found!");
+            }
         }
 
         return nodeDatasets;
