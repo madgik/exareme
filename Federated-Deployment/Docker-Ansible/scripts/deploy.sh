@@ -133,7 +133,7 @@ do
 			
 		# 5: Stop one service. 
 		elif [[ "${answer1}" == "5" ]]; then
-            echo -e "\nYou chose to stop one exareme service for a worker target node..."
+            echo -e "\nYou chose to stop a Worker exareme service for a Worker target node..."
 
             if [[ ! -s ../hosts.ini ]]; then
                 echo -e "\nFile for holding target machines' information (hosts.ini) does not exist. Please create it first (Option 7)."
