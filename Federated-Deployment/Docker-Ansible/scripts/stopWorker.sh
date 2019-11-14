@@ -12,8 +12,14 @@ checkIP ${answer}
 
 while IFS= read -r line || [[ -n "$line" ]]; do
     if [[ ${line} == *"ansible_host"* ]]; then
+        node=$(echo "$line" | cut -d " " -f 1)
         ip=$(echo "$line" | cut -d '=' -f 2)
         if [[ ${ip} == ${answer} ]]; then
+            if [[ ${node} == "master" ]]; then
+                echo -e "\nThe target node you are trying to stop is the **Master node**. \
+This operation can not be done..Returning to main menu.."
+                return;
+            fi
             workerStop=1
             name=$(echo "$line" | cut -d ' ' -f 1)
 
