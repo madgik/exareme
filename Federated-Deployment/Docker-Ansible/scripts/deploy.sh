@@ -28,7 +28,7 @@ do
     echo "2: (Re)Start all services."
 	echo "3: (Re)Start one service."
     echo "4: Stop all services."
-    echo "5: Stop one service."
+    echo "5: Stop a Worker service."
 	echo "6: Create or modify the exareme docker image version (exareme.yaml)."
     echo "7: (Re)Initialize the exareme swarm target machines' information (hosts.ini, vault.yaml)."
     echo "8: Add a new worker to the exareme swarm information files (hosts.ini, vault.yaml)."
