@@ -91,7 +91,7 @@ workerHostsInfo () {
 
 # Get Master Node Info
 masterHostsInfo () {
-    echo -e "\nWhat is the ansible host for target \"master\"? (expecting IP)"
+    echo -e "\nWhat is the IP for target \"master\"?"
     read answer
 
     checkIP ${answer}
@@ -255,7 +255,7 @@ createFiles () {
             #Construct worker88.197.53.38, worker88.197.53.44 .. workerN below [workers] tag
             while [[ ${workerNum} != 0 ]]
             do
-                echo -e "\nWhat is the ansible host for target \"worker\"? (expecting IP)"
+                echo -e "\nWhat is the IP for the next target \"worker\"?"
                 read answer
 
                 checkIP ${answer}
