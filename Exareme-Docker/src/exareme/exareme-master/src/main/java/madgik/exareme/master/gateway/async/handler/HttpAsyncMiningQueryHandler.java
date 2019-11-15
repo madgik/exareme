@@ -52,6 +52,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
     private static final AdpDBManager manager = AdpDBManagerLocator.getDBManager();
     private static final IterationsHandler iterationsHandler = IterationsHandler.getInstance();
     private static final String error = new String("text/plain+error");
+    private static final String user_error = new String("text/plain+user_error");
 
     public HttpAsyncMiningQueryHandler() {
     }
@@ -101,7 +102,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         } catch (Exception e) {
             log.error(e.getMessage());
             String data = e.getMessage();
-            String type = error;        //type could be error, user_error, warning regarding the error occurred along the process
+            String type = user_error;        //type could be error, user_error, warning regarding the error occurred along the process
             String result = defaultOutputFormat(data, type);
             BasicHttpEntity entity = new BasicHttpEntity();
             entity.setContent(new ByteArrayInputStream(result.getBytes()));
@@ -129,6 +130,8 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 //Get datasets provided by user
                 userDatasets = datasets.split(",");
             }
+            else
+                throw new Exception("Missing key: 'dataset'. You need to select one for running an Experiment.");
             if(inputContent.containsKey("pathology"))
                 pathology = inputContent.get("pathology");
             else
@@ -245,6 +248,15 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             log.error("Could not parse the algorithms properly.");
             String data = "Could not parse the algorithms properly.";
             String type = error;        //type could be error, user_error, warning regarding the error occured along the process
+            String result = defaultOutputFormat(data, type);
+            BasicHttpEntity entity = new BasicHttpEntity();
+            entity.setContent(new ByteArrayInputStream(result.getBytes()));
+            response.setStatusCode(HttpStatus.SC_BAD_REQUEST);
+            response.setEntity(entity);
+        } catch (PathologyException | DatasetsException e) {
+            log.error(e.getMessage());
+            String data = e.getMessage();
+            String type = user_error;        //type could be error, user_error, warning regarding the error occured along the process
             String result = defaultOutputFormat(data, type);
             BasicHttpEntity entity = new BasicHttpEntity();
             entity.setContent(new ByteArrayInputStream(result.getBytes()));
