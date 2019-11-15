@@ -96,12 +96,23 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                         COOKIE_ALGORITHM_EXECUTION_ID + "=" + algorithmExecIdStr);
             }
         }
-        handleInternal(request, response, context);
+        try {
+            handleInternal(request, response, context);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            String data = e.getMessage();
+            String type = error;        //type could be error, user_error, warning regarding the error occurred along the process
+            String result = defaultOutputFormat(data, type);
+            BasicHttpEntity entity = new BasicHttpEntity();
+            entity.setContent(new ByteArrayInputStream(result.getBytes()));
+            response.setStatusCode(HttpStatus.SC_BAD_REQUEST);
+            response.setEntity(entity);
+        }
         httpExchange.submitResponse(new BasicAsyncResponseProducer(response));
     }
 
     private void handleInternal(HttpRequest request, HttpResponse response, HttpContext context)
-            throws HttpException, IOException {
+            throws Exception {
 
         String datasets;
         String pathology=null;
@@ -120,6 +131,8 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             }
             if(inputContent.containsKey("pathology"))
                 pathology = inputContent.get("pathology");
+            else
+                throw new Exception("Missing key: 'pathology'. You need to select one for running an Experiment.");
         }
 
         try {
@@ -131,7 +144,8 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             //Check that datasets provided by user exist and retrieve only the nodes containing the existing datasets
             List<String> nodesToBeChecked;
             if (userDatasets == null && pathology == null)
-                nodesToBeChecked = allNodesIPs();          //If algorithm does not have 'datasets' as parameter  -> Get IP's from Exareme's registry TODO check if more
+                nodesToBeChecked = allNodesIPs();          //If algorithm does not have 'datasets' and 'pathology' as parameter
+                // -> Get IP's from Exareme's registry TODO check if more
                 //TODO appropriate to get all the nodes from Consul, for consistency reasons
             else    //else -> get only the Exareme nodes containing datasets provided by user
                 nodesToBeChecked = checkDatasets(nodeDatasets, userDatasets,pathology);
@@ -139,7 +153,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             //Check that node containers are up and running properly
             log.debug("Checking workers...");
 
-            if (!nodesRunning(nodesToBeChecked,pathology)) return;
+            if (!nodesRunning(nodesToBeChecked,pathology)) return;  //TODO inside nodesRunning getDatasetsFromConsul(pathology) when there are IPs that do not belong in Exareme registry
             ContainerProxy[] usedContainerProxies;
 
             //Find container proxy of used containers (from IPs)
