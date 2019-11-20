@@ -33,12 +33,13 @@ def test_NAIVEBAYES_1():
             {"name": "dataset","value": "car"},
             {"name": "x", "value": "car_buying,car_maint,car_doors,car_persons,car_lug_boot,car_safety"},
             {"name": "y", "value": "car_class"}]
-    data2.append({"name": "dbIdentifier","value":result1['dbIdentifier'] })
+    data2.append({"name": "dbIdentifier","value":result1['result'][0]['dbIdentifier'] })
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
     r = requests.post(url2,data=json.dumps(data2),headers=headers)
     trainingResult = json.loads(r.text)
     print (r.text)
+    
 
 #     $car_buying
 #        car_buying
