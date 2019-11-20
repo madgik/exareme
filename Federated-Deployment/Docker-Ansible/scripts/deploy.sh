@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 
 # Including functions only
-source ./vault.sh include-only
-source ./hosts.sh include-only
+source ./updateFiles.sh include-only
 source ./stop.sh include-only
 
-# TODO check what is happening when you give the wrong pass more than 3 times
+# TODO check what is happening when you give the wrong $USER pass more than 3 times
 
 export ANSIBLE_HOST_KEY_CHECKING=False      #avoid host key checking
 
@@ -29,7 +28,7 @@ do
     echo "2: (Re)Start all services."
 	echo "3: (Re)Start one service."
     echo "4: Stop all services."
-    echo "5: Stop one service."
+    echo "5: Stop a Worker service."
 	echo "6: Create or modify the exareme docker image version (exareme.yaml)."
     echo "7: (Re)Initialize the exareme swarm target machines' information (hosts.ini, vault.yaml)."
     echo "8: Add a new worker to the exareme swarm information files (hosts.ini, vault.yaml)."
@@ -105,7 +104,7 @@ do
 				break
             fi
 			
-			echo -e "\nAll neccessary files exist (hosts.ini, vault.yaml, exareme.yaml). Stoping..."
+			echo -e "\nAll neccessary files exist (hosts.ini, vault.yaml, exareme.yaml)."
             . ./restartWorker.sh
             break
 		
@@ -128,13 +127,13 @@ do
 				break
             fi
 
-			echo -e "\nAll neccessary files exist (hosts.ini, vault.yaml, exareme.yaml). Stoping..."
+			echo -e "\nAll neccessary files exist (hosts.ini, vault.yaml, exareme.yaml)."
             . ./stop.sh
             break
 			
 		# 5: Stop one service. 
 		elif [[ "${answer1}" == "5" ]]; then
-            echo -e "\nYou chose to stop one exareme service for a worker target node..."
+            echo -e "\nYou chose to stop a Worker exareme service for a Worker target node..."
 
             if [[ ! -s ../hosts.ini ]]; then
                 echo -e "\nFile for holding target machines' information (hosts.ini) does not exist. Please create it first (Option 7)."
@@ -158,8 +157,7 @@ do
 		# 7: (Re)Initialize the exareme swarm target machines' information (hosts.ini, vault.yaml).
         elif [[ "${answer1}" == "7" ]]; then
             echo -e "\nYou chose to (re)initialize the target machines' information (hosts.ini, vault.yaml)..."
-            . ./hosts.sh
-            . ./vault.sh
+            . updateFiles.sh
             break
 		
 		# 8: Add a new worker to the exareme swarm information (hosts.ini, vault.yaml)."
