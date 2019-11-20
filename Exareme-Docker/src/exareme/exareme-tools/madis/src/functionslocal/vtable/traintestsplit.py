@@ -49,7 +49,7 @@ class traintestsplit(functions.vtable.vtbase.VT):
                 self.shuffle = True
         else:
             self.shuffle = None
-
+        print self.shuffle
         # print largs
         # print dictargs
 
