@@ -133,8 +133,6 @@ def createDataTable(metadataDictionary, cur):
 
 
 def addCSVInTheDataTable(csvFilePath, metadataDictionary, cur):
-    # Get the csv file name that will be the dataset name
-    datasetName = os.path.splitext(os.path.basename(csvFilePath))[0]
 
     # Open the csv
     csvFile = open(csvFilePath, 'r')
@@ -144,6 +142,8 @@ def addCSVInTheDataTable(csvFilePath, metadataDictionary, cur):
     csvHeader = next(csvReader)
     columnsString = csvHeader[0]
     for column in csvHeader[1:]:
+        if column not in metadataDictionary:
+            raise KeyError('Column ' + column + ' does not exist in the metadata!')
         columnsString += ', ' + column
     columnsQuery = 'INSERT INTO DATA (' + columnsString + ') VALUES ('
 
