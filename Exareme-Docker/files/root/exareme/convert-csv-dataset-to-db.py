@@ -209,68 +209,6 @@ def main():
                 csvFilePath = os.path.join(pathologiesFolderPath,pathologyName,csv)
                 addCSVInTheDataTable(csvFilePath, metadataDictionary, cur)
                 
-        
-
-        '''
-        if os.path.isfile(csvFilePath):
-            # Create the query for the sqlite data table
-
-            createDataTableQuery = 'CREATE TABLE DATA('
-
-            csvFile = open(csvFilePath, 'r')
-            csvReader = csv.reader(csvFile)
-            csvHeader = next(csvReader)
-            subjectcode = csvHeader[0]
-            createDataTableQuery += ' ' + subjectcode + ' TEXT'
-            for column in csvHeader[1:]:
-                if column not in variablesTypesDict:
-                    raise ValueError('Column: "' + column + '" does not exist in the metadata file provided.')
-                columnType = variablesTypesDict[column]
-                createDataTableQuery += ', ' + column + ' ' + columnType
-            createDataTableQuery += ')'
-
-            # Create the data table
-            cur.execute('DROP TABLE IF EXISTS DATA')
-            cur.execute(createDataTableQuery)
-
-            # Add data
-            columnsString = csvHeader[0]
-            for column in csvHeader[1:]:
-                columnsString += ', ' + column
-            columnsQuery = 'INSERT INTO DATA (' + columnsString + ') VALUES ('
-
-            for row in csvReader:
-                insertRowQuery = columnsQuery + "'" + row[0] + "'"
-                for (value, column) in zip(row[1:], csvHeader[1:]):
-                    if variablesTypesDict[column] == 'text':
-                        insertRowQuery += ", '" + value + "'"
-                    elif value == '':
-                        insertRowQuery += ', null'
-                    else:
-                        insertRowQuery += ', ' + value
-                insertRowQuery += ');'
-                try:
-                    cur.execute(insertRowQuery)
-                except:
-                    raise ValueError('Row: ' + str(row) + ', Query: ' + str(insertRowQuery))
-        else:           # If datasets.csv does not exist.
-            if args.nodeType == 'master':
-                # Create the query for the sqlite data table from the metadata
-
-                createDataTableQuery = 'CREATE TABLE DATA('
-                for column, columnType in variablesTypesDict.iteritems():
-                    createDataTableQuery += column + ' ' + columnType + ', '
-                createDataTableQuery = createDataTableQuery[:-2]
-                createDataTableQuery += ')'
-
-                # Create the data table
-                cur.execute('DROP TABLE IF EXISTS DATA')
-                cur.execute(createDataTableQuery)
-            else:
-                raise IOError('The datasets.csv file does not exist for the ' + pathologyName + ' pathology')
-        '''
-        
-
     
         con.commit()
         con.close()
