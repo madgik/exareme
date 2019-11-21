@@ -15,11 +15,11 @@ else
 	EXAREME_MASTER_PATH=${EXAREME_MASTER_PATH}
 fi
 
-if [[ -z "${DATASETS}" ]]; then
-	echo "Env. variable 'datasets' not initialized in docker-compose.yaml files. Exiting..."
+if [[ -z "${DATA}" ]]; then
+	echo "Env. variable 'data' not initialized in docker-compose.yaml files. Exiting..."
 	exit 1
 else
-	DATASETS=${DATASETS}
+	DATA=${DATA}
 fi
 if [ -z ${CONSULURL} ]; then echo "CONSULURL is unset"; exit; fi
 if [ -z ${NODE_NAME} ]; then echo "NODE_NAME is unset";exit;  fi
@@ -39,7 +39,7 @@ stop_exareme () {
 
 #Clean ups in Consul [key-value store]
 deleteKeysFromConsul () {
-	if [[ "$(curl -s -o  /dev/null -i -w "%{http_code}\n" ${CONSULURL}/v1/kv/${DATASETS}/${NODE_NAME}?keys)" = "200" ]]; then
+	if [[ "$(curl -s -o  /dev/null -i -w "%{http_code}\n" ${CONSULURL}/v1/kv/${DATA}/${NODE_NAME}?keys)" = "200" ]]; then
 		curl -s -X DELETE $CONSULURL/v1/kv/$DATASETS/$NODE_NAME
 	fi
 	if [[ "$(curl -s -o  /dev/null -i -w "%{http_code}\n" ${CONSULURL}/v1/kv/${1}/${NODE_NAME}?keys)" = "200" ]]; then

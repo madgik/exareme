@@ -33,7 +33,7 @@ services:
       - DOCKER_METADATA_FOLDER=${DOCKER_DATA_FOLDER}
       - EXAREME_ACTIVE_WORKERS_PATH=active_workers
       - EXAREME_MASTER_PATH=master
-      - DATASETS=datasets
+      - DATA=data
     deploy:
       restart_policy:
         condition: on-failure
