@@ -33,20 +33,20 @@ The first doc sums up everything regarding Docker Swarm and the second one how t
 In every node the DATA should follow a specific structure. We will refer to the path of the DATA folder as ```data_path```. The ```data_path``` can be different across the nodes.
 
 The data folder should contain one folder for each pathology that it has datasets for. Inside that folder there should be:
-1) the datasets.csv file with all the datasets combined and
+1) the .csv files that will contain one or more datasets, 
 2) the CDEsMetadata.json file for that specific pathology.
 
 For example:
 
 -> Data Folder <br />
 ------> Dementia <br />
-----------> datasets.csv <br />
+----------> adni.csv <br />
 ----------> CDEsMetadata.json <br />
 ------> Neuropathology <br />
-----------> datasets.csv <br />
+----------> demo.csv <br />
 ----------> CDEsMetadata.json <br />
 
-The master node should have the CDEsMetadata.json for every pathology even if it doesn't contain a datasets.csv file.
+The master node should have the CDEsMetadata.json for every pathology even if it doesn't contain a .csv file.
 
 For example:
 
@@ -54,7 +54,7 @@ For example:
 ------> Dementia <br />
 ----------> CDEsMetadata.json <br />
 ------> Neuropathology <br />
-----------> datasets.csv <br />
+----------> demo.csv <br />
 ----------> CDEsMetadata.json <br />
 
 
