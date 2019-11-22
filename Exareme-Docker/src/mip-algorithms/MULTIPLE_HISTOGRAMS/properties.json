@@ -1,0 +1,65 @@
+{
+	"name": "MULTIPLE_HISTOGRAMS",
+	"desc": "Creates a histogram plot of x. Bins have a uniform width. Histogram displays the bins as rectangles such that the height of each rectangle indicates the number of elements in the bin.",
+	"type": "python_multiple_local_global",
+	"status": "enabled",
+	"parameters": [{
+			"name": "x",
+			"desc": "Variables from database to distribute among bins. The variable should be Real, Integer or String. The variable can be either numerical or categorical. It cannot be empty",
+			"type": "column",
+			"columnValuesSQLType": "real,integer,text",
+			"columnValuesIsCategorical": "",
+			"columnValuesNumOfEnumerations": "",
+			"value": "lefthippocampus",
+			"valueNotBlank": true,
+			"valueMultiple": true,
+			"valueType": "string"
+		}, {
+			"name": "y",
+			"desc": "Categorical variables from database. If not None, plots a histogram with a bar for each category in y",
+			"type": "column",
+			"columnValuesSQLType": "text,integer",
+			"columnValuesIsCategorical": "true",
+			"columnValuesNumOfEnumerations": "",
+			"value": "gender",
+			"valueNotBlank": false,
+			"valueMultiple": true,
+			"valueType": "string"
+		}, {
+			"name": "bins",
+			"desc": "Bin of each variable in Json format",
+			"type": "other",
+			"value": "{ \"lefthippocampus\" : 3 }",
+			"min": 1,
+			"max": null,
+			"enumerations": null,
+			"valueNotBlank": false,
+			"valueMultiple": false,
+			"valueType": "json"
+		}, {
+			"name": "pathology",
+			"desc": "The name of the pathology that the dataset belongs to.",
+			"type": "pathology",
+			"value": "dementia",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "string"
+		}, {
+			"name": "dataset",
+			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed.",
+			"type": "dataset",
+			"value": "desd-synthdata",
+			"valueNotBlank": true,
+			"valueMultiple": true,
+			"valueType": "string"
+		}, {
+			"name": "filter",
+			"desc": "",
+			"type": "filter",
+			"value": "",
+			"valueNotBlank": false,
+			"valueMultiple": true,
+			"valueType": "string"
+		}
+	]
+}
