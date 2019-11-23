@@ -174,7 +174,7 @@ Ansible-vault comes with the installation of ansible. Make sure you have it inst
 With ansible-vault we can have an encrypted file which will contain sensitive information (credentials) like the ones shown above.
 
 In order to create the file you need to run 
-```ansible-vault create vault_file.yaml``` inside ```Federated-Deployment/Docker-Ansible/``` folder.
+```ansible-vault create vault.yaml``` inside ```Federated-Deployment/Docker-Ansible/``` folder.
 It will ask for a vault-password that you will need to enter it each time you run a playbook. So keep it in mind.
 
 Here you will add
