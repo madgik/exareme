@@ -9,21 +9,17 @@ import numpy as np
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/utils/')
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/MULTIPLE_HISTOGRAMS/')
 
-from algorithm_utils import StateData
+from algorithm_utils import StateData,Global2Local_TD
 from multhist_lib import multipleHist2_Loc2Glob_TD
 
 
-def run_local_step(local_state, local_in):
-    # Unpack local state
-    args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWithDistinctValues, dataFrame = local_state['args_X'], local_state['args_Y'] ,local_state['args_bins'], local_state['dataSchema'], local_state['CategoricalVariablesWithDistinctValues'], local_state['dataFrame']
-    # Unpack local input
-    globalStatistics = local_in['globalStatistics']
+def run_local_step(args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWithDistinctValues, dataFrame, globalStatistics):
 
     # Local Part of the algorithm
     Hist = dict()
     for varx in args_X:
         if varx in CategoricalVariablesWithDistinctValues: # varx is  categorical
-            print varx ," IS CATEGORICAL"
+            #print varx ," IS CATEGORICAL"
             # Histogram categorical of varx
             df_count = dataFrame.groupby(varx)[varx].count()
             for groupLevelx in CategoricalVariablesWithDistinctValues[varx]:
@@ -33,7 +29,7 @@ def run_local_step(local_state, local_in):
                     Hist[varx,None,groupLevelx,None] = { "count" : 0, "level" : None, "hist" : None}
             for vary in args_Y:
                 #Histogram thn varx group by var y
-                print vary
+                #print vary
                 df_count = dataFrame.groupby([varx,vary])[varx].count()
                 for groupLevelx in CategoricalVariablesWithDistinctValues[varx]:
                     for groupLevely in CategoricalVariablesWithDistinctValues[vary]:
@@ -43,28 +39,25 @@ def run_local_step(local_state, local_in):
                             Hist[varx,vary,groupLevelx,groupLevely] = { "count" : 0, "level" : groupLevely, "hist" : None }
 
         if varx not in  CategoricalVariablesWithDistinctValues: # varx is not categorical
-             print varx
-             Hist[varx,None,None,None] =  { "count" : 0, "level" : None, "hist" :  np.histogram(dataFrame[varx], range = [ globalStatistics[varx,None,None,None]['min'],
-                                                                                                globalStatistics[varx,None,None,None]['max']],  bins = args_bins[varx]) }
+             #print varx
+             Hist[varx,None,None,None] =  { "count" : 0, "level" : None, "hist" : [x.tolist() for x in np.histogram(dataFrame[varx], range = [ globalStatistics[varx,None,None,None]['min'],
+                                                                                                globalStatistics[varx,None,None,None]['max']],  bins = args_bins[varx])] }
              #Histogram thn varx group by var y
              for vary in args_Y:
-                 print vary
+                 #print vary
                  dfs = dataFrame.groupby(vary)[varx]
                  for groupLevely in CategoricalVariablesWithDistinctValues[vary]:
-                    print groupLevely
+                    #print groupLevely
                     if groupLevely in dfs.groups:
-                        print "yes"
+                        #print "yes"
                         df = dfs.get_group(groupLevely)
-                        Hist[varx,vary,None,groupLevely] = { "count" : None, "level" : None, "hist" : np.histogram(df, range = [ globalStatistics[varx,vary,None,groupLevely]['min'],
-                                                                                                                  globalStatistics[varx,vary,None,groupLevely]['max']],  bins = args_bins[varx])}
+                        Hist[varx,vary,None,groupLevely] = { "count" : None, "level" : None, "hist" : [x.tolist() for x in np.histogram(df, range = [ globalStatistics[varx,vary,None,groupLevely]['min'],
+                                                                                                                  globalStatistics[varx,vary,None,groupLevely]['max']],  bins = args_bins[varx])]}
                     else:
-                        print "no"
+                        #print "no"
                         Hist[varx,vary,None,groupLevely] = { "count" : None, "level" : None, "hist" : None}
 
-
-    # Pack results
-    local_out = multipleHist2_Loc2Glob_TD(Hist)
-    return local_out
+    return Hist
 
 
 def main():
@@ -79,9 +72,18 @@ def main():
     # Load local state
     local_state = StateData.load(fname_prev_state).get_data()
     # Load global node output
-    global_out = Global2Local_TD.load(global_db).get_data()
+    globalStatistics = Global2Local_TD.load(global_db).get_data()['global_in']
+    #raise ValueError(globalStatistics,local_state['args_X'])
+
     # Run algorithm local step
-    local_out = run_local_step(local_state = local_state, local_in = global_out)
+    Hist = run_local_step(local_state['args_X'], local_state['args_Y'] ,
+                               local_state['args_bins'], local_state['dataSchema'],
+                               local_state['CategoricalVariablesWithDistinctValues'], local_state['dataFrame'],
+                               globalStatistics)
+
+
+    # Pack results
+    local_out = multipleHist2_Loc2Glob_TD(local_state['args_X'], local_state['args_Y'] , local_state['CategoricalVariablesWithDistinctValues'], Hist)
     # Return the output data
     local_out.transfer()
 

@@ -19,8 +19,8 @@ sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))
 from algorithm_utils import StateData,query_database,variable_categorical_getDistinctValues, init_logger# ExaremeError, PrivacyError, PRIVACY_MAGIC_NUMBER
 from multhist_lib import multipleHist1_Loc2Glob_TD
 
-def run_local_step(local_in):
-    args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWithDistinctValues, dataFrame = local_in
+def run_local_step(args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWithDistinctValues, dataFrame):
+
     localstatistics = dict()
 
     for varx in args_X:
@@ -53,7 +53,7 @@ def run_local_step(local_in):
                 for groupLevely in CategoricalVariablesWithDistinctValues[vary]:
                     if groupLevely in dataFrame[vary].unique():
                         #print groupLevely, vary
-                        localstatistics[varx,vary,None,groupLevely] = { "count": df_count[groupLevely], "min": df_min[groupLevely], "max": df_max[groupLevely] }
+                        localstatistics[varx,vary,None,groupLevely] = { "count": df_count[groupLevely], "min": dataFrame[varx].min(), "max": dataFrame[varx].max() }
                     else:
                         localstatistics[varx,vary,None,groupLevely] = { "count": 0, "min": None, "max": None }
     # TODO: Return only counts >  PRIVACY_MAGIC_NUMBER
@@ -63,13 +63,7 @@ def run_local_step(local_in):
     #         localstatistics[key]['min'] = 0
     #         localstatistics[key]['max'] = 0
 
-    local_state = StateData(args_X = args_X, args_Y = args_Y, args_bins = args_bins,  dataSchema = dataSchema,
-                            CategoricalVariablesWithDistinctValues = CategoricalVariablesWithDistinctValues, dataFrame = dataFrame)
-    raise
-    local_out = multipleHist1_Loc2Glob_TD(localstatistics)
-
-    return local_state, local_out
-
+    return localstatistics
 
 def main():
 
@@ -85,9 +79,8 @@ def main():
     query = args.db_query
     fname_cur_state = path.abspath(args.cur_state_pkl)
     fname_loc_db = path.abspath(args.input_local_DB)
+
     # Get data
-    ##--> TODO args.x, args.y!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    ##--> Check what happens if y is empty!!
     if args.y == '':
         args_X = list(args.x.replace(' ', '').split(','))
         args_Y = []
@@ -98,24 +91,25 @@ def main():
         varNames = "'" + "','".join(list(args.x.replace(' ', '').split(','))) + "','" + "','".join(
                         list(args.y.replace(' ', '').split(','))) + "'"
 
-    raise ValueError (args.bins)                    
     args_bins = json.loads(args.bins)
-
     args_bins = dict( (str(key), val) for key, val in args_bins.items())
-    raise ValueError("ELENI",args_X,args_Y,args_bins,varNames )
 
     queryMetadata = "select * from metadata where code in (" + varNames  + ");"
     dataSchema, metadataSchema, metadata, dataFrame  = query_database(fname_db=fname_loc_db, queryData=query, queryMetadata=queryMetadata)
     CategoricalVariablesWithDistinctValues = variable_categorical_getDistinctValues(metadata)
-    local_in = args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWithDistinctValues, dataFrame
 
      # Run algorithm local step
-    local_state, local_out = run_local_step(local_in=local_in)
+    localStatistics = run_local_step(args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWithDistinctValues, dataFrame)
+
 
     # Save local state
-    local_state.save(fname=fname_cur_state)
+    local_state = StateData(args_X = args_X, args_Y = args_Y, args_bins = args_bins,  dataSchema = dataSchema,
+                                CategoricalVariablesWithDistinctValues = CategoricalVariablesWithDistinctValues, dataFrame = dataFrame)
+    local_state.save(fname = fname_cur_state)
 
     # Transfer local output
+    local_out = multipleHist1_Loc2Glob_TD(localStatistics)
+    #raise ValueError( local_out.get_data())
     local_out.transfer()
 
 if __name__ == '__main__':

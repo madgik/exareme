@@ -19,10 +19,14 @@ def main():
     args, unknown = parser.parse_known_args()
     local_dbs = path.abspath(args.local_step_dbs)
 
-    globalStatistics = multipleHist1_Loc2Glob_TD.load(local_dbs)
+    #Get global data
+    globalStatistics = multipleHist1_Loc2Glob_TD.load(local_dbs).get_data()
+
+    #raise ValueError(globalStatistics)
+    global_out = Global2Local_TD(global_in = globalStatistics)
 
     # Return the algorithm's output
-    global_out.transfer(globalStatistics = globalStatistics)
+    global_out.transfer()
 
 
 if __name__ == '__main__':

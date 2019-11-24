@@ -34,15 +34,18 @@ class multipleHist1_Loc2Glob_TD(TransferData):
 
 class multipleHist2_Loc2Glob_TD(TransferData):
     def __init__(self, *args):
-        if len(args) != 1:
+        if len(args) != 4:
             raise ExaremeError('Illegal number of arguments.')
-        self.Hist = args[0]
+        self.args_X = args[0]
+        self.args_Y = args[1]
+        self.CategoricalVariablesWithDistinctValues = args[2]
+        self.Hist = args[3]
 
     def get_data(self):
-        return self.Hist
+        return self.args_X, self.args_Y, self.CategoricalVariablesWithDistinctValues , self.Hist
 
     def __add__(self, other):
-        result = dict()
+        resultHist = dict()
         for key in self.Hist:
             if self.Hist[key]['hist'] is not None and other.Hist[key]['hist'] is not None :
                 histsum = (np.nansum (self.Hist[key]['hist'][0],other.Hist[key]['hist'][0]),self.Hist[key]['hist'][1])
@@ -52,5 +55,5 @@ class multipleHist2_Loc2Glob_TD(TransferData):
                 histsum = (other.Hist[key]['hist'][0], other.Hist[key]['hist'][1])
             else:
                 histsum = None
-                result[key] = {"count": np.nansum (self.Hist[key]['count'], other.Hist[key]['count']), "hist" : histsum }
-        return multipleHist2_Loc2Glob_TD(result)
+                resultHist[key] = {"count": np.nansum (self.Hist[key]['count'], other.Hist[key]['count']), "hist" : histsum }
+        return multipleHist2_Loc2Glob_TD(self.args_X, self.args_Y,self.CategoricalVariablesWithDistinctValues, self.Hist ,resultHist)
