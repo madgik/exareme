@@ -56,10 +56,10 @@ if [[ $(sudo docker network ls | grep mip-local) == '' ]]; then
 fi
 
 #Get hostname of node
-name=$(hostname)
+name=jason
 
 echo -e "\nUpdate label name for Swarm node "$name
-sudo docker node update --label-add name=${name} ${name}
+sudo docker node update --label-add name=${name} docker-desktop
 echo -e "\n"
 
 #Read image from file exareme.yaml
