@@ -215,7 +215,7 @@ if __name__ == '__main__':
     data = [
         {"name": "e", "value": "probGiViTI_2017_Complessiva"},
         {"name": "o", "value": "hospOutcomeLatest_RIC10"},
-        {"name": "devel", "value": "internal"},
+        {"name": "devel", "value": "external"},
         {"name": "max_deg", "value": "4"},
         {"name": "confLevels", "value": "0.8, 0.95"},
         {"name": "thres", "value": "0.95"},
