@@ -14,32 +14,52 @@ from algorithm_utils import set_algorithms_output_data
 from multhist_lib import multipleHist2_Loc2Glob_TD
 
 
-args_X= ['lefthippocampus']
-args_Y = ['gender']
-CategoricalVariablesWithDistinctValues=  {'gender': ['M', 'F']}
-GlobalHist= {('lefthippocampus', None, None, None): {'count': 0, 'hist': [[34, 785, 101], [1.3047, 2.353766666666667, 3.4028333333333336, 4.4519]], 'level': None}, ('lefthippocampus', 'gender', None, 'M'): {'count': None, 'hist': [[1, 363, 82], [1.3047, 2.353766666666667, 3.4028333333333336, 4.4519]], 'level': None}, ('lefthippocampus', 'gender', None, 'F'): {'count': None, 'hist': [[33, 422, 19], [1.3047, 2.353766666666667, 3.4028333333333336, 4.4519]], 'level': None}}
+def highchartsbasiccolumn(title, ytitle, categoriesList, mydatajson):
+    a = '<span style="font-size:10px">{point.key}</span><table>'
+    b = '<tr><td style="color:{series.color};padding:0">{series.name}: </td><td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>'
+    myresult =  {
+        "type" : "application/vnd.highcharts+json",
+        "data" : { "chart" : { "type": "column" },
+                   "title" : { "text": title },
+                   "xAxis" : { "categories": categoriesList, "crosshair": True },
+                   "yAxis":  { "min": 0, "title": { "text": ytitle }},
 
-def DictToJson(GlobalHist):
-    Series = {}
-    for varx in args_X:
-        print GlobalHist[(varx,None,None,None)]
-        for vary in args_Y:
-            for groupLevely in CategoricalVariablesWithDistinctValues[vary]:
-                print GlobalHist[(varx,vary,None,groupLevely)]
+                   "tooltip": { "headerFormat": a,
+                                "pointFormat":  b},
 
-###################################TODO na bgalw to groupLevelx apo to key kai na to bvalw sto val tou dict
+                   "plotOptions": { "column": { "pointPadding": 0.2, "borderWidth": 0} },
+                   "series": mydatajson
+        }
+    }
+    return myresult
 
-    for key in GlobalHist:
-        variableName, covariableName, variableLevel,covariableLevel = key
+def histogramToHighchart (Hist):
 
-        count = GlobalHist[key]['count']
-        HistCounts = GlobalHist[key]['hist'][0]
-        HistRanges = GlobalHist[key]['hist'][1]
-        level = GlobalHist[key]['level']
-        print variableName, covariableName, variableLevel,covariableLevel
-        print count, HistCounts, HistRanges,level
+    myjsonresult  =  { "result" : []}
+    for key in Hist:
+        variableName, covariableName = key
+        #title
+        title = "Histogram of " + variableName
+        if covariableName is not None:
+            title += " grouped by " + covariableName
+        #print title
+        #mydatajson
+        mydatajson = []
+        if covariableName is None:
+            mydatajson.append({
+                    "name" : "All",
+                    "data" :  Hist[key]['Data']
+                })
+        else:
+            for i in  range(len(Hist[key]['Categoriesy'])):
+                mydatajson.append({
+                            "name" : Hist[key]['Categoriesy'][i],
+                            "data" : Hist[key]['Data'][i]
+                        })
 
-
+        myhighchart = highchartsbasiccolumn(title, "Count", Hist[key]['Categoriesx'], mydatajson)
+        myjsonresult["result"].append(myhighchart)
+    return json.dumps(myjsonresult)
 
 def main():
     # Parse arguments
@@ -50,9 +70,11 @@ def main():
 
     # Load local nodes output
     args_X, args_Y,CategoricalVariablesWithDistinctValues, GlobalHist = multipleHist2_Loc2Glob_TD.load(local_dbs).get_data()
+
     # Return the algorithm's output
-    raise ValueError (args_X, args_Y,CategoricalVariablesWithDistinctValues,GlobalHist)
-    set_algorithms_output_data(GlobalHist)
+    #raise ValueError (args_X, args_Y,CategoricalVariablesWithDistinctValues,GlobalHist)
+    global_out = histogramToHighchart(GlobalHist)
+    set_algorithms_output_data(global_out)
 
 
 if __name__ == '__main__':

@@ -47,13 +47,7 @@ class multipleHist2_Loc2Glob_TD(TransferData):
     def __add__(self, other):
         resultHist = dict()
         for key in self.Hist:
-            if self.Hist[key]['hist'] is not None and other.Hist[key]['hist'] is not None :
-                histsum = (np.nansum (self.Hist[key]['hist'][0],other.Hist[key]['hist'][0]),self.Hist[key]['hist'][1])
-            elif self.Hist[key]['hist'] is  not None and other.Hist[key]['hist'] is None :
-                histsum = (self.Hist[key]['hist'][0], self.Hist[key]['hist'][1])
-            elif self.Hist[key]['hist'] is  None and other.Hist[key]['hist'] is not None :
-                histsum = (other.Hist[key]['hist'][0], other.Hist[key]['hist'][1])
-            else:
-                histsum = None
-                resultHist[key] = {"count": np.nansum (self.Hist[key]['count'], other.Hist[key]['count']), "hist" : histsum }
+            resultHist[key] = { "Data ": self.Hist[key]['Data'] +  other.Hist[key]['Data'],
+                                "Categoriesx" : self.Hist[key]['Categoriesx'],
+                                "Categoriesy" : self.Hist[key]['Categoriesy'] }
         return multipleHist2_Loc2Glob_TD(self.args_X, self.args_Y,self.CategoricalVariablesWithDistinctValues, self.Hist ,resultHist)

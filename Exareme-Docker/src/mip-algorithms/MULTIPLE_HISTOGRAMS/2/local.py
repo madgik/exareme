@@ -14,7 +14,6 @@ from multhist_lib import multipleHist2_Loc2Glob_TD
 
 
 def run_local_step(args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWithDistinctValues, dataFrame, globalStatistics):
-
     # Local Part of the algorithm
     Hist = dict()
     for varx in args_X:
@@ -22,41 +21,53 @@ def run_local_step(args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWi
             #print varx ," IS CATEGORICAL"
             # Histogram categorical of varx
             df_count = dataFrame.groupby(varx)[varx].count()
+            categories = CategoricalVariablesWithDistinctValues[varx]
+            data = []
             for groupLevelx in CategoricalVariablesWithDistinctValues[varx]:
                 if groupLevelx in dataFrame[varx].unique():
-                    Hist[varx,None,groupLevelx,None] = { "count" : df_count[groupLevelx], "level" : None, "hist" : None}
+                    data.append(df_count[groupLevelx])
                 else:
-                    Hist[varx,None,groupLevelx,None] = { "count" : 0, "level" : None, "hist" : None}
+                    data.append(0)
+            Hist[varx,None] = {"Data" :  data, "Categoriesx" : categories, "Categoriesy" :None}
+
             for vary in args_Y:
                 #Histogram thn varx group by var y
-                #print vary
                 df_count = dataFrame.groupby([varx,vary])[varx].count()
-                for groupLevelx in CategoricalVariablesWithDistinctValues[varx]:
-                    for groupLevely in CategoricalVariablesWithDistinctValues[vary]:
+                dataTotal = []
+                for groupLevely in CategoricalVariablesWithDistinctValues[vary]:
+                    data = []
+                    for groupLevelx in CategoricalVariablesWithDistinctValues[varx]:
                         if (groupLevelx, groupLevely) in zip(dataFrame[varx],dataFrame[vary]) :
-                            Hist[varx,vary,groupLevelx,groupLevely] = { "count" : df_count[groupLevelx][groupLevely], "level" : groupLevely, "hist" : None}
+                            data.append(df_count[groupLevelx][groupLevely])
                         else:
-                            Hist[varx,vary,groupLevelx,groupLevely] = { "count" : 0, "level" : groupLevely, "hist" : None }
+                            data.append (0)
+                    dataTotal.append(data)
+                Hist[varx,vary] = {"Data" :  dataTotal, "Categoriesx" : categories, "Categoriesy" :CategoricalVariablesWithDistinctValues[vary]  }
 
         if varx not in  CategoricalVariablesWithDistinctValues: # varx is not categorical
              #print varx
-             Hist[varx,None,None,None] =  { "count" : 0, "level" : None, "hist" : [x.tolist() for x in np.histogram(dataFrame[varx], range = [ globalStatistics[varx,None,None,None]['min'],
-                                                                                                globalStatistics[varx,None,None,None]['max']],  bins = args_bins[varx])] }
+             myhist = [x.tolist() for x in np.histogram(dataFrame[varx], range = [ globalStatistics[varx,None,None,None]['min'],
+                                                                                                globalStatistics[varx,None,None,None]['max']],  bins = args_bins[varx])]
+             mycategories = [str(myhist[1][i+1])+"-"+str(myhist[1][i]) for i in range(len(myhist[1])-1)]
+             Hist[varx,None] = { "Data" : myhist[0], "Categoriesx" : mycategories , "Categoriesy" : None }
              #Histogram thn varx group by var y
              for vary in args_Y:
-                 #print vary
                  dfs = dataFrame.groupby(vary)[varx]
+                 data = []
+
                  for groupLevely in CategoricalVariablesWithDistinctValues[vary]:
                     #print groupLevely
                     if groupLevely in dfs.groups:
-                        #print "yes"
                         df = dfs.get_group(groupLevely)
-                        Hist[varx,vary,None,groupLevely] = { "count" : None, "level" : None, "hist" : [x.tolist() for x in np.histogram(df, range = [ globalStatistics[varx,vary,None,groupLevely]['min'],
-                                                                                                                  globalStatistics[varx,vary,None,groupLevely]['max']],  bins = args_bins[varx])]}
+                        myhist =  [x.tolist() for x in np.histogram(df, range = [ globalStatistics[varx,vary,None,groupLevely]['min'],
+                                                                         globalStatistics[varx,vary,None,groupLevely]['max']],
+                                                                         bins = args_bins[varx])]
+                        data.append(myhist[0])
+                        #Hist[varx,vary] = { "count" : None, "level" : None, "hist" : myhist,  "Categoriesy" :CategoricalVariablesWithDistinctValues[vary] }
                     else:
-                        #print "no"
-                        Hist[varx,vary,None,groupLevely] = { "count" : None, "level" : None, "hist" : None}
-
+                        data.append([0]*args_bins[varx])
+                        #Hist[varx,vary] = { "count" : None, "level" : None, "hist" : None}
+                    Hist[varx,vary] = {  "Data" : data ,  "Categoriesx" : mycategories, "Categoriesy" : CategoricalVariablesWithDistinctValues[vary] }
     return Hist
 
 
