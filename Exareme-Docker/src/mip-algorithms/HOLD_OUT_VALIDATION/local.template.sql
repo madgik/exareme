@@ -20,7 +20,7 @@ attach database '%{defaultDB}' as defaultDB;
 attach database '%{input_local_DB}' as localDB;
 
 
-select categoricalparameter_inputerrorchecking('shuffle', '%{shuffle}', 'True,False');
+select categoricalparameter_inputerrorchecking('shuffle', '%{shuffle}', 'True,False,');
 
 --Read dataset
 drop table if exists inputdata;
