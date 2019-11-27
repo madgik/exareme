@@ -50,35 +50,74 @@ def query_with_privacy(fname_db, query):
     return schema, data
 
 
-def query_from_formula(fname_db, formula, variables):
+def query_from_formula(fname_db, formula, variables, data_tab_name, metadata_tab_name, no_intercept=False):
+    """
+    Queries a database based on a list of variables and a patsy (R language) formula. Additionally performs privacy
+    check and returns results only if number of datapoints is sufficient.
+
+    Parameters
+    ----------
+    fname_db : string
+        Path and name of database.
+    formula : string
+        Formula in patsy (R language) syntax. E.g. 'y ~ x1 + x2 * x3'.
+    variables : list of strings
+        A list of the variables names.
+    data_tab_name : string
+        The name of the data table in the database.
+    metadata_tab_name : string
+        The name of the metagata table in the database.
+    no_intercept : bool
+        If no_intercept is True there is no intercept in the returned matrix(-ices). To use in the case where only a
+        rhs expression is needed, not a full formula.
+
+    Returns
+    -------
+    (lhs_dm, rhs_dm) or rhs_dm : patsy.DesignMatrix objects
+        When a tilda is present in the formula, the function returns two design matrices (lhs_dm, rhs_dm).
+        When it is not the function returns just the rhs_dm.
+    """
     from numpy import log as log
     from numpy import exp as exp
+    if no_intercept:
+        formula += '-1'
     conn = sqlite3.connect(fname_db)
     # Perform privacy check
-    if pd.read_sql_query(make_count_query(variables), conn).iat[0, 0] < PRIVACY_MAGIC_NUMBER:
+    if pd.read_sql_query(make_count_query(variables, data_tab_name), conn).iat[0, 0] < PRIVACY_MAGIC_NUMBER:
         raise PrivacyError('Query results in illegal number of datapoints.')
         # TODO privacy check by variable
-    # Pull data and return design matrix(-ces)
-    data = pd.read_sql_query(make_data_query(variables), conn)
+    # Pull is_categorical from metadata table
+    is_categorical = [pd.read_sql_query(make_iscateg_query(v, metadata_tab_name,
+                                                           is_categorical_argname='isCategorical', code_argname='code'),
+                                        conn).iat[0, 0] for v in variables]
+    # Pull data from db and return design matrix(-ces)
+    data = pd.read_sql_query(make_data_query(variables, data_tab_name, is_categorical), conn)
     if '~' in formula:
-        Y, X = dmatrices(formula, data, return_type='dataframe')
-        return Y, X
+        lhs_dm, rhs_dm = dmatrices(formula, data, return_type='dataframe')
+        return lhs_dm, rhs_dm
     else:
-        X = dmatrix(formula, data, return_type='dataframe')
-        return X
+        rhs_dm = dmatrix(formula, data, return_type='dataframe')
+        return rhs_dm
 
 
-def make_count_query(variables):
-    q = 'SELECT count(' + variables[0] + ') FROM DATA WHERE '
+def make_iscateg_query(variable, metadata_tab_name, is_categorical_argname, code_argname):
+    q = 'SELECT ' + is_categorical_argname + ' FROM ' + metadata_tab_name
+    q += ' WHERE ' + code_argname + "=='" + variable + "';"
+    return q
+
+
+def make_count_query(variables, data_tab_name):
+    q = 'SELECT count(' + variables[0] + ') FROM ' + data_tab_name + ' WHERE '
     q += ' AND '.join([v + "!=''" for v in variables])
     q += ';'
     return q
 
 
-def make_data_query(variables):
+def make_data_query(variables, data_tab_name, is_categorical):
+    variables_casts = [v if not c else 'CAST(' + v + ' AS text) AS ' + v for v, c in zip(variables, is_categorical)]
     q = 'SELECT '
-    q += ', '.join(variables)
-    q += ' FROM DATA WHERE '
+    q += ', '.join(variables_casts)
+    q += ' FROM ' + data_tab_name + ' WHERE '
     q += ' AND '.join([v + "!=''" for v in variables])
     q += ';'
     return q
@@ -133,12 +172,17 @@ class ExaremeError(Exception):
         super(ExaremeError, self).__init__(message)
 
 
-if __name__ == '__main__':
+def main():
     fname_db = '/Users/zazon/madgik/mip_data/dementia/datasets.db'
-    variables = ['lefthippocampus', 'leftamygdala', 'gender', 'righthippocampus']
-    formula = "gender ~ (lefthippocampus + leftamygdala) * righthippocampus + log(leftamygdala) + standardize(" \
-              "righthippocampus) + exp(lefthippocampus) + I(lefthippocampus + leftamygdala*2)"
-    Y, X = query_from_formula(fname_db, formula, variables)
+    variables = ['gender', 'lefthippocampus', 'righthippocampus']
+    formula = 'gender ~ lefthippocampus * righthippocampus'
+    Y, X = query_from_formula(fname_db, formula, variables, data_tab_name='DATA', metadata_tab_name='METADATA',
+                           no_intercept=True)
     print(Y.design_info.term_names)
     print(X.design_info.term_names)
     print(X)
+    print(Y)
+
+
+if __name__ == '__main__':
+    main()
