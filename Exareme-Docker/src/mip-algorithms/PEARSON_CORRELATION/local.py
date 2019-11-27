@@ -68,7 +68,6 @@ def pearsonr_local(local_in):
     return local_out
 
 
-import logging
 
 
 def main():
@@ -81,8 +80,8 @@ def main():
     args, unknown = parser.parse_known_args()
     query = args.db_query
     fname_loc_db = path.abspath(args.input_local_DB)
-    if args.x == '':
-        raise ExaremeError('Field x must be non empty.')
+    if args.y == '':
+        raise ExaremeError('Field y must be non empty.')
     args_X = list(
             args.x
                 .replace(' ', '')
@@ -95,13 +94,13 @@ def main():
     )
     # Populate schemata, treating cases Y=empty and Y=not empty accordingly (behaviour of R function `cor`)
     schema_X, schema_Y = [], []
-    if args_Y == ['']:
-        for i in xrange(len(args_X)):
-            for j in xrange(i + 1, len(args_X)):
-                schema_X.append(args_X[i])
-                schema_Y.append(args_X[j])
-        correlmatr_row_names = args_X
-        correlmatr_col_names = args_X
+    if args_X == ['']:
+        for i in xrange(len(args_Y)):
+            for j in xrange(i + 1, len(args_Y)):
+                schema_X.append(args_Y[i])
+                schema_Y.append(args_Y[j])
+        correlmatr_row_names = args_Y
+        correlmatr_col_names = args_Y
     else:
         for i in xrange(len(args_X)):
             for j in xrange(len(args_Y)):

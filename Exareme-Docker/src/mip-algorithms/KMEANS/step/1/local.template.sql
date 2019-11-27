@@ -1,5 +1,7 @@
-requirevars 'defaultDB' 'x';
+requirevars 'defaultDB' 'y';
 attach database '%{defaultDB}' as defaultDB;
+
+var 'x' '%{y}';
 
 update defaultDB.algorithmparameters set val=val +1 where name ='iterations';
 

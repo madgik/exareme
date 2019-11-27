@@ -8,23 +8,20 @@ import re
 from decimal import *
 
 
-endpointUrl='http://88.197.53.38:9090/mining/query/ID3'
+endpointUrl='http://88.197.53.23:9090/mining/query/ID3'
 
 def test_ID3_1():
     logging.info("---------- TEST : ID3 - Test using contact-lenses dataset  ")
-    data = [
-            {   "name": "iterations_max_number", "value": "20" },
-            {   "name": "x", "value": "CL_age,CL_spectacle_prescrip,CL_astigmatism,CL_tear_prod_rate"  },
+    data = [{   "name": "x", "value": "CL_age,CL_spectacle_prescrip,CL_astigmatism,CL_tear_prod_rate"  },
             {   "name": "y", "value": "CL_contact_lenses" },
             {   "name": "dataset", "value": "contact-lenses" },
             {   "name": "filter", "value": "" },
-            {   "name": "pathology","value":"dementia"}
-
-        ]
+            {   "name": "pathology","value":"dementia"}]
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
     r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
     result = json.loads(r.text)
-    print (result['result'][1]['data'])
+
+    print (result['result'])
 
     resultR  = '''\
 CL_tear_prod_rate = reduced: none
@@ -47,21 +44,23 @@ CL_tear_prod_rate = normal
     treeR = json.dumps(tree)
     treeR = json.loads(treeR)
     print (treeR)
-    resultsComparison(result['result'][1]['data'], treeR)
 
+    #
+    # result = [{'data': {'profile': 'tabular-data-resource', 'data': [[1.0, 'CL_tear_prod_rate', 'normal', 2.0, ''], [1.0, 'CL_tear_prod_rate', 'reduced', '', 'none'], [2.0, 'CL_astigmatism', 'no', 3.0, ''], [2.0, 'CL_astigmatism', 'yes', 4.0, ''], [3.0, 'CL_age', 'pre-presbyopic', '', 'soft'], [3.0, 'CL_age', 'presbyopic', 5.0, ''], [3.0, 'CL_age', 'young', '', 'soft'], [4.0, 'CL_spectacle_prescrip', 'hypermetrope', 6.0, ''], [4.0, 'CL_spectacle_prescrip', 'myope', '', 'hard'], [5.0, 'CL_spectacle_prescrip', 'hypermetrope', '', 'soft'], [5.0, 'CL_spectacle_prescrip', 'myope', '', 'none'], [6.0, 'CL_age', 'pre-presbyopic', '', 'none'], [6.0, 'CL_age', 'presbyopic', '', 'none'], [6.0, 'CL_age', 'young', '', 'hard']], 'name': 'ID3_TABLE', 'schema': {'fields': [{'type': 'int', 'name': 'id'}, {'type': 'text', 'name': 'colname'}, {'type': 'text', 'name': 'edge'}, {'type': 'int', 'name': 'childnodes'}, {'type': 'text', 'name': 'leafval'}]}}, 'type': 'application/vnd.dataresource+json'}, {'type': 'application/json', 'data': [{'childnodes': [{'edge': 'normal', 'colname': 'CL_astigmatism', 'childnodes': [{'edge': 'no', 'colname': 'CL_age', 'childnodes': [{'leafval': 'soft', 'edge': 'pre-presbyopic'}, {'edge': 'presbyopic', 'colname': 'CL_spectacle_prescrip', 'childnodes': [{'leafval': 'soft', 'edge': 'hypermetrope'}, {'leafval': 'none', 'edge': 'myope'}]}, {'leafval': 'soft', 'edge': 'young'}]}, {'edge': 'yes', 'colname': 'CL_spectacle_prescrip', 'childnodes': [{'edge': 'hypermetrope', 'colname': 'CL_age', 'childnodes': [{'leafval': 'none', 'edge': 'pre-presbyopic'}, {'leafval': 'none', 'edge': 'presbyopic'}, {'leafval': 'hard', 'edge': 'young'}]}, {'leafval': 'hard', 'edge': 'myope'}]}]}, {'leafval': 'none', 'edge': 'reduced'}], 'colname': 'CL_tear_prod_rate'}]}]
+    # treeR = ['CL_tear_prod_rate', [['=', 'reduced', 'none'], ['=', 'normal', ['CL_astigmatism', [['=', 'no', ['CL_age', [['=', 'pre-presbyopic', 'soft'], ['=', 'young', 'soft'], ['=', 'presbyopic', ['CL_spectacle_prescrip', [['=', 'hypermetrope', 'soft'], ['=', 'myope', 'none']]]]]]], ['=', 'yes', ['CL_spectacle_prescrip', [['=', 'myope', 'hard'], ['=', 'hypermetrope', ['CL_age', [['=', 'pre-presbyopic', 'none'], ['=', 'presbyopic', 'none'], ['=', 'young', 'hard']]]]]]]]]]]]
+
+
+    resultsComparison(result['result'][1]['data'], treeR)
 
 
 def test_ID3_Privacy():
     logging.info("---------- TEST : ID3 - Test using contact-lenses dataset  ")
 
-    data = [
-            {   "name": "iterations_max_number", "value": "20" },
-            {   "name": "x", "value": "CL_age,CL_spectacle_prescrip,CL_astigmatism,CL_tear_prod_rate"  },
+    data = [{   "name": "x", "value": "CL_age,CL_spectacle_prescrip,CL_astigmatism,CL_tear_prod_rate"  },
             {   "name": "y", "value": "CL_contact_lenses" },
             {   "name": "dataset", "value": "contact-lenses" },
             {   "name": "filter", "value": "{\"condition\": \"AND\", \"rules\": [{\"id\": \"CL_age\", \"field\": \"CL_age\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"Young\"}], \"valid\": true}" },
-            {   "name": "pathology","value":"dementia"}
-        ]
+            {   "name": "pathology","value":"dementia"}]
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
     r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
@@ -76,26 +75,26 @@ def check_privacy_result(result):
     assert result == "{\"result\" : [{\"data\":\"The Experiment could not run with the input provided because there are insufficient data.\",\"type\":\"text/plain+warning\"}]}"
 
 
-
-
-
-
 def resultsComparison(jsonExaremeResult, jsonRResult):
     if jsonExaremeResult[0]['colname']==jsonRResult[0]:
+        #print("TEST",  jsonRResult[0])
         for childR in jsonRResult[1]:
             find = 0
             for childEx in jsonExaremeResult[0]['childnodes']:
+                #print ("paidi",childEx)
                 if childEx['edge'] == childR[1]:
                     find = 1
                     if 'childnodes' in childEx.keys():
-                        resultsComparison(childEx['childnodes'], childR[2])
+                        print ("TOTO",childEx, childR[2])
+                        resultsComparison([childEx], childR[2])
                     else:
-                        print ("Leafvals:", childEx['leafval'], childR[2])
+                        #print ("Leafvals:", childEx['leafval'], childR[2])
                         assert (childEx['leafval']== childR[2])
             if find == 0:
                 print ("error: Different childs")
                 assert 0
     else:
+        #print("AAA", jsonExaremeResult, jsonRResult[0])
         print ("error: Different colname", jsonExaremeResult[0]['colname'], jsonRResult[0])
         assert(0)
 

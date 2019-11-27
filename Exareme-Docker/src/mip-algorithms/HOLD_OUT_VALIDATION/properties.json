@@ -1,12 +1,12 @@
 {
 	"name": "HOLD_OUT_VALIDATION",
-	"desc": "Hold Out Validation",
+	"desc": "Split datasets into random train and test subsets",
 	"type": "local_global",
 	"status": "enabled",
 	"vtype": "",
 	"parameters": [{
 			"name": "pathology",
-			"desc": "The name of the pathology that the dataset belongs to.",
+			"desc": "The name of the pathology in which the dataset belongs to.",
 			"type": "pathology",
 			"value": "dementia",
 			"valueNotBlank": true,
@@ -14,15 +14,15 @@
 			"valueType": "string"
 		}, {
 			"name": "dataset",
-			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed.",
+			"desc": "The names of one or more datasets, in which the algorithm will be executed.",
 			"type": "dataset",
 			"value": "desd-synthdata",
 			"valueNotBlank": true,
 			"valueMultiple": true,
 			"valueType": "string"
-		}, {
+		},  {
 			"name": "x",
-			"desc": "",
+			"desc": "Independent variables: A list of variables from database.",
 			"type": "column",
 			"columnValuesSQLType": "",
 			"columnValuesIsCategorical": "",
@@ -33,7 +33,7 @@
 			"valueType": "string"
 		}, {
 			"name": "y",
-			"desc": "classname",
+			"desc": "Dependent variable: A categorical variable form database.",
 			"type": "column",
 			"columnValuesSQLType": "",
 			"columnValuesIsCategorical": "true",
@@ -42,39 +42,51 @@
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "string"
-		}, {
+		},{
 			"name": "test_size",
-			"desc": "",
+			"desc": "(Optional). If it is between 0.0 and 1.0, it represents the proportion of the dataset to include in the test split. If None, the value is set to the complement of the train size. If train_size is also None, it will be set to 0.25.",
 			"type": "other",
 			"value": "0.25",
-			"valueNotBlank": true,
+			"min": null,
+			"max": null,
+			"enumerations": null,
+			"valueNotBlank": false,
 			"valueMultiple": false,
 			"valueType": "real"
 		}, {
 			"name": "train_size",
-			"desc": "",
+			"desc": "(Optional). If it is between 0.0 and 1.0, it represents the proportion of the dataset to include in the train split. If None, the value is automatically set to the complement of the test size.",
 			"type": "other",
 			"value": "",
+			"min": null,
+			"max": null,
+			"enumerations": null,
 			"valueNotBlank": false,
 			"valueMultiple": false,
 			"valueType": "real"
 		}, {
 			"name": "random_state",
-			"desc": "",
+			"desc": "(Optional). It is the seed used by the random number generator.",
 			"type": "other",
 			"value": "",
+			"min": null,
+			"max": null,
+			"enumerations": null,
 			"valueNotBlank": false,
 			"valueMultiple": false,
-			"valueType": "real"
+			"valueType": "integer"
 		}, {
 			"name": "shuffle",
-			"desc": "",
+			"desc": "Whether or not to shuffle the data before splitting.",
 			"type": "other",
-			"value": "",
+			"value": "False",
+			"min": null,
+			"max": null,
+			"enumerations": ['True','False','None'],
 			"valueNotBlank": false,
 			"valueMultiple": false,
 			"valueType": "string"
-		} , {
+		}, {
 			"name": "filter",
 			"desc": "",
 			"type": "filter",
@@ -87,6 +99,9 @@
 			"desc": "Predefined value for the dbIdentifier",
 			"type": "other",
 			"value": "",
+			"min": null,
+			"max": null,
+			"enumerations": null,
 			"valueNotBlank": false,
 			"valueMultiple": false,
 			"valueType": "string"

@@ -13,7 +13,7 @@
 --
 -- drop table if exists inputdata;
 -- create table inputdata as
--- select %{x}
+-- select %{y}
 -- from (file header:t '/home/eleni/Desktop/HBP/exareme/Exareme-Docker/src/mip-algorithms/unit_tests/datasets/CSVs/desd-synthdata.csv');
 
 --http://www.sthda.com/english/wiki/t-test-formula
@@ -22,7 +22,7 @@
 ------------------ End input for testing
 ------------------------------------------------------------------------------
 
-requirevars 'defaultDB' 'input_local_DB' 'db_query' 'x' 'hypothesis' 'effectsize' 'ci' 'meandiff';
+requirevars 'defaultDB' 'input_local_DB' 'db_query' 'y' 'hypothesis' 'effectsize' 'ci' 'meandiff';
 
 attach database '%{defaultDB}' as defaultDB;
 attach database '%{input_local_DB}' as localDB;
@@ -39,7 +39,7 @@ drop table if exists inputdata;
 create table inputdata as select * from (%{db_query});
 
 -- Cast values of columns using cast function.
-var 'cast_x' from select create_complex_query("","tonumber(?) as ?", "," , "" , '%{x}');
+var 'cast_x' from select create_complex_query("","tonumber(?) as ?", "," , "" , '%{y}');
 drop table if exists defaultDB.localinputtblflat;
 create table defaultDB.localinputtblflat as
 select %{cast_x} from inputdata;
@@ -47,7 +47,7 @@ select %{cast_x} from inputdata;
 --One Sample T-test
 var 'localstats' from select create_complex_query("","insert into  defaultDB.localstatistics
 select '?' as colname, sum(?) as S1, sum(?*?) as S2, count(?) as N from localinputtblflat
-where ? is not null and ? <>'NA' and ? <>'';" , "" , "" , '%{x}');
+where ? is not null and ? <>'NA' and ? <>'';" , "" , "" , '%{y}');
 drop table if exists defaultDB.localstatistics;
 create table defaultDB.localstatistics (colname text, S1 real, S2 real, N int);
 %{localstats};

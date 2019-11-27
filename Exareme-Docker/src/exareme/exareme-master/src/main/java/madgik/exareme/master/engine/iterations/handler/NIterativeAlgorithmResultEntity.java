@@ -126,6 +126,7 @@ public class NIterativeAlgorithmResultEntity extends BasicHttpEntity
                     String data = result.substring(result.lastIndexOf("ExaremeError:") + "ExaremeError:".length()).replaceAll("\\s", " ");
                     String type = user_error;
                     String output = defaultOutputFormat(data,type);
+                    logErrorMessage(output);
                     channel = Channels.newChannel(
                             new ByteArrayInputStream(output.getBytes(StandardCharsets.UTF_8)));
 
@@ -133,6 +134,7 @@ public class NIterativeAlgorithmResultEntity extends BasicHttpEntity
                     String data = "The Experiment could not run with the input provided because there are insufficient data.";
                     String type = warning;
                     String output = defaultOutputFormat(data,type);
+                    logErrorMessage(output);
                     channel = Channels.newChannel(
                             new ByteArrayInputStream(output.getBytes(StandardCharsets.UTF_8)));
 
@@ -140,6 +142,7 @@ public class NIterativeAlgorithmResultEntity extends BasicHttpEntity
                     String data = "One or more containers are not responding. Please inform the system administrator.";
                     String type = error;
                     String output = defaultOutputFormat(data,type);
+                    logErrorMessage(output);
                     channel = Channels.newChannel(
                             new ByteArrayInputStream(output.getBytes(StandardCharsets.UTF_8)));
 
@@ -149,6 +152,7 @@ public class NIterativeAlgorithmResultEntity extends BasicHttpEntity
                             + "]. Please inform your system administrator to consult the logs.";
                     String type = error;
                     String output = defaultOutputFormat(data,type);
+                    logErrorMessage(output);
                     channel = Channels.newChannel(
                             new ByteArrayInputStream(output.getBytes(StandardCharsets.UTF_8)));
                 }
@@ -182,5 +186,9 @@ public class NIterativeAlgorithmResultEntity extends BasicHttpEntity
 
     private String defaultOutputFormat(String data, String type){
         return "{\"result\" : [{\"data\":"+"\""+data+"\",\"type\":"+"\""+type+"\"}]}";
+    }
+
+    private void logErrorMessage(String error){
+        log.info("Algorithm exited with error and returned:\n " + error);
     }
 }

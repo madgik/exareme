@@ -113,7 +113,7 @@ public abstract class RmiObjectProxy<T> implements ObjectProxy<T> {
                             //If exist in Consul[Key-Value store], delete infos regarding that Exareme node from there
                             if (name != null) {
                                 try {
-                                    deleteFromConsul(System.getenv("DATASETS") + "/" + name);
+                                    deleteFromConsul(System.getenv("DATA") + "/" + name);
                                     deleteFromConsul(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/" + name);
                                     log.info("Worker node:[" + name + "," + regEntityName.getIP() + "]" + " removed from Consul key-value store");
                                 } catch (IOException E) {
@@ -165,7 +165,7 @@ public abstract class RmiObjectProxy<T> implements ObjectProxy<T> {
             httpGet = new HttpGet(consulURL + "/v1/kv/" + query);
             log.debug("Running: " + httpGet.getURI());
             CloseableHttpResponse response = null;
-            if (httpGet.toString().contains(System.getenv("EXAREME_MASTER_PATH")+"/") || httpGet.toString().contains(System.getenv("DATASETS")+"/")) {    //if we can not contact : http://exareme-keystore:8500/v1/kv/master* or http://exareme-keystore:8500/v1/kv/datasets*
+            if (httpGet.toString().contains(System.getenv("EXAREME_MASTER_PATH")+"/") || httpGet.toString().contains(System.getenv("DATA")+"/")) {    //if we can not contact : http://exareme-keystore:8500/v1/kv/master* or http://exareme-keystore:8500/v1/kv/datasets*
                 try {   //then throw exception
                     response = httpclient.execute(httpGet);
                     if (response.getStatusLine().getStatusCode() != 200) {
@@ -211,7 +211,7 @@ public abstract class RmiObjectProxy<T> implements ObjectProxy<T> {
             //curl -X DELETE $CONSULURL/v1/kv/$1/$NODE_NAME
             log.debug("Running: " + httpDelete.getURI());
             CloseableHttpResponse response = null;
-            if (httpDelete.toString().contains(System.getenv("EXAREME_ACTIVE_WORKERS_PATH")+"/") || httpDelete.toString().contains(System.getenv("DATASETS")+"/")) {    //if we can not contact : http://exareme-keystore:8500/v1/kv/master* or http://exareme-keystore:8500/v1/kv/datasets*
+            if (httpDelete.toString().contains(System.getenv("EXAREME_ACTIVE_WORKERS_PATH")+"/") || httpDelete.toString().contains(System.getenv("DATA")+"/")) {    //if we can not contact : http://exareme-keystore:8500/v1/kv/master* or http://exareme-keystore:8500/v1/kv/datasets*
                 try {   //then throw exception
                     response = httpclient.execute(httpDelete);
                     if (response.getStatusLine().getStatusCode() != 200) {

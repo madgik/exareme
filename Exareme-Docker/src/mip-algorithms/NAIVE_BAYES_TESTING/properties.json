@@ -1,36 +1,67 @@
 {
 	"name": "NAIVE_BAYES_TESTING",
-	"desc": "BayesNaive_v3",
+	"desc": "Naive Bayes clasiifier: Testing phase",
 	"type": "local_global",
 	"status": "enabled",
 	"vtype": "",
 	"parameters": [{
+		"name": "x",
+		"desc": "Independent variables: A list of variables from database.",
+		"type": "column",
+		"columnValuesSQLType": "",
+		"columnValuesIsCategorical": "",
+		"columnValuesNumOfEnumerations": "",
+		"value": "righthippocampus,lefthippocampus",
+		"valueNotBlank": true,
+		"valueMultiple": true,
+		"valueType": "string"
+	}, {
+		"name": "y",
+		"desc": "Dependent variable: A categorical variable form database.",
+		"type": "column",
+		"columnValuesSQLType": "",
+		"columnValuesIsCategorical": "true",
+		"columnValuesNumOfEnumerations": "",
+		"value": "alzheimerbroadcategory",
+		"valueNotBlank": true,
+		"valueMultiple": false,
+		"valueType": "string"
+	}, {
 			"name": "iterationNumber",
-			"desc": "",
+			"desc": "Training datasets have id != iteration number.",
 			"type": "other",
 			"value": "0",
+			"min": null,
+			"max": null,
+			"enumerations": null,
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "integer"
 		}, {
 			"name": "model",
-			"desc": "",
+			"desc": "Training model in json format. It cannot be empty",
 			"type": "other",
 			"value": "",
+			"min": null,
+			"max": null,
+			"enumerations": null,
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "json"
 		}, {
 			"name": "dbIdentifier",
-			"desc": "",
+			"desc": "Predefined value for the dbIdentifier",
 			"type": "other",
 			"value": "",
+			"min": null,
+			"max": null,
+			"enumerations": null,
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "string"
 		}, {
 			"name": "pathology",
-			"desc": "The name of the pathology that the dataset belongs to.",
+			"desc": "The name of the pathology in which the dataset belongs to.",
 			"type": "pathology",
 			"value": "dementia",
 			"valueNotBlank": true,
@@ -38,33 +69,11 @@
 			"valueType": "string"
 		}, {
 			"name": "dataset",
-			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty.",
+			"desc": "The names of one or more datasets, in which the algorithm will be executed.",
 			"type": "dataset",
 			"value": "adni",
 			"valueNotBlank": true,
 			"valueMultiple": true,
-			"valueType": "string"
-		}, {
-			"name": "x",
-			"desc": "",
-			"type": "column",
-			"columnValuesSQLType": "",
-			"columnValuesIsCategorical": "",
-			"columnValuesNumOfEnumerations": "",
-			"value": "righthippocampus,lefthippocampus",
-			"valueNotBlank": true,
-			"valueMultiple": true,
-			"valueType": "string"
-		}, {
-			"name": "y",
-			"desc": "classname",
-			"type": "column",
-			"columnValuesSQLType": "",
-			"columnValuesIsCategorical": "true",
-			"columnValuesNumOfEnumerations": "",
-			"value": "alzheimerbroadcategory",
-			"valueNotBlank": true,
-			"valueMultiple": false,
 			"valueType": "string"
 		}
 	]

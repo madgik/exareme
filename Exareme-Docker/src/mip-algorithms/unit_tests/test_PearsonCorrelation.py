@@ -5,7 +5,7 @@ import math
 
 # Required datasets: adni_9rows, adni, data_pr1, desd-synthdata
 
-endpointUrl = 'http://88.197.53.38:9090/mining/query/PEARSON_CORRELATION'
+endpointUrl = 'http://88.197.53.23:9090/mining/query/PEARSON_CORRELATION'
 
 
 def test_PearsonCorrlation_MIP_AlgoTesting_1():
@@ -304,11 +304,11 @@ def test_PearsonCorrlation_MIP_AlgoTesting_4():
     data = [
         {
             "name" : "x",
-            "value": "righthippocampus, lefthippocampus, leftententorhinalarea"
+            "value": ""
         },
         {
             "name" : "y",
-            "value": ""
+            "value": "righthippocampus, lefthippocampus, leftententorhinalarea"
         },
 	{   "name": "pathology",
 	    "value":"dementia"
@@ -365,11 +365,11 @@ def test_PearsonCorrlation_MIP_AlgoTesting_5():
     data = [
         {
             "name" : "x",
-            "value": "righthippocampus, lefthippocampus, opticchiasm"
+            "value": ""
         },
         {
             "name" : "y",
-            "value": ""
+            "value": "righthippocampus, lefthippocampus, opticchiasm"
         },
 	{   "name": "pathology",
 	    "value":"dementia"
@@ -426,11 +426,11 @@ def test_PearsonCorrlation_MIP_AlgoTesting_6():
     data = [
         {
             "name" : "x",
-            "value": "lefthippocampus, subjectageyears, opticchiasm"
+            "value": ""
         },
         {
             "name" : "y",
-            "value": ""
+            "value": "lefthippocampus, subjectageyears, opticchiasm"
         },
 	{   "name": "pathology",
 	    "value":"dementia"
@@ -487,11 +487,11 @@ def test_PearsonCorrlation_MIP_AlgoTesting_7():
     data = [
         {
             "name" : "x",
-            "value": "subjectageyears, lefthippocampus, opticchiasm"
+            "value": ""
         },
         {
             "name" : "y",
-            "value": ""
+            "value": "subjectageyears, lefthippocampus, opticchiasm"
         },
 	{   "name": "pathology",
 	    "value":"dementia"

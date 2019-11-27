@@ -11,7 +11,7 @@ from rpy2.robjects.packages import importr
 import rpy2.robjects as robjects
 
 
-endpointUrl='http://88.197.53.38:9090/mining/query/KMEANS'
+endpointUrl='http://88.197.53.23:9090/mining/query/KMEANS'
 folderPath = 'R_scripts'
 file ='kMeans.Rmd'
 
@@ -28,7 +28,7 @@ class TestkMeans(unittest.TestCase):
         logging.info("---------- TEST : KMEANS - desd-synthdata   & 2 variables,  2 clusters")
         data = [
                 {   "name": "iterations_max_number", "value": "50" },
-                {   "name": "x", "value": "lefthippocampus,righthippocampus" },
+                {   "name": "y", "value": "lefthippocampus,righthippocampus" },
                 {   "name": "k", "value":""},
                 {   "name":"centers", "value": "[{\"clid\":1,\"lefthippocampus\":1.7,\"righthippocampus\":1.5},\
                                                  {\"clid\":2,\"lefthippocampus\":2.5,\"righthippocampus\":2.0}]" },
@@ -50,7 +50,7 @@ class TestkMeans(unittest.TestCase):
             logging.info("---------- TEST : KMEANS - desd-synthdata   & 3 variables,  4 clusters")
             data = [
                     {   "name": "iterations_max_number", "value": "50" },
-                    {   "name": "x", "value": "rightpallidum,leftpallidum,lefthippocampus" },
+                    {   "name": "y", "value": "rightpallidum,leftpallidum,lefthippocampus" },
                     {   "name": "k", "value":""},
                     {   "name":"centers", "value": "[{\"clid\":1,\"rightpallidum\":0.2,\"leftpallidum\":0.5,\"lefthippocampus\":1.7},\
                                                      {\"clid\":2,\"rightpallidum\":0.6,\"leftpallidum\":1.2,\"lefthippocampus\":2.0},\
@@ -74,7 +74,7 @@ class TestkMeans(unittest.TestCase):
         logging.info("---------- TEST : KMEANS - desd-synthdata  & 4 variables,  5 clusters")
         data = [
                 {   "name": "iterations_max_number", "value": "50" },
-                {   "name": "x", "value": "rightpallidum,leftpallidum,lefthippocampus,righthippocampus" },
+                {   "name": "y", "value": "rightpallidum,leftpallidum,lefthippocampus,righthippocampus" },
                 {   "name": "k", "value":""},
                 {   "name":"centers", "value": "[{\"clid\":1,\"rightpallidum\":0.2,\"leftpallidum\":0.5,\"lefthippocampus\":1.7,\"righthippocampus\":1.5},\
                                                  {\"clid\":2,\"rightpallidum\":0.6,\"leftpallidum\":1.2,\"lefthippocampus\":2.5,\"righthippocampus\":2.0},\
@@ -99,7 +99,7 @@ class TestkMeans(unittest.TestCase):
         logging.info("---------- TEST : Algorithms for Privacy Error")
         data = [
                 {   "name": "iterations_max_number", "value": "50" },
-                {   "name": "x", "value": "rightpallidum,leftpallidum,lefthippocampus,righthippocampus" },
+                {   "name": "y", "value": "rightpallidum,leftpallidum,lefthippocampus,righthippocampus" },
                 {   "name": "k", "value":""},
                 {   "name":"centers", "value": "[{\"clid\":1,\"rightpallidum\":0.2,\"leftpallidum\":0.5,\"lefthippocampus\":1.7,\"righthippocampus\":1.5},\
                  {\"clid\":2,\"rightpallidum\":0.6,\"leftpallidum\":1.2,\"lefthippocampus\":2.5,\"righthippocampus\":2.0},\
