@@ -9,7 +9,7 @@ import numpy as np
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/utils/')
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/MULTIPLE_HISTOGRAMS/')
 
-from algorithm_utils import StateData,Global2Local_TD
+from algorithm_utils import StateData,Global2Local_TD, PRIVACY_MAGIC_NUMBER
 from multhist_lib import multipleHist2_Loc2Glob_TD
 
 
@@ -68,6 +68,18 @@ def run_local_step(args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWi
                         data.append([0]*args_bins[varx])
                         #Hist[varx,vary] = { "count" : None, "level" : None, "hist" : None}
                     Hist[varx,vary] = {  "Data" : data ,  "Categoriesx" : mycategories, "Categoriesy" : CategoricalVariablesWithDistinctValues[vary] }
+
+    # Histogram modification due to privacy
+    for key in Hist:
+        for i in xrange(len(Hist[key]['Data'])):
+            if isinstance(Hist[key]['Data'][i], list):
+                for j in xrange(len(Hist[key]['Data'][i])):
+                    if Hist[key]['Data'][i][j] <= PRIVACY_MAGIC_NUMBER:
+                     Hist[key]['Data'][i][j] = 0
+            else:
+                if Hist[key]['Data'][i] <= PRIVACY_MAGIC_NUMBER:
+                    Hist[key]['Data'][i] = 0
+
     return Hist
 
 
@@ -91,7 +103,6 @@ def main():
                                local_state['args_bins'], local_state['dataSchema'],
                                local_state['CategoricalVariablesWithDistinctValues'], local_state['dataFrame'],
                                globalStatistics)
-
 
     # Pack results
     local_out = multipleHist2_Loc2Glob_TD(local_state['args_X'], local_state['args_Y'] , local_state['CategoricalVariablesWithDistinctValues'], Hist)

@@ -13,6 +13,7 @@ endpointUrl='http://88.197.53.23:9090/mining/query/MULTIPLE_HISTOGRAMS'
 folderPath = 'R_scripts'
 file ='MultipleHistograms.Rmd'
 
+PRIVACY_MAGIC_NUMBER = 10
 
 class TestHistogram(unittest.TestCase):
     def setUp(self):
@@ -99,7 +100,10 @@ def resultsComparison(result, TestResult, variableIsCategorical): #Exareme - R
                     if variableIsCategorical == 0 :
                         if ykey in Rtest:
                             for z in range(len(Rtest[ykey])):
-                                assert int(Rtest[ykey][z]) == int(result['result'][j]['data']['series'][k]['data'][z])
+                                if int(Rtest[ykey][z]) > PRIVACY_MAGIC_NUMBER:
+                                    assert int(Rtest[ykey][z]) == int(result['result'][j]['data']['series'][k]['data'][z])
+                                else:
+                                    assert int(result['result'][j]['data']['series'][k]['data'][z]) == 0
                                 #print (result['result'][j]['data']['xAxis']['categories'][z])
                                 minmaxvalues = result['result'][j]['data']['xAxis']['categories'][z].split("-")
                                 #print (minmaxvalues)
@@ -116,7 +120,10 @@ def resultsComparison(result, TestResult, variableIsCategorical): #Exareme - R
                             print (ykeynew)
                             if ykeynew in Rtest:
                                 print (Rtest[ykeynew], result['result'][j]['data']['series'][k]['data'][z] )
-                                assert int(Rtest[ykeynew][0]) == int(result['result'][j]['data']['series'][k]['data'][z])
+                                if int(Rtest[ykeynew][0]) > PRIVACY_MAGIC_NUMBER:
+                                    assert int(Rtest[ykeynew][0]) == int(result['result'][j]['data']['series'][k]['data'][z])
+                                else:
+                                    assert int(result['result'][j]['data']['series'][k]['data'][z]) == 0
                             else:
                                 print(int(result['result'][j]['data']['series'][k]['data'][z]) )
                                 assert int(result['result'][j]['data']['series'][k]['data'][z]) == 0
