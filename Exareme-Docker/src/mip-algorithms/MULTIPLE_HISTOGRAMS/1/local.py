@@ -53,12 +53,6 @@ def run_local_step(args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWi
                         localstatistics[varx,vary,None,groupLevely] = { "count": df_count[groupLevely], "min": dataFrame[varx].min(), "max": dataFrame[varx].max() }
                     else:
                         localstatistics[varx,vary,None,groupLevely] = { "count": 0, "min": None, "max": None }
-    # TODO: Return only counts >  PRIVACY_MAGIC_NUMBER
-    # for key in localstatistics:
-    #     if localstatistics[key]['count'] < PRIVACY_MAGIC_NUMBER:
-    #         localstatistics[key]['count'] = 0
-    #         localstatistics[key]['min'] = 0
-    #         localstatistics[key]['max'] = 0
 
     return localstatistics
 
