@@ -1,6 +1,3 @@
-#TODO : Ta bins einai json kai den eisagetai swsta (Thanasis)
-#
-
 from __future__ import division
 from __future__ import print_function
 
