@@ -63,6 +63,8 @@ def query_database(fname_db, queryData, queryMetadata):
 
     cur.execute(queryData)
     data = cur.fetchall()
+    if len(data) < PRIVACY_MAGIC_NUMBER:
+        raise PrivacyError('Query results in illegal number of datapoints.')
     dataSchema = [description[0] for description in cur.description]
 
     cur.execute(queryMetadata)

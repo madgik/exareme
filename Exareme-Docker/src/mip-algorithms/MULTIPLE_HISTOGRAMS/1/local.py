@@ -16,7 +16,7 @@ import logging
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/utils/')
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/MULTIPLE_HISTOGRAMS/')
 
-from algorithm_utils import StateData,query_database,variable_categorical_getDistinctValues, init_logger# ExaremeError, PrivacyError, PRIVACY_MAGIC_NUMBER
+from algorithm_utils import StateData,query_database,variable_categorical_getDistinctValues, init_logger, ExaremeError, PrivacyError, PRIVACY_MAGIC_NUMBER
 from multhist_lib import multipleHist1_Loc2Glob_TD
 
 def run_local_step(args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWithDistinctValues, dataFrame):
@@ -80,6 +80,9 @@ def main():
     fname_cur_state = path.abspath(args.cur_state_pkl)
     fname_loc_db = path.abspath(args.input_local_DB)
 
+    if args.x == '':
+        raise ExaremeError('Field x must be non empty.')
+
     # Get data
     if args.y == '':
         args_X = list(args.x.replace(' ', '').split(','))
@@ -90,17 +93,24 @@ def main():
         args_Y = list(args.y.replace(' ', '').split(','))
         varNames = "'" + "','".join(list(args.x.replace(' ', '').split(','))) + "','" + "','".join(
                         list(args.y.replace(' ', '').split(','))) + "'"
-
-    args_bins = json.loads(args.bins)
-    args_bins = dict( (str(key), val) for key, val in args_bins.items())
+    if args.bins == '':
+        args_bins = {}
+    else:
+        args_bins = json.loads(args.bins)
+        args_bins = dict( (str(key), val) for key, val in args_bins.items())
 
     queryMetadata = "select * from metadata where code in (" + varNames  + ");"
     dataSchema, metadataSchema, metadata, dataFrame  = query_database(fname_db=fname_loc_db, queryData=query, queryMetadata=queryMetadata)
     CategoricalVariablesWithDistinctValues = variable_categorical_getDistinctValues(metadata)
 
+    #Checking bins input
+    for varx in args_X:
+        if varx not in CategoricalVariablesWithDistinctValues:
+            if varx not in args_bins:
+                raise ExaremeError('Bin value is not defined for one at least non-categorical variable. i.e. ' + varx)
+
      # Run algorithm local step
     localStatistics = run_local_step(args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWithDistinctValues, dataFrame)
-
 
     # Save local state
     local_state = StateData(args_X = args_X, args_Y = args_Y, args_bins = args_bins,  dataSchema = dataSchema,
