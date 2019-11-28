@@ -105,7 +105,7 @@ read answer
 while true
 do
     if [[ ${answer} == "y" ]];then
-        echo -e "\nSearching of previous instance of ${PORTAINER_NAME}..."
+        echo -e "\nSearching for previous instance of ${PORTAINER_NAME}..."
         if [[ $(sudo docker inspect ${PORTAINER_NAME}) == [] ]]; then
                 :
         else
