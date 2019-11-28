@@ -94,7 +94,7 @@ Following the instructions from here:
 https://portainer.readthedocs.io/en/stable/deployment.html#secure-portainer-using-ssl <br />
 you need to create an SSL certificate for your domain, if that has not already been done.
 
-You can use the following commands to generate the required files with ```openssl````:
+You can use the following commands to generate the required files with ```openssl```:
 
 ``` 
     openssl genrsa -out portainer.key 2048
