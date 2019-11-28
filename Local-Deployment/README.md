@@ -89,6 +89,27 @@ In the ```Local-Deployment/``` folder, run the ```deployLocal.sh``` to start the
 
 You will be prompted to provide any information needed.
 
+If you wish to also deploy Portainer.io for observing service logs you need to secure Portainer using SSL.
+
+Following the instructions from here:
+https://portainer.readthedocs.io/en/stable/deployment.html#secure-portainer-using-ssl
+you need to create an SSL certificate for your domain, if that has not already been done.
+
+You can use the following commands to generate the required files with ```openssl````:
+
+``` openssl genrsa -out portainer.key 2048
+    openssl ecparam -genkey -name secp384r1 -out portainer.key
+    openssl req -new -x509 -sha256 -key portainer.key -out portainer.crt -days 3650
+```
+
+You can use as well ```letsencrypt``` that also provides free SSL certificates.
+
+For Ubuntu 18.04.3 LTS we *used and tested* ```letsencrypt``` method of creating an SSL certificate by following the instruction from here:
+https://devanswers.co/lets-encrypt-ssl-apache-ubuntu-18-04/
+
+Although we ONLY tested ```letsencrypt```, we give the 2 options provided by the official documentation: https://portainer.readthedocs.io/en/stable/deployment.html#secure-portainer-using-ssl
+along with the option of deploying Portainer.io *without* https for you to choose the way you want to deploy.
+
 # Troubleshooting
 
 While ```sudo docker service ls```, if the services are Replicated 0/1:
