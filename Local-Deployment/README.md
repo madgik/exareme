@@ -74,7 +74,7 @@ EXAREME_TAG: "v21.2.0"
 ## [Optional] Data path location
 ```This step can be done through the deploy script.```
 
-In the ```Local-Deployment/``` folder create an ``data_path.txt``` file.
+In the ```Local-Deployment/``` folder create a ```data_path.txt``` file.
 
 The file should contain the following line, modify it according to the path where your data folder is.
 
