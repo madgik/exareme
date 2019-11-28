@@ -90,7 +90,7 @@ You will be prompted to provide any information needed.
 
 If you wish to also deploy Portainer.io for observing service logs you need to secure Portainer using SSL.
 
-Following the instructions from here:
+Following the instructions from here: <br />
 https://portainer.readthedocs.io/en/stable/deployment.html#secure-portainer-using-ssl <br />
 you need to create an SSL certificate for your domain, if that has not already been done.
 
