@@ -50,7 +50,9 @@ def query_with_privacy(fname_db, query):
     return schema, data
 
 
-def query_from_formula(fname_db, formula, variables, data_tab_name, metadata_tab_name, no_intercept=False):
+def query_from_formula(fname_db, formula, variables,
+                       data_table, metadata_table, metadata_code_column, metadata_isCategorical_column,
+                       no_intercept=False):
     """
     Queries a database based on a list of variables and a patsy (R language) formula. Additionally performs privacy
     check and returns results only if number of datapoints is sufficient.
@@ -63,10 +65,14 @@ def query_from_formula(fname_db, formula, variables, data_tab_name, metadata_tab
         Formula in patsy (R language) syntax. E.g. 'y ~ x1 + x2 * x3'.
     variables : list of strings
         A list of the variables names.
-    data_tab_name : string
+    data_table : string
         The name of the data table in the database.
-    metadata_tab_name : string
+    metadata_table : string
         The name of the metagata table in the database.
+    metadata_code_column : string
+        The name of the code column in the metadata table in the database.
+    metadata_isCategorical_column : string
+        The name of the is_categorical column in the metadata table in the database.
     no_intercept : bool
         If no_intercept is True there is no intercept in the returned matrix(-ices). To use in the case where only a
         rhs expression is needed, not a full formula.
@@ -82,45 +88,43 @@ def query_from_formula(fname_db, formula, variables, data_tab_name, metadata_tab
     if no_intercept:
         formula += '-1'
     conn = sqlite3.connect(fname_db)
+
+    # Define query forming functions
+    def iscateg_query(var):
+        q = 'SELECT ' + metadata_isCategorical_column + ' FROM ' + metadata_table
+        q += ' WHERE ' + metadata_code_column + "=='" + var + "';"
+        return q
+
+    def count_query(varz):
+        q = 'SELECT count(' + varz[0] + ') FROM ' + data_table + ' WHERE '
+        q += ' AND '.join([v + "!=''" for v in varz])
+        q += ';'
+        return q
+
+    def data_query(varz, is_cat):
+        variables_casts = [v if not c else 'CAST(' + v + ' AS text) AS ' + v for v, c in
+                           zip(varz, is_cat)]
+        q = 'SELECT '
+        q += ', '.join(variables_casts)
+        q += ' FROM ' + data_table + ' WHERE '
+        q += ' AND '.join([v + "!=''" for v in varz])
+        q += ';'
+        return q
+
     # Perform privacy check
-    if pd.read_sql_query(make_count_query(variables, data_tab_name), conn).iat[0, 0] < PRIVACY_MAGIC_NUMBER:
+    if pd.read_sql_query(sql=count_query(variables), con=conn).iat[0, 0] < PRIVACY_MAGIC_NUMBER:
         raise PrivacyError('Query results in illegal number of datapoints.')
         # TODO privacy check by variable
     # Pull is_categorical from metadata table
-    is_categorical = [pd.read_sql_query(make_iscateg_query(v, metadata_tab_name,
-                                                           is_categorical_argname='isCategorical', code_argname='code'),
-                                        conn).iat[0, 0] for v in variables]
+    is_categorical = [pd.read_sql_query(sql=iscateg_query(v), con=conn).iat[0, 0] for v in variables]
     # Pull data from db and return design matrix(-ces)
-    data = pd.read_sql_query(make_data_query(variables, data_tab_name, is_categorical), conn)
+    data = pd.read_sql_query(sql=data_query(variables, is_categorical), con=conn)
     if '~' in formula:
         lhs_dm, rhs_dm = dmatrices(formula, data, return_type='dataframe')
         return lhs_dm, rhs_dm
     else:
         rhs_dm = dmatrix(formula, data, return_type='dataframe')
         return rhs_dm
-
-
-def make_iscateg_query(variable, metadata_tab_name, is_categorical_argname, code_argname):
-    q = 'SELECT ' + is_categorical_argname + ' FROM ' + metadata_tab_name
-    q += ' WHERE ' + code_argname + "=='" + variable + "';"
-    return q
-
-
-def make_count_query(variables, data_tab_name):
-    q = 'SELECT count(' + variables[0] + ') FROM ' + data_tab_name + ' WHERE '
-    q += ' AND '.join([v + "!=''" for v in variables])
-    q += ';'
-    return q
-
-
-def make_data_query(variables, data_tab_name, is_categorical):
-    variables_casts = [v if not c else 'CAST(' + v + ' AS text) AS ' + v for v, c in zip(variables, is_categorical)]
-    q = 'SELECT '
-    q += ', '.join(variables_casts)
-    q += ' FROM ' + data_tab_name + ' WHERE '
-    q += ' AND '.join([v + "!=''" for v in variables])
-    q += ';'
-    return q
 
 
 class StateData(object):
@@ -175,13 +179,13 @@ class ExaremeError(Exception):
 def main():
     fname_db = '/Users/zazon/madgik/mip_data/dementia/datasets.db'
     variables = ['gender', 'lefthippocampus', 'righthippocampus']
-    formula = 'gender ~ lefthippocampus * righthippocampus'
-    Y, X = query_from_formula(fname_db, formula, variables, data_tab_name='DATA', metadata_tab_name='METADATA',
-                           no_intercept=True)
-    print(Y.design_info.term_names)
-    print(X.design_info.term_names)
-    print(X)
-    print(Y)
+    formula = 'gender ~ (lefthippocampus + righthippocampus)**3 + exp(righthippocampus) + I(lefthippocampus * ' \
+              'righthippocampus/ 2)'
+    Y, X = query_from_formula(fname_db, formula, variables, data_table='DATA', metadata_table='METADATA',
+                              metadata_code_column='code', metadata_isCategorical_column='isCategorical',
+                              no_intercept=True)
+    print(X.design_info.column_names)
+    print(Y.design_info.column_names)
 
 
 if __name__ == '__main__':
