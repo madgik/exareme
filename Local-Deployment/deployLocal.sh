@@ -10,8 +10,11 @@ PORTAINER_PORT="9000"
 PORTAINER_IMAGE="portainer/portainer"
 PORTAINER_VERSION=":latest"
 PORTAINER_DATA=$(echo $PWD)"/portainer"
+PORTAINER_NAME="mip_portainer"
 
 FEDERATION_ROLE="master"
+
+DOMAIN_NAME="dl038.madgik.di.uoa.gr"
 
 #Check if data_path exist
 if [[ -s dataPath.txt ]]; then
@@ -31,7 +34,7 @@ LOCAL_DATA_FOLDER=$(cat dataPath.txt | cut -d '=' -f 2)
 
 chmod 755 *.sh
 
-#TODO check -s -f in exareme.yaml fileg
+#TODO check -s -f in exareme.yaml file {-s greater than -f}
 #Check if Exareme docker image exists in file
 if [[ -s exareme.yaml ]]; then
     :
@@ -103,8 +106,15 @@ read answer
 while true
 do
     if [[ ${answer} == "y" ]];then
-        if [[ $(sudo docker service ls | grep mip_portainer) != '' ]]; then
-            sudo docker service rm mip_portainer
+        echo -e "\nSearching of previous instance of ${PORTAINER_NAME}..."
+        if [[ $(sudo docker inspect ${PORTAINER_NAME}) == [] ]]; then
+                :
+        else
+                containerID=$(sudo docker inspect -f {{.ID}} ${PORTAINER_NAME})
+                echo -e "\nStopping previous instace of ${PORTAINER_NAME}..."
+                sudo docker stop ${containerID}
+                echo -e "\nRemoving previous instace of ${PORTAINER_NAME}..."
+                sudo docker rm ${containerID}
         fi
         . ./portainer.sh
         break

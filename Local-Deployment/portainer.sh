@@ -4,9 +4,13 @@ test -d ${PORTAINER_DATA} \
         || sudo mkdir -p ${PORTAINER_DATA} \
         || ( echo Failed to create ${PORTAINER_DATA}; exit 1 )
 
-sudo docker service create \
---publish mode=host,target=${PORTAINER_PORT},published=9000 \
---constraint 'node.role == manager' \
---detach=true --mount type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
---mount type=bind,src=${PORTAINER_DATA},dst=/data \
---name mip_portainer ${PORTAINER_IMAGE}${PORTAINER_VERSION}
+echo -e "\nCreating a new instance of ${PORTAINER_NAME}.."
+
+sudo docker run -d -p ${PORTAINER_PORT}:9000 \
+	-v /var/run/docker.sock:/var/run/docker.sock \
+	-v ${PORTAINER_DATA}:/data \
+	-v /etc/letsencrypt/live/${DOMAIN_NAME}:/certs/live/${DOMAIN_NAME}:ro \
+	-v /etc/letsencrypt/archive/${DOMAIN_NAME}:/certs/archive/${DOMAIN_NAME}:ro \
+	--name ${PORTAINER_NAME} \
+	${PORTAINER_IMAGE}${PORTAINER_VERSION} \
+	--ssl --sslcert /certs/live/${DOMAIN_NAME}/cert.pem --sslkey /certs/live/${DOMAIN_NAME}/privkey.pem
