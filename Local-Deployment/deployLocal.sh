@@ -17,7 +17,7 @@ FEDERATION_ROLE="master"
 DOMAIN_NAME="dl038.madgik.di.uoa.gr"
 
 #Check if data_path exist
-if [[ -s dataPath.txt ]]; then
+if [[ -s data_path.txt ]]; then
     :
 else
     echo "What is the data_path for host machine?"
@@ -26,10 +26,10 @@ else
     if [[ "${answer: -1}"  != "/" ]]; then
             answer=${answer}"/"
     fi
-    echo LOCAL_DATA_FOLDER=${answer} > dataPath.txt
+    echo LOCAL_DATA_FOLDER=${answer} > data_path.txt
 fi
 
-LOCAL_DATA_FOLDER=$(cat dataPath.txt | cut -d '=' -f 2)
+LOCAL_DATA_FOLDER=$(cat data_path.txt | cut -d '=' -f 2)
 
 
 chmod 755 *.sh
