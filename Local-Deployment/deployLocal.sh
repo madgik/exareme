@@ -34,7 +34,6 @@ LOCAL_DATA_FOLDER=$(cat dataPath.txt | cut -d '=' -f 2)
 
 chmod 755 *.sh
 
-#TODO check -s -f in exareme.yaml file {-s greater than -f}
 #Check if Exareme docker image exists in file
 if [[ -s exareme.yaml ]]; then
     :
