@@ -3,10 +3,10 @@ import os
 import json
 import logging
 
-endpointUrl='http://88.197.53.23:9090/mining/query/ANOVA'
+endpointUrl='http://88.197.53.38:9090/mining/query/ANOVA'
 
 def test_ANOVA_Privacy():
-        logging.info("---------- TEST : Algorithms for Privacy Error")
+        logging.info("---------- TEST : Algorithms for User Error")
         data = [{   "name": "iterations_max_number", "value": "20" },
                 {   "name": "x", "value": "ANOVA_var_I1*ANOVA_var_I2*ANOVA_var_I3" },
                 {   "name": "y", "value": "ANOVA_var_D" },

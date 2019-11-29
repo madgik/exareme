@@ -3,10 +3,10 @@ import os
 import json
 import logging
 
-endpointUrl='http://88.197.53.23:9090/mining/query/LINEAR_REGRESSION'
+endpointUrl='http://88.197.53.38:9090/mining/query/LINEAR_REGRESSION'
 
 def test_LINEAR_REGRESSION_Privacy():
-        logging.info("---------- TEST : Algorithms for Privacy Error")
+        logging.info("---------- TEST : Algorithms for User Error")
         data = [{ "name": "x",	"value": "alzheimerbroadcategory+gender"},
                 { "name": "y",  "value": "lefthippocampus"},
                 { "name": "referencevalues", "value": "[{\"name\":\"alzheimerbroadcategory\",\"val\":\"AD\"},{\"name\":\"gender\",\"val\":\"M\"}]"},
