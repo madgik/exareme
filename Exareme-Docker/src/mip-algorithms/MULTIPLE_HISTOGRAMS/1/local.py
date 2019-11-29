@@ -88,7 +88,7 @@ def main():
         args_bins = {}
     else:
         args_bins = json.loads(args.bins)
-        args_bins = dict( (str(key), val) for key, val in args_bins.items())
+        #args_bins = dict( (str(key), val) for key, val in args_bins.items())
 
     queryMetadata = "select * from metadata where code in (" + varNames  + ");"
     dataSchema, metadataSchema, metadata, dataFrame  = query_database(fname_db=fname_loc_db, queryData=query, queryMetadata=queryMetadata)

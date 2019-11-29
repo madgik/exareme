@@ -22,12 +22,18 @@ class multipleHist1_Loc2Glob_TD(TransferData):
     def __add__(self, other):
         result = dict()
         for key in self.localstatistics:
-                result[key] = {
-                "count": np.nansum (self.localstatistics[key]['count'], other.localstatistics[key]['count']) ,
-                "min" :  np.nanmin (self.localstatistics[key]['min'] , other.localstatistics[key]['min']),
-                "max" :  np.nanmax (self.localstatistics[key]['max'] , other.localstatistics[key]['max'])
+            minvalue = None
+            maxvalue = None
+            if self.localstatistics[key]['min'] != None:
+                minvalue = min (self.localstatistics[key]['min'], other.localstatistics[key]['min'])
+                maxvalue = max (self.localstatistics[key]['max'], other.localstatistics[key]['max'])
+
+            result[key] = {
+                "count": self.localstatistics[key]['count'] + other.localstatistics[key]['count'] ,
+                 "min" : minvalue,
+                 "max" : maxvalue
                  }
-        raise ValueError(result)
+        #raise ValueError(result)
         return multipleHist1_Loc2Glob_TD(result)
 
 
@@ -45,9 +51,22 @@ class multipleHist2_Loc2Glob_TD(TransferData):
         return self.args_X, self.args_Y, self.CategoricalVariablesWithDistinctValues , self.Hist
 
     def __add__(self, other):
-        resultHist = dict()
+        result = dict()
+
         for key in self.Hist:
-            resultHist[key] = { "Data ": self.Hist[key]['Data'] +  other.Hist[key]['Data'],
+            globalHist = [0]*len(self.Hist[key]['Data'])
+            if any(isinstance(i, int) for i in self.Hist[key]['Data']):
+                for i in xrange(len(self.Hist[key]['Data'])):
+                    globalHist[i] = self.Hist[key]['Data'][i] + other.Hist[key]['Data'][i]
+
+            if any(isinstance(i, list) for i in self.Hist[key]['Data']):
+                for i in xrange(len(self.Hist[key]['Data'])):
+                    globalHist[i] = [0]*len(self.Hist[key]['Data'][i])
+                    for j in xrange(len(self.Hist[key]['Data'][i])):
+                        globalHist[i][j] =  self.Hist[key]['Data'][i][j] + other.Hist[key]['Data'][i][j]
+
+            result[key] = { "Data": globalHist,
                                 "Categoriesx" : self.Hist[key]['Categoriesx'],
                                 "Categoriesy" : self.Hist[key]['Categoriesy'] }
-        return multipleHist2_Loc2Glob_TD(self.args_X, self.args_Y,self.CategoricalVariablesWithDistinctValues, self.Hist ,resultHist)
+        #raise ValueError(self.Hist, other.Hist,result)
+        return multipleHist2_Loc2Glob_TD(self.args_X, self.args_Y,self.CategoricalVariablesWithDistinctValues, result)

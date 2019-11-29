@@ -10,7 +10,7 @@ import json
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/utils/')
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/MULTIPLE_HISTOGRAMS/')
 
-from algorithm_utils import set_algorithms_output_data
+from algorithm_utils import set_algorithms_output_data, PRIVACY_MAGIC_NUMBER
 from multhist_lib import multipleHist2_Loc2Glob_TD
 
 
@@ -70,6 +70,17 @@ def main():
 
     # Load local nodes output
     args_X, args_Y,CategoricalVariablesWithDistinctValues, GlobalHist = multipleHist2_Loc2Glob_TD.load(local_dbs).get_data()
+
+    # Histogram modification due to privacy --> Move it to local.py
+    for key in GlobalHist:
+        for i in xrange(len(GlobalHist[key]['Data'])):
+            if isinstance(GlobalHist[key]['Data'][i], list):
+                for j in xrange(len(GlobalHist[key]['Data'][i])):
+                    if GlobalHist[key]['Data'][i][j] <= PRIVACY_MAGIC_NUMBER:
+                     GlobalHist[key]['Data'][i][j] = 0
+            else:
+                if GlobalHist[key]['Data'][i] <= PRIVACY_MAGIC_NUMBER:
+                    GlobalHist[key]['Data'][i] = 0
 
     # Return the algorithm's output
     #raise ValueError (args_X, args_Y,CategoricalVariablesWithDistinctValues,GlobalHist)
