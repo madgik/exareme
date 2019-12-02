@@ -291,7 +291,6 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         String pathologyKey = searchConsul(System.getenv("DATA") + "/" + masterName + "/" + pathology + "?keys");
         String[] pathologyKeyKeysArray = gson.fromJson(pathologyKey, String[].class);
         if (pathologyKeyKeysArray != null) {
-            System.out.println(pathologyKeyKeysArray[0]);
             pathologyNodes.add(pathologyKeyKeysArray[0]);                 //Add Master Pathology
         }
 
@@ -312,7 +311,6 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             pathologyKey = searchConsul(System.getenv("DATA") + "/" + workerName + "/" + pathology + "?keys");
             pathologyKeyKeysArray = gson.fromJson(pathologyKey, String[].class);
             if (pathologyKeyKeysArray != null) {
-                System.out.println(pathologyKeyKeysArray[0]);
                 pathologyNodes.add(pathologyKeyKeysArray[0]);                 //Add worker Pathology
             }
 
