@@ -125,17 +125,20 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         //Get parameters of given algorithm
         HashMap<String, String> inputContent = getAlgoParameters(request);
         if (inputContent != null) {
-            if (inputContent.containsKey("dataset")) {
-                datasets = inputContent.get("dataset");
-                //Get datasets provided by user
-                userDatasets = datasets.split(",");
-            }
-            else
-                throw new Exception("Missing key: 'dataset'. You need to select one for running an Experiment.");
-            if(inputContent.containsKey("pathology"))
+            if (inputContent.size() == 1 && inputContent.containsKey("pathology")) {     //allow only 1 key (pathology) example: List_Variables
                 pathology = inputContent.get("pathology");
-            else
-                throw new Exception("Missing key: 'pathology'. You need to select one for running an Experiment.");
+            } else {
+                if (inputContent.containsKey("dataset")) {
+                    datasets = inputContent.get("dataset");
+                    //Get datasets provided by user
+                    userDatasets = datasets.split(",");
+                } else
+                    throw new Exception("Missing key: 'dataset'. You need to select one for running an Experiment.");
+                if (inputContent.containsKey("pathology"))
+                    pathology = inputContent.get("pathology");
+                else
+                    throw new Exception("Missing key: 'pathology'. You need to select one for running an Experiment.");
+            }
         }
 
         try {
@@ -146,7 +149,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
 
             //Check that datasets provided by user exist and retrieve only the nodes containing the existing datasets
             List<String> nodesToBeChecked;
-            if (userDatasets == null && pathology == null)
+            if (userDatasets == null || pathology == null)
                 nodesToBeChecked = allNodesIPs();          //If algorithm does not have 'datasets' and 'pathology' as parameter
                 // -> Get IP's from Exareme's registry TODO check if more
                 //TODO appropriate to get all the nodes from Consul, for consistency reasons
