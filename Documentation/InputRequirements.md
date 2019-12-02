@@ -27,7 +27,7 @@ The metadata file should follow these rules:
 		</ul>
 	</li>
 </ul>
-An example can be seen here: https://github.com/madgik/exareme/blob/dev_multiple_csvs/Exareme-Docker/src/mip-algorithms/unit_tests/data/dementia/CDEsMetadata.json .
+An example can be seen here: https://github.com/madgik/exareme/blob/master/Exareme-Docker/src/mip-algorithms/unit_tests/data/dementia/CDEsMetadata.json .
 
 
 ## CSV Files
