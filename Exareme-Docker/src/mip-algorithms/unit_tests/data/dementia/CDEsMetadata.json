@@ -2352,7 +2352,7 @@
 					"maxValue": 11,
 					"methodology": "mip-cde",
 					"minValue": 0,
-					"sql_type": "integer",
+					"sql_type": "int",
 					"type": "",
 					"isCategorical": false,
 					"units": "months"

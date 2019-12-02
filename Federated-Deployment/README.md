@@ -41,6 +41,7 @@ For example:
 -> Data Folder <br />
 ------> Dementia <br />
 ----------> adni.csv <br />
+----------> ppmi.csv <br />
 ----------> CDEsMetadata.json <br />
 ------> Neuropathology <br />
 ----------> demo.csv <br />

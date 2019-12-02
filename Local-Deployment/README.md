@@ -33,10 +33,11 @@ For example:
 
 -> Data Folder <br />
 ------> Dementia <br />
-----------> datasets.csv <br />
+----------> adni.csv <br />
+----------> ppmi.csv <br />
 ----------> CDEsMetadata.json <br />
 ------> Neuropathology <br />
-----------> datasets.csv <br />
+----------> demo.csv <br />
 ----------> CDEsMetadata.json <br />
 
 The master node should have the CDEsMetadata.json for every pathology even if it doesn't contain a datasets.csv file.
@@ -47,7 +48,7 @@ For example:
 ------> Dementia <br />
 ----------> CDEsMetadata.json <br />
 ------> Neuropathology <br />
-----------> datasets.csv <br />
+----------> demo.csv <br />
 ----------> CDEsMetadata.json <br />
 
 
