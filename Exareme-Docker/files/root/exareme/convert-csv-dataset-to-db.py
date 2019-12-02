@@ -20,6 +20,7 @@ def createMetadataDictionary(CDEsMetadataPath):
 
     metadataDictionary = {}
     metadataDictionary['subjectcode'] = 'text'
+    metadataDictionary['dataset'] = 'text'
     metadataDictionary = addGroupVariablesToDictionary(metadataJSON,
             metadataDictionary)
     return metadataDictionary
@@ -38,7 +39,7 @@ def addGroupVariablesToDictionary(groupMetadata, metadataDictionary):
     return metadataDictionary
 
 
-# This metadata list is used to create the metadata table. It contains all the knows information for each variable.
+# This metadata list is used to create the metadata table. It contains all the known information for each variable.
 def createMetadataList(CDEsMetadataPath):
     CDEsMetadata = open(CDEsMetadataPath)
     metadataJSON = json.load(CDEsMetadata)

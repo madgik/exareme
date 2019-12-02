@@ -516,15 +516,6 @@
 			"sql_type": "real",
 			"type": "real",
 			"isCategorical": false
-		}, {
-			"isCategorical": false,
-			"code": "dataset",
-			"sql_type": "text",
-			"description": "Variable used to differentiate datasets",
-			"label": "Dataset",
-			"units": "",
-			"type": "text",
-			"methodology": "mip-cde"
 		}
 	],
 	"code": "root",
