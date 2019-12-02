@@ -51,6 +51,9 @@ For example:
 ----------> demo.csv <br />
 ----------> CDEsMetadata.json <br />
 
+For more information on what these files should contain you can see here:
+https://github.com/madgik/exareme/Documentation/InputRequirements.md
+
 
 ## [Optional] Exareme Version 
 
