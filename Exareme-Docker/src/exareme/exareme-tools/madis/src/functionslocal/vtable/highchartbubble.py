@@ -35,8 +35,8 @@ class highchartbubble(functions.vtable.vtbase.VT):
         mydata = []
         for myrow in c:
             mydata.append(list(myrow))
-        print schema[2]
-        print schema[2][0]
+        #print schema[2]
+        #print schema[2][0]
         if len(schema)!=3 or (len(schema)==3 and str(schema[2][0])!='noofpoints'):
             myresult =  {
                     "type" : "application/vnd.highcharts+json",

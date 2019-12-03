@@ -16,7 +16,7 @@ from multhist_lib import multipleHist2_Loc2Glob_TD
 
 def highchartsbasiccolumn(title, ytitle, categoriesList, mydatajson):
     a = '<span style="font-size:10px">{point.key}</span><table>'
-    b = '<tr><td style="color:{series.color};padding:0">{series.name}: </td><td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>'
+    b = '<tr><td style="color:{series.color};padding:0"> {series.name}: </td><td style="padding:0"><b>{point.y:.1f}</b></td></tr>'
     myresult =  {
         "type" : "application/vnd.highcharts+json",
         "data" : { "chart" : { "type": "column" },
