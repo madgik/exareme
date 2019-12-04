@@ -140,7 +140,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             List<String> nodesToBeChecked;
             if (pathology != null) {
                 nodeDatasets = getDatasetsFromConsul(pathology);
-                if (nodeDatasets == null || userDatasets == null)
+                if (userDatasets == null)
                     nodesToBeChecked = allNodesIPs();   //LIST_VARIABLES Algorithm
                 else
                     nodesToBeChecked = checkDatasets(nodeDatasets, userDatasets, pathology);
@@ -305,7 +305,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             pathologyKeyKeysArray = gson.fromJson(pathologyKey, String[].class);
 
             if (pathologyKeyKeysArray != null) {
-                pathologyNodes.add(pathologyKeyKeysArray[0]);                 //Add Master Pathology
+                pathologyNodes.add(pathologyKeyKeysArray[0]);                 //Add Workers Pathology
             }
 
             datasetKey = searchConsul(System.getenv("DATA") + "/" + workerName + "/" + pathology + "?raw");
