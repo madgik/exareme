@@ -140,13 +140,13 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             List<String> nodesToBeChecked;
             if (pathology != null) {
                 nodeDatasets = getDatasetsFromConsul(pathology);
-                if (userDatasets == null)
+                if (nodeDatasets == null || userDatasets == null)
                     nodesToBeChecked = allNodesIPs();   //LIST_VARIABLES Algorithm
                 else
                     nodesToBeChecked = checkDatasets(nodeDatasets, userDatasets, pathology);
             }
             else
-                nodesToBeChecked = allNodesIPs();   //LIST_DATASET Algorithm
+                nodesToBeChecked = allNodesIPs();       //LIST_DATASET Algorithm
 
             //Check that node containers are up and running properly
             log.debug("Checking workers...");
@@ -272,6 +272,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
     private HashMap<String, String[]> getDatasetsFromConsul(String pathology) throws IOException, PathologyException {
         Gson gson = new Gson();
         HashMap<String, String[]> nodeDatasets = new HashMap<>();
+        List<String> pathologyNodes = new ArrayList<String>();
 
         String masterKey = searchConsul(System.getenv("EXAREME_MASTER_PATH") + "/?keys");
         String[] masterKeysArray = gson.fromJson(masterKey, String[].class);
@@ -281,6 +282,10 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
 
         String pathologyKey = searchConsul(System.getenv("DATA") + "/" + masterName + "/" + pathology + "?keys");
         String[] pathologyKeyKeysArray = gson.fromJson(pathologyKey, String[].class);
+
+        if (pathologyKeyKeysArray != null) {
+            pathologyNodes.add(pathologyKeyKeysArray[0]);                 //Add Master Pathology
+        }
 
         String datasetKey = searchConsul(System.getenv("DATA") + "/" + masterName + "/" + pathology + "?raw");
         String[] datasetKeysArray = gson.fromJson(datasetKey, String[].class);
@@ -299,10 +304,18 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             pathologyKey = searchConsul(System.getenv("DATA") + "/" + workerName + "/" + pathology + "?keys");
             pathologyKeyKeysArray = gson.fromJson(pathologyKey, String[].class);
 
+            if (pathologyKeyKeysArray != null) {
+                pathologyNodes.add(pathologyKeyKeysArray[0]);                 //Add Master Pathology
+            }
+
             datasetKey = searchConsul(System.getenv("DATA") + "/" + workerName + "/" + pathology + "?raw");
             datasetKeysArray = gson.fromJson(datasetKey, String[].class);
             if (datasetKeysArray != null)
                 nodeDatasets.put(workerIP, datasetKeysArray);        //Map Worker's IP-> Worker's Datasets
+        }
+
+        if (pathologyNodes.isEmpty()) {
+            throw new PathologyException("Pathology " + pathology + " not found!");
         }
 
         return nodeDatasets;
