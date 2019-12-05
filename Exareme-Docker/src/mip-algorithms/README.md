@@ -48,10 +48,9 @@ The parameter has the following properties:<ul>
 </li>
 <li><code>columnValuesSQLType</code> (String) If type is column or formula then this is required. Specifies the possible types that the column can have. Allowed types 'text, integer, real'. They could be more than one in combination with a comma. Empty string means that there is no constraint. </li>
 <li><code>columnValuesIsCategorical</code> (String) If type is column or formula then this is required. Specifies the categorical type that the column can have. Allowed types 'true','false'. Empty string means that there is no constraint. </li>
-<li><code>enumerations</code> (List) Specifies the enumerations the parameter can have. Example of possible values [1, 2] or ['male','female']. </li>
-<li><code>min</code> (same as valueType) Specifies the min value the parameter can have. Example of possible values '1'. </li>
-<li><code>max</code> (same as valueType) Specifies the max value the parameter can have. Example of possible values '100'. </li>
-
+<li><code>valueMin</code> (Double) Specifies the min value the parameter can have. Example of possible values '1',2.3' . </li>
+<li><code>valueMax</code> (Double) Specifies the max value the parameter can have. Example of possible values '100.3'. </li>
+<li><code>valueEnumerations</code> (List of Strings) Specifies the enumerations the parameter can have. Example of possible values ["1", "2"] or ["male","female"]. </li>
 <li><code>value</code> (String) It is used as an example value. </li>
 <li><code>defaultValue</code> (String) If the parameter can be blank, then this value will be used if the user does not provide one. </li>
 <li><code>valueNotBlank</code> (Boolean) Defines if the value can be blank.</li>
