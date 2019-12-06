@@ -60,9 +60,9 @@ The parameter has the following properties:<ul>
 <li><code>valueNotBlank</code> (Boolean) Defines if the value can be blank.</li>
 <li><code>defaultValue</code> (String) If the parameter can be blank, then this value will be used if the user does not provide one. </li>
 <li><code>valueMultiple</code> (Boolean) Defines if the parameter can have multiple values. </li>
-<li><code>valueMin</code> (Double) If the type of the parameter is 'other' this specifies the min value the parameter can have. Example of possible values 1 or 2,3 . </li>
-<li><code>valueMax</code> (Double) If the type of the parameter is 'other' this specifies the max value the parameter can have. Example of possible values 100,3  . </li>
-<li><code>valueEnumerations</code> (List of Strings) If the type of the parameter is 'other' this specifies the enumerations the parameter can have. Example of possible values ["1", "2"] or ["male","female"]. </li>
+<li><code>valueMin</code> (Optional, Double) If the type of the parameter is 'other' and the valueType is 'real' or 'integer' this specifies the min value the parameter can have. Example of possible values 1 or 2,3 . </li>
+<li><code>valueMax</code> (Optional, Double) If the type of the parameter is 'other' and the valueType is 'real' or 'integer' this specifies the max value the parameter can have. Example of possible values 100,3  . </li>
+<li><code>valueEnumerations</code> (Optional, List of Strings) If the type of the parameter is 'other' and the valueType is 'string' this specifies the enumerations the parameter can have. Example of possible values ["1", "2"] or ["male","female"]. </li>
 </ul>
 </ol>
 </li>
