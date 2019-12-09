@@ -106,7 +106,7 @@ do
         echo -e "\nSearching for previous instance of ${PORTAINER_NAME}..."
         if [[ $(sudo docker inspect ${PORTAINER_NAME} 2> /dev/null) == [] ]]; then
                 echo "No previous instance found.."
-        else    #TODO add 3 options regarding the way the user wants to deploy Portainer, if so
+        else
                 containerID=$(sudo docker inspect -f {{.ID}} ${PORTAINER_NAME})
                 echo -e "\nStopping previous instace of ${PORTAINER_NAME}..."
                 sudo docker stop ${containerID}
