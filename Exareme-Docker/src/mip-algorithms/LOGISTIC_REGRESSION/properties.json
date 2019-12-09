@@ -62,9 +62,8 @@
             "valueNotBlank": false,
             "valueMultiple": false,
             "valueType": "integer",
-            "minValue": 1,
-            "maxValue": 100,
-            "enumValues": null
+            "valueMin": 1,
+            "valueMax": 100
         }
     ]
 }
