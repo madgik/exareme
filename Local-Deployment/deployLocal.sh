@@ -14,8 +14,6 @@ PORTAINER_NAME="mip_portainer"
 
 FEDERATION_ROLE="master"
 
-DOMAIN_NAME="dl038.madgik.di.uoa.gr"
-
 #Check if data_path exist
 if [[ -s data_path.txt ]]; then
     :
@@ -106,8 +104,8 @@ while true
 do
     if [[ ${answer} == "y" ]];then
         echo -e "\nSearching for previous instance of ${PORTAINER_NAME}..."
-        if [[ $(sudo docker inspect ${PORTAINER_NAME}) == [] ]]; then
-                :
+        if [[ $(sudo docker inspect ${PORTAINER_NAME} 2> /dev/null) == [] ]]; then
+                echo "No previous instance found.."
         else    #TODO add 3 options regarding the way the user wants to deploy Portainer, if so
                 containerID=$(sudo docker inspect -f {{.ID}} ${PORTAINER_NAME})
                 echo -e "\nStopping previous instace of ${PORTAINER_NAME}..."
@@ -115,7 +113,17 @@ do
                 echo -e "\nRemoving previous instace of ${PORTAINER_NAME}..."
                 sudo docker rm ${containerID}
         fi
-        . ./portainer.sh
+
+        echo -e "\nWhat is the Domain name for which an SSL certificate created?"
+        read answer
+        command=$(sudo find /etc/letsencrypt/live/${answer}/cert.pem 2> /dev/null)
+
+        if [[ ${command} == "/etc/letsencrypt/live/"${answer}"/cert.pem" ]]; then
+            DOMAIN_NAME=${answer}
+            . ./portainer.sh
+        else
+            echo -e "\nNo certificate for that Domain name: "${answer}". Starting without Portainer.."
+        fi
         break
     elif [[ ${answer} == "n" ]]; then
         break
