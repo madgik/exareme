@@ -30,9 +30,7 @@
 			"desc": "Bin of each variable in Json format",
 			"type": "other",
 			"value": "{ \"rightententorhinalarea\" : 35, \"righthippocampus\" : 35 }",
-			"min": 1,
-			"max": null,
-			"enumerations": null,
+			"valueMin": 1,
 			"valueNotBlank": false,
 			"valueMultiple": false,
 			"valueType": "json"
