@@ -144,7 +144,7 @@ public class CDEsMetadata {
     public PathologyCDEsMetadata getPathologyCDEsMetadata(String pathology) throws CDEsMetadataException{
         if(pathology == null) {
             log.error("Cannot fetch the metadata of a null pathology.");
-            throw new CDEsMetadataException("There was an error loading the metadata. Please consult the administrator.");
+            throw new CDEsMetadataException("The value of the parameter 'pathology' should not be blank.");
         }
 
         return cdesMetadata.get(pathology);
