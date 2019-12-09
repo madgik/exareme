@@ -75,7 +75,7 @@
 			"desc": "(Optional). Whether or not to shuffle the data before splitting.",
 			"type": "other",
 			"value": "False",
-			"valueEnumerations": ['True','False'],
+			"valueEnumerations": ["True","False"],
 			"valueNotBlank": false,
 			"valueMultiple": false,
 			"valueType": "string"

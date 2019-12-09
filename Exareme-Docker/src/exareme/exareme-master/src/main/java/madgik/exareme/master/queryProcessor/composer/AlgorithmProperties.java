@@ -1,9 +1,8 @@
 package madgik.exareme.master.queryProcessor.composer;
 
 import madgik.exareme.master.queryProcessor.composer.Exceptions.AlgorithmException;
-import madgik.exareme.master.queryProcessor.composer.Exceptions.ComposerException;
 import madgik.exareme.master.queryProcessor.composer.Exceptions.CDEsMetadataException;
-import org.apache.log4j.Logger;
+import madgik.exareme.master.queryProcessor.composer.Exceptions.ComposerException;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -16,7 +15,6 @@ import java.util.List;
  * AlgorithmProperties contains all the information about the properties in each algorithm's properties.json file.
  */
 public class AlgorithmProperties {
-    private static final Logger log = Logger.getLogger(AlgorithmProperties.class);
 
     private String name;
     private String desc;
@@ -187,7 +185,7 @@ public class AlgorithmProperties {
                     if (parameterProperties.getValueMin() != null && Double.parseDouble(curValue) < parameterProperties.getValueMin())
                         throw new AlgorithmException("The value(s) of the parameter '" + parameterProperties.getName()
                                 + "' should be greater than " + parameterProperties.getValueMin() + " .");
-                    if (Double.parseDouble(curValue) > parameterProperties.getValueMax())
+                    if (parameterProperties.getValueMax() != null && Double.parseDouble(curValue) > parameterProperties.getValueMax())
                         throw new AlgorithmException("The value(s) of the parameter '" + parameterProperties.getName()
                                 + "' should be less than " + parameterProperties.getValueMax() + " .");
                 }

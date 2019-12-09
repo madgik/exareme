@@ -170,6 +170,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             AdpDBClientQueryStatus queryStatus;
 
             AlgorithmProperties algorithmProperties = Algorithms.getInstance().getAlgorithmProperties(algorithmName);
+
             if (algorithmProperties == null)
                 throw new AlgorithmException("The algorithm '" + algorithmName + "' does not exist.");
 
