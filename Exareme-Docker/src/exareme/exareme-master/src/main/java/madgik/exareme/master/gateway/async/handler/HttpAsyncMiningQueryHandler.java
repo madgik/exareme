@@ -439,7 +439,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
     }
 
     private boolean nodesRunning(List<String> nodesToBeChecked, String pathology) throws Exception {
-
+        Gson gson = new Gson();
         //Check if IP's gotten from Consul[Key-Value store] exist in Exareme's Registry
         List<String> notContainerProxy = new ArrayList<>();
         ContainerProxy[] containerProxy = ArtRegistryLocator.getArtRegistryProxy().getContainers();     //get IP's from Exareme's Registry
@@ -468,7 +468,14 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 log.info("It seems that node[" + name + "," + ip + "] you are trying to check is not part of Exareme's registry. Deleting it from Consul....");
 
                 //Delete datasets and IP of the node
-                deleteFromConsul(System.getenv("DATA") + "/" + name);
+                String pathologyKey = searchConsul(System.getenv("DATA") + "/" + name + "?keys");
+                String[] pathologyKeyArray = gson.fromJson(pathologyKey, String[].class);
+                for( String p: pathologyKeyArray){
+                    System.out.println("hereeeeee: "+p);
+                    deleteFromConsul(p);
+                }
+
+                //deleteFromConsul(System.getenv("DATA") + "/" + name);   //TODO get the pathologies and DELETE those
                 deleteFromConsul(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/" + name);
 
                 //Get datasets exist in other nodes for showing appropriate message to user
