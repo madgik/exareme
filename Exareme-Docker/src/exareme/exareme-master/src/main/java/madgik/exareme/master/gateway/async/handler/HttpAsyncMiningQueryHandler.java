@@ -467,15 +467,13 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 String name = names.get(ip);
                 log.info("It seems that node[" + name + "," + ip + "] you are trying to check is not part of Exareme's registry. Deleting it from Consul....");
 
-                //Delete datasets and IP of the node
+                //Delete pathologies and IP of the node
                 String pathologyKey = searchConsul(System.getenv("DATA") + "/" + name + "?keys");
                 String[] pathologyKeyArray = gson.fromJson(pathologyKey, String[].class);
-                for( String p: pathologyKeyArray){
-                    System.out.println("hereeeeee: "+p);
-                    deleteFromConsul(p);
+                for( String p: pathologyKeyArray) {
+                    deleteFromConsul(p);            //Delete every pathology for node with name $name
                 }
-
-                //deleteFromConsul(System.getenv("DATA") + "/" + name);   //TODO get the pathologies and DELETE those
+                //Delete IP of active_worker with name $name
                 deleteFromConsul(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/" + name);
 
                 //Get datasets exist in other nodes for showing appropriate message to user
