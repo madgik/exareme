@@ -22,7 +22,7 @@ def test_LINEAR_REGRESSION():
 
 
 def check_result(result):
-    assert result == "{\"result\" : [{\"data\":\"Missing key: 'pathology'. You need to select one for running an Experiment.\",\"type\":\"text/plain+user_error\"}]}"
+    assert result == "{\"result\" : [{\"data\":\"The value of the parameter 'pathology' should not be blank.\",\"type\":\"text/plain+error\"}]}"
 if __name__ == '__main__':
     unittest.main()
 

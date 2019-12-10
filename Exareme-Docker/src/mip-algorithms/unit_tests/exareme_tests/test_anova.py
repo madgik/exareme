@@ -23,4 +23,4 @@ def test_ANOVA_Privacy():
 
 
 def check_privacy_result(result):
-    assert result == "{\"result\" : [{\"data\":\" Incorrect parameter value. \'sstype\' value should be one of the following: 1,2,3 \",\"type\":\"text/plain+user_error\"}]}"
+    assert result == "{\"result\" : [{\"data\":\"The value(s) of the parameter 'sstype' should be less than 3.0 .\",\"type\":\"text/plain+error\"}]}"
