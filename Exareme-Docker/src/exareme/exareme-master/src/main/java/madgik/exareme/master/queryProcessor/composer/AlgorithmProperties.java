@@ -1,25 +1,24 @@
 package madgik.exareme.master.queryProcessor.composer;
 
 import madgik.exareme.master.queryProcessor.composer.Exceptions.AlgorithmException;
-import madgik.exareme.master.queryProcessor.composer.Exceptions.ComposerException;
 import madgik.exareme.master.queryProcessor.composer.Exceptions.CDEsMetadataException;
-import org.apache.log4j.Logger;
+import madgik.exareme.master.queryProcessor.composer.Exceptions.ComposerException;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * AlgorithmProperties contains all the information about the properties in each algorithm's properties.json file.
  */
 public class AlgorithmProperties {
-    private static final Logger log = Logger.getLogger(AlgorithmProperties.class);
 
     private String name;
     private String desc;
     private AlgorithmType type;
-    private String responseContentType;
     private ParameterProperties[] parameters;
 
     public enum AlgorithmType {
@@ -79,9 +78,6 @@ public class AlgorithmProperties {
         return parameters;
     }
 
-    public String getResponseContentType() {
-        return responseContentType;
-    }
 
     /**
      * Returns the value of the parameter provided
@@ -134,7 +130,7 @@ public class AlgorithmProperties {
      */
     public void mergeAlgorithmParametersWithInputContent(HashMap<String, String> inputContent)
             throws AlgorithmException, CDEsMetadataException {
-        if(inputContent == null)
+        if (inputContent == null)
             return;
 
         String pathology = inputContent.get(ComposerConstants.getPathologyPropertyName());
@@ -161,7 +157,7 @@ public class AlgorithmProperties {
     }
 
     /**
-     * Checks if the given input has acceptable values for that specific parameter.
+     * Checks if the given parameter input has acceptable values for that specific parameter.
      *
      * @param value               the value given as input
      * @param parameterProperties the rules that the value should follow
@@ -179,6 +175,31 @@ public class AlgorithmProperties {
         } else if (parameterProperties.getType().equals(ParameterProperties.ParameterType.formula)) {
             String[] values = value.split("[+\\-*:0]+");
             validateCDEVariables(values, parameterProperties, pathology);
+        }
+        // If value is not a column (type=other) then check for min-max-enumerations
+        else if (parameterProperties.getType().equals(ParameterProperties.ParameterType.other)) {
+            if (parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.integer)
+                    || parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.real)) {
+                String[] values = value.split(",");
+                for (String curValue : values) {
+                    if (parameterProperties.getValueMin() != null && Double.parseDouble(curValue) < parameterProperties.getValueMin())
+                        throw new AlgorithmException("The value(s) of the parameter '" + parameterProperties.getName()
+                                + "' should be greater than " + parameterProperties.getValueMin() + " .");
+                    if (parameterProperties.getValueMax() != null && Double.parseDouble(curValue) > parameterProperties.getValueMax())
+                        throw new AlgorithmException("The value(s) of the parameter '" + parameterProperties.getName()
+                                + "' should be less than " + parameterProperties.getValueMax() + " .");
+                }
+            } else if (parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.string)) {
+                if (parameterProperties.getValueEnumerations() == null)
+                    return;
+                List<String> enumerations = Arrays.asList(parameterProperties.getValueEnumerations());
+                String[] values = value.split(",");
+                for (String curValue : values) {
+                    if (!enumerations.contains(curValue))
+                        throw new AlgorithmException("The value '" + curValue + "' of the parameter '" + parameterProperties.getName()
+                                + "' is not included in the valueEnumerations " + Arrays.toString(parameterProperties.getValueEnumerations()) + " .");
+                }
+            }
         }
     }
 
@@ -214,16 +235,6 @@ public class AlgorithmProperties {
             if (!allowedIsCategoricalValue.equals(columnValuesIsCategorical) && !allowedIsCategoricalValue.equals("")) {
                 throw new AlgorithmException("The CDE '" + curValue + "' does not match the categorical value '"
                         + allowedIsCategoricalValue + "' specified for the algorithm.");
-            }
-
-            String allowedNumOfEnumerationsValue = parameterProperties.getColumnValuesNumOfEnumerations();
-            if (!allowedNumOfEnumerationsValue.equals("")) {
-                int numOfEnumerationsIntegerValue = Integer.parseInt(allowedNumOfEnumerationsValue);
-                int columnValuesNumOfEnumerations = metadata.getColumnValuesNumOfEnumerations(curValue);
-                if (columnValuesNumOfEnumerations != numOfEnumerationsIntegerValue) {
-                    throw new AlgorithmException("The CDE '" + curValue + "' does not match the numOfEnumerations value '"
-                            + allowedNumOfEnumerationsValue + "' specified for the algorithm.");
-                }
             }
         }
     }

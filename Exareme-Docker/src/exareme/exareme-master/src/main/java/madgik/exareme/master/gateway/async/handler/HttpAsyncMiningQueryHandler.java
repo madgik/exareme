@@ -170,16 +170,13 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             AdpDBClientQueryStatus queryStatus;
 
             AlgorithmProperties algorithmProperties = Algorithms.getInstance().getAlgorithmProperties(algorithmName);
+
             if (algorithmProperties == null)
                 throw new AlgorithmException("The algorithm '" + algorithmName + "' does not exist.");
 
             algorithmProperties.mergeAlgorithmParametersWithInputContent(inputContent);
 
             DataSerialization ds = DataSerialization.summary;
-
-            if (algorithmProperties.getResponseContentType() != null) {
-                response.setHeader("Content-Type", algorithmProperties.getResponseContentType());
-            }
 
             // Bypass direct composer call in case of iterative algorithm.
             if (algorithmProperties.getType().equals(AlgorithmProperties.AlgorithmType.iterative) ||
