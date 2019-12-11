@@ -4,15 +4,32 @@
   register: leader
   tags:
     - always
-    -
-- name: Find Exareme ID
-  shell: docker service ls --filter name={{ leader.stdout }}_exareme-master --format '{{ "{{" }}.ID{{ "}}" }}'
-  register: exaremeService
+
+- name: Find Stacks
+  shell: docker stack ls --format '{{ "{{" }}.Name{{ "}}" }}'
+  register: nodeStacks
   tags:
     - exareme
 
-- name: Remove Exareme Service
-  shell:  docker service rm "{{ exaremeService.stdout }}"
+- name: Find Exareme master service
+  shell: docker service ls --filter name={{ leader.stdout }}_exareme-master --format '{{ "{{" }}.ID{{ "}}" }}'
+  register: master
+  tags:
+    - exareme
+
+- name: Remove Exareme master
+  shell: docker service rm "{{ master.stdout }}"
+  register: master_rm
+  ignore_errors: true
+  tags:
+    - exareme
+
+- name: Remove Exareme Workers
+  shell: docker service rm "{{ item }}"_exareme
+  with_items:
+    - "{{ nodeStacks.stdout_lines }}"
+  register: workers_rm
+  ignore_errors: true
   tags:
     - exareme
 
