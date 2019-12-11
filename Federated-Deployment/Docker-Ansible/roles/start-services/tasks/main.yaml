@@ -3,7 +3,7 @@
   shell: docker node ls -f "role=manager" --format '{{ "{{" }}.Hostname {{ "}}" }}'
   register: leader
   tags:
-    - exareme
+    - always
 
 #Todo if we have multiple masters and maybe leader.stdout -> leader.stdout_lines with_items?
 - name: Run Exareme Master

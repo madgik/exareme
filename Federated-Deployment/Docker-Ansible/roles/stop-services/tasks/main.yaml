@@ -1,21 +1,23 @@
 ---
-- name: Find Stacks
-  shell: docker stack ls --format '{{ "{{" }}.Name{{ "}}" }}'
-  register: nodeStacks
+- name: Find Leader
+  shell: docker node ls -f "role=manager" --format '{{ "{{" }}.Hostname {{ "}}" }}'
+  register: leader
+  tags:
+    - always
+    -
+- name: Find Exareme ID
+  shell: docker service ls --filter name={{ leader.stdout }}_exareme-master --format '{{ "{{" }}.ID{{ "}}" }}'
+  register: exaremeService
   tags:
     - exareme
 
-- name: Remove Services From Stack
-  shell: docker stack rm {{ item }} 
-  with_items: 
-  - "{{ nodeStacks.stdout_lines }}"
-  args:
-    chdir: "{{ home_path }}"
+- name: Remove Exareme Service
+  shell:  docker service rm "{{ exaremeService.stdout }}"
   tags:
     - exareme
 
 - name: Find Portainer ID
-  shell: docker service ls --filter name=mip_portainer --format '{{ "{{" }}.ID{{ "}}" }}'
+  shell: docker service ls --filter name={{ leader.stdout }}_mip-portainer --format '{{ "{{" }}.ID{{ "}}" }}'
   register: portainer_id
   ignore_errors: true
   tags:
