@@ -114,15 +114,36 @@ do
                 sudo docker rm ${containerID}
         fi
 
-        echo -e "\nWhat is the Domain name for which an SSL certificate created?"
-        read answer
-        command=$(sudo find /etc/letsencrypt/live/${answer}/cert.pem 2> /dev/null)
-
-        if [[ ${command} == "/etc/letsencrypt/live/"${answer}"/cert.pem" ]]; then
-            DOMAIN_NAME=${answer}
+        if [[ -s domain_name.txt ]]; then
+            DOMAIN_NAME=$(cat domain_name.txt | cut -d '=' -f 2)
             . ./portainer.sh
         else
-            echo -e "\nNo certificate for that Domain name: "${answer}". Starting without Portainer.."
+            echo -e "\nWhat is the Domain name for which an SSL certificate created?"
+            read answer
+            command=$(sudo find /etc/letsencrypt/live/${answer}/cert.pem 2> /dev/null)
+
+            if [[ ${command} == "/etc/letsencrypt/live/"${answer}"/cert.pem" ]]; then
+                DOMAIN_NAME=${answer}
+                . ./portainer.sh
+                echo -e "\nDo you wish that Domain name to be stored so you will not be asked again? [y/n]"
+                read answer
+                while true
+                do
+                    if [[ ${answer} == "y" ]]; then
+                        echo "Storing information.."
+                        echo DOMAIN_NAME=${DOMAIN_NAME} > domain_name.txt
+                        break
+                    elif [[ ${answer} == "n" ]]; then
+                        echo "You will be asked again to provide the domain name.."
+                        break
+                    else
+                        echo "$answer is not a valid answer! Try again.. [ y/n ]"
+                        read answer
+                    fi
+                done
+            else
+                echo -e "\nNo certificate for that Domain name: "${answer}". Starting without Portainer.."
+            fi
         fi
         break
     elif [[ ${answer} == "n" ]]; then
