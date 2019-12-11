@@ -6,7 +6,7 @@ networks:
       name: mip-federation
 
 services:
-  mip-portainer:
+  service:
     image: ${PORTAINER_IMAGE}
     command:
       --ssl
