@@ -27,21 +27,21 @@
          || ( echo Failed to create {{ PORTAINER_DATA }}; exit 1 )
 
 - name: Remove Portainer Service if it already exists
-  shell: docker service rm mip_portainer
+  shell: docker service rm {{ leader.stdout }}_mip-portainer
   ignore_errors: true
   tags:
     - portainer
 
 - name: Run Portainer Service
-  shell: >
-         docker service create \
-         --publish mode=host,target={{ PORTAINER_PORT }},published=9000 \
-         --constraint 'node.role == manager' \
-         --detach=true \
-         --mount type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
-         --mount type=bind,src={{ PORTAINER_DATA }},dst=/data \
-         --name mip_portainer \
-         {{ PORTAINER_IMAGE }}{{ PORTAINER_VERSION }}
+  shell: docker stack deploy -c docker-compose-portainer.yml {{ leader.stdout }}
+  args:
+    chdir: "{{ home_path }}Compose-Files/"
+  environment:
+    FEDERATION_NODE: "{{ leader.stdout }}"
+    FEDERATION_ROLE: "master"
+    PORTAINER_IMAGE: "{{ PORTAINER_IMAGE }}{{ PORTAINER_VERSION }}"
+    HOME_PATH: "{{ home_path }}"
+    DOMAIN_NAME: "{{ domain_name }}"
   tags:
     - portainer
 
