@@ -27,7 +27,7 @@
          || ( echo Failed to create {{ PORTAINER_DATA }}; exit 1 )
 
 - name: Run Portainer Service
-  shell: docker stack deploy -c docker-compose-portainer.yml {{ leader.stdout }}
+  shell: docker stack deploy -c docker-compose-portainer.yml {{ leader.stdout }}_portainer
   args:
     chdir: "{{ home_path }}Compose-Files/"
   environment:
