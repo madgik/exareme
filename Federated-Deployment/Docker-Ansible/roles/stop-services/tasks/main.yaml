@@ -11,20 +11,23 @@
   tags:
     - exareme
 
-- name: Remove Exareme stacks
+- name: Remove Exareme
   shell: docker stack rm "{{ item }}"
   with_items:
     - "{{ nodeStacks.stdout_lines }}"
-  when: item != "{{ leader.stdout }}_portainer"
   ignore_errors: true
   tags:
     - exareme
 
+- name: Find Portainer service ID
+  shell: docker service inspect -f '{{ "{{" }}.ID{{ "}}" }}' {{ PORTAINER_NAME }}
+  register: portainerID
+  ignore_errors: true
+  tags:
+    - portainer
+
 - name: Remove Portainer
-  shell: docker stack rm "{{ item }}"
-  with_items:
-    - "{{ nodeStacks.stdout_lines }}"
-  when: item == "{{ leader.stdout }}_portainer"
+  shell: docker service rm {{ portainerID.stdout }}
   register: portainer_rm
   ignore_errors: true
   tags:
