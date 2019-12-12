@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+#TODO check with Thanasis duplicate
 portainer () {
     echo -e "\nDo you wish to run Portainer in a secure way? (SSL certificate required) [ y/n ]"
     read answer
