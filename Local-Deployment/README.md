@@ -113,6 +113,7 @@ Press Enter or Yes when prompted to continue.
 2. Get an SSL Certificate <br />
 ```sudo certbot --apache```
 <br />
+
 ```
 Enter email address (used for urgent renewal and security notices) (Enter 'c' to cancel):
 ``` 
