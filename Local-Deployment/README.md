@@ -89,17 +89,67 @@ LOCAL_DATA_FOLDER=/home/user/data/
 # Deployment
 
 In the ```Local-Deployment/``` folder, run the ```deployLocal.sh``` to start the deployment.
-
 You will be prompted to provide any information needed.
 
-If you wish to also deploy Portainer.io for observing service logs you need to secure Portainer using SSL.
+## [Optional] Secure Portainer
 
-Following the instructions from here: <br />
-https://portainer.readthedocs.io/en/stable/deployment.html#secure-portainer-using-ssl <br />
-you need to create an SSL certificate for your domain, if that has not already been done.
+As stated in the official Deployment Documentation (https://portainer.readthedocs.io/en/stable/deployment.html#secure-portainer-using-ssl) <br />
+**By default, Portainer’s web interface and API is exposed over HTTP. This is not secured, it’s recommended to enable SSL in a production environment.** <br />
 
-For Ubuntu 18.04.3 LTS we **used and tested** ```letsencrypt``` for creating an SSL certificate by following the instruction from here: <br />
-https://devanswers.co/lets-encrypt-ssl-apache-ubuntu-18-04/
+To enable SSL, you need to create an SSL certificate. <br />
+
+For Ubuntu 18.04.3 LTS we **used and tested** ```letsencrypt```.
+Following the instruction from here:
+https://devanswers.co/lets-encrypt-ssl-apache-ubuntu-18-04/ <br />
+to generate an SSL certificate you need to:
+
+1. Install Let’s Encrypt client (Certbot)
+```sudo apt-get update && sudo apt-get install software-properties-common```
+```sudo add-apt-repository universe && sudo add-apt-repository ppa:certbot/certbot```
+```sudo apt-get update && sudo apt-get install certbot python-certbot-apache```
+
+Press Enter or Yes when prompted to continue.
+
+2. Get an SSL Certificate
+```sudo certbot --apache```
+
+```Enter email address (used for urgent renewal and security notices) (Enter 'c' to cancel):```
+Enter an email address where you can be contacted in case of urgent renewal and security notices.
+
+```Please read the Terms of Service at
+   https://letsencrypt.org/documents/LE-SA-v1.2-November-15-2017.pdf. You must
+   agree in order to register with the ACME server at
+   https://acme-v02.api.letsencrypt.org/directory```
+
+Press a and ENTER to agree to the Terms of Service.
+
+```Would you be willing to share your email address with the Electronic Frontier
+Foundation, a founding partner of the Let's Encrypt project and the non-profit
+organization that develops Certbot? We'd like to send you email about EFF and
+our work to encrypt the web, protect its users and defend digital rights.
+```
+
+Press n and ENTER to not share your email address with EFF.
+
+```Which names would you like to activate HTTPS for?```
+
+If you do not already have a list with names, you need to add a Domain name for your Portainer service.<br />
+One suggestion is to give the following format: <br />
+```hostname.dnsdomainname```<br />
+ you can find the hostname and the dnsdomainname by executing the commands in the machine you want to run Portainer.
+
+Make sure you remember the Domain name because you will be prompted to enter it in the ```deployLocal.sh``` script
+
+If you do have a list with names:
+Select option 1 if you don’t want to use the www. prefix in your website address, otherwise select option 2.
+
+```Obtaining a new certificate......```
+
+Press 1 and ENTER to No redirect - Make no further changes to the webserver configuration.
+
+The SSL certificate just created.
+
+**Keep in mind that ```letsencrypt``` certifications expire after 90 days**
 
 # Troubleshooting
 
