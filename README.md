@@ -1,4 +1,4 @@
-## Exareme:  [![Build Status](https://travis-ci.org/madgik/exareme.svg?branch=master)](https://travis-ci.org/madgik/exareme)
+## Exareme:
 
 ### Exareme Packaging:
 <ul>

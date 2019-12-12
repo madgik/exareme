@@ -130,28 +130,23 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 //Get datasets provided by user
                 userDatasets = datasets.split(",");
             }
-            else
-                throw new Exception("Missing key: 'dataset'. You need to select one for running an Experiment.");
-            if(inputContent.containsKey("pathology"))
+            if (inputContent.containsKey("pathology"))
                 pathology = inputContent.get("pathology");
-            else
-                throw new Exception("Missing key: 'pathology'. You need to select one for running an Experiment.");
         }
 
         try {
             //Get datasets available in Consul[Key-Value store] for each Exareme node[master/workers]
             HashMap<String, String[]> nodeDatasets = null;
-            if (pathology != null)
-                nodeDatasets = getDatasetsFromConsul(pathology);
-
-            //Check that datasets provided by user exist and retrieve only the nodes containing the existing datasets
             List<String> nodesToBeChecked;
-            if (userDatasets == null && pathology == null)
-                nodesToBeChecked = allNodesIPs();          //If algorithm does not have 'datasets' and 'pathology' as parameter
-                // -> Get IP's from Exareme's registry TODO check if more
-                //TODO appropriate to get all the nodes from Consul, for consistency reasons
-            else    //else -> get only the Exareme nodes containing datasets provided by user
-                nodesToBeChecked = checkDatasets(nodeDatasets, userDatasets,pathology);
+            if (pathology != null) {
+                nodeDatasets = getDatasetsFromConsul(pathology);
+                if (userDatasets == null)
+                    nodesToBeChecked = allNodesIPs();   //LIST_VARIABLES Algorithm
+                else
+                    nodesToBeChecked = checkDatasets(nodeDatasets, userDatasets, pathology);
+            }
+            else
+                nodesToBeChecked = allNodesIPs();       //LIST_DATASET Algorithm
 
             //Check that node containers are up and running properly
             log.debug("Checking workers...");
@@ -175,16 +170,13 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             AdpDBClientQueryStatus queryStatus;
 
             AlgorithmProperties algorithmProperties = Algorithms.getInstance().getAlgorithmProperties(algorithmName);
+
             if (algorithmProperties == null)
                 throw new AlgorithmException("The algorithm '" + algorithmName + "' does not exist.");
 
             algorithmProperties.mergeAlgorithmParametersWithInputContent(inputContent);
 
             DataSerialization ds = DataSerialization.summary;
-
-            if (algorithmProperties.getResponseContentType() != null) {
-                response.setHeader("Content-Type", algorithmProperties.getResponseContentType());
-            }
 
             // Bypass direct composer call in case of iterative algorithm.
             if (algorithmProperties.getType().equals(AlgorithmProperties.AlgorithmType.iterative) ||
@@ -287,8 +279,8 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
 
         String pathologyKey = searchConsul(System.getenv("DATA") + "/" + masterName + "/" + pathology + "?keys");
         String[] pathologyKeyKeysArray = gson.fromJson(pathologyKey, String[].class);
+
         if (pathologyKeyKeysArray != null) {
-            System.out.println(pathologyKeyKeysArray[0]);
             pathologyNodes.add(pathologyKeyKeysArray[0]);                 //Add Master Pathology
         }
 
@@ -308,9 +300,9 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
 
             pathologyKey = searchConsul(System.getenv("DATA") + "/" + workerName + "/" + pathology + "?keys");
             pathologyKeyKeysArray = gson.fromJson(pathologyKey, String[].class);
+
             if (pathologyKeyKeysArray != null) {
-                System.out.println(pathologyKeyKeysArray[0]);
-                pathologyNodes.add(pathologyKeyKeysArray[0]);                 //Add worker Pathology
+                pathologyNodes.add(pathologyKeyKeysArray[0]);                 //Add Workers Pathology
             }
 
             datasetKey = searchConsul(System.getenv("DATA") + "/" + workerName + "/" + pathology + "?raw");
@@ -318,7 +310,6 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             if (datasetKeysArray != null)
                 nodeDatasets.put(workerIP, datasetKeysArray);        //Map Worker's IP-> Worker's Datasets
         }
-
 
         if (pathologyNodes.isEmpty()) {
             throw new PathologyException("Pathology " + pathology + " not found!");

@@ -21,10 +21,10 @@ public class Algorithms {
         Gson gson = new Gson();
         File repoFile = new File(repoPath);
         if (!repoFile.exists()) throw new IOException("Unable to locate property file.");
-
         // Read every algorithm's property.json
         ArrayList<AlgorithmProperties> currentAlgorithms = new ArrayList<>();
         algorithmsHashMap = new HashMap<>();
+
         for (File file : Objects.requireNonNull(repoFile.listFiles(new FileFilter() {
             @Override
             public boolean accept(File pathname) {
@@ -35,6 +35,7 @@ public class Algorithms {
         }))) {
             AlgorithmProperties algorithm = gson.fromJson(new BufferedReader(
                     new FileReader(file.getAbsolutePath() + "/properties.json")), AlgorithmProperties.class);
+
             algorithm.validateAlgorithmPropertiesInitialization();
             algorithmsHashMap.put(algorithm.getName(), algorithm);
             currentAlgorithms.add(algorithm);
