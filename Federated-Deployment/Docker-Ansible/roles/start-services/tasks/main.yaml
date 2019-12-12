@@ -28,7 +28,7 @@
 
 - name: Run Portainer Service
   shell: >
-    sudo docker service create \
+    docker service create \
     --publish mode=host,target={{ PORTAINER_PORT }},published=9000 \
     --constraint 'node.role == manager' \
     --detach=true --mount type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
@@ -37,6 +37,17 @@
     --mount type=bind,src=/etc/letsencrypt/archive/{{ DOMAIN_NAME }},dst=/certs/archive/{{ DOMAIN_NAME }} \
     --name {{ PORTAINER_NAME }} {{PORTAINER_IMAGE }}{{ PORTAINER_VERSION }} \
     --ssl --sslcert /certs/live/{{ DOMAIN_NAME }}/cert.pem --sslkey /certs/live/{{ DOMAIN_NAME }}/privkey.pem
+  tags:
+    - portainerSecure
+
+- name: Run Portainer Service
+  shell: >
+    docker service create \
+    --publish mode=host,target={{ PORTAINER_PORT }},published=9000 \
+    --constraint 'node.role == manager' \
+    --detach=true --mount type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
+    --mount type=bind,src={{ PORTAINER_DATA }},dst=/data \
+    --name {{ PORTAINER_NAME }} {{PORTAINER_IMAGE }}{{ PORTAINER_VERSION }} \
   tags:
     - portainer
 
