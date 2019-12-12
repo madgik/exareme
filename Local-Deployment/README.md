@@ -103,33 +103,36 @@ For Ubuntu 18.04.3 LTS we **used and tested** ```letsencrypt```. Following the i
 https://devanswers.co/lets-encrypt-ssl-apache-ubuntu-18-04/ <br />
 to generate an SSL certificate you need to:
 
-1. Install Let’s Encrypt client (Certbot)
-```sudo apt-get update && sudo apt-get install software-properties-common```
-```sudo add-apt-repository universe && sudo add-apt-repository ppa:certbot/certbot```
-```sudo apt-get update && sudo apt-get install certbot python-certbot-apache```
+1. Install Let’s Encrypt client (Certbot) <br />
+```sudo apt-get update && sudo apt-get install software-properties-common``` <br />
+```sudo add-apt-repository universe && sudo add-apt-repository ppa:certbot/certbot``` <br />
+```sudo apt-get update && sudo apt-get install certbot python-certbot-apache``` <br />
 
 Press Enter or Yes when prompted to continue.
 
-2. Get an SSL Certificate
+2. Get an SSL Certificate <br />
 ```sudo certbot --apache```
 
-```Enter email address (used for urgent renewal and security notices) (Enter 'c' to cancel):```
+```Enter email address (used for urgent renewal and security notices) (Enter 'c' to cancel):``` <br />
 Enter an email address where you can be contacted in case of urgent renewal and security notices.
 
-```Please read the Terms of Service at
-   https://letsencrypt.org/documents/LE-SA-v1.2-November-15-2017.pdf. You must
-   agree in order to register with the ACME server at
-   https://acme-v02.api.letsencrypt.org/directory```
-
-Press a and ENTER to agree to the Terms of Service.
-
-```Would you be willing to share your email address with the Electronic Frontier
-   Foundation, a founding partner of the Let's Encrypt project and the non-profit
-   organization that develops Certbot? We'd like to send you email about EFF and
-   our work to encrypt the web, protect its users and defend digital rights.
+```
+Please read the Terms of Service at
+https://letsencrypt.org/documents/LE-SA-v1.2-November-15-2017.pdf. You must
+agree in order to register with the ACME server at
+https://acme-v02.api.letsencrypt.org/directory 
 ```
 
-Press n and ENTER to not share your email address with EFF.
+Press a and ENTER to agree to the Terms of Service.<br />
+
+```
+Would you be willing to share your email address with the Electronic Frontier
+Foundation, a founding partner of the Let's Encrypt project and the non-profit
+organization that develops Certbot? We'd like to send you email about EFF and
+our work to encrypt the web, protect its users and defend digital rights.
+```
+
+Press n and ENTER to not share your email address with EFF. <br />
 
 ```Which names would you like to activate HTTPS for?```
 
