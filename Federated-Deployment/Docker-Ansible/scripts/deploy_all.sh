@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 init_ansible_playbook
-Portainer () {
+g
+portainer () {
     echo -e "\nDo you wish to run Portainer in a secure way? (SSL certificate required) [ y/n ]"
     read answer
 
