@@ -113,7 +113,10 @@ Press Enter or Yes when prompted to continue.
 2. Get an SSL Certificate <br />
 ```sudo certbot --apache```
 
-```Enter email address (used for urgent renewal and security notices) (Enter 'c' to cancel):``` <br />
+```
+Enter email address (used for urgent renewal and security notices) (Enter 'c' to cancel):
+``` 
+<br />
 Enter an email address where you can be contacted in case of urgent renewal and security notices.
 
 ```
@@ -134,7 +137,9 @@ our work to encrypt the web, protect its users and defend digital rights.
 
 Press n and ENTER to not share your email address with EFF. <br />
 
-```Which names would you like to activate HTTPS for?```
+```
+Which names would you like to activate HTTPS for?
+```
 
 If you do not already have a list with names, you need to add a Domain name for your Portainer service.<br />
 One suggestion is to give a name in the following format: <br />
@@ -146,7 +151,9 @@ Make sure you remember the Domain name because you will be prompted to enter it 
 If you do have a list with names:
 Select option 1 if you don’t want to use the www. prefix in your website address, otherwise select option 2.
 
-```Obtaining a new certificate......```
+```
+Obtaining a new certificate......
+```
 
 Press 1 and ENTER to No redirect - Make no further changes to the webserver configuration.
 
