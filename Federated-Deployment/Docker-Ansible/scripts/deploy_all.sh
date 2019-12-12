@@ -1,6 +1,48 @@
 #!/usr/bin/env bash
 
 init_ansible_playbook
+Portainer () {
+    echo -e "\nDo you wish to run Portainer in a secure way? (SSL certificate required) [ y/n ]"
+    read answer
+
+    while true
+    do
+        if [[ ${answer} == "y" ]]; then
+
+            #TODO ask for DOMAIN_NAME
+
+            ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml --skip-tags portainer"
+            ${ansible_playbook_start}
+
+            ansible_playbook_code=$?
+
+            #If status code != 0 an error has occurred
+            if [[ ${ansible_playbook_code} -ne 0 ]]; then
+                echo "Playbook \"../Start-Exareme.yaml\" exited with error." >&2
+                exit 1
+            fi
+            echo -e "\nExareme services and secure Portainer service are now running"
+            break
+        elif [[ ${answer} == "n" ]];then
+            ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml --skip-tags portainerSecure"
+            ${ansible_playbook_start}
+
+            ansible_playbook_code=$?
+
+            #If status code != 0 an error has occurred
+            if [[ ${ansible_playbook_code} -ne 0 ]]; then
+                echo "Playbook \"../Start-Exareme.yaml\" exited with error." >&2
+                exit 1
+            fi
+            echo -e "\nExareme services and non secure Portainer service are now running"
+            break
+        else
+            echo ${answer}" is not a valid answer! Try again.. [ y/n ]"
+            read answer
+        fi
+    done
+    return
+}
 
 echo -e "\nInitializing Swarm, initializing mip-federation network, copying Compose-Files folder to Manager of Swarm..."
 sleep 1
@@ -80,20 +122,10 @@ read answer
 while true
 do
     if [[ "${answer}" == "y" ]]; then
-        ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml"
-        ${ansible_playbook_start}
-
-        ansible_playbook_code=$?
-
-        #If status code != 0 an error has occurred
-        if [[ ${ansible_playbook_code} -ne 0 ]]; then
-            echo "Playbook \"../Start-Exareme.yaml\" exited with error." >&2
-            exit 1
-        fi
-        echo -e "\nExareme services and Portainer service are now running"
+        Portainer
         break
     elif [[ "${answer}" == "n" ]]; then
-        ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml --skip-tags portainer"
+        ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml --skip-tags portainer,portainerSecure"
         ${ansible_playbook_start}
 
         ansible_playbook_code=$?
