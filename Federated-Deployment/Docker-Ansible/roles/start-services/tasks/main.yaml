@@ -25,22 +25,6 @@
          test -d {{ PORTAINER_DATA }}
          || mkdir -p {{ PORTAINER_DATA }}
          || ( echo Failed to create {{ PORTAINER_DATA }}; exit 1 )
-  environment:
-    PORTAINER_DATA: "{{ PORTAINER_DATA }}"
-
-- name: Find Portainer service ID if exists
-  shell: docker service inspect -f '{{ "{{" }}.ID{{ "}}" }}' {{ PORTAINER_NAME }}
-  register: portainerID
-  ignore_errors: true
-  tags:
-    - portainer
-
-- name: Remove Portainer service is exists
-  shell: docker service rm {{ portainerID.stdout }}
-  register: portainer_rm
-  ignore_errors: true
-  tags:
-    - portainer
 
 - name: Run Portainer Service
   shell: >
@@ -53,11 +37,6 @@
     --mount type=bind,src=/etc/letsencrypt/archive/{{ DOMAIN_NAME }},dst=/certs/archive/{{ DOMAIN_NAME }} \
     --name {{ PORTAINER_NAME }} {{PORTAINER_IMAGE }}{{ PORTAINER_VERSION }} \
     --ssl --sslcert /certs/live/{{ DOMAIN_NAME }}/cert.pem --sslkey /certs/live/{{ DOMAIN_NAME }}/privkey.pem
-  environment:
-    PORTAINER_IMAGE: "{{ PORTAINER_IMAGE }}{{ PORTAINER_VERSION }}"
-    PORTAINER_NAME: "{{ PORTAINER_NAME }}"
-    PORTAINER_DATA: "{{ PORTAINER_DATA }}"
-    DOMAIN_NAME: "{{ DOMAIN_NAME }}"
   tags:
     - portainer
 
