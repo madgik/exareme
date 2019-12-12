@@ -93,8 +93,7 @@ You will be prompted to provide any information needed.
 
 ## [Optional] Secure Portainer
 
-As stated in the official Deployment Documentation<br />
-(https://portainer.readthedocs.io/en/stable/deployment.html#secure-portainer-using-ssl) <br />
+As stated in the official <a href="https://portainer.readthedocs.io/en/stable/deployment.html#secure-portainer-using-ssl">Deployment Documentation</a> <br />
 **"By default, Portainer’s web interface and API is exposed over HTTP. This is not secured, it’s recommended to enable SSL in a production environment."** <br />
 
 To enable SSL, you need to create an SSL certificate. <br />
