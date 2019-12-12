@@ -14,6 +14,7 @@ PORTAINER_NAME="mip_portainer"
 
 FEDERATION_ROLE="master"
 
+flag=0
 #Check if data_path exist
 if [[ -s data_path.txt ]]; then
     :
@@ -39,9 +40,11 @@ else
     . ./exareme.sh
 fi
 
+#Previous Swarm not found
 if [[ $(sudo docker info | grep Swarm | grep inactive*) != '' ]]; then
     echo -e "\nInitialize Swarm.."
     sudo docker swarm init --advertise-addr=$(wget http://ipinfo.io/ip -qO -)
+#Previous Swarm found
 else
     echo -e "\nLeaving previous Swarm.."
     sudo docker swarm leave -f
@@ -50,6 +53,7 @@ else
     sudo docker swarm init --advertise-addr=$(wget http://ipinfo.io/ip -qO -)
 fi
 
+#Init network
 if [[ $(sudo docker network ls | grep mip-local) == '' ]]; then
     echo -e "\nInitialize Network"
     sudo docker network create \
@@ -83,37 +87,19 @@ imageName=$(echo "$image" | cut -d ':' -f 1)
 #tag the second half of string image
 tag=$(echo "$image" | cut -d ':' -f 2 )
 
-#Remove services if already existed
-if [[ $(sudo docker service ls | grep ${name}"_exareme-keystore") != '' ]]; then
-    sudo docker service rm ${name}"_exareme-keystore"
-fi
-
-if [[ $(sudo docker service ls | grep ${name}"_exareme-master") != '' ]]; then
-    sudo docker service rm ${name}"_exareme-master"
-fi
-
+#Stack deploy
 sudo env FEDERATION_NODE=${name} FEDERATION_ROLE=${FEDERATION_ROLE} EXAREME_IMAGE=${imageName}":"${tag} \
 EXAREME_KEYSTORE=${EXAREME_KEYSTORE} DOCKER_DATA_FOLDER=${DOCKER_DATA_FOLDER} \
 LOCAL_DATA_FOLDER=${LOCAL_DATA_FOLDER} \
 docker stack deploy -c docker-compose-master.yml ${name}
 
-echo -e "\nDo you wish to run Portainer service? [ y/n ]"
+#Portainer
+echo -e "\nDo you wish to run Portainer in a Secure way? (SSL certificate required)  [ y/n ]"
 read answer
 
 while true
 do
     if [[ ${answer} == "y" ]];then
-        echo -e "\nSearching for previous instance of ${PORTAINER_NAME}..."
-        if [[ $(sudo docker inspect ${PORTAINER_NAME} 2> /dev/null) == [] ]]; then
-                echo "No previous instance found.."
-        else
-                containerID=$(sudo docker inspect -f {{.ID}} ${PORTAINER_NAME})
-                echo -e "\nStopping previous instace of ${PORTAINER_NAME}..."
-                sudo docker stop ${containerID}
-                echo -e "\nRemoving previous instace of ${PORTAINER_NAME}..."
-                sudo docker rm ${containerID}
-        fi
-
         if [[ -s domain_name.txt ]]; then
             DOMAIN_NAME=$(cat domain_name.txt | cut -d '=' -f 2)
             . ./portainer.sh
@@ -124,7 +110,8 @@ do
 
             if [[ ${command} == "/etc/letsencrypt/live/"${answer}"/cert.pem" ]]; then
                 DOMAIN_NAME=${answer}
-                . ./portainer.sh
+
+                #Optional to store Domain_name in a file
                 echo -e "\nDo you wish that Domain name to be stored so you will not be asked again? [y/n]"
                 read answer
                 while true
@@ -141,12 +128,31 @@ do
                         read answer
                     fi
                 done
+
+                #Run Secure Portainer service
+                flag=1
+                . ./portainer.sh
             else
                 echo -e "\nNo certificate for that Domain name: "${answer}". Starting without Portainer.."
             fi
         fi
         break
     elif [[ ${answer} == "n" ]]; then
+        echo -e "\nDo you wish to run Portainer in a NON secure way? [ y/n ]"
+        read answer
+        while true
+        do
+            if [[ ${answer} == "y" ]]; then
+                #Run UnSecure Portainer service
+                flag=0
+                . ./portainer.sh
+                break
+            elif [[ ${answer} == "n" ]]; then
+                break
+            else
+                echo ${answer}" is not a valid answer. Try again [ y/n ]"
+            fi
+        done
         break
     else
         echo ${answer}" is not a valid answer. Try again [ y/n ]"
