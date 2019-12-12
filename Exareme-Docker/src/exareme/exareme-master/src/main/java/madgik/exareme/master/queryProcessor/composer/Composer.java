@@ -176,16 +176,16 @@ public class Composer {
                         defaultDBFilePath, algorithmProperties.getParameters(), numberOfWorkers);
                 break;
             case python_local:
-                dflScript = composePythonLocalAlgorithmsDFLScript(algorithmName, inputLocalDB, dbQuery, csvDatabaseProperties,
+                dflScript = composePythonLocalAlgorithmsDFLScript(algorithmName, inputLocalDB, pythonDBQuery, csvDatabaseProperties,
                         outputGlobalTbl, algorithmProperties.getParameters());
                 break;
             case python_local_global:
                 dflScript = composePythonLocalGlobalAlgorithmsDFLScript(algorithmName, algorithmKey, inputLocalDB,
-                        dbQuery, csvDatabaseProperties, outputGlobalTbl, algorithmProperties.getParameters());
+                        pythonDBQuery, csvDatabaseProperties, outputGlobalTbl, algorithmProperties.getParameters());
                 break;
             case python_multiple_local_global:
                 dflScript = composePythonMultipleLocalGlobalAlgorithmsDFLScript(algorithmName, algorithmKey,
-                        inputLocalDB, dbQuery, csvDatabaseProperties, outputGlobalTbl, algorithmProperties.getParameters());
+                        inputLocalDB, pythonDBQuery, csvDatabaseProperties, outputGlobalTbl, algorithmProperties.getParameters());
                 break;
             case iterative:
                 throw new ComposerException("Iterative Algorithms should not call composeDFLScripts");
