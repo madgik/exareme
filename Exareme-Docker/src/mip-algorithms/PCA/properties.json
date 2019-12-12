@@ -9,11 +9,20 @@
             "desc": "A list of variables from database. The variable should be Real, Integer. It cannot be empty",
             "type": "column",
             "columnValuesSQLType": "real, integer",
-            "columnValuesIsCategorical": "false",
+            "columnValuesIsCategorical": "",
             "columnValuesNumOfEnumerations": "",
             "value": "leftaccumbensarea, leftacgganteriorcingulategyrus, leftainsanteriorinsula, rightaccumbensarea, rightacgganteriorcingulategyrus, rightainsanteriorinsula",
             "valueNotBlank": true,
             "valueMultiple": true,
+            "valueType": "string"
+        },
+        {
+            "name": "pathology",
+            "desc": "The name of the pathology that the dataset belongs to.",
+            "type": "pathology",
+            "value": "dementia",
+            "valueNotBlank": true,
+            "valueMultiple": false,
             "valueType": "string"
         },
         {
@@ -32,6 +41,15 @@
             "value": "",
             "valueNotBlank": false,
             "valueMultiple": true,
+            "valueType": "string"
+        },
+        {
+            "name": "formula",
+            "desc": "Patsy formula (similar to R language syntax).",
+            "type": "formula",
+            "value": "",
+            "valueNotBlank": false,
+            "valueMultiple": false,
             "valueType": "string"
         }
     ]
