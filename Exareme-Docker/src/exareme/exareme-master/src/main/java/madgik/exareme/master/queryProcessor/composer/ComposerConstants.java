@@ -5,6 +5,7 @@ import madgik.exareme.utils.properties.AdpProperties;
 public class ComposerConstants {
     public static final String algorithmKey = "algorithm_key";
     public static final String inputLocalDBKey = "input_local_DB";
+    public static final String dbQueryKey = "db_query";
     public static final String inputGlobalTblKey = "input_global_tbl";
     public static final String outputGlobalTblKey = "output_tbl";
     public static final String prevOutputGlobalTblKey = "prv_output_global_tbl";
