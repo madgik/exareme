@@ -112,12 +112,12 @@ Press Enter or Yes when prompted to continue.
 
 2. Get an SSL Certificate <br />
 ```sudo certbot --apache```
-
+<br />
 ```
 Enter email address (used for urgent renewal and security notices) (Enter 'c' to cancel):
 ``` 
-<br />
-Enter an email address where you can be contacted in case of urgent renewal and security notices.
+
+Enter an email address where you can be contacted in case of urgent renewal and security notices. <br />
 
 ```
 Please read the Terms of Service at
@@ -150,16 +150,17 @@ Make sure you remember the Domain name because you will be prompted to enter it 
 
 If you do have a list with names:
 Select option 1 if you don’t want to use the www. prefix in your website address, otherwise select option 2.
+<br />
 
 ```
 Obtaining a new certificate......
 ```
 
-Press 1 and ENTER to No redirect - Make no further changes to the webserver configuration.
+Press 1 and ENTER to No redirect - Make no further changes to the webserver configuration. <br />
 
-*The SSL certificate just created.*
+*The SSL certificate just created.* <br />
 
-**Keep in mind that ```letsencrypt``` certifications expire after 90 days**
+**Keep in mind that ```letsencrypt``` certifications expire after 90 days** <br />
 
 # Troubleshooting
 
