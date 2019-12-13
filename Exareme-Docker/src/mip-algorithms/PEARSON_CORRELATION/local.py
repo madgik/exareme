@@ -45,7 +45,7 @@ def pearsonr_local(local_in):
     sxx = np.empty(n_cols, dtype=np.float)
     sxy = np.empty(n_cols, dtype=np.float)
     syy = np.empty(n_cols, dtype=np.float)
-
+    raise ValueError(X, Y)
     for i in xrange(n_cols):
         x, y = X[:, i], Y[:, i]
         # Compute local statistics
@@ -65,7 +65,8 @@ def main():
     # Parse arguments
     parser = ArgumentParser()
     # Algo arguments
-    parser.add_argument('-variables', required=True, help='List of variables involved.')
+    parser.add_argument('-x', required=True, help='Variable names in x, comma separated.')
+    parser.add_argument('-y', required=True, help='Variable names in y, comma separated.')
     parser.add_argument('-formula', required=True, help='A string holding a patsy formula.')
     parser.add_argument('-no_intercept', required=True, help='A boolean signaling a no-intercept-by-default behaviour.')
     # Exareme arguments
@@ -76,36 +77,48 @@ def main():
     parser.add_argument('-metadata_isCategorical_column', required=True)
 
     args, unknown = parser.parse_known_args()
-    varibles = json.loads(args.variables)
-    formula = json.loads(args.formula)
+    args_x = list(
+            args.x
+                .replace(' ', '')
+                .split(',')
+    )
+    args_y = list(
+            args.y
+                .replace(' ', '')
+                .split(',')
+    )
+    varibles = args_x + args_y
+    formula = args.formula
     no_intercept = json.loads(args.no_intercept)
     input_local_DB = args.input_local_DB
     data_table = args.data_table
     metadata_table = args.metadata_table
-    metadata_code_column = args.metadata_code_column
+    metadata_code_column = 'code' # TODO Ask thanasis to correct this in exareme (received null)
+    # metadata_code_column = args.metadata_code_column
     metadata_isCategorical_column = args.metadata_isCategorical_column
-    Y, X = query_from_formula(fname_db=input_local_DB, formula=formula, variables=varibles,
+    lhs, rhs = query_from_formula(fname_db=input_local_DB, formula=formula, variables=varibles,
                        data_table=data_table, metadata_table=metadata_table,
                        metadata_code_column=metadata_code_column,
                        metadata_isCategorical_column=metadata_isCategorical_column,
                        no_intercept=no_intercept)
 
     schema_X, schema_Y = [], []
-    if Y == None:
-        for i in xrange(len(X.columns)):
-            for j in xrange(i + 1, len(X.columns)):
-                schema_X.append(X.design_info.column_names[i])
-                schema_Y.append(X.design_info.column_names[j])
-        correlmatr_row_names = X.design_info.column_names
-        correlmatr_col_names = X.design_info.column_names
+    if lhs == None:
+        for i in xrange(len(rhs.columns)):
+            for j in xrange(i + 1, len(rhs.columns)):
+                schema_X.append(rhs.design_info.column_names[i])
+                schema_Y.append(rhs.design_info.column_names[j])
+        correlmatr_row_names = rhs.design_info.column_names
+        correlmatr_col_names = rhs.design_info.column_names
     else:
-        for i in xrange(len(X.columns)):
-            for j in xrange(len(Y.columns)):
-                schema_X.append(X.design_info.column_names[i])
-                schema_Y.append(Y.design_info.column_names[j])
-        correlmatr_col_names = X.design_info.column_names
-        correlmatr_row_names = Y.design_info.column_names
-    local_in = np.asarray(X), np.asarray(Y), schema_X, schema_Y, correlmatr_row_names, correlmatr_col_names
+        for i in xrange(len(rhs.columns)):
+            for j in xrange(len(lhs.columns)):
+                schema_X.append(rhs.design_info.column_names[i])
+                schema_Y.append(lhs.design_info.column_names[j])
+        correlmatr_col_names = rhs.design_info.column_names
+        correlmatr_row_names = lhs.design_info.column_names
+
+    local_in = np.asarray(rhs), np.asarray(lhs), schema_X, schema_Y, correlmatr_row_names, correlmatr_col_names
 
     # Run algorithm local step
     local_out = pearsonr_local(local_in=local_in)
