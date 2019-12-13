@@ -102,6 +102,8 @@ do
     if [[ ${answer} == "y" ]];then
         if [[ -s domain_name.txt ]]; then
             DOMAIN_NAME=$(cat domain_name.txt | cut -d '=' -f 2)
+            #Run Secure Portainer service
+            flag=1
             . ./portainer.sh
         else
             echo -e "\nWhat is the Domain name for which an SSL certificate created?"
