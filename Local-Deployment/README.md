@@ -102,8 +102,7 @@ For Ubuntu 18.04.3 LTS we **used and tested** ```letsencrypt```. Following the i
 https://devanswers.co/lets-encrypt-ssl-apache-ubuntu-18-04/ <br />
 to generate an SSL certificate you need to:
 
-0. Install apache if not already installed. For Ubuntu 18.04.3 LTS we <br />
-followed the instructions from <a href="https://devanswers.co/installing-apache-ubuntu-18-04-server-virtual-hosts/">here</a> <br />
+0. Install apache if not already installed. For Ubuntu 18.04.3 LTS we followed the instructions from <a href="https://devanswers.co/installing-apache-ubuntu-18-04-server-virtual-hosts/">here</a> <br />
 
 ```sudo apt update && sudo apt install apache2```<br/>
 
