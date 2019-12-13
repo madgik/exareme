@@ -99,8 +99,7 @@ As stated in the official <a href="https://portainer.readthedocs.io/en/stable/de
 To enable SSL, you need to create an SSL certificate. <br />
 
 For Ubuntu 18.04.3 LTS we **used and tested** ```letsencrypt```. Following the instruction from here: <br />
-https://devanswers.co/lets-encrypt-ssl-apache-ubuntu-18-04/ <br />
-to generate an SSL certificate you need to:
+https://devanswers.co/lets-encrypt-ssl-apache-ubuntu-18-04/ to generate an SSL certificate you need to:
 
 0. Install apache if not already installed. For Ubuntu 18.04.3 LTS we followed the instructions from <a href="https://devanswers.co/installing-apache-ubuntu-18-04-server-virtual-hosts/">here</a> <br />
 
