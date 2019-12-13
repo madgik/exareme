@@ -35,65 +35,64 @@ def pearsonr_global(global_in):
         JSON string containing a list of results, one for each variable pair, where each result hold the variable
         pair names, the Pearson coefficient, the p-value and the lower and upper confidence intervals.
     """
-    nn, sx, sy, sxx, sxy, syy, schema_X, schema_Y, correlmatr_row_names, correlmatr_col_names = global_in.get_data()
-    n_cols = len(nn)
-    schema_out = [None] * n_cols
-    r = [0] * n_cols
-    prob = [0] * n_cols
-    ci_lo = [0] * n_cols
-    ci_hi = [0] * n_cols
-    for i in xrange(n_cols):
-        schema_out[i] = schema_X[i] + ' ~ ' + schema_Y[i]
-        # Compute pearson correlation coefficient and p-value
-        if nn[i] == 0:
-            raise ExaremeError('The variables chosen do not contain any datapoints.')
-        else:
-            d = (math.sqrt(nn[i] * sxx[i] - sx[i] * sx[i]) * math.sqrt(nn[i] * syy[i] - sy[i] * sy[i]))
+    n_obs, sx, sy, sxx, sxy, syy, cm_names, lnames, rnames = global_in.get_data()
+    cm_shape = sx.shape
+    r = np.zeros(cm_shape, dtype=np.float)
+    prob = np.zeros(cm_shape, dtype=np.float)
+    ci_lo = np.zeros(cm_shape, dtype=np.float)
+    ci_hi = np.zeros(cm_shape, dtype=np.float)
+
+    df = n_obs - 2
+    for i in xrange(cm_shape[0]):
+        for j in xrange(cm_shape[1]):
+            d = (math.sqrt(n_obs * sxx[i, j] - sx[i, j] * sx[i, j])
+                 * math.sqrt(n_obs * syy[i, j] - sy[i, j] * sy[i, j]))
             if d == 0:
-                r[i] = 0
+                r[i, j] = 0
             else:
-                r[i] = float((nn[i] * sxy[i] - sx[i] * sy[i]) / d)
-            r[i] = max(min(r[i], 1.0), -1.0)  # If abs(r) > 1 correct it: artifact of floating point arithmetic.
-            df = nn[i] - 2
-            if abs(r[i]) == 1.0:
-                prob[i] = 0.0
+                r[i, j] = float((n_obs * sxy[i, j] - sx[i, j] * sy[i, j]) / d)
+            r[i, j] = max(min(r[i, j], 1.0), -1.0)  # If abs(r) > 1 correct it: artifact of floating point arithmetic.
+            if abs(r[i, j]) == 1.0:
+                prob[i, j] = 0.0
             else:
-                t_squared = r[i] ** 2 * (df / ((1.0 - r[i]) * (1.0 + r[i])))
-                prob[i] = special.betainc(
+                t_squared = r[i, j] ** 2 * (df / ((1.0 - r[i, j]) * (1.0 + r[i, j])))
+                prob[i, j] = special.betainc(
                         0.5 * df, 0.5, np.fmin(np.asarray(df / (df + t_squared)), 1.0)
                 )
-        # Compute 95% confidence intervals
-        alpha = 0.05  # Two-tail test with confidence intervals 95%
-        if r[i] is not None:
-            r_z = np.arctanh(r[i])
-            se = 1 / np.sqrt(nn[i] - 3)
-            z = st.norm.ppf(1 - alpha / 2)
-            lo_z, hi_z = r_z - z * se, r_z + z * se
-            ci_lo[i], ci_hi[i] = np.tanh((lo_z, hi_z))
-        else:
-            raise ValueError('Pearson coefficient is NaN.')
+            # Compute 95% confidence intervals
+            alpha = 0.05  # Two-tail test with confidence intervals 95%
+            if r[i, j] is not None:
+                r_z = np.arctanh(r[i, j])
+                se = 1 / np.sqrt(n_obs - 3)
+                z = st.norm.ppf(1 - alpha / 2)
+                lo_z, hi_z = r_z - z * se, r_z + z * se
+                ci_lo[i, j], ci_hi[i, j] = np.tanh((lo_z, hi_z))
+            else:
+                raise ExaremeError('Pearson coefficient is NaN.')
 
     # Format output data
     # JSON raw
     result_list = []
-    for i in xrange(n_cols):
-        result_list.append({
-            'Variables'                      : schema_out[i],
-            'Pearson correlation coefficient': r[i],
-            'p-value'                        : prob[i] if prob[i] >= P_VALUE_CUTOFF else P_VALUE_CUTOFF_STR,
-            'C.I. Lower'                     : ci_lo[i],
-            'C.I. Upper'                     : ci_hi[i]
-        })
-    # Taabular summary
+    for i in xrange(cm_shape[0]):
+        for j in xrange(cm_shape[1]):
+            result_list.append({
+                'Variables'                      : cm_names[i, j],
+                'Pearson correlation coefficient': r[i, j],
+                'p-value'                        : prob[i, j] if prob[i, j] >= P_VALUE_CUTOFF else P_VALUE_CUTOFF_STR,
+                'C.I. Lower'                     : ci_lo[i, j],
+                'C.I. Upper'                     : ci_hi[i, j]
+            })
+    # Tabular summary
     tabular_data_summary = [["variables", "Pearson correlation coefficient", "p-value", "lower c.i.", "upper c.i."]]
-    for i in xrange(n_cols):
-        tabular_data_summary.append([
-            schema_out[i],
-            r[i],
-            prob[i] if prob[i] >= P_VALUE_CUTOFF else P_VALUE_CUTOFF_STR,
-            ci_lo[i],
-            ci_hi[i]
-        ])
+    for i in xrange(cm_shape[0]):
+        for j in xrange(cm_shape[1]):
+            tabular_data_summary.append([
+                cm_names[i, j],
+                r[i, j],
+                prob[i, j] if prob[i, j] >= P_VALUE_CUTOFF else P_VALUE_CUTOFF_STR,
+                ci_lo[i, j],
+                ci_hi[i, j]
+            ])
     tabular_data_summary_schema_fields = [
         {
             "name": "variables",
@@ -114,24 +113,15 @@ def pearsonr_global(global_in):
     ]
     # Highchart Correlation Matrix
     correlmatr_data = []
-    for i, varx in enumerate(correlmatr_col_names):
-        for j, vary in enumerate(correlmatr_row_names):
-            if varx == vary:
-                corr = 1.0
-            else:
-                if varx + ' ~ ' + vary in schema_out:
-                    idx = schema_out.index(varx + ' ~ ' + vary)
-                elif vary + ' ~ ' + varx in schema_out:
-                    idx = schema_out.index(vary + ' ~ ' + varx)
-                else:
-                    raise ValueError('Variable names do not agree.')
-                corr = r[idx]
+    for i in xrange(cm_shape[0]):
+        for j in xrange(cm_shape[1]):
             correlmatr_data.append({
-                'x'    : i,
-                'y'    : j,
-                'value': round(corr, 4),
-                'name' : varx + ' ~ ' + vary
+                'x'    : j,
+                'y'    : i,
+                'value': round(r[i, j], 4),
+                'name' : cm_names[i, j]
             })
+
     hichart_correl_matr = {
         'chart'    : {
             'type'           : 'heatmap',
@@ -141,10 +131,10 @@ def pearsonr_global(global_in):
             'text': 'Pearson Correlation Matrix'
         },
         'xAxis'    : {
-            'categories': correlmatr_col_names
+            'categories': rnames
         },
         'yAxis'    : {
-            'categories': correlmatr_row_names,
+            'categories': lnames,
             'title'     : 'null'
         },
         'colorAxis': {

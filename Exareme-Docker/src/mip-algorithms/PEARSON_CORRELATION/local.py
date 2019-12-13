@@ -17,17 +17,18 @@ from pearsonc_lib import PearsonCorrelationLocalDT
 
 
 def pearsonr_local(local_in):
+    # TODO Rewrite docstring
     """Local step in Pearson correlation coefficient. Statistics are computed in each local database and then they
     are sent to the master node to be aggregated accordingly.
     The computed statistics are: `nn` number of observations, `sx` and `sy` sums of linear terms \sum_i x_i and
     \sum_i y_i respectively, `sxx`, `sxy` and `syy` sums of quadratic terms \sum_i x_i x_i, \sum_i x_i y_i and
     \sum_i y_i y_i respectively, where x and y are vectors of the pair of variables under consideration, pulled from
-    matrices X and Y respectively.
+    matrices right_vars and left_vars respectively.
 
     Parameters
     ----------
     local_in : numpy.array, numpy.array, list, list
-        Tuple holding matrices X and Y as numpy arrays and lists of variable names schema_X and schema_Y
+        Tuple holding matrices right_vars and left_vars as numpy arrays and lists of variable names schema_X and schema_Y
 
     Returns
     -------
@@ -35,28 +36,30 @@ def pearsonr_local(local_in):
        Object holding the computed statistics as well as schema_X, schema_Y do be transferred to the master node.
     """
     # Unpack data
-    X, Y, schema_X, schema_Y, correlmatr_row_names, correlmatr_col_names = local_in
-    n_obs, n_cols = len(X), len(X[0])
+    left_vars, right_vars = local_in
 
-    # Init statistics
-    nn = np.empty(n_cols, dtype=np.int)
-    sx = np.empty(n_cols, dtype=np.float)
-    sy = np.empty(n_cols, dtype=np.float)
-    sxx = np.empty(n_cols, dtype=np.float)
-    sxy = np.empty(n_cols, dtype=np.float)
-    syy = np.empty(n_cols, dtype=np.float)
-    raise ValueError(X, Y)
-    for i in xrange(n_cols):
-        x, y = X[:, i], Y[:, i]
-        # Compute local statistics
-        nn[i] = n_obs
-        sx[i] = x.sum()
-        sy[i] = y.sum()
-        sxx[i] = (x * x).sum()
-        sxy[i] = (x * y).sum()
-        syy[i] = (y * y).sum()
-        local_out = PearsonCorrelationLocalDT(
-                (nn, sx, sy, sxx, sxy, syy, schema_X, schema_Y, correlmatr_row_names, correlmatr_col_names))
+    n_obs = len(right_vars)
+    cm_shape = len(left_vars.columns), len(right_vars.columns)
+
+    # Compute statistics
+    sx = np.empty(cm_shape, dtype=np.float)
+    sy = np.empty(cm_shape, dtype=np.float)
+    sxx = np.empty(cm_shape, dtype=np.float)
+    sxy = np.empty(cm_shape, dtype=np.float)
+    syy = np.empty(cm_shape, dtype=np.float)
+    cm_names = np.array([[''] * cm_shape[1]] * cm_shape[0], dtype=object)
+    for i in xrange(cm_shape[0]):
+        for j in xrange(cm_shape[1]):
+            y, x = left_vars.iloc[:, i], right_vars.iloc[:, j]
+            sx[i, j] = x.sum()
+            sy[i, j] = y.sum()
+            sxx[i, j] = (x * x).sum()
+            sxy[i, j] = (x * y).sum()
+            syy[i, j] = (y * y).sum()
+            cm_names[i, j] = y.name + ' ~ ' + x.name
+
+    local_out = PearsonCorrelationLocalDT(
+            n_obs, sx, sy, sxx, sxy, syy, cm_names, list(left_vars.columns), list(right_vars.columns))
 
     return local_out
 
@@ -89,36 +92,23 @@ def main():
     )
     varibles = args_x + args_y
     formula = args.formula
+    formula = formula.replace('_', '~')  # TODO Fix tilda problem and remove
     no_intercept = json.loads(args.no_intercept)
     input_local_DB = args.input_local_DB
     data_table = args.data_table
     metadata_table = args.metadata_table
-    metadata_code_column = 'code' # TODO Ask thanasis to correct this in exareme (received null)
+    metadata_code_column = 'code'  # TODO Fix this in exareme (received null)
     # metadata_code_column = args.metadata_code_column
     metadata_isCategorical_column = args.metadata_isCategorical_column
-    lhs, rhs = query_from_formula(fname_db=input_local_DB, formula=formula, variables=varibles,
-                       data_table=data_table, metadata_table=metadata_table,
-                       metadata_code_column=metadata_code_column,
-                       metadata_isCategorical_column=metadata_isCategorical_column,
-                       no_intercept=no_intercept)
+    left_vars, right_vars = query_from_formula(fname_db=input_local_DB, formula=formula, variables=varibles,
+                                               data_table=data_table, metadata_table=metadata_table,
+                                               metadata_code_column=metadata_code_column,
+                                               metadata_isCategorical_column=metadata_isCategorical_column,
+                                               no_intercept=no_intercept)
 
-    schema_X, schema_Y = [], []
-    if lhs == None:
-        for i in xrange(len(rhs.columns)):
-            for j in xrange(i + 1, len(rhs.columns)):
-                schema_X.append(rhs.design_info.column_names[i])
-                schema_Y.append(rhs.design_info.column_names[j])
-        correlmatr_row_names = rhs.design_info.column_names
-        correlmatr_col_names = rhs.design_info.column_names
-    else:
-        for i in xrange(len(rhs.columns)):
-            for j in xrange(len(lhs.columns)):
-                schema_X.append(rhs.design_info.column_names[i])
-                schema_Y.append(lhs.design_info.column_names[j])
-        correlmatr_col_names = rhs.design_info.column_names
-        correlmatr_row_names = lhs.design_info.column_names
-
-    local_in = np.asarray(rhs), np.asarray(lhs), schema_X, schema_Y, correlmatr_row_names, correlmatr_col_names
+    if left_vars is None:
+        left_vars = right_vars
+    local_in = left_vars, right_vars
 
     # Run algorithm local step
     local_out = pearsonr_local(local_in=local_in)
