@@ -391,16 +391,6 @@
 			"sql_type": "integer",
 			"type": "integer",
 			"isCategorical": false
-		}, {
-			"code": "dataset",
-			"description": "Variable used to differentiate datasets",
-			"label": "Dataset",
-			"units": "",
-			"type": "text",
-			"methodology": "mip-cde",
-			"sql_type": "text",
-			"isCategorical": false
-
 		}
 	]
 }
