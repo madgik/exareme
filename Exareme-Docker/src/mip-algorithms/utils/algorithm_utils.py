@@ -124,7 +124,7 @@ def query_from_formula(fname_db, formula, variables,
         return lhs_dm, rhs_dm
     else:
         rhs_dm = dmatrix(formula, data, return_type='dataframe')
-        return rhs_dm
+        return None, rhs_dm
 
 
 class StateData(object):
@@ -186,6 +186,7 @@ def main():
                               no_intercept=True)
     print(X.design_info.column_names)
     print(Y.design_info.column_names)
+    print(len(X))
 
 
 if __name__ == '__main__':

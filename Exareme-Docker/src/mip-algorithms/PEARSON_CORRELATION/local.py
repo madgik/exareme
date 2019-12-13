@@ -4,6 +4,7 @@ from __future__ import print_function
 
 import sys
 from os import path
+import json
 from argparse import ArgumentParser
 
 import numpy as np
@@ -11,7 +12,7 @@ import numpy.ma as ma
 
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))) + '/utils/')
 
-from algorithm_utils import query_with_privacy, ExaremeError, PrivacyError, PRIVACY_MAGIC_NUMBER
+from algorithm_utils import query_from_formula
 from pearsonc_lib import PearsonCorrelationLocalDT
 
 
@@ -36,7 +37,6 @@ def pearsonr_local(local_in):
     # Unpack data
     X, Y, schema_X, schema_Y, correlmatr_row_names, correlmatr_col_names = local_in
     n_obs, n_cols = len(X), len(X[0])
-    assert (len(Y), len(Y[0])) == (n_obs, n_cols), 'Matrices X and Y should have the same size.'
 
     # Init statistics
     nn = np.empty(n_cols, dtype=np.int)
@@ -46,77 +46,66 @@ def pearsonr_local(local_in):
     sxy = np.empty(n_cols, dtype=np.float)
     syy = np.empty(n_cols, dtype=np.float)
 
-    # Create mask
-    mask = [True in np.isnan(X[row, :]) or True in np.isnan(Y[row, :]) for row in range(n_obs)]
     for i in xrange(n_cols):
-        # Create masked arrays
         x, y = X[:, i], Y[:, i]
-        xm = ma.masked_array(x, mask=mask)
-        ym = ma.masked_array(y, mask=mask)
         # Compute local statistics
-        nn[i] = n_obs - sum(mask)
-        if nn[i] < PRIVACY_MAGIC_NUMBER:
-            raise PrivacyError('Removing missing values results in illegal number of datapoints in local db.')
-        sx[i] = xm.filled(0).sum()
-        sy[i] = ym.filled(0).sum()
-        sxx[i] = (xm.filled(0) * xm.filled(0)).sum()
-        sxy[i] = (xm.filled(0) * ym.filled(0)).sum()
-        syy[i] = (ym.filled(0) * ym.filled(0)).sum()
+        nn[i] = n_obs
+        sx[i] = x.sum()
+        sy[i] = y.sum()
+        sxx[i] = (x * x).sum()
+        sxy[i] = (x * y).sum()
+        syy[i] = (y * y).sum()
         local_out = PearsonCorrelationLocalDT(
                 (nn, sx, sy, sxx, sxy, syy, schema_X, schema_Y, correlmatr_row_names, correlmatr_col_names))
 
     return local_out
 
 
-
-
 def main():
     # Parse arguments
     parser = ArgumentParser()
-    parser.add_argument('-x', required=True, help='Variable names in x, comma separated.')
-    parser.add_argument('-y', required=True, help='Variable names in y, comma separated.')
+    # Algo arguments
+    parser.add_argument('-variables', required=True, help='List of variables involved.')
+    parser.add_argument('-formula', required=True, help='A string holding a patsy formula.')
+    parser.add_argument('-no_intercept', required=True, help='A boolean signaling a no-intercept-by-default behaviour.')
+    # Exareme arguments
     parser.add_argument('-input_local_DB', required=True, help='Path to local db.')
-    parser.add_argument('-db_query', required=True, help='Query to be executed on local db.')
-    args, unknown = parser.parse_known_args()
-    query = args.db_query
-    fname_loc_db = path.abspath(args.input_local_DB)
-    if args.y == '':
-        raise ExaremeError('Field y must be non empty.')
-    args_X = list(
-            args.x
-                .replace(' ', '')
-                .split(',')
-    )
-    args_Y = list(
-            args.y
-                .replace(' ', '')
-                .split(',')
-    )
-    # Populate schemata, treating cases Y=empty and Y=not empty accordingly (behaviour of R function `cor`)
-    schema_X, schema_Y = [], []
-    if args_X == ['']:
-        for i in xrange(len(args_Y)):
-            for j in xrange(i + 1, len(args_Y)):
-                schema_X.append(args_Y[i])
-                schema_Y.append(args_Y[j])
-        correlmatr_row_names = args_Y
-        correlmatr_col_names = args_Y
-    else:
-        for i in xrange(len(args_X)):
-            for j in xrange(len(args_Y)):
-                schema_X.append(args_X[i])
-                schema_Y.append(args_Y[j])
-        correlmatr_col_names = args_X
-        correlmatr_row_names = args_Y
+    parser.add_argument('-data_table', required=True)
+    parser.add_argument('-metadata_table', required=True)
+    parser.add_argument('-metadata_code_column', required=True)
+    parser.add_argument('-metadata_isCategorical_column', required=True)
 
-    # Read data and split between X and Y matrices according to schemata
-    schema, data = query_with_privacy(fname_db=fname_loc_db, query=query)
-    data = np.array(data, dtype=np.float64)
-    idx_X = [schema.index(v) for v in schema_X if v in schema]
-    idx_Y = [schema.index(v) for v in schema_Y if v in schema]
-    X = data[:, idx_X]
-    Y = data[:, idx_Y]
-    local_in = X, Y, schema_X, schema_Y, correlmatr_row_names, correlmatr_col_names
+    args, unknown = parser.parse_known_args()
+    varibles = json.loads(args.variables)
+    formula = json.loads(args.formula)
+    no_intercept = json.loads(args.no_intercept)
+    input_local_DB = args.input_local_DB
+    data_table = args.data_table
+    metadata_table = args.metadata_table
+    metadata_code_column = args.metadata_code_column
+    metadata_isCategorical_column = args.metadata_isCategorical_column
+    Y, X = query_from_formula(fname_db=input_local_DB, formula=formula, variables=varibles,
+                       data_table=data_table, metadata_table=metadata_table,
+                       metadata_code_column=metadata_code_column,
+                       metadata_isCategorical_column=metadata_isCategorical_column,
+                       no_intercept=no_intercept)
+
+    schema_X, schema_Y = [], []
+    if Y == None:
+        for i in xrange(len(X.columns)):
+            for j in xrange(i + 1, len(X.columns)):
+                schema_X.append(X.design_info.column_names[i])
+                schema_Y.append(X.design_info.column_names[j])
+        correlmatr_row_names = X.design_info.column_names
+        correlmatr_col_names = X.design_info.column_names
+    else:
+        for i in xrange(len(X.columns)):
+            for j in xrange(len(Y.columns)):
+                schema_X.append(X.design_info.column_names[i])
+                schema_Y.append(Y.design_info.column_names[j])
+        correlmatr_col_names = X.design_info.column_names
+        correlmatr_row_names = Y.design_info.column_names
+    local_in = np.asarray(X), np.asarray(Y), schema_X, schema_Y, correlmatr_row_names, correlmatr_col_names
 
     # Run algorithm local step
     local_out = pearsonr_local(local_in=local_in)
