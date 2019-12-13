@@ -102,14 +102,22 @@ For Ubuntu 18.04.3 LTS we **used and tested** ```letsencrypt```. Following the i
 https://devanswers.co/lets-encrypt-ssl-apache-ubuntu-18-04/ <br />
 to generate an SSL certificate you need to:
 
-1. Install Let’s Encrypt client (Certbot) <br />
+0. Install apache if not already installed. For Ubuntu 18.04.3 LTS we <br />
+followed the instructions from <a href="https://devanswers.co/installing-apache-ubuntu-18-04-server-virtual-hosts/">here</a> <br />
+
+```sudo apt update && sudo apt install apache2```<br/>
+
+1. To see if Apache installed correctly, we can check the current Apache service status.<br />
+```sudo service apache2 status``` <br />
+
+2. Install Let’s Encrypt client (Certbot) <br />
 ```sudo apt-get update && sudo apt-get install software-properties-common``` <br />
 ```sudo add-apt-repository universe && sudo add-apt-repository ppa:certbot/certbot``` <br />
 ```sudo apt-get update && sudo apt-get install certbot python-certbot-apache``` <br />
 
 Press Enter or Yes when prompted to continue.
 
-2. Get an SSL Certificate <br />
+3. Get an SSL Certificate <br />
 ```sudo certbot --apache```
 <br />
 
