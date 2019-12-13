@@ -101,7 +101,7 @@ To enable SSL, you need to create an SSL certificate. <br />
 For Ubuntu 18.04.3 LTS we **used and tested** ```letsencrypt```. Following the instruction from here: <br />
 https://devanswers.co/lets-encrypt-ssl-apache-ubuntu-18-04/ to generate an SSL certificate you need to:
 
-0. Install apache if not already installed. For Ubuntu 18.04.3 LTS we followed the instructions from <a href="https://devanswers.co/installing-apache-ubuntu-18-04-server-virtual-hosts/">here</a>
+0. Install apache if not already installed. For Ubuntu 18.04.3 LTS we followed the instructions from <a href="https://devanswers.co/installing-apache-ubuntu-18-04-server-virtual-hosts/">here</a><br />
 ```sudo apt update && sudo apt install apache2```<br/>
 
 1. To see if Apache installed correctly, we can check the current Apache service status.<br />
