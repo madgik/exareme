@@ -13,6 +13,6 @@
 
 
     - name: copy content
-      local_action: copy content={{ stat_result.stat.isdir}} dest={{ current_path}}/domain.txt
+      local_action: copy content={{ stat_result.stat.exists}} dest={{ current_path}}/domain.txt
       vars:
         current_path: "{{ lookup('env','PWD') }}"
