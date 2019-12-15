@@ -53,7 +53,7 @@ def query_with_privacy(fname_db, query):
 
 def query_from_formula(fname_db, formula, variables,
                        data_table, metadata_table, metadata_code_column, metadata_isCategorical_column,
-                       no_intercept=False):
+                       no_intercept=False, coding=None):
     """
     Queries a database based on a list of variables and a patsy (R language) formula. Additionally performs privacy
     check and returns results only if number of datapoints is sufficient.
@@ -86,6 +86,9 @@ def query_from_formula(fname_db, formula, variables,
     """
     from numpy import log as log
     from numpy import exp as exp
+
+    assert coding in {None, 'Treatment', 'Poly', 'Sum', 'Diff', 'Helmert'}
+
     if no_intercept:
         formula += '-1'
     conn = sqlite3.connect(fname_db)
@@ -118,6 +121,10 @@ def query_from_formula(fname_db, formula, variables,
         # TODO privacy check by variable
     # Pull is_categorical from metadata table
     is_categorical = [pd.read_sql_query(sql=iscateg_query(v), con=conn).iat[0, 0] for v in variables]
+    if coding is not None:
+        for c, v in zip(is_categorical, variables):
+            if c:
+                formula = formula.replace(v, 'C(' + v + ', ' + coding + ')')
     # Pull data from db and return design matrix(-ces)
     data = pd.read_sql_query(sql=data_query(variables, is_categorical), con=conn)
     if '~' in formula:
@@ -244,7 +251,7 @@ def main():
               'righthippocampus/ 2)'
     Y, X = query_from_formula(fname_db, formula, variables, data_table='DATA', metadata_table='METADATA',
                               metadata_code_column='code', metadata_isCategorical_column='isCategorical',
-                              no_intercept=True)
+                              no_intercept=True, coding='Diff')
     print(X.design_info.column_names)
     print(Y.design_info.column_names)
     print(len(X))
