@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-init_ansible_playbook
 notFound=0
 
 portainer () {
@@ -24,7 +23,7 @@ portainer () {
                             if [[ ${1} == "restart" ]]; then
                                 echo ${1}
                                 #Run secure Portainer
-                                ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml -tags portainerSecure"
+                                ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml --tags portainerSecure"
                                 ${ansible_playbook_start}
 
                                 ansible_playbook_code=$?
@@ -102,7 +101,7 @@ portainer () {
                             if [[ ${1} == "restart" ]]; then
                                 echo ${1}
                                 #Run secure Portainer
-                                ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml -tags portainerSecure"
+                                ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml --tags portainerSecure"
                                 ${ansible_playbook_start}
 
                                 ansible_playbook_code=$?
@@ -139,7 +138,7 @@ portainer () {
                             if [[ ${1} == "restart" ]]; then
                                 echo ${1}
                                 #Run secure Portainer
-                                ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml -tags portainerSecure"
+                                ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml --tags portainerSecure"
                                 ${ansible_playbook_start}
 
                                 ansible_playbook_code=$?
