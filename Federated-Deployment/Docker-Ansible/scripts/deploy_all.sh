@@ -14,7 +14,7 @@ portainer () {
                     domain_name=$(echo "$line" | cut -d ':' -d ' ' -d '"' -f 2 -d '"')
 
                     if [[ ${domain_name} != "" ]]; then
-                        ansible_playbook_check=${ansible_playbook}"../CheckDomain.yaml -vvvv -e domain_name="${domain_name}
+                        ansible_playbook_check=${ansible_playbook}"../CheckDomain.yamlg -e domain_name="${domain_name}
                         ${ansible_playbook_check}
 
                         flag=$(cat domain.txt)
