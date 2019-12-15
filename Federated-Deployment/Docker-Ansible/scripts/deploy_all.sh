@@ -14,7 +14,6 @@ portainer () {
             while IFS= read -r line || [[ -n "$line" ]]; do
                 if [[ "$line" == *DOMAIN_NAME:* ]]; then
                     domain_name=$(echo "$line" | cut -d ':' -d ' ' -d '"' -f 2 -d '"')
-                    echo ${domain_name}
 
                     if [[ ${domain_name} != "" ]]; then
                         ansible_playbook_check=${ansible_playbook}"../CheckDomain.yaml -vvvv -e domain_name="${domain_name}
@@ -141,7 +140,7 @@ portainer () {
         elif [[ ${answer} == "n" ]];then
             echo -e "\nPortainer running in a non Secure way"
             ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml --skip-tags portainerSecure"
-            echo ${ansible_playbook_start}
+            ${ansible_playbook_start}
 
             ansible_playbook_code=$?
 
