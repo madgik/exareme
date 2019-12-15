@@ -14,14 +14,13 @@ portainer () {
                     domain_name=$(echo "$line" | cut -d ':' -d ' ' -d '"' -f 2 -d '"')
 
                     if [[ ${domain_name} != "" ]]; then
-                        ansible_playbook_check=${ansible_playbook}"../CheckDomain.yamlg -e domain_name="${domain_name}
+                        ansible_playbook_check=${ansible_playbook}"../CheckDomain.yaml -e domain_name="${domain_name}
                         ${ansible_playbook_check}
 
                         flag=$(cat domain.txt)
 
                         if [[ ${flag} == "True" ]]; then
                             if [[ ${1} == "restart" ]]; then
-                                echo ${1}
                                 #Run secure Portainer
                                 ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml --tags portainerSecure"
                                 ${ansible_playbook_start}
@@ -36,7 +35,6 @@ portainer () {
                                 echo -e "\nSecure Portainer service are now running"
 
                             else
-                                echo ${1}
                                 #Run secure Portainer
                                 ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml --skip-tags portainer"
                                 ${ansible_playbook_start}
@@ -99,7 +97,6 @@ portainer () {
                             sed -i -e '1iDOMAIN_NAME: "'${domain_name}'"\' ../group_vars/all.yaml
 
                             if [[ ${1} == "restart" ]]; then
-                                echo ${1}
                                 #Run secure Portainer
                                 ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml --tags portainerSecure"
                                 ${ansible_playbook_start}
@@ -113,7 +110,6 @@ portainer () {
                                 fi
                                 echo -e "\nSecure Portainer service are now running"
                             else
-                                echo ${1}
                                 #Run secure Portainer
                                 ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml --skip-tags portainer"
                                 ${ansible_playbook_start}
@@ -136,7 +132,6 @@ portainer () {
                             sed -i -e '1iDOMAIN_NAME: "'${domain_name}'"\' ../group_vars/all.yaml
 
                             if [[ ${1} == "restart" ]]; then
-                                echo ${1}
                                 #Run secure Portainer
                                 ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml --tags portainerSecure"
                                 ${ansible_playbook_start}
@@ -150,7 +145,6 @@ portainer () {
                                 fi
                                 echo -e "\nSecure Portainer service are now running"
                             else
-                                echo ${1}
                                 #Run secure Portainer
                                 ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml --skip-tags portainer"
                                 ${ansible_playbook_start}
@@ -190,6 +184,36 @@ portainer () {
             fi
             break
         elif [[ ${answer} == "n" ]];then
+
+            if [[ ${1} == "restart" ]]; then
+                #Run secure Portainer
+                ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml --skip-tags portainerSecure,exareme"
+                ${ansible_playbook_start}
+
+                ansible_playbook_code=$?
+
+                #If status code != 0 an error has occurred
+                if [[ ${ansible_playbook_code} -ne 0 ]]; then
+                    echo "Playbook \"../Start-Exareme.yaml\" exited with error." >&2
+                    exit 1
+                fi
+                echo -e "\nExareme services and non Secure Portainer service are now running"
+
+            else
+                #Run secure Portainer
+                ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml --skip-tags portainer"
+                ${ansible_playbook_start}
+
+                ansible_playbook_code=$?
+
+                #If status code != 0 an error has occurred
+                if [[ ${ansible_playbook_code} -ne 0 ]]; then
+                    echo "Playbook \"../Start-Exareme.yaml\" exited with error." >&2
+                    exit 1
+                fi
+                echo -e "\nExareme services and Secure Portainer service are now running"
+            fi
+
             ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml --skip-tags portainerSecure"
             ${ansible_playbook_start}
 
