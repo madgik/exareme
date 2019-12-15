@@ -197,7 +197,7 @@ portainer () {
                     echo "Playbook \"../Start-Exareme.yaml\" exited with error." >&2
                     exit 1
                 fi
-                echo -e "\nExareme services and non Secure Portainer service are now running"
+                echo -e "\nNon Secure Portainer service is now running"
 
             else
                 #Run secure Portainer
@@ -213,18 +213,6 @@ portainer () {
                 fi
                 echo -e "\nExareme services and Secure Portainer service are now running"
             fi
-
-            ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml --skip-tags portainerSecure"
-            ${ansible_playbook_start}
-
-            ansible_playbook_code=$?
-
-            #If status code != 0 an error has occurred
-            if [[ ${ansible_playbook_code} -ne 0 ]]; then
-                echo "Playbook \"../Start-Exareme.yaml\" exited with error." >&2
-                exit 1
-            fi
-            echo -e "\nExareme services and non Secure Portainer service are now running"
             break
         else
             echo ${answer}" is not a valid answer! Try again.. [ y/n ]"
