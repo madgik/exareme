@@ -211,6 +211,11 @@ portainer () {
     return
 }
 
+# If include-only flag is given don't execute the script
+if [[ "$1" == "include-only" ]]; then
+  return
+fi
+
 echo -e "\nInitializing Swarm, initializing mip-federation network, copying Compose-Files folder to Manager of Swarm..."
 sleep 1
 
