@@ -26,7 +26,7 @@
          || mkdir -p {{ PORTAINER_DATA }}
          || ( echo Failed to create {{ PORTAINER_DATA }}; exit 1 )
 
-- name: Run Portainer Service
+- name: Run Secure Portainer Service
   shell: >
     docker service create \
     --publish mode=host,target={{ PORTAINER_PORT }},published=9000 \
@@ -40,7 +40,7 @@
   tags:
     - portainerSecure
 
-- name: Run Portainer Service
+- name: Run non Secure Portainer Service
   shell: >
     docker service create \
     --publish mode=host,target={{ PORTAINER_PORT }},published=9000 \
