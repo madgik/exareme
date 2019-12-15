@@ -67,7 +67,7 @@ portainer () {
                 read domain
                 domain_name=${domain}
 
-                ansible_playbook_check=${ansible_playbook}"../CheckDomain.yaml -vvvv -e domain_name="${domain_name}
+                ansible_playbook_check=${ansible_playbook}"../CheckDomain.yaml -e domain_name="${domain_name}
                 ${ansible_playbook_check}
 
                 flag=$(cat domain.txt)
@@ -138,7 +138,6 @@ portainer () {
             fi
             break
         elif [[ ${answer} == "n" ]];then
-            echo -e "\nPortainer running in a non Secure way"
             ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml --skip-tags portainerSecure"
             ${ansible_playbook_start}
 
@@ -149,7 +148,7 @@ portainer () {
                 echo "Playbook \"../Start-Exareme.yaml\" exited with error." >&2
                 exit 1
             fi
-            echo -e "\nExareme services and non secure Portainer service are now running"
+            echo -e "\nExareme services and non Secure Portainer service are now running"
             break
         else
             echo ${answer}" is not a valid answer! Try again.. [ y/n ]"
