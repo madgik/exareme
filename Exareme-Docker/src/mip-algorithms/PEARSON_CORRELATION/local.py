@@ -101,7 +101,7 @@ def main():
     metadata_code_column = 'code'  # TODO Fix this in exareme (received null)
     # metadata_code_column = args.metadata_code_column
     metadata_isCategorical_column = args.metadata_isCategorical_column
-    coding = None if args.coding=='null' else args.coding
+    coding = None if args.coding == 'null' else args.coding
     left_vars, right_vars = query_from_formula(fname_db=input_local_DB, formula=formula, variables=varibles,
                                                data_table=data_table, metadata_table=metadata_table,
                                                metadata_code_column=metadata_code_column,

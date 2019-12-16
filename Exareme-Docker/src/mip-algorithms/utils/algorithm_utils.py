@@ -77,6 +77,9 @@ def query_from_formula(fname_db, formula, variables,
     no_intercept : bool
         If no_intercept is True there is no intercept in the returned matrix(-ices). To use in the case where only a
         rhs expression is needed, not a full formula.
+    coding : None or string
+        Specifies the coding scheme for categorical variables. Must be in {None, 'Treatment', 'Poly', 'Sum', 'Diff',
+        Helmert'}.
 
     Returns
     -------
@@ -96,9 +99,9 @@ def query_from_formula(fname_db, formula, variables,
     # Define query forming functions
     def iscateg_query(var):
         return "SELECT {is_cat} FROM {metadata} WHERE {code}=='{var}';".format(is_cat=metadata_isCategorical_column,
-                                                                             metadata=metadata_table,
-                                                                             code=metadata_code_column,
-                                                                             var=var)
+                                                                               metadata=metadata_table,
+                                                                               code=metadata_code_column,
+                                                                               var=var)
 
     def count_query(varz):
         return 'SELECT COUNT({var}) FROM {data} WHERE {clause};'.format(var=varz[0],
@@ -108,7 +111,7 @@ def query_from_formula(fname_db, formula, variables,
 
     def data_query(varz, is_cat):
         variables_casts = ', '.join([v if not c else 'CAST({v} AS text) AS {v}'.format(v=v) for v, c in
-                           zip(varz, is_cat)])
+                                     zip(varz, is_cat)])
         return 'SELECT {variables} FROM {data} WHERE {clause};'.format(variables=variables_casts,
                                                                        data=data_table,
                                                                        clause=' AND '.join(["{}!=''".format(v)
@@ -123,7 +126,7 @@ def query_from_formula(fname_db, formula, variables,
     if coding is not None:
         for c, v in zip(is_categorical, variables):
             if c:
-                formula = formula.replace(v, 'C({v}, {coding})'.format(v=v,coding=coding))
+                formula = formula.replace(v, 'C({v}, {coding})'.format(v=v, coding=coding))
     # Pull data from db and return design matrix(-ces)
     data = pd.read_sql_query(sql=data_query(variables, is_categorical), con=conn)
     if '~' in formula:
