@@ -47,10 +47,9 @@ portainer () {
                                     exit 1
                                 fi
                                 echo -e "\nExareme services and Secure Portainer service are now running"
-
                             fi
-
                         elif [[ ${flag} == "False" ]]; then
+                            #TODO add ${1} == "restart"
                             echo -e "\nNo certificate for that Domain name: "${domain_name}". Starting without Portainer.."
 
                             ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml --skip-tags portainer,portainerSecure"
@@ -168,6 +167,7 @@ portainer () {
                     done
 
                 else
+                    #TODO add ${1} == "restart"
                     echo -e "\nNo certificate for that Domain name: "${domain_name}". Starting without Portainer.."
                     ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml --skip-tags portainer,portainerSecure"
                     ${ansible_playbook_start}
