@@ -139,7 +139,7 @@ public class AlgorithmProperties {
             String value = inputContent.get(parameterProperties.getName());
             if (value != null && !value.equals("")) {
                 if (!parameterProperties.getValueMultiple() && value.contains(",")
-                        && parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.json)) {
+                        && !parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.json)) {
                     throw new AlgorithmException(
                             "The value of the parameter '" + parameterProperties.getName()
                                     + "' should contain only one value.");
