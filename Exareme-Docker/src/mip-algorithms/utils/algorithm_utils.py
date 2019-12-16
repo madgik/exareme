@@ -8,6 +8,7 @@ import logging
 import os
 import errno
 import pandas as pd
+
 import numpy as np
 from patsy import dmatrix, dmatrices
 
@@ -52,7 +53,7 @@ def query_with_privacy(fname_db, query):
 
 def query_from_formula(fname_db, formula, variables,
                        data_table, metadata_table, metadata_code_column, metadata_isCategorical_column,
-                       no_intercept=False):
+                       no_intercept=False, coding=None):
     """
     Queries a database based on a list of variables and a patsy (R language) formula. Additionally performs privacy
     check and returns results only if number of datapoints is sufficient.
@@ -76,6 +77,9 @@ def query_from_formula(fname_db, formula, variables,
     no_intercept : bool
         If no_intercept is True there is no intercept in the returned matrix(-ices). To use in the case where only a
         rhs expression is needed, not a full formula.
+    coding : None or string
+        Specifies the coding scheme for categorical variables. Must be in {None, 'Treatment', 'Poly', 'Sum', 'Diff',
+        Helmert'}.
 
     Returns
     -------
@@ -85,31 +89,33 @@ def query_from_formula(fname_db, formula, variables,
     """
     from numpy import log as log
     from numpy import exp as exp
+
+    assert coding in {None, 'Treatment', 'Poly', 'Sum', 'Diff', 'Helmert'}
+
     if no_intercept:
         formula += '-1'
     conn = sqlite3.connect(fname_db)
 
     # Define query forming functions
     def iscateg_query(var):
-        q = 'SELECT ' + metadata_isCategorical_column + ' FROM ' + metadata_table
-        q += ' WHERE ' + metadata_code_column + "=='" + var + "';"
-        return q
+        return "SELECT {is_cat} FROM {metadata} WHERE {code}=='{var}';".format(is_cat=metadata_isCategorical_column,
+                                                                               metadata=metadata_table,
+                                                                               code=metadata_code_column,
+                                                                               var=var)
 
     def count_query(varz):
-        q = 'SELECT count(' + varz[0] + ') FROM ' + data_table + ' WHERE '
-        q += ' AND '.join([v + "!=''" for v in varz])
-        q += ';'
-        return q
+        return 'SELECT COUNT({var}) FROM {data} WHERE {clause};'.format(var=varz[0],
+                                                                        data=data_table,
+                                                                        clause=' AND '.join(["{}!=''".format(v)
+                                                                                             for v in varz]))
 
     def data_query(varz, is_cat):
-        variables_casts = [v if not c else 'CAST(' + v + ' AS text) AS ' + v for v, c in
-                           zip(varz, is_cat)]
-        q = 'SELECT '
-        q += ', '.join(variables_casts)
-        q += ' FROM ' + data_table + ' WHERE '
-        q += ' AND '.join([v + "!=''" for v in varz])
-        q += ';'
-        return q
+        variables_casts = ', '.join([v if not c else 'CAST({v} AS text) AS {v}'.format(v=v) for v, c in
+                                     zip(varz, is_cat)])
+        return 'SELECT {variables} FROM {data} WHERE {clause};'.format(variables=variables_casts,
+                                                                       data=data_table,
+                                                                       clause=' AND '.join(["{}!=''".format(v)
+                                                                                            for v in varz]))
 
     # Perform privacy check
     if pd.read_sql_query(sql=count_query(variables), con=conn).iat[0, 0] < PRIVACY_MAGIC_NUMBER:
@@ -117,6 +123,10 @@ def query_from_formula(fname_db, formula, variables,
         # TODO privacy check by variable
     # Pull is_categorical from metadata table
     is_categorical = [pd.read_sql_query(sql=iscateg_query(v), con=conn).iat[0, 0] for v in variables]
+    if coding is not None:
+        for c, v in zip(is_categorical, variables):
+            if c:
+                formula = formula.replace(v, 'C({v}, {coding})'.format(v=v, coding=coding))
     # Pull data from db and return design matrix(-ces)
     data = pd.read_sql_query(sql=data_query(variables, is_categorical), con=conn)
     if '~' in formula:
@@ -124,7 +134,59 @@ def query_from_formula(fname_db, formula, variables,
         return lhs_dm, rhs_dm
     else:
         rhs_dm = dmatrix(formula, data, return_type='dataframe')
-        return rhs_dm
+        return None, rhs_dm
+
+
+def value_casting(value, type):
+    if type == 'text':
+        return str(value)
+    elif type == 'real' or type == 'int':
+        return float(value)
+
+
+def variable_type(value):
+    if str(value) == 'text':
+        return 'S16'
+    elif str(value) == 'real' or str(value) == 'int':
+        return 'float64'
+
+
+def query_database(fname_db, queryData, queryMetadata):
+    # connect to database
+    conn = sqlite3.connect(fname_db)
+    cur = conn.cursor()
+
+    cur.execute(queryData)
+    data = cur.fetchall()
+    if len(data) < PRIVACY_MAGIC_NUMBER:
+        raise PrivacyError('Query results in illegal number of datapoints.')
+    dataSchema = [description[0] for description in cur.description]
+
+    cur.execute(queryMetadata)
+    metadata = cur.fetchall()
+    metadataSchema = [description[0] for description in cur.description]
+    conn.close()
+
+    # Save data to pd.Dataframe
+    dataFrame = pd.DataFrame.from_records(data=data, columns=dataSchema)
+
+    # Cast Dataframe based on metadata
+    metadataVarNames = [str(x) for x in list(zip(*metadata)[0])]
+    metadataTypes = [variable_type(x) for x in list(zip(*metadata)[1])]
+    for varName in dataSchema:
+        index = metadataVarNames.index(varName)
+        dataFrame[varName] = dataFrame[varName].astype(metadataTypes[index])
+
+    return dataSchema, metadataSchema, metadata, dataFrame
+
+
+def variable_categorical_getDistinctValues(metadata):
+    distinctValues = dict()
+    dataTypes = zip((str(x) for x in list(zip(*metadata)[0])), (str(x) for x in list(zip(*metadata)[1])))
+    for md in metadata:
+        if md[2] == 1:  # when variable is categorical
+            distinctValues[str(md[0])] = [value_casting(x, str(md[1])) for x in md[3].split(',')]
+    return distinctValues
 
 
 class StateData(object):
@@ -162,6 +224,14 @@ def init_logger():
     logging.basicConfig(filename='/var/log/exaremePythonAlgorithms.log')
 
 
+class Global2Local_TD(TransferData):
+    def __init__(self, **kwargs):
+        self.data = kwargs
+
+    def get_data(self):
+        return self.data
+
+
 def set_algorithms_output_data(data):
     print(data)
 
@@ -183,9 +253,10 @@ def main():
               'righthippocampus/ 2)'
     Y, X = query_from_formula(fname_db, formula, variables, data_table='DATA', metadata_table='METADATA',
                               metadata_code_column='code', metadata_isCategorical_column='isCategorical',
-                              no_intercept=True)
+                              no_intercept=True, coding='Diff')
     print(X.design_info.column_names)
     print(Y.design_info.column_names)
+    print(len(X))
 
 
 if __name__ == '__main__':
