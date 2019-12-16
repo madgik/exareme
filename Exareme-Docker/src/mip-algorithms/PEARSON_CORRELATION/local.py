@@ -72,6 +72,7 @@ def main():
     parser.add_argument('-y', required=True, help='Variable names in y, comma separated.')
     parser.add_argument('-formula', required=True, help='A string holding a patsy formula.')
     parser.add_argument('-no_intercept', required=True, help='A boolean signaling a no-intercept-by-default behaviour.')
+    parser.add_argument('-coding', required=True, help='Coding method for categorical variables.')
     # Exareme arguments
     parser.add_argument('-input_local_DB', required=True, help='Path to local db.')
     parser.add_argument('-data_table', required=True)
@@ -100,11 +101,12 @@ def main():
     metadata_code_column = 'code'  # TODO Fix this in exareme (received null)
     # metadata_code_column = args.metadata_code_column
     metadata_isCategorical_column = args.metadata_isCategorical_column
+    coding = args.coding
     left_vars, right_vars = query_from_formula(fname_db=input_local_DB, formula=formula, variables=varibles,
                                                data_table=data_table, metadata_table=metadata_table,
                                                metadata_code_column=metadata_code_column,
                                                metadata_isCategorical_column=metadata_isCategorical_column,
-                                               no_intercept=no_intercept)
+                                               no_intercept=no_intercept, coding=coding)
 
     if left_vars is None:
         left_vars = right_vars
