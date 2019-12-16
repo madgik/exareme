@@ -3,7 +3,7 @@
 notFound=0
 
 portainer () {
-    echo -e "\nDo you wish to run Portainer in a secure way? (SSL certificate required) [ y/n ]"
+    echo -e "\nDo you wish to run Portainer in a secure way? (SSL certificate required in Target machine) [ y/n ]"
     read answer
 
     while true
@@ -73,10 +73,11 @@ portainer () {
                             if [[ ${1} == "restart" ]]; then
                                  #If portainer function called from restart.sh
                                 echo -e "\nNo certificate for that Domain name: "${domain_name}". Portainer service did not restart.."
+                                sleep 1
                             else
                                 #portainer function called from start-services/tasks/main.yaml
                                 echo -e "\nNo certificate for that Domain name: "${domain_name}". Starting without Portainer.."
-
+                                sleep 1
                                 ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml --skip-tags portainer,portainerSecure"
                                 ${ansible_playbook_start}
 
@@ -166,7 +167,7 @@ portainer () {
                         if [[ ${info} == "y" ]]; then
                             break
                         elif [[ ${info} == "n" ]]; then
-                            echo "You will be asked again to provide the domain name.."
+                            echo -e "\nYou will be asked again to provide the domain name.."
 
                             #After Playbook is done, remove that info since the user did not want to store info for domain_name
                             sed -i "/DOMAIN_NAME/ d" ../group_vars/all.yaml
@@ -181,9 +182,11 @@ portainer () {
                     #If portainer function called from restart.sh
                     if [[ ${1} == "restart" ]]; then
                         echo -e "\nNo certificate for that Domain name: "${domain_name}". Portainer services did not restart.."
+                        sleep 1
                     #portainer function called from start-services/tasks/main.yaml
                     else
                         echo -e "\nNo certificate for that Domain name: "${domain_name}". Starting without Portainer.."
+                        sleep 1
                         ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml --skip-tags portainer,portainerSecure"
                         ${ansible_playbook_start}
 

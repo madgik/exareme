@@ -41,6 +41,7 @@ if [[ "${answer}" == "1" ]]; then
 	ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml --skip-tags portainer,portainerSecure"
 	${ansible_playbook_start}
 	ansible_playbook_code=$?
+	echo -e "\nExareme services just restarted.."
 elif [[ "${answer}" == "2" ]]; then
     portainer "restart"
 elif [[ "${answer}" == "3" ]]; then
