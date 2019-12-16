@@ -52,7 +52,7 @@ public class ParameterProperties {
             if (columnValuesIsCategorical == null) {
                 throw new AlgorithmException("The parameter field 'columnValuesIsCategorical' was not initialized in the properties.json file.");
             }
-        } else if (type.equals(ParameterType.other) && valueType.equals(ParameterValueType.json)){
+        } else if (valueType.equals(ParameterValueType.json)){
             if(valueMultiple) {
                 throw new AlgorithmException("The parameter field 'valueMultiple' cannot be true because the 'valueType' is json.");
             }
