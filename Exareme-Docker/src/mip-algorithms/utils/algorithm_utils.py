@@ -95,25 +95,24 @@ def query_from_formula(fname_db, formula, variables,
 
     # Define query forming functions
     def iscateg_query(var):
-        q = 'SELECT ' + metadata_isCategorical_column + ' FROM ' + metadata_table
-        q += ' WHERE ' + metadata_code_column + "=='" + var + "';"
-        return q
+        return "SELECT {is_cat} FROM {metadata} WHERE {code}=='{var}';".format(is_cat=metadata_isCategorical_column,
+                                                                             metadata=metadata_table,
+                                                                             code=metadata_code_column,
+                                                                             var=var)
 
     def count_query(varz):
-        q = 'SELECT count(' + varz[0] + ') FROM ' + data_table + ' WHERE '
-        q += ' AND '.join([v + "!=''" for v in varz])
-        q += ';'
-        return q
+        return 'SELECT COUNT({var}) FROM {data} WHERE {clause};'.format(var=varz[0],
+                                                                        data=data_table,
+                                                                        clause=' AND '.join(["{}!=''".format(v)
+                                                                                             for v in varz]))
 
     def data_query(varz, is_cat):
-        variables_casts = [v if not c else 'CAST(' + v + ' AS text) AS ' + v for v, c in
-                           zip(varz, is_cat)]
-        q = 'SELECT '
-        q += ', '.join(variables_casts)
-        q += ' FROM ' + data_table + ' WHERE '
-        q += ' AND '.join([v + "!=''" for v in varz])
-        q += ';'
-        return q
+        variables_casts = ', '.join([v if not c else 'CAST({v} AS text) AS {v}'.format(v=v) for v, c in
+                           zip(varz, is_cat)])
+        return 'SELECT {variables} FROM {data} WHERE {clause};'.format(variables=variables_casts,
+                                                                       data=data_table,
+                                                                       clause=' AND '.join(["{}!=''".format(v)
+                                                                                            for v in varz]))
 
     # Perform privacy check
     if pd.read_sql_query(sql=count_query(variables), con=conn).iat[0, 0] < PRIVACY_MAGIC_NUMBER:
@@ -124,7 +123,7 @@ def query_from_formula(fname_db, formula, variables,
     if coding is not None:
         for c, v in zip(is_categorical, variables):
             if c:
-                formula = formula.replace(v, 'C(' + v + ', ' + coding + ')')
+                formula = formula.replace(v, 'C({v}, {coding})'.format(v=v,coding=coding))
     # Pull data from db and return design matrix(-ces)
     data = pd.read_sql_query(sql=data_query(variables, is_categorical), con=conn)
     if '~' in formula:
