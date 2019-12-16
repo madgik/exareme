@@ -138,16 +138,15 @@ public class AlgorithmProperties {
         for (ParameterProperties parameterProperties : this.getParameters()) {
             String value = inputContent.get(parameterProperties.getName());
             if (value != null && !value.equals("")) {
-                if (!parameterProperties.getValueMultiple() && value.contains(",")) {
+                if (!parameterProperties.getValueMultiple() && value.contains(",")
+                        && parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.json)) {
                     throw new AlgorithmException(
                             "The value of the parameter '" + parameterProperties.getName()
                                     + "' should contain only one value.");
                 }
-                String[] values = value.split(",");
-                for (String curValue : values) {
-                    validateAlgorithmParameterValueType(curValue, parameterProperties);
-                    validateAlgorithmParameterType(curValue, parameterProperties, pathology);
-                }
+                validateAlgorithmParameterValueType(value, parameterProperties);
+                validateAlgorithmParameterType(value, parameterProperties, pathology);
+
             } else {            // if value not given or it is blank
                 if (parameterProperties.getValueNotBlank()) {
                     throw new AlgorithmException(
@@ -166,7 +165,6 @@ public class AlgorithmProperties {
 
     /**
      * Checks if the given parameter input has acceptable values for that specific parameter.
-     * If the parameter has multiple values, only one is provided each time in this function.
      *
      * @param value               the value given as input
      * @param parameterProperties the rules that the value should follow
@@ -177,31 +175,33 @@ public class AlgorithmProperties {
             ParameterProperties parameterProperties,
             String pathology
     ) throws AlgorithmException, CDEsMetadataException {
-
-        if (parameterProperties.getType().equals(ParameterProperties.ParameterType.column)) {
-            String[] values = {value};
-            validateCDEVariables(values, parameterProperties, pathology);
-        } else if (parameterProperties.getType().equals(ParameterProperties.ParameterType.formula)) {
-            String[] values = value.split("[+\\-*:0]+");
-            validateCDEVariables(values, parameterProperties, pathology);
-        }
-        // If value is not a column (type=other) then check for min-max-enumerations
-        else if (parameterProperties.getType().equals(ParameterProperties.ParameterType.other)) {
-            if (parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.integer)
-                    || parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.real)) {
-                if (parameterProperties.getValueMin() != null && Double.parseDouble(value) < parameterProperties.getValueMin())
-                    throw new AlgorithmException("The value(s) of the parameter '" + parameterProperties.getName()
-                            + "' should be greater than " + parameterProperties.getValueMin() + " .");
-                if (parameterProperties.getValueMax() != null && Double.parseDouble(value) > parameterProperties.getValueMax())
-                    throw new AlgorithmException("The value(s) of the parameter '" + parameterProperties.getName()
-                            + "' should be less than " + parameterProperties.getValueMax() + " .");
-            } else if (parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.string)) {
-                if (parameterProperties.getValueEnumerations() == null)
-                    return;
-                List<String> enumerations = Arrays.asList(parameterProperties.getValueEnumerations());
-                if (!enumerations.contains(value))
-                    throw new AlgorithmException("The value '" + value + "' of the parameter '" + parameterProperties.getName()
-                            + "' is not included in the valueEnumerations " + Arrays.toString(parameterProperties.getValueEnumerations()) + " .");
+        // First we split in case we have multiple values.
+        String[] values = value.split(",");
+        for(String singleValue: values) {
+            if (parameterProperties.getType().equals(ParameterProperties.ParameterType.column)) {
+                validateCDEVariables(values, parameterProperties, pathology);
+            } else if (parameterProperties.getType().equals(ParameterProperties.ParameterType.formula)) {
+                String[] formulaValues = singleValue.split("[+\\-*:0]+");
+                validateCDEVariables(formulaValues, parameterProperties, pathology);
+            }
+            // If value is not a column (type=other) then check for min-max-enumerations
+            else if (parameterProperties.getType().equals(ParameterProperties.ParameterType.other)) {
+                if (parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.integer)
+                        || parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.real)) {
+                    if (parameterProperties.getValueMin() != null && Double.parseDouble(singleValue) < parameterProperties.getValueMin())
+                        throw new AlgorithmException("The value(s) of the parameter '" + parameterProperties.getName()
+                                + "' should be greater than " + parameterProperties.getValueMin() + " .");
+                    if (parameterProperties.getValueMax() != null && Double.parseDouble(singleValue) > parameterProperties.getValueMax())
+                        throw new AlgorithmException("The value(s) of the parameter '" + parameterProperties.getName()
+                                + "' should be less than " + parameterProperties.getValueMax() + " .");
+                } else if (parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.string)) {
+                    if (parameterProperties.getValueEnumerations() == null)
+                        return;
+                    List<String> enumerations = Arrays.asList(parameterProperties.getValueEnumerations());
+                    if (!enumerations.contains(singleValue))
+                        throw new AlgorithmException("The value '" + singleValue + "' of the parameter '" + parameterProperties.getName()
+                                + "' is not included in the valueEnumerations " + Arrays.toString(parameterProperties.getValueEnumerations()) + " .");
+                }
             }
         }
     }
@@ -252,21 +252,7 @@ public class AlgorithmProperties {
             String value,
             ParameterProperties parameterProperties
     ) throws AlgorithmException {
-        if (parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.real)) {
-            try {
-                Double.parseDouble(value);
-            } catch (NumberFormatException nfe) {
-                throw new AlgorithmException(
-                        "The value of the parameter '" + parameterProperties.getName() + "' should be a real number.");
-            }
-        } else if (parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.integer)) {
-            try {
-                Integer.parseInt(value);
-            } catch (NumberFormatException e) {
-                throw new AlgorithmException(
-                        "The value of the parameter '" + parameterProperties.getName() + "' should be an integer.");
-            }
-        } else if (parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.json)) {
+        if(parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.json)){
             try {
                 new JSONObject(value);
             } catch (JSONException ex) {
@@ -278,11 +264,31 @@ public class AlgorithmProperties {
                                     + parameterProperties.getName() + "' cannot be parsed into json.");
                 }
             }
-        } else if (parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.string)) {
-            if (value.equals("")) {
-                throw new AlgorithmException(
-                        "The value of the parameter '" + parameterProperties.getName()
-                                + "' contains an empty string.");
+        }
+
+        // If it is not json it could be more than one value
+        String[] values = value.split(",");
+        for(String curValue: values) {
+            if (parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.real)) {
+                try {
+                    Double.parseDouble(curValue);
+                } catch (NumberFormatException nfe) {
+                    throw new AlgorithmException(
+                            "The value of the parameter '" + parameterProperties.getName() + "' should be a real number.");
+                }
+            } else if (parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.integer)) {
+                try {
+                    Integer.parseInt(curValue);
+                } catch (NumberFormatException e) {
+                    throw new AlgorithmException(
+                            "The value of the parameter '" + parameterProperties.getName() + "' should be an integer.");
+                }
+            } else if (parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.string)) {
+                if (curValue.equals("")) {
+                    throw new AlgorithmException(
+                            "The value of the parameter '" + parameterProperties.getName()
+                                    + "' contains an empty string.");
+                }
             }
         }
     }
