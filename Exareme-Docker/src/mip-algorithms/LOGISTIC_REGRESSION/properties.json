@@ -8,8 +8,9 @@
             "name": "x",
             "desc": "A list of variables from database. The variable should be Real, Integer. It cannot be empty",
             "type": "column",
-            "columnValuesSQLType": "real, integer",
-            "columnValuesIsCategorical": "false",
+            "columnValuesSQLType": "real, integer, text",
+            "columnValuesIsCategorical": "",
+            "columnValuesNumOfEnumerations": "",
             "value": "leftaccumbensarea, leftacgganteriorcingulategyrus, leftainsanteriorinsula, rightaccumbensarea, rightacgganteriorcingulategyrus, rightainsanteriorinsula",
             "valueNotBlank": true,
             "valueMultiple": true,
@@ -21,6 +22,7 @@
             "type": "column",
             "columnValuesSQLType": "text, integer",
             "columnValuesIsCategorical": "true",
+            "columnValuesNumOfEnumerations": "",
             "value": "gender",
             "valueNotBlank": true,
             "valueMultiple": false,
@@ -64,6 +66,48 @@
             "valueType": "integer",
             "valueMin": 1,
             "valueMax": 100
+        },
+        {
+            "name": "formula",
+            "desc": "Patsy formula  (R language syntax).",
+            "type": "other",
+            "value": "agegroup + gender _ leftaccumbensarea + leftacgganteriorcingulategyrus + leftainsanteriorinsula",
+            "defaultValue": "",
+            "valueNotBlank": true,
+            "valueMultiple": false,
+            "valueType": "string"
+        },
+        {
+            "name": "no_intercept",
+            "desc": "Boolean flag for having no intercept by default.",
+            "type": "other",
+            "value": "true",
+            "defaultValue": "false",
+            "valueNotBlank": false,
+            "valueMultiple": false,
+            "valueType": "string",
+            "valueEnumerations": [
+                "true",
+                "false"
+            ]
+        },
+        {
+            "name": "coding",
+            "desc": "Coding method for categorical variables.",
+            "type": "other",
+            "value": "null",
+            "defaultValue": "null",
+            "valueNotBlank": false,
+            "valueMultiple": false,
+            "valueType": "string",
+            "valueEnumerations": [
+                "null",
+                "Treatment",
+                "Diff",
+                "Poly",
+                "Sum",
+                "Helmert"
+            ]
         }
     ]
 }

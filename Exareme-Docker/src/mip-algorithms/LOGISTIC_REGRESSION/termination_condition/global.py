@@ -4,7 +4,6 @@ from __future__ import print_function
 import sys
 from os import path
 from argparse import ArgumentParser
-import logging
 
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/utils/')
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) +
@@ -16,8 +15,8 @@ from log_regr_lib import PREC
 
 def termination_condition(global_state, max_iter):
     delta = global_state['delta']
-    iter = global_state['iter']
-    if delta < PREC or iter >= max_iter:
+    iter_ = global_state['iter_']
+    if delta < PREC or iter_ >= max_iter:
         set_algorithms_output_data('STOP')
     else:
         set_algorithms_output_data('CONTINUE')

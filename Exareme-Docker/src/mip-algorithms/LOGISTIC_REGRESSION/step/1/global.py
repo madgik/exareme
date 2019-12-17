@@ -19,11 +19,9 @@ def logregr_global_iter(global_state, global_in):
     n_obs = global_state['n_obs']
     n_cols = global_state['n_cols']
     ll_old = global_state['ll']
-    coeff = global_state['coeff']
-    iter = global_state['iter']
-    y_val_dict = global_state['y_val_dict']
-    schema_X = global_state['schema_X']
-    schema_Y = global_state['schema_Y']
+    iter_ = global_state['iter_']
+    y_name = global_state['y_name']
+    x_names = global_state['x_names']
     # Unpack global input
     ll_new, grad, hess = global_in.get_data()
 
@@ -34,11 +32,11 @@ def logregr_global_iter(global_state, global_in):
     )
     # Update termination quantities
     delta = abs(ll_new - ll_old)
-    iter += 1
+    iter_ += 1
 
     # Pack state and results
-    global_state = StateData(n_obs=n_obs, n_cols=n_cols, ll=ll_new, coeff=coeff, delta=delta, iter=iter,
-                             y_val_dict=y_val_dict, schema_X=schema_X, schema_Y=schema_Y)
+    global_state = StateData(n_obs=n_obs, n_cols=n_cols, ll=ll_new, coeff=coeff, delta=delta,
+                             iter_=iter_, y_name=y_name, x_names=x_names)
     global_out = LogRegrIter_Glob2Loc_TD(coeff)
     return global_state, global_out
 
