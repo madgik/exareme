@@ -11,6 +11,7 @@ We will refer to the machine from which you run the ansible scripts as Admin and
 2) Install Python (version 2.7) in all Target machines, in order for playbooks to run.
 
 3) Install Docker in all Target machines.
+4) Install Docker compose all Target machines.
 
 # Ports
 
