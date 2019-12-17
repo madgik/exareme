@@ -4,36 +4,33 @@
 	"type": "local_global",
 	"status": "enabled",
 	"vtype": "",
-	"parameters": [ {
-		"name": "x",
-		"desc": "Independent variables: A list of variables from database.",
-		"type": "column",
-		"columnValuesSQLType": "",
-		"columnValuesIsCategorical": "",
-		"columnValuesNumOfEnumerations": "",
-		"value": "righthippocampus,lefthippocampus",
-		"valueNotBlank": true,
-		"valueMultiple": true,
-		"valueType": "string"
-	}, {
-		"name": "y",
-		"desc": "Dependent variable: A categorical variable form database.",
-		"type": "column",
-		"columnValuesSQLType": "",
-		"columnValuesIsCategorical": "true",
-		"columnValuesNumOfEnumerations": "",
-		"value": "alzheimerbroadcategory",
-		"valueNotBlank": true,
-		"valueMultiple": false,
-		"valueType": "string"
-	},{
+	"parameters": [{
+			"name": "x",
+			"desc": "Independent variables: A list of variables from database.",
+			"type": "column",
+			"columnValuesSQLType": "",
+			"columnValuesIsCategorical": "",
+			"columnValuesNumOfEnumerations": "",
+			"value": "righthippocampus,lefthippocampus",
+			"valueNotBlank": true,
+			"valueMultiple": true,
+			"valueType": "string"
+		}, {
+			"name": "y",
+			"desc": "Dependent variable: A categorical variable form database.",
+			"type": "column",
+			"columnValuesSQLType": "",
+			"columnValuesIsCategorical": "true",
+			"columnValuesNumOfEnumerations": "",
+			"value": "alzheimerbroadcategory",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "string"
+		}, {
 			"name": "iterationNumber",
 			"desc": "The iterationNumber shows the id of the testing dataset.",
 			"type": "other",
 			"value": "0",
-			"min": null,
-			"max": null,
-			"enumerations": null,
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "integer"
@@ -42,9 +39,6 @@
 			"desc": "Additive smoothing parameter (0 for no smoothing)",
 			"type": "other",
 			"value": "0.1",
-			"min": null,
-			"max": null,
-			"enumerations": null,
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "real"
@@ -53,9 +47,6 @@
 			"desc": "Predefined value for the dbIdentifier",
 			"type": "other",
 			"value": "",
-			"min": null,
-			"max": null,
-			"enumerations": null,
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "string"

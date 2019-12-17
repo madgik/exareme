@@ -1,41 +1,42 @@
 {
-	"name": "HISTOGRAMS",
+	"name": "MULTIPLE_HISTOGRAMS",
 	"desc": "Creates a histogram plot of x. Bins have a uniform width. Histogram displays the bins as rectangles such that the height of each rectangle indicates the number of elements in the bin.",
-	"type": "multiple_local_global",
+	"type": "python_multiple_local_global",
+	"status": "enabled",
 	"parameters": [{
 			"name": "x",
-			"desc": "A variable from database to distribute among bins.",
+			"desc": "Variables from database to distribute among bins. The variable should be Real, Integer or String. The variable can be either numerical or categorical. It cannot be empty",
 			"type": "column",
 			"columnValuesSQLType": "real,integer,text",
 			"columnValuesIsCategorical": "",
 			"columnValuesNumOfEnumerations": "",
-			"value": "lefthippocampus",
+			"value": "rightententorhinalarea,righthippocampus",
 			"valueNotBlank": true,
-			"valueMultiple": false,
+			"valueMultiple": true,
 			"valueType": "string"
 		}, {
 			"name": "y",
-			"desc": "(Optional). A categorical variable from database. If not None, plots a histogram with a bar for each category in y",
+			"desc": "Categorical variables from database. If not None, plots a histogram with a bar for each category in y",
 			"type": "column",
 			"columnValuesSQLType": "text,integer",
 			"columnValuesIsCategorical": "true",
 			"columnValuesNumOfEnumerations": "",
-			"value": "gender",
+			"value": "gender, alzheimerbroadcategory",
 			"valueNotBlank": false,
-			"valueMultiple": false,
+			"valueMultiple": true,
 			"valueType": "string"
 		}, {
 			"name": "bins",
-			"desc": "Number of bins",
+			"desc": "Bin of each variable in Json format",
 			"type": "other",
-			"value": "50",
+			"value": "{ \"rightententorhinalarea\" : 35, \"righthippocampus\" : 35 }",
 			"valueMin": 1,
 			"valueNotBlank": false,
 			"valueMultiple": false,
-			"valueType": "integer"
+			"valueType": "json"
 		}, {
 			"name": "pathology",
-			"desc": "The name of the pathology in which the dataset belongs to.",
+			"desc": "The name of the pathology that the dataset belongs to.",
 			"type": "pathology",
 			"value": "dementia",
 			"valueNotBlank": true,
@@ -43,7 +44,7 @@
 			"valueType": "string"
 		}, {
 			"name": "dataset",
-			"desc": "The names of one or more datasets, in which the algorithm will be executed.",
+			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed.",
 			"type": "dataset",
 			"value": "desd-synthdata",
 			"valueNotBlank": true,

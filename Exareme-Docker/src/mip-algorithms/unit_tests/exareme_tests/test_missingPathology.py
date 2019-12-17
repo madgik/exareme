@@ -6,7 +6,7 @@ import logging
 endpointUrl='http://88.197.53.38:9090/mining/query/LINEAR_REGRESSION'
 
 def test_LINEAR_REGRESSION():
-    logging.info("---------- TEST : Algorithms for Privacy Error")
+    logging.info("---------- TEST : Algorithms for User Error")
     data = [{ "name": "x",	"value": "alzheimerbroadcategory*gender*brainstem*opticchiasm"},
             { "name": "y",  "value": "lefthippocampus"},
             { "name": "referencevalues", "value": "[{\"name\":\"gender\",\"val\":\"M\"}]"},
@@ -22,7 +22,7 @@ def test_LINEAR_REGRESSION():
 
 
 def check_result(result):
-    assert result == "{\"result\" : [{\"data\":\"Missing key: 'pathology'. You need to select one for running an Experiment.\",\"type\":\"text/plain+user_error\"}]}"
+    assert result == "{\"result\" : [{\"data\":\"The value of the parameter 'pathology' should not be blank.\",\"type\":\"text/plain+error\"}]}"
 if __name__ == '__main__':
     unittest.main()
 
