@@ -47,11 +47,14 @@ public class ParameterProperties {
             throw new AlgorithmException("The parameter field 'type' was not initialized in the properties.json file.");
         } else if (type.equals(ParameterType.column) || type.equals(ParameterType.formula)) {
             if (columnValuesSQLType == null) {
-                throw new AlgorithmException("The parameter field 'columnValuesSQLType' was not initialized in the properties.json file.");
             }
 
             if (columnValuesIsCategorical == null) {
                 throw new AlgorithmException("The parameter field 'columnValuesIsCategorical' was not initialized in the properties.json file.");
+            }
+        } else if (valueType.equals(ParameterValueType.json)){
+            if(valueMultiple) {
+                throw new AlgorithmException("The parameter field 'valueMultiple' cannot be true because the 'valueType' is json.");
             }
         }
         if (value == null) {

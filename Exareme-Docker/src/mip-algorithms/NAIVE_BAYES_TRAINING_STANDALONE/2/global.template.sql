@@ -82,6 +82,8 @@ where colname in (select code from defaultDB.globalmetadatatbl  where categorica
 and colname <> '%{y}';
 
 --select * from defaultDB.global_probabilities;
+var 'result' from  select * from (totabulardataresourceformat title:NAIVE_BAYES_TABLE types:text,text,text,real,real,real
+select colname,val,classval,average,sigma,probability from defaultDB.global_probabilities);
 
-select * from (totabulardataresourceformat title:NAIVE_BAYES_TABLE types:text,text,text,real,real,real
-select colname,val,classval,average,sigma,probability from defaultdb.global_probabilities);
+
+select '{"result": [' || '%{result}' || ']}';
