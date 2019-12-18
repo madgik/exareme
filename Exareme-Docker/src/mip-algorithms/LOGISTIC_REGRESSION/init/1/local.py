@@ -3,12 +3,13 @@ from __future__ import print_function
 
 import json
 import sys
-from os import path
 from argparse import ArgumentParser
+from os import path
 
 import numpy as np
 
-sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) + '/utils/')
+sys.path.append(
+    path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) + '/utils/')
 sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) +
                 '/LOGISTIC_REGRESSION/')
 
@@ -32,24 +33,25 @@ def logregr_local_init(local_in):
     return local_state, local_out
 
 
-def main(args):
+def main():
     # Parse arguments
     parser = ArgumentParser()
     # Algo arguments
     parser.add_argument('-x', required=True, help='Variable names in x, comma separated.')
     parser.add_argument('-y', required=True, help='Variable names in y, comma separated.')
     parser.add_argument('-formula', required=True, help='A string holding a patsy formula.')
-    parser.add_argument('-no_intercept', required=True, help='A boolean signaling a no-intercept-by-default behaviour.')
-    parser.add_argument('-coding', required=True, help='Coding method for categorical variables.')
+    parser.add_argument('-no_intercept', required=True,
+                        help='A boolean signaling a no-intercept-by-default behaviour.')
     # Exareme arguments
-    parser.add_argument('-cur_state_pkl', required=True, help='Path to the pickle file holding the current state.')
+    parser.add_argument('-cur_state_pkl', required=True,
+                        help='Path to the pickle file holding the current state.')
     parser.add_argument('-input_local_DB', required=True, help='Path to local db.')
     parser.add_argument('-data_table', required=True)
     parser.add_argument('-metadata_table', required=True)
     parser.add_argument('-metadata_code_column', required=True)
     parser.add_argument('-metadata_isCategorical_column', required=True)
 
-    args, unknown = parser.parse_known_args(args)
+    args, unknown = parser.parse_known_args()
     args_x = list(
             args.x
                 .replace(' ', '')
@@ -65,17 +67,15 @@ def main(args):
     input_local_DB = args.input_local_DB
     data_table = args.data_table
     metadata_table = args.metadata_table
-    metadata_code_column = 'code'  # TODO Fix this in exareme (received null)
-    # metadata_code_column = args.metadata_code_column
+    metadata_code_column = args.metadata_code_column
     metadata_isCategorical_column = args.metadata_isCategorical_column
-    coding = None if args.coding == 'null' else args.coding
 
     # Get data from local DB
     Y, X = query_from_formula(fname_db=input_local_DB, formula=formula, variables=varibles,
                               data_table=data_table, metadata_table=metadata_table,
                               metadata_code_column=metadata_code_column,
                               metadata_isCategorical_column=metadata_isCategorical_column,
-                              no_intercept=no_intercept, coding=coding)
+                              no_intercept=no_intercept, coding=None)
     if len(Y.columns) != 2:
         raise ExaremeError('Variable must contain only two categories.')
     local_in = Y, X
@@ -89,6 +89,4 @@ def main(args):
 
 
 if __name__ == '__main__':
-    import sys
-    print(sys.argv[1:])
-    main(sys.argv[1:])
+    main()

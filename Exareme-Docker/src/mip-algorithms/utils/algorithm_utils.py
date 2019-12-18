@@ -255,9 +255,8 @@ class ExaremeError(Exception):
 
 def main():
     fname_db = '/Users/zazon/madgik/mip_data/dementia/datasets.db'
-    variables = ['gender', 'lefthippocampus', 'righthippocampus']
-    formula = 'gender ~ (lefthippocampus + righthippocampus)**3 + exp(righthippocampus) + I(lefthippocampus * ' \
-              'righthippocampus/ 2)'
+    variables = ['gender', 'lefthippocampus', 'alzheimerbroadcategory']
+    formula = 'gender ~ alzheimerbroadcategory * lefthippocampus'
     Y, X = query_from_formula(fname_db, formula, variables, data_table='DATA',
                               metadata_table='METADATA',
                               metadata_code_column='code',
@@ -265,7 +264,7 @@ def main():
                               no_intercept=True, coding='Diff')
     print(X.design_info.column_names)
     print(Y.design_info.column_names)
-    print(len(X))
+    print(Y)
 
 
 if __name__ == '__main__':

@@ -11,7 +11,7 @@
             "columnValuesSQLType": "real, integer, text",
             "columnValuesIsCategorical": "",
             "columnValuesNumOfEnumerations": "",
-            "value": "leftaccumbensarea, leftacgganteriorcingulategyrus, leftainsanteriorinsula, rightaccumbensarea, rightacgganteriorcingulategyrus, rightainsanteriorinsula",
+            "value": "alzheimerbroadcategory, lefthippocampus",
             "valueNotBlank": true,
             "valueMultiple": true,
             "valueType": "string"
@@ -71,7 +71,7 @@
             "name": "formula",
             "desc": "Patsy formula  (R language syntax).",
             "type": "other",
-            "value": "agegroup + gender _ leftaccumbensarea + leftacgganteriorcingulategyrus + leftainsanteriorinsula",
+            "value": "gender _ alzheimerbroadcategory * lefthippocampus",
             "defaultValue": "",
             "valueNotBlank": true,
             "valueMultiple": false,
@@ -81,7 +81,7 @@
             "name": "no_intercept",
             "desc": "Boolean flag for having no intercept by default.",
             "type": "other",
-            "value": "true",
+            "value": "false",
             "defaultValue": "false",
             "valueNotBlank": false,
             "valueMultiple": false,
@@ -89,24 +89,6 @@
             "valueEnumerations": [
                 "true",
                 "false"
-            ]
-        },
-        {
-            "name": "coding",
-            "desc": "Coding method for categorical variables.",
-            "type": "other",
-            "value": "null",
-            "defaultValue": "null",
-            "valueNotBlank": false,
-            "valueMultiple": false,
-            "valueType": "string",
-            "valueEnumerations": [
-                "null",
-                "Treatment",
-                "Diff",
-                "Poly",
-                "Sum",
-                "Helmert"
             ]
         }
     ]

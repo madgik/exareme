@@ -14,8 +14,8 @@ class LogRegrInit_Loc2Glob_TD(TransferData):
     def __init__(self, *args):
         self.n_obs = args[0]
         self.n_cols = args[1]
-        self.y_name = args[3]
-        self.x_names = args[2]
+        self.y_name = args[2]
+        self.x_names = args[3]
 
     def get_data(self):
         return self.n_obs, self.n_cols, self.y_name, self.x_names

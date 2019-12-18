@@ -23,7 +23,7 @@ def logregr_global_final(global_state, global_in):
     coeff = global_state['coeff']
     y_name = global_state['y_name']
     x_names = global_state['x_names']
-    y_val_dict = global_state['y_val_dict']
+    # y_val_dict = global_state['y_val_dict']
     # Unpack global input
     ll, grad, hess, y_sum, y_sqsum, ssres, posneg, FP_rate_frac, TP_rate_frac = global_in.get_data()
 
