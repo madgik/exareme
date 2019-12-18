@@ -19,6 +19,7 @@ def createColumnList(variablesMetadataPath):
     metadataList = addGroupVariablesToList(metadataJSON, metadataList)
     metadataList.sort()
     metadataList.insert(0, 'subjectcode')
+    metadataList.insert(0, 'dataset')
     return metadataList
 
 
@@ -107,8 +108,6 @@ def main():
                                 dialect='excel')
             print ('Splitting file: ' + filePath)
             headerDict = headerToDict(next(reader))
-
-            # TODO Check if every column in the header exists in the metadata
 
             checkCSVHeadersExistInMetadata(headerDict,
                     harmonisedColumnList)

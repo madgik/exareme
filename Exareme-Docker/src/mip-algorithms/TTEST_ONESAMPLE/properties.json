@@ -26,9 +26,7 @@
 			"desc": "'different', 'greaterthan' or 'lessthan', the alternative hypothesis; different to testValue, greater than testValue, and less than testValue respectively ",
 			"type": "other",
 			"value": "different",
-			"min": null,
-			"max": null,
-			"enumerations": ['different', 'greaterthan' , 'lessthan'],
+			"valueEnumerations": ["different", "greaterthan" , "lessthan"],
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "string"
@@ -37,9 +35,8 @@
 			"desc": "1 or 0, provide Cohen's d effect sizes",
 			"type": "other",
 			"value": "1",
-			"min": null,
-			"max": null,
-			"enumerations": [0,1],
+			"valueMin": 0,
+			"valueMax": 1,
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "integer"
@@ -48,9 +45,8 @@
 			"desc": "1 or 0, provide confidence intervals for the mean difference",
 			"type": "other",
 			"value": "1",
-			"min": null,
-			"max": null,
-			"enumerations": [0,1],
+			"valueMin": 0,
+			"valueMax": 1,
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "integer"
@@ -59,15 +55,14 @@
 			"desc": "1 or 0, provide means and standard deviations ",
 			"type": "other",
 			"value": "1",
-			"min": null,
-			"max": null,
-			"enumerations": [0,1],
+			"valueMin": 0,
+			"valueMax": 1,
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "integer"
 		}, {
 			"name": "pathology",
-			"desc": "The name of the pathology that the dataset belongs to.",
+			"desc": "The name of the pathology in which the dataset belongs to.",
 			"type": "pathology",
 			"value": "dementia",
 			"valueNotBlank": true,
@@ -75,7 +70,7 @@
 			"valueType": "string"
 		}, {
 			"name": "dataset",
-			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty.",
+			"desc": "The names of one or more datasets, in which the algorithm will be executed. ",
 			"type": "dataset",
 			"value": "desd-synthdata",
 			"valueNotBlank": true,

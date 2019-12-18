@@ -1,30 +1,25 @@
 #!/usr/bin/env bash
 
+# Including functions only
+source ./updateFiles.sh include-only
+
 workerStop=0
 
 echo -e "\nWhat is the IP of the worker target node, in which Exareme service is running, that you want to stop?"
 read answer
-while true
-do
-    if [[ ${answer} =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
-        for i in 1 2 3 4; do
-            if [[ $(echo "$answer" | cut -d. -f$i) -gt 255 ]]; then
-                echo "$answer" | cut -d. -f$i
-                echo -e "\n${answer} is not a valid IP. Try again..."
-                read answer
-            fi
-        done
-        break
-    else
-        echo -e "\n${answer} is not a valid IP. Try again..."
-        read answer
-    fi
-done
+
+checkIP ${answer}
 
 while IFS= read -r line || [[ -n "$line" ]]; do
     if [[ ${line} == *"ansible_host"* ]]; then
+        node=$(echo "$line" | cut -d " " -f 1)
         ip=$(echo "$line" | cut -d '=' -f 2)
         if [[ ${ip} == ${answer} ]]; then
+            if [[ ${node} == "master" ]]; then
+                echo -e "\nThe target node you are trying to stop is the **Master node**. \
+This operation can not be done..Returning to main menu.."
+                return;
+            fi
             workerStop=1
             name=$(echo "$line" | cut -d ' ' -f 1)
 

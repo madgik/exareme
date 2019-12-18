@@ -7,7 +7,7 @@ import codecs
 import logging
 import os
 import errno
-
+import pandas as pd
 
 PRIVACY_MAGIC_NUMBER = 10
 P_VALUE_CUTOFF = 0.001
@@ -49,6 +49,50 @@ def query_with_privacy(fname_db, query):
     return schema, data
 
 
+def value_casting(value,type):
+    if type == 'text': return str(value)
+    elif type == 'real' or type == 'int': return float(value)
+
+def variable_type(value):
+    if str(value) == 'text': return 'S16'
+    elif str(value) == 'real' or str(value) == 'int': return 'float64'
+
+def query_database(fname_db, queryData, queryMetadata):
+    #connect to database
+    conn = sqlite3.connect(fname_db)
+    cur = conn.cursor()
+
+    cur.execute(queryData)
+    data = cur.fetchall()
+    if len(data) < PRIVACY_MAGIC_NUMBER:
+        raise PrivacyError('Query results in illegal number of datapoints.')
+    dataSchema = [description[0] for description in cur.description]
+
+    cur.execute(queryMetadata)
+    metadata = cur.fetchall()
+    metadataSchema = [description[0] for description in cur.description]
+    conn.close()
+
+    #Save data to pd.Dataframe
+    dataFrame =pd.DataFrame.from_records(data = data, columns = dataSchema)
+
+    #Cast Dataframe based on metadata
+    metadataVarNames = [str(x) for x in list(zip(*metadata)[0])]
+    metadataTypes = [variable_type(x) for x in list(zip(*metadata)[1])]
+    for varName in  dataSchema:
+        index = metadataVarNames.index(varName)
+        dataFrame[varName] = dataFrame[varName].astype(metadataTypes[index])
+
+    return dataSchema, metadataSchema, metadata, dataFrame
+
+def variable_categorical_getDistinctValues(metadata):
+    distinctValues = dict()
+    dataTypes = zip((str(x) for x in list(zip(*metadata)[0])),(str(x) for x in list(zip(*metadata)[1])))
+    for md in metadata:
+        if md[2] == 1: # when variable is categorical
+            distinctValues[str(md[0])] = [value_casting(x,str(md[1])) for x in md[3].split(',')]
+    return distinctValues
+
 class StateData(object):
     def __init__(self, **kwargs):
         self.data = kwargs
@@ -81,6 +125,14 @@ class StateData(object):
 
 def init_logger():
     logging.basicConfig(filename='/var/log/exaremePythonAlgorithms.log')
+
+
+class Global2Local_TD(TransferData):
+    def __init__(self, **kwargs):
+        self.data =kwargs
+
+    def get_data(self):
+        return self.data
 
 
 def set_algorithms_output_data(data):
