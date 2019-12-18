@@ -991,7 +991,7 @@ public class Composer {
         ArrayList<Pair<String, String>> csvDBProperties = new ArrayList<Pair<String, String>>();
         csvDBProperties.add(new Pair<>(ComposerConstants.csvDBTableDataKey, properties.getString("csvDatabase.table.data")));
         csvDBProperties.add(new Pair<>(ComposerConstants.csvDBTableMetadataKey, properties.getString("csvDatabase.table.metadata")));
-        csvDBProperties.add(new Pair<>(ComposerConstants.csvDBTableMetadataColumnCodeKey, properties.getString("csvDatabase.metadata.column.code")));
+        csvDBProperties.add(new Pair<>(ComposerConstants.csvDBTableMetadataColumnCodeKey, properties.getString("csvDatabase.table.metadata.column.code")));
         csvDBProperties.add(new Pair<>(ComposerConstants.csvDBTableMetadataColumnSqlTypeKey, properties.getString("csvDatabase.table.metadata.column.sql_type")));
         csvDBProperties.add(new Pair<>(ComposerConstants.csvDBTableMetadataColumnIsCategoricalKey, properties.getString("csvDatabase.table.metadata.column.isCategorical")));
         csvDBProperties.add(new Pair<>(ComposerConstants.csvDBTableMetadataColumnEnumerationsKey, properties.getString("csvDatabase.table.metadata.column.enumerations")));
