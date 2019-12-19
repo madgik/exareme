@@ -2,12 +2,13 @@ from __future__ import division
 from __future__ import print_function
 
 import sys
-from os import path
 from itertools import groupby
-from operator import itemgetter
-from scipy.stats import chi2
-from scipy.integrate import quad
 from math import sqrt, exp, pi, asin, acos, atan
+from operator import itemgetter
+from os import path
+
+from scipy.integrate import quad
+from scipy.stats import chi2
 
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))) + '/utils/')
 from algorithm_utils import TransferData
@@ -54,9 +55,12 @@ class CBIter_Loc2Glob_TD(TransferData):
         # assert len(self.gradient) == len(other.gradient), "Local gradient sizes do not agree."
         # assert self.hessian.shape == other.hessian.shape, "Local Hessian sizes do not agree."
         return CBIter_Loc2Glob_TD(
-                {deg: self.ll_dict[deg] + other.ll_dict[deg] for deg in range(1, len(self.ll_dict) + 1)},
-                {deg: self.grad_dict[deg] + other.grad_dict[deg] for deg in range(1, len(self.ll_dict) + 1)},
-                {deg: self.hess_dict[deg] + other.hess_dict[deg] for deg in range(1, len(self.ll_dict) + 1)},
+                {deg: self.ll_dict[deg] + other.ll_dict[deg] for deg in
+                 range(1, len(self.ll_dict) + 1)},
+                {deg: self.grad_dict[deg] + other.grad_dict[deg] for deg in
+                 range(1, len(self.ll_dict) + 1)},
+                {deg: self.hess_dict[deg] + other.hess_dict[deg] for deg in
+                 range(1, len(self.ll_dict) + 1)},
         )
 
 
@@ -86,9 +90,12 @@ class CBFinal_Loc2Glob_TD(TransferData):
         # assert len(self.gradient) == len(other.gradient), "Local gradient sizes do not agree."
         # assert self.hessian.shape == other.hessian.shape, "Local Hessian sizes do not agree."
         return CBFinal_Loc2Glob_TD(
-                {deg: self.ll_dict[deg] + other.ll_dict[deg] for deg in range(1, len(self.ll_dict) + 1)},
-                {deg: self.grad_dict[deg] + other.grad_dict[deg] for deg in range(1, len(self.ll_dict) + 1)},
-                {deg: self.hess_dict[deg] + other.hess_dict[deg] for deg in range(1, len(self.ll_dict) + 1)},
+                {deg: self.ll_dict[deg] + other.ll_dict[deg] for deg in
+                 range(1, len(self.ll_dict) + 1)},
+                {deg: self.grad_dict[deg] + other.grad_dict[deg] for deg in
+                 range(1, len(self.ll_dict) + 1)},
+                {deg: self.hess_dict[deg] + other.hess_dict[deg] for deg in
+                 range(1, len(self.ll_dict) + 1)},
                 self.logLikBisector + other.logLikBisector
         )
 
@@ -170,9 +177,10 @@ def givitiStatCdf(t, m, devel='external', thres=0.95):
                 cdfValue = 2 / (pi * pDegInc) * integral
             elif m == 4:
                 integral = quad(
-                        lambda r: r ** 2 * exp(-(r ** 2) / 2) * (atan(sqrt(r ** 2 / k * (r ** 2 / k - 2))) -
-                                                                 sqrt(k) / r * atan(sqrt(r ** 2 / k - 2)) -
-                                                                 sqrt(k) / r * acos((r ** 2 / k - 1) ** (-1 / 2))),
+                        lambda r: r ** 2 * exp(-(r ** 2) / 2) * (
+                                atan(sqrt(r ** 2 / k * (r ** 2 / k - 2))) -
+                                sqrt(k) / r * atan(sqrt(r ** 2 / k - 2)) -
+                                sqrt(k) / r * acos((r ** 2 / k - 1) ** (-1 / 2))),
                         sqrt(2 * k), sqrt(t)
                 )[0]
                 cdfValue = (2 / pi) ** (3 / 2) * (pDegInc) ** (-2) * integral
@@ -186,3 +194,172 @@ def givitiStatCdf(t, m, devel='external', thres=0.95):
         return 1
     else:
         return cdfValue
+
+
+def build_cb_highchart(**kwargs):
+    kwargs = {k: str(v) for k, v in kwargs.items()}
+    calib_curve, calib_belt1, calib_belt2, over_bisect1, under_bisect1, over_bisect2, \
+    under_bisect2, cl1, cl2, thres, n_obs, model_deg, p_values, e_name, o_name = kwargs[
+                                                                                     'calib_curve'], \
+                                                                                 kwargs[
+                                                                                     'calib_belt1'], \
+                                                                                 kwargs[
+                                                                                     'calib_belt2'], \
+                                                                                 kwargs[
+                                                                                     'over_bisect1'], \
+                                                                                 kwargs[
+                                                                                     'under_bisect1'], \
+                                                                                 kwargs[
+                                                                                     'over_bisect2'], \
+                                                                                 kwargs[
+                                                                                     'under_bisect2'], \
+                                                                                 kwargs['cl1'], \
+                                                                                 kwargs['cl2'], \
+                                                                                 kwargs['thres'], \
+                                                                                 kwargs['n_obs'], \
+                                                                                 kwargs[
+                                                                                     'model_deg'], \
+                                                                                 kwargs['p_values'], \
+                                                                                 kwargs['e_name'], \
+                                                                                 kwargs['o_name']
+    hc = {
+        "title"      : {
+            "text": "GiViTI Calibration Belt"
+        },
+
+        "annotations": [
+            {
+                "labels"      : [
+                    {
+                        "point"  : {"x": 100, "y": 100},
+                        "text"   : "Polynomial degree: " + model_deg + " <br/>Model selection "
+                                                                       "significance level: " +
+                                   thres +
+                                   " <br/>p-value: " + p_values +
+                                   " <br/>n: " + n_obs,
+                        "padding": 10,
+                        "shape"  : 'rect'
+                    }
+                ],
+                "labelOptions": {
+                    "borderRadius"   : 5,
+                    "backgroundColor": "#bbd9fa",
+                    "borderWidth"    : 1,
+                    "borderColor"    : "#9aa2ab"
+                }
+            },
+            {
+                "labels"      : [
+                    {
+                        "point"  : {"x": 400, "y": 400},
+                        "text"   : "Confidence level: " + cl1 + "<br/>Under the bisector: " +
+                                   under_bisect1 + "<br/>Over the bisector: "
+                                   + over_bisect1,
+                        "padding": 10,
+                        "shape"  : 'rect'
+                    }
+                ],
+                "labelOptions": {
+                    "borderRadius"   : 5,
+                    "backgroundColor": "#6e7d8f",
+                    "borderWidth"    : 1,
+                    "borderColor"    : "#AAA"
+                }
+            },
+            {
+                "labels"      : [
+                    {
+                        "point"  : {"x": 400, "y": 465},
+                        "text"   : "Confidence level: " + cl2 + "<br/>Under the bisector: " +
+                                   under_bisect2 + "<br/>Over the bisector: "
+                                   + over_bisect2,
+                        "padding": 10,
+                        "shape"  : 'rect'
+                    }
+                ],
+                "labelOptions": {
+                    "borderRadius"   : 5,
+                    "backgroundColor": "#a5b4c7",
+                    "borderWidth"    : 1,
+                    "borderColor"    : "#AAA"
+                }
+            }
+        ],
+
+        "xAxis"      : {
+            "title"  : {
+                "text": "EXPECTED (" + e_name + ")"
+            },
+            "visible": True
+        },
+
+        "yAxis"      : {
+            "title"  : {
+                "text": "OBSERVED (" + o_name + ")"
+            },
+            "visible": True
+        },
+
+        "tooltip"    : {
+            "crosshairs": True,
+            "shared"    : True
+        },
+
+        "legend"     : {},
+
+        "series"     : [
+            {
+                "name"     : "Observed mortality",
+                "data"     : calib_curve,
+                "zIndex"   : 3,
+                "lineWidth": 3,
+                "color"    : "Highcharts.getOptions().colors[0]",
+                "marker"   : {
+                    "enabled": False
+                },
+                "label"    : {
+                    "enabled": False
+                }
+            },
+            {
+                "name"     : "Confidence level " + cl2,
+                "data"     : calib_belt2,
+                "type"     : "arearange",
+                "lineWidth": 0,
+                "linkedTo" : ":previous",
+                "color"    : "#a5b4c7",
+                "zIndex"   : 0,
+                "marker"   : {
+                    "enabled": False
+                }
+            },
+            {
+                "name"     : "Confidence level " + cl1,
+                "data"     : calib_belt1,
+                "type"     : "arearange",
+                "lineWidth": 0,
+                "linkedTo" : ":previous",
+                "color"    : "#6e7d8f",
+                "zIndex"   : 1,
+                "marker"   : {
+                    "enabled": False
+                }
+            },
+            {
+                "name"            : "Bisector",
+                "data"            : [[0, 0], [1, 1]],
+                "zIndex"          : 2,
+                "color"           : '#fc7938',
+                "lineWidth"       : 1.5,
+                "dashStyle"       : "Dash",
+                "allowPointSelect": False,
+                "marker"          : {
+                    "enabled": False
+                },
+                "label"           : {
+                    "enabled": False
+                }
+            }
+        ]
+    }
+    return hc

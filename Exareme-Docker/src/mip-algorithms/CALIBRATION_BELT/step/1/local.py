@@ -2,13 +2,14 @@ from __future__ import division
 from __future__ import print_function
 
 import sys
-from os import path
 from argparse import ArgumentParser
+from os import path
 
 import numpy as np
 from scipy.special import expit
 
-sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) + '/utils/')
+sys.path.append(
+    path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) + '/utils/')
 sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) +
                 '/CALIBRATION_BELT/')
 

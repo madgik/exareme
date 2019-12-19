@@ -2,13 +2,14 @@ from __future__ import division
 from __future__ import print_function
 
 import sys
-from os import path
 from argparse import ArgumentParser
+from os import path
 
 import numpy as np
 from scipy.special import logit
 
-sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) + '/utils/')
+sys.path.append(
+    path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) + '/utils/')
 sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) +
                 '/CALIBRATION_BELT/')
 
@@ -41,7 +42,8 @@ def main():
     parser.add_argument('-e', required=True, help='Expected outcomes.')
     parser.add_argument('-o', required=True, help='Observed outcomes.')
     parser.add_argument('-max_deg', required=True, help='Maximum degree of calibration curve.')
-    parser.add_argument('-cur_state_pkl', required=True, help='Path to the pickle file holding the current state.')
+    parser.add_argument('-cur_state_pkl', required=True,
+                        help='Path to the pickle file holding the current state.')
     parser.add_argument('-input_local_DB', required=True, help='Path to local db.')
     parser.add_argument('-db_query', required=True, help='Query to be executed on local db.')
     args, unknown = parser.parse_known_args()
@@ -53,7 +55,6 @@ def main():
     max_deg = int(args.max_deg)
     assert 1 < max_deg <= 4, "Max deg should be between 2 and 4 for `devel`=`external` or between 3 and 4 for " \
                              "`devel`=`internal`."
-
 
     # Get data from local DB
     schema, data = query_with_privacy(fname_db=fname_loc_db, query=query)

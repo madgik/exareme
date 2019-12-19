@@ -2,21 +2,22 @@ from __future__ import division
 from __future__ import print_function
 
 import sys
-from os import path
 from argparse import ArgumentParser
+from os import path
 
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/utils/')
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) +
                 '/CALIBRATION_BELT/')
 
-
 from algorithm_utils import StateData, set_algorithms_output_data, MAX_ITER_LOGISTIC
 from cb_lib import PREC
+
 
 def termination_condition(global_state):
     delta_dict = global_state['delta_dict']
     iter = global_state['iter']
-    if reduce((lambda x, y: x and y), [delta < PREC for delta in delta_dict.values()]) or iter >= MAX_ITER_LOGISTIC:
+    if reduce((lambda x, y: x and y),
+              [delta < PREC for delta in delta_dict.values()]) or iter >= MAX_ITER_LOGISTIC:
         set_algorithms_output_data('STOP')
     else:
         set_algorithms_output_data('CONTINUE')

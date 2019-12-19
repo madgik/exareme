@@ -1,28 +1,27 @@
 from __future__ import division
 from __future__ import print_function
 
-import sys
-from os import path
-from argparse import ArgumentParser
-import numpy as np
 import json
-from scipy.stats import chi2, norm
-from scipy.special import logit, expit
+import sys
+from argparse import ArgumentParser
+from os import path
 
-sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) + '/utils/')
+import numpy as np
+from scipy.special import logit, expit
+from scipy.stats import chi2
+
+sys.path.append(
+        path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) + '/utils/')
 sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) +
                 '/CALIBRATION_BELT/')
 
 from algorithm_utils import StateData, set_algorithms_output_data
-from cb_lib import CBFinal_Loc2Glob_TD, find_relative_to_bisector, givitiStatCdf
+from cb_lib import CBFinal_Loc2Glob_TD, find_relative_to_bisector, givitiStatCdf, build_cb_highchart
 
 
 def cb_global_final(global_state, global_in):
     # Unpack global state
     n_obs = global_state['n_obs']
-    ll_old_dict = global_state['ll_dict']
-    coeff_dict = global_state['coeff_dict']
-    iter = global_state['iter']
     e_name = global_state['e_name']
     o_name = global_state['o_name']
     devel = global_state['devel']
@@ -117,9 +116,15 @@ def cb_global_final(global_state, global_in):
         'Confidence level 2'    : str(int(cl2 * 100)) + '%',
         'Threshold'             : str(int(thres * 100)) + '%',
         'Expected name'         : e_name,
-        'Observed name'         : o_name
+        'Observed name'         : o_name,
     }
-
+    # Highchart
+    highchart = build_cb_highchart(calib_curve=calib_curve, calib_belt1=calib_belt1,
+                                   calib_belt2=calib_belt2, over_bisect1=over_bisect1,
+                                   under_bisect1=under_bisect1, over_bisect2=over_bisect2,
+                                   under_bisect2=under_bisect2, cl1=cl1, cl2=cl2,
+                                   thres=thres, n_obs=n_obs, model_deg=model_deg, p_values=p_value,
+                                   e_name=e_name, o_name=o_name)
     # Write output to JSON
     result = {
         'result': [
@@ -129,6 +134,12 @@ def cb_global_final(global_state, global_in):
                 "data": [
                     raw_data
                 ]
+            },
+            # Highchart
+            {
+                "type": "application/vnd.highcharts+json",
+                "data": highchart
+
             }
         ]
     }

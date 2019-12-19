@@ -1,6 +1,6 @@
-import requests
 import json
-import numpy as np
+
+import requests
 
 endpointUrl = 'http://localhost:9090/mining/query/CALIBRATION_BELT'
 headers = {'Content-type': 'application/json', "Accept": "text/plain"}
@@ -210,6 +210,7 @@ def generate_html(data):
                 + '\nvar o_name = ' + '\'' + o_name + '\'' + ';' \
                 + html_tail
     return html_page
+
 
 if __name__ == '__main__':
     data = [
