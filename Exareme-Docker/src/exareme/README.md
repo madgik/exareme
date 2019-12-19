@@ -53,7 +53,7 @@
         
     - Edit the etc/exareme/exareme-env.sh and specify java, python installation (if needed).   
     - Edit the etc/exareme/gateway.properties 
-        + specify the mip-algorihtms path (e.g. 
+        + specify the mip-algorithms path (e.g. 
         + specify the gateway port (if needed).
 
 * Start/Stop Exareme and check the logs
@@ -77,7 +77,7 @@
     ./bin/exareme-admin.sh --kill
     ```
     
-* In order to update configuration files accross nodes
+* In order to update configuration files across nodes
     ```
     ./bin/exareme-admin.sh --update    
     ```

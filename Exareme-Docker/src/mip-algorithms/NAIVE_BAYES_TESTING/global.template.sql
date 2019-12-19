@@ -18,6 +18,14 @@ group by actualclass,predictedclass;
 --                            from defaultDB.global_oneconfusionmatrix,
 --							(select count(distinct predictedclass) as noclasses from defaultDB.global_oneconfusionmatrix) order by predictedclass);
 --select * from defaultDB.global_oneconfusionmatrix;
+--
+-- select tabletojson(actualclass,predictedclass,val, "actualclass,predictedclass,val",0)  as componentresult
+-- from defaultdb.global_oneconfusionmatrix;
+--
+--
 
-select tabletojson(actualclass,predictedclass,val, "actualclass,predictedclass,val")  as componentresult
-from defaultdb.global_oneconfusionmatrix;
+var 'jsonResult' from select '{ "type": "application/json", "data": ' || componentresult || '}' from
+( select tabletojson(actualclass,predictedclass,val, "actualclass,predictedclass,val",0)  as componentresult
+from defaultdb.global_oneconfusionmatrix );
+
+select '{"result": [' || '%{jsonResult}' || ']}';

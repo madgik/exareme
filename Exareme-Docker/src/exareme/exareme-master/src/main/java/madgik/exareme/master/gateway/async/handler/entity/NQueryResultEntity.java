@@ -2,6 +2,7 @@ package madgik.exareme.master.gateway.async.handler.entity;
 
 import madgik.exareme.master.client.AdpDBClientQueryStatus;
 import madgik.exareme.master.connector.DataSerialization;
+import org.apache.commons.io.IOUtils;
 import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.nio.ContentEncoder;
 import org.apache.http.nio.IOControl;
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.charset.StandardCharsets;
 
 /**
  * TODO flush output before suspend
@@ -19,12 +21,15 @@ import java.nio.channels.ReadableByteChannel;
 public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncContentProducer {
 
     private static final Logger log = Logger.getLogger(NQueryResultEntity.class);
-    
+
     private final AdpDBClientQueryStatus queryStatus;
     private final ByteBuffer buffer;
     private ReadableByteChannel channel;
     private NQueryStatusEntity.QueryStatusListener l;
     private DataSerialization format;
+    private final static String user_error = "text/plain+user_error";
+    private final static String error = "text/plain+error";
+    private final static String warning = "text/plain+warning";
 
     public NQueryResultEntity(AdpDBClientQueryStatus status, DataSerialization ds,
                               int bufferSize) {
@@ -63,28 +68,51 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
                 encoder.complete();
                 close();
             }
+
         } else {
             log.trace("|" + queryStatus.getError() + "|");
             if (queryStatus.getError().contains("ExaremeError:")) {
-                String result = queryStatus.getError();
-                result = result.substring(result.lastIndexOf("ExaremeError:") + "ExaremeError:".length()).replaceAll("\\s"," ");
-                encoder.write(ByteBuffer.wrap(createErrorMessage(result).getBytes()));
-                encoder.complete();
-                close();
-            }
-            else if (queryStatus.getError().contains("PrivacyError")) {
-                String result = createErrorMessage("The Experiment could not run with the input provided because there are insufficient data.");
+                String data = queryStatus.getError().substring(queryStatus.getError().lastIndexOf("ExaremeError:") + "ExaremeError:".length()).replaceAll("\\s", " ");
+                //type could be error, user_error, warning regarding the error occured along the process
+                String type = user_error;
+                String result = defaultOutputFormat(data, type);
+                logErrorMessage(result);
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();
-            }
-            else if (queryStatus.getError().matches("java.rmi.RemoteException: Containers:.*not responding")) {
-                String result = createErrorMessage("One or more containers are not responding. Please inform the system administrator.");
+            } else if (queryStatus.getError().contains("PrivacyError")) {
+                String data = "The Experiment could not run with the input provided because there are insufficient data.";
+                //type could be error, user_error, warning regarding the error occured along the process
+                String type = warning;
+                String result = defaultOutputFormat(data, type);
+                logErrorMessage(result);
+                encoder.write(ByteBuffer.wrap(result.getBytes()));
+                encoder.complete();
+                close();
+            } else if (queryStatus.getError().contains("java.rmi.RemoteException")) {
+                String data = "One or more containers are not responding. Please inform the system administrator.";
+                //type could be error, user_error, warning regarding the error occured along the process
+                String type = error;
+                String result = defaultOutputFormat(data, type);
+                logErrorMessage(result);
+                encoder.write(ByteBuffer.wrap(result.getBytes()));
+                encoder.complete();
+                close();
+            } else if (queryStatus.getError().contains("java.lang.IndexOutOfBoundsException:")) {
+                String data = "Something went wrong. Clean-ups were made, you may re-run your experiment. Please inform the system administrator though for fixing any remaining issue.";
+                //type could be error, user_error, warning regarding the error occured along the process
+                String type = error;
+                String result = defaultOutputFormat(data, type);
+                logErrorMessage(result);
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();
             } else {
-                String result = createErrorMessage("Something went wrong. Please inform your system administrator to consult the logs.");
+                String data = "Something went wrong. Please inform your system administrator to consult the logs.";
+                //type could be error, user_error, warning regarding the error occured along the process
+                String type = error;
+                String result = defaultOutputFormat(data, type);
+                logErrorMessage(result);
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();
@@ -92,8 +120,12 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
         }
     }
 
-    private String createErrorMessage(String error) {
-        return "{\"error\" : \"" + error + "\"}";
+    private String defaultOutputFormat(String data, String type) {
+        return "{\"result\" : [{\"data\":" + "\"" + data + "\",\"type\":" + "\"" + type + "\"}]}";
+    }
+
+    private void logErrorMessage(String error){
+        log.info("Algorithm exited with error and returned:\n " + error);
     }
 
     @Override

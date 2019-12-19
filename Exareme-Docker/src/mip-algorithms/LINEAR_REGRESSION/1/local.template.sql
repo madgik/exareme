@@ -28,13 +28,16 @@
 -- attach 'datasets.db' as 'db';
 -- attach database '%{defaultDB}' as defaultDB;
 
-requirevars 'defaultDB' 'input_local_DB' 'db_query' 'x' 'y' 'referencevalues' 'encodingparameter';
+requirevars 'defaultDB' 'input_local_DB' 'db_query' 'x' 'y'  'encodingparameter';
 attach database '%{defaultDB}' as defaultDB;
 attach database '%{input_local_DB}' as localDB;
 
 --Read dataset
 drop table if exists inputdata;
 create table inputdata as select * from (%{db_query});
+
+-- ErrorHandling
+select categoricalparameter_inputerrorchecking('encodingparameter', '%{encodingparameter}', 'dummycoding,sumscoding,simplecoding');
 
 var 'xnames' from
 select group_concat(xname) as  xname from

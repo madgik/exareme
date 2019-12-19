@@ -22,20 +22,26 @@ registered=True
 # --- [0|Column names ---
 # [1|currentnode [2|parentnode [3|colname [4|colval [5|nextnode [6|leafval
 
-def recursive_checkchilds(resulttable, nodestoinsert, level):
-
-    for i in xrange(len(resulttable)):
-        # print "CCC",level, resulttable[i]['currentnode']
-        if 'childnodes' in resulttable[i].keys():
-            if str(resulttable[i]['childnodes'])== str(level):
-                for k in nodestoinsert:
-                    k.pop('id')
-                resulttable[i]['childnodes']= nodestoinsert
-                # print "DDD",resulttable[i]['nextnode']
-                return
-            elif "colname" in str(resulttable[i]['childnodes']): #is a dict containing childs
-                     recursive_checkchilds(resulttable[i]['childnodes'], nodestoinsert, level)
-
+def recursive_checkchilds(resulttable, nodestoinsert, level,colname):
+    #print "NODESTOINSERT", nodestoinsert,level,colname
+    #print resulttable, type(resulttable)
+    if isinstance(resulttable, list):
+        for d in resulttable:
+            #print "1", d
+            recursive_checkchilds(d, nodestoinsert, level, colname)
+    elif isinstance(resulttable, dict):
+        if 'childnodes' not in resulttable.keys():
+            return
+        if resulttable['childnodes'] == level:
+            for k in nodestoinsert:
+                k.pop('id')
+            resulttable['childnodes']= nodestoinsert
+            resulttable['colname'] = colname
+            #print "TABLE", resulttable
+            return
+        else:
+            #print "2"
+            recursive_checkchilds(resulttable['childnodes'], nodestoinsert, level, colname)
 
 class treetojson(functions.vtable.vtbase.VT):
 
@@ -53,21 +59,23 @@ class treetojson(functions.vtable.vtbase.VT):
         init = True
 
         for myrow in c: # assume that it is ordered by nodeno
-            # print myrow
+            #print "MYROW",myrow
             level = int(myrow[0]) #currentlevel
             nodestoinsert = ast.literal_eval(myrow[1]) #nodes of the level at hand. It is a dice
             for i in nodestoinsert:
                 if str(i['leafval']) =="": i.pop('leafval')
                 if str(i['childnodes'])=="": i.pop('childnodes')
-
+                colname = i.pop('colname')
             if init is True:
                 for k in nodestoinsert:
                     k.pop('id')
-                resulttable =  nodestoinsert
+                resulttable =  [{"colname":colname, "childnodes":nodestoinsert}]
                 init = False
             else:
-                # print "AA", resulttable
-                recursive_checkchilds(resulttable,nodestoinsert,level)
+                #print "INIT", resulttable
+                #print level,nodestoinsert,colname
+                recursive_checkchilds(resulttable[0]['childnodes'],nodestoinsert,level,colname)
+        print "END"
 
         # print "RESULT",resulttable
         yield [('result',),]
@@ -76,10 +84,7 @@ class treetojson(functions.vtable.vtbase.VT):
 
 
 
-
-
 # formattreetotableoutput  select currentnode as nodeno ,jgroup(jpack(colname||"="||colval,nextnode,leafval)) as nodeinfo from  mytree group by currentnode ;
-
 
 
 def Source():

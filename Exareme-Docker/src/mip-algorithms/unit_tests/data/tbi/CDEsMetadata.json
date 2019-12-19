@@ -1,0 +1,396 @@
+{
+	"code": "tbi",
+	"groups": [],
+	"label": "Traumatic Βrain Ιnjury",
+	"variables": [{
+			"code": "gcsonadmission_eyes",
+			"enumerations": [{
+					"code": "1",
+					"label": "None (1)"
+				}, {
+					"code": "2",
+					"label": "To pain (2)"
+				}, {
+					"code": "3",
+					"label": "To speech (3)"
+				}, {
+					"code": "4",
+					"label": "Spontaneously (4)"
+				}, {
+					"code": "notEvaluable",
+					"label": "Not Evaluable"
+				}
+			],
+			"label": "GCS: Best eyes response",
+			"methodology": "creactive",
+			"type": "polynominal",
+			"sql_type": "text",
+			"isCategorical": true
+		}, {
+			"code": "gcsonadmission_motor",
+			"enumerations": [{
+					"code": "1",
+					"label": "None (1)"
+				}, {
+					"code": "2",
+					"label": "Extension to pain (2)"
+				}, {
+					"code": "3",
+					"label": "Flexion (abnormal) to pain (3)"
+				}, {
+					"code": "4",
+					"label": "Withdraws to pain (4)"
+				}, {
+					"code": "5",
+					"label": "Localizes pain (5)"
+				}, {
+					"code": "6",
+					"label": "Obeys commands (6)"
+				}, {
+					"code": "notEvaluable",
+					"label": "Not Evaluable"
+				}
+			],
+			"label": "GCS: Best motor response",
+			"methodology": "creactive",
+			"type": "polynominal",
+			"sql_type": "text",
+			"isCategorical": true
+		}, {
+			"code": "gcsonadmission_verbal",
+			"enumerations": [{
+					"code": "1",
+					"label": "None (1)"
+				}, {
+					"code": "2",
+					"label": "Incomprehensible sounds (2)"
+				}, {
+					"code": "3",
+					"label": "Inappropriate words (3)"
+				}, {
+					"code": "4",
+					"label": "Confused (4)"
+				}, {
+					"code": "5",
+					"label": "Orientated (5)"
+				}, {
+					"code": "notEvaluable",
+					"label": "Not Evaluable"
+				}
+			],
+			"label": "GCS Best verbal response",
+			"methodology": "creactive",
+			"type": "polynominal",
+			"sql_type": "text",
+			"isCategorical": true
+		}, {
+			"code": "gcsonadmission",
+			"enumerations": [{
+					"code": "notEvaluable",
+					"label": "not Evaluable"
+				}, {
+					"code": "1",
+					"label": "1"
+				}, {
+					"code": "2",
+					"label": "2"
+				}, {
+					"code": "3",
+					"label": "3"
+				}, {
+					"code": "4",
+					"label": "4"
+				}, {
+					"code": "5",
+					"label": "5"
+				}, {
+					"code": "6",
+					"label": "6"
+				}, {
+					"code": "7",
+					"label": "7"
+				}, {
+					"code": "8",
+					"label": "8"
+				}, {
+					"code": "9",
+					"label": "9"
+				}, {
+					"code": "10",
+					"label": "10"
+				}, {
+					"code": "11",
+					"label": "11"
+				}, {
+					"code": "12",
+					"label": "12"
+				}, {
+					"code": "13",
+					"label": "13"
+				}, {
+					"code": "14",
+					"label": "14"
+				}, {
+					"code": "15",
+					"label": "15"
+				}
+			],
+			"label": "GCS total score",
+			"methodology": "creactive",
+			"type": "polynominal",
+			"sql_type": "text",
+			"isCategorical": true
+		}, {
+			"code": "pupilsonadmission",
+			"enumerations": [{
+					"code": "notEvaluable",
+					"label": "not Evaluable"
+				}, {
+					"code": "BiDiallPupil",
+					"label": "Bilaterally dilated and non-reactive"
+				}, {
+					"code": "UniDiallPupil",
+					"label": "Unilaterally dilated and non-reactive"
+				}, {
+					"code": "bilalPupil",
+					"label": "Reattive bilateralmente e/o miotiche"
+				}
+			],
+			"label": "Pupils on admission",
+			"methodology": "creactive",
+			"type": "polynominal",
+			"sql_type": "text",
+			"isCategorical": true
+		}, {
+			"code": "extracranialtrauma",
+			"label": "Extracranial Trauma",
+			"methodology": "creactive",
+			"type": "integer",
+			"sql_type": "int",
+			"isCategorical": false
+		}, {
+			"code": "petechiae",
+			"enumerations": [{
+					"code": "No",
+					"label": "No"
+				}, {
+					"code": "Yes",
+					"label": "Yes"
+				}
+			],
+			"label": "Petechiae",
+			"methodology": "creactive",
+			"type": "polynominal",
+			"sql_type": "text",
+			"isCategorical": true
+		}, {
+			"code": "cistern",
+			"enumerations": [{
+					"code": "Normal",
+					"label": "Normal"
+				}, {
+					"code": "Absent",
+					"label": "Absent"
+				}, {
+					"code": "Compressed/Distorted",
+					"label": "Compressed/Distorted"
+				}
+			],
+			"label": "Cistern",
+			"methodology": "creactive",
+			"toolTip": "Le cisterne perimesencefaliche sono gli spazi liquorali che circondano il mesencefalo.",
+			"type": "polynominal",
+			"sql_type": "text",
+			"isCategorical": true
+		}, {
+			"code": "shift",
+			"enumerations": [{
+					"code": "No",
+					"label": "No"
+				}, {
+					"code": "Yes",
+					"label": "Yes"
+				}
+			],
+			"label": "shift",
+			"methodology": "creactive",
+			"toolTip": "Midline shift refers to a the shift of the brain past the imaginary centre line dividing the brain into its two hemispheres.",
+			"type": "polynominal",
+			"sql_type": "text",
+			"isCategorical": true
+		}, {
+			"code": "marshall",
+			"enumerations": [{
+					"code": "I",
+					"label": "(D-I) Diffuse injury I"
+				}, {
+					"code": "II",
+					"label": "(D-II) Diffuse injury II"
+				}, {
+					"code": "III",
+					"label": "(D-III) Diffuse injury III"
+				}, {
+					"code": "IV",
+					"label": "(D-IV) Diffuse injury IV"
+				}, {
+					"code": "V",
+					"label": "(5-EML) Evacuated mass lesion"
+				}, {
+					"code": "VI",
+					"label": "(6-NEML) Not Evacuated mass lesion"
+				}
+			],
+			"label": "Marshall",
+			"methodology": "creactive",
+			"type": "polynominal",
+			"sql_type": "text",
+			"isCategorical": true
+		}, {
+			"code": "notevacuatedhematoma",
+			"enumerations": [{
+					"code": "No",
+					"label": "No"
+				}, {
+					"code": "Yes",
+					"label": "Yes"
+				}
+			],
+			"label": "Not Evacuated Hematoma",
+			"methodology": "creactive",
+			"type": "polynominal",
+			"sql_type": "text",
+			"isCategorical": true
+		}, {
+			"code": "traumaticsubarachnoidhemorr",
+			"enumerations": [{
+					"code": "No",
+					"label": "No"
+				}, {
+					"code": "Yes",
+					"label": "Yes"
+				}
+			],
+			"label": "Traumatic subarachnoid haemorrhage",
+			"methodology": "creactive",
+			"toolTip": "tSAH is blood distributed in the subarachnoid space. Its location can be very limited for example in the interpeduncular space or over the tentorium. Otherwise it can be found in the cortical sulcus or on the brain vault.",
+			"type": "polynominal",
+			"sql_type": "text",
+			"isCategorical": true
+		}, {
+			"code": "epiduralhematoma",
+			"enumerations": [{
+					"code": "No",
+					"label": "No"
+				}, {
+					"code": "Yes",
+					"label": "Yes"
+				}
+			],
+			"label": "Epidural Hematoma",
+			"methodology": "creactive",
+			"toolTip": "Collection of blood between the dura mater and cranial theca, caused by fractures that can injure the middle meningeal artery or one of its branches. It may be associated with intracranial hypertension and cause coma, usually after a lucid interval. If promptly operated the prognosis is favourable.",
+			"type": "polynominal",
+			"sql_type": "text",
+			"isCategorical": true
+		}, {
+			"code": "hypoxia",
+			"enumerations": [{
+					"code": "No",
+					"label": "No"
+				}, {
+					"code": "Yes",
+					"label": "Yes"
+				}, {
+					"code": "NotAvailable",
+					"label": "Not Available"
+				}
+			],
+			"label": "Hypoxia",
+			"methodology": "creactive",
+			"type": "polynominal",
+			"sql_type": "text",
+			"isCategorical": true
+		}, {
+			"code": "hypotension",
+			"enumerations": [{
+					"code": "NotAvailable",
+					"label": "Not Available"
+				}, {
+					"code": "No",
+					"label": "No"
+				}, {
+					"code": "Yes",
+					"label": "Yes"
+				}
+			],
+			"label": "Hypotension",
+			"methodology": "creactive",
+			"type": "polynominal",
+			"sql_type": "text",
+			"isCategorical": true
+		}, {
+			"code": "glucose",
+			"label": "Blood glucose at ER (mg/dl)",
+			"methodology": "creactive",
+			"toolTip": "The first blood glucose value before ICU admission",
+			"type": "real",
+			"sql_type": "real",
+			"isCategorical": false
+		}, {
+			"code": "hb",
+			"label": "Hemoglobin ER (gr/dl)",
+			"methodology": "creactive",
+			"toolTip": "The lowest hemoglobin value available before ICU admission",
+			"type": "real",
+			"sql_type": "real",
+			"isCategorical": false
+		}, {
+			"code": "gose",
+			"enumerations": [{
+					"code": "ModerateDisabUpper",
+					"label": "Moderate disability UPPER LEVEL"
+				}, {
+					"code": "ModerateDisabLower",
+					"label": "Moderate disability LOWER LEVEL"
+				}, {
+					"code": "Vegetative",
+					"label": "Vegetative state"
+				}, {
+					"code": "Deceased",
+					"label": "Deceased"
+				}, {
+					"code": "GoodRecoveryUpper",
+					"label": "Good recovery UPPER LEVEL"
+				}, {
+					"code": "SevereDisabLower",
+					"label": "Severe disability LOWER LEVEL"
+				}, {
+					"code": "GoodRecoveryLower",
+					"label": "Good recovery LOWER LEVEL"
+				}, {
+					"code": "SevereDisabUpper",
+					"label": "Severe disability UPPER LEVEL"
+				}
+			],
+			"label": "Glasgow Outcome Scale Extended",
+			"methodology": "creactive",
+			"type": "polynominal",
+			"sql_type": "text",
+			"isCategorical": true
+		}, {
+			"code": "impact_prob_core_mortality",
+			"label": "Temporary Impact Probability",
+			"methodology": "creactive",
+			"type": "real",
+			"sql_type": "real",
+			"isCategorical": false
+		}, {
+			"code": "Mortality",
+			"label": "Six Month Mortality",
+			"methodology": "creactive",
+			"sql_type": "integer",
+			"type": "integer",
+			"isCategorical": false
+		}
+	]
+}

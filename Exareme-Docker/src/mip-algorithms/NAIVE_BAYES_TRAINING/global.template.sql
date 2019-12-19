@@ -80,7 +80,8 @@ where colname in (select code from defaultDB.globalmetadatatbl  where categorica
 and colname <> '%{y}';
 
 --select * from defaultDB.global_probabilities;
+var 'jsonResult' from select '{ "type": "application/json", "data": ' || componentresult || ', "dbIdentifier": ' || '%{dbIdentifier}'   || '}' from
+( select tabletojson(colname,val,classval,average,sigma,probability, "colname,val,classval,average,sigma,probability",0)  as componentresult
+from defaultdb.global_probabilities);
 
-select jdict('results', componentresult, 'dbIdentifier', '%{dbIdentifier}') as results
-from (select tabletojson(colname,val,classval,average,sigma,probability, "colname,val,classval,average,sigma,probability")  as componentresult
-from defaultdb.global_probabilities );
+select '{"result": [' || '%{jsonResult}' || ']}';

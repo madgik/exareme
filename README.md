@@ -1,4 +1,4 @@
-## Exareme:  [![Build Status](https://travis-ci.org/madgik/exareme.svg?branch=master)](https://travis-ci.org/madgik/exareme)
+## Exareme:
 
 ### Exareme Packaging:
 <ul>
@@ -9,9 +9,14 @@
             <li>Scripts for creating a docker image with the exareme source code and the mip-algorithms that will run on exareme.</li>
         </ul>
     </li>
-    <li><code><b>Deployment</b></code>
+    <li><code><b>Federated-Deployment</b></code>
         <ul>
-            <li>Scripts for deploying the Exareme docker image.</li>
+            <li>Scripts for deploying the federated Exareme stack in many nodes.</li>
+        </ul>
+    </li>
+    <li><code><b>Local-Deployment</b></code>
+        <ul>
+            <li>Scripts for deploying locally the Exareme stack.</li>
         </ul>
     </li>
 </ul>

@@ -1,44 +1,12 @@
 {
 	"name": "NAIVE_BAYES_TRAINING",
-	"desc": "BayesNaive_v3",
+	"desc": "Naive Bayes clasiifier: Training phase",
 	"type": "local_global",
 	"status": "enabled",
 	"vtype": "",
 	"parameters": [{
-			"name": "iterationNumber",
-			"desc": "The iterationNumber shows the id of the testing dataset.",
-			"type": "other",
-			"value": "0",
-			"valueNotBlank": true,
-			"valueMultiple": false,
-			"valueType": "integer"
-		}, {
-			"name": "alpha",
-			"desc": "",
-			"type": "other",
-			"value": "0.1",
-			"valueNotBlank": true,
-			"valueMultiple": false,
-			"valueType": "real"
-		}, {
-			"name": "dbIdentifier",
-			"desc": "",
-			"type": "other",
-			"value": "",
-			"valueNotBlank": true,
-			"valueMultiple": false,
-			"valueType": "string"
-		}, {
-			"name": "dataset",
-			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty.",
-			"type": "dataset",
-			"value": "adni",
-			"valueNotBlank": true,
-			"valueMultiple": true,
-			"valueType": "string"
-		}, {
 			"name": "x",
-			"desc": "",
+			"desc": "Independent variables: A list of variables from database.",
 			"type": "column",
 			"columnValuesSQLType": "",
 			"columnValuesIsCategorical": "",
@@ -49,7 +17,7 @@
 			"valueType": "string"
 		}, {
 			"name": "y",
-			"desc": "classname",
+			"desc": "Dependent variable: A categorical variable form database.",
 			"type": "column",
 			"columnValuesSQLType": "",
 			"columnValuesIsCategorical": "true",
@@ -57,6 +25,46 @@
 			"value": "alzheimerbroadcategory",
 			"valueNotBlank": true,
 			"valueMultiple": false,
+			"valueType": "string"
+		}, {
+			"name": "iterationNumber",
+			"desc": "The iterationNumber shows the id of the testing dataset.",
+			"type": "other",
+			"value": "0",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "integer"
+		}, {
+			"name": "alpha",
+			"desc": "Additive smoothing parameter (0 for no smoothing)",
+			"type": "other",
+			"value": "0.1",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "real"
+		}, {
+			"name": "dbIdentifier",
+			"desc": "Predefined value for the dbIdentifier",
+			"type": "other",
+			"value": "",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "string"
+		}, {
+			"name": "pathology",
+			"desc": "The name of the pathology that the dataset belongs to.",
+			"type": "pathology",
+			"value": "dementia",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "string"
+		}, {
+			"name": "dataset",
+			"desc": "The names of one or more datasets, in which the algorithm will be executed.",
+			"type": "dataset",
+			"value": "adni",
+			"valueNotBlank": true,
+			"valueMultiple": true,
 			"valueType": "string"
 		}
 	]

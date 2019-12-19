@@ -3,8 +3,6 @@ from __future__ import print_function
 
 import sys
 from os import path
-import os
-import errno
 from argparse import ArgumentParser
 import numpy as np
 import json
@@ -86,7 +84,7 @@ def logregr_global_final(global_state, global_in):
     raw_data = {
         'Covariates'                 : [
             {
-                'Variable'       : schema_X[i],
+                'Variable'   : schema_X[i],
                 'Coefficient': coeff[i],
                 'std.err.'   : stderr[i],
                 'z score'    : z_scores[i],
@@ -265,14 +263,12 @@ def logregr_global_final(global_state, global_in):
             # Raw results
             {
                 "type": "application/json",
-                "data": [
-                    raw_data
-                ]
+                "data": raw_data
             },
             # Tabular data resource Logistic Regression summary 1
             {
                 "type": "application/vnd.dataresource+json",
-                "data": [
+                "data":
                     {
                         "name"   : "logistic regression summary 1",
                         "profile": "tabular-data-resource",
@@ -281,21 +277,19 @@ def logregr_global_final(global_state, global_in):
                             "fields": tabular_data_summary1_schema_fields
                         }
                     }
-                ]
             },
             # Tabular data resource summary 2
             {
                 "type": "application/vnd.dataresource+json",
-                "data": [
+                "data":
                     {
                         "name"   : "logistic regression summary 2",
                         "profile": "tabular-data-resource",
-                        "data"   : tabular_data_summary2,
+                        "data"   : tabular_data_summary2[1:],
                         "schema" : {
                             "fields": tabular_data_summary2_schema_fields
                         }
                     }
-                ]
             },
             # Highchart ROC
             {

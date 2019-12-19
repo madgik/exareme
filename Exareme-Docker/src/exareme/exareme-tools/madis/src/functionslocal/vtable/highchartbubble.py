@@ -25,31 +25,49 @@ class highchartbubble(functions.vtable.vtbase.VT):
             raise functions.OperatorError(__name__.rsplit('.')[-1],"No query argument ")
         query = dictargs['query']
 
+        if 'title' not in dictargs:
+            raise functions.OperatorError(__name__.rsplit('.')[-1],"No title argument ")
+
         cur = envars['db'].cursor()
         c=cur.execute(query)
         schema = cur.getdescriptionsafe()
-        yield [('highchartresult',)]
-        mydata = ""
+
+        mydata = []
         for myrow in c:
-            mydata +=str(list(myrow))+','
-
-        if mydata == "":
-            yield ("{}")
+            mydata.append(list(myrow))
+        #print schema[2]
+        #print schema[2][0]
+        if len(schema)!=3 or (len(schema)==3 and str(schema[2][0])!='noofpoints'):
+            myresult =  {
+                    "type" : "application/vnd.highcharts+json",
+                    "data" : { "chart" : { "type": "bubble",  "plotBorderWidth": 1, "zoomType": "xy"},
+                                "title" : { "text": str(dictargs['title']) },
+                                "subtitle":{"text":"The plot is empty as there are not two variables "}
+                    }
+                }
+        elif len(mydata)==0:
+            myresult =  {
+                    "type" : "application/vnd.highcharts+json",
+                    "data" : { "chart" : { "type": "bubble",  "plotBorderWidth": 1, "zoomType": "xy"},
+                                "title" : { "text": str(dictargs['title']) },
+                                "subtitle":{"text":"The plot is empty as there are not data points"}
+                    }
+                }
         else:
-            if len(schema)>3:
-                raise functions.OperatorError(__name__.rsplit('.')[-1],"Too many columns ")
-            # print schema
-            myresult =  "{\"chart\":{\"type\": \"bubble\",\"plotBorderWidth\": 1,\"zoomType\": \"xy\"},"
-            if 'title' in dictargs:
-                myresult +=  "\"title\": { \"text\": \" " + dictargs['title'] +"  \" },"
-            myresult+= "\"xAxis\": {\"gridLineWidth\": 1 , \"title\": {\"text\": \"x: " + schema[0][0] + "\",\"align\": \"middle\"}}," \
-                       "\"yAxis\": {\"gridLineWidth\": 1 , \"title\": {\"text\": \"y: " + schema[1][0]+ "\",\"align\": \"middle\"}}," \
-                        "\"series\":[{\"name\": \"clusters\",\"data\": ["
-            myresult += mydata
-            myresult = myresult[:-1]+ "]}]}"
+            myresult =  {
+                "type" : "application/vnd.highcharts+json",
+                "data" : { "chart" : { "type": "bubble",  "plotBorderWidth": 1, "zoomType": "xy"},
+                            "title" : { "text": str(dictargs['title']) },
+                            "xAxis" : { "gridLineWidth": 1, "title": {"text": str(schema[0][0]), "align":"middle" }},
+                            "yAxis":  { "gridLineWidth": 1, "title": {"text": str(schema[1][0]), "align":"middle" }},
+                            "series": [{ "data": mydata}]
+                }
+            }
 
+        myjsonresult = json.dumps(myresult)
+        yield [('highchartresult',)]
+        yield (myjsonresult,)
 
-            yield (myresult,)
 
 def Source():
     return functions.vtable.vtbase.VTGenerator(highchartbubble)

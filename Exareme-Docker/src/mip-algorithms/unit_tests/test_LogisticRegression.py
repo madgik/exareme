@@ -5,7 +5,7 @@ import math
 
 # Required datasets: data_logisticRegression.csv
 
-endpointUrl = 'http://88.197.53.100:9090/mining/query/LOGISTIC_REGRESSION'
+endpointUrl = 'http://88.197.53.23:9090/mining/query/LOGISTIC_REGRESSION'
 
 
 def test_LogisticRegression():
@@ -35,6 +35,10 @@ def test_LogisticRegression():
             "value": "alzheimerbroadcategory_logreg_test"
         },
         {
+            "name": "pathology",
+            "value": "dementia"
+         },
+        {
             "name" : "dataset",
             "value": "data_logisticRegression"
         },
@@ -47,7 +51,8 @@ def test_LogisticRegression():
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
     r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
     result = json.loads(r.text)
-    exareme_coeffs = result['result'][0]['data'][0]['Covariates']
+    print (result)
+    exareme_coeffs = result['result'][0]['data']['Covariates']
     r_coeffs = [{
         'name'       : '(Intercept)',
         'coefficient': -8.850,
@@ -109,6 +114,11 @@ def test_LogisticRegression_MultipleDataset():
             "value": "alzheimerbroadcategory_logreg_test"
         },
         {
+            "name": "pathology",
+            "value": "dementia"
+
+        },
+        {
             "name" : "dataset",
             "value": "data_logisticRegression, adni"
         },
@@ -121,7 +131,7 @@ def test_LogisticRegression_MultipleDataset():
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
     r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
     result = json.loads(r.text)
-    exareme_coeffs = result['result'][0]['data'][0]['Covariates']
+    exareme_coeffs = result['result'][0]['data']['Covariates']
     r_coeffs = [{
         'name'       : '(Intercept)',
         'coefficient': -8.850,
@@ -170,6 +180,10 @@ def test_LogisticRegression_Privacy():
             "value": "alzheimerbroadcategory_logreg_test"
         },
         {
+            "name": "pathology",
+            "value": "dementia"
+        },
+        {
             "name" : "dataset",
             "value": "adni_9rows"
         },
@@ -199,4 +213,4 @@ def check_result(exareme_coeffs, r_coeffs):
 
 
 def check_privacy_result(result):
-    assert result == "{\"error\" : \"The Experiment could not run with the input provided because there are insufficient data.\"}"
+    assert result == "{\"result\" : [{\"data\":\"The Experiment could not run with the input provided because there are insufficient data.\",\"type\":\"text/plain+warning\"}]}"

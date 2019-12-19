@@ -11,7 +11,7 @@ Highcharts.chart('container', { chart: { type: 'column' },
         crosshair: true },
     yAxis: { min: 0, title: { text: 'Rainfall (mm)' } },
     tooltip: { headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+        pointFormat: '<tr><td style="color:{series.color};padding:0"> {series.name}: </td>' +
             '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
         footerFormat: '</table>',
         shared: true,
@@ -66,58 +66,67 @@ class highchartsbasiccolumn(functions.vtable.vtbase.VT):
         enumerations = re.split(',',str(dictargs['enumerations']))
         enumerations = [x for x in enumerations if x] # remove nulls elements of the list
 
+        if 'title' not in dictargs:
+            raise functions.OperatorError(__name__.rsplit('.')[-1],"No title argument ")
+
         cur = envars['db'].cursor()
         c=cur.execute(query)
         schema = cur.getdescriptionsafe()
 
         mydata = [x for x in c]
-        bins = 0
-        for c in mydata: bins = max(bins,int(c[1]))
-        categories =[None for x in xrange(int(bins)+1)]
-        categoriesstring =''
+        categoriesList = []
+
         for c in mydata:
-            if c[2] is None:
-                if categories[int(c[1])] is None:
-                    categories[int(c[1])] = str(c[4]) + '-' + str(c[3])
-                    categoriesstring+= "\""+ str(c[4]) + '-' + str(c[3])+"\","
-            else:
-                if categories[int(c[1])] is None:
-                    categories[int(c[1])] = str(c[2])
-                    categoriesstring+= "\""+ str(c[2])+"\","
+            if c[2] is not None and int(c[1])==len(categoriesList):
+                categoriesList.append(str(c[2]))
+            elif c[2] is  None and int(c[1])==len(categoriesList):
+                categoriesList.append(str(c[4]) + '-' + str(c[3]))
 
-        myresult =  "{ \"chart\": { \"type\": \"column\" },"
-        if 'title' in dictargs:
-            myresult +=  " \"title\": { \"text\": \"" + dictargs['title'] +"\"},"
-        myresult+= "\"xAxis\": { \"categories\": [" + categoriesstring[0:-1]  +" ], \"crosshair\": True }, \"yAxis\": { \"min\": 0, \"title\": { \"text\": \"" + dictargs['ytitle']+ "\" } },\
-                    \"tooltip\": { \"headerFormat\": \"<span style='font-size:10px'>{point.key}</span><table>\",\
-                    \"pointFormat\": \"<tr><td style='color:{series.color};padding:0'>{series}: </td>\
-                                           <td style='padding:0'><b>{point.y}</b></td></tr>\"},\
-                    \"plotOptions\": { \"column\": { \"pointPadding\": 0.2, \"borderWidth\": 0}},\
-                    \"series\": ["
-
+        mydatajson = []
 
         if len(enumerations)==1 and enumerations[0] =='None':
-            print "AAAA",enumerations
-            myresult += "{ \"name\": \""+"All"+"\", \"data\": ["
-            for i in xrange(len(categories)):
+            mydata2 =[]
+            for i in xrange(len(categoriesList)):
                 for c in mydata:
                     if  int(c[1])==i:
-                        myresult += str(int(c[5])) +","
-            myresult = myresult[0:-1] + "]},"
-            myresult = myresult[0:-1]+"]}"
+                        mydata2.append(int(c[5]))
+
+            mydatajson = [{
+                "name" : "All",
+                "data" : mydata2
+            }]
+
         else:
             for name in enumerations: #AD,Other
-                myresult += "{ \"name\": \""+name+"\", \"data\": ["
-                for i in xrange(len(categories)):
+                mydata2 =[]
+                for i in xrange(len(categoriesList)):
                     for c in mydata:
                         if str(c[0])== name and int(c[1])==i:
-                            myresult += str(int(c[5])) +","
-                myresult = myresult[0:-1] + "]},"
-            myresult = myresult[0:-1]+"]}"
+                            mydata2.append(int(c[5]))
+                mydatajson.append({
+                    "name" : name,
+                    "data" : mydata2
+                })
+        a = '<span style="font-size:10px">{point.key}</span><table>'
+        b = '<tr><td style="color:{series.color};padding:0"> {series.name}: </td><td style="padding:0"><b>{point.y:.1f}</b></td></tr>'
+        myresult =  {
+            "type" : "application/vnd.highcharts+json",
+            "data" : { "chart" : { "type": "column" },
+                       "title" : { "text": str(dictargs['title']) },
+                       "xAxis" : { "categories": categoriesList, "crosshair": True },
+                       "yAxis":  { "min": 0, "title": { "text": str(dictargs['ytitle']) }},
 
+                       "tooltip": { "headerFormat": a,
+                                    "pointFormat":  b},
 
+                       "plotOptions": { "column": { "pointPadding": 0.2, "borderWidth": 0} },
+                       "series": mydatajson
+            }
+        }
+
+        myjsonresult = json.dumps(myresult)
         yield [('highchartresult',)]
-        yield (myresult,)
+        yield (myjsonresult,)
 
 def Source():
     return functions.vtable.vtbase.VTGenerator(highchartsbasiccolumn)

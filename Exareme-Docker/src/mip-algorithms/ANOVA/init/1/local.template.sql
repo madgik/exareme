@@ -12,7 +12,6 @@
 -- hidden var 'y' 'ANOVA_var_D';
 -- hidden var 'x' 'ANOVA_var_I1+ANOVA_var_I2+ANOVA_var_I3+0';
 -- var 'type' 2;
--- hidden var 'outputformat' 'pfa';
 
 -- Test2
 -- drop table if exists inputdata;
@@ -32,9 +31,11 @@
 -----------------------------------------------------------------------------
 -- to y = real, x = equation of + - * 1 0,type = 1 2 3
 
-requirevars 'defaultDB' 'input_local_DB' 'db_query' 'x' 'y' 'dataset';
+requirevars 'defaultDB' 'input_local_DB' 'db_query' 'x' 'y' 'dataset' 'sstype';
 attach database '%{defaultDB}' as defaultDB;
 attach database '%{input_local_DB}' as localDB;
+
+select categoricalparameter_inputerrorchecking('sstype', '%{sstype}', '1,2,3');
 
 var 'xnames' from
 select group_concat(xname) as  xname from

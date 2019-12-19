@@ -73,6 +73,8 @@ RUN apk add --update curl ca-certificates && \
 ADD files/requirements.txt /root/requirements.txt
 RUN apk add --update py-psycopg2 py-pip ca-certificates gcc musl-dev python-dev lapack-dev g++ gfortran && \
     pip install -r /root/requirements.txt && \
+    pip install scipy==1.2.1 scikit-learn==0.20.3 && \
+    pip install pandas && \
     pip install liac-arff && \
     apk del py-pip ca-certificates gcc musl-dev python-dev lapack-dev gfortran && \
     rm -rf /tmp/* /var/cache/apk/*
@@ -94,7 +96,7 @@ ADD src/mip-algorithms /root/mip-algorithms
 ADD files/java.sh /etc/profile.d/java.sh
 RUN chmod 755 /etc/profile.d/java.sh
 ADD files/root /root
-RUN chmod -R 755 /root/exareme/
+RUN chmod -R 755 /root/exareme/*.py /root/exareme/*.sh
 
 EXPOSE 9090
 EXPOSE 22

@@ -10,7 +10,6 @@
             "type": "column",
             "columnValuesSQLType": "real, integer",
             "columnValuesIsCategorical": "false",
-            "columnValuesNumOfEnumerations": "",
             "value": "leftaccumbensarea, leftacgganteriorcingulategyrus, leftainsanteriorinsula, rightaccumbensarea, rightacgganteriorcingulategyrus, rightainsanteriorinsula",
             "valueNotBlank": true,
             "valueMultiple": true,
@@ -22,8 +21,16 @@
             "type": "column",
             "columnValuesSQLType": "text, integer",
             "columnValuesIsCategorical": "true",
-            "columnValuesNumOfEnumerations": "2",
             "value": "gender",
+            "valueNotBlank": true,
+            "valueMultiple": false,
+            "valueType": "string"
+        },
+        {
+            "name": "pathology",
+            "desc": "The name of the pathology that the dataset belongs to.",
+            "type": "pathology",
+            "value": "dementia",
             "valueNotBlank": true,
             "valueMultiple": false,
             "valueType": "string"
@@ -45,6 +52,18 @@
             "valueNotBlank": false,
             "valueMultiple": true,
             "valueType": "string"
+        },
+        {
+            "name": "max_iter",
+            "desc": "Maximum number of iterations. Must be a positive integer.",
+            "type": "other",
+            "value": "",
+            "defaultValue": "20",
+            "valueNotBlank": false,
+            "valueMultiple": false,
+            "valueType": "integer",
+            "valueMin": 1,
+            "valueMax": 100
         }
     ]
 }

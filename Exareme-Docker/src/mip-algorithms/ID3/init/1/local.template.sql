@@ -1,18 +1,24 @@
 ------------------Input for testing
 ------------------------------------------------------------------------------
+-- 
 --
 -- hidden var 'defaultDB' defaultDB_ID3;
--- hidden var 'columns' 'car_buying,car_maint,car_doors,car_persons,car_lug_boot,car_safety';
--- var 'classname' 'car_class';
--- hidden var 'outputformat' 'json';
+-- hidden var 'input_local_DB''datasets.db';
+-- hidden var 'x' 'apoe4,gender';
+-- var 'y' 'alzheimerbroadcategory';
+--
+-- attach database '%{defaultDB}' as defaultDB;
+-- attach database '%{input_local_DB}' as localDB;
 --
 -- drop table if exists inputdata;
 -- create table inputdata as
---    select %{columns},%{classname}
---    from (file header:t '/home/eleni/Desktop/HBP/exareme/Exareme-Docker/src/mip-algorithms/ID3/car.csv');
-
+--    select %{x},%{y}
+--    from data;
+--
 --
 -- select * from inputdata;
+--
+
 
 ------------------ End input for testing
 -----------------------------------------------------------------------------
@@ -20,7 +26,7 @@
 --k or centers should be null. Otherwise the algorithm should stop. The algorithm should stop if Var 'error' ==1 . TODO Sofia k>=2
 --var 'error' from  select case when tonumber(%{centersisempty}) + tonumber(%{kisempty}) =1 then 0 else 1 end;
 
-requirevars 'defaultDB' 'input_local_DB' 'db_query' 'x' 'y' 'dataset' 'outputformat';
+requirevars 'defaultDB' 'input_local_DB' 'db_query' 'x' 'y' 'dataset' ;
 attach database '%{defaultDB}' as defaultDB;
 attach database '%{input_local_DB}' as localDB;
 

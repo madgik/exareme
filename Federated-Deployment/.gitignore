@@ -1,0 +1,11 @@
+.DS_Store
+._*
+portainer
+postgres
+settings.local.*
+
+#Ansible
+*.retry
+/Docker-Ansible/vault.yaml
+/Docker-Ansible/hosts.ini
+/Docker-Ansible/group_vars/exareme.yaml

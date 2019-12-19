@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-This script uses the csv file with the data and the json file for the metadata to produce an sqlite DB.
+This script creates multiple dbs for each pathology folder containing a dataset csv file and a metadata json file.
 """
 
 import os
@@ -12,13 +12,15 @@ import sqlite3
 import json
 from argparse import ArgumentParser
 
-
-def createMetadataDictionary(variablesMetadataPath):
-    variablesMetadata = open(variablesMetadataPath)
-    metadataJSON = json.load(variablesMetadata)
+# This metadata dictionary contains only code and sqltype so that processing will be faster
+# It also includes the subjectcode
+def createMetadataDictionary(CDEsMetadataPath):
+    CDEsMetadata = open(CDEsMetadataPath)
+    metadataJSON = json.load(CDEsMetadata)
 
     metadataDictionary = {}
     metadataDictionary['subjectcode'] = 'text'
+    metadataDictionary['dataset'] = 'text'
     metadataDictionary = addGroupVariablesToDictionary(metadataJSON,
             metadataDictionary)
     return metadataDictionary
@@ -27,6 +29,8 @@ def createMetadataDictionary(variablesMetadataPath):
 def addGroupVariablesToDictionary(groupMetadata, metadataDictionary):
     if 'variables' in groupMetadata:
         for variable in groupMetadata['variables']:
+            if 'sql_type' not in variable:
+                raise ValueError('The variable "' + variable['code'] + '" does not contain the sql_type field in the metadata.')
             metadataDictionary[variable['code']] = variable['sql_type']
     if 'groups' in groupMetadata:
         for group in groupMetadata['groups']:
@@ -35,9 +39,10 @@ def addGroupVariablesToDictionary(groupMetadata, metadataDictionary):
     return metadataDictionary
 
 
-def createMetadataList(variablesMetadataPath):
-    variablesMetadata = open(variablesMetadataPath)
-    metadataJSON = json.load(variablesMetadata)
+# This metadata list is used to create the metadata table. It contains all the known information for each variable.
+def createMetadataList(CDEsMetadataPath):
+    CDEsMetadata = open(CDEsMetadataPath)
+    metadataJSON = json.load(CDEsMetadata)
 
     metadataList = []
     metadataList = addGroupVariablesToList(metadataJSON,
@@ -50,8 +55,14 @@ def addGroupVariablesToList(groupMetadata, metadataList):
         for variable in groupMetadata['variables']:
             variableDictionary = {}
             variableDictionary['code'] = variable['code']
+            if 'sql_type' not in variable:
+                raise ValueError('The variable "' + variable['code'] + '" does not contain the sql_type field in the metadata.')
             variableDictionary['sql_type'] = variable['sql_type']
+            if 'isCategorical' not in variable:
+                raise ValueError('The variable "' + variable['code'] + '" does not contain the isCategorical field in the metadata.')
             variableDictionary['isCategorical'] = '1' if variable['isCategorical'] else '0'
+            if variable['isCategorical'] and 'enumerations' not in variable:
+                raise ValueError('The variable "' + variable['code'] + '" does not contain enumerations even though it is categorical.')
             if 'enumerations' in variable: 
                 enumerations = []
                 for enumeration in variable['enumerations']:
@@ -76,71 +87,9 @@ def addGroupVariablesToList(groupMetadata, metadataList):
     return metadataList
 
 
-def main():
-
-    # Read the parameters
-
-    parser = ArgumentParser()
-    parser.add_argument('-c', '--csvFilePath', required=True,
-                        help='The folder of the csv dataset.')
-    parser.add_argument('-v', '--variablesMetadataPath', required=True,
-                        help='The folder of the metadata file.')
-    parser.add_argument('-o', '--outputDBAbsPath', required=True,
-                        help='The folder where the output db file is going to be.'
-                        )
-    args = parser.parse_args()
-
-    csvFilePath = os.path.abspath(args.csvFilePath)
-    variablesMetadataPath = os.path.abspath(args.variablesMetadataPath)
-    outputDBAbsPath = args.outputDBAbsPath
-
+def addMetadataInTheDatabase(CDEsMetadataPath, cur):
     # Transform the metadata json into a column name -> column type dictionary
-
-    variablesTypesDict = createMetadataDictionary(variablesMetadataPath)
-
-    # Create the query for the sqlite data table
-
-    createDataTableQuery = 'CREATE TABLE DATA('
-
-    csvFile = open(csvFilePath, 'r')
-    csvReader = csv.reader(csvFile)
-    csvHeader = next(csvReader)
-    subjectcode = csvHeader[0]
-    createDataTableQuery += ' ' + subjectcode + ' TEXT'
-    for column in csvHeader[1:]:
-        columnType = variablesTypesDict[column]
-        createDataTableQuery += ', ' + column + ' ' + columnType
-    createDataTableQuery += ')'
-
-    # Create the data table
-    con = sqlite3.connect(outputDBAbsPath)
-    cur = con.cursor()
-    cur.execute('DROP TABLE IF EXISTS DATA')
-    cur.execute(createDataTableQuery)
-
-    # Add data
-    columnsString = csvHeader[0]
-    for column in csvHeader[1:]:
-        columnsString += ', ' + column
-    columnsQuery = 'INSERT INTO DATA (' + columnsString + ') VALUES ('
-
-    for row in csvReader:
-        insertRowQuery = columnsQuery + "'" + row[0] + "'"
-        for (value, column) in zip(row[1:], csvHeader[1:]):
-            if variablesTypesDict[column] == 'text':
-                insertRowQuery += ", '" + value + "'"
-            elif value == '':
-                insertRowQuery += ', null'
-            else:
-                insertRowQuery += ', ' + value
-        insertRowQuery += ');'
-        try:
-            cur.execute(insertRowQuery)
-        except:
-            raise ValueError('Row: ' + str(row) + ', Query: ' + str(insertRowQuery))
-
-    # Transform the metadata JSON to a list
-    metadataList = createMetadataList(variablesMetadataPath)
+    metadataList = createMetadataList(CDEsMetadataPath)
 
     # Create the query for the metadata table
     createMetadataTableQuery = 'CREATE TABLE METADATA('
@@ -155,7 +104,7 @@ def main():
     cur.execute('DROP TABLE IF EXISTS METADATA')
     cur.execute(createMetadataTableQuery)
 
-    # Add data to the metadata table		TODO
+    # Add data to the metadata table        TODO
     columnsQuery = 'INSERT INTO METADATA (code, sql_type, isCategorical, enumerations, min, max) VALUES ('
 
     for variable in metadataList:
@@ -169,8 +118,101 @@ def main():
         insertVariableQuery += ");"
         cur.execute(insertVariableQuery)
 
-    con.commit()
-    con.close()
+
+def createDataTable(metadataDictionary, cur):
+    # Create the query for the sqlite data table
+    createDataTableQuery = 'CREATE TABLE DATA('
+    for column in metadataDictionary:
+        createDataTableQuery += column + ' ' + metadataDictionary[column] + ', '
+    # Remove the last comma
+    createDataTableQuery = createDataTableQuery[:-2]
+    createDataTableQuery += ')'
+
+    # Create the data table
+    cur.execute('DROP TABLE IF EXISTS DATA')
+    cur.execute(createDataTableQuery)
+
+
+def addCSVInTheDataTable(csvFilePath, metadataDictionary, cur):
+
+    # Open the csv
+    csvFile = open(csvFilePath, 'r')
+    csvReader = csv.reader(csvFile)
+    
+    # Create the csv INSERT statement
+    csvHeader = next(csvReader)
+    columnsString = csvHeader[0]
+    for column in csvHeader[1:]:
+        if column not in metadataDictionary:
+            raise KeyError('Column ' + column + ' does not exist in the metadata!')
+        columnsString += ', ' + column
+    columnsQuery = 'INSERT INTO DATA (' + columnsString + ') VALUES ('
+
+    # Insert data
+    for row in csvReader:
+        insertRowQuery = columnsQuery
+        for (value, column) in zip(row, csvHeader):
+            if metadataDictionary[column] == 'text':
+                insertRowQuery += "'" + value + "', "
+            elif value == '':
+                insertRowQuery += 'null, '
+            else:
+                insertRowQuery += value + ", "
+        insertRowQuery = insertRowQuery[:-2]
+        insertRowQuery += ');'
+
+        try:
+            cur.execute(insertRowQuery)
+        except:
+            raise ValueError('Row: ' + str(row) + ', Query: ' + str(insertRowQuery) + ', could not be inserted in the database.')
+
+
+def main():
+
+    # Read the parameters
+    parser = ArgumentParser()
+    parser.add_argument('-f', '--pathologiesFolderPath', required=True,
+                        help='The folder with the pathologies data.')
+    parser.add_argument('-t', '--nodeType', required=True,
+                        help='Is this a master or a worker node?'
+                        )
+    args = parser.parse_args()
+
+    pathologiesFolderPath = os.path.abspath(args.pathologiesFolderPath)
+    
+    # Get all pathologies
+    pathologiesList = next(os.walk(pathologiesFolderPath))[1]
+     
+    # Create the datasets db for each pathology
+    for pathologyName in pathologiesList:
+        
+        # Initializing metadata and output absolute path
+        CDEsMetadataPath = os.path.join(pathologiesFolderPath,pathologyName,"CDEsMetadata.json")
+        outputDBAbsPath = os.path.join(pathologiesFolderPath,pathologyName,"datasets.db")
+
+        # Connect to the database
+        con = sqlite3.connect(outputDBAbsPath)
+        cur = con.cursor()
+        
+        # Add the metadata table + rows
+        addMetadataInTheDatabase(CDEsMetadataPath, cur)
+        
+        
+        # Transform the metadata json into a column name -> column type list
+        metadataDictionary = createMetadataDictionary(CDEsMetadataPath)
+        
+        # Create the data table with the header
+        createDataTable(metadataDictionary, cur)
+        
+        # Add all the csvs in the database
+        for csv in os.listdir(os.path.join(pathologiesFolderPath,pathologyName)):
+            if csv.endswith('.csv'):
+                csvFilePath = os.path.join(pathologiesFolderPath,pathologyName,csv)
+                addCSVInTheDataTable(csvFilePath, metadataDictionary, cur)
+                
+    
+        con.commit()
+        con.close()
 
 
 if __name__ == '__main__':

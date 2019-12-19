@@ -113,41 +113,72 @@ class highchartscatter3d(functions.vtable.vtbase.VT):
             raise functions.OperatorError(__name__.rsplit('.')[-1],"No query argument ")
         query = dictargs['query']
 
+        if 'title' not in dictargs:
+            raise functions.OperatorError(__name__.rsplit('.')[-1],"No title argument ")
+
         cur = envars['db'].cursor()
         c=cur.execute(query)
         schema = cur.getdescriptionsafe()
-        yield [('highchartresult',)]
 
-        mydata = ""
+        mydata = []
         for myrow in c:
-            mydata +=str(list(myrow))+','
+            mydata.append(list(myrow))
 
-        if mydata == "":
-            yield ("{}")
+        if len(schema)!=3:
+            myresult =  { "type": "application/vnd.highcharts+json",
+                        "data": { "chart": { "renderTo": 'container',
+                                            "margin": 100,
+                                            "type": "scatter3d",
+                                            "animation": "false",
+                                            "options3d": {  "enabled": "true", "alpha": 10, "beta": 30, "depth": 250,"viewDistance": 5, "fitToPlot": "false",
+                                                            "frame": { "bottom": { "size": 1, "color": "rgba(0,0,0,0.02)" },
+                                                            "back": { "size": 1, "color": "rgba(0,0,0,0.04)" },
+                                                            "side": { "size": 1, "color": "rgba(0,0,0,0.06)" }}}},
+                                            "title": { "text": dictargs['title'] },
+                                            "subtitle": { "text": "The plot is empty as there are not three variables" }}
+                                }
+
+        elif len(mydata)==0:
+            myresult =  { "type": "application/vnd.highcharts+json",
+                        "data": { "chart": { "renderTo": 'container',
+                                            "margin": 100,
+                                            "type": "scatter3d",
+                                            "animation": "false",
+                                            "options3d": {  "enabled": "true", "alpha": 10, "beta": 30, "depth": 250,"viewDistance": 5, "fitToPlot": "false",
+                                                            "frame": { "bottom": { "size": 1, "color": "rgba(0,0,0,0.02)" },
+                                                            "back": { "size": 1, "color": "rgba(0,0,0,0.04)" },
+                                                            "side": { "size": 1, "color": "rgba(0,0,0,0.06)" }}}},
+                                            "title": { "text": dictargs['title'] },
+                                            "subtitle": { "text": "The plot is empty as there are not data points" }}
+                                            }
+
+
+
+
+
+
+
         else:
-            if len(schema)>3:
-                raise functions.OperatorError(__name__.rsplit('.')[-1],"Too many columns ")
-            # print schema
-            myresult = "{\"chart\": {\"margin\": 100, \"type\": \"scatter3d\", \"options3d\": {" \
-                               "\"enabled\": true, \"alpha\": 10, \"beta\": 30, \"depth\": 250," \
-                               "\"viewDistance\": 5, \"fitToPlot\": false," \
-                               "\"frame\": { \"bottom\": { \"size\": 1, \"color\": \"rgba(0,0,0,0.02)\" }," \
-                               "\"back\": { \"size\": 1, \"color\": \"rgba(0,0,0,0.04)\" }," \
-                               "\"side\": { \"size\": 1, \"color\": \"rgba(0,0,0,0.06)\" }}}},"
-            if 'title' in dictargs:
-                myresult +=  "\"title\": { \"text\": \" " + dictargs['title'] +"  \" },"
-            myresult+= "\"xAxis\": {\"gridLineWidth\": 1 , \"title\": {\"text\": \"x: " + schema[0][0] + "\",\"align\": \"middle\"}}," \
-                       "\"yAxis\": {\"gridLineWidth\": 1 , \"title\": {\"text\": \"y: " + schema[1][0]+ "\",\"align\": \"middle\"}}," \
-                        "\"zAxis\": {\"gridLineWidth\": 1 , \"title\": {\"text\": \"z: " + schema[2][0] + "\",\"align\": \"middle\"}}," \
-                        "\"legend\": { \"enabled\": false }," \
-                        "\"series\": [{" \
-                        "\"colorByPoint\": true,"\
-                        "\"data\": ["
+            myresult ={ "type": "application/vnd.highcharts+json",
+                        "data": { "chart": { "renderTo": 'container',
+                                            "margin": 100,
+                                            "type": "scatter3d",
+                                            "animation": "false",
+                                            "options3d": {  "enabled": "true", "alpha": 10, "beta": 30, "depth": 250,"viewDistance": 5, "fitToPlot": "false",
+                                                            "frame": { "bottom": { "size": 1, "color": "rgba(0,0,0,0.02)" },
+                                                            "back": { "size": 1, "color": "rgba(0,0,0,0.04)" },
+                                                            "side": { "size": 1, "color": "rgba(0,0,0,0.06)" }}}},
+                                            "title": { "text": dictargs['title'] },
+                                            "xAxis": {"gridLineWidth": 1 , "title": {"text": "x: " + str(schema[0][0]) + "","align": "middle"}},
+                                            "yAxis": {"gridLineWidth": 1 , "title": {"text": "y: " + str(schema[1][0])+ "","align": "middle"}},
+                                            "zAxis": {"gridLineWidth": 1 , "title": {"text": "z: " + str(schema[2][0]) + "","align": "middle"}},
+                                            "series": [{"colorByPoint": "true",
+                                                        "data": mydata ,
+                                                        "marker": {"radius": 5}}]}}
 
-            myresult += mydata
-            myresult= myresult[:-1] + "],\"marker\": {\"radius\": 5}}]}"
-            # print "myresult", myresult
-            yield (myresult,)
+        myjsonresult = json.dumps(myresult)
+        yield [('highchartresult',)]
+        yield (myjsonresult,)
 
 def Source():
     return functions.vtable.vtbase.VTGenerator(highchartscatter3d)

@@ -1,12 +1,20 @@
 {
 	"name": "CROSS_VALIDATION_K_FOLD",
-	"desc": "Cross Validation K Fold",
+	"desc": "K-Folds cross-validator",
 	"type": "local_global",
 	"status": "enabled",
 	"vtype": "",
 	"parameters": [{
+			"name": "pathology",
+			"desc": "The name of the pathology in which the dataset belongs to.",
+			"type": "pathology",
+			"value": "dementia",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "string"
+		}, {
 			"name": "dataset",
-			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed.",
+			"desc": "The names of one or more datasets, in which the algorithm will be executed.",
 			"type": "dataset",
 			"value": "desd-synthdata",
 			"valueNotBlank": true,
@@ -14,7 +22,7 @@
 			"valueType": "string"
 		}, {
 			"name": "x",
-			"desc": "",
+			"desc": "Independent variables: A list of variables from database.",
 			"type": "column",
 			"columnValuesSQLType": "",
 			"columnValuesIsCategorical": "",
@@ -25,7 +33,7 @@
 			"valueType": "string"
 		}, {
 			"name": "y",
-			"desc": "classname",
+			"desc": "Dependent variable: A categorical variable form database.",
 			"type": "column",
 			"columnValuesSQLType": "",
 			"columnValuesIsCategorical": "true",
@@ -36,13 +44,21 @@
 			"valueType": "string"
 		}, {
 			"name": "kfold",
-			"desc": "",
+			"desc": "Number of pieces the dataset will be split",
 			"type": "other",
 			"value": "3",
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "integer"
 		}, {
+			"name": "filter",
+			"desc": "",
+			"type": "filter",
+			"value": "",
+			"valueNotBlank": false,
+			"valueMultiple": true,
+			"valueType": "string"
+		},{
 			"name": "dbIdentifier",
 			"desc": "Predefined value for the dbIdentifier",
 			"type": "other",

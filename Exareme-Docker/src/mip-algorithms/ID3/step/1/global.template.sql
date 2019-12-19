@@ -24,6 +24,9 @@ select colname, max(sumofentropies) from (
     group by colname
 );
 
+var 'distinctvalues' from select group_concat(val) from (select distinct %{y} as val from defaultDB.localinputtblcurrent);
+var 'noofcolumns' from select count(*) from (coltypes select * from defaultdb.localinputtblcurrent);
+
 --2. Find new nodes of tree and update global_tree
 drop table if exists defaultDB.globalnewnodesoftree;
 create table defaultDB.globalnewnodesoftree (no int, colname text, colval text, nextnode int, leafval text);
@@ -34,6 +37,10 @@ from ( select distinct colname, val as colval, case when count(*) = 1 then "-" e
        group by colname,val),
      ( select case when no is null then '1' else cast(max(no)+1 as text)   end as no from defaultdb.globaltree );
 
+select * from defaultDB.globalnewnodesoftree;
+
+update defaultDB.globalnewnodesoftree
+set leafval= '%{distinctvalues}' where leafval='?' and %{noofcolumns}=2;
 select * from defaultDB.globalnewnodesoftree;
 
 update defaultdb.globaltree set nextnode = (select no from defaultDB.globalnewnodesoftree)

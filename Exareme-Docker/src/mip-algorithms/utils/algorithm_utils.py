@@ -88,8 +88,6 @@ def query_from_formula(fname_db, formula, variables,
         When a tilda is present in the formula, the function returns two design matrices (lhs_dm, rhs_dm).
         When it is not the function returns just the rhs_dm.
     """
-    from numpy import log as log
-    from numpy import exp as exp
 
     assert coding in {None, 'Treatment', 'Poly', 'Sum', 'Diff', 'Helmert'}
 

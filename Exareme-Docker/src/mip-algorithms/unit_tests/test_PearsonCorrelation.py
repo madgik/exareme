@@ -5,7 +5,7 @@ import math
 
 # Required datasets: adni_9rows, adni, data_pr1, desd-synthdata
 
-endpointUrl = 'http://88.197.53.100:9090/mining/query/PEARSON_CORRELATION'
+endpointUrl = 'http://88.197.53.23:9090/mining/query/PEARSON_CORRELATION'
 
 
 def test_PearsonCorrlation_MIP_AlgoTesting_1():
@@ -30,6 +30,9 @@ def test_PearsonCorrlation_MIP_AlgoTesting_1():
             "name" : "y",
             "value": "righthippocampus"
         },
+	{   "name": "pathology",
+ 	    "value":"dementia"
+	},
         {
             "name" : "dataset",
             "value": "desd-synthdata"
@@ -72,6 +75,9 @@ def test_PearsonCorrlation_MIP_AlgoTesting_2():
             "name" : "y",
             "value": "opticchiasm"
         },
+	{   "name": "pathology",
+	    "value":"dementia"
+	},
         {
             "name" : "dataset",
             "value": "desd-synthdata"
@@ -114,6 +120,9 @@ def test_PearsonCorrlation_MIP_AlgoTesting_2p1():
             "name" : "y",
             "value": "minimentalstate"
         },
+	{   "name": "pathology",
+	    "value":"dementia"
+	},
         {
             "name" : "dataset",
             "value": "desd-synthdata"
@@ -156,6 +165,9 @@ def test_PearsonCorrlation_MIP_AlgoTesting_3():
             "name" : "y",
             "value": "opticchiasm"
         },
+	{   "name": "pathology",
+	    "value":"dementia"
+	},
         {
             "name" : "dataset",
             "value": "desd-synthdata"
@@ -198,6 +210,9 @@ def test_PearsonCorrlation_MIP_AlgoTesting_3p1():
             "name" : "y",
             "value": "var2"
         },
+	{   "name": "pathology",
+	    "value":"dementia"
+	},
         {
             "name" : "dataset",
             "value": "data_pr1"
@@ -240,6 +255,9 @@ def test_PearsonCorrlation_MIP_AlgoTesting_3p2():
             "name" : "y",
             "value": "var4"
         },
+	{   "name": "pathology",
+	    "value":"dementia"
+	},
         {
             "name" : "dataset",
             "value": "data_pr1"
@@ -286,12 +304,15 @@ def test_PearsonCorrlation_MIP_AlgoTesting_4():
     data = [
         {
             "name" : "x",
-            "value": "righthippocampus, lefthippocampus, leftententorhinalarea"
+            "value": ""
         },
         {
             "name" : "y",
-            "value": ""
+            "value": "righthippocampus, lefthippocampus, leftententorhinalarea"
         },
+	{   "name": "pathology",
+	    "value":"dementia"
+	},
         {
             "name" : "dataset",
             "value": "desd-synthdata"
@@ -344,12 +365,15 @@ def test_PearsonCorrlation_MIP_AlgoTesting_5():
     data = [
         {
             "name" : "x",
-            "value": "righthippocampus, lefthippocampus, opticchiasm"
+            "value": ""
         },
         {
             "name" : "y",
-            "value": ""
+            "value": "righthippocampus, lefthippocampus, opticchiasm"
         },
+	{   "name": "pathology",
+	    "value":"dementia"
+	},
         {
             "name" : "dataset",
             "value": "desd-synthdata"
@@ -402,12 +426,15 @@ def test_PearsonCorrlation_MIP_AlgoTesting_6():
     data = [
         {
             "name" : "x",
-            "value": "lefthippocampus, subjectageyears, opticchiasm"
+            "value": ""
         },
         {
             "name" : "y",
-            "value": ""
+            "value": "lefthippocampus, subjectageyears, opticchiasm"
         },
+	{   "name": "pathology",
+	    "value":"dementia"
+	},
         {
             "name" : "dataset",
             "value": "desd-synthdata"
@@ -460,12 +487,15 @@ def test_PearsonCorrlation_MIP_AlgoTesting_7():
     data = [
         {
             "name" : "x",
-            "value": "subjectageyears, lefthippocampus, opticchiasm"
+            "value": ""
         },
         {
             "name" : "y",
-            "value": ""
+            "value": "subjectageyears, lefthippocampus, opticchiasm"
         },
+	{   "name": "pathology",
+	    "value":"dementia"
+	},
         {
             "name" : "dataset",
             "value": "desd-synthdata"
@@ -497,6 +527,7 @@ def test_PearsonCorrlation_Privacy():
 
     data = [{"name" : "x","value": "lefthippocampus"},
             {"name" : "y","value": "righthippocampus"},
+	    {   "name": "pathology","value":"dementia"},
             {"name" : "dataset","value": "adni_9rows"},
             {"name" : "filter","value": ""},
     	  ]
@@ -509,7 +540,7 @@ def test_PearsonCorrlation_Privacy():
     check_privacy_result(r.text)
 
 def check_privacy_result(result):
-    assert result == "{\"error\" : \"The Experiment could not run with the input provided because there are insufficient data.\"}"
+    assert result == "{\"result\" : [{\"data\":\"The Experiment could not run with the input provided because there are insufficient data.\",\"type\":\"text/plain+warning\"}]}"
 
 
 def check_result(my_result, r_var_pair, r_corr, r_pval, r_ci_lo, r_ci_hi):
