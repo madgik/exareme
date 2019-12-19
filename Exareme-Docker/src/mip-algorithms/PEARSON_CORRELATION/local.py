@@ -81,28 +81,32 @@ def main():
     parser.add_argument('-metadata_isCategorical_column', required=True)
 
     args, unknown = parser.parse_known_args()
-    args_x = list(
-            args.x
-                .replace(' ', '')
-                .split(',')
-    )
+
     args_y = list(
             args.y
                 .replace(' ', '')
                 .split(',')
     )
-    varibles = args_x + args_y
+    if args.x == '':
+        variables = (args_y,)
+    else:
+        args_x = list(
+                args.x
+                    .replace(' ', '')
+                    .split(',')
+        )
+        variables = (args_y, args_x)
+
     formula = args.formula
     formula = formula.replace('_', '~')  # TODO Fix tilda problem and remove
     no_intercept = json.loads(args.no_intercept)
     input_local_DB = args.input_local_DB
     data_table = args.data_table
     metadata_table = args.metadata_table
-    metadata_code_column = 'code'  # TODO Fix this in exareme (received null)
-    # metadata_code_column = args.metadata_code_column
+    metadata_code_column = args.metadata_code_column
     metadata_isCategorical_column = args.metadata_isCategorical_column
     coding = None if args.coding == 'null' else args.coding
-    left_vars, right_vars = query_from_formula(fname_db=input_local_DB, formula=formula, variables=varibles,
+    left_vars, right_vars = query_from_formula(fname_db=input_local_DB, formula=formula, variables=variables,
                                                data_table=data_table, metadata_table=metadata_table,
                                                metadata_code_column=metadata_code_column,
                                                metadata_isCategorical_column=metadata_isCategorical_column,

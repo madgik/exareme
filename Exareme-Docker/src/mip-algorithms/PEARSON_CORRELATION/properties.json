@@ -59,7 +59,7 @@
             "type": "other",
             "value": "agegroup + gender _ leftaccumbensarea + leftacgganteriorcingulategyrus + leftainsanteriorinsula",
             "defaultValue": "",
-            "valueNotBlank": true,
+            "valueNotBlank": false,
             "valueMultiple": false,
             "valueType": "string"
         },
