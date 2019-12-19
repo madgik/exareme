@@ -58,7 +58,7 @@ fi
 
 #Get hostname of node
 name=$(hostname)
-#. in hostname gives errors, replace with _
+#. if hostname gives errors, replace with _
 name=${name//./_}
 
 #Get node Hostname
