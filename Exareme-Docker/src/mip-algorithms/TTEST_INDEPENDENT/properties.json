@@ -1,6 +1,7 @@
 {
 	"name": "TTEST_INDEPENDENT",
 	"desc": "Student’s Independent samples t-test",
+	"label": "T-Test Independent",
 	"type": "multiple_local_global",
 	"parameters": [{
 			"name": "y",

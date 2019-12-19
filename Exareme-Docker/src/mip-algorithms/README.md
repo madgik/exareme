@@ -37,6 +37,7 @@ submitted.</p>
 The parameter has the following properties:<ul>
 <li><code>name</code> (String) </li>
 <li><code>desc</code> (String) Will be shown in the properties of the algorithm. </li>
+<li><code>label</code> (String) The name of the algorithm to be shown on the front-end. </li>
 <li><code>type</code> Defines the type of the parameter. It can take the following values:
 <ol>
 <li><code>column</code> (Used for querying the columns of the database.)</li>

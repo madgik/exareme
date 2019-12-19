@@ -1,6 +1,7 @@
 {
 	"name": "LINEAR_REGRESSION",
 	"desc": "LINEAR REGRESSION",
+	"label": "Linear Regression",
 	"type": "multiple_local_global",
 	"parameters": [{
 			"name": "x",
@@ -37,7 +38,7 @@
 			"desc": "Encoding parameter. It can be one of the following:dummycoding,sumscoding,simplecoding",
 			"type": "other",
 			"value": "dummycoding",
-			"valueEnumerations": ["dummycoding","sumscoding","simplecoding"],
+			"valueEnumerations": ["dummycoding", "sumscoding", "simplecoding"],
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "string"
