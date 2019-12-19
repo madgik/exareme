@@ -1,7 +1,7 @@
 {
 	"name": "KMEANS",
 	"desc": "KMEANS_accurate",
-	"label": "K-means",
+	"label": "k-Means Clustering",
 	"type": "iterative",
 	"parameters": [{
 			"name": "y",

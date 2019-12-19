@@ -1,7 +1,7 @@
 {
 	"name": "CROSS_VALIDATION_K_FOLD",
 	"desc": "K-Folds cross-validator",
-	"label": "Cross Validation K-Fold",
+	"label": "Cross Validation k-Fold",
 	"type": "local_global",
 	"parameters": [{
 			"name": "pathology",
