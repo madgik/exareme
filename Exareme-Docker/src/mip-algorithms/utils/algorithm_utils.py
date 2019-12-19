@@ -1,15 +1,14 @@
 from __future__ import division
 from __future__ import print_function
 
-import sqlite3
-import pickle
 import codecs
+import errno
 import logging
 import os
-import errno
-import pandas as pd
+import pickle
+import sqlite3
 
-import numpy as np
+import pandas as pd
 from patsy import dmatrix, dmatrices
 
 PRIVACY_MAGIC_NUMBER = 10
@@ -63,10 +62,11 @@ def query_from_formula(fname_db, formula, variables,
     ----------
     fname_db : string
         Path and name of database.
-    formula : string
-        Formula in patsy (R language) syntax. E.g. 'y ~ x1 + x2 * x3'.
-    variables : list of strings
-        A list of the variables names.
+    formula : string or None
+        Formula in patsy (R language) syntax. E.g. 'y ~ x1 + x2 * x3'. If None a trivial formula of the form 'lhs ~
+        rhs' is generated.
+    variables : tuple of list of strings
+        A tuple of the form (`lhs`, `rhs`) or (`rhs`,) where `lhs` and `rhs` are lists of the variable names.
     data_table : string
         The name of the data table in the database.
     metadata_table : string
@@ -93,17 +93,21 @@ def query_from_formula(fname_db, formula, variables,
 
     assert coding in {None, 'Treatment', 'Poly', 'Sum', 'Diff', 'Helmert'}
 
+    # If no formula is given, generate a trivial one
+    if formula is '':
+        formula = '~'.join(map(lambda x: '+'.join(x), variables))
+    variables = reduce(lambda a, b: a + b, variables)
+
     if no_intercept:
         formula += '-1'
     conn = sqlite3.connect(fname_db)
 
     # Define query forming functions
     def iscateg_query(var):
-        return "SELECT {is_cat} FROM {metadata} WHERE {code}=='{var}';".format(
-            is_cat=metadata_isCategorical_column,
-            metadata=metadata_table,
-            code=metadata_code_column,
-            var=var)
+        return "SELECT {is_cat} FROM {metadata} WHERE {code}=='{var}';".format(is_cat=metadata_isCategorical_column,
+                                                                               metadata=metadata_table,
+                                                                               code=metadata_code_column,
+                                                                               var=var)
 
     def count_query(varz):
         return 'SELECT COUNT({var}) FROM {data} WHERE {clause};'.format(var=varz[0],
@@ -255,8 +259,11 @@ class ExaremeError(Exception):
 
 def main():
     fname_db = '/Users/zazon/madgik/mip_data/dementia/datasets.db'
-    variables = ['gender', 'lefthippocampus', 'alzheimerbroadcategory']
+    lhs = ['gender']
+    rhs = ['lefthippocampus', 'alzheimerbroadcategory']
+    variables = (lhs, rhs)
     formula = 'gender ~ alzheimerbroadcategory * lefthippocampus'
+    formula = None
     Y, X = query_from_formula(fname_db, formula, variables, data_table='DATA',
                               metadata_table='METADATA',
                               metadata_code_column='code',
@@ -264,7 +271,7 @@ def main():
                               no_intercept=True, coding='Diff')
     print(X.design_info.column_names)
     print(Y.design_info.column_names)
-    print(Y)
+    # print(Y)
 
 
 if __name__ == '__main__':

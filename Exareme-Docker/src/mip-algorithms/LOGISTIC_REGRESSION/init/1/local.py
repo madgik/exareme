@@ -9,7 +9,7 @@ from os import path
 import numpy as np
 
 sys.path.append(
-    path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) + '/utils/')
+        path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) + '/utils/')
 sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) +
                 '/LOGISTIC_REGRESSION/')
 
@@ -58,7 +58,7 @@ def main():
                 .split(',')
     )
     args_y = args.y.strip()
-    varibles = args_x + [args_y]
+    varibles = ([args_y], args_x)
     formula = args.formula
     formula = formula.replace('_', '~')  # TODO Fix tilda problem and remove
     no_intercept = json.loads(args.no_intercept)

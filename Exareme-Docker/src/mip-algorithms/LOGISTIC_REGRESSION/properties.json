@@ -73,7 +73,7 @@
             "type": "other",
             "value": "gender _ alzheimerbroadcategory * lefthippocampus",
             "defaultValue": "",
-            "valueNotBlank": true,
+            "valueNotBlank": false,
             "valueMultiple": false,
             "valueType": "string"
         },
