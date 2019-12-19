@@ -1,4 +1,4 @@
 apsw==3.9.2-r1
 NumPy==1.16.3
 titus
-
+patsy
