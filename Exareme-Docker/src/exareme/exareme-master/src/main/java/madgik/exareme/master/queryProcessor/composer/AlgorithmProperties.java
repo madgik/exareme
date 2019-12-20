@@ -18,6 +18,7 @@ public class AlgorithmProperties {
 
     private String name;
     private String desc;
+    private String label;
     private AlgorithmType type;
     private ParameterProperties[] parameters;
 
@@ -43,6 +44,9 @@ public class AlgorithmProperties {
         if (desc == null) {
             throw new AlgorithmException("The parameter field 'desc' was not initialized in the properties.json file");
         }
+        if (label == null) {
+            throw new AlgorithmException("The parameter field 'label' was not initialized in the properties.json file");
+        }
         if (type == null) {
             throw new AlgorithmException("The parameter field 'type' was not initialized in the properties.json file");
         }
@@ -64,6 +68,14 @@ public class AlgorithmProperties {
 
     public void setDesc(String desc) {
         this.desc = desc;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public AlgorithmType getType() {

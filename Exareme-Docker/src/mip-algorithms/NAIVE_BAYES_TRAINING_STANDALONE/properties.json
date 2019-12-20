@@ -1,9 +1,8 @@
 {
 	"name": "NAIVE_BAYES_TRAINING_STANDALONE",
 	"desc": "BayesNaive_training_for_exareme",
+	"label": "Naive Bayes Training",
 	"type": "multiple_local_global",
-	"status": "enabled",
-	"vtype": "",
 	"parameters": [{
 			"name": "x",
 			"desc": "Independent variables: A list of variables from database.",
@@ -34,17 +33,15 @@
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "real"
-		},
-    {
-     "name": "pathology",
-     "desc": "The name of the pathology in which the dataset belongs to.",
-     "type": "pathology",
-     "value": "dementia",
-     "valueNotBlank": true,
-     "valueMultiple": false,
-     "valueType": "string"
-   },
-   {
+		}, {
+			"name": "pathology",
+			"desc": "The name of the pathology in which the dataset belongs to.",
+			"type": "pathology",
+			"value": "dementia",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "string"
+		}, {
 			"name": "dataset",
 			"desc": "The names of one or more datasets, in which the algorithm will be executed.",
 			"type": "dataset",
