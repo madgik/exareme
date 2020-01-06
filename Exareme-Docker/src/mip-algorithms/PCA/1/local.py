@@ -3,18 +3,32 @@ from __future__ import division
 from __future__ import print_function
 
 import sys
-from os import path
 from argparse import ArgumentParser
+from os import path, getcwd
 
 import numpy as np
 import numpy.ma as ma
 
-sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/utils/')
-sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/PCA/')
+_ALGORITHM_TYPE = 'python_multiple_local_global'
 
-from algorithm_utils import StateData, query_with_privacy, ExaremeError, PrivacyError, PRIVACY_MAGIC_NUMBER
-from lib import PCA1_Loc2Glob_TD
+if _ALGORITHM_TYPE == 'python_local_global':
+    dir_levels = 2
+elif _ALGORITHM_TYPE == 'python_multiple_local_global':
+    dir_levels = 3
+elif _ALGORITHM_TYPE == 'python_iterative':
+    if path.basename(getcwd()) == 'termination_condition':
+        dir_levels = 3
+    else:
+        dir_levels = 4
+else:
+    raise ValueError('_ALGORITHM_TYPE unknown type.')
+new_path = path.abspath(__file__)
+for _ in range(dir_levels):
+    new_path = path.dirname(new_path)
+sys.path.append(new_path)
 
+from utils.algorithm_utils import StateData, TransferData, query_with_privacy, ExaremeError, PrivacyError, \
+    PRIVACY_MAGIC_NUMBER
 
 def pca_local(local_in):
     # Unpack data
@@ -35,19 +49,19 @@ def pca_local(local_in):
         sx[i] = xm.sum()
 
         local_state = StateData(X=X, schema_X=schema_X)
-        local_out = PCA1_Loc2Glob_TD(nn, sx)
+        local_out = TransferData(nn=(nn, 'add'), sx=(sx, 'add'))
 
     return local_state, local_out
 
 
-def main():
+def main(args):
     # Parse arguments
     parser = ArgumentParser()
     parser.add_argument('-x', required=True, help='Variable names in x, comma separated.')
     parser.add_argument('-input_local_DB', required=True, help='Path to local db.')
     parser.add_argument('-cur_state_pkl', required=True, help='Path to the pickle file holding the current state.')
     parser.add_argument('-db_query', required=True, help='Query to be executed on local db.')
-    args, unknown = parser.parse_known_args()
+    args, unknown = parser.parse_known_args(args)
     query = args.db_query
     fname_cur_state = path.abspath(args.cur_state_pkl)
     fname_loc_db = path.abspath(args.input_local_DB)
@@ -68,9 +82,11 @@ def main():
     local_state, local_out = pca_local(local_in=local_in)
     # Save local state
     local_state.save(fname=fname_cur_state)
-    # Transfer local outpu
+    # Transfer local output
     local_out.transfer()
 
 
 if __name__ == '__main__':
-    main()
+    import sys
+
+    main(sys.argv[1:])

@@ -2,25 +2,41 @@ from __future__ import division
 from __future__ import print_function
 
 import sys
-from os import path
-import numpy as np
 from argparse import ArgumentParser
+from os import path, getcwd
 
-sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/utils/')
-sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/PCA/')
+import numpy as np
 
-from algorithm_utils import Global2Local_TD
-from lib import PCA1_Loc2Glob_TD
+_ALGORITHM_TYPE = 'python_multiple_local_global'
+
+if _ALGORITHM_TYPE == 'python_local_global':
+    dir_levels = 2
+elif _ALGORITHM_TYPE == 'python_multiple_local_global':
+    dir_levels = 3
+elif _ALGORITHM_TYPE == 'python_iterative':
+    if path.basename(getcwd()) == 'termination_condition':
+        dir_levels = 3
+    else:
+        dir_levels = 4
+else:
+    raise ValueError('_ALGORITHM_TYPE unknown type.')
+new_path = path.abspath(__file__)
+for _ in range(dir_levels):
+    new_path = path.dirname(new_path)
+sys.path.append(new_path)
+
+from utils.algorithm_utils import TransferData
 
 
 def pca_global(global_in):
-    nn, sx = global_in.get_data()
+    data = global_in.get_data()
+    nn, sx = data['nn'], data['sx']
     n_cols = len(nn)
     mean = np.empty(n_cols, dtype=np.float)
     for i in xrange(n_cols):
         mean[i] = sx[i] / nn[i]
 
-    global_out = Global2Local_TD(mean=mean)
+    global_out = TransferData(mean=(mean, 'do_nothing'))
 
     return global_out
 
@@ -32,7 +48,7 @@ def main():
     args, unknown = parser.parse_known_args()
     local_dbs = path.abspath(args.local_step_dbs)
 
-    local_out = PCA1_Loc2Glob_TD.load(local_dbs)
+    local_out = TransferData.load(local_dbs)
     # Run algorithm global step
     global_out = pca_global(global_in=local_out)
 

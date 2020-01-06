@@ -7,7 +7,9 @@ import logging
 import os
 import pickle
 import sqlite3
+from collections import OrderedDict
 
+import numpy as np
 import pandas as pd
 from patsy import dmatrix, dmatrices
 
@@ -16,9 +18,33 @@ P_VALUE_CUTOFF = 0.001
 P_VALUE_CUTOFF_STR = '< ' + str(P_VALUE_CUTOFF)
 
 
-class TransferData():
+class TransferData(object):
+    def __init__(self, **kwargs):
+        self.data = OrderedDict()
+        self.reduce_type = OrderedDict()
+        for k, v in kwargs.items():
+            self.data[k] = v[0]
+            self.reduce_type[k] = v[1]
+
+    def __repr__(self):
+        ret = ''
+        for k in self.data.keys():
+            ret += '{k} : {val}, reduce by {red_type}\n'.format(k=k, val=self.data[k], red_type=self.reduce_type[k])
+        return ret
+
     def __add__(self, other):
-        raise NotImplementedError('The __add__ method should be implemented by the child class.')
+        kwargs = OrderedDict()
+        for k in self.data.keys():
+            if self.reduce_type[k] == 'add':
+                kwargs[k] = (self.data[k] + other.data[k], 'add')
+            elif self.reduce_type[k] == 'max':
+                kwargs[k] = (max(self.data[k], other.data[k]), 'max')
+            elif self.reduce_type[k] == 'do_nothing':
+                kwargs[k] = (self.data[k], 'do_nothing')
+            else:
+                raise ValueError('{rt} is not implemented as a reduce method.'.format(rt=self.reduce_type[k]))
+        print(kwargs)
+        return TransferData(**kwargs)
 
     @classmethod
     def load(cls, inputDB):
@@ -37,6 +63,32 @@ class TransferData():
 
     def transfer(self):
         print(codecs.encode(pickle.dumps(self), 'ascii'))
+
+    def get_data(self):
+        return self.data
+
+
+# class TransferData():
+#     def __add__(self, other):
+#         raise NotImplementedError('The __add__ method should be implemented by the child class.')
+#
+#     @classmethod
+#     def load(cls, inputDB):
+#         conn = sqlite3.connect(inputDB)
+#         cur = conn.cursor()
+#         cur.execute('SELECT data FROM transfer')
+#         first = True
+#         result = None
+#         for row in cur:
+#             if first:
+#                 result = pickle.loads(codecs.decode(row[0], 'ascii'))
+#                 first = False
+#             else:
+#                 result += pickle.loads(codecs.decode(row[0], 'ascii'))
+#         return result
+#
+#     def transfer(self):
+#         print(codecs.encode(pickle.dumps(self), 'ascii'))
 
 
 def query_with_privacy(fname_db, query):
@@ -253,6 +305,15 @@ class PrivacyError(Exception):
 class ExaremeError(Exception):
     def __init__(self, message):
         super(ExaremeError, self).__init__(message)
+
+
+def make_json_raw(**kwargs):
+    result_list = []
+    for k, v in kwargs.items():
+        result_list.append({
+            k: v if type(v) != np.ndarray else v.tolist()
+        })
+    return result_list
 
 
 def main():
