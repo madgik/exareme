@@ -18,24 +18,8 @@ while True:
         break
 del _new_path
 
-from utils.algorithm_utils import StateData, Global2Local_TD, TransferData, parse_exareme_args
-
-
-def pca_local(local_state, local_in):
-    # Unpack local state
-    X, schema_X = local_state['X'], local_state['schema_X']
-    # Unpack local input
-    data = local_in.get_data()
-    mean = data['mean']
-
-    # Substract the mean of each variable
-    n_obs = len(X)
-    X = X - mean
-    gramian = np.dot(np.transpose(X), X)
-
-    # Pack results
-    local_out = TransferData(gramian=(gramian, 'add'), n_obs=(n_obs, 'add'), schema_X=(schema_X, 'do_nothing'))
-    return local_out
+from utils.algorithm_utils import StateData, TransferData, parse_exareme_args
+from PCA.pca_lib import local_2
 
 
 def main(args):
@@ -47,7 +31,7 @@ def main(args):
     # Load global node output
     global_out = TransferData.load(global_db)
     # Run algorithm local step
-    local_out = pca_local(local_state=local_state, local_in=global_out)
+    local_out = local_2(local_state=local_state, local_in=global_out)
     # Return the output data
     local_out.transfer()
 

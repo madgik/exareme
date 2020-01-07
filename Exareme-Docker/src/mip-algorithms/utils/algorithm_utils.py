@@ -19,7 +19,7 @@ P_VALUE_CUTOFF = 0.001
 P_VALUE_CUTOFF_STR = '< ' + str(P_VALUE_CUTOFF)
 
 
-class TransferData(object):
+class TransferAndAggregateData(object):
     def __init__(self, **kwargs):
         self.data = OrderedDict()
         self.reduce_type = OrderedDict()
@@ -44,8 +44,7 @@ class TransferData(object):
                 kwargs[k] = (self.data[k], 'do_nothing')
             else:
                 raise ValueError('{rt} is not implemented as a reduce method.'.format(rt=self.reduce_type[k]))
-        print(kwargs) # TODO what's this??
-        return TransferData(**kwargs)
+        return TransferAndAggregateData(**kwargs)
 
     @classmethod
     def load(cls, inputDB):
@@ -69,27 +68,27 @@ class TransferData(object):
         return self.data
 
 
-# class TransferData():
-#     def __add__(self, other):
-#         raise NotImplementedError('The __add__ method should be implemented by the child class.')
-#
-#     @classmethod
-#     def load(cls, inputDB):
-#         conn = sqlite3.connect(inputDB)
-#         cur = conn.cursor()
-#         cur.execute('SELECT data FROM transfer')
-#         first = True
-#         result = None
-#         for row in cur:
-#             if first:
-#                 result = pickle.loads(codecs.decode(row[0], 'ascii'))
-#                 first = False
-#             else:
-#                 result += pickle.loads(codecs.decode(row[0], 'ascii'))
-#         return result
-#
-#     def transfer(self):
-#         print(codecs.encode(pickle.dumps(self), 'ascii'))
+class TransferData():
+    def __add__(self, other):
+        raise NotImplementedError('The __add__ method should be implemented by the child class.')
+
+    @classmethod
+    def load(cls, inputDB):
+        conn = sqlite3.connect(inputDB)
+        cur = conn.cursor()
+        cur.execute('SELECT data FROM transfer')
+        first = True
+        result = None
+        for row in cur:
+            if first:
+                result = pickle.loads(codecs.decode(row[0], 'ascii'))
+                first = False
+            else:
+                result += pickle.loads(codecs.decode(row[0], 'ascii'))
+        return result
+
+    def transfer(self):
+        print(codecs.encode(pickle.dumps(self), 'ascii'))
 
 
 def query_with_privacy(fname_db, query):

@@ -2,9 +2,7 @@ from __future__ import division
 from __future__ import print_function
 
 import sys
-from os import path, getcwd
-
-import numpy as np
+from os import path
 
 _new_path = path.dirname(path.dirname(path.abspath(__file__)))
 sys.path.append(_new_path)
@@ -20,19 +18,7 @@ while True:
 del _new_path
 
 from utils.algorithm_utils import TransferData, parse_exareme_args
-
-
-def pca_global(global_in):
-    data = global_in.get_data()
-    nn, sx = data['nn'], data['sx']
-    n_cols = len(nn)
-    mean = np.empty(n_cols, dtype=np.float)
-    for i in xrange(n_cols):
-        mean[i] = sx[i] / nn[i]
-
-    global_out = TransferData(mean=(mean, 'do_nothing'))
-
-    return global_out
+from PCA.pca_lib import global_1
 
 
 def main(args):
@@ -40,7 +26,7 @@ def main(args):
 
     local_out = TransferData.load(local_dbs)
     # Run algorithm global step
-    global_out = pca_global(global_in=local_out)
+    global_out = global_1(global_in=local_out)
 
     # Return the algorithm's output
     global_out.transfer()
