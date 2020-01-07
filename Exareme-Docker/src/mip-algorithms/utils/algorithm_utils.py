@@ -144,7 +144,7 @@ def query_from_formula(fname_db, formula, variables,
     assert coding in {None, 'Treatment', 'Poly', 'Sum', 'Diff', 'Helmert'}
 
     # If no formula is given, generate a trivial one
-    if formula is '':
+    if formula is '' or formula is None:
         formula = '~'.join(map(lambda x: '+'.join(x), variables))
     variables = reduce(lambda a, b: a + b, variables)
 
@@ -314,6 +314,7 @@ def make_json_raw(**kwargs):
         })
     return result_list
 
+
 # TODO Open json file using relative path
 def parse_exareme_args():
     import json
@@ -327,6 +328,10 @@ def parse_exareme_args():
     parser.add_argument('-prev_state_pkl', required=False, help='Path to the pickle file holding the previous state.')
     parser.add_argument('-local_step_dbs', required=False, help='Path to local db.')
     parser.add_argument('-global_step_db', required=False, help='Path to db holding global step results.')
+    parser.add_argument('-data_table', required=False)
+    parser.add_argument('-metadata_table', required=False)
+    parser.add_argument('-metadata_code_column', required=False)
+    parser.add_argument('-metadata_isCategorical_column', required=False)
     # Add algorithm arguments
     for p in params:
         name = '-' + p['name']
@@ -337,20 +342,25 @@ def parse_exareme_args():
     args, unknown = parser.parse_known_args()
     return args
 
+
 def main():
     fname_db = '/Users/zazon/madgik/mip_data/dementia/datasets.db'
-    lhs = ['gender']
-    rhs = ['lefthippocampus', 'alzheimerbroadcategory']
-    variables = (lhs, rhs)
+    lhs = ['leftaccumbensarea']
+    rhs = ['leftaccumbensarea', 'leftacgganteriorcingulategyrus']
+    variables = (rhs,)
     formula = 'gender ~ alzheimerbroadcategory * lefthippocampus'
     formula = None
-    Y, X = query_from_formula(fname_db, formula, variables, data_table='DATA',
+    _, X = query_from_formula(fname_db, formula, variables, data_table='DATA',
                               metadata_table='METADATA',
                               metadata_code_column='code',
                               metadata_isCategorical_column='isCategorical',
                               no_intercept=True, coding='Diff')
     print(X.design_info.column_names)
-    print(Y.design_info.column_names)
+    print(np.array(X))
+    X = np.array(X)
+    print(X.sum(axis=0))
+    print(len(X))
+    # print(Y.design_info.column_names)
     # print(Y)
 
 

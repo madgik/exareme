@@ -4,96 +4,96 @@ from __future__ import print_function
 import json
 import sys
 from os import path
+
 import numpy as np
-import numpy.ma as ma
 
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))) + '/utils/')
 
-from utils.algorithm_utils import StateData, TransferAndAggregateData, query_with_privacy, ExaremeError, \
-    PrivacyError, PRIVACY_MAGIC_NUMBER, make_json_raw
+from utils.algorithm_utils import StateData, TransferAndAggregateData, make_json_raw, query_from_formula
 
 
 def get_data(args):
-    query = args.db_query
-
-    fname_loc_db = path.abspath(args.input_local_DB)
-    if args.x == '':
-        raise ExaremeError('Field x must be non empty.')
-    schema_X = list(
+    input_local_DB = args.input_local_DB
+    args_x = list(
             args.x
                 .replace(' ', '')
                 .split(',')
     )
-    schema, data = query_with_privacy(fname_db=fname_loc_db, query=query)
-    idx_X = [schema.index(v) for v in schema_X if v in schema]
-    data = np.array(data, dtype=np.float64)
-    X = data[:, idx_X]
-    return X, schema
+    variables = (args_x,)
+    formula = args.formula
+    formula = formula.replace('_', '~')  # TODO Fix tilda problem and remove
+    no_intercept = json.loads(args.no_intercept)
+    data_table = args.data_table
+    metadata_table = args.metadata_table
+    metadata_code_column = args.metadata_code_column
+    metadata_isCategorical_column = args.metadata_isCategorical_column
+
+    # Get data from local DB
+    _, X = query_from_formula(fname_db=input_local_DB, formula=formula, variables=variables,
+                              data_table=data_table, metadata_table=metadata_table,
+                              metadata_code_column=metadata_code_column,
+                              metadata_isCategorical_column=metadata_isCategorical_column,
+                              no_intercept=no_intercept, coding=None)
+
+    return X
+
 
 def local_1(local_in):
     # Unpack data
-    X, schema_X = local_in
-    n_obs, n_cols = len(X), len(X[0])
+    X = local_in
+    n_obs, n_cols = len(X), len(X.columns)
+    var_names = list(X.columns)
+    X = np.array(X)
 
-    # Init statistics
-    nn = np.empty(n_cols, dtype=np.int)
-    sx = np.empty(n_cols, dtype=np.float)
+    sx = X.sum(axis=0)
 
-    mask = [True in np.isnan(X[row, :]) for row in range(n_obs)]
-    for i in xrange(n_cols):
-        x = X[:, i]
-        xm = ma.masked_array(x, mask=mask)
-        nn[i] = n_obs - sum(mask)
-        if nn[i] < PRIVACY_MAGIC_NUMBER:
-            raise PrivacyError('Removing missing values results in illegal number of datapoints in local db.')
-        sx[i] = xm.sum()
-
-        local_state = StateData(X=X, schema_X=schema_X)
-        local_out = TransferAndAggregateData(nn=(nn, 'add'), sx=(sx, 'add'))
+    local_state = StateData(X=X, var_names=var_names)
+    local_out = TransferAndAggregateData(n_obs=(n_obs, 'add'), sx=(sx, 'add'))
 
     return local_state, local_out
 
-def global_1(global_in):
-    data = global_in.get_data()
-    nn, sx = data['nn'], data['sx']
-    n_cols = len(nn)
-    mean = np.empty(n_cols, dtype=np.float)
-    for i in xrange(n_cols):
-        mean[i] = sx[i] / nn[i]
 
-    global_out = TransferAndAggregateData(mean=(mean, 'do_nothing'))
+def global_1(global_in):
+    # Unpack global input
+    data = global_in.get_data()
+    n_obs, sx = data['n_obs'], data['sx']
+
+    means = sx / n_obs
+    global_out = TransferAndAggregateData(means=(means, 'do_nothing'))
 
     return global_out
 
+
 def local_2(local_state, local_in):
     # Unpack local state
-    X, schema_X = local_state['X'], local_state['schema_X']
+    X, var_names = local_state['X'], local_state['var_names']
     # Unpack local input
     data = local_in.get_data()
-    mean = data['mean']
+    means = data['means']
 
-    # Substract the mean of each variable
     n_obs = len(X)
-    X = X - mean
+    X = X - means
     gramian = np.dot(np.transpose(X), X)
 
     # Pack results
-    local_out = TransferAndAggregateData(gramian=(gramian, 'add'), n_obs=(n_obs, 'add'), schema_X=(schema_X, 'do_nothing'))
+    local_out = TransferAndAggregateData(gramian=(gramian, 'add'), n_obs=(n_obs, 'add'),
+                                         var_names=(var_names, 'do_nothing'))
     return local_out
+
 
 def global_2(global_in):
     # Unpack global input
     data = global_in.get_data()
-    gramian, n_obs, schema_X = data['gramian'], data['n_obs'], data['schema_X']
-    covar_matr = np.divide(gramian, n_obs - 1)
+    gramian, n_obs, var_names = data['gramian'], data['n_obs'], data['var_names']
 
+    covar_matr = np.divide(gramian, n_obs - 1)
     eigen_vals, eigen_vecs = np.linalg.eig(covar_matr)
 
     idx = eigen_vals.argsort()[::-1]
     eigen_vals = eigen_vals[idx]
     eigen_vecs = eigen_vecs[:, idx]
 
-    json_raw = make_json_raw(eigenvalues=eigen_vals, eigenvectors=eigen_vecs, var_names=schema_X)
+    json_raw = make_json_raw(eigenvalues=eigen_vals, eigenvectors=eigen_vecs, var_names=var_names)
     # Write output to JSON
     result = {
         "result": [
