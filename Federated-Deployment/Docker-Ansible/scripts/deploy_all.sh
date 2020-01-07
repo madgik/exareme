@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-notFound=0
+notFound=1
 
 portainer () {
     echo -e "\nDo you wish to run Portainer in a secure way? (SSL certificate required in Target machine) [ y/n ]"
@@ -13,6 +13,7 @@ portainer () {
             while IFS= read -r line || [[ -n "$line" ]]; do
                  #If DOMAIN_NAME exists as key in ../group_vars/all.yaml
                 if [[ "$line" == *DOMAIN_NAME:* ]]; then
+                    notFound=0
                     #Get the value
                     domain_name=$(echo "$line" | cut -d ':' -d ' ' -d '"' -f 2 -d '"')
 
@@ -91,12 +92,7 @@ portainer () {
                        notFound=1
                        break
                     fi
-                #DOMAIN_NAME does not exist in ../group_vars/all.yaml as key
-                else
-                    notFound=1      #TODO the way it is now it only sees the first line.. fix it
-                    break
                 fi
-                break
             done < ../group_vars/all.yaml
 
             if [[ ${notFound} == "1" ]]; then
