@@ -38,36 +38,31 @@ portainer () {
                         #Domain name exists in Target machine
                         if [[ ${flag} == "True" ]]; then
 
-                            #If portainer function called from restart.sh
+                            #If portainer function called from restart.sh, restart Secure Portainer only
                             if [[ ${1} == "restart" ]]; then
-
                                 #Run Secure Portainer Only
-                                ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml --tags portainerSecure"
-                                ${ansible_playbook_start}
-
-                                ansible_playbook_code=$?
-
-                                #If status code != 0 an error has occurred
-                                if [[ ${ansible_playbook_code} -ne 0 ]]; then
-                                    echo "Playbook \"../Start-Exareme.yaml --tags portainerSecure\" exited with error." >&2
-                                    exit 1
-                                fi
-                                echo -e "\nSecure Portainer service just restarted.."
-
+                                tags="portainerSecure"
+                                echoErrorMessage="Playbook \"../Start-Exareme.yaml --tags portainerSecure\" exited with error."
+                                echoMessage="\nSecure Portainer service just restarted.."
                             else
-                                #portainer function called from start-services/tasks/main.yaml
-                                ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml --skip-tags portainer"
-                                ${ansible_playbook_start}
-
-                                ansible_playbook_code=$?
-
-                                #If status code != 0 an error has occurred
-                                if [[ ${ansible_playbook_code} -ne 0 ]]; then
-                                    echo "Playbook \"../Start-Exareme.yaml --skip-tags portainer\" exited with error." >&2
-                                    exit 1
-                                fi
-                                echo -e "\nExareme services and Secure Portainer service are now running"
+                                #portainer function called from start-services/tasks/main.yaml, start Secure Portainer + exareme
+                                tags="portainerSecure,exareme"
+                                echoErrorMessage="Playbook \"../Start-Exareme.yaml --tags portainerSecure,exareme\" exited with error."
+                                echoMessage="\nExareme services and Secure Portainer service are now running"
                             fi
+
+                            ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml --tags "${tags}
+                            ${ansible_playbook_start}
+
+                            ansible_playbook_code=$?
+
+                            #If status code != 0 an error has occurred
+                            if [[ ${ansible_playbook_code} -ne 0 ]]; then
+                                echo ${echoErrorMessage} >&2
+                                exit 1
+                            fi
+                            echo -e ${echoMessage}
+
                         #Domain name does not exist in Target machine
                         elif [[ ${flag} == "False" ]]; then
                             if [[ ${1} == "restart" ]]; then
@@ -75,7 +70,7 @@ portainer () {
                                 echo -e "\nNo certificate for that Domain name: "${domain_name}". Portainer service did not restart.."
                                 sleep 1
                             else
-                                #portainer function called from start-services/tasks/main.yaml
+                                #portainer function called from start-services/tasks/main.yaml, start only Exareme because certificate not correct
                                 echo -e "\nNo certificate for that Domain name: "${domain_name}". Starting without Portainer.."
                                 sleep 1
                                 ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml --skip-tags portainer,portainerSecure"
@@ -98,7 +93,7 @@ portainer () {
                     fi
                 #DOMAIN_NAME does not exist in ../group_vars/all.yaml as key
                 else
-                    notFound=1
+                    notFound=1      #TODO the way it is now it only sees the first line.. fix it
                     break
                 fi
                 break
@@ -135,32 +130,29 @@ portainer () {
                     sed -i -e '1iDOMAIN_NAME: "'${domain_name}'"\' ../group_vars/all.yaml
 
                     if [[ ${1} == "restart" ]]; then
-                        #If portainer function called from restart.sh
-                        ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml --skip-tags portainer,exareme"
-                        ${ansible_playbook_start}
-
-                        ansible_playbook_code=$?
-
-                        #If status code != 0 an error has occurred
-                        if [[ ${ansible_playbook_code} -ne 0 ]]; then
-                            echo "Playbook \"../Start-Exareme.yaml --skip-tags portainer,exareme\" exited with error." >&2
-                            exit 1
-                        fi
-                        echo -e "\nSecure Portainer service just restarted.."
+                        #If portainer function called from restart.sh, restart Secure Portainer only
+                        skippedTags="portainer,exareme"
+                        echoErrorMessage="Playbook \"../Start-Exareme.yaml --skip-tags portainer,exareme\" exited with error."
+                        echoMessage="\nSecure Portainer service just restarted.."
                     else
-                        #portainer function called from start-services/tasks/main.yaml
-                        ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml --skip-tags portainer"
-                        ${ansible_playbook_start}
+                        #portainer function called from start-services/tasks/main.yaml, start Secure Portainer + exareme
+                        skippedTags="portainer"
+                        echoErrorMessage="Playbook \"../Start-Exareme.yaml --skip-tags portainer\" exited with error."
+                        echoMessage="\nExareme services and Secure Portainer service are now running"
 
-                        ansible_playbook_code=$?
-
-                        #If status code != 0 an error has occurred
-                        if [[ ${ansible_playbook_code} -ne 0 ]]; then
-                            echo "Playbook \"../Start-Exareme.yaml --skip-tags portainer\" exited with error." >&2
-                            exit 1
-                        fi
-                        echo -e "\nExareme services and Secure Portainer service are now running"
                     fi
+
+                    ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml --skip-tags "${skippedTags}
+                    ${ansible_playbook_start}
+
+                    ansible_playbook_code=$?
+
+                    #If status code != 0 an error has occurred
+                    if [[ ${ansible_playbook_code} -ne 0 ]]; then
+                        echo ${echoErrorMessage} >&2
+                        exit 1
+                    fi
+                    echo -e ${echoMessage}
 
                     while true
                     do
@@ -183,7 +175,7 @@ portainer () {
                     if [[ ${1} == "restart" ]]; then
                         echo -e "\nNo certificate for that Domain name: "${domain_name}". Portainer services did not restart.."
                         sleep 1
-                    #portainer function called from start-services/tasks/main.yaml
+                    #portainer function called from start-services/tasks/main.yaml, start only exareme because certificate not exist
                     else
                         echo -e "\nNo certificate for that Domain name: "${domain_name}". Starting without Portainer.."
                         sleep 1
