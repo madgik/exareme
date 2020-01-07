@@ -206,33 +206,28 @@ portainer () {
         #Run Non secure Portainer
         elif [[ ${answer} == "n" ]];then
             if [[ ${1} == "restart" ]]; then
-                #if portainer service called from restart.sh
-                ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml --skip-tags portainerSecure,exareme"
-                ${ansible_playbook_start}
-
-                ansible_playbook_code=$?
-
-                #If status code != 0 an error has occurred
-                if [[ ${ansible_playbook_code} -ne 0 ]]; then
-                    echo "Playbook \"../Start-Exareme.yaml --skip-tags portainerSecure,exareme\" exited with error." >&2
-                    exit 1
-                fi
-                echo -e "\nNon Secure Portainer service just restarted.."
-
+                #if portainer service called from restart.sh, restart only Non secure Portainer
+                skippedTags="portainerSecure,exareme"
+                echoErrorMessage="Playbook \"../Start-Exareme.yaml --skip-tags portainerSecure,exareme\" exited with error."
+                echoMessage="\nNon Secure Portainer service just restarted.."
             else
-                #portainer function called from start-services/tasks/main.yaml
-                ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml --skip-tags portainerSecure"
+                #portainer function called from start-services/tasks/main.yaml, start Non secure portainer + exareme
+                skippedTags="portainerSecure"
+                echoErrorMessage="Playbook \"../Start-Exareme.yaml --skip-tags portainerSecure\" exited with error."
+                echoMessage="\nExareme services and Non secure Portainer service are now running"
+
+            fi
+                ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml --skip-tags "${skippedTags}
                 ${ansible_playbook_start}
 
                 ansible_playbook_code=$?
 
                 #If status code != 0 an error has occurred
                 if [[ ${ansible_playbook_code} -ne 0 ]]; then
-                    echo "Playbook \"../Start-Exareme.yaml --skip-tags portainerSecure\" exited with error." >&2
+                    echo ${echoErrorMessage} >&2
                     exit 1
                 fi
-                echo -e "\nExareme services and Non secure Portainer service are now running"
-            fi
+                echo -e ${echoMessage}
             break
         else
             echo ${answer}" is not a valid answer! Try again.. [ y/n ]"
@@ -336,7 +331,7 @@ do
 
         #If status code != 0 an error has occurred
         if [[ ${ansible_playbook_code} -ne 0 ]]; then
-            echo "Playbook \"Start-Exareme.yaml\" exited with error." >&2
+            echo "Playbook \"Start-Exareme.yaml --skip-tags portainer,portainerSecure\" exited with error." >&2
             exit 1
         fi
         echo -e "\nExareme services are now running"
