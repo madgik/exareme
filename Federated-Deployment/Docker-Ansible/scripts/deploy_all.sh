@@ -100,7 +100,12 @@ portainer () {
             done < ../group_vars/all.yaml
 
             if [[ ${notFound} == "1" ]]; then
-                echo -e "\nWhat is the Domain name for which an SSL certificate created in the Target machine?" #TODO master IP
+                while IFS= read -r line || [[ -n "$line" ]]; do
+                    if [[ ${line} == *"master ansible_host="* ]]; then
+                        master_IP=$(echo "$line" | cut -d "=" -f 2)
+                    fi
+                done < ../hosts.ini
+                echo -e "\nWhat is the Domain name for which an SSL certificate created in the Target machine ["${master_IP}]"?"
                 read domain_name
 
                 #Check if Domain name exists in the Target machine
