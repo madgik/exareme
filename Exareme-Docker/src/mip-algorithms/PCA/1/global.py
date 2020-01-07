@@ -2,7 +2,6 @@ from __future__ import division
 from __future__ import print_function
 
 import sys
-from argparse import ArgumentParser
 from os import path, getcwd
 
 import numpy as np
@@ -25,7 +24,7 @@ for _ in range(dir_levels):
     new_path = path.dirname(new_path)
 sys.path.append(new_path)
 
-from utils.algorithm_utils import TransferData
+from utils.algorithm_utils import TransferData, parse_exareme_args
 
 
 def pca_global(global_in):
@@ -41,11 +40,7 @@ def pca_global(global_in):
     return global_out
 
 
-def main():
-    # Parse arguments
-    parser = ArgumentParser()
-    parser.add_argument('-local_step_dbs', required=True, help='Path to local db.')
-    args, unknown = parser.parse_known_args()
+def main(args):
     local_dbs = path.abspath(args.local_step_dbs)
 
     local_out = TransferData.load(local_dbs)
@@ -57,4 +52,5 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    args = parse_exareme_args()
+    main(args)

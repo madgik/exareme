@@ -3,7 +3,6 @@ from __future__ import print_function
 
 import sys
 from os import path, getcwd
-from argparse import ArgumentParser
 import numpy as np
 
 _ALGORITHM_TYPE = 'python_multiple_local_global'
@@ -24,7 +23,7 @@ for _ in range(dir_levels):
     new_path = path.dirname(new_path)
 sys.path.append(new_path)
 
-from utils.algorithm_utils import StateData, Global2Local_TD, TransferData
+from utils.algorithm_utils import StateData, Global2Local_TD, TransferData, parse_exareme_args
 
 
 def pca_local(local_state, local_in):
@@ -44,12 +43,7 @@ def pca_local(local_state, local_in):
     return local_out
 
 
-def main():
-    # Parse arguments
-    parser = ArgumentParser()
-    parser.add_argument('-prev_state_pkl', required=True, help='Path to the pickle file holding the previous state.')
-    parser.add_argument('-global_step_db', required=True, help='Path to db holding global step results.')
-    args, _ = parser.parse_known_args()
+def main(args):
     fname_prev_state = path.abspath(args.prev_state_pkl)
     global_db = path.abspath(args.global_step_db)
 
@@ -64,4 +58,5 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    args = parse_exareme_args()
+    main(args)

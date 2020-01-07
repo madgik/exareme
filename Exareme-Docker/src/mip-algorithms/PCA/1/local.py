@@ -3,7 +3,6 @@ from __future__ import division
 from __future__ import print_function
 
 import sys
-from argparse import ArgumentParser
 from os import path, getcwd
 
 import numpy as np
@@ -27,8 +26,9 @@ for _ in range(dir_levels):
     new_path = path.dirname(new_path)
 sys.path.append(new_path)
 
-from utils.algorithm_utils import StateData, TransferData, query_with_privacy, ExaremeError, PrivacyError, \
-    PRIVACY_MAGIC_NUMBER
+from utils.algorithm_utils import StateData, TransferData, parse_exareme_args, query_with_privacy, ExaremeError, \
+    PrivacyError, PRIVACY_MAGIC_NUMBER
+
 
 def pca_local(local_in):
     # Unpack data
@@ -55,13 +55,7 @@ def pca_local(local_in):
 
 
 def main(args):
-    # Parse arguments
-    parser = ArgumentParser()
-    parser.add_argument('-x', required=True, help='Variable names in x, comma separated.')
-    parser.add_argument('-input_local_DB', required=True, help='Path to local db.')
-    parser.add_argument('-cur_state_pkl', required=True, help='Path to the pickle file holding the current state.')
-    parser.add_argument('-db_query', required=True, help='Query to be executed on local db.')
-    args, unknown = parser.parse_known_args(args)
+    # TODO a function unpack_args to get all data
     query = args.db_query
     fname_cur_state = path.abspath(args.cur_state_pkl)
     fname_loc_db = path.abspath(args.input_local_DB)
@@ -87,6 +81,5 @@ def main(args):
 
 
 if __name__ == '__main__':
-    import sys
-
-    main(sys.argv[1:])
+    args = parse_exareme_args()
+    main(args)

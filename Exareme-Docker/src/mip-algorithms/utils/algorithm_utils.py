@@ -7,6 +7,7 @@ import logging
 import os
 import pickle
 import sqlite3
+from argparse import ArgumentParser
 from collections import OrderedDict
 
 import numpy as np
@@ -43,7 +44,7 @@ class TransferData(object):
                 kwargs[k] = (self.data[k], 'do_nothing')
             else:
                 raise ValueError('{rt} is not implemented as a reduce method.'.format(rt=self.reduce_type[k]))
-        print(kwargs)
+        print(kwargs) # TODO what's this??
         return TransferData(**kwargs)
 
     @classmethod
@@ -179,7 +180,6 @@ def query_from_formula(fname_db, formula, variables,
     # Perform privacy check
     if pd.read_sql_query(sql=count_query(variables), con=conn).iat[0, 0] < PRIVACY_MAGIC_NUMBER:
         raise PrivacyError('Query results in illegal number of datapoints.')
-        # TODO privacy check by variable
     # Pull is_categorical from metadata table
     is_categorical = [pd.read_sql_query(sql=iscateg_query(v), con=conn).iat[0, 0] for v in
                       variables]
@@ -315,6 +315,28 @@ def make_json_raw(**kwargs):
         })
     return result_list
 
+# TODO Open json file using relative path
+def parse_exareme_args():
+    import json
+    with open('/root/mip-algorithms/PCA/properties.json', 'r') as prop:
+        params = json.load(prop)['parameters']
+    parser = ArgumentParser()
+    # Add Exareme arguments
+    parser.add_argument('-input_local_DB', required=False, help='Path to local db.')
+    parser.add_argument('-db_query', required=False, help='Query to be executed on local db.')
+    parser.add_argument('-cur_state_pkl', required=False, help='Path to the pickle file holding the current state.')
+    parser.add_argument('-prev_state_pkl', required=False, help='Path to the pickle file holding the previous state.')
+    parser.add_argument('-local_step_dbs', required=False, help='Path to local db.')
+    parser.add_argument('-global_step_db', required=False, help='Path to db holding global step results.')
+    # Add algorithm arguments
+    for p in params:
+        name = '-' + p['name']
+        required = p['valueNotBlank']
+        if name not in ['pathology', 'dataset', 'filter']:
+            parser.add_argument(name, required=required)
+
+    args, unknown = parser.parse_known_args()
+    return args
 
 def main():
     fname_db = '/Users/zazon/madgik/mip_data/dementia/datasets.db'

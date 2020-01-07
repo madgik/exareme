@@ -3,7 +3,6 @@ from __future__ import print_function
 
 import json
 import sys
-from argparse import ArgumentParser
 from os import path, getcwd
 
 import numpy as np
@@ -26,7 +25,7 @@ for _ in range(dir_levels):
     new_path = path.dirname(new_path)
 sys.path.append(new_path)
 
-from utils.algorithm_utils import set_algorithms_output_data, make_json_raw, TransferData
+from utils.algorithm_utils import set_algorithms_output_data, make_json_raw, TransferData, parse_exareme_args
 
 
 def pca_global(global_in):
@@ -78,22 +77,17 @@ def pca_global(global_in):
     return global_out
 
 
-def main():
-    # Parse arguments
-    parser = ArgumentParser()
-
-    parser.add_argument('-local_step_dbs', required=True, help='Path to db holding local step results.')
-    args, unknown = parser.parse_known_args()
+def main(args):
     local_dbs = path.abspath(args.local_step_dbs)
 
     # Load local nodes output
     local_out = TransferData.load(local_dbs)
     # Run algorithm global step
     global_out = pca_global(global_in=local_out)
-    # raise ValueError(type(global_out), global_out)
     # Return the algorithm's output
     set_algorithms_output_data(global_out)
 
 
 if __name__ == '__main__':
-    main()
+    args = parse_exareme_args()
+    main(args)
