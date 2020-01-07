@@ -7,7 +7,18 @@ from os import path
 
 import numpy as np
 
-sys.path.append(path.dirname(path.dirname(path.abspath(__file__))) + '/utils/')
+_new_path = path.dirname(path.dirname(path.abspath(__file__)))
+sys.path.append(_new_path)
+while True:
+    try:
+        import utils.algorithm_utils
+    except:
+        sys.path.pop()
+        _new_path = path.dirname(_new_path)
+        sys.path.append(_new_path)
+    else:
+        break
+del _new_path
 
 from utils.algorithm_utils import StateData, TransferAndAggregateData, make_json_raw, query_from_formula
 
@@ -93,38 +104,67 @@ def global_2(global_in):
     eigen_vals = eigen_vals[idx]
     eigen_vecs = eigen_vecs[:, idx]
 
-    json_raw = make_json_raw(eigenvalues=eigen_vals, eigenvectors=eigen_vecs, var_names=var_names)
-    # Write output to JSON
-    result = {
-        "result": [
-            # Raw results
-            {
-                "type": "application/json",
-                "data": json_raw
-            },
-            # # Tabular data resource summary
-            # {
-            #     "type": "application/vnd.dataresource+json",
-            #     "data":
-            #         {
-            #             "name"   : "Pearson correlation summary",
-            #             "profile": "tabular-data-resource",
-            #             "data"   : tabular_data_summary[1:],
-            #             "schema" : {
-            #                 "fields": tabular_data_summary_schema_fields
-            #             }
-            #         }
-            #
-            # },
-            # # Highchart correlation matrix
-            # {
-            #     "type": "application/vnd.highcharts+json",
-            #     "data": hichart_correl_matr
-            # }
-        ]
-    }
+    pca_result = PCAResult(n_obs, var_names, eigen_vals, eigen_vecs)
+    result = pca_result.get_output()
+
     try:
         global_out = json.dumps(result, allow_nan=False)
     except ValueError:
         raise ValueError('Result contains NaNs.')
     return global_out
+
+
+class PCAResult(object):
+    def __init__(self, n_obs, var_names, eigen_vals, eigen_vecs):
+        self.n_obs = n_obs
+        self.var_names = var_names
+        self.eigen_vals = eigen_vals
+        self.eigen_vecs = eigen_vecs
+
+    def get_json_raw(self):
+        return make_json_raw(n_obs=self.n_obs, var_names=self.var_names, eigen_vals=self.eigen_vals,
+                             eigen_vecs=self.eigen_vecs)
+
+    def get_eigenval_table(self):
+        tabular_data = dict()
+        tabular_data["name"] = "Eigenvalues"
+        tabular_data["profile"] = "tabular-data-resource"
+        tabular_data["data"] = [self.var_names, self.eigen_vals.tolist()]
+        tabular_data["schema"] = {
+            "fields": [{"name": n, "type": "number"} for n in self.var_names]
+        }
+        return tabular_data
+
+    def get_eigenvec_table(self):
+        tabular_data = dict()
+        tabular_data["name"] = "Eigenvectors"
+        tabular_data["profile"] = "tabular-data-resource"
+        tabular_data["data"] = [self.var_names]
+        for ei in self.eigen_vecs.T:
+            tabular_data["data"].append(ei.tolist())
+        tabular_data["schema"] = {
+            "fields": [{"name": n, "type": "number"} for n in self.var_names]
+        }
+        return tabular_data
+
+    def get_output(self):
+        result = {
+            "result": [
+                # Raw results
+                {
+                    "type": "application/json",
+                    "data": self.get_json_raw()
+                },
+                # Tabular eigenvalues
+                {
+                    "type": "application/vnd.dataresource+json",
+                    "data": self.get_eigenval_table()
+                },
+                # Tabular eigenvectors
+                {
+                    "type": "application/vnd.dataresource+json",
+                    "data": self.get_eigenvec_table()
+                }
+            ]
+        }
+        return result

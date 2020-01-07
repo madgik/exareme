@@ -17,14 +17,14 @@ while True:
         break
 del _new_path
 
-from utils.algorithm_utils import TransferData, parse_exareme_args
+from utils.algorithm_utils import TransferAndAggregateData, parse_exareme_args
 from PCA.pca_lib import global_1
 
 
 def main(args):
     local_dbs = path.abspath(args.local_step_dbs)
 
-    local_out = TransferData.load(local_dbs)
+    local_out = TransferAndAggregateData.load(local_dbs)
     # Run algorithm global step
     global_out = global_1(global_in=local_out)
 

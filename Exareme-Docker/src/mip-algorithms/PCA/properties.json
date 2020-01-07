@@ -8,7 +8,7 @@
             "name": "x",
             "desc": "A list of variables from database. The variable should be Real, Integer. It cannot be empty",
             "type": "column",
-            "columnValuesSQLType": "real, integer",
+            "columnValuesSQLType": "real, integer, text",
             "columnValuesIsCategorical": "",
             "columnValuesNumOfEnumerations": "",
             "value": "leftaccumbensarea, leftacgganteriorcingulategyrus, leftainsanteriorinsula, rightaccumbensarea, rightacgganteriorcingulategyrus, rightainsanteriorinsula",

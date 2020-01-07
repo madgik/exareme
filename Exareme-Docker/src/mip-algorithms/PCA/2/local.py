@@ -18,7 +18,7 @@ while True:
         break
 del _new_path
 
-from utils.algorithm_utils import StateData, TransferData, parse_exareme_args
+from utils.algorithm_utils import StateData, TransferAndAggregateData, parse_exareme_args
 from PCA.pca_lib import local_2
 
 
@@ -29,7 +29,7 @@ def main(args):
     # Load local state
     local_state = StateData.load(fname_prev_state).get_data()
     # Load global node output
-    global_out = TransferData.load(global_db)
+    global_out = TransferAndAggregateData.load(global_db)
     # Run algorithm local step
     local_out = local_2(local_state=local_state, local_in=global_out)
     # Return the output data
