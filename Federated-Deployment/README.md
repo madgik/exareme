@@ -256,7 +256,7 @@ You will be prompted to provide any more information needed.
 ## [Optional] Secure Portainer
 
 By default, Portainer’s web interface and API is exposed over HTTP. If you want them to be exposed over HTTPS check
-<a href="https://github.com/madgik/exareme/blob/dev_secureServices/Documentation/SecurePortainer.md">here</a><br />.
+<a href="https://github.com/madgik/exareme/blob/dev_secureServices/Documentation/SecurePortainer.md">here</a>.<br />
 
 # Deployment [Manual]
 
