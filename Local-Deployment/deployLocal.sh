@@ -62,9 +62,14 @@ fi
 
 #Get hostname of node
 name=$(hostname)
+#. in hostname gives errors, replace with _
+name=${name//./_}
 
-echo -e "\nUpdate label name for Swarm node "$name
-sudo docker node update --label-add name=${name} ${name}
+#Get node Hostname
+nodeHostname=$(sudo docker node ls --format {{.Hostname}})
+
+echo -e "\nUpdate label name for Swarm node "${nodeHostname}
+sudo docker node update --label-add name=${name} ${nodeHostname}
 echo -e "\n"
 
 #Read image from file exareme.yaml
