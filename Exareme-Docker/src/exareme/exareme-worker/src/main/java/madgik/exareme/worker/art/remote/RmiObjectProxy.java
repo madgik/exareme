@@ -102,12 +102,14 @@ public abstract class RmiObjectProxy<T> implements ObjectProxy<T> {
                         }
                     }
                     //Search if the Exareme's node IP exist in Exareme's registry
-                    for (ContainerProxy containerProxy : ArtRegistryLocator.getArtRegistryProxy().getContainers()) {
-                        log.debug("Container: " + containerProxy.getEntityName().getIP() + " : " +
-                                containerProxy.getEntityName().getName());
-                        if (containerProxy.getEntityName().getIP().equals(regEntityName.getIP())) {
+                    //for (ContainerProxy containerProxy : ArtRegistryLocator.getArtRegistryProxy().getContainers()) {
+                    //    log.debug("Container: " + containerProxy.getEntityName().getIP() + " : " +
+                    //            containerProxy.getEntityName().getName());
+                     //   System.out.println("HERE: "+containerProxy.getEntityName().getIP());
+                        System.out.println("and here: "+regEntityName.getIP());
+                    //    if (containerProxy.getEntityName().getIP().equals(regEntityName.getIP())) {
                             //If exists, remove it from Exareme's registry
-                            ArtRegistryLocator.getArtRegistryProxy().removeContainer(containerProxy.getEntityName());
+                    //        ArtRegistryLocator.getArtRegistryProxy().removeContainer(containerProxy.getEntityName());
                             log.info("Worker node:[" + name + "," + regEntityName.getIP() + "]" + " removed successfully from Exareme's registry");
 
                             //If exist in Consul[Key-Value store], delete infos regarding that Exareme node from there
@@ -120,9 +122,9 @@ public abstract class RmiObjectProxy<T> implements ObjectProxy<T> {
                                     throw new RemoteException("Can not contact Consul Key value Store");
                                 }
                             }
-                            break;
-                        }
-                    }
+                            //break;
+                        //}
+                    //}
                 }
                 throw new RemoteException("There was an error with worker "+ "[" + name + "," + regEntityName.getIP() + "].");
             }
