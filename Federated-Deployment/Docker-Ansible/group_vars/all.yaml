@@ -1,4 +1,6 @@
-DOMAIN_NAME: "dl038.madgik.di.uoa.gr"
+DOMAIN_NAME: ""
+# Portainer
+PORTAINER_PORT: "9000"
 
 ## DO NOT CHANGE  ##
 
@@ -9,7 +11,6 @@ EXAREME_KEYSTORE: "exareme-keystore:8500"
 DOCKER_DATA_FOLDER: "/root/exareme/data/"
 
 # Portainer
-PORTAINER_PORT: "9000"
 PORTAINER_IMAGE: "portainer/portainer"
 PORTAINER_VERSION: ":latest"
 PORTAINER_DATA: "{{hostvars['master']['home_path']}}portainer"
