@@ -33,5 +33,5 @@ def main(args):
 
 
 if __name__ == '__main__':
-    args = parse_exareme_args()
+    args = parse_exareme_args(__file__)
     main(args)

@@ -2,8 +2,7 @@ from __future__ import division
 from __future__ import print_function
 
 import sys
-from os import path, getcwd
-import numpy as np
+from os import path
 
 _new_path = path.dirname(path.dirname(path.abspath(__file__)))
 sys.path.append(_new_path)
@@ -37,5 +36,5 @@ def main(args):
 
 
 if __name__ == '__main__':
-    args = parse_exareme_args()
+    args = parse_exareme_args(__file__)
     main(args)

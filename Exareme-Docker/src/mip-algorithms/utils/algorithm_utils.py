@@ -315,10 +315,14 @@ def make_json_raw(**kwargs):
     return result_list
 
 
-# TODO Open json file using relative path
-def parse_exareme_args():
+def parse_exareme_args(fp):
     import json
-    with open('/root/mip-algorithms/PCA/properties.json', 'r') as prop:
+    from os import path
+    # Find properties.json and parse algorithm parameters
+    prop_path = path.abspath(fp)
+    while not path.isfile(prop_path + '/properties.json'):
+        prop_path = path.dirname(prop_path)
+    with open(prop_path + '/properties.json', 'r') as prop:
         params = json.load(prop)['parameters']
     parser = ArgumentParser()
     # Add Exareme arguments
