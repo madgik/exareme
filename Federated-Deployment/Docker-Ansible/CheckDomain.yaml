@@ -1,0 +1,18 @@
+---
+- hosts: master
+  remote_user: "{{ hostvars['master']['remote_user'] }}"
+  become: yes
+  become_user: "{{ hostvars['master']['become_user'] }}"
+  tasks:
+    - name: Check if Domain name exists
+      stat:
+        path: /etc/letsencrypt/live/{{ domain_name }}/
+      register: stat_result
+      vars:
+        domain_name: "{{ lookup('env', 'domain_name') }}"
+
+
+    - name: copy content
+      local_action: copy content={{ stat_result.stat.exists}} dest={{ current_path}}/domain.txt
+      vars:
+        current_path: "{{ lookup('env','PWD') }}"
