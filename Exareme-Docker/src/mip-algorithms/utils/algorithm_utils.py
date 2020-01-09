@@ -50,7 +50,7 @@ def query_with_privacy(fname_db, query):
     return schema, data
 
 
-def query_from_formula(fname_db, formula, variables,
+def query_from_formula(fname_db, formula, variables, dataset,
                        data_table, metadata_table, metadata_code_column,
                        metadata_isCategorical_column,
                        no_intercept=False, coding=None):
@@ -88,8 +88,6 @@ def query_from_formula(fname_db, formula, variables,
         When a tilda is present in the formula, the function returns two design matrices (lhs_dm, rhs_dm).
         When it is not the function returns just the rhs_dm.
     """
-    from numpy import log as log
-    from numpy import exp as exp
 
     assert coding in {None, 'Treatment', 'Poly', 'Sum', 'Diff', 'Helmert'}
 
@@ -110,21 +108,26 @@ def query_from_formula(fname_db, formula, variables,
                                                                                var=var)
 
     def count_query(varz):
-        return 'SELECT COUNT({var}) FROM {data} WHERE {clause};'.format(var=varz[0],
-                                                                        data=data_table,
-                                                                        clause=' AND '.join(
-                                                                                ["{}!=''".format(v)
-                                                                                 for v in varz]))
+        return "SELECT COUNT({var}) FROM {data} WHERE {clause} AND dataset=='{dataset}';".format(var=varz[0],
+                                                                                                 data=data_table,
+                                                                                                 clause=' AND '.join(
+                                                                                                         [
+                                                                                                             "{}!=''".format(
+                                                                                                                     v)
+                                                                                                             for v in
+                                                                                                             varz]),
+                                                                                                 dataset=dataset)
 
     def data_query(varz, is_cat):
         variables_casts = ', '.join(
                 [v if not c else 'CAST({v} AS text) AS {v}'.format(v=v) for v, c in
                  zip(varz, is_cat)])
-        return 'SELECT {variables} FROM {data} WHERE {clause};'.format(variables=variables_casts,
-                                                                       data=data_table,
-                                                                       clause=' AND '.join(
-                                                                               ["{}!=''".format(v)
-                                                                                for v in varz]))
+        return "SELECT {variables} FROM {data} WHERE {clause} AND dataset=='{dataset}';".format(variables=variables_casts,
+                                                                                                data=data_table,
+                                                                                                clause=' AND '.join(
+                                                                                                        ["{}!=''".format(v)
+                                                                                                         for v in varz]),
+                                                                                                dataset=dataset)
 
     # Perform privacy check
     if pd.read_sql_query(sql=count_query(variables), con=conn).iat[0, 0] < PRIVACY_MAGIC_NUMBER:
@@ -259,17 +262,20 @@ class ExaremeError(Exception):
 
 def main():
     fname_db = '/Users/zazon/madgik/mip_data/dementia/datasets.db'
-    lhs = ['gender']
-    rhs = ['lefthippocampus', 'alzheimerbroadcategory']
+    lhs = ['leftaccumbensarea', 'leftacgganteriorcingulategyrus', 'leftainsanteriorinsula']
+    rhs = ['rightaccumbensarea', 'rightacgganteriorcingulategyrus', 'rightainsanteriorinsula']
     variables = (lhs, rhs)
-    formula = 'gender ~ alzheimerbroadcategory * lefthippocampus'
-    formula = None
+    # formula = 'gender ~ alzheimerbroadcategory * lefthippocampus'
+    formula = ''
     Y, X = query_from_formula(fname_db, formula, variables, data_table='DATA',
+                              dataset='adni',
                               metadata_table='METADATA',
                               metadata_code_column='code',
                               metadata_isCategorical_column='isCategorical',
                               no_intercept=True, coding='Diff')
-    print(X.design_info.column_names)
+    print(X.shape)
+    print(Y.shape)
+    print(Y.design_info.column_names)
     print(Y.design_info.column_names)
     # print(Y)
 

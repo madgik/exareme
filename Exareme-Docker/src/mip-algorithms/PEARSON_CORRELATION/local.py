@@ -2,13 +2,12 @@
 from __future__ import division
 from __future__ import print_function
 
-import sys
-from os import path
 import json
+import sys
 from argparse import ArgumentParser
+from os import path
 
 import numpy as np
-import numpy.ma as ma
 
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))) + '/utils/')
 
@@ -70,6 +69,7 @@ def main():
     # Algo arguments
     parser.add_argument('-x', required=True, help='Variable names in x, comma separated.')
     parser.add_argument('-y', required=True, help='Variable names in y, comma separated.')
+    parser.add_argument('-dataset', required=True, help='Dataset name.')
     parser.add_argument('-formula', required=True, help='A string holding a patsy formula.')
     parser.add_argument('-no_intercept', required=True, help='A boolean signaling a no-intercept-by-default behaviour.')
     parser.add_argument('-coding', required=True, help='Coding method for categorical variables.')
@@ -97,6 +97,7 @@ def main():
         )
         variables = (args_y, args_x)
 
+    dataset = args.dataset
     formula = args.formula
     formula = formula.replace('_', '~')  # TODO Fix tilda problem and remove
     no_intercept = json.loads(args.no_intercept)
@@ -107,6 +108,7 @@ def main():
     metadata_isCategorical_column = args.metadata_isCategorical_column
     coding = None if args.coding == 'null' else args.coding
     left_vars, right_vars = query_from_formula(fname_db=input_local_DB, formula=formula, variables=variables,
+                                               dataset=dataset,
                                                data_table=data_table, metadata_table=metadata_table,
                                                metadata_code_column=metadata_code_column,
                                                metadata_isCategorical_column=metadata_isCategorical_column,

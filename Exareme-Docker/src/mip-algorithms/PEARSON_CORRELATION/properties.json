@@ -68,7 +68,7 @@
             "desc": "Boolean flag for having no intercept by default.",
             "type": "other",
             "value": "true",
-            "defaultValue": "false",
+            "defaultValue": "true",
             "valueNotBlank": false,
             "valueMultiple": false,
             "valueType": "string",
