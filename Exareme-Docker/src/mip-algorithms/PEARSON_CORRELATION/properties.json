@@ -1,6 +1,7 @@
 {
     "name": "PEARSON_CORRELATION",
     "desc": "Calculates a Pearson correlation coefficient and the p-value for testing non-correlation.",
+    "label": "Pearson Correlation",
     "type": "python_local_global",
     "status": "enabled",
     "parameters": [
