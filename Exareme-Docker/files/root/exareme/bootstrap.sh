@@ -169,13 +169,13 @@ if [[ "${MASTER_FLAG}" != "master" ]]; then
 	getNames="$( echo ${check} | jq '.active_nodes')"
 
 	#Retrieve result as json. If $NODE_NAME exists in result, the algorithm run in the specific node
-#	if [[ $getNames = *${NODE_NAME}* ]]; then
+	if [[ $getNames = *${NODE_NAME}* ]]; then
 		echo -e "\nWorker node["${MY_IP}","${NODE_NAME}"] connected to Master node["${MASTER_IP}","${MASTER_NAME}"]"
 		curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_ACTIVE_WORKERS_PATH}/${NODE_NAME} <<< ${MY_IP}
-#	else
-#		echo "Worker node["${MY_IP}","${NODE_NAME}]" seems that is not connected with the Master.Exiting..."
-#		exit 1
-#	fi
+	else
+		echo "Worker node["${MY_IP}","${NODE_NAME}]" seems that is not connected with the Master.Exiting..."
+		exit 1
+	fi
 
 
 #This is the Master
@@ -256,13 +256,13 @@ else
 		getNames="$( echo ${check} | jq '.active_nodes')"
 
 		#Retrieve result as json. If $NODE_NAME exists in result, the algorithm run in the specific node
-#		if [[ $getNames = *${NODE_NAME}* ]]; then
+		if [[ $getNames = *${NODE_NAME}* ]]; then
 			echo -e "\nMaster node["${MY_IP}","${NODE_NAME}"] initialized"
 			curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/${NODE_NAME} <<< ${MY_IP}
-#		else
-#			echo "Master node["${MY_IP}","${NODE_NAME}]" seems that could not be initialized.Exiting..."
-#			exit 1
-#		fi
+		else
+			echo "Master node["${MY_IP}","${NODE_NAME}]" seems that could not be initialized.Exiting..."
+			exit 1
+		fi
 	fi
 fi
 
