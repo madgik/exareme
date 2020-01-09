@@ -107,8 +107,14 @@ def query_from_formula(fname_db, formula, variables,
                        metadata_isCategorical_column,
                        no_intercept=False, coding=None):
     """
-    Queries a database based on a list of variables and a patsy (R language) formula. Additionally performs privacy
-    check and returns results only if number of datapoints is sufficient.
+    Queries a database based on a list of variables and a patsy (R language) formula and returns corresponding
+    matrix(-ces). When the formula is of the form 'lhs ~ rhs' tho matrices are outputed, one for each side. When the
+    formula is of the form 'rhs' just one matrix is outputed.
+
+    Additionally, a privacy check is performed and function returns results only if number of datapoints is sufficient.
+
+    If no formula is given (empty str or None) a formula is generated as follows: if variables are given as (`lhs`, `rhs`) then
+    formula is 'lhs ~ rhs', if variables are given as (`rhs`,) then formula is just a rhs expression.
 
     Parameters
     ----------
@@ -136,7 +142,7 @@ def query_from_formula(fname_db, formula, variables,
 
     Returns
     -------
-    (lhs_dm, rhs_dm) or rhs_dm : patsy.DesignMatrix objects
+    (lhs_dm, rhs_dm) or rhs_dm : pandas.DataFrame objects
         When a tilda is present in the formula, the function returns two design matrices (lhs_dm, rhs_dm).
         When it is not the function returns just the rhs_dm.
     """
