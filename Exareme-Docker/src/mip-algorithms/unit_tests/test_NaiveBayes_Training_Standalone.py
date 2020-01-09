@@ -38,7 +38,7 @@ class TestNaiveBayesStandalone(unittest.TestCase):
         # print ("AAAA", r.text)
         print ("BBBB1", self.Test1Result)
         # print (type(self.Test1Result))
-        resultsComparison( result['data']['data'], json.loads(str(self.Test1Result))[0],'alzheimerbroadcategory')
+        resultsComparison( result['result'][0]['data']['data'], json.loads(str(self.Test1Result))[0],'alzheimerbroadcategory')
 
     def test_NaiveBayesStandalone_2(self):
         logging.info("---------- TEST 2: Naive Bayes training ")
@@ -55,7 +55,7 @@ class TestNaiveBayesStandalone(unittest.TestCase):
         print ("AAAA", r.text)
         print ("BBBB1", self.Test2Result)
         # print (type(self.Test2Result))
-        resultsComparison( result['data']['data'],  json.loads(str(self.Test2Result))[0],'alzheimerbroadcategory')
+        resultsComparison( result['result'][0]['data']['data'],  json.loads(str(self.Test2Result))[0],'alzheimerbroadcategory')
 
 
     def test_NaiveBayesStandalone_Privacy(self):

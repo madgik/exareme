@@ -1,7 +1,7 @@
 {
     "name": "LIST_DATASET",
     "desc": "Fetches a list of the datasets in the nodes.",
+	"label": "List Datasets",
     "type": "python_local_global",
-    "status": "enabled",
     "parameters": []
 }

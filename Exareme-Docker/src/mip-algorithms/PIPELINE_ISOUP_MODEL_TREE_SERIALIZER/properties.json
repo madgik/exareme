@@ -1,6 +1,7 @@
 {
 	"name": "PIPELINE_ISOUP_MODEL_TREE_SERIALIZER",
 	"desc": "PIPELINE_ISOUP_MODEL_TREE_SERIALIZER",
+	"label": "Pipeline Isoup Model Tree Serializer",
 	"type": "pipeline",
 	"parameters": [{
 			"name": "target_attributes",

@@ -1,6 +1,7 @@
 {
 	"name": "TTEST_ONESAMPLE",
 	"desc": "Student’s One-sample t-test",
+	"label": "T-Test One-Sample ",
 	"type": "local_global",
 	"parameters": [{
 			"name": "y",
@@ -26,7 +27,7 @@
 			"desc": "'different', 'greaterthan' or 'lessthan', the alternative hypothesis; different to testValue, greater than testValue, and less than testValue respectively ",
 			"type": "other",
 			"value": "different",
-			"valueEnumerations": ["different", "greaterthan" , "lessthan"],
+			"valueEnumerations": ["different", "greaterthan", "lessthan"],
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "string"
