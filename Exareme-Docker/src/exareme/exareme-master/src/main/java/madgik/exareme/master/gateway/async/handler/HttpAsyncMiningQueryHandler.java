@@ -420,9 +420,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 log.debug("Parameter in the json: ");
                 log.debug(name + " = " + value);
 
-                if (name.equals("filter")) value = value.replaceAll("[^A-Za-z0-9,._*+><=&|(){}:\"\\[\\]]", "");
-                else
-                    value = value.replaceAll("[^A-Za-z0-9,._*+():\\-{}\\\"\\[\\]]", "");    // ><=&| we no more need those for filtering
+                value = value.replaceAll("[^A-Za-z0-9,._~*+><=&|(){}:\\-\\\"\\[\\]]", "");    // ><=&| we no more need those for filtering
                 value = value.replaceAll("\\s+", "");
 
                 log.debug("Parameter after format: ");
