@@ -1,6 +1,7 @@
 {
     "name": "TEMPLATE_MULTIPLE_LOCAL_GLOBAL",
     "desc": "Template for multiple-local-global algorithms",
+    "label": "Template for multiple-local-global algorithms",
     "type": "python_multiple_local_global",
     "status": "enabled",
     "parameters": [
