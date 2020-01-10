@@ -39,3 +39,16 @@
     - "{{ stackName.stdout_lines }}"
   when: network_status.rc == 0
 
+- name: Check if Portainer service exists
+  shell: docker service inspect -f '{{ "{{" }}.ID{{ "}}" }}' {{ PORTAINER_NAME }}
+  register: portainerID
+  ignore_errors: true
+  tags:
+    - portainer
+
+- name: Remove Portainer service if exists
+  shell: docker service rm {{ portainerID.stdout }}
+  register: portainer_rm
+  ignore_errors: true
+  tags:
+    - portainer

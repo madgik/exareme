@@ -3,6 +3,7 @@
 # Including functions only
 source ./updateFiles.sh include-only
 source ./stop.sh include-only
+source ./deploy_all.sh include-only
 
 # TODO check what is happening when you give the wrong $USER pass more than 3 times
 

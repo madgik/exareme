@@ -42,8 +42,6 @@ services:
           - node.labels.name == ${FEDERATION_NODE}
     networks:
       - "net-federation" # Connect the docker container to the global network
-    ports:
-      - "8500:8500"
 
   exareme-master:
     image: ${EXAREME_IMAGE}
