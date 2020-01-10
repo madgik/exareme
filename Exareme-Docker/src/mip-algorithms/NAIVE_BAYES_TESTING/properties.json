@@ -1,9 +1,8 @@
 {
 	"name": "NAIVE_BAYES_TESTING",
-	"desc": "Naive Bayes clasiifier: Testing phase",
+	"desc": "Naive Bayes clasifier: Testing phase",
+	"label": "Naive Bayes Testing",
 	"type": "local_global",
-	"status": "enabled",
-	"vtype": "",
 	"parameters": [{
 			"name": "x",
 			"desc": "Independent variables: A list of variables from database.",

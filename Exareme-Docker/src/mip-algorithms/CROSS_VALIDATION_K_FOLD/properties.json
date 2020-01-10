@@ -1,9 +1,8 @@
 {
 	"name": "CROSS_VALIDATION_K_FOLD",
 	"desc": "K-Folds cross-validator",
+	"label": "Cross Validation k-Fold",
 	"type": "local_global",
-	"status": "enabled",
-	"vtype": "",
 	"parameters": [{
 			"name": "pathology",
 			"desc": "The name of the pathology in which the dataset belongs to.",
@@ -58,7 +57,7 @@
 			"valueNotBlank": false,
 			"valueMultiple": true,
 			"valueType": "string"
-		},{
+		}, {
 			"name": "dbIdentifier",
 			"desc": "Predefined value for the dbIdentifier",
 			"type": "other",

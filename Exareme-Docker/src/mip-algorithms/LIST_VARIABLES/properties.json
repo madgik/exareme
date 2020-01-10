@@ -1,6 +1,7 @@
 {
 	"name": "LIST_VARIABLES",
 	"desc": "Fetches a list of the variables for the dataset at hand",
+	"label": "List Variables",
 	"type": "python_local",
 	"parameters": [{
 			"name": "pathology",
