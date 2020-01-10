@@ -1,6 +1,7 @@
 {
     "name": "LOGISTIC_REGRESSION",
     "desc": "Binary Logistic Regression without regularization using Newton-Raphson method",
+    "label": "Logistic Regression",
     "type": "python_iterative",
     "status": "enabled",
     "parameters": [

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Stop Exareme Services
-stopExaremeService () {
+stopService () {
     if [[ ${1} == "1" ]]; then
         echo -e "\nStopping Exareme services..."
 
@@ -45,15 +45,15 @@ while true
 do
     if [[ "${answer}" == "1" ]]; then
         # Stop Exareme services
-        stopExaremeService 1
+        stopService 1
         break
     elif [[ "${answer}" == "2" ]]; then
         # Stop Portainer service
-        stopExaremeService 2
+        stopService 2
         break
     elif [[ "${answer}" == "3" ]]; then
         # Stop Exareme services and Portainer
-        stopExaremeService 3
+        stopService 3
         break
     else
         echo "$answer is not a valid answer! Try again.. [ 1-2-3 ]"

@@ -1,6 +1,7 @@
 {
 	"name": "TTEST_PAIRED",
 	"desc": "Student’s paired samples t-test",
+	"label": "T-Test Paired",
 	"type": "local_global",
 	"parameters": [{
 			"name": "y",
@@ -18,7 +19,7 @@
 			"desc": "'different', 'greaterthan' or 'lessthan',the alternative hypothesis; measure 1 different to measure 2, measure 1 greater than measure 2, and measure 1 less than measure 2 respectively.",
 			"type": "other",
 			"value": "different",
-			"valueEnumerations": ["different", "greaterthan" , "lessthan"],
+			"valueEnumerations": ["different", "greaterthan", "lessthan"],
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "string"

@@ -13,15 +13,15 @@ while true
 do
     if [[ "${answer}" == "1" ]]; then
         # Restart Exareme services
-        stopExaremeService 1
+        stopService 1
         break
     elif [[ "${answer}" == "2" ]]; then
 		# Restart Portainer service
-		stopExaremeService 2
+		stopService 2
         break
     elif [[ "${answer}" == "3" ]]; then
 		# Restart Exareme and Portainer services
-		stopExaremeService 3
+		stopService 3
         break
     else
         echo "$answer is not a valid answer! Try again.. [ 1-2-3 ]"
@@ -38,24 +38,14 @@ fi
 if [[ "${answer}" == "1" ]]; then
     echo -e "\nStarting Exareme services..."
 
-	ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml --skip-tags portainer"
+	ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml --skip-tags portainer,portainerSecure"
 	${ansible_playbook_start}
 	ansible_playbook_code=$?
-	
+	echo -e "\nExareme services just restarted.."
 elif [[ "${answer}" == "2" ]]; then
-    echo -e "\nStarting Portainer services..."
-
-	ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml --skip-tags exareme"
-	${ansible_playbook_start}
-	ansible_playbook_code=$?
-
+    portainer "restart"
 elif [[ "${answer}" == "3" ]]; then
-    echo -e "\nStarting all services..."
-	
-	ansible_playbook_start=${ansible_playbook}"../Start-Exareme.yaml"
-	${ansible_playbook_start}
-	ansible_playbook_code=$?
-
+    portainer
 fi
 
 #If status code != 0 an error has occurred
