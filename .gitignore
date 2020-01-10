@@ -6,8 +6,6 @@
 ## .pyc files
 *.pyc
 
-# Python
-__init__.py
 
 ## Directory-based project format:
 .idea/
