@@ -5,8 +5,6 @@ package madgik.exareme.worker.art.remote;
 
 import com.google.gson.Gson;
 import madgik.exareme.common.art.entity.EntityName;
-import madgik.exareme.worker.art.container.ContainerProxy;
-import madgik.exareme.worker.art.registry.ArtRegistryLocator;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
@@ -90,15 +88,12 @@ public abstract class RmiObjectProxy<T> implements ObjectProxy<T> {
                 //Get the Exareme's node name that is not responding
                 HashMap<String,String> names = null;
                 try {
-		    semaphore.acquire();
+		        semaphore.acquire();
                     names = getNamesOfActiveNodes();
                     for (Map.Entry<String, String> entry : names.entrySet()) {
-                        System.out.println("ActiveNodes from Consul key-value store: " + entry.getKey() + " = " + entry.getValue());
+                        log.debug("ActiveNodes from Consul key-value store: " + entry.getKey() + " = " + entry.getValue());
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-		catch (InterruptedException e) {
+                } catch (IOException | InterruptedException e) {
                     e.printStackTrace();
                 }
 
@@ -107,9 +102,8 @@ public abstract class RmiObjectProxy<T> implements ObjectProxy<T> {
                     while (entries.hasNext()) {
                         Map.Entry<String, String> entry = entries.next();
                         if (Objects.equals(entry.getKey(), regEntityName.getIP())) {
-                            System.out.println(entry.getKey()+"="+regEntityName.getIP());
                             name = entry.getValue();
-                            System.out.println("Found node with name: "+name+" that seems to be done..");
+                            log.info("Found node with name: "+name+" that seems to be down..");
 
                             try {
                                 String pathologyKey = searchConsul(System.getenv("DATA") + "/" + name + "?keys");
@@ -126,7 +120,7 @@ public abstract class RmiObjectProxy<T> implements ObjectProxy<T> {
                         }
                     }
                 }
-		semaphore.release();
+                semaphore.release();
                 throw new RemoteException("There was an error with worker "+ "["+ regEntityName.getIP() + "].");
             }
         }
