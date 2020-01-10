@@ -1,12 +1,10 @@
 from __future__ import division
 from __future__ import print_function
+from __future__ import unicode_literals
 
 import sys
-import sqlite3
-from os import path
-import os
-import errno
 from argparse import ArgumentParser
+from os import path
 
 import numpy as np
 
@@ -73,7 +71,7 @@ def main():
                                     "empty strings"
 
     # Remove rows with missing values
-    mask_Y = [y is '' for y in Y]
+    mask_Y = [y == '' for y in Y]
     mask_X = np.isnan(X).any(axis=1)
     mask = np.logical_or(mask_X, mask_Y)
     X, Y = X[~mask], Y[~mask]
