@@ -1,9 +1,8 @@
 {
 	"name": "HOLD_OUT_VALIDATION",
 	"desc": "Split datasets into random train and test subsets",
+	"label": "Hold Out Validation",
 	"type": "local_global",
-	"status": "enabled",
-	"vtype": "",
 	"parameters": [{
 			"name": "pathology",
 			"desc": "The name of the pathology in which the dataset belongs to.",
@@ -20,7 +19,7 @@
 			"valueNotBlank": true,
 			"valueMultiple": true,
 			"valueType": "string"
-		},  {
+		}, {
 			"name": "x",
 			"desc": "Independent variables: A list of variables from database.",
 			"type": "column",
@@ -42,14 +41,13 @@
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "string"
-		},{
+		}, {
 			"name": "test_size",
-			"desc": "(Optional). If it is between 0.0 and 1.0, it represents the proportion of the dataset to include in the test split. If None, the value is set to the complement of the train size.",
+			"desc": "(Optional). If it is between 0.0 and 1.0, it represents the proportion of the dataset to include in the test split. If it is not given, the value is set to the complement of the train size.",
 			"type": "other",
 			"value": "0.25",
-			"min": null,
-			"max": null,
-			"enumerations": null,
+			"valueMin": 0.0,
+			"valueMax": 1.0,
 			"valueNotBlank": false,
 			"valueMultiple": false,
 			"valueType": "real"
@@ -58,9 +56,8 @@
 			"desc": "(Optional). If it is between 0.0 and 1.0, it represents the proportion of the dataset to include in the train split. If None, the value is automatically set to the complement of the test size.",
 			"type": "other",
 			"value": "",
-			"min": null,
-			"max": null,
-			"enumerations": null,
+			"valueMin": 0.0,
+			"valueMax": 1.0,
 			"valueNotBlank": false,
 			"valueMultiple": false,
 			"valueType": "real"
@@ -69,9 +66,6 @@
 			"desc": "(Optional). It is the seed used by the random number generator.",
 			"type": "other",
 			"value": "",
-			"min": null,
-			"max": null,
-			"enumerations": null,
 			"valueNotBlank": false,
 			"valueMultiple": false,
 			"valueType": "integer"
@@ -80,9 +74,7 @@
 			"desc": "(Optional). Whether or not to shuffle the data before splitting.",
 			"type": "other",
 			"value": "False",
-			"min": null,
-			"max": null,
-			"enumerations": ['True','False'],
+			"valueEnumerations": ["True", "False"],
 			"valueNotBlank": false,
 			"valueMultiple": false,
 			"valueType": "string"
@@ -99,9 +91,6 @@
 			"desc": "Predefined value for the dbIdentifier",
 			"type": "other",
 			"value": "",
-			"min": null,
-			"max": null,
-			"enumerations": null,
 			"valueNotBlank": false,
 			"valueMultiple": false,
 			"valueType": "string"

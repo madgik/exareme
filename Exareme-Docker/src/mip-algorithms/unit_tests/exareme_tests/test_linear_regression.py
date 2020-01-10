@@ -22,6 +22,6 @@ def test_LINEAR_REGRESSION_Privacy():
 
 
 def check_privacy_result(result):
-    assert result == "{\"result\" : [{\"data\":\" Incorrect parameter value. \'encodingparameter\' value should be one of the following: dummycoding,sumscoding,simplecoding \",\"type\":\"text/plain+user_error\"}]}"
+    assert result == "{\"result\" : [{\"data\":\"The value 'lala' of the parameter 'encodingparameter' is not included in the valueEnumerations [dummycoding, sumscoding, simplecoding] .\",\"type\":\"text/plain+error\"}]}"
 if __name__ == '__main__':
     unittest.main()

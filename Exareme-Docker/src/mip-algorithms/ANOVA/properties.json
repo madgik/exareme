@@ -1,6 +1,7 @@
 {
 	"name": "ANOVA",
 	"desc": "Two-way analysis of variance (ANOVA)",
+	"label": "ANOVA",
 	"type": "iterative",
 	"parameters": [{
 			"name": "x",
@@ -29,11 +30,10 @@
 			"desc": "Type of sum of squares to use. It can be 1 or 2 or 3.",
 			"type": "other",
 			"value": "2",
-			"min": null,
-			"max": null,
-			"enumerations": [1,2,3],
+			"valueMin": 1,
+			"valueMax": 3,
 			"valueNotBlank": true,
-			"valueMultiple": true,
+			"valueMultiple": false,
 			"valueType": "integer"
 		}, {
 			"name": "pathology",

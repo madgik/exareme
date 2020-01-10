@@ -41,8 +41,6 @@ services:
           - node.labels.name == ${FEDERATION_NODE}
     networks:
       - "net-local" # Connect the docker container to the global network
-    ports:
-      - "8500:8500"
 
   exareme-master:
     image: ${EXAREME_IMAGE}
@@ -54,7 +52,7 @@ services:
       - DOCKER_METADATA_FOLDER=${DOCKER_DATA_FOLDER}
       - EXAREME_ACTIVE_WORKERS_PATH=active_workers
       - EXAREME_MASTER_PATH=master
-      - DATASETS=datasets
+      - DATA=data
     depends_on:
       - exareme-keystore
     deploy:

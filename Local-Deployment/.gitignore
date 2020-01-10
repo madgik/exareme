@@ -1,2 +1,4 @@
 exareme.yaml
-dataPath.txt
+data_path.txt
+domain_name.txt
+portainer/

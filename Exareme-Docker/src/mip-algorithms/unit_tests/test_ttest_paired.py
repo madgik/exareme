@@ -19,9 +19,10 @@ class TestTTESTPaired(unittest.TestCase):
         with open (filePath, "r") as myfile:
             data = myfile.read()
         #Execute R script
-        self.Test1Result, self.Test2Result, self.Test3Result, self.Test4Result = robjects.r(data)
+        self.Test1Result, self.Test2aResult, self.Test2bResult, self.Test3Result, self.Test4Result = robjects.r(data)
         print ("1", self.Test1Result)
-        print ("2", self.Test2Result)
+        print ("2a", self.Test2aResult)
+        print ("2b", self.Test2bResult)
         print ("3", self.Test3Result)
         print ("4", self.Test4Result)
 
@@ -45,7 +46,7 @@ class TestTTESTPaired(unittest.TestCase):
 
     def test_pairedttest_2(self):
         logging.info("---------- TEST 2: ")
-        data = [{"name": "y", "value": "lefthippocampus-righthippocampus"},
+        data = [{"name": "y", "value": "lefthippocampus-righthippocampus,leftententorhinalarea - rightententorhinalarea"},
                 {"name": "hypothesis", "value": "different"},
                 {"name": "effectsize", "value": "1" },
                 {"name": "ci","value": "1"  },
@@ -58,8 +59,8 @@ class TestTTESTPaired(unittest.TestCase):
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
         result = json.loads(r.text)
         print (r.text)
-        resultsComparison(data, result['result'][0]['data'], json.loads(self.Test2Result))
-
+        resultsComparison(data, [result['result'][0]['data'][1]], json.loads(self.Test2aResult))
+        resultsComparison(data, [result['result'][0]['data'][0]], json.loads(self.Test2bResult))
 
     def test_pairedttest_3(self):
         logging.info("---------- TEST 3: ")
@@ -117,6 +118,8 @@ def check_privacy_result(result):
 
 
 def resultsComparison(data, jsonExaremeResult, jsonRResult):
+    print (jsonExaremeResult)
+    print (jsonRResult)
     assert (len(jsonExaremeResult)==len(jsonRResult))
     variableExist = 0
     for i in range(len(jsonRResult)):

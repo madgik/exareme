@@ -1,8 +1,8 @@
 {
 	"name": "PIPELINE_ISOUP_MODEL_TREE_SERIALIZER",
 	"desc": "PIPELINE_ISOUP_MODEL_TREE_SERIALIZER",
+	"label": "Pipeline Isoup Model Tree Serializer",
 	"type": "pipeline",
-	"responseContentType": "application/visjs+javascript",
 	"parameters": [{
 			"name": "target_attributes",
 			"desc": "Dependent parameters. One or more can be selected.",

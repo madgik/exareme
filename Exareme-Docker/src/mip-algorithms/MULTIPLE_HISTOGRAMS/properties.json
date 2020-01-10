@@ -1,8 +1,8 @@
 {
 	"name": "MULTIPLE_HISTOGRAMS",
 	"desc": "Creates a histogram plot of x. Bins have a uniform width. Histogram displays the bins as rectangles such that the height of each rectangle indicates the number of elements in the bin.",
+	"label": "Multiple Histograms",
 	"type": "python_multiple_local_global",
-	"status": "enabled",
 	"parameters": [{
 			"name": "x",
 			"desc": "Variables from database to distribute among bins. The variable should be Real, Integer or String. The variable can be either numerical or categorical. It cannot be empty",
@@ -30,9 +30,7 @@
 			"desc": "Bin of each variable in Json format",
 			"type": "other",
 			"value": "{ \"rightententorhinalarea\" : 35, \"righthippocampus\" : 35 }",
-			"min": 1,
-			"max": null,
-			"enumerations": null,
+			"valueMin": 1,
 			"valueNotBlank": false,
 			"valueMultiple": false,
 			"valueType": "json"

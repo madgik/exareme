@@ -8,16 +8,18 @@ public class ParameterProperties {
     private ParameterType type;
     private String columnValuesSQLType;
     private String columnValuesIsCategorical;
-    private String columnValuesNumOfEnumerations;
     private String value;
-    private String defaultValue;
-    private Boolean valueNotBlank;
-    private Boolean valueMultiple;
     private ParameterValueType valueType;
+    private Boolean valueNotBlank;
+    private String defaultValue;
+    private Boolean valueMultiple;
+    private Double valueMin;
+    private Double valueMax;
+    private String[] valueEnumerations;
 
     public enum ParameterType {
         column,                // used for selecting specific columns from the database
-        formula,               // used for parsig the input as a formula of R, '+ - * : 0' are allowed.
+        formula,               // used for parsing the input as a formula of R, '+ - * : 0' are allowed.
         filter,                // used for filtering on the database input
         dataset,               // used for choosing database input
         pathology,             // used for specifying what database to use
@@ -45,21 +47,14 @@ public class ParameterProperties {
             throw new AlgorithmException("The parameter field 'type' was not initialized in the properties.json file.");
         } else if (type.equals(ParameterType.column) || type.equals(ParameterType.formula)) {
             if (columnValuesSQLType == null) {
-                throw new AlgorithmException("The parameter field 'columnValuesSQLType' was not initialized in the properties.json file.");
             }
 
             if (columnValuesIsCategorical == null) {
                 throw new AlgorithmException("The parameter field 'columnValuesIsCategorical' was not initialized in the properties.json file.");
             }
-
-            if (columnValuesNumOfEnumerations == null) {
-                throw new AlgorithmException("The parameter field 'columnValuesNumOfEnumerations' was not initialized in the properties.json file.");
-            } else if (!columnValuesNumOfEnumerations.equals("")) {
-                try {
-                    Integer.parseInt(columnValuesNumOfEnumerations);
-                } catch (NumberFormatException e) {
-                    throw new AlgorithmException("The parameter field 'columnValuesNumOfEnumerations' cannot be parsed to an Integer.");
-                }
+        } else if (valueType.equals(ParameterValueType.json)){
+            if(valueMultiple) {
+                throw new AlgorithmException("The parameter field 'valueMultiple' cannot be true because the 'valueType' is json.");
             }
         }
         if (value == null) {
@@ -108,10 +103,6 @@ public class ParameterProperties {
         return columnValuesIsCategorical;
     }
 
-    public String getColumnValuesNumOfEnumerations() {
-        return columnValuesNumOfEnumerations;
-    }
-
     public String getValue() {
         return value;
     }
@@ -138,5 +129,17 @@ public class ParameterProperties {
 
     public ParameterValueType getValueType() {
         return valueType;
+    }
+
+    public Double getValueMin() {
+        return valueMin;
+    }
+
+    public Double getValueMax() {
+        return valueMax;
+    }
+
+    public String[] getValueEnumerations() {
+        return valueEnumerations;
     }
 }
