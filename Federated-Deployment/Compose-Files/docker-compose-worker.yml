@@ -34,6 +34,7 @@ services:
       - EXAREME_ACTIVE_WORKERS_PATH=active_workers
       - EXAREME_MASTER_PATH=master
       - DATA=data
+      - TAG=dev     #dev or prod
     deploy:
       restart_policy:
         condition: on-failure
