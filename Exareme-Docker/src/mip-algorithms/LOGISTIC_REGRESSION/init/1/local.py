@@ -39,6 +39,7 @@ def main():
     # Algo arguments
     parser.add_argument('-x', required=True, help='Variable names in x, comma separated.')
     parser.add_argument('-y', required=True, help='Variable names in y, comma separated.')
+    parser.add_argument('-dataset', required=True)
     parser.add_argument('-formula', required=True, help='A string holding a patsy formula.')
     parser.add_argument('-no_intercept', required=True,
                         help='A boolean signaling a no-intercept-by-default behaviour.')
@@ -59,6 +60,7 @@ def main():
     )
     args_y = args.y.strip()
     varibles = ([args_y], args_x)
+    dataset = args.dataset
     formula = args.formula
     formula = formula.replace('_', '~')  # TODO Fix tilda problem and remove
     no_intercept = json.loads(args.no_intercept)
@@ -71,11 +73,16 @@ def main():
     metadata_isCategorical_column = args.metadata_isCategorical_column
 
     # Get data from local DB
-    Y, X = query_from_formula(fname_db=input_local_DB, formula=formula, variables=varibles,
-                              data_table=data_table, metadata_table=metadata_table,
+    Y, X = query_from_formula(fname_db=input_local_DB,
+                              formula=formula,
+                              variables=varibles,
+                              dataset=dataset,
+                              data_table=data_table,
+                              metadata_table=metadata_table,
                               metadata_code_column=metadata_code_column,
                               metadata_isCategorical_column=metadata_isCategorical_column,
-                              no_intercept=no_intercept, coding=None)
+                              no_intercept=no_intercept,
+                              coding=None)
     if len(Y.columns) != 2:
         raise ExaremeError('Variable must contain only two categories.')
     local_in = Y, X
