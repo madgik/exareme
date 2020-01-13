@@ -156,7 +156,8 @@ if [[ "${MASTER_FLAG}" != "master" ]]; then
 	done
 
     if [[ ${TAG} == "dev" ]]; then
-        :
+        echo -e "\nWorker node["${MY_IP}","${NODE_NAME}"] connected to Master node["${MASTER_IP}","${MASTER_NAME}"]"
+        curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_ACTIVE_WORKERS_PATH}/${NODE_NAME} <<< ${MY_IP}
     elif [[ ${TAG} == "prod" ]]; then
         # Health check for Worker. HEALTH_CHECK algorithm execution
         echo "Health check for Worker node["${MY_IP}","${NODE_NAME}"]"
@@ -242,7 +243,8 @@ else
 		done
 	
         if [[ ${TAG} == "dev" ]]; then
-            :
+            echo -e "\nMaster node["${MY_IP}","${NODE_NAME}"] initialized"
+            curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/${NODE_NAME} <<< ${MY_IP}
         elif [[ ${TAG} == "prod" ]]; then
 
 		    echo "Running set-local-datasets."
