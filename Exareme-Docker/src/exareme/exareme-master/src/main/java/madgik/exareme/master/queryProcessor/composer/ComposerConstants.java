@@ -18,6 +18,18 @@ public class ComposerConstants {
     public static final String curStatePKLKey = "cur_state_pkl";
     public static final String prevStatePKLKey = "prev_state_pkl";
 
+    // Information about the names of the tables and the columns in the CSV Database
+    // These value will be used to pass the specific information to the algorithms
+    public static final String csvDBTableDataKey = "data_table";
+    public static final String csvDBTableMetadataKey = "metadata_table";
+    public static final String csvDBTableMetadataColumnCodeKey = "metadata_code_column";
+    public static final String csvDBTableMetadataColumnSqlTypeKey = "metadata_sqlType_column";
+    public static final String csvDBTableMetadataColumnIsCategoricalKey = "metadata_isCategorical_column";
+    public static final String csvDBTableMetadataColumnEnumerationsKey = "metadata_enumerations_column";
+    public static final String csvDBTableMetadataColumnMinValueKey = "metadata_minValue_column";
+    public static final String csvDBTableMetadataColumnMaxValueKey = "metadata_maxValue_column";
+
+
     public static String getAlgorithmsFolderPath() {
         return AdpProperties.getGatewayProperties().getString("algorithms.path");
     }

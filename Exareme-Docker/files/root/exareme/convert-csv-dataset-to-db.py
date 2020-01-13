@@ -70,15 +70,15 @@ def addGroupVariablesToList(groupMetadata, metadataList):
                 variableDictionary['enumerations'] = ','.join(enumerations)
 
             else:
-                variableDictionary['enumerations'] = 'null'
+                variableDictionary['enumerations'] = None
             if 'min' in variable:
                 variableDictionary['min'] = variable['min']
             else:
-                variableDictionary['min'] = 'null'
+                variableDictionary['min'] = None
             if 'max' in variable:
                 variableDictionary['max'] = variable['max']
             else:
-                variableDictionary['max'] = 'null'
+                variableDictionary['max'] = None
             metadataList.append(variableDictionary)
     if 'groups' in groupMetadata:
         for group in groupMetadata['groups']:
@@ -111,10 +111,19 @@ def addMetadataInTheDatabase(CDEsMetadataPath, cur):
         insertVariableQuery = columnsQuery
         insertVariableQuery += "'" + variable['code'] + "'"
         insertVariableQuery += ", '" + variable['sql_type'] + "'"
-        insertVariableQuery += ", '" + variable['isCategorical'] + "'"
-        insertVariableQuery += ", '" + variable['enumerations'] + "'"
-        insertVariableQuery += ", '" + variable['min'] + "'"
-        insertVariableQuery += ", '" + variable['max'] + "'"
+        insertVariableQuery += ", '" + variable['isCategorical'] + "'"    
+        if variable['enumerations'] :
+            insertVariableQuery += ", '" + variable['enumerations'] + "'"
+        else:
+            insertVariableQuery += ", NULL"
+        if variable['min'] :
+            insertVariableQuery += ", '" + variable['min'] + "'"
+        else:
+            insertVariableQuery += ", NULL"
+        if variable['max'] :
+            insertVariableQuery += ", '" + variable['max'] + "'"
+        else:
+            insertVariableQuery += ", NULL"
         insertVariableQuery += ");"
         cur.execute(insertVariableQuery)
 
