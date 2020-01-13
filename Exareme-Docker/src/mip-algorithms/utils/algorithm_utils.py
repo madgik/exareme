@@ -177,12 +177,13 @@ def query_from_formula(fname_db, formula, variables, dataset,
         variables_casts = ', '.join(
                 [v if not c else 'CAST({v} AS text) AS {v}'.format(v=v) for v, c in
                  zip(varz, is_cat)])
-        return "SELECT {variables} FROM {data} WHERE {clause} AND dataset=='{dataset}';".format(variables=variables_casts,
-                                                                                                data=data_table,
-                                                                                                clause=' AND '.join(
-                                                                                                        ["{}!=''".format(v)
-                                                                                                         for v in varz]),
-                                                                                                dataset=dataset)
+        return "SELECT {variables} FROM {data} WHERE {clause} AND dataset=='{dataset}';".format(
+            variables=variables_casts,
+            data=data_table,
+            clause=' AND '.join(
+                    ["{}!=''".format(v)
+                     for v in varz]),
+            dataset=dataset)
 
     # Perform privacy check
     if pd.read_sql_query(sql=count_query(variables), con=conn).iat[0, 0] < PRIVACY_MAGIC_NUMBER:
