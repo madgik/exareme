@@ -31,6 +31,7 @@ def get_data(args):
                 .split(',')
     )
     variables = (args_x,)
+    dataset = args.dataset
     formula = args.formula
     formula = formula.replace('_', '~')  # TODO Fix tilda problem and remove
     no_intercept = json.loads(args.no_intercept)
@@ -40,11 +41,16 @@ def get_data(args):
     metadata_isCategorical_column = args.metadata_isCategorical_column
 
     # Get data from local DB
-    _, X = query_from_formula(fname_db=input_local_DB, formula=formula, variables=variables,
-                              data_table=data_table, metadata_table=metadata_table,
+    _, X = query_from_formula(fname_db=input_local_DB,
+                              formula=formula,
+                              variables=variables,
+                              dataset=dataset,
+                              data_table=data_table,
+                              metadata_table=metadata_table,
                               metadata_code_column=metadata_code_column,
                               metadata_isCategorical_column=metadata_isCategorical_column,
-                              no_intercept=no_intercept, coding=None)
+                              no_intercept=no_intercept,
+                              coding=None)
 
     return X
 
