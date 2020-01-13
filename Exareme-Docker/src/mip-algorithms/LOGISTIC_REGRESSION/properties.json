@@ -1,63 +1,96 @@
 {
-	"name": "LOGISTIC_REGRESSION",
-	"desc": "Binary Logistic Regression without regularization using Newton-Raphson method",
-	"label": "Logistic Regression",
-	"type": "python_iterative",
-	"parameters": [{
-			"name": "x",
-			"desc": "A list of variables from database. The variable should be Real, Integer. It cannot be empty",
-			"type": "column",
-			"columnValuesSQLType": "real, integer",
-			"columnValuesIsCategorical": "false",
-			"value": "leftaccumbensarea, leftacgganteriorcingulategyrus, leftainsanteriorinsula, rightaccumbensarea, rightacgganteriorcingulategyrus, rightainsanteriorinsula",
-			"valueNotBlank": true,
-			"valueMultiple": true,
-			"valueType": "string"
-		}, {
-			"name": "y",
-			"desc": "A single variable from database. The variable should be Categorical with only two categories (i.e. Boolean). It cannot be empty.",
-			"type": "column",
-			"columnValuesSQLType": "text, integer",
-			"columnValuesIsCategorical": "true",
-			"value": "gender",
-			"valueNotBlank": true,
-			"valueMultiple": false,
-			"valueType": "string"
-		}, {
-			"name": "pathology",
-			"desc": "The name of the pathology that the dataset belongs to.",
-			"type": "pathology",
-			"value": "dementia",
-			"valueNotBlank": true,
-			"valueMultiple": false,
-			"valueType": "string"
-		}, {
-			"name": "dataset",
-			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty",
-			"type": "dataset",
-			"value": "adni",
-			"valueNotBlank": true,
-			"valueMultiple": true,
-			"valueType": "string"
-		}, {
-			"name": "filter",
-			"desc": "",
-			"type": "filter",
-			"value": "",
-			"valueNotBlank": false,
-			"valueMultiple": true,
-			"valueType": "string"
-		}, {
-			"name": "max_iter",
-			"desc": "Maximum number of iterations. Must be a positive integer.",
-			"type": "other",
-			"value": "",
-			"defaultValue": "20",
-			"valueNotBlank": false,
-			"valueMultiple": false,
-			"valueType": "integer",
-			"valueMin": 1,
-			"valueMax": 100
-		}
-	]
+    "name": "LOGISTIC_REGRESSION",
+    "desc": "Binary Logistic Regression without regularization using Newton-Raphson method",
+    "label": "Logistic Regression",
+    "type": "python_iterative",
+    "status": "enabled",
+    "parameters": [
+        {
+            "name": "x",
+            "desc": "A list of variables from database. The variable should be Real, Integer. It cannot be empty",
+            "type": "column",
+            "columnValuesSQLType": "real, integer, text",
+            "columnValuesIsCategorical": "",
+            "columnValuesNumOfEnumerations": "",
+            "value": "alzheimerbroadcategory, lefthippocampus",
+            "valueNotBlank": true,
+            "valueMultiple": true,
+            "valueType": "string"
+        },
+        {
+            "name": "y",
+            "desc": "A single variable from database. The variable should be Categorical with only two categories (i.e. Boolean). It cannot be empty.",
+            "type": "column",
+            "columnValuesSQLType": "text, integer",
+            "columnValuesIsCategorical": "true",
+            "columnValuesNumOfEnumerations": "",
+            "value": "gender",
+            "valueNotBlank": true,
+            "valueMultiple": false,
+            "valueType": "string"
+        },
+        {
+            "name": "pathology",
+            "desc": "The name of the pathology that the dataset belongs to.",
+            "type": "pathology",
+            "value": "dementia",
+            "valueNotBlank": true,
+            "valueMultiple": false,
+            "valueType": "string"
+        },
+        {
+            "name": "dataset",
+            "desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty",
+            "type": "dataset",
+            "value": "adni",
+            "valueNotBlank": true,
+            "valueMultiple": true,
+            "valueType": "string"
+        },
+        {
+            "name": "filter",
+            "desc": "",
+            "type": "filter",
+            "value": "",
+            "valueNotBlank": false,
+            "valueMultiple": true,
+            "valueType": "string"
+        },
+        {
+            "name": "max_iter",
+            "desc": "Maximum number of iterations. Must be a positive integer.",
+            "type": "other",
+            "value": "",
+            "defaultValue": "20",
+            "valueNotBlank": false,
+            "valueMultiple": false,
+            "valueType": "integer",
+            "valueMin": 1,
+            "valueMax": 100
+        },
+        {
+            "name": "formula",
+            "desc": "Patsy formula  (R language syntax).",
+            "type": "other",
+            "value": "gender _ alzheimerbroadcategory * lefthippocampus",
+            "defaultValue": "",
+            "valueNotBlank": false,
+            "valueMultiple": false,
+            "valueType": "string"
+        },
+        {
+            "name": "no_intercept",
+            "desc": "Boolean flag for having no intercept by default.",
+            "type": "other",
+            "value": "false",
+            "defaultValue": "false",
+            "valueNotBlank": false,
+            "valueMultiple": false,
+            "valueType": "string",
+            "valueEnumerations": [
+                "true",
+                "false"
+            ]
+        }
+    ]
 }
