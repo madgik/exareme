@@ -102,19 +102,13 @@ def query_with_privacy(fname_db, query):
     return schema, data
 
 
-def query_from_formula(fname_db, formula, variables,
+def query_from_formula(fname_db, formula, variables, dataset,
                        data_table, metadata_table, metadata_code_column,
                        metadata_isCategorical_column,
                        no_intercept=False, coding=None):
     """
-    Queries a database based on a list of variables and a patsy (R language) formula and returns corresponding
-    matrix(-ces). When the formula is of the form 'lhs ~ rhs' tho matrices are outputed, one for each side. When the
-    formula is of the form 'rhs' just one matrix is outputed.
-
-    Additionally, a privacy check is performed and function returns results only if number of datapoints is sufficient.
-
-    If no formula is given (empty str or None) a formula is generated as follows: if variables are given as (`lhs`, `rhs`) then
-    formula is 'lhs ~ rhs', if variables are given as (`rhs`,) then formula is just a rhs expression.
+    Queries a database based on a list of variables and a patsy (R language) formula. Additionally performs privacy
+    check and returns results only if number of datapoints is sufficient.
 
     Parameters
     ----------
@@ -146,11 +140,15 @@ def query_from_formula(fname_db, formula, variables,
         When a tilda is present in the formula, the function returns two design matrices (lhs_dm, rhs_dm).
         When it is not the function returns just the rhs_dm.
     """
+    from numpy import log as log
+    from numpy import exp as exp
+    _ = log(exp(1))  # This line is needed to prevent import opimizer from removing above lines
 
     assert coding in {None, 'Treatment', 'Poly', 'Sum', 'Diff', 'Helmert'}
+    dataset = dataset.replace(' ', '').split(',')
 
     # If no formula is given, generate a trivial one
-    if formula is '' or formula is None:
+    if formula is '':
         formula = '~'.join(map(lambda x: '+'.join(x), variables))
     variables = reduce(lambda a, b: a + b, variables)
 
@@ -166,21 +164,31 @@ def query_from_formula(fname_db, formula, variables,
                                                                                var=var)
 
     def count_query(varz):
-        return 'SELECT COUNT({var}) FROM {data} WHERE {clause};'.format(var=varz[0],
-                                                                        data=data_table,
-                                                                        clause=' AND '.join(
-                                                                                ["{}!=''".format(v)
-                                                                                 for v in varz]))
+        return "SELECT COUNT({var}) FROM {data} WHERE ({var_clause}) AND ({ds_clause});".format(
+                var=varz[0],
+                data=data_table,
+                var_clause=' AND '.join(
+                        [
+                            "{}!=''".format(
+                                    v)
+                            for v in
+                            varz]),
+                ds_clause=' OR '.join(["dataset=='{d}'".format(d=d) for d in dataset])
+        )
 
     def data_query(varz, is_cat):
         variables_casts = ', '.join(
                 [v if not c else 'CAST({v} AS text) AS {v}'.format(v=v) for v, c in
-                 zip(varz, is_cat)])
-        return 'SELECT {variables} FROM {data} WHERE {clause};'.format(variables=variables_casts,
-                                                                       data=data_table,
-                                                                       clause=' AND '.join(
-                                                                               ["{}!=''".format(v)
-                                                                                for v in varz]))
+                 zip(varz, is_cat)]
+        )
+        return "SELECT {variables} FROM {data} WHERE ({var_clause}) AND ({ds_clause});".format(
+                variables=variables_casts,
+                data=data_table,
+                var_clause=' AND '.join(
+                        ["{}!=''".format(v)
+                         for v in varz]),
+                ds_clause=' OR '.join(["dataset=='{d}'".format(d=d) for d in dataset])
+        )
 
     # Perform privacy check
     if pd.read_sql_query(sql=count_query(variables), con=conn).iat[0, 0] < PRIVACY_MAGIC_NUMBER:
@@ -346,7 +354,7 @@ def parse_exareme_args(fp):
     for p in params:
         name = '-' + p['name']
         required = p['valueNotBlank']
-        if name not in ['pathology', 'dataset', 'filter']:
+        if name not in ['pathology', 'filter']:
             parser.add_argument(name, required=required)
 
     args, unknown = parser.parse_known_args()
@@ -355,22 +363,21 @@ def parse_exareme_args(fp):
 
 def main():
     fname_db = '/Users/zazon/madgik/mip_data/dementia/datasets.db'
-    lhs = ['leftaccumbensarea']
-    rhs = ['leftaccumbensarea', 'leftacgganteriorcingulategyrus']
-    variables = (rhs,)
-    formula = 'gender ~ alzheimerbroadcategory * lefthippocampus'
-    formula = None
-    _, X = query_from_formula(fname_db, formula, variables, data_table='DATA',
+    lhs = ['leftaccumbensarea', 'leftacgganteriorcingulategyrus', 'leftainsanteriorinsula']
+    rhs = ['rightaccumbensarea', 'rightacgganteriorcingulategyrus', 'rightainsanteriorinsula']
+    variables = (lhs, rhs)
+    # formula = 'gender ~ alzheimerbroadcategory * lefthippocampus'
+    formula = ''
+    Y, X = query_from_formula(fname_db, formula, variables, data_table='DATA',
+                              dataset='adni, ppmi, edsd',
                               metadata_table='METADATA',
                               metadata_code_column='code',
                               metadata_isCategorical_column='isCategorical',
                               no_intercept=True, coding='Diff')
+    print(X.shape)
+    print(Y.shape)
     print(X.design_info.column_names)
-    print(np.array(X))
-    X = np.array(X)
-    print(X.sum(axis=0))
-    print(len(X))
-    # print(Y.design_info.column_names)
+    print(Y.design_info.column_names)
     # print(Y)
 
 
