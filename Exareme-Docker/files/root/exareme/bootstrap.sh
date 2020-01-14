@@ -3,27 +3,20 @@
 if [[ -z "${EXAREME_ACTIVE_WORKERS_PATH}" ]]; then
 	echo "Env. variable 'active_workers' not initialized in docker-compose.yaml files. Exiting..."
 	exit 1
-else
-	EXAREME_ACTIVE_WORKERS_PATH=${EXAREME_ACTIVE_WORKERS_PATH}
 fi
 
 if [[ -z "${EXAREME_MASTER_PATH}" ]]; then
 	echo "Env. variable 'master' not initialized in docker-compose.yaml files. Exiting..."
 	exit 1
-
-else
-	EXAREME_MASTER_PATH=${EXAREME_MASTER_PATH}
 fi
 
 if [[ -z "${DATA}" ]]; then
 	echo "Env. variable 'data' not initialized in docker-compose.yaml files. Exiting..."
 	exit 1
-else
-	DATA=${DATA}
 fi
-if [ -z ${CONSULURL} ]; then echo "CONSULURL is unset"; exit; fi
-if [ -z ${NODE_NAME} ]; then echo "NODE_NAME is unset";exit;  fi
-if [ -z ${DOCKER_DATA_FOLDER} ]; then echo "DOCKER_DATA_FOLDER is unset"; exit; fi
+if [[ -z ${CONSULURL} ]]; then echo "CONSULURL is unset"; exit; fi
+if [[ -z ${NODE_NAME} ]]; then echo "NODE_NAME is unset";exit;  fi
+if [[ -z ${DOCKER_DATA_FOLDER} ]]; then echo "DOCKER_DATA_FOLDER is unset"; exit; fi
 
 #Stop Exareme service
 stop_exareme () {
@@ -156,6 +149,9 @@ if [[ "${MASTER_FLAG}" != "master" ]]; then
 	done
 
     if [[ ${TAG} == "dev" ]]; then
+        echo "Running set-local-datasets."
+	    ./set-local-datasets.sh
+
         echo -e "\nWorker node["${MY_IP}","${NODE_NAME}"] connected to Master node["${MASTER_IP}","${MASTER_NAME}"]"
         curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_ACTIVE_WORKERS_PATH}/${NODE_NAME} <<< ${MY_IP}
     elif [[ ${TAG} == "prod" ]]; then
@@ -176,6 +172,9 @@ if [[ "${MASTER_FLAG}" != "master" ]]; then
         if [[ $getNames = *${NODE_NAME}* ]]; then
             echo -e "\nWorker node["${MY_IP}","${NODE_NAME}"] connected to Master node["${MASTER_IP}","${MASTER_NAME}"]"
             curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_ACTIVE_WORKERS_PATH}/${NODE_NAME} <<< ${MY_IP}
+            echo "Running set-local-datasets."
+    	    ./set-local-datasets.sh
+
         else
             echo "Worker node["${MY_IP}","${NODE_NAME}]" seems that is not connected with the Master.Exiting..."
             exit 1
@@ -243,12 +242,12 @@ else
 		done
 	
         if [[ ${TAG} == "dev" ]]; then
+             echo "Running set-local-datasets."
+		    ./set-local-datasets.sh
+
             echo -e "\nMaster node["${MY_IP}","${NODE_NAME}"] initialized"
             curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/${NODE_NAME} <<< ${MY_IP}
         elif [[ ${TAG} == "prod" ]]; then
-
-		    echo "Running set-local-datasets."
-		    ./set-local-datasets.sh
 
 		    # Health check for Master. HEALTH_CHECK algorithm execution
 		    echo "Health check for Master node["${MY_IP}","${NODE_NAME}"]"
@@ -267,6 +266,10 @@ else
             if [[ $getNames = *${NODE_NAME}* ]]; then
                 echo -e "\nMaster node["${MY_IP}","${NODE_NAME}"] initialized"
                 curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/${NODE_NAME} <<< ${MY_IP}
+
+                echo "Running set-local-datasets."
+    		    ./set-local-datasets.sh
+
             else
                 echo "Master node["${MY_IP}","${NODE_NAME}]" seems that could not be initialized.Exiting..."
                 exit 1
