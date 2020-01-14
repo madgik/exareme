@@ -22,7 +22,7 @@ def logregr_local_init(local_in):
     Y, X = local_in
     n_obs = len(Y)
     n_cols = len(X.columns)
-    Y = Y.iloc[:, 0]
+    Y = Y.iloc[:, 1]
     y_name = Y.name
     x_names = list(X.columns)
     Y, X = np.array(Y), np.array(X)
