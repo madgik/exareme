@@ -185,7 +185,8 @@ from EXAREME..Exiting"
                     ./set-local-datasets.sh
 
                 else
-                    echo "Worker node["${MY_IP}","${NODE_NAME}]" seems that is not connected with the Master.\
+                    echo ${check}
+                    echo "Worker node["${MY_IP}","${NODE_NAME}]" seems that is not connected with the Master..\
 Switch TAG to 'dev' to see Error messages coming from EXAREME..Exiting..."
                     exit 1
                 fi
@@ -289,7 +290,8 @@ from EXAREME..Exiting"
                         ./set-local-datasets.sh
 
                     else
-                        echo "Master node["${MY_IP}","${NODE_NAME}]" seems that could not be initialized.\
+                        echo ${check}
+                        echo "Master node["${MY_IP}","${NODE_NAME}]" seems that could not be initialized..\
 Switch TAG to 'dev' to see Error messages coming from EXAREME..Exiting..."
                         exit 1
                     fi
