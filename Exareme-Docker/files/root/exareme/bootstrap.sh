@@ -252,27 +252,35 @@ else
 		    # Health check for Master. HEALTH_CHECK algorithm execution
 		    echo "Health check for Master node["${MY_IP}","${NODE_NAME}"]"
 		    check="$(curl -s ${MY_IP}:9092/check/worker?IP_MASTER=${MY_IP}?IP_WORKER=${MY_IP})"	 #Master has a Worker instance. So in this case IP_MASTER / IP_WORKER is the same
+            echo ${check} | jq empty
+            check_code=$?
 
-		    #error: Something went wrong could happen (it could be madis)
-		    if [[ $( echo ${check} | jq '.error') != null ]]; then
-                 echo ${check} | jq '.error'
-                 echo "Exiting.."
-                 exit 1
-            fi
-
-		    getNames="$( echo ${check} | jq '.active_nodes')"
-
-            #Retrieve result as json. If $NODE_NAME exists in result, the algorithm run in the specific node
-            if [[ $getNames = *${NODE_NAME}* ]]; then
-                echo -e "\nMaster node["${MY_IP}","${NODE_NAME}"] initialized"
-                curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/${NODE_NAME} <<< ${MY_IP}
-
-                echo "Running set-local-datasets."
-    		    ./set-local-datasets.sh
-
-            else
-                echo "Master node["${MY_IP}","${NODE_NAME}]" seems that could not be initialized.Exiting..."
+            if [[ ${check_code} -ne 0 ]]; then
+                echo "An error has occurred: "${check}
+                echo "Exiting.."
                 exit 1
+		    else    #TODO check if that is needed.. I think not
+                #error: Something went wrong could happen (it could be madis)
+                if [[ $( echo ${check} | jq '.error') != null ]]; then
+                     echo ${check} | jq '.error'
+                     echo "Exiting.."
+                     exit 1
+                fi
+
+                getNames="$( echo ${check} | jq '.active_nodes')"
+
+                #Retrieve result as json. If $NODE_NAME exists in result, the algorithm run in the specific node
+                if [[ $getNames = *${NODE_NAME}* ]]; then
+                    echo -e "\nMaster node["${MY_IP}","${NODE_NAME}"] initialized"
+                    curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/${NODE_NAME} <<< ${MY_IP}
+
+                    echo "Running set-local-datasets."
+                    ./set-local-datasets.sh
+
+                else
+                    echo "Master node["${MY_IP}","${NODE_NAME}]" seems that could not be initialized.Exiting..."
+                    exit 1
+                fi
             fi
         fi
 	fi
