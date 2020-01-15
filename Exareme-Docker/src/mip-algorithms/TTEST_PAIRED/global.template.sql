@@ -21,11 +21,11 @@ var 'typesofresults2' from select strreplace(mystring) from (select 'text,real,i
 
 
 var 'jsonResult' from select '{ "type": "application/json", "data": ' || val ||'}' from
-(select tabletojson( colname, statistics, df,%{resultschema}, "colname,statistics,df,%{resultschema}",0) as val
+(select tabletojson( colname, t_value, df,%{resultschema}, "colname,t_value,df,%{resultschema}",0) as val
  from defaultDB.globalttestresult);
 
 var 'tableResult' from select * from (totabulardataresourceformat title:INDEPENDENT_TEST_TABLE types:%{typesofresults2}
-              select colname,statistics,df,%{resultschema} from defaultDB.globalttestresult);
+              select colname,t_value,df,%{resultschema} from defaultDB.globalttestresult);
 
 select '{"result": [' || '%{jsonResult}' || ',' || '%{tableResult}' || ']}';
 

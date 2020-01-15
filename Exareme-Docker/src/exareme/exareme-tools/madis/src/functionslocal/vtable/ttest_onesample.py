@@ -49,7 +49,7 @@ class ttest_onesample(functions.vtable.vtbase.VT):
         if len(schema) == 0:
             raise functions.OperatorError(__name__.rsplit('.')[-1], "Empty table")
 
-        outputschema = [['colname'], ['t-value'], ['df']]
+        outputschema = [['colname'], ['t_value'], ['df']]
         init = True
         for myrow in c:
             colname = str(myrow[0])
@@ -63,8 +63,8 @@ class ttest_onesample(functions.vtable.vtbase.VT):
             result = [colname, t_value, df]
 
             if init == True:
-                outputschema.append(["p-value"])
-                outputschemaString = 'p-value'
+                outputschema.append(["p_value"])
+                outputschemaString = 'p_value'
             if hypothesis == 'different': result.append(2.0 * (1.0-stats.t.cdf(abs(t_value), df)))
             elif hypothesis == 'lessthan': result.append(stats.t.cdf(t_value, df))
             elif hypothesis == 'greaterthan': result.append(1.0- stats.t.cdf(t_value, df))
