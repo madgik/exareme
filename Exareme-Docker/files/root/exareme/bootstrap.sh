@@ -152,7 +152,7 @@ if [[ "${MASTER_FLAG}" != "master" ]]; then
         echo "Running set-local-datasets."
 	    ./set-local-datasets.sh
 
-        echo -e "\nWorker node["${MY_IP}","${NODE_NAME}"] connected to Master node["${MASTER_IP}","${MASTER_NAME}"]"
+        echo -e "\nDEV version: Worker node["${MY_IP}","${NODE_NAME}"] may be connected to Master node["${MASTER_IP}","${MASTER_NAME}"]"
         curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_ACTIVE_WORKERS_PATH}/${NODE_NAME} <<< ${MY_IP}
     elif [[ ${TAG} == "prod" ]]; then
         # Health check for Worker. HEALTH_CHECK algorithm execution
@@ -172,6 +172,7 @@ if [[ "${MASTER_FLAG}" != "master" ]]; then
         if [[ $getNames = *${NODE_NAME}* ]]; then
             echo -e "\nWorker node["${MY_IP}","${NODE_NAME}"] connected to Master node["${MASTER_IP}","${MASTER_NAME}"]"
             curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_ACTIVE_WORKERS_PATH}/${NODE_NAME} <<< ${MY_IP}
+
             echo "Running set-local-datasets."
     	    ./set-local-datasets.sh
 
@@ -210,8 +211,7 @@ else
 	if [[ "$(curl -s -o  /dev/null -i -w "%{http_code}\n" ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/?keys)" = "200" ]]; then
 		#Workers connected to Master node
 		if [[ "$(curl -s -o  /dev/null -i -w "%{http_code}\n" ${CONSULURL}/v1/kv/${EXAREME_ACTIVE_WORKERS_PATH}/?keys)" = "200" ]]; then
-			#Empty echo for if-then-else consistency
-			echo ""
+			:
 			#TODO check what if master restarts with different IP while workers are already connected to the master's registry with previous IP
 		else
 			./exareme-admin.sh --start
@@ -245,7 +245,7 @@ else
              echo "Running set-local-datasets."
 		    ./set-local-datasets.sh
 
-            echo -e "\nMaster node["${MY_IP}","${NODE_NAME}"] initialized"
+            echo -e "\nDEV version: Master node["${MY_IP}","${NODE_NAME}"] may be initialized"
             curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/${NODE_NAME} <<< ${MY_IP}
         elif [[ ${TAG} == "prod" ]]; then
 
@@ -278,8 +278,6 @@ else
 	fi
 fi
 
-#Both Worker(s)/Master will execute the command. At this point Consul [Key-value store] is up, running and everyone can access it
-./set-local-datasets.sh
 echo '*/15  *  *  *  *	./set-local-datasets.sh' >> /etc/crontabs/root
 crond
 
