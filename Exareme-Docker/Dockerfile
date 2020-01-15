@@ -75,6 +75,7 @@ RUN apk add --update py-psycopg2 py-pip ca-certificates gcc musl-dev python-dev 
     pip install -r /root/requirements.txt && \
     pip install scipy==1.2.1 scikit-learn==0.20.3 && \
     pip install pandas && \
+    pip install lifelines && \
     pip install liac-arff && \
     apk del py-pip ca-certificates gcc musl-dev python-dev lapack-dev gfortran && \
     rm -rf /tmp/* /var/cache/apk/*

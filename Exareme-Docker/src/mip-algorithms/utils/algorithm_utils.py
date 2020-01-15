@@ -40,6 +40,8 @@ class TransferAndAggregateData(object):
                 kwargs[k] = (self.data[k] + other.data[k], 'add')
             elif self.reduce_type[k] == 'max':
                 kwargs[k] = (max(self.data[k], other.data[k]), 'max')
+            elif self.reduce_type[k] == 'concat':
+                kwargs[k] = (np.concatenate(self.data[k], other.data[k]), 'concat')
             elif self.reduce_type[k] == 'do_nothing':
                 kwargs[k] = (self.data[k], 'do_nothing')
             else:
