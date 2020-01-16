@@ -2,10 +2,13 @@ from __future__ import division
 from __future__ import print_function
 
 import json
+import math
 import sys
 from os import path
 
+import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 from lifelines import KaplanMeierFitter
 
 _new_path = path.dirname(path.dirname(path.abspath(__file__)))
@@ -26,7 +29,7 @@ from utils.algorithm_utils import make_json_raw, TransferAndAggregateData
 PRIVACY_MAGIC_NUMBER = 15
 
 
-def get_data(args):
+def get_data(timelines, event_val, max_duration):
     # # Parse args
     # arg_events = args.events
     #
@@ -38,18 +41,28 @@ def get_data(args):
     # metadata_code_column = args.metadata_code_column
     # metadata_isCategorical_column = args.metadata_isCategorical_column
 
-    total_duration = 30
-    events = np.random.randint(0, 2, 2000)
-    durations = np.random.randint(0, 20, 2000)
-    # events = np.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0])
-    # durations = np.array([3, 6, 7, 4, 5, 1, 2, 2, 9, 5, 6, 9, 8, 2, 3, 20, 40, 30])
+    events = []
+    durations = []
+    for tl in timelines:
+        if event_val in tl[1]:
+            event = 1
+            event_idx = tl[1].index(event_val)
+            duration = tl[0][event_idx]
+        else:
+            event = 0
+            duration = max_duration
+        events.append(event)
+        durations.append(duration)
 
-    return events, durations, total_duration
+    events = np.array(events)
+    durations = np.array(durations)
+
+    return events, durations, max_duration
 
 
 def local_1(local_in):
     # Unpack data
-    events, durations, total_duration = local_in
+    events, durations, max_duration = local_in
 
     # Sort events by ascending duration
     idx = np.argsort(durations)
@@ -58,7 +71,7 @@ def local_1(local_in):
 
     # Split events into observed and non_observed groups
     durations_observed = np.array([d for d, e in zip(durations, events) if e == 1])
-    durations_non_observed = np.array([total_duration + 1 for e in events if e == 0])
+    durations_non_observed = np.array([max_duration for e in events if e == 0])
 
     # Remove some observations at random to allow grouping (see below)
     n_rem_o = len(durations_observed) % PRIVACY_MAGIC_NUMBER
@@ -105,6 +118,9 @@ def global_1(global_in):
 
     kmf.plot()
 
+    plt.xlim(40, 95)  # TODO Remove these lines
+    plt.show()
+
     survival_function = kmf.survival_function_
     timeline = kmf.timeline
 
@@ -148,8 +164,77 @@ class KaplanMeierResult(object):
         return result
 
 
+def generate_fake_data(n_patients):
+    from collections import OrderedDict
+    from faker import Faker
+    import uuid
+    from datetime import timedelta, date
+
+    faker = Faker()
+    records = OrderedDict()
+    records['subjectcode'] = []
+    records['subjectvisitdate'] = []
+    records['subjectage'] = []
+    records['alzheimerbroadcategory'] = []
+    for _ in range(n_patients):
+        subjectcode = uuid.uuid4().hex
+        birth_date = faker.date_between(start_date='-120y', end_date='-60y')
+        lifetime = math.ceil(np.random.normal(365 * 77, 365 * 12))
+        death_date = birth_date + timedelta(lifetime)
+
+        while True:
+            first_visit_delta = math.ceil(np.random.normal(365 * 67, 365 * 7))
+            first_visit = birth_date + timedelta(first_visit_delta)
+            if first_visit < death_date:
+                break
+        num_visits = np.random.randint(1, 10)
+        visits = [first_visit]
+        for i in range(num_visits):
+            lam_visits = np.random.randint(30, 600)
+            visit_delta = math.ceil(np.random.poisson(lam_visits))
+            visits.append(visits[i - 1] + timedelta(visit_delta))
+        visits = [v for v in visits if v < death_date]
+        visits = [v for v in visits if v < date.today()]
+        visits = sorted(visits)
+
+        if visits != []:
+            alz_coin = np.random.binomial(1, 0.6)
+            alz_categories = ['CN'] * len(visits)
+            if alz_coin:
+                alz_diag_visit = np.random.randint(0, len(visits))
+                alz_categories[alz_diag_visit:] = ['AD'] * (len(visits) - alz_diag_visit)
+
+            for visit, alz_cat in zip(visits, alz_categories):
+                records['subjectcode'].append(subjectcode)
+                records['subjectvisitdate'].append(visit.strftime("%m-%d-%Y") + ' 0:00')
+                age = visit - birth_date
+                records['subjectage'].append(age.days / 365)
+                records['alzheimerbroadcategory'].append(alz_cat)
+
+    records = pd.DataFrame.from_dict(records)
+    records.set_index('subjectcode', inplace=True)
+    return records
+
+
+def build_timelines(df, time_axis, var):
+    timelines = []
+    for g in df.groupby('subjectcode'):
+        timeline = (g[1][time_axis].tolist(), g[1][var].tolist())
+        timelines.append(timeline)
+    return timelines
+
+
 def main():
-    local_in = get_data(None)
+    pd.set_option('display.max_columns', 3)
+    pd.set_option('display.width', 100)
+
+    fake_data = generate_fake_data(1000)
+    print(fake_data)
+
+    timelines = build_timelines(fake_data, time_axis='subjectage', var='alzheimerbroadcategory')
+    print(timelines)
+
+    local_in = get_data(timelines, 'AD', 100)
     local_out = local_1(local_in=local_in)
     global_out = global_1(global_in=local_out)
     print(global_out)
