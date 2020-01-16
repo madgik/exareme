@@ -131,6 +131,9 @@ def main():
                  else:
                      global_state['globalTree'].grow_tree(activePaths[key]['filter'], criterion, bestColName, valueParentNode, bestThreshold,activePaths[key]["samples"], samplesPerClass)
         else: #It is leaf -->TODO
+            samplesPerClass = None
+            if global_state['args_Y'][0] in global_state['CategoricalVariables']: # Classification Algorithm
+                samplesPerClass = activePaths[key]["classNumbersJ"]["parentNode"]["counts"]
             global_state['globalTree'].grow_tree(activePaths[key]['filter'], criterion, None, None, None,activePaths[key]["samples"], samplesPerClass) #Isws edw na dinw kai alla stoixeia. Alla logw privacy den xreiazetai
     activePaths = activePathsNew
     globalTreeJ = global_state['globalTree'].tree_to_json()

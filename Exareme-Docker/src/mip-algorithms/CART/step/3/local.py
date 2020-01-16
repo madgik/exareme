@@ -39,7 +39,7 @@ def compute_statistics2_in_the_node(dataFrame, colNames, activePath, className, 
                 mseRight[i] = np.sum((dfRight[className] - activePath["statisticsJ"][colName]["meanRight"][i])**2)
 
         statisticsJ[colName] =  {"mseLeft" : mseLeft, "mseRight" : mseRight}
-    print (statisticsJ)
+    #print (statisticsJ)
     return statisticsJ
 
 
