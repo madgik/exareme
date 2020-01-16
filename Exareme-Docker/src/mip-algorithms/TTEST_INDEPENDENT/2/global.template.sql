@@ -1,4 +1,4 @@
-requirevars 'defaultDB' 'input_global_tbl' 'hypothesis' 'effectsize' 'ci' 'y' 'meandiff' 'xlevels';
+requirevars 'defaultDB' 'input_global_tbl' 'hypothesis' 'y' 'xlevels';
 attach database '%{defaultDB}' as defaultDB;
 
  --var 'input_global_tbl' 'defaultDB.localstatistics2';
@@ -14,7 +14,7 @@ var 'xlevels1' from select case when '%{xlevels}'<>'' then '%{xlevels}' else '%{
 
 drop table if exists defaultDB.globalttestresult;
 create table defaultDB.globalttestresult as
-select * from (ttest_independent colnames:%{y}  ylevels:%{xlevels1} effectsize:%{effectsize} ci:%{ci} meandiff:%{meandiff} hypothesis:%{hypothesis}
+select * from (ttest_independent colnames:%{y}  ylevels:%{xlevels1} effectsize:1 ci:1 meandiff:1 hypothesis:%{hypothesis}
                select colname, groupval, mean, std,  Ntotal,sse from  defaultDB.globalstatistics2 order by colname,groupval);
 
 var 'resultschema' from select outputschema from globalttestresult limit 1;

@@ -1,4 +1,4 @@
-requirevars 'defaultDB' 'input_global_tbl' 'testvalue' 'hypothesis' 'effectsize' 'ci' 'meandiff';
+requirevars 'defaultDB' 'input_global_tbl' 'testvalue' 'hypothesis';
 attach database '%{defaultDB}' as defaultDB;
 
 --var 'input_global_tbl' 'defaultDB.localstatistics';
@@ -12,7 +12,7 @@ group by colname);
 
 drop table if exists defaultDB.globalttestresult;
 create table  defaultDB.globalttestresult as
-select * from (ttest_onesample testvalue:%{testvalue} effectsize:%{effectsize} ci:%{ci} meandiff:%{meandiff} hypothesis:%{hypothesis} sediff:0
+select * from (ttest_onesample testvalue:%{testvalue} effectsize:1 ci:1 meandiff:1 hypothesis:%{hypothesis} sediff:0
                select * from   defaultDB.globalstatistics);
 
 var 'resultschema' from select outputschema from defaultDB.globalttestresult limit 1;
