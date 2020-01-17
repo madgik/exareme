@@ -123,17 +123,20 @@ def main():
                  samplesPerClass = None
                  if global_state['args_Y'][0] in global_state['CategoricalVariables']: # Classification Algorithm
                      samplesPerClass = activePaths[key]["classNumbersJ"]["parentNode"]["counts"]
+                 classValue = None
+                 if global_state['args_Y'][0] not in global_state['CategoricalVariables']: # Regression Algorithm
+                    classValue = 1 #TODO !!! #activePaths[no]["statisticsJ"]["parentNode"]["ss_argsY"] /activePaths[no]["statisticsJ"]["parentNode"]["nn_argsY"]
                  if global_state['globalTree'] is None:
-                     global_state['globalTree'] = Node(criterion, bestColName, valueParentNode, bestThreshold, activePaths[key]["samples"], samplesPerClass)
+                     global_state['globalTree'] = Node(criterion, bestColName, valueParentNode, bestThreshold, activePaths[key]["samples"], samplesPerClass, classValue)
                      globalTreeJ = global_state['globalTree'].tree_to_json()
                      #raise ValueError("AA", criterion, bestColName, valueParentNode, bestThreshold, activePaths[key]["samples"], samplesPerClass)
                  else:
-                     global_state['globalTree'].grow_tree(activePaths[key]['filter'], criterion, bestColName, valueParentNode, bestThreshold,activePaths[key]["samples"], samplesPerClass)
+                     global_state['globalTree'].grow_tree(activePaths[key]['filter'], criterion, bestColName, valueParentNode, bestThreshold,activePaths[key]["samples"], samplesPerClass, classValue)
         else: #It is leaf -->TODO
             samplesPerClass = None
             if global_state['args_Y'][0] in global_state['CategoricalVariables']: # Classification Algorithm
                 samplesPerClass = activePaths[key]["classNumbersJ"]["parentNode"]["counts"]
-            global_state['globalTree'].grow_tree(activePaths[key]['filter'], criterion, None, None, None,activePaths[key]["samples"], samplesPerClass) #Isws edw na dinw kai alla stoixeia. Alla logw privacy den xreiazetai
+            global_state['globalTree'].grow_tree(activePaths[key]['filter'], criterion, None, None, None,activePaths[key]["samples"], samplesPerClass, classValue) #Isws edw na dinw kai alla stoixeia. Alla logw privacy den xreiazetai
     activePaths = activePathsNew
     globalTreeJ = global_state['globalTree'].tree_to_json()
     #if global_state['stepsNo'] ==1:

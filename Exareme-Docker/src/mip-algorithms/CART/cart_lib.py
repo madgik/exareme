@@ -44,15 +44,17 @@ def add_dict(dict1,dict2):
 
 
 class Node:
-    def __init__(self, criterion, colName,  gain, threshold, samples, samplesPerClass):
+    def __init__(self, criterion, colName,  gain, threshold, samples, samplesPerClass, classValue):
         self.criterion =  criterion
-        self.gain = gain
         self.colName = colName
+        self.gain = gain
         self.threshold = threshold
         self.samples =  samples
         self.samplesPerClass = samplesPerClass
+        self.classValue = classValue
         self.left = None
         self.right = None
+
 
     def tree_to_json(self):
     #TODO sto tree_to_json na mhn kanw return to samplesPerClass logw privacy
@@ -72,11 +74,16 @@ class Node:
                     myclass = key
             samplesPerClass = self.samplesPerClass
 
+        myclassValue = None
+        if self.criterion == "mse":
+            myclassValue = self.classValue
+
         if self.gain == 0 :
             return { "criterion" :self.criterion,
                      "gain" :self.gain,
                      "samples" :self.samples,
                      "samplesPerClass" : samplesPerClass,
+                     "classValue" : myclassValue,
                      "class" : myclass,
                      "right" : rightvalue,
                      "left" : leftvalue }
@@ -87,22 +94,23 @@ class Node:
                      "criterion" :self.criterion,
                      "samples" :self.samples,
                      "samplesPerClass": samplesPerClass,
+                     "classValue" : myclassValue,
                      "class" : myclass,
                      "right" : rightvalue,
                      "left" : leftvalue }
 
-    def grow_tree(self, path, criterion, bestColName, parentNodeGain, bestThreshold, samples, samplesPerClass):
+    def grow_tree(self, path, criterion, bestColName, parentNodeGain, bestThreshold, samples, samplesPerClass, classValue):
         if len(path) > 0:
             if path[0]["operator"] == '<=':
                 if self.left == None:
-                    self.left = Node(criterion, bestColName, parentNodeGain, bestThreshold, samples,samplesPerClass)
+                    self.left = Node(criterion, bestColName, parentNodeGain, bestThreshold, samples,samplesPerClass, classValue)
                 else:
-                    self.left.grow_tree(path[1:],criterion, bestColName, parentNodeGain, bestThreshold, samples, samplesPerClass)
+                    self.left.grow_tree(path[1:],criterion, bestColName, parentNodeGain, bestThreshold, samples, samplesPerClass, classValue)
             if path[0]["operator"] =='>':
                 if self.right == None:
-                    self.right = Node(criterion, bestColName, parentNodeGain, bestThreshold, samples,samplesPerClass)
+                    self.right = Node(criterion, bestColName, parentNodeGain, bestThreshold, samples,samplesPerClass, classValue)
                 else:
-                    self.right.grow_tree(path[1:],criterion, bestColName, parentNodeGain, bestThreshold, samples, samplesPerClass)
+                    self.right.grow_tree(path[1:],criterion, bestColName, parentNodeGain, bestThreshold, samples, samplesPerClass, classValue)
 
 
 class CartInit_Loc2Glob_TD(TransferData):
@@ -272,7 +280,8 @@ class CartIter3_Loc2Glob_TD(TransferData):
 
             if "statisticsJ" in A1[no] and "statisticsJ" in A2[no]:
                 activePathsNew[no]["statisticsJ"]  = dict()
-                activePathsNew[no]["statisticsJ"]["parentNode"] = A1[no]["statisticsJ"]["parentNode"]
+                activePathsNew[no]["statisticsJ"]["parentNode"] = A1[no]["statisticsJ"]["parentNode"] #TODO:  Einai swsto? Ti alla exei?
+                activePathsNew[no]["statisticsJ"]["parentNode"]["mse"] = add_vals(A1[no]["statisticsJ"]["parentNode"]["mse"], A2[no]["statisticsJ"]["parentNode"]["mse"])
 
             #3.  ADD ["classNumbersJ"][key] or ["statisticsJ"][key]
             for key in A1[no]["thresholdsJ"]:
