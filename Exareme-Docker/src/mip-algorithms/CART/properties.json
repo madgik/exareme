@@ -29,7 +29,7 @@
 			"name": "max_depth",
 			"desc": "The maximum depth of the tree. If Blank, then nodes are expanded until all leaves contain at least min_samples_split samples.",
 			"type": "other",
-			"value": "2",
+			"value": "3",
 			"min": 1,
 			"max": null,
 			"enumerations": null,

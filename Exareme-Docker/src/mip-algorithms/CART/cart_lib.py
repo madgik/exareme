@@ -10,6 +10,12 @@ from algorithm_utils import TransferData
 
 SAMPLING_NUMBER = 1 #TODO: = PRIVACY_MAGIC_NUMBER
 
+def add_vals(a,b):
+    if a == None and b == None:
+        return None
+    else:
+        return(a or 0 ) +( b or 0)
+
 def DataFrameFilter(df, key, operator, value):
     if operator == '==':
         return df[df[key] == value]
@@ -194,7 +200,7 @@ class CartIter2_Loc2Glob_TD(TransferData):
         return self.activePaths
 
     def __add__(self, other):
-        return CartIter2_Loc2Glob_TD(self.activePaths)
+
         #run ./FINALME2.py
         A1 = self.activePaths
         A2 = other.activePaths
@@ -229,10 +235,10 @@ class CartIter2_Loc2Glob_TD(TransferData):
                 if "statisticsJ" in A1[no] and "statisticsJ" in A2[no]:
                     if key in A1[no]["statisticsJ"]:
                         activePathsNew[no]["statisticsJ"][key] = dict()
-                        activePathsNew[no]["statisticsJ"][key]["ssLeft"] = [A1[no]["statisticsJ"][key]["ssLeft"][i] + A2[no]["statisticsJ"][key]["ssLeft"][i] for i in xrange(len(A1[no]["statisticsJ"][key]["ssLeft"]))]
-                        activePathsNew[no]["statisticsJ"][key]["ssRight"] =[A1[no]["statisticsJ"][key]["ssRight"][i] + A2[no]["statisticsJ"][key]["ssRight"][i] for i in xrange(len(A1[no]["statisticsJ"][key]["ssRight"]))]
-                        activePathsNew[no]["statisticsJ"][key]["nnLeft"] = [A1[no]["statisticsJ"][key]["nnLeft"][i] + A2[no]["statisticsJ"][key]["nnLeft"][i] for i in xrange(len(A1[no]["statisticsJ"][key]["nnLeft"]))]
-                        activePathsNew[no]["statisticsJ"][key]["nnRight"] = [A1[no]["statisticsJ"][key]["nnRight"][i] + A2[no]["statisticsJ"][key]["nnRight"][i] for i in xrange(len(A1[no]["statisticsJ"][key]["nnRight"]))]
+                        activePathsNew[no]["statisticsJ"][key]["ssLeft"] = [add_vals(A1[no]["statisticsJ"][key]["ssLeft"][i], A2[no]["statisticsJ"][key]["ssLeft"][i]) for i in xrange(len(A1[no]["statisticsJ"][key]["ssLeft"]))]
+                        activePathsNew[no]["statisticsJ"][key]["ssRight"] =[add_vals(A1[no]["statisticsJ"][key]["ssRight"][i], A2[no]["statisticsJ"][key]["ssRight"][i]) for i in xrange(len(A1[no]["statisticsJ"][key]["ssRight"]))]
+                        activePathsNew[no]["statisticsJ"][key]["nnLeft"] = [add_vals(A1[no]["statisticsJ"][key]["nnLeft"][i], A2[no]["statisticsJ"][key]["nnLeft"][i]) for i in xrange(len(A1[no]["statisticsJ"][key]["nnLeft"]))]
+                        activePathsNew[no]["statisticsJ"][key]["nnRight"] = [add_vals(A1[no]["statisticsJ"][key]["nnRight"][i], A2[no]["statisticsJ"][key]["nnRight"][i]) for i in xrange(len(A1[no]["statisticsJ"][key]["nnRight"]))]
         return CartIter2_Loc2Glob_TD(activePathsNew)
 
 
@@ -280,19 +286,9 @@ class CartIter3_Loc2Glob_TD(TransferData):
                         activePathsNew[no]["statisticsJ"][key]["meanLeft"]= A1[no]["statisticsJ"][key]["meanLeft"]
                         activePathsNew[no]["statisticsJ"][key]["meanRight"]= A1[no]["statisticsJ"][key]["meanRight"]
 
-                        activePathsNew[no]["statisticsJ"][key]["mseLeft"] = []
-                        for i in xrange(len(A1[no]["statisticsJ"][key]["mseLeft"])):
-                            if A1[no]["statisticsJ"][key]["mseLeft"][i] is not None and A2[no]["statisticsJ"][key]["mseLeft"][i] is not None :
-                                activePathsNew[no]["statisticsJ"][key]["mseLeft"].append(A1[no]["statisticsJ"][key]["mseLeft"][i] + A2[no]["statisticsJ"][key]["mseLeft"][i])
-                            else:
-                                activePathsNew[no]["statisticsJ"][key]["mseLeft"].append(None)
+                        activePathsNew[no]["statisticsJ"][key]["mseLeft"] = [add_vals(A1[no]["statisticsJ"][key]["mseLeft"][i], A2[no]["statisticsJ"][key]["mseLeft"][i]) for i in xrange(len(A1[no]["statisticsJ"][key]["mseLeft"]))]
+                        activePathsNew[no]["statisticsJ"][key]["mseRight"] = [add_vals(A1[no]["statisticsJ"][key]["mseRight"][i], A2[no]["statisticsJ"][key]["mseRight"][i]) for i in xrange(len(A1[no]["statisticsJ"][key]["mseRight"]))]
 
-                        activePathsNew[no]["statisticsJ"][key]["mseRight"] = []
-                        for i in xrange(len(A1[no]["statisticsJ"][key]["mseRight"])):
-                            if A1[no]["statisticsJ"][key]["mseRight"][i] is not None and A2[no]["statisticsJ"][key]["mseRight"][i] is not None :
-                                activePathsNew[no]["statisticsJ"][key]["mseRight"].append(A1[no]["statisticsJ"][key]["mseRight"][i] + A2[no]["statisticsJ"][key]["mseRight"][i])
-                            else:
-                                activePathsNew[no]["statisticsJ"][key]["mseRight"].append(None)
 
         return CartIter3_Loc2Glob_TD(activePathsNew)
 

@@ -16,14 +16,14 @@ def main():
     parser = ArgumentParser()
     parser.add_argument('-prev_state_pkl', required=True,
                         help='Path to the pickle file holding the previous state.')
-    #parser.add_argument('-max_iter', type=int, required=True, help='Maximum number of iterations.')
+    parser.add_argument('-max_depth', type=int, required=True, help='Maximum depth of tree')
     args, unknown = parser.parse_known_args()
     fname_prev_state = path.abspath(args.prev_state_pkl)
     #max_iter = args.max_iter
 
     global_state = StateData.load(fname_prev_state).data
 
-    if bool(global_state['activePaths']) == False or global_state['stepsNo'] > 3 :
+    if bool(global_state['activePaths']) == False or global_state['stepsNo'] > args.max_depth :
         set_algorithms_output_data('STOP')
     else:
         set_algorithms_output_data('CONTINUE')

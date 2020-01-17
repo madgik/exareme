@@ -32,30 +32,12 @@ def main():
     activePaths = CartIter2_Loc2Glob_TD.load(local_dbs).get_data()
 
     # Run algorithm global step
-    # if  global_state['args_Y'][0] not in global_state['CategoricalVariables']: # Regression Algorithm
-    #     for key in activePaths:
-    #         activePaths[key]["statisticsJ"]["parentNode"]["mean_argsY"] = activePaths[key]["statisticsJ"]["parentNode"]["ss_argsY"]/ activePaths[key]["statisticsJ"]["parentNode"]["nn_argsY"]
-    #         for colName in global_state['args_X']:
-    #             activePaths[key]["statisticsJ"][colName]["meanLeft"] = [i / j for i, j in zip(activePaths[key]["statisticsJ"][colName]["ssLeft"] ,activePaths[key]["statisticsJ"][colName]["nnLeft"])]
-    #             activePaths[key]["statisticsJ"][colName]["meanRight"] = [i / j for i, j in zip(activePaths[key]["statisticsJ"][colName]["ssRight"] ,activePaths[key]["statisticsJ"][colName]["nnRight"])]
-
     if  global_state['args_Y'][0] not in global_state['CategoricalVariables']: # Regression Algorithm
         for key in activePaths:
             activePaths[key]["statisticsJ"]["parentNode"]["mean_argsY"] = activePaths[key]["statisticsJ"]["parentNode"]["ss_argsY"]/ activePaths[key]["statisticsJ"]["parentNode"]["nn_argsY"]
             for colName in global_state['args_X']:
-                activePaths[key]["statisticsJ"][colName]["meanLeft"] = list()
-                activePaths[key]["statisticsJ"][colName]["meanRight"] = list()
-                for i in xrange(len(activePaths[key]["statisticsJ"][colName]["ssLeft"])):
-                    if activePaths[key]["statisticsJ"][colName]["nnLeft"][i] !=0:
-                        activePaths[key]["statisticsJ"][colName]["meanLeft"].append(activePaths[key]["statisticsJ"][colName]["ssLeft"][i]/activePaths[key]["statisticsJ"][colName]["nnLeft"][i])
-                    else:
-                        activePaths[key]["statisticsJ"][colName]["meanLeft"].append(None)
-
-                    if activePaths[key]["statisticsJ"][colName]["nnRight"][i] !=0:
-                        activePaths[key]["statisticsJ"][colName]["meanRight"].append(activePaths[key]["statisticsJ"][colName]["ssRight"][i]/activePaths[key]["statisticsJ"][colName]["nnRight"][i])
-                    else:
-                        activePaths[key]["statisticsJ"][colName]["meanRight"].append(None)
-
+                activePaths[key]["statisticsJ"][colName]["meanLeft"] =  [i / j if j != 0 else None for i, j in zip(activePaths[key]["statisticsJ"][colName]["ssLeft"] , activePaths[key]["statisticsJ"][colName]["nnLeft"])]
+                activePaths[key]["statisticsJ"][colName]["meanRight"] = [i / j if j != 0 else None for i, j in zip(activePaths[key]["statisticsJ"][colName]["ssRight"], activePaths[key]["statisticsJ"][colName]["nnRight"])]
 
     global_out = Cart_Glob2Loc_TD(global_state['globalTree'], activePaths )
     # Save global state

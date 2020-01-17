@@ -11,7 +11,7 @@ sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath
 sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) + '/CART/')
 
 from algorithm_utils import StateData,PRIVACY_MAGIC_NUMBER
-from cart_lib import CartIter3_Loc2Glob_TD, Cart_Glob2Loc_TD, Node
+from cart_lib import CartIter3_Loc2Glob_TD, Cart_Glob2Loc_TD, Node, add_vals
 
 def compute_gini(colName, thresholds, classNumbersJOfColname, nnNode, classDistVal):
     #Compute gini index for the new nodes
@@ -45,10 +45,9 @@ def compute_mse(colName, thresholds, statisticJOfColname, gainNode, nnNode):
     #Compute mse for the right and left node
     gain = [0.0]*len(thresholds)
     for i in xrange(len(thresholds)):
-        if statisticJOfColname['mseLeft'][i] is not None and statisticJOfColname['mseRight'][i] is not None:
-            gain[i] = (statisticJOfColname['mseLeft'][i] + statisticJOfColname['mseRight'][i])/ nnNode
-        else:
-            gain[i] = None
+        gain[i] = None
+        if nnNode!=0 and (statisticJOfColname['mseLeft'][i] is not None or statisticJOfColname['mseRight'][i] is not None):
+            gain[i] = add_vals(statisticJOfColname['mseLeft'][i],statisticJOfColname['mseRight'][i])/ nnNode
     bestGain = min(gain)
     bestThreshold = thresholds[gain.index(bestGain)]
     return  colName, bestGain, bestThreshold

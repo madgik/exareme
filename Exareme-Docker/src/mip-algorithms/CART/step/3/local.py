@@ -29,13 +29,13 @@ def compute_statistics2_in_the_node(dataFrame, colNames, activePath, className, 
             elif colName in CategoricalVariables:
                 dfLeft = df.loc[df[colName] in thresholds[i]['left']]
                 dfRight = df.loc[df[colName] in thresholds[i]['right']]
-            if activePath["statisticsJ"][colName]["meanLeft"][i] is None:
-                mseLeft[i] = None
-            else:
-                mseLeft[i] = np.sum((dfLeft[className] - activePath["statisticsJ"][colName]["meanLeft"][i])**2 )
-            if activePath["statisticsJ"][colName]["meanRight"][i] is None:
-                mseRight[i] = None
-            else:
+
+
+            mseLeft[i] = None
+            mseRight[i] = None
+            if activePath["statisticsJ"][colName]["meanLeft"][i] is not None:
+                mseLeft[i] = np.sum((dfLeft[className] - activePath["statisticsJ"][colName]["meanLeft"][i])**2)
+            if activePath["statisticsJ"][colName]["meanRight"][i] is not None:
                 mseRight[i] = np.sum((dfRight[className] - activePath["statisticsJ"][colName]["meanRight"][i])**2)
 
         statisticsJ[colName] =  {"mseLeft" : mseLeft, "mseRight" : mseRight}
