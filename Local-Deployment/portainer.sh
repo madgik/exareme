@@ -4,6 +4,7 @@ test -d ${PORTAINER_DATA} \
         || sudo mkdir -p ${PORTAINER_DATA} \
         || ( echo Failed to create ${PORTAINER_DATA}; exit 1 )
 
+
 echo -e "\nCreating a new instance of ${PORTAINER_NAME}.."
 
 #Secure Portainer

@@ -54,7 +54,7 @@ def test_LogisticRegression():
     print (result)
     exareme_coeffs = result['result'][0]['data']['Covariates']
     r_coeffs = [{
-        'name'       : '(Intercept)',
+        'name'       : 'Intercept',
         'coefficient': -8.850,
         'std.err.'   : 1.025,
         'z value'    : -8.634,
@@ -133,7 +133,7 @@ def test_LogisticRegression_MultipleDataset():
     result = json.loads(r.text)
     exareme_coeffs = result['result'][0]['data']['Covariates']
     r_coeffs = [{
-        'name'       : '(Intercept)',
+        'name'       : 'Intercept',
         'coefficient': -8.850,
         'std.err.'   : 1.025,
         'z value'    : -8.634,
