@@ -125,7 +125,7 @@ def main():
                      samplesPerClass = activePaths[key]["classNumbersJ"]["parentNode"]["counts"]
                  classValue = None
                  if global_state['args_Y'][0] not in global_state['CategoricalVariables']: # Regression Algorithm
-                    classValue = 1 #TODO !!! #activePaths[no]["statisticsJ"]["parentNode"]["ss_argsY"] /activePaths[no]["statisticsJ"]["parentNode"]["nn_argsY"]
+                    classValue = activePaths[key]["statisticsJ"]["parentNode"]["ss_argsY"] /activePaths[key]["statisticsJ"]["parentNode"]["nn_argsY"]
                  if global_state['globalTree'] is None:
                      global_state['globalTree'] = Node(criterion, bestColName, valueParentNode, bestThreshold, activePaths[key]["samples"], samplesPerClass, classValue)
                      globalTreeJ = global_state['globalTree'].tree_to_json()
