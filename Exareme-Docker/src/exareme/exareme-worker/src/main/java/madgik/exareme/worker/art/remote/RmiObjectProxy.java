@@ -88,7 +88,7 @@ public abstract class RmiObjectProxy<T> implements ObjectProxy<T> {
                 //Get the Exareme's node name that is not responding
                 HashMap<String,String> names = null;
                 try {
-		        semaphore.acquire();
+                    semaphore.acquire();
                     names = getNamesOfActiveNodes();
                     for (Map.Entry<String, String> entry : names.entrySet()) {
                         log.debug("ActiveNodes from Consul key-value store: " + entry.getKey() + " = " + entry.getValue());
@@ -120,8 +120,13 @@ public abstract class RmiObjectProxy<T> implements ObjectProxy<T> {
                         }
                     }
                 }
-                semaphore.release();
                 throw new RemoteException("There was an error with worker "+ "["+ regEntityName.getIP() + "].");
+            }
+            finally {
+                boolean acquired = semaphore.tryAcquire();
+                if (!acquired) {
+                    semaphore.release();
+                }
             }
         }
         return remoteObject;
