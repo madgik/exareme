@@ -77,20 +77,6 @@
             "valueNotBlank": false,
             "valueMultiple": false,
             "valueType": "string"
-        },
-        {
-            "name": "no_intercept",
-            "desc": "Boolean flag for having no intercept by default.",
-            "type": "other",
-            "value": "false",
-            "defaultValue": "false",
-            "valueNotBlank": false,
-            "valueMultiple": false,
-            "valueType": "string",
-            "valueEnumerations": [
-                "true",
-                "false"
-            ]
         }
     ]
 }

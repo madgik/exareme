@@ -2,7 +2,6 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-import json
 import sys
 from argparse import ArgumentParser
 from os import path
@@ -42,8 +41,6 @@ def main():
     parser.add_argument('-y', required=True, help='Variable names in y, comma separated.')
     parser.add_argument('-dataset', required=True)
     parser.add_argument('-formula', required=True, help='A string holding a patsy formula.')
-    parser.add_argument('-no_intercept', required=True,
-                        help='A boolean signaling a no-intercept-by-default behaviour.')
     # Exareme arguments
     parser.add_argument('-cur_state_pkl', required=True,
                         help='Path to the pickle file holding the current state.')
@@ -64,7 +61,6 @@ def main():
     dataset = args.dataset
     formula = args.formula
     formula = formula.replace('_', '~')  # TODO Fix tilda problem and remove
-    no_intercept = json.loads(args.no_intercept)
 
     cur_state_pkl = args.cur_state_pkl
     input_local_DB = args.input_local_DB
@@ -82,7 +78,7 @@ def main():
                               metadata_table=metadata_table,
                               metadata_code_column=metadata_code_column,
                               metadata_isCategorical_column=metadata_isCategorical_column,
-                              no_intercept=no_intercept,
+                              no_intercept=False,
                               coding=None)
     if len(Y.columns) != 2:
         raise ExaremeError('Variable must contain only two categories.')
