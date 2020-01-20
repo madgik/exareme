@@ -23,6 +23,7 @@ public class ComposerConstants {
     public static final String csvDBTableDataKey = "data_table";
     public static final String csvDBTableMetadataKey = "metadata_table";
     public static final String csvDBTableMetadataColumnCodeKey = "metadata_code_column";
+    public static final String csvDBTableMetadataColumnLabelKey = "metadata_label_column";
     public static final String csvDBTableMetadataColumnSqlTypeKey = "metadata_sqlType_column";
     public static final String csvDBTableMetadataColumnIsCategoricalKey = "metadata_isCategorical_column";
     public static final String csvDBTableMetadataColumnEnumerationsKey = "metadata_enumerations_column";
