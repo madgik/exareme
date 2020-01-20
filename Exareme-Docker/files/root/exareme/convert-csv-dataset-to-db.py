@@ -76,17 +76,17 @@ def addGroupVariablesToList(groupMetadata, metadataList):
                     enumerations.append(unicode(enumeration['code']))
                 variableDictionary['enumerations'] = ','.join(enumerations)
             else:
-                variableDictionary['enumerations'] = 'null'
+                variableDictionary['enumerations'] = None
             
             if 'min' in variable:
                 variableDictionary['min'] = variable['min']
             else:
-                variableDictionary['min'] = 'null'
+                variableDictionary['min'] = None
             
             if 'max' in variable:
                 variableDictionary['max'] = variable['max']
             else:
-                variableDictionary['max'] = 'null'
+                variableDictionary['max'] = None
             
             metadataList.append(variableDictionary)
             
@@ -123,20 +123,24 @@ def addMetadataInTheDatabase(CDEsMetadataPath, cur):
         insertVariableQuery += "'" + variable['code'] + "'"
         insertVariableQuery += ", '" + variable['label'] + "'"
         insertVariableQuery += ", '" + variable['sql_type'] + "'"
-        insertVariableQuery += ", " + variable['isCategorical']
-        if variable['enumerations'] == '':
-            insertVariableQuery += ", null"
-        else:
+        insertVariableQuery += ", " + variable['isCategorical']    
+        if variable['enumerations'] :
             insertVariableQuery += ", '" + variable['enumerations'] + "'"
-        if variable['min'] == 'null':
-            insertVariableQuery += ", null"
         else:
+            insertVariableQuery += ", NULL"
+            
+        if variable['min'] :
             insertVariableQuery += ", '" + variable['min'] + "'"
-        if variable['max'] == 'null':
-            insertVariableQuery += ", null"
         else:
+            insertVariableQuery += ", NULL"
+            
+        if variable['max'] :
             insertVariableQuery += ", '" + variable['max'] + "'"
+        else:
+            insertVariableQuery += ", NULL" 
+        
         insertVariableQuery += ");"
+        
         try:
             cur.execute(insertVariableQuery)
         except sqlite3.IntegrityError:
