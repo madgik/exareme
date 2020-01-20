@@ -18,7 +18,7 @@
 			"name": "testvalue",
 			"desc": "A number specifying the value of the null hypothesis",
 			"type": "other",
-			"value": "3.0",
+			"value": "0.0",
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "real"
@@ -31,36 +31,6 @@
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "string"
-		}, {
-			"name": "effectsize",
-			"desc": "1 or 0, provide Cohen's d effect sizes",
-			"type": "other",
-			"value": "1",
-			"valueMin": 0,
-			"valueMax": 1,
-			"valueNotBlank": true,
-			"valueMultiple": false,
-			"valueType": "integer"
-		}, {
-			"name": "ci",
-			"desc": "1 or 0, provide confidence intervals for the mean difference",
-			"type": "other",
-			"value": "1",
-			"valueMin": 0,
-			"valueMax": 1,
-			"valueNotBlank": true,
-			"valueMultiple": false,
-			"valueType": "integer"
-		}, {
-			"name": "meandiff",
-			"desc": "1 or 0, provide means and standard deviations ",
-			"type": "other",
-			"value": "1",
-			"valueMin": 0,
-			"valueMax": 1,
-			"valueNotBlank": true,
-			"valueMultiple": false,
-			"valueType": "integer"
 		}, {
 			"name": "pathology",
 			"desc": "The name of the pathology in which the dataset belongs to.",

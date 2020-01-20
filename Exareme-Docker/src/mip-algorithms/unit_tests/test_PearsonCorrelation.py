@@ -6,7 +6,7 @@ import requests
 
 # Required datasets: adni_9rows, adni, data_pr1, desd-synthdata
 
-endpointUrl = 'http://localhost:9090/mining/query/PEARSON_CORRELATION'
+endpointUrl = 'http://88.197.53.34:9090/mining/query/PEARSON_CORRELATION'
 
 
 def test_PearsonCorrlation_MIP_AlgoTesting_1():
