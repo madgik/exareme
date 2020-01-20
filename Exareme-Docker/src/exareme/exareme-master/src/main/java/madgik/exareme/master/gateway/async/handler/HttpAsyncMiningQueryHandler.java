@@ -152,6 +152,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                     entity.setContent(new ByteArrayInputStream(result.getBytes()));
                     response.setStatusCode(HttpStatus.SC_BAD_REQUEST);
                     response.setEntity(entity);
+                    return;
                 }
                 catch (Exception e){
                     String data = "Can not contact Consul key value Store.Please inform your system admin.";
