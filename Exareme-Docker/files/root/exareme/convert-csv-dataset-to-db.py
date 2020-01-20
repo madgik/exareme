@@ -54,31 +54,42 @@ def addGroupVariablesToList(groupMetadata, metadataList):
         for variable in groupMetadata['variables']:
             variableDictionary = {}
             variableDictionary['code'] = variable['code']
+            
+            if 'label' not in variable:
+                raise ValueError('The variable "' + variable['code'] + '" does not contain the label field in the metadata.')
+            variableDictionary['label'] = variable['label']
+            
             if 'sql_type' not in variable:
                 raise ValueError('The variable "' + variable['code'] + '" does not contain the sql_type field in the metadata.')
             variableDictionary['sql_type'] = variable['sql_type']
+            
             if 'isCategorical' not in variable:
                 raise ValueError('The variable "' + variable['code'] + '" does not contain the isCategorical field in the metadata.')
             variableDictionary['isCategorical'] = '1' if variable['isCategorical'] else '0'
+            
             if variable['isCategorical'] and 'enumerations' not in variable:
                 raise ValueError('The variable "' + variable['code'] + '" does not contain enumerations even though it is categorical.')
+            
             if 'enumerations' in variable: 
                 enumerations = []
                 for enumeration in variable['enumerations']:
                     enumerations.append(unicode(enumeration['code']))
                 variableDictionary['enumerations'] = ','.join(enumerations)
-
             else:
                 variableDictionary['enumerations'] = 'null'
+            
             if 'min' in variable:
                 variableDictionary['min'] = variable['min']
             else:
                 variableDictionary['min'] = 'null'
+            
             if 'max' in variable:
                 variableDictionary['max'] = variable['max']
             else:
                 variableDictionary['max'] = 'null'
+            
             metadataList.append(variableDictionary)
+            
     if 'groups' in groupMetadata:
         for group in groupMetadata['groups']:
             metadataList = addGroupVariablesToList(group,
@@ -93,6 +104,7 @@ def addMetadataInTheDatabase(CDEsMetadataPath, cur):
     # Create the query for the metadata table
     createMetadataTableQuery = 'CREATE TABLE METADATA('
     createMetadataTableQuery += ' code TEXT PRIMARY KEY ASC CHECK (TYPEOF(code) = "text")'
+    createMetadataTableQuery += ', label TEXT CHECK (TYPEOF(label) = "text")'
     createMetadataTableQuery += ', sql_type TEXT CHECK (TYPEOF(sql_type) = "text")'
     createMetadataTableQuery += ', isCategorical INTEGER CHECK (TYPEOF(isCategorical) = "integer")'
     createMetadataTableQuery += ', enumerations TEXT CHECK (TYPEOF(enumerations) = "text" OR TYPEOF(enumerations) = "null")'
@@ -104,11 +116,12 @@ def addMetadataInTheDatabase(CDEsMetadataPath, cur):
     cur.execute(createMetadataTableQuery)
 
     # Add data to the metadata table
-    columnsQuery = 'INSERT INTO METADATA (code, sql_type, isCategorical, enumerations, min, max) VALUES ('
+    columnsQuery = 'INSERT INTO METADATA (code, label, sql_type, isCategorical, enumerations, min, max) VALUES ('
 
     for variable in metadataList:
         insertVariableQuery = columnsQuery
         insertVariableQuery += "'" + variable['code'] + "'"
+        insertVariableQuery += ", '" + variable['label'] + "'"
         insertVariableQuery += ", '" + variable['sql_type'] + "'"
         insertVariableQuery += ", " + variable['isCategorical']
         if variable['enumerations'] == '':
