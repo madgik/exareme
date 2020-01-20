@@ -269,7 +269,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             entity.setContent(new ByteArrayInputStream(result.getBytes()));
             response.setStatusCode(HttpStatus.SC_BAD_REQUEST);
             response.setEntity(entity);
-        } catch (DatasetsException | IOException e) {
+        } catch (PathologyException | DatasetsException | IOException e) {
             log.error(e.getMessage());
             String data = e.getMessage();
             String type = user_error;        //type could be error, user_error, warning regarding the error occured along the process
@@ -503,7 +503,11 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 HashMap<String, String[]> nodeDatasets;
                 try {
                     nodeDatasets = getDatasetsFromConsul(pathology);
-                } catch (Exception e) {
+                }
+                catch (PathologyException e) {
+                    throw new PathologyException(e.getMessage());
+                }
+                catch (Exception e) {
                     throw new Exception("Can not contact Consul key value store. Please inform your system admin.");
                 }
                 for (Map.Entry<String, String[]> entry : nodeDatasets.entrySet()) {
@@ -571,7 +575,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                 log.error("Caught an error:"+e.getMessage());
 		        response.close();
 		        throw new IOException(e.getMessage());
-            } 
+            }
 	        result = EntityUtils.toString(response.getEntity());
         }
         if (httpGet.toString().contains(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/")) {    //if we can not contact : http://exareme-keystore:8500/v1/kv/active_workers*
