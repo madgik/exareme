@@ -45,8 +45,7 @@ def createMetadataList(CDEsMetadataPath):
     metadataJSON = json.load(CDEsMetadata)
 
     metadataList = []
-    metadataList = addGroupVariablesToList(metadataJSON,
-            metadataList)
+    metadataList = addGroupVariablesToList(metadataJSON, metadataList)
     return metadataList
 
 
@@ -93,37 +92,54 @@ def addMetadataInTheDatabase(CDEsMetadataPath, cur):
 
     # Create the query for the metadata table
     createMetadataTableQuery = 'CREATE TABLE METADATA('
-    createMetadataTableQuery += ' code TEXT PRIMARY KEY ASC'
-    createMetadataTableQuery += ', sql_type TEXT'
-    createMetadataTableQuery += ', isCategorical INTEGER'
-    createMetadataTableQuery += ', enumerations TEXT'
-    createMetadataTableQuery += ', min INTEGER'
-    createMetadataTableQuery += ', max INTEGER)'
+    createMetadataTableQuery += ' code TEXT PRIMARY KEY ASC CHECK (TYPEOF(code) = "text")'
+    createMetadataTableQuery += ', sql_type TEXT CHECK (TYPEOF(sql_type) = "text")'
+    createMetadataTableQuery += ', isCategorical INTEGER CHECK (TYPEOF(isCategorical) = "integer")'
+    createMetadataTableQuery += ', enumerations TEXT CHECK (TYPEOF(enumerations) = "text" OR TYPEOF(enumerations) = "null")'
+    createMetadataTableQuery += ', min INTEGER CHECK (TYPEOF(min) = "integer" OR TYPEOF(min) = "null")'
+    createMetadataTableQuery += ', max INTEGER CHECK (TYPEOF(max) = "integer" OR TYPEOF(max) = "null"))'
 
     # Create the metadata table
     cur.execute('DROP TABLE IF EXISTS METADATA')
     cur.execute(createMetadataTableQuery)
 
-    # Add data to the metadata table        TODO
+    # Add data to the metadata table
     columnsQuery = 'INSERT INTO METADATA (code, sql_type, isCategorical, enumerations, min, max) VALUES ('
 
     for variable in metadataList:
         insertVariableQuery = columnsQuery
         insertVariableQuery += "'" + variable['code'] + "'"
         insertVariableQuery += ", '" + variable['sql_type'] + "'"
-        insertVariableQuery += ", '" + variable['isCategorical'] + "'"
-        insertVariableQuery += ", '" + variable['enumerations'] + "'"
-        insertVariableQuery += ", '" + variable['min'] + "'"
-        insertVariableQuery += ", '" + variable['max'] + "'"
+        insertVariableQuery += ", " + variable['isCategorical']
+        if variable['enumerations'] == '':
+            insertVariableQuery += ", null"
+        else:
+            insertVariableQuery += ", '" + variable['enumerations'] + "'"
+        if variable['min'] == 'null':
+            insertVariableQuery += ", null"
+        else:
+            insertVariableQuery += ", '" + variable['min'] + "'"
+        if variable['max'] == 'null':
+            insertVariableQuery += ", null"
+        else:
+            insertVariableQuery += ", '" + variable['max'] + "'"
         insertVariableQuery += ");"
-        cur.execute(insertVariableQuery)
-
+        try:
+            cur.execute(insertVariableQuery)
+        except sqlite3.IntegrityError:
+            raise ValueError ('Failed to execute query: ' + insertVariableQuery + '  , due to database constraints.')
+            
 
 def createDataTable(metadataDictionary, cur):
     # Create the query for the sqlite data table
     createDataTableQuery = 'CREATE TABLE DATA('
     for column in metadataDictionary:
-        createDataTableQuery += column + ' ' + metadataDictionary[column] + ', '
+        if metadataDictionary[column] in ['INT','int','Int']:
+            createDataTableQuery += column + ' ' + metadataDictionary[column] + ' CHECK (TYPEOF(' + column + ') = "integer" OR TYPEOF(' + column + ') = "null"), '
+        elif metadataDictionary[column] in ['REAL','real','Real']:
+            createDataTableQuery += column + ' ' + metadataDictionary[column] + ' CHECK (TYPEOF(' + column + ') = "real" OR TYPEOF(' + column + ') = "integer" OR TYPEOF(' + column + ') = "null"), '
+        elif metadataDictionary[column] in ['TEXT','text','Text']:
+            createDataTableQuery += column + ' ' + metadataDictionary[column] + ' CHECK (TYPEOF(' + column + ') = "text" OR TYPEOF(' + column + ') = "null"), '
     # Remove the last comma
     createDataTableQuery = createDataTableQuery[:-2]
     createDataTableQuery += ')'
@@ -164,7 +180,35 @@ def addCSVInTheDataTable(csvFilePath, metadataDictionary, cur):
         try:
             cur.execute(insertRowQuery)
         except:
+            findErrorOnSqlQuery(cur, row, csvHeader, metadataDictionary, csvFilePath)
             raise ValueError('Row: ' + str(row) + ', Query: ' + str(insertRowQuery) + ', could not be inserted in the database.')
+
+
+def findErrorOnSqlQuery(cur, row, csvHeader, metadataDictionary, csvFilePath):
+
+    # Insert the code column into the database and then update it for each row to find where the problem is
+    firstRow = True
+
+    for (value, column) in zip(row, csvHeader):
+        if firstRow:
+            firstRow = False
+            code = value
+            insertQuery = "INSERT INTO DATA (subjectcode) VALUES ('" + value + "');"
+            cur.execute(insertQuery)
+            continue;
+        
+        if metadataDictionary[column] == 'text':
+            updateQuery = "UPDATE DATA SET " + column + " = '" + value + "' WHERE subjectcode = '" + code + "';";
+        elif value == '':
+            updateQuery = "UPDATE DATA SET " + column + " = null WHERE subjectcode = '" + code + "';";
+        else:
+            updateQuery = "UPDATE DATA SET " + column + " = " + value + " WHERE subjectcode = '" + code + "';";
+
+        try:
+            cur.execute(updateQuery)
+        except:
+            raise ValueError("Error inserting into the database. Could not insert value: '" + value + "', into column: '" + column + "', at row with subjectcode: " + code + ", while inserting csv: " + csvFilePath)
+
 
 
 def main():
@@ -196,7 +240,6 @@ def main():
         
         # Add the metadata table + rows
         addMetadataInTheDatabase(CDEsMetadataPath, cur)
-        
         
         # Transform the metadata json into a column name -> column type list
         metadataDictionary = createMetadataDictionary(CDEsMetadataPath)
