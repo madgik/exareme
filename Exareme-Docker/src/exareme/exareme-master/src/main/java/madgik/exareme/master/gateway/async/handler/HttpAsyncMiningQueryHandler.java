@@ -142,7 +142,18 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             if (pathology != null) {
                 try {
                     nodeDatasets = getDatasetsFromConsul(pathology);
-                } catch (Exception e){
+                }
+                catch (PathologyException e) {
+                    log.error(e.getMessage());
+                    String data = e.getMessage();
+                    String type = user_error;        //type could be error, user_error, warning regarding the error occured along the process
+                    String result = defaultOutputFormat(data, type);
+                    BasicHttpEntity entity = new BasicHttpEntity();
+                    entity.setContent(new ByteArrayInputStream(result.getBytes()));
+                    response.setStatusCode(HttpStatus.SC_BAD_REQUEST);
+                    response.setEntity(entity);
+                }
+                catch (Exception e){
                     String data = "Can not contact Consul key value Store.Please inform your system admin.";
                     String type = error;        //type could be error, user_error, warning regarding the error occured along the process
                     String result = defaultOutputFormat(data, type);
@@ -257,7 +268,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             entity.setContent(new ByteArrayInputStream(result.getBytes()));
             response.setStatusCode(HttpStatus.SC_BAD_REQUEST);
             response.setEntity(entity);
-        } catch (PathologyException | DatasetsException | IOException e) {
+        } catch (DatasetsException | IOException e) {
             log.error(e.getMessage());
             String data = e.getMessage();
             String type = user_error;        //type could be error, user_error, warning regarding the error occured along the process
@@ -573,11 +584,11 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                         result = EntityUtils.toString(response.getEntity());
                     }
                 }
-                catch (Exception e){
+            catch (Exception e){
                 log.debug("Caught an error:"+e.getMessage());
                 response.close();
                 throw new IOException(e.getMessage());
-                }
+            }
         }
         return result;
     }
