@@ -1,5 +1,6 @@
 from __future__ import division
 from __future__ import print_function
+from __future__ import unicode_literals
 
 import sys
 from os import path
@@ -21,9 +22,9 @@ def logregr_global_final(global_state, global_in):
     n_obs = global_state['n_obs']
     n_cols = global_state['n_cols']
     coeff = global_state['coeff']
-    y_val_dict = global_state['y_val_dict']
-    schema_X = global_state['schema_X']
-    schema_Y = global_state['schema_Y']
+    y_name = global_state['y_name']
+    x_names = global_state['x_names']
+    # y_val_dict = global_state['y_val_dict']
     # Unpack global input
     ll, grad, hess, y_sum, y_sqsum, ssres, posneg, FP_rate_frac, TP_rate_frac = global_in.get_data()
 
@@ -84,7 +85,7 @@ def logregr_global_final(global_state, global_in):
     raw_data = {
         'Covariates'                 : [
             {
-                'Variable'   : schema_X[i],
+                'Variable'   : x_names[i],
                 'Coefficient': coeff[i],
                 'std.err.'   : stderr[i],
                 'z score'    : z_scores[i],
@@ -92,7 +93,7 @@ def logregr_global_final(global_state, global_in):
                 'Lower C.I.' : lci[i],
                 'Upper C.I.' : rci[i]
             }
-            for i in range(len(schema_X))
+            for i in range(len(x_names))
         ],
         'Model degrees of freedom'   : df_mod,
         'Residual degrees of freedom': df_resid,
@@ -109,16 +110,15 @@ def logregr_global_final(global_state, global_in):
         'Precision'                  : precision,
         'Recall'                     : recall,
         'F1 score'                   : F1,
-        # 'ROC coordinates'            : list(zip(FP_rate, TP_rate)),
         'AUC'                        : AUC,
         'Gini coefficient'           : gini,
         'F statistic'                : F_stat
     }
     # Tabular summary 1
     tabular_data_summary1 = [["variable", "coefficient", "std.err.", "z-score", "p-value", "lower c.i.", "upper c.i."]]
-    for i in range(len(schema_X)):
+    for i in range(len(x_names)):
         tabular_data_summary1.append([
-            schema_X[i],
+            x_names[i],
             coeff[i],
             stderr[i],
             z_scores[i],
@@ -195,67 +195,67 @@ def logregr_global_final(global_state, global_in):
         }
     }
     # Highchart confusion matrix
-    highchart_conf_matr = {
-
-        "chart"    : {
-            "type": "heatmap",
-
-        },
-        "title"    : {
-            "useHTML": True,
-            "text"   : "Confusion Matrix<br/><center><font size='2'>Binary categories:<br/>" +
-                       " ".join([key + ' :' + str(y_val_dict[key]) for key in list(y_val_dict.keys())]) +
-                       "</font></center>"
-        },
-        "xAxis"    : {
-            "categories": ["Condition Positives", "Condition Negatives"]
-        },
-        "yAxis"    : {
-            "categories": ["Prediction Negatives", "Prediction Positives"],
-            "title"     : "null"
-        },
-        "colorAxis": {
-            "min"     : 0,
-            "minColor": "#FFFFFF",
-            "maxColor": "#6699ff"
-        },
-        "legend"   : {
-            "enabled": False,
-        },
-        "tooltip"  : {
-            "enabled": False
-        },
-        "series"   : [{
-            "dataLabels" : [{
-                "format" : '{point.name}: {point.value}',
-                "enabled": True,
-                "color"  : '#333333'
-            }],
-            "name"       : 'Confusion Matrix',
-            "borderWidth": 1,
-            "data"       : [{
-                "name" : 'True Positives',
-                "x"    : 0,
-                "y"    : 1,
-                "value": TP
-            }, {
-                "name" : 'False Positives',
-                "x"    : 1,
-                "y"    : 1,
-                "value": FP
-            }, {
-                "name" : 'False Negatives',
-                "x"    : 0,
-                "y"    : 0,
-                "value": FN
-            }, {
-                "name" : 'True Negatives',
-                "x"    : 1,
-                "y"    : 0,
-                "value": TN
-            }]
-        }]
-    }
+    # highchart_conf_matr = {
+    #
+    #     "chart"    : {
+    #         "type": "heatmap",
+    #
+    #     },
+    #     "title"    : {
+    #         "useHTML": True,
+    #         "text"   : "Confusion Matrix<br/><center><font size='2'>Binary categories:<br/>" +
+    #                    " ".join([key + ' :' + str(y_val_dict[key]) for key in list(y_val_dict.keys())]) +
+    #                    "</font></center>"
+    #     },
+    #     "xAxis"    : {
+    #         "categories": ["Condition Positives", "Condition Negatives"]
+    #     },
+    #     "yAxis"    : {
+    #         "categories": ["Prediction Negatives", "Prediction Positives"],
+    #         "title"     : "null"
+    #     },
+    #     "colorAxis": {
+    #         "min"     : 0,
+    #         "minColor": "#FFFFFF",
+    #         "maxColor": "#6699ff"
+    #     },
+    #     "legend"   : {
+    #         "enabled": False,
+    #     },
+    #     "tooltip"  : {
+    #         "enabled": False
+    #     },
+    #     "series"   : [{
+    #         "dataLabels" : [{
+    #             "format" : '{point.name}: {point.value}',
+    #             "enabled": True,
+    #             "color"  : '#333333'
+    #         }],
+    #         "name"       : 'Confusion Matrix',
+    #         "borderWidth": 1,
+    #         "data"       : [{
+    #             "name" : 'True Positives',
+    #             "x"    : 0,
+    #             "y"    : 1,
+    #             "value": TP
+    #         }, {
+    #             "name" : 'False Positives',
+    #             "x"    : 1,
+    #             "y"    : 1,
+    #             "value": FP
+    #         }, {
+    #             "name" : 'False Negatives',
+    #             "x"    : 0,
+    #             "y"    : 0,
+    #             "value": FN
+    #         }, {
+    #             "name" : 'True Negatives',
+    #             "x"    : 1,
+    #             "y"    : 0,
+    #             "value": TN
+    #         }]
+    #     }]
+    # }
 
     # Write output to JSON
     result = {
@@ -299,7 +299,8 @@ def logregr_global_final(global_state, global_in):
             # Highchart confusion matrix
             {
                 "type": "application/vnd.highcharts+json",
-                "data": highchart_conf_matr
+                # "data": highchart_conf_matr
+                "data": None
             }
         ]
     }

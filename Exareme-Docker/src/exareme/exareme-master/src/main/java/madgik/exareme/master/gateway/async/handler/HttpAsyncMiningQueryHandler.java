@@ -302,7 +302,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             pathologyKeyKeysArray = gson.fromJson(pathologyKey, String[].class);
 
             if (pathologyKeyKeysArray != null) {
-                pathologyNodes.add(pathologyKeyKeysArray[0]);                 //Add Workers Pathology
+                pathologyNodes.add(pathologyKeyKeysArray[0]);                 //Add worker Pathology
             }
 
             datasetKey = searchConsul(System.getenv("DATA") + "/" + workerName + "/" + pathology + "?raw");

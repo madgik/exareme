@@ -1,0 +1,90 @@
+{
+    "name": "PCA",
+    "desc": "Returns the eigenvalues and eigenvectors of the covariance matrix on centered data.",
+    "label": "Principal Components analysis",
+    "type": "python_multiple_local_global",
+    "status": "enabled",
+    "parameters": [
+        {
+            "name": "x",
+            "desc": "A list of variables from database. The variable should be Real, Integer. It cannot be empty",
+            "type": "column",
+            "columnValuesSQLType": "real, integer, text",
+            "columnValuesIsCategorical": "",
+            "columnValuesNumOfEnumerations": "",
+            "value": "leftaccumbensarea, leftacgganteriorcingulategyrus, leftainsanteriorinsula, rightaccumbensarea, rightacgganteriorcingulategyrus, rightainsanteriorinsula",
+            "valueNotBlank": true,
+            "valueMultiple": true,
+            "valueType": "string"
+        },
+        {
+            "name": "pathology",
+            "desc": "The name of the pathology that the dataset belongs to.",
+            "type": "pathology",
+            "value": "dementia",
+            "valueNotBlank": true,
+            "valueMultiple": false,
+            "valueType": "string"
+        },
+        {
+            "name": "dataset",
+            "desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty",
+            "type": "dataset",
+            "value": "adni",
+            "valueNotBlank": true,
+            "valueMultiple": true,
+            "valueType": "string"
+        },
+        {
+            "name": "filter",
+            "desc": "",
+            "type": "filter",
+            "value": "",
+            "valueNotBlank": false,
+            "valueMultiple": true,
+            "valueType": "string"
+        },
+        {
+            "name": "formula",
+            "desc": "Patsy formula  (R language syntax).",
+            "type": "other",
+            "value": "leftaccumbensarea + leftacgganteriorcingulategyrus * leftainsanteriorinsula",
+            "defaultValue": "",
+            "valueNotBlank": false,
+            "valueMultiple": false,
+            "valueType": "string"
+        },
+        {
+            "name": "no_intercept",
+            "desc": "Boolean flag for having no intercept by default.",
+            "type": "other",
+            "value": "true",
+            "defaultValue": "false",
+            "valueNotBlank": false,
+            "valueMultiple": false,
+            "valueType": "string",
+            "enumValues": [
+                "true",
+                "false"
+            ]
+        },
+        {
+            "name": "coding",
+            "desc": "Coding method for categorical variables.",
+            "type": "other",
+            "value": "null",
+            "defaultValue": "null",
+            "valueNotBlank": false,
+            "valueMultiple": false,
+            "valueType": "string",
+            "enumValues": [
+                "null",
+                "Treatment",
+                "Diff",
+                "Poly",
+                "Sum",
+                "Helmert"
+            ]
+        }
+    ]
+}

@@ -1,6 +1,7 @@
 {
 	"name": "HISTOGRAMS",
 	"desc": "Creates a histogram plot of x. Bins have a uniform width. Histogram displays the bins as rectangles such that the height of each rectangle indicates the number of elements in the bin.",
+	"label": "Histograms",
 	"type": "multiple_local_global",
 	"parameters": [{
 			"name": "x",

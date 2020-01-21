@@ -1,6 +1,7 @@
 {
 	"name": "PIPELINE_ISOUP_REGRESSION_TREE_SERIALIZER",
 	"desc": "PIPELINE_ISOUP_REGRESSION_TREE_SERIALIZER",
+	"label": "Pipeline Isoup Regression Tree Serializer",
 	"type": "pipeline",
 	"parameters": [{
 			"name": "target_attributes",

@@ -1,33 +1,32 @@
 from __future__ import division
 from __future__ import print_function
+from __future__ import unicode_literals
 
 import sys
-from os import path
 from argparse import ArgumentParser
+from os import path
+
 import numpy as np
 
 sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) + '/utils/')
 sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) +
                 '/LOGISTIC_REGRESSION/')
 
-from algorithm_utils import StateData, ExaremeError
+from algorithm_utils import StateData
 from log_regr_lib import LogRegrInit_Loc2Glob_TD, LogRegrIter_Glob2Loc_TD
 
 
 def logregr_global_init(global_in):
-    n_obs, n_cols, y_val_dict, schema_X, schema_Y = global_in.get_data()
-
-    if n_obs == 0:
-        raise ExaremeError('The selected variables contain 0 datapoints.')
+    n_obs, n_cols, y_name, x_names = global_in.get_data()
 
     # Init vars
     ll = - 2 * n_obs * np.log(2)
     coeff = np.zeros(n_cols)
-    iter = 0
+    iter_ = 0
 
     # Pack state and results
-    global_state = StateData(n_obs=n_obs, n_cols=n_cols, ll=ll, coeff=coeff, iter=iter,
-                             y_val_dict=y_val_dict, schema_X=schema_X, schema_Y=schema_Y)
+    global_state = StateData(n_obs=n_obs, n_cols=n_cols, ll=ll, coeff=coeff, iter_=iter_,
+                             y_name=y_name, x_names=x_names)
     global_out = LogRegrIter_Glob2Loc_TD(coeff)
 
     return global_state, global_out

@@ -11,6 +11,8 @@ Result <- ttestPS(
   data = df_TT,
   pairs = list(list(i1 = 'lefthippocampus', i2 = 'righthippocampus')),
   effectSize = T,
+  ci = T,
+  meanDiff = T,
   hypothesis = 'different'
 )
 Test1Result <- toJSON(Result$ttest$asDF, na="string")

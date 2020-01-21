@@ -1,6 +1,7 @@
 {
     "name": "LOGISTIC_REGRESSION",
     "desc": "Binary Logistic Regression without regularization using Newton-Raphson method",
+    "label": "Logistic Regression",
     "type": "python_iterative",
     "status": "enabled",
     "parameters": [
@@ -8,9 +9,10 @@
             "name": "x",
             "desc": "A list of variables from database. The variable should be Real, Integer. It cannot be empty",
             "type": "column",
-            "columnValuesSQLType": "real, integer",
-            "columnValuesIsCategorical": "false",
-            "value": "leftaccumbensarea, leftacgganteriorcingulategyrus, leftainsanteriorinsula, rightaccumbensarea, rightacgganteriorcingulategyrus, rightainsanteriorinsula",
+            "columnValuesSQLType": "real, integer, text",
+            "columnValuesIsCategorical": "",
+            "columnValuesNumOfEnumerations": "",
+            "value": "alzheimerbroadcategory, lefthippocampus",
             "valueNotBlank": true,
             "valueMultiple": true,
             "valueType": "string"
@@ -21,6 +23,7 @@
             "type": "column",
             "columnValuesSQLType": "text, integer",
             "columnValuesIsCategorical": "true",
+            "columnValuesNumOfEnumerations": "",
             "value": "gender",
             "valueNotBlank": true,
             "valueMultiple": false,
@@ -64,6 +67,16 @@
             "valueType": "integer",
             "valueMin": 1,
             "valueMax": 100
+        },
+        {
+            "name": "formula",
+            "desc": "Patsy formula  (R language syntax).",
+            "type": "other",
+            "value": "gender _ alzheimerbroadcategory * lefthippocampus",
+            "defaultValue": "",
+            "valueNotBlank": false,
+            "valueMultiple": false,
+            "valueType": "string"
         }
     ]
 }

@@ -1,15 +1,14 @@
 {
 	"name": "KMEANS",
 	"desc": "KMEANS_accurate",
+	"label": "k-Means Clustering",
 	"type": "iterative",
-	"status": "enabled",
-	"vtype": "clusterplot",
 	"parameters": [{
 			"name": "y",
 			"desc": "A list of real/integer variables from database.",
 			"type": "column",
 			"columnValuesSQLType": "real,integer",
-			"columnValuesIsCategorical": "",
+			"columnValuesIsCategorical": "false",
 			"columnValuesNumOfEnumerations": "",
 			"value": "lefthippocampus,righthippocampus",
 			"valueNotBlank": true,
@@ -40,8 +39,7 @@
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "real"
-		},
-		{
+		}, {
 			"name": "pathology",
 			"desc": "The name of the pathology in which the dataset belongs to.",
 			"type": "pathology",
@@ -49,8 +47,7 @@
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "string"
-		},
-		{
+		}, {
 			"name": "dataset",
 			"desc": "The names of one or more datasets, in which the algorithm will be executed.",
 			"type": "dataset",
@@ -58,19 +55,17 @@
 			"valueNotBlank": true,
 			"valueMultiple": true,
 			"valueType": "string"
-		},
-		{
+		}, {
 			"name": "iterations_max_number",
 			"desc": "(Optional). Maximum number of iterations",
 			"type": "other",
 			"value": "",
 			"valueMin": 1,
-			"defaultValue" : "1000",
+			"defaultValue": "1000",
 			"valueNotBlank": false,
 			"valueMultiple": false,
 			"valueType": "integer"
-		},
-		{
+		}, {
 			"name": "filter",
 			"desc": "",
 			"type": "filter",

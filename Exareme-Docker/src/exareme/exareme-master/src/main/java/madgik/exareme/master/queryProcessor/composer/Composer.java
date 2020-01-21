@@ -8,15 +8,16 @@ import madgik.exareme.master.engine.iterations.handler.IterationsConstants;
 import madgik.exareme.master.engine.iterations.handler.IterationsHandlerDFLUtils;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.master.queryProcessor.composer.Exceptions.ComposerException;
+import madgik.exareme.utils.association.Pair;
 import madgik.exareme.utils.file.FileUtil;
-import madgik.exareme.worker.art.registry.ArtRegistryLocator;
+import madgik.exareme.utils.properties.AdpProperties;
+import madgik.exareme.utils.properties.GenericProperties;
 import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -118,27 +119,6 @@ public class Composer {
 
     /**
      * Composes the DFL script for the given algorithm properties and query.
-     *
-     * @param qKey                the query key, or in general a key for the algorithm
-     * @param algorithmProperties the algorithm properties instance
-     * @return the generated DFL script
-     * @throws ComposerException If the algorithm type or the iterative algorithm phase isn't
-     *                           supported or finally, if this method could not retrieve
-     *                           ContainerProxies.
-     */
-    public static String composeDFLScript(String qKey,
-                                          AlgorithmProperties algorithmProperties
-    ) throws ComposerException {
-        try {
-            return composeDFLScript(qKey, algorithmProperties,
-                    ArtRegistryLocator.getArtRegistryProxy() == null ? 0 : ArtRegistryLocator.getArtRegistryProxy().getContainers().length);
-        } catch (RemoteException e) {
-            throw new ComposerException(e.getMessage());
-        }
-    }
-
-    /**
-     * Composes the DFL script for the given algorithm properties and query.
      * It does not create the script for iterative algorithms.
      *
      * @param algorithmKey        the algorithm key, or in general a key for the algorithm
@@ -173,38 +153,39 @@ public class Composer {
         String dbQuery = createLocalTableQuery(algorithmProperties);
         // Escaping double quotes for python algorithms because they are needed elsewhere
         String pythonDBQuery = dbQuery.replace("\"", "\\\"");
+        ArrayList<Pair<String, String>> csvDatabaseProperties = getCSVDatabaseProperties();
         String outputGlobalTbl = "output_" + algorithmKey;
 
         // Create the dflScript depending on algorithm type
         String dflScript;
         switch (algorithmProperties.getType()) {
             case local:
-                dflScript = composeLocalAlgorithmsDFLScript(algorithmName, inputLocalDB, dbQuery, outputGlobalTbl,
+                dflScript = composeLocalAlgorithmsDFLScript(algorithmName, inputLocalDB, dbQuery, csvDatabaseProperties, outputGlobalTbl,
                         defaultDBFilePath, algorithmProperties.getParameters());
                 break;
             case local_global:
-                dflScript = composeLocalGlobalAlgorithmsDFLScript(algorithmName, inputLocalDB, dbQuery,
+                dflScript = composeLocalGlobalAlgorithmsDFLScript(algorithmName, inputLocalDB, dbQuery, csvDatabaseProperties,
                         outputGlobalTbl, defaultDBFilePath, algorithmProperties.getParameters());
                 break;
             case multiple_local_global:
-                dflScript = composeMultipleLocalGlobalAlgorithmsDFLScript(algorithmName, inputLocalDB, dbQuery, outputGlobalTbl,
+                dflScript = composeMultipleLocalGlobalAlgorithmsDFLScript(algorithmName, inputLocalDB, dbQuery, csvDatabaseProperties, outputGlobalTbl,
                         defaultDBFilePath, algorithmProperties.getParameters());
                 break;
             case pipeline:
-                dflScript = composePipelineAlgorithmsDFLScript(algorithmName, inputLocalDB, dbQuery, outputGlobalTbl,
+                dflScript = composePipelineAlgorithmsDFLScript(algorithmName, inputLocalDB, dbQuery, csvDatabaseProperties, outputGlobalTbl,
                         defaultDBFilePath, algorithmProperties.getParameters(), numberOfWorkers);
                 break;
             case python_local:
-                dflScript = composePythonLocalAlgorithmsDFLScript(algorithmName, inputLocalDB, pythonDBQuery,
+                dflScript = composePythonLocalAlgorithmsDFLScript(algorithmName, inputLocalDB, pythonDBQuery, csvDatabaseProperties,
                         outputGlobalTbl, algorithmProperties.getParameters());
                 break;
             case python_local_global:
                 dflScript = composePythonLocalGlobalAlgorithmsDFLScript(algorithmName, algorithmKey, inputLocalDB,
-                        pythonDBQuery, outputGlobalTbl, algorithmProperties.getParameters());
+                        pythonDBQuery, csvDatabaseProperties, outputGlobalTbl, algorithmProperties.getParameters());
                 break;
             case python_multiple_local_global:
                 dflScript = composePythonMultipleLocalGlobalAlgorithmsDFLScript(algorithmName, algorithmKey,
-                        inputLocalDB, pythonDBQuery, outputGlobalTbl, algorithmProperties.getParameters());
+                        inputLocalDB, pythonDBQuery, csvDatabaseProperties, outputGlobalTbl, algorithmProperties.getParameters());
                 break;
             case iterative:
                 throw new ComposerException("Iterative Algorithms should not call composeDFLScripts");
@@ -220,18 +201,20 @@ public class Composer {
     /**
      * Returns an exaDFL script for the algorithms of type local
      *
-     * @param algorithmName       the name of the algorithm
-     * @param inputLocalDB        the location of the local database
-     * @param dbQuery             the query to execute on the database
-     * @param outputGlobalTbl     the table where the output is going to be printed
-     * @param defaultDBFileName   the name of the local db that the SQL scripts are going to use
-     * @param algorithmParameters the parameters of the algorithm provided
+     * @param algorithmName         the name of the algorithm
+     * @param inputLocalDB          the location of the local database
+     * @param dbQuery               the query to execute on the database
+     * @param csvDatabaseProperties the csv database properties to construct the sql query
+     * @param outputGlobalTbl       the table where the output is going to be printed
+     * @param defaultDBFileName     the name of the local db that the SQL scripts are going to use
+     * @param algorithmParameters   the parameters of the algorithm provided
      * @return an ExaDFL script that Exareme will use to run the query
      */
     private static String composeLocalAlgorithmsDFLScript(
             String algorithmName,
             String inputLocalDB,
             String dbQuery,
+            ArrayList<Pair<String, String>> csvDatabaseProperties,
             String outputGlobalTbl,
             String defaultDBFileName,
             ParameterProperties[] algorithmParameters
@@ -248,6 +231,9 @@ public class Composer {
         dflScript.append(String.format("'%s:%s' ", ComposerConstants.defaultDBKey, defaultDBFileName));
         dflScript.append(String.format("'%s:%s' ", ComposerConstants.inputLocalDBKey, inputLocalDB));
         dflScript.append(String.format("'%s:%s' ", ComposerConstants.dbQueryKey, dbQuery));
+        for (Pair<String, String> csvDatabaseProperty : csvDatabaseProperties) {
+            dflScript.append(String.format("'%s:%s' ", csvDatabaseProperty.getA(), csvDatabaseProperty.getB()));
+        }
         dflScript.append(String.format("\n  select filetext('%s')\n", localScriptPath));
         dflScript.append(");\n");
 
@@ -257,18 +243,20 @@ public class Composer {
     /**
      * Returns an exaDFL script for the algorithms of type local_global
      *
-     * @param algorithmName       the name of the algorithm
-     * @param inputLocalDB        the query to read from the local table
-     * @param dbQuery             the query to execute on the database
-     * @param outputGlobalTbl     the table where the output is going to be printed
-     * @param defaultDBFileName   the name of the local db that the SQL scripts are going to use
-     * @param algorithmParameters the parameters of the algorithm provided
+     * @param algorithmName         the name of the algorithm
+     * @param inputLocalDB          the query to read from the local table
+     * @param dbQuery               the query to execute on the database
+     * @param csvDatabaseProperties the csv database properties to construct the sql query
+     * @param outputGlobalTbl       the table where the output is going to be printed
+     * @param defaultDBFileName     the name of the local db that the SQL scripts are going to use
+     * @param algorithmParameters   the parameters of the algorithm provided
      * @return an ExaDFL script that Exareme will use to run the query
      */
     private static String composeLocalGlobalAlgorithmsDFLScript(
             String algorithmName,
             String inputLocalDB,
             String dbQuery,
+            ArrayList<Pair<String, String>> csvDatabaseProperties,
             String outputGlobalTbl,
             String defaultDBFileName,
             ParameterProperties[] algorithmParameters
@@ -288,6 +276,9 @@ public class Composer {
         dflScript.append(String.format("'%s:%s' ", ComposerConstants.defaultDBKey, defaultDBFileName));
         dflScript.append(String.format("'%s:%s' ", ComposerConstants.inputLocalDBKey, inputLocalDB));
         dflScript.append(String.format("'%s:%s' ", ComposerConstants.dbQueryKey, dbQuery));
+        for (Pair<String, String> csvDatabaseProperty : csvDatabaseProperties) {
+            dflScript.append(String.format("'%s:%s' ", csvDatabaseProperty.getA(), csvDatabaseProperty.getB()));
+        }
 
         dflScript.append(String.format("\n  select filetext('%s')\n", localScriptPath));
         dflScript.append(");\n");
@@ -314,18 +305,20 @@ public class Composer {
     /**
      * Returns an exaDFL script for the algorithms of type multiple_local_global
      *
-     * @param algorithmName       the name of the algorithm
-     * @param inputLocalDB        the location of the local database
-     * @param dbQuery             the query to execute on the database
-     * @param outputGlobalTbl     the table where the output is going to be printed
-     * @param defaultDBFileName   the name of the local db that the SQL scripts are going to use
-     * @param algorithmParameters the parameters of the algorithm provided
+     * @param algorithmName         the name of the algorithm
+     * @param inputLocalDB          the location of the local database
+     * @param dbQuery               the query to execute on the database
+     * @param csvDatabaseProperties the csv database properties to construct the sql query
+     * @param outputGlobalTbl       the table where the output is going to be printed
+     * @param defaultDBFileName     the name of the local db that the SQL scripts are going to use
+     * @param algorithmParameters   the parameters of the algorithm provided
      * @return an ExaDFL script that Exareme will use to run the query
      */
     private static String composeMultipleLocalGlobalAlgorithmsDFLScript(
             String algorithmName,
             String inputLocalDB,
             String dbQuery,
+            ArrayList<Pair<String, String>> csvDatabaseProperties,
             String outputGlobalTbl,
             String defaultDBFileName,
             ParameterProperties[] algorithmParameters
@@ -363,6 +356,9 @@ public class Composer {
             dflScript.append(String.format("'%s:%s' ", ComposerConstants.defaultDBKey, defaultDBFileName));
             dflScript.append(String.format("'%s:%s' ", ComposerConstants.inputLocalDBKey, inputLocalDB));
             dflScript.append(String.format("'%s:%s' ", ComposerConstants.dbQueryKey, dbQuery));
+            for (Pair<String, String> csvDatabaseProperty : csvDatabaseProperties) {
+                dflScript.append(String.format("'%s:%s' ", csvDatabaseProperty.getA(), csvDatabaseProperty.getB()));
+            }
             if (iteration > 1)
                 dflScript.append(String.format("'%s:%s' ", ComposerConstants.prevOutputGlobalTblKey, prevOutputGlobalTbl));
             dflScript.append(String.format("\n  select filetext('%s')\n", localScriptPath));
@@ -394,19 +390,21 @@ public class Composer {
     /**
      * Returns an exaDFL script for the algorithms of type pipeline
      *
-     * @param algorithmName       the name of the algorithm
-     * @param inputLocalDB        the location of the local database
-     * @param dbQuery             the query to execute on the database
-     * @param outputGlobalTbl     the table where the output is going to be printed
-     * @param defaultDBFileName   the name of the local db that the SQL scripts are going to use
-     * @param algorithmParameters the parameters of the algorithm provided
-     * @param numberOfWorkers     the number of workers that the algorithm is going to run on
+     * @param algorithmName         the name of the algorithm
+     * @param inputLocalDB          the location of the local database
+     * @param dbQuery               the query to execute on the database
+     * @param csvDatabaseProperties the csv database properties to construct the sql query
+     * @param outputGlobalTbl       the table where the output is going to be printed
+     * @param defaultDBFileName     the name of the local db that the SQL scripts are going to use
+     * @param algorithmParameters   the parameters of the algorithm provided
+     * @param numberOfWorkers       the number of workers that the algorithm is going to run on
      * @return an ExaDFL script that Exareme will use to run the query
      */
     private static String composePipelineAlgorithmsDFLScript(
             String algorithmName,
             String inputLocalDB,
             String dbQuery,
+            ArrayList<Pair<String, String>> csvDatabaseProperties,
             String outputGlobalTbl,
             String defaultDBFileName,
             ParameterProperties[] algorithmParameters,
@@ -430,6 +428,9 @@ public class Composer {
         dflScript.append(String.format("'%s:%s' ", ComposerConstants.defaultDBKey, defaultDBFileName));
         dflScript.append(String.format("'%s:%s' ", ComposerConstants.inputLocalDBKey, inputLocalDB));
         dflScript.append(String.format("'%s:%s' ", ComposerConstants.dbQueryKey, dbQuery));
+        for (Pair<String, String> csvDatabaseProperty : csvDatabaseProperties) {
+            dflScript.append(String.format("'%s:%s' ", csvDatabaseProperty.getA(), csvDatabaseProperty.getB()));
+        }
         dflScript.append(String.format("'%s:%s' ", ComposerConstants.outputGlobalTblKey, outputGlobalTbl));
         dflScript.append(String.format("\n  select filetext('%s')\n", localScriptPath));
         dflScript.append(");\n");
@@ -447,6 +448,9 @@ public class Composer {
             dflScript.append(String.format("'%s:%s' ", ComposerConstants.defaultDBKey, defaultDBFileName));
             dflScript.append(String.format("'%s:%s' ", ComposerConstants.inputLocalDBKey, inputLocalDB));
             dflScript.append(String.format("'%s:%s' ", ComposerConstants.dbQueryKey, dbQuery));
+            for (Pair<String, String> csvDatabaseProperty : csvDatabaseProperties) {
+                dflScript.append(String.format("'%s:%s' ", csvDatabaseProperty.getA(), csvDatabaseProperty.getB()));
+            }
             dflScript.append(String.format("'%s:%s' ", ComposerConstants.outputGlobalTblKey, outputGlobalTbl));
             dflScript.append(String.format("'%s:%s' ", ComposerConstants.prevOutputLocalTblKey, prevOutputLocalTbl));
             dflScript.append(String.format("\n  select filetext('%s')\n", localUpdateScriptPath));
@@ -463,6 +467,9 @@ public class Composer {
         dflScript.append(String.format("'%s:%s' ", ComposerConstants.defaultDBKey, defaultDBFileName));
         dflScript.append(String.format("'%s:%s' ", ComposerConstants.inputLocalDBKey, inputLocalDB));
         dflScript.append(String.format("'%s:%s' ", ComposerConstants.dbQueryKey, dbQuery));
+        for (Pair<String, String> csvDatabaseProperty : csvDatabaseProperties) {
+            dflScript.append(String.format("'%s:%s' ", csvDatabaseProperty.getA(), csvDatabaseProperty.getB()));
+        }
         dflScript.append(String.format("'%s:%s' ", ComposerConstants.outputGlobalTblKey, outputGlobalTbl));
         dflScript.append(String.format("'%s:%s' ", ComposerConstants.prevOutputLocalTblKey, prevOutputLocalTbl));
         dflScript.append(String.format("\n  select filetext('%s')\n", globalScriptPath));
@@ -494,6 +501,7 @@ public class Composer {
         String defaultDBFileName = HBPConstants.DEMO_DB_WORKING_DIRECTORY + dbIdentifier + "_defaultDB.db";
         String inputLocalDB = getDataPath(algorithmProperties);
         String dbQuery = createLocalTableQuery(algorithmProperties);
+        ArrayList<Pair<String, String>> csvDatabaseProperties = getCSVDatabaseProperties();
         ParameterProperties[] algorithmParameters = algorithmProperties.getParameters();
 
         StringBuilder dflScript = new StringBuilder();
@@ -515,6 +523,9 @@ public class Composer {
             dflScript.append(String.format("'%s:%s' ", ComposerConstants.defaultDBKey, defaultDBFileName));
             dflScript.append(String.format("'%s:%s' ", ComposerConstants.inputLocalDBKey, inputLocalDB));
             dflScript.append(String.format("'%s:%s' ", ComposerConstants.dbQueryKey, dbQuery));
+            for (Pair<String, String> csvDatabaseProperty : csvDatabaseProperties) {
+                dflScript.append(String.format("'%s:%s' ", csvDatabaseProperty.getA(), csvDatabaseProperty.getB()));
+            }
             dflScript.append(String.format("'%s:%s' ", iterationsParameterIterDBKey, iterationsDBName));
             dflScript.append(String.format("\n  select filetext('%s')\n",
                     algorithmFolderPath + "/" + terminationConditionTemplateSQLFilename));
@@ -555,6 +566,9 @@ public class Composer {
             dflScript.append(String.format("'%s:%s' ", ComposerConstants.defaultDBKey, defaultDBFileName));
             dflScript.append(String.format("'%s:%s' ", ComposerConstants.inputLocalDBKey, inputLocalDB));
             dflScript.append(String.format("'%s:%s' ", ComposerConstants.dbQueryKey, dbQuery));
+            for (Pair<String, String> csvDatabaseProperty : csvDatabaseProperties) {
+                dflScript.append(String.format("'%s:%s' ", csvDatabaseProperty.getA(), csvDatabaseProperty.getB()));
+            }
             if (iteration > 1)
                 dflScript.append(String.format("'%s:%s' ", ComposerConstants.prevOutputGlobalTblKey, prevOutputGlobalTbl));
             dflScript.append(String.format("\n  select filetext('%s')\n", localScriptPath));
@@ -590,17 +604,19 @@ public class Composer {
     /**
      * Returns an exaDFL script for the algorithms of type python_local
      *
-     * @param algorithmName       the name of the algorithm
-     * @param inputLocalDB        the location of the local database
-     * @param dbQuery             the query to execute on the database
-     * @param outputGlobalTbl     the name of the output table
-     * @param algorithmParameters the parameters of the algorithm
+     * @param algorithmName         the name of the algorithm
+     * @param inputLocalDB          the location of the local database
+     * @param dbQuery               the query to execute on the database
+     * @param csvDatabaseProperties the csv database properties to construct the sql query
+     * @param outputGlobalTbl       the name of the output table
+     * @param algorithmParameters   the parameters of the algorithm
      * @return
      */
     private static String composePythonLocalAlgorithmsDFLScript(
             String algorithmName,
             String inputLocalDB,
             String dbQuery,
+            ArrayList<Pair<String, String>> csvDatabaseProperties,
             String outputGlobalTbl,
             ParameterProperties[] algorithmParameters
     ) {
@@ -611,10 +627,13 @@ public class Composer {
         dflScript.append("distributed create table " + outputGlobalTbl + " as direct \n");
         dflScript.append("select * from (\n  call_python_script 'python " + localPythonScriptPath + " ");
         for (ParameterProperties parameter : algorithmParameters) {
-            dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue().replaceAll("\"","\\\"")));
+            dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue().replaceAll("\"", "\\\"")));
         }
         dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.inputLocalDBKey, inputLocalDB));
         dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.dbQueryKey, dbQuery));
+        for (Pair<String, String> csvDatabaseProperty : csvDatabaseProperties) {
+            dflScript.append(String.format("-%s \"%s\" ", csvDatabaseProperty.getA(), csvDatabaseProperty.getB()));
+        }
         dflScript.append("'\n);\n");
 
         return dflScript.toString();
@@ -623,12 +642,13 @@ public class Composer {
     /**
      * Returns an exaDFL script for the algorithms of type python_local_global
      *
-     * @param algorithmName       the name of the algorithm
-     * @param algorithmKey        the key of the specific algorithm
-     * @param inputLocalDB        the location of the local database
-     * @param dbQuery             the query to execute on the database
-     * @param outputGlobalTbl     the name of the output table
-     * @param algorithmParameters the parameters of the algorithm
+     * @param algorithmName         the name of the algorithm
+     * @param algorithmKey          the key of the specific algorithm
+     * @param inputLocalDB          the location of the local database
+     * @param dbQuery               the query to execute on the database
+     * @param csvDatabaseProperties the csv database properties to construct the sql query
+     * @param outputGlobalTbl       the name of the output table
+     * @param algorithmParameters   the parameters of the algorithm
      * @return
      */
     private static String composePythonLocalGlobalAlgorithmsDFLScript(
@@ -636,6 +656,7 @@ public class Composer {
             String algorithmKey,
             String inputLocalDB,
             String dbQuery,
+            ArrayList<Pair<String, String>> csvDatabaseProperties,
             String outputGlobalTbl,
             ParameterProperties[] algorithmParameters
     ) {
@@ -648,10 +669,13 @@ public class Composer {
         dflScript.append("distributed create temporary table input_global_tbl to 1 as virtual \n");
         dflScript.append("select * from (\n  call_python_script 'python " + localPythonScriptPath + " ");
         for (ParameterProperties parameter : algorithmParameters) {
-            dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue().replaceAll("\"","\\\"")));
+            dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue().replaceAll("\"", "\\\"")));
         }
         dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.inputLocalDBKey, inputLocalDB));
         dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.dbQueryKey, dbQuery));
+        for (Pair<String, String> csvDatabaseProperty : csvDatabaseProperties) {
+            dflScript.append(String.format("-%s \"%s\" ", csvDatabaseProperty.getA(), csvDatabaseProperty.getB()));
+        }
         dflScript.append("'\n);\n");
 
         // Format global
@@ -660,7 +684,7 @@ public class Composer {
                         outputGlobalTbl));
         dflScript.append("select * from (\n  call_python_script 'python " + globalPythonScriptPath + " ");
         for (ParameterProperties parameter : algorithmParameters) {
-            dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue().replaceAll("\"","\\\"")));
+            dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue().replaceAll("\"", "\\\"")));
         }
         dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.localDBsKey, transferDBFilePath));
         dflScript.append(
@@ -672,12 +696,13 @@ public class Composer {
     /**
      * Returns an exaDFL script for the algorithms of type python_multiple_local_global
      *
-     * @param algorithmName       the name of the algorithm
-     * @param algorithmKey        the key of the specific algorithm
-     * @param inputLocalDB        the location of the local database
-     * @param dbQuery             the query to execute on the database
-     * @param outputGlobalTbl     the name of the output table
-     * @param algorithmParameters the parameters of the algorithm
+     * @param algorithmName         the name of the algorithm
+     * @param algorithmKey          the key of the specific algorithm
+     * @param inputLocalDB          the location of the local database
+     * @param dbQuery               the query to execute on the database
+     * @param csvDatabaseProperties the csv database properties to construct the sql query
+     * @param outputGlobalTbl       the name of the output table
+     * @param algorithmParameters   the parameters of the algorithm
      * @return
      */
     private static String composePythonMultipleLocalGlobalAlgorithmsDFLScript(
@@ -685,6 +710,7 @@ public class Composer {
             String algorithmKey,
             String inputLocalDB,
             String dbQuery,
+            ArrayList<Pair<String, String>> csvDatabaseProperties,
             String outputGlobalTbl,
             ParameterProperties[] algorithmParameters
     ) {
@@ -727,10 +753,13 @@ public class Composer {
                     .format("distributed create temporary table %s to 1 as virtual \n", inputGlobalTbl));
             dflScript.append("select * from (\n  call_python_script 'python " + localScriptPath + " ");
             for (ParameterProperties parameter : algorithmParameters) {
-                dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue().replace("\"","\\\"")));
-}
+                dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue().replace("\"", "\\\"")));
+            }
             dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.inputLocalDBKey, inputLocalDB));
             dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.dbQueryKey, dbQuery));
+            for (Pair<String, String> csvDatabaseProperty : csvDatabaseProperties) {
+                dflScript.append(String.format("-%s \"%s\" ", csvDatabaseProperty.getA(), csvDatabaseProperty.getB()));
+            }
             dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.curStatePKLKey, localStatePKLFile));
             if (iteration > 1) {
                 dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.prevStatePKLKey, prevLocalStatePKLFile));
@@ -753,8 +782,8 @@ public class Composer {
 
             dflScript.append("select * from (\n  call_python_script 'python " + globalScriptPath + " ");
             for (ParameterProperties parameter : algorithmParameters) {
-                dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue().replace("\"","\\\"")));
-}
+                dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue().replace("\"", "\\\"")));
+            }
             dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.localDBsKey, globalTransferDBFilePath));
             dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.curStatePKLKey, globalStatePKLFile));
             if (iteration > 1) {
@@ -789,6 +818,7 @@ public class Composer {
         String dbQuery = createLocalTableQuery(algorithmProperties);
         // Escaping double quotes for python algorithms because they are needed elsewhere
         dbQuery = dbQuery.replace("\"", "\\\"");
+        ArrayList<Pair<String, String>> csvDatabaseProperties = getCSVDatabaseProperties();
         ParameterProperties[] algorithmParameters = algorithmProperties.getParameters();
         String algorithmFolderPath = generateIterativeWorkingDirectoryString(
                 algorithmName, iterativeAlgorithmPhase);
@@ -803,8 +833,8 @@ public class Composer {
             dflScript.append("distributed create table " + outputGlobalTbl + " as direct \n");
             dflScript.append("select * from (\n  call_python_script 'python " + globalScriptPath + " ");
             for (ParameterProperties parameter : algorithmParameters) {
-                dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue().replace("\"","\\\"")));
-}
+                dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue().replace("\"", "\\\"")));
+            }
             dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.prevStatePKLKey, prevGlobalStatePKLFile));
             dflScript.append("'\n);\n");
 
@@ -878,10 +908,13 @@ public class Composer {
                     .format("distributed create temporary table %s to 1 as virtual \n", inputGlobalTbl));
             dflScript.append("select * from (\n  call_python_script 'python " + localScriptPath + " ");
             for (ParameterProperties parameter : algorithmParameters) {
-                dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue().replace("\"","\\\"")));
+                dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue().replace("\"", "\\\"")));
             }
             dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.inputLocalDBKey, inputLocalDB));
             dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.dbQueryKey, dbQuery));
+            for (Pair<String, String> csvDatabaseProperty : csvDatabaseProperties) {
+                dflScript.append(String.format("-%s \"%s\" ", csvDatabaseProperty.getA(), csvDatabaseProperty.getB()));
+            }
             dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.curStatePKLKey, localStatePKLFile));
             if (iteration > 1) {
                 dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.prevStatePKLKey, prevLocalStatePKLFile));
@@ -905,8 +938,8 @@ public class Composer {
 
                 dflScript.append("select * from (\n  call_python_script 'python " + globalScriptPath + " ");
                 for (ParameterProperties parameter : algorithmParameters) {
-                    dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue().replace("\"","\\\"")));
-}
+                    dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue().replace("\"", "\\\"")));
+                }
                 dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.localDBsKey, globalTransferDBFilePath));
                 dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.curStatePKLKey, globalStatePKLFile));
                 dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.prevStatePKLKey, prevGlobalStatePKLFile));
@@ -921,8 +954,8 @@ public class Composer {
 
             dflScript.append("select * from (\n  call_python_script 'python " + globalScriptPath + " ");
             for (ParameterProperties parameter : algorithmParameters) {
-                dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue().replace("\"","\\\"")));
-}
+                dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue().replace("\"", "\\\"")));
+            }
             dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.localDBsKey, globalTransferDBFilePath));
             dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.curStatePKLKey, globalStatePKLFile));
             if (iteration > 1 || !iterativeAlgorithmPhase.equals(init)) {
@@ -945,6 +978,28 @@ public class Composer {
 
     }
     // Utilities --------------------------------------------------------------------------------
+
+    /**
+     * This function is used to gather and return all the properties related to the csv database
+     * like table and column names.
+     *
+     * @return a list of pairs containing parameter names and parameter values to be passed in the algorithms
+     */
+    private static ArrayList<Pair<String, String>> getCSVDatabaseProperties() {
+        GenericProperties properties = AdpProperties.getGatewayProperties();
+
+        ArrayList<Pair<String, String>> csvDBProperties = new ArrayList<Pair<String, String>>();
+        csvDBProperties.add(new Pair<>(ComposerConstants.csvDBTableDataKey, properties.getString("csvDatabase.table.data")));
+        csvDBProperties.add(new Pair<>(ComposerConstants.csvDBTableMetadataKey, properties.getString("csvDatabase.table.metadata")));
+        csvDBProperties.add(new Pair<>(ComposerConstants.csvDBTableMetadataColumnCodeKey, properties.getString("csvDatabase.table.metadata.column.code")));
+        csvDBProperties.add(new Pair<>(ComposerConstants.csvDBTableMetadataColumnSqlTypeKey, properties.getString("csvDatabase.table.metadata.column.sql_type")));
+        csvDBProperties.add(new Pair<>(ComposerConstants.csvDBTableMetadataColumnIsCategoricalKey, properties.getString("csvDatabase.table.metadata.column.isCategorical")));
+        csvDBProperties.add(new Pair<>(ComposerConstants.csvDBTableMetadataColumnEnumerationsKey, properties.getString("csvDatabase.table.metadata.column.enumerations")));
+        csvDBProperties.add(new Pair<>(ComposerConstants.csvDBTableMetadataColumnMinValueKey, properties.getString("csvDatabase.table.metadata.column.minValue")));
+        csvDBProperties.add(new Pair<>(ComposerConstants.csvDBTableMetadataColumnMaxValueKey, properties.getString("csvDatabase.table.metadata.column.maxValue")));
+
+        return csvDBProperties;
+    }
 
     /**
      * Returns the path of the datasets.db file depending on the pathology.

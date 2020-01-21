@@ -75,15 +75,15 @@ def main():
         raise ExaremeError('Field x must be non empty.')
 
     # Get data
-    if args.y == '':
-        args_X = list(args.x.replace(' ', '').split(','))
+    if args.x == '':
+        args_X = list(args.y.replace(' ', '').split(','))
         args_Y = []
-        varNames = "'" + "','".join(list(args.x.replace(' ', '').split(','))) + "'"
+        varNames = "'" + "','".join(list(args.y.replace(' ', '').split(','))) + "'"
     else:
-        args_X = list(args.x.replace(' ', '').split(','))
-        args_Y = list(args.y.replace(' ', '').split(','))
-        varNames = "'" + "','".join(list(args.x.replace(' ', '').split(','))) + "','" + "','".join(
-                        list(args.y.replace(' ', '').split(','))) + "'"
+        args_X = list(args.y.replace(' ', '').split(','))
+        args_Y = list(args.x.replace(' ', '').split(','))
+        varNames = "'" + "','".join(list(args.y.replace(' ', '').split(','))) + "','" + "','".join(
+                        list(args.x.replace(' ', '').split(','))) + "'"
     if args.bins == '':
         args_bins = {}
     else:
