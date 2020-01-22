@@ -3,6 +3,8 @@ attach database '%{defaultDB}' as defaultDB;
 
 --var 'input_global_tbl' 'localcounts';
 ----------------------------------------------------------------------------------------------------------
+var 'PRIVACY_MAGIC_NUMBER' 10 --0.5;
+
 -- Merge local_counts
 drop table if exists defaultDB.globalcounts;
 create table  defaultDB.globalcounts as
@@ -27,17 +29,87 @@ select colname, max(sumofentropies) from (
 var 'distinctvalues' from select group_concat(val) from (select distinct %{y} as val from defaultDB.localinputtblcurrent);
 var 'noofcolumns' from select count(*) from (coltypes select * from defaultdb.localinputtblcurrent);
 
---2. Find new nodes of tree and update global_tree
+
+
 drop table if exists defaultDB.globalnewnodesoftree;
-create table defaultDB.globalnewnodesoftree (no int, colname text, colval text, nextnode int, leafval text);
-insert into  globalnewnodesoftree
-select no, colname, colval, nextnode, leafval
-from ( select distinct colname, val as colval, case when count(*) = 1 then "-" else "?" end as nextnode,  case when count(*) == 1 then classval else "?" end as  leafval
+create table defaultDB.globalnewnodesoftree (no int, colname text, colval text, nextnode int, leafval text, samplesperclass text);
+insert into  defaultDB.globalnewnodesoftree
+select no,colname,colval,
+case when minsampleperclass < %{PRIVACY_MAGIC_NUMBER} then "-" else nextnode end as nextnode,
+case when minsampleperclass < %{PRIVACY_MAGIC_NUMBER} and leafval = "?" then classes else leafval end as leafval,
+samplesperclass
+from
+(
+select no, colname, colval, nextnode, leafval, classes, samplesperclass, minsampleperclass
+from ( select distinct colname, val as colval,
+       case when count(*) == 1 then "-" else "?" end as nextnode,
+       case when count(*) == 1 then classval else "?" end as  leafval
        from defaultDB.globalcounts where colname in (select colname from defaultDB.gain)
        group by colname,val),
-     ( select case when no is null then '1' else cast(max(no)+1 as text)   end as no from defaultdb.globaltree );
+     ( select case when no is null then '1' else cast(max(no)+1 as text)   end as no from defaultDB.globaltree),
+     ( select val as val1,
+       group_concat(classval) as classes,
+       group_concat(classval||case when quantity <%{PRIVACY_MAGIC_NUMBER} then "<%{PRIVACY_MAGIC_NUMBER}" else "="||quantity end) as samplesperclass,
+       min(quantity) as minsampleperclass
+       from defaultDB.globalcounts where colname in (select colname from defaultDB.gain)  group by val)
+        where val1 = colval);
 
-select * from defaultDB.globalnewnodesoftree;
+
+--
+-- --2. Find new nodes of tree and update global_tree
+-- drop table if exists defaultDB.globalnewnodesoftree;
+-- create table defaultDB.globalnewnodesoftree (no int, colname text, colval text, nextnode int, leafval text, samplesperclass text);
+-- insert into  globalnewnodesoftree
+-- select no, colname, colval, nextnode, leafval,1
+-- from ( select distinct colname, val as colval,
+--        case when count(*) = 1 then "-" else "?" end as nextnode,
+--        case when count(*) == 1 then classval else "?" end as  leafval
+--        from defaultDB.globalcounts where colname in (select colname from defaultDB.gain)
+--        group by colname,val),
+--      ( select case when no is null then '1' else cast(max(no)+1 as text)   end as no from defaultdb.globaltree );
+--
+-- select * from defaultDB.globalnewnodesoftree;
+
+
+-- drop table if exists defaultDB.globalnewnodesoftree;
+-- create table defaultDB.globalnewnodesoftree (no int, colname text, colval text, nextnode int, leafval text, samplesperclass text);
+-- insert into  defaultDB.globalnewnodesoftree
+-- select no, colname, colval, nextnode, leafval, samplesperclass
+-- from ( select distinct colname, val as colval,
+--       case when count(*) == 1 then "-" else "?" end as nextnode,
+--       case when count(*) == 1 then classval else "?" end as  leafval
+--       from defaultDB.globalcounts where colname in (select colname from defaultDB.gain)
+--       group by colname,val),
+--     ( select case when no is null then '1' else cast(max(no)+1 as text)   end as no from defaultDB.globaltree),
+--     ( select val as val1, group_concat(classval||"="||quantity) as samplesperclass from defaultDB.globalcounts where colname in (select colname from defaultDB.gain) group by val)
+--     where val1 = colval;
+
+
+--2. Find new nodes of tree and update global_tree
+-- drop table if exists defaultDB.globalnewnodesoftree;
+-- create table defaultDB.globalnewnodesoftree (no int, colname text, colval text, nextnode int, leafval text, samplesperclass text);
+-- insert into  defaultDB.globalnewnodesoftree
+-- select no,colname,colval,
+-- case when minsampleperclass < %{PRIVACY_MAGIC_NUMBER} then "-" else nextnode end as nextnode,
+-- case when minsampleperclass < %{PRIVACY_MAGIC_NUMBER} then classes else nextnode end as leafval,
+-- samplesperclass
+-- from (
+-- select no, colname, colval, nextnode, leafval, classes, samplesperclass, minsampleperclass
+-- from ( select distinct colname, val as colval,
+--        case when count(*) == 1 then "-" else "?" end as nextnode,
+--        case when count(*) == 1 then classval else "?" end as  leafval
+--        from defaultDB.globalcounts where colname in (select colname from defaultDB.gain)
+--        group by colname,val),
+--      ( select case when no is null then '1' else cast(max(no)+1 as text)   end as no from defaultDB.globaltree),
+--      ( select val as val1,
+--        group_concat(classval) as classes,
+--        group_concat(classval||case when quantity <%{PRIVACY_MAGIC_NUMBER} then "<%{PRIVACY_MAGIC_NUMBER}" else "="||quantity end) as samplesperclass,
+--        min(quantity) as minsampleperclass
+--        from defaultDB.globalcounts where colname in (select colname from defaultDB.gain)  group by val)
+--        where val1 = colval);
+
+
+--select * from defaultDB.globalnewnodesoftree;
 
 update defaultDB.globalnewnodesoftree
 set leafval= '%{distinctvalues}' where leafval='?' and %{noofcolumns}=2;

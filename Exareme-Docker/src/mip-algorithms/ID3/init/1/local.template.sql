@@ -1,6 +1,6 @@
 ------------------Input for testing
 ------------------------------------------------------------------------------
--- 
+--
 --
 -- hidden var 'defaultDB' defaultDB_ID3;
 -- hidden var 'input_local_DB''datasets.db';
@@ -31,14 +31,14 @@ attach database '%{defaultDB}' as defaultDB;
 attach database '%{input_local_DB}' as localDB;
 
 --Read dataset
-drop table if exists inputdata;
-create table inputdata as
+drop table if exists defaultDB.inputdata;
+create table defaultDB.inputdata as
 select %{x},%{y} from (%{db_query});
 
 
 drop table if exists defaultDB.algorithmparameters; --used for testing !!!
 create table defaultDB.algorithmparameters (name,val);
-insert into defaultDB.algorithmparameters select 'classname' , '%{clasname}' ;
+insert into defaultDB.algorithmparameters select 'classname' , '%{y}' ;
 insert into defaultDB.algorithmparameters select 'columns' , '%{x}' ;
 insert into defaultDB.algorithmparameters select 'iterations' , 0 ;
 
@@ -48,7 +48,7 @@ var 'nullCondition' from select create_complex_query("","`?` is not null and `?`
 drop table if exists defaultDB.localinputtbl;
 create table defaultDB.localinputtbl as
 select %{castcolumnsandclassname}
-from inputdata where %{nullCondition};
+from  defaultDB.inputdata where %{nullCondition};
 
 var 'privacy' from select privacychecking(no) from (select count(*) as no from defaultDB.localinputtbl);
 
