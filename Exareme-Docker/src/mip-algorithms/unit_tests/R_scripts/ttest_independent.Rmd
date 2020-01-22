@@ -4,7 +4,7 @@ library(jsonlite)
 library(tidyverse)
 library(jmv)
 
-df_TT <- read_csv("../unit_tests/data/dementia/CSVs/desd-synthdata.csv",
+df_TT <- read_csv("../unit_tests/data/dementia/desd-synthdata.csv",
                   col_types = cols(gender = col_factor(levels = c("M", "F"))))
 
 ## Test #1: independent samples T-Test
