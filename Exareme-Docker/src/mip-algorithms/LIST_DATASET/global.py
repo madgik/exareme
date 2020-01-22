@@ -1,12 +1,9 @@
-import sys
 import json
 from os import path
 from argparse import ArgumentParser
 
-sys.path.append(path.dirname(path.dirname(path.abspath(__file__))) + '/utils/')
-
-from algorithm_utils import set_algorithms_output_data
-from list_dataset_lib import ListDatasetLocalDT
+from utils.algorithm_utils import set_algorithms_output_data
+from LIST_DATASET.list_dataset_lib import ListDatasetLocalDT
 
 def main():
     # Parse arguments
