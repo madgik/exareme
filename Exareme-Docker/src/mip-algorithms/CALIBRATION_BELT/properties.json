@@ -1,6 +1,7 @@
 {
     "name": "CALIBRATION_BELT",
     "desc": "Calibration Belt for Quality-of-Care Assessment.",
+    "label": "Calibration Belt",
     "type": "python_iterative",
     "status": "enabled",
     "parameters": [
