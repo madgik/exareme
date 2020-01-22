@@ -1,7 +1,7 @@
 library(tidyverse)
 library(jsonlite)
 
-rawData <- read_csv("../unit_tests/data/dementia/CSVs/desd-synthdata.csv")
+rawData <- read_csv("../unit_tests/data/dementia/desd-synthdata.csv")
 df_ <- rawData %>%
   select(
     gender, alzheimerbroadcategory,
