@@ -388,7 +388,7 @@
 			"code": "Mortality",
 			"label": "Six Month Mortality",
 			"methodology": "creactive",
-			"sql_type": "integer",
+			"sql_type": "int",
 			"type": "integer",
 			"isCategorical": false
 		}
