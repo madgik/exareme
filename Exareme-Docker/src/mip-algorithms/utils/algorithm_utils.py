@@ -403,7 +403,7 @@ def parse_exareme_args(fp):
     for p in params:
         name = '-' + p['name']
         required = p['valueNotBlank']
-        if name not in ['pathology', 'filter']:
+        if name != 'pathology':
             parser.add_argument(name, required=required)
 
     args, unknown = parser.parse_known_args()
