@@ -159,7 +159,10 @@ def query_from_formula(fname_db, formula, variables, dataset, query_filter,
     variables = reduce(lambda a, b: a + b, variables)
 
     # Parse filter if given
-    query_filter_clause = parse_filter(json.loads(query_filter))
+    if query_filter == '':
+        query_filter_clause = ''
+    else:
+        query_filter_clause = parse_filter(json.loads(query_filter))
 
     if no_intercept:
         formula += '-1'
@@ -207,7 +210,6 @@ def query_from_formula(fname_db, formula, variables, dataset, query_filter,
             if c:
                 formula = formula.replace(v, 'C({v}, {coding})'.format(v=v, coding=coding))
     # Pull data from db and return design matrix(-ces)
-    print(data_query(variables, is_categorical))
     data = pd.read_sql_query(sql=data_query(variables, is_categorical), con=conn)
     if '~' in formula:
         lhs_dm, rhs_dm = dmatrices(formula, data, return_type='dataframe')

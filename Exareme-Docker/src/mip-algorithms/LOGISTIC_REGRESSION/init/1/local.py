@@ -40,6 +40,7 @@ def main():
     parser.add_argument('-x', required=True, help='Variable names in x, comma separated.')
     parser.add_argument('-y', required=True, help='Variable names in y, comma separated.')
     parser.add_argument('-dataset', required=True)
+    parser.add_argument('-filter', required=True)
     parser.add_argument('-formula', required=True, help='A string holding a patsy formula.')
     # Exareme arguments
     parser.add_argument('-cur_state_pkl', required=True,
@@ -59,6 +60,7 @@ def main():
     args_y = args.y.strip()
     varibles = ([args_y], args_x)
     dataset = args.dataset
+    query_filter = args.filter
     formula = args.formula
     formula = formula.replace('_', '~')  # TODO Fix tilda problem and remove
 
@@ -74,6 +76,7 @@ def main():
                               formula=formula,
                               variables=varibles,
                               dataset=dataset,
+                              query_filter=query_filter,
                               data_table=data_table,
                               metadata_table=metadata_table,
                               metadata_code_column=metadata_code_column,
