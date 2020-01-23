@@ -412,48 +412,34 @@ def parse_exareme_args(fp):
 
 def main():
     fname_db = '/Users/zazon/madgik/mip_data/dementia/datasets.db'
-    lhs = ['gender']
-    rhs = ['alzheimerbroadcategory', 'lefthippocampus']
+    lhs = ['lefthippocampus']
+    rhs = ['alzheimerbroadcategory']
     variables = (lhs, rhs)
-    formula = 'gender ~ alzheimerbroadcategory + lefthippocampus'
-    # formula = ''
+    # formula = 'gender ~ alzheimerbroadcategory + lefthippocampus'
+    formula = ''
     query_filter = """
     {
-                "condition": "AND",
-                "rules": [
-                    {
-                        "id": "gender",
-                        "field": "gender",
-                        "type": "string",
-                        "input": "text",
-                        "operator": "equal",
-                        "value": "F"
-                    },
-                    {
-                        "condition": "AND",
-                        "rules": [
-                            {
-                                "id": "lefthippocampus",
-                                "field": "lefthippocampus",
-                                "type": "float",
-                                "input": "float",
-                                "operator": "less",
-                                "value": "3"
-                            },
-                            {
-                                "id": "lefthippocampus",
-                                "field": "lefthippocampus",
-                                "type": "float",
-                                "input": "float",
-                                "operator": "greater",
-                                "value": "2"
-                            }
-                        ],
-                        "valid": true
-                    }
-                ],
-                "valid": true
+        "condition":"AND",
+        "rules":[
+            {
+                "id":"alzheimerbroadcategory",
+                "field":"alzheimerbroadcategory",
+                "type":"string",
+                "input":"select",
+                "operator":"not_equal",
+                "value":"Other"
+            },
+            {
+                "id":"alzheimerbroadcategory",
+                "field":"alzheimerbroadcategory",
+                "type":"string",
+                "input":"select",
+                "operator":"not_equal",
+                "value":"CN"
             }
+        ],
+        "valid":true
+    }
     """
     Y, X = query_from_formula(fname_db, formula, variables, data_table='DATA',
                               dataset='adni, ppmi, edsd',

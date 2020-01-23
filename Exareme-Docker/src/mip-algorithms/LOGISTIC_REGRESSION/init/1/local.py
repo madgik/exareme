@@ -83,8 +83,10 @@ def main():
                               metadata_isCategorical_column=metadata_isCategorical_column,
                               no_intercept=False,
                               coding=None)
-    if len(Y.columns) != 2:
-        raise ExaremeError('Variable must contain only two categories.')
+    if len(Y.columns) > 2:
+        raise ExaremeError('Data must contain only two categories. More where given.')
+    elif len(Y.columns) == 1:
+        raise ExaremeError('Data must contain two categories. Only one present.')
     local_in = Y, X
 
     # Run algorithm local step
