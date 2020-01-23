@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 
 import codecs
 import errno
+import json
 import logging
 import os
 import pickle
@@ -103,7 +104,7 @@ def query_with_privacy(fname_db, query):
     return schema, data
 
 
-def query_from_formula(fname_db, formula, variables, dataset,
+def query_from_formula(fname_db, formula, variables, dataset, query_filter,
                        data_table, metadata_table, metadata_code_column,
                        metadata_isCategorical_column,
                        no_intercept=False, coding=None):
@@ -120,6 +121,10 @@ def query_from_formula(fname_db, formula, variables, dataset,
         rhs' is generated.
     variables : tuple of list of strings
         A tuple of the form (`lhs`, `rhs`) or (`rhs`,) where `lhs` and `rhs` are lists of the variable names.
+    dataset : string
+        A string of a list of datasets.
+    query_filter : string
+        TODO
     data_table : string
         The name of the data table in the database.
     metadata_table : string
@@ -153,6 +158,9 @@ def query_from_formula(fname_db, formula, variables, dataset,
         formula = '~'.join(map(lambda x: '+'.join(x), variables))
     variables = reduce(lambda a, b: a + b, variables)
 
+    # Parse filter if given
+    query_filter_clause = parse_filter(json.loads(query_filter))
+
     if no_intercept:
         formula += '-1'
     conn = sqlite3.connect(fname_db)
@@ -165,16 +173,13 @@ def query_from_formula(fname_db, formula, variables, dataset,
                                                                                var=var)
 
     def count_query(varz):
-        return "SELECT COUNT({var}) FROM {data} WHERE ({var_clause}) AND ({ds_clause});".format(
+        return "SELECT COUNT({var}) FROM {data} WHERE ({var_clause}) AND ({ds_clause}) {flt_clause};".format(
                 var=varz[0],
                 data=data_table,
-                var_clause=' AND '.join(
-                        [
-                            "{}!=''".format(
-                                    v)
-                            for v in
-                            varz]),
-                ds_clause=' OR '.join(["dataset=='{d}'".format(d=d) for d in dataset])
+                var_clause=' AND '.join(["{v}!='' and {v} is not null".format(v=v) for v in varz]),
+                ds_clause=' OR '.join(["dataset=='{d}'".format(d=d) for d in dataset]),
+                flt_clause='' if query_filter_clause == '' else 'AND ({flt_clause})'.format(
+                        flt_clause=query_filter_clause)
         )
 
     def data_query(varz, is_cat):
@@ -182,13 +187,13 @@ def query_from_formula(fname_db, formula, variables, dataset,
                 [v if not c else 'CAST({v} AS text) AS {v}'.format(v=v) for v, c in
                  zip(varz, is_cat)]
         )
-        return "SELECT {variables} FROM {data} WHERE ({var_clause}) AND ({ds_clause});".format(
+        return "SELECT {variables} FROM {data} WHERE ({var_clause}) AND ({ds_clause})  {flt_clause};".format(
                 variables=variables_casts,
                 data=data_table,
-                var_clause=' AND '.join(
-                        ["{}!=''".format(v)
-                         for v in varz]),
-                ds_clause=' OR '.join(["dataset=='{d}'".format(d=d) for d in dataset])
+                var_clause=' AND '.join(["{v}!='' and {v} is not null".format(v=v) for v in varz]),
+                ds_clause=' OR '.join(["dataset=='{d}'".format(d=d) for d in dataset]),
+                flt_clause='' if query_filter_clause == '' else 'AND ({flt_clause})'.format(
+                        flt_clause=query_filter_clause)
         )
 
     # Perform privacy check
@@ -202,6 +207,7 @@ def query_from_formula(fname_db, formula, variables, dataset,
             if c:
                 formula = formula.replace(v, 'C({v}, {coding})'.format(v=v, coding=coding))
     # Pull data from db and return design matrix(-ces)
+    print(data_query(variables, is_categorical))
     data = pd.read_sql_query(sql=data_query(variables, is_categorical), con=conn)
     if '~' in formula:
         lhs_dm, rhs_dm = dmatrices(formula, data, return_type='dataframe')
@@ -209,6 +215,46 @@ def query_from_formula(fname_db, formula, variables, dataset,
     else:
         rhs_dm = dmatrix(formula, data, return_type='dataframe')
         return None, rhs_dm
+
+
+def parse_filter(query_filter):
+    _operators = {
+        "equal"      : "=",
+        "not_equal"  : "!=",
+        "less"       : "<",
+        "greater"    : ">",
+        "between"    : "between",
+        "not_between": "not_between"
+    }
+
+    def add_spaces(s):
+        return ' ' + s + ' '
+
+    def format_rule(rule):
+        id_ = rule['id']
+        op = _operators[rule['operator']]
+        val = rule['value']
+        type_ = rule['type']
+        if type_ == 'string':
+            if type(val) == list:
+                val = ["'{v}'".format(v=v) for v in val]
+            else:
+                val = "'{v}'".format(v=val)
+        if op == 'between':
+            return "{id} BETWEEN {val1} AND {val2}".format(id=id_, op=op, val1=val[0], val2=val[1])
+        elif op == 'not_between':
+            return "{id} NOT BETWEEN {val1} AND {val2}".format(id=id_, op=op, val1=val[0], val2=val[1])
+        else:
+            return "{id}{op}{val}".format(id=id_, op=op, val=val)
+
+    def format_group(group):
+        return '({group})'.format(group=group)
+
+    cond = query_filter['condition']
+    rules = query_filter['rules']
+    return add_spaces(cond).join(
+            [format_rule(rule=rule)
+             if 'id' in rule else format_group(group=parse_filter(rule)) for rule in rules])
 
 
 def value_casting(value, type):
@@ -364,17 +410,56 @@ def parse_exareme_args(fp):
 
 def main():
     fname_db = '/Users/zazon/madgik/mip_data/dementia/datasets.db'
-    lhs = ['leftaccumbensarea', 'leftacgganteriorcingulategyrus', 'leftainsanteriorinsula']
-    rhs = ['rightaccumbensarea', 'rightacgganteriorcingulategyrus', 'rightainsanteriorinsula']
+    lhs = ['gender']
+    rhs = ['alzheimerbroadcategory', 'lefthippocampus']
     variables = (lhs, rhs)
-    # formula = 'gender ~ alzheimerbroadcategory * lefthippocampus'
-    formula = ''
+    formula = 'gender ~ alzheimerbroadcategory + lefthippocampus'
+    # formula = ''
+    query_filter = """
+    {
+                "condition": "AND",
+                "rules": [
+                    {
+                        "id": "gender",
+                        "field": "gender",
+                        "type": "string",
+                        "input": "text",
+                        "operator": "equal",
+                        "value": "F"
+                    },
+                    {
+                        "condition": "AND",
+                        "rules": [
+                            {
+                                "id": "lefthippocampus",
+                                "field": "lefthippocampus",
+                                "type": "float",
+                                "input": "float",
+                                "operator": "less",
+                                "value": "3"
+                            },
+                            {
+                                "id": "lefthippocampus",
+                                "field": "lefthippocampus",
+                                "type": "float",
+                                "input": "float",
+                                "operator": "greater",
+                                "value": "2"
+                            }
+                        ],
+                        "valid": true
+                    }
+                ],
+                "valid": true
+            }
+    """
     Y, X = query_from_formula(fname_db, formula, variables, data_table='DATA',
                               dataset='adni, ppmi, edsd',
+                              query_filter=query_filter,
                               metadata_table='METADATA',
                               metadata_code_column='code',
                               metadata_isCategorical_column='isCategorical',
-                              no_intercept=True, coding='Diff')
+                              no_intercept=True, coding=None)
     print(X.shape)
     print(Y.shape)
     print(X.design_info.column_names)
