@@ -137,7 +137,7 @@ class PCAResult(object):
         tabular_data = dict()
         tabular_data["name"] = "Eigenvalues"
         tabular_data["profile"] = "tabular-data-resource"
-        tabular_data["data"] = [self.var_names, self.eigen_vals.tolist()]
+        tabular_data["data"] = [self.eigen_vals.tolist()]
         tabular_data["schema"] = {
             "fields": [{"name": n, "type": "number"} for n in self.var_names]
         }
@@ -147,7 +147,7 @@ class PCAResult(object):
         tabular_data = dict()
         tabular_data["name"] = "Eigenvectors"
         tabular_data["profile"] = "tabular-data-resource"
-        tabular_data["data"] = [self.var_names]
+        tabular_data["data"] = []
         for ei in self.eigen_vecs.T:
             tabular_data["data"].append(ei.tolist())
         tabular_data["schema"] = {
