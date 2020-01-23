@@ -154,7 +154,7 @@ def query_from_formula(fname_db, formula, variables, dataset, query_filter,
     dataset = dataset.replace(' ', '').split(',')
 
     # If no formula is given, generate a trivial one
-    if formula is '':
+    if formula == '':
         formula = '~'.join(map(lambda x: '+'.join(x), variables))
     variables = reduce(lambda a, b: a + b, variables)
 
