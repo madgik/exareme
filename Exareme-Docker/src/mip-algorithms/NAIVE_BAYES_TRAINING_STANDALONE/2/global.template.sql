@@ -117,4 +117,4 @@ end;
 var 'resulthighchartbubble' from  %{q1};
 var 'resulthighchartscatter3d' from %{q2};
 
-select '{"result": ['||'%{resulthighchartbubble}'||','||'%{resulthighchartscatter3d}'||','||'%{resulttable}'||']}';
+select '{"result": ['||'%{resulttable}'||','||'%{resulthighchartbubble}'||','||'%{resulthighchartscatter3d}'||']}';
