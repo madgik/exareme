@@ -370,12 +370,7 @@ class ExaremeError(Exception):
 
 
 def make_json_raw(**kwargs):
-    result_list = []
-    for k, v in kwargs.items():
-        result_list.append({
-            k: v if type(v) != np.ndarray else v.tolist()
-        })
-    return result_list
+    return {k: v if type(v) != np.ndarray else v.tolist() for k, v in kwargs.items()}
 
 
 def parse_exareme_args(fp):

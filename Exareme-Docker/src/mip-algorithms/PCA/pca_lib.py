@@ -155,6 +155,103 @@ class PCAResult(object):
         }
         return tabular_data
 
+    def get_highchart_eigen_scree(self):
+        return {
+                "chart": {
+                    "type": 'line'
+                },
+                "title": {
+                    "text": 'Eigenvalues'
+                },
+                "xAxis": {
+                    "categories": list(range(len(self.eigen_vals))),
+                    "title": {
+                        "text": 'Dimension'
+                    }
+                },
+                "yAxis": {
+                    "title": {
+                        "text": 'Eigenvalue'
+                    }
+                },
+                "plotOptions": {
+                    "line": {
+                        "dataLabels": {
+                            "enabled": True
+                        },
+                        "label": False,
+                        "enableMouseTracking": False
+                    }
+                },
+                "series": [
+                    {
+                        "type": 'column',
+                        "data": [round(ei, 2) for ei in self.eigen_vals]
+                    },
+                    {
+                        "type": 'line',
+                        "data": [round(ei, 2) for ei in self.eigen_vals],
+                        "color": '#0A1E6E'
+                    }
+                ],
+                "legend": {
+                    "enabled": False
+                }
+        }
+
+    def get_bubbles(self):
+        max_elem = max([max([abs(elem) for elem in evec]) for evec in self.eigen_vecs])
+        return {
+                    "chart": {
+                        "type": 'bubble',
+                        "plotBorderWidth": 1,
+                        "zoomType": 'xy'
+                    },
+
+                    "legend": {
+                        "enabled": False
+                    },
+
+                    "title": {
+                        "text": 'Eigenvectors bubble chart'
+                    },
+                    "xAxis": {
+                        "gridLineWidth": 1,
+                        "title": {
+                            "text": 'Dimensions'
+                        },
+                        "tickLength": 500,
+                        "categories": list(range(len(self.eigen_vals)))
+                    },
+
+                    "yAxis": {
+                        "startOnTick": False,
+                        "endOnTick": False,
+                        "title": {
+                            "text": 'Variables'
+                        },
+                        "categories": self.var_names,
+                        "maxPadding": 0.2,
+                    },
+                    "plotOptions": {
+                        "bubble": {
+                            "minSize": 0,
+                            "maxSize": 50
+                        }
+                    },
+
+                    "colorAxis": {
+                        "min": 0,
+                        "max": max_elem
+                    },
+                    "series": [{
+                        "colorKey": 'z',
+                        "data": [{'x': i, 'y': j, 'z': abs(elem)}
+                                     for i, evec in enumerate(self.eigen_vecs)
+                                     for j, elem in enumerate(evec)]
+                    }]
+                }
+
     def get_output(self):
         result = {
             "result": [
@@ -172,6 +269,16 @@ class PCAResult(object):
                 {
                     "type": "application/vnd.dataresource+json",
                     "data": self.get_eigenvec_table()
+                },
+                # Highchart Eigenvalues scree plot
+                {
+                    "type": "application/vnd.highcharts+json",
+                    "data": self.get_highchart_eigen_scree()
+                },
+                # Highchart Eigenvectors bubble plot
+                {
+                    "type": "application/vnd.highcharts+json",
+                    "data": self.get_bubbles()
                 }
             ]
         }
