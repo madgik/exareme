@@ -33,32 +33,29 @@ def highchartsbasiccolumn(title, ytitle, categoriesList, mydatajson):
     }
     return myresult
 
-def histogramToHighchart (Hist):
-
+def histogramToHighchart (Hist, args_X, args_Y):
     myjsonresult  =  { "result" : []}
-    for key in Hist:
-        variableName, covariableName = key
-        #title
-        title = "Histogram of " + variableName
-        if covariableName is not None:
-            title += " grouped by " + covariableName
-        #print title
-        #mydatajson
+    for variableName in args_X: 
+        title ="Histogram of " + variableName
         mydatajson = []
-        if covariableName is None:
-            mydatajson.append({
-                    "name" : "All",
-                    "data" :  Hist[key]['Data']
-                })
-        else:
-            for i in  range(len(Hist[key]['Categoriesy'])):
-                mydatajson.append({
-                            "name" : Hist[key]['Categoriesy'][i],
-                            "data" : Hist[key]['Data'][i]
-                        })
+        key = (variableName, None)
+        mydatajson.append({ "name" : "All",
+                            "data" :  Hist[key]['Data']})
 
         myhighchart = highchartsbasiccolumn(title, "Count", Hist[key]['Categoriesx'], mydatajson)
         myjsonresult["result"].append(myhighchart)
+        
+        for covariableName in args_Y:
+            title = "Histogram of " + variableName + " grouped by " + covariableName
+            mydatajson = []           
+            key = (variableName, covariableName)
+            for i in  range(len(Hist[key]['Categoriesy'])):
+                mydatajson.append({ "name" : Hist[key]['Categoriesy'][i],
+                                    "data" : Hist[key]['Data'][i] })
+
+            myhighchart = highchartsbasiccolumn(title, "Count", Hist[key]['Categoriesx'], mydatajson)
+            myjsonresult["result"].append(myhighchart)
+    
     return json.dumps(myjsonresult)
 
 def main():
@@ -84,7 +81,7 @@ def main():
 
     # Return the algorithm's output
     #raise ValueError (args_X, args_Y,CategoricalVariablesWithDistinctValues,GlobalHist)
-    global_out = histogramToHighchart(GlobalHist)
+    global_out = histogramToHighchart(GlobalHist, args_X, args_Y)
     set_algorithms_output_data(global_out)
 
 
