@@ -155,7 +155,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                     return;
                 }
                 catch (Exception e){
-                    String data = "Can not contact Consul key value Store.Please inform your system admin.";
+                    String data = "An error has occurred.Please inform your system admin.";
                     String type = error;        //type could be error, user_error, warning regarding the error occured along the process
                     String result = defaultOutputFormat(data, type);
                     BasicHttpEntity entity = new BasicHttpEntity();
@@ -508,7 +508,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                     throw new PathologyException(e.getMessage());
                 }
                 catch (Exception e) {
-                    throw new Exception("Can not contact Consul key value store. Please inform your system admin.");
+                    throw new Exception("An error has occurred.Please inform your system admin.");
                 }
                 for (Map.Entry<String, String[]> entry : nodeDatasets.entrySet()) {
                     String[] getDatasets = entry.getValue();
@@ -572,9 +572,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             try {   //then throw exception
                 response = httpclient.execute(httpGet);
             } catch (Exception e) {
-                log.error("Caught an error:"+e.getMessage());
 		        response.close();
-		        throw new IOException(e.getMessage());
             }
 	        result = EntityUtils.toString(response.getEntity());
         }
@@ -590,9 +588,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
                     }
                 }
             catch (Exception e){
-                log.debug("Caught an error:"+e.getMessage());
                 response.close();
-                throw new IOException(e.getMessage());
             }
         }
         return result;
