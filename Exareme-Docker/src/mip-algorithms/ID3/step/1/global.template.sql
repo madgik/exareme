@@ -4,8 +4,8 @@ attach database '%{defaultDB}' as defaultDB;
 --var 'input_global_tbl' 'localcounts';
 ----------------------------------------------------------------------------------------------------------
 var 'PRIVACY_MAGIC_NUMBER' 10;  -- 0.5 == no privacy
-var 'x' CL_age,CL_spectacle_prescrip,CL_astigmatism,CL_tear_prod_rate;
-var 'y' CL_contact_lenses;
+--var 'x' CL_age,CL_spectacle_prescrip,CL_astigmatism,CL_tear_prod_rate;
+--var 'y' CL_contact_lenses;
 
 -- Merge local_counts
 drop table if exists defaultDB.globalcounts;
