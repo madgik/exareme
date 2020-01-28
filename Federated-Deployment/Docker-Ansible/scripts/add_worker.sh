@@ -111,7 +111,7 @@ while IFS= read -r line || [[ -n "$line" ]]; do
                 continue
             else                            #workerN exists below [workers] tag
                 workerExist=1               #TODO check if [workerX_X_X_X] exists as tag?
-                echo -e "\nWorker with IP: \"workerIP\" already exists under [workers] tag."
+                echo -e "\nWorker with IP: \"${workerIP}\" already exists under [workers] tag."
                 break
             fi
             if [[ -z "$line1" ]]; then
