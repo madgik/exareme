@@ -124,11 +124,9 @@ worker88_197_53_100 ansible_ssh_pass="{{worker88_197_53_100_ssh_pass}}"
 [Requirement1: Mind that the variable ```data_path``` is the path where pathology folders are stored in your Target machine (Each Pathology folder includes the Data CSV (datasets.csv) and the Metadata file (CDEsMetadata.json))]<br/>
 
 [Requirement2: Mind that the variable ```home_path``` is the path where ```Federated-Deployment/Compose-Files/``` will be copied and stored in the master node. Compose-Files contains 2 docker-compose.yaml files for deploying the services. 
-
-<br/>
 The ```home_path``` can be Any path in which become_user has permissions. If the path does not exist in the master node,then any sub-folders are created automatically during the copy.]<br/>
-You can see that there are 2 main categories in hosts.ini file. The first one is ```[master]```, the second one is ```[workers]```.
-<br/>
+
+You can see that there are 2 main categories in hosts.ini file. The first one is ```[master]```, the second one is ```[workers]```. <br/>
 You can always add more workers following the template given above: </br>
 a) by adding the name workerX of the worker under [workers] and </br>
 b) creating a tag [workerX] with all the necessary variables. </br>
