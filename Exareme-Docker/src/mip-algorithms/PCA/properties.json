@@ -48,25 +48,11 @@
             "name": "formula",
             "desc": "Patsy formula  (R language syntax).",
             "type": "other",
-            "value": "leftaccumbensarea + leftacgganteriorcingulategyrus * leftainsanteriorinsula",
+            "value": "",
             "defaultValue": "",
             "valueNotBlank": false,
             "valueMultiple": false,
             "valueType": "string"
-        },
-        {
-            "name": "no_intercept",
-            "desc": "Boolean flag for having no intercept by default.",
-            "type": "other",
-            "value": "true",
-            "defaultValue": "false",
-            "valueNotBlank": false,
-            "valueMultiple": false,
-            "valueType": "string",
-            "enumValues": [
-                "true",
-                "false"
-            ]
         },
         {
             "name": "coding",
