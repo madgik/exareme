@@ -48,7 +48,7 @@
             "name": "formula",
             "desc": "Patsy formula  (R language syntax).",
             "type": "other",
-            "value": "leftaccumbensarea + leftacgganteriorcingulategyrus * leftainsanteriorinsula",
+            "value": "",
             "defaultValue": "",
             "valueNotBlank": false,
             "valueMultiple": false,
