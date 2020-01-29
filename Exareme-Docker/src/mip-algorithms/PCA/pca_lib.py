@@ -35,7 +35,6 @@ def get_data(args):
     query_filter = args.filter
     formula = args.formula
     formula = formula.replace('_', '~')  # TODO Fix tilda problem and remove
-    no_intercept = json.loads(args.no_intercept)
     data_table = args.data_table
     metadata_table = args.metadata_table
     metadata_code_column = args.metadata_code_column
@@ -51,7 +50,7 @@ def get_data(args):
                               metadata_table=metadata_table,
                               metadata_code_column=metadata_code_column,
                               metadata_isCategorical_column=metadata_isCategorical_column,
-                              no_intercept=no_intercept,
+                              no_intercept=True,
                               coding=None)
 
     return X

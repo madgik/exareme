@@ -55,20 +55,6 @@
             "valueType": "string"
         },
         {
-            "name": "no_intercept",
-            "desc": "Boolean flag for having no intercept by default.",
-            "type": "other",
-            "value": "true",
-            "defaultValue": "false",
-            "valueNotBlank": false,
-            "valueMultiple": false,
-            "valueType": "string",
-            "enumValues": [
-                "true",
-                "false"
-            ]
-        },
-        {
             "name": "coding",
             "desc": "Coding method for categorical variables.",
             "type": "other",
