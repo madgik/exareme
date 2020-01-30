@@ -26,7 +26,7 @@ from utils.algorithm_utils import StateData, TransferAndAggregateData, make_json
 def get_data(args):
     input_local_DB = args.input_local_DB
     args_x = list(
-            args.x
+            args.y
                 .replace(' ', '')
                 .split(',')
     )
