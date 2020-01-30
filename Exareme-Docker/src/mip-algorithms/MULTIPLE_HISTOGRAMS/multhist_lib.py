@@ -9,6 +9,32 @@ sys.path.append(path.dirname(path.dirname(path.abspath(__file__))) + '/utils/')
 
 from algorithm_utils import TransferData, ExaremeError
 
+def add_vals(a,b):
+    if a == None and b == None:
+        return None
+    else:
+        return(a or 0 ) +( b or 0)
+
+
+def comp_min_val(a,b):
+    if a == None and b == None:
+        return None
+    elif a == None and b != None:
+        return b
+    elif a != None and b == None:
+        return a
+    else:
+        return min(a,b)
+
+def comp_max_val(a,b):
+    if a == None and b == None:
+        return None
+    elif a == None and b != None:
+        return b
+    elif a != None and b == None:
+        return a
+    else:
+        return max(a,b)
 
 class multipleHist1_Loc2Glob_TD(TransferData):
     def __init__(self, *args):
@@ -22,16 +48,10 @@ class multipleHist1_Loc2Glob_TD(TransferData):
     def __add__(self, other):
         result = dict()
         for key in self.localstatistics:
-            minvalue = None
-            maxvalue = None
-            if self.localstatistics[key]['min'] != None:
-                minvalue = min (self.localstatistics[key]['min'], other.localstatistics[key]['min'])
-                maxvalue = max (self.localstatistics[key]['max'], other.localstatistics[key]['max'])
-
             result[key] = {
                 "count": self.localstatistics[key]['count'] + other.localstatistics[key]['count'] ,
-                 "min" : minvalue,
-                 "max" : maxvalue
+                 "min" : comp_min_val (self.localstatistics[key]['min'], other.localstatistics[key]['min']),
+                 "max" : comp_max_val (self.localstatistics[key]['max'], other.localstatistics[key]['max'])
                  }
         #raise ValueError(result)
         return multipleHist1_Loc2Glob_TD(result)
@@ -57,13 +77,13 @@ class multipleHist2_Loc2Glob_TD(TransferData):
             globalHist = [0]*len(self.Hist[key]['Data'])
             if any(isinstance(i, int) for i in self.Hist[key]['Data']):
                 for i in xrange(len(self.Hist[key]['Data'])):
-                    globalHist[i] = self.Hist[key]['Data'][i] + other.Hist[key]['Data'][i]
+                    globalHist[i] = add_vals(self.Hist[key]['Data'][i] , other.Hist[key]['Data'][i])
 
             if any(isinstance(i, list) for i in self.Hist[key]['Data']):
                 for i in xrange(len(self.Hist[key]['Data'])):
                     globalHist[i] = [0]*len(self.Hist[key]['Data'][i])
                     for j in xrange(len(self.Hist[key]['Data'][i])):
-                        globalHist[i][j] =  self.Hist[key]['Data'][i][j] + other.Hist[key]['Data'][i][j]
+                        globalHist[i][j] =  add_vals(self.Hist[key]['Data'][i][j] , other.Hist[key]['Data'][i][j])
 
             result[key] = { "Data": globalHist,
                                 "Categoriesx" : self.Hist[key]['Categoriesx'],
