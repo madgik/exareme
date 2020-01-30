@@ -9,7 +9,7 @@ import numpy as np
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/utils/')
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/MULTIPLE_HISTOGRAMS/')
 
-from algorithm_utils import StateData,Global2Local_TD
+from algorithm_utils import StateData,Global2Local_TD, PRIVACY_MAGIC_NUMBER
 from multhist_lib import multipleHist2_Loc2Glob_TD
 
 
@@ -46,10 +46,14 @@ def run_local_step(args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWi
 
         if varx not in  CategoricalVariablesWithDistinctValues: # varx is not categorical
              #print varx
-             myhist = [x.tolist() for x in np.histogram(dataFrame[varx], range = [ globalStatistics[varx,None,None,None]['min'],
+             if globalStatistics[varx,None,None,None]['count'] > PRIVACY_MAGIC_NUMBER :
+                 myhist = [x.tolist() for x in np.histogram(dataFrame[varx], range = [ globalStatistics[varx,None,None,None]['min'],
                                                                                                 globalStatistics[varx,None,None,None]['max']],  bins = args_bins[varx])]
-             mycategories = [str(myhist[1][i+1])+"-"+str(myhist[1][i]) for i in range(len(myhist[1])-1)]
-             Hist[varx,None] = { "Data" : myhist[0], "Categoriesx" : mycategories , "Categoriesy" : None }
+                 mycategories = [str(myhist[1][i+1])+"-"+str(myhist[1][i]) for i in range(len(myhist[1])-1)]
+                 Hist[varx,None] = { "Data" : myhist[0], "Categoriesx" : mycategories , "Categoriesy" : None }
+             else:
+                 mycategories = None
+                 Hist[varx,None] = { "Data" : [0]*args_bins[varx], "Categoriesx" : mycategories , "Categoriesy" : None }
              #Histogram thn varx group by var y
              for vary in args_Y:
                  dfs = dataFrame.groupby(vary)[varx]
@@ -59,10 +63,13 @@ def run_local_step(args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWi
                     #print groupLevely
                     if groupLevely in dfs.groups:
                         df = dfs.get_group(groupLevely)
-                        myhist =  [x.tolist() for x in np.histogram(df, range = [ globalStatistics[varx,vary,None,groupLevely]['min'],
+                        if  globalStatistics[varx,vary,None,groupLevely]['count'] > PRIVACY_MAGIC_NUMBER :
+                            myhist =  [x.tolist() for x in np.histogram(df, range = [ globalStatistics[varx,vary,None,groupLevely]['min'],
                                                                          globalStatistics[varx,vary,None,groupLevely]['max']],
                                                                          bins = args_bins[varx])]
-                        data.append(myhist[0])
+                            data.append(myhist[0])
+                        else:
+                            data.append([0]*args_bins[varx])
                         #Hist[varx,vary] = { "count" : None, "level" : None, "hist" : myhist,  "Categoriesy" :CategoricalVariablesWithDistinctValues[vary] }
                     else:
                         data.append([0]*args_bins[varx])

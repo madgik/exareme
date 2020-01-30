@@ -104,7 +104,7 @@ def main():
     activePathsNew = dict()
     no = 0
     for key in activePaths:
-        if activePaths[key]["samples"] > PRIVACY_MAGIC_NUMBER:
+        if activePaths[key]["samples"] > PRIVACY_MAGIC_NUMBER and max([len(activePaths[key]['thresholdsJ'][i]) for i in global_state['args_X']]) > 0 : # if activePaths[key]["samples"] > PRIVACY_MAGIC_NUMBER:
             bestColName, valueParentNode, bestValue, bestThreshold = best_splits( activePaths[key], global_state['args_X'], global_state['args_Y'][0], global_state['CategoricalVariables'])
 
             if valueParentNode > 0 : #If the number of samples>PRIVACY_NYMBER then I have privacy issues or #If GiniNode = 0 then I am in a leaf wih pure class.
