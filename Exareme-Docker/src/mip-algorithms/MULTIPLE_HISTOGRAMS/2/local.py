@@ -5,11 +5,12 @@ import sys
 from os import path
 from argparse import ArgumentParser
 import numpy as np
+import logging
 
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/utils/')
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/MULTIPLE_HISTOGRAMS/')
 
-from algorithm_utils import StateData,Global2Local_TD, PRIVACY_MAGIC_NUMBER
+from algorithm_utils import StateData,Global2Local_TD, PRIVACY_MAGIC_NUMBER,init_logger
 from multhist_lib import multipleHist2_Loc2Glob_TD
 
 
@@ -46,8 +47,16 @@ def run_local_step(args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWi
 
         if varx not in  CategoricalVariablesWithDistinctValues: # varx is not categorical
              #print varx
+             logging.warning("A. globalStatistics[varx,None,None,None]['count']=")
+             logging.warning(globalStatistics[varx,None,None,None]['count'])
              if globalStatistics[varx,None,None,None]['count'] > PRIVACY_MAGIC_NUMBER :
                  dataFrameNew = dataFrame[varx].dropna()
+                 logging.warning("A. globalStatistics[varx,None,None,None]['min']=")
+                 logging.warning( globalStatistics[varx,None,None,None]['min'])
+                 logging.warning("A. globalStatistics[varx,None,None,None]['max']=")
+                 logging.warning( globalStatistics[varx,None,None,None]['max'])
+                 logging.warning("A. args_bins[varx]=")
+                 logging.warning( args_bins[varx])
                  myhist = [x.tolist() for x in np.histogram(dataFrameNew, range = [ globalStatistics[varx,None,None,None]['min'],
                                                                                                 globalStatistics[varx,None,None,None]['max']],  bins = args_bins[varx])]
                  mycategories = [str(myhist[1][i+1])+"-"+str(myhist[1][i]) for i in range(len(myhist[1])-1)]
@@ -64,11 +73,18 @@ def run_local_step(args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWi
                     #print groupLevely
                     if groupLevely in dfs.groups:
                         df = dfs.get_group(groupLevely)
+                        logging.warning("B.  globalStatistics[varx,vary,None,groupLevely]['count'] =")
+                        logging.warning( globalStatistics[varx,vary,None,groupLevely]['count'] )
                         if  globalStatistics[varx,vary,None,groupLevely]['count'] > PRIVACY_MAGIC_NUMBER :
                             dfNew = df.dropna()
+                            logging.warning("B.globalStatistics[varx,vary,None,groupLevely]['min']=")
+                            logging.warning(globalStatistics[varx,vary,None,groupLevely]['min'])
+                            logging.warning("B.globalStatistics[varx,vary,None,groupLevely]['max']=")
+                            logging.warning( globalStatistics[varx,vary,None,groupLevely]['max'])
+                            logging.warning("B. args_bins[varx]=")
+                            logging.warning( args_bins[varx])
                             myhist =  [x.tolist() for x in np.histogram(dfNew, range = [globalStatistics[varx,vary,None,groupLevely]['min'],
-                                                                         globalStatistics[varx,vary,None,groupLevely]['max']],
-                                                                         bins = args_bins[varx])]
+                                                                         globalStatistics[varx,vary,None,groupLevely]['max']], bins = args_bins[varx])]
                             data.append(myhist[0])
                         else:
                             data.append([0]*args_bins[varx])
@@ -105,6 +121,23 @@ def main():
     local_state = StateData.load(fname_prev_state).get_data()
     # Load global node output
     globalStatistics = Global2Local_TD.load(global_db).get_data()['global_in']
+
+    init_logger()
+    logging.warning("args_X= ")
+    logging.warning(local_state['args_X'])
+    logging.warning("args_Y=")
+    logging.warning(local_state['args_Y'])
+    logging.warning("args_bins=")
+    logging.warning(local_state['args_bins'])
+    logging.warning("local_state['dataSchema']=")
+    logging.warning(local_state['dataSchema'])
+    logging.warning("CategoricalVariablesWithDistinctValues= ")
+    logging.warning(local_state['CategoricalVariablesWithDistinctValues'])
+    logging.warning("dataFrame=")
+    logging.warning(local_state['dataFrame'])
+    logging.warning("globalStatistics=")
+    logging.warning(globalStatistics)
+
     #raise ValueError(globalStatistics,local_state['args_X'])
 
     # Run algorithm local step

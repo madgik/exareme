@@ -108,6 +108,16 @@ def main():
                                 CategoricalVariablesWithDistinctValues = CategoricalVariablesWithDistinctValues, dataFrame = dataFrame)
     local_state.save(fname = fname_cur_state)
 
+    init_logger()
+    logging.warning("args_X= ")
+    logging.warning(args_X)
+    logging.warning("args_Y=")
+    logging.warning(args_Y)
+    logging.warning("args_bins=")
+    logging.warning(args_bins)
+    logging.warning("localStatistics=")
+    logging.warning(localStatistics)
+
     # Transfer local output
     local_out = multipleHist1_Loc2Glob_TD(localStatistics)
     #raise ValueError( local_out.get_data())
