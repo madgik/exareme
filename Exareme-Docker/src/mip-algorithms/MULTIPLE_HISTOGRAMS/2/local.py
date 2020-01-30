@@ -47,7 +47,8 @@ def run_local_step(args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWi
         if varx not in  CategoricalVariablesWithDistinctValues: # varx is not categorical
              #print varx
              if globalStatistics[varx,None,None,None]['count'] > PRIVACY_MAGIC_NUMBER :
-                 myhist = [x.tolist() for x in np.histogram(dataFrame[varx], range = [ globalStatistics[varx,None,None,None]['min'],
+                 dataFrameNew = dataFrame[varx].dropna()
+                 myhist = [x.tolist() for x in np.histogram(dataFrameNew, range = [ globalStatistics[varx,None,None,None]['min'],
                                                                                                 globalStatistics[varx,None,None,None]['max']],  bins = args_bins[varx])]
                  mycategories = [str(myhist[1][i+1])+"-"+str(myhist[1][i]) for i in range(len(myhist[1])-1)]
                  Hist[varx,None] = { "Data" : myhist[0], "Categoriesx" : mycategories , "Categoriesy" : None }
@@ -64,7 +65,8 @@ def run_local_step(args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWi
                     if groupLevely in dfs.groups:
                         df = dfs.get_group(groupLevely)
                         if  globalStatistics[varx,vary,None,groupLevely]['count'] > PRIVACY_MAGIC_NUMBER :
-                            myhist =  [x.tolist() for x in np.histogram(df, range = [ globalStatistics[varx,vary,None,groupLevely]['min'],
+                            dfNew = df.dropna()
+                            myhist =  [x.tolist() for x in np.histogram(dfNew, range = [globalStatistics[varx,vary,None,groupLevely]['min'],
                                                                          globalStatistics[varx,vary,None,groupLevely]['max']],
                                                                          bins = args_bins[varx])]
                             data.append(myhist[0])
