@@ -6,7 +6,7 @@
     "status": "enabled",
     "parameters": [
         {
-            "name": "x",
+            "name": "y",
             "desc": "A list of variables from database. The variable should be Real, Integer. It cannot be empty",
             "type": "column",
             "columnValuesSQLType": "real, integer, text",
@@ -70,6 +70,20 @@
                 "Poly",
                 "Sum",
                 "Helmert"
+            ]
+        },
+        {
+            "name": "standardize",
+            "desc": "If true input data will be standardized.",
+            "type": "other",
+            "value": "",
+            "defaultValue": "false",
+            "valueNotBlank": true,
+            "valueMultiple": false,
+            "valueType": "string",
+            "enumValues": [
+                "false",
+                "true"
             ]
         }
     ]

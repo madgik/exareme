@@ -26,7 +26,7 @@ def main(args):
 
     local_out = TransferAndAggregateData.load(local_dbs)
     # Run algorithm global step
-    global_out = global_1(global_in=local_out)
+    global_out = global_1(args, global_in=local_out)
 
     # Return the algorithm's output
     global_out.transfer()
