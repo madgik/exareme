@@ -2,11 +2,7 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-import sys
-from os import path
-
-sys.path.append(path.dirname(path.dirname(path.abspath(__file__))) + '/utils/')
-from algorithm_utils import TransferData
+from utils.algorithm_utils import TransferData
 
 PREC = 1e-7  # Precission used in termination_condition
 

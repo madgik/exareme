@@ -2,19 +2,16 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-import sys
-from os import path
-from argparse import ArgumentParser
-import numpy as np
 import json
+from os import path
+
+import numpy as np
 import scipy.stats as st
+from argparse import ArgumentParser
+from utils.algorithm_utils import StateData, set_algorithms_output_data, P_VALUE_CUTOFF, \
+    P_VALUE_CUTOFF_STR
 
-sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) + '/utils/')
-sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) +
-                '/LOGISTIC_REGRESSION/')
-
-from algorithm_utils import StateData, set_algorithms_output_data, ExaremeError, P_VALUE_CUTOFF, P_VALUE_CUTOFF_STR
-from log_regr_lib import LogRegrFinal_Loc2Glob_TD
+from LOGISTIC_REGRESSION.log_regr_lib import LogRegrFinal_Loc2Glob_TD
 
 
 def logregr_global_final(global_state, global_in):

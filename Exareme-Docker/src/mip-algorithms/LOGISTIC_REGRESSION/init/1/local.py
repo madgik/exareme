@@ -2,19 +2,11 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-import sys
-from argparse import ArgumentParser
-from os import path
-
 import numpy as np
+from argparse import ArgumentParser
+from utils.algorithm_utils import StateData, query_from_formula, ExaremeError
 
-sys.path.append(
-        path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) + '/utils/')
-sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) +
-                '/LOGISTIC_REGRESSION/')
-
-from algorithm_utils import StateData, query_from_formula, ExaremeError
-from log_regr_lib import LogRegrInit_Loc2Glob_TD
+from LOGISTIC_REGRESSION.log_regr_lib import LogRegrInit_Loc2Glob_TD
 
 
 def logregr_local_init(local_in):

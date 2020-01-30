@@ -2,17 +2,12 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-import sys
 from os import path
 
 from argparse import ArgumentParser
+from utils.algorithm_utils import StateData, set_algorithms_output_data
 
-sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/utils/')
-sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) +
-                '/LOGISTIC_REGRESSION/')
-
-from algorithm_utils import StateData, set_algorithms_output_data
-from log_regr_lib import PREC
+from LOGISTIC_REGRESSION.log_regr_lib import PREC
 
 _MAX_ITER = 40
 
