@@ -71,6 +71,20 @@
                 "Sum",
                 "Helmert"
             ]
+        },
+        {
+            "name": "standardize",
+            "desc": "If true input data will be standardized.",
+            "type": "other",
+            "value": "",
+            "defaultValue": "false",
+            "valueNotBlank": true,
+            "valueMultiple": false,
+            "valueType": "string",
+            "enumValues": [
+                "false",
+                "true"
+            ]
         }
     ]
 }
