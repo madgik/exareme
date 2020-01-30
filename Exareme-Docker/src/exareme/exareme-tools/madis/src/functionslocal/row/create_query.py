@@ -78,15 +78,23 @@ def create_complex_query(*args):
     if columnnamesA =='': columnnamesA = "null"
     mycolumnsA = columnnamesA.split(",");
 
-    if len(args)==6:
+    if len(args) >= 6:
         columnnamesB = args[5]
         mycolumnsB = columnnamesB.split(",");
         print mycolumnsB
+    if len(args) == 7:
+        columnnamesC = args[6]
+        mycolumnsC = columnnamesC.split(",");
+        print mycolumnsC
 
     query = init
 
     for i in xrange(len(mycolumnsA)):
-        if len(args)==6:
+        if len(args)==7:
+            istep=step.replace("???", mycolumnsC[i])
+            istep=istep.replace("??", mycolumnsB[i])
+            istep=istep.replace("?", mycolumnsA[i])
+        elif len(args)==6:
             istep=step.replace("??", mycolumnsB[i])
             istep=istep.replace("?", mycolumnsA[i])
         else:

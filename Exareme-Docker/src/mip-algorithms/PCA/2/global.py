@@ -27,7 +27,7 @@ def main(args):
     # Load local nodes output
     local_out = TransferAndAggregateData.load(local_dbs)
     # Run algorithm global step
-    global_out = global_2(global_in=local_out)
+    global_out = global_2(args, global_in=local_out)
     # Return the algorithm's output
     set_algorithms_output_data(global_out)
 

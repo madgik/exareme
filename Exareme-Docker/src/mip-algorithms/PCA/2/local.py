@@ -30,7 +30,7 @@ def main(args):
     # Load global node output
     global_out = TransferAndAggregateData.load(global_db)
     # Run algorithm local step
-    local_out = local_2(local_state=local_state, local_in=global_out)
+    local_out = local_2(args, local_state=local_state, local_in=global_out)
     # Return the output data
     local_out.transfer()
 

@@ -1,4 +1,4 @@
-requirevars 'defaultDB' 'input_global_tbl' 'testvalue' 'hypothesis' 'effectsize' 'ci' 'meandiff';
+requirevars 'defaultDB' 'input_global_tbl' 'testvalue' 'hypothesis';
 attach database '%{defaultDB}' as defaultDB;
 
 --var 'input_global_tbl' 'defaultDB.localstatistics';
@@ -12,7 +12,7 @@ group by colname);
 
 drop table if exists defaultDB.globalttestresult;
 create table  defaultDB.globalttestresult as
-select * from (ttest_onesample testvalue:%{testvalue} effectsize:%{effectsize} ci:%{ci} meandiff:%{meandiff} hypothesis:%{hypothesis} sediff:0
+select * from (ttest_onesample testvalue:%{testvalue} effectsize:1 ci:1 meandiff:1 hypothesis:%{hypothesis} sediff:0
                select * from   defaultDB.globalstatistics);
 
 var 'resultschema' from select outputschema from defaultDB.globalttestresult limit 1;
@@ -21,11 +21,11 @@ var 'typesofresults2' from select strreplace(mystring) from (select 'text,real,i
 
 
 var 'jsonResult' from select '{ "type": "application/json", "data": ' || val ||'}' from
-(select tabletojson( colname, statistics, df,%{resultschema}, "colname,statistics,df,%{resultschema}",0) as val
+(select tabletojson( colname, t_value, df,%{resultschema}, "colname,t_value,df,%{resultschema}",0) as val
  from defaultDB.globalttestresult);
 
 var 'tableResult' from select * from (totabulardataresourceformat title:INDEPENDENT_TEST_TABLE types:%{typesofresults2}
-              select colname,statistics,df,%{resultschema} from defaultDB.globalttestresult);
+              select colname,t_value,df,%{resultschema} from defaultDB.globalttestresult);
 
 select '{"result": [' || '%{jsonResult}' || ',' || '%{tableResult}' || ']}';
 

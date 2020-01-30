@@ -47,7 +47,7 @@ class ttest_independent(functions.vtable.vtbase.VT):
         if len(schema)==0:
             raise functions.OperatorError(__name__.rsplit('.')[-1],"Empty table")
 
-        outputschema = [['colname'],['statistics'],['df']]
+        outputschema = [['colname'],['t_value'],['df']]
         init = True
         mydata = [myrow for myrow in c]
 
@@ -74,11 +74,15 @@ class ttest_independent(functions.vtable.vtbase.VT):
             result = [colnameA,t_value,df]
 
             if init == True:
-                outputschema.append(["Hypothesis"])
-                outputschemaString = 'Hypothesis'
+                outputschema.append(["p_value"])
+                outputschemaString = 'p_value'
             if hypothesis == 'different': result.append(2.0 * (1.0-stats.t.cdf(abs(t_value), df)))
             elif hypothesis == 'lessthan': result.append(stats.t.cdf(t_value, df))
             elif hypothesis == 'greaterthan': result.append(1.0- stats.t.cdf(t_value, df))
+
+    # # p-values
+    # z_to_p = lambda z: st.norm.sf(abs(z)) * 2
+    # p_values = z_to_p(z_scores)
 
             if meandiff == 1:
                 if init ==True:

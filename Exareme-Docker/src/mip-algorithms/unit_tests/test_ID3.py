@@ -8,7 +8,7 @@ import re
 from decimal import *
 
 
-endpointUrl='http://88.197.53.23:9090/mining/query/ID3'
+endpointUrl='http://88.197.53.34:9090/mining/query/ID3'
 
 def test_ID3_1():
     logging.info("---------- TEST : ID3 - Test using contact-lenses dataset  ")
@@ -89,7 +89,10 @@ def resultsComparison(jsonExaremeResult, jsonRResult):
                         resultsComparison([childEx], childR[2])
                     else:
                         #print ("Leafvals:", childEx['leafval'], childR[2])
-                        assert (childEx['leafval']== childR[2])
+                        # if '(Stopped due to privacy)' in childEx['leafval']:
+                        #     childEx['leafval'].replace(' (Stopped due to privacy)', '')
+                        if '(Stoppedduetoprivacy)' not in childEx['leafval']:
+                            assert (childEx['leafval']== childR[2])
             if find == 0:
                 print ("error: Different childs")
                 assert 0

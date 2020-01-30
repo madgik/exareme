@@ -1,5 +1,6 @@
 from __future__ import division
 from __future__ import print_function
+from __future__ import unicode_literals
 
 import sys
 from os import path
@@ -12,28 +13,21 @@ PREC = 1e-7  # Precission used in termination_condition
 
 class LogRegrInit_Loc2Glob_TD(TransferData):
     def __init__(self, *args):
-        if len(args) != 5:
-            raise ValueError('Illegal number of arguments.')
         self.n_obs = args[0]
         self.n_cols = args[1]
-        self.y_val_dict = args[2]
-        self.schema_X = args[3]
-        self.schema_Y = args[4]
+        self.y_name = args[2]
+        self.x_names = args[3]
 
     def get_data(self):
-        return self.n_obs, self.n_cols, self.y_val_dict, self.schema_X, self.schema_Y
+        return self.n_obs, self.n_cols, self.y_name, self.x_names
 
     def __add__(self, other):
         assert self.n_cols == other.n_cols, "Local n_cols do not agree."
-        assert self.y_val_dict == other.y_val_dict, "Local y_val_dict do not agree."
-        assert self.schema_X == other.schema_X, "Local schema_X do not agree."
-        assert self.schema_Y == other.schema_Y, "Local schema_Y do not agree."
         return LogRegrInit_Loc2Glob_TD(
                 self.n_obs + other.n_obs,
                 self.n_cols,
-                self.y_val_dict,
-                self.schema_X,
-                self.schema_Y
+                self.y_name,
+                self.x_names,
         )
 
 

@@ -82,8 +82,39 @@ where colname in (select code from defaultDB.globalmetadatatbl  where categorica
 and colname <> '%{y}';
 
 --select * from defaultDB.global_probabilities;
-var 'result' from  select * from (totabulardataresourceformat title:NAIVE_BAYES_TABLE types:text,text,text,real,real,real
+var 'resulttable' from  select * from (totabulardataresourceformat title:NAIVE_BAYES_TABLE types:text,text,text,real,real,real
 select colname,val,classval,average,sigma,probability from defaultDB.global_probabilities);
 
+--select '{"result": [' || '%{resulttable}' || ']}';
 
-select '{"result": [' || '%{result}' || ']}';
+var 'var1' from select code from globalmetadatatbl where categorical = 0  order by code limit 1 ;
+var 'var2' from select code from globalmetadatatbl where categorical = 0  order by code limit 2 offset 1;
+var 'var3' from select code from globalmetadatatbl where categorical = 0  order by code limit 2 offset 2;
+
+var 'q1' from
+select case when '%{var1}' in (select code from globalmetadatatbl) and '%{var2}' in (select code from globalmetadatatbl) and  '%{var3}' not in (select code from globalmetadatatbl)
+then (select create_complex_query("","select * from (highchartbubble title:NAIVE_BAYES_TRAINING_OUTPUT
+select ?.average,  ??.average, ?.sigma*?.sigma+??.sigma*??.sigma as noofpoints
+from (select average, classval, sigma from global_probabilities where colname = '?') as ?,
+     (select average, classval, sigma from global_probabilities where colname = '??') as ??
+where ?.classval = ??.classval);", "," , "" , '%{var1}','%{var2}'))
+else (select create_complex_query("","select * from (highchartbubble title:NAIVE_BAYES_TRAINING_OUTPUT
+select 1,1,1);", "," , "" , 'A'))
+end;
+
+var 'q2' from
+select case when '%{var1}' in (select code from globalmetadatatbl)  and '%{var2}' in (select code from globalmetadatatbl)  and  '%{var3}' in (select code from globalmetadatatbl)
+then (select create_complex_query("","select * from (highchartscatter3d title:NAIVE_BAYES_TRAINING_OUTPUT
+  select ?.average, ??.average, ???.average as noofpoints
+  from (select average, classval, sigma from global_probabilities where colname = '?') as ?,
+       (select average, classval, sigma from global_probabilities where colname = '??') as ??,
+       (select average, classval, sigma from global_probabilities where colname = '???') as ???
+  where ?.classval = ??.classval and ?.classval = ???.classval);", "," , "" , '%{var1}','%{var2}','%{var3}'))
+else (select create_complex_query("","select * from (highchartscatter3d title:NAIVE_BAYES_TRAINING_OUTPUT
+  select 1,1);", "," , "" , 'A'))
+end;
+
+var 'resulthighchartbubble' from  %{q1};
+var 'resulthighchartscatter3d' from %{q2};
+
+select '{"result": ['||'%{resulttable}'||','||'%{resulthighchartbubble}'||','||'%{resulthighchartscatter3d}'||']}';
