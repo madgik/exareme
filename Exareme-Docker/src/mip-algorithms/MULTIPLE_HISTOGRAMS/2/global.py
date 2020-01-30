@@ -6,11 +6,12 @@ from os import path
 from argparse import ArgumentParser
 import numpy as np
 import json
+import logging
 
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/utils/')
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/MULTIPLE_HISTOGRAMS/')
 
-from algorithm_utils import set_algorithms_output_data, PRIVACY_MAGIC_NUMBER
+from algorithm_utils import set_algorithms_output_data, PRIVACY_MAGIC_NUMBER,init_logger
 from multhist_lib import multipleHist2_Loc2Glob_TD
 
 
@@ -33,29 +34,32 @@ def highchartsbasiccolumn(title, ytitle, categoriesList, mydatajson):
     }
     return myresult
 
-def histogramToHighchart (Hist, args_X, args_Y):
+def histogramToHighchart (Hist):
+
     myjsonresult  =  { "result" : []}
-    for variableName in args_X: 
-        title ="Histogram of " + variableName
+    for key in Hist:
+        variableName, covariableName = key
+        #title
+        title = "Histogram of " + variableName
+        if covariableName is not None:
+            title += " grouped by " + covariableName
+        #print title
+        #mydatajson
         mydatajson = []
-        key = (variableName, None)
-        mydatajson.append({ "name" : "All",
-                            "data" :  Hist[key]['Data']})
+        if covariableName is None:
+            mydatajson.append({
+                    "name" : "All",
+                    "data" :  Hist[key]['Data']
+                })
+        else:
+            for i in  range(len(Hist[key]['Categoriesy'])):
+                mydatajson.append({
+                            "name" : Hist[key]['Categoriesy'][i],
+                            "data" : Hist[key]['Data'][i]
+                        })
 
         myhighchart = highchartsbasiccolumn(title, "Count", Hist[key]['Categoriesx'], mydatajson)
         myjsonresult["result"].append(myhighchart)
-        
-        for covariableName in args_Y:
-            title = "Histogram of " + variableName + " grouped by " + covariableName
-            mydatajson = []           
-            key = (variableName, covariableName)
-            for i in  range(len(Hist[key]['Categoriesy'])):
-                mydatajson.append({ "name" : Hist[key]['Categoriesy'][i],
-                                    "data" : Hist[key]['Data'][i] })
-
-            myhighchart = highchartsbasiccolumn(title, "Count", Hist[key]['Categoriesx'], mydatajson)
-            myjsonresult["result"].append(myhighchart)
-    
     return json.dumps(myjsonresult)
 
 def main():
@@ -65,8 +69,13 @@ def main():
     args, unknown = parser.parse_known_args()
     local_dbs = path.abspath(args.local_step_dbs)
 
+
+
     # Load local nodes output
     args_X, args_Y,CategoricalVariablesWithDistinctValues, GlobalHist = multipleHist2_Loc2Glob_TD.load(local_dbs).get_data()
+    init_logger()
+    logging.warning("GlobalHist= ")
+    logging.warning(GlobalHist)
 
     # Histogram modification due to privacy --> Move it to local.py
     for key in GlobalHist:
@@ -81,7 +90,7 @@ def main():
 
     # Return the algorithm's output
     #raise ValueError (args_X, args_Y,CategoricalVariablesWithDistinctValues,GlobalHist)
-    global_out = histogramToHighchart(GlobalHist, args_X, args_Y)
+    global_out = histogramToHighchart(GlobalHist)
     set_algorithms_output_data(global_out)
 
 
