@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+cd "${0%/*}" || (echo "Could not chdir to this script's dir!" && exit)  # Change the working directory to the script's directory, when running from other location.
+
 # Including functions only
 source ./updateFiles.sh include-only
 source ./stop.sh include-only
