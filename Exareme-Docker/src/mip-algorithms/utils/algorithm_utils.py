@@ -24,28 +24,28 @@ P_VALUE_CUTOFF_STR = '< ' + str(P_VALUE_CUTOFF)
 class TransferAndAggregateData(object):
     def __init__(self, **kwargs):
         self.data = OrderedDict()
-        self.reduce_type = OrderedDict()
+        self.rule = OrderedDict()
         for k, v in kwargs.items():
             self.data[k] = v[0]
-            self.reduce_type[k] = v[1]
+            self.rule[k] = v[1]
 
     def __repr__(self):
         ret = ''
         for k in self.data.keys():
-            ret += '{k} : {val}, reduce by {red_type}\n'.format(k=k, val=self.data[k], red_type=self.reduce_type[k])
+            ret += '{k} : {val}, reduce by {red_type}\n'.format(k=k, val=self.data[k], red_type=self.rule[k])
         return ret
 
     def __add__(self, other):
         kwargs = OrderedDict()
         for k in self.data.keys():
-            if self.reduce_type[k] == 'add':
+            if self.rule[k] == 'add':
                 kwargs[k] = (self.data[k] + other.data[k], 'add')
-            elif self.reduce_type[k] == 'max':
+            elif self.rule[k] == 'max':
                 kwargs[k] = (max(self.data[k], other.data[k]), 'max')
-            elif self.reduce_type[k] == 'do_nothing':
+            elif self.rule[k] == 'do_nothing':
                 kwargs[k] = (self.data[k], 'do_nothing')
             else:
-                raise ValueError('{rt} is not implemented as a reduce method.'.format(rt=self.reduce_type[k]))
+                raise ValueError('{rt} is not implemented as a composition rule.'.format(rt=self.rule[k]))
         return TransferAndAggregateData(**kwargs)
 
     @classmethod
