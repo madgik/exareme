@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 
 from os import path
 
-from TEMPLATE_MULTIPLE_LOCAL_GLOBAL.algorithm_lib import local_2
+from TEMPLATE_MULTIPLE_LOCAL_GLOBAL.template_lib import local_2
 from utils.algorithm_utils import StateData, TransferAndAggregateData, parse_exareme_args
 
 

@@ -5,8 +5,8 @@ from __future__ import unicode_literals
 
 from os import path
 
-from algorithm_lib import global_1
-from utils.algorithm_utils import parse_exareme_args, set_algorithms_output_data, TransferAndAggregateData
+from TEMPLATE_LOCAL_GLOBAL.template_lib import global_1
+from utils.algorithm_utils import  TransferAndAggregateData, parse_exareme_args, set_algorithms_output_data
 
 
 def main(args):

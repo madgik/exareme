@@ -3,7 +3,7 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from algorithm_lib import get_data, local_1
+from TEMPLATE_LOCAL_GLOBAL.template_lib import get_data, local_1
 from utils.algorithm_utils import parse_exareme_args
 
 
