@@ -6,11 +6,12 @@ from os import path
 from argparse import ArgumentParser
 import numpy as np
 import json
+import logging
 
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/utils/')
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/MULTIPLE_HISTOGRAMS/')
 
-from algorithm_utils import set_algorithms_output_data, PRIVACY_MAGIC_NUMBER
+from algorithm_utils import set_algorithms_output_data, PRIVACY_MAGIC_NUMBER,init_logger
 from multhist_lib import multipleHist2_Loc2Glob_TD
 
 
@@ -68,8 +69,13 @@ def main():
     args, unknown = parser.parse_known_args()
     local_dbs = path.abspath(args.local_step_dbs)
 
+
+
     # Load local nodes output
     args_X, args_Y,CategoricalVariablesWithDistinctValues, GlobalHist = multipleHist2_Loc2Glob_TD.load(local_dbs).get_data()
+    init_logger()
+    logging.warning("GlobalHist= ")
+    logging.warning(GlobalHist)
 
     # Histogram modification due to privacy --> Move it to local.py
     for key in GlobalHist:

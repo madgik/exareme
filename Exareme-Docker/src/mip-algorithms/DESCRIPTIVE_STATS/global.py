@@ -1,17 +1,13 @@
 from __future__ import division
 from __future__ import print_function
+from __future__ import unicode_literals
 
-import sys
-import math
 import json
 from os import path
-import numpy as np
+
 from argparse import ArgumentParser
-
-sys.path.append(path.dirname(path.dirname(path.abspath(__file__))) + '/utils/')
-
-from algorithm_utils import set_algorithms_output_data, ExaremeError, P_VALUE_CUTOFF, P_VALUE_CUTOFF_STR
 from lib import DescrStatsLocal_DT
+from utils.algorithm_utils import set_algorithms_output_data
 
 
 def descr_stats_global(global_in):
@@ -40,7 +36,7 @@ def descr_stats_global(global_in):
                 'Std.Err.'      : None,
                 'Mean + Std.Err': None,
                 'Mean - Std.Err': None,
-                'Frequencies'           : freqs
+                'Frequencies'   : freqs
             })
 
         else:
@@ -54,7 +50,7 @@ def descr_stats_global(global_in):
                 'Std.Err.'      : std,
                 'Mean + Std.Err': upper_ci,
                 'Mean - Std.Err': lower_ci,
-                'Frequencies': None
+                'Frequencies'   : None
             })
 
     schema = {
@@ -71,19 +67,17 @@ def descr_stats_global(global_in):
         ]
     }
 
-
     result = {
         'result': [
             {
                 "type": "application/vnd.dataresource+json",
                 "data": {
-                    "data": results,
+                    "data"  : results,
                     "schema": schema
                 }
             }
         ]
     }
-
 
     try:
         global_out = json.dumps(result, allow_nan=False)

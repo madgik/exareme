@@ -28,4 +28,3 @@ else
     --mount type=bind,src=${PORTAINER_DATA},dst=/data \
     --name ${PORTAINER_NAME} ${PORTAINER_IMAGE}${PORTAINER_VERSION}
 fi
-

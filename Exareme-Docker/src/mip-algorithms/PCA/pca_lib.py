@@ -2,54 +2,46 @@ from __future__ import division
 from __future__ import print_function
 
 import json
-import sys
-from os import path
 
 import numpy as np
-
-_new_path = path.dirname(path.dirname(path.abspath(__file__)))
-sys.path.append(_new_path)
-while True:
-    try:
-        import utils.algorithm_utils
-    except:
-        sys.path.pop()
-        _new_path = path.dirname(_new_path)
-        sys.path.append(_new_path)
-    else:
-        break
-del _new_path
-
 from utils.algorithm_utils import StateData, TransferAndAggregateData, make_json_raw, query_from_formula
 
 
 def get_data(args):
     input_local_DB = args.input_local_DB
     args_x = list(
-            args.x
+            args.y
                 .replace(' ', '')
                 .split(',')
     )
     variables = (args_x,)
+    dataset = args.dataset
+    query_filter = args.filter
     formula = args.formula
     formula = formula.replace('_', '~')  # TODO Fix tilda problem and remove
-    no_intercept = json.loads(args.no_intercept)
     data_table = args.data_table
     metadata_table = args.metadata_table
     metadata_code_column = args.metadata_code_column
     metadata_isCategorical_column = args.metadata_isCategorical_column
 
     # Get data from local DB
-    _, X = query_from_formula(fname_db=input_local_DB, formula=formula, variables=variables,
-                              data_table=data_table, metadata_table=metadata_table,
+    _, X = query_from_formula(fname_db=input_local_DB,
+                              formula=formula,
+                              variables=variables,
+                              dataset=dataset,
+                              query_filter=query_filter,
+                              data_table=data_table,
+                              metadata_table=metadata_table,
                               metadata_code_column=metadata_code_column,
                               metadata_isCategorical_column=metadata_isCategorical_column,
-                              no_intercept=no_intercept, coding=None)
+                              no_intercept=True,
+                              coding=None)
 
     return X
 
 
-def local_1(local_in):
+def local_1(args, local_in):
+    standardize = json.loads(args.standardize)
     # Unpack data
     X = local_in
     n_obs, n_cols = len(X), len(X.columns)
@@ -57,25 +49,35 @@ def local_1(local_in):
     X = np.array(X)
 
     sx = X.sum(axis=0)
+    if standardize:
+        sxx = np.sum(np.square(X), axis=0)
+        local_out = TransferAndAggregateData(n_obs=(n_obs, 'add'), sx=(sx, 'add'), sxx=(sxx, 'add'))
+    else:
+        local_out = TransferAndAggregateData(n_obs=(n_obs, 'add'), sx=(sx, 'add'))
 
     local_state = StateData(X=X, var_names=var_names)
-    local_out = TransferAndAggregateData(n_obs=(n_obs, 'add'), sx=(sx, 'add'))
 
     return local_state, local_out
 
 
-def global_1(global_in):
+def global_1(args, global_in):
+    standardize = json.loads(args.standardize)
     # Unpack global input
     data = global_in.get_data()
     n_obs, sx = data['n_obs'], data['sx']
-
     means = sx / n_obs
-    global_out = TransferAndAggregateData(means=(means, 'do_nothing'))
+    if standardize:
+        sxx = data['sxx']
+        sigmas = np.sqrt(sxx / (n_obs - 1))
+        global_out = TransferAndAggregateData(means=(means, 'do_nothing'), sigmas=(sigmas, 'do_nothing'))
+    else:
+        global_out = TransferAndAggregateData(means=(means, 'do_nothing'))
 
     return global_out
 
 
-def local_2(local_state, local_in):
+def local_2(args, local_state, local_in):
+    standardize = json.loads(args.standardize)
     # Unpack local state
     X, var_names = local_state['X'], local_state['var_names']
     # Unpack local input
@@ -84,6 +86,10 @@ def local_2(local_state, local_in):
 
     n_obs = len(X)
     X = X - means
+    if standardize:
+        sigmas = data['sigmas']
+        X = X / sigmas
+    # raise ValueError(X, sigmas if standardize else None)
     gramian = np.dot(np.transpose(X), X)
 
     # Pack results
@@ -92,7 +98,7 @@ def local_2(local_state, local_in):
     return local_out
 
 
-def global_2(global_in):
+def global_2(args, global_in):
     # Unpack global input
     data = global_in.get_data()
     gramian, n_obs, var_names = data['gramian'], data['n_obs'], data['var_names']
@@ -129,7 +135,7 @@ class PCAResult(object):
         tabular_data = dict()
         tabular_data["name"] = "Eigenvalues"
         tabular_data["profile"] = "tabular-data-resource"
-        tabular_data["data"] = [self.var_names, self.eigen_vals.tolist()]
+        tabular_data["data"] = [self.eigen_vals.tolist()]
         tabular_data["schema"] = {
             "fields": [{"name": n, "type": "number"} for n in self.var_names]
         }
@@ -139,13 +145,110 @@ class PCAResult(object):
         tabular_data = dict()
         tabular_data["name"] = "Eigenvectors"
         tabular_data["profile"] = "tabular-data-resource"
-        tabular_data["data"] = [self.var_names]
+        tabular_data["data"] = []
         for ei in self.eigen_vecs.T:
             tabular_data["data"].append(ei.tolist())
         tabular_data["schema"] = {
             "fields": [{"name": n, "type": "number"} for n in self.var_names]
         }
         return tabular_data
+
+    def get_highchart_eigen_scree(self):
+        return {
+            "chart"      : {
+                "type": 'line'
+            },
+            "title"      : {
+                "text": 'Eigenvalues'
+            },
+            "xAxis"      : {
+                "categories": list(range(len(self.eigen_vals))),
+                "title"     : {
+                    "text": 'Dimension'
+                }
+            },
+            "yAxis"      : {
+                "title": {
+                    "text": 'Eigenvalue'
+                }
+            },
+            "plotOptions": {
+                "line": {
+                    "dataLabels"         : {
+                        "enabled": True
+                    },
+                    "label"              : False,
+                    "enableMouseTracking": False
+                }
+            },
+            "series"     : [
+                {
+                    "type": 'column',
+                    "data": [round(ei, 2) for ei in self.eigen_vals]
+                },
+                {
+                    "type" : 'line',
+                    "data" : [round(ei, 2) for ei in self.eigen_vals],
+                    "color": '#0A1E6E'
+                }
+            ],
+            "legend"     : {
+                "enabled": False
+            }
+        }
+
+    def get_bubbles(self):
+        max_elem = max([max([abs(elem) for elem in evec]) for evec in self.eigen_vecs])
+        return {
+            "chart"      : {
+                "type"           : 'bubble',
+                "plotBorderWidth": 1,
+                "zoomType"       : 'xy'
+            },
+
+            "legend"     : {
+                "enabled": False
+            },
+
+            "title"      : {
+                "text": 'Eigenvectors bubble chart'
+            },
+            "xAxis"      : {
+                "gridLineWidth": 1,
+                "title"        : {
+                    "text": 'Dimensions'
+                },
+                "tickLength"   : 500,
+                "categories"   : list(range(len(self.eigen_vals)))
+            },
+
+            "yAxis"      : {
+                "startOnTick": False,
+                "endOnTick"  : False,
+                "title"      : {
+                    "text": 'Variables'
+                },
+                "categories" : self.var_names,
+                "maxPadding" : 0.2,
+            },
+            "plotOptions": {
+                "bubble": {
+                    "minSize": 0,
+                    "maxSize": 50
+                }
+            },
+
+            "colorAxis"  : {
+                "min": 0,
+                "max": max_elem
+            },
+            "series"     : [{
+                "colorKey": 'z',
+                "data"    : [{'x': i, 'y': j, 'z': abs(elem)}
+                             for i, evec in enumerate(self.eigen_vecs)
+                             for j, elem in enumerate(evec)]
+            }]
+        }
 
     def get_output(self):
         result = {
@@ -164,6 +267,16 @@ class PCAResult(object):
                 {
                     "type": "application/vnd.dataresource+json",
                     "data": self.get_eigenvec_table()
+                },
+                # Highchart Eigenvalues scree plot
+                {
+                    "type": "application/vnd.highcharts+json",
+                    "data": self.get_highchart_eigen_scree()
+                },
+                # Highchart Eigenvectors bubble plot
+                {
+                    "type": "application/vnd.highcharts+json",
+                    "data": self.get_bubbles()
                 }
             ]
         }

@@ -75,15 +75,15 @@ def main():
         raise ExaremeError('Field x must be non empty.')
 
     # Get data
-    if args.y == '':
-        args_X = list(args.x.replace(' ', '').split(','))
+    if args.x == '':
+        args_X = list(args.y.replace(' ', '').split(','))
         args_Y = []
-        varNames = "'" + "','".join(list(args.x.replace(' ', '').split(','))) + "'"
+        varNames = "'" + "','".join(list(args.y.replace(' ', '').split(','))) + "'"
     else:
-        args_X = list(args.x.replace(' ', '').split(','))
-        args_Y = list(args.y.replace(' ', '').split(','))
-        varNames = "'" + "','".join(list(args.x.replace(' ', '').split(','))) + "','" + "','".join(
-                        list(args.y.replace(' ', '').split(','))) + "'"
+        args_X = list(args.y.replace(' ', '').split(','))
+        args_Y = list(args.x.replace(' ', '').split(','))
+        varNames = "'" + "','".join(list(args.y.replace(' ', '').split(','))) + "','" + "','".join(
+                        list(args.x.replace(' ', '').split(','))) + "'"
     if args.bins == '':
         args_bins = {}
     else:
@@ -107,6 +107,16 @@ def main():
     local_state = StateData(args_X = args_X, args_Y = args_Y, args_bins = args_bins,  dataSchema = dataSchema,
                                 CategoricalVariablesWithDistinctValues = CategoricalVariablesWithDistinctValues, dataFrame = dataFrame)
     local_state.save(fname = fname_cur_state)
+
+    init_logger()
+    logging.warning("args_X= ")
+    logging.warning(args_X)
+    logging.warning("args_Y=")
+    logging.warning(args_Y)
+    logging.warning("args_bins=")
+    logging.warning(args_bins)
+    logging.warning("localStatistics=")
+    logging.warning(localStatistics)
 
     # Transfer local output
     local_out = multipleHist1_Loc2Glob_TD(localStatistics)

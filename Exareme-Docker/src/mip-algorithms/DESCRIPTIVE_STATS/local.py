@@ -1,19 +1,15 @@
 # Forward compatibility
 from __future__ import division
 from __future__ import print_function
+from __future__ import unicode_literals
 
-import sys
 from os import path
-from argparse import ArgumentParser
-import sqlite3
 
 import numpy as np
-import numpy.ma as ma
-
-sys.path.append(path.dirname(path.dirname(path.abspath(__file__))) + '/utils/')
-from algorithm_utils import query_with_privacy, ExaremeError, PrivacyError, PRIVACY_MAGIC_NUMBER
-
+import sqlite3
+from argparse import ArgumentParser
 from lib import DescrStatsLocal_DT, Variable, TransferVariable
+from utils.algorithm_utils import query_with_privacy, PrivacyError, PRIVACY_MAGIC_NUMBER
 
 
 def descr_stats_local(local_in):
@@ -43,10 +39,8 @@ def descr_stats_local(local_in):
             transf_var = TransferVariable(is_categorical, var_name, count, freqs)
             transf_var_list.append(transf_var)
 
-
     local_out = DescrStatsLocal_DT(transf_var_list)
     return local_out
-
 
 
 def main():

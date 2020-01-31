@@ -10,7 +10,7 @@
 			"columnValuesSQLType": "text,integer",
 			"columnValuesIsCategorical": "true",
 			"columnValuesNumOfEnumerations": "",
-			"value": "CL_age,CL_spectacle_prescrip,CL_astigmatism,CL_tear_prod_rate",
+			"value": "alzheimerbroadcategory",
 			"valueNotBlank": true,
 			"valueMultiple": true,
 			"valueType": "string"
@@ -21,7 +21,7 @@
 			"columnValuesSQLType": "text,integer",
 			"columnValuesIsCategorical": "true",
 			"columnValuesNumOfEnumerations": "",
-			"value": "CL_contact_lenses",
+			"value": "gender",
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "string"
@@ -29,7 +29,7 @@
 			"name": "dataset",
 			"desc": "The names of one or more datasets, in which the algorithm will be executed.",
 			"type": "dataset",
-			"value": "contact-lenses",
+			"value": "desd-synthdata",
 			"valueNotBlank": true,
 			"valueMultiple": true,
 			"valueType": "string"

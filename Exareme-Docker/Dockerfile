@@ -102,6 +102,7 @@ EXPOSE 9090
 EXPOSE 22
 
 ENV USER=root
+ENV PYTHONPATH "${PYTONPATH}:/root/mip-algorithms"
 WORKDIR /root/exareme
 
 CMD ["/bin/bash","bootstrap.sh"]
