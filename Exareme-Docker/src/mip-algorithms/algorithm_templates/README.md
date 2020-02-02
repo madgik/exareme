@@ -91,7 +91,7 @@ Along with the algorithm folder a second folder is created called `<ALGNAME>_ext
 In there you will find a template for your unittests called `test_<ALGNAME>.py`. There is
 no need to edit this file as it reads the input from `expected_<ALGNAME>.json`. This is the 
 file you should edit. It has the following structure
-```json
+```
 {
     "result": [
         {
