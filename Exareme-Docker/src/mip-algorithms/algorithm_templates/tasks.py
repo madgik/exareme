@@ -6,6 +6,7 @@ import glob
 from string import Template
 
 from invoke import task
+from invoke.exceptions import Failure
 
 _properties_types = {
     'local-global'      : 'python_local_global',
@@ -100,6 +101,10 @@ properties_defaults = [
     'alg-type': 'Type of algorithm to create. (local-global, multi-local-global, iterative)'
 })
 def create(c, name, alg_type):
+    if os.path.exists(os.path.join('output', name.upper())):
+        print('Cleaning previous output')
+        remove(c, name)
+
     start_message = 'Creating a {alg_type} algorithm named {name}.'.format(alg_type=alg_type,
                                                                            name=name)
     print(start_message)
