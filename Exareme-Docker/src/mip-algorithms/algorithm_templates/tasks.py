@@ -6,7 +6,6 @@ import glob
 from string import Template
 
 from invoke import task
-from invoke.exceptions import Failure
 
 _properties_types = {
     'local-global'      : 'python_local_global',
@@ -101,20 +100,20 @@ properties_defaults = [
     'alg-type': 'Type of algorithm to create. (local-global, multi-local-global, iterative)'
 })
 def create(c, name, alg_type):
-    if os.path.exists(os.path.join('output', name.upper())):
+    # Prepare names
+    dirname = name.upper()
+    alg_name = name.lower()
+    class_prefix = to_camel_case(name)
+    # Clean if exists
+    if os.path.exists(os.path.join('output', dirname)):
         print('Cleaning previous output')
         remove(c, name)
 
-    start_message = 'Creating a {alg_type} algorithm named {name}.'.format(alg_type=alg_type,
-                                                                           name=name)
+    start_message = 'Creating a {alg_type} algorithm named {name}.'.format(alg_type=alg_type, name=name)
     print(start_message)
     print()
 
     properties = build_properties(alg_type, name)
-
-    dirname = name.upper()
-    alg_name = name.lower()
-    class_prefix = name.capitalize()
 
     template_replace = {
         'template'                      : alg_name,
@@ -124,7 +123,7 @@ def create(c, name, alg_type):
         'TEMPLATE_ITERATIVE'            : dirname,
     }
 
-    # Begin file copying
+    # Copy files
     dirname = os.path.join('output', dirname)
     os.mkdir('{dirname}'.format(dirname=dirname))
     templ_root = os.path.join('templates', _template_dirnames[alg_type])
@@ -138,11 +137,64 @@ def create(c, name, alg_type):
         new_filename = os.path.join(dirname, path)
         with safe_open_w(os.path.join('{new_fn}'.format(new_fn=new_filename), fn + '.py')) as f:
             f.write(new_content)
-
     c.run('mv {dirname}/template_lib.py {dirname}/{name}_lib.py'.format(dirname=dirname, name=name))
-    properties_path = '{dirname}/properties.json'.format(dirname=dirname)
+    # Create properties.json
+    properties_path = '{dirname}/properties.json'.format(dirname=dirname)  # TODO use path.join
     with open(properties_path, 'w') as f:
         json.dump(properties, f, indent=4)
+    # Call make_tests
+    make_tests(c, name, properties)
+
+
+@task(optional=['properties'], help={
+    'name': 'Name of the algorithm to create.'
+})
+def make_tests(c, name, properties=None):
+    # Prepare names
+    name_caps = name.upper()
+    dirname = os.path.join('output', 'tests_' + name_caps)
+    alg_name = name.lower()
+    class_prefix = to_camel_case(name)
+    # Clean if exists
+    if os.path.exists(dirname):
+        print('Cleaning previous output')
+        # TODO
+    # Start
+    start_message = 'Creating tests for {name}.'.format(name=name)
+    print(start_message)
+    print()
+    ip = input('Enter the ip of the machine where you will deploy (or leave blank for later):\n')
+    if not ip:
+        ip = '0.0.0.0'
+    template_replace = {
+        'Template': class_prefix,
+        'TEMPLATE': name_caps,
+        'ip'      : ip
+    }
+    # Copy template unittest
+    os.mkdir('{dirname}'.format(dirname=dirname))
+    fn_tests_templ = os.path.join('templates', 'TEMPLATE_UNITTESTS', 'test_Template.tmpl')
+    with open(fn_tests_templ, 'r') as f:
+        content = f.read()
+    new_content = Template(content).substitute(template_replace)
+    with safe_open_w(os.path.join(dirname, 'test_' + class_prefix + '.py')) as f:
+        f.write(new_content)
+    # Create expected results json
+    if not properties:
+        properties = build_properties('iterative', name)
+    expected = OrderedDict()
+    expected['result'] = [{
+        'input' : [],
+        'output': ['TODO: PUT ALGORITHM OUTPUT HERE']
+    }]
+    for p in properties['parameters']:
+        expected['result'][0]['input'].append({
+            'name' : p['name'],
+            'value': None
+        })
+    expected_path = os.path.join(dirname, 'expected_' + class_prefix + '.json')
+    with open(expected_path, 'w') as f:
+        json.dump(expected, f, indent=4)
 
 
 def build_properties(alg_type, name):
@@ -213,7 +265,14 @@ def safe_open_w(path):
     return open(path, 'w')
 
 
+def to_camel_case(string):
+    return ''.join([w.capitalize() for w in string.split('_')])
+
+
 @task
 def remove(c, name):
     dirname = os.path.join('output', name.upper())
     c.run("rm -r {dirname}".format(dirname=dirname))
+    tests_dirname = os.path.join('output', 'tests_' + name.upper())
+    if os.path.exists(tests_dirname):
+        c.run("rm -r {dirname}".format(dirname=tests_dirname))
