@@ -12,7 +12,7 @@ def main(args):
     fname_prev_state = path.abspath(args.prev_state_pkl)
 
     global_state = StateData.load(fname_prev_state).data
-    termination_condition(global_state)
+    termination_condition(args, global_state)
 
 
 if __name__ == '__main__':

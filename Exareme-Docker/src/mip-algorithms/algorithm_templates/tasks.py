@@ -19,6 +19,12 @@ _template_dirnames = {
     'iterative'         : 'TEMPLATE_ITERATIVE'
 }
 
+_exec_filenames = {
+    'local-global'      : 'exec_template_lg.tmpl',
+    'multi-local-global': 'exec_template_mlg.tmpl',
+    'iterative'         : 'exec_template_iter.tmpl'
+}
+
 properties_formula = [
     {
         "name"         : "formula",
@@ -95,11 +101,11 @@ properties_defaults = [
 ]
 
 
-@task(help={
+@task(optional=['extras'], help={
     'name'    : 'Name of the algorithm to create.',
     'alg-type': 'Type of algorithm to create. (local-global, multi-local-global, iterative)'
 })
-def create(c, name, alg_type):
+def create(c, name, alg_type, extras=True):
     # Prepare names
     dirname = name.upper()
     alg_name = name.lower()
@@ -143,22 +149,19 @@ def create(c, name, alg_type):
     with open(properties_path, 'w') as f:
         json.dump(properties, f, indent=4)
     # Call make_tests
-    make_tests(c, name, properties)
+    if extras:
+        name_caps = name.upper()
+        extras_dirname = os.path.join('output', name_caps + '_extras')
+        os.mkdir('{dirname}'.format(dirname=extras_dirname))
+        make_tests(c, name, extras_dirname, properties)
+        make_exec(c, name, alg_type, extras_dirname, properties)
 
 
-@task(optional=['properties'], help={
-    'name': 'Name of the algorithm to create.'
-})
-def make_tests(c, name, properties=None):
+def make_tests(c, name, extras_dirname, properties):
     # Prepare names
     name_caps = name.upper()
-    dirname = os.path.join('output', 'tests_' + name_caps)
-    alg_name = name.lower()
     class_prefix = to_camel_case(name)
-    # Clean if exists
-    if os.path.exists(dirname):
-        print('Cleaning previous output')
-        # TODO
+
     # Start
     start_message = 'Creating tests for {name}.'.format(name=name)
     print(start_message)
@@ -172,36 +175,59 @@ def make_tests(c, name, properties=None):
         'ip'      : ip
     }
     # Copy template unittest
-    os.mkdir('{dirname}'.format(dirname=dirname))
     fn_tests_templ = os.path.join('templates', 'TEMPLATE_UNITTESTS', 'test_Template.tmpl')
     with open(fn_tests_templ, 'r') as f:
         content = f.read()
     new_content = Template(content).substitute(template_replace)
-    with safe_open_w(os.path.join(dirname, 'test_' + class_prefix + '.py')) as f:
+    with safe_open_w(os.path.join(extras_dirname, 'test_' + class_prefix + '.py')) as f:
         f.write(new_content)
     # Create expected results json
-    if not properties:
-        properties = build_properties('iterative', name)
     expected = OrderedDict()
     expected['result'] = [{
         'input' : [],
-        'output': ['TODO: PUT ALGORITHM OUTPUT HERE']
+        'output': ['TODO: PUT EXPECTED OUTPUT HERE']
     }]
     for p in properties['parameters']:
         expected['result'][0]['input'].append({
             'name' : p['name'],
             'value': None
         })
-    expected_path = os.path.join(dirname, 'expected_' + class_prefix + '.json')
+    expected_path = os.path.join(extras_dirname, 'expected_' + class_prefix + '.json')
     with open(expected_path, 'w') as f:
         json.dump(expected, f, indent=4)
+
+
+def make_exec(c, name, alg_type, extras_dirname, properties):
+    alg_name = name.lower()
+    name_caps = name.upper()
+    # Start
+    start_message = 'Creating local execution script for {name}.'.format(name=name)
+    print(start_message)
+    print()
+    data_path = input('Enter path to data db:\n')
+    alg_args = dict()
+    for p in properties['parameters']:
+        alg_args[p['name']] = ''
+    template_replace = {
+        'template' : alg_name,
+        'TEMPLATE' : name_caps,
+        'data_path': data_path,
+        'alg_args' : alg_args
+    }
+    # Copy template unittest
+    fn_exec_templ = os.path.join('templates', 'TEMPLATE_EXEC', _exec_filenames[alg_type])
+    with open(fn_exec_templ, 'r') as f:
+        content = f.read()
+    new_content = Template(content).substitute(template_replace)
+    with safe_open_w(os.path.join(extras_dirname, 'exec_' + alg_name + '.py')) as f:
+        f.write(new_content)
 
 
 def build_properties(alg_type, name):
     properties = OrderedDict()
     properties['name'] = name.upper()
     properties['desc'] = input('Enter a short description for your algorithm:\n')
-    properties['label'] = input('Enter a label for your algorithm:\n')
+    properties['label'] = ' '.join([w.capitalize() for w in name.split('_')])
     properties['type'] = _properties_types[alg_type]
     properties['status'] = 'enabled'
     properties['parameters'] = []
@@ -273,6 +299,6 @@ def to_camel_case(string):
 def remove(c, name):
     dirname = os.path.join('output', name.upper())
     c.run("rm -r {dirname}".format(dirname=dirname))
-    tests_dirname = os.path.join('output', 'tests_' + name.upper())
+    tests_dirname = os.path.join('output', name.upper() + '_extras')
     if os.path.exists(tests_dirname):
         c.run("rm -r {dirname}".format(dirname=tests_dirname))
