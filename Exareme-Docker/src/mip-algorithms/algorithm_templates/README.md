@@ -9,7 +9,7 @@ pip3 install invoke
 ```
 ### Basic commands
 First, you can see all tasks by typing
-```bash
+```console
 $ invoke --list
 Available tasks:
 
@@ -28,14 +28,15 @@ Docstring:
   none
 
 Options:
-  -a STRING, --alg-type=STRING   Type of algorithm to create. (local-global, multi-local-global, iterative)
-  -n STRING, --name=STRING       Name of the algorithm to create.
+  -a STRING, --alg-type=STRING     Type of algorithm to create. (local-global, multi-local-global, iterative)
+  -e [STRING], --extras[=STRING]
+  -n STRING, --name=STRING         Name of the algorithm to create.
 
 ```
 
-The `name` parameter is just the algorithm's name (uppercase or lowercase) and
+The `name` parameter is just the algorithm's name (uppercase or lowercase, separate words with underscores) and
 the `alg-type` is the algorithm's type. This can be `local-global`, `multi-local-global` or
-`iterative`.
+`iterative`. The `extras` parameter is optional, is `True` by default and it's used to generate extras (see below).
 
 ### An example
 
@@ -78,7 +79,46 @@ SGD
 Everything is now in place and **you only have to edit the `sgd_lib.py` file** where 
 all the algorithm methods are found.
 
-If something went wrong and you want to remove the algorithm folder just type
+If you want to restart no need to delete the generated folders. The scripts will 
+take care of that.
+If you want to manually remove the folders, just type
 ```bash
 invoke remove sgd
 ```
+
+### Extras
+Along with the algorithm folder a second folder is created called `<ALGNAME>_extras`.
+In there you will find a template for your unittests called `test_<ALGNAME>.py`. There is
+no need to edit this file as it reads the input from `expected_<ALGNAME>.json`. This is the 
+file you should edit. It has the following structure
+```json
+{
+    "result": [
+        {
+            "input": [
+                {
+                    "name" : ...,
+                    "value": ...    
+                },
+                ...
+            ],
+            "output": [
+                {
+                    "name" : ...,
+                    "value": ...    
+                },
+                ...
+            ]
+        }
+    ]
+}
+```
+You create a list of many `{input, output}` pairs with input parameters for the algorithm 
+and the output produced by some standard library (`scipy`, `sklearn`, ...). 
+
+Then `test_<ALGNAME>.py` can be executed by typing `python -m test_<ALGNAME>.py` or
+simply `pytest` to execute all unittests in a folder.
+
+Finally, one more file is created to help you debug your algorithm. 
+It's called `exec_<ALGNAME>.py`. Use this file to run your algorithm
+on your local machine without the need to deploy `Exareme`. 
