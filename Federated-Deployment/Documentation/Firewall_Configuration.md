@@ -1,6 +1,6 @@
 Note: </br> 
 This is a modified Documentation from previous work that had been done by DIAS-EPFL.</br>
-Initial source can be found here: https://github.com/HBPMedical/mip-federation/tree/master/Documentation
+Initial source can be found <a href="https://github.com/HBPMedical/mip-federation/tree/master/Documentation">here.</a>
 
 In this document you will find configurations in case of firewall existing in Federation nodes.
 
