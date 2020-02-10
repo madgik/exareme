@@ -53,6 +53,34 @@
             "valueNotBlank": false,
             "valueMultiple": true,
             "valueType": "string"
+        },
+        {
+            "name": "formula",
+            "desc": "Patsy formula  (R language syntax).",
+            "type": "other",
+            "value": "",
+            "defaultValue": "",
+            "valueNotBlank": false,
+            "valueMultiple": false,
+            "valueType": "string"
+        },
+        {
+            "name": "coding",
+            "desc": "Coding method for categorical variables.",
+            "type": "other",
+            "value": "null",
+            "defaultValue": "null",
+            "valueNotBlank": false,
+            "valueMultiple": false,
+            "valueType": "string",
+            "enumValues": [
+                "null",
+                "Treatment",
+                "Diff",
+                "Poly",
+                "Sum",
+                "Helmert"
+            ]
         }
     ]
 }

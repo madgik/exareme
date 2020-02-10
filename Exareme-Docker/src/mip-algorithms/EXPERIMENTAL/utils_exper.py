@@ -17,9 +17,12 @@ import numpy as np
 import pandas as pd
 from patsy import dmatrix, dmatrices
 
+from sqlalchemy import create_engine, MetaData, Table, select
+
 # ------------------------ Use only during dev ---------------- #
+
 fake_args = [
-    '-input_local_DB', 'path/to/data',
+    '-input_local_DB', 'datasets.db',
     '-db_query', '',
     '-cur_state_pkl', 'cur_state.pkl',
     '-prev_state_pkl', 'prev_state.pkl',
@@ -29,15 +32,16 @@ fake_args = [
     '-metadata_table', 'METADATA',
     '-metadata_code_column', 'code',
     '-metadata_isCategorical_column', 'isCategorical',
-    '-x', 'my_x',
-    '-y', 'my_y',
+    '-y', 'alzheimerbroadcategory, gender, lefthippocampus',
     '-pathology', 'dementia',
     '-dataset', 'adni',
-    '-filter', ''
+    '-filter', '',
+    '-formula', '',
+    '-coding', 'Treatment'
 ]
 
 # -------------------------- Globals -------------------------- #
-_ALLOWED_METHODS = {'run_local', 'run_central'}
+_ALLOWED_METHODS = {'local_', 'global_'}
 
 _COMMON_ALGORITHM_ARGUMENTS = {
     'input_local_DB',
@@ -63,10 +67,6 @@ def make_dirs(fname):
         except OSError as exc:  # Guard against race condition
             if exc.errno != errno.EEXIST:
                 raise
-
-
-def get_data(params):
-    return {'x': 42}
 
 
 # ------------------------- Exceptions ------------------------- #
@@ -98,27 +98,26 @@ class Meta(type):
 
 def exareme(func):
     func_name = func.__name__
-    if func_name == 'run_local':
+    if func_name == 'local_':
         @wraps(func)
         def wrapper(self):
             print('Getting data from DBs')
-            # self.data = AlgorithmData(self._args) # Uncomment when ready
-            self.data = get_data(None)
-            print('Start local computation')
+            self.data = AlgorithmData(self._args)
+            print('Start local_')
             func(self)
-            print('End local computation')
-            print('Pushing all to central node')
+            print('End local_')
+            print('Pushing all to global node')
             self._transfer_struct.transfer_all()
             print('\n')
-    elif func_name == 'run_central':
+    elif func_name == 'global_':
         @wraps(func)
         def wrapper(self):
             self.data = AlgorithmError('There are no data available on the global node!')
             print('Fetching all from local nodes')
             self._transfer_struct = TransferStruct.fetch_all(transfer_db='transfer_db.txt')
-            print('Start central computation')
+            print('Start global_')
             func(self)
-            print('End central computation')
+            print('End global_')
             print('Displaying result')
             self.set_algorithms_output_data()
             print('\n')
@@ -272,37 +271,85 @@ def parse_exareme_args(fp):
         required = p['valueNotBlank']
         parser.add_argument(name, required=required)
 
-    args, unknown = parser.parse_known_args(args=fake_args)  # TODO remove when ready
+    args, _ = parser.parse_known_args(args=fake_args)  # TODO remove when ready
+    args.y = list(args.y
+                  .replace(' ', '')
+                  .split(','))
+    if args.x:
+        args.x = list(args.x
+                      .replace(' ', '')
+                      .split(','))
+    args.dataset = list(args.dataset
+                        .replace(' ', '')
+                        .split(','))
     return args
 
 
 # ----------------------- Query DB ------------------------- #
 class AlgorithmData(object):
     def __init__(self, args):
-        if 'y' in args and 'x' not in args:
-            args_y = list(
-                    args.y
-                        .replace(' ', '')
-                        .split(',')
-            )
-            vars_tuples = (args_y,)
-            self.variables = query_from_formula(args, vars_tuples)
-        elif 'y' in args and 'x' in args:
-            args_y = list(
-                    args.y
-                        .replace(' ', '')
-                        .split(',')
-            )
-            args_x = list(
-                    args.x
-                        .replace(' ', '')
-                        .split(',')
-            )
-            vars_tuples = (args_y, args_x)
-            self.variables, self.covariables = query_from_formula(args, vars_tuples)
+        data, is_categorical = read_data_from_db(args)
+        model_vars = get_model_variables(args, data, is_categorical)
+        if len(model_vars) == 1:
+            self.variables = model_vars[0]
+        elif len(model_vars) == 2:
+            self.variables, self.covariables = model_vars
+
+
+def get_model_variables(args, data, is_categorical):
+    # Get formula from args or build if doesn't exist
+    if args.formula:
+        formula = args.formula
+    else:
+        if args.x:
+            var_tup = (args.y, args.x)
+            formula = '~'.join(map(lambda x: '+'.join(x), var_tup))
         else:
-            raise AlgorithmError('Algorithm should either contain `y` and no `x` (variables only), or `y` and `x` ('
-                                 'variables and covariables).')
+            formula = '+'.join(args.y) + '-1'
+    # Process categorical vars
+    var_names = args.y
+    if args.x:
+        var_names.extend(args.x)
+    for var in var_names:
+        if is_categorical[var]:
+            formula = formula.replace(var, 'C({v}, {coding})'.format(v=var, coding=args.coding))
+    # Create variables (and possibly covariables)
+    if args.x:
+        model_vars, model_covars = dmatrices(formula, data, return_type='dataframe')
+        return model_vars, model_covars
+    else:
+        model_vars = dmatrix(formula, data, return_type='dataframe')
+        return model_vars,
+
+
+def read_data_from_db(args):
+    var_names = args.y
+    if args.x:
+        var_names.extend(args.x)
+    engine, sqla_md = connect_to_db(args.input_local_DB)
+    # Create tables
+    data_table = Table(args.data_table, sqla_md, autoload=True)
+    metadata_table = Table(args.metadata_table, sqla_md, autoload=True)
+    # Get data
+    sel_data = select([data_table.c[var] for var in var_names])
+    data = pd.read_sql(sel_data, engine)
+    data = data.dropna()
+    # Privacy check
+    if len(data) < _PRIVACY_THRESHOLD:
+        raise PrivacyError
+    # Get isCategorical
+    is_categorical = dict()
+    for vn in var_names:
+        sel_iscat = select([metadata_table.c.isCategorical]).where(metadata_table.c.code == vn)
+        result = engine.execute(sel_iscat)
+        is_categorical[vn] = result.fetchone()[0]
+    return data, is_categorical
+
+
+def connect_to_db(db_path):
+    engine = create_engine('sqlite:///{}'.format(db_path), echo=True)
+    sqla_md = MetaData(engine)
+    return engine, sqla_md
 
 
 # TODO refactor this shit with SQLAlchemy
@@ -440,7 +487,7 @@ class Algorithm(object):
         self._folder_path = os.path.split(__file__)[0]
         self._args = parse_exareme_args(self._folder_path)
         self.parameters = Parameters(self._args)
-        self.data = None
+        self.data = AlgorithmData(self._args)
         self._transfer_struct = TransferStruct()
         self.result = None
 
@@ -479,10 +526,10 @@ class Algorithm(object):
 
 
 class LocalGlobal(Algorithm):
-    def run_local(self):
+    def local_(self):
         raise NotImplementedError
 
-    def run_central(self):
+    def global_(self):
         raise NotImplementedError
 
 
@@ -490,24 +537,32 @@ class LocalGlobal(Algorithm):
 
 
 class MyAlgorithm(LocalGlobal):
-    def run_local(self):
-        print('This is a local computation')
-        x = self.data['x']
-        y = 2 * x
-        self.push_and_add(x=x)
-        self.push_and_add(y=y)
+    def local_(self):
+        print('This is local_')
+        x = self.data.variables
+        print(np.mean(x))
+        print(np.std(x))
+        n_obs = len(x)
+        sx = x.agg(np.sum)
+        sxx = x.applymap(np.square).agg(np.sum)
+        self.push_and_add(n_obs=n_obs)
+        self.push_and_add(sx=sx)
+        self.push_and_add(sxx=sxx)
 
-    def run_central(self):
-        print('This is a global computation')
-        x = self.fetch('x')
-        y = self.fetch('y')
-        self.result = {'x': x, 'y': y}
+    def global_(self):
+        print('This is global_')
+        n_obs = self.fetch('n_obs')
+        sx = self.fetch('sx')
+        sxx = self.fetch('sxx')
+        means = sx.div(n_obs)
+        stderr = sxx.sub(n_obs * np.square(means)).div(n_obs - 1).apply(np.sqrt)
+        self.result = {'mean': means, 'stderr': stderr}
 
 
 def run():
     a = MyAlgorithm()
-    a.run_local()
-    a.run_central()
+    a.local_()
+    a.global_()
 
     print('The End')
 
