@@ -5,6 +5,7 @@
 	"type": "multiple_local_global",
 	"parameters": [{
 			"name": "y",
+			"label": "y",
 			"desc": "A vector of strings naming the variables of interest in data",
 			"type": "column",
 			"columnValuesSQLType": "real,integer",
@@ -16,6 +17,7 @@
 			"valueType": "string"
 		}, {
 			"name": "x",
+			"label": "x",
 			"desc": "The grouping variable",
 			"type": "column",
 			"columnValuesSQLType": "",
@@ -27,6 +29,7 @@
 			"valueType": "string"
 		}, {
 			"name": "xlevels",
+			"label": "xlevels",
 			"desc": "The two levels of the grouping variable (Order matters)",
 			"type": "other",
 			"value": "M,F",
@@ -35,6 +38,7 @@
 			"valueType": "string"
 		}, {
 			"name": "hypothesis",
+			"label": "hypothesis",
 			"desc": "'different', 'greaterthan' or 'lessthan', the alternative hypothesis; group 1 different to group 2, group 1 greater than group 2, and group 1 less than group 1 respectively ",
 			"type": "other",
 			"value": "greaterthan",
@@ -44,6 +48,7 @@
 			"valueType": "string"
 		}, {
 			"name": "effectsize",
+			"label": "effectsize",
 			"desc": "1 or 0, provide Cohen's d effect sizes",
 			"type": "other",
 			"value": "1",
@@ -54,6 +59,7 @@
 			"valueType": "integer"
 		}, {
 			"name": "ci",
+			"label": "ci",
 			"desc": "1 or 0, provide confidence intervals for the mean difference",
 			"type": "other",
 			"value": "1",
@@ -64,6 +70,7 @@
 			"valueType": "integer"
 		}, {
 			"name": "meandiff",
+			"label": "meandiff",
 			"desc": "1 or 0, provide means and standard deviations ",
 			"type": "other",
 			"value": "1",
@@ -74,6 +81,7 @@
 			"valueType": "integer"
 		}, {
 			"name": "pathology",
+			"label": "pathology",
 			"desc": "The name of the pathology in which the dataset belongs to.",
 			"type": "pathology",
 			"value": "dementia",
@@ -82,6 +90,7 @@
 			"valueType": "string"
 		}, {
 			"name": "dataset",
+			"label": "dataset",
 			"desc": "The names of one or more datasets, in which the algorithm will be executed.",
 			"type": "dataset",
 			"value": "desd-synthdata",
@@ -90,6 +99,7 @@
 			"valueType": "string"
 		}, {
 			"name": "filter",
+			"label": "filter",
 			"desc": "",
 			"type": "filter",
 			"value": "",

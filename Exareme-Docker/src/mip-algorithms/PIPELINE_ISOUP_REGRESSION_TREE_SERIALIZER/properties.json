@@ -5,6 +5,7 @@
 	"type": "pipeline",
 	"parameters": [{
 			"name": "target_attributes",
+			"label": "target_attributes",
 			"desc": "Dependent parameters. One or more can be selected.",
 			"type": "column",
 			"columnValuesSQLType": "",
@@ -16,6 +17,7 @@
 			"valueType": "string"
 		}, {
 			"name": "descriptive_attributes",
+			"label": "descriptive_attributes",
 			"desc": "Independent parameters. One or more can be selected.",
 			"type": "column",
 			"columnValuesSQLType": "",
@@ -27,6 +29,7 @@
 			"valueType": "string"
 		}, {
 			"name": "pathology",
+			"label": "pathology",
 			"desc": "The name of the pathology that the dataset belongs to.",
 			"type": "pathology",
 			"value": "dementia",
@@ -35,6 +38,7 @@
 			"valueType": "string"
 		}, {
 			"name": "dataset",
+			"label": "dataset",
 			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty.",
 			"type": "dataset",
 			"value": "adni",
@@ -43,6 +47,7 @@
 			"valueType": "string"
 		}, {
 			"name": "filter",
+			"label": "filter",
 			"desc": "",
 			"type": "filter",
 			"value": "",
