@@ -5,6 +5,7 @@
 	"type": "multiple_local_global",
 	"parameters": [{
 			"name": "x",
+			"label": "x",
 			"desc": "Independent variables: A list of variables from database.",
 			"type": "column",
 			"columnValuesSQLType": "",
@@ -16,6 +17,7 @@
 			"valueType": "string"
 		}, {
 			"name": "y",
+			"label": "y",
 			"desc": "Dependent variable: A categorical variable form database.",
 			"type": "column",
 			"columnValuesSQLType": "",
@@ -27,6 +29,7 @@
 			"valueType": "string"
 		}, {
 			"name": "alpha",
+			"label": "alpha",
 			"desc": "Additive smoothing parameter (0 for no smoothing)",
 			"type": "other",
 			"value": "0.1",
@@ -35,6 +38,7 @@
 			"valueType": "real"
 		}, {
 			"name": "pathology",
+			"label": "pathology",
 			"desc": "The name of the pathology in which the dataset belongs to.",
 			"type": "pathology",
 			"value": "dementia",
@@ -43,6 +47,7 @@
 			"valueType": "string"
 		}, {
 			"name": "dataset",
+			"label": "dataset",
 			"desc": "The names of one or more datasets, in which the algorithm will be executed.",
 			"type": "dataset",
 			"value": "desd-synthdata",
@@ -51,6 +56,7 @@
 			"valueType": "string"
 		}, {
 			"name": "filter",
+			"label": "filter",
 			"desc": "",
 			"type": "filter",
 			"value": "",

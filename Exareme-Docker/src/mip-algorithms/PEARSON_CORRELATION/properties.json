@@ -5,6 +5,7 @@
 	"type": "python_local_global",
 	"parameters": [{
 			"name": "x",
+			"label": "x",
 			"desc": "A list of variables from database. The variable should be Real, Float, Integer. It can be empty.",
 			"type": "column",
 			"columnValuesSQLType": "real, integer",
@@ -15,6 +16,7 @@
 			"valueType": "string"
 		}, {
 			"name": "y",
+			"label": "y",
 			"desc": "A list of variables from database. The variable should be Real, Float, Integer. It can be empty.",
 			"type": "column",
 			"columnValuesSQLType": "real, integer",
@@ -25,6 +27,7 @@
 			"valueType": "string"
 		}, {
 			"name": "pathology",
+			"label": "pathology",
 			"desc": "The name of the pathology that the dataset belongs to.",
 			"type": "pathology",
 			"value": "dementia",
@@ -33,6 +36,7 @@
 			"valueType": "string"
 		}, {
 			"name": "dataset",
+			"label": "dataset",
 			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty",
 			"type": "dataset",
 			"value": "adni",
@@ -41,6 +45,7 @@
 			"valueType": "string"
 		}, {
 			"name": "filter",
+			"label": "filter",
 			"desc": "",
 			"type": "filter",
 			"value": "",
