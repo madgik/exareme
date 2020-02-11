@@ -4,7 +4,11 @@ import requests
 import math
 import logging
 
+<<<<<<< HEAD
 endpointUrl = 'http://88.197.53.34:9090/mining/query/DESCRIPTIVE_STATS'
+=======
+endpointUrl = 'http://88.197.53.100:9090/mining/query/DESCRIPTIVE_STATS'
+>>>>>>> 04de076016b7414eba63db010e59d999b153d5d9
 
 
 def get_test_params():

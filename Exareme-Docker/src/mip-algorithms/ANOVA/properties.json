@@ -5,6 +5,7 @@
 	"type": "iterative",
 	"parameters": [{
 			"name": "x",
+			"label": "x",
 			"desc": "The right part of the linear predictor function, that contains the indepedent variables in an equation supporting the symbols +, :, * , R notation.The independent variables are variables of the input dataset.",
 			"type": "formula",
 			"columnValuesSQLType": "",
@@ -16,6 +17,7 @@
 			"valueType": "string"
 		}, {
 			"name": "y",
+			"label": "y",			
 			"desc": "The left part of the linear predictor function, that contains the dependent variable.The dependent variable is a variable of the input dataset.",
 			"type": "column",
 			"columnValuesSQLType": "real,integer",
@@ -27,6 +29,7 @@
 			"valueType": "string"
 		}, {
 			"name": "sstype",
+			"label": "sstype",
 			"desc": "Type of sum of squares to use. It can be 1 or 2 or 3.",
 			"type": "other",
 			"value": "3",
@@ -37,6 +40,7 @@
 			"valueType": "integer"
 		}, {
 			"name": "pathology",
+			"label": "pathology",
 			"desc": "The name of the pathology in which the dataset belongs to.",
 			"type": "pathology",
 			"value": "dementia",
@@ -45,6 +49,7 @@
 			"valueType": "string"
 		}, {
 			"name": "dataset",
+			"label": "dataset",
 			"desc": "The names of one or more datasets, in which the algorithm will be executed.",
 			"type": "dataset",
 			"value": "ANOVA_Balanced_with_inter_V1V2",
@@ -53,6 +58,7 @@
 			"valueType": "string"
 		}, {
 			"name": "filter",
+			"label": "filter",
 			"desc": "",
 			"type": "filter",
 			"value": "",

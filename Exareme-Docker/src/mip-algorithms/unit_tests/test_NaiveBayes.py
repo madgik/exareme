@@ -5,9 +5,15 @@ import math
 from decimal import *
 
 
+<<<<<<< HEAD
 url1='http://88.197.53.34:9090/mining/query/CROSS_VALIDATION_K_FOLD'
 url2='http://88.197.53.34:9090/mining/query/NAIVE_BAYES_TRAINING'
 url3='http://88.197.53.34:9090/mining/query/NAIVE_BAYES_TESTING'
+=======
+url1='http://88.197.53.100:9090/mining/query/CROSS_VALIDATION_K_FOLD'
+url2='http://88.197.53.100:9090/mining/query/NAIVE_BAYES_TRAINING'
+url3='http://88.197.53.100:9090/mining/query/NAIVE_BAYES_TESTING'
+>>>>>>> 04de076016b7414eba63db010e59d999b153d5d9
 
 def test_NAIVEBAYES_1():
     logging.info("---------- TEST : NAIVE BAYES :CATEGORICAL DATASET  ")

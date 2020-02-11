@@ -5,6 +5,7 @@
 	"type": "python_local_global",
 	"parameters": [{
 			"name": "x",
+			"label": "x",
 			"desc": "A list of variables from database. The variable should be Real, Integer or String. The variable can be either numerical or categorical. It cannot be empty",
 			"type": "column",
 			"columnValuesSQLType": "real, integer, text",
@@ -16,6 +17,7 @@
 			"valueType": "string"
 		}, {
 			"name": "dataset",
+			"label": "dataset",
 			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty",
 			"type": "dataset",
 			"value": "adni",
@@ -24,6 +26,7 @@
 			"valueType": "string"
 		}, {
 			"name": "filter",
+			"label": "filter",
 			"desc": "",
 			"type": "filter",
 			"value": "",
@@ -32,6 +35,7 @@
 			"valueType": "string"
 		}, {
 			"name": "pathology",
+			"label": "pathology",
 			"desc": "The name of the pathology that the dataset belongs to.",
 			"type": "pathology",
 			"value": "dementia",

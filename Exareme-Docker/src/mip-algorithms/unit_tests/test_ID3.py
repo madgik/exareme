@@ -8,7 +8,11 @@ import re
 from decimal import *
 
 
+<<<<<<< HEAD
 endpointUrl='http://88.197.53.34:9090/mining/query/ID3'
+=======
+endpointUrl='http://88.197.53.100:9090/mining/query/ID3'
+>>>>>>> 04de076016b7414eba63db010e59d999b153d5d9
 
 def test_ID3_1():
     logging.info("---------- TEST : ID3 - Test using contact-lenses dataset  ")

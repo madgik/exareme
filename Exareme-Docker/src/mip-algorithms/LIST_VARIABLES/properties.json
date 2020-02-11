@@ -5,6 +5,7 @@
 	"type": "python_local",
 	"parameters": [{
 			"name": "pathology",
+			"label": "pathology",
 			"desc": "The name of the pathology that the dataset belongs to.",
 			"type": "pathology",
 			"value": "dementia",

@@ -5,6 +5,7 @@
 	"type": "multiple_local_global",
 	"parameters": [{
 			"name": "y",
+			"label": "y",
 			"desc": "A vector of strings naming the variables of interest in data",
 			"type": "column",
 			"columnValuesSQLType": "real,integer",
@@ -16,6 +17,7 @@
 			"valueType": "string"
 		}, {
 			"name": "x",
+			"label": "x",
 			"desc": "The grouping variable",
 			"type": "column",
 			"columnValuesSQLType": "",
@@ -27,6 +29,7 @@
 			"valueType": "string"
 		}, {
 			"name": "xlevels",
+			"label": "xlevels",
 			"desc": "The two levels of the grouping variable (Order matters)",
 			"type": "other",
 			"value": "M,F",

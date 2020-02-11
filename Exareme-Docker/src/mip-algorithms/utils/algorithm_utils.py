@@ -294,8 +294,13 @@ def query_database(fname_db, queryData, queryMetadata):
 
     # Cast Dataframe based on metadata
     metadataVarNames = [str(x) for x in list(zip(*metadata)[0])]
+<<<<<<< HEAD
     metadataTypes = [variable_type(x) for x in list(zip(*metadata)[1])]
     for varName in dataSchema:
+=======
+    metadataTypes = [variable_type(x) for x in list(zip(*metadata)[2])]
+    for varName in  dataSchema:
+>>>>>>> 04de076016b7414eba63db010e59d999b153d5d9
         index = metadataVarNames.index(varName)
         dataFrame[varName] = dataFrame[varName].astype(metadataTypes[index])
 
@@ -307,8 +312,13 @@ def variable_categorical_getDistinctValues(metadata):
     dataTypes = zip((str(x) for x in list(zip(*metadata)[0])),
                     (str(x) for x in list(zip(*metadata)[1])))
     for md in metadata:
+<<<<<<< HEAD
         if md[2] == 1:  # when variable is categorical
             distinctValues[str(md[0])] = [value_casting(x, str(md[1])) for x in md[3].split(',')]
+=======
+        if md[3] == 1: # when variable is categorical
+            distinctValues[str(md[0])] = [value_casting(x,str(md[2])) for x in md[4].split(',')]
+>>>>>>> 04de076016b7414eba63db010e59d999b153d5d9
     return distinctValues
 
 
