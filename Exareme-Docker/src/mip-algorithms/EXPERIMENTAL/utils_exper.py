@@ -17,9 +17,32 @@ import numpy as np
 import pandas as pd
 from patsy import dmatrix, dmatrices
 
-from sqlalchemy import create_engine, MetaData, Table, select
+from sqlalchemy import create_engine, MetaData, Table, select, or_, and_, not_, between
 
 # ------------------------ Use only during dev ---------------- #
+
+my_filter = '''{
+    "condition": "AND",
+    "rules"    : [
+        {
+            "id"      : "alzheimerbroadcategory",
+            "field"   : "alzheimerbroadcategory",
+            "type"    : "string",
+            "input"   : "select",
+            "operator": "not_equal",
+            "value"   : "MCI"
+        },
+        {
+            "id"      : "alzheimerbroadcategory",
+            "field"   : "alzheimerbroadcategory",
+            "type"    : "string",
+            "input"   : "select",
+            "operator": "not_equal",
+            "value"   : "Other"
+        }
+    ],
+    "valid"    : true
+}'''
 
 fake_args = [
     '-input_local_DB', 'datasets.db',
@@ -32,12 +55,12 @@ fake_args = [
     '-metadata_table', 'METADATA',
     '-metadata_code_column', 'code',
     '-metadata_isCategorical_column', 'isCategorical',
-    '-y', 'alzheimerbroadcategory, gender, lefthippocampus',
+    '-y', 'alzheimerbroadcategory, lefthippocampus',
     '-pathology', 'dementia',
     '-dataset', 'adni',
-    '-filter', '',
+    '-filter', my_filter,
     '-formula', '',
-    '-coding', 'Treatment'
+    '-coding', None
 ]
 
 # -------------------------- Globals -------------------------- #
@@ -57,6 +80,22 @@ _COMMON_ALGORITHM_ARGUMENTS = {
 }
 
 _PRIVACY_THRESHOLD = 10
+
+_FILTER_OPERATORS = {
+    'equal'           : lambda a, b: a.__eq__(b),
+    'not_equal'       : lambda a, b: a.__ne__(b),
+    'less'            : lambda a, b: a.__lt__(b),
+    'greater'         : lambda a, b: a.__gt__(b),
+    'less_or_equal'   : lambda a, b: a.__le__(b),
+    'greater_or_equal': lambda a, b: a.__ge__(b),
+    'between'         : lambda a, b: between(a, b[0], b[1]),
+    'not_between'     : lambda a, b: not_(between(a, b[0], b[1]))
+}
+
+_FILTER_CONDS = {
+    'AND': lambda *a: and_(*a),
+    'OR' : lambda *a: or_(*a),
+}
 
 
 # ----------------------- Helpers ----------------------- #
@@ -271,7 +310,7 @@ def parse_exareme_args(fp):
         required = p['valueNotBlank']
         parser.add_argument(name, required=required)
 
-    args, _ = parser.parse_known_args(args=fake_args)  # TODO remove when ready
+    args, _ = parser.parse_known_args(args=fake_args)  # TODO remove fake_args when ready
     args.y = list(args.y
                   .replace(' ', '')
                   .split(','))
@@ -282,6 +321,7 @@ def parse_exareme_args(fp):
     args.dataset = list(args.dataset
                         .replace(' ', '')
                         .split(','))
+    args.filter = json.loads(args.filter)
     return args
 
 
@@ -299,7 +339,7 @@ class AlgorithmData(object):
 def get_model_variables(args, data, is_categorical):
     # Get formula from args or build if doesn't exist
     if args.formula:
-        formula = args.formula
+        formula = args.formula.replace('_', '~')  # fixme
     else:
         if args.x:
             var_tup = (args.y, args.x)
@@ -310,9 +350,10 @@ def get_model_variables(args, data, is_categorical):
     var_names = args.y
     if args.x:
         var_names.extend(args.x)
-    for var in var_names:
-        if is_categorical[var]:
-            formula = formula.replace(var, 'C({v}, {coding})'.format(v=var, coding=args.coding))
+    if args.coding:
+        for var in var_names:
+            if is_categorical[var]:
+                formula = formula.replace(var, 'C({v}, {coding})'.format(v=var, coding=args.coding))
     # Create variables (and possibly covariables)
     if args.x:
         model_vars, model_covars = dmatrices(formula, data, return_type='dataframe')
@@ -323,27 +364,53 @@ def get_model_variables(args, data, is_categorical):
 
 
 def read_data_from_db(args):
-    var_names = args.y
-    if args.x:
-        var_names.extend(args.x)
     engine, sqla_md = connect_to_db(args.input_local_DB)
     # Create tables
     data_table = Table(args.data_table, sqla_md, autoload=True)
     metadata_table = Table(args.metadata_table, sqla_md, autoload=True)
     # Get data
-    sel_data = select([data_table.c[var] for var in var_names])
-    data = pd.read_sql(sel_data, engine)
-    data = data.dropna()
+    var_names = args.y
+    if args.x:
+        var_names.extend(args.x)
+    data = select_data_from_datasets(table=data_table, engine=engine, var_names=var_names, datasets=args.dataset,
+                                     query_filter=args.filter)
     # Privacy check
     if len(data) < _PRIVACY_THRESHOLD:
         raise PrivacyError
     # Get isCategorical
+    is_categorical = select_iscategorical_from_metadata(engine, metadata_table, var_names)
+    return data, is_categorical
+
+
+def select_iscategorical_from_metadata(engine, metadata_table, var_names):
     is_categorical = dict()
     for vn in var_names:
         sel_iscat = select([metadata_table.c.isCategorical]).where(metadata_table.c.code == vn)
         result = engine.execute(sel_iscat)
         is_categorical[vn] = result.fetchone()[0]
-    return data, is_categorical
+    return is_categorical
+
+
+def build_filter_clause(table, rules):
+    if 'condition' in rules:
+        cond = _FILTER_CONDS[rules['condition']]
+        rules = rules['rules']
+        return cond(*[build_filter_clause(table, rule) for rule in rules])
+    elif 'id' in rules:
+        var_name = rules['id']
+        op = _FILTER_OPERATORS[rules['operator']]
+        val = rules['value']
+        return op(table.c[var_name], val)
+
+
+def select_data_from_datasets(table, engine, var_names, datasets, query_filter):
+    dataset_clause = or_(*[table.c.dataset == ds for ds in datasets])
+    filter_clause = build_filter_clause(table, query_filter)
+    sel_stmt = select([table.c[var] for var in var_names]).where(dataset_clause).where(filter_clause)
+    data = pd.read_sql(sel_stmt, engine)
+    data.replace('', np.nan, inplace=True)  # todo remove when no empty str in dbs
+    data = data.dropna()
+    return data
 
 
 def connect_to_db(db_path):
@@ -556,7 +623,7 @@ class MyAlgorithm(LocalGlobal):
         sxx = self.fetch('sxx')
         means = sx.div(n_obs)
         stderr = sxx.sub(n_obs * np.square(means)).div(n_obs - 1).apply(np.sqrt)
-        self.result = {'mean': means, 'stderr': stderr}
+        self.result = {'mean': means, 'stderr': stderr, 'n_obs': n_obs}
 
 
 def run():
