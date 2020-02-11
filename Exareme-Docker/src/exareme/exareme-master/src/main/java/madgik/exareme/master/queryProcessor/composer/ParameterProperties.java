@@ -42,7 +42,7 @@ public class ParameterProperties {
             throw new AlgorithmException("The parameter field 'name' was not initialized in the properties.json file.");
         }
         if (label == null) {
-            throw new AlgorithmException("The parameter field 'desc' was not initialized in the properties.json file.");
+            throw new AlgorithmException("The parameter field 'label' was not initialized in the properties.json file.");
         }
         if (desc == null) {
             throw new AlgorithmException("The parameter field 'desc' was not initialized in the properties.json file.");
