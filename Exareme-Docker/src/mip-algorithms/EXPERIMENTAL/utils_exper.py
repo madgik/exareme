@@ -384,10 +384,11 @@ def read_data_from_db(args):
 
 def select_iscategorical_from_metadata(engine, metadata_table, var_names):
     is_categorical = dict()
-    for vn in var_names:
-        sel_iscat = select([metadata_table.c.isCategorical]).where(metadata_table.c.code == vn)
-        result = engine.execute(sel_iscat)
-        is_categorical[vn] = result.fetchone()[0]
+    sel_iscat = select([metadata_table.c.code, metadata_table.c.isCategorical]) \
+        .where(or_(*[metadata_table.c.code == vn for vn in var_names]))
+    result = engine.execute(sel_iscat)
+    for vn, i in result:
+        is_categorical[vn] = i
     return is_categorical
 
 
