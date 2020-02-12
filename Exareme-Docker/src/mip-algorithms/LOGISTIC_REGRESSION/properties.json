@@ -57,22 +57,10 @@
             "valueType": "string"
         },
         {
-            "name": "max_iter",
-            "desc": "Maximum number of iterations. Must be a positive integer.",
-            "type": "other",
-            "value": "",
-            "defaultValue": "20",
-            "valueNotBlank": false,
-            "valueMultiple": false,
-            "valueType": "integer",
-            "valueMin": 1,
-            "valueMax": 100
-        },
-        {
             "name": "formula",
             "desc": "Patsy formula  (R language syntax).",
             "type": "other",
-            "value": "gender _ alzheimerbroadcategory * lefthippocampus",
+            "value": "",
             "defaultValue": "",
             "valueNotBlank": false,
             "valueMultiple": false,
