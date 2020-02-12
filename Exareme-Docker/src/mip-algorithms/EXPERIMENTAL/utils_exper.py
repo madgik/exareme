@@ -20,17 +20,6 @@ from patsy import dmatrix, dmatrices
 
 from sqlalchemy import create_engine, MetaData, Table, select, or_, and_, not_, between
 
-# =======
-# Logging
-# =======
-logging.basicConfig(
-        format='%(asctime)s - %(levelname)s: %(message)s',
-        filename=os.path.splitext(__file__)[0] + '.log',
-        level=logging.INFO
-)
-logger = logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
-
-
 # ===================
 # Use only during dev
 # ===================
@@ -76,10 +65,11 @@ fake_args = [
     '-coding', None
 ]
 
-
 # =======
 # Globals
 # =======
+_LOGGING_LEVEL = logging.INFO
+
 _ALLOWED_METHODS = {'local_', 'global_'}
 
 _COMMON_ALGORITHM_ARGUMENTS = {
@@ -112,6 +102,32 @@ _FILTER_CONDS = {
     'AND': lambda *a: and_(*a),
     'OR' : lambda *a: or_(*a),
 }
+
+# =======
+# Logging
+# =======
+logging.basicConfig(
+        format='%(asctime)s - %(levelname)s: %(message)s',
+        filename=os.path.splitext(__file__)[0] + '.log',
+        level=_LOGGING_LEVEL
+)
+logger = logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)  # todo see if we can use DEBUG here
+
+
+# Logging decorator
+def logged(func):
+    def wrapper(*args, **kwargs):
+        try:
+            if _LOGGING_LEVEL == logging.INFO:
+                logging.info("Starting: '{0}'".format(func.__name__))
+            elif _LOGGING_LEVEL == logging.DEBUG:
+                logging.info("Starting: '{0}', args: {1}, kwargs: {2}".format(func.__name__, args, kwargs))
+            return func(*args, **kwargs)
+        except Exception as e:
+            logging.exception(e)
+            raise e
+
+    return wrapper
 
 
 # =======
@@ -147,36 +163,22 @@ class PrivacyError(Exception):
 
 
 # ================
-# Meta-programming
+# Metaclass
 # ================
-class Meta(type):
+class AlgorithmMeta(type):
     def __new__(mcs, name, bases, attrs):
         for key, attr in attrs.items():
             if callable(attr):
                 if attr.__name__ not in _ALLOWED_METHODS:
                     attrs[key] = logged(attr)
                 if attr.__name__ in _ALLOWED_METHODS:
-                    attrs[key] = logged(exareme(attr))
+                    attrs[key] = logged(algorithm_methods_decorator(attr))
             # if callable(attr) and attr.__name__ in _ALLOWED_METHODS:
-            #     attrs[key] = exareme(attr)
+            #     attrs[key] = algorithm_methods_decorator(attr)
         return type.__new__(mcs, name, bases, attrs)
 
 
-# Logging decorator
-def logged(func):
-    def wrapper(*args, **kwargs):
-        try:
-            logging.info("Starting: '{0}', args: {1}, kwargs: {2}".
-                          format(func.__name__, args, kwargs))
-            return func(*args, **kwargs)
-        except Exception as e:
-            logging.exception(e)
-            raise e
-
-    return wrapper
-
-
-def exareme(func):
+def algorithm_methods_decorator(func):
     func_name = func.__name__
     if func_name == 'local_':
         wrapper = make_local_wrapper(func)
@@ -479,7 +481,7 @@ def connect_to_db(db_path):
 # Algorithm Base Classes
 # ======================
 class Algorithm(object):
-    __metaclass__ = Meta
+    __metaclass__ = AlgorithmMeta
 
     def __init__(self):
         self._folder_path, name = os.path.split(__file__)
@@ -549,7 +551,6 @@ class MyAlgorithm(Algorithm):
         self.push_and_add(sxx=sxx)
 
     def global_(self):
-        x = self.data.variables
         print('This is global_')
         n_obs = self.fetch('n_obs')
         sx = self.fetch('sx')
