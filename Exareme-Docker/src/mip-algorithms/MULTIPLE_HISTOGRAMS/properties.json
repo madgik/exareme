@@ -4,7 +4,8 @@
 	"label": "Multiple Histograms",
 	"type": "python_multiple_local_global",
 	"parameters": [{
-			"name": "y",
+			"name": "x",
+			"label": "x",
 			"desc": "Variables from database to distribute among bins. The variable should be Real, Integer or String. The variable can be either numerical or categorical. It cannot be empty",
 			"type": "column",
 			"columnValuesSQLType": "real,integer,text",
@@ -15,7 +16,8 @@
 			"valueMultiple": true,
 			"valueType": "string"
 		}, {
-			"name": "x",
+			"name": "y",
+			"label": "y",
 			"desc": "Categorical variables from database. If not None, plots a histogram with a bar for each category in y",
 			"type": "column",
 			"columnValuesSQLType": "text,integer",
@@ -27,17 +29,17 @@
 			"valueType": "string"
 		}, {
 			"name": "bins",
+			"label": "bins",
 			"desc": "Bin of each variable in Json format",
 			"type": "other",
 			"value": "{ \"rightententorhinalarea\" : 35, \"righthippocampus\" : 35 }",
-			"min": 1,
-			"max": null,
-			"enumerations": null,
+			"valueMin": 1,
 			"valueNotBlank": false,
 			"valueMultiple": false,
 			"valueType": "json"
 		}, {
 			"name": "pathology",
+			"label": "pathology",
 			"desc": "The name of the pathology that the dataset belongs to.",
 			"type": "pathology",
 			"value": "dementia",
@@ -46,6 +48,7 @@
 			"valueType": "string"
 		}, {
 			"name": "dataset",
+			"label": "dataset",
 			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed.",
 			"type": "dataset",
 			"value": "desd-synthdata",
@@ -54,6 +57,7 @@
 			"valueType": "string"
 		}, {
 			"name": "filter",
+			"label": "filter",
 			"desc": "",
 			"type": "filter",
 			"value": "",

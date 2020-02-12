@@ -70,7 +70,7 @@ if [[ "${MASTER_FLAG}" != "master" ]]; then   #worker
 		deleteKeysFromConsul "$EXAREME_ACTIVE_WORKERS_PATH"
 	fi
 	if [[ "$(curl -s -o  /dev/null -i -w "%{http_code}\n" ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/?keys)" = "200" ]]; then
-		MY_IP=$(/sbin/ifconfig | grep "inet " | awk -F: '{print $2}' | grep '10.20' | awk '{print $1;}' | head -n 1)
+		MY_IP=$(/sbin/ifconfig eth0 | grep "inet" | awk -F: '{print $2}' | cut -d ' ' -f 1)
 		MASTER_IP=$(curl -s ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/$(curl -s ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/?keys | jq -r '.[]' | sed "s/${EXAREME_MASTER_PATH}\///g")?raw)
 		#Delete worker from master's registry
 		curl -s ${MASTER_IP}:9091/remove/worker?IP=${MY_IP}		#TODO check if that was done?
@@ -92,7 +92,7 @@ mkdir -p  /tmp/demo/db/
 if [[ "${MASTER_FLAG}" != "master" ]]; then
 
 	DESC="exareme-worker"
-	MY_IP=$(/sbin/ifconfig | grep "inet " | awk -F: '{print $2}' | grep '10.20' | awk '{print $1;}' | head -n 1)
+	MY_IP=$(/sbin/ifconfig eth0 | grep "inet" | awk -F: '{print $2}' | cut -d ' ' -f 1)
 
 	#Try accessing Consul[key-value store]
 	echo -e "\nWorker node["${NODE_NAME}","${MY_IP}"] trying to connect with Consul[key-value store]"
@@ -197,7 +197,7 @@ Switch TAG to 'dev' to see Error messages coming from EXAREME..Exiting..."
 #This is the Master
 else
 	DESC="exareme-master"
-	MY_IP=$(/sbin/ifconfig | grep "inet " | awk -F: '{print $2}' | grep '10.20' | awk '{print $1;}' | head -n 1)
+	MY_IP=$(/sbin/ifconfig eth0 | grep "inet" | awk -F: '{print $2}' | cut -d ' ' -f 1)
 
 	echo -e "\nMaster node["${NODE_NAME}","${MY_IP}"] trying to connect with Consul[key-value store]"
 

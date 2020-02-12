@@ -5,8 +5,6 @@ package madgik.exareme.worker.art.remote;
 
 import com.google.gson.Gson;
 import madgik.exareme.common.art.entity.EntityName;
-import madgik.exareme.worker.art.container.ContainerProxy;
-import madgik.exareme.worker.art.registry.ArtRegistryLocator;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
@@ -24,6 +22,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.Semaphore;
 
 /**
  * University of Athens /
@@ -78,6 +77,8 @@ public abstract class RmiObjectProxy<T> implements ObjectProxy<T> {
     public T getRemoteObject() throws RemoteException {
         String name = null;
         Iterator<Map.Entry<String, String>> entries;
+        Gson gson = new Gson();
+        Semaphore semaphore = new Semaphore(1);
 
         if (isConnected == false) {
             try {
@@ -87,8 +88,12 @@ public abstract class RmiObjectProxy<T> implements ObjectProxy<T> {
                 //Get the Exareme's node name that is not responding
                 HashMap<String,String> names = null;
                 try {
+                    semaphore.acquire();
                     names = getNamesOfActiveNodes();
-                } catch (IOException e) {
+                    for (Map.Entry<String, String> entry : names.entrySet()) {
+                        log.debug("ActiveNodes from Consul key-value store: " + entry.getKey() + " = " + entry.getValue());
+                    }
+                } catch (IOException | InterruptedException e) {
                     e.printStackTrace();
                 }
 
@@ -98,33 +103,30 @@ public abstract class RmiObjectProxy<T> implements ObjectProxy<T> {
                         Map.Entry<String, String> entry = entries.next();
                         if (Objects.equals(entry.getKey(), regEntityName.getIP())) {
                             name = entry.getValue();
-                            break;
-                        }
-                    }
-                    //Search if the Exareme's node IP exist in Exareme's registry
-                    for (ContainerProxy containerProxy : ArtRegistryLocator.getArtRegistryProxy().getContainers()) {
-                        log.debug("Container: " + containerProxy.getEntityName().getIP() + " : " +
-                                containerProxy.getEntityName().getName());
-                        if (containerProxy.getEntityName().getIP().equals(regEntityName.getIP())) {
-                            //If exists, remove it from Exareme's registry
-                            ArtRegistryLocator.getArtRegistryProxy().removeContainer(containerProxy.getEntityName());
-                            log.info("Worker node:[" + name + "," + regEntityName.getIP() + "]" + " removed successfully from Exareme's registry");
+                            log.info("Found node with name: "+name+" that seems to be down..");
 
-                            //If exist in Consul[Key-Value store], delete infos regarding that Exareme node from there
-                            if (name != null) {
-                                try {
-                                    deleteFromConsul(System.getenv("DATA") + "/" + name);
-                                    deleteFromConsul(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/" + name);
-                                    log.info("Worker node:[" + name + "," + regEntityName.getIP() + "]" + " removed from Consul key-value store");
-                                } catch (IOException E) {
-                                    throw new RemoteException("Can not contact Consul Key value Store");
+                            try {
+                                String pathologyKey = searchConsul(System.getenv("DATA") + "/" + name + "?keys");
+                                String[] pathologyKeyArray = gson.fromJson(pathologyKey, String[].class);
+                                for( String p: pathologyKeyArray) {
+                                    deleteFromConsul(p);            //Delete every pathology for node with name $name
                                 }
+                                deleteFromConsul(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/" + name);
+                                log.info("Worker node:[" + name + "," + regEntityName.getIP() + "]" + " removed from Consul key-value store");
+                            } catch (IOException E) {
+                                throw new RemoteException("Can not contact Consul Key value Store");
                             }
                             break;
                         }
                     }
                 }
-                throw new RemoteException("There was an error with worker "+ "[" + name + "," + regEntityName.getIP() + "].");
+                throw new RemoteException("There was an error with worker "+ "["+ regEntityName.getIP() + "].");
+            }
+            finally {
+                boolean acquired = semaphore.tryAcquire();
+                if (!acquired) {
+                    semaphore.release();
+                }
             }
         }
         return remoteObject;
@@ -233,3 +235,4 @@ public abstract class RmiObjectProxy<T> implements ObjectProxy<T> {
         return RetryPolicyFactory.defaultRetryPolicy();
     }
 }
+
