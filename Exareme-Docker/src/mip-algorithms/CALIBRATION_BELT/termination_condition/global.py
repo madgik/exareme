@@ -9,15 +9,16 @@ sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) +
                 '/CALIBRATION_BELT/')
 
-from algorithm_utils import StateData, set_algorithms_output_data, MAX_ITER_LOGISTIC
+from algorithm_utils import StateData, set_algorithms_output_data
 from cb_lib import PREC
 
+_MAX_ITER = 40
 
 def termination_condition(global_state):
     delta_dict = global_state['delta_dict']
     iter = global_state['iter']
     if reduce((lambda x, y: x and y),
-              [delta < PREC for delta in delta_dict.values()]) or iter >= MAX_ITER_LOGISTIC:
+              [delta < PREC for delta in delta_dict.values()]) or iter >= _MAX_ITER:
         set_algorithms_output_data('STOP')
     else:
         set_algorithms_output_data('CONTINUE')
