@@ -1,7 +1,7 @@
 # Forward compatibility
 from __future__ import division
 from __future__ import print_function
-from __future__ import unicode_literals
+# from __future__ import unicode_literals
 
 import codecs
 import errno
@@ -9,6 +9,7 @@ import json
 import os
 import pickle
 from functools import wraps
+import logging
 import sqlite3
 
 from argparse import ArgumentParser
@@ -19,8 +20,20 @@ from patsy import dmatrix, dmatrices
 
 from sqlalchemy import create_engine, MetaData, Table, select, or_, and_, not_, between
 
-# ------------------------ Use only during dev ---------------- #
+# =======
+# Logging
+# =======
+logging.basicConfig(
+        format='%(asctime)s - %(levelname)s: %(message)s',
+        filename=os.path.splitext(__file__)[0] + '.log',
+        level=logging.INFO
+)
+logger = logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
+
+# ===================
+# Use only during dev
+# ===================
 my_filter = '''{
     "condition": "AND",
     "rules"    : [
@@ -63,7 +76,10 @@ fake_args = [
     '-coding', None
 ]
 
-# -------------------------- Globals -------------------------- #
+
+# =======
+# Globals
+# =======
 _ALLOWED_METHODS = {'local_', 'global_'}
 
 _COMMON_ALGORITHM_ARGUMENTS = {
@@ -98,7 +114,9 @@ _FILTER_CONDS = {
 }
 
 
-# ----------------------- Helpers ----------------------- #
+# =======
+# Helpers
+# =======
 def make_dirs(fname):
     if not os.path.exists(os.path.dirname(fname)):
         try:
@@ -108,7 +126,9 @@ def make_dirs(fname):
                 raise
 
 
-# ------------------------- Exceptions ------------------------- #
+# ==========
+# Exceptions
+# ==========
 class UnknownFunctionError(Exception):
     pass
 
@@ -118,7 +138,7 @@ class TransferError(Exception):
 
 
 class AlgorithmError(Exception):
-    def __getitem__(self, item):
+    def __getattr__(self, key):
         raise self
 
 
@@ -126,42 +146,67 @@ class PrivacyError(Exception):
     pass
 
 
-# ----------------------- Meta-programming ----------------------- #
+# ================
+# Meta-programming
+# ================
 class Meta(type):
     def __new__(mcs, name, bases, attrs):
-        for key, value in attrs.items():
-            if callable(value) and value.__name__ in _ALLOWED_METHODS:
-                attrs[key] = exareme(value)
+        for key, attr in attrs.items():
+            if callable(attr):
+                if attr.__name__ not in _ALLOWED_METHODS:
+                    attrs[key] = logged(attr)
+                if attr.__name__ in _ALLOWED_METHODS:
+                    attrs[key] = logged(exareme(attr))
+            # if callable(attr) and attr.__name__ in _ALLOWED_METHODS:
+            #     attrs[key] = exareme(attr)
         return type.__new__(mcs, name, bases, attrs)
+
+
+# Logging decorator
+def logged(func):
+    def wrapper(*args, **kwargs):
+        try:
+            logging.info("Starting: '{0}', args: {1}, kwargs: {2}".
+                          format(func.__name__, args, kwargs))
+            return func(*args, **kwargs)
+        except Exception as e:
+            logging.exception(e)
+            raise e
+
+    return wrapper
 
 
 def exareme(func):
     func_name = func.__name__
     if func_name == 'local_':
-        @wraps(func)
-        def wrapper(self):
-            print('Getting data from DBs')
-            self.data = AlgorithmData(self._args)
-            print('Start local_')
-            func(self)
-            print('End local_')
-            print('Pushing all to global node')
-            self._transfer_struct.transfer_all()
-            print('\n')
+        wrapper = make_local_wrapper(func)
     elif func_name == 'global_':
-        @wraps(func)
-        def wrapper(self):
-            self.data = AlgorithmError('There are no data available on the global node!')
-            print('Fetching all from local nodes')
-            self._transfer_struct = TransferStruct.fetch_all(transfer_db='transfer_db.txt')
-            print('Start global_')
-            func(self)
-            print('End global_')
-            print('Displaying result')
-            self.set_algorithms_output_data()
-            print('\n')
+        wrapper = make_global_wrapper(func)
     else:
+        logging.error('Unknown function name.')
         raise UnknownFunctionError(func_name)
+    return wrapper
+
+
+def make_local_wrapper(func):
+    @wraps(func)
+    def wrapper(self):
+        self.data = AlgorithmData(self._args)
+        func(self)
+        self._transfer_struct.transfer_all()
+
+    return wrapper
+
+
+def make_global_wrapper(func):
+    @wraps(func)
+    def wrapper(self):
+        self.data = AlgorithmError('There are no data available on the global node. Only local nodes can access '
+                                   'data.')  # todo rephrase this
+        self._transfer_struct = TransferStruct.fetch_all(transfer_db='transfer_db.txt')
+        func(self)
+        self.set_algorithms_output_data()
+
     return wrapper
 
 
@@ -175,7 +220,9 @@ def one_kwarg(func):
     return wrapper
 
 
-# ----------------------- TransferStruct ----------------------- #
+# ==============
+# TransferStruct
+# ==============
 class TransferRule(object):
     def __init__(self, val):
         self.val = val
@@ -285,7 +332,10 @@ class TransferStruct(object):
 #         return obj
 #
 
-# ----------------------- Parameters ----------------------- #
+
+# ==========
+# Parameters
+# ==========
 class Parameters(object):
     def __init__(self, args):
         for name, val in args.__dict__.items():
@@ -325,7 +375,9 @@ def parse_exareme_args(fp):
     return args
 
 
-# ----------------------- Query DB ------------------------- #
+# ========
+# DB Tools
+# ========
 class AlgorithmData(object):
     def __init__(self, args):
         data, is_categorical = read_data_from_db(args)
@@ -337,6 +389,9 @@ class AlgorithmData(object):
 
 
 def get_model_variables(args, data, is_categorical):
+    from numpy import log as log
+    from numpy import exp as exp
+    _ = log(exp(1))  # This line is needed to prevent import opimizer from removing above lines
     # Get formula from args or build if doesn't exist
     if args.formula:
         formula = args.formula.replace('_', '~')  # fixme
@@ -415,147 +470,23 @@ def select_data_from_datasets(table, engine, var_names, datasets, query_filter):
 
 
 def connect_to_db(db_path):
-    engine = create_engine('sqlite:///{}'.format(db_path), echo=True)
+    engine = create_engine('sqlite:///{}'.format(db_path), echo=False)
     sqla_md = MetaData(engine)
     return engine, sqla_md
 
 
-# TODO refactor this shit with SQLAlchemy
-def query_from_formula(args, vars_tuples):
-    fname_db = args.input_local_DB
-    formula = args.formula
-    formula = formula.replace('_', '~')  # TODO Fix tilda problem and remove
-    no_intercept = args.no_interecpt
-    coding = args.coding
-    dataset = args.dataset
-    query_filter = args.filter
-    data_table = args.data_table
-    metadata_table = args.metadata_table
-    metadata_code_column = args.metadata_code_column
-    metadata_isCategorical_column = args.metadata_isCategorical_column
-
-    from numpy import log as log
-    from numpy import exp as exp
-    _ = log(exp(1))  # This line is needed to prevent import opimizer from removing above lines
-
-    assert coding in {None, 'Treatment', 'Poly', 'Sum', 'Diff', 'Helmert'}
-    dataset = dataset.replace(' ', '').split(',')
-
-    # If no formula is given, generate a trivial one
-    if formula == '':
-        formula = '~'.join(map(lambda x: '+'.join(x), vars_tuples))
-    vars_tuples = reduce(lambda a, b: a + b, vars_tuples)
-
-    # Parse filter if given
-    if query_filter == '':
-        query_filter_clause = ''
-    else:
-        query_filter_clause = parse_filter(json.loads(query_filter))
-
-    if no_intercept:
-        formula += '-1'
-    conn = sqlite3.connect(fname_db)
-
-    # Define query forming functions
-    def iscateg_query(var):
-        return "SELECT {is_cat} FROM {metadata} WHERE {code}=='{var}';".format(is_cat=metadata_isCategorical_column,
-                                                                               metadata=metadata_table,
-                                                                               code=metadata_code_column,
-                                                                               var=var)
-
-    def count_query(varz):
-        return "SELECT COUNT({var}) FROM {data} WHERE ({var_clause}) AND ({ds_clause}) {flt_clause};".format(
-                var=varz[0],
-                data=data_table,
-                var_clause=' AND '.join(["{v}!='' and {v} is not null".format(v=v) for v in varz]),
-                ds_clause=' OR '.join(["dataset=='{d}'".format(d=d) for d in dataset]),
-                flt_clause='' if query_filter_clause == '' else 'AND ({flt_clause})'.format(
-                        flt_clause=query_filter_clause)
-        )
-
-    def data_query(varz, is_cat):
-        variables_casts = ', '.join(
-                [v if not c else 'CAST({v} AS text) AS {v}'.format(v=v) for v, c in
-                 zip(varz, is_cat)]
-        )
-        return "SELECT {variables} FROM {data} WHERE ({var_clause}) AND ({ds_clause})  {flt_clause};".format(
-                variables=variables_casts,
-                data=data_table,
-                var_clause=' AND '.join(["{v}!='' and {v} is not null".format(v=v) for v in varz]),
-                ds_clause=' OR '.join(["dataset=='{d}'".format(d=d) for d in dataset]),
-                flt_clause='' if query_filter_clause == '' else 'AND ({flt_clause})'.format(
-                        flt_clause=query_filter_clause)
-        )
-
-    # Perform privacy check
-    if pd.read_sql_query(sql=count_query(vars_tuples), con=conn).iat[0, 0] < _PRIVACY_THRESHOLD:
-        raise PrivacyError('Query results in illegal number of datapoints.')
-    # Pull is_categorical from metadata table
-    is_categorical = [pd.read_sql_query(sql=iscateg_query(v), con=conn).iat[0, 0] for v in
-                      vars_tuples]
-    if coding is not None:
-        for c, v in zip(is_categorical, vars_tuples):
-            if c:
-                formula = formula.replace(v, 'C({v}, {coding})'.format(v=v, coding=coding))
-    # Pull data from db and return design matrix(-ces)
-    data = pd.read_sql_query(sql=data_query(vars_tuples, is_categorical), con=conn)
-    if '~' in formula:
-        variables, covariables = dmatrices(formula, data, return_type='dataframe')
-        return variables, covariables
-    else:
-        variables = dmatrix(formula, data, return_type='dataframe')
-        return variables
-
-
-def parse_filter(query_filter):
-    _operators = {
-        "equal"      : "=",
-        "not_equal"  : "!=",
-        "less"       : "<",
-        "greater"    : ">",
-        "between"    : "between",
-        "not_between": "not_between"
-    }
-
-    def add_spaces(s):
-        return ' ' + s + ' '
-
-    def format_rule(rule):
-        id_ = rule['id']
-        op = _operators[rule['operator']]
-        val = rule['value']
-        type_ = rule['type']
-        if type_ == 'string':
-            if type(val) == list:
-                val = ["'{v}'".format(v=v) for v in val]
-            else:
-                val = "'{v}'".format(v=val)
-        if op == 'between':
-            return "{id} BETWEEN {val1} AND {val2}".format(id=id_, op=op, val1=val[0], val2=val[1])
-        elif op == 'not_between':
-            return "{id} NOT BETWEEN {val1} AND {val2}".format(id=id_, op=op, val1=val[0], val2=val[1])
-        else:
-            return "{id}{op}{val}".format(id=id_, op=op, val=val)
-
-    def format_group(group):
-        return '({group})'.format(group=group)
-
-    cond = query_filter['condition']
-    rules = query_filter['rules']
-    return add_spaces(cond).join(
-            [format_rule(rule=rule)
-             if 'id' in rule else format_group(group=parse_filter(rule)) for rule in rules])
-
-
-# ----------------------- Algorithms ----------------------- #
+# ======================
+# Algorithm Base Classes
+# ======================
 class Algorithm(object):
     __metaclass__ = Meta
 
     def __init__(self):
-        self._folder_path = os.path.split(__file__)[0]
+        self._folder_path, name = os.path.split(__file__)
+        self._name = os.path.splitext(name)[0]
         self._args = parse_exareme_args(self._folder_path)
         self.parameters = Parameters(self._args)
-        self.data = AlgorithmData(self._args)
+        self.data = None  # AlgorithmData(self._args)
         self._transfer_struct = TransferStruct()
         self.result = None
 
@@ -601,10 +532,10 @@ class LocalGlobal(Algorithm):
         raise NotImplementedError
 
 
-# =============================== Tests =============================== #
-
-
-class MyAlgorithm(LocalGlobal):
+# =====
+# Tests
+# =====
+class MyAlgorithm(Algorithm):
     def local_(self):
         print('This is local_')
         x = self.data.variables
@@ -618,6 +549,7 @@ class MyAlgorithm(LocalGlobal):
         self.push_and_add(sxx=sxx)
 
     def global_(self):
+        x = self.data.variables
         print('This is global_')
         n_obs = self.fetch('n_obs')
         sx = self.fetch('sx')
