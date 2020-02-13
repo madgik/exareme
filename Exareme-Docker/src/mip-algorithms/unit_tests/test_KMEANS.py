@@ -11,7 +11,7 @@ from rpy2.robjects.packages import importr
 import rpy2.robjects as robjects
 
 
-endpointUrl='http://88.197.53.34:9090/mining/query/KMEANS'
+endpointUrl='http://88.197.53.100:9090/mining/query/KMEANS'
 folderPath = 'R_scripts'
 file ='kMeans.Rmd'
 
