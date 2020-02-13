@@ -19,7 +19,7 @@ echo "EXAREME HOME DIR: $EXAREME_HOME";
 . ./exareme-env.sh  &> /dev/null
 
 #maybe simply pass MASTER_IP from bootstrap
-EXAREME_MASTER=`/sbin/ifconfig | grep "inet " | awk -F: '{print $2}'  | grep '10.20' | awk '{print $1;}' | head -n 1`;	#TODO 10.20 always?
+EXAREME_MASTER=`/sbin/ifconfig eth0 | grep "inet" | awk -F: '{print $2}' | cut -d ' ' -f 1`;
 echo "EXAREME_HOST : $EXAREME_MASTER";
 echo "EXAREME_USER: $EXAREME_USER";
 ####################################################################################################

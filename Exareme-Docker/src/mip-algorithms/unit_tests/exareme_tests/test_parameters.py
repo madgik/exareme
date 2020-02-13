@@ -3,8 +3,8 @@ import os
 import json
 import logging
 
-endpointUrl1='http://88.197.53.38:9090/mining/query/LINEAR_REGRESSION'
-endpointUrl2='http://88.197.53.38:9090/mining/query/LOGISTIC_REGRESSION'
+endpointUrl1='http://88.197.53.100:9090/mining/query/LINEAR_REGRESSION'
+endpointUrl2='http://88.197.53.100:9090/mining/query/LOGISTIC_REGRESSION'
 
 def test_valueEnumerationsParameter():
     logging.info("---------- TEST : valueEnumerations throwing error.")

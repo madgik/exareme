@@ -5,6 +5,7 @@
 	"type": "iterative",
 	"parameters": [{
 			"name": "x",
+			"label": "x",
 			"desc": "Independent variables: A list of categorical variables from database.",
 			"type": "column",
 			"columnValuesSQLType": "text,integer",
@@ -16,6 +17,7 @@
 			"valueType": "string"
 		}, {
 			"name": "y",
+			"label": "y",
 			"desc": "Dependent variable: A categorical variable from database.",
 			"type": "column",
 			"columnValuesSQLType": "text,integer",
@@ -27,6 +29,7 @@
 			"valueType": "string"
 		}, {
 			"name": "dataset",
+			"label": "dataset",
 			"desc": "The names of one or more datasets, in which the algorithm will be executed.",
 			"type": "dataset",
 			"value": "desd-synthdata",
@@ -35,6 +38,7 @@
 			"valueType": "string"
 		}, {
 			"name": "filter",
+			"label": "filter",
 			"desc": "",
 			"type": "filter",
 			"value": "",
@@ -43,6 +47,7 @@
 			"valueType": "string"
 		}, {
 			"name": "pathology",
+			"label": "pathology",
 			"desc": "The name of the pathology in which the dataset belongs to.",
 			"type": "pathology",
 			"value": "dementia",

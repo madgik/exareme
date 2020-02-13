@@ -122,11 +122,11 @@ worker88_197_53_100 ansible_ssh_pass="{{worker88_197_53_100_ssh_pass}}"
 [You can find the hostname of any machine by executing ```hostname``` in terminal]
 
 [Requirement1: Mind that the variable ```data_path``` is the path where pathology folders are stored in your Target machine (Each Pathology folder includes the Data CSV (datasets.csv) and the Metadata file (CDEsMetadata.json))]<br/>
-[Requirement2: Mind that the variable ```home_path``` is the path where ```Federated-Deployment/Compose-Files/``` will be stored in the master node. Compose-Files
-contains 2 docker-compose.yaml files for deploying the services. The ```home_path``` can be Any path in which become_user has permissions.]
 
-You can see that there are 2 main categories in hosts.ini file. The first one is ```[master]```, the second one is ```[workers]```.
+[Requirement2: Mind that the variable ```home_path``` is the path where ```Federated-Deployment/Compose-Files/``` will be copied and stored in the master node. Compose-Files contains 2 docker-compose.yaml files for deploying the services. 
+The ```home_path``` can be Any path in which become_user has permissions. If the path does not exist in the master node,then any sub-folders are created automatically during the copy.]<br/>
 
+You can see that there are 2 main categories in hosts.ini file. The first one is ```[master]```, the second one is ```[workers]```. <br/>
 You can always add more workers following the template given above: </br>
 a) by adding the name workerX of the worker under [workers] and </br>
 b) creating a tag [workerX] with all the necessary variables. </br>
@@ -183,9 +183,6 @@ It will ask for a vault-password that you will need to enter it each time you ru
 
 Here you will add
 ```
-# remote_user and ssh_pass will be user to login to the target hostname
-# become_user and become_pass will be used to execute docker and other commands. Make sure that user has permission to run docker commands. You could use root for become_user if possible.
-
 master_remote_user: your_username
 master_become_user: your_username
 master_ssh_pass: your_password
@@ -201,7 +198,13 @@ worker88_197_53_100_become_user: your_username
 worker88_197_53_100_ssh_pass: your_password
 worker88_197_53_100_become_pass: your_password
 ```
-all in plaintext. If you have more than 2 workers, you will add those too by adding ```workerX_...``` in front of each variable where X is the IP of the node with ```.``` replaced by ```_```.<br/>
+all in plaintext where:<br/>
+a)remote_user and ssh_pass will be user to login to the target hostname<br/>
+b)become_user and become_pass will be used to execute docker and other commands. Make sure that become_user has permission to run docker commands (add user to docker group in the target machines).You could use root for become_user if possible.
+<br/><br/>
+Keep in mind that you must be able to ```ssh remote_user@ansible_host``` in *all target machines* by only providing the ```ssh_pass``` as a password.If this is not the case, consider to change your ssh configurations.
+
+If you have more than 2 workers, you will add those too by adding ```workerX_...``` in front of each variable where X is the IP of the node with ```.``` replaced by ```_```.<br/>
 [Keep in mind that your password can be anything you want But ansible has a special character for comments ```#``` . If your password contains that specific character ansible will take the characters next to it as comments.]<br/>
 When you exit you can see that vault.yaml is encrypted with all your sensitive information (credentials) in there.
 
