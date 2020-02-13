@@ -148,30 +148,51 @@ if [[ "${MASTER_FLAG}" != "master" ]]; then
 		fi
 	done
 
+    if [[ ${TAG} == "dev" ]]; then
+        echo "Running set-local-datasets."
+	    ./set-local-datasets.sh
 
-	# Health check for Worker. HEALTH_CHECK algorithm execution
-	echo "Health check for Worker node["${MY_IP}","${NODE_NAME}"]"
-	check="$(curl -s ${MASTER_IP}:9092/check/worker?IP_MASTER=${MASTER_IP}?IP_WORKER=${MY_IP})"
+        echo -e "\nDEV version: Worker node["${MY_IP}","${NODE_NAME}"] may be connected to Master node["${MASTER_IP}","${MASTER_NAME}"]"
+        curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_ACTIVE_WORKERS_PATH}/${NODE_NAME} <<< ${MY_IP}
+    elif [[ ${TAG} == "prod" ]]; then
+        #Health check for Worker. HEALTH_CHECK algorithm execution
+        echo "Health check for Worker node["${MY_IP}","${NODE_NAME}"]"
 
-	#error: Something went wrong could happen (it could be madis..)
-	if [[ $( echo ${check} | jq '.error') != null ]]; then
-		echo ${check} | jq '.error'
-		echo -e  "\nExiting.."
-		exit 1
-	fi
+        check="$(curl -s ${MASTER_IP}:9092/check/worker?IP_MASTER=${MASTER_IP}?IP_WORKER=${MY_IP})"
 
-	getNames="$( echo ${check} | jq '.active_nodes')"
+        if [[ -z ${check} ]]; then
+            #If curl returned nothing, something is wrong. We can not know what is wrong though..
+            printf "Health_Check algorithm did not return anything...Switch TAG to 'dev' to see Error messages coming\
+from EXAREME..Exiting"
+            exit 1
+        else
+            #check if what curl returned is JSON
+            echo ${check} | jq empty
+            #if NOT JSON an error code will be returned (!=0)
+            check_code=$?
+            if [[ ${check_code} -ne 0 ]]; then
+                echo "An error has occurred: " ${check} ".....Exiting"
+                exit 1
+            else
+                getNames="$( echo ${check} | jq '.active_nodes')"
 
-	#Retrieve result as json. If $NODE_NAME exists in result, the algorithm run in the specific node
-#	if [[ $getNames = *${NODE_NAME}* ]]; then
-		echo -e "\nWorker node["${MY_IP}","${NODE_NAME}"] connected to Master node["${MASTER_IP}","${MASTER_NAME}"]"
-		curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_ACTIVE_WORKERS_PATH}/${NODE_NAME} <<< ${MY_IP}
-#	else
-#		echo "Worker node["${MY_IP}","${NODE_NAME}]" seems that is not connected with the Master.Exiting..."
-#		exit 1
-#	fi
+                #Retrieve result as json. If $NODE_NAME exists in result, the algorithm run in the specific node
+                if [[ ${getNames} = *${NODE_NAME}* ]]; then
+                    echo -e "\nWorker node["${MY_IP}","${NODE_NAME}"] connected to Master node["${MASTER_IP}","${MASTER_NAME}"]"
+                    curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_ACTIVE_WORKERS_PATH}/${NODE_NAME} <<< ${MY_IP}
 
+                    echo "Running set-local-datasets."
+                    ./set-local-datasets.sh
 
+                else
+                    echo ${check}
+                    echo "Worker node["${MY_IP}","${NODE_NAME}]" seems that is not connected with the Master..\
+Switch TAG to 'dev' to see Error messages coming from EXAREME..Exiting..."
+                    exit 1
+                fi
+            fi
+        fi
+    fi
 
 #This is the Master
 else
@@ -232,7 +253,6 @@ else
 			fi
 		done
 	
-
         if [[ ${TAG} == "dev" ]]; then
              echo "Running set-local-datasets."
 		    ./set-local-datasets.sh

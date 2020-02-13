@@ -53,7 +53,7 @@ services:
       - EXAREME_ACTIVE_WORKERS_PATH=active_workers
       - EXAREME_MASTER_PATH=master
       - DATA=data
-      - TAG=prod   #dev or prod
+      - TAG=dev   #dev or prod
     depends_on:
       - exareme-keystore
     deploy:

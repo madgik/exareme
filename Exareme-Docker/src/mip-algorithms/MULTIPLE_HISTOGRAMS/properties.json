@@ -1,72 +1,77 @@
 {
-	"name": "MULTIPLE_HISTOGRAMS",
-	"desc": "Creates a histogram plot of x. Bins have a uniform width. Histogram displays the bins as rectangles such that the height of each rectangle indicates the number of elements in the bin.",
-	"label": "Multiple Histograms",
-	"type": "python_multiple_local_global",
-	"parameters": [{
-			"name": "y",
-			"label": "y",
-			"desc": "Variables from database to distribute among bins. The variable should be Real, Integer or String. The variable can be either numerical or categorical. It cannot be empty",
-			"type": "column",
-			"columnValuesSQLType": "real,integer,text",
-			"columnValuesIsCategorical": "",
-			"columnValuesNumOfEnumerations": "",
-			"value": "rightententorhinalarea,righthippocampus",
-			"valueNotBlank": true,
-			"valueMultiple": true,
-			"valueType": "string"
-		}, {
-			"name": "x",
-			"label": "x",
-			"desc": "Categorical variables from database. If not None, plots a histogram with a bar for each category in y",
-			"type": "column",
-			"columnValuesSQLType": "text,integer",
-			"columnValuesIsCategorical": "true",
-			"columnValuesNumOfEnumerations": "",
-			"value": "gender, alzheimerbroadcategory",
-			"valueNotBlank": false,
-			"valueMultiple": true,
-			"valueType": "string"
-		}, {
-			"name": "bins",
-			"label": "bins",
-			"desc": "Bin of each variable in Json format",
-			"type": "other",
-			"value": "{ \"rightententorhinalarea\" : 35, \"righthippocampus\" : 35 }",
-			"min": 1,
-			"max": null,
-			"enumerations": null,
-			"valueNotBlank": false,
-			"valueMultiple": false,
-			"valueType": "json"
-		}, {
-			"name": "pathology",
-			"label": "pathology",
-			"desc": "The name of the pathology that the dataset belongs to.",
-			"type": "pathology",
-			"value": "dementia",
-			"valueNotBlank": true,
-			"valueMultiple": false,
-			"valueType": "string"
-		}, {
-			"name": "dataset",
-			"label": "dataset",
-			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed.",
-			"type": "dataset",
-			"value": "desd-synthdata",
-			"valueNotBlank": true,
-			"valueMultiple": true,
-			"valueType": "string"
-		}, {
-			"name": "filter",
-			"label": "filter",
-			"desc": "",
-			"type": "filter",
-			"value": "",
-			"valueNotBlank": false,
-			"valueMultiple": true,
-			"valueType": "string"
-		}
-	]
+    "name": "MULTIPLE_HISTOGRAMS",
+    "desc": "Creates a histogram plot of x. Bins have a uniform width. Histogram displays the bins as rectangles such that the height of each rectangle indicates the number of elements in the bin.",
+    "label": "Multiple Histograms",
+    "type": "python_multiple_local_global",
+    "parameters": [
+        {
+            "name": "y",
+            "label": "y",
+            "desc": "Variables from database to distribute among bins. The variable should be Real, Integer or String. The variable can be either numerical or categorical. It cannot be empty",
+            "type": "column",
+            "columnValuesSQLType": "real,integer,text",
+            "columnValuesIsCategorical": "",
+            "columnValuesNumOfEnumerations": "",
+            "value": "rightententorhinalarea,righthippocampus",
+            "valueNotBlank": true,
+            "valueMultiple": true,
+            "valueType": "string"
+        },
+        {
+            "name": "x",
+            "label": "x",
+            "desc": "Categorical variables from database. If not None, plots a histogram with a bar for each category in y",
+            "type": "column",
+            "columnValuesSQLType": "text,integer",
+            "columnValuesIsCategorical": "true",
+            "columnValuesNumOfEnumerations": "",
+            "value": "gender, alzheimerbroadcategory",
+            "valueNotBlank": false,
+            "valueMultiple": true,
+            "valueType": "string"
+        },
+        {
+            "name": "bins",
+            "label": "bins",
+            "desc": "Bin of each variable in Json format",
+            "type": "other",
+            "value": "{ \"rightententorhinalarea\" : 35, \"righthippocampus\" : 35 }",
+            "min": 1,
+            "max": null,
+            "enumerations": null,
+            "valueNotBlank": false,
+            "valueMultiple": false,
+            "valueType": "json"
+        },
+        {
+            "name": "pathology",
+            "label": "pathology",
+            "desc": "The name of the pathology that the dataset belongs to.",
+            "type": "pathology",
+            "value": "dementia",
+            "valueNotBlank": true,
+            "valueMultiple": false,
+            "valueType": "string"
+        },
+        {
+            "name": "dataset",
+            "label": "dataset",
+            "desc": "It contains the names of one or more datasets, in which the algorithm will be executed.",
+            "type": "dataset",
+            "value": "desd-synthdata",
+            "valueNotBlank": true,
+            "valueMultiple": true,
+            "valueType": "string"
+        },
+        {
+            "name": "filter",
+            "label": "filter",
+            "desc": "",
+            "type": "filter",
+            "value": "",
+            "valueNotBlank": false,
+            "valueMultiple": true,
+            "valueType": "string"
+        }
+    ]
 }
-

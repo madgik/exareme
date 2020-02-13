@@ -7,7 +7,7 @@
     "parameters": [
         {
             "name": "x",
-			"label": "x",
+            "label": "x",
             "desc": "A list of variables from database. The variable should be Real, Integer. It cannot be empty",
             "type": "column",
             "columnValuesSQLType": "real, integer, text",
@@ -20,7 +20,7 @@
         },
         {
             "name": "y",
-			"label": "y",
+            "label": "y",
             "desc": "A single variable from database. The variable should be Categorical with only two categories (i.e. Boolean). It cannot be empty.",
             "type": "column",
             "columnValuesSQLType": "text, integer",
@@ -33,7 +33,7 @@
         },
         {
             "name": "pathology",
-			"label": "pathology",
+            "label": "pathology",
             "desc": "The name of the pathology that the dataset belongs to.",
             "type": "pathology",
             "value": "dementia",
@@ -43,7 +43,7 @@
         },
         {
             "name": "dataset",
-			"label": "dataset",
+            "label": "dataset",
             "desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty",
             "type": "dataset",
             "value": "adni",
@@ -53,7 +53,7 @@
         },
         {
             "name": "filter",
-			"label": "filter",
+            "label": "filter",
             "desc": "",
             "type": "filter",
             "value": "",
@@ -63,7 +63,7 @@
         },
         {
             "name": "formula",
-			"label": "formula",
+            "label": "formula",
             "desc": "Patsy formula  (R language syntax).",
             "type": "other",
             "value": "",
@@ -73,5 +73,4 @@
             "valueType": "string"
         }
     ]
-
 }

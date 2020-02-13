@@ -1,0 +1,120 @@
+{
+    "name": "CALIBRATION_BELT",
+    "desc": "Calibration Belt for Quality-of-Care Assessment.",
+    "label": "Calibration Belt",
+    "type": "python_iterative",
+    "status": "enabled",
+    "parameters": [
+        {
+            "name": "e",
+            "desc": "Expected probability of dichotomous outcome.",
+            "type": "column",
+            "columnValuesSQLType": "real",
+            "columnValuesIsCategorical": "false",
+            "columnValuesNumOfEnumerations": "",
+            "value": "probGiViTI_2017_Complessiva",
+            "valueNotBlank": true,
+            "valueMultiple": false,
+            "valueType": "string"
+        },
+        {
+            "name": "o",
+            "desc": "Observed dichotomous outcomes.",
+            "type": "column",
+            "columnValuesSQLType": "text, integer",
+            "columnValuesIsCategorical": "true",
+            "columnValuesNumOfEnumerations": "2",
+            "value": "hospOutcomeLatest_RIC10",
+            "valueNotBlank": true,
+            "valueMultiple": false,
+            "valueType": "string"
+        },
+        {
+            "name": "devel",
+            "desc": "A character string specifying if the model has been fit on the same dataset under evaluation (internal) or if the model has been developed on an external sample (external).",
+            "type": "other",
+            "value": "external",
+            "valueNotBlank": true,
+            "valueMultiple": false,
+            "valueType": "string",
+            "min": null,
+            "max": null,
+            "enumerations": [
+                "internal",
+                "external"
+            ]
+        },
+        {
+            "name": "max_deg",
+            "desc": "Maximum degree of polynomial.",
+            "type": "other",
+            "value": "4",
+            "valueNotBlank": true,
+            "valueMultiple": false,
+            "valueType": "integer",
+            "min": 1,
+            "max": 4,
+            "enumerations": null
+        },
+        {
+            "name": "confLevels",
+            "desc": "A pair of confidence levels for which the calibration belt will be computed.",
+            "type": "other",
+            "value": "0.80, 0.95",
+            "valueNotBlank": true,
+            "valueMultiple": true,
+            "valueType": "string"
+        },
+        {
+            "name": "thres",
+            "desc": "A numeric scalar between 0 and 1 representing the significance level adopted in the forward selection.",
+            "type": "other",
+            "value": "0.95",
+            "valueNotBlank": true,
+            "valueMultiple": false,
+            "valueType": "real",
+            "min": 0,
+            "max": 1,
+            "enumerations": null
+        },
+        {
+            "name": "num_points",
+            "desc": "A numeric scalar indicating the number of points to be considered to plot the calibration belt.",
+            "type": "other",
+            "value": "200",
+            "valueNotBlank": true,
+            "valueMultiple": false,
+            "valueType": "integer",
+            "min": 10,
+            "max": 200,
+            "enumerations": null
+        },
+        {
+            "name": "dataset",
+            "desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty",
+            "type": "dataset",
+            "value": "cb_data",
+            "valueNotBlank": true,
+            "valueMultiple": true,
+            "valueType": "string"
+        },
+        {
+            "name": "filter",
+            "desc": "",
+            "type": "filter",
+            "value": "",
+            "valueNotBlank": false,
+            "valueMultiple": true,
+            "valueType": "string"
+        },
+        {
+            "name": "pathology",
+            "desc": "The name of the pathology that the dataset belongs to.",
+            "type": "pathology",
+            "value": "dementia",
+            "valueNotBlank": true,
+            "valueMultiple": false,
+            "valueType": "string"
+        }
+    ]
+}
