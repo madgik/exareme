@@ -7,7 +7,6 @@ import math
 import re
 from decimal import *
 
-
 endpointUrl='http://88.197.53.100:9090/mining/query/ID3'
 
 def test_ID3_1():

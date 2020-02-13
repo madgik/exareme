@@ -1,99 +1,108 @@
 {
-	"name": "TTEST_ONESAMPLE",
-	"desc": "Student’s One-sample t-test",
-	"label": "T-Test One-Sample ",
-	"type": "local_global",
-	"parameters": [{
-			"name": "y",
-			"label": "y",
-			"desc": "A vector of strings naming the variables of interest in data",
-			"type": "column",
-			"columnValuesSQLType": "real,integer",
-			"columnValuesIsCategorical": "",
-			"columnValuesNumOfEnumerations": "",
-			"value": "righthippocampus,lefthippocampus",
-			"valueNotBlank": true,
-			"valueMultiple": true,
-			"valueType": "string"
-		}, {
-			"name": "testvalue",
-			"label": "testvalue",
-			"desc": "A number specifying the value of the null hypothesis",
-			"type": "other",
-			"value": "3.0",
-			"valueNotBlank": true,
-			"valueMultiple": false,
-			"valueType": "real"
-		}, {
-			"name": "hypothesis",
-			"label": "hypothesis",
-			"desc": "'different', 'greaterthan' or 'lessthan', the alternative hypothesis; different to testValue, greater than testValue, and less than testValue respectively ",
-			"type": "other",
-			"value": "different",
-			"valueEnumerations": ["different", "greaterthan", "lessthan"],
-			"valueNotBlank": true,
-			"valueMultiple": false,
-			"valueType": "string"
-		}, {
-			"name": "effectsize",
-			"label": "effectsize",
-			"desc": "1 or 0, provide Cohen's d effect sizes",
-			"type": "other",
-			"value": "1",
-			"valueMin": 0,
-			"valueMax": 1,
-			"valueNotBlank": true,
-			"valueMultiple": false,
-			"valueType": "integer"
-		}, {
-			"name": "ci",
-			"label": "ci",
-			"desc": "1 or 0, provide confidence intervals for the mean difference",
-			"type": "other",
-			"value": "1",
-			"valueMin": 0,
-			"valueMax": 1,
-			"valueNotBlank": true,
-			"valueMultiple": false,
-			"valueType": "integer"
-		}, {
-			"name": "meandiff",
-			"label": "meandiff",
-			"desc": "1 or 0, provide means and standard deviations ",
-			"type": "other",
-			"value": "1",
-			"valueMin": 0,
-			"valueMax": 1,
-			"valueNotBlank": true,
-			"valueMultiple": false,
-			"valueType": "integer"
-		}, {
-			"name": "pathology",
-			"label": "pathology",
-			"desc": "The name of the pathology in which the dataset belongs to.",
-			"type": "pathology",
-			"value": "dementia",
-			"valueNotBlank": true,
-			"valueMultiple": false,
-			"valueType": "string"
-		}, {
-			"name": "dataset",
-			"label": "dataset",
-			"desc": "The names of one or more datasets, in which the algorithm will be executed. ",
-			"type": "dataset",
-			"value": "desd-synthdata",
-			"valueNotBlank": true,
-			"valueMultiple": true,
-			"valueType": "string"
-		}, {
-			"name": "filter",
-			"label": "filter",
-			"desc": "",
-			"type": "filter",
-			"value": "",
-			"valueNotBlank": false,
-			"valueMultiple": true,
-			"valueType": "string"
-		}
-	]
+    "name": "TTEST_ONESAMPLE",
+    "desc": "Student’s One-sample t-test",
+    "label": "T-Test One-Sample ",
+    "type": "local_global",
+    "parameters": [
+        {
+            "name": "y",
+            "label": "y",
+            "desc": "A vector of strings naming the variables of interest in data",
+            "type": "column",
+            "columnValuesSQLType": "real,integer",
+            "columnValuesIsCategorical": "",
+            "columnValuesNumOfEnumerations": "",
+            "value": "righthippocampus,lefthippocampus",
+            "valueNotBlank": true,
+            "valueMultiple": true,
+            "valueType": "string"
+        },
+        {
+            "name": "testvalue",
+            "label": "testvalue",
+            "desc": "A number specifying the value of the null hypothesis",
+            "type": "other",
+            "value": "3.0",
+            "valueNotBlank": true,
+            "valueMultiple": false,
+            "valueType": "real"
+        },
+        {
+            "name": "hypothesis",
+            "label": "hypothesis",
+            "desc": "'different', 'greaterthan' or 'lessthan', the alternative hypothesis; different to testValue, greater than testValue, and less than testValue respectively ",
+            "type": "other",
+            "value": "different",
+            "valueEnumerations": ["different", "greaterthan", "lessthan"],
+            "valueNotBlank": true,
+            "valueMultiple": false,
+            "valueType": "string"
+        },
+        {
+            "name": "effectsize",
+            "label": "effectsize",
+            "desc": "1 or 0, provide Cohen's d effect sizes",
+            "type": "other",
+            "value": "1",
+            "valueMin": 0,
+            "valueMax": 1,
+            "valueNotBlank": true,
+            "valueMultiple": false,
+            "valueType": "integer"
+        },
+        {
+            "name": "ci",
+            "label": "ci",
+            "desc": "1 or 0, provide confidence intervals for the mean difference",
+            "type": "other",
+            "value": "1",
+            "valueMin": 0,
+            "valueMax": 1,
+            "valueNotBlank": true,
+            "valueMultiple": false,
+            "valueType": "integer"
+        },
+        {
+            "name": "meandiff",
+            "label": "meandiff",
+            "desc": "1 or 0, provide means and standard deviations ",
+            "type": "other",
+            "value": "1",
+            "valueMin": 0,
+            "valueMax": 1,
+            "valueNotBlank": true,
+            "valueMultiple": false,
+            "valueType": "integer"
+        },
+        {
+            "name": "pathology",
+            "label": "pathology",
+            "desc": "The name of the pathology in which the dataset belongs to.",
+            "type": "pathology",
+            "value": "dementia",
+            "valueNotBlank": true,
+            "valueMultiple": false,
+            "valueType": "string"
+        },
+        {
+            "name": "dataset",
+            "label": "dataset",
+            "desc": "The names of one or more datasets, in which the algorithm will be executed. ",
+            "type": "dataset",
+            "value": "desd-synthdata",
+            "valueNotBlank": true,
+            "valueMultiple": true,
+            "valueType": "string"
+        },
+        {
+            "name": "filter",
+            "label": "filter",
+            "desc": "",
+            "type": "filter",
+            "value": "",
+            "valueNotBlank": false,
+            "valueMultiple": true,
+            "valueType": "string"
+        }
+    ]
 }

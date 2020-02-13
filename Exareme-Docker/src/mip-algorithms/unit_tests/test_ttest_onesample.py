@@ -11,6 +11,7 @@ import rpy2.robjects as robjects
 
 
 endpointUrl='http://88.197.53.100:9090/mining/query/TTEST_ONESAMPLE'
+
 folderPath = 'R_scripts'
 file ='ttest_onesample.Rmd'
 
