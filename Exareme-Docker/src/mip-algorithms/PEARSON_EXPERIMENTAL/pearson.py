@@ -1,15 +1,9 @@
-import math
-import logging
-
 import numpy as np
 import scipy.special as special
 import scipy.stats as st
 
-from PEARSON_EXPERIMENTAL.mip_framework.algorithm_base import Algorithm
-from PEARSON_EXPERIMENTAL.mip_framework.exceptions import AlgorithmError
-
-P_VALUE_CUTOFF = 0.001
-P_VALUE_CUTOFF_STR = '< ' + str(P_VALUE_CUTOFF)
+from mip_algorithms import Algorithm, AlgorithmResult, TabularDataResource, HighChart, AlgorithmError
+from mip_algorithms.constants import P_VALUE_CUTOFF, P_VALUE_CUTOFF_STR
 
 
 class Pearson(Algorithm):
@@ -18,7 +12,7 @@ class Pearson(Algorithm):
 
     def local_(self):
         left_vars = right_vars = self.data.variables
-        if self.data.covariables:
+        if self.data.covariables is not None:
             right_vars = self.data.covariables
 
         n_obs = len(right_vars)
@@ -71,8 +65,8 @@ class Pearson(Algorithm):
         df = n_obs - 2
         for i in xrange(cm_shape[0]):
             for j in xrange(cm_shape[1]):
-                d = (math.sqrt(n_obs * sxx[i, j] - sx[i, j] * sx[i, j])
-                     * math.sqrt(n_obs * syy[i, j] - sy[i, j] * sy[i, j]))
+                d = (np.sqrt(n_obs * sxx[i, j] - sx[i, j] * sx[i, j])
+                     * np.sqrt(n_obs * syy[i, j] - sy[i, j] * sy[i, j]))
                 if d == 0:
                     r[i, j] = 0
                 else:
@@ -97,134 +91,45 @@ class Pearson(Algorithm):
                 else:
                     raise AlgorithmError('Pearson coefficient is NaN.')
 
-        # Format output data
-        # JSON raw
-        result_list = []
-        for i in xrange(cm_shape[0]):
-            for j in xrange(cm_shape[1]):
-                result_list.append({
-                    'Variables'                      : cm_names[i, j],
-                    'Pearson correlation coefficient': r[i, j],
-                    'p-value'                        : prob[i, j] if prob[
-                                                                         i, j] >= P_VALUE_CUTOFF else P_VALUE_CUTOFF_STR,
-                    'C.I. Lower'                     : ci_lo[i, j],
-                    'C.I. Upper'                     : ci_hi[i, j]
-                })
-        # Tabular summary
-        tabular_data_summary = [["variables", "Pearson correlation coefficient", "p-value", "lower c.i.", "upper c.i."]]
-        for i in xrange(cm_shape[0]):
-            for j in xrange(cm_shape[1]):
-                tabular_data_summary.append([
+        # Format results for output
+        raw_data = {
+            'Correlation matrix labels'      : cm_names.tolist(),
+            'x axis names'                   : rnames,
+            'y axis names'                   : lnames,
+            'Pearson correlation coefficient': r.tolist(),
+            'p-value'                        : prob.tolist(),
+            'C.I. Lower'                     : ci_lo.tolist(),
+            'C.I. Upper'                     : ci_hi.tolist()
+        }
+        correl_tabular = []
+        for i in range(cm_shape[0]):
+            for j in range(cm_shape[1]):
+                correl_tabular.append([
                     cm_names[i, j],
                     r[i, j],
-                    prob[i, j] if prob[i, j] >= P_VALUE_CUTOFF else P_VALUE_CUTOFF_STR,
+                    str(prob[i, j]) if prob[i, j] >= P_VALUE_CUTOFF else P_VALUE_CUTOFF_STR,
                     ci_lo[i, j],
                     ci_hi[i, j]
                 ])
-        tabular_data_summary_schema_fields = [
-            {
-                "name": "variables",
-                "type": "string"
-            }, {
-                "name": "Pearson correlation coefficient",
-                "type": "number"
-            }, {
-                "name": "p-value",
-                "type": "string"
-            }, {
-                "name": "lower c.i.",
-                "type": "number"
-            }, {
-                "name": "upper c.i.",
-                "type": "number"
-            },
-        ]
-        # Highchart Correlation Matrix
-        correlmatr_data = []
-        for i in xrange(cm_shape[0]):
-            for j in xrange(cm_shape[1]):
-                correlmatr_data.append({
-                    'x'    : j,
-                    'y'    : i,
-                    'value': round(r[i, j], 4),
-                    'name' : cm_names[i, j]
-                })
-
-        hichart_correl_matr = {
-            'chart'    : {
-                'type'           : 'heatmap',
-                'plotBorderWidth': 1
-            },
-            'title'    : {
-                'text': 'Pearson Correlation Matrix'
-            },
-            'xAxis'    : {
-                'categories': rnames
-            },
-            'yAxis'    : {
-                'categories': lnames,
-                'title'     : 'null'
-            },
-            'colorAxis': {
-                'stops'   : [
-                    [0, '#c4463a'],
-                    [0.5, '#ffffff'],
-                    [0.9, '#3060cf']
+        table_output = TabularDataResource.make(
+                fields=[
+                    'variables',
+                    'Pearson correlation coefficient',
+                    'p-value',
+                    'lower c.i.',
+                    'upper c.i.'
                 ],
-                'min'     : -1,
-                'max'     : 1,
-                'minColor': '#FFFFFF',
-                'maxColor': "#6699ff"
-            },
-            'legend'   : {
-                'align'        : 'right',
-                'layout'       : 'vertical',
-                'margin'       : 0,
-                'verticalAlign': 'top',
-                'y'            : 25,
-                'symbolHeight' : 280
-            },
-            'tooltip'  : {
-                'headerFormat': '',
-                'pointFormat' : '<b>{point.name}: {point.value}</b>',
-                'enabled'     : True
-            },
-            'series'   : [{
-                'name'       : 'coefficients',
-                'borderWidth': 1,
-                'data'       : correlmatr_data,
-                'dataLabels' : {
-                    'enabled': True,
-                    'color'  : '#000000'
-                }
-            }]
-        }
-        # Write output to JSON
-        self.result = {
-            'result': [
-                # Raw results
-                {
-                    "type": "application/json",
-                    "data": result_list
-                },
-                # Tabular data resource summary
-                {
-                    "type": "application/vnd.dataresource+json",
-                    "data":
-                        {
-                            "name"   : "Pearson correlation summary",
-                            "profile": "tabular-data-resource",
-                            "data"   : tabular_data_summary[1:],
-                            "schema" : {
-                                "fields": tabular_data_summary_schema_fields
-                            }
-                        }
+                data=correl_tabular,
+                title='Pearson Correlation Summary')
 
-                },
-                # Highchart correlation matrix
-                {
-                    "type": "application/vnd.highcharts+json",
-                    "data": hichart_correl_matr
-                }
-            ]
-        }
+        highchart = HighChart.correlation_heatmap(
+                correlation_matrix=r,
+                x_axis_names=rnames,
+                y_axis_names=lnames,
+                title='Pearson Correlation Heatmap'
+        )
+        self.result = AlgorithmResult(
+                raw_data=raw_data,
+                tables=[table_output],
+                highcharts=[highchart]
+        )

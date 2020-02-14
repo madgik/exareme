@@ -53,6 +53,16 @@
             "valueNotBlank": false,
             "valueMultiple": true,
             "valueType": "string"
+        },
+        {
+            "name": "formula",
+            "desc": "Patsy formula  (R language syntax).",
+            "type": "other",
+            "value": "",
+            "defaultValue": "",
+            "valueNotBlank": false,
+            "valueMultiple": false,
+            "valueType": "string"
         }
     ]
 }
