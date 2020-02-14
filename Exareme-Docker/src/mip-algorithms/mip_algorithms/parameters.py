@@ -3,7 +3,7 @@ import logging
 import os
 from argparse import ArgumentParser
 
-from mip_algorithms import _LOGGING_LEVEL_ALG, logged
+from mip_algorithms import LOGGING_LEVEL_ALG, logged
 
 _COMMON_ALGORITHM_ARGUMENTS = {
     'input_local_DB',
@@ -29,9 +29,9 @@ class Parameters(object):
         return getattr(self, name)
 
     def __repr__(self):
-        if _LOGGING_LEVEL_ALG == logging.INFO:
+        if LOGGING_LEVEL_ALG == logging.INFO:
             return 'Parameters()'
-        elif _LOGGING_LEVEL_ALG == logging.DEBUG:
+        elif LOGGING_LEVEL_ALG == logging.DEBUG:
             r = 'Parameters('
             for k, v in self.__dict__.items():
                 r += '\n{k}={v}'.format(k=k, v=v)

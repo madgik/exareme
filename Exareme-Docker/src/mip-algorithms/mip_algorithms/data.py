@@ -2,7 +2,8 @@ import logging
 
 import numpy as np
 import pandas as pd
-from mip_algorithms import _LOGGING_LEVEL_ALG, logged
+from mip_algorithms import logged
+from mip_algorithms.constants import LOGGING_LEVEL_ALG
 from mip_algorithms.exceptions import PrivacyError
 from patsy import PatsyError, dmatrix, dmatrices
 from sqlalchemy import between, not_, and_, or_, Table, select, create_engine, MetaData
@@ -31,9 +32,9 @@ class AlgorithmData(object):
         self.variables, self.covariables = get_model_variables(args, data, self.is_categorical)
 
     def __repr__(self):
-        if _LOGGING_LEVEL_ALG == logging.INFO:
+        if LOGGING_LEVEL_ALG == logging.INFO:
             return 'AlgorithmData()'
-        elif _LOGGING_LEVEL_ALG == logging.DEBUG:
+        elif LOGGING_LEVEL_ALG == logging.DEBUG:
             return 'AlgorithmData(\nvariables:={var},\ncovariables:={covar},\nis_categorical:={iscat}\n)'.format(
                     var=self.variables, covar=self.covariables, iscat=self.is_categorical)
 
@@ -43,29 +44,7 @@ def get_model_variables(args, data, is_categorical):
     from numpy import log as log
     from numpy import exp as exp
     _ = log(exp(1))  # This line is needed to prevent import opimizer from removing above lines
-    # Get formula from args or build if doesn't exist
-    if hasattr(args, 'formula'):
-        formula = args.formula
-    else:
-        formula = None
-
-    if formula:
-        formula = formula.replace('_', '~')  # fixme
-    else:
-        if args.x:
-            var_tup = (args.y, args.x)
-            formula = '~'.join(map(lambda x: '+'.join(x), var_tup))
-        else:
-            formula = '+'.join(args.y) + '-1'
-    # Process categorical vars
-    var_names = args.y
-    if args.x:
-        var_names.extend(args.x)
-    if hasattr(args, 'coding'):
-        if args.coding:
-            for var in var_names:
-                if is_categorical[var]:
-                    formula = formula.replace(var, 'C({v}, {coding})'.format(v=var, coding=args.coding))
+    formula = get_formula(args, is_categorical)
     # Create variables (and possibly covariables)
     if args.x:
         try:
@@ -84,73 +63,104 @@ def get_model_variables(args, data, is_categorical):
 
 
 @logged
-def read_data_from_db(args):
-    # Connect to db
-    try:
-        engine, sqla_md = connect_to_db(args.input_local_DB)
-    except SQLAlchemyError as e:
-        logging.error('SQLAlchemy failed to connect to database.')
-        raise e
-    # Create tables
-    try:
-        data_table = Table(args.data_table, sqla_md, autoload=True)
-        metadata_table = Table(args.metadata_table, sqla_md, autoload=True)
-    except SQLAlchemyError as e:
-        logging.error('SQLAlchemy failed to autoload tables.')
-        raise e
-    # Get data
+def get_formula(args, is_categorical):
+    # Get formula from args or build if doesn't exist
+    if hasattr(args, 'formula'):
+        formula = args.formula
+    else:
+        formula = None
+    if formula:
+        formula = formula.replace('_', '~')  # fixme
+    else:
+        if args.x:
+            var_tup = (args.y, args.x)
+            formula = '~'.join(map(lambda x: '+'.join(x), var_tup))
+        else:
+            formula = '+'.join(args.y) + '-1'
+    # Process categorical vars
     var_names = args.y
     if args.x:
         var_names.extend(args.x)
-    data = select_data_from_datasets(table=data_table, engine=engine, var_names=var_names, datasets=args.dataset,
-                                     query_filter=args.filter)
-    # Privacy check
-    if len(data) < _PRIVACY_THRESHOLD:
-        raise PrivacyError
-    # Get isCategorical
-    is_categorical = select_iscategorical_from_metadata(engine, metadata_table, var_names)
+    if hasattr(args, 'coding'):
+        if args.coding:
+            for var in var_names:
+                if is_categorical[var]:
+                    formula = formula.replace(var, 'C({v}, {coding})'.format(v=var, coding=args.coding))
+    return formula
+
+
+@logged
+def read_data_from_db(args):
+    db = DataBase(db_path=args.input_local_DB, data_table_name=args.data_table, metadata_table_name=args.metadata_table)
+    var_names = args.y
+    if args.x:
+        var_names.extend(args.x)
+    data = db.select_vars_from_data(var_names=var_names, datasets=args.dataset, filter_rules=args.filter)
+    is_categorical = db.select_iscategorical_from_metadata(var_names=var_names)
     return data, is_categorical
 
 
-@logged
-def select_iscategorical_from_metadata(engine, metadata_table, var_names):
-    is_categorical = dict()
-    sel_iscat = select([metadata_table.c.code, metadata_table.c.isCategorical]) \
-        .where(or_(*[metadata_table.c.code == vn for vn in var_names]))
-    result = engine.execute(sel_iscat)
-    for vn, i in result:
-        is_categorical[vn] = i
-    return is_categorical
+class DataBase(object):
+    def __init__(self, db_path, data_table_name, metadata_table_name):
+        self.db_path = db_path
+        try:
+            self.engine = create_engine('sqlite:///{}'.format(self.db_path), echo=False)
+        except SQLAlchemyError as e:
+            logging.error('SQLAlchemy failed to connect to database.')
+            raise e
+        try:
+            self.sqla_md = MetaData(self.engine)
+        except SQLAlchemyError as e:
+            logging.error('SQLAlchemy failed to build MetaData.')
+            raise e
+        try:
+            self.data_table = self.create_table(data_table_name)
+        except SQLAlchemyError as e:
+            logging.error('SQLAlchemy failed to build data_table.')
+            raise e
+        try:
+            self.metadata_table = self.create_table(metadata_table_name)
+        except SQLAlchemyError as e:
+            logging.error('SQLAlchemy failed to build metadata_table.')
+            raise e
 
+    @logged
+    def create_table(self, table_name):
+        return Table(table_name, self.sqla_md, autoload=True)
 
-@logged
-def build_filter_clause(table, rules):
-    if 'condition' in rules:
-        cond = _FILTER_CONDS[rules['condition']]
-        rules = rules['rules']
-        return cond(*[build_filter_clause(table, rule) for rule in rules])
-    elif 'id' in rules:
-        var_name = rules['id']
-        op = _FILTER_OPERATORS[rules['operator']]
-        val = rules['value']
-        return op(table.c[var_name], val)
+    @logged
+    def select_vars_from_data(self, var_names, datasets, filter_rules):
+        dataset_clause = or_(*[self.data_table.c.dataset == ds for ds in datasets])
+        sel_stmt = select([self.data_table.c[var] for var in var_names]).where(dataset_clause)
+        if filter_rules:
+            filter_clause = self.build_filter_clause(filter_rules)
+            sel_stmt = sel_stmt.where(filter_clause)
+        data = pd.read_sql(sel_stmt, self.engine)
+        data.replace('', np.nan, inplace=True)  # todo remove when no empty str in dbs
+        data = data.dropna()
+        # Privacy check
+        if len(data) < _PRIVACY_THRESHOLD:
+            raise PrivacyError
+        return data
 
+    @logged
+    def build_filter_clause(self, rules):
+        if 'condition' in rules:
+            cond = _FILTER_CONDS[rules['condition']]
+            rules = rules['rules']
+            return cond(*[self.build_filter_clause(rule) for rule in rules])
+        elif 'id' in rules:
+            var_name = rules['id']
+            op = _FILTER_OPERATORS[rules['operator']]
+            val = rules['value']
+            return op(self.data_table.c[var_name], val)
 
-@logged
-def select_data_from_datasets(table, engine, var_names, datasets, query_filter):
-    dataset_clause = or_(*[table.c.dataset == ds for ds in datasets])
-    sel_stmt = select([table.c[var] for var in var_names]).where(dataset_clause)
-    if query_filter:
-        filter_clause = build_filter_clause(table, query_filter)
-        sel_stmt = sel_stmt.where(filter_clause)
-    data = pd.read_sql(sel_stmt, engine)
-    data.replace('', np.nan, inplace=True)  # todo remove when no empty str in dbs
-    data = data.dropna()
-    return data
-
-
-@logged
-def connect_to_db(db_path):
-    engine = create_engine('sqlite:///{}'.format(db_path), echo=False)
-    sqla_md = MetaData(engine)
-    return engine, sqla_md
+    @logged
+    def select_iscategorical_from_metadata(self, var_names):
+        is_categorical = dict()
+        sel_iscat = select([self.metadata_table.c.code, self.metadata_table.c.isCategorical]) \
+            .where(or_(*[self.metadata_table.c.code == vn for vn in var_names]))
+        result = self.engine.execute(sel_iscat)
+        for vn, i in result:
+            is_categorical[vn] = i
+        return is_categorical

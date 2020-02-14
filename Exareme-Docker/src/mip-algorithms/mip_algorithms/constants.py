@@ -1,2 +1,7 @@
+import logging
+
+LOGGING_LEVEL_ALG = logging.DEBUG
+LOGGING_LEVEL_SQL = logging.INFO
+
 P_VALUE_CUTOFF = 0.001
 P_VALUE_CUTOFF_STR = '< ' + str(P_VALUE_CUTOFF)

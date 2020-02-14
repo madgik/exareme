@@ -4,7 +4,7 @@ import pickle
 import sqlite3
 
 import numpy as np
-from mip_algorithms import logged, _LOGGING_LEVEL_ALG
+from mip_algorithms import logged, LOGGING_LEVEL_ALG
 from mip_algorithms.exceptions import TransferError
 
 
@@ -67,9 +67,9 @@ class TransferStruct(object):
         return getattr(self, name).val
 
     def __repr__(self):
-        if _LOGGING_LEVEL_ALG == logging.INFO:
+        if LOGGING_LEVEL_ALG == logging.INFO:
             return 'TransferStruct()'
-        elif _LOGGING_LEVEL_ALG == logging.DEBUG:
+        elif LOGGING_LEVEL_ALG == logging.DEBUG:
             r = 'TransferStruct('
             for k, v in self.__dict__.items():
                 r += '\n{k}={v}, '.format(k=k, v=v)
