@@ -4,59 +4,60 @@ import json
 import logging
 import os
 import pickle
+import sqlite3
 from argparse import ArgumentParser
 from functools import wraps
 
 import numpy as np
 import pandas as pd
-from PEARSON_EXPERIMENTAL.mip_framework import _LOGGING_LEVEL
+from PEARSON_EXPERIMENTAL.mip_framework import _LOGGING_LEVEL_ALG
 from sqlalchemy import between, not_, and_, or_, Table, select, create_engine, MetaData
 from patsy import dmatrix, dmatrices
 
 from PEARSON_EXPERIMENTAL.mip_framework.exceptions import TransferError, PrivacyError, UnknownFunctionError, \
     AlgorithmError
 
-my_filter = '''{
-    "condition": "AND",
-    "rules"    : [
-        {
-            "id"      : "alzheimerbroadcategory",
-            "field"   : "alzheimerbroadcategory",
-            "type"    : "string",
-            "input"   : "select",
-            "operator": "not_equal",
-            "value"   : "MCI"
-        },
-        {
-            "id"      : "alzheimerbroadcategory",
-            "field"   : "alzheimerbroadcategory",
-            "type"    : "string",
-            "input"   : "select",
-            "operator": "not_equal",
-            "value"   : "Other"
-        }
-    ],
-    "valid"    : true
-}'''
-
-fake_args = [
-    '-input_local_DB', 'datasets.db',
-    '-db_query', '',
-    '-cur_state_pkl', 'cur_state.pkl',
-    '-prev_state_pkl', 'prev_state.pkl',
-    '-local_step_dbs', 'path/to/local/dbs',
-    '-global_step_db', 'path/to/global/dbs',
-    '-data_table', 'DATA',
-    '-metadata_table', 'METADATA',
-    '-metadata_code_column', 'code',
-    '-metadata_isCategorical_column', 'isCategorical',
-    '-y', 'alzheimerbroadcategory, lefthippocampus',
-    '-pathology', 'dementia',
-    '-dataset', 'adni',
-    '-filter', my_filter,
-    '-formula', '',
-    '-coding', None
-]
+# my_filter = '''{
+#     "condition": "AND",
+#     "rules"    : [
+#         {
+#             "id"      : "alzheimerbroadcategory",
+#             "field"   : "alzheimerbroadcategory",
+#             "type"    : "string",
+#             "input"   : "select",
+#             "operator": "not_equal",
+#             "value"   : "MCI"
+#         },
+#         {
+#             "id"      : "alzheimerbroadcategory",
+#             "field"   : "alzheimerbroadcategory",
+#             "type"    : "string",
+#             "input"   : "select",
+#             "operator": "not_equal",
+#             "value"   : "Other"
+#         }
+#     ],
+#     "valid"    : true
+# }'''
+#
+# fake_args = [
+#     '-input_local_DB', 'datasets.db',
+#     '-db_query', '',
+#     '-cur_state_pkl', 'cur_state.pkl',
+#     '-prev_state_pkl', 'prev_state.pkl',
+#     '-local_step_dbs', 'path/to/local/dbs',
+#     '-global_step_db', 'path/to/global/dbs',
+#     '-data_table', 'DATA',
+#     '-metadata_table', 'METADATA',
+#     '-metadata_code_column', 'code',
+#     '-metadata_isCategorical_column', 'isCategorical',
+#     '-y', 'alzheimerbroadcategory, lefthippocampus',
+#     '-pathology', 'dementia',
+#     '-dataset', 'adni',
+#     '-filter', my_filter,
+#     '-formula', '',
+#     '-coding', None
+# ]
 
 _COMMON_ALGORITHM_ARGUMENTS = {
     'input_local_DB',
@@ -96,12 +97,15 @@ class AlgorithmMeta(type):
     def __new__(mcs, name, bases, attrs):
         for key, attr in attrs.items():
             if callable(attr):
-                if attr.__name__ not in _ALLOWED_METHODS:
-                    attrs[key] = logged(attr)
-                if attr.__name__ in _ALLOWED_METHODS:
-                    attrs[key] = logged(algorithm_methods_decorator(attr))
-            # if callable(attr) and attr.__name__ in _ALLOWED_METHODS:
-            #     attrs[key] = algorithm_methods_decorator(attr)
+                # todo understand: if ifs order is changed I get
+                #   File "/root/mip-algorithms/PEARSON_EXPERIMENTAL/pearson.py", line 20, in local_
+                #       left_vars = right_vars = self.data.variables
+                #       AttributeError: 'NoneType' object has no attribute 'variables'
+                if hasattr(attr, '__name__'):
+                    if attr.__name__ not in (_ALLOWED_METHODS | {'__repr__', '__init__', '__str__'}):
+                        attrs[key] = logged(attr)
+                    if attr.__name__ in _ALLOWED_METHODS:
+                        attrs[key] = logged(algorithm_methods_decorator(attr))
         return type.__new__(mcs, name, bases, attrs)
 
 
@@ -132,8 +136,7 @@ def make_global_wrapper(func):
     def wrapper(self):
         self.data = AlgorithmError('There are no data available on the global node. Only local nodes can access '
                                    'data.')  # todo rephrase this
-        self._transfer_struct = TransferStruct.fetch_all(
-                transfer_db='/Users/zazon/madgik/exareme/Exareme-Docker/src/mip-algorithms/EXPERIMENTAL/transfer_db.txt')
+        self._transfer_struct = TransferStruct.fetch_all(transfer_db=self._args.local_step_dbs)
         func(self)
         self.set_algorithms_output_data()
 
@@ -141,21 +144,20 @@ def make_global_wrapper(func):
 
 
 def logged(func):
-    def wrapper(*args, **kwargs):
+    # @wraps  todo why this fails??
+    def logging_wrapper(*args, **kwargs):
         try:
-            if _LOGGING_LEVEL == logging.INFO:
+            if _LOGGING_LEVEL_ALG == logging.INFO:
                 logging.info("Starting: '{0}'".format(func.__name__))
-            elif _LOGGING_LEVEL == logging.DEBUG:
-                logging.info(
-                        "Starting: '{0}',\nargs:\n{1},\nkwargs:\n{2}".format(
-                                func.__name__, args,
-                                kwargs))
+            elif _LOGGING_LEVEL_ALG == logging.DEBUG:
+                logging.debug("Starting: '{0}',\nargs: \n{1},\nkwargs: \n{2}"
+                              .format(func.__name__, args, kwargs))
             return func(*args, **kwargs)
         except Exception as e:
             logging.exception(e)
             raise e
 
-    return wrapper
+    return logging_wrapper
 
 
 @logged
@@ -170,16 +172,15 @@ def make_dirs(fname):
 
 def one_kwarg(func):
     @wraps(func)
-    def wrapper(self, **kwarg):
+    def onekwarg_wrapper(self, **kwarg):
         if len(kwarg) != 1:
             raise ValueError('Please push one variable at the time.')
         func(self, **kwarg)
 
-    return wrapper
+    return onekwarg_wrapper
 
 
 class TransferRule(object):
-    @logged
     def __init__(self, val):
         self.val = val
 
@@ -187,7 +188,8 @@ class TransferRule(object):
         raise NotImplementedError
 
     def __repr__(self):
-        return str(self.val)
+        cls_name = '{}'.format(self.__class__)[:-2].split('.')[-1]  # fixme find better solution
+        return '{cls}({val})'.format(cls=cls_name, val=self.val)
 
 
 class AddMe(TransferRule):
@@ -225,7 +227,6 @@ class DoNothing(TransferRule):
 
 
 class TransferStruct(object):
-    @logged
     def __init__(self, **kwargs):
         for name, val in kwargs.items():
             setattr(self, name, val)
@@ -234,45 +235,49 @@ class TransferStruct(object):
     def __add__(self, other):
         return TransferStruct(**{name: val + other.__dict__[name] for name, val in self.__dict__.items()})
 
-    @logged
     def __getitem__(self, name):
         return getattr(self, name).val
 
     def __repr__(self):
-        return 'TransferStruct({contents})'.format(contents={name: val for name, val in self.__dict__.items()})
+        if _LOGGING_LEVEL_ALG == logging.INFO:
+            return 'TransferStruct()'
+        elif _LOGGING_LEVEL_ALG == logging.DEBUG:
+            r = 'TransferStruct('
+            for k, v in self.__dict__.items():
+                r += '\n{k}={v}, '.format(k=k, v=v)
+            r += '\n)'
+            return r
 
-    @logged
     def register_for_transfer(self, rule_cls, **kwarg):
         name, var = kwarg.popitem()
         setattr(self, name, rule_cls(var))
 
     @logged
     def transfer_all(self):
-        with open('transfer_db.txt', 'w') as f:
-            f.write(codecs.encode(pickle.dumps(self), 'ascii'))
+        print(codecs.encode(pickle.dumps(self), 'ascii'))
+        # with open('transfer_db.txt', 'w') as f:
+        #     f.write(codecs.encode(pickle.dumps(self), 'ascii'))
 
     @classmethod
     def fetch_all(cls, transfer_db):  # TODO replace with sqlalchemy
-        with open(transfer_db, 'r') as f:
-            content = f.read()
-            return pickle.loads(codecs.decode(content, 'ascii'))
-
-        # conn = sqlite3.connect(transfer_db)
-        # cur = conn.cursor()
-        # cur.execute('SELECT data FROM _transfer_struct')
-        # first = True
-        # result = None
-        # for row in cur:
-        #     if first:
-        #         result = pickle.loads(codecs.decode(row[0], 'ascii'))
-        #         first = False
-        #     else:
-        #         result += pickle.loads(codecs.decode(row[0], 'ascii'))
-        # return result
+        conn = sqlite3.connect(transfer_db)
+        cur = conn.cursor()
+        cur.execute("SELECT data FROM transfer")  # fixme avoid sql literals!
+        first = True
+        result = None
+        for row in cur:
+            if first:
+                result = pickle.loads(codecs.decode(row[0], 'ascii'))
+                first = False
+            else:
+                result += pickle.loads(codecs.decode(row[0], 'ascii'))
+        return result
+        # with open(transfer_db, 'r') as f:
+        #     content = f.read()
+        #     return pickle.loads(codecs.decode(content, 'ascii'))
 
 
 class Parameters(object):
-    @logged
     def __init__(self, args):
         for name, val in args.__dict__.items():
             if name not in _COMMON_ALGORITHM_ARGUMENTS:
@@ -280,6 +285,16 @@ class Parameters(object):
 
     def __getitem__(self, name):
         return getattr(self, name)
+
+    def __repr__(self):
+        if _LOGGING_LEVEL_ALG == logging.INFO:
+            return 'Parameters()'
+        elif _LOGGING_LEVEL_ALG == logging.DEBUG:
+            r = 'Parameters('
+            for k, v in self.__dict__.items():
+                r += '\n{k}={v}'.format(k=k, v=v)
+            r += '\n)'
+            return r
 
 
 @logged
@@ -310,18 +325,22 @@ def parse_exareme_args(fp, cli_args):
                         .split(','))
     if args.filter:
         args.filter = json.loads(args.filter)
+    else:
+        args.filter = None
     return args
 
 
 class AlgorithmData(object):
-    @logged
     def __init__(self, args):
-        data, is_categorical = read_data_from_db(args)
-        model_vars = get_model_variables(args, data, is_categorical)
-        if len(model_vars) == 1:
-            self.variables = model_vars[0]
-        elif len(model_vars) == 2:
-            self.variables, self.covariables = model_vars
+        data, self.is_categorical = read_data_from_db(args)
+        self.variables, self.covariables = get_model_variables(args, data, self.is_categorical)
+
+    def __repr__(self):
+        if _LOGGING_LEVEL_ALG == logging.INFO:
+            return 'AlgorithmData()'
+        elif _LOGGING_LEVEL_ALG == logging.DEBUG:
+            return 'AlgorithmData(\nvariables:={var},\ncovariables:={covar},\nis_categorical:={iscat}\n)'.format(
+                    var=self.variables, covar=self.covariables, iscat=self.is_categorical)
 
 
 @logged
@@ -330,8 +349,13 @@ def get_model_variables(args, data, is_categorical):
     from numpy import exp as exp
     _ = log(exp(1))  # This line is needed to prevent import opimizer from removing above lines
     # Get formula from args or build if doesn't exist
-    if args.formula:
-        formula = args.formula.replace('_', '~')  # fixme
+    if hasattr(args, 'formula'):
+        formula = args.formula
+    else:
+        formula = None
+
+    if formula:
+        formula = formula.replace('_', '~')  # fixme
     else:
         if args.x:
             var_tup = (args.y, args.x)
@@ -342,17 +366,18 @@ def get_model_variables(args, data, is_categorical):
     var_names = args.y
     if args.x:
         var_names.extend(args.x)
-    if args.coding:
-        for var in var_names:
-            if is_categorical[var]:
-                formula = formula.replace(var, 'C({v}, {coding})'.format(v=var, coding=args.coding))
+    if hasattr(args, 'coding'):
+        if args.coding:
+            for var in var_names:
+                if is_categorical[var]:
+                    formula = formula.replace(var, 'C({v}, {coding})'.format(v=var, coding=args.coding))
     # Create variables (and possibly covariables)
     if args.x:
         model_vars, model_covars = dmatrices(formula, data, return_type='dataframe')
         return model_vars, model_covars
     else:
         model_vars = dmatrix(formula, data, return_type='dataframe')
-        return model_vars,
+        return model_vars, None
 
 
 @logged
@@ -402,8 +427,10 @@ def build_filter_clause(table, rules):
 @logged
 def select_data_from_datasets(table, engine, var_names, datasets, query_filter):
     dataset_clause = or_(*[table.c.dataset == ds for ds in datasets])
-    filter_clause = build_filter_clause(table, query_filter)
-    sel_stmt = select([table.c[var] for var in var_names]).where(dataset_clause).where(filter_clause)
+    sel_stmt = select([table.c[var] for var in var_names]).where(dataset_clause)
+    if query_filter:
+        filter_clause = build_filter_clause(table, query_filter)
+        sel_stmt = sel_stmt.where(filter_clause)
     data = pd.read_sql(sel_stmt, engine)
     data.replace('', np.nan, inplace=True)  # todo remove when no empty str in dbs
     data = data.dropna()
@@ -428,6 +455,9 @@ class Algorithm(object):
         self.data = None
         self._transfer_struct = TransferStruct()
         self.result = None
+
+    def __repr__(self):
+        return '{name}()'.format(name=self._name.capitalize())
 
     def set_algorithms_output_data(self):
         try:
@@ -457,7 +487,9 @@ class Algorithm(object):
 
     def fetch(self, name):
         try:
-            return self._transfer_struct[name]
+            ret = self._transfer_struct[name]
+            logging.debug('Fetching: {0}'.format(ret))
+            return ret
         except KeyError:
             print('Cannot fetch unknown variable.')
             raise

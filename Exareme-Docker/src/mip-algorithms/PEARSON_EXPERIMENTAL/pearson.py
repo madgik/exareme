@@ -1,4 +1,5 @@
 import math
+import logging
 
 import numpy as np
 import scipy.special as special
@@ -16,8 +17,9 @@ class Pearson(Algorithm):
         super(Pearson, self).__init__(__file__, cli_args)
 
     def local_(self):
-        left_vars = self.data.variables
-        right_vars = self.data.covariables
+        left_vars = right_vars = self.data.variables
+        if self.data.covariables:
+            right_vars = self.data.covariables
 
         n_obs = len(right_vars)
         cm_shape = len(left_vars.columns), len(right_vars.columns)
