@@ -82,6 +82,26 @@ class Algorithm(object):
             print('{} is not a variable name.'.format(name))
             raise
 
+    def execute(self, input_args):  # todo Make mixin classes for local-global etc with different init and execute
+                                    #    classes and make specific algorithms inherit them for debugging
+        pass
+        # print('Getting data from local db.')
+        # self.data = AlgorithmData(self._args)
+        # print('Starting LOCAL EXECUTION')
+        # func(self)
+        # print('Transferring data')
+        # self._transfer_struct.transfer_all()
+        #
+        # self.data = AlgorithmError('There are no data available on the global node. Only local nodes can access '
+        #                            'data.')  # todo rephrase this
+        # print('Fetching data.')
+        # self._transfer_struct = TransferStruct.fetch_all(transfer_db=self._args.local_step_dbs)
+        # print('Starting GLOBAL EXECUTION')
+        # func(self)
+        # print('Setting algorithm output')
+        # self.set_algorithms_output_data()
+
+
 
 class LocalGlobal(Algorithm):
     def local_(self):

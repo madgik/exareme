@@ -2,8 +2,9 @@ import numpy as np
 import scipy.special as special
 import scipy.stats as st
 
-from mip_algorithms import Algorithm, AlgorithmResult, TabularDataResource, HighChart, AlgorithmError
+from mip_algorithms import Algorithm, AlgorithmResult, TabularDataResource, AlgorithmError
 from mip_algorithms.constants import P_VALUE_CUTOFF, P_VALUE_CUTOFF_STR
+from mip_algorithms.highchart import Heatmap
 
 
 class Pearson(Algorithm):
@@ -122,12 +123,8 @@ class Pearson(Algorithm):
                 data=correl_tabular,
                 title='Pearson Correlation Summary')
 
-        highchart = HighChart.correlation_heatmap(
-                correlation_matrix=r,
-                x_axis_names=rnames,
-                y_axis_names=lnames,
-                title='Pearson Correlation Heatmap'
-        )
+        highchart = Heatmap(title='Pearson Correlation Heatmap', matrix=r, min=-1, max=1).render()
+
         self.result = AlgorithmResult(
                 raw_data=raw_data,
                 tables=[table_output],

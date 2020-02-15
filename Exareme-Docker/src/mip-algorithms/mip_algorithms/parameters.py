@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import re
 from argparse import ArgumentParser
 
 from mip_algorithms import LOGGING_LEVEL_ALG, logged
@@ -55,12 +56,9 @@ def parse_exareme_args(fp, cli_args):
         parser.add_argument(name, required=required)
     # Parse and process
     args, _ = parser.parse_known_args(cli_args)
-    args.y = args.y.replace(' ', '').split(',')
+    args.y = re.split(r'\s*,\s*', args.y)
     if args.x:
-        args.x = args.x.replace(' ', '').split(',')
-    args.dataset = args.dataset.replace(' ', '').split(',')
-    if args.filter:
-        args.filter = json.loads(args.filter)
-    else:
-        args.filter = None
+        args.x = re.split(r'\s*,\s*', args.x)
+    args.dataset = re.split(r'\s*,\s*', args.dataset)
+    args.filter = json.loads(args.filter) if args.filter else None
     return args
