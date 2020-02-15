@@ -1,20 +1,5 @@
 import json
 
-__all__ = [
-    'Highchart',
-    'Chart',
-    'BarChart',
-    'BubbleChart',
-    'ColumnChart',
-    'ErrorbarChart',
-    'HeatmapChart',
-    'LineChart',
-    'ScatterChart',
-    'Series',
-    'Title',
-    'Axis'
-]
-
 
 class RenderableList(list):
     def render(self):
@@ -69,62 +54,6 @@ class Chart(Field):
     _fields = ['type']
 
 
-class BarChart(Highchart):
-    def __init__(self, **kwargs):
-        if 'chart' in kwargs.keys():
-            raise KeyError('Cannot set chart type in subclasses of Highchart.')
-        self.chart = Chart(type='bar')
-        super(BarChart, self).__init__(**kwargs)
-
-
-class BubbleChart(Highchart):
-    def __init__(self, **kwargs):
-        if 'chart' in kwargs.keys():
-            raise KeyError('Cannot set chart type in subclasses of Highchart.')
-        self.chart = Chart(type='bubble')
-        super(BubbleChart, self).__init__(**kwargs)
-
-
-class ColumnChart(Highchart):
-    def __init__(self, **kwargs):
-        if 'chart' in kwargs.keys():
-            raise KeyError('Cannot set chart type in subclasses of Highchart.')
-        self.chart = Chart(type='column')
-        super(ColumnChart, self).__init__(**kwargs)
-
-
-class ErrorbarChart(Highchart):
-    def __init__(self, **kwargs):
-        if 'chart' in kwargs.keys():
-            raise KeyError('Cannot set chart type in subclasses of Highchart.')
-        self.chart = Chart(type='errorbar')
-        super(ErrorbarChart, self).__init__(**kwargs)
-
-
-class HeatmapChart(Highchart):
-    def __init__(self, **kwargs):
-        if 'chart' in kwargs.keys():
-            raise KeyError('Cannot set chart type in subclasses of Highchart.')
-        self.chart = Chart(type='heatmap')
-        super(HeatmapChart, self).__init__(**kwargs)
-
-
-class LineChart(Highchart):
-    def __init__(self, **kwargs):
-        if 'chart' in kwargs.keys():
-            raise KeyError('Cannot set chart type in subclasses of Highchart.')
-        self.chart = Chart(type='line')
-        super(LineChart, self).__init__(**kwargs)
-
-
-class ScatterChart(Highchart):
-    def __init__(self, **kwargs):
-        if 'chart' in kwargs.keys():
-            raise KeyError('Cannot set chart type in subclasses of Highchart.')
-        self.chart = Chart(type='bar')
-        super(ScatterChart, self).__init__(**kwargs)
-
-
 class Series(ListField):
     _fields = ['type', 'data']
 
@@ -141,24 +70,57 @@ class ColorAxis(Field):
     _fields = ['min', 'max', 'minColor', 'maxColor']
 
 
-class HighchartTemplate(object):
-    chart = None
-
-    def render(self):
-        return self.chart.render()
-
-    def render_to_json(self, indent=4):
-        return self.chart.render_to_json(indent=indent)
+class Bar_(Highchart):
+    def __init__(self, **kwargs):
+        if 'chart' in kwargs.keys():
+            raise KeyError('Cannot set chart type in subclasses of Highchart.')
+        self.chart = Chart(type='bar')
+        super(Bar_, self).__init__(**kwargs)
 
 
-class Heatmap(HighchartTemplate):
-    def __init__(self, title, matrix, min, max, xnames=None, ynames=None):
-        heatmap_data = []
-        for i in range(len(matrix)):
-            for j in range(len(matrix[0])):
-                heatmap_data.append([i, j, matrix[i][j]])
-        self.chart = HeatmapChart(title=Title(text=title)) \
-            .set(xAxis=Axis(categories=xnames)) \
-            .set(yAxis=Axis(categories=ynames)) \
-            .set(colorAxis=ColorAxis(min=min, max=max, minColor='#ff0000', maxColor='#0000ff')) \
-            .set(series=Series(data=heatmap_data))
+class Bubble_(Highchart):
+    def __init__(self, **kwargs):
+        if 'chart' in kwargs.keys():
+            raise KeyError('Cannot set chart type in subclasses of Highchart.')
+        self.chart = Chart(type='bubble')
+        super(Bubble_, self).__init__(**kwargs)
+
+
+class Column_(Highchart):
+    def __init__(self, **kwargs):
+        if 'chart' in kwargs.keys():
+            raise KeyError('Cannot set chart type in subclasses of Highchart.')
+        self.chart = Chart(type='column')
+        super(Column_, self).__init__(**kwargs)
+
+
+class Errorbar_(Highchart):
+    def __init__(self, **kwargs):
+        if 'chart' in kwargs.keys():
+            raise KeyError('Cannot set chart type in subclasses of Highchart.')
+        self.chart = Chart(type='errorbar')
+        super(Errorbar_, self).__init__(**kwargs)
+
+
+class Heatmap_(Highchart):
+    def __init__(self, **kwargs):
+        if 'chart' in kwargs.keys():
+            raise KeyError('Cannot set chart type in subclasses of Highchart.')
+        self.chart = Chart(type='heatmap')
+        super(Heatmap_, self).__init__(**kwargs)
+
+
+class Line_(Highchart):
+    def __init__(self, **kwargs):
+        if 'chart' in kwargs.keys():
+            raise KeyError('Cannot set chart type in subclasses of Highchart.')
+        self.chart = Chart(type='line')
+        super(Line_, self).__init__(**kwargs)
+
+
+class Scatter_(Highchart):
+    def __init__(self, **kwargs):
+        if 'chart' in kwargs.keys():
+            raise KeyError('Cannot set chart type in subclasses of Highchart.')
+        self.chart = Chart(type='bar')
+        super(Scatter_, self).__init__(**kwargs)

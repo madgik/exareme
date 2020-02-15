@@ -83,7 +83,7 @@ class Algorithm(object):
             raise
 
     def execute(self, input_args):  # todo Make mixin classes for local-global etc with different init and execute
-                                    #    classes and make specific algorithms inherit them for debugging
+        #    classes and make specific algorithms inherit them for debugging
         pass
         # print('Getting data from local db.')
         # self.data = AlgorithmData(self._args)
@@ -100,7 +100,6 @@ class Algorithm(object):
         # func(self)
         # print('Setting algorithm output')
         # self.set_algorithms_output_data()
-
 
 
 class LocalGlobal(Algorithm):
