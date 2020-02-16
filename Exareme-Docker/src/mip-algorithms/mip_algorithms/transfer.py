@@ -76,7 +76,7 @@ class TransferStruct(object):
             r += '\n)'
             return r
 
-    def register_for_transfer(self, rule_cls, **kwarg):
+    def register(self, rule_cls, **kwarg):
         name, var = kwarg.popitem()
         setattr(self, name, rule_cls(var))
 

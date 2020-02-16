@@ -7,6 +7,7 @@ class AlgorithmResult(object):
         self.tables = tables
         self.highcharts = highcharts
 
+    @logged
     def output(self):
         result = [
             {
