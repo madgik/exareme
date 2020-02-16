@@ -1,4 +1,5 @@
 import logging
+import re
 
 import numpy as np
 import pandas as pd
@@ -28,38 +29,45 @@ _FILTER_CONDS = {
 
 class AlgorithmData(object):
     def __init__(self, args):
-        data, self.is_categorical = read_data_from_db(args)
-        self.variables, self.covariables = get_model_variables(args, data, self.is_categorical)
+        db = DataBase(db_path=args.input_local_DB, data_table_name=args.data_table,
+                      metadata_table_name=args.metadata_table)
+        self.data = read_data_from_db(db, args)
+        self.metadata = read_metadata_from_db(db, args)
+        self.variables, self.covariables = self.build_vars_and_covars(args, self.metadata.is_categorical)
 
     def __repr__(self):
         if LOGGING_LEVEL_ALG == logging.INFO:
             return 'AlgorithmData()'
         elif LOGGING_LEVEL_ALG == logging.DEBUG:
-            return 'AlgorithmData(\nvariables:={var},\ncovariables:={covar},\nis_categorical:={iscat}\n)'.format(
-                    var=self.variables, covar=self.covariables, iscat=self.is_categorical)
+            return 'AlgorithmData(\nvariables:={var},\ncovariables:={covar},\n)'.format(
+                    var=self.variables, covar=self.covariables)
 
-
-@logged
-def get_model_variables(args, data, is_categorical):
-    from numpy import log as log
-    from numpy import exp as exp
-    _ = log(exp(1))  # This line is needed to prevent import opimizer from removing above lines
-    formula = get_formula(args, is_categorical)
-    # Create variables (and possibly covariables)
-    if args.x:
-        try:
-            model_vars, model_covars = dmatrices(formula, data, return_type='dataframe')
-        except (NameError, PatsyError) as e:
-            logging.error('Patsy failed to get variables from formula.')
-            raise e
-        return model_vars, model_covars
-    else:
-        try:
-            model_vars = dmatrix(formula, data, return_type='dataframe')
-        except (NameError, PatsyError) as e:
-            logging.error('Patsy failed to get variables from formula.')
-            raise e
-        return model_vars, None
+    def build_vars_and_covars(self, args, is_categorical):
+        # This one CANNOT be `logged` since it runs on __init__
+        if LOGGING_LEVEL_ALG == logging.INFO:
+            logging.info("Starting 'AlgorithmData.build_vars_and_covars'.")
+        elif LOGGING_LEVEL_ALG == logging.DEBUG:
+            logging.debug("Starting 'AlgorithmData.build_vars_and_covars',\nargs: \n{0},\nkwargs: \n{1}"
+                          .format(args, is_categorical))
+        from numpy import log as log
+        from numpy import exp as exp
+        _ = log(exp(1))  # This line is needed to prevent import opimizer from removing above lines
+        formula = get_formula(args, is_categorical)
+        # Create variables (and possibly covariables)
+        if args.x:
+            try:
+                variables, covariables = dmatrices(formula, self.data, return_type='dataframe')
+            except (NameError, PatsyError) as e:
+                logging.error('Patsy failed to get variables and covariables from formula.')
+                raise e
+            return variables, covariables
+        else:
+            try:
+                variables = dmatrix(formula, self.data, return_type='dataframe')
+            except (NameError, PatsyError) as e:
+                logging.error('Patsy failed to get variables from formula.')
+                raise e
+            return variables, None
 
 
 @logged
@@ -89,15 +97,30 @@ def get_formula(args, is_categorical):
     return formula
 
 
+class AlgorithmMetadata(object):
+    def __init__(self, label, is_categorical, enumerations, minmax):
+        self.label = label
+        self.is_categorical = is_categorical
+        self.enumerations = enumerations
+        self.minmax = minmax
+
+
 @logged
-def read_data_from_db(args):
-    db = DataBase(db_path=args.input_local_DB, data_table_name=args.data_table, metadata_table_name=args.metadata_table)
+def read_data_from_db(db, args):
     var_names = args.y
     if args.x:
         var_names.extend(args.x)
     data = db.select_vars_from_data(var_names=var_names, datasets=args.dataset, filter_rules=args.filter)
-    is_categorical = db.select_iscategorical_from_metadata(var_names=var_names)
-    return data, is_categorical
+    return data
+
+
+@logged
+def read_metadata_from_db(db, args):
+    var_names = args.y
+    if args.x:
+        var_names.extend(args.x)
+    md = db.select_md_from_metadata(var_names=var_names, args=args)
+    return AlgorithmMetadata(*md)
 
 
 class DataBase(object):
@@ -136,7 +159,7 @@ class DataBase(object):
             filter_clause = self.build_filter_clause(filter_rules)
             sel_stmt = sel_stmt.where(filter_clause)
         data = pd.read_sql(sel_stmt, self.engine)
-        data.replace('', np.nan, inplace=True)  # todo remove when no empty str in dbs
+        data.replace('', np.nan, inplace=True)  # fixme remove when no empty str in dbs
         data = data.dropna()
         # Privacy check
         if len(data) < _PRIVACY_THRESHOLD:
@@ -156,11 +179,30 @@ class DataBase(object):
             return op(self.data_table.c[var_name], val)
 
     @logged
-    def select_iscategorical_from_metadata(self, var_names):
+    def select_md_from_metadata(self, var_names, args):
+        code_name = args.metadata_code_column
+        label_name = args.metadata_label_column
+        iscat_name = args.metadata_isCategorical_column
+        enums_name = args.metadata_enumerations_column
+        min_name = args.metadata_minValue_column
+        max_name = args.metadata_maxValue_column
+        label = dict()
         is_categorical = dict()
-        sel_iscat = select([self.metadata_table.c.code, self.metadata_table.c.isCategorical]) \
-            .where(or_(*[self.metadata_table.c.code == vn for vn in var_names]))
-        result = self.engine.execute(sel_iscat)
-        for vn, i in result:
-            is_categorical[vn] = i
-        return is_categorical
+        enumerations = dict()
+        minmax = dict()
+        sel_stmt = select([
+            self.metadata_table.c['code'],  # fixme remove when exareme is fixed
+            self.metadata_table.c['label'],  # fixme remove when exareme is fixed
+            self.metadata_table.c[iscat_name],
+            self.metadata_table.c[enums_name],
+            self.metadata_table.c[min_name],
+            self.metadata_table.c[max_name],
+        ]).where(or_(*[self.metadata_table.c['code'] == vn for vn in var_names]))  # fixme
+        result = self.engine.execute(sel_stmt)
+        for vn, la, ic, en, mi, ma in result:
+            label[vn] = la
+            is_categorical[vn] = ic
+            if en:
+                enumerations[vn] = re.split(r'\s*,\s*', en)
+            minmax[vn] = (mi, ma)
+        return label, is_categorical, enumerations, minmax

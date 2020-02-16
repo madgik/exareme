@@ -16,7 +16,11 @@ _COMMON_ALGORITHM_ARGUMENTS = {
     'data_table',
     'metadata_table',
     'metadata_code_column',
+    'metadata_label_column',
     'metadata_isCategorical_column',
+    'metadata_enumerations_column',
+    'metadata_minValue_column',
+    'metadata_maxValue_column'
 }
 
 
