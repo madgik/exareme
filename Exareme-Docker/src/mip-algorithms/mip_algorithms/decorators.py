@@ -68,7 +68,7 @@ def make_wrapper(node, step=None, state=None):
                 self._transfer_struct.transfer_all()
             # Save state
             if state is not None:
-                self._state.save_all(fn_state=self._args.cur_state_pkl)
+                self._state.store_all(fn_state=self._args.cur_state_pkl)
             # Output result
             if node == 'global' and step == 'last':
                 self.set_algorithms_output_data()

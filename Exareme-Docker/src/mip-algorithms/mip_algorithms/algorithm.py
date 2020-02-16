@@ -38,6 +38,8 @@ class Algorithm(object):
         self.parameters = Parameters(self._args)
         self.data = None
         self._transfer_struct = TransferStruct()
+        self._state = None
+        self._termination = False
         self.result = None
 
     def __repr__(self):
@@ -52,23 +54,23 @@ class Algorithm(object):
 
     @one_kwarg
     def push_and_aggree(self, **kwarg):
-        self._transfer_struct.register_for_transfer(DoNothing, **kwarg)
+        self._transfer_struct.register(DoNothing, **kwarg)
 
     @one_kwarg
     def push_and_add(self, **kwarg):
-        self._transfer_struct.register_for_transfer(AddMe, **kwarg)
+        self._transfer_struct.register(AddMe, **kwarg)
 
     @one_kwarg
     def push_and_min(self, **kwarg):
-        self._transfer_struct.register_for_transfer(MinMe, **kwarg)
+        self._transfer_struct.register(MinMe, **kwarg)
 
     @one_kwarg
     def push_and_max(self, **kwarg):
-        self._transfer_struct.register_for_transfer(MaxMe, **kwarg)
+        self._transfer_struct.register(MaxMe, **kwarg)
 
     @one_kwarg
     def push_and_concat(self, **kwarg):
-        self._transfer_struct.register_for_transfer(ConcatMe, **kwarg)
+        self._transfer_struct.register(ConcatMe, **kwarg)
 
     def fetch(self, name):
         try:
@@ -76,30 +78,31 @@ class Algorithm(object):
             logging.debug('Fetching: {0}'.format(ret))
             return ret
         except KeyError:
-            print('Cannot fetch unknown variable.')
+            logging.error('Cannot fetch unknown variable.')
             raise
         except TypeError:
-            print('{} is not a variable name.'.format(name))
+            logging.error('{} is not a variable name.'.format(name))
             raise
+
+    @one_kwarg
+    def store(self, **kwargs):
+        self._state.register(**kwargs)
+
+    def load(self, name):
+        return getattr(self._state, name=name)
+
+    def terminate(self):
+        self.store(termination=True)
+
+    def termination_condition(self):
+        if self._termination:
+            print('STOP')
+        else:
+            print('CONTINUE')
 
     def execute(self, input_args):  # todo Make mixin classes for local-global etc with different init and execute
         #    classes and make specific algorithms inherit them for debugging
         pass
-        # print('Getting data from local db.')
-        # self.data = AlgorithmData(self._args)
-        # print('Starting LOCAL EXECUTION')
-        # func(self)
-        # print('Transferring data')
-        # self._transfer_struct.transfer_all()
-        #
-        # self.data = AlgorithmError('There are no data available on the global node. Only local nodes can access '
-        #                            'data.')  # todo rephrase this
-        # print('Fetching data.')
-        # self._transfer_struct = TransferStruct.fetch_all(transfer_db=self._args.local_step_dbs)
-        # print('Starting GLOBAL EXECUTION')
-        # func(self)
-        # print('Setting algorithm output')
-        # self.set_algorithms_output_data()
 
 
 class LocalGlobal(Algorithm):
