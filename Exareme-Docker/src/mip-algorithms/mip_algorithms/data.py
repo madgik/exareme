@@ -77,9 +77,7 @@ def get_formula(args, is_categorical):
         formula = args.formula
     else:
         formula = None
-    if formula:
-        formula = formula.replace('_', '~')  # fixme
-    else:
+    if not formula:
         if args.x:
             var_tup = (args.y, args.x)
             formula = '~'.join(map(lambda x: '+'.join(x), var_tup))
@@ -191,13 +189,13 @@ class DataBase(object):
         enumerations = dict()
         minmax = dict()
         sel_stmt = select([
-            self.metadata_table.c['code'],  # fixme remove when exareme is fixed
-            self.metadata_table.c['label'],  # fixme remove when exareme is fixed
+            self.metadata_table.c[code_name],
+            self.metadata_table.c[label_name],
             self.metadata_table.c[iscat_name],
             self.metadata_table.c[enums_name],
             self.metadata_table.c[min_name],
             self.metadata_table.c[max_name],
-        ]).where(or_(*[self.metadata_table.c['code'] == vn for vn in var_names]))  # fixme
+        ]).where(or_(*[self.metadata_table.c[code_name] == vn for vn in var_names]))
         result = self.engine.execute(sel_stmt)
         for vn, la, ic, en, mi, ma in result:
             label[vn] = la

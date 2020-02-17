@@ -8,6 +8,7 @@ import numpy as np
 import scipy.stats as st
 from mip_algorithms import Algorithm, AlgorithmResult, TabularDataResource
 from mip_algorithms.constants import P_VALUE_CUTOFF, P_VALUE_CUTOFF_STR, PREC, MAX_ITER, CONFIDENCE
+from mip_algorithms.highcharts.user_defined import ConfusionMatrix, ROC
 from scipy.special import expit
 
 
@@ -148,7 +149,7 @@ class LogistiRegression(Algorithm):
 
         smr = self.compute_summary()
         accuracy, confusion_mat, f1, precision, recall = self.compute_confusion_matrix()
-        roc_curve, AUC, gini = self.compute_roc()
+        roc_curve, auc, gini = self.compute_roc()
 
         # Format output data
         # JSON raw
@@ -178,7 +179,7 @@ class LogistiRegression(Algorithm):
             'Precision'                  : precision,
             'Recall'                     : recall,
             'F1 score'                   : f1,
-            'AUC'                        : AUC,
+            'AUC'                        : auc,
             'Gini coefficient'           : gini,
         }
         # Tabular summary 1
@@ -203,8 +204,9 @@ class LogistiRegression(Algorithm):
                         "McFadden pseudo-R^2", "Cox-Snell pseudo-R^2"],
                 data=[[smr.df_mod, smr.df_resid, ll, smr.ll0, smr.aic, smr.bic, smr.r2_mcf, smr.r2_cs]],
                 title='Logistic Regression Summary').render()
-
-        self.result = AlgorithmResult(raw_data=raw_data, tables=[table1, table2], highcharts=[])
+        hc_confmat = ConfusionMatrix(title='Confusion Matrix', confusion_matrix=confusion_mat).render()
+        hc_roc = ROC(title='ROC Curve', roc_curve=roc_curve, auc=auc, gini=gini).render()
+        self.result = AlgorithmResult(raw_data=raw_data, tables=[table1, table2], highcharts=[hc_confmat, hc_roc])
 
     def predict(self, x=None, coeff=None, threshold=0.5):
         if x is None:
@@ -238,7 +240,7 @@ class LogistiRegression(Algorithm):
         TN = true_negatives[half_idx]
         FP = false_positives[half_idx]
         FN = false_negatives[half_idx]
-        confusion_mat = [[TP, FP], [FN, TN]]
+        confusion_mat = {'TP': TP, 'TN': TN, 'FP': FP, 'FN': FN}
         accuracy = (TP + TN) / n_obs
         try:
             precision = TP / (TP + FP)

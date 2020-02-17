@@ -47,19 +47,31 @@ class ListField(Field):
 
 
 class Highchart(Field):
-    _fields = ['chart', 'series', 'subtitle', 'title', 'xAxis', 'yAxis', 'zAxis', 'colorAxis']
+    _fields = ['chart', 'series', 'subtitle', 'title', 'xAxis', 'yAxis', 'zAxis', 'colorAxis', 'legend']
 
 
 class Chart(Field):
-    _fields = ['type']
+    _fields = ['type', 'zoomType']
 
 
 class Series(ListField):
-    _fields = ['type', 'data']
+    _fields = ['type', 'data', 'useHTML', 'label', 'dataLabels', 'borderWidth', 'name']
+
+
+class Legend(Field):
+    _fields = ['enabled']
+
+
+class Label(Field):
+    _fields = ['onArea']
+
+
+class DataLabels(ListField):
+    _fields = ['format', 'enabled', 'color']
 
 
 class Title(Field):
-    _fields = ['text']
+    _fields = ['text', 'useHTML']
 
 
 class Axis(Field):
@@ -68,6 +80,14 @@ class Axis(Field):
 
 class ColorAxis(Field):
     _fields = ['min', 'max', 'minColor', 'maxColor']
+
+
+class Area_(Highchart):
+    def __init__(self, **kwargs):
+        if 'chart' in kwargs.keys():
+            raise KeyError('Cannot set chart type in subclasses of Highchart.')
+        self.chart = Chart(type='area', zoomType='xy')
+        super(Area_, self).__init__(**kwargs)
 
 
 class Bar_(Highchart):

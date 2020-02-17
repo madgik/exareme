@@ -7,6 +7,7 @@
     "parameters": [
         {
             "name": "x",
+            "label": "x",
             "desc": "A list of variables from database. The variable should be Real, Float, Integer. It can be empty.",
             "type": "column",
             "columnValuesSQLType": "real, integer, text",
@@ -18,6 +19,7 @@
         },
         {
             "name": "y",
+            "label": "y",
             "desc": "A list of variables from database. The variable should be Real, Float, Integer. It can be empty.",
             "type": "column",
             "columnValuesSQLType": "real, integer, text",
@@ -29,6 +31,7 @@
         },
         {
             "name": "pathology",
+            "label": "pathology",
             "desc": "The name of the pathology that the dataset belongs to.",
             "type": "pathology",
             "value": "dementia",
@@ -38,6 +41,7 @@
         },
         {
             "name": "dataset",
+            "label": "dataset",
             "desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty",
             "type": "dataset",
             "value": "adni",
@@ -47,6 +51,7 @@
         },
         {
             "name": "filter",
+            "label": "filter",
             "desc": "",
             "type": "filter",
             "value": "",
@@ -56,6 +61,7 @@
         },
         {
             "name": "formula",
+            "label": "formula",
             "desc": "Patsy formula  (R language syntax).",
             "type": "other",
             "value": "",
@@ -63,6 +69,24 @@
             "valueNotBlank": false,
             "valueMultiple": false,
             "valueType": "string"
+        },
+        {
+            "name": "coding",
+            "desc": "Coding method for categorical variables.",
+            "type": "other",
+            "value": "null",
+            "defaultValue": "null",
+            "valueNotBlank": false,
+            "valueMultiple": false,
+            "valueType": "string",
+            "enumValues": [
+                "null",
+                "Treatment",
+                "Diff",
+                "Poly",
+                "Sum",
+                "Helmert"
+            ]
         }
     ]
 }

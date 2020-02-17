@@ -65,4 +65,6 @@ def parse_exareme_args(fp, cli_args):
         args.x = re.split(r'\s*,\s*', args.x)
     args.dataset = re.split(r'\s*,\s*', args.dataset)
     args.filter = json.loads(args.filter) if args.filter else None
+    if hasattr(args, 'coding'):
+        args.coding = None if args.coding == 'null' else args.coding
     return args

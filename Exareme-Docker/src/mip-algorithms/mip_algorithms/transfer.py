@@ -16,7 +16,7 @@ class TransferRule(object):
         raise NotImplementedError
 
     def __repr__(self):
-        cls_name = '{}'.format(self.__class__)[:-2].split('.')[-1]  # fixme find better solution
+        cls_name = '{}'.format(self.__class__)[:-2].split('.')[-1]  # hack for getting the class name
         return '{cls}({val})'.format(cls=cls_name, val=self.val)
 
 
@@ -83,8 +83,6 @@ class TransferStruct(object):
     @logged
     def transfer_all(self):
         print(codecs.encode(pickle.dumps(self), 'ascii'))
-        # with open('transfer_db.txt', 'w') as f:
-        #     f.write(codecs.encode(pickle.dumps(self), 'ascii'))
 
     @classmethod
     def fetch_all(cls, transfer_db):  # TODO replace with sqlalchemy
@@ -100,6 +98,3 @@ class TransferStruct(object):
             else:
                 result += pickle.loads(codecs.decode(row[0], 'ascii'))
         return result
-        # with open(transfer_db, 'r') as f:
-        #     content = f.read()
-        #     return pickle.loads(codecs.decode(content, 'ascii'))

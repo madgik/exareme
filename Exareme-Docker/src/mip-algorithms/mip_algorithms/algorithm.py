@@ -9,11 +9,11 @@ from mip_algorithms.parameters import Parameters, parse_exareme_args
 from mip_algorithms.transfer import AddMe, MaxMe, MinMe, ConcatMe, DoNothing, TransferStruct
 from mip_algorithms.utils import one_kwarg
 
-_ALLOWED_METHODS = {'local_', 'global_', 'local_init', 'global_init', 'local_step', 'global_step', 'local_final',
+_MAIN_METHODS = {'local_', 'global_', 'local_init', 'global_init', 'local_step', 'global_step', 'local_final',
                     'global_final', 'termination_condition'}
 
 
-class AlgorithmMeta(type):
+class MetaAlgorithm(type):
     def __new__(mcs, name, bases, attrs):
         for key, attr in attrs.items():
             if callable(attr):
@@ -22,15 +22,15 @@ class AlgorithmMeta(type):
                 #       left_vars = right_vars = self.data.variables
                 #       AttributeError: 'NoneType' object has no attribute 'variables'
                 if hasattr(attr, '__name__'):
-                    if attr.__name__ not in (_ALLOWED_METHODS | {'__repr__', '__init__', '__str__'}):
+                    if attr.__name__ not in (_MAIN_METHODS | {'__repr__', '__init__', '__str__'}):
                         attrs[key] = logged(attr)
-                    if attr.__name__ in _ALLOWED_METHODS:
+                    if attr.__name__ in _MAIN_METHODS:
                         attrs[key] = logged(algorithm_methods_decorator(attr))
         return type.__new__(mcs, name, bases, attrs)
 
 
 class Algorithm(object):
-    __metaclass__ = AlgorithmMeta
+    __metaclass__ = MetaAlgorithm
 
     def __init__(self, alg_file, cli_args):
         self._folder_path, name = os.path.split(alg_file)
@@ -49,9 +49,13 @@ class Algorithm(object):
 
     def set_algorithms_output_data(self):
         try:
+            logging.debug('Algorithm output:\n {res}'.format(res=json.dumps(self.result.output(), indent=4)))
             print(json.dumps(self.result.output(), allow_nan=False))
         except ValueError:
-            print('Result contains NaNs.')
+            logging.warning('Result contains NaNs.')
+        except TypeError:
+            logging.debug('Cannot JSON serialize {res}'.format(res=self.result.output()))
+            raise
 
     @one_kwarg
     def push(self, **kwargs):
@@ -108,9 +112,9 @@ class Algorithm(object):
         pass
 
 
-class LocalGlobal(Algorithm):
-    def local_(self):
-        raise NotImplementedError
-
-    def global_(self):
-        raise NotImplementedError
+# class LocalGlobal(Algorithm):
+#     def local_(self):
+#         raise NotImplementedError
+#
+#     def global_(self):
+#         raise NotImplementedError

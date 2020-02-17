@@ -123,7 +123,7 @@ class Pearson(Algorithm):
                 data=correl_tabular,
                 title='Pearson Correlation Summary').render()
 
-        highchart = CorrelationHeatmap(title='Pearson Correlation Heatmap', matrix=r, min=-1, max=1).render()
+        highchart = CorrelationHeatmap(title='Pearson Correlation Heatmap', matrix=r, min_val=-1, max_val=1).render()
 
         self.result = AlgorithmResult(
                 raw_data=raw_data,

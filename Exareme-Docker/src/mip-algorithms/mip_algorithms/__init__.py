@@ -1,5 +1,4 @@
 import logging
-import os
 
 from mip_algorithms.constants import LOGGING_LEVEL_ALG, LOGGING_LEVEL_SQL
 
