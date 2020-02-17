@@ -52,9 +52,10 @@ class Algorithm(object):
             logging.debug('Algorithm output:\n {res}'.format(res=json.dumps(self.result.output(), indent=4)))
             print(json.dumps(self.result.output(), allow_nan=False))
         except ValueError:
-            logging.warning('Result contains NaNs.')
+            logging.error('Result contains NaNs.')
+            raise
         except TypeError:
-            logging.debug('Cannot JSON serialize {res}'.format(res=self.result.output()))
+            logging.error('Cannot JSON serialize {res}'.format(res=self.result.output()))
             raise
 
     @one_kwarg
@@ -110,7 +111,6 @@ class Algorithm(object):
     def execute(self, input_args):  # todo Make mixin classes for local-global etc with different init and execute
         #    classes and make specific algorithms inherit them for debugging
         pass
-
 
 # class LocalGlobal(Algorithm):
 #     def local_(self):

@@ -8,7 +8,7 @@ import numpy as np
 import scipy.stats as st
 from mip_algorithms import Algorithm, AlgorithmResult, TabularDataResource
 from mip_algorithms.constants import P_VALUE_CUTOFF, P_VALUE_CUTOFF_STR, PREC, MAX_ITER, CONFIDENCE
-from mip_algorithms.highcharts.user_defined import ConfusionMatrix, ROC
+from mip_algorithms.highcharts import ConfusionMatrix, ROC
 from scipy.special import expit
 
 
@@ -223,11 +223,11 @@ class LogistiRegression(Algorithm):
         fp_rate = [fp / (fp + tn) if fp != 0 or tn != 0 else 1 for fp, tn in zip(false_positives, true_negatives)]
         tp_rate = [tp / (tp + fn) if tp != 0 or fn != 0 else 1 for tp, fn in zip(true_positives, false_negatives)]
         roc_curve = list(zip(fp_rate, tp_rate))
-        AUC = 0.0
+        auc = 0.0
         for t in range(1, len(fp_rate)):
-            AUC += 0.5 * (fp_rate[t] - fp_rate[t - 1]) * (tp_rate[t] + tp_rate[t - 1])
-        gini = 2 * AUC - 1
-        return roc_curve, AUC, gini
+            auc += 0.5 * (fp_rate[t] - fp_rate[t - 1]) * (tp_rate[t] + tp_rate[t - 1])
+        gini = 2 * auc - 1
+        return roc_curve, auc, gini
 
     def compute_confusion_matrix(self):
         n_obs = self.load('n_obs')
