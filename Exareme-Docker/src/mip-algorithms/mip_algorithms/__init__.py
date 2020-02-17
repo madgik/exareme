@@ -7,7 +7,7 @@ __all__ = ['Algorithm', 'AlgorithmResult', 'TabularDataResource', 'HighChart', '
 
 logging.basicConfig(
         format='%(asctime)s - %(levelname)s: %(message)s',
-        filename=os.path.splitext('/root/mip.log')[0] + '.log',
+        filename='/root/mip.log',
         level=LOGGING_LEVEL_ALG
 )
 logging.getLogger('sqlalchemy.engine').setLevel(LOGGING_LEVEL_SQL)

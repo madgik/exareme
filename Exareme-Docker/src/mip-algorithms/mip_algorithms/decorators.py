@@ -84,7 +84,7 @@ def make_termination_wrapper(func):
         # Load global state
         self._state = State.load_all(fn_state=self._args.prev_state_pkl)
         # Load `terminate`
-        self.termination = self._state['termination']
+        self._termination = self._state.termination
         # Execute termination condition
         func(self)
 

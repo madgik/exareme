@@ -42,9 +42,9 @@ class Pearson(Algorithm):
         self.push_and_add(sxx=sxx)
         self.push_and_add(sxy=sxy)
         self.push_and_add(syy=syy)
-        self.push_and_aggree(cm_names=cm_names)
-        self.push_and_aggree(lnames=list(left_vars.columns))
-        self.push_and_aggree(rnames=list(right_vars.columns))
+        self.push_and_agree(cm_names=cm_names)
+        self.push_and_agree(lnames=list(left_vars.columns))
+        self.push_and_agree(rnames=list(right_vars.columns))
 
     def global_(self):
         n_obs = self.fetch('n_obs')
@@ -112,7 +112,7 @@ class Pearson(Algorithm):
                     ci_lo[i, j],
                     ci_hi[i, j]
                 ])
-        table_output = TabularDataResource.make(
+        table_output = TabularDataResource(
                 fields=[
                     'variables',
                     'Pearson correlation coefficient',
@@ -121,7 +121,7 @@ class Pearson(Algorithm):
                     'upper c.i.'
                 ],
                 data=correl_tabular,
-                title='Pearson Correlation Summary')
+                title='Pearson Correlation Summary').render()
 
         highchart = CorrelationHeatmap(title='Pearson Correlation Heatmap', matrix=r, min=-1, max=1).render()
 

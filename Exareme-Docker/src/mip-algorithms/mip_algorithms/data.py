@@ -31,7 +31,7 @@ class AlgorithmData(object):
     def __init__(self, args):
         db = DataBase(db_path=args.input_local_DB, data_table_name=args.data_table,
                       metadata_table_name=args.metadata_table)
-        self.data = read_data_from_db(db, args)
+        self.raw = read_data_from_db(db, args)
         self.metadata = read_metadata_from_db(db, args)
         self.variables, self.covariables = self.build_vars_and_covars(args, self.metadata.is_categorical)
 
@@ -56,14 +56,14 @@ class AlgorithmData(object):
         # Create variables (and possibly covariables)
         if args.x:
             try:
-                variables, covariables = dmatrices(formula, self.data, return_type='dataframe')
+                variables, covariables = dmatrices(formula, self.raw, return_type='dataframe')
             except (NameError, PatsyError) as e:
                 logging.error('Patsy failed to get variables and covariables from formula.')
                 raise e
             return variables, covariables
         else:
             try:
-                variables = dmatrix(formula, self.data, return_type='dataframe')
+                variables = dmatrix(formula, self.raw, return_type='dataframe')
             except (NameError, PatsyError) as e:
                 logging.error('Patsy failed to get variables from formula.')
                 raise e

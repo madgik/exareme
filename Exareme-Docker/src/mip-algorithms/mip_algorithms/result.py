@@ -29,20 +29,24 @@ class AlgorithmResult(object):
 
 
 class TabularDataResource(object):
-    @staticmethod
+    def __init__(self, fields, data, title):
+        self.fields = fields
+        self.data = data
+        self.title = title
+
     @logged
-    def make(fields, data, title):
+    def render(self):
         header = []
-        for datum, name in zip(data[0], fields):
+        for datum, name in zip(self.data[0], self.fields):
             dt = 'string' if type(datum) == str else 'number'
             header.append({
                 "name": name,
                 "type": dt
             })
         return {
-            "name"   : title,
+            "name"   : self.title,
             "profile": "tabular-data-resource",
-            "data"   : data,
+            "data"   : self.data,
             "schema" : {
                 "fields": header
             }

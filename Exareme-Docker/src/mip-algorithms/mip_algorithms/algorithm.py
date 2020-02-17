@@ -9,7 +9,8 @@ from mip_algorithms.parameters import Parameters, parse_exareme_args
 from mip_algorithms.transfer import AddMe, MaxMe, MinMe, ConcatMe, DoNothing, TransferStruct
 from mip_algorithms.utils import one_kwarg
 
-_ALLOWED_METHODS = {'local_', 'global_'}
+_ALLOWED_METHODS = {'local_', 'global_', 'local_init', 'global_init', 'local_step', 'global_step', 'local_final',
+                    'global_final', 'termination_condition'}
 
 
 class AlgorithmMeta(type):
@@ -53,8 +54,10 @@ class Algorithm(object):
             print('Result contains NaNs.')
 
     @one_kwarg
-    def push_and_aggree(self, **kwarg):
-        self._transfer_struct.register(DoNothing, **kwarg)
+    def push(self, **kwargs):
+        self._transfer_struct.register(DoNothing, **kwargs)
+
+    push_and_agree = push
 
     @one_kwarg
     def push_and_add(self, **kwarg):
@@ -89,7 +92,7 @@ class Algorithm(object):
         self._state.register(**kwargs)
 
     def load(self, name):
-        return getattr(self._state, name=name)
+        return getattr(self._state, name)
 
     def terminate(self):
         self.store(termination=True)
