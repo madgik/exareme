@@ -71,7 +71,7 @@ def make_wrapper(node, step=None, state=None):
                 self._state.store_all(fn_state=self._args.cur_state_pkl)
             # Output result
             if node == 'global' and step == 'last':
-                self.set_algorithms_output_data()
+                self.set_output()
 
         return inner_wrapper
 

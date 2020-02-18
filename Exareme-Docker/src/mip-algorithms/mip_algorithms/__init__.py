@@ -3,7 +3,7 @@ import logging
 from mip_algorithms.constants import LOGGING_LEVEL_ALG, LOGGING_LEVEL_SQL
 
 __all__ = ['Algorithm', 'AlgorithmResult', 'TabularDataResource', 'HighChart', 'AlgorithmError', 'logged',
-           'LOGGING_LEVEL_ALG']
+           'LOGGING_LEVEL_ALG', 'create_runner']
 
 logging.basicConfig(
         format='%(asctime)s - %(levelname)s: %(message)s',
@@ -32,3 +32,4 @@ def logged(func):
 from algorithm import Algorithm
 from result import AlgorithmResult, TabularDataResource, HighChart
 from exceptions import AlgorithmError
+from runner.runner import create_runner

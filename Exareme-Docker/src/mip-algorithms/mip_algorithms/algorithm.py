@@ -10,7 +10,7 @@ from mip_algorithms.transfer import AddMe, MaxMe, MinMe, ConcatMe, DoNothing, Tr
 from mip_algorithms.utils import one_kwarg
 
 _MAIN_METHODS = {'local_', 'global_', 'local_init', 'global_init', 'local_step', 'global_step', 'local_final',
-                    'global_final', 'termination_condition'}
+                 'global_final', 'termination_condition'}
 
 
 class MetaAlgorithm(type):
@@ -47,7 +47,7 @@ class Algorithm(object):
         name = ''.join(capwords(self._name, '_').split('_'))
         return '{name}()'.format(name=name)
 
-    def set_algorithms_output_data(self):
+    def set_output(self):
         try:
             logging.debug('Algorithm output:\n {res}'.format(res=json.dumps(self.result.output(), indent=4)))
             print(json.dumps(self.result.output(), allow_nan=False))
@@ -59,8 +59,8 @@ class Algorithm(object):
             raise
 
     @one_kwarg
-    def push(self, **kwargs):
-        self._transfer_struct.register(DoNothing, **kwargs)
+    def push(self, **kwarg):
+        self._transfer_struct.register(DoNothing, **kwarg)
 
     push_and_agree = push
 
@@ -107,14 +107,3 @@ class Algorithm(object):
             print('STOP')
         else:
             print('CONTINUE')
-
-    def execute(self, input_args):  # todo Make mixin classes for local-global etc with different init and execute
-        #    classes and make specific algorithms inherit them for debugging
-        pass
-
-# class LocalGlobal(Algorithm):
-#     def local_(self):
-#         raise NotImplementedError
-#
-#     def global_(self):
-#         raise NotImplementedError

@@ -50,8 +50,13 @@ class ConcatMe(TransferRule):
 class DoNothing(TransferRule):
     @logged
     def __add__(self, other):
-        if self.val != other.val:
-            raise TransferError('Local nodes do not agree on common variable: {0}, {1}'.format(self.val, other.val))
+        if type(self.val) == np.ndarray and type(other.val) == np.ndarray:
+            if np.any(self.val != other.val):
+                raise TransferError('Local nodes do not agree on common variable: {0}, {1}'.format(self.val, other.val))
+        elif type(self.val) in {int, float, str, tuple, list}:
+            if self.val != other.val:
+                raise TransferError('Local nodes do not agree on common variable: {0}, {1}'.format(self.val, other.val))
+        return DoNothing(self.val)
 
 
 class TransferStruct(object):
@@ -98,3 +103,14 @@ class TransferStruct(object):
             else:
                 result += pickle.loads(codecs.decode(row[0], 'ascii'))
         return result
+
+    # The following two methods are needed for the `transfer_all` hack in `runner`
+    def __getstate__(self):
+        state = {}
+        for attr, value in self.__dict__.iteritems():
+            if issubclass(value.__class__, TransferRule):
+                state[attr] = value
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
