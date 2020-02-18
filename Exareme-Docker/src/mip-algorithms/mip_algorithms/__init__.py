@@ -2,7 +2,8 @@ import logging
 
 from mip_algorithms.constants import LOGGING_LEVEL_ALG, LOGGING_LEVEL_SQL
 
-__all__ = ['Algorithm', 'AlgorithmResult', 'TabularDataResource', 'HighChart', 'AlgorithmError', 'logged']
+__all__ = ['Algorithm', 'AlgorithmResult', 'TabularDataResource', 'HighChart', 'AlgorithmError', 'logged',
+           'LOGGING_LEVEL_ALG']
 
 logging.basicConfig(
         format='%(asctime)s - %(levelname)s: %(message)s',
