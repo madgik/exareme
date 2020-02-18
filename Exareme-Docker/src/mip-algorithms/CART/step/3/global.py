@@ -136,6 +136,9 @@ def main():
             samplesPerClass = None
             if global_state['args_Y'][0] in global_state['CategoricalVariables']: # Classification Algorithm
                 samplesPerClass = activePaths[key]["classNumbersJ"]["parentNode"]["counts"]
+            classValue = None
+            if global_state['args_Y'][0] not in global_state['CategoricalVariables']: # Regression Algorithm
+                classValue = activePaths[key]["statisticsJ"]["parentNode"]["ss_argsY"] /activePaths[key]["statisticsJ"]["parentNode"]["nn_argsY"]
             global_state['globalTree'].grow_tree(activePaths[key]['filter'], criterion, None, None, None,activePaths[key]["samples"], samplesPerClass, classValue) #Isws edw na dinw kai alla stoixeia. Alla logw privacy den xreiazetai
     activePaths = activePathsNew
     globalTreeJ = global_state['globalTree'].tree_to_json()

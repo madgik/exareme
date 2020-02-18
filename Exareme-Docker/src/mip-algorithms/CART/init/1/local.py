@@ -11,7 +11,7 @@ import pandas as pd
 sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) + '/utils/')
 sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) + '/CART/')
 
-from algorithm_utils import query_database, variable_categorical_getDistinctValues, StateData
+from algorithm_utils import query_database, variable_categorical_getDistinctValues, StateData, PrivacyError, PRIVACY_MAGIC_NUMBER
 from cart_lib import CartInit_Loc2Glob_TD
 
 def main():
@@ -44,7 +44,8 @@ def main():
     for x in dataSchema:
         if x in CategoricalVariables:
             dataFrame = dataFrame[dataFrame[x].astype(bool)]
-
+    if len(dataFrame) < PRIVACY_MAGIC_NUMBER: 
+        raise PrivacyError('The Experiment could not run with the input provided because there are insufficient data.')
 
     # Save local state
     local_state = StateData( dataFrame = dataFrame,
