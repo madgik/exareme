@@ -1,6 +1,6 @@
 import sys
 
-from LOGISTIC_EXPERIMENTAL.logistic_regression import LogistiRegression
+from LOGISTIC_EXPERIMENTAL.logistic_regression import LogisticRegression
 
 if __name__ == '__main__':
-    LogistiRegression(sys.argv[1:]).local_init()
+    LogisticRegression(sys.argv[1:]).local_init()

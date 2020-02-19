@@ -12,9 +12,9 @@ from mip_algorithms.highcharts import ConfusionMatrix, ROC
 from scipy.special import expit
 
 
-class LogistiRegression(Algorithm):
+class LogisticRegression(Algorithm):
     def __init__(self, cli_args):
-        super(LogistiRegression, self).__init__(__file__, cli_args)
+        super(LogisticRegression, self).__init__(__file__, cli_args)
 
     def local_init(self):
         Y, X = self.data.variables, self.data.covariables

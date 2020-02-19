@@ -130,3 +130,20 @@ class Pearson(Algorithm):
                 tables=[table_output],
                 highcharts=[highchart]
         )
+
+
+if __name__ == '__main__':
+    from mip_algorithms import create_runner
+
+    algorithm_args = [
+        '-x', '',
+        '-y', 'leftaccumbensarea, leftacgganteriorcingulategyrus, leftainsanteriorinsula',
+        '-pathology', 'dementia',
+        '-dataset', 'adni',
+        '-filter', '',
+        '-formula', '',
+        '-coding', '',
+    ]
+    runner = create_runner(for_class='Pearson', found_in='PEARSON_EXPERIMENTAL/pearson',
+                           of_type='local-global', algorithm_args=algorithm_args, num_workers=3)
+    runner.run()
