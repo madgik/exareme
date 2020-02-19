@@ -145,5 +145,5 @@ if __name__ == '__main__':
         '-coding', '',
     ]
     runner = create_runner(for_class='Pearson', found_in='PEARSON_EXPERIMENTAL/pearson',
-                           of_type='local-global', algorithm_args=algorithm_args, num_workers=3)
+                           alg_type='local-global', algorithm_args=algorithm_args, num_workers=3)
     runner.run()

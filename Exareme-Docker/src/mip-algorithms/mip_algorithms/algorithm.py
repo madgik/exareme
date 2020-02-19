@@ -50,7 +50,7 @@ class Algorithm(object):
     def set_output(self):
         try:
             logging.debug('Algorithm output:\n {res}'.format(res=json.dumps(self.result.output(), indent=4)))
-            print(json.dumps(self.result.output(), allow_nan=False))
+            print(json.dumps(self.result.output(), allow_nan=False, indent=4))
         except ValueError:
             logging.error('Result contains NaNs.')
             raise

@@ -14,26 +14,20 @@ from sqlalchemy import create_engine, MetaData, Table, select, func
 dbs_path = '/Users/zazon/madgik/exareme/Exareme-Docker/src/mip-algorithms/mip_algorithms/runner/dbs'
 
 
-def transfer_all(self):
-    conn = sqlite3.connect(os.path.join(dbs_path, 'local_transfer.db'))
+def write_to_transfer_db(out, db_name):
+    conn = sqlite3.connect(os.path.join(dbs_path, db_name))
     c = conn.cursor()
-    c.execute('INSERT INTO transfer VALUES (?)', (codecs.encode(pickle.dumps(self), 'ascii'),))
+    c.execute('INSERT INTO transfer VALUES (?)', (out,))
     conn.commit()
     conn.close()
 
 
-def __init__(self, cli_args):
-    super(self.__class__, self).__init__(cli_args)
-    self._transfer_struct.transfer_all = types.MethodType(transfer_all, self._transfer_struct)
-
-
-# todo: use this to capture transfers (replace function above)
 def capture_stdout(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         # Capture stdout
         old_stdout = sys.stdout
-        sys.stdout = new_stdout = io.StringIO()
+        sys.stdout = new_stdout = io.BytesIO()
         func(*args, **kwargs)
         func_out = new_stdout.getvalue()
         sys.stdout = old_stdout
@@ -43,15 +37,15 @@ def capture_stdout(func):
     return wrapper
 
 
-def create_runner(for_class, of_type, found_in, algorithm_args, num_workers=3):
+def create_runner(for_class, alg_type, found_in, algorithm_args, num_workers=3):
     folder = os.path.split(found_in)
     folder = folder[0] + '.' + folder[1]
     mod = importlib.import_module(folder)
     alg_cls = getattr(mod, for_class)
 
     # Create Worker and Master classes
-    Worker = type('Worker', (alg_cls,), {'__init__': __init__})
-    Master = type('Master', (alg_cls,), {'__init__': __init__})
+    Worker = type('Worker', (alg_cls,), {})
+    Master = type('Master', (alg_cls,), {})
 
     class Runner(object):
         def __init__(self, num_wrk, split=False):
@@ -81,37 +75,54 @@ def create_runner(for_class, of_type, found_in, algorithm_args, num_workers=3):
         def run(self):
             raise NotImplementedError
 
-    if of_type == 'local-global':
+    if alg_type == 'local-global':
         class LocalGlobalRunner(Runner):
             def run(self):
                 self.make_transfer_db(path=os.path.join(dbs_path, 'local_transfer.db'))
                 for i in range(self.num_wrk):
-                    self.workers[i].local_()
+                    out = capture_stdout(self.workers[i].local_)()
+                    write_to_transfer_db(out, 'local_transfer.db')
                 self.master.global_()
 
         return LocalGlobalRunner(num_wrk=num_workers)
 
-    elif of_type == 'iterative':
+    elif alg_type == 'iterative':
         class IterativeRunner(Runner):
             def run(self):
+                # ===== INIT ===== #
+                # Locals
                 self.make_transfer_db(path=os.path.join(dbs_path, 'local_transfer.db'))
-                # Init
                 for i in range(self.num_wrk):
-                    self.workers[i].local_init()
-                self.master.global_init()
-                # Step
+                    out = capture_stdout(self.workers[i].local_init)()
+                    write_to_transfer_db(out, 'local_transfer.db')
+                # Global
+                self.make_transfer_db(path=os.path.join(dbs_path, 'global_transfer.db'))
+                out = capture_stdout(self.master.global_init)()
+                write_to_transfer_db(out, 'global_transfer.db')
+                # ===== STEP ===== #
                 while True:
+                    # Locals
+                    self.make_transfer_db(path=os.path.join(dbs_path, 'local_transfer.db'))
                     for i in range(self.num_wrk):
-                        self.workers[i].local_step()
-                    self.master.global_step()
-                    if self.master.termination_condition() == 'STOP':
+                        out = capture_stdout(self.workers[i].local_step)()
+                        write_to_transfer_db(out, 'local_transfer.db')
+                    # Global
+                    self.make_transfer_db(path=os.path.join(dbs_path, 'global_transfer.db'))
+                    out = capture_stdout(self.master.global_step)()
+                    write_to_transfer_db(out, 'global_transfer.db')
+                    if 'STOP' in capture_stdout(self.master.termination_condition)():
                         break
-                # Final
+                # ===== FINAL ===== #
+                # Locals
+                self.make_transfer_db(path=os.path.join(dbs_path, 'local_transfer.db'))
                 for i in range(self.num_wrk):
-                    self.workers[i].local_final()
+                    out = capture_stdout(self.workers[i].local_final)()
+                    write_to_transfer_db(out, 'local_transfer.db')
+                # Global
                 self.master.global_final()
 
         return IterativeRunner(num_wrk=num_workers)
+
 
 def split_db(num_wrk):
     # Connect to original DB
@@ -168,6 +179,17 @@ def get_cli_args(algorithm_args, node, num=None):
 
 def main():
     algorithm_args = [
+        '-x', 'leftaccumbensarea, leftacgganteriorcingulategyrus, leftainsanteriorinsula',
+        '-y', 'gender',
+        '-pathology', 'dementia',
+        '-dataset', 'adni',
+        '-filter', '',
+        '-formula', '',
+    ]
+    runner = create_runner(for_class='LogisticRegression', found_in='LOGISTIC_EXPERIMENTAL/logistic_regression',
+                           alg_type='iterative', num_workers=3, algorithm_args=algorithm_args)
+    runner.run()
+    algorithm_args = [
         '-x', '',
         '-y', 'leftaccumbensarea, leftacgganteriorcingulategyrus, leftainsanteriorinsula',
         '-pathology', 'dementia',
@@ -177,7 +199,7 @@ def main():
         '-coding', '',
     ]
     runner = create_runner(for_class='Pearson', found_in='PEARSON_EXPERIMENTAL/pearson',
-                           of_type='local-global', num_workers=3, algorithm_args=algorithm_args)
+                           alg_type='local-global', num_workers=3, algorithm_args=algorithm_args)
     runner.run()
 
 

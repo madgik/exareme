@@ -6,7 +6,7 @@ from collections import namedtuple
 
 import numpy as np
 import scipy.stats as st
-from mip_algorithms import Algorithm, AlgorithmResult, TabularDataResource
+from mip_algorithms import Algorithm, AlgorithmResult, TabularDataResource, create_runner
 from mip_algorithms.constants import P_VALUE_CUTOFF, P_VALUE_CUTOFF_STR, PREC, MAX_ITER, CONFIDENCE
 from mip_algorithms.highcharts import ConfusionMatrix, ROC
 from scipy.special import expit
@@ -298,3 +298,16 @@ class LogisticRegression(Algorithm):
 LogisticRegressionSummary = namedtuple('LogisticRegressionSummary',
                                        ['aic', 'bic', 'df_mod', 'df_resid', 'high_ci', 'll0', 'low_ci', 'p_values',
                                         'r2_cs', 'r2_mcf', 'stderr', 'z_scores', ])
+
+if __name__ == '__main__':
+    algorithm_args = [
+        '-x', 'leftaccumbensarea, leftacgganteriorcingulategyrus, leftainsanteriorinsula',
+        '-y', 'gender',
+        '-pathology', 'dementia',
+        '-dataset', 'adni',
+        '-filter', '',
+        '-formula', '',
+    ]
+    runner = create_runner(for_class='LogisticRegression', found_in='LOGISTIC_EXPERIMENTAL/logistic_regression',
+                           alg_type='iterative', num_workers=3, algorithm_args=algorithm_args)
+    runner.run()
