@@ -107,7 +107,7 @@ def cb_global_final(global_state, global_in):
         'Calibration curve'     : np.around(calib_curve, 4).tolist(),
         'Calibration belt 1'    : np.around(calib_belt1, 4).tolist(),
         'Calibration belt 2'    : np.around(calib_belt2, 4).tolist(),
-        'p values'              : np.around(p_value, 3),
+        'p value'              : np.around(p_value, 3),
         'Over bisector 1'       : over_bisect1,
         'Under bisector 1'      : under_bisect1,
         'Over bisector 2'       : over_bisect2,
