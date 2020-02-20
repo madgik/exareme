@@ -1,10 +1,7 @@
-import codecs
 import io
 import os
-import pickle
 import sqlite3
 import sys
-import types
 import importlib
 from functools import wraps
 
@@ -25,7 +22,6 @@ def write_to_transfer_db(out, db_name):
 def capture_stdout(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        # Capture stdout
         old_stdout = sys.stdout
         sys.stdout = new_stdout = io.BytesIO()
         func(*args, **kwargs)
@@ -176,32 +172,3 @@ def get_cli_args(algorithm_args, node, num=None):
     ]
     return algorithm_args + common_args
 
-
-def main():
-    algorithm_args = [
-        '-x', 'leftaccumbensarea, leftacgganteriorcingulategyrus, leftainsanteriorinsula',
-        '-y', 'gender',
-        '-pathology', 'dementia',
-        '-dataset', 'adni',
-        '-filter', '',
-        '-formula', '',
-    ]
-    runner = create_runner(for_class='LogisticRegression', found_in='LOGISTIC_EXPERIMENTAL/logistic_regression',
-                           alg_type='iterative', num_workers=3, algorithm_args=algorithm_args)
-    runner.run()
-    algorithm_args = [
-        '-x', '',
-        '-y', 'leftaccumbensarea, leftacgganteriorcingulategyrus, leftainsanteriorinsula',
-        '-pathology', 'dementia',
-        '-dataset', 'adni',
-        '-filter', '',
-        '-formula', '',
-        '-coding', '',
-    ]
-    runner = create_runner(for_class='Pearson', found_in='PEARSON_EXPERIMENTAL/pearson',
-                           alg_type='local-global', num_workers=3, algorithm_args=algorithm_args)
-    runner.run()
-
-
-if __name__ == '__main__':
-    main()

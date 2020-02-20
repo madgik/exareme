@@ -301,11 +301,34 @@ LogisticRegressionSummary = namedtuple('LogisticRegressionSummary',
 
 if __name__ == '__main__':
     algorithm_args = [
-        '-x', 'leftaccumbensarea, leftacgganteriorcingulategyrus, leftainsanteriorinsula',
-        '-y', 'gender',
+        '-x', 'lefthippocampus',
+        '-y', 'alzheimerbroadcategory',
         '-pathology', 'dementia',
-        '-dataset', 'adni',
-        '-filter', '',
+        '-dataset', 'adni, ppmi, edsd',
+        '-filter', '''
+                    {
+                        "condition": "OR",
+                        "rules": [
+                            {
+                                "id": "alzheimerbroadcategory",
+                                "field": "alzheimerbroadcategory",
+                                "type": "string",
+                                "input": "text",
+                                "operator": "equal",
+                                "value": "AD"
+                            },
+                            {
+                                "id": "alzheimerbroadcategory",
+                                "field": "alzheimerbroadcategory",
+                                "type": "string",
+                                "input": "text",
+                                "operator": "equal",
+                                "value": "CN"
+                            }
+                        ],
+                        "valid": true
+                    }
+        ''',
         '-formula', '',
     ]
     runner = create_runner(for_class='LogisticRegression', found_in='LOGISTIC_EXPERIMENTAL/logistic_regression',
