@@ -1,22 +1,17 @@
 #!/usr/bin/env bash
 
-if [[ -z "${EXAREME_ACTIVE_WORKERS_PATH}" ]]; then
-	echo "Env. variable 'active_workers' not initialized in docker-compose.yaml files. Exiting..."
-	exit 1
-fi
+#Init environmental variables
 
-if [[ -z "${EXAREME_MASTER_PATH}" ]]; then
-	echo "Env. variable 'master' not initialized in docker-compose.yaml files. Exiting..."
-	exit 1
-fi
+export DOCKER_DATA_FOLDER="/root/exareme/data/"
+export DOCKER_METADATA_FOLDER="/root/exareme/data/"
+export EXAREME_ACTIVE_WORKERS_PATH="active_workers"
+export EXAREME_MASTER_PATH="master"
+export DATA="data"
 
-if [[ -z "${DATA}" ]]; then
-	echo "Env. variable 'data' not initialized in docker-compose.yaml files. Exiting..."
-	exit 1
-fi
-if [[ -z ${CONSULURL} ]]; then echo "CONSULURL is unset"; exit; fi
-if [[ -z ${NODE_NAME} ]]; then echo "NODE_NAME is unset";exit;  fi
-if [[ -z ${DOCKER_DATA_FOLDER} ]]; then echo "DOCKER_DATA_FOLDER is unset"; exit; fi
+if [[ -z ${CONSULURL} ]]; then echo "CONSULURL is unset. Check docker-compose file."; exit; fi
+if [[ -z ${NODE_NAME} ]]; then echo "NODE_NAME is unset. Check docker-compose file.";exit;  fi
+if [[ -z ${MASTER_FLAG} ]]; then echo "MASTER_FLAG is unset. Check docker-compose file.";exit;  fi
+if [[ -z ${TAG} ]]; then echo "TAG is unset. Check docker-compose file.";exit;  fi
 
 #Stop Exareme service
 stop_exareme () {

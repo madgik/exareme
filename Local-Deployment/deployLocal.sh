@@ -14,6 +14,27 @@ PORTAINER_NAME="mip_portainer"
 
 FEDERATION_ROLE="master"
 
+PUBLIC_IP="127.0.0.1"
+LOCAL_IP="127.0.0.1"
+
+_get_public_ip(){
+	ip=$(wget http://ipinfo.io/ip -qO -)
+	if [ "$ip" != "" ]; then
+		PUBLIC_IP=$ip
+	fi
+}
+
+_get_local_ip(){
+	local iface=$(ip route show|awk '/^default via/ {print $NF" "$5}'|sort|head -1|cut -d ' ' -f 2)
+	local ip=$(ip address show|grep "inet.*$iface"|awk '{print $2}'|cut -d '/' -f1)
+	if [ "$ip" != "" ]; then
+		LOCAL_IP=$ip
+	fi
+}
+
+_get_public_ip
+_get_local_ip
+
 flag=0
 #Check if data_path exist
 if [[ -s data_path.txt ]]; then
@@ -28,7 +49,7 @@ else
     echo LOCAL_DATA_FOLDER=${answer} > data_path.txt
 fi
 
-LOCAL_DATA_FOLDER=$(cat data_path.txt | cut -d '=' -f 2)
+. ./data_path.txt
 
 
 chmod 755 *.sh
@@ -43,14 +64,14 @@ fi
 #Previous Swarm not found
 if [[ $(sudo docker info | grep Swarm | grep inactive*) != '' ]]; then
     echo -e "\nInitialize Swarm.."
-    sudo docker swarm init --advertise-addr=$(wget http://ipinfo.io/ip -qO -)
+    sudo docker swarm init --advertise-addr=${LOCAL_IP}
 #Previous Swarm found
 else
     echo -e "\nLeaving previous Swarm.."
     sudo docker swarm leave -f
     sleep 1
     echo -e "\nInitialize Swarm.."
-    sudo docker swarm init --advertise-addr=$(wget http://ipinfo.io/ip -qO -)
+    sudo docker swarm init --advertise-addr=${LOCAL_IP}
 fi
 
 #Init network
