@@ -96,18 +96,19 @@ def cb_global_final(global_state, global_in):
     raw_data = {
         'Model Parameters'      :
             {
-                'Model degree'     : model_deg,
+                'Model degree'     : int(model_deg),
                 'coeff'            : coeff.tolist(),
                 'log-likelihood'   : ll,
                 'Hessian'          : hess.tolist(),
                 'Covariance matrix': covar.tolist()
             },
+        'Model degree': int(model_deg),  # todo remove (or not??)
         'n_obs'                 : n_obs,
         'Likelihood ration test': ddev,
         'Calibration curve'     : np.around(calib_curve, 4).tolist(),
         'Calibration belt 1'    : np.around(calib_belt1, 4).tolist(),
         'Calibration belt 2'    : np.around(calib_belt2, 4).tolist(),
-        'p value'              : np.around(p_value, 3),
+        'p value'              : p_value,
         'Over bisector 1'       : over_bisect1,
         'Under bisector 1'      : under_bisect1,
         'Over bisector 2'       : over_bisect2,
@@ -143,10 +144,11 @@ def cb_global_final(global_state, global_in):
             }
         ]
     }
-    try:
-        global_out = json.dumps(result, allow_nan=False)
-    except ValueError:
-        raise ValueError('Result contains NaNs.')
+    global_out = json.dumps(result)
+    # try:
+    #     global_out = json.dumps(result, allow_nan=False)
+    # except ValueError:
+    #     raise ValueError('Result contains NaNs.')
     return global_out
 
 
