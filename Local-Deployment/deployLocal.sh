@@ -134,10 +134,15 @@ do
     do
         if [[ ${answer} == "y" ]];then
             if [[ -s domain_name.txt ]]; then
-                DOMAIN_NAME=$(cat domain_name.txt | cut -d '=' -f 2)
+                . ./domain_name.txt
                 #Run Secure Portainer service
                 flag=1
-                . ./portainer.sh
+                command=$(sudo find /etc/letsencrypt/live/${DOMAIN_NAME}/cert.pem 2> /dev/null)
+                if [[ ${command} == "/etc/letsencrypt/live/"${DOMAIN_NAME}"/cert.pem" ]]; then
+                    . ./portainer.sh
+                else
+                    echo -e "\nNo certificate for the Domain name: "${DOMAIN_NAME}" existing in file \"domain_name.txt\". Starting without Portainer.."
+                fi
             else
                 echo -e "\nWhat is the Domain name for which an SSL certificate created?"
                 read answer
