@@ -46,7 +46,7 @@ services:
     image: ${EXAREME_IMAGE}
     environment:
       - CONSULURL=${EXAREME_KEYSTORE}
-      - MASTER_FLAG=${FEDERATION_ROLE}
+      - FLAG=${FEDERATION_ROLE}
       - NODE_NAME=${FEDERATION_NODE}
       - TAG=dev   #dev or prod
     depends_on:
