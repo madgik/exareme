@@ -10,7 +10,7 @@ export DATA="data"
 
 if [[ -z ${CONSULURL} ]]; then echo "CONSULURL is unset. Check docker-compose file."; exit; fi
 if [[ -z ${NODE_NAME} ]]; then echo "NODE_NAME is unset. Check docker-compose file.";exit;  fi
-if [[ -z ${MASTER_FLAG} ]]; then echo "MASTER_FLAG is unset. Check docker-compose file.";exit;  fi
+if [[ -z ${FEDERATION_ROLE} ]]; then echo "FEDERATION_ROLE is unset. Check docker-compose file.";exit;  fi
 if [[ -z ${TAG} ]]; then echo "TAG is unset. Check docker-compose file.";exit;  fi
 
 #Stop Exareme service
@@ -59,7 +59,7 @@ trap term_handler SIGTERM SIGKILL
 #This funciton will be executed when the container receives the SIGTERM signal (when stopping)
 term_handler () {
 
-if [[ "${MASTER_FLAG}" != "master" ]]; then   #worker
+if [[ "${FEDERATION_ROLE}" != "master" ]]; then   #worker
 	echo "*******************************Stopping Worker**************************************"
 	if [[ "$(curl -s ${CONSULURL}/v1/health/state/passing | jq -r '.[].Status')" = "passing" ]];  then
 		deleteKeysFromConsul "$EXAREME_ACTIVE_WORKERS_PATH"
@@ -84,7 +84,7 @@ exit 0
 mkdir -p  /tmp/demo/db/
 
 #This is the Worker
-if [[ "${MASTER_FLAG}" != "master" ]]; then
+if [[ "${FEDERATION_ROLE}" != "master" ]]; then
 
 	DESC="exareme-worker"
 	MY_IP=$(/sbin/ifconfig eth0 | grep "inet" | awk -F: '{print $2}' | cut -d ' ' -f 1)
