@@ -29,7 +29,7 @@ services:
     environment:
       - CONSULURL=${EXAREME_KEYSTORE}
       - NODE_NAME=${FEDERATION_NODE}
-      - FLAG=${FEDERATION_ROLE}
+      - FEDERATION_ROLE=${FEDERATION_ROLE}
       - TAG=prod     #dev or prod
     deploy:
       restart_policy:
