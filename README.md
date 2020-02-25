@@ -2,11 +2,17 @@
 
 ### Exareme Packaging:
 <ul>
+    <li><code><b>Documentation</b></code>
+        <ul>
+            <li>How to provide input that Exareme requires from data point of view.</li>
+            <li>How to run Portainer as a secure Service.</li>
+      </ul>
+    </li>
     <li><code><b>Exareme-Docker</b></code>
         <ul>
             <li>Exareme source code (src/exareme).</li>
             <li>The mip algorithms that run on exareme (src/mip-algorithms).</li>
-            <li>Scripts for creating a docker image with the exareme source code and the mip-algorithms that will run on exareme.</li>
+            <li>Documentation on creating a docker image of Exareme along with it's algorithms.</li>
         </ul>
     </li>
     <li><code><b>Federated-Deployment</b></code>
