@@ -1,6 +1,6 @@
 # Local Exareme Deployment Guide
 
-Here you will find all the information needed in order to deploy Exareme in your environment via docker compose and shell scripts.
+Here you will find all the information needed in order to deploy Exareme in your environment via Docker swarm and shell scripts.
 
 # Requirement
 
@@ -31,10 +31,11 @@ Make sure the following ports are available:
 Clone this repository on your local computer so you can use it to deploy Exareme.
 
 ## Data Structure
-DATA should follow a specific structure. A data folder, which will be referred as  ```data_path```, should contain one
-folder for each pathology that it has datasets for. Inside that folder there should be:
+In the node in which you will deploy Exareme there should be a *DATA FOLDER* which contains the *DATA* existing in that node. We will refer to the path leading to *DATA FOLDER* as ```data_path```. 
 
-1) the datasets.csv file with all the datasets combined and
+The *DATA FOLDER* should follow a specific structure.
+It should contain one folder for each pathology that it has datasets for. Inside that folder there should be:
+1) the .csv files that will contain one or more datasets, 
 2) the CDEsMetadata.json file for that specific pathology.
 
 For example:
@@ -48,8 +49,7 @@ For example:
 ----------> demo.csv <br />
 ----------> CDEsMetadata.json <br />
 
-You should include the CDEsMetadata.json file for every pathology even if it doesn't contain a datasets.csv file.
-
+On the current node where Exareme will be deployed, we *must include* the CDEsMetadata.json file for *every pathology* that exists even if it *doesn't contain* any .csv file.
 For example:
 
 -> Data Folder <br />
@@ -59,9 +59,12 @@ For example:
 ----------> demo.csv <br />
 ----------> CDEsMetadata.json <br />
 
-For more information on what these files should contain you can see here:
-https://github.com/madgik/exareme/Documentation/InputRequirements.md
+For more information on what these files should contain you can see <a href="../Documentation/InputRequirements.md#input-requirements">here</a>.
 
+# Deployment
+
+In the *Local-Deployment/* folder, run the ```deployLocal.sh``` to start the deployment.
+You will be prompted to provide any information needed.
 
 ## [Optional] Exareme Version 
 ```This step can be done through the deploy script.```
@@ -72,7 +75,7 @@ The file should contain the following lines, modify them depending on the versio
 
 ```
 EXAREME_IMAGE: "hbpmip/exareme"
-EXAREME_TAG: "v21.2.0"
+EXAREME_TAG: "v21.3.0"
 ```
 
 ## [Optional] Data path location
@@ -80,21 +83,16 @@ EXAREME_TAG: "v21.2.0"
 
 In the ```Local-Deployment/``` folder create a ```data_path.txt``` file.
 
-The file should contain the following line, modify it according to the path where your data folder is.
+The file should contain the following line, modify it according to the path where your *DATA FOLDER* is.
 
 ```
 LOCAL_DATA_FOLDER=/home/user/data/
 ```
 
-# Deployment
-
-In the ```Local-Deployment/``` folder, run the ```deployLocal.sh``` to start the deployment.
-You will be prompted to provide any information needed.
-
 ## [Optional] Secure Portainer
 
 By default, Portainer’s web interface and API are exposed over HTTP. If you want them to be exposed over HTTPS check
-<a href="https://github.com/madgik/exareme/tree/master/Documentation/SecurePortainer.md">here</a>.<br />
+<a href="../Documentation/SecurePortainer.md#optional-secure-portainer">here</a>. Information about how to <a href="../Federated-Deployment/Documentation/Troubleshoot.md#portainer">launch Portainer for the first time.</a>
 
 # Troubleshooting
 
