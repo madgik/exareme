@@ -6,7 +6,7 @@ import math
 # Required datasets: data_logisticRegression.csv
 
 
-endpointUrl = 'http://88.197.53.38:9090/mining/query/LOGISTIC_REGRESSION'
+endpointUrl = 'http://88.197.53.100:9090/mining/query/LOGISTIC_REGRESSION'
 
 
 def test_LogisticRegression():
