@@ -24,6 +24,7 @@ def cb_global_final(global_state, global_in):
     n_obs = global_state['n_obs']
     e_name = global_state['e_name']
     o_name = global_state['o_name']
+    e_domain = global_state['e_domain']
     devel = global_state['devel']
     max_deg = global_state['max_deg']
     cl = global_state['cl']
@@ -63,8 +64,11 @@ def cb_global_final(global_state, global_in):
     p_value = 1 - givitiStatCdf(calibrationStat, m=model_deg, devel=devel, thres=thres)
 
     # Compute calibration curve
-    e_min, e_max = 0.01, 0.99  # TODO replace e_min and e_max values with actual ones
-    e = np.linspace(e_min, e_max, num=num_points)
+    e_min, e_max = e_domain
+    e_lin = np.linspace(e_min, e_max, num=(int(num_points) + 1) // 2)
+    e_log = expit(np.linspace(logit(e_min), logit(e_max), num=int(num_points) // 2))
+    e = np.concatenate((e_lin, e_log))
+    e = np.sort(e)
     ge = logit(e)
     G = [np.ones(len(e))]
     for d in range(1, len(coeff)):
@@ -75,15 +79,17 @@ def cb_global_final(global_state, global_in):
 
     # Compute confidence intervals
     cl1, cl2 = cl[0], cl[1]
-    sig2gp = [np.dot(G[i], np.dot(covar, G[i])) for i in range(len(G))]
-    ci1 = np.sqrt(np.multiply(chi2.ppf(q=cl1, df=2), sig2gp))
-    ci2 = np.sqrt(np.multiply(chi2.ppf(q=cl2, df=2), sig2gp))
-    g_min1, g_max1 = np.dot(G, coeff) - ci1, np.dot(G, coeff) + ci1
-    g_min2, g_max2 = np.dot(G, coeff) - ci2, np.dot(G, coeff) + ci2
+    GVG = [np.dot(G[i], np.dot(covar, G[i])) for i in range(len(G))]
+    sqrt_chi_GVG_1 = np.sqrt(np.multiply(chi2.ppf(q=cl1, df=2), GVG))
+    sqrt_chi_GVG_2 = np.sqrt(np.multiply(chi2.ppf(q=cl2, df=2), GVG))
+    g_min1, g_max1 = np.dot(G, coeff) - sqrt_chi_GVG_1, np.dot(G, coeff) + sqrt_chi_GVG_1
+    g_min2, g_max2 = np.dot(G, coeff) - sqrt_chi_GVG_2, np.dot(G, coeff) + sqrt_chi_GVG_2
     p_min1, p_max1 = expit(g_min1), expit(g_max1)
     p_min2, p_max2 = expit(g_min2), expit(g_max2)
-    calib_belt1 = np.array([e, p_min1, p_max1]).transpose()
-    calib_belt2 = np.array([e, p_min2, p_max2]).transpose()
+    calib_belt1 = np.array([p_min1, p_max1])
+    calib_belt2 = np.array([p_min2, p_max2])
+    calib_belt1_hc = np.array([e, p_min1, p_max1]).transpose()
+    calib_belt2_hc = np.array([e, p_min2, p_max2]).transpose()
 
     # Find regions relative to bisector
     over_bisect1 = find_relative_to_bisector(np.around(e, 4), p_min1, 'over')
@@ -102,13 +108,14 @@ def cb_global_final(global_state, global_in):
                 'Hessian'          : hess.tolist(),
                 'Covariance matrix': covar.tolist()
             },
-        'Model degree': int(model_deg),  # todo remove (or not??)
+        'Model degree'          : int(model_deg),  # todo remove (or not??)
         'n_obs'                 : n_obs,
-        'Likelihood ration test': ddev,
-        'Calibration curve'     : np.around(calib_curve, 4).tolist(),
-        'Calibration belt 1'    : np.around(calib_belt1, 4).tolist(),
-        'Calibration belt 2'    : np.around(calib_belt2, 4).tolist(),
-        'p value'              : p_value,
+        'Likelihood ratio test' : ddev,
+        'seqP'                  : np.around(e, 8).tolist(),
+        # 'Calibration curve'     : np.around(calib_curve, 4).tolist(),
+        'Calibration belt 1'    : np.around(calib_belt1, 8).tolist(),
+        'Calibration belt 2'    : np.around(calib_belt2, 8).tolist(),
+        'p value'               : p_value,
         'Over bisector 1'       : over_bisect1,
         'Under bisector 1'      : under_bisect1,
         'Over bisector 2'       : over_bisect2,
@@ -120,8 +127,8 @@ def cb_global_final(global_state, global_in):
         'Observed name'         : o_name,
     }
     # Highchart
-    highchart = build_cb_highchart(calib_curve=calib_curve, calib_belt1=calib_belt1,
-                                   calib_belt2=calib_belt2, over_bisect1=over_bisect1,
+    highchart = build_cb_highchart(calib_curve=calib_curve, calib_belt1=calib_belt1_hc,
+                                   calib_belt2=calib_belt2_hc, over_bisect1=over_bisect1,
                                    under_bisect1=under_bisect1, over_bisect2=over_bisect2,
                                    under_bisect2=under_bisect2, cl1=cl1, cl2=cl2,
                                    thres=thres, n_obs=n_obs, model_deg=model_deg, p_values=p_value,

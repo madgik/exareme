@@ -25,6 +25,7 @@ def cb_global_iter(global_state, global_in):
     e_name = global_state['e_name']
     o_name = global_state['o_name']
     max_deg = global_state['max_deg']
+    e_domain = global_state['e_domain']
     # Unpack global input
     ll_dict, grad_dict, hess_dict = global_in.get_data()
 
@@ -35,6 +36,7 @@ def cb_global_iter(global_state, global_in):
                 np.linalg.inv(hess_dict[deg]),
                 grad_dict[deg]
         )
+        coeff_dict[deg] = coeff_dict[deg].clip(-10, 10)  # regularize
         # Update termination quantities
         delta_dict[deg] = abs(ll_dict[deg] - ll_old_dict[deg])
     iter += 1
@@ -42,7 +44,7 @@ def cb_global_iter(global_state, global_in):
     # Pack state and results
     global_state = StateData(n_obs=n_obs, ll_dict=ll_dict, coeff_dict=coeff_dict,
                              delta_dict=delta_dict, iter=iter,
-                             e_name=e_name, o_name=o_name, max_deg=max_deg)
+                             e_name=e_name, o_name=o_name, max_deg=max_deg, e_domain=e_domain)
     global_out = CBIter_Glob2Loc_TD(coeff_dict)
     return global_state, global_out
 
