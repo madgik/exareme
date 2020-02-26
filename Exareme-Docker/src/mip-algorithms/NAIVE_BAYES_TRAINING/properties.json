@@ -1,7 +1,7 @@
 {
 	"name": "NAIVE_BAYES_TRAINING",
 	"desc": "Naive Bayes clasiifier: Training phase",
-	"label": "Naive Bayes Training",
+	"label": "Naive Bayes Training for Galaxy",
 	"type": "local_global",
 	"parameters": [{
 			"name": "x",
