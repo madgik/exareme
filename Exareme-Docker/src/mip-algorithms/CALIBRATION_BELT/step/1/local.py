@@ -6,10 +6,10 @@ from argparse import ArgumentParser
 from os import path
 
 import numpy as np
-from scipy.special import expit
+from scipy.special import expit, xlogy
 
 sys.path.append(
-    path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) + '/utils/')
+        path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) + '/utils/')
 sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) +
                 '/CALIBRATION_BELT/')
 
@@ -42,17 +42,24 @@ def cb_local_iter(local_state, local_in):
         )
         hess_dict[deg] = hess
         # Gradient
+        Ymsd = (Y - s) / d  # Stable computation of (Y - s) / d
+        Ymsd[(Y == 0) & (s == 0)] = -1
+        Ymsd[(Y == 1) & (s == 1)] = 1
+        Ymsd = Ymsd.clip(-100, 100)
+
         grad = np.dot(
                 np.transpose(X),
                 np.dot(
                         D,
-                        z + np.divide(Y - s, d)
+                        z + Ymsd  # np.divide(Y - s, d)
                 )
         )
         grad_dict[deg] = grad
+
+        if np.isnan(grad_dict[deg]).any():
+            raise ValueError('Grad contains NaNs!', grad_dict[deg], deg, coeff, z, s, d, Y, Ymsd)
         # Log-likelihood
-        ls1, ls2 = np.log(s), np.log(1 - s)
-        ll = np.dot(Y, ls1) + np.dot(1 - Y, ls2)
+        ll = np.sum(xlogy(Y, s) + xlogy(1 - Y, 1 - s))
         ll_dict[deg] = ll
     # Pack state and results
     local_state = StateData(X_matrices=X_matrices, Y=Y, max_deg=max_deg)
