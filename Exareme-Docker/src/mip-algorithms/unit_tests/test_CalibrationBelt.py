@@ -15,7 +15,6 @@ def get_test_params():
 
 @pytest.mark.parametrize("test_input, expected", get_test_params())
 def test_eval(test_input, expected):
-    global _COUNT
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
     if expected[0] is None:
         assert True
