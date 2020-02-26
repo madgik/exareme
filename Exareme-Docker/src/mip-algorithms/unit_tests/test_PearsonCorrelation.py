@@ -329,13 +329,13 @@ def test_PearsonCorrlation_MIP_AlgoTesting_4():
     result = json.loads(r.text)
 
     check_result(
-            result['result'][0]['data'][0], 'righthippocampus ~ lefthippocampus', 0.902, '< 0.001', 0.889, 0.913
+            result['result'][0]['data'][3], 'righthippocampus ~ lefthippocampus', 0.902, '< 0.001', 0.889, 0.913
     )
     check_result(
-            result['result'][0]['data'][1], 'righthippocampus ~ leftententorhinalarea', 0.808, '< 0.001', 0.784, 0.829
+            result['result'][0]['data'][6], 'righthippocampus ~ leftententorhinalarea', 0.808, '< 0.001', 0.784, 0.829
     )
     check_result(
-            result['result'][0]['data'][2], 'lefthippocampus ~ leftententorhinalarea', 0.806, '< 0.001', 0.782, 0.828
+            result['result'][0]['data'][7], 'lefthippocampus ~ leftententorhinalarea', 0.806, '< 0.001', 0.782, 0.828
     )
 
 
@@ -390,13 +390,13 @@ def test_PearsonCorrlation_MIP_AlgoTesting_5():
     result = json.loads(r.text)
 
     check_result(
-            result['result'][0]['data'][0], 'righthippocampus ~ lefthippocampus', 0.902, '< 0.001', 0.889, 0.913
+            result['result'][0]['data'][3], 'righthippocampus ~ lefthippocampus', 0.902, '< 0.001', 0.889, 0.913
     )
     check_result(
-            result['result'][0]['data'][1], 'righthippocampus ~ opticchiasm', 0.198, '< 0.001', 0.135, 0.259
+            result['result'][0]['data'][6], 'righthippocampus ~ opticchiasm', 0.198, '< 0.001', 0.135, 0.259
     )
     check_result(
-            result['result'][0]['data'][2], 'lefthippocampus ~ opticchiasm', 0.211, '< 0.001', 0.148, 0.272
+            result['result'][0]['data'][7], 'lefthippocampus ~ opticchiasm', 0.211, '< 0.001', 0.148, 0.272
     )
 
 
@@ -451,13 +451,13 @@ def test_PearsonCorrlation_MIP_AlgoTesting_6():
     result = json.loads(r.text)
 
     check_result(
-            result['result'][0]['data'][0], 'lefthippocampus ~ subjectageyears', -0.208, '< 0.001', -0.277, -0.137
+            result['result'][0]['data'][1], 'lefthippocampus ~ subjectageyears', -0.208, '< 0.001', -0.277, -0.137
     )
     check_result(
-            result['result'][0]['data'][1], 'lefthippocampus ~ opticchiasm', 0.202, '< 0.001', 0.130, 0.271
+            result['result'][0]['data'][2], 'lefthippocampus ~ opticchiasm', 0.202, '< 0.001', 0.130, 0.271
     )
     check_result(
-            result['result'][0]['data'][2], 'subjectageyears ~ opticchiasm', -0.006, 0.867, -0.079, 0.067
+            result['result'][0]['data'][5], 'subjectageyears ~ opticchiasm', -0.006, 0.867, -0.079, 0.067
     )
 
 
@@ -512,13 +512,13 @@ def test_PearsonCorrlation_MIP_AlgoTesting_7():
     result = json.loads(r.text)
 
     check_result(
-            result['result'][0]['data'][0], 'subjectageyears ~ lefthippocampus', -0.208, '< 0.001', -0.277, -0.137
+            result['result'][0]['data'][1], 'subjectageyears ~ lefthippocampus', -0.208, '< 0.001', -0.277, -0.137
     )
     check_result(
-            result['result'][0]['data'][1], 'subjectageyears ~ opticchiasm', -0.006, 0.867, -0.079, 0.067
+            result['result'][0]['data'][2], 'subjectageyears ~ opticchiasm', -0.006, 0.867, -0.079, 0.067
     )
     check_result(
-            result['result'][0]['data'][2], 'lefthippocampus ~ opticchiasm', 0.202, '< 0.001', 0.130, 0.271
+            result['result'][0]['data'][5], 'lefthippocampus ~ opticchiasm', 0.202, '< 0.001', 0.130, 0.271
     )
 
 def test_PearsonCorrlation_Privacy():
@@ -552,7 +552,7 @@ def check_result(my_result, r_var_pair, r_corr, r_pval, r_ci_lo, r_ci_hi):
         pval = float(my_result['p-value'])
     ci_lo = float(my_result['C.I. Lower'])
     ci_hi = float(my_result['C.I. Upper'])
-    assert var_pair == r_var_pair
+    assert set(var_pair.split(' ~ ')) == set(r_var_pair.split(' ~ '))
     assert math.isclose(corr, r_corr, rel_tol=0, abs_tol=1e-03)
     if type(r_pval) == str:
         assert pval == r_pval

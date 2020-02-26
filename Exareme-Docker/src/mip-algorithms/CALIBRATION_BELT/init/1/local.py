@@ -25,14 +25,15 @@ def cb_local_init(local_in):
     ge_vec = logit(e_vec)
     X_matrices = dict()
     for deg in range(1, max_deg + 1):
-        X = [np.ones(len(e_vec))]  # TODO check if can change to numpy array
+        X = [np.ones(len(e_vec))]
         for d in range(1, deg + 1):
             X = np.append(X, [np.power(ge_vec, d)], axis=0)
         X_matrices[deg] = X.transpose()
     Y = o_vec
+    e_domain = np.min(e_vec), np.max(e_vec)
     # Pack state and results
     local_state = StateData(X_matrices=X_matrices, Y=Y, max_deg=max_deg)
-    local_out = CBInit_Loc2Glob_TD(n_obs, e_name, o_name, max_deg)
+    local_out = CBInit_Loc2Glob_TD(n_obs, e_name, o_name, max_deg, e_domain)
     return local_state, local_out
 
 
@@ -68,6 +69,7 @@ def main():
     mask_o = [oi is None for oi in o_vec]
     mask = np.logical_or(mask_e, mask_o)
     e_vec, o_vec = np.array(e_vec[~mask], dtype=np.float64), np.array(o_vec[~mask], dtype=np.int8)
+    # todo perform privacy check here!
     assert min(e_vec) >= 0. and max(e_vec) <= 1., "Variable e should take values only in [0, 1]"
     assert set(o_vec) == {0, 1}, "Variable o should only contain values 0 and 1."
 

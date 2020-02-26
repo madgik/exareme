@@ -18,15 +18,16 @@ PREC = 1e-7  # Precision used in termination_condition
 
 class CBInit_Loc2Glob_TD(TransferData):
     def __init__(self, *args):
-        if len(args) != 4:
+        if len(args) != 5:
             raise ValueError('Illegal number of arguments.')
         self.n_obs = args[0]
         self.e_name = args[1]
         self.o_name = args[2]
         self.max_deg = args[3]
+        self.e_domain = args[4]
 
     def get_data(self):
-        return self.n_obs, self.e_name, self.o_name, self.max_deg
+        return self.n_obs, self.e_name, self.o_name, self.max_deg, self.e_domain
 
     def __add__(self, other):
         assert self.e_name == other.e_name, "Local e names do not agree."
@@ -36,7 +37,8 @@ class CBInit_Loc2Glob_TD(TransferData):
                 self.n_obs + other.n_obs,
                 self.e_name,
                 self.o_name,
-                self.max_deg
+                self.max_deg,
+                min(self.e_domain[0], other.e_domain[0]), max(self.e_domain[1], other.e_domain[1])
         )
 
 

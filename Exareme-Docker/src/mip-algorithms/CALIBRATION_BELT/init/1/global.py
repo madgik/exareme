@@ -17,7 +17,7 @@ from cb_lib import CBInit_Loc2Glob_TD, CBIter_Glob2Loc_TD
 
 
 def cb_global_init(global_in):
-    n_obs, e_name, o_name, max_deg = global_in.get_data()
+    n_obs, e_name, o_name, max_deg, e_domain = global_in.get_data()
 
     if n_obs == 0:
         raise ExaremeError('The selected variables contain 0 datapoints.')
@@ -33,7 +33,7 @@ def cb_global_init(global_in):
 
     # Pack state and results
     global_state = StateData(n_obs=n_obs, ll_dict=ll_dict, coeff_dict=coeff_dict, iter=iter,
-                             e_name=e_name, o_name=o_name, max_deg=max_deg)
+                             e_name=e_name, o_name=o_name, max_deg=max_deg, e_domain=e_domain)
     global_out = CBIter_Glob2Loc_TD(coeff_dict)
 
     return global_state, global_out
