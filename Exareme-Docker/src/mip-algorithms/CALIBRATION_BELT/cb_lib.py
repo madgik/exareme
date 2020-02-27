@@ -199,7 +199,7 @@ def givitiStatCdf(t, m, devel='external', thres=0.95):
 
 
 def build_cb_highchart(**kwargs):
-    kwargs = {k: str(v) for k, v in kwargs.items()}
+    # kwargs = {k: str(v) for k, v in kwargs.items()}
     calib_curve, calib_belt1, calib_belt2, over_bisect1, under_bisect1, over_bisect2, \
     under_bisect2, cl1, cl2, thres, n_obs, model_deg, p_values, e_name, o_name = kwargs[
                                                                                      'calib_curve'], \
@@ -315,7 +315,7 @@ def build_cb_highchart(**kwargs):
                 "data"     : calib_curve,
                 "zIndex"   : 3,
                 "lineWidth": 3,
-                "color"    : "Highcharts.getOptions().colors[0]",
+                "color"    : "#2f7ed8",
                 "marker"   : {
                     "enabled": False
                 },

@@ -127,11 +127,11 @@ def cb_global_final(global_state, global_in):
         'Observed name'         : o_name,
     }
     # Highchart
-    highchart = build_cb_highchart(calib_curve=calib_curve, calib_belt1=calib_belt1_hc,
-                                   calib_belt2=calib_belt2_hc, over_bisect1=over_bisect1,
+    highchart = build_cb_highchart(calib_curve=calib_curve.tolist(), calib_belt1=calib_belt1_hc.tolist(),
+                                   calib_belt2=calib_belt2_hc.tolist(), over_bisect1=over_bisect1,
                                    under_bisect1=under_bisect1, over_bisect2=over_bisect2,
-                                   under_bisect2=under_bisect2, cl1=cl1, cl2=cl2,
-                                   thres=thres, n_obs=n_obs, model_deg=model_deg, p_values=p_value,
+                                   under_bisect2=under_bisect2, cl1=str(cl1), cl2=str(cl2),
+                                   thres=str(thres), n_obs=str(n_obs), model_deg=str(model_deg), p_values=str(p_value),
                                    e_name=e_name, o_name=o_name)
     # Write output to JSON
     result = {
