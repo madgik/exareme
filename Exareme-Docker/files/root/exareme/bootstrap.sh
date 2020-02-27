@@ -217,6 +217,7 @@ else
 	    :
 	else
 	    transformCsvToDB "master"
+    fi
 
 	#Master re-booted
 	if [[ "$(curl -s -o  /dev/null -i -w "%{http_code}\n" ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/?keys)" = "200" ]]; then
