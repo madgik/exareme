@@ -71,7 +71,7 @@ def main():
     e_vec, o_vec = np.array(e_vec[~mask], dtype=np.float64), np.array(o_vec[~mask], dtype=np.int8)
     # todo perform privacy check here!
     assert min(e_vec) >= 0. and max(e_vec) <= 1., "Variable e should take values only in [0, 1]"
-    assert set(o_vec) == {0, 1}, "Variable o should only contain values 0 and 1."
+    assert set(o_vec).issubset({0, 1}), "Variable o should only contain values 0 and 1."
 
     local_in = e_vec, o_vec, e_name, o_name, max_deg
     # Run algorithm local step
