@@ -30,6 +30,7 @@ services:
       - CONSULURL=${EXAREME_KEYSTORE}
       - NODE_NAME=${FEDERATION_NODE}
       - FEDERATION_ROLE=${FEDERATION_ROLE}
+      - MODE=federation
       - TAG=prod     #dev or prod
     deploy:
       restart_policy:
