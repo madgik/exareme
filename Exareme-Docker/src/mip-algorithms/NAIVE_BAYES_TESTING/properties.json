@@ -32,7 +32,8 @@
 			"label": "iterationNumber",
 			"desc": "Training datasets have id != iteration number.",
 			"type": "other",
-			"value": "0",
+			"value": 0,
+			"valueMin": 0,
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "integer"
@@ -47,7 +48,7 @@
 			"valueType": "json"
 		}, {
 			"name": "dbIdentifier",
-			"label": "dbIdentifier",			   
+			"label": "dbIdentifier",
 			"desc": "Predefined value for the dbIdentifier",
 			"type": "other",
 			"value": "",

@@ -32,7 +32,8 @@
 			"label": "iterationNumber",
 			"desc": "The iterationNumber shows the id of the testing dataset.",
 			"type": "other",
-			"value": "0",
+			"value": 0,
+			"valueMin": 0,
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "integer"
