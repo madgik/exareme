@@ -215,7 +215,7 @@ def cart_step_3_local(dataFrame, args_X, args_Y, CategoricalVariables, activePat
         if args_Y[0] not in CategoricalVariables: # Regression Algorithm
             activePaths[key]["statisticsJ"]["parentNode"]["mse"] = np.sum((df[args_Y[0]] - activePaths[key]["statisticsJ"]["parentNode"]["mean_argsY"])**2 )
             mystat = compute_statistics2_in_the_node(df, args_X, activePaths[key],args_Y[0], CategoricalVariables)
-            for colName in local_state['args_X']:
+            for colName in args_X:
                 activePaths[key]["statisticsJ"][colName]["mseLeft"] = mystat[colName]["mseLeft"]
                 activePaths[key]["statisticsJ"][colName]["mseRight"] = mystat[colName]["mseRight"]
     return activePaths
