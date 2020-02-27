@@ -12,6 +12,7 @@ if [[ -z ${CONSULURL} ]]; then echo "CONSULURL is unset. Check docker-compose fi
 if [[ -z ${NODE_NAME} ]]; then echo "NODE_NAME is unset. Check docker-compose file.";exit;  fi
 if [[ -z ${FEDERATION_ROLE} ]]; then echo "FEDERATION_ROLE is unset. Check docker-compose file.";exit;  fi
 if [[ -z ${TAG} ]]; then echo "TAG is unset. Check docker-compose file.";exit;  fi
+if [[ -z ${MODE} ]]; then echo "MODE is unset. Check docker-compose file.";exit;  fi
 
 #Stop Exareme service
 stop_exareme () {
@@ -41,7 +42,7 @@ transformCsvToDB () {
 	# Removing all previous .db files from the DOCKER_DATA_FOLDER
 	echo "Deleting previous db files. "
 	rm -rf ${DOCKER_DATA_FOLDER}/**/*.db
-	
+
 	echo "Parsing the csv files in " ${DOCKER_DATA_FOLDER} " to db files. "
 	python ./convert-csv-dataset-to-db.py -f ${DOCKER_DATA_FOLDER} -t ${1}
 	#Get the status code from previous command
@@ -212,7 +213,10 @@ else
 	done
 
 	#CSVs to DB
-	transformCsvToDB "master"
+	if [[ ${MODE} == "local" ]]; then       # transformCsvToDB "master" has already be executed from deployLocal.sh
+	    :
+	else
+	    transformCsvToDB "master"
 
 	#Master re-booted
 	if [[ "$(curl -s -o  /dev/null -i -w "%{http_code}\n" ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/?keys)" = "200" ]]; then
