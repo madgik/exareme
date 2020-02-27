@@ -3,8 +3,9 @@
 	"desc": "Student’s One-sample t-test",
 	"label": "T-Test One-Sample ",
 	"type": "local_global",
-	"parameters": [{
+	"parameters": [
 			"name": "y",
+			"label": "y",			 
 			"desc": "A vector of strings naming the variables of interest in data",
 			"type": "column",
 			"columnValuesSQLType": "real,integer",
@@ -16,6 +17,7 @@
 			"valueType": "string"
 		}, {
 			"name": "testvalue",
+			"label": "testvalue",					 
 			"desc": "A number specifying the value of the null hypothesis",
 			"type": "other",
 			"value": "0.0",
@@ -24,6 +26,7 @@
 			"valueType": "real"
 		}, {
 			"name": "hypothesis",
+			"label": "hypothesis",					  
 			"desc": "'different', 'greaterthan' or 'lessthan', the alternative hypothesis; different to testValue, greater than testValue, and less than testValue respectively ",
 			"type": "other",
 			"value": "different",
@@ -33,6 +36,7 @@
 			"valueType": "string"
 		}, {
 			"name": "pathology",
+			"label": "pathology",					 
 			"desc": "The name of the pathology in which the dataset belongs to.",
 			"type": "pathology",
 			"value": "dementia",
@@ -41,6 +45,7 @@
 			"valueType": "string"
 		}, {
 			"name": "dataset",
+			"label": "dataset",				   
 			"desc": "The names of one or more datasets, in which the algorithm will be executed. ",
 			"type": "dataset",
 			"value": "desd-synthdata",
@@ -49,6 +54,7 @@
 			"valueType": "string"
 		}, {
 			"name": "filter",
+			"label": "filter",				  
 			"desc": "",
 			"type": "filter",
 			"value": "",
