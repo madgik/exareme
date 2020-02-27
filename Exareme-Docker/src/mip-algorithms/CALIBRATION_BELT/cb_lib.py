@@ -38,7 +38,7 @@ class CBInit_Loc2Glob_TD(TransferData):
                 self.e_name,
                 self.o_name,
                 self.max_deg,
-                min(self.e_domain[0], other.e_domain[0]), max(self.e_domain[1], other.e_domain[1])
+                (min(self.e_domain[0], other.e_domain[0]), max(self.e_domain[1], other.e_domain[1]))
         )
 
 
