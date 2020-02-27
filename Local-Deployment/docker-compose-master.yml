@@ -46,13 +46,9 @@ services:
     image: ${EXAREME_IMAGE}
     environment:
       - CONSULURL=${EXAREME_KEYSTORE}
-      - MASTER_FLAG=${FEDERATION_ROLE}
+      - FEDERATION_ROLE=${FEDERATION_ROLE}
       - NODE_NAME=${FEDERATION_NODE}
-      - DOCKER_DATA_FOLDER=${DOCKER_DATA_FOLDER}
-      - DOCKER_METADATA_FOLDER=${DOCKER_DATA_FOLDER}
-      - EXAREME_ACTIVE_WORKERS_PATH=active_workers
-      - EXAREME_MASTER_PATH=master
-      - DATA=data
+      - TAG=dev   #dev or prod
     depends_on:
       - exareme-keystore
     deploy:

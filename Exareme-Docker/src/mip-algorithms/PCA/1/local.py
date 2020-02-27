@@ -27,7 +27,7 @@ def main(args):
 
     local_in = get_data(args)
     # Run algorithm local step
-    local_state, local_out = local_1(local_in=local_in)
+    local_state, local_out = local_1(args, local_in=local_in)
     # Save local state
     local_state.save(fname=fname_cur_state)
     # Transfer local output

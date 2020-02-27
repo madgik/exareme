@@ -5,7 +5,7 @@
 	"type": "multiple_local_global",
 	"parameters": [{
 			"name": "y",
-			"label": "y",			 
+			"label": "y",
 			"desc": "A vector of strings naming the variables of interest in data",
 			"type": "column",
 			"columnValuesSQLType": "real,integer",
@@ -29,7 +29,7 @@
 			"valueType": "string"
 		}, {
 			"name": "xlevels",
-			"label": "xlevels",				   
+			"label": "xlevels",
 			"desc": "The two levels of the grouping variable (Order matters)",
 			"type": "other",
 			"value": "M,F",
@@ -38,7 +38,7 @@
 			"valueType": "string"
 		}, {
 			"name": "hypothesis",
-			"label": "hypothesis",					  
+			"label": "hypothesis",
 			"desc": "'different', 'greaterthan' or 'lessthan', the alternative hypothesis; group 1 different to group 2, group 1 greater than group 2, and group 1 less than group 1 respectively ",
 			"type": "other",
 			"value": "greaterthan",
@@ -48,7 +48,7 @@
 			"valueType": "string"
 		}, {
 			"name": "pathology",
-			"label": "pathology",					 
+			"label": "pathology",
 			"desc": "The name of the pathology in which the dataset belongs to.",
 			"type": "pathology",
 			"value": "dementia",
@@ -57,7 +57,7 @@
 			"valueType": "string"
 		}, {
 			"name": "dataset",
-			"label": "dataset",				   
+			"label": "dataset",
 			"desc": "The names of one or more datasets, in which the algorithm will be executed.",
 			"type": "dataset",
 			"value": "desd-synthdata",
@@ -66,7 +66,7 @@
 			"valueType": "string"
 		}, {
 			"name": "filter",
-			"label": "filter",				  
+			"label": "filter",
 			"desc": "",
 			"type": "filter",
 			"value": "",

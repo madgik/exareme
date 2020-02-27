@@ -7,6 +7,7 @@
     "parameters": [
         {
             "name": "x",
+            "label": "x",
             "desc": "A list of variables from database. The variable should be Real, Integer. It cannot be empty",
             "type": "column",
             "columnValuesSQLType": "real, integer, text",
@@ -19,6 +20,7 @@
         },
         {
             "name": "y",
+            "label": "y",
             "desc": "A single variable from database. The variable should be Categorical with only two categories (i.e. Boolean). It cannot be empty.",
             "type": "column",
             "columnValuesSQLType": "text, integer",
@@ -31,6 +33,7 @@
         },
         {
             "name": "pathology",
+            "label": "pathology",
             "desc": "The name of the pathology that the dataset belongs to.",
             "type": "pathology",
             "value": "dementia",
@@ -40,6 +43,7 @@
         },
         {
             "name": "dataset",
+            "label": "dataset",
             "desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty",
             "type": "dataset",
             "value": "adni",
@@ -49,6 +53,7 @@
         },
         {
             "name": "filter",
+            "label": "filter",
             "desc": "",
             "type": "filter",
             "value": "",
@@ -57,40 +62,15 @@
             "valueType": "string"
         },
         {
-            "name": "max_iter",
-            "desc": "Maximum number of iterations. Must be a positive integer.",
-            "type": "other",
-            "value": "",
-            "defaultValue": "20",
-            "valueNotBlank": false,
-            "valueMultiple": false,
-            "valueType": "integer",
-            "valueMin": 1,
-            "valueMax": 100
-        },
-        {
             "name": "formula",
+            "label": "formula",
             "desc": "Patsy formula  (R language syntax).",
             "type": "other",
-            "value": "gender _ alzheimerbroadcategory * lefthippocampus",
+            "value": "",
             "defaultValue": "",
             "valueNotBlank": false,
             "valueMultiple": false,
             "valueType": "string"
-        },
-        {
-            "name": "no_intercept",
-            "desc": "Boolean flag for having no intercept by default.",
-            "type": "other",
-            "value": "false",
-            "defaultValue": "false",
-            "valueNotBlank": false,
-            "valueMultiple": false,
-            "valueType": "string",
-            "valueEnumerations": [
-                "true",
-                "false"
-            ]
         }
     ]
 }

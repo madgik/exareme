@@ -1,11 +1,11 @@
 {
 	"name": "NAIVE_BAYES_TRAINING",
 	"desc": "Naive Bayes clasiifier: Training phase",
-	"label": "Naive Bayes Training",
+	"label": "Naive Bayes Training for Galaxy",
 	"type": "local_global",
 	"parameters": [{
 			"name": "x",
-			"label": "x",	
+			"label": "x",
 			"desc": "Independent variables: A list of variables from database.",
 			"type": "column",
 			"columnValuesSQLType": "",
@@ -17,7 +17,7 @@
 			"valueType": "string"
 		}, {
 			"name": "y",
-			"label": "y",	
+			"label": "y",
 			"desc": "Dependent variable: A categorical variable form database.",
 			"type": "column",
 			"columnValuesSQLType": "",
@@ -29,7 +29,7 @@
 			"valueType": "string"
 		}, {
 			"name": "iterationNumber",
-			"label": "iterationNumber",				  
+			"label": "iterationNumber",
 			"desc": "The iterationNumber shows the id of the testing dataset.",
 			"type": "other",
 			"value": "0",
@@ -38,6 +38,7 @@
 			"valueType": "integer"
 		}, {
 			"name": "alpha",
+			"label": "alpha",
 			"desc": "Additive smoothing parameter (0 for no smoothing)",
 			"type": "other",
 			"value": "0.1",
@@ -46,7 +47,7 @@
 			"valueType": "real"
 		}, {
 			"name": "dbIdentifier",
-			"label": "dbIdentifier",			   
+			"label": "dbIdentifier",
 			"desc": "Predefined value for the dbIdentifier",
 			"type": "other",
 			"value": "",
@@ -55,7 +56,7 @@
 			"valueType": "string"
 		}, {
 			"name": "pathology",
-			"label": "pathology",			
+			"label": "pathology",
 			"desc": "The name of the pathology that the dataset belongs to.",
 			"type": "pathology",
 			"value": "dementia",
@@ -64,7 +65,7 @@
 			"valueType": "string"
 		}, {
 			"name": "dataset",
-			"label": "dataset",		  
+			"label": "dataset",
 			"desc": "The names of one or more datasets, in which the algorithm will be executed.",
 			"type": "dataset",
 			"value": "adni",

@@ -1,29 +1,17 @@
 #!/usr/bin/env bash
 
-if [[ -z "${EXAREME_ACTIVE_WORKERS_PATH}" ]]; then
-	echo "Env. variable 'active_workers' not initialized in docker-compose.yaml files. Exiting..."
-	exit 1
-else
-	EXAREME_ACTIVE_WORKERS_PATH=${EXAREME_ACTIVE_WORKERS_PATH}
-fi
+#Init environmental variables
 
-if [[ -z "${EXAREME_MASTER_PATH}" ]]; then
-	echo "Env. variable 'master' not initialized in docker-compose.yaml files. Exiting..."
-	exit 1
+export DOCKER_DATA_FOLDER="/root/exareme/data/"
+export DOCKER_METADATA_FOLDER="/root/exareme/data/"
+export EXAREME_ACTIVE_WORKERS_PATH="active_workers"
+export EXAREME_MASTER_PATH="master"
+export DATA="data"
 
-else
-	EXAREME_MASTER_PATH=${EXAREME_MASTER_PATH}
-fi
-
-if [[ -z "${DATA}" ]]; then
-	echo "Env. variable 'data' not initialized in docker-compose.yaml files. Exiting..."
-	exit 1
-else
-	DATA=${DATA}
-fi
-if [ -z ${CONSULURL} ]; then echo "CONSULURL is unset"; exit; fi
-if [ -z ${NODE_NAME} ]; then echo "NODE_NAME is unset";exit;  fi
-if [ -z ${DOCKER_DATA_FOLDER} ]; then echo "DOCKER_DATA_FOLDER is unset"; exit; fi
+if [[ -z ${CONSULURL} ]]; then echo "CONSULURL is unset. Check docker-compose file."; exit; fi
+if [[ -z ${NODE_NAME} ]]; then echo "NODE_NAME is unset. Check docker-compose file.";exit;  fi
+if [[ -z ${FEDERATION_ROLE} ]]; then echo "FEDERATION_ROLE is unset. Check docker-compose file.";exit;  fi
+if [[ -z ${TAG} ]]; then echo "TAG is unset. Check docker-compose file.";exit;  fi
 
 #Stop Exareme service
 stop_exareme () {
@@ -71,13 +59,13 @@ trap term_handler SIGTERM SIGKILL
 #This funciton will be executed when the container receives the SIGTERM signal (when stopping)
 term_handler () {
 
-if [[ "${MASTER_FLAG}" != "master" ]]; then   #worker
+if [[ "${FEDERATION_ROLE}" != "master" ]]; then   #worker
 	echo "*******************************Stopping Worker**************************************"
 	if [[ "$(curl -s ${CONSULURL}/v1/health/state/passing | jq -r '.[].Status')" = "passing" ]];  then
 		deleteKeysFromConsul "$EXAREME_ACTIVE_WORKERS_PATH"
 	fi
 	if [[ "$(curl -s -o  /dev/null -i -w "%{http_code}\n" ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/?keys)" = "200" ]]; then
-		MY_IP=$(/sbin/ifconfig | grep "inet " | awk -F: '{print $2}' | grep '10.20' | awk '{print $1;}' | head -n 1)
+		MY_IP=$(/sbin/ifconfig eth0 | grep "inet" | awk -F: '{print $2}' | cut -d ' ' -f 1)
 		MASTER_IP=$(curl -s ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/$(curl -s ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/?keys | jq -r '.[]' | sed "s/${EXAREME_MASTER_PATH}\///g")?raw)
 		#Delete worker from master's registry
 		curl -s ${MASTER_IP}:9091/remove/worker?IP=${MY_IP}		#TODO check if that was done?
@@ -96,10 +84,10 @@ exit 0
 mkdir -p  /tmp/demo/db/
 
 #This is the Worker
-if [[ "${MASTER_FLAG}" != "master" ]]; then
+if [[ "${FEDERATION_ROLE}" != "master" ]]; then
 
 	DESC="exareme-worker"
-	MY_IP=$(/sbin/ifconfig | grep "inet " | awk -F: '{print $2}' | grep '10.20' | awk '{print $1;}' | head -n 1)
+	MY_IP=$(/sbin/ifconfig eth0 | grep "inet" | awk -F: '{print $2}' | cut -d ' ' -f 1)
 
 	#Try accessing Consul[key-value store]
 	echo -e "\nWorker node["${NODE_NAME}","${MY_IP}"] trying to connect with Consul[key-value store]"
@@ -155,33 +143,56 @@ if [[ "${MASTER_FLAG}" != "master" ]]; then
 		fi
 	done
 
-	# Health check for Worker. HEALTH_CHECK algorithm execution
-	echo "Health check for Worker node["${MY_IP}","${NODE_NAME}"]"
-	check="$(curl -s ${MASTER_IP}:9092/check/worker?IP_MASTER=${MASTER_IP}?IP_WORKER=${MY_IP})"
+    if [[ ${TAG} == "dev" ]]; then
+        echo "Running set-local-datasets."
+	    ./set-local-datasets.sh
 
-	#error: Something went wrong could happen (it could be madis..)
-	if [[ $( echo ${check} | jq '.error') != null ]]; then
-		echo ${check} | jq '.error'
-		echo -e  "\nExiting.."
-		exit 1
-	fi
+        echo -e "\nDEV version: Worker node["${MY_IP}","${NODE_NAME}"] may be connected to Master node["${MASTER_IP}","${MASTER_NAME}"]"
+        curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_ACTIVE_WORKERS_PATH}/${NODE_NAME} <<< ${MY_IP}
+    elif [[ ${TAG} == "prod" ]]; then
+        #Health check for Worker. HEALTH_CHECK algorithm execution
+        echo "Health check for Worker node["${MY_IP}","${NODE_NAME}"]"
 
-	getNames="$( echo ${check} | jq '.active_nodes')"
+        check="$(curl -s ${MASTER_IP}:9092/check/worker?IP_MASTER=${MASTER_IP}?IP_WORKER=${MY_IP})"
 
-	#Retrieve result as json. If $NODE_NAME exists in result, the algorithm run in the specific node
-#	if [[ $getNames = *${NODE_NAME}* ]]; then
-		echo -e "\nWorker node["${MY_IP}","${NODE_NAME}"] connected to Master node["${MASTER_IP}","${MASTER_NAME}"]"
-		curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_ACTIVE_WORKERS_PATH}/${NODE_NAME} <<< ${MY_IP}
-#	else
-#		echo "Worker node["${MY_IP}","${NODE_NAME}]" seems that is not connected with the Master.Exiting..."
-#		exit 1
-#	fi
+        if [[ -z ${check} ]]; then
+            #If curl returned nothing, something is wrong. We can not know what is wrong though..
+            printf "Health_Check algorithm did not return anything...Switch TAG to 'dev' to see Error messages coming\
+from EXAREME..Exiting"
+            exit 1
+        else
+            #check if what curl returned is JSON
+            echo ${check} | jq empty
+            #if NOT JSON an error code will be returned (!=0)
+            check_code=$?
+            if [[ ${check_code} -ne 0 ]]; then
+                echo "An error has occurred: " ${check} ".....Exiting"
+                exit 1
+            else
+                getNames="$( echo ${check} | jq '.active_nodes')"
 
+                #Retrieve result as json. If $NODE_NAME exists in result, the algorithm run in the specific node
+                if [[ ${getNames} = *${NODE_NAME}* ]]; then
+                    echo -e "\nWorker node["${MY_IP}","${NODE_NAME}"] connected to Master node["${MASTER_IP}","${MASTER_NAME}"]"
+                    curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_ACTIVE_WORKERS_PATH}/${NODE_NAME} <<< ${MY_IP}
+
+                    echo "Running set-local-datasets."
+                    ./set-local-datasets.sh
+
+                else
+                    echo ${check}
+                    echo "Worker node["${MY_IP}","${NODE_NAME}]" seems that is not connected with the Master..\
+Switch TAG to 'dev' to see Error messages coming from EXAREME..Exiting..."
+                    exit 1
+                fi
+            fi
+        fi
+    fi
 
 #This is the Master
 else
 	DESC="exareme-master"
-	MY_IP=$(/sbin/ifconfig | grep "inet " | awk -F: '{print $2}' | grep '10.20' | awk '{print $1;}' | head -n 1)
+	MY_IP=$(/sbin/ifconfig eth0 | grep "inet" | awk -F: '{print $2}' | cut -d ' ' -f 1)
 
 	echo -e "\nMaster node["${NODE_NAME}","${MY_IP}"] trying to connect with Consul[key-value store]"
 
@@ -207,8 +218,7 @@ else
 	if [[ "$(curl -s -o  /dev/null -i -w "%{http_code}\n" ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/?keys)" = "200" ]]; then
 		#Workers connected to Master node
 		if [[ "$(curl -s -o  /dev/null -i -w "%{http_code}\n" ${CONSULURL}/v1/kv/${EXAREME_ACTIVE_WORKERS_PATH}/?keys)" = "200" ]]; then
-			#Empty echo for if-then-else consistency
-			echo ""
+			:
 			#TODO check what if master restarts with different IP while workers are already connected to the master's registry with previous IP
 		else
 			./exareme-admin.sh --start
@@ -238,36 +248,54 @@ else
 			fi
 		done
 	
+        if [[ ${TAG} == "dev" ]]; then
+             echo "Running set-local-datasets."
+		    ./set-local-datasets.sh
 
-		echo "Running set-local-datasets."
-		./set-local-datasets.sh
+            echo -e "\nDEV version: Master node["${MY_IP}","${NODE_NAME}"] may be initialized"
+            curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/${NODE_NAME} <<< ${MY_IP}
+        elif [[ ${TAG} == "prod" ]]; then
+		    #Health check for Master. HEALTH_CHECK algorithm execution
+		    echo "Health check for Master node["${MY_IP}","${NODE_NAME}"]"
 
-		# Health check for Master. HEALTH_CHECK algorithm execution
-		echo "Health check for Master node["${MY_IP}","${NODE_NAME}"]"
-		check="$(curl -s ${MY_IP}:9092/check/worker?IP_MASTER=${MY_IP}?IP_WORKER=${MY_IP})"	 #Master has a Worker instance. So in this case IP_MASTER / IP_WORKER is the same
+		    check=$(curl -s ${MY_IP}:9092/check/worker?IP_MASTER=${MY_IP}?IP_WORKER=${MY_IP})    #Master has a Worker instance. So in this case IP_MASTER / IP_WORKER is the same
 
-		#error: Something went wrong could happen (it could be madis)
-		if [[ $( echo ${check} | jq '.error') != null ]]; then
-			 echo ${check} | jq '.error'
-			 echo "Exiting.."
-			 exit 1
-		fi
+            if [[ -z ${check} ]]; then
+            #if curl returned nothing, something is wrong. We can not know what is wrong though
+                printf "Health_Check algorithm did not return anything...Switch TAG to 'dev' to see Error messages coming\
+from EXAREME..Exiting"
+                exit 1
+            else
+                #check if what curl returned is JSON
+                echo ${check} | jq empty
+                #if NOT JSON an error code will be returned (!=0)
+                check_code=$?
+                if [[ ${check_code} -ne 0 ]]; then
+                    echo "An error has occurred: " ${check} ".....Exiting"
+                    exit 1
+                else
+                    getNames="$( echo ${check} | jq '.active_nodes')"
 
-		getNames="$( echo ${check} | jq '.active_nodes')"
+                    #Retrieve result as json. If $NODE_NAME exists in result, the algorithm run in the specific node
+                    if [[ ${getNames} = *${NODE_NAME}* ]]; then
+                        echo -e "\nMaster node["${MY_IP}","${NODE_NAME}"] initialized"
+                        curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/${NODE_NAME} <<< ${MY_IP}
 
-		#Retrieve result as json. If $NODE_NAME exists in result, the algorithm run in the specific node
-#		if [[ $getNames = *${NODE_NAME}* ]]; then
-			echo -e "\nMaster node["${MY_IP}","${NODE_NAME}"] initialized"
-			curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/${NODE_NAME} <<< ${MY_IP}
-#		else
-#			echo "Master node["${MY_IP}","${NODE_NAME}]" seems that could not be initialized.Exiting..."
-#			exit 1
-#		fi
+                        echo "Running set-local-datasets."
+                        ./set-local-datasets.sh
+
+                    else
+                        echo ${check}
+                        echo "Master node["${MY_IP}","${NODE_NAME}]" seems that could not be initialized..\
+Switch TAG to 'dev' to see Error messages coming from EXAREME..Exiting..."
+                        exit 1
+                    fi
+                fi
+            fi
+        fi
 	fi
 fi
 
-#Both Worker(s)/Master will execute the command. At this point Consul [Key-value store] is up, running and everyone can access it
-./set-local-datasets.sh
 echo '*/15  *  *  *  *	./set-local-datasets.sh' >> /etc/crontabs/root
 crond
 

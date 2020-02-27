@@ -5,6 +5,7 @@
 	"type": "python_iterative",
 	"parameters": [{
 			"name": "x",
+			"label": "x",
 			"desc": "Independent variables: A list of variables from database.",
 			"type": "column",
 			"columnValuesSQLType": "real, integer, text",
@@ -16,6 +17,7 @@
 			"valueType": "string"
 		}, {
 			"name": "y",
+			"label": "y",
 			"desc": "Dependent variable: A variable from database.",
 			"type": "column",
 			"columnValuesSQLType": "real, integer, text",
@@ -27,6 +29,7 @@
 			"valueType": "string"
 		}, {
 			"name": "max_depth",
+			"label": "max_depth",
 			"desc": "The maximum depth of the tree. If Blank, then nodes are expanded until all leaves contain at least min_samples_split samples.",
 			"type": "other",
 			"value": "3",
@@ -39,6 +42,7 @@
 		},
 		{
 			"name": "dataset",
+			"label": "dataset",
 			"desc": "The names of one or more datasets, in which the algorithm will be executed.",
 			"type": "dataset",
 			"value": "desd-synthdata",
@@ -47,6 +51,7 @@
 			"valueType": "string"
 		}, {
 			"name": "filter",
+			"label": "filter",
 			"desc": "",
 			"type": "filter",
 			"value": "",
@@ -55,6 +60,7 @@
 			"valueType": "string"
 		},{
 			"name": "pathology",
+			"label": "pathology",
 			"desc": "The name of the pathology in which the dataset belongs to.",
 			"type": "pathology",
 			"value": "dementia",

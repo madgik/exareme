@@ -1,11 +1,11 @@
 {
 	"name": "HOLD_OUT_VALIDATION",
 	"desc": "Split datasets into random train and test subsets",
-	"label": "Hold Out Validation",
+	"label": "Hold Out Validation for Galaxy",
 	"type": "local_global",
 	"parameters": [{
 			"name": "pathology",
-			"label": "pathology",			
+			"label": "pathology",
 			"desc": "The name of the pathology in which the dataset belongs to.",
 			"type": "pathology",
 			"value": "dementia",
@@ -14,7 +14,7 @@
 			"valueType": "string"
 		}, {
 			"name": "dataset",
-			"label": "dataset",		  
+			"label": "dataset",
 			"desc": "The names of one or more datasets, in which the algorithm will be executed.",
 			"type": "dataset",
 			"value": "desd-synthdata",
@@ -23,7 +23,7 @@
 			"valueType": "string"
 		}, {
 			"name": "x",
-			"label": "x",	
+			"label": "x",
 			"desc": "Independent variables: A list of variables from database.",
 			"type": "column",
 			"columnValuesSQLType": "",
@@ -35,7 +35,7 @@
 			"valueType": "string"
 		}, {
 			"name": "y",
-			"label": "y",	
+			"label": "y",
 			"desc": "Dependent variable: A categorical variable form database.",
 			"type": "column",
 			"columnValuesSQLType": "",
@@ -47,7 +47,7 @@
 			"valueType": "string"
 		}, {
 			"name": "test_size",
-			"label": "test_size",			
+			"label": "test_size",
 			"desc": "(Optional). If it is between 0.0 and 1.0, it represents the proportion of the dataset to include in the test split. If it is not given, the value is set to the complement of the train size.",
 			"type": "other",
 			"value": "0.25",
@@ -58,7 +58,7 @@
 			"valueType": "real"
 		}, {
 			"name": "train_size",
-			"label": "train_size",			 
+			"label": "train_size",
 			"desc": "(Optional). If it is between 0.0 and 1.0, it represents the proportion of the dataset to include in the train split. If None, the value is automatically set to the complement of the test size.",
 			"type": "other",
 			"value": "",
@@ -69,7 +69,7 @@
 			"valueType": "real"
 		}, {
 			"name": "random_state",
-			"label": "random_state",			   
+			"label": "random_state",
 			"desc": "(Optional). It is the seed used by the random number generator.",
 			"type": "other",
 			"value": "",
@@ -78,7 +78,7 @@
 			"valueType": "integer"
 		}, {
 			"name": "shuffle",
-			"label": "shuffle",		  
+			"label": "shuffle",
 			"desc": "(Optional). Whether or not to shuffle the data before splitting.",
 			"type": "other",
 			"value": "False",
@@ -88,7 +88,7 @@
 			"valueType": "string"
 		}, {
 			"name": "filter",
-			"label": "filter",		 
+			"label": "filter",
 			"desc": "",
 			"type": "filter",
 			"value": "",
@@ -97,7 +97,7 @@
 			"valueType": "string"
 		}, {
 			"name": "dbIdentifier",
-			"label": "dbIdentifier",			   
+			"label": "dbIdentifier",
 			"desc": "Predefined value for the dbIdentifier",
 			"type": "other",
 			"value": "",
