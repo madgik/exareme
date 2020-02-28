@@ -44,7 +44,7 @@
 			"type": "other",
 			"value": "0.1",
 			"valueMin": 0,
-			"valueMax" : 1
+			"valueMax" : 1,
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "real"
