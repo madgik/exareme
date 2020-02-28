@@ -9,11 +9,14 @@ from decimal import *
 from rpy2.robjects.packages import importr
 import rpy2.robjects as robjects
 
-endpointUrl='http://88.197.53.34:9090/mining/query/ANOVA'
+import sys
+from os import path
+sys.path.append(path.abspath(__file__))
+from lib import vmUrl
+endpointUrl= vmUrl+'ANOVA'
+
 folderPath = 'R_scripts'
 file ='ANOVA.Rmd'
-
-
 
 class TestANOVA(unittest.TestCase):
     def setUp(self):

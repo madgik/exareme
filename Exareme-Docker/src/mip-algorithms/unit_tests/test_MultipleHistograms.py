@@ -9,7 +9,11 @@ from decimal import *
 from rpy2.robjects.packages import importr
 import rpy2.robjects as robjects
 
-endpointUrl='http://88.197.53.34:9090/mining/query/MULTIPLE_HISTOGRAMS'
+import sys
+from os import path
+sys.path.append(path.abspath(__file__))
+from lib import vmUrl
+endpointUrl= vmUrl+'MULTIPLE_HISTOGRAMS'
 folderPath = 'R_scripts'
 file ='MultipleHistograms.Rmd'
 
@@ -37,6 +41,7 @@ class TestHistogram(unittest.TestCase):
         r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
         result = json.loads(r.text)
         print ("AAAA", r.text)
+        print ("RRRR",self.TestResult[0:5])
         resultsComparison(result, self.TestResult[0:5], 0)
 
     def test_Histogram_2(self):

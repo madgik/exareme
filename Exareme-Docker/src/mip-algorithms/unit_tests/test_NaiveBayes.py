@@ -4,10 +4,13 @@ import logging
 import math
 from decimal import *
 
-
-url1='http://88.197.53.34:9090/mining/query/CROSS_VALIDATION_K_FOLD'
-url2='http://88.197.53.34:9090/mining/query/NAIVE_BAYES_TRAINING'
-url3='http://88.197.53.34:9090/mining/query/NAIVE_BAYES_TESTING'
+import sys
+from os import path
+sys.path.append(path.abspath(__file__))
+from lib import vmUrl
+url1=vmUrl+'CROSS_VALIDATION_K_FOLD'
+url2=vmUrl+'NAIVE_BAYES_TRAINING'
+url3=vmUrl+'NAIVE_BAYES_TESTING'
 
 def test_NAIVEBAYES_1():
     logging.info("---------- TEST : NAIVE BAYES :CATEGORICAL DATASET  ")
