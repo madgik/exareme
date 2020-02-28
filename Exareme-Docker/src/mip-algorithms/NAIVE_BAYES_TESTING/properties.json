@@ -33,6 +33,7 @@
 			"desc": "Training datasets have id != iteration number.",
 			"type": "other",
 			"value": "0",
+			"valueMin": 0,
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "integer"

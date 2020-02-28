@@ -33,6 +33,7 @@
 			"desc": "The iterationNumber shows the id of the testing dataset.",
 			"type": "other",
 			"value": "0",
+			"valueMin": 0,
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "integer"
@@ -42,6 +43,8 @@
 			"desc": "Additive smoothing parameter (0 for no smoothing)",
 			"type": "other",
 			"value": "0.1",
+			"valueMin": 0,
+			"valueMax" : 1
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "real"

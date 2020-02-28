@@ -51,6 +51,7 @@
 			"desc": "Number of pieces the dataset will be split",
 			"type": "other",
 			"value": "3",
+			"valueMin": 1,
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "integer"
