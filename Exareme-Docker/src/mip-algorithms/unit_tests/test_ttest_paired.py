@@ -9,8 +9,11 @@ from decimal import *
 from rpy2.robjects.packages import importr
 import rpy2.robjects as robjects
 
-endpointUrl='http://88.197.53.100:9090/mining/query/TTEST_PAIRED'
-
+import sys
+from os import path
+sys.path.append(path.abspath(__file__))
+from lib import vmUrl
+endpointUrl= vmUrl+'TTEST_PAIRED'
 folderPath = 'R_scripts'
 file ='ttest_paired.Rmd'
 
@@ -31,10 +34,6 @@ class TestTTESTPaired(unittest.TestCase):
         logging.info("---------- TEST 1:  ")
         data = [{"name": "y", "value": "lefthippocampus-righthippocampus"},
                 {"name": "hypothesis", "value": "different"},
-                {"name": "effectsize", "value": "1" },
-                {"name": "ci","value": "0"  },
-                {"name": "meandiff", "value": "0"  },
-                {"name": "sediff", "value": "0"  },
 		{   "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter","value": ""}]
@@ -49,10 +48,6 @@ class TestTTESTPaired(unittest.TestCase):
         logging.info("---------- TEST 2: ")
         data = [{"name": "y", "value": "lefthippocampus-righthippocampus,leftententorhinalarea - rightententorhinalarea"},
                 {"name": "hypothesis", "value": "different"},
-                {"name": "effectsize", "value": "1" },
-                {"name": "ci","value": "1"  },
-                {"name": "meandiff", "value": "1"  },
-                {"name": "sediff", "value": "1"  },
 		{   "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter","value": ""}]
@@ -67,10 +62,6 @@ class TestTTESTPaired(unittest.TestCase):
         logging.info("---------- TEST 3: ")
         data = [{"name": "y", "value": "lefthippocampus-righthippocampus"},
                 {"name": "hypothesis", "value": "greaterthan"},
-                {"name": "effectsize", "value": "1" },
-                {"name": "ci","value": "1"  },
-                {"name": "meandiff", "value": "1"  },
-                {"name": "sediff", "value": "1"  },
 		{   "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter","value": ""}]
@@ -85,10 +76,6 @@ class TestTTESTPaired(unittest.TestCase):
         logging.info("---------- TEST 4: ")
         data = [{"name": "y", "value": "lefthippocampus-righthippocampus"},
                 {"name": "hypothesis", "value": "lessthan"},
-                {"name": "effectsize", "value": "1" },
-                {"name": "ci","value": "1"  },
-                {"name": "meandiff", "value": "1"  },
-                {"name": "sediff", "value": "1"  },
 		{   "name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "desd-synthdata"},
                 {"name": "filter","value": ""}]
@@ -102,11 +89,7 @@ class TestTTESTPaired(unittest.TestCase):
         logging.info("---------- TEST : Algorithms for Privacy Error")
         data = [{"name": "y", "value": "lefthippocampus-righthippocampus"},
                     {"name": "hypothesis", "value": "different"},
-                    {"name": "effectsize", "value": "1" },
-                    {"name": "ci","value": "1"  },
-                    {"name": "meandiff", "value": "1"  },
-                    {"name": "sediff", "value": "1"  },
-		    {   "name": "pathology","value":"dementia"},
+		            {"name": "pathology","value":"dementia"},
                     {"name": "dataset", "value": "adni_9rows"},
                     {"name": "filter","value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
@@ -129,27 +112,27 @@ def resultsComparison(data, jsonExaremeResult, jsonRResult):
         for j in range(len(jsonExaremeResult)):
             if jsonExaremeResult[j]['colname'] == varR:
                 variableExist +=1
-                assert (math.isclose(jsonExaremeResult[j]['statistics'],jsonRResult[i]['stat[stud]'],rel_tol=0,abs_tol=10**(-abs(Decimal(str(jsonRResult[i]['stat[stud]'])).as_tuple().exponent))))
+                assert (math.isclose(jsonExaremeResult[j]['t_value'],jsonRResult[i]['stat[stud]'],rel_tol=0,abs_tol=10**(-abs(Decimal(str(jsonRResult[i]['stat[stud]'])).as_tuple().exponent))))
                 assert (math.isclose(jsonExaremeResult[j]['df'],jsonRResult[i]['df[stud]'],rel_tol=0,abs_tol=10**(-abs(Decimal(str(jsonRResult[i]['df[stud]'])).as_tuple().exponent))))
-                if int(data[2]['value']) == 1: #effectsize
-                    print("effectsize")
-                    assert (math.isclose(jsonExaremeResult[j]['Cohens_d'],jsonRResult[i]['es[stud]'],rel_tol=0,abs_tol=10**(-abs(Decimal(str(jsonRResult[i]['es[stud]'])).as_tuple().exponent))))
-                if int(data[3]['value']) == 1:  #ci
-                    print("ci")
-                    if str(jsonRResult[i]['ciu[stud]']) =='Inf' or str(jsonRResult[i]['ciu[stud]']) =='-Inf':
-                        assert str(jsonExaremeResult[j]['Upper'])  == str(jsonRResult[i]['ciu[stud]'])
-                    else:
-                        assert (math.isclose(jsonExaremeResult[j]['Upper'],jsonRResult[i]['ciu[stud]'],rel_tol=0,abs_tol=10**(-abs(Decimal(str(jsonRResult[i]['ciu[stud]'])).as_tuple().exponent))))
-                    if str(jsonRResult[i]['cil[stud]']) =='Inf' or str(jsonRResult[i]['cil[stud]']) =='-Inf':
-                        assert str(jsonExaremeResult[j]['Lower'])  == str(jsonRResult[i]['cil[stud]'])
-                    else:
-                        assert (math.isclose(jsonExaremeResult[j]['Lower'],jsonRResult[i]['cil[stud]'],rel_tol=0,abs_tol=10**(-abs(Decimal(str(jsonRResult[i]['cil[stud]'])).as_tuple().exponent))))
-                if int(data[4]['value']) == 1:  #meandiff
-                    print("meandiff")
-                    assert (math.isclose(jsonExaremeResult[j]['Meandifference'],jsonRResult[i]['md[stud]'],rel_tol=0,abs_tol=10**(-abs(Decimal(str(jsonRResult[i]['md[stud]'])).as_tuple().exponent))))
-                if int(data[5]['value']) == 1:  #sediff
-                    print("sediff")
-                    assert (math.isclose(jsonExaremeResult[j]['SEdifference'],jsonRResult[i]['sed[stud]'],rel_tol=0,abs_tol=10**(-abs(Decimal(str(jsonRResult[i]['sed[stud]'])).as_tuple().exponent))))
+            #if int(data[2]['value']) == 1: #effectsize
+                print("effectsize")
+                assert (math.isclose(jsonExaremeResult[j]['Cohens_d'],jsonRResult[i]['es[stud]'],rel_tol=0,abs_tol=10**(-abs(Decimal(str(jsonRResult[i]['es[stud]'])).as_tuple().exponent))))
+            #if int(data[3]['value']) == 1:  #ci
+                print("ci")
+                if str(jsonRResult[i]['ciu[stud]']) =='Inf' or str(jsonRResult[i]['ciu[stud]']) =='-Inf':
+                    assert str(jsonExaremeResult[j]['Upper'])  == str(jsonRResult[i]['ciu[stud]'])
+                else:
+                    assert (math.isclose(jsonExaremeResult[j]['Upper'],jsonRResult[i]['ciu[stud]'],rel_tol=0,abs_tol=10**(-abs(Decimal(str(jsonRResult[i]['ciu[stud]'])).as_tuple().exponent))))
+                if str(jsonRResult[i]['cil[stud]']) =='Inf' or str(jsonRResult[i]['cil[stud]']) =='-Inf':
+                    assert str(jsonExaremeResult[j]['Lower'])  == str(jsonRResult[i]['cil[stud]'])
+                else:
+                    assert (math.isclose(jsonExaremeResult[j]['Lower'],jsonRResult[i]['cil[stud]'],rel_tol=0,abs_tol=10**(-abs(Decimal(str(jsonRResult[i]['cil[stud]'])).as_tuple().exponent))))
+            #if int(data[4]['value']) == 1:  #meandiff
+                print("meandiff")
+                assert (math.isclose(jsonExaremeResult[j]['Meandifference'],jsonRResult[i]['md[stud]'],rel_tol=0,abs_tol=10**(-abs(Decimal(str(jsonRResult[i]['md[stud]'])).as_tuple().exponent))))
+            #if int(data[5]['value']) == 1:  #sediff
+                print("sediff")
+                assert (math.isclose(jsonExaremeResult[j]['SEdifference'],jsonRResult[i]['sed[stud]'],rel_tol=0,abs_tol=10**(-abs(Decimal(str(jsonRResult[i]['sed[stud]'])).as_tuple().exponent))))
     assert (variableExist == len(jsonExaremeResult))
 
 if __name__ == '__main__':

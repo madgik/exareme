@@ -8,7 +8,7 @@ import numpy as np
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))) + '/utils/')
 from algorithm_utils import TransferData
 
-SAMPLING_NUMBER = 1 #TODO: = PRIVACY_MAGIC_NUMBER
+SAMPLING_NUMBER = 10 #TODO: = PRIVACY_MAGIC_NUMBER
 
 def add_vals(a,b):
     if a == None and b == None:
