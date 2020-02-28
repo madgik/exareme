@@ -5,6 +5,7 @@
 	"type": "local_global",
 	"parameters": [{
 			"name": "x",
+			"label": "x",
 			"desc": "Independent variables: A list of variables from database.",
 			"type": "column",
 			"columnValuesSQLType": "",
@@ -16,6 +17,7 @@
 			"valueType": "string"
 		}, {
 			"name": "y",
+			"label": "y",
 			"desc": "Dependent variable: A categorical variable form database.",
 			"type": "column",
 			"columnValuesSQLType": "",
@@ -27,6 +29,7 @@
 			"valueType": "string"
 		}, {
 			"name": "iterationNumber",
+			"label": "iterationNumber",
 			"desc": "Training datasets have id != iteration number.",
 			"type": "other",
 			"value": "0",
@@ -35,6 +38,7 @@
 			"valueType": "integer"
 		}, {
 			"name": "model",
+			"label": "model",
 			"desc": "Training model in json format. It cannot be empty",
 			"type": "other",
 			"value": "",
@@ -43,6 +47,7 @@
 			"valueType": "json"
 		}, {
 			"name": "dbIdentifier",
+			"label": "dbIdentifier",
 			"desc": "Predefined value for the dbIdentifier",
 			"type": "other",
 			"value": "",
@@ -51,6 +56,7 @@
 			"valueType": "string"
 		}, {
 			"name": "pathology",
+			"label": "pathology",
 			"desc": "The name of the pathology in which the dataset belongs to.",
 			"type": "pathology",
 			"value": "dementia",
@@ -59,6 +65,7 @@
 			"valueType": "string"
 		}, {
 			"name": "dataset",
+			"label": "dataset",
 			"desc": "The names of one or more datasets, in which the algorithm will be executed.",
 			"type": "dataset",
 			"value": "adni",
