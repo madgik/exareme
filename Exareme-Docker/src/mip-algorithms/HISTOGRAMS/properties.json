@@ -5,7 +5,6 @@
 	"type": "multiple_local_global",
 	"parameters": [{
 			"name": "x",
-			"label": "x",
 			"desc": "A variable from database to distribute among bins.",
 			"type": "column",
 			"columnValuesSQLType": "real,integer,text",
@@ -17,7 +16,6 @@
 			"valueType": "string"
 		}, {
 			"name": "y",
-			"label": "y",
 			"desc": "(Optional). A categorical variable from database. If not None, plots a histogram with a bar for each category in y",
 			"type": "column",
 			"columnValuesSQLType": "text,integer",
@@ -29,7 +27,6 @@
 			"valueType": "string"
 		}, {
 			"name": "bins",
-			"label": "bins",
 			"desc": "Number of bins",
 			"type": "other",
 			"value": "50",
@@ -39,7 +36,6 @@
 			"valueType": "integer"
 		}, {
 			"name": "pathology",
-			"label": "pathology",
 			"desc": "The name of the pathology in which the dataset belongs to.",
 			"type": "pathology",
 			"value": "dementia",
@@ -48,7 +44,6 @@
 			"valueType": "string"
 		}, {
 			"name": "dataset",
-			"label": "dataset",
 			"desc": "The names of one or more datasets, in which the algorithm will be executed.",
 			"type": "dataset",
 			"value": "desd-synthdata",
@@ -57,7 +52,6 @@
 			"valueType": "string"
 		}, {
 			"name": "filter",
-			"label": "filter",
 			"desc": "",
 			"type": "filter",
 			"value": "",

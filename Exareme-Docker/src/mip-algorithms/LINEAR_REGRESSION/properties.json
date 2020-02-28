@@ -5,7 +5,6 @@
 	"type": "multiple_local_global",
 	"parameters": [{
 			"name": "x",
-			"label": "x",
 			"desc": "The right part of the linear predictor function, that contains the indepedent variables in an equation supporting the symbols +, :, * , R notation.The independent variables are variables of the input dataset.",
 			"type": "formula",
 			"columnValuesSQLType": "real,integer,text",
@@ -17,7 +16,6 @@
 			"valueType": "string"
 		}, {
 			"name": "y",
-			"label": "y",
 			"desc": "The left part of the linear predictor function, that contains the dependent variable.The dependent variable is a variable of the input dataset.",
 			"type": "column",
 			"columnValuesSQLType": "real,integer",
@@ -29,7 +27,6 @@
 			"valueType": "string"
 		}, {
 			"name": "referencevalues",
-			"label": "referencevalues",
 			"desc": "(Optional). Reference values of categorical independent variables. It should be json. It can be empty.",
 			"type": "other",
 			"value": "[{\"name\":\"alzheimerbroadcategory\",\"val\":\"Other\"}]",
@@ -38,7 +35,6 @@
 			"valueType": "json"
 		}, {
 			"name": "encodingparameter",
-			"label": "encodingparameter",
 			"desc": "Encoding parameter. It can be one of the following:dummycoding,sumscoding,simplecoding",
 			"type": "other",
 			"value": "dummycoding",
@@ -48,7 +44,6 @@
 			"valueType": "string"
 		}, {
 			"name": "pathology",
-			"label": "pathology",
 			"desc": "The name of the pathology in which the dataset belongs to.",
 			"type": "pathology",
 			"value": "dementia",
@@ -57,7 +52,6 @@
 			"valueType": "string"
 		}, {
 			"name": "dataset",
-			"label": "dataset",
 			"desc": "The names of one or more datasets, in which the algorithm will be executed.",
 			"type": "dataset",
 			"value": "desd-synthdata",
@@ -66,7 +60,6 @@
 			"valueType": "string"
 		}, {
 			"name": "filter",
-			"label": "filter",
 			"desc": "",
 			"type": "filter",
 			"value": "",

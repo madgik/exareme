@@ -13,53 +13,53 @@ sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath
 
 from algorithm_utils import StateData
 from cart_lib import Cart_Glob2Loc_TD, CartIter2_Loc2Glob_TD, DataFrameFilter
+from cart_steps import cart_step_2_local
 
-
-
-def node_computations(dataFrame, colNames, activePath, className, CategoricalVariables, flag):
-    if flag == "classNumbers":
-        classNumbersJ = dict()
-    elif flag == "statistics":
-        statisticsJ = dict()
-
-    for colName in colNames:
-        df = dataFrame[[colName,className]]
-        thresholds =  activePath["thresholdsJ"][colName]
-        if flag == "classNumbers":
-            countsLeft = [None]*len(thresholds)
-            countsRight = [None]*len(thresholds)
-        elif flag == "statistics":
-            ssLeft = [None]*len(thresholds)
-            ssRight = [None]*len(thresholds)
-            nnLeft = [None]*len(thresholds)
-            nnRight = [None]*len(thresholds)
-
-        for i in xrange(len(thresholds)):
-            if colName not in CategoricalVariables:
-                dfLeft = df.loc[df[colName] <= thresholds[i]]
-                dfRight = df.loc[df[colName] > thresholds[i]]
-            elif colName in CategoricalVariables:
-                dfLeft = df.loc[df[colName] in thresholds[i]['left']]
-                dfRight = df.loc[df[colName] in thresholds[i]['right']]
-
-            if flag == "classNumbers":
-                countsLeft[i] = json.loads(dfLeft.groupby(className)[className].count().to_json())
-                countsRight[i] = json.loads(dfRight.groupby(className)[className].count().to_json())
-            elif flag == "statistics":
-                ssLeft[i] = np.sum(dfLeft[className])
-                ssRight[i] = np.sum(dfRight[className])
-                nnLeft[i] = len(dfLeft[className])
-                nnRight[i] = len(dfRight[className])
-
-        if flag == "classNumbers":
-            classNumbersJ[colName]= { "countsLeft" : countsLeft, "countsRight": countsRight }
-        elif flag == "statistics":
-            statisticsJ[colName] =  { "ssLeft" : ssLeft, "ssRight" : ssRight,  "nnLeft" : nnLeft, "nnRight" : nnRight}
-
-    if flag == "classNumbers":
-        return classNumbersJ
-    if flag == "statistics":
-        return statisticsJ
+#
+# def node_computations(dataFrame, colNames, activePath, className, CategoricalVariables, flag):
+#     if flag == "classNumbers":
+#         classNumbersJ = dict()
+#     elif flag == "statistics":
+#         statisticsJ = dict()
+#
+#     for colName in colNames:
+#         df = dataFrame[[colName,className]]
+#         thresholds =  activePath["thresholdsJ"][colName]
+#         if flag == "classNumbers":
+#             countsLeft = [None]*len(thresholds)
+#             countsRight = [None]*len(thresholds)
+#         elif flag == "statistics":
+#             ssLeft = [None]*len(thresholds)
+#             ssRight = [None]*len(thresholds)
+#             nnLeft = [None]*len(thresholds)
+#             nnRight = [None]*len(thresholds)
+#
+#         for i in xrange(len(thresholds)):
+#             if colName not in CategoricalVariables:
+#                 dfLeft = df.loc[df[colName] <= thresholds[i]]
+#                 dfRight = df.loc[df[colName] > thresholds[i]]
+#             elif colName in CategoricalVariables:
+#                 dfLeft = df.loc[df[colName] in thresholds[i]['left']]
+#                 dfRight = df.loc[df[colName] in thresholds[i]['right']]
+#
+#             if flag == "classNumbers":
+#                 countsLeft[i] = json.loads(dfLeft.groupby(className)[className].count().to_json())
+#                 countsRight[i] = json.loads(dfRight.groupby(className)[className].count().to_json())
+#             elif flag == "statistics":
+#                 ssLeft[i] = np.sum(dfLeft[className])
+#                 ssRight[i] = np.sum(dfRight[className])
+#                 nnLeft[i] = len(dfLeft[className])
+#                 nnRight[i] = len(dfRight[className])
+#
+#         if flag == "classNumbers":
+#             classNumbersJ[colName]= { "countsLeft" : countsLeft, "countsRight": countsRight }
+#         elif flag == "statistics":
+#             statisticsJ[colName] =  { "ssLeft" : ssLeft, "ssRight" : ssRight,  "nnLeft" : nnLeft, "nnRight" : nnRight}
+#
+#     if flag == "classNumbers":
+#         return classNumbersJ
+#     if flag == "statistics":
+#         return statisticsJ
 
 
 
@@ -86,20 +86,23 @@ def main():
     globalTree, activePaths = Cart_Glob2Loc_TD.load(global_db).get_data()
 
     # Run algorithm local iteration step
-    for key in activePaths:
-        df = local_state['dataFrame']
-        # For each unfinished path, find the subset of dataFrame (df)
-        for i in xrange(len(activePaths[key]['filter'])):
-            df = DataFrameFilter(df, activePaths[key]['filter'][i]["variable"],
-                                     activePaths[key]['filter'][i]["operator"],
-                                     activePaths[key]['filter'][i]["value"])
-        if  local_state['args_Y'][0] in local_state['CategoricalVariables']:  #Classification Algorithm
-            resultJ = node_computations(df,  local_state['args_X'], activePaths[key],  local_state['args_Y'][0],  local_state['CategoricalVariables'],"classNumbers")
-            activePaths[key]["classNumbersJ"] = dict(activePaths[key]["classNumbersJ"].items() + resultJ.items())
-        elif  local_state['args_Y'][0] not in local_state['CategoricalVariables']: # Regression Algorithm
-            resultJ = node_computations(df,  local_state['args_X'], activePaths[key],  local_state['args_Y'][0],  local_state['CategoricalVariables'],"statistics")
-            activePaths[key]["statisticsJ"] = dict(activePaths[key]["statisticsJ"].items() + resultJ.items())
-    #print activePaths
+    activePaths = cart_step_2_local(local_state['dataFrame'], local_state['CategoricalVariables'], local_state['args_X'], local_state['args_Y'], activePaths)
+    #
+    # # Run algorithm local iteration step
+    # for key in activePaths:
+    #     df = local_state['dataFrame']
+    #     # For each unfinished path, find the subset of dataFrame (df)
+    #     for i in xrange(len(activePaths[key]['filter'])):
+    #         df = DataFrameFilter(df, activePaths[key]['filter'][i]["variable"],
+    #                                  activePaths[key]['filter'][i]["operator"],
+    #                                  activePaths[key]['filter'][i]["value"])
+    #     if  local_state['args_Y'][0] in local_state['CategoricalVariables']:  #Classification Algorithm
+    #         resultJ = node_computations(df,  local_state['args_X'], activePaths[key],  local_state['args_Y'][0],  local_state['CategoricalVariables'],"classNumbers")
+    #         activePaths[key]["classNumbersJ"] = dict(activePaths[key]["classNumbersJ"].items() + resultJ.items())
+    #     elif  local_state['args_Y'][0] not in local_state['CategoricalVariables']: # Regression Algorithm
+    #         resultJ = node_computations(df,  local_state['args_X'], activePaths[key],  local_state['args_Y'][0],  local_state['CategoricalVariables'],"statistics")
+    #         activePaths[key]["statisticsJ"] = dict(activePaths[key]["statisticsJ"].items() + resultJ.items())
+    # #print activePaths
     ## Finished
     local_state = StateData( args_X = local_state['args_X'],
                              args_Y = local_state['args_Y'],

@@ -11,8 +11,9 @@ import pandas as pd
 sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) + '/utils/')
 sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) + '/CART/')
 
-from algorithm_utils import query_database, variable_categorical_getDistinctValues, StateData
+from algorithm_utils import query_database, variable_categorical_getDistinctValues, StateData, PrivacyError, PRIVACY_MAGIC_NUMBER
 from cart_lib import CartInit_Loc2Glob_TD
+from cart_steps import cart_init_1_local
 
 def main():
     # Parse arguments
@@ -40,11 +41,14 @@ def main():
     dataSchema, metadataSchema, metadata, dataFrame  = query_database(fname_db=fname_loc_db, queryData=query, queryMetadata=queryMetadata)
     CategoricalVariables = variable_categorical_getDistinctValues(metadata)
 
-    dataFrame = dataFrame.dropna()
-    for x in dataSchema:
-        if x in CategoricalVariables:
-            dataFrame = dataFrame[dataFrame[x].astype(bool)]
-
+    # dataFrame = dataFrame.dropna()
+    # for x in dataSchema:
+    #     if x in CategoricalVariables:
+    #         dataFrame = dataFrame[dataFrame[x].astype(bool)]
+    
+    dataFrame = cart_init_1_local(dataFrame, dataSchema, CategoricalVariables)
+    if len(dataFrame) < PRIVACY_MAGIC_NUMBER:
+        raise PrivacyError('The Experiment could not run with the input provided because there are insufficient data.')
 
     # Save local state
     local_state = StateData( dataFrame = dataFrame,
