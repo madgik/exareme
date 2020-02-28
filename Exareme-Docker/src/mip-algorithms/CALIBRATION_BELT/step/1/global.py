@@ -36,7 +36,15 @@ def cb_global_iter(global_state, global_in):
                 np.linalg.inv(hess_dict[deg]),
                 grad_dict[deg]
         )
-        coeff_dict[deg] = coeff_dict[deg].clip(-10, 10)  # regularize
+        coeff_dict[deg] = np.array([c if not np.isinf(c) else np.sign(c) * 10 for c in coeff_dict[deg]])  # regularize
+        if np.isnan(ll_dict[deg]).any():
+            raise ValueError('Loglik contains NaNs!', ll_dict[deg], deg)
+        if np.isnan(grad_dict[deg]).any():
+            raise ValueError('Grad contains NaNs!', grad_dict[deg], deg)
+        if np.isnan(hess_dict[deg]).any():
+            raise ValueError('Hessian contains NaNs!', hess_dict[deg], deg)
+        if np.isnan(coeff_dict[deg]).any():
+            raise ValueError('Coeffs contains NaNs!', coeff_dict[deg], deg)
         # Update termination quantities
         delta_dict[deg] = abs(ll_dict[deg] - ll_old_dict[deg])
     iter += 1

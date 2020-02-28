@@ -24,6 +24,6 @@ def test_eval(test_input, expected):
         res = res['result'][0]['data'][0]
         expected = expected[0]
 
-        assert math.isclose(res['n_obs'], expected['n_obs'], rel_tol=1e-2)
-        assert math.isclose(res['Model degree'], expected['Model degree'], rel_tol=1e-2)
-        assert math.isclose(res['p value'], expected['p value'], rel_tol=1e-2)
+        assert math.isclose(res['n_obs'], expected['n_obs'], abs_tol=1e-2)
+        assert math.isclose(res['Model degree'], expected['Model degree'], abs_tol=1e-2)
+        assert math.isclose(res['p value'], expected['p value'], abs_tol=1e-2)
