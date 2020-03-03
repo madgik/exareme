@@ -1,7 +1,7 @@
 {
 	"name": "NAIVE_BAYES_TESTING",
 	"desc": "Naive Bayes clasifier: Testing phase",
-	"label": "Naive Bayes Testing",
+	"label": "Naive Bayes Testing for Galaxy",
 	"type": "local_global",
 	"parameters": [{
 			"name": "x",

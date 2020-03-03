@@ -3,8 +3,8 @@ import json
 import requests
 import math
 import logging
-
-endpointUrl = 'http://88.197.53.100:9090/mining/query/DESCRIPTIVE_STATS'
+from lib import vmUrl
+endpointUrl= vmUrl+'DESCRIPTIVE_STATS'
 
 
 def get_test_params():

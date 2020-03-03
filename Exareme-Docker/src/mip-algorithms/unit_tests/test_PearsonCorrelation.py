@@ -2,11 +2,10 @@ import requests
 import json
 import logging
 import math
+from lib import vmUrl
+endpointUrl= vmUrl+'PEARSON_CORRELATION'
 
 # Required datasets: adni_9rows, adni, data_pr1, desd-synthdata
-
-endpointUrl = 'http://88.197.53.100:9090/mining/query/PEARSON_CORRELATION'
-
 
 def test_PearsonCorrlation_MIP_AlgoTesting_1():
     """

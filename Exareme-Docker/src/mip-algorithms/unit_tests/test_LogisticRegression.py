@@ -4,9 +4,8 @@ import logging
 import math
 
 # Required datasets: data_logisticRegression.csv
-
-
-endpointUrl = 'http://88.197.53.100:9090/mining/query/LOGISTIC_REGRESSION'
+from lib import vmUrl
+endpointUrl= vmUrl+'LOGISTIC_REGRESSION'
 
 
 def test_LogisticRegression():
