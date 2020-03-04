@@ -30,7 +30,10 @@ def main():
     # Load global state
     global_state = StateData.load(fname_prev_state).data
     globalTreeJ = global_state['globalTree'].tree_to_json()
-    set_algorithms_output_data(globalTreeJ)
+
+    myresult =  {"result": [{"type": "application/json", "data": globalTreeJ}]}
+
+    set_algorithms_output_data(myresult)
 
 if __name__ == '__main__':
     main()

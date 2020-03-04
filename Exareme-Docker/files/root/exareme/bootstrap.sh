@@ -1,22 +1,17 @@
 #!/usr/bin/env bash
 
-if [[ -z "${EXAREME_ACTIVE_WORKERS_PATH}" ]]; then
-	echo "Env. variable 'active_workers' not initialized in docker-compose.yaml files. Exiting..."
-	exit 1
-fi
+#Init environmental variables
 
-if [[ -z "${EXAREME_MASTER_PATH}" ]]; then
-	echo "Env. variable 'master' not initialized in docker-compose.yaml files. Exiting..."
-	exit 1
-fi
+export DOCKER_DATA_FOLDER="/root/exareme/data/"
+export DOCKER_METADATA_FOLDER="/root/exareme/data/"
+export EXAREME_ACTIVE_WORKERS_PATH="active_workers"
+export EXAREME_MASTER_PATH="master"
+export DATA="data"
 
-if [[ -z "${DATA}" ]]; then
-	echo "Env. variable 'data' not initialized in docker-compose.yaml files. Exiting..."
-	exit 1
-fi
-if [[ -z ${CONSULURL} ]]; then echo "CONSULURL is unset"; exit; fi
-if [[ -z ${NODE_NAME} ]]; then echo "NODE_NAME is unset";exit;  fi
-if [[ -z ${DOCKER_DATA_FOLDER} ]]; then echo "DOCKER_DATA_FOLDER is unset"; exit; fi
+if [[ -z ${CONSULURL} ]]; then echo "CONSULURL is unset. Check docker-compose file."; exit; fi
+if [[ -z ${NODE_NAME} ]]; then echo "NODE_NAME is unset. Check docker-compose file.";exit;  fi
+if [[ -z ${FEDERATION_ROLE} ]]; then echo "FEDERATION_ROLE is unset. Check docker-compose file.";exit;  fi
+if [[ -z ${TAG} ]]; then echo "TAG is unset. Check docker-compose file.";exit;  fi
 
 #Stop Exareme service
 stop_exareme () {
@@ -64,7 +59,7 @@ trap term_handler SIGTERM SIGKILL
 #This funciton will be executed when the container receives the SIGTERM signal (when stopping)
 term_handler () {
 
-if [[ "${MASTER_FLAG}" != "master" ]]; then   #worker
+if [[ "${FEDERATION_ROLE}" != "master" ]]; then   #worker
 	echo "*******************************Stopping Worker**************************************"
 	if [[ "$(curl -s ${CONSULURL}/v1/health/state/passing | jq -r '.[].Status')" = "passing" ]];  then
 		deleteKeysFromConsul "$EXAREME_ACTIVE_WORKERS_PATH"
@@ -89,7 +84,7 @@ exit 0
 mkdir -p  /tmp/demo/db/
 
 #This is the Worker
-if [[ "${MASTER_FLAG}" != "master" ]]; then
+if [[ "${FEDERATION_ROLE}" != "master" ]]; then
 
 	DESC="exareme-worker"
 	MY_IP=$(/sbin/ifconfig eth0 | grep "inet" | awk -F: '{print $2}' | cut -d ' ' -f 1)
