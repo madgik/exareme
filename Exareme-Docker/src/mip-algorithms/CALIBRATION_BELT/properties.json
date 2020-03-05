@@ -7,6 +7,7 @@
     "parameters": [
         {
             "name": "x",
+            "label": "x",
             "desc": "Expected probability of dichotomous outcome.",
             "type": "column",
             "columnValuesSQLType": "real",
@@ -19,6 +20,7 @@
         },
         {
             "name": "y",
+            "label": "y",
             "desc": "Observed dichotomous outcomes.",
             "type": "column",
             "columnValuesSQLType": "text, integer",
@@ -31,6 +33,7 @@
         },
         {
             "name": "devel",
+            "label": "devel",
             "desc": "A character string specifying if the model has been fit on the same dataset under evaluation (internal) or if the model has been developed on an external sample (external).",
             "type": "other",
             "value": "external",
@@ -46,6 +49,7 @@
         },
         {
             "name": "max_deg",
+            "label": "max_deg",
             "desc": "Maximum degree of polynomial.",
             "type": "other",
             "value": "4",
@@ -58,6 +62,7 @@
         },
         {
             "name": "confLevels",
+            "label": "confLevels",
             "desc": "A pair of confidence levels for which the calibration belt will be computed.",
             "type": "other",
             "value": "0.80, 0.95",
@@ -67,6 +72,7 @@
         },
         {
             "name": "thres",
+            "label": "thres",
             "desc": "A numeric scalar between 0 and 1 representing the significance level adopted in the forward selection.",
             "type": "other",
             "value": "0.95",
@@ -79,6 +85,7 @@
         },
         {
             "name": "num_points",
+            "label": "num_points",
             "desc": "A numeric scalar indicating the number of points to be considered to plot the calibration belt.",
             "type": "other",
             "value": "200",
@@ -91,6 +98,7 @@
         },
         {
             "name": "dataset",
+            "label": "dataset",
             "desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty",
             "type": "dataset",
             "value": "demo1",
@@ -100,6 +108,7 @@
         },
         {
             "name": "filter",
+            "label": "filter",
             "desc": "",
             "type": "filter",
             "value": "",
@@ -109,6 +118,7 @@
         },
         {
             "name": "pathology",
+            "label": "pathology",
             "desc": "The name of the pathology that the dataset belongs to.",
             "type": "pathology",
             "value": "tbi",

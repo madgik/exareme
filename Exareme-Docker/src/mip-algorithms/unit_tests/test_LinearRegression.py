@@ -10,7 +10,11 @@ import re
 from rpy2.robjects.packages import importr
 import rpy2.robjects as robjects
 
-endpointUrl='http://88.197.53.100:9090/mining/query/LINEAR_REGRESSION'
+import sys
+from os import path
+sys.path.append(path.abspath(__file__))
+from lib import vmUrl
+endpointUrl= vmUrl+'LINEAR_REGRESSION'
 folderPath = 'R_scripts'
 file ='LinearRegression.Rmd'
 

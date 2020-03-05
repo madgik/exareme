@@ -17,7 +17,7 @@
 			"valueType": "string"
 		}, {
 			"name": "y",
-			"label": "y",			
+			"label": "y",
 			"desc": "The left part of the linear predictor function, that contains the dependent variable.The dependent variable is a variable of the input dataset.",
 			"type": "column",
 			"columnValuesSQLType": "real,integer",

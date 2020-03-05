@@ -61,6 +61,7 @@
     EXAREME_KEYSTORE: "{{ EXAREME_KEYSTORE }}"
     DOCKER_DATA_FOLDER: "{{ DOCKER_DATA_FOLDER }}"
     LOCAL_DATA_FOLDER: "{{ hostvars[item]['data_path'] }}"
+    FEDERATION_ROLE: "worker"
   with_items: "{{ groups['workers'] }}"
   ignore_errors: true
   tags:

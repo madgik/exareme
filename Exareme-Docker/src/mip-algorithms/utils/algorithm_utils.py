@@ -16,6 +16,7 @@ import numpy as np
 import pandas as pd
 from patsy import dmatrix, dmatrices
 
+
 PRIVACY_MAGIC_NUMBER = 10
 P_VALUE_CUTOFF = 0.001
 P_VALUE_CUTOFF_STR = '< ' + str(P_VALUE_CUTOFF)
@@ -259,6 +260,7 @@ def parse_filter(query_filter):
              if 'id' in rule else format_group(group=parse_filter(rule)) for rule in rules])
 
 
+
 def value_casting(value, type):
     if type == 'text':
         return str(value)
@@ -294,7 +296,7 @@ def query_database(fname_db, queryData, queryMetadata):
 
     # Cast Dataframe based on metadata
     metadataVarNames = [str(x) for x in list(zip(*metadata)[0])]
-    metadataTypes = [variable_type(x) for x in list(zip(*metadata)[1])]
+    metadataTypes = [variable_type(x) for x in list(zip(*metadata)[2])]
     for varName in dataSchema:
         index = metadataVarNames.index(varName)
         dataFrame[varName] = dataFrame[varName].astype(metadataTypes[index])
@@ -307,9 +309,10 @@ def variable_categorical_getDistinctValues(metadata):
     dataTypes = zip((str(x) for x in list(zip(*metadata)[0])),
                     (str(x) for x in list(zip(*metadata)[1])))
     for md in metadata:
-        if md[2] == 1:  # when variable is categorical
-            distinctValues[str(md[0])] = [value_casting(x, str(md[1])) for x in md[3].split(',')]
+        if md[3] == 1:  # when variable is categorical
+            distinctValues[str(md[0])] = [value_casting(x, str(md[2])) for x in md[4].split(',')]
     return distinctValues
+
 
 
 class StateData(object):
