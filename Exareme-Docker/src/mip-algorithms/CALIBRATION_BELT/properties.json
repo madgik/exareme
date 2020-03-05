@@ -6,27 +6,27 @@
     "status": "enabled",
     "parameters": [
         {
-            "name": "e",
-            "label": "e",
+            "name": "x",
+            "label": "x",
             "desc": "Expected probability of dichotomous outcome.",
             "type": "column",
             "columnValuesSQLType": "real",
             "columnValuesIsCategorical": "false",
             "columnValuesNumOfEnumerations": "",
-            "value": "probGiViTI_2017_Complessiva",
+            "value": "impact_prob_core_mortality",
             "valueNotBlank": true,
             "valueMultiple": false,
             "valueType": "string"
         },
         {
-            "name": "o",
-            "label": "o",
+            "name": "y",
+            "label": "y",
             "desc": "Observed dichotomous outcomes.",
             "type": "column",
             "columnValuesSQLType": "text, integer",
             "columnValuesIsCategorical": "true",
             "columnValuesNumOfEnumerations": "2",
-            "value": "hospOutcomeLatest_RIC10",
+            "value": "Mortality",
             "valueNotBlank": true,
             "valueMultiple": false,
             "valueType": "string"
@@ -101,7 +101,7 @@
             "label": "dataset",
             "desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty",
             "type": "dataset",
-            "value": "cb_data",
+            "value": "demo1",
             "valueNotBlank": true,
             "valueMultiple": true,
             "valueType": "string"
@@ -121,7 +121,7 @@
             "label": "pathology",
             "desc": "The name of the pathology that the dataset belongs to.",
             "type": "pathology",
-            "value": "dementia",
+            "value": "tbi",
             "valueNotBlank": true,
             "valueMultiple": false,
             "valueType": "string"

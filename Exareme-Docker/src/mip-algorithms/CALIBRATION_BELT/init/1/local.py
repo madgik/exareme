@@ -55,8 +55,8 @@ def cb_local_init(local_in):
 def main():
     # Parse arguments
     parser = ArgumentParser()
-    parser.add_argument('-e', required=True, help='Expected outcomes.')
-    parser.add_argument('-o', required=True, help='Observed outcomes.')
+    parser.add_argument('-x', required=True, help='Expected outcomes.')
+    parser.add_argument('-y', required=True, help='Observed outcomes.')
     parser.add_argument('-max_deg', required=True, help='Maximum degree of calibration curve.')
     parser.add_argument('-cur_state_pkl', required=True,
                         help='Path to the pickle file holding the current state.')
@@ -66,8 +66,8 @@ def main():
     fname_cur_state = path.abspath(args.cur_state_pkl)
     fname_loc_db = path.abspath(args.input_local_DB)
     query = args.db_query
-    e_name = args.e.strip()
-    o_name = args.o.strip()
+    e_name = args.x.strip()
+    o_name = args.y.strip()
     max_deg = int(args.max_deg)
     assert 1 < max_deg <= 4, "Max deg should be between 2 and 4 for `devel`=`external` or between 3 and 4 for " \
                              "`devel`=`internal`."
