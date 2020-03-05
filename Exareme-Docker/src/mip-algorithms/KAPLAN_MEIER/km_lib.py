@@ -9,11 +9,17 @@ from os import path
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from sqlalchemy import create_engine
 from lifelines import KaplanMeierFitter
 
 from utils.algorithm_utils import make_json_raw, TransferAndAggregateData
 
-PRIVACY_MAGIC_NUMBER = 15
+PRIVACY_MAGIC_NUMBER = 10
+
+
+def parse_args_longitudinal():
+    # todo Like parse_exareme_args but with additional fields: subjectcode, visitID, visitDate, age
+    pass
 
 
 def get_data(timelines, event_val, max_duration):
@@ -211,20 +217,32 @@ def build_timelines(df, time_axis, var):
     return timelines
 
 
+def create_fake_db():
+    engine = create_engine('sqlite:////Users/zazon/madgik/exareme/Exareme-Docker/src/mip-algorithms/KAPLAN_MEIER'
+                           '/km_fake.sqlite')
+    data = pd.read_csv('/Users/zazon/madgik/exareme/Exareme-Docker/src/mip-algorithms/KAPLAN_MEIER/km_fake.csv')
+    dataset_col = pd.DataFrame({'dataset': ['longitudinal'] * len(data)})
+    data = data.join(dataset_col)
+    data.to_sql('DATA', con=engine)
+
+
 def main():
-    pd.set_option('display.max_columns', 3)
-    pd.set_option('display.width', 100)
+    create_fake_db()
 
-    fake_data = generate_fake_data(1000)
-    print(fake_data)
+    # pd.set_option('display.max_columns', 3)
+    # pd.set_option('display.width', 100)
+    #
+    # fake_data = generate_fake_data(1000)
+    # fake_data.to_csv('/Users/zazon/madgik/exareme/Exareme-Docker/src/mip-algorithms/KAPLAN_MEIER/km_fake.csv')
+    # print(fake_data)
 
-    timelines = build_timelines(fake_data, time_axis='subjectage', var='alzheimerbroadcategory')
-    print(timelines)
-
-    local_in = get_data(timelines, 'AD', 100)
-    local_out = local_1(local_in=local_in)
-    global_out = global_1(global_in=local_out)
-    print(global_out)
+    # timelines = build_timelines(fake_data, time_axis='subjectage', var='alzheimerbroadcategory')
+    # print(timelines)
+    #
+    # local_in = get_data(timelines, 'AD', 100)
+    # local_out = local_1(local_in=local_in)
+    # global_out = global_1(global_in=local_out)
+    # print(global_out)
 
 
 if __name__ == '__main__':
