@@ -37,7 +37,7 @@ def variableshouldbebinary_inputerrorchecking(nameofvariable, numberdistictvalue
     if numberdistictvalues == 2 :
         return "OK"
     else:
-        raise functions.OperatorError("ExaremeError", "Variable: " +nameofvariable+ " should be binary")
+        raise functions.OperatorError("ExaremeError", "Variable: " +nameofvariable+ " should have two distinct values. Here it gets "  + str(numberdistictvalues) +" distinct value(/s)")
 variableshouldbebinary_inputerrorchecking.registered = True
 
 

@@ -55,7 +55,7 @@ worker88_197_53_100 become_user="{{worker88_197_53_100_become_user}}"
 worker88_197_53_100 ansible_become_pass="{{worker88_197_53_100_become_pass}}"
 worker88_197_53_100 ansible_ssh_pass="{{worker88_197_53_100_ssh_pass}}"
 ```
-[You can find the hostname of any machine by executing ```hostname``` in terminal]
+You can find the hostname of any machine by executing ```hostname``` in terminal. Please mind that the ```hostname``` of the Target node *Must Not* include dashes[.] If that is the case, change your hostname configurations in the Target node as needed.
 
 [Requirement1: Mind that the variable ```data_path``` is the path where pathology folders are stored in your Target machine (Each Pathology folder includes the Data CSV (datasets.csv) and the Metadata file (CDEsMetadata.json))]<br/>
 

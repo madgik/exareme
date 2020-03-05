@@ -4,8 +4,8 @@ import logging
 import math
 
 # Required datasets: data_logisticRegression.csv
-
-endpointUrl = 'http://88.197.53.100:9090/mining/query/LOGISTIC_REGRESSION'
+from lib import vmUrl
+endpointUrl= vmUrl+'LOGISTIC_REGRESSION'
 
 
 def test_LogisticRegression():
@@ -54,7 +54,7 @@ def test_LogisticRegression():
     print (result)
     exareme_coeffs = result['result'][0]['data']['Covariates']
     r_coeffs = [{
-        'name'       : '(Intercept)',
+        'name'       : 'Intercept',
         'coefficient': -8.850,
         'std.err.'   : 1.025,
         'z value'    : -8.634,
@@ -133,7 +133,7 @@ def test_LogisticRegression_MultipleDataset():
     result = json.loads(r.text)
     exareme_coeffs = result['result'][0]['data']['Covariates']
     r_coeffs = [{
-        'name'       : '(Intercept)',
+        'name'       : 'Intercept',
         'coefficient': -8.850,
         'std.err.'   : 1.025,
         'z value'    : -8.634,

@@ -48,7 +48,10 @@ Result <- ttestOneS(
   data = df_TT,
   vars = vars(lefthippocampus, righthippocampus),
   testValue = 3.0,
-  hypothesis = 'dt')
+  hypothesis = 'dt',
+  effectSize = T ,
+  ci = T,
+  meanDiff = T)
 Test4Result <- toJSON(Result$ttest$asDF, na="string")
 
 return(c(Test1Result, Test2Result, Test3Result, Test4Result))

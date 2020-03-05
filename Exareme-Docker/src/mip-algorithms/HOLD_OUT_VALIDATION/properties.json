@@ -1,7 +1,7 @@
 {
 	"name": "HOLD_OUT_VALIDATION",
 	"desc": "Split datasets into random train and test subsets",
-	"label": "Hold Out Validation",
+	"label": "Hold Out Validation for Galaxy",
 	"type": "local_global",
 	"parameters": [{
 			"name": "pathology",

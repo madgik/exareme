@@ -15,7 +15,9 @@ Result = ttestIS(
   formula = lefthippocampus ~ gender,
   data = df_TT,
   hypothesis = 'different',
-  effectSize = T
+  effectSize = T,
+  ci = T,
+  meanDiff = T
   )
 Test1aResult <- toJSON(Result$ttest$asDF, na="string")
 

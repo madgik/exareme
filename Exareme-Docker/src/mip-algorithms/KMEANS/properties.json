@@ -9,7 +9,7 @@
 			"desc": "A list of real/integer variables from database.",
 			"type": "column",
 			"columnValuesSQLType": "real,integer",
-			"columnValuesIsCategorical": "",
+			"columnValuesIsCategorical": "false",
 			"columnValuesNumOfEnumerations": "",
 			"value": "lefthippocampus,righthippocampus",
 			"valueNotBlank": true,

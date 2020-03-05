@@ -120,70 +120,77 @@ LOCAL_DATA_FOLDER=${LOCAL_DATA_FOLDER} \
 docker stack deploy -c docker-compose-master.yml ${name}
 
 #Portainer
-echo -e "\nDo you wish to run Portainer in a Secure way? (SSL certificate required)  [ y/n ]"
+echo -e "\nDo you wish to run Portainer? [ y/n ]"
 read answer
 
 while true
+
 do
-    if [[ ${answer} == "y" ]];then
-        if [[ -s domain_name.txt ]]; then
-            DOMAIN_NAME=$(cat domain_name.txt | cut -d '=' -f 2)
-            #Run Secure Portainer service
-            flag=1
-            . ./portainer.sh
-        else
-            echo -e "\nWhat is the Domain name for which an SSL certificate created?"
-            read answer
-            command=$(sudo find /etc/letsencrypt/live/${answer}/cert.pem 2> /dev/null)
+    if [[ ${answer} == "y" ]]; then
+    echo -e "\nDo you wish to run Portainer in a Secure way? (SSL certificate required)  [ y/n ]"
+    read answer
 
-            if [[ ${command} == "/etc/letsencrypt/live/"${answer}"/cert.pem" ]]; then
-                DOMAIN_NAME=${answer}
-
-                #Optional to store Domain_name in a file
-                echo -e "\nDo you wish that Domain name to be stored so you will not be asked again? [y/n]"
-                read answer
-                while true
-                do
-                    if [[ ${answer} == "y" ]]; then
-                        echo "Storing information.."
-                        echo DOMAIN_NAME=${DOMAIN_NAME} > domain_name.txt
-                        break
-                    elif [[ ${answer} == "n" ]]; then
-                        echo "You will be asked again to provide the domain name.."
-                        break
-                    else
-                        echo "$answer is not a valid answer! Try again.. [ y/n ]"
-                        read answer
-                    fi
-                done
-
+    while true
+    do
+        if [[ ${answer} == "y" ]];then
+            if [[ -s domain_name.txt ]]; then
+                . ./domain_name.txt
                 #Run Secure Portainer service
                 flag=1
-                . ./portainer.sh
+                command=$(sudo find /etc/letsencrypt/live/${DOMAIN_NAME}/cert.pem 2> /dev/null)
+                if [[ ${command} == "/etc/letsencrypt/live/"${DOMAIN_NAME}"/cert.pem" ]]; then
+                    . ./portainer.sh
+                else
+                    echo -e "\nNo certificate for the Domain name: "${DOMAIN_NAME}" existing in file \"domain_name.txt\". Starting without Portainer.."
+                fi
             else
-                echo -e "\nNo certificate for that Domain name: "${answer}". Starting without Portainer.."
+                echo -e "\nWhat is the Domain name for which an SSL certificate created?"
+                read answer
+                command=$(sudo find /etc/letsencrypt/live/${answer}/cert.pem 2> /dev/null)
+
+                if [[ ${command} == "/etc/letsencrypt/live/"${answer}"/cert.pem" ]]; then
+                    DOMAIN_NAME=${answer}
+
+                    #Optional to store Domain_name in a file
+                    echo -e "\nDo you wish that Domain name to be stored so you will not be asked again? [y/n]"
+                    read answer
+                    while true
+                    do
+                        if [[ ${answer} == "y" ]]; then
+                            echo "Storing information.."
+                            echo DOMAIN_NAME=${DOMAIN_NAME} > domain_name.txt
+                            break
+                        elif [[ ${answer} == "n" ]]; then
+                            echo "You will be asked again to provide the domain name.."
+                            break
+                        else
+                            echo "$answer is not a valid answer! Try again.. [ y/n ]"
+                            read answer
+                        fi
+                    done
+
+                    #Run Secure Portainer service
+                    flag=1
+                    . ./portainer.sh
+                else
+                    echo -e "\nNo certificate for that Domain name: "${answer}". Starting without Portainer.."
+                fi
             fi
+            break
+        elif [[ ${answer} == "n" ]]; then
+            flag=0
+            . ./portainer.sh
+            break
+        else
+            echo ${answer}" is not a valid answer. Try again [ y/n ]"
+            read answer
         fi
-        break
+    done
     elif [[ ${answer} == "n" ]]; then
-        echo -e "\nDo you wish to run Portainer in a NON secure way? [ y/n ]"
-        read answer
-        while true
-        do
-            if [[ ${answer} == "y" ]]; then
-                #Run UnSecure Portainer service
-                flag=0
-                . ./portainer.sh
-                break
-            elif [[ ${answer} == "n" ]]; then
-                break
-            else
-                echo ${answer}" is not a valid answer. Try again [ y/n ]"
-            fi
-        done
-        break
+        :
     else
         echo ${answer}" is not a valid answer. Try again [ y/n ]"
         read answer
-     fi
+    fi
+    break
 done

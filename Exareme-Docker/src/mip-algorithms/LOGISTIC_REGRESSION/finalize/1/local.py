@@ -13,7 +13,7 @@ sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath
                 '/LOGISTIC_REGRESSION/')
 
 from algorithm_utils import StateData
-from log_regr_lib import LogRegrIter_Loc2Glob_TD, LogRegrIter_Glob2Loc_TD, LogRegrFinal_Loc2Glob_TD
+from log_regr_lib import LogRegrIter_Glob2Loc_TD, LogRegrFinal_Loc2Glob_TD
 
 
 def logregr_local_final(local_state, local_in):
