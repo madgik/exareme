@@ -5,6 +5,7 @@
 	"type": "iterative",
 	"parameters": [{
 			"name": "y",
+			"label": "y",
 			"desc": "A list of real/integer variables from database.",
 			"type": "column",
 			"columnValuesSQLType": "real,integer",
@@ -16,6 +17,7 @@
 			"valueType": "string"
 		}, {
 			"name": "k",
+			"label": "k",
 			"desc": "Number of centers",
 			"type": "other",
 			"value": "3",
@@ -25,6 +27,7 @@
 			"valueType": "integer"
 		}, {
 			"name": "centers",
+			"label": "centers",
 			"desc": "(Optional). A set of initial (distinct) cluster centres",
 			"type": "other",
 			"value": "[{\"clid\":1,\"lefthippocampus\":1.7,\"righthippocampus\":1.5},{\"clid\":2,\"lefthippocampus\":2.5,\"righthippocampus\":2.0}]",
@@ -33,6 +36,7 @@
 			"valueType": "json"
 		}, {
 			"name": "e",
+			"label": "e",
 			"desc": "Number of error value",
 			"type": "other",
 			"value": "0.01",
@@ -41,6 +45,7 @@
 			"valueType": "real"
 		}, {
 			"name": "pathology",
+			"label": "pathology",
 			"desc": "The name of the pathology in which the dataset belongs to.",
 			"type": "pathology",
 			"value": "dementia",
@@ -49,6 +54,7 @@
 			"valueType": "string"
 		}, {
 			"name": "dataset",
+			"label": "dataset",
 			"desc": "The names of one or more datasets, in which the algorithm will be executed.",
 			"type": "dataset",
 			"value": "adni",
@@ -57,6 +63,7 @@
 			"valueType": "string"
 		}, {
 			"name": "iterations_max_number",
+			"label": "iterations_max_number",
 			"desc": "(Optional). Maximum number of iterations",
 			"type": "other",
 			"value": "",
@@ -67,6 +74,7 @@
 			"valueType": "integer"
 		}, {
 			"name": "filter",
+			"label": "filter",
 			"desc": "",
 			"type": "filter",
 			"value": "",

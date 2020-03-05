@@ -5,6 +5,7 @@
 	"type": "local_global",
 	"parameters": [{
 			"name": "y",
+			"label": "y",
 			"desc": "A vector of strings (i.e. 'x1a-x1b,x2a-x2b' naming the pairs of interest in data. Here x1a,x1b is first pair, and x2a,x2b is the second pair.",
 			"type": "formula",
 			"columnValuesSQLType": "real,integer",
@@ -16,6 +17,7 @@
 			"valueType": "string"
 		}, {
 			"name": "hypothesis",
+			"label": "hypothesis",
 			"desc": "'different', 'greaterthan' or 'lessthan',the alternative hypothesis; measure 1 different to measure 2, measure 1 greater than measure 2, and measure 1 less than measure 2 respectively.",
 			"type": "other",
 			"value": "different",
@@ -25,6 +27,7 @@
 			"valueType": "string"
 		}, {
 			"name": "effectsize",
+			"label": "effectsize",
 			"desc": "1 or 0, provide Cohen's d effect sizes",
 			"type": "other",
 			"value": "1",
@@ -35,6 +38,7 @@
 			"valueType": "integer"
 		}, {
 			"name": "ci",
+			"label": "ci",
 			"desc": "1 or 0, provide confidence intervals for the mean difference",
 			"type": "other",
 			"value": "1",
@@ -45,6 +49,7 @@
 			"valueType": "integer"
 		}, {
 			"name": "meandiff",
+			"label": "meandiff",
 			"desc": "1 or 0, provide means  ",
 			"type": "other",
 			"value": "1",
@@ -55,6 +60,7 @@
 			"valueType": "integer"
 		}, {
 			"name": "sediff",
+			"label": "sediff",
 			"desc": "1 or 0, provide standard deviations ",
 			"type": "other",
 			"value": "1",
@@ -65,6 +71,7 @@
 			"valueType": "integer"
 		}, {
 			"name": "pathology",
+			"label": "pathology",
 			"desc": "The name of the pathology in which the dataset belongs to.",
 			"type": "pathology",
 			"value": "dementia",
@@ -73,6 +80,7 @@
 			"valueType": "string"
 		}, {
 			"name": "dataset",
+			"label": "dataset",
 			"desc": "The names of one or more datasets, in which the algorithm will be executed.",
 			"type": "dataset",
 			"value": "desd-synthdata",
@@ -81,6 +89,7 @@
 			"valueType": "string"
 		}, {
 			"name": "filter",
+			"label": "filter",
 			"desc": "",
 			"type": "filter",
 			"value": "",

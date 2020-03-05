@@ -4,6 +4,7 @@ import madgik.exareme.master.queryProcessor.composer.Exceptions.AlgorithmExcepti
 
 public class ParameterProperties {
     private String name;
+    private String label;
     private String desc;
     private ParameterType type;
     private String columnValuesSQLType;
@@ -39,6 +40,9 @@ public class ParameterProperties {
     public void validateParameterPropertiesInitialization() throws AlgorithmException {
         if (name == null) {
             throw new AlgorithmException("The parameter field 'name' was not initialized in the properties.json file.");
+        }
+        if (label == null) {
+            throw new AlgorithmException("The parameter field 'label' was not initialized in the properties.json file.");
         }
         if (desc == null) {
             throw new AlgorithmException("The parameter field 'desc' was not initialized in the properties.json file.");
@@ -77,6 +81,14 @@ public class ParameterProperties {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public String getDesc() {
