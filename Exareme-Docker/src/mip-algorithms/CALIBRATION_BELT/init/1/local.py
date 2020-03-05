@@ -2,6 +2,7 @@ from __future__ import division
 from __future__ import print_function
 
 import sys
+import sqlite3
 from argparse import ArgumentParser
 from os import path
 
@@ -13,9 +14,23 @@ sys.path.append(
 sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) +
                 '/CALIBRATION_BELT/')
 
-from algorithm_utils import StateData, query_with_privacy
+from algorithm_utils import StateData, PrivacyError
 from cb_lib import CBInit_Loc2Glob_TD
 
+
+# ======================= Remove after testing!! ======================= #
+PRIVACY_MAGIC_NUMBER = 1
+
+def query_with_privacy(fname_db, query):
+    conn = sqlite3.connect(fname_db)
+    cur = conn.cursor()
+    cur.execute(query)
+    schema = [description[0] for description in cur.description]
+    data = cur.fetchall()
+    if len(data) < PRIVACY_MAGIC_NUMBER:
+        raise PrivacyError('Query results in illegal number of datapoints.')
+    return schema, data
+# ====================================================================== #
 
 def cb_local_init(local_in):
     # Unpack local input
