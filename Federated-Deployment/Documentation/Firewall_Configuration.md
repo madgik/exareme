@@ -16,13 +16,13 @@ All management communication is done through TLS encrypted communications betwee
 
 The following ports and protocols are required to be open for the proper function of the Docker Swarm overlay network technology:
 
- * On **all** the Manager node of Swarm:
+ * On **all** the nodes of Docker Swarm:
    * **TCP: 7946**
    * **UDP: 7946**
    * **UDP: 4789**
    * **Protocol 50 (ESP)**
 
- * **Only** on the Worker nodes of the Swarm:
+ * **Only** on the Master nodes of the Swarm:
    * **TCP: 2377**
 
 ## UFW Configuration for the MIP
@@ -45,7 +45,7 @@ Specific public services provided by the MIP to the end-users will require their
     -> Rules updated
     -> Rules updated (v6)
     ```
-3. Docker Swarm ports
+3. Docker Swarm ports for All nodes
 
     ```sh
     $ sudo ufw allow 7946/tcp
