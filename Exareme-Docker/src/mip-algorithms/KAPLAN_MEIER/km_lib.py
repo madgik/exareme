@@ -2,55 +2,61 @@ from __future__ import division
 from __future__ import print_function
 
 import json
-import math
-import sys
-from os import path
+import re
+import sqlite3
 
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from sqlalchemy import create_engine
 from lifelines import KaplanMeierFitter
 
-from utils.algorithm_utils import make_json_raw, TransferAndAggregateData
-
-PRIVACY_MAGIC_NUMBER = 10
+from utils.algorithm_utils import make_json_raw, TransferAndAggregateData, PRIVACY_MAGIC_NUMBER, PrivacyError
 
 
-def parse_args_longitudinal():
-    # todo Like parse_exareme_args but with additional fields: subjectcode, visitID, visitDate, age
-    pass
+def query_longitudinal(query, input_local_DB):
+    # fixme The following is a hack for querying longitudinal data, should be done by Exareme
+    _, sel_head, sel_tail = re.split(r'(select )', query)
+    query = sel_head + 'subjectcode, subjectvisitdate, subjectage, ' + sel_tail
+    con = sqlite3.connect(input_local_DB)
+    data = pd.read_sql(query, con=con)
+    data.replace('', np.nan, inplace=True)  # fixme remove when no empty str in dbs
+    data = data.dropna()
+    # Privacy check
+    if len(data) < PRIVACY_MAGIC_NUMBER:
+        raise PrivacyError
+    return data
 
 
-def get_data(timelines, event_val, max_duration):
-    # # Parse args
-    # arg_events = args.events
-    #
-    # dataset = args.dataset
-    #
-    # input_local_DB = args.input_local_DB
-    # data_table = args.data_table
-    # metadata_table = args.metadata_table
-    # metadata_code_column = args.metadata_code_column
-    # metadata_isCategorical_column = args.metadata_isCategorical_column
+def get_data(args):
+    input_local_DB = args.input_local_DB
+    bin_var = args.y.strip()
+    outcome_pos = args.outcome_pos
+    outcome_neg = args.outcome_neg
+    max_age = args.max_age
+    db_query = args.db_query
 
+    # Get data and build timelines
+    data = query_longitudinal(db_query, input_local_DB)
+    data = data[(data[bin_var] == outcome_pos) | (data[bin_var] == outcome_neg)]
+    timelines = build_timelines(data, time_axis='subjectage', var=bin_var)
+
+    # Convert timelines to (events, durations)
     events = []
     durations = []
     for tl in timelines:
-        if event_val in tl[1]:
+        if outcome_pos in tl[1]:
             event = 1
-            event_idx = tl[1].index(event_val)
+            event_idx = tl[1].index(outcome_pos)
             duration = tl[0][event_idx]
         else:
             event = 0
-            duration = max_duration
+            duration = max_age
         events.append(event)
         durations.append(duration)
 
     events = np.array(events)
     durations = np.array(durations)
 
-    return events, durations, max_duration
+    return events, durations, max_age
 
 
 def local_1(local_in):
@@ -109,16 +115,13 @@ def global_1(global_in):
     kmf = KaplanMeierFitter()
     kmf.fit(durations=durations, event_observed=events)
 
-    kmf.plot()
-
-    plt.xlim(40, 95)  # TODO Remove these lines
-    plt.show()
-
     survival_function = kmf.survival_function_
+    confidence_interval = kmf.confidence_interval_
+    confidence_interval = confidence_interval.iloc[1:, :].values.tolist()
     timeline = kmf.timeline
 
     # Pack results into corresponding object
-    result = KaplanMeierResult(survival_function.values.flatten(), timeline)
+    result = KaplanMeierResult(survival_function.values.flatten(), confidence_interval, timeline)
     output = result.get_output()
 
     # Print output not allowing nans
@@ -130,13 +133,15 @@ def global_1(global_in):
 
 
 class KaplanMeierResult(object):
-    def __init__(self, survival_function, timeline):
+    def __init__(self, survival_function, confidence_interval, timeline):
         self.survival_function = survival_function
+        self.confidence_interval = confidence_interval
         self.timeline = timeline
 
     # This method returns a json object with all the algorithm results
     def get_json_raw(self):
-        return make_json_raw(survival_function=list(zip(self.survival_function, self.timeline)))
+        return make_json_raw(survival_function=list(zip(self.survival_function, self.timeline)),
+                             confidence_interval=list(self.confidence_interval))
 
     # This method packs everything in one json object, to be output in the frontend.
     def get_output(self):
@@ -147,66 +152,9 @@ class KaplanMeierResult(object):
                     "type": "application/json",
                     "data": self.get_json_raw()
                 },
-                # # Tabular data
-                # {
-                #     "type": "application/vnd.dataresource+json",
-                #     "data": self.get_table()
-                # }
             ]
         }
         return result
-
-
-def generate_fake_data(n_patients):
-    from collections import OrderedDict
-    from faker import Faker
-    import uuid
-    from datetime import timedelta, date
-
-    faker = Faker()
-    records = OrderedDict()
-    records['subjectcode'] = []
-    records['subjectvisitdate'] = []
-    records['subjectage'] = []
-    records['alzheimerbroadcategory'] = []
-    for _ in range(n_patients):
-        subjectcode = uuid.uuid4().hex
-        birth_date = faker.date_between(start_date='-120y', end_date='-60y')
-        lifetime = math.ceil(np.random.normal(365 * 77, 365 * 12))
-        death_date = birth_date + timedelta(lifetime)
-
-        while True:
-            first_visit_delta = math.ceil(np.random.normal(365 * 67, 365 * 7))
-            first_visit = birth_date + timedelta(first_visit_delta)
-            if first_visit < death_date:
-                break
-        num_visits = np.random.randint(1, 10)
-        visits = [first_visit]
-        for i in range(num_visits):
-            lam_visits = np.random.randint(30, 600)
-            visit_delta = math.ceil(np.random.poisson(lam_visits))
-            visits.append(visits[i - 1] + timedelta(visit_delta))
-        visits = [v for v in visits if v < death_date]
-        visits = [v for v in visits if v < date.today()]
-        visits = sorted(visits)
-
-        if visits != []:
-            alz_coin = np.random.binomial(1, 0.6)
-            alz_categories = ['CN'] * len(visits)
-            if alz_coin:
-                alz_diag_visit = np.random.randint(0, len(visits))
-                alz_categories[alz_diag_visit:] = ['AD'] * (len(visits) - alz_diag_visit)
-
-            for visit, alz_cat in zip(visits, alz_categories):
-                records['subjectcode'].append(subjectcode)
-                records['subjectvisitdate'].append(visit.strftime("%m-%d-%Y") + ' 0:00')
-                age = visit - birth_date
-                records['subjectage'].append(age.days / 365)
-                records['alzheimerbroadcategory'].append(alz_cat)
-
-    records = pd.DataFrame.from_dict(records)
-    records.set_index('subjectcode', inplace=True)
-    return records
 
 
 def build_timelines(df, time_axis, var):
@@ -217,32 +165,21 @@ def build_timelines(df, time_axis, var):
     return timelines
 
 
-def create_fake_db():
-    engine = create_engine('sqlite:////Users/zazon/madgik/exareme/Exareme-Docker/src/mip-algorithms/KAPLAN_MEIER'
-                           '/km_fake.sqlite')
-    data = pd.read_csv('/Users/zazon/madgik/exareme/Exareme-Docker/src/mip-algorithms/KAPLAN_MEIER/km_fake.csv')
-    dataset_col = pd.DataFrame({'dataset': ['longitudinal'] * len(data)})
-    data = data.join(dataset_col)
-    data.to_sql('DATA', con=engine)
-
-
 def main():
-    create_fake_db()
+    class Args(object):
+        def __init__(self):
+            self.input_local_DB = '/Users/zazon/madgik/exareme/Exareme-Docker/src/mip-algorithms/KAPLAN_MEIER/km_fake.sqlite'
+            self.y = 'alzheimerbroadcategory'
+            self.outcome_pos = 'AD'
+            self.outcome_neg = 'CN'
+            self.max_age = 100
+            self.db_query = 'select alzheimerbroadcategory from data;'
 
-    # pd.set_option('display.max_columns', 3)
-    # pd.set_option('display.width', 100)
-    #
-    # fake_data = generate_fake_data(1000)
-    # fake_data.to_csv('/Users/zazon/madgik/exareme/Exareme-Docker/src/mip-algorithms/KAPLAN_MEIER/km_fake.csv')
-    # print(fake_data)
-
-    # timelines = build_timelines(fake_data, time_axis='subjectage', var='alzheimerbroadcategory')
-    # print(timelines)
-    #
-    # local_in = get_data(timelines, 'AD', 100)
-    # local_out = local_1(local_in=local_in)
-    # global_out = global_1(global_in=local_out)
-    # print(global_out)
+    args = Args()
+    local_in = get_data(args)
+    local_out = local_1(local_in=local_in)
+    global_out = global_1(global_in=local_out)
+    print(global_out)
 
 
 if __name__ == '__main__':
