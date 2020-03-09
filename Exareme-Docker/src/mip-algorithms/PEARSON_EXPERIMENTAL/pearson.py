@@ -133,6 +133,7 @@ class Pearson(Algorithm):
 
 
 if __name__ == '__main__':
+    import time
     from mip_algorithms import create_runner
 
     algorithm_args = [
@@ -146,4 +147,7 @@ if __name__ == '__main__':
     ]
     runner = create_runner(for_class='Pearson', found_in='PEARSON_EXPERIMENTAL/pearson',
                            alg_type='local-global', algorithm_args=algorithm_args, num_workers=3)
+    start = time.time()
     runner.run()
+    end = time.time()
+    print('Completed in ', end - start)

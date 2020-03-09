@@ -7,7 +7,7 @@ __all__ = ['Algorithm', 'AlgorithmResult', 'TabularDataResource', 'HighChart', '
 
 logging.basicConfig(
         format='%(asctime)s - %(levelname)s: %(message)s',
-        filename='/root/mip.log',
+        filename='mip.log',
         level=LOGGING_LEVEL_ALG
 )
 logging.getLogger('sqlalchemy.engine').setLevel(LOGGING_LEVEL_SQL)
@@ -26,6 +26,7 @@ def logged(func):
             logging.exception(e)
             raise e
 
+    logging_wrapper._original = func
     return logging_wrapper
 
 

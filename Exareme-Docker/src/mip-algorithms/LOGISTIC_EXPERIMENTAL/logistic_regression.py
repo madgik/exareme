@@ -300,6 +300,7 @@ LogisticRegressionSummary = namedtuple('LogisticRegressionSummary',
                                         'r2_cs', 'r2_mcf', 'stderr', 'z_scores', ])
 
 if __name__ == '__main__':
+    import time
     algorithm_args = [
         '-x', 'lefthippocampus',
         '-y', 'alzheimerbroadcategory',
@@ -333,4 +334,7 @@ if __name__ == '__main__':
     ]
     runner = create_runner(for_class='LogisticRegression', found_in='LOGISTIC_EXPERIMENTAL/logistic_regression',
                            alg_type='iterative', num_workers=3, algorithm_args=algorithm_args)
+    start = time.time()
     runner.run()
+    end = time.time()
+    print('Completed in ', end - start)
