@@ -118,6 +118,9 @@ def global_1(global_in):
     survival_function = kmf.survival_function_
     confidence_interval = kmf.confidence_interval_
     confidence_interval = confidence_interval.iloc[1:, :].values.tolist()
+    ci_tmp = [[1.0, 1.0]]
+    ci_tmp.extend(confidence_interval)
+    confidence_interval = ci_tmp
     timeline = kmf.timeline
 
     # Pack results into corresponding object
@@ -137,11 +140,67 @@ class KaplanMeierResult(object):
         self.survival_function = survival_function
         self.confidence_interval = confidence_interval
         self.timeline = timeline
+        self.confidence_interval = [[x, y[0], y[1]] for x, y in zip(self.timeline, self.confidence_interval)]
 
     # This method returns a json object with all the algorithm results
     def get_json_raw(self):
-        return make_json_raw(survival_function=list(zip(self.survival_function, self.timeline)),
+        return make_json_raw(survival_function=list(zip(self.timeline, self.survival_function)),
                              confidence_interval=list(self.confidence_interval))
+
+    def get_highchart(self):
+        return {
+
+            'chart'      : {
+                'type'              : 'arearange',
+                'zoomType'          : 'x',
+                'scrollablePlotArea': {
+                    'minWidth'       : 600,
+                    'scrollPositionX': 1
+                }
+            },
+
+            'title'      : {
+                'text': 'Survival curve'
+            },
+
+            'xAxis'      : {
+                'title': {
+                    'text': 'Age'
+                }
+            },
+
+            'plotOptions': {
+                'arearange': {
+                    'step': 'left'
+                }
+            },
+
+            'yAxis'      : {
+                'title': {
+                    'text': 'Survival Probability'
+                }
+            },
+
+            'tooltip'    : {
+                'crosshairs': True,
+                'shared'    : True,
+            },
+
+            'legend'     : {
+                'enabled': False
+            },
+
+            'series'     : [{
+                'data': list(self.confidence_interval)
+
+            },
+                {
+                    'type': "line",
+                    'step': True,
+                    'data': zip(self.timeline, self.survival_function.tolist()),
+                }]
+
+        }
 
     # This method packs everything in one json object, to be output in the frontend.
     def get_output(self):
@@ -151,6 +210,11 @@ class KaplanMeierResult(object):
                 {
                     "type": "application/json",
                     "data": self.get_json_raw()
+                },
+                # Highchart Survival curve
+                {
+                    "type": "application/vnd.highcharts+json",
+                    "data": self.get_highchart()
                 },
             ]
         }
