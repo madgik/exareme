@@ -69,10 +69,11 @@ class Node:
         myclass = None
         samplesPerClass = None
         if self.criterion == "gini":
+            samplesPerClass = dict()
             for key in self.samplesPerClass:
                 if myclass is None or self.samplesPerClass[key]> self.samplesPerClass[myclass]:
-                    myclass = key
-            samplesPerClass = self.samplesPerClass
+                    myclass = str(key)
+                samplesPerClass[str(key)] = self.samplesPerClass[key]
 
         myclassValue = None
         if self.criterion == "mse":
