@@ -1,0 +1,101 @@
+{
+	"name": "RANDOM_FOREST",
+	"desc": "Random Forest",
+	"label": "Random Forest",
+	"type": "python_iterative",
+	"parameters": [{
+			"name": "x",
+			"label":"x",
+			"desc": "Independent variables: A list of variables from database.",
+			"type": "column",
+			"columnValuesSQLType": "real, integer, text",
+			"columnValuesIsCategorical": "",
+			"columnValuesNumOfEnumerations": "",
+			"value": "lefthippocampus,righthippocampus",
+			"valueNotBlank": true,
+			"valueMultiple": true,
+			"valueType": "string"
+		},{
+			"name": "y",
+			"label":"y",
+			"desc": "Dependent variable: A variable from database.",
+			"type": "column",
+			"columnValuesSQLType": "real, integer, text",
+			"columnValuesIsCategorical": "",
+			"columnValuesNumOfEnumerations": "",
+			"value": "alzheimerbroadcategory",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "string"
+		},{
+			"name": "n_trees",
+			"label":"n_trees",
+			"desc": "The number of trees in the forest.",
+			"type": "other",
+			"value": 3,
+			"valueMin" : 1,
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "integer"
+		},{
+			"name": "n_features",
+			"label":"n_features",
+			"desc": "the number of features to sample and pass onto each tree, this is where feature bagging happens. It can either be sqrt, log2 or an integer. In case of sqrt, the number of features sampled to each tree is square root of total features and log base 2 of total features in case of log2",
+			"type": "other",
+			"value": 3,
+			"valueMin" : 1,
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "integer"
+		},{
+			"name": "sample_percentage",
+			"label":"sample_percentage",
+			"desc": "sample_size: percentage of rows randomly selected and passed onto each tree. [0,1]",
+			"type": "other",
+			"value": 0.3,
+			"valueMin" : 0,
+			"valueMax" :1,
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "real"
+		},{
+			"name": "max_depth",
+			"label":"max_depth",
+			"desc": "The maximum depth of each tree. If Blank, then nodes are expanded until all leaves contain at least min_samples_split samples.",
+			"type": "other",
+			"value": 3,
+			"valueMin": 1,
+			"enumerations": null,
+			"valueNotBlank": false,
+			"valueMultiple": false,
+			"valueType": "integer"
+		},{
+  			"name": "pathology",
+  			"label":"pathology",
+				"desc": "The name of the pathology in which the dataset belongs to.",
+  			"type": "pathology",
+  			"value": "dementia",
+  			"valueNotBlank": true,
+  			"valueMultiple": false,
+  			"valueType": "string"
+  	},{
+  			"name": "dataset",
+				"label": "dataset",
+  			"desc": "The names of one or more datasets, in which the algorithm will be executed.",
+  			"type": "dataset",
+  			"value": "desd-synthdata",
+  			"valueNotBlank": true,
+  			"valueMultiple": true,
+  			"valueType": "string"
+  	},{
+			"name": "filter",
+			"label": "filter",
+			"desc": "",
+			"type": "filter",
+			"value": "",
+			"valueNotBlank": false,
+			"valueMultiple": true,
+			"valueType": "string"
+		}
+	]
+}
