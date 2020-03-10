@@ -22,7 +22,7 @@ def query_longitudinal(query, input_local_DB):
     data = data.dropna()
     # Privacy check
     if len(data) < PRIVACY_MAGIC_NUMBER:
-        raise PrivacyError
+        raise PrivacyError('Query results in illegal number of datapoints.')
     return data
 
 
@@ -111,6 +111,9 @@ def global_1(global_in):
     for d in grouped_durations_non_observed:
         durations += [d] * PRIVACY_MAGIC_NUMBER
         events += [0] * PRIVACY_MAGIC_NUMBER
+
+    durations = np.array(durations, dtype=np.float)
+    events = np.array(events, dtype=np.int)
 
     kmf = KaplanMeierFitter()
     kmf.fit(durations=durations, event_observed=events)

@@ -12,7 +12,7 @@
             "type": "column",
             "columnValuesSQLType": "integer, text",
             "columnValuesIsCategorical": true,
-            "value": "",
+            "value": "alzheimerbroadcategory",
             "valueNotBlank": false,
             "valueMultiple": false,
             "valueType": "string"

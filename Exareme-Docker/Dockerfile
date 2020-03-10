@@ -71,14 +71,15 @@ RUN apk add --update curl ca-certificates && \
 # Some extra python libraries for the mip-algorithms, which needs to be
 # compiled by hand
 ADD files/requirements.txt /root/requirements.txt
-RUN apk add --update py-psycopg2 py-pip ca-certificates gcc musl-dev python-dev lapack-dev g++ gfortran && \
-    pip install -r /root/requirements.txt && \
-    pip install scipy==1.2.1 scikit-learn==0.20.3 && \
-    pip install pandas && \
-    pip install lifelines && \
-    pip install liac-arff && \
-    apk del py-pip ca-certificates gcc musl-dev python-dev lapack-dev gfortran && \
-    rm -rf /tmp/* /var/cache/apk/*
+RUN apk add --update py-psycopg2 py-pip ca-certificates gcc musl-dev python-dev lapack-dev g++ gfortran
+RUN pip install -r /root/requirements.txt
+RUN pip install scipy==1.2.1 scikit-learn==0.20.3
+RUN pip install pandas
+RUN apk add --update freetype-dev libjpeg-turbo-dev libpng-dev
+RUN pip install lifelines
+RUN pip install liac-arff
+RUN apk del py-pip ca-certificates gcc musl-dev python-dev lapack-dev gfortran
+RUN rm -rf /tmp/* /var/cache/apk/*
 
 # Runtime dependencies for Exareme
 RUN apk add --update rsync curl bash jq python py-requests lapack --no-cache procps && \
@@ -103,6 +104,7 @@ EXPOSE 9090
 EXPOSE 22
 
 ENV USER=root
+ENV PYTHONPATH "${PYTONPATH}:/root/mip-algorithms"
 WORKDIR /root/exareme
 
 CMD ["/bin/bash","bootstrap.sh"]
