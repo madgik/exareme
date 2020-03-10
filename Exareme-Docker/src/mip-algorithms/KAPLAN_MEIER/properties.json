@@ -7,7 +7,7 @@
     "parameters": [
         {
             "name": "y",
-            "label": "Variable used for binary event",
+            "label": "Event variable",
             "desc": "A single categorical variable whose values describe a binary event.",
             "type": "column",
             "columnValuesSQLType": "integer, text",
@@ -22,7 +22,7 @@
             "label": "pathology",
             "desc": "The name of the pathology that the dataset belongs to.",
             "type": "pathology",
-            "value": "dementia",
+            "value": "dementia_longitudinal",
             "valueNotBlank": true,
             "valueMultiple": false,
             "valueType": "string"
@@ -32,7 +32,7 @@
             "label": "dataset",
             "desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty",
             "type": "dataset",
-            "value": "adni",
+            "value": "fake_longitudinal",
             "valueNotBlank": true,
             "valueMultiple": true,
             "valueType": "string"
@@ -49,7 +49,7 @@
         },
         {
             "name": "outcome_pos",
-            "label": "Value corresponding to positive outcome.",
+            "label": "Positive outcome",
             "desc": "",
             "type": "other",
             "value": "AD",
@@ -59,7 +59,7 @@
         },
         {
             "name": "outcome_neg",
-            "label": "Value corresponding to negative outcome.",
+            "label": "Negative outcome",
             "desc": "",
             "type": "other",
             "value": "CN",
@@ -69,7 +69,7 @@
         },
         {
             "name": "max_age",
-            "label": "Maximum age used in survival analysis.",
+            "label": "Maximum age",
             "desc": "",
             "type": "other",
             "value": 100,
