@@ -1,0 +1,81 @@
+{
+    "name": "KAPLAN_MEIER",
+    "desc": "Kaplan-Meier Estimator for the Survival Function",
+    "label": "Kaplan-Meier Estimator",
+    "type": "python_local_global",
+    "status": "enabled",
+    "parameters": [
+        {
+            "name": "y",
+            "label": "Event variable",
+            "desc": "A single categorical variable whose values describe a binary event.",
+            "type": "column",
+            "columnValuesSQLType": "integer, text",
+            "columnValuesIsCategorical": true,
+            "value": "alzheimerbroadcategory",
+            "valueNotBlank": false,
+            "valueMultiple": false,
+            "valueType": "string"
+        },
+        {
+            "name": "pathology",
+            "label": "pathology",
+            "desc": "The name of the pathology that the dataset belongs to.",
+            "type": "pathology",
+            "value": "dementia_longitudinal",
+            "valueNotBlank": true,
+            "valueMultiple": false,
+            "valueType": "string"
+        },
+        {
+            "name": "dataset",
+            "label": "dataset",
+            "desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty",
+            "type": "dataset",
+            "value": "fake_longitudinal",
+            "valueNotBlank": true,
+            "valueMultiple": true,
+            "valueType": "string"
+        },
+        {
+            "name": "filter",
+            "label": "filter",
+            "desc": "",
+            "type": "filter",
+            "value": "",
+            "valueNotBlank": false,
+            "valueMultiple": true,
+            "valueType": "string"
+        },
+        {
+            "name": "outcome_pos",
+            "label": "Positive outcome",
+            "desc": "",
+            "type": "other",
+            "value": "AD",
+            "valueNotBlank": true,
+            "valueMultiple": false,
+            "valueType": "string"
+        },
+        {
+            "name": "outcome_neg",
+            "label": "Negative outcome",
+            "desc": "",
+            "type": "other",
+            "value": "CN",
+            "valueNotBlank": true,
+            "valueMultiple": false,
+            "valueType": "string"
+        },
+        {
+            "name": "max_age",
+            "label": "Maximum age",
+            "desc": "",
+            "type": "other",
+            "value": 100,
+            "valueNotBlank": true,
+            "valueMultiple": false,
+            "valueType": "real"
+        }
+    ]
+}
