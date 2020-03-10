@@ -6,6 +6,7 @@ from os import path
 import numpy as np
 import pandas as pd
 import json
+import itertools
 
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))) + '/utils/')
 from algorithm_utils import PRIVACY_MAGIC_NUMBER
