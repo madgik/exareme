@@ -2,8 +2,11 @@ import requests
 import os
 import json
 import logging
+import sys
+sys.path.insert(0,'../')
+from lib import vmUrl
 
-endpointUrl1='http://88.197.53.100:9090/mining/query/LINEAR_REGRESSION'
+endpointUrl1=vmUrl+'LINEAR_REGRESSION'
 
 def test_valueEnumerationsParameter():
     logging.info("---------- TEST : valueEnumerations throwing error.")

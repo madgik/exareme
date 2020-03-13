@@ -2,8 +2,11 @@ import requests
 import os
 import json
 import logging
+import sys
+sys.path.insert(0,'../')
+from lib import vmUrl
 
-endpointUrl='http://88.197.53.100:9090/mining/query/LINEAR_REGRESSION'
+endpointUrl=vmUrl+'LINEAR_REGRESSION'
 
 def test_LINEAR_REGRESSION_Privacy():
         logging.info("---------- TEST : Algorithms for User Error")
