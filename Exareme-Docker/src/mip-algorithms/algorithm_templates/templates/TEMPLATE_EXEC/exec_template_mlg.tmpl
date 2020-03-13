@@ -1,0 +1,45 @@
+import json
+
+from ${TEMPLATE}.${template}_lib import get_data, local_1, global_1, local_2, global_2
+
+# Enter values below and run
+args_algorithm = ${alg_args}
+
+args_exareme = {
+    "input_local_DB"               : "${data_path}",
+    "cur_state_pkl"                : "",
+    "prev_state_pkl"               : "",
+    "local_step_dbs"               : "",
+    "global_step_db"               : "",
+    "data_table"                   : 'data',
+    "metadata_table"               : "metadata",
+    "metadata_code_column"         : "code",
+    "metadata_isCategorical_column": 'isCategorical',
+}
+
+
+class Arguments:
+    def __init__(self, args):
+        for k, v, in args.items():
+            setattr(self, k, v)
+
+
+def run():
+    args = Arguments(dict(args_algorithm.items() + args_exareme.items()))
+
+    # LOCAL 1
+    local_in = get_data(args)
+    local_state, local_out = local_1(args, local_in=local_in)
+    # GLOBAL 1
+    global_out = global_1(args, global_in=local_out)
+    # LOCAL 2
+    local_out = local_2(args, local_state=local_state.get_data(), local_in=global_out)
+    # GLOBAL 2
+    global_out = global_2(args, global_in=local_out)
+    # Format output
+    parsed = json.loads(global_out)
+    print(json.dumps(parsed, indent=4, sort_keys=True))
+
+
+if __name__ == '__main__':
+    run()

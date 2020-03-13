@@ -1,0 +1,55 @@
+# Forward compatibility
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
+import json
+
+from utils.algorithm_utils import query_from_formula, make_json_raw, TransferAndAggregateData
+
+
+def get_data(args):
+    pass
+
+
+def local_1(args, local_in):
+    pass
+
+
+def global_1(args, global_in):
+    pass
+
+
+class ${Template}Result:
+    def __init__(self):
+        pass
+
+    def get_json_raw(self):
+        pass
+
+    def get_tabular(self):
+        pass
+
+    def get_highchart(self):
+        pass
+
+    def get_output(self):
+        return {
+            "result": [
+                # Raw results
+                {
+                    "type": "application/json",
+                    "data": self.get_json_raw()
+                },
+                # Tabular
+                {
+                    "type": "application/vnd.dataresource+json",
+                    "data": self.get_tabular()
+                },
+                # Highcharts
+                {
+                    "type": "application/vnd.highcharts+json",
+                    "data": self.get_highchart()
+                }
+            ]
+        }

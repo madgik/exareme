@@ -3,27 +3,11 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import json
-import math
-import sys
-from os import path
 
+import math
 import numpy as np
 import scipy.special as special
 import scipy.stats as st
-
-_new_path = path.dirname(path.dirname(path.abspath(__file__)))
-sys.path.append(_new_path)
-while True:
-    try:
-        import utils.algorithm_utils
-    except:
-        sys.path.pop()
-        _new_path = path.dirname(_new_path)
-        sys.path.append(_new_path)
-    else:
-        break
-del _new_path
-
 from utils.algorithm_utils import query_from_formula, TransferData, ExaremeError, P_VALUE_CUTOFF, P_VALUE_CUTOFF_STR
 
 
@@ -45,15 +29,11 @@ def get_data(args):
 
     dataset = args.dataset
     query_filter = args.filter
-    # formula = args.formula
-    # formula = formula.replace('_', '~')  # TODO Fix tilda problem and remove
-    # no_intercept = json.loads(args.no_intercept)
     input_local_DB = args.input_local_DB
     data_table = args.data_table
     metadata_table = args.metadata_table
     metadata_code_column = args.metadata_code_column
     metadata_isCategorical_column = args.metadata_isCategorical_column
-    # coding = None if args.coding == 'null' else args.coding
     left_vars, right_vars = query_from_formula(fname_db=input_local_DB, formula='', variables=variables,
                                                dataset=dataset,
                                                query_filter=query_filter,

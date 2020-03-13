@@ -1,13 +1,9 @@
-import sys
-import os
 from os import path
 import json
 import sqlite3
 
-sys.path.append(path.dirname(path.dirname(path.abspath(__file__))) + '/utils/')
-
 from argparse import ArgumentParser
-from algorithm_utils import set_algorithms_output_data
+from utils.algorithm_utils import set_algorithms_output_data
 
 def main():
     # Parse arguments
