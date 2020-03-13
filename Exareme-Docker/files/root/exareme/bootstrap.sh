@@ -12,7 +12,6 @@ if [[ -z ${CONSULURL} ]]; then echo "CONSULURL is unset. Check docker-compose fi
 if [[ -z ${NODE_NAME} ]]; then echo "NODE_NAME is unset. Check docker-compose file.";exit;  fi
 if [[ -z ${FEDERATION_ROLE} ]]; then echo "FEDERATION_ROLE is unset. Check docker-compose file.";exit;  fi
 if [[ -z ${TAG} ]]; then echo "TAG is unset. Check docker-compose file.";exit;  fi
-if [[ -z ${MODE} ]]; then echo "MODE is unset. Check docker-compose file.";exit;  fi
 
 #Stop Exareme service
 stop_exareme () {
@@ -213,11 +212,7 @@ else
 	done
 
 	#CSVs to DB
-	if [[ ${MODE} == "local" ]]; then       # transformCsvToDB "master" has already be executed from deployLocal.sh
-	    :
-	else
-	    transformCsvToDB "master"
-        fi
+	transformCsvToDB "master"
 
 	#Master re-booted
 	if [[ "$(curl -s -o  /dev/null -i -w "%{http_code}\n" ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/?keys)" = "200" ]]; then

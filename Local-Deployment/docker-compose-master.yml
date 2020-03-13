@@ -48,7 +48,6 @@ services:
       - CONSULURL=${EXAREME_KEYSTORE}
       - FEDERATION_ROLE=${FEDERATION_ROLE}
       - NODE_NAME=${FEDERATION_NODE}
-      - MODE=local
       - TAG=dev   #dev or prod
     depends_on:
       - exareme-keystore
