@@ -11,7 +11,7 @@
             "desc": "A list of variables from database. The variable should be Real, Integer. It cannot be empty",
             "type": "column",
             "columnValuesSQLType": "real, integer, text",
-            "columnValuesIsCategorical": "",
+            "columnValuesIsCategorical": "false",
             "columnValuesNumOfEnumerations": "",
             "value": "leftaccumbensarea, leftacgganteriorcingulategyrus, leftainsanteriorinsula, rightaccumbensarea, rightacgganteriorcingulategyrus, rightainsanteriorinsula",
             "valueNotBlank": true,

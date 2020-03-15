@@ -10,7 +10,7 @@ from patsy import PatsyError, dmatrix, dmatrices
 from sqlalchemy import between, not_, and_, or_, Table, select, create_engine, MetaData
 from sqlalchemy.exc import SQLAlchemyError
 
-_PRIVACY_THRESHOLD = 10
+_PRIVACY_THRESHOLD = 0
 _FILTER_OPERATORS = {
     'equal'           : lambda a, b: a.__eq__(b),
     'not_equal'       : lambda a, b: a.__ne__(b),
