@@ -2,25 +2,10 @@ from __future__ import division
 from __future__ import print_function
 
 import json
-import sys
-from os import path
-
 import numpy as np
 
-_new_path = path.dirname(path.dirname(path.abspath(__file__)))
-sys.path.append(_new_path)
-while True:
-    try:
-        import utils.algorithm_utils
-    except:
-        sys.path.pop()
-        _new_path = path.dirname(_new_path)
-        sys.path.append(_new_path)
-    else:
-        break
-del _new_path
-
-from utils.algorithm_utils import StateData, TransferAndAggregateData, make_json_raw, query_from_formula
+from utils.algorithm_utils import StateData, TransferAndAggregateData
+from utils.algorithm_utils import make_json_raw, query_from_formula
 
 
 def get_data(args):
@@ -34,7 +19,7 @@ def get_data(args):
     dataset = args.dataset
     query_filter = args.filter
     formula = args.formula
-    formula = formula.replace('_', '~')  # TODO Fix tilda problem and remove
+    formula = formula.replace('_', '~')  # fixme Fix tilda problem and remove
     data_table = args.data_table
     metadata_table = args.metadata_table
     metadata_code_column = args.metadata_code_column
@@ -85,7 +70,8 @@ def global_1(args, global_in):
     if standardize:
         sxx = data['sxx']
         sigmas = np.sqrt(sxx / (n_obs - 1))
-        global_out = TransferAndAggregateData(means=(means, 'do_nothing'), sigmas=(sigmas, 'do_nothing'))
+        global_out = TransferAndAggregateData(means=(means, 'do_nothing'),
+                                              sigmas=(sigmas, 'do_nothing'))
     else:
         global_out = TransferAndAggregateData(means=(means, 'do_nothing'))
 
@@ -120,7 +106,7 @@ def global_2(args, global_in):
     gramian, n_obs, var_names = data['gramian'], data['n_obs'], data['var_names']
 
     covar_matr = np.divide(gramian, n_obs - 1)
-    eigen_vals, eigen_vecs = np.linalg.eig(covar_matr)
+    eigen_vals, eigen_vecs = np.linalg.eigh(covar_matr)
 
     idx = eigen_vals.argsort()[::-1]
     eigen_vals = eigen_vals[idx]
@@ -144,8 +130,12 @@ class PCAResult(object):
         self.eigen_vecs = eigen_vecs
 
     def get_json_raw(self):
-        return make_json_raw(n_obs=self.n_obs, var_names=self.var_names, eigen_vals=self.eigen_vals,
-                             eigen_vecs=self.eigen_vecs)
+        return make_json_raw(
+                n_obs=self.n_obs,
+                var_names=self.var_names,
+                eigen_vals=self.eigen_vals,
+                eigen_vecs=self.eigen_vecs
+        )
 
     def get_eigenval_table(self):
         tabular_data = dict()
