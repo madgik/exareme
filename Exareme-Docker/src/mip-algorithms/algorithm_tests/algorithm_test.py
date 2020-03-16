@@ -48,6 +48,7 @@ class AlgorithmTest(object):
                 metadata_table_name='metadata'
         )
         self.categorical_variables, self.numerical_variables = self.get_variable_groups()
+        self.test_cases = []
 
     def get_variable_groups(self):
         """Groups db variables in categorical and numerical and returns corresponding lists"""
@@ -61,17 +62,15 @@ class AlgorithmTest(object):
 
     def generate_test_cases(self, num_tests=100):
         """Generates list of input/output pairs for algorithm tests"""
-        test_cases = []
-        while len(test_cases) < num_tests:
+        while len(self.test_cases) < num_tests:
             in_ = self.generate_random_input()
             out = self.get_expected(in_)
             if out is None:
                 continue
-            test_cases.append({
+            self.test_cases.append({
                 'input' : in_,
                 'output': out
             })
-        return test_cases
 
     def get_expected(self, alg_input):
         """Produces expected output from some widely used library. Should be implemented in subclasses"""
@@ -131,3 +130,9 @@ class AlgorithmTest(object):
         variables = variables.split(',')
         data = self.db.select_vars_from_data(variables, datasets=['adni'], filter_rules=None)
         return data
+
+    def to_json(self, fname):
+        with open(fname, 'w') as file:
+            json.dump({
+                'test_cases': self.test_cases
+            }, file, indent=4)

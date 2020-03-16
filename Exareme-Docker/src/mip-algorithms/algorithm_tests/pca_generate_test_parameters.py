@@ -8,6 +8,7 @@ class PCATest(AlgorithmTest):
         variables = alg_input[0]['value']
         standardize = alg_input[1]['value']
         data = self.get_data(variables)
+        data = data.dropna()
         if len(data) == 0 or data.shape[0] < data.shape[1]:
             return None
         if standardize:
@@ -15,6 +16,10 @@ class PCATest(AlgorithmTest):
         pca = PCA()
         pca.fit(data)
         return [
+            {
+                'name': 'n_obs',
+                'value': len(data)
+            },
             {
                 'name' : 'eigen_vals',
                 'value': pca.explained_variance_.tolist()
@@ -28,5 +33,5 @@ class PCATest(AlgorithmTest):
 
 if __name__ == '__main__':
     pca_test = PCATest('/Users/zazon/madgik/exareme/Exareme-Docker/src/mip-algorithms/PCA/properties.json')
-    test_cases = pca_test.generate_test_cases()
-    pass
+    pca_test.generate_test_cases()
+    pca_test.to_json('pca_expected.json')
