@@ -69,7 +69,7 @@ def global_1(args, global_in):
     means = sx / n_obs
     if standardize:
         sxx = data['sxx']
-        sigmas = np.sqrt(sxx / (n_obs - 1))
+        sigmas = ((sxx - n_obs * means ** 2) / (n_obs - 1)) ** 0.5
         global_out = TransferAndAggregateData(means=(means, 'do_nothing'),
                                               sigmas=(sigmas, 'do_nothing'))
     else:
