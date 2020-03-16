@@ -1,4 +1,5 @@
 from sklearn.decomposition import PCA
+import numpy as np
 
 from algorithm_test import AlgorithmTest
 
@@ -9,16 +10,19 @@ class PCATest(AlgorithmTest):
         standardize = alg_input[1]['value']
         data = self.get_data(variables)
         data = data.dropna()
-        if len(data) == 0 or data.shape[0] < data.shape[1]:
+        n_obs = len(data)
+        if n_obs == 0 or data.shape[0] < data.shape[1]:
             return None
         if standardize:
             data = (data - data.mean()) / data.std()
+        grammian = np.dot(data.T, data)
+        covariance_matrix = grammian / (n_obs - 1)
         pca = PCA()
         pca.fit(data)
         return [
             {
                 'name': 'n_obs',
-                'value': len(data)
+                'value': n_obs
             },
             {
                 'name' : 'eigen_vals',
@@ -27,6 +31,10 @@ class PCATest(AlgorithmTest):
             {
                 'name': 'eigen_vecs',
                 'value': pca.components_.tolist()
+            },
+            {
+                'name': 'covariance_matrix',
+                'value': covariance_matrix.tolist()
             }
         ]
 
