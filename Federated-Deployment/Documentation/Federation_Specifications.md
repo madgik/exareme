@@ -93,9 +93,7 @@ nc -z -v -w1 -u <host> 4789 # for all nodes
 nc -z -v -w1 -u <host> 7946 # for all nodes
 ```
 
-**Note:** netcat is not installed by default on RHEL; it can be done with the command `sudo yum install nc`. The -z option is not available on RHEL: simply run the commands above without it.
-
-**Note 2:** Alternatively, if you are using `bash` as your command line shell and it was build with the support for it; tcp ports opening can be checked with this command (change tcp for udp to check udp ports):
+**Note 1:** Alternatively, if you are using `bash` as your command line shell and it was build with the support for it; tcp ports opening can be checked with this command (change tcp for udp to check udp ports):
 
 ```
 </dev/tcp/<host>/<port> && echo "Port is open and docker is running" || echo "Port is closed and/or docker is not running"
@@ -110,7 +108,7 @@ If the firewall configuration for tcp and udp ports is correct, but IP protocol 
 As Docker documentation states:
 > On Linux, Docker manipulates iptables rules to provide network isolation. This is an implementation detail, and you should not modify the rules Docker inserts into your iptables policies.
 
-In case of network configuration issues, make sure that the IP tables rules were not modified manually or through scripts. This can interfere with Docker configuration or even prevent Docker to define the needed configuration.
+In case of network configuration issues, make sure that the IP table rules were not modified manually or through scripts. This can interfere with Docker configuration or even prevent Docker to define the needed configuration.
 
 #### IP Masquerade
 
