@@ -1,5 +1,4 @@
 from sklearn.decomposition import PCA
-import numpy as np
 
 from algorithm_test import AlgorithmTest
 
@@ -18,21 +17,15 @@ class PCATest(AlgorithmTest):
         pca.fit(data)
         return [
             {
-                'name': 'n_obs',
-                'value': n_obs
-            },
-            {
-                'name' : 'eigen_vals',
-                'value': pca.explained_variance_.tolist()
-            },
-            {
-                'name': 'eigen_vecs',
-                'value': pca.components_.tolist()
+                'n_obs'     : n_obs,
+                'eigen_vals': pca.explained_variance_.tolist(),
+                'eigen_vecs': pca.components_.tolist()
             }
         ]
 
 
 if __name__ == '__main__':
-    pca_test = PCATest('/Users/zazon/madgik/exareme/Exareme-Docker/src/mip-algorithms/PCA/properties.json')
+    pca_test = PCATest(
+            '/Users/zazon/madgik/exareme/Exareme-Docker/src/mip-algorithms/PCA/properties.json')
     pca_test.generate_test_cases()
     pca_test.to_json('pca_expected.json')
