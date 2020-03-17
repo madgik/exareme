@@ -1,6 +1,7 @@
 from collections import defaultdict
 import json
 import random
+import numpy as np
 
 from sqlalchemy import select
 
@@ -115,14 +116,10 @@ class AlgorithmTest(object):
             num_numerical = num_columns - num_categorical
         else:
             raise ValueError('columnValuesIsCategorical can be true, false or empty.')
-        categorical_choice = [
-            random.choice(self.categorical_variables)
-            for _ in range(num_categorical)
-        ]
-        numerical_choice = [
-            random.choice(self.numerical_variables)
-            for _ in range(num_numerical)
-        ]
+        categorical_choice = np.random.permutation(self.categorical_variables) \
+                                 .tolist()[:num_categorical]
+        numerical_choice = np.random.permutation(self.numerical_variables) \
+                               .tolist()[:num_numerical]
         return ','.join(numerical_choice + categorical_choice)
 
     @staticmethod
