@@ -20,9 +20,6 @@ _PARAM_FIELDS = [
     'maxValue'
 ]
 _IGNORE = [
-    'filter',
-    'dataset',
-    'pathology',
     'formula',
     'coding'
 ]
@@ -73,7 +70,10 @@ class AlgorithmTest(object):
             })
 
     def get_expected(self, alg_input):
-        """Produces expected output from some widely used library. Should be implemented in subclasses"""
+        """
+        Produces expected output from some widely used library.
+        Should be implemented in subclasses
+        """
         raise NotImplementedError
 
     def generate_random_input(self):
@@ -81,19 +81,28 @@ class AlgorithmTest(object):
         alg_input = []
         for param in self.params:
             if param['type'] == 'column':
-                rand_param = self.get_random_column_param(param)
+                param_value = self.get_random_column_param(param)
             elif param['type'] == 'other':
-                rand_param = self.get_random_other_param(param)
+                param_value = self.get_random_other_param(param)
+            elif param['name'] == 'filter':
+                param_value = ''
+            elif param['name'] == 'dataset':
+                param_value = 'adni'
+            elif param['name'] == 'pathology':
+                param_value = 'dementia'
             else:
                 raise ValueError('Parameter type must be column or other.')
             alg_input.append({
                 'name' : param['name'],
-                'value': rand_param
+                'value': param_value
             })
         return alg_input
 
     def get_random_column_param(self, param):
-        """Generates a string of comma separated variable names according to the algorithm specifications"""
+        """
+        Generates a string of comma separated variable names
+        according to the algorithm specifications
+        """
         num_columns = 1
         if param['valueMultiple']:
             num_columns = random.randint(1, 20)
