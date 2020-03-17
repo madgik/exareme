@@ -42,7 +42,8 @@ def get_data(args):
 
 
 def local_1(args, local_in):
-    standardize = json.loads(args.standardize)
+    # standardize = json.loads(args.standardize)
+    standardize = True
     # Unpack data
     X = local_in
     n_obs, n_cols = len(X), len(X.columns)
@@ -62,7 +63,8 @@ def local_1(args, local_in):
 
 
 def global_1(args, global_in):
-    standardize = json.loads(args.standardize)
+    # standardize = json.loads(args.standardize)
+    standardize = True
     # Unpack global input
     data = global_in.get_data()
     n_obs, sx = data['n_obs'], data['sx']
@@ -79,7 +81,8 @@ def global_1(args, global_in):
 
 
 def local_2(args, local_state, local_in):
-    standardize = json.loads(args.standardize)
+    # standardize = json.loads(args.standardize)
+    standardize = True
     # Unpack local state
     X, var_names = local_state['X'], local_state['var_names']
     # Unpack local input
