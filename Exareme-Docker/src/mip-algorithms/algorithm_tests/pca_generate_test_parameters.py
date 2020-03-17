@@ -7,16 +7,13 @@ from algorithm_test import AlgorithmTest
 class PCATest(AlgorithmTest):
     def get_expected(self, alg_input):
         variables = alg_input[0]['value']
-        standardize = alg_input[1]['value']
         data = self.get_data(variables)
         data = data.dropna()
         n_obs = len(data)
         if n_obs == 0 or data.shape[0] < data.shape[1]:
             return None
-        if standardize:
-            data = (data - data.mean()) / data.std()
-        grammian = np.dot(data.T, data)
-        covariance_matrix = grammian / (n_obs - 1)
+        data -= data.mean()
+        data /= data.std()
         pca = PCA()
         pca.fit(data)
         return [
@@ -31,10 +28,6 @@ class PCATest(AlgorithmTest):
             {
                 'name': 'eigen_vecs',
                 'value': pca.components_.tolist()
-            },
-            {
-                'name': 'covariance_matrix',
-                'value': covariance_matrix.tolist()
             }
         ]
 
