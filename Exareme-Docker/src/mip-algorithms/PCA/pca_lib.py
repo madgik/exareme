@@ -87,11 +87,10 @@ def local_2(args, local_state, local_in):
     means = data['means']
 
     n_obs = len(X)
-    X = X - means
+    X -= means
     if standardize:
         sigmas = data['sigmas']
-        X = X / sigmas
-    # raise ValueError(X, sigmas if standardize else None)
+        X /= sigmas
     gramian = np.dot(np.transpose(X), X)
 
     # Pack results
@@ -111,6 +110,7 @@ def global_2(args, global_in):
     idx = eigen_vals.argsort()[::-1]
     eigen_vals = eigen_vals[idx]
     eigen_vecs = eigen_vecs[:, idx]
+    eigen_vecs = eigen_vecs.T
 
     pca_result = PCAResult(n_obs, var_names, eigen_vals, eigen_vecs)
     result = pca_result.get_output()
