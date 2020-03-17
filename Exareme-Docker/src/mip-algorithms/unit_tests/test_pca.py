@@ -21,10 +21,10 @@ def test_eval(test_input, expected):
     res = requests.post(endpointUrl, data=json.dumps(test_input), headers=headers)
     res = json.loads(res.text)
     res = res['result'][0]['data']
-    expected = expected
+    expected = expected[0]
 
     assert math.isclose(res['n_obs'], expected['n_obs'], rel_tol=1e-5)
-    assert np.isclose(res['eigen_vals'], expected['eigen_vals'], rtol=1e-5)
+    assert np.isclose(res['eigen_vals'], expected['eigen_vals'], rtol=1e-5).all()
     for u, v in zip(res['eigen_vecs'], expected['eigen_vecs']):
         assert math.isclose(
                 abs(np.dot(v, u) / (np.sqrt(np.dot(v, v)) * np.sqrt(np.dot(u, u)))),
