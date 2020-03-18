@@ -2,25 +2,10 @@ from __future__ import division
 from __future__ import print_function
 
 import json
-import sys
-from os import path
-
 import numpy as np
 
-_new_path = path.dirname(path.dirname(path.abspath(__file__)))
-sys.path.append(_new_path)
-while True:
-    try:
-        import utils.algorithm_utils
-    except:
-        sys.path.pop()
-        _new_path = path.dirname(_new_path)
-        sys.path.append(_new_path)
-    else:
-        break
-del _new_path
-
-from utils.algorithm_utils import StateData, TransferAndAggregateData, make_json_raw, query_from_formula
+from utils.algorithm_utils import StateData, TransferAndAggregateData
+from utils.algorithm_utils import make_json_raw, query_from_formula
 
 
 def get_data(args):
@@ -34,7 +19,7 @@ def get_data(args):
     dataset = args.dataset
     query_filter = args.filter
     formula = args.formula
-    formula = formula.replace('_', '~')  # TODO Fix tilda problem and remove
+    formula = formula.replace('_', '~')  # fixme Fix tilda problem and remove
     data_table = args.data_table
     metadata_table = args.metadata_table
     metadata_code_column = args.metadata_code_column
@@ -57,7 +42,8 @@ def get_data(args):
 
 
 def local_1(args, local_in):
-    standardize = json.loads(args.standardize)
+    # standardize = json.loads(args.standardize)
+    standardize = True
     # Unpack data
     X = local_in
     n_obs, n_cols = len(X), len(X.columns)
@@ -77,15 +63,17 @@ def local_1(args, local_in):
 
 
 def global_1(args, global_in):
-    standardize = json.loads(args.standardize)
+    # standardize = json.loads(args.standardize)
+    standardize = True
     # Unpack global input
     data = global_in.get_data()
     n_obs, sx = data['n_obs'], data['sx']
     means = sx / n_obs
     if standardize:
         sxx = data['sxx']
-        sigmas = np.sqrt(sxx / (n_obs - 1))
-        global_out = TransferAndAggregateData(means=(means, 'do_nothing'), sigmas=(sigmas, 'do_nothing'))
+        sigmas = ((sxx - n_obs * means ** 2) / (n_obs - 1)) ** 0.5
+        global_out = TransferAndAggregateData(means=(means, 'do_nothing'),
+                                              sigmas=(sigmas, 'do_nothing'))
     else:
         global_out = TransferAndAggregateData(means=(means, 'do_nothing'))
 
@@ -93,7 +81,8 @@ def global_1(args, global_in):
 
 
 def local_2(args, local_state, local_in):
-    standardize = json.loads(args.standardize)
+    # standardize = json.loads(args.standardize)
+    standardize = True
     # Unpack local state
     X, var_names = local_state['X'], local_state['var_names']
     # Unpack local input
@@ -101,11 +90,10 @@ def local_2(args, local_state, local_in):
     means = data['means']
 
     n_obs = len(X)
-    X = X - means
+    X -= means
     if standardize:
         sigmas = data['sigmas']
-        X = X / sigmas
-    # raise ValueError(X, sigmas if standardize else None)
+        X /= sigmas
     gramian = np.dot(np.transpose(X), X)
 
     # Pack results
@@ -120,11 +108,12 @@ def global_2(args, global_in):
     gramian, n_obs, var_names = data['gramian'], data['n_obs'], data['var_names']
 
     covar_matr = np.divide(gramian, n_obs - 1)
-    eigen_vals, eigen_vecs = np.linalg.eig(covar_matr)
+    eigen_vals, eigen_vecs = np.linalg.eigh(covar_matr)
 
     idx = eigen_vals.argsort()[::-1]
     eigen_vals = eigen_vals[idx]
     eigen_vecs = eigen_vecs[:, idx]
+    eigen_vecs = eigen_vecs.T
 
     pca_result = PCAResult(n_obs, var_names, eigen_vals, eigen_vecs)
     result = pca_result.get_output()
@@ -144,8 +133,12 @@ class PCAResult(object):
         self.eigen_vecs = eigen_vecs
 
     def get_json_raw(self):
-        return make_json_raw(n_obs=self.n_obs, var_names=self.var_names, eigen_vals=self.eigen_vals,
-                             eigen_vecs=self.eigen_vecs)
+        return make_json_raw(
+                n_obs=self.n_obs,
+                var_names=self.var_names,
+                eigen_vals=self.eigen_vals,
+                eigen_vecs=self.eigen_vecs
+        )
 
     def get_eigenval_table(self):
         tabular_data = dict()

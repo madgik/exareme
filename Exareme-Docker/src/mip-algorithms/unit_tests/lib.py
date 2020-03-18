@@ -1,1 +1,1 @@
-vmUrl = 'http://88.197.53.100:9090/mining/query/'
+vmUrl = 'http://localhost:9090/mining/query/'
