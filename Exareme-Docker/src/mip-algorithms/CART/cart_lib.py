@@ -335,8 +335,9 @@ def compute_local_thresholds(X, args_X, CategoricalVariables):
             X_sorted = sorted(X[varx])
             nn = len(X_sorted)
             indexThresholds = []
-            for i in range(0, nn, PRIVACY_MAGIC_NUMBER):
+            for i in range(0, nn-1, PRIVACY_MAGIC_NUMBER):
                 thresholdsJ[varx].append((X_sorted[i]+X_sorted[i+1])/2.0)
+
         elif varx in CategoricalVariables: # For categorical only variables
             L = []
             for combs in (itertools.combinations(CategoricalVariables[varx], r) for r in range(len(CategoricalVariables[varx])+1))  :
