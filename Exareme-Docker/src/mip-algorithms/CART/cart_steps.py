@@ -320,7 +320,7 @@ def cart_step_3_global(args_X, args_Y, CategoricalVariables, globalTree , active
                     classValue = activePaths[key]["statisticsJ"]["parentNode"]["ss_argsY"] /activePaths[key]["statisticsJ"]["parentNode"]["nn_argsY"]
                  if globalTree is None:
                      globalTree = Node(criterion, bestColName, valueParentNode, bestThreshold, activePaths[key]["samples"], samplesPerClass, classValue)
-                     globalTreeJ = globalTree.tree_to_json()
+                     #globalTreeJ = globalTree.tree_to_json()
                      #raise ValueError("AA", criterion, bestColName, valueParentNode, bestThreshold, activePaths[key]["samples"], samplesPerClass)
                  else:
                      globalTree.grow_tree(activePaths[key]['filter'], criterion, bestColName, valueParentNode, bestThreshold,activePaths[key]["samples"], samplesPerClass, classValue)
@@ -333,7 +333,7 @@ def cart_step_3_global(args_X, args_Y, CategoricalVariables, globalTree , active
                 classValue = activePaths[key]["statisticsJ"]["parentNode"]["ss_argsY"] /activePaths[key]["statisticsJ"]["parentNode"]["nn_argsY"]
             globalTree.grow_tree(activePaths[key]['filter'], criterion, None, None, None,activePaths[key]["samples"], samplesPerClass, classValue) #Isws edw na dinw kai alla stoixeia. Alla logw privacy den xreiazetai
     activePaths = activePathsNew
-    globalTreeJ = globalTree.tree_to_json()
+    #globalTreeJ = globalTree.tree_to_json()
 
     return globalTree, activePaths
     #if global_state['stepsNo'] ==1:
