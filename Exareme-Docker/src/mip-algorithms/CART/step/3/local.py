@@ -11,38 +11,7 @@ sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath
 sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) + '/CART/')
 
 from algorithm_utils import StateData
-from cart_lib import Cart_Glob2Loc_TD, CartIter3_Loc2Glob_TD, DataFrameFilter
-from cart_steps import cart_step_3_local
-#
-#
-# def compute_statistics2_in_the_node(dataFrame, colNames, activePath, className, CategoricalVariables):
-#     statisticsJ = dict()
-#     for colName in colNames:
-#         df = dataFrame[[colName,className]]
-#         thresholds =  activePath["thresholdsJ"][colName]
-#         mseLeft = [None]*len(thresholds)
-#         mseRight = [None]*len(thresholds)
-#         for i in xrange(len(thresholds)):
-#             if colName not in CategoricalVariables:
-#                 dfLeft = df.loc[df[colName] <= thresholds[i]]
-#                 dfRight = df.loc[df[colName] > thresholds[i]]
-#             elif colName in CategoricalVariables:
-#                 dfLeft = df.loc[df[colName] in thresholds[i]['left']]
-#                 dfRight = df.loc[df[colName] in thresholds[i]['right']]
-#
-#
-#             mseLeft[i] = None
-#             mseRight[i] = None
-#             if activePath["statisticsJ"][colName]["meanLeft"][i] is not None:
-#                 mseLeft[i] = np.sum((dfLeft[className] - activePath["statisticsJ"][colName]["meanLeft"][i])**2)
-#             if activePath["statisticsJ"][colName]["meanRight"][i] is not None:
-#                 mseRight[i] = np.sum((dfRight[className] - activePath["statisticsJ"][colName]["meanRight"][i])**2)
-#
-#         statisticsJ[colName] =  {"mseLeft" : mseLeft, "mseRight" : mseRight}
-#     #print (statisticsJ)
-#     return statisticsJ
-#
-
+from cart_lib import Cart_Glob2Loc_TD, CartIter3_Loc2Glob_TD, cart_step_3_local
 
 def main():
     # Parse arguments
@@ -66,22 +35,6 @@ def main():
 
     # Run algorithm local iteration step
     activePaths = cart_step_3_local(local_state['dataFrame'], local_state['args_X'], local_state['args_Y'], local_state['CategoricalVariables'], activePaths)
-
-    # for key in activePaths:
-    #     df = local_state['dataFrame']
-    #     # For each unfinished path, find the subset of dataFrame (df)
-    #     for i in xrange(len(activePaths[key]['filter'])):
-    #         df = DataFrameFilter(df, activePaths[key]['filter'][i]["variable"],
-    #                                  activePaths[key]['filter'][i]["operator"],
-    #                                  activePaths[key]['filter'][i]["value"])
-    #
-    #     if local_state['args_Y'][0] not in local_state['CategoricalVariables']: # Regression Algorithm
-    #         activePaths[key]["statisticsJ"]["parentNode"]["mse"] = np.sum((df[local_state['args_Y'][0]] - activePaths[key]["statisticsJ"]["parentNode"]["mean_argsY"])**2 )
-    #         mystat = compute_statistics2_in_the_node(df, local_state['args_X'], activePaths[key], local_state['args_Y'][0], local_state['CategoricalVariables'])
-    #         for colName in local_state['args_X']:
-    #             activePaths[key]["statisticsJ"][colName]["mseLeft"] = mystat[colName]["mseLeft"]
-    #             activePaths[key]["statisticsJ"][colName]["mseRight"] = mystat[colName]["mseRight"]
-    # #print activePaths
 
     ## Finished
     local_state = StateData( args_X = local_state['args_X'],

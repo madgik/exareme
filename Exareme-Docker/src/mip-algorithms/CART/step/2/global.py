@@ -10,8 +10,7 @@ sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath
 sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) + '/CART/')
 
 from algorithm_utils import StateData
-from cart_lib import CartIter2_Loc2Glob_TD, Cart_Glob2Loc_TD
-from cart_steps import cart_step_2_global
+from cart_lib import CartIter2_Loc2Glob_TD, Cart_Glob2Loc_TD, cart_step_2_global
 
 def main():
     # Parse arguments
@@ -34,13 +33,6 @@ def main():
 
     # Run algorithm global step
     activePaths = cart_step_2_global(global_state['args_X'], global_state['args_Y'], global_state['CategoricalVariables'], activePaths)
-
-    # if  global_state['args_Y'][0] not in global_state['CategoricalVariables']: # Regression Algorithm
-    #     for key in activePaths:
-    #         activePaths[key]["statisticsJ"]["parentNode"]["mean_argsY"] = activePaths[key]["statisticsJ"]["parentNode"]["ss_argsY"]/ activePaths[key]["statisticsJ"]["parentNode"]["nn_argsY"]
-    #         for colName in global_state['args_X']:
-    #             activePaths[key]["statisticsJ"][colName]["meanLeft"] =  [i / j if j != 0 else None for i, j in zip(activePaths[key]["statisticsJ"][colName]["ssLeft"] , activePaths[key]["statisticsJ"][colName]["nnLeft"])]
-    #             activePaths[key]["statisticsJ"][colName]["meanRight"] = [i / j if j != 0 else None for i, j in zip(activePaths[key]["statisticsJ"][colName]["ssRight"], activePaths[key]["statisticsJ"][colName]["nnRight"])]
 
     global_out = Cart_Glob2Loc_TD(global_state['globalTree'], activePaths )
     # Save global state

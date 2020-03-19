@@ -10,8 +10,7 @@ sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath
 sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) + '/CART/')
 
 from algorithm_utils import StateData, ExaremeError
-from cart_lib import CartInit_Loc2Glob_TD, Cart_Glob2Loc_TD
-from cart_steps import cart_init_1_global
+from cart_lib import CartInit_Loc2Glob_TD, Cart_Glob2Loc_TD, cart_init_1_global
 
 def main():
     # Parse arguments
@@ -28,8 +27,6 @@ def main():
     args_X, args_Y, CategoricalVariables = CartInit_Loc2Glob_TD.load(local_dbs).get_data()
 
     # Run algorithm global step
-    #globalTree = None
-    #activePaths = None
     globalTree, activePaths = cart_init_1_global()
 
     # Save global state
