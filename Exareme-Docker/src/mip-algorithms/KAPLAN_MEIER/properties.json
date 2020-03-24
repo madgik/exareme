@@ -7,7 +7,7 @@
     "parameters": [
         {
             "name": "y",
-            "label": "Event variable",
+            "label": "y",
             "desc": "A single categorical variable whose values describe a binary event.",
             "type": "column",
             "columnValuesSQLType": "integer, text",
