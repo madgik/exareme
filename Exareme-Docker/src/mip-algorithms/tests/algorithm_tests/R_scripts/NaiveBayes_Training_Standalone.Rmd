@@ -4,7 +4,7 @@ library(tidyverse)
 library(data.table)
 library(e1071)
 
-rawData <- read_csv("../../data/dementia/desd-synthdata.csv")
+rawData <- read_csv("../data/dementia/desd-synthdata.csv")
 
 ## Test 1
 RawData1 <-rawData %>%
