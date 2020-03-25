@@ -4,7 +4,7 @@ import json
 import logging
 import sys
 sys.path.insert(0,'../')
-from lib import vmUrl
+from tests.algorithm_tests.lib import vmUrl
 
 endpointUrl=vmUrl+'LINEAR_REGRESSION'
 
