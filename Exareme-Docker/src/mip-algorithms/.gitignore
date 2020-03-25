@@ -53,4 +53,4 @@ crashlytics.properties
 crashlytics-build.properties
 
 # Creating demo data.
-unit_tests/data/output
+tests/data/output
