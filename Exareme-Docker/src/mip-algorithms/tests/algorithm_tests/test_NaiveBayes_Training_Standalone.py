@@ -62,23 +62,6 @@ class TestNaiveBayesStandalone(unittest.TestCase):
         resultsComparison( result['result'][0]['data']['data'],  json.loads(str(self.Test2Result))[0],'alzheimerbroadcategory')
 
 
-    def test_NaiveBayesStandalone_Privacy(self):
-        logging.info("---------- TEST : Algorithms for Privacy Error")
-        data = [{"name": "pathology","value":"dementia"},
-                {"name": "dataset","value": "adni_9rows"},
-                {"name": "x", "value": "lefthippocampus,righthippocampus"},
-                {"name": "y", "value": "alzheimerbroadcategory"},
-                {"name": "alpha","value": "0.1"},
-                { "name": "filter", "value": ""}]
-
-        headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
-        result = json.loads(r.text)
-        check_privacy_result(r.text)
-
-def check_privacy_result(result):
-    assert result == "{\"result\" : [{\"data\":\"The Experiment could not run with the input provided because there are insufficient data.\",\"type\":\"text/plain+warning\"}]}"
-
 def resultsComparison(jsonExaremeResult, RResult, y):
     jsonRResult1 = json.loads(RResult[1])
     jsonRResult2 = json.loads(RResult[2])

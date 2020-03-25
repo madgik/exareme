@@ -27,7 +27,3 @@ def test_eval(test_input, expected):
                 assert math.isclose(val, test_val, rel_tol=0, abs_tol=1e-03)
             else:
                 assert val == test_val
-
-
-def check_privacy_result(result):
-    assert result == "{\"result\" : [{\"data\":\"The Experiment could not run with the input provided because there are insufficient data.\",\"type\":\"text/plain+warning\"}]}"

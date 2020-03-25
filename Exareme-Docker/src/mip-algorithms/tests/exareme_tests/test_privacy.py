@@ -212,6 +212,21 @@ def test_NAIVEBAYES_privacy():
     check_privacy_result(r.text)
 
 
+def test_NaiveBayesStandalone_Privacy(self):
+    logging.info("---------- TEST : Algorithms for Privacy Error")
+    data = [{"name": "pathology","value":"dementia"},
+            {"name": "dataset","value": "adni_9rows"},
+            {"name": "x", "value": "lefthippocampus,righthippocampus"},
+            {"name": "y", "value": "alzheimerbroadcategory"},
+            {"name": "alpha","value": "0.1"},
+            { "name": "filter", "value": ""}]
+
+    headers = {'Content-type': 'application/json', "Accept": "text/plain"}
+    r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+    result = json.loads(r.text)
+    check_privacy_result(r.text)
+
+
 def test_PearsonCorrlation_Privacy():
     logging.info("---------- TEST : Algorithms for Privacy Error")
 
