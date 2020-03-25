@@ -1,19 +1,18 @@
 import requests
 import unittest
-import os,sys
+import os
 import json
 import logging
 import math
 from decimal import *
 import re
 
-from rpy2.robjects.packages import importr
 import rpy2.robjects as robjects
 
 import sys
 from os import path
 sys.path.append(path.abspath(__file__))
-from lib import vmUrl
+from tests.algorithm_tests.lib import vmUrl
 endpointUrl= vmUrl+'LINEAR_REGRESSION'
 folderPath = 'R_scripts'
 file ='LinearRegression.Rmd'
@@ -510,24 +509,6 @@ class TestLinearRegression(unittest.TestCase):
         print (r.text)
         result = json.loads(r.text)
         resultsComparison(result['result'][0]['data']['coefficients'],result['result'][0]['data']['statistics'],  json.loads(self.RResults[30][1]),json.loads(self.RResults[30][2]))
-
-
-    def test_LinearRegression_Privacy(self):
-        logging.info("---------- TEST : Algorithms for Privacy Error")
-        data = [{ "name": "x",	"value": "alzheimerbroadcategory+gender"},
-                { "name": "y",  "value": "lefthippocampus"},
-                { "name": "referencevalues", "value": "[{\"name\":\"alzheimerbroadcategory\",\"val\":\"AD\"},{\"name\":\"gender\",\"val\":\"M\"}]"},
-                { "name": "encodingparameter", "value": "dummycoding"},
-		        { "name": "pathology","value":"dementia"},
-                { "name": "dataset", "value": "adni_9rows"},
-                { "name": "filter", "value": ""}]
-        headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
-        result = json.loads(r.text)
-        check_privacy_result(r.text)
-
-def check_privacy_result(result):
-    assert result == "{\"result\" : [{\"data\":\"The Experiment could not run with the input provided because there are insufficient data.\",\"type\":\"text/plain+warning\"}]}"
 
 
 

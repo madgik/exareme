@@ -1,18 +1,17 @@
 import requests
 import unittest
-import os,sys
+import os
 import json
 import logging
 import math
 from decimal import *
 
-from rpy2.robjects.packages import importr
 import rpy2.robjects as robjects
 
 import sys
 from os import path
 sys.path.append(path.abspath(__file__))
-from lib import vmUrl
+from tests.algorithm_tests.lib import vmUrl
 endpointUrl= vmUrl+'ANOVA'
 
 folderPath = 'R_scripts'
@@ -314,22 +313,6 @@ class TestANOVA(unittest.TestCase):
         print (r.text)
         resultsComparison(result['result'][0]['data'], json.loads(self.Test17Result))
 
-    def test_ANOVA_Privacy(self):
-        logging.info("---------- TEST : Algorithms for Privacy Error")
-
-        data = [
-                {   "name": "x", "value": "ANOVA_var_I1*ANOVA_var_I2*ANOVA_var_I3" },
-                {   "name": "y", "value": "ANOVA_var_D" },
-                {   "name": "sstype", "value": "1" },
-	            {   "name": "pathology","value":"dementia"},
-                {   "name": "dataset", "value": "adni_9rows" },
-                {   "name": "filter", "value": "" }
-              ]
-
-        headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
-        result = json.loads(r.text)
-        check_privacy_result(r.text)
 
 def resultsComparison(jsonExaremeResult, jsonRResult):
 
@@ -347,12 +330,6 @@ def resultsComparison(jsonExaremeResult, jsonRResult):
             assert (math.isclose(jsonExaremeResult[d]['etasquared'],jsonRResult[d]['etaSq'],rel_tol=0,abs_tol=10**(-abs(Decimal(str(jsonRResult[d]['etaSq'])).as_tuple().exponent))))
             assert (math.isclose(jsonExaremeResult[d]['partetasquared'],jsonRResult[d]['etaSqP'],rel_tol=0,abs_tol=10**(-abs(Decimal(str(jsonRResult[d]['etaSqP'])).as_tuple().exponent))))
             #assert math.isclose(omegaSquared,corr_omegaSquared,rel_tol=0,abs_tol=1e-06)
-
-
-def check_privacy_result(result):
-    assert result == "{\"result\" : [{\"data\":\"The Experiment could not run with the input provided because there are insufficient data.\",\"type\":\"text/plain+warning\"}]}"
-
-
 
 
 if __name__ == '__main__':

@@ -1,17 +1,12 @@
 import requests
-import unittest
-import os,sys
 import json
 import logging
-import math
 import re
-from decimal import *
-
 
 import sys
 from os import path
 sys.path.append(path.abspath(__file__))
-from lib import vmUrl
+from tests.algorithm_tests.lib import vmUrl
 endpointUrl= vmUrl+'ID3'
 
 def test_ID3_1():
@@ -55,28 +50,6 @@ CL_tear_prod_rate = normal
 
 
     resultsComparison(result['result'][1]['data'], treeR)
-
-
-def test_ID3_Privacy():
-    logging.info("---------- TEST : ID3 - Test using contact-lenses dataset  ")
-
-    data = [{   "name": "x", "value": "CL_age,CL_spectacle_prescrip,CL_astigmatism,CL_tear_prod_rate"  },
-            {   "name": "y", "value": "CL_contact_lenses" },
-            {   "name": "dataset", "value": "contact-lenses" },
-            {   "name": "filter", "value": "{\"condition\": \"AND\", \"rules\": [{\"id\": \"CL_age\", \"field\": \"CL_age\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"Young\"}], \"valid\": true}" },
-            {   "name": "pathology","value":"dementia"}]
-
-    headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
-    result = json.loads(r.text)
-    print (result)
-
-    check_privacy_result(r.text)
-
-
-
-def check_privacy_result(result):
-    assert result == "{\"result\" : [{\"data\":\"The Experiment could not run with the input provided because there are insufficient data.\",\"type\":\"text/plain+warning\"}]}"
 
 
 def resultsComparison(jsonExaremeResult, jsonRResult):

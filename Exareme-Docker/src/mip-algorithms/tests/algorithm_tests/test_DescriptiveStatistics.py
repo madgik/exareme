@@ -2,8 +2,7 @@ import pytest
 import json
 import requests
 import math
-import logging
-from lib import vmUrl
+from tests.algorithm_tests.lib import vmUrl
 endpointUrl= vmUrl+'DESCRIPTIVE_STATS'
 
 
@@ -29,29 +28,6 @@ def test_eval(test_input, expected):
             else:
                 assert val == test_val
 
-def test_Descriptive_Statistics_Privacy():
-    logging.info("---------- TEST : Algorithms for Privacy Error")
-    data = [{
-        "name": "x",
-        "value": "leftmpogpostcentralgyrusmedialsegment"
-        },
-        {
-            "name": "dataset",
-            "value": "adni_9rows"
-        },
-        {
-            "name": "filter",
-            "value": ""
-        },
-        {
-            "name": "pathology",
-            "value": "dementia"
-        }
-            ]
-    headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
-    result = json.loads(r.text)
-    check_privacy_result(r.text)
 
 def check_privacy_result(result):
     assert result == "{\"result\" : [{\"data\":\"The Experiment could not run with the input provided because there are insufficient data.\",\"type\":\"text/plain+warning\"}]}"

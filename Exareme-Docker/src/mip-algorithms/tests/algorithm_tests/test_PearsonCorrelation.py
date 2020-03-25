@@ -2,7 +2,7 @@ import requests
 import json
 import logging
 import math
-from lib import vmUrl
+from tests.algorithm_tests.lib import vmUrl
 endpointUrl= vmUrl+'PEARSON_CORRELATION'
 
 # Required datasets: adni_9rows, adni, data_pr1, desd-synthdata
@@ -519,27 +519,6 @@ def test_PearsonCorrlation_MIP_AlgoTesting_7():
     check_result(
             result['result'][0]['data'][5], 'lefthippocampus ~ opticchiasm', 0.202, '< 0.001', 0.130, 0.271
     )
-
-def test_PearsonCorrlation_Privacy():
-
-    logging.info("---------- TEST : Algorithms for Privacy Error")
-
-    data = [{"name" : "x","value": "lefthippocampus"},
-            {"name" : "y","value": "righthippocampus"},
-	    {   "name": "pathology","value":"dementia"},
-            {"name" : "dataset","value": "adni_9rows"},
-            {"name" : "filter","value": ""},
-    	  ]
-
-    headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
-
-    result = json.loads(r.text)
-
-    check_privacy_result(r.text)
-
-def check_privacy_result(result):
-    assert result == "{\"result\" : [{\"data\":\"The Experiment could not run with the input provided because there are insufficient data.\",\"type\":\"text/plain+warning\"}]}"
 
 
 def check_result(my_result, r_var_pair, r_corr, r_pval, r_ci_lo, r_ci_hi):

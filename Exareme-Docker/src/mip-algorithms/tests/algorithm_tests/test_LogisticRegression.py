@@ -4,7 +4,7 @@ import logging
 import math
 
 # Required datasets: data_logisticRegression.csv
-from lib import vmUrl
+from tests.algorithm_tests.lib import vmUrl
 endpointUrl= vmUrl+'LOGISTIC_REGRESSION'
 
 
@@ -167,39 +167,6 @@ def test_LogisticRegression_MultipleDataset():
     check_result(exareme_coeffs=exareme_coeffs, r_coeffs=r_coeffs)
 
 
-def test_LogisticRegression_Privacy():
-    logging.info("---------- TEST : Logistic Regression Privacy Error")
-
-    data = [
-        {
-            "name" : "x",
-            "value": "leftententorhinalarea_logreg_test, rightententorhinalarea_logreg_test, lefthippocampus_logreg_test, righthippocampus_logreg_test"
-        },
-        {
-            "name" : "y",
-            "value": "alzheimerbroadcategory_logreg_test"
-        },
-        {
-            "name": "pathology",
-            "value": "dementia"
-        },
-        {
-            "name" : "dataset",
-            "value": "adni_9rows"
-        },
-        {
-            "name" : "filter",
-            "value": ""
-        },
-    ]
-
-    headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
-    result = json.loads(r.text)
-
-    check_privacy_result(r.text)
-
-
 def check_result(exareme_coeffs, r_coeffs):
     for exa_coeff, r_coeff in zip(exareme_coeffs, r_coeffs):
         assert exa_coeff['Variable'] == r_coeff['name']
@@ -211,6 +178,3 @@ def check_result(exareme_coeffs, r_coeffs):
         else:
             assert math.isclose(exa_coeff['p value'], r_coeff['p value'], rel_tol=1e-03)
 
-
-def check_privacy_result(result):
-    assert result == "{\"result\" : [{\"data\":\"The Experiment could not run with the input provided because there are insufficient data.\",\"type\":\"text/plain+warning\"}]}"

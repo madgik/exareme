@@ -1,19 +1,17 @@
 import requests
 import unittest
-import os,sys
+import os
 import json
 import logging
 import math
-import re
 from decimal import *
 
-from rpy2.robjects.packages import importr
 import rpy2.robjects as robjects
 
 import sys
 from os import path
 sys.path.append(path.abspath(__file__))
-from lib import vmUrl
+from tests.algorithm_tests.lib import vmUrl
 endpointUrl= vmUrl+'KMEANS'
 folderPath = 'R_scripts'
 file ='kMeans.Rmd'
@@ -98,27 +96,6 @@ class TestkMeans(unittest.TestCase):
         resultsComparison(result['result'][0]['data'], self.Test3Result)
 
 
-    def test_KMEANS_Privacy(self):
-        logging.info("---------- TEST : Algorithms for Privacy Error")
-        data = [
-                {   "name": "iterations_max_number", "value": "50" },
-                {   "name": "y", "value": "rightpallidum,leftpallidum,lefthippocampus,righthippocampus" },
-                {   "name": "k", "value":""},
-                {   "name":"centers", "value": "[{\"clid\":1,\"rightpallidum\":0.2,\"leftpallidum\":0.5,\"lefthippocampus\":1.7,\"righthippocampus\":1.5},\
-                 {\"clid\":2,\"rightpallidum\":0.6,\"leftpallidum\":1.2,\"lefthippocampus\":2.5,\"righthippocampus\":2.0},\
-                 {\"clid\":3,\"rightpallidum\":1.0,\"leftpallidum\":1.5,\"lefthippocampus\":3.9,\"righthippocampus\":2.5},\
-                 {\"clid\":4,\"rightpallidum\":1.5,\"leftpallidum\":2.0,\"lefthippocampus\":4.0,\"righthippocampus\":3.0},\
-                { \"clid\":5,\"rightpallidum\":2.0,\"leftpallidum\":2.2,\"lefthippocampus\":2.3,\"righthippocampus\":4.0}]" },
-                {   "name": "pathology","value":"dementia"},
-                {   "name": "dataset", "value": "adni_9rows" },
-                {   "name": "e", "value": "0.0001" },
-                {   "name": "filter", "value": "" }
-            ]
-        headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-        r = requests.post(endpointUrl,data=json.dumps(data),headers=headers)
-        result = json.loads(r.text)
-        check_privacy_result(r.text)
-
 def resultsComparison(jsonExaremeResult, jsonRResult):
     Rvariables = json.loads(jsonRResult[0][1])
     Rvariables = [v.split(".")[1] for v in Rvariables]
@@ -135,6 +112,3 @@ def resultsComparison(jsonExaremeResult, jsonRResult):
             print (jsonExaremeResult[ii]['clpoints'] , Rpoints[i])
             assert jsonExaremeResult[ii]['clpoints'] == Rpoints[i]
             ii = ii +1
-
-def check_privacy_result(result):
-    assert result == "{\"result\" : [{\"data\":\"The Experiment could not run with the input provided because there are insufficient data.\",\"type\":\"text/plain+warning\"}]}"

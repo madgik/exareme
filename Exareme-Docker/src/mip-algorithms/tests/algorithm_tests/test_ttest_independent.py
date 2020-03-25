@@ -1,18 +1,17 @@
 import requests
 import unittest
-import os,sys
+import os
 import json
 import logging
 import math
 from decimal import *
 
-from rpy2.robjects.packages import importr
 import rpy2.robjects as robjects
 
 import sys
 from os import path
 sys.path.append(path.abspath(__file__))
-from lib import vmUrl
+from tests.algorithm_tests.lib import vmUrl
 endpointUrl= vmUrl+'TTEST_INDEPENDENT'
 folderPath = 'R_scripts'
 file ='ttest_independent.Rmd'
@@ -90,24 +89,6 @@ class TestTTESTIndependent(unittest.TestCase):
         result = json.loads(r.text)
         print (r.text)
         resultsComparison(data, result['result'][0]['data'], json.loads(self.Test3Result))
-
-    def test_UnpairedTtest__Privacy(self):
-        logging.info("---------- TEST : Algorithms for Privacy Error")
-        data = [{"name": "y", "value": "lefthippocampus"},
-                {"name": "x", "value": "gender"    },
-                {"name": "xlevels",  "value": "M,F"},
-                {"name": "hypothesis", "value": "lessthan"},
-		{   "name": "pathology","value":"dementia"},
-                {"name": "dataset", "value": "adni_9rows"},
-                {"name": "filter","value": ""}
-               ]
-        headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
-        result = json.loads(r.text)
-        check_privacy_result(r.text)
-
-def check_privacy_result(result):
-    assert result == "{\"result\" : [{\"data\":\"The Experiment could not run with the input provided because there are insufficient data.\",\"type\":\"text/plain+warning\"}]}"
 
 
 def resultsComparison(data, jsonExaremeResult, jsonRResult):
