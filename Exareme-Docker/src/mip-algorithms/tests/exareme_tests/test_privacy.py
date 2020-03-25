@@ -15,6 +15,7 @@ from tests.algorithm_tests.test_LogisticRegression import endpointUrl as url_log
 from tests.algorithm_tests.test_MultipleHistograms import endpointUrl \
     as url_multi_hist
 from tests.algorithm_tests.test_NaiveBayes import url1
+from tests.algorithm_tests.test_NaiveBayes_Training_Standalone import endpointUrl as url_naive_bayes_standalone
 from tests.algorithm_tests.test_PearsonCorrelation import endpointUrl as url_pearson
 from tests.algorithm_tests.test_ttest_independent import endpointUrl \
     as url_ttest_indep
@@ -212,7 +213,7 @@ def test_NAIVEBAYES_privacy():
     check_privacy_result(r.text)
 
 
-def test_NaiveBayesStandalone_Privacy(self):
+def test_NaiveBayesStandalone_Privacy():
     logging.info("---------- TEST : Algorithms for Privacy Error")
     data = [{"name": "pathology","value":"dementia"},
             {"name": "dataset","value": "adni_9rows"},
@@ -222,7 +223,7 @@ def test_NaiveBayesStandalone_Privacy(self):
             { "name": "filter", "value": ""}]
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+    r = requests.post(url_naive_bayes_standalone, data=json.dumps(data), headers=headers)
     result = json.loads(r.text)
     check_privacy_result(r.text)
 
