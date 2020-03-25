@@ -1,7 +1,7 @@
 library(tidyverse)
 library(jsonlite)
 
-mydata <-read.csv("../unit_tests/data/dementia/desd-synthdata.csv",header=T)
+mydata <-read.csv("../data/dementia/desd-synthdata.csv",header=T)
 
 ## TEST 1: 2 variables and 2 clusters
 data2 <-data.frame(mydata$lefthippocampus,mydata$righthippocampus)
