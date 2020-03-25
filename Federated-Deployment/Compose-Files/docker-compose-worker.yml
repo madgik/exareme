@@ -30,7 +30,7 @@ services:
       - CONSULURL=${EXAREME_KEYSTORE}
       - NODE_NAME=${FEDERATION_NODE}
       - FEDERATION_ROLE=${FEDERATION_ROLE}
-      - TAG=prod     #dev or prod
+      - ENVIRONMENT_TYPE=TEST     #TEST / DEV / PROD
     deploy:
       restart_policy:
         condition: on-failure

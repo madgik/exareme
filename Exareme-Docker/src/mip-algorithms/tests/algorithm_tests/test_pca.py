@@ -27,8 +27,10 @@ def test_eval(test_input, expected):
     assert math.isclose(res['n_obs'], expected['n_obs'], rel_tol=1e-5)
     assert np.isclose(res['eigen_vals'], expected['eigen_vals'], rtol=1e-5).all()
     for u, v in zip(res['eigen_vecs'], expected['eigen_vecs']):
-        assert math.isclose(abs_cosine_similarity(u, v), 1, rel_tol=1e-5)
+        assert are_collinear(u, v)
 
 
-def abs_cosine_similarity(u, v):
-    return abs(np.dot(v, u) / (np.sqrt(np.dot(v, v)) * np.sqrt(np.dot(u, u))))
+def are_collinear(u, v):
+    cosine_similarity = np.dot(v, u) / (np.sqrt(np.dot(v, v)) *
+                                        np.sqrt(np.dot(u, u)))
+    return math.isclose(abs(cosine_similarity), 1, rel_tol=1e-5)

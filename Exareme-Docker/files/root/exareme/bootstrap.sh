@@ -11,7 +11,7 @@ export DATA="data"
 if [[ -z ${CONSULURL} ]]; then echo "CONSULURL is unset. Check docker-compose file."; exit; fi
 if [[ -z ${NODE_NAME} ]]; then echo "NODE_NAME is unset. Check docker-compose file.";exit;  fi
 if [[ -z ${FEDERATION_ROLE} ]]; then echo "FEDERATION_ROLE is unset. Check docker-compose file.";exit;  fi
-if [[ -z ${TAG} ]]; then echo "TAG is unset. Check docker-compose file.";exit;  fi
+if [[ -z ${ENVIRONMENT_TYPE} ]]; then echo "ENVIRONMENT_TYPE is unset. Check docker-compose file.";exit;  fi
 
 #Stop Exareme service
 stop_exareme () {
@@ -143,13 +143,13 @@ if [[ "${FEDERATION_ROLE}" != "master" ]]; then
 		fi
 	done
 
-    if [[ ${TAG} == "dev" ]]; then
+    if [[ ${ENVIRONMENT_TYPE} == "DEV" ]] || [[ ${ENVIRONMENT_TYPE} == "TEST" ]]; then
         echo "Running set-local-datasets."
 	    ./set-local-datasets.sh
 
         echo -e "\nDEV version: Worker node["${MY_IP}","${NODE_NAME}"] may be connected to Master node["${MASTER_IP}","${MASTER_NAME}"]"
         curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_ACTIVE_WORKERS_PATH}/${NODE_NAME} <<< ${MY_IP}
-    elif [[ ${TAG} == "prod" ]]; then
+    elif [[ ${ENVIRONMENT_TYPE} == "PROD" ]]; then
         #Health check for Worker. HEALTH_CHECK algorithm execution
         echo "Health check for Worker node["${MY_IP}","${NODE_NAME}"]"
 
@@ -157,7 +157,7 @@ if [[ "${FEDERATION_ROLE}" != "master" ]]; then
 
         if [[ -z ${check} ]]; then
             #If curl returned nothing, something is wrong. We can not know what is wrong though..
-            printf "Health_Check algorithm did not return anything...Switch TAG to 'dev' to see Error messages coming\
+            printf "Health_Check algorithm did not return anything...Switch ENVIRONMENT_TYPE to 'DEV' to see Error messages coming\
 from EXAREME..Exiting"
             exit 1
         else
@@ -182,7 +182,7 @@ from EXAREME..Exiting"
                 else
                     echo ${check}
                     echo "Worker node["${MY_IP}","${NODE_NAME}]" seems that is not connected with the Master..\
-Switch TAG to 'dev' to see Error messages coming from EXAREME..Exiting..."
+Switch ENVIRONMENT_TYPE to 'DEV' to see Error messages coming from EXAREME..Exiting..."
                     exit 1
                 fi
             fi
@@ -248,13 +248,13 @@ else
 			fi
 		done
 	
-        if [[ ${TAG} == "dev" ]]; then
+        if [[ ${ENVIRONMENT_TYPE} == "DEV" ]] || [[ ${ENVIRONMENT_TYPE} == "TEST" ]] ; then
              echo "Running set-local-datasets."
 		    ./set-local-datasets.sh
 
             echo -e "\nDEV version: Master node["${MY_IP}","${NODE_NAME}"] may be initialized"
             curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/${NODE_NAME} <<< ${MY_IP}
-        elif [[ ${TAG} == "prod" ]]; then
+        elif [[ ${ENVIRONMENT_TYPE} == "PROD" ]]; then
 		    #Health check for Master. HEALTH_CHECK algorithm execution
 		    echo "Health check for Master node["${MY_IP}","${NODE_NAME}"]"
 
@@ -262,7 +262,7 @@ else
 
             if [[ -z ${check} ]]; then
             #if curl returned nothing, something is wrong. We can not know what is wrong though
-                printf "Health_Check algorithm did not return anything...Switch TAG to 'dev' to see Error messages coming\
+                printf "Health_Check algorithm did not return anything...Switch ENVIRONMENT_TYPE to 'DEV' to see Error messages coming\
 from EXAREME..Exiting"
                 exit 1
             else
@@ -287,7 +287,7 @@ from EXAREME..Exiting"
                     else
                         echo ${check}
                         echo "Master node["${MY_IP}","${NODE_NAME}]" seems that could not be initialized..\
-Switch TAG to 'dev' to see Error messages coming from EXAREME..Exiting..."
+Switch ENVIRONMENT_TYPE to 'DEV' to see Error messages coming from EXAREME..Exiting..."
                         exit 1
                     fi
                 fi
