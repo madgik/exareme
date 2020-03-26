@@ -1,7 +1,7 @@
 {
 	"name": "NAIVE_BAYES_TESTING",
 	"desc": "Naive Bayes clasifier: Testing phase",
-	"label": "Naive Bayes Testing",
+	"label": "Naive Bayes Testing for Galaxy",
 	"type": "local_global",
 	"parameters": [{
 			"name": "x",
@@ -33,6 +33,7 @@
 			"desc": "Training datasets have id != iteration number.",
 			"type": "other",
 			"value": "0",
+			"valueMin": 0,
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "integer"

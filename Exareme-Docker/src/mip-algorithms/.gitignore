@@ -6,6 +6,9 @@
 ## .pyc files
 *.pyc
 
+# db files
+*.db
+
 ## Directory-based project format:
 .idea/
 # if you remove the above rule, at least ignore the following:
@@ -50,4 +53,4 @@ crashlytics.properties
 crashlytics-build.properties
 
 # Creating demo data.
-unit_tests/data/output
+tests/data/output

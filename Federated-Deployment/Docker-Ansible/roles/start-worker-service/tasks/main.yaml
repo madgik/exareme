@@ -8,3 +8,4 @@
     EXAREME_KEYSTORE: "{{ EXAREME_KEYSTORE }}"
     DOCKER_DATA_FOLDER: "{{ DOCKER_DATA_FOLDER }}"
     LOCAL_DATA_FOLDER: "{{ hostvars[my_host]['data_path'] }}"
+    FEDERATION_ROLE: "worker"
