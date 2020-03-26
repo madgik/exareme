@@ -2,7 +2,7 @@ In order for you to run the unit_tests, you need to:
 
 1)Install python3
 
-2)Inside folder ```unit_tests```
+2)Inside a test folder:
 
 Run: ```python3 -m pytest``` for running all the unit_tests
 
