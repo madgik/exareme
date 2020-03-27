@@ -10,27 +10,16 @@ import numpy as np
 from scipy.special import logit
 
 sys.path.append(
-    path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) + '/utils/')
-sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) +
-                '/CALIBRATION_BELT/')
+        path.dirname(path.dirname(
+                path.dirname(path.dirname(path.abspath(__file__))))) + '/utils/')
+sys.path.append(
+        path.dirname(
+            path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) +
+        '/CALIBRATION_BELT/')
 
-from algorithm_utils import StateData, PrivacyError
+from algorithm_utils import StateData, query_with_privacy
 from cb_lib import CBInit_Loc2Glob_TD
 
-
-# ======================= Remove after testing!! ======================= #
-PRIVACY_MAGIC_NUMBER = 1
-
-def query_with_privacy(fname_db, query):
-    conn = sqlite3.connect(fname_db)
-    cur = conn.cursor()
-    cur.execute(query)
-    schema = [description[0] for description in cur.description]
-    data = cur.fetchall()
-    if len(data) < PRIVACY_MAGIC_NUMBER:
-        raise PrivacyError('Query results in illegal number of datapoints.')
-    return schema, data
-# ====================================================================== #
 
 def cb_local_init(local_in):
     # Unpack local input
@@ -57,11 +46,13 @@ def main():
     parser = ArgumentParser()
     parser.add_argument('-x', required=True, help='Expected outcomes.')
     parser.add_argument('-y', required=True, help='Observed outcomes.')
-    parser.add_argument('-max_deg', required=True, help='Maximum degree of calibration curve.')
+    parser.add_argument('-max_deg', required=True,
+                        help='Maximum degree of calibration curve.')
     parser.add_argument('-cur_state_pkl', required=True,
                         help='Path to the pickle file holding the current state.')
     parser.add_argument('-input_local_DB', required=True, help='Path to local db.')
-    parser.add_argument('-db_query', required=True, help='Query to be executed on local db.')
+    parser.add_argument('-db_query', required=True,
+                        help='Query to be executed on local db.')
     args, unknown = parser.parse_known_args()
     fname_cur_state = path.abspath(args.cur_state_pkl)
     fname_loc_db = path.abspath(args.input_local_DB)
@@ -83,10 +74,13 @@ def main():
     mask_e = [ei is None for ei in e_vec]
     mask_o = [oi is None for oi in o_vec]
     mask = np.logical_or(mask_e, mask_o)
-    e_vec, o_vec = np.array(e_vec[~mask], dtype=np.float64), np.array(o_vec[~mask], dtype=np.int8)
+    e_vec, o_vec = np.array(e_vec[~mask], dtype=np.float64), np.array(o_vec[~mask],
+                                                                      dtype=np.int8)
     # todo perform privacy check here!
-    assert min(e_vec) >= 0. and max(e_vec) <= 1., "Variable e should take values only in [0, 1]"
-    assert set(o_vec).issubset({0, 1}), "Variable o should only contain values 0 and 1."
+    assert min(e_vec) >= 0. and max(
+            e_vec) <= 1., "Variable e should take values only in [0, 1]"
+    assert set(o_vec).issubset(
+            {0, 1}), "Variable o should only contain values 0 and 1."
 
     local_in = e_vec, o_vec, e_name, o_name, max_deg
     # Run algorithm local step
