@@ -14,8 +14,8 @@ from tests.algorithm_tests_with_privacy.test_LinearRegression import endpointUrl
 from tests.algorithm_tests.test_LogisticRegression import endpointUrl as url_logreg
 from tests.algorithm_tests_with_privacy.test_MultipleHistograms import endpointUrl \
     as url_multi_hist
-from tests.algorithm_tests.test_NaiveBayes import url1
-from tests.algorithm_tests.test_NaiveBayes_Training_Standalone import \
+from tests.algorithm_tests_with_privacy.test_NaiveBayes import url1
+from tests.algorithm_tests_with_privacy.test_NaiveBayes_Training_Standalone import \
     endpointUrl as url_naive_bayes_standalone
 from tests.algorithm_tests.test_PearsonCorrelation import endpointUrl as url_pearson
 from tests.algorithm_tests_with_privacy.test_ttest_independent import endpointUrl \
@@ -24,8 +24,9 @@ from tests.algorithm_tests_with_privacy.test_ttest_onesample import endpointUrl 
     as url_ttest_onesample
 from tests.algorithm_tests_with_privacy.test_ttest_paired import endpointUrl \
     as url_ttest_paired
-from tests.algorithm_tests.test_CalibrationBelt import endpointUrl \
-    as url_calibration
+
+from tests.algorithm_tests.lib import vmUrl
+url_calibration= vmUrl+'CALIBRATION_BELT'
 
 url_descr_stat += 'DESCRIPTIVE_STATS'
 
