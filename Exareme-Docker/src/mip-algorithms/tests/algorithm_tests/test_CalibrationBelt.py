@@ -2,7 +2,7 @@ import pytest
 import json
 import requests
 import math
-from lib import vmUrl
+from tests.algorithm_tests.lib import vmUrl
 endpointUrl= vmUrl+'CALIBRATION_BELT'
 
 def get_test_params():

@@ -15,7 +15,8 @@ from tests.algorithm_tests.test_LogisticRegression import endpointUrl as url_log
 from tests.algorithm_tests_with_privacy.test_MultipleHistograms import endpointUrl \
     as url_multi_hist
 from tests.algorithm_tests_with_privacy.test_NaiveBayes import url1
-from tests.algorithm_tests_with_privacy.test_NaiveBayes_Training_Standalone import endpointUrl as url_naive_bayes_standalone
+from tests.algorithm_tests_with_privacy.test_NaiveBayes_Training_Standalone import \
+    endpointUrl as url_naive_bayes_standalone
 from tests.algorithm_tests.test_PearsonCorrelation import endpointUrl as url_pearson
 from tests.algorithm_tests_with_privacy.test_ttest_independent import endpointUrl \
     as url_ttest_indep
@@ -23,6 +24,9 @@ from tests.algorithm_tests_with_privacy.test_ttest_onesample import endpointUrl 
     as url_ttest_onesample
 from tests.algorithm_tests_with_privacy.test_ttest_paired import endpointUrl \
     as url_ttest_paired
+
+from tests.algorithm_tests.lib import vmUrl
+url_calibration= vmUrl+'CALIBRATION_BELT'
 
 url_descr_stat += 'DESCRIPTIVE_STATS'
 
@@ -215,15 +219,16 @@ def test_NAIVEBAYES_privacy():
 
 def test_NaiveBayesStandalone_Privacy():
     logging.info("---------- TEST : Algorithms for Privacy Error")
-    data = [{"name": "pathology","value":"dementia"},
-            {"name": "dataset","value": "adni_9rows"},
+    data = [{"name": "pathology", "value": "dementia"},
+            {"name": "dataset", "value": "adni_9rows"},
             {"name": "x", "value": "lefthippocampus,righthippocampus"},
             {"name": "y", "value": "alzheimerbroadcategory"},
-            {"name": "alpha","value": "0.1"},
-            { "name": "filter", "value": ""}]
+            {"name": "alpha", "value": "0.1"},
+            {"name": "filter", "value": ""}]
 
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-    r = requests.post(url_naive_bayes_standalone, data=json.dumps(data), headers=headers)
+    r = requests.post(url_naive_bayes_standalone, data=json.dumps(data),
+                      headers=headers)
     result = json.loads(r.text)
     check_privacy_result(r.text)
 
@@ -285,6 +290,25 @@ def test_pairedttest_Privacy():
             {"name": "filter", "value": ""}]
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
     r = requests.post(url_ttest_paired, data=json.dumps(data), headers=headers)
+    result = json.loads(r.text)
+    check_privacy_result(r.text)
+
+
+def test_calibration_Privacy():
+    logging.info("---------- TEST : Algorithms for Privacy Error")
+    data = [{"name": "x", "value": "probGiViTI_2018_Complessiva"},
+            {"name": "y", "value": "hospOutcomeLatest_RIC10"},
+            {"name": "devel", "value": "external"},
+            {"name": "max_deg", "value": "4"},
+            {"name": "confLevels", "value": "0.80, 0.95"},
+            {"name": "thres", "value": "0.95"},
+            {"name": "num_points", "value": "60"},
+            {"name": "dataset", "value": "adni_9rows"},
+            {"name" : "filter",
+             "value": "\n{\n  \"condition\": \"AND\",\n  \"rules\": [\n    {\n      \"id\": \"cb_var1\",\n      \"field\": \"cb_var1\",\n      \"type\": \"integer\",\n      \"input\": \"select\",\n      \"operator\": \"equal\",\n      \"value\": 7\n    }\n  ],\n  \"valid\": true\n}\n"},
+            {"name": "pathology", "value": "dementia"}]
+    headers = {'Content-type': 'application/json', "Accept": "text/plain"}
+    r = requests.post(url_calibration, data=json.dumps(data), headers=headers)
     result = json.loads(r.text)
     check_privacy_result(r.text)
 
