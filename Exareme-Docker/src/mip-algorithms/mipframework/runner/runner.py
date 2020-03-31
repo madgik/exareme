@@ -49,9 +49,10 @@ def create_runner(for_class, alg_type, found_in, algorithm_args, num_workers=3):
             if split:
                 split_db(num_wrk)
             # Get cli arguments
-            local_argv = []
-            for i in range(num_wrk):
-                local_argv.append(get_cli_args(algorithm_args, node='worker', num=i))
+            local_argv = [
+                get_cli_args(algorithm_args, node='worker', num=i)
+                for i in range(num_wrk)
+            ]
             global_argv = get_cli_args(algorithm_args, node='master')
 
             # Create workers and master
@@ -121,21 +122,28 @@ def create_runner(for_class, alg_type, found_in, algorithm_args, num_workers=3):
 
 
 def split_db(num_wrk):
-    # Connect to original DB
     engine = create_engine('sqlite:///{}'.format(os.path.join(dbs_path, 'datasets.db')), echo=False)
     sqla_md = MetaData(engine)
     data = Table('data', sqla_md, autoload=True)
     metadata = Table('metadata', sqla_md, autoload=True)
-    # Create node DBs
-    worker_engines = []
-    for i in range(num_wrk):
-        worker_engines.append(
-                create_engine('sqlite:///{}'.format(
-                        os.path.join(dbs_path, 'local_dataset{}.db'.format(i))
-                ), echo=False)
-        )
-        sqla_md.create_all(worker_engines[i])
-    # Split data into node DBs
+
+    worker_engines = create_worker_db_engines(num_wrk, sqla_md)
+
+    split_data_to_workers(data, engine, num_wrk, worker_engines)
+
+    write_metadata_to_workers(engine, metadata, num_wrk, worker_engines)
+
+
+def write_metadata_to_workers(engine, metadata, num_wrk, worker_engines):
+    select_all_md = select([metadata])
+    all_md = engine.execute(select_all_md)
+    for row in all_md:
+        ins_md = metadata.insert().values(row)
+        for i in range(num_wrk):
+            worker_engines[i].execute(ins_md)
+
+
+def split_data_to_workers(data, engine, num_wrk, worker_engines):
     select_count = select([func.count()]).select_from(data)
     num_rows = engine.execute(select_count).fetchone()[0]
     ri = iter(np.random.randint(num_wrk, size=num_rows))
@@ -144,13 +152,18 @@ def split_db(num_wrk):
     for row in all_data:
         ins_row = data.insert().values(row)
         worker_engines[next(ri)].execute(ins_row)
-    # Write metadata
-    select_all_md = select([metadata])
-    all_md = engine.execute(select_all_md)
-    for row in all_md:
-        ins_md = metadata.insert().values(row)
-        for i in range(num_wrk):
-            worker_engines[i].execute(ins_md)
+
+
+def create_worker_db_engines(num_wrk, sqla_md):
+    worker_engines = []
+    for i in range(num_wrk):
+        worker_engines.append(
+            create_engine('sqlite:///{}'.format(
+                os.path.join(dbs_path, 'local_dataset{}.db'.format(i))
+            ), echo=False)
+        )
+        sqla_md.create_all(worker_engines[i])
+    return worker_engines
 
 
 def get_cli_args(algorithm_args, node, num=None):

@@ -5,7 +5,7 @@ import numpy as np
 
 from sqlalchemy import select
 
-from mip_algorithms.data import DataBase
+from mipframework.data import DataBase
 
 _PARAM_FIELDS = [
     'name',
@@ -40,19 +40,23 @@ class AlgorithmTest(object):
             if p['name'] not in _IGNORE
         ]
         self.db = DataBase(
-                db_path='/Users/zazon/madgik/exareme/Exareme-Docker/src/mip-algorithms/algorithm_tests/static_data'
-                        '/test_data.db',
-                data_table_name='data',
-                metadata_table_name='metadata'
+            db_path='/Users/zazon/madgik/exareme/Exareme-Docker/src/mip-algorithms/algorithm_tests/static_data'
+                    '/test_data.db',
+            data_table_name='data',
+            metadata_table_name='metadata'
         )
         self.categorical_variables, self.numerical_variables = self.get_variable_groups()
         self.test_cases = []
 
     def get_variable_groups(self):
-        """Groups db variables in categorical and numerical and returns corresponding lists"""
+        """
+        Groups db variables in categorical and numerical
+        and returns corresponding lists
+        """
         categorical_vars = []
         numerical_vars = []
-        sel_stmt = select([self.db.metadata_table.c.code, self.db.metadata_table.c.isCategorical])
+        sel_stmt = select(
+            [self.db.metadata_table.c.code, self.db.metadata_table.c.isCategorical])
         result = self.db.engine.execute(sel_stmt)
         for c, i in result:
             categorical_vars.append(c) if i else numerical_vars.append(c)
@@ -115,7 +119,8 @@ class AlgorithmTest(object):
             num_categorical = random.randint(0, num_columns)
             num_numerical = num_columns - num_categorical
         else:
-            raise ValueError('columnValuesIsCategorical can be true, false or empty.')
+            raise ValueError(
+                'columnValuesIsCategorical can be true, false or empty.')
         categorical_choice = np.random.permutation(self.categorical_variables) \
                                  .tolist()[:num_categorical]
         numerical_choice = np.random.permutation(self.numerical_variables) \
@@ -134,7 +139,8 @@ class AlgorithmTest(object):
 
     def get_data(self, variables):
         variables = variables.split(',')
-        data = self.db.select_vars_from_data(variables, datasets=['adni'], filter_rules=None)
+        data = self.db.select_vars_from_data(variables, datasets=['adni'],
+                                             filter_rules=None)
         return data
 
     def to_json(self, fname):

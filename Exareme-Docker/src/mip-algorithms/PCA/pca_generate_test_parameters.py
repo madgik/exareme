@@ -1,6 +1,6 @@
 from sklearn.decomposition import PCA
 
-from algorithm_test import AlgorithmTest
+from mipframework.algorithmtest import AlgorithmTest
 
 
 class PCATest(AlgorithmTest):
@@ -26,6 +26,6 @@ class PCATest(AlgorithmTest):
 
 if __name__ == '__main__':
     pca_test = PCATest(
-            '/Users/zazon/madgik/exareme/Exareme-Docker/src/mip-algorithms/PCA/properties.json')
+            '/Exareme-Docker/src/mip-algorithms/PCA/properties.json')
     pca_test.generate_test_cases()
     pca_test.to_json('pca_expected.json')
