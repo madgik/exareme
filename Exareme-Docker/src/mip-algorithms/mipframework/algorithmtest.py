@@ -5,7 +5,7 @@ import numpy as np
 
 from sqlalchemy import select
 
-from mipframework.data import DataBase
+from .data import DataBase
 
 _PARAM_FIELDS = [
     'name',

@@ -1,7 +1,7 @@
 import os
 import logging
 
-from mipframework.constants import LOGGING_LEVEL_ALG, LOGGING_LEVEL_SQL
+from .constants import LOGGING_LEVEL_ALG, LOGGING_LEVEL_SQL
 
 __all__ = ['Algorithm', 'AlgorithmResult', 'TabularDataResource', 'HighChart', 'AlgorithmError', 'logged',
            'LOGGING_LEVEL_ALG', 'create_runner']
@@ -31,7 +31,7 @@ def logged(func):
     return logging_wrapper
 
 
-from algorithm import Algorithm
-from result import AlgorithmResult, TabularDataResource, HighChart
-from exceptions import AlgorithmError
-from runner.runner import create_runner
+from .algorithm import Algorithm
+from .result import AlgorithmResult, TabularDataResource, HighChart
+from .exceptions import AlgorithmError
+from .runner.runner import create_runner

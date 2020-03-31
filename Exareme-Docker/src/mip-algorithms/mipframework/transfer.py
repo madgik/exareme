@@ -4,8 +4,8 @@ import pickle
 import sqlite3
 
 import numpy as np
-from mipframework import logged, LOGGING_LEVEL_ALG
-from mipframework.exceptions import TransferError
+from . import logged, LOGGING_LEVEL_ALG
+from .exceptions import TransferError
 
 
 class TransferRule(object):

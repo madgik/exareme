@@ -1,4 +1,4 @@
-from mipframework import logged
+from . import logged
 
 
 class AlgorithmResult(object):

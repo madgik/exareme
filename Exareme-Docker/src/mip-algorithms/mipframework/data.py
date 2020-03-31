@@ -3,12 +3,16 @@ import re
 
 import numpy as np
 import pandas as pd
-from mipframework import logged
-from mipframework.constants import LOGGING_LEVEL_ALG
-from mipframework.exceptions import PrivacyError
 from patsy import PatsyError, dmatrix, dmatrices
-from sqlalchemy import between, not_, and_, or_, Table, select, create_engine, MetaData
+from sqlalchemy import (
+    between, not_, and_, or_,
+    Table, select, create_engine, MetaData
+)
 from sqlalchemy.exc import SQLAlchemyError
+
+from . import logged
+from .constants import LOGGING_LEVEL_ALG
+from .exceptions import PrivacyError
 
 _PRIVACY_THRESHOLD = 0
 _FILTER_OPERATORS = {
@@ -33,32 +37,39 @@ class AlgorithmData(object):
                       metadata_table_name=args.metadata_table)
         self.raw = read_data_from_db(db, args)
         self.metadata = read_metadata_from_db(db, args)
-        self.variables, self.covariables = self.build_vars_and_covars(args, self.metadata.is_categorical)
+        self.variables, self.covariables = self.build_vars_and_covars(
+            args,
+            self.metadata.is_categorical
+        )
 
     def __repr__(self):
         if LOGGING_LEVEL_ALG == logging.INFO:
             return 'AlgorithmData()'
         elif LOGGING_LEVEL_ALG == logging.DEBUG:
-            return 'AlgorithmData(\nvariables:={var},\ncovariables:={covar},\n)'.format(
-                    var=self.variables, covar=self.covariables)
+            return ('AlgorithmData(\nvariables:={var},\ncovariables:={covar},\n)'
+                    .format(var=self.variables, covar=self.covariables))
 
     def build_vars_and_covars(self, args, is_categorical):
         # This one CANNOT be `logged` since it runs on __init__
         if LOGGING_LEVEL_ALG == logging.INFO:
             logging.info("Starting 'AlgorithmData.build_vars_and_covars'.")
         elif LOGGING_LEVEL_ALG == logging.DEBUG:
-            logging.debug("Starting 'AlgorithmData.build_vars_and_covars',\nargs: \n{0},\nkwargs: \n{1}"
-                          .format(args, is_categorical))
+            logging.debug(
+                "Starting 'AlgorithmData.build_vars_and_covars',\nargs: \n{0},\nkwargs: \n{1}"
+                    .format(args, is_categorical))
         from numpy import log as log
         from numpy import exp as exp
-        _ = log(exp(1))  # This line is needed to prevent import opimizer from removing above lines
+        # This line is needed to prevent import opimizer from removing above lines
+        _ = log(exp(1))
         formula = get_formula(args, is_categorical)
         # Create variables (and possibly covariables)
         if args.x:
             try:
-                variables, covariables = dmatrices(formula, self.raw, return_type='dataframe')
+                variables, covariables = dmatrices(formula, self.raw,
+                                                   return_type='dataframe')
             except (NameError, PatsyError) as e:
-                logging.error('Patsy failed to get variables and covariables from formula.')
+                logging.error(
+                    'Patsy failed to get variables and covariables from formula.')
                 raise e
             return variables, covariables
         else:
@@ -91,7 +102,9 @@ def get_formula(args, is_categorical):
         if args.coding:
             for var in var_names:
                 if is_categorical[var]:
-                    formula = formula.replace(var, 'C({v}, {coding})'.format(v=var, coding=args.coding))
+                    formula = formula.replace(
+                        var, 'C({v}, {coding})'.format(v=var, coding=args.coding)
+                    )
     return formula
 
 
@@ -108,7 +121,8 @@ def read_data_from_db(db, args):
     var_names = args.y
     if args.x:
         var_names.extend(args.x)
-    data = db.select_vars_from_data(var_names=var_names, datasets=args.dataset, filter_rules=args.filter)
+    data = db.select_vars_from_data(var_names=var_names, datasets=args.dataset,
+                                    filter_rules=args.filter)
     return data
 
 
@@ -125,7 +139,8 @@ class DataBase(object):
     def __init__(self, db_path, data_table_name, metadata_table_name):
         self.db_path = db_path
         try:
-            self.engine = create_engine('sqlite:///{}'.format(self.db_path), echo=False)
+            self.engine = create_engine('sqlite:///{}'.format(self.db_path),
+                                        echo=False)
         except SQLAlchemyError as e:
             logging.error('SQLAlchemy failed to connect to database.')
             raise e
@@ -152,12 +167,13 @@ class DataBase(object):
     @logged
     def select_vars_from_data(self, var_names, datasets, filter_rules):
         dataset_clause = or_(*[self.data_table.c.dataset == ds for ds in datasets])
-        sel_stmt = select([self.data_table.c[var] for var in var_names]).where(dataset_clause)
+        sel_stmt = (select([self.data_table.c[var] for var in var_names])
+                    .where(dataset_clause))
         if filter_rules:
             filter_clause = self.build_filter_clause(filter_rules)
             sel_stmt = sel_stmt.where(filter_clause)
         data = pd.read_sql(sel_stmt, self.engine)
-        data.replace('', np.nan, inplace=True)  # fixme remove when no empty str in dbs
+        data.replace('', np.nan, inplace=True)  # fixme remove
         data = data.dropna()
         # Privacy check
         if len(data) < _PRIVACY_THRESHOLD:

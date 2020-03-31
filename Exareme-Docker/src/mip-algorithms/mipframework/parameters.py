@@ -4,7 +4,7 @@ import os
 import re
 from argparse import ArgumentParser
 
-from mipframework import LOGGING_LEVEL_ALG, logged
+from . import LOGGING_LEVEL_ALG, logged
 
 _COMMON_ALGORITHM_ARGUMENTS = {
     'input_local_DB',

@@ -3,11 +3,11 @@ import logging
 import os
 from string import capwords
 
-from mipframework import logged
-from mipframework.decorators import algorithm_methods_decorator
-from mipframework.parameters import Parameters, parse_exareme_args
-from mipframework.transfer import AddMe, MaxMe, MinMe, ConcatMe, DoNothing, TransferStruct
-from mipframework.utils import one_kwarg
+from . import logged
+from .decorators import algorithm_methods_decorator
+from .parameters import Parameters, parse_exareme_args
+from .transfer import AddMe, MaxMe, MinMe, ConcatMe, DoNothing, TransferStruct
+from .utils import one_kwarg
 
 _MAIN_METHODS = {'local_', 'global_', 'local_init', 'global_init', 'local_step', 'global_step', 'local_final',
                  'global_final', 'termination_condition'}

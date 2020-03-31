@@ -1,4 +1,4 @@
-from mipframework.highcharts.core import Heatmap_, Area_, Title, Axis, ColorAxis, Series, Legend, DataLabels, Label
+from .core import Heatmap_, Area_, Title, Axis, ColorAxis, Series, Legend, DataLabels, Label
 
 
 class HighchartTemplate(object):
