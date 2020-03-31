@@ -13,7 +13,7 @@
             "columnValuesSQLType": "real, integer, text",
             "columnValuesIsCategorical": "false",
             "columnValuesNumOfEnumerations": "",
-            "value": "leftaccumbensarea, leftacgganteriorcingulategyrus, leftainsanteriorinsula, rightaccumbensarea, rightacgganteriorcingulategyrus, rightainsanteriorinsula",
+            "value": "rightppplanumpolare,leftmtgmiddletemporalgyrus,rightpcggposteriorcingulategyrus",
             "valueNotBlank": true,
             "valueMultiple": true,
             "valueType": "string"

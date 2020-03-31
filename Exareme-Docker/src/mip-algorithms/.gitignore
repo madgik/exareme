@@ -53,9 +53,4 @@ crashlytics.properties
 crashlytics-build.properties
 
 # Creating demo data.
-unit_tests/data/output
-
-# Algorithm templates output
-algorithm_templates/output/*
-# exception to the rule needed because we want to keep the folder but not its contents and git doesn't do that
-!algorithm_templates/.gitkeep
+tests/data/output

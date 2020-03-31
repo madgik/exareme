@@ -1,0 +1,47 @@
+library(tidyverse)
+library(jsonlite)
+
+mydata <-read.csv("../data/dementia/desd-synthdata.csv",header=T)
+
+## TEST 1: 2 variables and 2 clusters
+data2 <-data.frame(mydata$lefthippocampus,mydata$righthippocampus)
+data3<-na.omit(data2)
+c1 <- c( 1.7, 1.5)
+c2 <- c( 2.5, 2.0)
+centers <- rbind(c1,c2)
+k <-kmeans(data3, centers, iter.max =50, algorithm ="Lloyd")
+A = toJSON(colnames(k$centers))
+B = toJSON(k$centers)
+C = toJSON(k$size)
+Result1 = matrix( c("Test1",A,B,C), ncol=4, byrow=TRUE, dimnames=list('',c('testname','variables','centers_points', 'centers_size')))
+
+## TEST 2: 3 variables and 4 clusters
+data2 <-data.frame(mydata$rightpallidum,mydata$leftpallidum,mydata$lefthippocampus)
+data3<-na.omit(data2)
+c1 <- c(0.2, 0.5, 1.7)
+c2 <- c(0.6, 1.2, 2.0)
+c3 <- c(1.0, 3.9, 2.5)
+c4 <- c(1.5, 2.0, 3.0)
+centers <- rbind(c1,c2,c3,c4)
+k <-kmeans(data3, centers,iter.max =50, algorithm ="Lloyd")
+A = toJSON(colnames(k$centers))
+B = toJSON(k$centers)
+C = toJSON(k$size)
+Result2 = matrix( c("Test2",A,B,C), ncol=4, byrow=TRUE, dimnames=list('',c('testname','variables','centers_points', 'centers_size')))
+
+## TEST 3: 4 variables and 5 clusters
+data2 <-data.frame(mydata$rightpallidum,mydata$leftpallidum,mydata$lefthippocampus,mydata$righthippocampus)
+data3<-na.omit(data2)
+c1 <- c(0.2, 0.5, 1.7, 1.5)
+c2 <- c(0.6, 1.2, 2.5, 2.0)
+c3 <- c(1.0, 1.5, 3.9, 2.5)
+c4 <- c(1.5, 2.0, 4.0, 3.0)
+c5 <- c(2.0, 2.2, 2.3, 4.0)
+centers <- rbind(c1,c2,c3,c4,c5)
+k <-kmeans(data3, centers,iter.max =50, algorithm ="Lloyd")
+A = toJSON(colnames(k$centers))
+B = toJSON(k$centers)
+C = toJSON(k$size)
+Result3 = matrix(c("Test3",A,B,C), ncol=4, byrow=TRUE, dimnames=list('',c('testname','variables','centers_points', 'centers_size')))
+
+return (c(toJSON(Result1), toJSON(Result2), toJSON(Result3)))

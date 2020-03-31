@@ -16,8 +16,12 @@ import numpy as np
 import pandas as pd
 from patsy import dmatrix, dmatrices
 
-
-PRIVACY_MAGIC_NUMBER = 10
+env_type = os.environ['ENVIRONMENT_TYPE']
+if env_type in {'DEV', 'PROD'}:
+    PRIVACY_MAGIC_NUMBER = 10
+elif env_type == 'TEST':
+    PRIVACY_MAGIC_NUMBER = 1
+    
 P_VALUE_CUTOFF = 0.001
 P_VALUE_CUTOFF_STR = '< ' + str(P_VALUE_CUTOFF)
 
@@ -33,7 +37,8 @@ class TransferAndAggregateData(object):
     def __repr__(self):
         ret = ''
         for k in self.data.keys():
-            ret += '{k} : {val}, reduce by {red_type}\n'.format(k=k, val=self.data[k], red_type=self.reduce_type[k])
+            ret += '{k} : {val}, reduce by {red_type}\n'.format(k=k, val=self.data[k],
+                                                                red_type=self.reduce_type[k])
         return ret
 
     def __add__(self, other):
@@ -48,7 +53,9 @@ class TransferAndAggregateData(object):
             elif self.reduce_type[k] == 'do_nothing':
                 kwargs[k] = (self.data[k], 'do_nothing')
             else:
-                raise ValueError('{rt} is not implemented as a reduce method.'.format(rt=self.reduce_type[k]))
+                raise ValueError(
+                        '{rt} is not implemented as a reduce method.'.format(
+                            rt=self.reduce_type[k]))
         return TransferAndAggregateData(**kwargs)
 
     @classmethod
@@ -173,10 +180,11 @@ def query_from_formula(fname_db, formula, variables, dataset, query_filter,
 
     # Define query forming functions
     def iscateg_query(var):
-        return "SELECT {is_cat} FROM {metadata} WHERE {code}=='{var}';".format(is_cat=metadata_isCategorical_column,
-                                                                               metadata=metadata_table,
-                                                                               code=metadata_code_column,
-                                                                               var=var)
+        return "SELECT {is_cat} FROM {metadata} WHERE {code}=='{var}';".format(
+                is_cat=metadata_isCategorical_column,
+                metadata=metadata_table,
+                code=metadata_code_column,
+                var=var)
 
     def count_query(varz):
         return "SELECT COUNT({var}) FROM {data} WHERE ({var_clause}) AND ({ds_clause}) {flt_clause};".format(
@@ -248,7 +256,8 @@ def parse_filter(query_filter):
         if op == 'between':
             return "{id} BETWEEN {val1} AND {val2}".format(id=id_, op=op, val1=val[0], val2=val[1])
         elif op == 'not_between':
-            return "{id} NOT BETWEEN {val1} AND {val2}".format(id=id_, op=op, val1=val[0], val2=val[1])
+            return "{id} NOT BETWEEN {val1} AND {val2}".format(id=id_, op=op, val1=val[0],
+                                                               val2=val[1])
         else:
             return "{id}{op}{val}".format(id=id_, op=op, val=val)
 
@@ -260,7 +269,6 @@ def parse_filter(query_filter):
     return add_spaces(cond).join(
             [format_rule(rule=rule)
              if 'id' in rule else format_group(group=parse_filter(rule)) for rule in rules])
-
 
 
 def value_casting(value, type):
@@ -314,7 +322,6 @@ def variable_categorical_getDistinctValues(metadata):
         if md[3] == 1:  # when variable is categorical
             distinctValues[str(md[0])] = [value_casting(x, str(md[2])) for x in md[4].split(',')]
     return distinctValues
-
 
 
 class StateData(object):
@@ -391,10 +398,13 @@ def parse_exareme_args(fp):
     # Add Exareme arguments
     parser.add_argument('-input_local_DB', required=False, help='Path to local db.')
     parser.add_argument('-db_query', required=False, help='Query to be executed on local db.')
-    parser.add_argument('-cur_state_pkl', required=False, help='Path to the pickle file holding the current state.')
-    parser.add_argument('-prev_state_pkl', required=False, help='Path to the pickle file holding the previous state.')
+    parser.add_argument('-cur_state_pkl', required=False,
+                        help='Path to the pickle file holding the current state.')
+    parser.add_argument('-prev_state_pkl', required=False,
+                        help='Path to the pickle file holding the previous state.')
     parser.add_argument('-local_step_dbs', required=False, help='Path to local db.')
-    parser.add_argument('-global_step_db', required=False, help='Path to db holding global step results.')
+    parser.add_argument('-global_step_db', required=False,
+                        help='Path to db holding global step results.')
     parser.add_argument('-data_table', required=False)
     parser.add_argument('-metadata_table', required=False)
     parser.add_argument('-metadata_code_column', required=False)
