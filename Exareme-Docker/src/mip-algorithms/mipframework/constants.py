@@ -1,6 +1,6 @@
 import logging
 
-LOGGING_LEVEL_ALG = logging.DEBUG
+LOGGING_LEVEL_ALG = logging.INFO
 LOGGING_LEVEL_SQL = logging.INFO
 
 P_VALUE_CUTOFF = 0.001

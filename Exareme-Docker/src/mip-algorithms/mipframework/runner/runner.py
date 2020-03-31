@@ -3,16 +3,19 @@ import os
 import sqlite3
 import sys
 import importlib
+from pathlib import Path
 from functools import wraps
 
 import numpy as np
 from sqlalchemy import create_engine, MetaData, Table, select, func
 
-dbs_path = os.path.join(os.path.dirname(__file__), 'dbs')
+# dbs_path = os.path.join(os.path.dirname(__file__), 'dbs')
+dbs_folder = Path(__file__).parent / 'dbs'
 
 
 def write_to_transfer_db(out, db_name):
-    conn = sqlite3.connect(os.path.join(dbs_path, db_name))
+    db_path = dbs_folder / db_name
+    conn = sqlite3.connect(db_path.as_posix())
     c = conn.cursor()
     c.execute('INSERT INTO transfer VALUES (?)', (out,))
     conn.commit()
@@ -64,7 +67,7 @@ def create_runner(for_class, alg_type, found_in, algorithm_args, num_workers=3):
 
         @staticmethod
         def make_transfer_db(path):
-            conn = sqlite3.connect(path)
+            conn = sqlite3.connect(path.as_posix())
             c = conn.cursor()
             c.execute('DROP TABLE IF EXISTS transfer')
             c.execute('CREATE TABLE transfer (data text)')
@@ -75,7 +78,8 @@ def create_runner(for_class, alg_type, found_in, algorithm_args, num_workers=3):
     if alg_type == 'local-global':
         class LocalGlobalRunner(Runner):
             def run(self):
-                self.make_transfer_db(path=os.path.join(dbs_path, 'local_transfer.db'))
+                db_path = dbs_folder / 'local_transfer.db'
+                self.make_transfer_db(path=db_path)
                 for i in range(self.num_wrk):
                     out = capture_stdout(self.workers[i].local_)()
                     write_to_transfer_db(out, 'local_transfer.db')
@@ -88,30 +92,35 @@ def create_runner(for_class, alg_type, found_in, algorithm_args, num_workers=3):
             def run(self):
                 # ===== INIT ===== #
                 # Locals
-                self.make_transfer_db(path=os.path.join(dbs_path, 'local_transfer.db'))
+                db_path = dbs_folder / 'local_transfer.db'
+                self.make_transfer_db(path=db_path)
                 for i in range(self.num_wrk):
                     out = capture_stdout(self.workers[i].local_init)()
                     write_to_transfer_db(out, 'local_transfer.db')
                 # Global
-                self.make_transfer_db(path=os.path.join(dbs_path, 'global_transfer.db'))
+                db_path = dbs_folder / 'global_transfer.db'
+                self.make_transfer_db(path=db_path)
                 out = capture_stdout(self.master.global_init)()
                 write_to_transfer_db(out, 'global_transfer.db')
                 # ===== STEP ===== #
                 while True:
                     # Locals
-                    self.make_transfer_db(path=os.path.join(dbs_path, 'local_transfer.db'))
+                    db_path = dbs_folder / 'local_transfer.db'
+                    self.make_transfer_db(path=db_path)
                     for i in range(self.num_wrk):
                         out = capture_stdout(self.workers[i].local_step)()
                         write_to_transfer_db(out, 'local_transfer.db')
                     # Global
-                    self.make_transfer_db(path=os.path.join(dbs_path, 'global_transfer.db'))
+                    db_path = dbs_folder / 'global_transfer.db'
+                    self.make_transfer_db(path=db_path)
                     out = capture_stdout(self.master.global_step)()
                     write_to_transfer_db(out, 'global_transfer.db')
                     if 'STOP' in capture_stdout(self.master.termination_condition)():
                         break
                 # ===== FINAL ===== #
                 # Locals
-                self.make_transfer_db(path=os.path.join(dbs_path, 'local_transfer.db'))
+                db_path = dbs_folder / 'local_transfer.db'
+                self.make_transfer_db(path=db_path)
                 for i in range(self.num_wrk):
                     out = capture_stdout(self.workers[i].local_final)()
                     write_to_transfer_db(out, 'local_transfer.db')
@@ -122,15 +131,14 @@ def create_runner(for_class, alg_type, found_in, algorithm_args, num_workers=3):
 
 
 def split_db(num_wrk):
-    engine = create_engine('sqlite:///{}'.format(os.path.join(dbs_path, 'datasets.db')), echo=False)
+    db_path = dbs_folder / 'datasets.db'
+    engine = create_engine('sqlite:///{}'.format(db_path), echo=False)
     sqla_md = MetaData(engine)
     data = Table('data', sqla_md, autoload=True)
     metadata = Table('metadata', sqla_md, autoload=True)
 
     worker_engines = create_worker_db_engines(num_wrk, sqla_md)
-
     split_data_to_workers(data, engine, num_wrk, worker_engines)
-
     write_metadata_to_workers(engine, metadata, num_wrk, worker_engines)
 
 
@@ -157,10 +165,9 @@ def split_data_to_workers(data, engine, num_wrk, worker_engines):
 def create_worker_db_engines(num_wrk, sqla_md):
     worker_engines = []
     for i in range(num_wrk):
+        db_path = dbs_folder / 'local_dataset{}.db'.format(i)
         worker_engines.append(
-            create_engine('sqlite:///{}'.format(
-                os.path.join(dbs_path, 'local_dataset{}.db'.format(i))
-            ), echo=False)
+            create_engine('sqlite:///{}'.format(db_path), echo=False)
         )
         sqla_md.create_all(worker_engines[i])
     return worker_engines
@@ -168,12 +175,23 @@ def create_worker_db_engines(num_wrk, sqla_md):
 
 def get_cli_args(algorithm_args, node, num=None):
     common_args = [
-        '-input_local_DB', os.path.join(dbs_path, 'local_dataset{}.db'.format(
-                num) if num is not None else ''),
-        '-cur_state_pkl', os.path.join(dbs_path, 'state_{0}{1}.pkl'.format(node, num if num is not None else '')),
-        '-prev_state_pkl', os.path.join(dbs_path, 'state_{0}{1}.pkl'.format(node, num if num is not None else '')),
-        '-local_step_dbs', os.path.join(dbs_path, 'local_transfer.db'),
-        '-global_step_db', os.path.join(dbs_path, 'global_transfer.db'),
+        '-input_local_DB',
+        (
+            (dbs_folder / 'local_dataset{}.db'.format(num)).as_posix()
+            if num is not None else ''
+        ),
+        '-cur_state_pkl',
+        (
+            dbs_folder / 'state_{0}{1}.pkl'
+            .format(node, num if num is not None else '')
+        ).as_posix(),
+        '-prev_state_pkl',
+        (
+            dbs_folder / 'state_{0}{1}.pkl'
+            .format(node, num if num is not None else '')
+        ).as_posix(),
+        '-local_step_dbs', (dbs_folder / 'local_transfer.db').as_posix(),
+        '-global_step_db', (dbs_folder / 'global_transfer.db').as_posix(),
         '-data_table', 'data',
         '-metadata_table', 'metadata',
         '-metadata_code_column', 'code',
@@ -184,4 +202,3 @@ def get_cli_args(algorithm_args, node, num=None):
         '-metadata_maxValue_column', 'max'
     ]
     return algorithm_args + common_args
-
