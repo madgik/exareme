@@ -2,8 +2,11 @@ from collections import defaultdict
 import json
 import random
 import numpy as np
+from pathlib import Path
+import abc
 
 from sqlalchemy import select
+from tqdm import tqdm
 
 from .data import DataBase
 
@@ -27,6 +30,16 @@ _IGNORE = [
 
 
 class AlgorithmTest(object):
+    __metaclass__ = abc.ABCMeta
+    """
+    A base class for generating random test-cases for algorithm testing.
+    The test-cases are generated based on specifications gathered from 
+    the algorithm's properties.json file, uniformly at random whenever 
+    possible. The class must be subclassed for each algorithm and the 
+    `get_expected` method must be implemented by the subclass using some
+    standard library for computing the expected results.
+    """
+
     def __init__(self, properties_path):
         with open(properties_path, 'r') as prop:
             params = json.load(prop)['parameters']
@@ -39,9 +52,10 @@ class AlgorithmTest(object):
             for p in params
             if p['name'] not in _IGNORE
         ]
+        db_path = (Path(__file__).parents[1]
+                   / 'tests' / 'data' / 'dementia' / 'datasets.db').as_posix()
         self.db = DataBase(
-            db_path='/Users/zazon/madgik/exareme/Exareme-Docker/src/mip-algorithms/algorithm_tests/static_data'
-                    '/test_data.db',
+            db_path=db_path,
             data_table_name='data',
             metadata_table_name='metadata'
         )
@@ -64,22 +78,24 @@ class AlgorithmTest(object):
 
     def generate_test_cases(self, num_tests=100):
         """Generates list of input/output pairs for algorithm tests"""
-        while len(self.test_cases) < num_tests:
-            in_ = self.generate_random_input()
-            out = self.get_expected(in_)
-            if out is None:
-                continue
-            self.test_cases.append({
-                'input' : in_,
-                'output': out
-            })
+        with tqdm(total=num_tests, desc='Generating test cases') as pbar:
+            while len(self.test_cases) < num_tests:
+                in_ = self.generate_random_input()
+                out = self.get_expected(in_)
+                if out is None:
+                    continue
+                self.test_cases.append({
+                    'input' : in_,
+                    'output': out
+                })
+                pbar.update(1)
 
+    @abc.abstractmethod
     def get_expected(self, alg_input):
         """
         Produces expected output from some widely used library.
-        Should be implemented in subclasses
+        Should be implemented in subclasses.
         """
-        raise NotImplementedError
 
     def generate_random_input(self):
         """Generates an algorithm input in the form expected by exareme"""
@@ -90,7 +106,7 @@ class AlgorithmTest(object):
             elif param['type'] == 'other':
                 param_value = self.get_random_other_param(param)
             elif param['name'] == 'filter':
-                param_value = ''
+                param_value = ''  # todo implement get_random_filter method
             elif param['name'] == 'dataset':
                 param_value = 'adni'
             elif param['name'] == 'pathology':

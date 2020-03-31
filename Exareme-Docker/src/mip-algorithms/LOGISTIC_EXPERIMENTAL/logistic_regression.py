@@ -156,20 +156,15 @@ class LogisticRegression(Algorithm):
         # Format output data
         # JSON raw
         raw_data = {
-            'Covariates'                 : [
-                {
-                    'Variable'   : x_names[i],
-                    'Coefficient': coeff[i],
-                    'std.err.'   : smr.stderr[i],
-                    'z score'    : smr.z_scores[i],
-                    'p value'    : (smr.p_values[i]
-                                    if smr.p_values[i] >= P_VALUE_CUTOFF
-                                    else P_VALUE_CUTOFF_STR),
-                    'Lower C.I.' : smr.low_ci[i],
-                    'Upper C.I.' : smr.high_ci[i]
-                }
-                for i in range(len(x_names))
-            ],
+            'Coefficients'               : list(coeff),
+            'Names'                      : list(x_names),
+            'Std.Err'                    : list(smr.stderr),
+            'z score'                    : list(smr.z_scores),
+            'p value'                    : [pv if pv >= P_VALUE_CUTOFF
+                                            else P_VALUE_CUTOFF_STR
+                                            for pv in smr.p_values],
+            'Lower C.I.'                 : list(smr.low_ci),
+            'Upper C.I.'                 : list(smr.high_ci),
             'Model degrees of freedom'   : smr.df_mod,
             'Residual degrees of freedom': smr.df_resid,
             'Log-likelihood'             : ll,
@@ -331,34 +326,13 @@ if __name__ == '__main__':
     import time
 
     algorithm_args = [
-        '-x', 'lefthippocampus',
+        '-x', 'rightacgganteriorcingulategyrus,leftmprgprecentralgyrusmedialsegment,rightopifgopercularpartoftheinferiorfrontalgyrus,rightpcggposteriorcingulategyrus,rightcalccalcarinecortex,rightptplanumtemporale,rightioginferioroccipitalgyrus,leftphgparahippocampalgyrus',
         '-y', 'alzheimerbroadcategory',
         '-pathology', 'dementia',
-        '-dataset', 'adni, ppmi, edsd',
-        '-filter', '''
-                    {
-                        "condition": "OR",
-                        "rules": [
-                            {
-                                "id": "alzheimerbroadcategory",
-                                "field": "alzheimerbroadcategory",
-                                "type": "string",
-                                "input": "text",
-                                "operator": "equal",
-                                "value": "AD"
-                            },
-                            {
-                                "id": "alzheimerbroadcategory",
-                                "field": "alzheimerbroadcategory",
-                                "type": "string",
-                                "input": "text",
-                                "operator": "equal",
-                                "value": "CN"
-                            }
-                        ],
-                        "valid": true
-                    }
-        ''',
+        '-dataset', 'adni',
+        '-filter', """
+        {"condition": "OR", "rules": [{"id": "alzheimerbroadcategory", "field": "alzheimerbroadcategory", "type": "string", "input": "text", "operator": "equal", "value": "AD"}, {"id": "alzheimerbroadcategory", "field": "alzheimerbroadcategory", "type": "string", "input": "text", "operator": "equal", "value": "Other"}], "valid": true}
+        """,
         '-formula', '',
     ]
     runner = create_runner(for_class='LogisticRegression',

@@ -16,12 +16,12 @@ from .exceptions import PrivacyError
 
 _PRIVACY_THRESHOLD = 0
 _FILTER_OPERATORS = {
-    'equal'           : lambda a, b: a.__eq__(b),
-    'not_equal'       : lambda a, b: a.__ne__(b),
-    'less'            : lambda a, b: a.__lt__(b),
-    'greater'         : lambda a, b: a.__gt__(b),
-    'less_or_equal'   : lambda a, b: a.__le__(b),
-    'greater_or_equal': lambda a, b: a.__ge__(b),
+    'equal'           : lambda a, b: a == b,
+    'not_equal'       : lambda a, b: a != b,
+    'less'            : lambda a, b: a < b,
+    'greater'         : lambda a, b: a > b,
+    'less_or_equal'   : lambda a, b: a <= b,
+    'greater_or_equal': lambda a, b: a >= b,
     'between'         : lambda a, b: between(a, b[0], b[1]),
     'not_between'     : lambda a, b: not_(between(a, b[0], b[1]))
 }

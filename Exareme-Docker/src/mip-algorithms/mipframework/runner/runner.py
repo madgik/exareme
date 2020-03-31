@@ -9,7 +9,6 @@ from functools import wraps
 import numpy as np
 from sqlalchemy import create_engine, MetaData, Table, select, func
 
-# dbs_path = os.path.join(os.path.dirname(__file__), 'dbs')
 dbs_folder = Path(__file__).parent / 'dbs'
 
 
