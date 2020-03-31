@@ -1,8 +1,8 @@
 import logging
 import pickle
 
-from mip_algorithms import logged
-from mip_algorithms.utils import one_kwarg, make_dirs
+from mipframework import logged
+from mipframework.utils import one_kwarg, make_dirs
 
 
 class State(object):

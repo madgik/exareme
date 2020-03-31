@@ -8,7 +8,7 @@ from functools import wraps
 import numpy as np
 from sqlalchemy import create_engine, MetaData, Table, select, func
 
-dbs_path = '/Users/zazon/madgik/exareme/Exareme-Docker/src/mip-algorithms/mip_algorithms/runner/dbs'
+dbs_path = os.path.join(os.path.dirname(__file__), 'dbs')
 
 
 def write_to_transfer_db(out, db_name):

@@ -2,7 +2,7 @@ import errno
 import os
 from functools import wraps
 
-from mip_algorithms import logged
+from mipframework import logged
 
 
 @logged

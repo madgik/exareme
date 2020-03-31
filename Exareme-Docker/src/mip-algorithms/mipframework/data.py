@@ -3,9 +3,9 @@ import re
 
 import numpy as np
 import pandas as pd
-from mip_algorithms import logged
-from mip_algorithms.constants import LOGGING_LEVEL_ALG
-from mip_algorithms.exceptions import PrivacyError
+from mipframework import logged
+from mipframework.constants import LOGGING_LEVEL_ALG
+from mipframework.exceptions import PrivacyError
 from patsy import PatsyError, dmatrix, dmatrices
 from sqlalchemy import between, not_, and_, or_, Table, select, create_engine, MetaData
 from sqlalchemy.exc import SQLAlchemyError

@@ -2,9 +2,9 @@ import numpy as np
 import scipy.special as special
 import scipy.stats as st
 
-from mip_algorithms import Algorithm, AlgorithmResult, TabularDataResource, AlgorithmError
-from mip_algorithms.constants import P_VALUE_CUTOFF, P_VALUE_CUTOFF_STR
-from mip_algorithms.highcharts import CorrelationHeatmap
+from mipframework import Algorithm, AlgorithmResult, TabularDataResource, AlgorithmError
+from mipframework.constants import P_VALUE_CUTOFF, P_VALUE_CUTOFF_STR
+from mipframework.highcharts import CorrelationHeatmap
 
 
 class Pearson(Algorithm):
@@ -134,7 +134,7 @@ class Pearson(Algorithm):
 
 if __name__ == '__main__':
     import time
-    from mip_algorithms import create_runner
+    from mipframework import create_runner
 
     algorithm_args = [
         '-x', '',

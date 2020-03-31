@@ -1,10 +1,10 @@
 import logging
 from functools import wraps
 
-from mip_algorithms.data import AlgorithmData
-from mip_algorithms.exceptions import UnknownFunctionError
-from mip_algorithms.state import State
-from mip_algorithms.transfer import TransferStruct
+from mipframework.data import AlgorithmData
+from mipframework.exceptions import UnknownFunctionError
+from mipframework.state import State
+from mipframework.transfer import TransferStruct
 
 
 def algorithm_methods_decorator(func):

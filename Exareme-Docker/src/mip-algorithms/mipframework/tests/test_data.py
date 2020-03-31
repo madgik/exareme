@@ -1,6 +1,6 @@
 import pytest
 
-from mip_algorithms.data import get_formula
+from mipframework.data import get_formula
 
 
 @pytest.fixture
