@@ -1,19 +1,17 @@
 {
-    "name": "LOGISTIC_REGRESSION",
-    "desc": "Binary Logistic Regression without regularization using Newton-Raphson method",
-    "label": "Logistic Regression",
+    "name": "LOGISTIC_EXPERIMENTAL",
+    "desc": "",
+    "label": "Logistic Experimental",
     "type": "python_iterative",
-    "status": "enabled",
     "parameters": [
         {
             "name": "x",
             "label": "x",
             "desc": "A list of variables from database. The variable should be Real, Integer. It cannot be empty",
             "type": "column",
-            "columnValuesSQLType": "real, integer, text",
-            "columnValuesIsCategorical": "",
-            "columnValuesNumOfEnumerations": "",
-            "value": "alzheimerbroadcategory, lefthippocampus",
+            "columnValuesSQLType": "real, integer",
+            "columnValuesIsCategorical": "false",
+            "value": "leftaccumbensarea, leftacgganteriorcingulategyrus, leftainsanteriorinsula, rightaccumbensarea, rightacgganteriorcingulategyrus, rightainsanteriorinsula",
             "valueNotBlank": true,
             "valueMultiple": true,
             "valueType": "string"
@@ -25,7 +23,6 @@
             "type": "column",
             "columnValuesSQLType": "text, integer",
             "columnValuesIsCategorical": "true",
-            "columnValuesNumOfEnumerations": "",
             "value": "gender",
             "valueNotBlank": true,
             "valueMultiple": false,

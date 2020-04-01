@@ -9,12 +9,12 @@ from .transfer import TransferStruct
 
 def algorithm_methods_decorator(func):
     func_name = func.__name__
-    # Local-Global algs
+    # Local-Global algorithms
     if func_name == 'local_':
         wrapper = make_wrapper(node='local', step='first')(func)
     elif func_name == 'global_':
         wrapper = make_wrapper(node='global', step='last')(func)
-    # Iterative algs
+    # Iterative algorithms
     elif func_name == 'local_init':
         wrapper = make_wrapper(node='local', step='first', state='init')(func)
     elif func_name == 'global_init':
@@ -46,29 +46,36 @@ def make_wrapper(node, step=None, state=None):
     def outer_wrapper(func):
         @wraps(func)
         def inner_wrapper(self):
+
             # Acquire data from DB (if local node)
             if node == 'local':
                 self.data = AlgorithmData(self._args)
+
             # Init or load state
             if state == 'init':
                 self._state = State()
             elif state == 'load':
                 self._state = State.load_all(fn_state=self._args.prev_state_pkl)
+
             # Fetch data
             if node == 'local' and step != 'first':
-                self._transfer_struct = TransferStruct.fetch_all(transfer_db=self._args.global_step_db)
+                transfer_db = self._args.global_step_db
+                self._transfer_struct = TransferStruct.fetch_all(transfer_db=transfer_db)
             elif node == 'global':
-                self._transfer_struct = TransferStruct.fetch_all(transfer_db=self._args.local_step_dbs)
+                transfer_db = self._args.local_step_dbs
+                self._transfer_struct = TransferStruct.fetch_all(transfer_db=transfer_db)
+
             # Execute node method
             func(self)
+
             # Transfer data
-            if node == 'local':
+            if node == 'local' or (node == 'global' and step != 'last'):
                 self._transfer_struct.transfer_all()
-            elif node == 'global' and step != 'last':
-                self._transfer_struct.transfer_all()
+
             # Save state
             if state is not None:
                 self._state.store_all(fn_state=self._args.cur_state_pkl)
+
             # Output result
             if node == 'global' and step == 'last':
                 self.set_output()

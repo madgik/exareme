@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import re
 from string import capwords
 
 from . import logged
@@ -9,24 +10,34 @@ from .parameters import Parameters, parse_exareme_args
 from .transfer import AddMe, MaxMe, MinMe, ConcatMe, DoNothing, TransferStruct
 from .utils import one_kwarg
 
-_MAIN_METHODS = {'local_', 'global_', 'local_init', 'global_init', 'local_step', 'global_step', 'local_final',
-                 'global_final', 'termination_condition'}
+_MAIN_METHODS = re.compile(r"""^((local_|global_)
+                                 (init|step(_[2-9])?|final|)?
+                                 |termination_condition)$""", re.VERBOSE)
 
 
 class MetaAlgorithm(type):
     def __new__(mcs, name, bases, attrs):
         for key, attr in attrs.items():
-            if callable(attr):
-                # todo understand: if ifs order is changed I get
-                #   File "/root/mip-algorithms/PEARSON_EXPERIMENTAL/pearson.py", line 20, in local_
-                #       left_vars = right_vars = self.data.variables
-                #       AttributeError: 'NoneType' object has no attribute 'variables'
-                if hasattr(attr, '__name__'):
-                    if attr.__name__ not in (_MAIN_METHODS | {'__repr__', '__init__', '__str__'}):
-                        attrs[key] = logged(attr)
-                    if attr.__name__ in _MAIN_METHODS:
-                        attrs[key] = logged(algorithm_methods_decorator(attr))
+            if cannot_be_decorated(attr):
+                continue
+            if can_be_logged(attr):
+                attrs[key] = logged(attr)
+            if in_main_methods(attr):
+                attrs[key] = logged(algorithm_methods_decorator(attr))
         return type.__new__(mcs, name, bases, attrs)
+
+
+def cannot_be_decorated(attr):
+    return not callable(attr) or not hasattr(attr, '__name__')
+
+
+def can_be_logged(attr):
+    return (attr.__name__ not in {'__init__', '__repr__', '__str__'}
+            and not _MAIN_METHODS.match(attr.__name__))
+
+
+def in_main_methods(attr):
+    return _MAIN_METHODS.match(attr.__name__)
 
 
 class Algorithm(object):
@@ -49,8 +60,9 @@ class Algorithm(object):
 
     def set_output(self):
         try:
-            logging.debug('Algorithm output:\n {res}'.format(res=json.dumps(self.result.output(), indent=4)))
-            print(json.dumps(self.result.output(), allow_nan=False, indent=4))
+            res = json.dumps(self.result.output())
+            logging.debug('Algorithm output:\n {res}'.format(res=res, indent=4))
+            print(json.dumps(self.result.output(), allow_nan=True, indent=4))
         except ValueError:
             logging.error('Result contains NaNs.')
             raise

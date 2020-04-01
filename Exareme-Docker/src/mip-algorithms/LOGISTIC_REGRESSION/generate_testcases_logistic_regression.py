@@ -64,6 +64,10 @@ class LogisticRegressionTest(AlgorithmTest):
         y = data[y_name]
         X = data[x_names.split(',')]
 
+        # Reject when one class appears less times than then number of columns
+        if any([len(y[y == item]) <= X.shape[1] for item in set(y)]):
+            return None
+
         # Fit logistic regression and return results
         logreg_res = LogisticRegression(penalty='none', solver='newton-cg').fit(X, y)
         coeff = logreg_res.intercept_.tolist() + logreg_res.coef_.tolist()[0]

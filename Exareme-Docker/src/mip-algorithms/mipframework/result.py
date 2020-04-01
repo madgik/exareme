@@ -18,12 +18,12 @@ class AlgorithmResult(object):
         for table in self.tables:
             result.append({
                 "type": "application/vnd.dataresource+json",
-                "data": table
+                "data": table.render()
             })
         for hc in self.highcharts:
             result.append({
                 "type": "application/vnd.highcharts+json",
-                "data": hc
+                "data": hc.render()
             })
         return {'result': result}
 

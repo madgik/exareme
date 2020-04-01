@@ -9,6 +9,10 @@ class State(object):
     def __init__(self):
         self.termination = False
 
+    def __repr__(self):
+        cls_name = type(self).__name__
+        return '{}()'.format(cls_name)
+
     @one_kwarg
     def register(self, **kwargs):
         name, var = kwargs.popitem()

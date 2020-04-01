@@ -1,0 +1,4046 @@
+{
+    "test_cases": [
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftaorganteriororbitalgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "rs11767557_c"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs11767557_c\", \"field\": \"rs11767557_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"0\"}, {\"id\": \"rs11767557_c\", \"field\": \"rs11767557_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 885,
+                    "coeff": [
+                        -2.254209506469191,
+                        -0.29049889064856965
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftaorganteriororbitalgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightstgsuperiortemporalgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "rs2718058_g"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs2718058_g\", \"field\": \"rs2718058_g\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}, {\"id\": \"rs2718058_g\", \"field\": \"rs2718058_g\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 552,
+                    "coeff": [
+                        -0.6559865313897294,
+                        -0.07763601069552828
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightstgsuperiortemporalgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightppplanumpolare,rightthalamusproper"
+                },
+                {
+                    "name": "y",
+                    "value": "rs3818361_t"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs3818361_t\", \"field\": \"rs3818361_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}, {\"id\": \"rs3818361_t\", \"field\": \"rs3818361_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 892,
+                    "coeff": [
+                        -1.9216123403100152,
+                        -0.1056280285328021,
+                        0.013111761138869067
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightppplanumpolare",
+                        "rightthalamusproper"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightofugoccipitalfusiformgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "rs11767557_c"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs11767557_c\", \"field\": \"rs11767557_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}, {\"id\": \"rs11767557_c\", \"field\": \"rs11767557_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 885,
+                    "coeff": [
+                        -2.337771297857466,
+                        0.11789591501526851
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightofugoccipitalfusiformgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightmogmiddleoccipitalgyrus,leftscasubcallosalarea,leftacgganteriorcingulategyrus,leftliglingualgyrus,rightcalccalcarinecortex,lefthippocampus,leftporgposteriororbitalgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "rs1476679_c"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs1476679_c\", \"field\": \"rs1476679_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}, {\"id\": \"rs1476679_c\", \"field\": \"rs1476679_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"0\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 535,
+                    "coeff": [
+                        0.14738275701553907,
+                        0.6703360896168019,
+                        0.6363258511043016,
+                        0.2373528048904837,
+                        0.36538393488453086,
+                        -0.4350441028560287,
+                        -0.8504607462566397,
+                        -1.8592713691892073
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightmogmiddleoccipitalgyrus",
+                        "leftscasubcallosalarea",
+                        "leftacgganteriorcingulategyrus",
+                        "leftliglingualgyrus",
+                        "rightcalccalcarinecortex",
+                        "lefthippocampus",
+                        "leftporgposteriororbitalgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftpoparietaloperculum"
+                },
+                {
+                    "name": "y",
+                    "value": "rs3851179_a"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs3851179_a\", \"field\": \"rs3851179_a\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"0\"}, {\"id\": \"rs3851179_a\", \"field\": \"rs3851179_a\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 892,
+                    "coeff": [
+                        -1.0347806237540882,
+                        0.4373086457408248
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftpoparietaloperculum"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightlorglateralorbitalgyrus,subjectageyears,rightaorganteriororbitalgyrus,leftaorganteriororbitalgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "rs11767557_c"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs11767557_c\", \"field\": \"rs11767557_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}, {\"id\": \"rs11767557_c\", \"field\": \"rs11767557_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 885,
+                    "coeff": [
+                        -4.817023014624906,
+                        -0.7045599734220881,
+                        0.036420003555912274,
+                        6.174075575295963,
+                        -5.901994833037371
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightlorglateralorbitalgyrus",
+                        "subjectageyears",
+                        "rightaorganteriororbitalgyrus",
+                        "leftaorganteriororbitalgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightputamen"
+                },
+                {
+                    "name": "y",
+                    "value": "rs744373_c"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs744373_c\", \"field\": \"rs744373_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"0\"}, {\"id\": \"rs744373_c\", \"field\": \"rs744373_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 838,
+                    "coeff": [
+                        0.006589915793281361,
+                        -0.39900837209904194
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightputamen"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightporgposteriororbitalgyrus,rightpcuprecuneus,leftcocentraloperculum,rightstgsuperiortemporalgyrus,leftmorgmedialorbitalgyrus,leftpcggposteriorcingulategyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "agegroup"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"agegroup\", \"field\": \"agegroup\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"60-69y\"}, {\"id\": \"agegroup\", \"field\": \"agegroup\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"50-59y\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 1066,
+                    "coeff": [
+                        1.239859462313456,
+                        0.651913379390188,
+                        -0.16989329823525645,
+                        0.24036872904330456,
+                        0.4926218812151938,
+                        -1.6696747553970002,
+                        0.6794596628806879
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightporgposteriororbitalgyrus",
+                        "rightpcuprecuneus",
+                        "leftcocentraloperculum",
+                        "rightstgsuperiortemporalgyrus",
+                        "leftmorgmedialorbitalgyrus",
+                        "leftpcggposteriorcingulategyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftfrpfrontalpole,subjectageyears"
+                },
+                {
+                    "name": "y",
+                    "value": "rs744373_c"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs744373_c\", \"field\": \"rs744373_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}, {\"id\": \"rs744373_c\", \"field\": \"rs744373_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 838,
+                    "coeff": [
+                        -2.1138608588233954,
+                        -0.23168164333332622,
+                        0.02278551235197765
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftfrpfrontalpole",
+                        "subjectageyears"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftocpoccipitalpole,rightttgtransversetemporalgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "adnicategory"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"adnicategory\", \"field\": \"adnicategory\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"CN\"}, {\"id\": \"adnicategory\", \"field\": \"adnicategory\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"AD\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 1066,
+                    "coeff": [
+                        0.40416405598699645,
+                        0.40115430650116957,
+                        -1.031162931073649
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftocpoccipitalpole",
+                        "rightttgtransversetemporalgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightcocentraloperculum"
+                },
+                {
+                    "name": "y",
+                    "value": "rs190982_g"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs190982_g\", \"field\": \"rs190982_g\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}, {\"id\": \"rs190982_g\", \"field\": \"rs190982_g\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 536,
+                    "coeff": [
+                        0.055198671032982455,
+                        -0.3329698983729305
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightcocentraloperculum"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftptplanumtemporale,rightcalccalcarinecortex,rightthalamusproper,rightamygdala,rightitginferiortemporalgyrus,leftitginferiortemporalgyrus,leftmorgmedialorbitalgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "rs10498633_t"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs10498633_t\", \"field\": \"rs10498633_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}, {\"id\": \"rs10498633_t\", \"field\": \"rs10498633_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 892,
+                    "coeff": [
+                        -3.926621416736238,
+                        0.9538720803749458,
+                        -0.46900851833292556,
+                        0.9090375027542854,
+                        0.07755436404548673,
+                        -0.34692825227687385,
+                        -0.07872082629630715,
+                        0.01184872891355113
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftptplanumtemporale",
+                        "rightcalccalcarinecortex",
+                        "rightthalamusproper",
+                        "rightamygdala",
+                        "rightitginferiortemporalgyrus",
+                        "leftitginferiortemporalgyrus",
+                        "leftmorgmedialorbitalgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftsfgsuperiorfrontalgyrus,rightententorhinalarea,leftmogmiddleoccipitalgyrus,rightporgposteriororbitalgyrus,leftmfcmedialfrontalcortex,leftthalamusproper,rightamygdala"
+                },
+                {
+                    "name": "y",
+                    "value": "rs10498633_t"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs10498633_t\", \"field\": \"rs10498633_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}, {\"id\": \"rs10498633_t\", \"field\": \"rs10498633_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 892,
+                    "coeff": [
+                        -4.368100107928568,
+                        0.12313124039962624,
+                        -1.9220034819834402,
+                        0.33743463735638174,
+                        -0.5132525654019088,
+                        -1.3649930990867354,
+                        0.5482716224149679,
+                        1.8396660478430347
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftsfgsuperiorfrontalgyrus",
+                        "rightententorhinalarea",
+                        "leftmogmiddleoccipitalgyrus",
+                        "rightporgposteriororbitalgyrus",
+                        "leftmfcmedialfrontalcortex",
+                        "leftthalamusproper",
+                        "rightamygdala"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftliglingualgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "alzheimerbroadcategory"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"alzheimerbroadcategory\", \"field\": \"alzheimerbroadcategory\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"CN\"}, {\"id\": \"alzheimerbroadcategory\", \"field\": \"alzheimerbroadcategory\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"AD\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 1066,
+                    "coeff": [
+                        -1.5941524410990715,
+                        0.2467358081383166
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftliglingualgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftscasubcallosalarea,rightaorganteriororbitalgyrus,leftmcggmiddlecingulategyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "rs10498633_t"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs10498633_t\", \"field\": \"rs10498633_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}, {\"id\": \"rs10498633_t\", \"field\": \"rs10498633_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 892,
+                    "coeff": [
+                        -2.884243920392452,
+                        1.0454469144652778,
+                        -0.6660675599871951,
+                        0.1839307296507385
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftscasubcallosalarea",
+                        "rightaorganteriororbitalgyrus",
+                        "leftmcggmiddlecingulategyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightttgtransversetemporalgyrus,rightgregyrusrectus"
+                },
+                {
+                    "name": "y",
+                    "value": "rs3764650_g"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs3764650_g\", \"field\": \"rs3764650_g\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"0\"}, {\"id\": \"rs3764650_g\", \"field\": \"rs3764650_g\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 892,
+                    "coeff": [
+                        -4.526263553354984,
+                        -0.7416717079288124,
+                        1.0532140812750546
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightttgtransversetemporalgyrus",
+                        "rightgregyrusrectus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightamygdala"
+                },
+                {
+                    "name": "y",
+                    "value": "rs11136000_t"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs11136000_t\", \"field\": \"rs11136000_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}, {\"id\": \"rs11136000_t\", \"field\": \"rs11136000_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"0\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 891,
+                    "coeff": [
+                        0.46755254843180716,
+                        -0.13144783698837173
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightamygdala"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "righthippocampus,leftmtgmiddletemporalgyrus,leftlorglateralorbitalgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "rs10498633_t"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs10498633_t\", \"field\": \"rs10498633_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}, {\"id\": \"rs10498633_t\", \"field\": \"rs10498633_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"0\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 892,
+                    "coeff": [
+                        -1.6534472691313982,
+                        -0.6111381095047517,
+                        0.12347451030922597,
+                        0.5529513161734573
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "righthippocampus",
+                        "leftmtgmiddletemporalgyrus",
+                        "leftlorglateralorbitalgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftputamen,rightocpoccipitalpole,leftventraldc,rightppplanumpolare,leftioginferioroccipitalgyrus,rightmprgprecentralgyrusmedialsegment,leftfofrontaloperculum,rightpogpostcentralgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "rs11767557_c"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs11767557_c\", \"field\": \"rs11767557_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"0\"}, {\"id\": \"rs11767557_c\", \"field\": \"rs11767557_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 885,
+                    "coeff": [
+                        -1.992006154175405,
+                        0.3184277132537034,
+                        -0.6550765452579261,
+                        -1.082603546118538,
+                        0.4101797118771487,
+                        0.5445076672873465,
+                        0.5267391530795463,
+                        1.3033574031807833,
+                        -0.30668011669262785
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftputamen",
+                        "rightocpoccipitalpole",
+                        "leftventraldc",
+                        "rightppplanumpolare",
+                        "leftioginferioroccipitalgyrus",
+                        "rightmprgprecentralgyrusmedialsegment",
+                        "leftfofrontaloperculum",
+                        "rightpogpostcentralgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightptplanumtemporale,pib"
+                },
+                {
+                    "name": "y",
+                    "value": "rs2718058_g"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs2718058_g\", \"field\": \"rs2718058_g\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"0\"}, {\"id\": \"rs2718058_g\", \"field\": \"rs2718058_g\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 7,
+                    "coeff": [
+                        -7.575753543867896,
+                        3.3818810089525435,
+                        0.045214295794076396
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightptplanumtemporale",
+                        "pib"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftmpogpostcentralgyrusmedialsegment,rightitginferiortemporalgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "rs1476679_c"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs1476679_c\", \"field\": \"rs1476679_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}, {\"id\": \"rs1476679_c\", \"field\": \"rs1476679_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"0\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 535,
+                    "coeff": [
+                        -3.2033909709446893,
+                        0.1680937554053172,
+                        0.10892047541452712
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftmpogpostcentralgyrusmedialsegment",
+                        "rightitginferiortemporalgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftptplanumtemporale,rightaorganteriororbitalgyrus,leftcalccalcarinecortex,rightpinsposteriorinsula,leftpoparietaloperculum,rightcuncuneus"
+                },
+                {
+                    "name": "y",
+                    "value": "rs190982_g"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs190982_g\", \"field\": \"rs190982_g\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"0\"}, {\"id\": \"rs190982_g\", \"field\": \"rs190982_g\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 536,
+                    "coeff": [
+                        1.1789341819021015,
+                        1.3145496778793033,
+                        -0.28609359816920066,
+                        0.0008206377028714278,
+                        -1.4833832414801194,
+                        -0.9392997780712452,
+                        0.24142521807065953
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftptplanumtemporale",
+                        "rightaorganteriororbitalgyrus",
+                        "leftcalccalcarinecortex",
+                        "rightpinsposteriorinsula",
+                        "leftpoparietaloperculum",
+                        "rightcuncuneus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightsmcsupplementarymotorcortex,righttrifgtriangularpartoftheinferiorfrontalgyrus,rightofugoccipitalfusiformgyrus,rightmorgmedialorbitalgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "gender"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"gender\", \"field\": \"gender\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"F\"}, {\"id\": \"gender\", \"field\": \"gender\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"M\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 1066,
+                    "coeff": [
+                        -12.068659974723465,
+                        1.1356520666684022,
+                        0.3357984966049395,
+                        1.8939139227823367,
+                        -0.7027414245669247
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightsmcsupplementarymotorcortex",
+                        "righttrifgtriangularpartoftheinferiorfrontalgyrus",
+                        "rightofugoccipitalfusiformgyrus",
+                        "rightmorgmedialorbitalgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "minimentalstate"
+                },
+                {
+                    "name": "y",
+                    "value": "rs1476679_c"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs1476679_c\", \"field\": \"rs1476679_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}, {\"id\": \"rs1476679_c\", \"field\": \"rs1476679_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 535,
+                    "coeff": [
+                        -4.110337354761003,
+                        0.09344489665244397
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "minimentalstate"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightorifgorbitalpartoftheinferiorfrontalgyrus,leftphgparahippocampalgyrus,rightthalamusproper,leftpogpostcentralgyrus,rightmogmiddleoccipitalgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "agegroup"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"agegroup\", \"field\": \"agegroup\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"70-79y\"}, {\"id\": \"agegroup\", \"field\": \"agegroup\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"+80y\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 1066,
+                    "coeff": [
+                        -4.307244026002625,
+                        -0.9194657182111954,
+                        -0.22961138555984012,
+                        0.6888428170201716,
+                        0.3425235125201815,
+                        -0.2123025609424056
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightorifgorbitalpartoftheinferiorfrontalgyrus",
+                        "leftphgparahippocampalgyrus",
+                        "rightthalamusproper",
+                        "leftpogpostcentralgyrus",
+                        "rightmogmiddleoccipitalgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightpogpostcentralgyrus,leftmpogpostcentralgyrusmedialsegment"
+                },
+                {
+                    "name": "y",
+                    "value": "rs1476679_c"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs1476679_c\", \"field\": \"rs1476679_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}, {\"id\": \"rs1476679_c\", \"field\": \"rs1476679_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"0\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 535,
+                    "coeff": [
+                        -1.428190794982301,
+                        0.10883651796547907,
+                        -0.019012178664987153
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightpogpostcentralgyrus",
+                        "leftmpogpostcentralgyrusmedialsegment"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightmpogpostcentralgyrusmedialsegment,leftporgposteriororbitalgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "agegroup"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"agegroup\", \"field\": \"agegroup\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"60-69y\"}, {\"id\": \"agegroup\", \"field\": \"agegroup\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"50-59y\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 1066,
+                    "coeff": [
+                        0.2160817204928351,
+                        0.7780582369197723,
+                        0.28224801757229534
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightmpogpostcentralgyrusmedialsegment",
+                        "leftporgposteriororbitalgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightmfcmedialfrontalcortex,rightmogmiddleoccipitalgyrus,subjectage"
+                },
+                {
+                    "name": "y",
+                    "value": "rs17125944_c"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs17125944_c\", \"field\": \"rs17125944_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}, {\"id\": \"rs17125944_c\", \"field\": \"rs17125944_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"0\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 888,
+                    "coeff": [
+                        -1.9672252374434156,
+                        0.42777523054907873,
+                        -0.10409365899259007,
+                        0.0011133018071585962
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightmfcmedialfrontalcortex",
+                        "rightmogmiddleoccipitalgyrus",
+                        "subjectage"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightpcggposteriorcingulategyrus,leftsmgsupramarginalgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "rs17125944_c"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs17125944_c\", \"field\": \"rs17125944_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"0\"}, {\"id\": \"rs17125944_c\", \"field\": \"rs17125944_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 888,
+                    "coeff": [
+                        -1.5546004171687753,
+                        0.15656705919017633,
+                        -0.08305044881152905
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightpcggposteriorcingulategyrus",
+                        "leftsmgsupramarginalgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightmogmiddleoccipitalgyrus,fdg"
+                },
+                {
+                    "name": "y",
+                    "value": "adnicategory"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"adnicategory\", \"field\": \"adnicategory\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"AD\"}, {\"id\": \"adnicategory\", \"field\": \"adnicategory\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"MCI\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 741,
+                    "coeff": [
+                        -11.847641341706757,
+                        0.5722939801746465,
+                        1.726822208751261
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightmogmiddleoccipitalgyrus",
+                        "fdg"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "lefttrifgtriangularpartoftheinferiorfrontalgyrus,leftaccumbensarea,rightliglingualgyrus,rightofugoccipitalfusiformgyrus,leftscasubcallosalarea"
+                },
+                {
+                    "name": "y",
+                    "value": "neurodegenerativescategories"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"neurodegenerativescategories\", \"field\": \"neurodegenerativescategories\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"AD\"}, {\"id\": \"neurodegenerativescategories\", \"field\": \"neurodegenerativescategories\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"MCI\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 798,
+                    "coeff": [
+                        -2.521011445897892,
+                        -0.1396062150286241,
+                        5.313586317451794,
+                        -0.849394746237443,
+                        3.1097189742724285,
+                        -3.2797864727047465
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "lefttrifgtriangularpartoftheinferiorfrontalgyrus",
+                        "leftaccumbensarea",
+                        "rightliglingualgyrus",
+                        "rightofugoccipitalfusiformgyrus",
+                        "leftscasubcallosalarea"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightliglingualgyrus,rightpogpostcentralgyrus,rightmprgprecentralgyrusmedialsegment,rightfofrontaloperculum,leftmfgmiddlefrontalgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "rs3818361_t"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs3818361_t\", \"field\": \"rs3818361_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}, {\"id\": \"rs3818361_t\", \"field\": \"rs3818361_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"0\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 892,
+                    "coeff": [
+                        -0.8988504714236857,
+                        0.04022093533445461,
+                        0.026308655690791594,
+                        -0.1631847940406853,
+                        -0.17430988983786838,
+                        0.0191512244143301
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightliglingualgyrus",
+                        "rightpogpostcentralgyrus",
+                        "rightmprgprecentralgyrusmedialsegment",
+                        "rightfofrontaloperculum",
+                        "leftmfgmiddlefrontalgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftaccumbensarea"
+                },
+                {
+                    "name": "y",
+                    "value": "rs11767557_c"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs11767557_c\", \"field\": \"rs11767557_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}, {\"id\": \"rs11767557_c\", \"field\": \"rs11767557_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"0\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 885,
+                    "coeff": [
+                        -3.772403407659989,
+                        2.6123280744288655
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftaccumbensarea"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightcuncuneus,rightcalccalcarinecortex,rightfofrontaloperculum"
+                },
+                {
+                    "name": "y",
+                    "value": "neurodegenerativescategories"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"neurodegenerativescategories\", \"field\": \"neurodegenerativescategories\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"MCI\"}, {\"id\": \"neurodegenerativescategories\", \"field\": \"neurodegenerativescategories\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"AD\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 798,
+                    "coeff": [
+                        -2.481397738977284,
+                        1.0052794644134362,
+                        -0.6085845648524961,
+                        0.3653501717408512
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightcuncuneus",
+                        "rightcalccalcarinecortex",
+                        "rightfofrontaloperculum"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftfrpfrontalpole,rightputamen,leftmfcmedialfrontalcortex"
+                },
+                {
+                    "name": "y",
+                    "value": "rs11136000_t"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs11136000_t\", \"field\": \"rs11136000_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}, {\"id\": \"rs11136000_t\", \"field\": \"rs11136000_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 891,
+                    "coeff": [
+                        -2.698149953758657,
+                        -0.14156892328617973,
+                        0.3567246876696624,
+                        0.33696693979797454
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftfrpfrontalpole",
+                        "rightputamen",
+                        "leftmfcmedialfrontalcortex"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftlorglateralorbitalgyrus,righttmptemporalpole,leftstgsuperiortemporalgyrus,rightorifgorbitalpartoftheinferiorfrontalgyrus,rightmfcmedialfrontalcortex,subjectageyears"
+                },
+                {
+                    "name": "y",
+                    "value": "apoe4"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"apoe4\", \"field\": \"apoe4\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}, {\"id\": \"apoe4\", \"field\": \"apoe4\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"0\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 1061,
+                    "coeff": [
+                        3.714679803432095,
+                        0.3290032482813758,
+                        -0.03729603914576505,
+                        -0.5518416916318626,
+                        1.1237575799926267,
+                        -0.030919977027589467,
+                        -0.0482803301200382
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftlorglateralorbitalgyrus",
+                        "righttmptemporalpole",
+                        "leftstgsuperiortemporalgyrus",
+                        "rightorifgorbitalpartoftheinferiorfrontalgyrus",
+                        "rightmfcmedialfrontalcortex",
+                        "subjectageyears"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightlorglateralorbitalgyrus,rightmogmiddleoccipitalgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "rs10498633_t"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs10498633_t\", \"field\": \"rs10498633_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}, {\"id\": \"rs10498633_t\", \"field\": \"rs10498633_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 892,
+                    "coeff": [
+                        -3.7117534295215155,
+                        -0.8472021879967014,
+                        0.717405020435436
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightlorglateralorbitalgyrus",
+                        "rightmogmiddleoccipitalgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightmprgprecentralgyrusmedialsegment"
+                },
+                {
+                    "name": "y",
+                    "value": "agegroup"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"agegroup\", \"field\": \"agegroup\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"60-69y\"}, {\"id\": \"agegroup\", \"field\": \"agegroup\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"50-59y\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 1066,
+                    "coeff": [
+                        2.34752019082069,
+                        -0.22272890563501097
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightmprgprecentralgyrusmedialsegment"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightputamen,leftcalccalcarinecortex,rightamygdala,rightmsfgsuperiorfrontalgyrusmedialsegment,leftporgposteriororbitalgyrus,leftsplsuperiorparietallobule"
+                },
+                {
+                    "name": "y",
+                    "value": "adnicategory"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"adnicategory\", \"field\": \"adnicategory\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"MCI\"}, {\"id\": \"adnicategory\", \"field\": \"adnicategory\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"CN\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 1066,
+                    "coeff": [
+                        0.32183615244874514,
+                        -0.009084962751225346,
+                        0.9898786534228285,
+                        -7.45029449350088,
+                        0.4145872178094599,
+                        -0.3887701868616086,
+                        0.11723085378665334
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightputamen",
+                        "leftcalccalcarinecortex",
+                        "rightamygdala",
+                        "rightmsfgsuperiorfrontalgyrusmedialsegment",
+                        "leftporgposteriororbitalgyrus",
+                        "leftsplsuperiorparietallobule"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightprgprecentralgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "rs3851179_a"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs3851179_a\", \"field\": \"rs3851179_a\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"0\"}, {\"id\": \"rs3851179_a\", \"field\": \"rs3851179_a\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 892,
+                    "coeff": [
+                        -0.33293613396828314,
+                        0.027798378957240806
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightprgprecentralgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightcocentraloperculum,leftorifgorbitalpartoftheinferiorfrontalgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "rs744373_c"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs744373_c\", \"field\": \"rs744373_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"0\"}, {\"id\": \"rs744373_c\", \"field\": \"rs744373_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 838,
+                    "coeff": [
+                        0.8598300906856519,
+                        -0.558221973910311,
+                        -0.10090626639652005
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightcocentraloperculum",
+                        "leftorifgorbitalpartoftheinferiorfrontalgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftppplanumpolare"
+                },
+                {
+                    "name": "y",
+                    "value": "gender"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"gender\", \"field\": \"gender\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"F\"}, {\"id\": \"gender\", \"field\": \"gender\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"M\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 1066,
+                    "coeff": [
+                        -11.109152396243465,
+                        4.998534840616983
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftppplanumpolare"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftthalamusproper"
+                },
+                {
+                    "name": "y",
+                    "value": "gender"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"gender\", \"field\": \"gender\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"M\"}, {\"id\": \"gender\", \"field\": \"gender\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"F\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 1066,
+                    "coeff": [
+                        -7.641803396656748,
+                        1.1337058117054075
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftthalamusproper"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftmogmiddleoccipitalgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "rs3764650_g"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs3764650_g\", \"field\": \"rs3764650_g\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}, {\"id\": \"rs3764650_g\", \"field\": \"rs3764650_g\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 892,
+                    "coeff": [
+                        -3.51247928550684,
+                        0.26143448779781925
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftmogmiddleoccipitalgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightputamen"
+                },
+                {
+                    "name": "y",
+                    "value": "rs1476679_c"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs1476679_c\", \"field\": \"rs1476679_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"0\"}, {\"id\": \"rs1476679_c\", \"field\": \"rs1476679_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 535,
+                    "coeff": [
+                        -2.026864514838119,
+                        0.06287597080893359
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightputamen"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "subjectageyears,leftpoparietaloperculum"
+                },
+                {
+                    "name": "y",
+                    "value": "rs1476679_c"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs1476679_c\", \"field\": \"rs1476679_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"0\"}, {\"id\": \"rs1476679_c\", \"field\": \"rs1476679_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 535,
+                    "coeff": [
+                        -5.027264433582541,
+                        0.0242138519901092,
+                        0.617406362124374
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "subjectageyears",
+                        "leftpoparietaloperculum"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftsmgsupramarginalgyrus,rightventraldc,leftainsanteriorinsula"
+                },
+                {
+                    "name": "y",
+                    "value": "rs610932_a"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs610932_a\", \"field\": \"rs610932_a\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}, {\"id\": \"rs610932_a\", \"field\": \"rs610932_a\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 889,
+                    "coeff": [
+                        -0.4720620203976134,
+                        -0.04418029143496563,
+                        0.2528272333606517,
+                        -0.33701343678385187
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftsmgsupramarginalgyrus",
+                        "rightventraldc",
+                        "leftainsanteriorinsula"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftamygdala,leftpallidum"
+                },
+                {
+                    "name": "y",
+                    "value": "neurodegenerativescategories"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"neurodegenerativescategories\", \"field\": \"neurodegenerativescategories\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"AD\"}, {\"id\": \"neurodegenerativescategories\", \"field\": \"neurodegenerativescategories\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"MCI\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 798,
+                    "coeff": [
+                        -2.8787447983671193,
+                        8.79694049979782,
+                        -1.8747916136362714
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftamygdala",
+                        "leftpallidum"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightphgparahippocampalgyrus,rightententorhinalarea,rightmcggmiddlecingulategyrus,rightitginferiortemporalgyrus,rightprgprecentralgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "neurodegenerativescategories"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"neurodegenerativescategories\", \"field\": \"neurodegenerativescategories\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"AD\"}, {\"id\": \"neurodegenerativescategories\", \"field\": \"neurodegenerativescategories\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"MCI\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 798,
+                    "coeff": [
+                        -2.967653332097216,
+                        -2.021793799852832,
+                        4.961202121795219,
+                        -0.7213616055640417,
+                        0.5750767625926737,
+                        -0.06579006378492293
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightphgparahippocampalgyrus",
+                        "rightententorhinalarea",
+                        "rightmcggmiddlecingulategyrus",
+                        "rightitginferiortemporalgyrus",
+                        "rightprgprecentralgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftsogsuperioroccipitalgyrus,rightpcuprecuneus,leftcuncuneus"
+                },
+                {
+                    "name": "y",
+                    "value": "rs3851179_a"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs3851179_a\", \"field\": \"rs3851179_a\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}, {\"id\": \"rs3851179_a\", \"field\": \"rs3851179_a\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 892,
+                    "coeff": [
+                        1.1804739702955718,
+                        -0.21902512403495314,
+                        -0.09599500242252175,
+                        -0.15402354056579237
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftsogsuperioroccipitalgyrus",
+                        "rightpcuprecuneus",
+                        "leftcuncuneus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightmfcmedialfrontalcortex,leftfrpfrontalpole,rightsogsuperioroccipitalgyrus,rightmorgmedialorbitalgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "apoe4"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"apoe4\", \"field\": \"apoe4\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"0\"}, {\"id\": \"apoe4\", \"field\": \"apoe4\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 1061,
+                    "coeff": [
+                        0.6171409863213271,
+                        0.08113995069827898,
+                        0.2600836240114521,
+                        -0.12379424747641382,
+                        -0.4001783672163572
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightmfcmedialfrontalcortex",
+                        "leftfrpfrontalpole",
+                        "rightsogsuperioroccipitalgyrus",
+                        "rightmorgmedialorbitalgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "subjectageyears,rightgregyrusrectus,rightphgparahippocampalgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "alzheimerbroadcategory"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"alzheimerbroadcategory\", \"field\": \"alzheimerbroadcategory\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"AD\"}, {\"id\": \"alzheimerbroadcategory\", \"field\": \"alzheimerbroadcategory\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"Other\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 1066,
+                    "coeff": [
+                        -2.149668089051985,
+                        -0.02501905937736684,
+                        -1.0831330040086333,
+                        2.5949745634331425
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "subjectageyears",
+                        "rightgregyrusrectus",
+                        "rightphgparahippocampalgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftaccumbensarea,leftaorganteriororbitalgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "rs610932_a"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs610932_a\", \"field\": \"rs610932_a\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}, {\"id\": \"rs610932_a\", \"field\": \"rs610932_a\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"0\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 889,
+                    "coeff": [
+                        0.15447696792839988,
+                        -1.8241516801378739,
+                        -0.04850899573759858
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftaccumbensarea",
+                        "leftaorganteriororbitalgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightporgposteriororbitalgyrus,leftpogpostcentralgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "rs3851179_a"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs3851179_a\", \"field\": \"rs3851179_a\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"0\"}, {\"id\": \"rs3851179_a\", \"field\": \"rs3851179_a\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 892,
+                    "coeff": [
+                        -0.28133906175102535,
+                        -0.0732299173788844,
+                        -0.07325807807238875
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightporgposteriororbitalgyrus",
+                        "leftpogpostcentralgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightpinsposteriorinsula,leftmogmiddleoccipitalgyrus,rightstgsuperiortemporalgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "rs3764650_g"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs3764650_g\", \"field\": \"rs3764650_g\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}, {\"id\": \"rs3764650_g\", \"field\": \"rs3764650_g\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"0\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 892,
+                    "coeff": [
+                        -5.529182977762176,
+                        -1.9523522988337314,
+                        -0.3263609146236311,
+                        1.1654756354872648
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightpinsposteriorinsula",
+                        "leftmogmiddleoccipitalgyrus",
+                        "rightstgsuperiortemporalgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftlorglateralorbitalgyrus,leftainsanteriorinsula"
+                },
+                {
+                    "name": "y",
+                    "value": "rs610932_a"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs610932_a\", \"field\": \"rs610932_a\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"0\"}, {\"id\": \"rs610932_a\", \"field\": \"rs610932_a\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 889,
+                    "coeff": [
+                        0.9137724921087598,
+                        -0.3687360440585961,
+                        0.10010502490141404
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftlorglateralorbitalgyrus",
+                        "leftainsanteriorinsula"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightppplanumpolare,leftmogmiddleoccipitalgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "rs744373_c"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs744373_c\", \"field\": \"rs744373_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}, {\"id\": \"rs744373_c\", \"field\": \"rs744373_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"0\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 838,
+                    "coeff": [
+                        0.592444052741131,
+                        0.32930487503261513,
+                        -0.2484782003606444
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightppplanumpolare",
+                        "leftmogmiddleoccipitalgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftporgposteriororbitalgyrus,rightpallidum,leftpcuprecuneus,rightlorglateralorbitalgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "neurodegenerativescategories"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"neurodegenerativescategories\", \"field\": \"neurodegenerativescategories\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"MCI\"}, {\"id\": \"neurodegenerativescategories\", \"field\": \"neurodegenerativescategories\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"AD\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 798,
+                    "coeff": [
+                        -3.018880288150954,
+                        0.7631005650470066,
+                        -0.9608426507381266,
+                        0.2938610557674229,
+                        0.2296772354061569
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftporgposteriororbitalgyrus",
+                        "rightpallidum",
+                        "leftpcuprecuneus",
+                        "rightlorglateralorbitalgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftaccumbensarea,leftorifgorbitalpartoftheinferiorfrontalgyrus,rightamygdala,leftppplanumpolare"
+                },
+                {
+                    "name": "y",
+                    "value": "rs11136000_t"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs11136000_t\", \"field\": \"rs11136000_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"0\"}, {\"id\": \"rs11136000_t\", \"field\": \"rs11136000_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 891,
+                    "coeff": [
+                        -0.6838088486389449,
+                        1.531678649516347,
+                        -0.4468635184699507,
+                        -0.2357267285562644,
+                        -0.005083001867824545
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftaccumbensarea",
+                        "leftorifgorbitalpartoftheinferiorfrontalgyrus",
+                        "rightamygdala",
+                        "leftppplanumpolare"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftpcggposteriorcingulategyrus,leftcuncuneus"
+                },
+                {
+                    "name": "y",
+                    "value": "agegroup"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"agegroup\", \"field\": \"agegroup\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"60-69y\"}, {\"id\": \"agegroup\", \"field\": \"agegroup\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"+80y\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 1066,
+                    "coeff": [
+                        -3.350232108488908,
+                        -0.7205876791569855,
+                        1.482215399545269
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftpcggposteriorcingulategyrus",
+                        "leftcuncuneus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightententorhinalarea,rightmfcmedialfrontalcortex,leftioginferioroccipitalgyrus,righthippocampus"
+                },
+                {
+                    "name": "y",
+                    "value": "rs17125944_c"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs17125944_c\", \"field\": \"rs17125944_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}, {\"id\": \"rs17125944_c\", \"field\": \"rs17125944_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 888,
+                    "coeff": [
+                        -9.584220589305893,
+                        1.2053435387155538,
+                        0.3399400325772483,
+                        1.0605819095530729,
+                        -0.8934865218403777
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightententorhinalarea",
+                        "rightmfcmedialfrontalcortex",
+                        "leftioginferioroccipitalgyrus",
+                        "righthippocampus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightscasubcallosalarea"
+                },
+                {
+                    "name": "y",
+                    "value": "rs11136000_t"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs11136000_t\", \"field\": \"rs11136000_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"0\"}, {\"id\": \"rs11136000_t\", \"field\": \"rs11136000_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 891,
+                    "coeff": [
+                        1.6381557719647508,
+                        -1.0861284339026258
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightscasubcallosalarea"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "subjectageyears,leftttgtransversetemporalgyrus,rightorifgorbitalpartoftheinferiorfrontalgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "apoe4"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"apoe4\", \"field\": \"apoe4\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"0\"}, {\"id\": \"apoe4\", \"field\": \"apoe4\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 1061,
+                    "coeff": [
+                        0.3413232530437316,
+                        -0.011755950474778534,
+                        0.5443811152847651,
+                        -0.4371493015103104
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "subjectageyears",
+                        "leftttgtransversetemporalgyrus",
+                        "rightorifgorbitalpartoftheinferiorfrontalgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "fdg,leftitginferiortemporalgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "rs10498633_t"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs10498633_t\", \"field\": \"rs10498633_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}, {\"id\": \"rs10498633_t\", \"field\": \"rs10498633_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 589,
+                    "coeff": [
+                        -2.5093738606516527,
+                        -0.08515384547148944,
+                        0.10350629797514498
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "fdg",
+                        "leftitginferiortemporalgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightsmgsupramarginalgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "alzheimerbroadcategory"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"alzheimerbroadcategory\", \"field\": \"alzheimerbroadcategory\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"Other\"}, {\"id\": \"alzheimerbroadcategory\", \"field\": \"alzheimerbroadcategory\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"AD\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 1066,
+                    "coeff": [
+                        -4.320215747942103,
+                        0.686374279618046
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightsmgsupramarginalgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftfrpfrontalpole,leftpcggposteriorcingulategyrus,fdg,leftporgposteriororbitalgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "rs3818361_t"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs3818361_t\", \"field\": \"rs3818361_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}, {\"id\": \"rs3818361_t\", \"field\": \"rs3818361_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 589,
+                    "coeff": [
+                        -1.278446567237946,
+                        -0.7796014349519302,
+                        1.084466285094481,
+                        -0.3193008485043674,
+                        -0.2929209076731547
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftfrpfrontalpole",
+                        "leftpcggposteriorcingulategyrus",
+                        "fdg",
+                        "leftporgposteriororbitalgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightorifgorbitalpartoftheinferiorfrontalgyrus,rightmfcmedialfrontalcortex,leftsmcsupplementarymotorcortex,rightprgprecentralgyrus,leftaorganteriororbitalgyrus,rightpoparietaloperculum,rightopifgopercularpartoftheinferiorfrontalgyrus,fdg,leftthalamusproper"
+                },
+                {
+                    "name": "y",
+                    "value": "rs11136000_t"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs11136000_t\", \"field\": \"rs11136000_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"0\"}, {\"id\": \"rs11136000_t\", \"field\": \"rs11136000_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 589,
+                    "coeff": [
+                        0.529971314520032,
+                        0.8435093999572809,
+                        -1.9679002486547787,
+                        0.05150956752488349,
+                        0.1374571421219905,
+                        -0.034514884269902325,
+                        -0.7994715560915873,
+                        -0.13748735750964905,
+                        0.02949650395186618,
+                        0.3115007509940841
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightorifgorbitalpartoftheinferiorfrontalgyrus",
+                        "rightmfcmedialfrontalcortex",
+                        "leftsmcsupplementarymotorcortex",
+                        "rightprgprecentralgyrus",
+                        "leftaorganteriororbitalgyrus",
+                        "rightpoparietaloperculum",
+                        "rightopifgopercularpartoftheinferiorfrontalgyrus",
+                        "fdg",
+                        "leftthalamusproper"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftopifgopercularpartoftheinferiorfrontalgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "rs190982_g"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs190982_g\", \"field\": \"rs190982_g\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}, {\"id\": \"rs190982_g\", \"field\": \"rs190982_g\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 536,
+                    "coeff": [
+                        -0.5592304479842533,
+                        -0.20845237247898166
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftopifgopercularpartoftheinferiorfrontalgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftitginferiortemporalgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "rs17125944_c"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs17125944_c\", \"field\": \"rs17125944_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"0\"}, {\"id\": \"rs17125944_c\", \"field\": \"rs17125944_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 888,
+                    "coeff": [
+                        -10.581292942239404,
+                        0.5389289019717933
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftitginferiortemporalgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftpallidum,rightthalamusproper"
+                },
+                {
+                    "name": "y",
+                    "value": "agegroup"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"agegroup\", \"field\": \"agegroup\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"+80y\"}, {\"id\": \"agegroup\", \"field\": \"agegroup\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"50-59y\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 1066,
+                    "coeff": [
+                        -10.768427055870815,
+                        -3.750771292856486,
+                        2.2326335548429217
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftpallidum",
+                        "rightthalamusproper"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftppplanumpolare,rightioginferioroccipitalgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "rs744373_c"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs744373_c\", \"field\": \"rs744373_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}, {\"id\": \"rs744373_c\", \"field\": \"rs744373_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"0\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 838,
+                    "coeff": [
+                        0.1448044260761466,
+                        -0.21520474014465704,
+                        -0.17438688475728004
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftppplanumpolare",
+                        "rightioginferioroccipitalgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightsfgsuperiorfrontalgyrus,rightpallidum,leftventraldc,rightorifgorbitalpartoftheinferiorfrontalgyrus,leftpcuprecuneus"
+                },
+                {
+                    "name": "y",
+                    "value": "rs3851179_a"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs3851179_a\", \"field\": \"rs3851179_a\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}, {\"id\": \"rs3851179_a\", \"field\": \"rs3851179_a\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 892,
+                    "coeff": [
+                        1.9347147098710555,
+                        -0.06758203856338131,
+                        2.11136139105874,
+                        -0.8201255694917309,
+                        0.30759013965445103,
+                        -0.1963759644518205
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightsfgsuperiorfrontalgyrus",
+                        "rightpallidum",
+                        "leftventraldc",
+                        "rightorifgorbitalpartoftheinferiorfrontalgyrus",
+                        "leftpcuprecuneus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightmogmiddleoccipitalgyrus,rightfugfusiformgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "rs3865444_t"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs3865444_t\", \"field\": \"rs3865444_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}, {\"id\": \"rs3865444_t\", \"field\": \"rs3865444_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 892,
+                    "coeff": [
+                        -4.183228897430324,
+                        0.19996238595075427,
+                        0.21157700552945985
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightmogmiddleoccipitalgyrus",
+                        "rightfugfusiformgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightaccumbensarea"
+                },
+                {
+                    "name": "y",
+                    "value": "adnicategory"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"adnicategory\", \"field\": \"adnicategory\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"CN\"}, {\"id\": \"adnicategory\", \"field\": \"adnicategory\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"MCI\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 1066,
+                    "coeff": [
+                        0.8753844685057542,
+                        -0.2917464066627377
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightaccumbensarea"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "subjectageyears,leftcaudate,leftpcggposteriorcingulategyrus,leftpallidum"
+                },
+                {
+                    "name": "y",
+                    "value": "rs10498633_t"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs10498633_t\", \"field\": \"rs10498633_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"0\"}, {\"id\": \"rs10498633_t\", \"field\": \"rs10498633_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 892,
+                    "coeff": [
+                        -5.569424356342866,
+                        0.013845451003492482,
+                        -0.013401470807684978,
+                        0.0942089838171621,
+                        1.0715762306001069
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "subjectageyears",
+                        "leftcaudate",
+                        "leftpcggposteriorcingulategyrus",
+                        "leftpallidum"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightputamen"
+                },
+                {
+                    "name": "y",
+                    "value": "rs11767557_c"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs11767557_c\", \"field\": \"rs11767557_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"0\"}, {\"id\": \"rs11767557_c\", \"field\": \"rs11767557_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 885,
+                    "coeff": [
+                        -1.0419196921907925,
+                        0.05498088218866714
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightputamen"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftcocentraloperculum"
+                },
+                {
+                    "name": "y",
+                    "value": "rs3764650_g"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs3764650_g\", \"field\": \"rs3764650_g\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}, {\"id\": \"rs3764650_g\", \"field\": \"rs3764650_g\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"0\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 892,
+                    "coeff": [
+                        -4.831745232991824,
+                        0.3329764640999461
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftcocentraloperculum"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightfofrontaloperculum"
+                },
+                {
+                    "name": "y",
+                    "value": "rs1476679_c"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs1476679_c\", \"field\": \"rs1476679_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}, {\"id\": \"rs1476679_c\", \"field\": \"rs1476679_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 535,
+                    "coeff": [
+                        -0.2564841280856137,
+                        -0.6294854428324477
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightfofrontaloperculum"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftsogsuperioroccipitalgyrus,righttmptemporalpole"
+                },
+                {
+                    "name": "y",
+                    "value": "neurodegenerativescategories"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"neurodegenerativescategories\", \"field\": \"neurodegenerativescategories\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"AD\"}, {\"id\": \"neurodegenerativescategories\", \"field\": \"neurodegenerativescategories\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"MCI\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 798,
+                    "coeff": [
+                        -5.01031406778393,
+                        0.5803588570912936,
+                        0.5355325530361998
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftsogsuperioroccipitalgyrus",
+                        "righttmptemporalpole"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftamygdala,leftmfgmiddlefrontalgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "rs17125944_c"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs17125944_c\", \"field\": \"rs17125944_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}, {\"id\": \"rs17125944_c\", \"field\": \"rs17125944_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 888,
+                    "coeff": [
+                        -7.352019742852026,
+                        6.778068594509183,
+                        -0.06559360433773677
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftamygdala",
+                        "leftmfgmiddlefrontalgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftitginferiortemporalgyrus,rightporgposteriororbitalgyrus,rightmorgmedialorbitalgyrus,leftfrpfrontalpole"
+                },
+                {
+                    "name": "y",
+                    "value": "rs744373_c"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs744373_c\", \"field\": \"rs744373_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}, {\"id\": \"rs744373_c\", \"field\": \"rs744373_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 838,
+                    "coeff": [
+                        0.029879696950162758,
+                        -0.09664101387067668,
+                        0.8853886277101198,
+                        -0.7422165470468776,
+                        0.13073502093231582
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftitginferiortemporalgyrus",
+                        "rightporgposteriororbitalgyrus",
+                        "rightmorgmedialorbitalgyrus",
+                        "leftfrpfrontalpole"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftphgparahippocampalgyrus,rightpallidum,rightcaudate,leftpallidum,rightgregyrusrectus,rightcuncuneus,rightangangulargyrus,rightventraldc"
+                },
+                {
+                    "name": "y",
+                    "value": "rs3818361_t"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs3818361_t\", \"field\": \"rs3818361_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"0\"}, {\"id\": \"rs3818361_t\", \"field\": \"rs3818361_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 892,
+                    "coeff": [
+                        -1.1137137633707392,
+                        -0.21305681076220168,
+                        0.9391100671467925,
+                        0.20108683521400747,
+                        0.04174123802798488,
+                        0.22802932581603183,
+                        0.08679282530566144,
+                        0.006090257549021591,
+                        -0.4488743183314082
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftphgparahippocampalgyrus",
+                        "rightpallidum",
+                        "rightcaudate",
+                        "leftpallidum",
+                        "rightgregyrusrectus",
+                        "rightcuncuneus",
+                        "rightangangulargyrus",
+                        "rightventraldc"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftcalccalcarinecortex"
+                },
+                {
+                    "name": "y",
+                    "value": "alzheimerbroadcategory"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"alzheimerbroadcategory\", \"field\": \"alzheimerbroadcategory\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"Other\"}, {\"id\": \"alzheimerbroadcategory\", \"field\": \"alzheimerbroadcategory\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"CN\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 1066,
+                    "coeff": [
+                        -1.2207856305970277,
+                        0.6307125027286167
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftcalccalcarinecortex"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightitginferiortemporalgyrus,rightpogpostcentralgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "rs1476679_c"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs1476679_c\", \"field\": \"rs1476679_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}, {\"id\": \"rs1476679_c\", \"field\": \"rs1476679_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"0\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 535,
+                    "coeff": [
+                        -2.9501628492144936,
+                        0.1440107854989142,
+                        -0.043773280222598035
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightitginferiortemporalgyrus",
+                        "rightpogpostcentralgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightpallidum,rightitginferiortemporalgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "rs2718058_g"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs2718058_g\", \"field\": \"rs2718058_g\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}, {\"id\": \"rs2718058_g\", \"field\": \"rs2718058_g\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 552,
+                    "coeff": [
+                        -0.6825191364354362,
+                        -0.6363356262949943,
+                        0.04127123003442033
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightpallidum",
+                        "rightitginferiortemporalgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightorifgorbitalpartoftheinferiorfrontalgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "rs744373_c"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs744373_c\", \"field\": \"rs744373_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}, {\"id\": \"rs744373_c\", \"field\": \"rs744373_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 838,
+                    "coeff": [
+                        -0.6822728928475597,
+                        -0.3772621672115016
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightorifgorbitalpartoftheinferiorfrontalgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftsfgsuperiorfrontalgyrus,leftmtgmiddletemporalgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "rs3818361_t"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs3818361_t\", \"field\": \"rs3818361_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}, {\"id\": \"rs3818361_t\", \"field\": \"rs3818361_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 892,
+                    "coeff": [
+                        -2.142413233194607,
+                        -0.12880947065874426,
+                        0.14680614813272344
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftsfgsuperiorfrontalgyrus",
+                        "leftmtgmiddletemporalgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftmprgprecentralgyrusmedialsegment,leftamygdala"
+                },
+                {
+                    "name": "y",
+                    "value": "rs3865444_t"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs3865444_t\", \"field\": \"rs3865444_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}, {\"id\": \"rs3865444_t\", \"field\": \"rs3865444_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"0\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 892,
+                    "coeff": [
+                        0.20055765319232813,
+                        -0.05560274396133321,
+                        -0.30394214790391416
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftmprgprecentralgyrusmedialsegment",
+                        "leftamygdala"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftttgtransversetemporalgyrus,leftmfgmiddlefrontalgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "agegroup"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"agegroup\", \"field\": \"agegroup\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"70-79y\"}, {\"id\": \"agegroup\", \"field\": \"agegroup\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"50-59y\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 1066,
+                    "coeff": [
+                        4.891807546929988,
+                        0.5424579062001617,
+                        -0.17446004742061597
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftttgtransversetemporalgyrus",
+                        "leftmfgmiddlefrontalgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightsogsuperioroccipitalgyrus,rightmcggmiddlecingulategyrus,leftsfgsuperiorfrontalgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "rs10498633_t"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs10498633_t\", \"field\": \"rs10498633_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}, {\"id\": \"rs10498633_t\", \"field\": \"rs10498633_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 892,
+                    "coeff": [
+                        -2.7575504323354036,
+                        -0.0868627263982152,
+                        -0.26584700495998137,
+                        0.16968222088937965
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightsogsuperioroccipitalgyrus",
+                        "rightmcggmiddlecingulategyrus",
+                        "leftsfgsuperiorfrontalgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftlorglateralorbitalgyrus,rightscasubcallosalarea,leftmogmiddleoccipitalgyrus,rightprgprecentralgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "rs17125944_c"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs17125944_c\", \"field\": \"rs17125944_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"0\"}, {\"id\": \"rs17125944_c\", \"field\": \"rs17125944_c\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 888,
+                    "coeff": [
+                        -9.279113472412396,
+                        -4.424523552718573,
+                        7.289065916363069,
+                        0.6593139358259471,
+                        0.16198395756091713
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftlorglateralorbitalgyrus",
+                        "rightscasubcallosalarea",
+                        "leftmogmiddleoccipitalgyrus",
+                        "rightprgprecentralgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightmorgmedialorbitalgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "rs2718058_g"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs2718058_g\", \"field\": \"rs2718058_g\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}, {\"id\": \"rs2718058_g\", \"field\": \"rs2718058_g\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 552,
+                    "coeff": [
+                        -2.5727108592690437,
+                        0.3669802120866151
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightmorgmedialorbitalgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightstgsuperiortemporalgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "apoe4"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"apoe4\", \"field\": \"apoe4\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}, {\"id\": \"apoe4\", \"field\": \"apoe4\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"0\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 1061,
+                    "coeff": [
+                        0.9701314885377371,
+                        -0.18126283629769227
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightstgsuperiortemporalgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftliglingualgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "rs190982_g"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs190982_g\", \"field\": \"rs190982_g\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}, {\"id\": \"rs190982_g\", \"field\": \"rs190982_g\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"0\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 536,
+                    "coeff": [
+                        -1.5555209754346209,
+                        0.22475978668386024
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftliglingualgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "rightsogsuperioroccipitalgyrus"
+                },
+                {
+                    "name": "y",
+                    "value": "gender"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"gender\", \"field\": \"gender\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"M\"}, {\"id\": \"gender\", \"field\": \"gender\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"F\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 1066,
+                    "coeff": [
+                        -5.644943382232572,
+                        1.3879757826520571
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "rightsogsuperioroccipitalgyrus"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftopifgopercularpartoftheinferiorfrontalgyrus,leftscasubcallosalarea"
+                },
+                {
+                    "name": "y",
+                    "value": "rs2718058_g"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs2718058_g\", \"field\": \"rs2718058_g\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}, {\"id\": \"rs2718058_g\", \"field\": \"rs2718058_g\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 552,
+                    "coeff": [
+                        -3.092320846439665,
+                        0.3586798227916054,
+                        0.5779299467324843
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftopifgopercularpartoftheinferiorfrontalgyrus",
+                        "leftscasubcallosalarea"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftocpoccipitalpole,rightsmgsupramarginalgyrus,rightsmcsupplementarymotorcortex,leftstgsuperiortemporalgyrus,rightmcggmiddlecingulategyrus,leftsplsuperiorparietallobule"
+                },
+                {
+                    "name": "y",
+                    "value": "adnicategory"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"adnicategory\", \"field\": \"adnicategory\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"MCI\"}, {\"id\": \"adnicategory\", \"field\": \"adnicategory\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"AD\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 1066,
+                    "coeff": [
+                        -4.5042854674115835,
+                        0.10479026907772068,
+                        0.4078152755913451,
+                        -0.5507313182363542,
+                        0.7195557302792995,
+                        -0.424419707086433,
+                        0.18315839904949052
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftocpoccipitalpole",
+                        "rightsmgsupramarginalgyrus",
+                        "rightsmcsupplementarymotorcortex",
+                        "leftstgsuperiortemporalgyrus",
+                        "rightmcggmiddlecingulategyrus",
+                        "leftsplsuperiorparietallobule"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftpinsposteriorinsula,rightscasubcallosalarea"
+                },
+                {
+                    "name": "y",
+                    "value": "rs3818361_t"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs3818361_t\", \"field\": \"rs3818361_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}, {\"id\": \"rs3818361_t\", \"field\": \"rs3818361_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"1\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 892,
+                    "coeff": [
+                        -1.9339064663948693,
+                        -0.6730574362038636,
+                        1.2211088896141125
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftpinsposteriorinsula",
+                        "rightscasubcallosalarea"
+                    ]
+                }
+            ]
+        },
+        {
+            "input": [
+                {
+                    "name": "x",
+                    "value": "leftventraldc,rightamygdala,rightpallidum"
+                },
+                {
+                    "name": "y",
+                    "value": "rs3865444_t"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni"
+                },
+                {
+                    "name": "filter",
+                    "value": "{\"condition\": \"OR\", \"rules\": [{\"id\": \"rs3865444_t\", \"field\": \"rs3865444_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"0\"}, {\"id\": \"rs3865444_t\", \"field\": \"rs3865444_t\", \"type\": \"string\", \"input\": \"text\", \"operator\": \"equal\", \"value\": \"2\"}], \"valid\": true}"
+                }
+            ],
+            "output": [
+                {
+                    "n_obs": 892,
+                    "coeff": [
+                        -2.896546210074636,
+                        -0.6756009613002936,
+                        1.7830555700072521,
+                        1.8380902996471686
+                    ],
+                    "coeff_names": [
+                        "Intercept",
+                        "leftventraldc",
+                        "rightamygdala",
+                        "rightpallidum"
+                    ]
+                }
+            ]
+        }
+    ]
+}

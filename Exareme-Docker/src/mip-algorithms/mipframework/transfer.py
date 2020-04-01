@@ -16,7 +16,7 @@ class TransferRule(object):
         raise NotImplementedError
 
     def __repr__(self):
-        cls_name = '{}'.format(self.__class__)[:-2].split('.')[-1]  # hack for getting the class name
+        cls_name = type(self).__name__
         return '{cls}({val})'.format(cls=cls_name, val=self.val)
 
 
