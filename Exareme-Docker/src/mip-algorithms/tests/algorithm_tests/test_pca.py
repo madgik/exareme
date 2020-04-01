@@ -10,7 +10,7 @@ endpointUrl = vmUrl + 'PCA'
 
 
 def get_test_params():
-    with open('runs/pca_expected.json') as json_file:
+    with open('expected/pca_expected.json') as json_file:
         params = json.load(json_file)['test_cases']
     params = [(p['input'], p['output']) for p in params]
     return params

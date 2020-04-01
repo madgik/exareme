@@ -6,7 +6,7 @@ from tests.algorithm_tests.lib import vmUrl
 endpointUrl= vmUrl+'CALIBRATION_BELT'
 
 def get_test_params():
-    with open('runs/calibration_expected_io.json') as json_file:
+    with open('expected/calibration_expected_io.json') as json_file:
         params = json.load(json_file)['results']
     params = [(p['input'], p['output']) for p in params]
     return params
