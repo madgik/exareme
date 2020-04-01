@@ -115,15 +115,20 @@ class LogisticRegression(Algorithm):
         cm_smr = compute_confusion_matrix(n_obs, half_idx, tp, tn, fp, fn)
         roc_curve, auc, gini = compute_roc(tp, tn, fp, fn)
 
+        p_values = [
+            str(pv)
+            if pv >= P_VALUE_CUTOFF
+            else P_VALUE_CUTOFF_STR
+            for pv in smr.p_values
+        ]
+
         # Collect output data
         out_data = {
             'Coefficients'               : list(coeff),
             'Names'                      : list(x_names),
             'Std.Err'                    : list(smr.stderr),
             'z score'                    : list(smr.z_scores),
-            'p value'                    : [pv if pv >= P_VALUE_CUTOFF
-                                            else P_VALUE_CUTOFF_STR
-                                            for pv in smr.p_values],
+            'p value'                    : list(p_values),
             'Lower C.I.'                 : list(smr.low_ci),
             'Upper C.I.'                 : list(smr.high_ci),
             'Model degrees of freedom'   : smr.df_mod,
@@ -143,32 +148,20 @@ class LogisticRegression(Algorithm):
             'Gini coefficient'           : gini,
         }
 
-        summary1_tabular = []
-        for i in range(len(x_names)):
-            summary1_tabular.append([
-                x_names[i],
-                coeff[i],
-                smr.stderr[i],
-                smr.z_scores[i],
-                (str(smr.p_values[i])
-                 if smr.p_values[i] >= P_VALUE_CUTOFF
-                 else P_VALUE_CUTOFF_STR),
-                smr.low_ci[i],
-                smr.high_ci[i]
-            ])
-        table1 = TabularDataResource(
+        table_1 = TabularDataResource(
             fields=["variable", "coefficient", "std.err.", "z-score", "p-value",
                     "lower c.i.", "upper c.i."],
-            data=summary1_tabular,
+            data=list(zip(x_names, coeff, smr.stderr, smr.z_scores,
+                          p_values, smr.low_ci, smr.high_ci)),
             title='Logistic Regression Coefficients'
         )
 
-        table2 = TabularDataResource(
+        table_2 = TabularDataResource(
             fields=["model degrees of freedom", "residual degrees of freedom",
                     "log-likelihood", "null model log-likelihood", "AIC", "BIC",
                     "McFadden pseudo-R^2", "Cox-Snell pseudo-R^2"],
-            data=[[smr.df_mod, smr.df_resid, ll, smr.ll0, smr.aic, smr.bic,
-                   smr.r2_mcf, smr.r2_cs]],
+            data=[(smr.df_mod, smr.df_resid, ll, smr.ll0, smr.aic, smr.bic,
+                   smr.r2_mcf, smr.r2_cs)],
             title='Logistic Regression Summary'
         )
 
@@ -183,7 +176,7 @@ class LogisticRegression(Algorithm):
         )
 
         self.result = AlgorithmResult(
-            raw_data=out_data, tables=[table1, table2],
+            raw_data=out_data, tables=[table_1, table_2],
             highcharts=[hc_confmat, hc_roc]
         )
 

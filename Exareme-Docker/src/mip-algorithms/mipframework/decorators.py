@@ -50,6 +50,8 @@ def make_wrapper(node, step=None, state=None):
             # Acquire data from DB (if local node)
             if node == 'local':
                 self.data = AlgorithmData(self._args)
+                self.metadata = self.data.metadata
+                del self.data.metadata
 
             # Init or load state
             if state == 'init':

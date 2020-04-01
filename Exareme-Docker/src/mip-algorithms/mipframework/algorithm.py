@@ -49,6 +49,7 @@ class Algorithm(object):
         self._args = parse_exareme_args(self._folder_path, cli_args)
         self.parameters = Parameters(self._args)
         self.data = None
+        self.metadata = None
         self._transfer_struct = TransferStruct()
         self._state = None
         self._termination = False
