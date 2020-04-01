@@ -372,7 +372,7 @@ if __name__ == '__main__':
         '-formula', '',
     ]
     runner = create_runner(for_class='LogisticRegression',
-                           found_in='LOGISTIC_EXPERIMENTAL/logistic_regression',
+                           found_in='LOGISTIC_REGRESSION/logistic_regression',
                            alg_type='iterative', num_workers=1,
                            algorithm_args=algorithm_args)
     start = time.time()
