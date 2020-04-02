@@ -360,7 +360,9 @@ if __name__ == '__main__':
         '-pathology', 'dementia',
         '-dataset', 'adni',
         '-filter', """
-        {"condition": "OR", "rules": [{"id": "alzheimerbroadcategory", "field": "alzheimerbroadcategory", "type": "string", "input": "text", "operator": "equal", "value": "AD"}, {"id": "alzheimerbroadcategory", "field": "alzheimerbroadcategory", "type": "string", "input": "text", "operator": "equal", "value": "Other"}], "valid": true}
+        {"condition": "OR", "rules": [{"id": "alzheimerbroadcategory", "field": 
+        "alzheimerbroadcategory", "type": "string", "input": "text", "operator": 
+        "equal", "value": "AD"}, {"id": "alzheimerbroadcategory", "field": "alzheimerbroadcategory", "type": "string", "input": "text", "operator": "equal", "value": "CN"}], "valid": true}
         """,
         '-formula', '',
     ]

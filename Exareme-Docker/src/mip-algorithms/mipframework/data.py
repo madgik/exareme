@@ -92,6 +92,8 @@ def get_formula(args, is_categorical):
         if args.x:
             var_tup = (args.y, args.x)
             formula = '~'.join(map(lambda x: '+'.join(x), var_tup))
+            if not args.intercept:
+                formula += '-1'
         else:
             formula = '+'.join(args.y) + '-1'
     # Process categorical vars

@@ -43,10 +43,11 @@ def in_main_methods(attr):
 class Algorithm(object):
     __metaclass__ = MetaAlgorithm
 
-    def __init__(self, alg_file, cli_args):
+    def __init__(self, alg_file, cli_args, intercept=True):
         self._folder_path, name = os.path.split(alg_file)
         self._name = os.path.splitext(name)[0]
         self._args = parse_exareme_args(self._folder_path, cli_args)
+        self._args.intercept = intercept
         self.parameters = Parameters(self._args)
         self.data = None
         self.metadata = None

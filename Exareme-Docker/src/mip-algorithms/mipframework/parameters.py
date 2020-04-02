@@ -26,7 +26,7 @@ _COMMON_ALGORITHM_ARGUMENTS = {
 
 class Parameters(object):
     def __init__(self, args):
-        for name, val in args.__dict__.items():
+        for name, val in vars(args).items():
             if name not in _COMMON_ALGORITHM_ARGUMENTS:
                 setattr(self, name, val)
 

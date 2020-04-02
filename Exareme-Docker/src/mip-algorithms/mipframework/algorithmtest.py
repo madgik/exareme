@@ -125,6 +125,9 @@ class AlgorithmTest(object):
         according to the algorithm specifications
         """
         num_columns = 1
+        if not param['valueNotBlank']:
+            if random.random() < 0.5:
+                return ''
         if param['valueMultiple']:
             num_columns = random.randint(1, 20)
         if param['columnValuesIsCategorical'] == 'true':

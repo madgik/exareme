@@ -1,7 +1,7 @@
 {
-    "name": "PEARSON_CORRELATION",
-    "desc": "Calculates a Pearson correlation coefficient and the p-value for testing non-correlation.",
-    "label": "Pearson Correlation",
+    "name": "PEARSON_EXPERIMENTAL",
+    "desc": "",
+    "label": "Pearson Experimental",
     "type": "python_local_global",
     "status": "enabled",
     "parameters": [
@@ -10,8 +10,8 @@
             "label": "x",
             "desc": "A list of variables from database. The variable should be Real, Float, Integer. It can be empty.",
             "type": "column",
-            "columnValuesSQLType": "real, integer, text",
-            "columnValuesIsCategorical": "",
+            "columnValuesSQLType": "real, integer",
+            "columnValuesIsCategorical": "false",
             "value": "leftaccumbensarea, leftacgganteriorcingulategyrus, leftainsanteriorinsula",
             "valueNotBlank": false,
             "valueMultiple": true,
@@ -22,8 +22,8 @@
             "label": "y",
             "desc": "A list of variables from database. The variable should be Real, Float, Integer. It can be empty.",
             "type": "column",
-            "columnValuesSQLType": "real, integer, text",
-            "columnValuesIsCategorical": "",
+            "columnValuesSQLType": "real, integer",
+            "columnValuesIsCategorical": "false",
             "value": "agegroup, gender",
             "valueNotBlank": true,
             "valueMultiple": true,
@@ -58,6 +58,35 @@
             "valueNotBlank": false,
             "valueMultiple": true,
             "valueType": "string"
+        },
+        {
+            "name": "formula",
+            "label": "formula",
+            "desc": "Patsy formula  (R language syntax).",
+            "type": "other",
+            "value": "",
+            "defaultValue": "",
+            "valueNotBlank": false,
+            "valueMultiple": false,
+            "valueType": "string"
+        },
+        {
+            "name": "coding",
+            "desc": "Coding method for categorical variables.",
+            "type": "other",
+            "value": "null",
+            "defaultValue": "null",
+            "valueNotBlank": false,
+            "valueMultiple": false,
+            "valueType": "string",
+            "enumValues": [
+                "null",
+                "Treatment",
+                "Diff",
+                "Poly",
+                "Sum",
+                "Helmert"
+            ]
         }
     ]
 }

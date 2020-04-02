@@ -1,3 +1,7 @@
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 import numpy as np
 import scipy.special as special
 import scipy.stats as st
@@ -9,7 +13,7 @@ from mipframework.highcharts import CorrelationHeatmap
 
 class Pearson(Algorithm):
     def __init__(self, cli_args):
-        super(Pearson, self).__init__(__file__, cli_args)
+        super(Pearson, self).__init__(__file__, cli_args, intercept=False)
 
     def local_(self):
         left_vars = right_vars = self.data.variables
@@ -24,6 +28,7 @@ class Pearson(Algorithm):
         sy = np.empty(cm_shape, dtype=np.float)
         sxx = np.empty(cm_shape, dtype=np.float)
         sxy = np.empty(cm_shape, dtype=np.float)
+        # sxy = (X * X.T[:, :, None]).sum(axis=1)
         syy = np.empty(cm_shape, dtype=np.float)
         cm_names = np.array([[''] * cm_shape[1]] * cm_shape[0], dtype=object)
         for i in xrange(cm_shape[0]):
@@ -64,22 +69,22 @@ class Pearson(Algorithm):
         ci_hi = np.zeros(cm_shape, dtype=np.float)
 
         df = n_obs - 2
-        for i in xrange(cm_shape[0]):
-            for j in xrange(cm_shape[1]):
+        for i in range(cm_shape[0]):
+            for j in range(cm_shape[1]):
                 d = (np.sqrt(n_obs * sxx[i, j] - sx[i, j] * sx[i, j])
                      * np.sqrt(n_obs * syy[i, j] - sy[i, j] * sy[i, j]))
                 if d == 0:
                     r[i, j] = 0
                 else:
                     r[i, j] = float((n_obs * sxy[i, j] - sx[i, j] * sy[i, j]) / d)
-                r[i, j] = max(min(r[i, j], 1.0),
-                              -1.0)  # If abs(r) > 1 correct it: artifact of floating point arithmetic.
+                # If abs(r) > 1 artifact of floating point arithmetic.
+                r[i, j] = max(min(r[i, j], 1.0), -1.0)
                 if abs(r[i, j]) == 1.0:
                     prob[i, j] = 0.0
                 else:
                     t_squared = r[i, j] ** 2 * (df / ((1.0 - r[i, j]) * (1.0 + r[i, j])))
                     prob[i, j] = special.betainc(
-                            0.5 * df, 0.5, np.fmin(np.asarray(df / (df + t_squared)), 1.0)
+                        0.5 * df, 0.5, np.fmin(np.asarray(df / (df + t_squared)), 1.0)
                     )
                 # Compute 95% confidence intervals
                 alpha = 0.05  # Two-tail test with confidence intervals 95%
@@ -94,6 +99,7 @@ class Pearson(Algorithm):
 
         # Format results for output
         raw_data = {
+            'n_obs'                          : n_obs,
             'Correlation matrix labels'      : cm_names.tolist(),
             'x axis names'                   : rnames,
             'y axis names'                   : lnames,
@@ -108,27 +114,30 @@ class Pearson(Algorithm):
                 correl_tabular.append([
                     cm_names[i, j],
                     r[i, j],
-                    str(prob[i, j]) if prob[i, j] >= P_VALUE_CUTOFF else P_VALUE_CUTOFF_STR,
+                    (str(prob[i, j])
+                     if prob[i, j] >= P_VALUE_CUTOFF
+                     else P_VALUE_CUTOFF_STR),
                     ci_lo[i, j],
                     ci_hi[i, j]
                 ])
         table_output = TabularDataResource(
-                fields=[
-                    'variables',
-                    'Pearson correlation coefficient',
-                    'p-value',
-                    'lower c.i.',
-                    'upper c.i.'
-                ],
-                data=correl_tabular,
-                title='Pearson Correlation Summary').render()
+            fields=[
+                'variables',
+                'Pearson correlation coefficient',
+                'p-value',
+                'lower c.i.',
+                'upper c.i.'
+            ],
+            data=correl_tabular,
+            title='Pearson Correlation Summary')
 
-        highchart = CorrelationHeatmap(title='Pearson Correlation Heatmap', matrix=r, min_val=-1, max_val=1).render()
+        highchart = CorrelationHeatmap(title='Pearson Correlation Heatmap', matrix=r,
+                                       min_val=-1, max_val=1)
 
         self.result = AlgorithmResult(
-                raw_data=raw_data,
-                tables=[table_output],
-                highcharts=[highchart]
+            raw_data=raw_data,
+            tables=[table_output],
+            highcharts=[highchart]
         )
 
 
@@ -137,16 +146,17 @@ if __name__ == '__main__':
     from mipframework import create_runner
 
     algorithm_args = [
-        '-x', '',
-        '-y', 'leftaccumbensarea, leftacgganteriorcingulategyrus, leftainsanteriorinsula',
-        '-pathology', 'dementia',
+        '-x', 'rightioginferioroccipitalgyrus,rightmfcmedialfrontalcortex',
+        '-y', 'subjectage,rightventraldc,rightaccumbensarea',
+        '-pathology', 'dementia, leftaccumbensarea',
         '-dataset', 'adni',
         '-filter', '',
         '-formula', '',
         '-coding', '',
     ]
-    runner = create_runner(for_class='Pearson', found_in='PEARSON_EXPERIMENTAL/pearson',
-                           alg_type='local-global', algorithm_args=algorithm_args, num_workers=3)
+    runner = create_runner(for_class='Pearson', found_in='PEARSON_CORRELATION/pearson',
+                           alg_type='local-global', algorithm_args=algorithm_args,
+                           num_workers=3)
     start = time.time()
     runner.run()
     end = time.time()
