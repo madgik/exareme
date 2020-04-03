@@ -212,6 +212,7 @@ def update_local_model_parameters(X, y, coeff):
     y_ratio = (y - s) / d
     y_ratio[(y == 0) & (s == 0)] = -1
     y_ratio[(y == 1) & (s == 1)] = 1
+    y_ratio = y_ratio.clip(-1e6, 1e6)  # clip inf's to avoid nan's in grad
     # Gradient
     grad = np.dot(
         np.transpose(X),
@@ -226,17 +227,23 @@ def update_local_model_parameters(X, y, coeff):
 
 
 def update_coefficients(grad, hess):
+    if np.isinf(hess).any():
+        hess = hess.clip(-1e6, 1e6)
+    if np.isinf(grad).any():
+        grad = grad.clip(-1e6, 1e6)
     # If inverse fails try Moore-Penrose pseudo-inverse
     try:
         inv_hess = np.linalg.inv(hess)
+        if np.isnan(inv_hess).any():
+            raise np.linalg.LinAlgError
     except np.linalg.LinAlgError:
         inv_hess = np.linalg.pinv(hess)
+    if np.isclose(grad, 0.).any() and np.isinf(inv_hess).any():
+        inv_hess = inv_hess.clip(-1e6, 1e6)
     coeff = np.dot(
         inv_hess,
         grad
     )
-    # Regularize by clipping infinite coefficients
-    coeff = np.array([c if not np.isinf(c) else np.sign(c) * 10 for c in coeff])
     return coeff
 
 

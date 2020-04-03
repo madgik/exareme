@@ -1,6 +1,5 @@
 import pytest
 import json
-from functools import reduce
 from pathlib import Path
 import numpy as np
 
@@ -17,14 +16,10 @@ def get_test_params():
 
 
 @pytest.mark.parametrize("test_input, expected", get_test_params())
-def test_eval(test_input, expected):
-    alg_args = reduce(
-        lambda a, b: a + b,
-        [
-            ['-' + p['name'], p['value']]
-            for p in test_input
-        ]
-    )
+def test_pearson_algorithm_local(test_input, expected):
+    alg_args = sum([['-' + p['name'], p['value']]
+                    for p in test_input],
+                   [])
     runner = create_runner(for_class='Pearson',
                            found_in='PEARSON_CORRELATION/pearson',
                            alg_type='local-global', num_workers=1,

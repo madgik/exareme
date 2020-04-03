@@ -1,6 +1,5 @@
 import pytest
 import json
-from functools import reduce
 from pathlib import Path
 import numpy as np
 
@@ -17,14 +16,10 @@ def get_test_params():
 
 
 @pytest.mark.parametrize("test_input, expected", get_test_params())
-def test_eval(test_input, expected):
-    alg_args = reduce(
-        lambda a, b: a + b,
-        [
-            ['-' + p['name'], p['value']]
-            for p in test_input
-        ]
-    )
+def test_logistic_regression_algorithm_local(test_input, expected):
+    alg_args = sum([['-' + p['name'], p['value']]
+                    for p in test_input],
+                   [])
     runner = create_runner(for_class='LogisticRegression',
                            found_in='LOGISTIC_REGRESSION/logistic_regression',
                            alg_type='iterative', num_workers=1,
@@ -33,5 +28,3 @@ def test_eval(test_input, expected):
     result = json.loads(result)['result'][0]['data']
     expected = expected[0]
     assert np.isclose(result['Coefficients'], expected['coeff'], atol=1e-3).all()
-
-
