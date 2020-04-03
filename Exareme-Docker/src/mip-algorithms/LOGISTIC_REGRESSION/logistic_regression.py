@@ -112,7 +112,8 @@ class LogisticRegression(Algorithm):
         half_idx = self.fetch('half_idx')
 
         smr = compute_summary(n_obs, n_cols, coeff, ll, hess, y_sum)
-        cm_smr = compute_confusion_matrix(n_obs, half_idx, tp, tn, fp, fn)
+        cm_smr = compute_confusion_matrix(tp[half_idx], tn[half_idx], fp[half_idx],
+                                          fn[half_idx])
         roc_curve, auc, gini = compute_roc(tp, tn, fp, fn)
 
         p_values = [
@@ -269,11 +270,13 @@ def compute_classification_results(y, yhats):
 
 def compute_summary(n_obs, n_cols, coeff, ll, hess, y_sum):
     # Stats
-    stderr = np.sqrt(
-        np.diag(
-            np.linalg.inv(hess)
-        )
-    )
+    try:
+        inv_hess = np.linalg.inv(hess)
+        if np.isnan(inv_hess).any():
+            raise np.linalg.LinAlgError
+    except np.linalg.LinAlgError:
+        inv_hess = np.linalg.pinv(hess)
+    stderr = np.sqrt(np.diag(inv_hess))
     z_scores = np.divide(coeff, stderr)
     p_values = (lambda z: st.norm.sf(abs(z)) * 2)(z_scores)
     # Confidence intervals
@@ -290,13 +293,16 @@ def compute_summary(n_obs, n_cols, coeff, ll, hess, y_sum):
     df_resid = n_obs - df_mod - 1
     # Null model log-likelihood
     y_mean = y_sum / n_obs
-    ll0 = y_sum * np.log(y_mean) + (n_obs - y_sum) * np.log(1.0 - y_mean)
+    ll0 = xlogy(y_sum, y_mean) + xlogy(n_obs - y_sum, 1.0 - y_mean)
     # AIC
     aic = 2 * n_cols - 2 * ll
     # BIC
     bic = np.log(n_obs) * n_cols - 2 * ll
     # pseudo-R^2 McFadden and Cox-Snell
-    r2_mcf = 1 - ll / ll0
+    if np.isclose(ll, 0.0) and np.isclose(ll0, 0.0):
+        r2_mcf = 1
+    else:
+        r2_mcf = 1 - ll / ll0
     r2_cs = 1 - np.exp(2 * (ll0 - ll) / n_obs)
 
     summary = LogisticRegressionSummary(aic=aic, bic=bic, df_mod=df_mod,
@@ -308,23 +314,16 @@ def compute_summary(n_obs, n_cols, coeff, ll, hess, y_sum):
     return summary
 
 
-def compute_confusion_matrix(
-    n_obs, half_idx,
-    true_positives, true_negatives,
-    false_positives, false_negatives
-):
-    TP = true_positives[half_idx]
-    TN = true_negatives[half_idx]
-    FP = false_positives[half_idx]
-    FN = false_negatives[half_idx]
-    confusion_mat = {'TP': TP, 'TN': TN, 'FP': FP, 'FN': FN}
-    accuracy = (TP + TN) / n_obs
+def compute_confusion_matrix(tp, tn, fp, fn):
+    confusion_mat = {'True Positives' : tp, 'True Negatives': tn,
+                     'False Positives': fp, 'False Negatives': fn}
+    accuracy = (tp + tn) / (tp + tn + fp + fn)
     try:
-        precision = TP / (TP + FP)
+        precision = tp / (tp + fp)
     except ZeroDivisionError:
         precision = 1
     try:
-        recall = TP / (TP + FN)
+        recall = tp / (tp + fn)
     except ZeroDivisionError:
         recall = 1
     try:
