@@ -33,22 +33,22 @@ class ConfusionMatrix(HighchartTemplate):
             "name" : 'True Positives',
             "x"    : 0,
             "y"    : 1,
-            "value": confusion_matrix['TP']
+            "value": confusion_matrix['True Positives']
         }, {
             "name" : 'False Positives',
             "x"    : 1,
             "y"    : 1,
-            "value": confusion_matrix['FP']
+            "value": confusion_matrix['False Positives']
         }, {
             "name" : 'False Negatives',
             "x"    : 0,
             "y"    : 0,
-            "value": confusion_matrix['FN']
+            "value": confusion_matrix['False Negatives']
         }, {
             "name" : 'True Negatives',
             "x"    : 1,
             "y"    : 0,
-            "value": confusion_matrix['TN']
+            "value": confusion_matrix['True Negatives']
         }]
         dataLables = DataLabels(format='{point.name}: {point.value}', enabled=True, color='#333333')
         self.chart = Heatmap_(title=Title(text=title)) \
