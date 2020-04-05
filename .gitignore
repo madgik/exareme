@@ -64,3 +64,6 @@ crashlytics-build.properties
 #R 
 .RData
 .Rhistory
+
+# pre-commit confing
+.pre-commit-config.yaml

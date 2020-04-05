@@ -423,25 +423,25 @@ if __name__ == "__main__":
         "-filter",
         """
         {
-            "condition": "OR", 
+            "condition": "OR",
             "rules": [
                 {
-                    "id": "alzheimerbroadcategory", 
-                    "field": "alzheimerbroadcategory", 
-                    "type": "string", 
-                    "input": "text", 
-                    "operator": "equal", 
+                    "id": "alzheimerbroadcategory",
+                    "field": "alzheimerbroadcategory",
+                    "type": "string",
+                    "input": "text",
+                    "operator": "equal",
                     "value": "AD"
-                }, 
+                },
                 {
-                    "id": "alzheimerbroadcategory", 
-                    "field": "alzheimerbroadcategory", 
-                    "type": "string", 
-                    "input": "text", 
-                    "operator": "equal", 
+                    "id": "alzheimerbroadcategory",
+                    "field": "alzheimerbroadcategory",
+                    "type": "string",
+                    "input": "text",
+                    "operator": "equal",
                     "value": "CN"
                 }
-            ], 
+            ],
             "valid": true
         }
         """,
