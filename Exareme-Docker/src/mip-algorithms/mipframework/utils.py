@@ -19,7 +19,7 @@ def one_kwarg(func):
     @wraps(func)
     def onekwarg_wrapper(self, **kwarg):
         if len(kwarg) != 1:
-            raise ValueError('Please push one variable at the time.')
+            raise ValueError("Please push one variable at the time.")
         func(self, **kwarg)
 
     return onekwarg_wrapper

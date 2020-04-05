@@ -1,4 +1,5 @@
-from .core import Heatmap_, Area_, Title, Axis, ColorAxis, Series, Legend, DataLabels, Label
+from .core import Heatmap_, Area_
+from .core import Title, Axis, ColorAxis, Series, Legend, DataLabels, Label
 
 
 class HighchartTemplate(object):
@@ -10,6 +11,13 @@ class HighchartTemplate(object):
     def render_to_json(self, indent=4):
         return self.chart.render_to_json(indent=indent)
 
+    def __str__(self):
+        return str(self.render_to_json())
+
+    def __repr__(self):
+        cls = type(self)
+        return '{}()'.format(cls.__name__)
+
 
 class CorrelationHeatmap(HighchartTemplate):
     def __init__(self, title, matrix, min_val, max_val, xnames=None, ynames=None):
@@ -17,16 +25,19 @@ class CorrelationHeatmap(HighchartTemplate):
         for i in range(len(matrix)):
             for j in range(len(matrix[0])):
                 heatmap_data.append([i, j, matrix[i][j]])
-        self.chart = Heatmap_(title=Title(text=title)) \
-            .set(xAxis=Axis(categories=xnames)) \
-            .set(yAxis=Axis(categories=ynames)) \
-            .set(colorAxis=ColorAxis(min=min_val, max=max_val, minColor='#ff0000', maxColor='#0000ff')) \
-            .set(series=Series(data=heatmap_data))
+        self.chart = (
+            Heatmap_(title=Title(text=title))
+                .set(xAxis=Axis(categories=xnames))
+                .set(yAxis=Axis(categories=ynames))
+                .set(colorAxis=ColorAxis(min=min_val, max=max_val,
+                                         minColor='#ff0000', maxColor='#0000ff'))
+                .set(series=Series(data=heatmap_data))
+        )
 
 
 class ConfusionMatrix(HighchartTemplate):
     def __init__(self, title, confusion_matrix):
-        assert type(confusion_matrix) == dict, 'Expecting a dictionary with keys: TP, FP, FN, TN'
+        assert type(confusion_matrix) == dict, 'Expecting dictionary'
         min_val = 0
         max_val = max(confusion_matrix.values())
         data = [{
@@ -50,20 +61,36 @@ class ConfusionMatrix(HighchartTemplate):
             "y"    : 0,
             "value": confusion_matrix['True Negatives']
         }]
-        dataLables = DataLabels(format='{point.name}: {point.value}', enabled=True, color='#333333')
-        self.chart = Heatmap_(title=Title(text=title)) \
-            .set(xAxis=Axis(categories=["Condition Positives", "Condition Negatives"])) \
-            .set(yAxis=Axis(categories=["Prediction Negatives", "Prediction Positives"], title=None)) \
-            .set(colorAxis=ColorAxis(min=min_val, max=max_val, minColor='#ffffff', maxColor='#0000ff')) \
-            .set(series=Series(data=data, borderWidth=1, dataLabels=dataLables)) \
-            .set(legend=Legend(enabled=False))
+        dataLables = DataLabels(format='{point.name}: {point.value}',
+                                enabled=True, color='#333333')
+        self.chart = (
+            Heatmap_(title=Title(text=title))
+                .set(xAxis=Axis(categories=["Condition Positives",
+                                            "Condition Negatives"]))
+                .set(yAxis=Axis(categories=["Prediction Negatives",
+                                            "Prediction Positives"],
+                                title=None))
+                .set(colorAxis=ColorAxis(min=min_val, max=max_val,
+                                         minColor='#ffffff', maxColor='#0000ff'))
+                .set(series=Series(data=data, borderWidth=1, dataLabels=dataLables))
+                .set(legend=Legend(enabled=False))
+        )
 
 
 class ROC(HighchartTemplate):
     def __init__(self, title, roc_curve, auc, gini):
-        self.chart = Area_(title=Title(text=title)) \
-            .set(xAxis=Axis(min=-0.05, max=1.05, title=Title(text='False Positive Rate'))) \
-            .set(yAxis=Axis(min=-0.05, max=1.05, title=Title(text='True Positive Rate'))) \
-            .set(series=Series(data=roc_curve, useHTML=True, label=Label(onArea=True),
-                               name="AUC " + str(auc) + "<br/>Gini Coefficient " + str(gini))) \
-            .set(legend=Legend(enabled=False))
+        self.chart = (
+            Area_(title=Title(text=title))
+                .set(xAxis=Axis(min=-0.05,
+                                max=1.05,
+                                title=Title(text='False Positive Rate')))
+                .set(yAxis=Axis(min=-0.05,
+                                max=1.05,
+                                title=Title(text='True Positive Rate')))
+                .set(series=Series(data=roc_curve,
+                                   useHTML=True,
+                                   label=Label(onArea=True),
+                                   name="AUC " + str(auc) +
+                                        "<br/>Gini Coefficient " + str(gini)))
+                .set(legend=Legend(enabled=False))
+        )

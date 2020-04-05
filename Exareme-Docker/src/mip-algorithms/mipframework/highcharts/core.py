@@ -47,7 +47,8 @@ class ListField(Field):
 
 
 class Highchart(Field):
-    _fields = ['chart', 'series', 'subtitle', 'title', 'xAxis', 'yAxis', 'zAxis', 'colorAxis', 'legend']
+    _fields = ['chart', 'series', 'subtitle', 'title',
+               'xAxis', 'yAxis', 'zAxis', 'colorAxis', 'legend']
 
 
 class Chart(Field):

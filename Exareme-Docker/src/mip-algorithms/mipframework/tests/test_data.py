@@ -6,17 +6,18 @@ from mipframework.data import get_formula
 @pytest.fixture
 def make_mock_args():
     class MockArgs(object):
-        def __init__(self, x, y, formula):
+        def __init__(self, x, y, formula, intercept=True):
             self.x = x
             self.y = y
             self.formula = formula
+            self.intercept = intercept
 
     return MockArgs
 
 
 def test_get_formula_from_args(make_mock_args):
     expected = 'y ~ x * z + w'
-    args = make_mock_args(x=None, y=None, formula=expected)
+    args = make_mock_args(x=['x', 'z', 'w'], y=['y'], formula=expected)
     output = get_formula._original(args, None)
     assert output == expected
 

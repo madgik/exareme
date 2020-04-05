@@ -10,9 +10,12 @@ from .parameters import Parameters, parse_exareme_args
 from .transfer import AddMe, MaxMe, MinMe, ConcatMe, DoNothing, TransferStruct
 from .utils import one_kwarg
 
-_MAIN_METHODS = re.compile(r"""^((local_|global_)
-                                 (init|step(_[2-9])?|final|)?
-                                 |termination_condition)$""", re.VERBOSE)
+_MAIN_METHODS = re.compile(
+    r"""^((local_|global_)
+        (init|step(_[2-9])?|final|)?
+        |termination_condition)$""",
+    re.VERBOSE,
+)
 
 
 class MetaAlgorithm(type):
@@ -28,12 +31,15 @@ class MetaAlgorithm(type):
 
 
 def cannot_be_decorated(attr):
-    return not callable(attr) or not hasattr(attr, '__name__')
+    return not callable(attr) or not hasattr(attr, "__name__")
 
 
 def can_be_logged(attr):
-    return (attr.__name__ not in {'__init__', '__repr__', '__str__'}
-            and not _MAIN_METHODS.match(attr.__name__))
+    return attr.__name__ not in {
+        "__init__",
+        "__repr__",
+        "__str__",
+    } and not _MAIN_METHODS.match(attr.__name__)
 
 
 def in_main_methods(attr):
@@ -57,19 +63,21 @@ class Algorithm(object):
         self.result = None
 
     def __repr__(self):
-        name = ''.join(capwords(self._name, '_').split('_'))
-        return '{name}()'.format(name=name)
+        name = "".join(capwords(self._name, "_").split("_"))
+        return "{name}()".format(name=name)
 
     def set_output(self):
         try:
             res = json.dumps(self.result.output())
-            logging.debug('Algorithm output:\n {res}'.format(res=res, indent=4))
+            logging.debug("Algorithm output:\n {res}".format(res=res, indent=4))
             print(json.dumps(self.result.output(), allow_nan=True, indent=4))
         except ValueError:
-            logging.error('Result contains NaNs.')
+            logging.error("Result contains NaNs.")
             raise
         except TypeError:
-            logging.error('Cannot JSON serialize {res}'.format(res=self.result.output()))
+            logging.error(
+                "Cannot JSON serialize {res}".format(res=self.result.output())
+            )
             raise
 
     @one_kwarg
@@ -97,13 +105,13 @@ class Algorithm(object):
     def fetch(self, name):
         try:
             ret = self._transfer_struct[name]
-            logging.debug('Fetching: {0}'.format(ret))
+            logging.debug("Fetching: {0}".format(ret))
             return ret
         except KeyError:
-            logging.error('Cannot fetch unknown variable.')
+            logging.error("Cannot fetch unknown variable.")
             raise
         except TypeError:
-            logging.error('{} is not a variable name.'.format(name))
+            logging.error("{} is not a variable name.".format(name))
             raise
 
     @one_kwarg
@@ -118,6 +126,6 @@ class Algorithm(object):
 
     def termination_condition(self):
         if self._termination:
-            print('STOP')
+            print("STOP")
         else:
-            print('CONTINUE')
+            print("CONTINUE")

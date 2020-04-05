@@ -16,9 +16,9 @@ class LogisticRegressionTest(AlgorithmTest):
     def get_expected(self, alg_input):
 
         # Get data and remove missing values
-        x_names = alg_input[0]['value']
-        y_name = alg_input[1]['value']
-        variables = x_names + ',' + y_name
+        x_names = alg_input[0]["value"]
+        y_name = alg_input[1]["value"]
+        variables = x_names + "," + y_name
         data = self.get_data(variables)
         data = data.dropna()
         n_obs = len(data)
@@ -37,52 +37,46 @@ class LogisticRegressionTest(AlgorithmTest):
         # Build filter
         filter_ = {
             "condition": "OR",
-            "rules"    : [
+            "rules": [
                 {
-                    "id"      : y_name,
-                    "field"   : y_name,
-                    "type"    : "string",
-                    "input"   : "text",
+                    "id": y_name,
+                    "field": y_name,
+                    "type": "string",
+                    "input": "text",
                     "operator": "equal",
-                    "value"   : cat_0
+                    "value": cat_0,
                 },
                 {
-                    "id"      : y_name,
-                    "field"   : y_name,
-                    "type"    : "string",
-                    "input"   : "text",
+                    "id": y_name,
+                    "field": y_name,
+                    "type": "string",
+                    "input": "text",
                     "operator": "equal",
-                    "value"   : cat_1
-                }
+                    "value": cat_1,
+                },
             ],
-            "valid"    : True
+            "valid": True,
         }
-        alg_input[4]['value'] = json.dumps(filter_)
+        alg_input[4]["value"] = json.dumps(filter_)
 
         # Filter data according to above filter
         data = data[(data[y_name] == cat_0) | (data[y_name] == cat_1)]
         y = data[y_name]
-        X = data[x_names.split(',')]
+        X = data[x_names.split(",")]
 
         # Reject when one class appears less times than then number of columns
         if any([len(y[y == item]) <= X.shape[1] for item in set(y)]):
             return None
 
         # Fit logistic regression and return results
-        logreg_res = LogisticRegression(penalty='none', solver='newton-cg').fit(X, y)
+        logreg_res = LogisticRegression(penalty="none", solver="newton-cg").fit(X, y)
         coeff = logreg_res.intercept_.tolist() + logreg_res.coef_.tolist()[0]
-        coeff_names = ['Intercept'] + x_names.split(',')
-        return [
-            {
-                'n_obs'      : n_obs,
-                'coeff'      : coeff,
-                'coeff_names': coeff_names
-            }
-        ]
+        coeff_names = ["Intercept"] + x_names.split(",")
+        return [{"n_obs": n_obs, "coeff": coeff, "coeff_names": coeff_names}]
 
 
-if __name__ == '__main__':
-    prop_path = dbs_folder = Path(__file__).parent / 'properties.json'
+if __name__ == "__main__":
+    prop_path = dbs_folder = Path(__file__).parent / "properties.json"
     logistic_regression_test = LogisticRegressionTest(prop_path.as_posix())
     logistic_regression_test.generate_test_cases(num_tests=100)
-    logistic_regression_test.to_json('logistic_regression_expected.json')
+    logistic_regression_test.to_json("logistic_regression_expected.json")
