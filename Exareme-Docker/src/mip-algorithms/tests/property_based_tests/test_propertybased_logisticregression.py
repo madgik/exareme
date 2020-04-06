@@ -3,7 +3,7 @@ from collections import Mapping
 import numpy as np
 import hypothesis
 from hypothesis import given, settings, assume, note
-from hypothesis.strategies import integers, floats
+from hypothesis.strategies import integers, floats, composite
 from hypothesis.extra.numpy import arrays
 
 from LOGISTIC_REGRESSION.logistic_regression import init_model
@@ -15,7 +15,7 @@ from LOGISTIC_REGRESSION.logistic_regression import compute_confusion_matrix
 from LOGISTIC_REGRESSION.logistic_regression import compute_roc
 
 
-@settings(max_examples=500)
+@settings(max_examples=1000)
 @given(n_cols=integers(1, int(1e6)), n_obs=integers(1, int(1e6)))
 def test_init_model(n_cols, n_obs):
     coeff, _, ll = init_model(n_cols, n_obs)
@@ -23,20 +23,27 @@ def test_init_model(n_cols, n_obs):
     assert not np.isnan(ll)
 
 
+@composite
+def local_data(draw):
+    n_cols = draw(integers(1, 50))
+    n_obs = draw(integers(n_cols + 1, 1000))
+    X = draw(arrays(np.float64, (n_obs, n_cols), elements=floats(-1e6, 1e6)))
+    y = draw(arrays(np.int32, (n_obs,), elements=integers(0, 1)))
+    coeff = draw(arrays(np.float64, (n_cols,), elements=floats(-1e6, 1e6)))
+    return X, y, coeff
+
+
 @settings(
+    max_examples=1000,
     suppress_health_check=[
         hypothesis.HealthCheck.filter_too_much,
         hypothesis.HealthCheck.too_slow,
         hypothesis.HealthCheck.data_too_large,
     ],
-    max_examples=500,
 )
-@given(
-    X=arrays(np.float64, (100, 10), elements=floats(-1e6, 1e6)),
-    y=arrays(np.int32, (100,), elements=integers(0, 1)),
-    coeff=arrays(np.float64, (10,), elements=floats(-1e6, 1e6)),
-)
-def test_update_local_model_params_not_nan(X, y, coeff):
+@given(local_data())
+def test_update_local_model_params_not_nan(local_datum):
+    X, y, coeff = local_datum
     grad, hess, ll = update_local_model_parameters(X, y, coeff)
     count = Counter(y)
     assume(count[0] > len(coeff) and count[1] > len(coeff))
@@ -45,93 +52,84 @@ def test_update_local_model_params_not_nan(X, y, coeff):
     assert not np.isnan(ll)
 
 
-@settings(
-    suppress_health_check=[
-        hypothesis.HealthCheck.filter_too_much,
-        hypothesis.HealthCheck.too_slow,
-        hypothesis.HealthCheck.data_too_large,
-    ],
-    max_examples=500,
-)
-@given(
-    X=arrays(np.float64, (10, 1), elements=floats(-1e6, 1e6)),
-    y=arrays(np.int32, (10,), elements=integers(0, 1)),
-    coeff=arrays(np.float64, (1,), elements=floats(-1e6, 1e6)),
-)
-def test_update_local_model_params_not_nan_1_column(X, y, coeff):
-    grad, hess, ll = update_local_model_parameters(X, y, coeff)
-    count = Counter(y)
-    assume(count[0] > len(coeff) and count[1] > len(coeff))
-    assert not np.isnan(grad).any()
-    assert not np.isnan(hess).any()
-    assert not np.isnan(ll)
+@composite
+def grads_and_hessians(draw):
+    n_cols = draw(integers(1, 50))
+    grad = draw(arrays(np.float, (n_cols,), elements=floats(-1e6, 1e6)))
+    hess = draw(arrays(np.float64, (n_cols, n_cols), elements=floats(-1e6, 1e6)))
+    return grad, hess
 
 
-@settings(max_examples=500)
-@given(
-    grad=arrays(np.float, (10,), elements=floats(-1e6, 1e6)),
-    hess=arrays(np.float64, (10, 10), elements=floats(-1e6, 1e6)),
-)
-def test_update_coefficients_not_nan(grad, hess):
+@settings(max_examples=1000)
+@given(grads_and_hessians())
+def test_update_coefficients_not_nan(grad_and_hess):
+    grad, hess = grad_and_hess
     assume(not np.isnan(grad).any() and not np.isnan(hess).any())
     coeff = update_coefficients(grad, hess)
     assert not np.isnan(coeff).any()
 
 
-@settings(max_examples=500)
-@given(
-    grad=arrays(np.float, (1,), elements=floats(-1e6, 1e6)),
-    hess=arrays(np.float64, (1, 1), elements=floats(-1e6, 1e6)),
-)
-def test_update_coefficients_not_nan_1_column(grad, hess):
-    coeff = update_coefficients(grad, hess)
-    assert not np.isnan(coeff).any()
-
-
-@settings(max_examples=500)
-@given(
-    y=arrays(np.int32, (100,), elements=integers(0, 1)),
-    yhats=arrays(np.int32, (10, 100), elements=integers(0, 1)),
-)
-def test_compute_classification_results_not_nan(y, yhats):
-    fn, fp, tn, tp = compute_classification_results(y, yhats)
-    assert not np.isnan(fn).any()
-    assert not np.isnan(fp).any()
-    assert not np.isnan(tn).any()
-    assert not np.isnan(tp).any()
-
-
-@settings(max_examples=500)
-@given(
-    y=arrays(np.int32, (100,), elements=integers(0, 1)),
-    yhats=arrays(np.int32, (10, 100), elements=integers(0, 1)),
-)
-def test_compute_classification_results_sum_to_one(y, yhats):
-    assume(not np.isnan(y).any() and not np.isnan(yhats).any())
-    for res in zip(*compute_classification_results(y, yhats)):
-        assert sum(res) == len(y)
+@composite
+def ys_and_yhats(draw):
+    n_cols = draw(integers(1, 50))
+    n_obs = draw(integers(n_cols + 1, 1000))
+    y = draw(arrays(np.int32, (n_obs,), elements=integers(0, 1)))
+    yhats = draw(arrays(np.int32, (n_cols, n_obs), elements=integers(0, 1)))
+    return y, yhats
 
 
 @settings(
+    max_examples=1000,
     suppress_health_check=[
         hypothesis.HealthCheck.filter_too_much,
         hypothesis.HealthCheck.too_slow,
         hypothesis.HealthCheck.data_too_large,
     ],
-    max_examples=500,
+    deadline=None,
 )
-@given(
-    coeff=arrays(np.float64, (3,), elements=floats(-1e6, 1e6)),
-    ll=floats(-1e6, 1e6),
-    hess=arrays(np.float64, (3, 3), elements=floats(-1e6, 1e6)),
-    y=arrays(np.int32, (10,), elements=integers(0, 1)),
+@given(ys_and_yhats())
+def test_compute_classification_results_not_nan_and_sum_to_one(y_and_yhats):
+    y, yhats = y_and_yhats
+    fn, fp, tn, tp = compute_classification_results(y, yhats)
+    assert not np.isnan(fn).any()
+    assert not np.isnan(fp).any()
+    assert not np.isnan(tn).any()
+    assert not np.isnan(tp).any()
+    for res in zip(fn, fp, tn, tp):
+        assert sum(res) == len(y)
+
+
+@composite
+def summary_inputs(draw):
+    n_cols = draw(integers(1, 50))
+    n_obs = draw(integers(n_cols + 1, 1000))
+    coeff = draw(arrays(np.float64, (n_cols,), elements=floats(-1e6, 1e6)))
+    ll = draw(floats(-1e6, 1e6))
+    hess = draw(
+        arrays(np.float64, (n_cols, n_cols), elements=floats(-1e6, 1e6)).filter(
+            lambda h: not np.isclose(h, 0.0).all()
+            and not np.isclose(np.linalg.det(h), 0.0)
+        )
+    )
+    y = draw(arrays(np.int32, (n_obs,), elements=integers(0, 1)))
+    return coeff, ll, hess, y
+
+
+@settings(
+    max_examples=1000,
+    suppress_health_check=[
+        hypothesis.HealthCheck.filter_too_much,
+        hypothesis.HealthCheck.too_slow,
+        hypothesis.HealthCheck.data_too_large,
+    ],
+    deadline=None,
 )
-def test_compute_summary_not_nan(coeff, ll, hess, y):
+@given(summary_inputs())
+def test_compute_summary_not_nan(summary_input):
+    coeff, ll, hess, y = summary_input
     n_obs = len(y)
     n_cols = len(coeff)
     y_sum = sum(y)
-    assume(not np.isclose(hess, 0.0).all())
-    assume(not np.isclose(np.linalg.det(hess), 0.0))
     try:
         inv_hess = np.linalg.inv(hess)
         if np.isnan(inv_hess).any():
@@ -145,6 +143,15 @@ def test_compute_summary_not_nan(coeff, ll, hess, y):
         assert not np.isnan(val).any()
 
 
+@settings(
+    max_examples=1000,
+    suppress_health_check=[
+        hypothesis.HealthCheck.filter_too_much,
+        hypothesis.HealthCheck.too_slow,
+        hypothesis.HealthCheck.data_too_large,
+    ],
+    deadline=None,
+)
 @given(
     tp=integers(0, int(1e6)),
     tn=integers(0, int(1e6)),
@@ -163,7 +170,7 @@ def test_compute_confusion_matrix_not_nan(tp, tn, fp, fn):
             assert not np.isnan(value).any()
 
 
-@settings(max_examples=500)
+@settings(max_examples=1000)
 @given(
     true_positives=arrays(np.int32, (100,), elements=integers(0, 100)),
     true_negatives=arrays(np.int32, (100,), elements=integers(0, 100)),

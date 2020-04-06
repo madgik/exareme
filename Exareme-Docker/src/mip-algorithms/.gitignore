@@ -54,3 +54,6 @@ crashlytics-build.properties
 
 # Creating demo data.
 tests/data/output
+
+# Hypothesis db
+.hypothesis
