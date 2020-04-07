@@ -1,3 +1,3 @@
-from pearson import Pearson
+from .pearson import Pearson
 
-__all__ = ['Pearson']
+__all__ = ["Pearson"]
