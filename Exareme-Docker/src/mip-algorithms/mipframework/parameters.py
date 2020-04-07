@@ -61,7 +61,7 @@ def parse_exareme_args(fp, cli_args):
     # Parse and process
     args, _ = parser.parse_known_args(cli_args)
     args.y = re.split(r"\s*,\s*", args.y)
-    if args.x:
+    if hasattr(args, "x") and args.x:
         args.x = re.split(r"\s*,\s*", args.x)
     args.dataset = re.split(r"\s*,\s*", args.dataset)
     args.filter = json.loads(args.filter) if args.filter else None

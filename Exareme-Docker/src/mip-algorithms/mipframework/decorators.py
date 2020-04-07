@@ -1,10 +1,14 @@
 import logging
+import re
 from functools import wraps
 
 from .data import AlgorithmData
 from .exceptions import UnknownFunctionError
 from .state import State
 from .transfer import TransferStruct
+
+_LOCAL_STEP = re.compile(r"^local_step(_[2-9])?$")
+_GLOBAL_STEP = re.compile(r"^global_step(_[2-9])?$")
 
 
 def algorithm_methods_decorator(func):
@@ -19,9 +23,9 @@ def algorithm_methods_decorator(func):
         wrapper = make_wrapper(node="local", step="first", state="init")(func)
     elif func_name == "global_init":
         wrapper = make_wrapper(node="global", state="init")(func)
-    elif func_name == "local_step":
+    elif _LOCAL_STEP.match(func_name):
         wrapper = make_wrapper(node="local", state="load")(func)
-    elif func_name == "global_step":
+    elif _GLOBAL_STEP.match(func_name):
         wrapper = make_wrapper(node="global", state="load")(func)
     elif func_name == "local_final":
         wrapper = make_wrapper(node="local", state="load")(func)

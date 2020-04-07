@@ -56,9 +56,7 @@ class AlgorithmData(object):
         elif LOGGING_LEVEL_ALG == logging.DEBUG:
             logging.debug(
                 "Starting 'AlgorithmData.build_vars_and_covars',"
-                "\nargs: \n{0},\nkwargs: \n{1}".format(
-                    args, is_categorical
-                )
+                "\nargs: \n{0},\nkwargs: \n{1}".format(args, is_categorical)
             )
         from numpy import log as log
         from numpy import exp as exp
@@ -67,7 +65,7 @@ class AlgorithmData(object):
         _ = log(exp(1))
         formula = get_formula(args, is_categorical)
         # Create variables (and possibly covariables)
-        if args.x:
+        if hasattr(args, "x") and args.x:
             try:
                 variables, covariables = dmatrices(
                     formula, self.full, return_type="dataframe"
@@ -95,7 +93,7 @@ def get_formula(args, is_categorical):
     else:
         formula = None
     if not formula:
-        if args.x:
+        if hasattr(args, "x") and args.x:
             var_tup = (args.y, args.x)
             formula = "~".join(map(lambda x: "+".join(x), var_tup))
             if not args.intercept:
@@ -104,7 +102,7 @@ def get_formula(args, is_categorical):
             formula = "+".join(args.y) + "-1"
     # Process categorical vars
     var_names = list(args.y)
-    if args.x:
+    if hasattr(args, "x") and args.x:
         var_names.extend(args.x)
     if hasattr(args, "coding"):
         if args.coding:
@@ -127,7 +125,7 @@ class AlgorithmMetadata(object):
 @logged
 def read_data_from_db(db, args):
     var_names = list(args.y)
-    if args.x:
+    if hasattr(args, "x") and args.x:
         var_names.extend(args.x)
     data = db.select_vars_from_data(
         var_names=var_names, datasets=args.dataset, filter_rules=args.filter
@@ -138,7 +136,7 @@ def read_data_from_db(db, args):
 @logged
 def read_metadata_from_db(db, args):
     var_names = list(args.y)
-    if args.x:
+    if hasattr(args, "x") and args.x:
         var_names.extend(args.x)
     md = db.select_md_from_metadata(var_names=var_names, args=args)
     return AlgorithmMetadata(*md)
