@@ -17,8 +17,7 @@ class PCA(Algorithm):
         n_obs = len(X)
         X = np.array(X)
 
-        sx = X.sum(axis=0)
-        sxx = (X ** 2).sum(axis=0)
+        sx, sxx = get_local_sums(X)
 
         self.push_and_add(n_obs=n_obs)
         self.push_and_add(sx=sx)
@@ -29,8 +28,7 @@ class PCA(Algorithm):
         sx = self.fetch("sx")
         sxx = self.fetch("sxx")
 
-        means = sx / n_obs
-        sigmas = ((sxx - n_obs * means ** 2) / (n_obs - 1)) ** 0.5
+        means, sigmas = get_moments(n_obs, sx, sxx)
 
         self.store(n_obs=n_obs)
         self.push(means=means)
@@ -42,9 +40,7 @@ class PCA(Algorithm):
         means = self.fetch("means")
         sigmas = self.fetch("sigmas")
 
-        X -= means
-        X /= sigmas
-        gramian = np.dot(X.T, X)
+        gramian = get_standardized_gramian(X, means, sigmas)
 
         self.push_and_add(gramian=gramian)
         self.push_and_agree(var_names=var_names)
@@ -54,13 +50,7 @@ class PCA(Algorithm):
         gramian = self.fetch("gramian")
         var_names = self.fetch("var_names")
 
-        covariance = np.divide(gramian, n_obs - 1)
-        eigenvalues, eigenvectors = np.linalg.eigh(covariance)
-
-        idx = eigenvalues.argsort()[::-1]
-        eigenvalues = eigenvalues[idx]
-        eigenvectors = eigenvectors[:, idx]
-        eigenvectors = eigenvectors.T
+        eigenvalues, eigenvectors = get_eigenstuff(gramian, n_obs)
 
         table_eigvals = TabularDataResource(
             fields=[name for name in var_names],
@@ -96,6 +86,35 @@ class PCA(Algorithm):
             tables=[table_eigvals, table_eigvecs],
             highcharts=[hc_scree, hc_bubbles],
         )
+
+
+def get_local_sums(X):
+    sx = X.sum(axis=0)
+    sxx = (X ** 2).sum(axis=0)
+    return sx, sxx
+
+
+def get_moments(n_obs, sx, sxx):
+    means = sx / n_obs
+    sigmas = ((sxx - n_obs * means ** 2) / (n_obs - 1)) ** 0.5
+    return means, sigmas
+
+
+def get_standardized_gramian(X, means, sigmas):
+    X -= means
+    X /= sigmas
+    gramian = np.dot(X.T, X)
+    return gramian
+
+
+def get_eigenstuff(gramian, n_obs):
+    covariance = np.divide(gramian, n_obs - 1)
+    eigenvalues, eigenvectors = np.linalg.eigh(covariance)
+    idx = eigenvalues.argsort()[::-1]
+    eigenvalues = eigenvalues[idx]
+    eigenvectors = eigenvectors[:, idx]
+    eigenvectors = eigenvectors.T
+    return eigenvalues, eigenvectors
 
 
 if __name__ == "__main__":
