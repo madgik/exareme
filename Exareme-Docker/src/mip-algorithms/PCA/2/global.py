@@ -3,8 +3,12 @@ from __future__ import print_function
 
 from os import path
 
-from PCA.pca_lib import global_2
-from utils.algorithm_utils import set_algorithms_output_data, TransferAndAggregateData, parse_exareme_args
+from PCA.pca import global_2
+from utils.algorithm_utils import (
+    set_algorithms_output_data,
+    TransferAndAggregateData,
+    parse_exareme_args,
+)
 
 
 def main(args):
@@ -18,5 +22,5 @@ def main(args):
     set_algorithms_output_data(global_out)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main(parse_exareme_args(__file__))

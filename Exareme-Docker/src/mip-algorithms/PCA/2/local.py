@@ -3,8 +3,12 @@ from __future__ import print_function
 
 from os import path
 
-from PCA.pca_lib import local_2
-from utils.algorithm_utils import StateData, TransferAndAggregateData, parse_exareme_args
+from PCA.pca import local_2
+from utils.algorithm_utils import (
+    StateData,
+    TransferAndAggregateData,
+    parse_exareme_args,
+)
 
 
 def main(args):
@@ -21,5 +25,5 @@ def main(args):
     local_out.transfer()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main(parse_exareme_args(__file__))

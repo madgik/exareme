@@ -1,3 +1,3 @@
-from .user_defined import CorrelationHeatmap, ConfusionMatrix, ROC
+from .user_defined import CorrelationHeatmap, ConfusionMatrix, ROC, ScreePlot
 
-__all__ = ['CorrelationHeatmap', 'ConfusionMatrix', 'ROC']
+__all__ = ["CorrelationHeatmap", "ConfusionMatrix", "ROC", "ScreePlot"]

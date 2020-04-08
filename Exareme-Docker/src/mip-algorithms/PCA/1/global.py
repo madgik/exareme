@@ -3,7 +3,7 @@ from __future__ import print_function
 
 from os import path
 
-from PCA.pca_lib import global_1
+from PCA.pca import global_1
 from utils.algorithm_utils import TransferAndAggregateData, parse_exareme_args
 
 
@@ -17,5 +17,5 @@ def main(args):
     global_out.transfer()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main(parse_exareme_args(__file__))

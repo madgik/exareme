@@ -1,5 +1,14 @@
-from .core import Heatmap_, Area_
-from .core import Title, Axis, ColorAxis, Series, Legend, DataLabels, Label
+from .core import Heatmap_, Area_, Column_, Bubble_
+from .core import (
+    Title,
+    Axis,
+    ColorAxis,
+    Series,
+    Legend,
+    DataLabels,
+    Label,
+    RenderableList,
+)
 
 
 class HighchartTemplate(object):
@@ -16,7 +25,7 @@ class HighchartTemplate(object):
 
     def __repr__(self):
         cls = type(self)
-        return '{}()'.format(cls.__name__)
+        return "{}()".format(cls.__name__)
 
 
 class CorrelationHeatmap(HighchartTemplate):
@@ -27,53 +36,67 @@ class CorrelationHeatmap(HighchartTemplate):
                 heatmap_data.append([i, j, matrix[i][j]])
         self.chart = (
             Heatmap_(title=Title(text=title))
-                .set(xAxis=Axis(categories=xnames))
-                .set(yAxis=Axis(categories=ynames))
-                .set(colorAxis=ColorAxis(min=min_val, max=max_val,
-                                         minColor='#ff0000', maxColor='#0000ff'))
-                .set(series=Series(data=heatmap_data))
+            .set(xAxis=Axis(categories=xnames))
+            .set(yAxis=Axis(categories=ynames))
+            .set(
+                colorAxis=ColorAxis(
+                    min=min_val, max=max_val, minColor="#ff0000", maxColor="#0000ff"
+                )
+            )
+            .set(series=Series(data=heatmap_data))
         )
 
 
 class ConfusionMatrix(HighchartTemplate):
     def __init__(self, title, confusion_matrix):
-        assert type(confusion_matrix) == dict, 'Expecting dictionary'
+        assert type(confusion_matrix) == dict, "Expecting dictionary"
         min_val = 0
         max_val = max(confusion_matrix.values())
-        data = [{
-            "name" : 'True Positives',
-            "x"    : 0,
-            "y"    : 1,
-            "value": confusion_matrix['True Positives']
-        }, {
-            "name" : 'False Positives',
-            "x"    : 1,
-            "y"    : 1,
-            "value": confusion_matrix['False Positives']
-        }, {
-            "name" : 'False Negatives',
-            "x"    : 0,
-            "y"    : 0,
-            "value": confusion_matrix['False Negatives']
-        }, {
-            "name" : 'True Negatives',
-            "x"    : 1,
-            "y"    : 0,
-            "value": confusion_matrix['True Negatives']
-        }]
-        dataLables = DataLabels(format='{point.name}: {point.value}',
-                                enabled=True, color='#333333')
+        data = [
+            {
+                "name": "True Positives",
+                "x": 0,
+                "y": 1,
+                "value": confusion_matrix["True Positives"],
+            },
+            {
+                "name": "False Positives",
+                "x": 1,
+                "y": 1,
+                "value": confusion_matrix["False Positives"],
+            },
+            {
+                "name": "False Negatives",
+                "x": 0,
+                "y": 0,
+                "value": confusion_matrix["False Negatives"],
+            },
+            {
+                "name": "True Negatives",
+                "x": 1,
+                "y": 0,
+                "value": confusion_matrix["True Negatives"],
+            },
+        ]
+        dataLables = DataLabels(
+            format="{point.name}: {point.value}", enabled=True, color="#333333"
+        )
         self.chart = (
             Heatmap_(title=Title(text=title))
-                .set(xAxis=Axis(categories=["Condition Positives",
-                                            "Condition Negatives"]))
-                .set(yAxis=Axis(categories=["Prediction Negatives",
-                                            "Prediction Positives"],
-                                title=None))
-                .set(colorAxis=ColorAxis(min=min_val, max=max_val,
-                                         minColor='#ffffff', maxColor='#0000ff'))
-                .set(series=Series(data=data, borderWidth=1, dataLabels=dataLables))
-                .set(legend=Legend(enabled=False))
+            .set(xAxis=Axis(categories=["Condition Positives", "Condition Negatives"]))
+            .set(
+                yAxis=Axis(
+                    categories=["Prediction Negatives", "Prediction Positives"],
+                    title=None,
+                )
+            )
+            .set(
+                colorAxis=ColorAxis(
+                    min=min_val, max=max_val, minColor="#ffffff", maxColor="#0000ff"
+                )
+            )
+            .set(series=Series(data=data, borderWidth=1, dataLabels=dataLables))
+            .set(legend=Legend(enabled=False))
         )
 
 
@@ -81,16 +104,79 @@ class ROC(HighchartTemplate):
     def __init__(self, title, roc_curve, auc, gini):
         self.chart = (
             Area_(title=Title(text=title))
-                .set(xAxis=Axis(min=-0.05,
-                                max=1.05,
-                                title=Title(text='False Positive Rate')))
-                .set(yAxis=Axis(min=-0.05,
-                                max=1.05,
-                                title=Title(text='True Positive Rate')))
-                .set(series=Series(data=roc_curve,
-                                   useHTML=True,
-                                   label=Label(onArea=True),
-                                   name="AUC " + str(auc) +
-                                        "<br/>Gini Coefficient " + str(gini)))
-                .set(legend=Legend(enabled=False))
+            .set(
+                xAxis=Axis(min=-0.05, max=1.05, title=Title(text="False Positive Rate"))
+            )
+            .set(
+                yAxis=Axis(min=-0.05, max=1.05, title=Title(text="True Positive Rate"))
+            )
+            .set(
+                series=Series(
+                    data=roc_curve,
+                    useHTML=True,
+                    label=Label(onArea=True),
+                    name="AUC " + str(auc) + "<br/>Gini Coefficient " + str(gini),
+                )
+            )
+            .set(legend=Legend(enabled=False))
+        )
+
+
+class ScreePlot(HighchartTemplate):
+    def __init__(self, title, data, xtitle):
+        self.chart = (
+            Column_(title=Title(text=title))
+            .set(
+                xAxis=Axis(categories=list(range(len(data))), title=Title(text=xtitle))
+            )
+            .set(yAxis=Axis(title=Title(text=title)))
+            .set(
+                series=RenderableList(
+                    [
+                        Series(data=data, type="column"),
+                        Series(data=data, type="line", color="#0A1E6E"),
+                    ]
+                )
+            )
+            .set(legend=Legend(enabled=False))
+        )
+
+
+class BubbleGridPlot(HighchartTemplate):
+    def __init__(self, title, data, var_names, xtitle, ytitle):
+        self.chart = (
+            Bubble_(title=Title(text=title))
+            .set(legend=Legend(enabled=False))
+            .set(
+                xAxis=Axis(
+                    title=Title(text=xtitle),
+                    gridLineWidth=1,
+                    tickLength=500,
+                    categories=list(range(len(data))),
+                )
+            )
+            .set(
+                yAxis=Axis(
+                    title=Title(text=ytitle),
+                    categories=var_names,
+                    startOnTick=False,
+                    endOnTick=False,
+                    maxPadding=0.2,
+                )
+            )
+            .set(
+                colorAxis=ColorAxis(
+                    min=0, max=max([abs(elem) for row in data for elem in row])
+                )
+            )
+            .set(
+                series=Series(
+                    data=[
+                        {"x": i, "y": j, "z": abs(elem)}
+                        for i, row in enumerate(data)
+                        for j, elem in enumerate(row)
+                    ],
+                    colorKey="z",
+                )
+            )
         )
