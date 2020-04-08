@@ -14,9 +14,9 @@ class PCA(Algorithm):
 
     def local_init(self):
         X = self.data.variables
-
         n_obs = len(X)
         X = np.array(X)
+
         sx = X.sum(axis=0)
         sxx = (X ** 2).sum(axis=0)
 
@@ -38,10 +38,10 @@ class PCA(Algorithm):
 
     def local_final(self):
         X = self.data.variables
+        var_names = list(X.columns)
         means = self.fetch("means")
         sigmas = self.fetch("sigmas")
 
-        var_names = list(X.columns)
         X -= means
         X /= sigmas
         gramian = np.dot(X.T, X)
@@ -103,8 +103,6 @@ if __name__ == "__main__":
     from mipframework import create_runner
 
     algorithm_args = [
-        "-x",
-        "rightioginferioroccipitalgyrus,rightmfcmedialfrontalcortex",
         "-y",
         "subjectage,rightventraldc,rightaccumbensarea, gender",
         "-pathology",
