@@ -67,3 +67,6 @@ crashlytics-build.properties
 
 # pre-commit confing
 .pre-commit-config.yaml
+
+# emacs files
+*~
