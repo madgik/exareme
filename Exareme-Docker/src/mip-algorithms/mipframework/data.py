@@ -104,13 +104,12 @@ def get_formula(args, is_categorical):
     var_names = list(args.y)
     if hasattr(args, "x") and args.x:
         var_names.extend(args.x)
-    if hasattr(args, "coding"):
-        if args.coding:
-            for var in var_names:
-                if is_categorical[var]:
-                    formula = formula.replace(
-                        var, "C({v}, {coding})".format(v=var, coding=args.coding)
-                    )
+    if hasattr(args, "coding") and args.coding:
+        for var in var_names:
+            if is_categorical[var]:
+                formula = formula.replace(
+                    var, "C({v}, {coding})".format(v=var, coding=args.coding)
+                )
     return formula
 
 

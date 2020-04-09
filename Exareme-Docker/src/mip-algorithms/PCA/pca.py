@@ -133,7 +133,7 @@ if __name__ == "__main__":
         "-formula",
         "",
         "-coding",
-        "",
+        "Treatment",
     ]
     runner = create_runner(
         for_class="PCA",
