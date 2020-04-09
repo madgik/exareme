@@ -37,41 +37,41 @@ public class ParameterProperties {
     public ParameterProperties() {
     }
 
-    public void validateParameterPropertiesInitialization() throws AlgorithmException {
+    public void validateParameterPropertiesInitialization(String algorithmName) throws AlgorithmException {
         if (name == null) {
-            throw new AlgorithmException("The parameter field 'name' was not initialized in the properties.json file.");
+            throw new AlgorithmException(algorithmName, "The parameter field 'name' was not initialized in the properties.json file.");
         }
         if (label == null) {
-            throw new AlgorithmException("The parameter field 'label' was not initialized in the properties.json file.");
+            throw new AlgorithmException(algorithmName, "The parameter field 'label' was not initialized in the properties.json file.");
         }
         if (desc == null) {
-            throw new AlgorithmException("The parameter field 'desc' was not initialized in the properties.json file.");
+            throw new AlgorithmException(algorithmName, "The parameter field 'desc' was not initialized in the properties.json file.");
         }
         if (type == null) {
-            throw new AlgorithmException("The parameter field 'type' was not initialized in the properties.json file.");
+            throw new AlgorithmException(algorithmName, "The parameter field 'type' was not initialized in the properties.json file.");
         } else if (type.equals(ParameterType.column) || type.equals(ParameterType.formula)) {
             if (columnValuesSQLType == null) {
             }
 
             if (columnValuesIsCategorical == null) {
-                throw new AlgorithmException("The parameter field 'columnValuesIsCategorical' was not initialized in the properties.json file.");
+                throw new AlgorithmException(algorithmName, "The parameter field 'columnValuesIsCategorical' was not initialized in the properties.json file.");
             }
         } else if (valueType.equals(ParameterValueType.json)){
             if(valueMultiple) {
-                throw new AlgorithmException("The parameter field 'valueMultiple' cannot be true because the 'valueType' is json.");
+                throw new AlgorithmException(algorithmName, "The parameter field 'valueMultiple' cannot be true because the 'valueType' is json.");
             }
         }
         if (value == null) {
-            throw new AlgorithmException("The parameter field 'value' was not initialized in the properties.json file");
+            throw new AlgorithmException(algorithmName, "The parameter field 'value' was not initialized in the properties.json file");
         }
         if (valueNotBlank == null) {
-            throw new AlgorithmException("The parameter field 'valueNotBlank' was not initialized in the properties.json file");
+            throw new AlgorithmException(algorithmName, "The parameter field 'valueNotBlank' was not initialized in the properties.json file");
         }
         if (valueMultiple == null) {
-            throw new AlgorithmException("The parameter field 'valueMultiple' was not initialized in the properties.json file");
+            throw new AlgorithmException(algorithmName, "The parameter field 'valueMultiple' was not initialized in the properties.json file");
         }
         if (valueType == null) {
-            throw new AlgorithmException("The parameter field 'valueType' was not initialized in the properties.json file");
+            throw new AlgorithmException(algorithmName, "The parameter field 'valueType' was not initialized in the properties.json file");
         }
     }
 
