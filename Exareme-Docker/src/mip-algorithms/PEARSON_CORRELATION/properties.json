@@ -72,6 +72,7 @@
         },
         {
             "name": "coding",
+            "label": "coding",
             "desc": "Coding method for categorical variables.",
             "type": "other",
             "value": "null",

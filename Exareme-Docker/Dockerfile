@@ -78,6 +78,8 @@ RUN pip install pandas
 RUN apk add --update freetype-dev libjpeg-turbo-dev libpng-dev
 RUN pip install lifelines
 RUN pip install liac-arff
+RUN pip install sqlalchemy
+RUN pip install pathlib
 RUN apk del py-pip ca-certificates gcc musl-dev python-dev lapack-dev gfortran
 RUN rm -rf /tmp/* /var/cache/apk/*
 
