@@ -8,6 +8,7 @@ __all__ = [
     "AlgorithmResult",
     "TabularDataResource",
     "AlgorithmError",
+    "UserError",
     "logged",
     "LOGGING_LEVEL_ALG",
     "create_runner",
@@ -43,5 +44,5 @@ def logged(func):
 
 from .algorithm import Algorithm
 from .result import AlgorithmResult, TabularDataResource
-from .exceptions import AlgorithmError
+from .exceptions import AlgorithmError, UserError
 from .runner.runner import create_runner

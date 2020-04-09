@@ -13,3 +13,7 @@ class AlgorithmError(Exception):
 
 class PrivacyError(Exception):
     pass
+
+
+class UserError(Exception):
+    pass

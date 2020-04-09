@@ -7,7 +7,7 @@ from collections import namedtuple
 import numpy as np
 import scipy.stats as st
 from scipy.special import expit, xlogy
-from mipframework import Algorithm, AlgorithmResult
+from mipframework import Algorithm, AlgorithmResult, UserError
 from mipframework import TabularDataResource
 from mipframework import create_runner
 from mipframework.highcharts import ConfusionMatrix, ROC
@@ -31,6 +31,12 @@ class LogisticRegression(Algorithm):
         n_cols = len(X.columns)
         y_name = y.name
         x_names = list(X.columns)
+
+        if len(y[y == 1]) < n_cols or len(y[y == 0]) < n_cols:
+            raise UserError(
+                "The number of either positive or negative outcomes is"
+                "smaller than the number of features."
+            )
 
         self.push_and_add(n_obs=n_obs)
         self.push_and_agree(n_cols=n_cols)

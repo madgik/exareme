@@ -6,7 +6,7 @@ import numpy as np
 import scipy.special as special
 import scipy.stats as st
 
-from mipframework import Algorithm, AlgorithmResult, TabularDataResource
+from mipframework import Algorithm, AlgorithmResult, TabularDataResource, UserError
 from mipframework.constants import P_VALUE_CUTOFF, P_VALUE_CUTOFF_STR, CONFIDENCE
 from mipframework.highcharts import CorrelationHeatmap
 
@@ -22,6 +22,14 @@ class Pearson(Algorithm):
         if self.data.covariables is not None:
             X = self.data.covariables.to_numpy()
             x_names = self.data.covariables.columns.to_numpy()
+
+        if any(len(set(column)) == 1 for column in X.T) or any(
+            len(set(column)) == 1 for column in Y.T
+        ):
+            raise UserError(
+                "Data contains a constant row and the Pearson correlation coefficient "
+                "is not defined in this case."
+            )
 
         sx, sxx, sxy, sy, syy = get_local_sums(X, Y)
         pair_names = get_var_pair_names(x_names, y_names)

@@ -15,7 +15,10 @@ from LOGISTIC_REGRESSION.logistic_regression import compute_confusion_matrix
 from LOGISTIC_REGRESSION.logistic_regression import compute_roc
 
 
-@settings(max_examples=1000)
+PROP_TESTING_MAX_EXAMPLES = 1000
+
+
+@settings(max_examples=PROP_TESTING_MAX_EXAMPLES)
 @given(n_cols=integers(1, int(1e6)), n_obs=integers(1, int(1e6)))
 def test_init_model(n_cols, n_obs):
     coeff, _, ll = init_model(n_cols, n_obs)
@@ -34,7 +37,7 @@ def local_data(draw):
 
 
 @settings(
-    max_examples=1000,
+    max_examples=PROP_TESTING_MAX_EXAMPLES,
     suppress_health_check=[
         hypothesis.HealthCheck.filter_too_much,
         hypothesis.HealthCheck.too_slow,
@@ -46,7 +49,7 @@ def test_update_local_model_params_not_nan(local_datum):
     X, y, coeff = local_datum
     grad, hess, ll = update_local_model_parameters(X, y, coeff)
     count = Counter(y)
-    assume(count[0] > len(coeff) and count[1] > len(coeff))
+    assume(count[0] >= len(coeff) and count[1] >= len(coeff))
     assert not np.isnan(grad).any()
     assert not np.isnan(hess).any()
     assert not np.isnan(ll)
@@ -60,7 +63,7 @@ def grads_and_hessians(draw):
     return grad, hess
 
 
-@settings(max_examples=1000)
+@settings(max_examples=PROP_TESTING_MAX_EXAMPLES)
 @given(grads_and_hessians())
 def test_update_coefficients_not_nan(grad_and_hess):
     grad, hess = grad_and_hess
@@ -79,7 +82,7 @@ def ys_and_yhats(draw):
 
 
 @settings(
-    max_examples=1000,
+    max_examples=PROP_TESTING_MAX_EXAMPLES,
     suppress_health_check=[
         hypothesis.HealthCheck.filter_too_much,
         hypothesis.HealthCheck.too_slow,
@@ -116,7 +119,7 @@ def summary_inputs(draw):
 
 
 @settings(
-    max_examples=1000,
+    max_examples=PROP_TESTING_MAX_EXAMPLES,
     suppress_health_check=[
         hypothesis.HealthCheck.filter_too_much,
         hypothesis.HealthCheck.too_slow,
@@ -141,10 +144,11 @@ def test_compute_summary_not_nan(summary_input):
     for name, val in summary._asdict().items():
         note(name)
         assert not np.isnan(val).any()
+    assert all(0 <= pv <= 1 for pv in summary.p_values)
 
 
 @settings(
-    max_examples=1000,
+    max_examples=PROP_TESTING_MAX_EXAMPLES,
     suppress_health_check=[
         hypothesis.HealthCheck.filter_too_much,
         hypothesis.HealthCheck.too_slow,
@@ -170,7 +174,7 @@ def test_compute_confusion_matrix_not_nan(tp, tn, fp, fn):
             assert not np.isnan(value).any()
 
 
-@settings(max_examples=1000)
+@settings(max_examples=PROP_TESTING_MAX_EXAMPLES)
 @given(
     true_positives=arrays(np.int32, (100,), elements=integers(0, 100)),
     true_negatives=arrays(np.int32, (100,), elements=integers(0, 100)),
