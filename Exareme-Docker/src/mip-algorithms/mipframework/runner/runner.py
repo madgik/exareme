@@ -163,7 +163,6 @@ def create_runner(for_class, alg_type, found_in, algorithm_args, num_workers=3):
         )
 
     elif alg_type == "iterative":
-
         return IterativeRunner(
             alg_cls=alg_cls, algorithm_args=algorithm_args, num_wrk=num_workers
         )
