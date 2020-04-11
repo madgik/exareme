@@ -3,24 +3,44 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 from collections import namedtuple
+from itertools import groupby
+from operator import itemgetter
 from math import sqrt, exp, pi, asin, acos, atan
 
 import numpy as np
-import scipy.stats as st
 from scipy.integrate import quad
 from scipy.stats import chi2
 from scipy.special import expit, logit, xlogy
 from mipframework import Algorithm, AlgorithmResult, UserError
 from mipframework import TabularDataResource
 from mipframework import create_runner
-from mipframework.highcharts import ConfusionMatrix, ROC
 from mipframework.constants import (
-    P_VALUE_CUTOFF,
-    P_VALUE_CUTOFF_STR,
     PREC,
     MAX_ITER,
-    CONFIDENCE,
 )
+
+
+def select_model(coeffs, devel, hessians, lls, max_deg, thres):
+    if devel == "external":
+        idx = 0
+    elif devel == "internal":
+        idx = 1
+    else:
+        raise ValueError("devel should be `internal` or `external`")
+    crit = chi2.ppf(q=thres, df=1)
+    for i in range(idx, max_deg):
+        ddev = 2 * (lls[i] - lls[i - 1])
+        if ddev > crit:
+            idx = i
+        else:
+            break
+    model_deg = idx + 1
+    hess = hessians[idx]
+    ll = lls[idx]
+    coeff = coeffs[idx]
+    coeff = coeff[~coeff.mask]
+    covariance = np.linalg.inv(hess[: idx + 2, : idx + 2])
+    return coeff, covariance, hess, ll, model_deg
 
 
 class CalibrationBelt(Algorithm):
@@ -163,41 +183,19 @@ class CalibrationBelt(Algorithm):
         thres = float(self.parameters.thres)
         max_deg = int(self.parameters.max_deg)
         num_points = int(self.parameters.num_points)
-
         lls = self.load("lls")
         hessians = self.load("hessians")
         coeffs = self.load("coeffs")
         log_lik_bisector = self.fetch("log_lik_bisector")
 
-        # Perform likelihood-ratio test
-        if devel == "external":
-            idx = 0
-        elif devel == "internal":
-            idx = 1
-        else:
-            raise ValueError("devel should be `internal` or `external`")
-
-        crit = chi2.ppf(q=thres, df=1)
-        for i in range(idx, max_deg):
-            ddev = 2 * (lls[i] - lls[i - 1])
-            if ddev > crit:
-                idx = i
-            else:
-                break
-
-        model_deg = idx + 1
-
-        # Get selected model coefficients, log-likelihood, grad, Hessian and covariance
-        hess = hessians[idx]
-        ll = lls[idx]
-        coeff = coeffs[idx]
-        coeff = coeff[~coeff.mask]
-        covariance = np.linalg.inv(hess[: idx + 2, : idx + 2])
+        coeff, covariance, hess, ll, model_deg = select_model(
+            coeffs, devel, hessians, lls, max_deg, thres
+        )
 
         # Compute p value
-        calibrationStat = 2 * (ll - log_lik_bisector)
+        calibration_stat = 2 * (ll - log_lik_bisector)
         p_value = 1 - giviti_stat_cdf(
-            calibrationStat, m=model_deg, devel=devel, thres=thres
+            calibration_stat, m=model_deg, devel=devel, thres=thres
         )
 
         # Compute calibration curve
@@ -228,9 +226,36 @@ class CalibrationBelt(Algorithm):
         p_min2, p_max2 = expit(g_min2), expit(g_max2)
         calib_belt1 = np.array([p_min1, p_max1])
         calib_belt2 = np.array([p_min2, p_max2])
-        calib_belt1_hc = np.array([e, p_min1, p_max1]).transpose()
-        calib_belt2_hc = np.array([e, p_min2, p_max2]).transpose()
-        pass
+        # calib_belt1_hc = np.array([e, p_min1, p_max1]).transpose()
+        # calib_belt2_hc = np.array([e, p_min2, p_max2]).transpose()
+
+        # Find regions relative to bisector
+        over_bisect1 = find_relative_to_bisector(np.around(e, 4), p_min1, "over")
+        under_bisect1 = find_relative_to_bisector(np.around(e, 4), p_max1, "under")
+        over_bisect2 = find_relative_to_bisector(np.around(e, 4), p_min2, "over")
+        under_bisect2 = find_relative_to_bisector(np.around(e, 4), p_max2, "under")
+
+        raw_data = {
+            "Model degree": int(model_deg),
+            "coeff": coeff.tolist(),
+            "log-likelihood": ll,
+            "n_obs": int(self.load("n_obs")),
+            "seqP": np.around(e, 8).tolist(),
+            "Calibration curve": np.around(calib_curve, 4).tolist(),
+            "Calibration belt 1": np.around(calib_belt1, 8).tolist(),
+            "Calibration belt 2": np.around(calib_belt2, 8).tolist(),
+            "p value": p_value,
+            "Over bisector 1": over_bisect1,
+            "Under bisector 1": under_bisect1,
+            "Over bisector 2": over_bisect2,
+            "Under bisector 2": under_bisect2,
+            "Confidence level 1": str(int(cl1 * 100)) + "%",
+            "Confidence level 2": str(int(cl2 * 100)) + "%",
+            "Threshold": str(int(thres * 100)) + "%",
+            # 'Expected name'        : e_name,
+            # 'Observed name'        : o_name,
+        }
+        self.result = AlgorithmResult(raw_data)
 
 
 def giviti_stat_cdf(t, m, devel="external", thres=0.95):
@@ -320,6 +345,28 @@ def giviti_stat_cdf(t, m, devel="external", thres=0.95):
         return cdf_value
 
 
+def find_relative_to_bisector(x, y, region):
+    assert len(x) == len(y), "x and y must have the same length"
+    if region == "over":
+        reg = [yi > xi for yi, xi in zip(y, x)]
+    elif region == "under":
+        reg = [yi < xi for yi, xi in zip(y, x)]
+    else:
+        raise ValueError("region_type must either be `over` or `under`")
+    idxreg = [i for i, o in enumerate(reg) if o]
+    if len(idxreg) == 0:
+        return "NEVER"
+    segments = ""
+    for k, g in groupby(enumerate(idxreg), lambda ix: ix[0] - ix[1]):
+        seg = list(map(itemgetter(1), g))
+        if x[seg[0]] != x[seg[-1]]:
+            segments += str(x[seg[0]]) + "-" + str(x[seg[-1]]) + ", "
+        else:
+            segments += str(x[seg[0]]) + ", "
+    segments = segments[:-2]
+    return segments
+
+
 if __name__ == "__main__":
     import time
 
@@ -329,7 +376,7 @@ if __name__ == "__main__":
         "-y",
         "hospOutcomeLatest_RIC10",
         "-devel",
-        "external",
+        "internal",
         "-max_deg",
         "4",
         "-confLevels",
