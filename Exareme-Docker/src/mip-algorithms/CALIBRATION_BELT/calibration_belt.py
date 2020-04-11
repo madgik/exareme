@@ -28,23 +28,23 @@ class CalibrationBelt(Algorithm):
         super(CalibrationBelt, self).__init__(__file__, cli_args, intercept=False)
 
     def local_init(self):
-        o_vec = np.array(self.data.variables).flatten()
-        e_vec = np.array(self.data.covariables).flatten()
+        observed = np.array(self.data.variables).flatten()
+        expected = np.array(self.data.covariables).flatten()
         max_deg = int(self.parameters.max_deg)
         if not 1 < max_deg <= 4:  # todo proper condition
             raise UserError(
                 "Max deg should be between 2 and 4 for `devel`=`external` "
                 "or between 3 and 4 for `devel`=`internal`."
             )
-        n_obs = len(e_vec)
-        ge_vec = logit(e_vec)
+        n_obs = len(expected)
+        ge = logit(expected)
 
-        Y = o_vec
-        X = np.array([np.power(ge_vec, i) for i in range(max_deg + 1)]).T
+        Y = observed
+        X = np.array([np.power(ge, i) for i in range(max_deg + 1)]).T
         Xs = np.broadcast_to(X, (4, n_obs, max_deg + 1))
         masks = np.zeros(Xs.shape, dtype=bool)
-        for deg in range(0, max_deg - 1):
-            masks[deg, :, deg + 2 :] = True
+        for idx in range(0, max_deg - 1):
+            masks[idx, :, idx + 2 :] = True
         Xs = np.ma.masked_array(Xs, mask=masks)
 
         self.store(Xs=Xs)
@@ -60,8 +60,8 @@ class CalibrationBelt(Algorithm):
         lls = np.ones((max_deg,), dtype=np.float) * (-2 * n_obs * np.log(2))
         coeffs = np.zeros((max_deg, max_deg + 1))
         masks = np.zeros(coeffs.shape, dtype=bool)
-        for deg in range(0, max_deg - 1):
-            masks[deg, deg + 2 :] = True
+        for idx in range(0, max_deg - 1):
+            masks[idx, idx + 2 :] = True
         coeffs = np.ma.masked_array(coeffs, mask=masks)
 
         self.store(n_obs=n_obs)
@@ -80,9 +80,9 @@ class CalibrationBelt(Algorithm):
         hessians = np.ma.empty((4, coeffs.shape[1], coeffs.shape[1]), dtype=np.float)
         grads = np.ma.empty((4, coeffs.shape[1]), dtype=np.float)
         lls = np.empty((4,), dtype=np.float)
-        for deg in range(max_deg):
-            X = Xs[deg]
-            coeff = coeffs[deg]
+        for idx in range(max_deg):
+            X = Xs[idx]
+            coeff = coeffs[idx]
             # Auxiliary quantities
             z = np.ma.dot(X, coeff)
             s = expit(z)
@@ -90,20 +90,18 @@ class CalibrationBelt(Algorithm):
             D = np.diag(d)
             # Hessian
             hess = np.ma.dot(np.transpose(X), np.ma.dot(D, X))
-            hessians[deg] = hess
+            hessians[idx] = hess
             # Gradient
             Ymsd = (Y - s) / d  # Stable computation of (Y - s) / d
             Ymsd[(Y == 0) & (s == 0)] = -1
             Ymsd[(Y == 1) & (s == 1)] = 1
-            # Ymsd = Ymsd.clip(-100, 100)
 
-            grad = np.ma.dot(np.transpose(X), np.ma.dot(D, z + Ymsd))  # np.divide(Y -
-            # s, d)
-            grads[deg] = grad
+            grad = np.ma.dot(np.transpose(X), np.ma.dot(D, z + Ymsd))
+            grads[idx] = grad
 
             # Log-likelihood
             ll = np.sum(xlogy(Y, s) + xlogy(1 - Y, 1 - s))
-            lls[deg] = ll
+            lls[idx] = ll
 
         self.push_and_add(lls=lls)
         self.push_and_add(grads=grads)
@@ -118,19 +116,20 @@ class CalibrationBelt(Algorithm):
         lls = self.fetch("lls")
         hessians = self.fetch("hessians")
 
-        for deg in range(max_deg):
-            # Compute new coefficients
-            inv_hess = hessians[deg]  # todo inv_hess is actually covariance
-            inv_hess[: deg + 2, : deg + 2] = np.linalg.inv(
-                hessians[deg][: deg + 2, : deg + 2]
-            )
-            coeffs[deg] = np.ma.dot(inv_hess, grads[deg])
-            # coeffs[deg] = coeffs.clip(-100, 100)
+        deltas = np.empty(lls.shape)
+
+        for idx in range(max_deg):
+            hess = hessians[idx]
+            covariance = np.ma.zeros(hess.shape)
+            covariance.mask = hess.mask
+            covariance[: idx + 2, : idx + 2] = np.linalg.inv(hess[: idx + 2, : idx + 2])
+            coeffs[idx] = np.ma.dot(covariance, grads[idx])
 
             # Update termination quantities
-            delta = abs(lls[deg] - lls_old[deg])
-            if delta < PREC or iter_ >= MAX_ITER:
-                self.terminate()
+            deltas[idx] = abs(lls[idx] - lls_old[idx])
+
+        if all([delta < PREC for delta in deltas]) or iter_ >= MAX_ITER:
+            self.terminate()
         iter_ += 1
 
         self.store(lls=lls)
@@ -143,7 +142,6 @@ class CalibrationBelt(Algorithm):
     def local_final(self):
         Xs = self.load("Xs")
         Y = self.load("Y")
-        max_deg = int(self.parameters.max_deg)
         coeffs = self.fetch("coeffs")
 
         # Compute partial log-likelihood on bisector,
@@ -156,9 +154,9 @@ class CalibrationBelt(Algorithm):
         s = expit(z)
         # Log-likelihood
         ls1, ls2 = np.log(s), np.log(1 - s)
-        logLikBisector = np.dot(Y, ls1) + np.dot(1 - Y, ls2)
+        log_lik_bisector = np.dot(Y, ls1) + np.dot(1 - Y, ls2)
 
-        self.push_and_add(logLikBisector=logLikBisector)
+        self.push_and_add(log_lik_bisector=log_lik_bisector)
 
     def global_final(self):
         devel = self.parameters.devel
@@ -167,10 +165,9 @@ class CalibrationBelt(Algorithm):
         num_points = int(self.parameters.num_points)
 
         lls = self.load("lls")
-        grads = self.load("grads")
         hessians = self.load("hessians")
         coeffs = self.load("coeffs")
-        logLikBisector = self.fetch("logLikBisector")
+        log_lik_bisector = self.fetch("log_lik_bisector")
 
         # Perform likelihood-ratio test
         if devel == "external":
@@ -194,15 +191,14 @@ class CalibrationBelt(Algorithm):
         hess = hessians[idx]
         ll = lls[idx]
         coeff = coeffs[idx]
-        covar = np.linalg.inv(hess[: idx + 2, : idx + 2])
+        coeff = coeff[~coeff.mask]
+        covariance = np.linalg.inv(hess[: idx + 2, : idx + 2])
 
         # Compute p value
-        calibrationStat = 2 * (ll - logLikBisector)
-        p_value = 1 - givitiStatCdf(
+        calibrationStat = 2 * (ll - log_lik_bisector)
+        p_value = 1 - giviti_stat_cdf(
             calibrationStat, m=model_deg, devel=devel, thres=thres
         )
-
-        coeff = coeff[~coeff.mask]
 
         # Compute calibration curve
         e_min, e_max = 0.01, 0.99  # todo
@@ -211,16 +207,13 @@ class CalibrationBelt(Algorithm):
         e = np.concatenate((e_lin, e_log))
         e = np.sort(e)
         ge = logit(e)
-        G = [np.ones(len(e))]
-        for d in range(1, len(coeff)):
-            G = np.append(G, [np.power(ge, d)], axis=0)
-        G = G.transpose()
+        G = np.array([np.power(ge, i) for i in range(len(coeff))]).T
         p = expit(np.dot(G, coeff))
         calib_curve = np.array([e, p]).transpose()
 
         # Compute confidence intervals
         cl1, cl2 = 0.8, 0.95  # todo
-        GVG = np.stack([np.dot(G[i], np.dot(covar, G[i])) for i in range(len(G))])
+        GVG = np.stack([np.dot(G[i], np.dot(covariance, G[i])) for i in range(len(G))])
         sqrt_chi_GVG_1 = np.sqrt(np.multiply(chi2.ppf(q=cl1, df=2), GVG))
         sqrt_chi_GVG_2 = np.sqrt(np.multiply(chi2.ppf(q=cl2, df=2), GVG))
         g_min1, g_max1 = (
@@ -240,28 +233,29 @@ class CalibrationBelt(Algorithm):
         pass
 
 
-def givitiStatCdf(t, m, devel="external", thres=0.95):
+def giviti_stat_cdf(t, m, devel="external", thres=0.95):
     assert m in {1, 2, 3, 4}, "m must be an integer from 1 to 4"
     assert 0 <= thres <= 1, "thres must be a number in [0, 1]"
-    pDegInc = 1 - thres
-    k = chi2.ppf(q=1 - pDegInc, df=1)
-    cdfValue = None
+    p_deg_inc = 1 - thres
+    k = chi2.ppf(q=1 - p_deg_inc, df=1)
+    cdf_value = None
     if devel == "external":
         if t <= (m - 1) * k:
-            cdfValue = 0
+            cdf_value = 0
         else:
             if m == 1:
-                cdfValue = chi2.cdf(t, df=2)
+                cdf_value = chi2.cdf(t, df=2)
             elif m == 2:
-                cdfValue = (
+                cdf_value = (
                     chi2.cdf(t, df=1)
                     - 1
-                    + pDegInc
+                    + p_deg_inc
                     + (-1) * sqrt(2) / sqrt(pi) * exp(-t / 2) * (sqrt(t) - sqrt(k))
-                ) / pDegInc
+                ) / p_deg_inc
             elif m == 3:
                 integral1 = quad(
-                    lambda y: (chi2.cdf(t - y, df=1) - 1 + pDegInc) * chi2.pdf(y, df=1),
+                    lambda y: (chi2.cdf(t - y, df=1) - 1 + p_deg_inc)
+                    * chi2.pdf(y, df=1),
                     k,
                     t - k,
                 )[0]
@@ -269,8 +263,8 @@ def givitiStatCdf(t, m, devel="external", thres=0.95):
                     lambda y: (sqrt(t - y) - sqrt(k)) * 1 / sqrt(y), k, t - k
                 )[0]
                 num = integral1 - exp(-t / 2) / (2 * pi) * 2 * integral2
-                den = pDegInc ** 2
-                cdfValue = num / den
+                den = p_deg_inc ** 2
+                cdf_value = num / den
             elif m == 4:
                 integral = quad(
                     lambda r: r ** 2
@@ -286,21 +280,21 @@ def givitiStatCdf(t, m, devel="external", thres=0.95):
                     sqrt(3 * k),
                     sqrt(t),
                 )[0]
-                cdfValue = (2 / (pi * pDegInc ** 2)) ** (3 / 2) * integral
+                cdf_value = (2 / (pi * p_deg_inc ** 2)) ** (3 / 2) * integral
     elif devel == "internal":
         assert m != 1, "if devel=`internal`, m must be an integer from 2 to 4"
         if t <= (m - 2) * k:
-            cdfValue = 0
+            cdf_value = 0
         else:
             if m == 2:
-                cdfValue = chi2.cdf(t, df=1)
+                cdf_value = chi2.cdf(t, df=1)
             elif m == 3:
                 integral = quad(
                     lambda r: r * exp(-(r ** 2) / 2) * acos(sqrt(k) / r),
                     sqrt(k),
                     sqrt(t),
                 )[0]
-                cdfValue = 2 / (pi * pDegInc) * integral
+                cdf_value = 2 / (pi * p_deg_inc) * integral
             elif m == 4:
                 integral = quad(
                     lambda r: r ** 2
@@ -313,17 +307,17 @@ def givitiStatCdf(t, m, devel="external", thres=0.95):
                     sqrt(2 * k),
                     sqrt(t),
                 )[0]
-                cdfValue = (2 / pi) ** (3 / 2) * (pDegInc) ** (-2) * integral
+                cdf_value = (2 / pi) ** (3 / 2) * (p_deg_inc) ** (-2) * integral
     else:
         raise ValueError("devel argument must be either `internal` or `external`")
-    if cdfValue < -0.001 or cdfValue > 1.001:
-        raise ValueError("cdfValue outside [0,1].")
-    elif -0.001 <= cdfValue < 0:
+    if cdf_value < -0.001 or cdf_value > 1.001:
+        raise ValueError("cdf_value outside [0,1].")
+    elif -0.001 <= cdf_value < 0:
         return 0
-    elif 1 < cdfValue <= 1.001:
+    elif 1 < cdf_value <= 1.001:
         return 1
     else:
-        return cdfValue
+        return cdf_value
 
 
 if __name__ == "__main__":
