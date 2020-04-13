@@ -79,6 +79,12 @@ class Series(ListField):
         "name",
         "color",
         "colorKey",
+        "lineWidth",
+        "linkedTo",
+        "zIndex",
+        "marker",
+        "dashStyle",
+        "allowPointSelect",
     ]
 
 

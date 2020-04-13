@@ -13,6 +13,7 @@ from scipy.stats import chi2
 from scipy.special import expit, logit, xlogy
 from mipframework import Algorithm, AlgorithmResult, UserError
 from mipframework import TabularDataResource
+from mipframework.highcharts import CalibrationBeltPlot
 from mipframework import create_runner
 from mipframework.constants import (
     PREC,
@@ -51,11 +52,16 @@ class CalibrationBelt(Algorithm):
         observed = np.array(self.data.variables).flatten()
         expected = np.array(self.data.covariables).flatten()
         max_deg = int(self.parameters.max_deg)
-        if not 1 < max_deg <= 4:  # todo proper condition
-            raise UserError(
-                "Max deg should be between 2 and 4 for `devel`=`external` "
-                "or between 3 and 4 for `devel`=`internal`."
-            )
+        if self.parameters.devel == "external":
+            if not 2 <= max_deg <= 4:
+                raise UserError(
+                    "Max deg should be between 2 and 4 for " "`devel`=`external`."
+                )
+        elif self.parameters.devel == "internal":
+            if not 3 <= max_deg <= 4:
+                raise UserError(
+                    "Max deg should be between 3 and 4 for `devel`=`internal`."
+                )
         n_obs = len(expected)
         ge = logit(expected)
 
@@ -176,7 +182,13 @@ class CalibrationBelt(Algorithm):
         ls1, ls2 = np.log(s), np.log(1 - s)
         log_lik_bisector = np.dot(Y, ls1) + np.dot(1 - Y, ls2)
 
+        # Find expected bounds
+        e_min = min(np.array(self.data.covariables).flatten())
+        e_max = max(np.array(self.data.covariables).flatten())
+
         self.push_and_add(log_lik_bisector=log_lik_bisector)
+        self.push_and_min(e_min=e_min)
+        self.push_and_max(e_max=e_max)
 
     def global_final(self):
         devel = self.parameters.devel
@@ -199,7 +211,7 @@ class CalibrationBelt(Algorithm):
         )
 
         # Compute calibration curve
-        e_min, e_max = 0.01, 0.99  # todo
+        e_min, e_max = self.fetch("e_min"), self.fetch("e_max")
         e_lin = np.linspace(e_min, e_max, num=(int(num_points) + 1) // 2)
         e_log = expit(np.linspace(logit(e_min), logit(e_max), num=int(num_points) // 2))
         e = np.concatenate((e_lin, e_log))
@@ -210,7 +222,7 @@ class CalibrationBelt(Algorithm):
         calib_curve = np.array([e, p]).transpose()
 
         # Compute confidence intervals
-        cl1, cl2 = 0.8, 0.95  # todo
+        cl1, cl2 = [float(cl) for cl in self.parameters.confLevels.split(",")]
         GVG = np.stack([np.dot(G[i], np.dot(covariance, G[i])) for i in range(len(G))])
         sqrt_chi_GVG_1 = np.sqrt(np.multiply(chi2.ppf(q=cl1, df=2), GVG))
         sqrt_chi_GVG_2 = np.sqrt(np.multiply(chi2.ppf(q=cl2, df=2), GVG))
@@ -226,8 +238,8 @@ class CalibrationBelt(Algorithm):
         p_min2, p_max2 = expit(g_min2), expit(g_max2)
         calib_belt1 = np.array([p_min1, p_max1])
         calib_belt2 = np.array([p_min2, p_max2])
-        # calib_belt1_hc = np.array([e, p_min1, p_max1]).transpose()
-        # calib_belt2_hc = np.array([e, p_min2, p_max2]).transpose()
+        calib_belt1_hc = np.array([e, p_min1, p_max1]).transpose()
+        calib_belt2_hc = np.array([e, p_min2, p_max2]).transpose()
 
         # Find regions relative to bisector
         over_bisect1 = find_relative_to_bisector(np.around(e, 4), p_min1, "over")
@@ -255,7 +267,16 @@ class CalibrationBelt(Algorithm):
             # 'Expected name'        : e_name,
             # 'Observed name'        : o_name,
         }
-        self.result = AlgorithmResult(raw_data)
+
+        chart = CalibrationBeltPlot(
+            title="Calibration Belt",
+            data=[calib_belt1_hc.tolist(), calib_belt2_hc.tolist()],
+            confidence_levels=[cl1, cl2],
+            e_name="expected",
+            o_name="observed",
+        )
+
+        self.result = AlgorithmResult(raw_data, highcharts=[chart])
 
 
 def giviti_stat_cdf(t, m, devel="external", thres=0.95):

@@ -1,4 +1,4 @@
-from .core import Heatmap_, Area_, Column_, Bubble_
+from .core import Heatmap_, Area_, Column_, Bubble_, Line_
 from .core import (
     Title,
     Axis,
@@ -177,6 +177,52 @@ class BubbleGridPlot(HighchartTemplate):
                         for j, elem in enumerate(row)
                     ],
                     colorKey="z",
+                )
+            )
+        )
+
+
+class CalibrationBeltPlot(HighchartTemplate):
+    def __init__(self, title, data, confidence_levels, e_name, o_name):
+        self.chart = (
+            Line_(title=Title(text=title))
+            .set(xAxis=Axis(title=Title(text="EXPECTED({})".format(e_name))))
+            .set(yAxis=Axis(title=Title(text="OBSERVED({})".format(o_name))))
+            .set(
+                series=RenderableList(
+                    [
+                        Series(
+                            name="Confidence level " + str(confidence_levels[1]),
+                            data=data[1],
+                            type="arearange",
+                            lineWidth=0,
+                            linkedTo=":previous",
+                            color="#a5b4c7",
+                            zIndex=0,
+                            marker={"enabled": False},
+                        ),
+                        Series(
+                            name="Confidence level " + str(confidence_levels[0]),
+                            data=data[0],
+                            type="arearange",
+                            lineWidth=0,
+                            linkedTo=":previous",
+                            color="#6e7d8f",
+                            zIndex=0,
+                            marker={"enabled": False},
+                        ),
+                        Series(
+                            name="Bisector",
+                            data=[[0, 0], [1, 1]],
+                            zIndex=2,
+                            color="#fc7938",
+                            lineWidth=1.5,
+                            dashStyle="Dash",
+                            allowPointSelect=False,
+                            marker={"enabled": False},
+                            label={"enabled": False},
+                        ),
+                    ]
                 )
             )
         )
