@@ -186,8 +186,8 @@ class CalibrationBeltPlot(HighchartTemplate):
     def __init__(self, title, data, confidence_levels, e_name, o_name):
         self.chart = (
             Line_(title=Title(text=title))
-            .set(xAxis=Axis(title=Title(text="EXPECTED({})".format(e_name))))
-            .set(yAxis=Axis(title=Title(text="OBSERVED({})".format(o_name))))
+            .set(xAxis=Axis(title=Title(text="EXPECTED ({})".format(e_name))))
+            .set(yAxis=Axis(title=Title(text="OBSERVED ({})".format(o_name))))
             .set(
                 series=RenderableList(
                     [

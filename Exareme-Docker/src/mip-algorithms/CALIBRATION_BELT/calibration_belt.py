@@ -2,7 +2,6 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from collections import namedtuple
 from itertools import groupby
 from operator import itemgetter
 from math import sqrt, exp, pi, asin, acos, atan
@@ -12,7 +11,6 @@ from scipy.integrate import quad
 from scipy.stats import chi2
 from scipy.special import expit, logit, xlogy
 from mipframework import Algorithm, AlgorithmResult, UserError
-from mipframework import TabularDataResource
 from mipframework.highcharts import CalibrationBeltPlot
 from mipframework import create_runner
 from mipframework.constants import (
@@ -29,7 +27,7 @@ def select_model(coeffs, devel, hessians, lls, max_deg, thres):
     else:
         raise ValueError("devel should be `internal` or `external`")
     crit = chi2.ppf(q=thres, df=1)
-    for i in range(idx, max_deg):
+    for i in range(idx + 1, max_deg):
         ddev = 2 * (lls[i] - lls[i - 1])
         if ddev > crit:
             idx = i
@@ -121,6 +119,7 @@ class CalibrationBelt(Algorithm):
             Ymsd = (Y - s) / d  # Stable computation of (Y - s) / d
             Ymsd[(Y == 0) & (s == 0)] = -1
             Ymsd[(Y == 1) & (s == 1)] = 1
+            Ymsd = Ymsd.clip(-1e6, 1e6)
 
             grad = np.ma.dot(np.transpose(X), np.ma.dot(D, z + Ymsd))
             grads[idx] = grad
@@ -144,11 +143,33 @@ class CalibrationBelt(Algorithm):
 
         deltas = np.empty(lls.shape)
 
+        if np.isinf(hessians).any():
+            hessians = hessians.clip(-1e6, 1e6)
+        if np.isinf(grads).any():
+            grads = grads.clip(-1e6, 1e6)
+
         for idx in range(max_deg):
             hess = hessians[idx]
             covariance = np.ma.zeros(hess.shape)
             covariance.mask = hess.mask
-            covariance[: idx + 2, : idx + 2] = np.linalg.inv(hess[: idx + 2, : idx + 2])
+            try:
+                covariance[: idx + 2, : idx + 2] = np.linalg.inv(
+                    hess[: idx + 2, : idx + 2]
+                )
+                if np.isnan(covariance[: idx + 2, : idx + 2]).any():
+                    raise np.linalg.LinAlgError
+            except np.linalg.LinAlgError:
+                covariance[: idx + 2, : idx + 2] = np.linalg.pinv(
+                    hess[: idx + 2, : idx + 2]
+                )
+            if (
+                np.isclose(grads[idx], 0.0).any()
+                and np.isinf(covariance[: idx + 2, : idx + 2]).any()
+            ):
+                covariance[: idx + 2, : idx + 2] = covariance[
+                    : idx + 2, : idx + 2
+                ].clip(-1e6, 1e6)
+
             coeffs[idx] = np.ma.dot(covariance, grads[idx])
 
             # Update termination quantities
@@ -186,6 +207,8 @@ class CalibrationBelt(Algorithm):
         e_min = min(np.array(self.data.covariables).flatten())
         e_max = max(np.array(self.data.covariables).flatten())
 
+        self.push_and_agree(e_name=self.parameters.x[0])
+        self.push_and_agree(o_name=self.parameters.y[0])
         self.push_and_add(log_lik_bisector=log_lik_bisector)
         self.push_and_min(e_min=e_min)
         self.push_and_max(e_max=e_max)
@@ -264,16 +287,16 @@ class CalibrationBelt(Algorithm):
             "Confidence level 1": str(int(cl1 * 100)) + "%",
             "Confidence level 2": str(int(cl2 * 100)) + "%",
             "Threshold": str(int(thres * 100)) + "%",
-            # 'Expected name'        : e_name,
-            # 'Observed name'        : o_name,
+            "Expected name": self.fetch("e_name"),
+            "Observed name": self.fetch("o_name"),
         }
 
         chart = CalibrationBeltPlot(
             title="Calibration Belt",
             data=[calib_belt1_hc.tolist(), calib_belt2_hc.tolist()],
             confidence_levels=[cl1, cl2],
-            e_name="expected",
-            o_name="observed",
+            e_name=self.fetch("e_name"),
+            o_name=self.fetch("o_name"),
         )
 
         self.result = AlgorithmResult(raw_data, highcharts=[chart])
