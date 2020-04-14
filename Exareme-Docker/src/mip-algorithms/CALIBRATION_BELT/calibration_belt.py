@@ -19,27 +19,31 @@ from mipframework.constants import (
 )
 
 
-def select_model(coeffs, devel, hessians, lls, max_deg, thres):
-    if devel == "external":
-        idx = 0
-    elif devel == "internal":
-        idx = 1
-    else:
-        raise ValueError("devel should be `internal` or `external`")
-    crit = chi2.ppf(q=thres, df=1)
-    for i in range(idx + 1, max_deg):
-        ddev = 2 * (lls[i] - lls[i - 1])
-        if ddev > crit:
-            idx = i
-        else:
-            break
-    model_deg = idx + 1
-    hess = hessians[idx]
-    ll = lls[idx]
-    coeff = coeffs[idx]
-    coeff = coeff[~coeff.mask]
-    covariance = np.linalg.inv(hess[: idx + 2, : idx + 2])
-    return coeff, covariance, hess, ll, model_deg
+def compute_calibration_curve(coeff, num_points, e_bounds):
+    # Compute calibration curve
+    e_min, e_max = e_bounds
+    e_lin = np.linspace(e_min, e_max, num=(int(num_points) + 1) // 2)
+    e_log = expit(np.linspace(logit(e_min), logit(e_max), num=int(num_points) // 2))
+    e = np.concatenate((e_lin, e_log))
+    e = np.sort(e)
+    ge = logit(e)
+    G = np.array([np.power(ge, i) for i in range(len(coeff))]).T
+    p = expit(np.dot(G, coeff))
+    calibration_curve = np.array([e, p]).transpose()
+    return G, calibration_curve, e
+
+
+def compute_calibration_belt(G, coeff, covariance, confidence_levels):
+    GVG = np.stack([np.dot(G[i], np.dot(covariance, G[i])) for i in range(len(G))])
+    sqrt_chi_GVG = np.sqrt(
+        np.multiply(chi2.ppf(q=confidence_levels, df=2)[:, np.newaxis], GVG)
+    )
+    g_min = np.dot(G, coeff) - sqrt_chi_GVG
+    g_max = np.dot(G, coeff) + sqrt_chi_GVG
+    p_min, p_max = expit(g_min), expit(g_max)
+    calibration_belts = np.array([p_min, p_max])
+    calibration_belts = np.einsum("ijk -> jik", calibration_belts)
+    return calibration_belts, p_min, p_max
 
 
 class CalibrationBelt(Algorithm):
@@ -81,12 +85,7 @@ class CalibrationBelt(Algorithm):
 
         iter_ = 0
 
-        lls = np.ones((max_deg,), dtype=np.float) * (-2 * n_obs * np.log(2))
-        coeffs = np.zeros((max_deg, max_deg + 1))
-        masks = np.zeros(coeffs.shape, dtype=bool)
-        for idx in range(0, max_deg - 1):
-            masks[idx, idx + 2 :] = True
-        coeffs = np.ma.masked_array(coeffs, mask=masks)
+        coeffs, lls = init_model(max_deg, n_obs)
 
         self.store(n_obs=n_obs)
         self.store(lls=lls)
@@ -100,33 +99,7 @@ class CalibrationBelt(Algorithm):
         max_deg = int(self.parameters.max_deg)
         coeffs = self.fetch("coeffs")
 
-        # Compute 0th, 1st and 2nd derivatives of loglikelihood
-        hessians = np.ma.empty((4, coeffs.shape[1], coeffs.shape[1]), dtype=np.float)
-        grads = np.ma.empty((4, coeffs.shape[1]), dtype=np.float)
-        lls = np.empty((4,), dtype=np.float)
-        for idx in range(max_deg):
-            X = Xs[idx]
-            coeff = coeffs[idx]
-            # Auxiliary quantities
-            z = np.ma.dot(X, coeff)
-            s = expit(z)
-            d = np.multiply(s, (1 - s))
-            D = np.diag(d)
-            # Hessian
-            hess = np.ma.dot(np.transpose(X), np.ma.dot(D, X))
-            hessians[idx] = hess
-            # Gradient
-            Ymsd = (Y - s) / d  # Stable computation of (Y - s) / d
-            Ymsd[(Y == 0) & (s == 0)] = -1
-            Ymsd[(Y == 1) & (s == 1)] = 1
-            Ymsd = Ymsd.clip(-1e6, 1e6)
-
-            grad = np.ma.dot(np.transpose(X), np.ma.dot(D, z + Ymsd))
-            grads[idx] = grad
-
-            # Log-likelihood
-            ll = np.sum(xlogy(Y, s) + xlogy(1 - Y, 1 - s))
-            lls[idx] = ll
+        grads, hessians, lls = update_local_model_parameters(Xs, Y, coeffs, max_deg)
 
         self.push_and_add(lls=lls)
         self.push_and_add(grads=grads)
@@ -141,39 +114,9 @@ class CalibrationBelt(Algorithm):
         lls = self.fetch("lls")
         hessians = self.fetch("hessians")
 
-        deltas = np.empty(lls.shape)
-
-        if np.isinf(hessians).any():
-            hessians = hessians.clip(-1e6, 1e6)
-        if np.isinf(grads).any():
-            grads = grads.clip(-1e6, 1e6)
-
-        for idx in range(max_deg):
-            hess = hessians[idx]
-            covariance = np.ma.zeros(hess.shape)
-            covariance.mask = hess.mask
-            try:
-                covariance[: idx + 2, : idx + 2] = np.linalg.inv(
-                    hess[: idx + 2, : idx + 2]
-                )
-                if np.isnan(covariance[: idx + 2, : idx + 2]).any():
-                    raise np.linalg.LinAlgError
-            except np.linalg.LinAlgError:
-                covariance[: idx + 2, : idx + 2] = np.linalg.pinv(
-                    hess[: idx + 2, : idx + 2]
-                )
-            if (
-                np.isclose(grads[idx], 0.0).any()
-                and np.isinf(covariance[: idx + 2, : idx + 2]).any()
-            ):
-                covariance[: idx + 2, : idx + 2] = covariance[
-                    : idx + 2, : idx + 2
-                ].clip(-1e6, 1e6)
-
-            coeffs[idx] = np.ma.dot(covariance, grads[idx])
-
-            # Update termination quantities
-            deltas[idx] = abs(lls[idx] - lls_old[idx])
+        deltas, grads, hessians = update_coefficients(
+            coeffs, grads, hessians, lls, lls_old, max_deg
+        )
 
         if all([delta < PREC for delta in deltas]) or iter_ >= MAX_ITER:
             self.terminate()
@@ -191,19 +134,8 @@ class CalibrationBelt(Algorithm):
         Y = self.load("Y")
         coeffs = self.fetch("coeffs")
 
-        # Compute partial log-likelihood on bisector,
-        # i.e. coeff = [0, 1] (needed for p-value calculation)
-        X = Xs[0]
-        coeff = coeffs[0]
-        coeff[:2] = np.array([0, 1])
-        # Auxiliary quantities
-        z = np.dot(X, coeff)
-        s = expit(z)
-        # Log-likelihood
-        ls1, ls2 = np.log(s), np.log(1 - s)
-        log_lik_bisector = np.dot(Y, ls1) + np.dot(1 - Y, ls2)
+        log_lik_bisector = compute_log_lik_on_bisector(Xs, Y, coeffs)
 
-        # Find expected bounds
         e_min = min(np.array(self.data.covariables).flatten())
         e_max = max(np.array(self.data.covariables).flatten())
 
@@ -215,70 +147,43 @@ class CalibrationBelt(Algorithm):
 
     def global_final(self):
         devel = self.parameters.devel
-        thres = float(self.parameters.thres)
+        threshold = float(self.parameters.thres)
         max_deg = int(self.parameters.max_deg)
         num_points = int(self.parameters.num_points)
         lls = self.load("lls")
         hessians = self.load("hessians")
         coeffs = self.load("coeffs")
         log_lik_bisector = self.fetch("log_lik_bisector")
+        e_bounds = self.fetch("e_min"), self.fetch("e_max")
+        confidence_levels = [float(cl) for cl in self.parameters.confLevels.split(",")]
 
         coeff, covariance, hess, ll, model_deg = select_model(
-            coeffs, devel, hessians, lls, max_deg, thres
+            coeffs, devel, hessians, lls, max_deg, threshold
         )
 
-        # Compute p value
-        calibration_stat = 2 * (ll - log_lik_bisector)
-        p_value = 1 - giviti_stat_cdf(
-            calibration_stat, m=model_deg, devel=devel, thres=thres
+        p_value = compute_pvalue(devel, ll, log_lik_bisector, model_deg, threshold)
+
+        G, calibration_curve, e = compute_calibration_curve(coeff, num_points, e_bounds)
+
+        calibration_belts, p_min, p_max = compute_calibration_belt(
+            G, coeff, covariance, confidence_levels
         )
 
-        # Compute calibration curve
-        e_min, e_max = self.fetch("e_min"), self.fetch("e_max")
-        e_lin = np.linspace(e_min, e_max, num=(int(num_points) + 1) // 2)
-        e_log = expit(np.linspace(logit(e_min), logit(e_max), num=int(num_points) // 2))
-        e = np.concatenate((e_lin, e_log))
-        e = np.sort(e)
-        ge = logit(e)
-        G = np.array([np.power(ge, i) for i in range(len(coeff))]).T
-        p = expit(np.dot(G, coeff))
-        calib_curve = np.array([e, p]).transpose()
+        over_bisect1 = find_relative_to_bisector(np.around(e, 4), p_min[0], "over")
+        under_bisect1 = find_relative_to_bisector(np.around(e, 4), p_max[0], "under")
+        over_bisect2 = find_relative_to_bisector(np.around(e, 4), p_min[1], "over")
+        under_bisect2 = find_relative_to_bisector(np.around(e, 4), p_max[1], "under")
 
-        # Compute confidence intervals
         cl1, cl2 = [float(cl) for cl in self.parameters.confLevels.split(",")]
-        GVG = np.stack([np.dot(G[i], np.dot(covariance, G[i])) for i in range(len(G))])
-        sqrt_chi_GVG_1 = np.sqrt(np.multiply(chi2.ppf(q=cl1, df=2), GVG))
-        sqrt_chi_GVG_2 = np.sqrt(np.multiply(chi2.ppf(q=cl2, df=2), GVG))
-        g_min1, g_max1 = (
-            np.dot(G, coeff) - sqrt_chi_GVG_1,
-            np.dot(G, coeff) + sqrt_chi_GVG_1,
-        )
-        g_min2, g_max2 = (
-            np.dot(G, coeff) - sqrt_chi_GVG_2,
-            np.dot(G, coeff) + sqrt_chi_GVG_2,
-        )
-        p_min1, p_max1 = expit(g_min1), expit(g_max1)
-        p_min2, p_max2 = expit(g_min2), expit(g_max2)
-        calib_belt1 = np.array([p_min1, p_max1])
-        calib_belt2 = np.array([p_min2, p_max2])
-        calib_belt1_hc = np.array([e, p_min1, p_max1]).transpose()
-        calib_belt2_hc = np.array([e, p_min2, p_max2]).transpose()
-
-        # Find regions relative to bisector
-        over_bisect1 = find_relative_to_bisector(np.around(e, 4), p_min1, "over")
-        under_bisect1 = find_relative_to_bisector(np.around(e, 4), p_max1, "under")
-        over_bisect2 = find_relative_to_bisector(np.around(e, 4), p_min2, "over")
-        under_bisect2 = find_relative_to_bisector(np.around(e, 4), p_max2, "under")
-
         raw_data = {
             "Model degree": int(model_deg),
             "coeff": coeff.tolist(),
             "log-likelihood": ll,
             "n_obs": int(self.load("n_obs")),
             "seqP": np.around(e, 8).tolist(),
-            "Calibration curve": np.around(calib_curve, 4).tolist(),
-            "Calibration belt 1": np.around(calib_belt1, 8).tolist(),
-            "Calibration belt 2": np.around(calib_belt2, 8).tolist(),
+            "Calibration curve": np.around(calibration_curve, 4).tolist(),
+            "Calibration belt 1": np.around(calibration_belts[0], 8).tolist(),
+            "Calibration belt 2": np.around(calibration_belts[1], 8).tolist(),
             "p value": p_value,
             "Over bisector 1": over_bisect1,
             "Under bisector 1": under_bisect1,
@@ -286,20 +191,135 @@ class CalibrationBelt(Algorithm):
             "Under bisector 2": under_bisect2,
             "Confidence level 1": str(int(cl1 * 100)) + "%",
             "Confidence level 2": str(int(cl2 * 100)) + "%",
-            "Threshold": str(int(thres * 100)) + "%",
+            "Threshold": str(int(threshold * 100)) + "%",
             "Expected name": self.fetch("e_name"),
             "Observed name": self.fetch("o_name"),
         }
 
+        calibration_belt1_hc = np.array([e, p_min[0], p_max[0]]).transpose()
+        calibration_belt2_hc = np.array([e, p_min[1], p_max[1]]).transpose()
         chart = CalibrationBeltPlot(
             title="Calibration Belt",
-            data=[calib_belt1_hc.tolist(), calib_belt2_hc.tolist()],
+            data=[calibration_belt1_hc.tolist(), calibration_belt2_hc.tolist()],
             confidence_levels=[cl1, cl2],
             e_name=self.fetch("e_name"),
             o_name=self.fetch("o_name"),
         )
 
         self.result = AlgorithmResult(raw_data, highcharts=[chart])
+
+
+def init_model(max_deg, n_obs):
+    lls = np.ones((max_deg,), dtype=np.float) * (-2 * n_obs * np.log(2))
+    coeffs = np.zeros((max_deg, max_deg + 1))
+    masks = np.zeros(coeffs.shape, dtype=bool)
+    for idx in range(0, max_deg - 1):
+        masks[idx, idx + 2 :] = True
+    coeffs = np.ma.masked_array(coeffs, mask=masks)
+    return coeffs, lls
+
+
+def update_local_model_parameters(Xs, Y, coeffs, max_deg):
+    hessians = np.ma.empty((4, coeffs.shape[1], coeffs.shape[1]), dtype=np.float)
+    grads = np.ma.empty((4, coeffs.shape[1]), dtype=np.float)
+    lls = np.empty((4,), dtype=np.float)
+    for idx in range(max_deg):
+        X = Xs[idx]
+        coeff = coeffs[idx]
+
+        z = np.ma.dot(X, coeff)
+        s = expit(z)
+        d = np.multiply(s, (1 - s))
+        D = np.diag(d)
+
+        hess = np.ma.dot(np.transpose(X), np.ma.dot(D, X))
+        hessians[idx] = hess
+
+        Ymsd = (Y - s) / d  # Stable computation of (Y - s) / d
+        Ymsd[(Y == 0) & (s == 0)] = -1
+        Ymsd[(Y == 1) & (s == 1)] = 1
+        Ymsd = Ymsd.clip(-1e6, 1e6)
+        grad = np.ma.dot(np.transpose(X), np.ma.dot(D, z + Ymsd))
+        grads[idx] = grad
+
+        ll = np.sum(xlogy(Y, s) + xlogy(1 - Y, 1 - s))
+        lls[idx] = ll
+    return grads, hessians, lls
+
+
+def update_coefficients(coeffs, grads, hessians, lls, lls_old, max_deg):
+    deltas = np.empty(lls.shape)
+    if np.isinf(hessians).any():
+        hessians = hessians.clip(-1e6, 1e6)
+    if np.isinf(grads).any():
+        grads = grads.clip(-1e6, 1e6)
+    for idx in range(max_deg):
+        hess = hessians[idx]
+        covariance = np.ma.zeros(hess.shape)
+        covariance.mask = hess.mask
+        try:
+            covariance[: idx + 2, : idx + 2] = np.linalg.inv(hess[: idx + 2, : idx + 2])
+            if np.isnan(covariance[: idx + 2, : idx + 2]).any():
+                raise np.linalg.LinAlgError
+        except np.linalg.LinAlgError:
+            covariance[: idx + 2, : idx + 2] = np.linalg.pinv(
+                hess[: idx + 2, : idx + 2]
+            )
+        if (
+            np.isclose(grads[idx], 0.0).any()
+            and np.isinf(covariance[: idx + 2, : idx + 2]).any()
+        ):
+            covariance[: idx + 2, : idx + 2] = covariance[: idx + 2, : idx + 2].clip(
+                -1e6, 1e6
+            )
+
+        coeffs[idx] = np.ma.dot(covariance, grads[idx])
+
+        # Update termination quantities
+        deltas[idx] = abs(lls[idx] - lls_old[idx])
+    return deltas, grads, hessians
+
+
+def compute_log_lik_on_bisector(Xs, Y, coeffs):
+    X = Xs[0]
+    coeff = coeffs[0]
+    coeff[:2] = np.array([0, 1])
+    z = np.dot(X, coeff)
+    s = expit(z)
+    ls1, ls2 = np.log(s), np.log(1 - s)
+    log_lik_bisector = np.dot(Y, ls1) + np.dot(1 - Y, ls2)
+    return log_lik_bisector
+
+
+def select_model(coeffs, devel, hessians, lls, max_deg, thres):
+    if devel == "external":
+        idx = 0
+    elif devel == "internal":
+        idx = 1
+    else:
+        raise ValueError("devel should be `internal` or `external`")
+    crit = chi2.ppf(q=thres, df=1)
+    for i in range(idx + 1, max_deg):
+        ddev = 2 * (lls[i] - lls[i - 1])
+        if ddev > crit:
+            idx = i
+        else:
+            break
+    model_deg = idx + 1
+    hess = hessians[idx]
+    ll = lls[idx]
+    coeff = coeffs[idx]
+    coeff = coeff[~coeff.mask]
+    covariance = np.linalg.inv(hess[: idx + 2, : idx + 2])
+    return coeff, covariance, hess, ll, model_deg
+
+
+def compute_pvalue(devel, ll, log_lik_bisector, model_deg, thres):
+    calibration_stat = 2 * (ll - log_lik_bisector)
+    p_value = 1 - giviti_stat_cdf(
+        calibration_stat, m=model_deg, devel=devel, thres=thres
+    )
+    return p_value
 
 
 def giviti_stat_cdf(t, m, devel="external", thres=0.95):
