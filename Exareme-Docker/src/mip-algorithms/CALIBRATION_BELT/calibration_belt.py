@@ -19,33 +19,6 @@ from mipframework.constants import (
 )
 
 
-def compute_calibration_curve(coeff, num_points, e_bounds):
-    # Compute calibration curve
-    e_min, e_max = e_bounds
-    e_lin = np.linspace(e_min, e_max, num=(int(num_points) + 1) // 2)
-    e_log = expit(np.linspace(logit(e_min), logit(e_max), num=int(num_points) // 2))
-    e = np.concatenate((e_lin, e_log))
-    e = np.sort(e)
-    ge = logit(e)
-    G = np.array([np.power(ge, i) for i in range(len(coeff))]).T
-    p = expit(np.dot(G, coeff))
-    calibration_curve = np.array([e, p]).transpose()
-    return G, calibration_curve, e
-
-
-def compute_calibration_belt(G, coeff, covariance, confidence_levels):
-    GVG = np.stack([np.dot(G[i], np.dot(covariance, G[i])) for i in range(len(G))])
-    sqrt_chi_GVG = np.sqrt(
-        np.multiply(chi2.ppf(q=confidence_levels, df=2)[:, np.newaxis], GVG)
-    )
-    g_min = np.dot(G, coeff) - sqrt_chi_GVG
-    g_max = np.dot(G, coeff) + sqrt_chi_GVG
-    p_min, p_max = expit(g_min), expit(g_max)
-    calibration_belts = np.array([p_min, p_max])
-    calibration_belts = np.einsum("ijk -> jik", calibration_belts)
-    return calibration_belts, p_min, p_max
-
-
 class CalibrationBelt(Algorithm):
     def __init__(self, cli_args):
         super(CalibrationBelt, self).__init__(__file__, cli_args, intercept=False)
@@ -320,6 +293,33 @@ def compute_pvalue(devel, ll, log_lik_bisector, model_deg, thres):
         calibration_stat, m=model_deg, devel=devel, thres=thres
     )
     return p_value
+
+
+def compute_calibration_curve(coeff, num_points, e_bounds):
+    # Compute calibration curve
+    e_min, e_max = e_bounds
+    e_lin = np.linspace(e_min, e_max, num=(int(num_points) + 1) // 2)
+    e_log = expit(np.linspace(logit(e_min), logit(e_max), num=int(num_points) // 2))
+    e = np.concatenate((e_lin, e_log))
+    e = np.sort(e)
+    ge = logit(e)
+    G = np.array([np.power(ge, i) for i in range(len(coeff))]).T
+    p = expit(np.dot(G, coeff))
+    calibration_curve = np.array([e, p]).transpose()
+    return G, calibration_curve, e
+
+
+def compute_calibration_belt(G, coeff, covariance, confidence_levels):
+    GVG = np.stack([np.dot(G[i], np.dot(covariance, G[i])) for i in range(len(G))])
+    sqrt_chi_GVG = np.sqrt(
+        np.multiply(chi2.ppf(q=confidence_levels, df=2)[:, np.newaxis], GVG)
+    )
+    g_min = np.dot(G, coeff) - sqrt_chi_GVG
+    g_max = np.dot(G, coeff) + sqrt_chi_GVG
+    p_min, p_max = expit(g_min), expit(g_max)
+    calibration_belts = np.array([p_min, p_max])
+    calibration_belts = np.einsum("ijk -> jik", calibration_belts)
+    return calibration_belts, p_min, p_max
 
 
 def giviti_stat_cdf(t, m, devel="external", thres=0.95):
