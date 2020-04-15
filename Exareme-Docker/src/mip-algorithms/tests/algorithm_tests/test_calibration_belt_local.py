@@ -3,6 +3,8 @@ import json
 from pathlib import Path
 import numpy as np
 
+from CALIBRATION_BELT import CalibrationBelt
+
 from mipframework import create_runner
 from mipframework.runner.runner import capture_stdout
 
@@ -22,8 +24,7 @@ def test_pearson_algorithm_local(test_input, expected):
     else:
         alg_args = sum([["-" + p["name"], p["value"]] for p in test_input], [])
         runner = create_runner(
-            for_class="CalibrationBelt",
-            found_in="CALIBRATION_BELT/calibration_belt",
+            CalibrationBelt,
             alg_type="iterative",
             num_workers=1,
             algorithm_args=alg_args,

@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 import numpy as np
 
+from PCA import PCA
 from mipframework import create_runner
 from mipframework.runner.runner import capture_stdout
 
@@ -19,11 +20,7 @@ def get_test_params():
 def test_pearson_algorithm_local(test_input, expected):
     alg_args = sum([["-" + p["name"], p["value"]] for p in test_input], [])
     runner = create_runner(
-        for_class="PCA",
-        found_in="PCA/pca",
-        alg_type="multiple-local-global",
-        num_workers=1,
-        algorithm_args=alg_args,
+        PCA, alg_type="multiple-local-global", num_workers=1, algorithm_args=alg_args,
     )
     result = capture_stdout(runner.run)()
     result = json.loads(result)["result"][0]["data"]
