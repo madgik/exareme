@@ -1,8 +1,6 @@
 import io
-import os
 import sqlite3
 import sys
-import importlib
 from pathlib import Path
 from functools import wraps
 from abc import ABCMeta, abstractmethod
@@ -74,70 +72,44 @@ def make_transfer_db(node):
 
 class LocalGlobalRunner(Runner):
     def run(self):
-        make_transfer_db("local")
-        for i in range(self.num_wrk):
-            out = capture_stdout(self.workers[i].local_)()
-            write_to_transfer_db(out, "local")
+        execute_dataflow_step(self, "local_")
         self.master.global_()
 
 
 class MultipleLocalGlobalRunner(Runner):
     def run(self):
-        # ===== INIT ===== #
-        # Locals
-        make_transfer_db("local")
-        for i in range(self.num_wrk):
-            out = capture_stdout(self.workers[i].local_init)()
-            write_to_transfer_db(out, "local")
-        # Global
-        make_transfer_db("global")
-        out = capture_stdout(self.master.global_init)()
-        write_to_transfer_db(out, "global")
-        # ===== STEPS ===== #
-        # TODO
-        # ===== FINAL ===== #
-        # Locals
-        make_transfer_db("local")
-        for i in range(self.num_wrk):
-            out = capture_stdout(self.workers[i].local_final)()
-            write_to_transfer_db(out, "local")
-        # Global
+        execute_dataflow_step(self, "local_init")
+        execute_dataflow_step(self, "global_init")
+        # TODO steps
+        execute_dataflow_step(self, "local_final")
         self.master.global_final()
 
 
 class IterativeRunner(Runner):
     def run(self):
-        # ===== INIT ===== #
-        # Locals
-        make_transfer_db("local")
-        for i in range(self.num_wrk):
-            out = capture_stdout(self.workers[i].local_init)()
-            write_to_transfer_db(out, "local")
-        # Global
-        make_transfer_db("global")
-        out = capture_stdout(self.master.global_init)()
-        write_to_transfer_db(out, "global")
-        # ===== STEP ===== #
+        execute_dataflow_step(self, "local_init")
+        execute_dataflow_step(self, "global_init")
         while True:
-            # Locals
-            make_transfer_db("local")
-            for i in range(self.num_wrk):
-                out = capture_stdout(self.workers[i].local_step)()
-                write_to_transfer_db(out, "local")
-            # Global
-            make_transfer_db("global")
-            out = capture_stdout(self.master.global_step)()
-            write_to_transfer_db(out, "global")
+            execute_dataflow_step(self, "local_step")
+            execute_dataflow_step(self, "global_step")
             if "STOP" in capture_stdout(self.master.termination_condition)():
                 break
-        # ===== FINAL ===== #
-        # Locals
-        make_transfer_db("local")
-        for i in range(self.num_wrk):
-            out = capture_stdout(self.workers[i].local_final)()
-            write_to_transfer_db(out, "local")
-        # Global
+        execute_dataflow_step(self, "local_final")
         self.master.global_final()
+
+
+def execute_dataflow_step(node_instance, method):
+    node_type = method.split("_")[0]
+    make_transfer_db(node_type)
+    if node_type == "local":
+        nodes = node_instance.workers
+    elif node_type == "global":
+        nodes = [node_instance.master]
+    else:
+        raise ValueError("method name should start with local or global")
+    for node in nodes:
+        out = capture_stdout(getattr(node, method))()
+        write_to_transfer_db(out, node_type)
 
 
 def create_runner(cls, alg_type, algorithm_args, num_workers=3):
