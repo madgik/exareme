@@ -104,7 +104,9 @@ def get_formula(args, is_categorical):
     var_names = list(args.y)
     if hasattr(args, "x") and args.x:
         var_names.extend(args.x)
-    if hasattr(args, "coding") and args.coding:
+    if 1 in is_categorical.values():
+        if not hasattr(args, "coding") or not args.coding:
+            args.coding = "Treatment"
         for var in var_names:
             if is_categorical[var]:
                 formula = formula.replace(
