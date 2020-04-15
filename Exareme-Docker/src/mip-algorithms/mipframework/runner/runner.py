@@ -13,7 +13,8 @@ from sqlalchemy import create_engine, MetaData, Table, select, func
 dbs_folder = Path(__file__).parent / "dbs"
 
 
-def write_to_transfer_db(out, db_name):
+def write_to_transfer_db(out, node):
+    db_name = node + "_transfer.db"
     db_path = dbs_folder / db_name
     conn = sqlite3.connect(db_path.as_posix())
     c = conn.cursor()
@@ -56,26 +57,27 @@ class Runner(object):
             self.workers.append(alg_cls(local_argv[i]))
         self.master = alg_cls(global_argv)
 
-    @staticmethod
-    def make_transfer_db(path):
-        conn = sqlite3.connect(path.as_posix())
-        c = conn.cursor()
-        c.execute("DROP TABLE IF EXISTS transfer")
-        c.execute("CREATE TABLE transfer (data text)")
-
     @abstractmethod
     def run(self):
         """This method is implemented in child classes according to algorithm type (
         local-global, multiple-local-global, iterative)"""
 
 
+def make_transfer_db(node):
+    db_name = node + "_transfer.db"
+    path = dbs_folder / db_name
+    conn = sqlite3.connect(path.as_posix())
+    c = conn.cursor()
+    c.execute("DROP TABLE IF EXISTS transfer")
+    c.execute("CREATE TABLE transfer (data text)")
+
+
 class LocalGlobalRunner(Runner):
     def run(self):
-        db_path = dbs_folder / "local_transfer.db"
-        self.make_transfer_db(path=db_path)
+        make_transfer_db("local")
         for i in range(self.num_wrk):
             out = capture_stdout(self.workers[i].local_)()
-            write_to_transfer_db(out, "local_transfer.db")
+            write_to_transfer_db(out, "local")
         self.master.global_()
 
 
@@ -83,25 +85,22 @@ class MultipleLocalGlobalRunner(Runner):
     def run(self):
         # ===== INIT ===== #
         # Locals
-        db_path = dbs_folder / "local_transfer.db"
-        self.make_transfer_db(path=db_path)
+        make_transfer_db("local")
         for i in range(self.num_wrk):
             out = capture_stdout(self.workers[i].local_init)()
-            write_to_transfer_db(out, "local_transfer.db")
+            write_to_transfer_db(out, "local")
         # Global
-        db_path = dbs_folder / "global_transfer.db"
-        self.make_transfer_db(path=db_path)
+        make_transfer_db("global")
         out = capture_stdout(self.master.global_init)()
-        write_to_transfer_db(out, "global_transfer.db")
+        write_to_transfer_db(out, "global")
         # ===== STEPS ===== #
         # TODO
         # ===== FINAL ===== #
         # Locals
-        db_path = dbs_folder / "local_transfer.db"
-        self.make_transfer_db(path=db_path)
+        make_transfer_db("local")
         for i in range(self.num_wrk):
             out = capture_stdout(self.workers[i].local_final)()
-            write_to_transfer_db(out, "local_transfer.db")
+            write_to_transfer_db(out, "local")
         # Global
         self.master.global_final()
 
@@ -110,61 +109,49 @@ class IterativeRunner(Runner):
     def run(self):
         # ===== INIT ===== #
         # Locals
-        db_path = dbs_folder / "local_transfer.db"
-        self.make_transfer_db(path=db_path)
+        make_transfer_db("local")
         for i in range(self.num_wrk):
             out = capture_stdout(self.workers[i].local_init)()
-            write_to_transfer_db(out, "local_transfer.db")
+            write_to_transfer_db(out, "local")
         # Global
-        db_path = dbs_folder / "global_transfer.db"
-        self.make_transfer_db(path=db_path)
+        make_transfer_db("global")
         out = capture_stdout(self.master.global_init)()
-        write_to_transfer_db(out, "global_transfer.db")
+        write_to_transfer_db(out, "global")
         # ===== STEP ===== #
         while True:
             # Locals
-            db_path = dbs_folder / "local_transfer.db"
-            self.make_transfer_db(path=db_path)
+            make_transfer_db("local")
             for i in range(self.num_wrk):
                 out = capture_stdout(self.workers[i].local_step)()
-                write_to_transfer_db(out, "local_transfer.db")
+                write_to_transfer_db(out, "local")
             # Global
-            db_path = dbs_folder / "global_transfer.db"
-            self.make_transfer_db(path=db_path)
+            make_transfer_db("global")
             out = capture_stdout(self.master.global_step)()
-            write_to_transfer_db(out, "global_transfer.db")
+            write_to_transfer_db(out, "global")
             if "STOP" in capture_stdout(self.master.termination_condition)():
                 break
         # ===== FINAL ===== #
         # Locals
-        db_path = dbs_folder / "local_transfer.db"
-        self.make_transfer_db(path=db_path)
+        make_transfer_db("local")
         for i in range(self.num_wrk):
             out = capture_stdout(self.workers[i].local_final)()
-            write_to_transfer_db(out, "local_transfer.db")
+            write_to_transfer_db(out, "local")
         # Global
         self.master.global_final()
 
 
-def create_runner(for_class, alg_type, found_in, algorithm_args, num_workers=3):
-    folder = os.path.split(found_in)
-    folder = folder[0] + "." + folder[1]
-    mod = importlib.import_module(folder)
-    alg_cls = getattr(mod, for_class)
-
+def create_runner(cls, alg_type, algorithm_args, num_workers=3):
     if alg_type == "local-global":
         return LocalGlobalRunner(
-            alg_cls=alg_cls, algorithm_args=algorithm_args, num_wrk=num_workers
+            alg_cls=cls, algorithm_args=algorithm_args, num_wrk=num_workers
         )
-
     elif alg_type == "multiple-local-global":
         return MultipleLocalGlobalRunner(
-            alg_cls=alg_cls, algorithm_args=algorithm_args, num_wrk=num_workers
+            alg_cls=cls, algorithm_args=algorithm_args, num_wrk=num_workers
         )
-
     elif alg_type == "iterative":
         return IterativeRunner(
-            alg_cls=alg_cls, algorithm_args=algorithm_args, num_wrk=num_workers
+            alg_cls=cls, algorithm_args=algorithm_args, num_wrk=num_workers
         )
 
 

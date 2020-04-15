@@ -455,8 +455,7 @@ if __name__ == "__main__":
         "",
     ]
     runner = create_runner(
-        for_class="LogisticRegression",
-        found_in="LOGISTIC_REGRESSION/logistic_regression",
+        LogisticRegression,
         alg_type="iterative",
         num_workers=1,
         algorithm_args=algorithm_args,

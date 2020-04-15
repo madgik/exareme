@@ -136,8 +136,7 @@ if __name__ == "__main__":
         "Treatment",
     ]
     runner = create_runner(
-        for_class="PCA",
-        found_in="PCA/pca",
+        PCA,
         alg_type="multiple-local-global",
         algorithm_args=algorithm_args,
         num_workers=1,

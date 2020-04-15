@@ -164,11 +164,7 @@ if __name__ == "__main__":
         "",
     ]
     runner = create_runner(
-        for_class="Pearson",
-        found_in="PEARSON_CORRELATION/pearson",
-        alg_type="local-global",
-        algorithm_args=algorithm_args,
-        num_workers=3,
+        Pearson, alg_type="local-global", algorithm_args=algorithm_args, num_workers=3,
     )
     start = time.time()
     runner.run()
