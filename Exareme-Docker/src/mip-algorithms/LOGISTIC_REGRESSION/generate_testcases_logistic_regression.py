@@ -1,6 +1,6 @@
 """
 WARNING: This one needs python3.6 because the 2.7 version of
-sklearn doesn't support Logistic Regression with no regularization.
+sklearn doesn't support Logistic Regression without regularization.
 """
 import json
 
@@ -72,7 +72,7 @@ class LogisticRegressionTest(AlgorithmTest):
         logreg_res = LogisticRegression(penalty="none", solver="newton-cg").fit(X, y)
         coeff = logreg_res.intercept_.tolist() + logreg_res.coef_.tolist()[0]
         coeff_names = ["Intercept"] + x_names.split(",")
-        return [{"n_obs": n_obs, "coeff": coeff, "coeff_names": coeff_names}]
+        return {"n_obs": n_obs, "coeff": coeff, "coeff_names": coeff_names}
 
 
 if __name__ == "__main__":
