@@ -11,6 +11,14 @@ from sqlalchemy import create_engine, MetaData, Table, select, func
 dbs_folder = Path(__file__).parent / "dbs"
 
 
+ALGORITHM_TYPES = {
+    "PCA": "multiple-local-global",
+    "Pearson": "local-global",
+    "LogisticRegression": "iterative",
+    "CalibrationBelt": "iterative",
+}
+
+
 def write_to_transfer_db(out, node):
     db_name = node + "_transfer.db"
     db_path = dbs_folder / db_name
@@ -111,18 +119,19 @@ class IterativeRunner(RunnerABC):
         self.master.global_final()
 
 
-def create_runner(cls, alg_type, algorithm_args, num_workers=3):
+def create_runner(algorithm_class, algorithm_args, num_workers=3):
+    alg_type = ALGORITHM_TYPES[algorithm_class.__name__]
     if alg_type == "local-global":
         return LocalGlobalRunner(
-            alg_cls=cls, algorithm_args=algorithm_args, num_wrk=num_workers
+            alg_cls=algorithm_class, algorithm_args=algorithm_args, num_wrk=num_workers
         )
     elif alg_type == "multiple-local-global":
         return MultipleLocalGlobalRunner(
-            alg_cls=cls, algorithm_args=algorithm_args, num_wrk=num_workers
+            alg_cls=algorithm_class, algorithm_args=algorithm_args, num_wrk=num_workers
         )
     elif alg_type == "iterative":
         return IterativeRunner(
-            alg_cls=cls, algorithm_args=algorithm_args, num_wrk=num_workers
+            alg_cls=algorithm_class, algorithm_args=algorithm_args, num_wrk=num_workers
         )
 
 

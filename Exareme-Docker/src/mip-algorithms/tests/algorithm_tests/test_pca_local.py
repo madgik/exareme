@@ -1,30 +1,18 @@
 import pytest
-import json
 from pathlib import Path
+
+from mipframework.testutils import get_test_params, get_algorithm_result
 import numpy as np
 
 from PCA import PCA
-from mipframework import create_runner
-from mipframework.runner.runner import capture_stdout
+
+expected_file = Path(__file__).parent / "expected" / "pca_expected.json"
 
 
-def get_test_params():
-    path = Path(__file__).parent / "expected" / "pca_expected.json"
-    with path.open() as json_expected:
-        params = json.load(json_expected)["test_cases"]
-    params = [(p["input"], p["output"]) for p in params]
-    return params
-
-
-@pytest.mark.parametrize("test_input, expected", get_test_params())
+@pytest.mark.parametrize("test_input, expected", get_test_params(expected_file))
 def test_pearson_algorithm_local(test_input, expected):
-    alg_args = sum([["-" + p["name"], p["value"]] for p in test_input], [])
-    runner = create_runner(
-        PCA, alg_type="multiple-local-global", num_workers=1, algorithm_args=alg_args,
-    )
-    result = capture_stdout(runner.run)()
-    result = json.loads(result)["result"][0]["data"]
-    expected = expected[0]
+    result = get_algorithm_result(PCA, test_input)
+
     assert int(result["n_obs"]) == int(expected["n_obs"])
     assert np.isclose(result["eigenvalues"], expected["eigen_vals"], atol=1e-3).all()
     for u, v in zip(result["eigenvectors"], expected["eigen_vecs"]):

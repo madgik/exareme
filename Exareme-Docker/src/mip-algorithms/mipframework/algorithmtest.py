@@ -75,9 +75,13 @@ class AlgorithmTest(object):
 
     def generate_test_cases(self, num_tests=100):
         """Generates list of input/output pairs for algorithm tests"""
+        seen = []
         with tqdm(total=num_tests, desc="Generating test cases") as pbar:
             while len(self.test_cases) < num_tests:
                 in_ = self.generate_random_input()
+                if in_ in seen:
+                    continue
+                seen.append(in_)
                 out = self.get_expected(in_)
                 if out is None:
                     continue
