@@ -35,7 +35,7 @@ def capture_stdout(func):
     return wrapper
 
 
-class Runner(object):
+class RunnerABC(object):
     __metaclass__ = ABCMeta
 
     def __init__(self, alg_cls, algorithm_args, num_wrk, split=False):
@@ -55,6 +55,19 @@ class Runner(object):
             self.workers.append(alg_cls(local_argv[i]))
         self.master = alg_cls(global_argv)
 
+    def execute_dataflow_step(self, method):
+        node_type = method.split("_")[0]
+        make_transfer_db(node_type)
+        if node_type == "local":
+            nodes = self.workers
+        elif node_type == "global":
+            nodes = [self.master]
+        else:
+            raise ValueError("method name should start with local or global")
+        for node in nodes:
+            out = capture_stdout(getattr(node, method))()
+            write_to_transfer_db(out, node_type)
+
     @abstractmethod
     def run(self):
         """This method is implemented in child classes according to algorithm type (
@@ -70,46 +83,32 @@ def make_transfer_db(node):
     c.execute("CREATE TABLE transfer (data text)")
 
 
-class LocalGlobalRunner(Runner):
+class LocalGlobalRunner(RunnerABC):
     def run(self):
-        execute_dataflow_step(self, "local_")
+        self.execute_dataflow_step("local_")
         self.master.global_()
 
 
-class MultipleLocalGlobalRunner(Runner):
+class MultipleLocalGlobalRunner(RunnerABC):
     def run(self):
-        execute_dataflow_step(self, "local_init")
-        execute_dataflow_step(self, "global_init")
+        self.execute_dataflow_step("local_init")
+        self.execute_dataflow_step("global_init")
         # TODO steps
-        execute_dataflow_step(self, "local_final")
+        self.execute_dataflow_step("local_final")
         self.master.global_final()
 
 
-class IterativeRunner(Runner):
+class IterativeRunner(RunnerABC):
     def run(self):
-        execute_dataflow_step(self, "local_init")
-        execute_dataflow_step(self, "global_init")
+        self.execute_dataflow_step("local_init")
+        self.execute_dataflow_step("global_init")
         while True:
-            execute_dataflow_step(self, "local_step")
-            execute_dataflow_step(self, "global_step")
+            self.execute_dataflow_step("local_step")
+            self.execute_dataflow_step("global_step")
             if "STOP" in capture_stdout(self.master.termination_condition)():
                 break
-        execute_dataflow_step(self, "local_final")
+        self.execute_dataflow_step("local_final")
         self.master.global_final()
-
-
-def execute_dataflow_step(node_instance, method):
-    node_type = method.split("_")[0]
-    make_transfer_db(node_type)
-    if node_type == "local":
-        nodes = node_instance.workers
-    elif node_type == "global":
-        nodes = [node_instance.master]
-    else:
-        raise ValueError("method name should start with local or global")
-    for node in nodes:
-        out = capture_stdout(getattr(node, method))()
-        write_to_transfer_db(out, node_type)
 
 
 def create_runner(cls, alg_type, algorithm_args, num_workers=3):
@@ -169,6 +168,8 @@ def create_worker_db_engines(num_wrk, sqla_md):
 
 
 def get_cli_args(algorithm_args, node, num=None):
+    if num is None:
+        num = ""
     common_args = [
         "-input_local_DB",
         (
@@ -177,13 +178,9 @@ def get_cli_args(algorithm_args, node, num=None):
             else ""
         ),
         "-cur_state_pkl",
-        (
-            dbs_folder / "state_{0}{1}.pkl".format(node, num if num is not None else "")
-        ).as_posix(),
+        (dbs_folder / "state_{0}{1}.pkl".format(node, num)).as_posix(),
         "-prev_state_pkl",
-        (
-            dbs_folder / "state_{0}{1}.pkl".format(node, num if num is not None else "")
-        ).as_posix(),
+        (dbs_folder / "state_{0}{1}.pkl".format(node, num)).as_posix(),
         "-local_step_dbs",
         (dbs_folder / "local_transfer.db").as_posix(),
         "-global_step_db",
