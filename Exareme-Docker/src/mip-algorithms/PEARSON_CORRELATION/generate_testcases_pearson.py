@@ -1,8 +1,4 @@
-import json
-
 from pathlib import Path
-import numpy as np
-from random import shuffle
 
 from scipy.stats import pearsonr
 
@@ -13,11 +9,11 @@ class PearsonTest(AlgorithmTest):
     def get_expected(self, alg_input):
 
         # Get data and remove missing values
-        x_names = alg_input[0]['value']
-        y_names = alg_input[1]['value']
+        x_names = alg_input[0]["value"]
+        y_names = alg_input[1]["value"]
         variables = y_names
-        if x_names != '':
-            variables += ',' + x_names
+        if x_names != "":
+            variables += "," + x_names
         data = self.get_data(variables)
         data = data.dropna()
         n_obs = len(data)
@@ -27,12 +23,12 @@ class PearsonTest(AlgorithmTest):
             return None
 
         # Assign data to X, Y
-        X = Y = data[y_names.split(',')]
-        if x_names != '':
-            X = data[x_names.split(',')]
+        X = Y = data[y_names.split(",")]
+        if x_names != "":
+            X = data[x_names.split(",")]
 
         # If Y has single value X cannot be empty
-        if x_names == '' and Y.shape[1] == 1:
+        if x_names == "" and Y.shape[1] == 1:
             return None
 
         correlation = []
@@ -44,17 +40,15 @@ class PearsonTest(AlgorithmTest):
                 r, p = pearsonr(X[x_col], Y[y_col])
                 correlation[j].append(r)
                 p_values[j].append(p)
-        return [
-            {
-                'n_obs'      : n_obs,
-                'Pearson correlation coefficient': correlation,
-                'p-value'   : p_values
-            }
-        ]
+        return {
+            "n_obs": n_obs,
+            "Pearson correlation coefficient": correlation,
+            "p-value": p_values,
+        }
 
 
-if __name__ == '__main__':
-    prop_path = dbs_folder = Path(__file__).parent / 'properties.json'
+if __name__ == "__main__":
+    prop_path = dbs_folder = Path(__file__).parent / "properties.json"
     logistic_regression_test = PearsonTest(prop_path.as_posix())
     logistic_regression_test.generate_test_cases(num_tests=100)
-    logistic_regression_test.to_json('pearson_expected.json')
+    logistic_regression_test.to_json("pearson_expected.json")

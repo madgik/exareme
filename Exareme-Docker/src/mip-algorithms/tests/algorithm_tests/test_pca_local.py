@@ -1,9 +1,8 @@
 import pytest
 from pathlib import Path
-
-from mipframework.testutils import get_test_params, get_algorithm_result
 import numpy as np
 
+from mipframework.testutils import get_test_params, get_algorithm_result
 from PCA import PCA
 
 expected_file = Path(__file__).parent / "expected" / "pca_expected.json"
