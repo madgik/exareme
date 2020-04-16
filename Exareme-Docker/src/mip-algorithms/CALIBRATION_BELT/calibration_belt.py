@@ -457,7 +457,7 @@ if __name__ == "__main__":
         "",
     ]
     runner = create_runner(
-        cls=CalibrationBelt,
+        algorithm_class=CalibrationBelt,
         alg_type="iterative",
         num_workers=1,
         algorithm_args=algorithm_args,
