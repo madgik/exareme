@@ -135,12 +135,7 @@ if __name__ == "__main__":
         "-coding",
         "Treatment",
     ]
-    runner = create_runner(
-        PCA,
-        alg_type="multiple-local-global",
-        algorithm_args=algorithm_args,
-        num_workers=1,
-    )
+    runner = create_runner(PCA, algorithm_args=algorithm_args, num_workers=1,)
     start = time.time()
     runner.run()
     end = time.time()

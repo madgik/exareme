@@ -457,10 +457,7 @@ if __name__ == "__main__":
         "",
     ]
     runner = create_runner(
-        algorithm_class=CalibrationBelt,
-        alg_type="iterative",
-        num_workers=1,
-        algorithm_args=algorithm_args,
+        algorithm_class=CalibrationBelt, num_workers=1, algorithm_args=algorithm_args,
     )
     start = time.time()
     runner.run()

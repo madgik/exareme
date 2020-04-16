@@ -455,10 +455,7 @@ if __name__ == "__main__":
         "",
     ]
     runner = create_runner(
-        LogisticRegression,
-        alg_type="iterative",
-        num_workers=1,
-        algorithm_args=algorithm_args,
+        LogisticRegression, num_workers=1, algorithm_args=algorithm_args,
     )
     start = time.time()
     runner.run()

@@ -163,9 +163,7 @@ if __name__ == "__main__":
         "-coding",
         "",
     ]
-    runner = create_runner(
-        Pearson, alg_type="local-global", algorithm_args=algorithm_args, num_workers=3,
-    )
+    runner = create_runner(Pearson, algorithm_args=algorithm_args, num_workers=3,)
     start = time.time()
     runner.run()
     end = time.time()
