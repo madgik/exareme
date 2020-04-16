@@ -1,7 +1,7 @@
 {
-    "name": "PEARSON_EXPERIMENTAL",
+    "name": "PEARSON_CORRELATION",
     "desc": "",
-    "label": "Pearson Experimental",
+    "label": "Pearson Correlation",
     "type": "python_local_global",
     "status": "enabled",
     "parameters": [

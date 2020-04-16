@@ -1,7 +1,7 @@
 {
-    "name": "LOGISTIC_EXPERIMENTAL",
+    "name": "LOGISTIC_REGRESSION",
     "desc": "",
-    "label": "Logistic Experimental",
+    "label": "Logistic Regression",
     "type": "python_iterative",
     "parameters": [
         {
