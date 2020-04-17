@@ -143,17 +143,7 @@ def read_metadata_from_db(db, args):
     return AlgorithmMetadata(*md)
 
 
-_db_instance = None
-
-
-def DataBase(db_path, data_table_name, metadata_table_name):
-    global _db_instance
-    if not _db_instance:
-        _db_instance = _DataBase(db_path, data_table_name, metadata_table_name)
-    return _db_instance
-
-
-class _DataBase(object):
+class DataBase(object):
     def __init__(self, db_path, data_table_name, metadata_table_name):
         self.db_path = db_path
         try:

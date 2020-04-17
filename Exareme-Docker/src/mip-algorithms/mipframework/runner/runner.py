@@ -7,8 +7,9 @@ from abc import ABCMeta, abstractmethod
 
 import numpy as np
 from sqlalchemy import create_engine, MetaData, Table, select, func
+from tqdm import tqdm
 
-dbs_folder = Path(__file__).parent / "dbs"
+dbs_dir = Path(__file__).parent / "dbs"
 
 
 ALGORITHM_TYPES = {
@@ -17,16 +18,6 @@ ALGORITHM_TYPES = {
     "LogisticRegression": "iterative",
     "CalibrationBelt": "iterative",
 }
-
-
-def write_to_transfer_db(out, node):
-    db_name = node + "_transfer.db"
-    db_path = dbs_folder / db_name
-    conn = sqlite3.connect(db_path.as_posix())
-    c = conn.cursor()
-    c.execute("INSERT INTO transfer VALUES (?)", (out,))
-    conn.commit()
-    conn.close()
 
 
 def capture_stdout(func):
@@ -46,26 +37,61 @@ def capture_stdout(func):
 class RunnerABC(object):
     __metaclass__ = ABCMeta
 
-    def __init__(self, alg_cls, algorithm_args, num_wrk, split=False):
-        # Split db
-        if split:
+    def __init__(self, alg_cls, algorithm_args, num_wrk):
+        self.subdir_path = dbs_dir / "{num_wrk}LocalDBs".format(num_wrk=num_wrk)
+        if not self.subdir_path.exists():
             split_db(num_wrk)
-        # Get cli arguments
-        local_argv = [
-            get_cli_args(algorithm_args, node="worker", num=i) for i in range(num_wrk)
-        ]
-        global_argv = get_cli_args(algorithm_args, node="master")
 
-        # Create workers and master
+        local_argv = [
+            self.get_cli_args(algorithm_args, node="worker", num=i)
+            for i in range(num_wrk)
+        ]
+        global_argv = self.get_cli_args(algorithm_args, node="master")
+
         self.num_wrk = num_wrk
-        self.workers = []
-        for i in range(num_wrk):
-            self.workers.append(alg_cls(local_argv[i]))
+        self.workers = [alg_cls(local_argv[i]) for i in range(num_wrk)]
         self.master = alg_cls(global_argv)
 
-    def execute_dataflow_step(self, method):
+    def get_cli_args(self, algorithm_args, node, num=None):
+        if num is None:
+            num = ""
+        common_args = [
+            "-input_local_DB",
+            (
+                (self.subdir_path / "local_dataset{}.db".format(num)).as_posix()
+                if num is not None
+                else ""
+            ),
+            "-cur_state_pkl",
+            (self.subdir_path / "state_{0}{1}.pkl".format(node, num)).as_posix(),
+            "-prev_state_pkl",
+            (self.subdir_path / "state_{0}{1}.pkl".format(node, num)).as_posix(),
+            "-local_step_dbs",
+            (self.subdir_path / "local_transfer.db").as_posix(),
+            "-global_step_db",
+            (self.subdir_path / "global_transfer.db").as_posix(),
+            "-data_table",
+            "data",
+            "-metadata_table",
+            "metadata",
+            "-metadata_code_column",
+            "code",
+            "-metadata_label_column",
+            "label",
+            "-metadata_isCategorical_column",
+            "isCategorical",
+            "-metadata_enumerations_column",
+            "enumerations",
+            "-metadata_minValue_column",
+            "min",
+            "-metadata_maxValue_column",
+            "max",
+        ]
+        return algorithm_args + common_args
+
+    def execute_runner_steps(self, method):
         node_type = method.split("_")[0]
-        make_transfer_db(node_type)
+        self.make_transfer_db(node_type)
         if node_type == "local":
             nodes = self.workers
         elif node_type == "global":
@@ -74,7 +100,24 @@ class RunnerABC(object):
             raise ValueError("method name should start with local or global")
         for node in nodes:
             out = capture_stdout(getattr(node, method))()
-            write_to_transfer_db(out, node_type)
+            self.write_to_transfer_db(out, node_type)
+
+    def make_transfer_db(self, node):
+        db_name = node + "_transfer.db"
+        path = self.subdir_path / db_name
+        conn = sqlite3.connect(path.as_posix())
+        c = conn.cursor()
+        c.execute("DROP TABLE IF EXISTS transfer")
+        c.execute("CREATE TABLE transfer (data text)")
+
+    def write_to_transfer_db(self, out, node):
+        db_name = node + "_transfer.db"
+        db_path = self.subdir_path / db_name
+        conn = sqlite3.connect(db_path.as_posix())
+        c = conn.cursor()
+        c.execute("INSERT INTO transfer VALUES (?)", (out,))
+        conn.commit()
+        conn.close()
 
     @abstractmethod
     def run(self):
@@ -82,40 +125,31 @@ class RunnerABC(object):
         local-global, multiple-local-global, iterative)"""
 
 
-def make_transfer_db(node):
-    db_name = node + "_transfer.db"
-    path = dbs_folder / db_name
-    conn = sqlite3.connect(path.as_posix())
-    c = conn.cursor()
-    c.execute("DROP TABLE IF EXISTS transfer")
-    c.execute("CREATE TABLE transfer (data text)")
-
-
 class LocalGlobalRunner(RunnerABC):
     def run(self):
-        self.execute_dataflow_step("local_")
+        self.execute_runner_steps("local_")
         self.master.global_()
 
 
 class MultipleLocalGlobalRunner(RunnerABC):
     def run(self):
-        self.execute_dataflow_step("local_init")
-        self.execute_dataflow_step("global_init")
+        self.execute_runner_steps("local_init")
+        self.execute_runner_steps("global_init")
         # TODO steps
-        self.execute_dataflow_step("local_final")
+        self.execute_runner_steps("local_final")
         self.master.global_final()
 
 
 class IterativeRunner(RunnerABC):
     def run(self):
-        self.execute_dataflow_step("local_init")
-        self.execute_dataflow_step("global_init")
+        self.execute_runner_steps("local_init")
+        self.execute_runner_steps("global_init")
         while True:
-            self.execute_dataflow_step("local_step")
-            self.execute_dataflow_step("global_step")
+            self.execute_runner_steps("local_step")
+            self.execute_runner_steps("global_step")
             if "STOP" in capture_stdout(self.master.termination_condition)():
                 break
-        self.execute_dataflow_step("local_final")
+        self.execute_runner_steps("local_final")
         self.master.global_final()
 
 
@@ -136,13 +170,13 @@ def create_runner(algorithm_class, algorithm_args, num_workers=3):
 
 
 def split_db(num_wrk):
-    db_path = dbs_folder / "datasets.db"
+    db_path = dbs_dir / "datasets.db"
     engine = create_engine("sqlite:///{}".format(db_path), echo=False)
-    sqla_md = MetaData(engine)
-    data = Table("data", sqla_md, autoload=True)
-    metadata = Table("metadata", sqla_md, autoload=True)
+    db_metadata = MetaData(engine)
+    data = Table("data", db_metadata, autoload=True)
+    metadata = Table("metadata", db_metadata, autoload=True)
 
-    worker_engines = create_worker_db_engines(num_wrk, sqla_md)
+    worker_engines = create_worker_db_engines(num_wrk, db_metadata)
     split_data_to_workers(data, engine, num_wrk, worker_engines)
     write_metadata_to_workers(engine, metadata, num_wrk, worker_engines)
 
@@ -150,10 +184,14 @@ def split_db(num_wrk):
 def write_metadata_to_workers(engine, metadata, num_wrk, worker_engines):
     select_all_md = select([metadata])
     all_md = engine.execute(select_all_md)
-    for row in all_md:
-        ins_md = metadata.insert().values(row)
-        for i in range(num_wrk):
-            worker_engines[i].execute(ins_md)
+    select_count = select([func.count()]).select_from(metadata)
+    count = engine.execute(select_count).fetchone()[0]
+    with tqdm(total=count, desc="Splitting data to Worker DBs") as pbar:
+        for row in all_md:
+            ins_md = metadata.insert().values(row)
+            for i in range(num_wrk):
+                worker_engines[i].execute(ins_md)
+            pbar.update(1)
 
 
 def split_data_to_workers(data, engine, num_wrk, worker_engines):
@@ -162,53 +200,21 @@ def split_data_to_workers(data, engine, num_wrk, worker_engines):
     ri = iter(np.random.randint(num_wrk, size=num_rows))
     select_all = select([data])
     all_data = engine.execute(select_all)
-    for row in all_data:
-        ins_row = data.insert().values(row)
-        worker_engines[next(ri)].execute(ins_row)
+    with tqdm(total=num_rows, desc="Splitting data to Worker DBs") as pbar:
+        for row in all_data:
+            ins_row = data.insert().values(row)
+            worker_engines[next(ri)].execute(ins_row)
+            pbar.update(1)
 
 
-def create_worker_db_engines(num_wrk, sqla_md):
+def create_worker_db_engines(num_wrk, db_metadata):
+    subdir_path = dbs_dir / "{num_wrk}LocalDBs".format(num_wrk=num_wrk)
+    if subdir_path.exists():
+        subdir_path.rmdir()
+    subdir_path.mkdir()
     worker_engines = []
     for i in range(num_wrk):
-        db_path = dbs_folder / "local_dataset{}.db".format(i)
+        db_path = subdir_path / "local_dataset{}.db".format(i)
         worker_engines.append(create_engine("sqlite:///{}".format(db_path), echo=False))
-        sqla_md.create_all(worker_engines[i])
+        db_metadata.create_all(worker_engines[i])
     return worker_engines
-
-
-def get_cli_args(algorithm_args, node, num=None):
-    if num is None:
-        num = ""
-    common_args = [
-        "-input_local_DB",
-        (
-            (dbs_folder / "local_dataset{}.db".format(num)).as_posix()
-            if num is not None
-            else ""
-        ),
-        "-cur_state_pkl",
-        (dbs_folder / "state_{0}{1}.pkl".format(node, num)).as_posix(),
-        "-prev_state_pkl",
-        (dbs_folder / "state_{0}{1}.pkl".format(node, num)).as_posix(),
-        "-local_step_dbs",
-        (dbs_folder / "local_transfer.db").as_posix(),
-        "-global_step_db",
-        (dbs_folder / "global_transfer.db").as_posix(),
-        "-data_table",
-        "data",
-        "-metadata_table",
-        "metadata",
-        "-metadata_code_column",
-        "code",
-        "-metadata_label_column",
-        "label",
-        "-metadata_isCategorical_column",
-        "isCategorical",
-        "-metadata_enumerations_column",
-        "enumerations",
-        "-metadata_minValue_column",
-        "min",
-        "-metadata_maxValue_column",
-        "max",
-    ]
-    return algorithm_args + common_args
