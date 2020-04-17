@@ -36,7 +36,7 @@ class PCA(Algorithm):
 
     def local_final(self):
         X = self.data.variables
-        var_names = list(X.columns)
+        var_names = list(self.parameters.y)
         means = self.fetch("means")
         sigmas = self.fetch("sigmas")
 
@@ -89,6 +89,8 @@ class PCA(Algorithm):
 
 
 def get_local_sums(X):
+    if X.shape == (0, 0):
+        return 0, 0
     sx = X.sum(axis=0)
     sxx = (X ** 2).sum(axis=0)
     return sx, sxx
@@ -101,6 +103,8 @@ def get_moments(n_obs, sx, sxx):
 
 
 def get_standardized_gramian(X, means, sigmas):
+    if X.shape == (0, 0):
+        return 0
     X -= means
     X /= sigmas
     gramian = np.dot(X.T, X)

@@ -9,7 +9,7 @@ expected_file = Path(__file__).parent / "expected" / "pearson_expected.json"
 
 
 @pytest.mark.parametrize(
-    "test_input, expected", get_test_params(expected_file, slice(85))
+    "test_input, expected", get_test_params(expected_file, slice(80))
 )
 def test_pearson_algorithm_local(test_input, expected):
     result = get_algorithm_result(Pearson, test_input, num_workers=1)
@@ -24,7 +24,7 @@ def test_pearson_algorithm_local(test_input, expected):
 
 
 @pytest.mark.parametrize(
-    "test_input, expected", get_test_params(expected_file, slice(85, 95))
+    "test_input, expected", get_test_params(expected_file, slice(80, 90))
 )
 def test_pearson_algorithm_federated(test_input, expected):
     result = get_algorithm_result(Pearson, test_input, num_workers=10)

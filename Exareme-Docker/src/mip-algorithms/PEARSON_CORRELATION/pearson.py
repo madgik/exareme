@@ -18,10 +18,10 @@ class Pearson(Algorithm):
     def local_(self):
         n_obs = self.data.variables.shape[0]
         Y = X = self.data.variables.to_numpy()
-        y_names = x_names = self.data.variables.columns.to_numpy()
+        y_names = x_names = np.array(self.parameters.y)
         if self.data.covariables is not None:
             X = self.data.covariables.to_numpy()
-            x_names = self.data.covariables.columns.to_numpy()
+            x_names = np.array(self.parameters.x)
 
         if any(len(set(column)) == 1 for column in X.T) or any(
             len(set(column)) == 1 for column in Y.T
