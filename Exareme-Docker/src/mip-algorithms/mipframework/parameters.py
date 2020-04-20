@@ -4,9 +4,10 @@ import os
 import re
 from argparse import ArgumentParser
 
-from . import LOGGING_LEVEL_ALG, logged
+from . import LOGGING_LEVEL_ALG
+from .loggingutils import logged
 
-_COMMON_ALGORITHM_ARGUMENTS = {
+COMMON_ALGORITHM_ARGUMENTS = {
     "input_local_DB",
     "db_query",
     "cur_state_pkl",
@@ -27,7 +28,7 @@ _COMMON_ALGORITHM_ARGUMENTS = {
 class Parameters(object):
     def __init__(self, args):
         for name, val in vars(args).items():
-            if name not in _COMMON_ALGORITHM_ARGUMENTS:
+            if name not in COMMON_ALGORITHM_ARGUMENTS:
                 setattr(self, name, val)
 
     def __getitem__(self, name):
@@ -48,7 +49,7 @@ class Parameters(object):
 def parse_exareme_args(fp, cli_args):
     parser = ArgumentParser()
     # Add common arguments
-    for arg in _COMMON_ALGORITHM_ARGUMENTS:
+    for arg in COMMON_ALGORITHM_ARGUMENTS:
         parser.add_argument("-" + arg)
     # Add algorithm specific arguments
     prop_path = os.path.join(fp, "properties.json")
@@ -61,8 +62,12 @@ def parse_exareme_args(fp, cli_args):
     # Parse and process
     args, _ = parser.parse_known_args(cli_args)
     args.y = re.split(r"\s*,\s*", args.y)
+    args.var_names = list(args.y)
+    args.formula_is_equation = False
     if hasattr(args, "x") and args.x:
         args.x = re.split(r"\s*,\s*", args.x)
+        args.var_names += list(args.x)
+        args.formula_is_equation = True
     args.dataset = re.split(r"\s*,\s*", args.dataset)
     args.filter = json.loads(args.filter) if args.filter else None
     if hasattr(args, "coding"):

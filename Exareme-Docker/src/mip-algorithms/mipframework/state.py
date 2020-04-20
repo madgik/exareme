@@ -1,7 +1,7 @@
 import logging
 import pickle
 
-from . import logged
+from .loggingutils import logged
 from .utils import one_kwarg, make_dirs
 
 

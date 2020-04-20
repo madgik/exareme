@@ -1,4 +1,4 @@
-from . import logged
+from .loggingutils import logged
 
 
 class AlgorithmResult(object):

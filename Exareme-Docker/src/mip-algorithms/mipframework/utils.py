@@ -2,7 +2,7 @@ import errno
 import os
 from functools import wraps
 
-from . import logged
+from .loggingutils import logged
 
 
 @logged

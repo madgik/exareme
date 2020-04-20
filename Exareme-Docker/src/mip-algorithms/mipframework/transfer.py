@@ -4,7 +4,8 @@ import pickle
 import sqlite3
 
 import numpy as np
-from . import logged, LOGGING_LEVEL_ALG
+from . import LOGGING_LEVEL_ALG
+from .loggingutils import logged
 from .exceptions import TransferError
 
 

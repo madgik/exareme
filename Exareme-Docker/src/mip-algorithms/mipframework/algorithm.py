@@ -4,7 +4,7 @@ import os
 import re
 from string import capwords
 
-from . import logged
+from .loggingutils import logged
 from .decorators import algorithm_methods_decorator
 from .parameters import Parameters, parse_exareme_args
 from .transfer import AddMe, MaxMe, MinMe, ConcatMe, DoNothing, TransferStruct

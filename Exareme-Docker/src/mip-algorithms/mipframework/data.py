@@ -1,18 +1,15 @@
-import logging
 import re
 
 import numpy as np
 import pandas as pd
-from patsy import PatsyError, dmatrix, dmatrices
+from mipframework.constants import PRIVACY_THRESHOLD
+from patsy import dmatrix, dmatrices
 from sqlalchemy import between, not_, and_, or_, Table, select, create_engine, MetaData
-from sqlalchemy.exc import SQLAlchemyError
 
-from . import logged
-from .constants import LOGGING_LEVEL_ALG
+from .loggingutils import log_this, repr_with_logging, logged
 from .exceptions import PrivacyError
 
-_PRIVACY_THRESHOLD = 0
-_FILTER_OPERATORS = {
+FILTER_OPERATORS = {
     "equal": lambda a, b: a == b,
     "not_equal": lambda a, b: a != b,
     "less": lambda a, b: a < b,
@@ -22,7 +19,7 @@ _FILTER_OPERATORS = {
     "between": lambda a, b: between(a, b[0], b[1]),
     "not_between": lambda a, b: not_(between(a, b[0], b[1])),
 }
-_FILTER_CONDS = {
+FILTER_CONDITIONS = {
     "AND": lambda *a: and_(*a),
     "OR": lambda *a: or_(*a),
 }
@@ -37,65 +34,43 @@ class AlgorithmData(object):
         )
         self.full = read_data_from_db(db, args)
         self.metadata = read_metadata_from_db(db, args)
-        self.variables, self.covariables = self.build_vars_and_covars(
+        self.variables, self.covariables = self.build_variables(
             args, self.metadata.is_categorical
         )
 
     def __repr__(self):
-        if LOGGING_LEVEL_ALG == logging.INFO:
-            return "AlgorithmData()"
-        elif LOGGING_LEVEL_ALG == logging.DEBUG:
-            return "AlgorithmData(\nvariables:={var},\ncovariables:={covar},\n)".format(
-                var=self.variables, covar=self.covariables
-            )
+        repr_with_logging(self, variables=self.variables, covariables=self.covariables)
 
-    def build_vars_and_covars(self, args, is_categorical):
-        # This one CANNOT be `logged` since it runs on __init__
-        if LOGGING_LEVEL_ALG == logging.INFO:
-            logging.info("Starting 'AlgorithmData.build_vars_and_covars'.")
-        elif LOGGING_LEVEL_ALG == logging.DEBUG:
-            logging.debug(
-                "Starting 'AlgorithmData.build_vars_and_covars',"
-                "\nargs: \n{0},\nkwargs: \n{1}".format(args, is_categorical)
-            )
+    def build_variables(self, args, is_categorical):
+        log_this(
+            "AlgorithmData.build_variables", args=args, is_categorical=is_categorical
+        )
+
         from numpy import log as log
         from numpy import exp as exp
 
-        # This line is needed to prevent import opimizer from removing above lines
+        # This line is needed to prevent import optimizer from removing above lines
         _ = log(exp(1))
         formula = get_formula(args, is_categorical)
         # Create variables (and possibly covariables)
-        if hasattr(args, "x") and args.x:
-            try:
-                variables, covariables = dmatrices(
-                    formula, self.full, return_type="dataframe"
-                )
-            except (NameError, PatsyError) as e:
-                logging.error(
-                    "Patsy failed to get variables and covariables from formula."
-                )
-                raise e
+        if args.formula_is_equation:
+            variables, covariables = dmatrices(
+                formula, self.full, return_type="dataframe"
+            )
             return variables, covariables
         else:
-            try:
-                variables = dmatrix(formula, self.full, return_type="dataframe")
-            except (NameError, PatsyError) as e:
-                logging.error("Patsy failed to get variables from formula.")
-                raise e
+            variables = dmatrix(formula, self.full, return_type="dataframe")
             return variables, None
 
 
 @logged
 def get_formula(args, is_categorical):
     # Get formula from args or build if doesn't exist
-    if hasattr(args, "formula"):
+    if hasattr(args, "formula") and args.formula:
         formula = args.formula
     else:
-        formula = None
-    if not formula:
         if hasattr(args, "x") and args.x:
-            var_tup = (args.y, args.x)
-            formula = "~".join(map(lambda x: "+".join(x), var_tup))
+            formula = "+".join(args.y) + "~" + "+".join(args.x)
             if not args.intercept:
                 formula += "-1"
         else:
@@ -146,26 +121,13 @@ def read_metadata_from_db(db, args):
 class DataBase(object):
     def __init__(self, db_path, data_table_name, metadata_table_name):
         self.db_path = db_path
-        try:
-            self.engine = create_engine("sqlite:///{}".format(self.db_path), echo=False)
-        except SQLAlchemyError as e:
-            logging.error("SQLAlchemy failed to connect to database.")
-            raise e
-        try:
-            self.sqla_md = MetaData(self.engine)
-        except SQLAlchemyError as e:
-            logging.error("SQLAlchemy failed to build MetaData.")
-            raise e
-        try:
-            self.data_table = self.create_table(data_table_name)
-        except SQLAlchemyError as e:
-            logging.error("SQLAlchemy failed to build data_table.")
-            raise e
-        try:
-            self.metadata_table = self.create_table(metadata_table_name)
-        except SQLAlchemyError as e:
-            logging.error("SQLAlchemy failed to build metadata_table.")
-            raise e
+        self.engine = create_engine("sqlite:///{}".format(self.db_path), echo=False)
+        self.sqla_md = MetaData(self.engine)
+        self.data_table = self.create_table(data_table_name)
+        self.metadata_table = self.create_table(metadata_table_name)
+
+    def __repr__(self):
+        return "{}()".format(type(self).__name__)
 
     @logged
     def create_table(self, table_name):
@@ -184,19 +146,19 @@ class DataBase(object):
         data.replace("", np.nan, inplace=True)  # fixme remove
         data = data.dropna()
         # Privacy check
-        if len(data) < _PRIVACY_THRESHOLD:
+        if len(data) < PRIVACY_THRESHOLD:
             raise PrivacyError
         return data
 
     @logged
     def build_filter_clause(self, rules):
         if "condition" in rules:
-            cond = _FILTER_CONDS[rules["condition"]]
+            cond = FILTER_CONDITIONS[rules["condition"]]
             rules = rules["rules"]
             return cond(*[self.build_filter_clause(rule) for rule in rules])
         elif "id" in rules:
             var_name = rules["id"]
-            op = _FILTER_OPERATORS[rules["operator"]]
+            op = FILTER_OPERATORS[rules["operator"]]
             val = rules["value"]
             return op(self.data_table.c[var_name], val)
 
