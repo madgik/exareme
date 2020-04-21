@@ -9,7 +9,7 @@ endpointUrl = vmUrl + "CALIBRATION_BELT"
 
 def get_test_params():
     with open("expected/calibration_belt_expected.json") as json_file:
-        params = json.load(json_file)["results"]
+        params = json.load(json_file)["test_cases"]
     params = [(p["input"], p["output"]) for p in params]
     return params
 
@@ -22,7 +22,7 @@ def test_eval(test_input, expected):
     else:
         res = requests.post(endpointUrl, data=json.dumps(test_input), headers=headers)
         res = json.loads(res.text)
-        res = res["test_cases"][0]["data"][0]
+        res = res["result"][0]["data"]
         expected = expected[0]
 
         assert math.isclose(res["n_obs"], expected["n_obs"], abs_tol=1e-2)

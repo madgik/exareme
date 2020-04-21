@@ -80,6 +80,7 @@ RUN pip install lifelines
 RUN pip install liac-arff
 RUN pip install sqlalchemy
 RUN pip install pathlib
+RUN pip install tqdm
 RUN apk del py-pip ca-certificates gcc musl-dev python-dev lapack-dev gfortran
 RUN rm -rf /tmp/* /var/cache/apk/*
 

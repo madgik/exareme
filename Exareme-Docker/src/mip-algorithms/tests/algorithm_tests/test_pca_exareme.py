@@ -22,9 +22,9 @@ def test_eval(test_input, expected):
     res = requests.post(endpointUrl, data=json.dumps(test_input), headers=headers)
     res = json.loads(res.text)
     res = res["result"][0]["data"]
-    expected = expected[0]
+    expected = expected
 
-    assert math.isclose(res["n_obs"], expected["n_obs"], rel_tol=1e-5)
+    assert int(res["n_obs"]) == int(expected["n_obs"])
     assert np.isclose(res["eigenvalues"], expected["eigen_vals"], rtol=1e-5).all()
     for u, v in zip(res["eigenvectors"], expected["eigen_vecs"]):
         assert are_collinear(u, v)
@@ -32,4 +32,4 @@ def test_eval(test_input, expected):
 
 def are_collinear(u, v):
     cosine_similarity = np.dot(v, u) / (np.sqrt(np.dot(v, v)) * np.sqrt(np.dot(u, u)))
-    return math.isclose(abs(cosine_similarity), 1, rel_tol=1e-5)
+    return np.isclose(abs(cosine_similarity), 1, rtol=1e-5)
