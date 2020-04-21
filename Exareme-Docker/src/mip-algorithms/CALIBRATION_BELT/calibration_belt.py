@@ -48,13 +48,21 @@ class CalibrationBelt(Algorithm):
             masks[idx, :, idx + 2 :] = True
         Xs = np.ma.masked_array(Xs, mask=masks)
 
+        n_y_pos = len(Y[Y == 1])
+        n_y_neg = len(Y[Y == 0])
+
         self.store(Xs=Xs)
         self.store(Y=Y)
         self.push_and_add(n_obs=n_obs)
+        self.push_and_add(n_y_pos=n_y_pos)
+        self.push_and_add(n_y_neg=n_y_neg)
 
     def global_init(self):
         n_obs = self.fetch("n_obs")
         max_deg = int(self.parameters.max_deg)
+
+        # if self.fetch("n_y_pos") < max_deg + 1 or self.fetch("n_y_neg") < max_deg + 1:
+        #     raise UserError("There are not enough data to perform this experiment.")
 
         iter_ = 0
 
