@@ -5,7 +5,7 @@ import re
 from argparse import ArgumentParser
 
 from . import LOGGING_LEVEL_ALG
-from .loggingutils import logged
+from .loggingutils import logged, repr_with_logging
 
 COMMON_ALGORITHM_ARGUMENTS = {
     "input_local_DB",
@@ -35,14 +35,7 @@ class Parameters(object):
         return getattr(self, name)
 
     def __repr__(self):
-        if LOGGING_LEVEL_ALG == logging.INFO:
-            return "Parameters()"
-        elif LOGGING_LEVEL_ALG == logging.DEBUG:
-            r = "Parameters("
-            for k, v in self.__dict__.items():
-                r += "\n{k}={v}".format(k=k, v=v)
-            r += "\n)"
-            return r
+        repr_with_logging(self, **self.__dict__)
 
 
 @logged

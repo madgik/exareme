@@ -63,7 +63,7 @@ class Algorithm(object):
         self.result = None
 
     def __repr__(self):
-        name = "".join(capwords(self._name, "_").split("_"))
+        name = type(self).__name__
         return "{name}()".format(name=name)
 
     def set_output(self):

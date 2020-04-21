@@ -1,6 +1,6 @@
 import logging
 
-LOGGING_LEVEL_ALG = logging.DEBUG
+LOGGING_LEVEL_ALG = logging.INFO
 LOGGING_LEVEL_SQL = logging.INFO
 
 PRIVACY_THRESHOLD = 0

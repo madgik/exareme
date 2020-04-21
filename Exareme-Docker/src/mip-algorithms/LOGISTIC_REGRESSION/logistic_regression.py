@@ -32,13 +32,12 @@ class LogisticRegression(Algorithm):
         y_name = y.name
         x_names = list(X.columns)
 
-        if len(y[y == 1]) < n_cols or len(y[y == 0]) < n_cols:
-            raise UserError(
-                "The number of either positive or negative outcomes is"
-                "smaller than the number of features."
-            )
+        n_y_pos = len(y[y == 1])
+        n_y_neg = len(y[y == 0])
 
         self.push_and_add(n_obs=n_obs)
+        self.push_and_add(n_y_pos=n_y_pos)
+        self.push_and_add(n_y_neg=n_y_neg)
         self.push_and_agree(n_cols=n_cols)
         self.push_and_agree(y_name=y_name)
         self.push_and_agree(x_names=x_names)
@@ -48,6 +47,9 @@ class LogisticRegression(Algorithm):
         n_cols = self.fetch("n_cols")
         y_name = self.fetch("y_name")
         x_names = self.fetch("x_names")
+
+        if self.fetch("n_y_pos") < n_cols or self.fetch("n_y_neg") < n_cols:
+            raise UserError("There are not enough data to perform this experiment.")
 
         coeff, iter_, ll = init_model(n_cols, n_obs)
 

@@ -5,7 +5,7 @@ from .constants import LOGGING_LEVEL_ALG
 
 def log_this(method, **kwargs):
     if LOGGING_LEVEL_ALG == logging.INFO:
-        logging.info("Starting: {method}.".format(method=method))
+        logging.info("Starting: {method}".format(method=method))
     elif LOGGING_LEVEL_ALG == logging.DEBUG:
         arguments = ",".join(["\n{k}={v}".format(k=k, v=v) for k, v in kwargs.items()])
         logging.debug(
@@ -25,17 +25,36 @@ def repr_with_logging(self, **kwargs):
 
 def logged(func):
     def logging_wrapper(*args, **kwargs):
+        cls = get_class_name(args)
         if LOGGING_LEVEL_ALG == logging.INFO:
-            logging.info(
-                "Starting: {0}.{1}".format(type(args[0]).__name__, func.__name__)
-            )
+            logging.info("Starting: {0}{1}".format(cls, func.__name__))
         elif LOGGING_LEVEL_ALG == logging.DEBUG:
             logging.debug(
-                "Starting: {0}.{1},\nargs: \n{2},\nkwargs: \n{3}".format(
-                    type(args[0]).__name__, func.__name__, args, kwargs
+                "Starting: {0}{1},\nargs: \n{2},\nkwargs: \n{3}".format(
+                    cls, func.__name__, args, kwargs
                 )
             )
         return func(*args, **kwargs)
 
+    def get_class_name(args):
+        if is_classmethod(args[0]):
+            cls = args[0].__name__ + "."
+        elif is_mipframework_method(args[0]):
+            cls = type(args[0]).__name__ + "."
+        else:
+            cls = ""
+        return cls
+
     logging_wrapper._original = func
     return logging_wrapper
+
+
+def is_classmethod(arg):
+    return type(arg) == type
+
+
+def is_mipframework_method(arg):
+    return (hasattr(arg, "__module__") and "mipframework" in arg.__module__) or (
+        hasattr(type(arg), "__base__")
+        and "mipframework" in type(arg).__base__.__module__
+    )

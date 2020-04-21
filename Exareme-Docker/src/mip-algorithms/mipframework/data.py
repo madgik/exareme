@@ -32,8 +32,8 @@ class AlgorithmData(object):
             data_table_name=args.data_table,
             metadata_table_name=args.metadata_table,
         )
-        self.full = read_data_from_db(db, args)
-        self.metadata = read_metadata_from_db(db, args)
+        self.full = db.read_data_from_db(args)
+        self.metadata = db.read_metadata_from_db(args)
         self.variables, self.covariables = self.build_variables(
             args, self.metadata.is_categorical
         )
@@ -97,25 +97,9 @@ class AlgorithmMetadata(object):
         self.enumerations = enumerations
         self.minmax = minmax
 
-
-@logged
-def read_data_from_db(db, args):
-    var_names = list(args.y)
-    if hasattr(args, "x") and args.x:
-        var_names.extend(args.x)
-    data = db.select_vars_from_data(
-        var_names=var_names, datasets=args.dataset, filter_rules=args.filter
-    )
-    return data
-
-
-@logged
-def read_metadata_from_db(db, args):
-    var_names = list(args.y)
-    if hasattr(args, "x") and args.x:
-        var_names.extend(args.x)
-    md = db.select_md_from_metadata(var_names=var_names, args=args)
-    return AlgorithmMetadata(*md)
+    def __repr__(self):
+        name = type(self).__name__
+        return "{name}()".format(name=name)
 
 
 class DataBase(object):
@@ -127,11 +111,30 @@ class DataBase(object):
         self.metadata_table = self.create_table(metadata_table_name)
 
     def __repr__(self):
-        return "{}()".format(type(self).__name__)
+        name = type(self).__name__
+        return "{name}()".format(name=name)
 
     @logged
     def create_table(self, table_name):
         return Table(table_name, self.sqla_md, autoload=True)
+
+    @logged
+    def read_data_from_db(self, args):
+        var_names = list(args.y)
+        if hasattr(args, "x") and args.x:
+            var_names.extend(args.x)
+        data = self.select_vars_from_data(
+            var_names=var_names, datasets=args.dataset, filter_rules=args.filter
+        )
+        return data
+
+    @logged
+    def read_metadata_from_db(self, args):
+        var_names = list(args.y)
+        if hasattr(args, "x") and args.x:
+            var_names.extend(args.x)
+        md = self.select_md_from_metadata(var_names=var_names, args=args)
+        return AlgorithmMetadata(*md)
 
     @logged
     def select_vars_from_data(self, var_names, datasets, filter_rules):
