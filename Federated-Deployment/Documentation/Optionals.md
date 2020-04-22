@@ -8,7 +8,7 @@ The file should contain the following lines, modify them depending on the versio
 
 ```
 EXAREME_IMAGE: "hbpmip/exareme"
-EXAREME_TAG: "v22.0.1"
+EXAREME_TAG: "22.0.1"
 ```
 
 # [Optional] Initialize Hosts
