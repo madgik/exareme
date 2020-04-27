@@ -22,7 +22,7 @@ def descr_stats_global(global_in):
 
         if var.is_categorical:
             is_categorical, var_name, count, freqs = var.get_data()
-            freqs = {str(key): freqs[key] for key in freqs.keys()}
+            freqs = {key: freqs[key] for key in freqs.keys()}
         else:
             is_categorical, var_name, nn, sx, sxx, xmin, xmax = var.get_data()
             mean = sx / nn
