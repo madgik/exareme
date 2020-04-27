@@ -313,7 +313,7 @@ def parse_filter(query_filter):
 
 def value_casting(value, type):
     if type == "text":
-        return str(value)
+        return value
     elif type == "real" or type == "int":
         return float(value)
 
