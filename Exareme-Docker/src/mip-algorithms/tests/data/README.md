@@ -12,9 +12,9 @@ The output of this command, is a folder named ```output```, which contains the c
 <br/>
 Then, you have to **create** a *pathology folder* inside the ```data_path``` of each of your nodes, **copy** the corresponding output-dataset there and **rename** it to "datasets.csv".<br/>
 For example, the "worker1.csv" in your 1st node, the "worker2.csv" in your 2nd node, etc.<br/>
-(The ```data_path``` is the one you specified in your [```hosts.ini```](https://github.com/LSmyrnaios/exareme/blob/kubernetes/Federated-Deployment/Documentation/Optionals.md#optional-initialize-hosts) file.)
+(The ```data_path``` is the one you specified in your [```hosts.ini```](https://github.com/madgik/exareme/blob/master/Federated-Deployment/Documentation/Optionals.md#optional-initialize-hosts) file.)
 <br/>
 Lastly, you have to **copy** the ```*pathology*/CDEsMetadata.json``` file in each of your nodes, inside the ```data_path/pathology``` folder.<br/>
 <br/>
-After running your cluster, you may click [here](https://github.com/LSmyrnaios/exareme/blob/kubernetes/Federated-Deployment/Documentation/Troubleshoot.md#check-that-all-workers-are-seen-by-exareme),
+After running your cluster, you may click [here](https://github.com/madgik/exareme/blob/master/Federated-Deployment/Documentation/Troubleshoot.md#check-that-all-workers-are-seen-by-exareme),
 for a way to check that all workers and their datasets, are seen by Exareme.
