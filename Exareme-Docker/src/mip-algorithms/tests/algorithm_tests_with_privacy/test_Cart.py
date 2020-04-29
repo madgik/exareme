@@ -16,12 +16,14 @@ import itertools
 import numpy as np
 from sklearn.metrics import r2_score,mean_squared_error
 
-# from os import path
-# sys.path.append(path.abspath(__file__))
-from lib import vmUrl
+from os import path
+sys.path.append(path.abspath(__file__))
+
+from tests.algorithm_tests.lib import vmUrl
 endpointUrl_CartTraining= vmUrl+'CART'
 endpointUrl_CartPredict= vmUrl+'CART_PREDICT'
-path = '~/Desktop/HBP/exareme/Exareme-Docker/src/mip-algorithms/unit_tests/data/dementia/'
+path = '../data/dementia/'
+
 
 def run_sklearn_classification(trainingDatasetPath, PredictionDatasetPath, argsX, argsY, maxDepth):
     #1. Read training data
