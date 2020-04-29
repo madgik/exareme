@@ -24,17 +24,20 @@ The Federation is composed of one or more Manager nodes, and of any number of Wo
 
 The Manager node of Swarm will run Docker engine (as all other nodes of Swarm) and create the Docker Swarm (standard Docker functionality).
 
-The Manager node of Swarm will host the following Federation elements:
+Regarding the Federation, the Manager node of Swarm will host 3 containers:
 
-- Web Portal (container run locally)
+- Exareme Master (service published on port 9090)
 - Consul (container run on the swarm. ```Optional``` service published on port 8500)
 - (Optional) Portainer (UI for swarm management, container run on the swarm, service published on port 9000)
-- Exareme Master (container run on the swarm, service published on port 9090)
+
+the Worker nodes of Swarm will host 1 container each:
+
+- Exareme Worker
 
 For Worker nodes of Swarm:
 
 - Each server dedicated to the Federation will have an internet access.
-- Each server dedicated to the Federation (or more accurately its Docker engine instance) will join the Docker Swarm. (```Manually``` by each Hospital if credentials for the server ```will not/can not``` be given to the administrators or ```Automatically``` by scripts run by administrators.).
+- Each server dedicated to the Federation will join the Docker Swarm. (```Manually``` by each Hospital if credentials for the server ```will not/can not``` be given to the administrators or ```Automatically``` by scripts run by administrators.).
 - The Manager node of Swarm will remotely start an Exareme worker on the node.
 
 The software Exareme will expose federated analysis functionalities to the Web Portal. Exareme provides several algorithms that can be performed over the data distributed in multiple nodes. Exareme algorithms retrieve only aggregated results from each node (no individual patient data will leave the servers of the MIP partners). Exareme then combines the partial results to obtain a single global result to the Web Portal.
@@ -70,11 +73,13 @@ Docker containers can be run in two ways:
   * UDP: ports 4789 and 7946 must be open and available
   * IP protocol 50 (ESP) must be enabled
 
+- If the configuration uses a whitelist of allowed IP addresses, the IP of all other Federation nodes must be authorised.
+
 ## Troubleshooting
 
 #### TCP and UDP ports
 
-The netcat utility can help to check the connections from one Federation server to another (and in particular from the Federation manager):
+The netcat utility can help to check the connections from one Federation server to another:
 
 - Testing that the UDP ports are open: ```nc -z -v -w1 -u <host> <port>```
 - Testing that the TCP ports are open: ```nc -z -v -w1 -t <host> <port>```
@@ -88,9 +93,7 @@ nc -z -v -w1 -u <host> 4789 # for all nodes
 nc -z -v -w1 -u <host> 7946 # for all nodes
 ```
 
-**Note:** netcat is not installed by default on RHEL; it can be done with the command `sudo yum install nc`. The -z option is not available on RHEL: simply run the commands above without it.
-
-**Note 2:** Alternatively, if you are using `bash` as your command line shell and it was build with the support for it; tcp ports opening can be checked with this command (change tcp for udp to check udp ports):
+**Note 1:** Alternatively, if you are using `bash` as your command line shell and it was build with the support for it; tcp ports opening can be checked with this command (change tcp for udp to check udp ports):
 
 ```
 </dev/tcp/<host>/<port> && echo "Port is open and docker is running" || echo "Port is closed and/or docker is not running"
@@ -105,7 +108,7 @@ If the firewall configuration for tcp and udp ports is correct, but IP protocol 
 As Docker documentation states:
 > On Linux, Docker manipulates iptables rules to provide network isolation. This is an implementation detail, and you should not modify the rules Docker inserts into your iptables policies.
 
-In case of network configuration issues, make sure that the IP tables rules were not modified manually or through scripts. This can interfere with Docker configuration or even prevent Docker to define the needed configuration.
+In case of network configuration issues, make sure that the IP table rules were not modified manually or through scripts. This can interfere with Docker configuration or even prevent Docker to define the needed configuration.
 
 #### IP Masquerade
 

@@ -71,8 +71,8 @@ def main():
     fname_cur_state = path.abspath(args.cur_state_pkl)
     fname_loc_db = path.abspath(args.input_local_DB)
 
-    if args.x == '':
-        raise ExaremeError('Field x must be non empty.')
+    #if args.x == '':
+     #   raise ExaremeError('Field x must be non empty.')
 
     # Get data
     if args.x == '':

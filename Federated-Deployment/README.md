@@ -10,7 +10,7 @@ We will refer to the machine from which you run the ansible scripts as Admin and
 
 2) Install Python (version 2.7) in all Target machines, in order for playbooks to run.
 
-3) Install Docker in all Target machines.
+3) Install Docker (version 19.03) in all Target machines.
 
 # Ports
 
@@ -35,7 +35,7 @@ In every Target node there should be a *DATA FOLDER* which contains the *DATA* e
 We will refer to the path leading to *DATA FOLDER* as ```data_path```. The ```data_path``` can be different across the Target nodes.
 
 In every node the *DATA FOLDER* should follow a specific structure.
-The *DATA FOLDER* should contain one folder for each pathology that it has datasets for. Inside that folder there should be:
+The *DATA FOLDER* should contain one folder for each pathology that has datasets for. Inside that folder there should be:
 1) the .csv files that will contain one or more datasets, 
 2) the CDEsMetadata.json file for that specific pathology.
 
@@ -50,7 +50,7 @@ For example:
 ----------> demo.csv <br />
 ----------> CDEsMetadata.json <br />
 
-On the Target node where the Exareme master node will be running, we *must include* the CDEsMetadata.json file for *every pathology* that exists even if it *doesn't contain* any .csv file.
+On the Target node where the Exareme *master node* will be running, we *must include* the CDEsMetadata.json file for *every pathology* that exists even if it *doesn't contain* any .csv file.
 For example on the Target node where Exareme master node will be running:
 
 -> Data Folder <br />
