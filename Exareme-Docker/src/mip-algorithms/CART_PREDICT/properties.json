@@ -11,7 +11,7 @@
 			"columnValuesSQLType": "real, integer, text",
 			"columnValuesIsCategorical": "",
 			"columnValuesNumOfEnumerations": "",
-			"value": "lefthippocampus,righthippocampus",
+			"value": "rightententorhinalarea,lefthippocampus,righthippocampus",
 			"valueNotBlank": true,
 			"valueMultiple": true,
 			"valueType": "string"
@@ -28,15 +28,24 @@
 			"valueMultiple": false,
 			"valueType": "string"
 		},	{
-			"name": "tree",
-			"label": "tree",
-			"desc": "Decision tree in json format. It cannot be empty",
+			"name": "treeJson",
+			"label": "treeJson",
+			"desc": "Decision tree in json format.",
 			"type": "other",
 			"value": "",
-			"valueNotBlank": true,
+			"valueNotBlank": false,
 			"valueMultiple": false,
 			"valueType": "json"
-		}, {
+		},{
+			"name": "treeFile",
+			"label": "treeFile",
+			"desc": "Path of txt file that contains the decision tree in json format.",
+			"type": "other",
+			"value": "tree.txt",
+			"valueNotBlank": false,
+			"valueMultiple": false,
+			"valueType": "string"
+		},{
 			"name": "dataset",
 			"label": "dataset",
 			"desc": "The names of one or more datasets, in which the algorithm will be executed.",

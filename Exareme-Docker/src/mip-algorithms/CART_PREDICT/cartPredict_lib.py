@@ -10,8 +10,11 @@ import math
 import json
 import logging
 import itertools
+import csv
 
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))) + '/utils/')
+
+from algorithm_utils import TransferData, PRIVACY_MAGIC_NUMBER, LOGS
 
 # dataset = "desd-synthdata"
 # args_X = ['lefthippocampus','righthippocampus']
@@ -30,11 +33,11 @@ def totabulardataresourceformat(name, data, fields):
         "type": "application/vnd.dataresource+json",
         "data":
             {
-                "name"   : name
+                "name"   : name,
                 "profile": "tabular-data-resource",
                 "data"   : data,
                 "schema" : {
-                    "fields": mfields
+                    "fields": fields
                 }
             }
     }
@@ -59,18 +62,17 @@ def add_vals(a,b):
         return(a or 0 ) +( b or 0)
 
 def predict(node, row, args_Y, isClassificationTree):
-    if isinstance(node['right'],dict) == False and isinstance(node['left'],dict) == False:
-        print "leaf:", node['class']
+    if (isinstance(node['right'],dict) == False and isinstance(node['left'],dict) == False) or \
+       (isinstance(node['left'],dict) == False and row[node['colName']] <= node['threshold']) or \
+       (isinstance(node['right'],dict) == False and row[node['colName']] > node['threshold']):
         if isClassificationTree:
             return node['class']
         else:
             return node['classValue']
-    elif row[node['colName']] < node['threshold']:
-        print "right"
-        return predict(node['right'], row,args_Y,isClassificationTree)
-    else:
-        print "left"
+    elif row[node['colName']] <= node['threshold']:
         return predict(node['left'], row,args_Y,isClassificationTree)
+    else:
+        return predict(node['right'], row,args_Y,isClassificationTree)
 
 def cart_1_local(dataFrame, dataSchema, categoricalVariables, args_X, args_Y, globalTreeJ):
     #1. Delete null values from DataFrame
@@ -85,35 +87,52 @@ def cart_1_local(dataFrame, dataSchema, categoricalVariables, args_X, args_Y, gl
         raise PrivacyError('The Experiment could not run with the input provided because there are insufficient data.')
 
     #3.
-    mse = 0 # mean square error
+    if LOGS:
+        file = open("/root/prediction.csv",'wb')
+        wr = csv.writer(file, dialect='excel')
+        ds = [elem for elem in dataSchema]
+        ds.append("prediction")
+        wr.writerow(ds)
+
     confusionMatrix = dict() # ConfusionMatrix['ActualValue', 'PredictedValue'] = ...
+    mse= 0 # mean square error
     if args_Y[0] in categoricalVariables:  #case of Classification tree
         for element in itertools.product(categoricalVariables['alzheimerbroadcategory'],categoricalVariables['alzheimerbroadcategory']):
             confusionMatrix[element[0],element[1]] = 0
         for index, row in dataFrame.iterrows():
-            print index, [row[x] for x in args_X], row[args_Y[0]]
             predictedValue = predict(globalTreeJ, row, args_Y, True)
+            if LOGS:
+                rowcopy = [row[elem] for elem in dataSchema]
+                rowcopy.append(predictedValue)
+                wr.writerow(rowcopy)
+                if predictedValue != row[args_Y[0]]:
+                    logging.warning(["wrongPrediction", row, predictedValue])
             confusionMatrix[row[args_Y[0]],predictedValue] = confusionMatrix[row[args_Y[0]],predictedValue] + 1
     elif args_Y[0] not in categoricalVariables: #case of regression tree
         for index, row in dataFrame.iterrows():
-            print index, [row[x] for x in args_X], row[args_Y[0]]
             predictedValue = predict(globalTreeJ, row, args_Y, False)
-            mse = mse + (row[args_Y[0]] - predictedValue) ^2
-
+            if LOGS:
+                rowcopy = [row[elem] for elem in dataSchema]
+                rowcopy.append(predictedValue)
+                wr.writerow(rowcopy)
+                logging.warning(["Predictions", row, predictedValue])
+            mse = mse + (row[args_Y[0]] - predictedValue) ** 2
+    if LOGS:
+        file.close()
     return confusionMatrix, mse, counts
 
 
 def cart_1_global(args_X, args_Y, categoricalVariables, confusionMatrix, mse, counts):
-    if args_y[0] in categoricalVariables:
+    if args_Y[0] in categoricalVariables:
         fields = [{"name": "Actual Value", "type": "text"},{"name": "Predicted Value", "type": "text"},{"name": "Counts", "type": "number"}]
-        confusionMatrixTable = totabulardataresourceformat("Confusion Matrix", [[key[0], key[1], confusionMatrix[key]] for key in confusionMatrix], fields)
-        result = {"result": [ confusionMatrixTable ]}
+        table = totabulardataresourceformat("Confusion Matrix", [[key[0], key[1], confusionMatrix[key]] for key in confusionMatrix], fields)
+        result = {"result": [ table ]}
 
     if args_Y[0] not in categoricalVariables:  #case of Classification tree
-        mse = mse / counts
+        mse = np.sqrt(mse / counts)
         fields = [{"name": "mse", "type": "number"}]
-        mseTable = totabulardataresourceformat("Mean Square Error", mse , fields)
-        result = {"result": [ mseTable ]}
+        table = totabulardataresourceformat("Mean Square Error", [mse] , fields)
+        result = {"result": [ table ]}
     try:
         global_out = json.dumps(result, allow_nan=False)
     except ValueError:
@@ -121,12 +140,9 @@ def cart_1_global(args_X, args_Y, categoricalVariables, confusionMatrix, mse, co
     return global_out
 
 
-
-
-
-class Cart_Loc2Glob_TD(transferData):
+class Cart_Loc2Glob_TD(TransferData):
     def __init__(self, *args):
-        if len(args) != 3:
+        if len(args) != 6:
             raise ValueError('Illegal number of arguments.')
         self.args_X = args[0]
         self.args_Y = args[1]
@@ -139,7 +155,7 @@ class Cart_Loc2Glob_TD(transferData):
         return self.args_X, self.args_Y, self.categoricalVariables, self.confusionMatrix, self.mse, self.counts
 
     def __add__(self, other):
-        return CartInit_Loc2Glob_TD(
+        return Cart_Loc2Glob_TD(
             self.args_X,
             self.args_Y,
             self.categoricalVariables,

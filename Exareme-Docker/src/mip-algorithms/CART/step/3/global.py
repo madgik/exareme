@@ -6,11 +6,12 @@ from os import path
 from argparse import ArgumentParser
 import numpy as np
 import json
+import logging
 
 sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) + '/utils/')
 sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) + '/CART/')
 
-from algorithm_utils import StateData,PRIVACY_MAGIC_NUMBER
+from algorithm_utils import StateData
 from cart_lib import CartIter3_Loc2Glob_TD, Cart_Glob2Loc_TD, cart_step_3_global
 
 def main():
@@ -29,18 +30,24 @@ def main():
 
     # Load global state
     global_state = StateData.load(fname_prev_state).data
+    #if global_state['stepsNo']==5:
+    #    raise ValueError("CHECK")
     # Load local nodes output
     activePaths = CartIter3_Loc2Glob_TD.load(local_dbs).get_data()
+    logging.warning(["global3: global_state['stepsNo'] :", global_state['stepsNo'] ])
+
     globalTree, activePaths = cart_step_3_global(global_state['args_X'], global_state['args_Y'], global_state['CategoricalVariables'],global_state['globalTree'], activePaths)
 
     global_out = Cart_Glob2Loc_TD(global_state['globalTree'], activePaths)
     # Save global state
+
     global_state = StateData(   stepsNo = global_state['stepsNo'] ,
                                 args_X = global_state['args_X'],
                                 args_Y = global_state['args_Y'],
                                 CategoricalVariables = global_state['CategoricalVariables'],
                                 globalTree = globalTree,
-                                activePaths = activePaths )
+                                activePaths = activePaths,
+                                t1 = global_state['t1']  )
     global_state.save(fname=fname_cur_state)
     # Return the algorithm's output
     global_out.transfer()

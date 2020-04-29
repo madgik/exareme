@@ -7,11 +7,13 @@ from argparse import ArgumentParser
 import sqlite3
 import json
 import pandas as pd
+import logging
 
-sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) + '/utils/')
-sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) + '/CART_PREDICT/')
+sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/utils/')
+sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/CART_PREDICT/')
 
-from algorithm_utils import query_database, variable_categorical_getDistinctValues, StateData, PrivacyError, PRIVACY_MAGIC_NUMBER
+
+from algorithm_utils import query_database, variable_categorical_getDistinctValues, StateData, PrivacyError, ExaremeError, PRIVACY_MAGIC_NUMBER, LOGS, init_logger
 from cartPredict_lib import cart_1_local, Cart_Loc2Glob_TD
 
 def main():
@@ -19,7 +21,8 @@ def main():
     parser = ArgumentParser()
     parser.add_argument('-x', required=True, help='Independent variable names, comma separated.')
     parser.add_argument('-y', required=True, help='Dependent variable name')
-    parser.add_argument('-tree', required=True, help='Dependent variable name')
+    parser.add_argument('-treeJson', required=True, help='Decision tree in json format')
+    parser.add_argument('-treeFile', required=True, help='Path of txt file that contains the decision tree in json format.')
     parser.add_argument('-cur_state_pkl', required=True, help='Path to the pickle file holding the current state.')
     parser.add_argument('-input_local_DB', required=True, help='Path to local db.')
     parser.add_argument('-db_query', required=True, help='Query to be executed on local db.')
@@ -28,11 +31,23 @@ def main():
     #Get variable
     args_X = list(args.x.replace(' ', '').split(','))
     args_Y = [args.y.replace(' ', '')]
-    args_globalTreeJ = json.loads(args.tree)
 
-    init_logger()
-    logging.warning("Init1Local: args_X, args_Y")
-    logging.warning([args_X, args_Y])
+    if args.treeJson is not '' and args.treeFile is '':
+        try:
+            args_globalTreeJ = json.loads(args.treeJson)
+        except:
+            raise ExaremeError('Tree json is too large. You should use treeFile input')
+    elif args.treeJson is '' and args.treeFile is not '':
+        file = open("/root/"+args.treeFile, "r")
+        args_globalTreeJ = json.loads(file.read())
+        file.close()
+    else:
+        raise ExaremeError('Only one of the fields treeJson and treeFile should be empty.')
+
+    if LOGS:
+        init_logger()
+        logging.warning("Init1Local: args_X, args_Y")
+        logging.warning([args_X, args_Y])
 
     #1. Query database and metadata
     queryMetadata = "select * from metadata where code in (" + "'" + "','".join(args_X) + "','" + "','".join(args_Y) + "'"  + ");"
@@ -46,7 +61,6 @@ def main():
 
     #4. Transfer local output
     local_out = Cart_Loc2Glob_TD(args_X, args_Y, categoricalVariables, confusionMatrix, mse, counts)
-    #raise ValueError( local_out.get_data())
     local_out.transfer()
 
 if __name__ == '__main__':

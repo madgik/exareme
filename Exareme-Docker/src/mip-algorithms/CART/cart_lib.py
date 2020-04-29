@@ -7,9 +7,10 @@ import numpy as np
 import pandas as pd
 import json
 import itertools
+import logging
 
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))) + '/utils/')
-from algorithm_utils import TransferData, PRIVACY_MAGIC_NUMBER
+from algorithm_utils import TransferData, PRIVACY_MAGIC_NUMBER, init_logger
 
 def add_vals(a,b):
     if a == None and b == None:
@@ -43,6 +44,25 @@ def add_dict(dict1,dict2):
             resultdict [key] = dict2[key]
     return resultdict
 
+def comp_min_val(a,b):
+    if a == None and b == None:
+        return None
+    elif a == None and b != None:
+        return b
+    elif a != None and b == None:
+        return a
+    else:
+        return min(a,b)
+
+def comp_max_val(a,b):
+    if a == None and b == None:
+        return None
+    elif a == None and b != None:
+        return b
+    elif a != None and b == None:
+        return a
+    else:
+        return max(a,b)
 
 class Node:
     def __init__(self, criterion, colName,  gain, threshold, samples, samplesPerClass, classValue):
@@ -69,37 +89,30 @@ class Node:
 
         myclass = None
         samplesPerClass = None
-        if self.criterion == "gini":
+        myclassValue = None
+        if self.criterion == "gini": #TODO: Ti ginetai se isobathmia klasewn!!!!!!
             samplesPerClass = dict()
             for key in self.samplesPerClass:
                 if myclass is None or self.samplesPerClass[key]> self.samplesPerClass[myclass]:
                     myclass = str(key)
                 samplesPerClass[str(key)] = self.samplesPerClass[key]
-
-        myclassValue = None
-        if self.criterion == "mse":
+        elif self.criterion == "mse":
             myclassValue = self.classValue
 
-        if self.gain == 0 :
-            return { "criterion" :self.criterion,
-                     "gain" :self.gain,
-                     "samples" :self.samples,
-                     "samplesPerClass" : samplesPerClass,
-                     "classValue" : myclassValue,
-                     "class" : myclass,
-                     "right" : rightvalue,
-                     "left" : leftvalue }
-        else:
-            return { "colName" : self.colName,
-                     "threshold" : self.threshold,
-                     "gain" :self.gain,
-                     "criterion" :self.criterion,
-                     "samples" :self.samples,
-                     "samplesPerClass": samplesPerClass,
-                     "classValue" : myclassValue,
-                     "class" : myclass,
-                     "right" : rightvalue,
-                     "left" : leftvalue }
+        if self.right is not None or self.left is not None:
+            myclass = None
+
+        return { "colName" : None if self.gain == 0 or (self.right is None and self.left is None) else self.colName ,
+                 "threshold" : None if self.gain == 0 or (self.right is None and self.left is None) else self.threshold,
+                 "criterion" :self.criterion,
+                 "gain" : self.gain,
+                 "samples" :self.samples,
+                 "samplesPerClass" : samplesPerClass,
+                 "classValue" : myclassValue,
+                 "class" : myclass,
+                 "right" : rightvalue,
+                 "left" : leftvalue }
+
 
     def grow_tree(self, path, criterion, bestColName, parentNodeGain, bestThreshold, samples, samplesPerClass, classValue):
         if len(path) > 0:
@@ -117,20 +130,22 @@ class Node:
 
 class CartInit_Loc2Glob_TD(TransferData):
     def __init__(self, *args):
-        if len(args) != 3:
+        if len(args) != 4:
             raise ValueError('Illegal number of arguments.')
         self.args_X = args[0]
         self.args_Y = args[1]
         self.CategoricalVariables = args[2]
+        self.t1 = args[3]
 
     def get_data(self):
-        return self.args_X, self.args_Y, self.CategoricalVariables
+        return self.args_X, self.args_Y, self.CategoricalVariables,self.t1
 
     def __add__(self, other):
         return CartInit_Loc2Glob_TD(
                 self.args_X,
                 self.args_Y,
-                self.CategoricalVariables
+                self.CategoricalVariables,
+                self.t1
         )
 
 
@@ -140,7 +155,6 @@ class Cart_Glob2Loc_TD(TransferData):
             raise ValueError('Illegal number of arguments.')
         self.globalTree = args[0]
         self.activePaths = args[1]
-
     def get_data(self):
         return self.globalTree, self.activePaths
 
@@ -166,6 +180,13 @@ class CartIter1_Loc2Glob_TD(TransferData):
             #1. ADD ["filter"]
             activePathsNew[no]["filter"] = A1[no]["filter"]
 
+            #2. ADD [domainJ"]
+            activePathsNew[no]["domainJ"] = dict()
+            for key in A1[no]["domainJ"]:
+                    activePathsNew[no]["domainJ"][key]= dict()
+                    activePathsNew[no]["domainJ"][key]["min"] = comp_min_val(A1[no]["domainJ"][key]["min"],A2[no]["domainJ"][key]["min"])
+                    activePathsNew[no]["domainJ"][key]["max"] = comp_max_val(A1[no]["domainJ"][key]["max"],A2[no]["domainJ"][key]["max"])
+
             #2. ADD ["thresholds"]
             activePathsNew[no]["thresholdsJ"] = dict()
             for key in A1[no]["thresholdsJ"]:
@@ -178,22 +199,12 @@ class CartIter1_Loc2Glob_TD(TransferData):
             if "classNumbersJ" in A1[no] and "classNumbersJ" in A2[no]:
                 activePathsNew[no]["classNumbersJ"] = dict()
                 activePathsNew[no]["classNumbersJ"]["parentNode"] = dict()
-                activePathsNew[no]["classNumbersJ"]["parentNode"]["counts"] = dict()
-                for key in A1[no]["classNumbersJ"]["parentNode"]["counts"]:
-                    if key in A2[no]["classNumbersJ"]["parentNode"]["counts"]:
-                        activePathsNew[no]["classNumbersJ"]["parentNode"]["counts"][key] = A1[no]["classNumbersJ"]["parentNode"]["counts"][key] + A2[no]["classNumbersJ"]["parentNode"]["counts"][key]
-                    else:
-                        activePathsNew[no]["classNumbersJ"]["parentNode"]["counts"][key] = A1[no]["classNumbersJ"]["parentNode"]["counts"][key]
-                for key in A2[no]["classNumbersJ"]["parentNode"]["counts"]:
-                    if key not in A1[no]["classNumbersJ"]["parentNode"]["counts"]:
-                        activePathsNew[no]["classNumbersJ"]["parentNode"]["counts"][key] = A2[no]["classNumbersJ"]["parentNode"]["counts"][key]
+                activePathsNew[no]["classNumbersJ"]["parentNode"]["counts"] = add_dict(A1[no]["classNumbersJ"]["parentNode"]["counts"], A2[no]["classNumbersJ"]["parentNode"]["counts"])
             if "statisticsJ" in A1[no] and "statisticsJ" in A2[no]:
                 activePathsNew[no]["statisticsJ"] = dict()
                 activePathsNew[no]["statisticsJ"]["parentNode"] = dict()
-                activePathsNew[no]["statisticsJ"]["parentNode"]["ss_argsY"] = A1[no]["statisticsJ"]["parentNode"]["ss_argsY"] + A2[no]["statisticsJ"]["parentNode"]["ss_argsY"]
-                activePathsNew[no]["statisticsJ"]["parentNode"]["nn_argsY"] = A1[no]["statisticsJ"]["parentNode"]["nn_argsY"] + A2[no]["statisticsJ"]["parentNode"]["nn_argsY"]
-
-
+                activePathsNew[no]["statisticsJ"]["parentNode"]["ss_argsY"] = add_vals(A1[no]["statisticsJ"]["parentNode"]["ss_argsY"], A2[no]["statisticsJ"]["parentNode"]["ss_argsY"])
+                activePathsNew[no]["statisticsJ"]["parentNode"]["nn_argsY"] = add_vals(A1[no]["statisticsJ"]["parentNode"]["nn_argsY"], A2[no]["statisticsJ"]["parentNode"]["nn_argsY"])
                 #TODO: ADD {"ss_argsY" : np.sum(X[args_Y[0]]), "nn_argsY" : X.shape[0] }
 
         return CartIter1_Loc2Glob_TD(activePathsNew)
@@ -222,6 +233,7 @@ class CartIter2_Loc2Glob_TD(TransferData):
             #1. ADD ["filter"],["thresholds"],["samples"]
             activePathsNew[no]["filter"] = A1[no]["filter"]
             activePathsNew[no]["thresholdsJ"] = A1[no]["thresholdsJ"]
+            activePathsNew[no]["domainJ"] = A1[no]["domainJ"]
             activePathsNew[no]["samples"] = A1[no]["samples"]
 
             #2. ADD ["classNumbersJ"]["parentNode"]
@@ -274,6 +286,7 @@ class CartIter3_Loc2Glob_TD(TransferData):
             #1. ADD ["filter"],["thresholds"],["samples"]
             activePathsNew[no]["filter"] = A1[no]["filter"]
             activePathsNew[no]["thresholdsJ"] = A1[no]["thresholdsJ"]
+            activePathsNew[no]["domainJ"] = A1[no]["domainJ"]
             activePathsNew[no]["samples"] = A1[no]["samples"]
 
             #2. ADD ["classNumbersJ"]
@@ -313,9 +326,11 @@ def cart_init_1_local(dataFrame, dataSchema, CategoricalVariables):
     for x in dataSchema:
         if x in CategoricalVariables:
             dataFrame = dataFrame[dataFrame[x].astype(bool)]
+    for key in CategoricalVariables:
+        CategoricalVariables[key] = list(np.unique(dataFrame[key]))
     # if len(dataFrame) < PRIVACY_MAGIC_NUMBER:
     #     raise PrivacyError('The Experiment could not run with the input provided because there are insufficient data.')
-    return dataFrame
+    return dataFrame, CategoricalVariables
 
 ##########################################################################################################################
 
@@ -326,19 +341,11 @@ def cart_init_1_global():
 
 
 ##########################################################################################################################
-
 def compute_local_thresholds(X, args_X, CategoricalVariables):
     thresholdsJ = dict()
     for varx in args_X:
         thresholdsJ[varx] = []
-        if varx not in CategoricalVariables: # For numeric only variables
-            X_sorted = sorted(X[varx])
-            nn = len(X_sorted)
-            indexThresholds = []
-            for i in range(0, nn-1, PRIVACY_MAGIC_NUMBER):
-                thresholdsJ[varx].append((X_sorted[i]+X_sorted[i+1])/2.0)
-
-        elif varx in CategoricalVariables: # For categorical only variables
+        if varx in CategoricalVariables: # For categorical only variables
             L = []
             for combs in (itertools.combinations(CategoricalVariables[varx], r) for r in range(len(CategoricalVariables[varx])+1))  :
                 for comb in combs:
@@ -353,6 +360,18 @@ def compute_local_thresholds(X, args_X, CategoricalVariables):
         thresholdsJ[varx].sort()
     return  thresholdsJ
 
+
+def compute_local_domain(X, args_X, CategoricalVariables):
+    domain = dict()
+    for varx in args_X:
+        if varx not in CategoricalVariables: # For numeric only variables
+            nn = len(X[varx])
+            if nn == 0:
+                domain[varx] = {"min": None, "max": None}
+            else:
+                domain[varx] = { "min" : min(X[varx]) , "max" :max(X[varx])}
+    return domain
+
 def cart_step_1_local(X, args_X, args_Y, CategoricalVariables, activePaths):
     # Compute local thresholds for each activePath and variable,
     # Compute samples per class (for classification) , ss and nn (for regression )
@@ -361,6 +380,7 @@ def cart_step_1_local(X, args_X, args_Y, CategoricalVariables, activePaths):
         activePaths[0] = dict()
         activePaths[0]["filter"] = []
         activePaths[0]["thresholdsJ"] = compute_local_thresholds(X, args_X, CategoricalVariables)
+        activePaths[0]["domainJ"] = compute_local_domain(X, args_X, CategoricalVariables)
         activePaths[0]["samples"] = X.shape[0]
         if args_Y[0] not in CategoricalVariables: # Regression Algorithm
             activePaths[0]["statisticsJ"] = dict()
@@ -369,8 +389,6 @@ def cart_step_1_local(X, args_X, args_Y, CategoricalVariables, activePaths):
             activePaths[0]["classNumbersJ"] = dict()
             activePaths[0]["classNumbersJ"]["parentNode"] = {"counts": json.loads(X.groupby(args_Y[0])[args_Y[0]].count().to_json())}
             #["samplesPerClass"] = json.loads(X.groupby(args_Y[0])[args_Y[0]].count().to_json())
-        else :
-            raise ValueError("Error-local1", activePaths)
     else:
         for key in activePaths:
             dX = X
@@ -380,6 +398,7 @@ def cart_step_1_local(X, args_X, args_Y, CategoricalVariables, activePaths):
                                          activePaths[key]['filter'][i]["operator"],
                                          activePaths[key]['filter'][i]["value"])
             activePaths[key]["thresholdsJ"] = compute_local_thresholds(dX, args_X, CategoricalVariables)
+            activePaths[key]["domainJ"] = compute_local_domain(dX, args_X, CategoricalVariables)
             activePaths[key]["samples"] = dX.shape[0]
             if args_Y[0] not in CategoricalVariables: # Regression Algorithm
                 activePaths[key]["statisticsJ"] = dict()
@@ -392,8 +411,20 @@ def cart_step_1_local(X, args_X, args_Y, CategoricalVariables, activePaths):
     return activePaths
 
 ##########################################################################################################################
-def cart_step_1_global():
-    return 1
+
+def cart_step_1_global(args_X, args_Y, CategoricalVariables, activePaths, no_split_points):
+    for no in activePaths:
+        for key in activePaths[no]['thresholdsJ']:
+            if key not in CategoricalVariables:
+                if len(activePaths[no]['thresholdsJ'][key])<no_split_points:
+                    activePaths[no]['thresholdsJ'][key] = []
+                    imin = activePaths[no]["domainJ"][key]["min"]
+                    imax = activePaths[no]["domainJ"][key]["max"]
+                    if imax != imin:
+                        step = (imax-imin) / no_split_points
+                        for i in np.arange(imin,imax,step):
+                            activePaths[no]['thresholdsJ'][key].append(i)
+    return activePaths
 
 ##########################################################################################################################
 
@@ -483,18 +514,15 @@ def compute_statistics2_in_the_node(dataFrame, colNames, activePath, className, 
             if colName not in CategoricalVariables:
                 dfLeft = df.loc[df[colName] <= thresholds[i]]
                 dfRight = df.loc[df[colName] > thresholds[i]]
-            elif colName in CategoricalVariables:
+            elif colName in CategoricalVariables:  # TODO!!! : Check this (what happens if it is a string)!! (how I compute mseLeft and mseRight)
                 dfLeft = df.loc[df[colName] in thresholds[i]['left']]
                 dfRight = df.loc[df[colName] in thresholds[i]['right']]
-
-
             mseLeft[i] = None
             mseRight[i] = None
             if activePath["statisticsJ"][colName]["meanLeft"][i] is not None:
                 mseLeft[i] = np.sum((dfLeft[className] - activePath["statisticsJ"][colName]["meanLeft"][i])**2)
             if activePath["statisticsJ"][colName]["meanRight"][i] is not None:
                 mseRight[i] = np.sum((dfRight[className] - activePath["statisticsJ"][colName]["meanRight"][i])**2)
-
         statisticsJ[colName] =  {"mseLeft" : mseLeft, "mseRight" : mseRight}
     #print (statisticsJ)
     return statisticsJ
@@ -571,14 +599,15 @@ def best_splits(activePath, colNames, className, CategoricalVariables):
         gainNode =  activePath["statisticsJ"]["parentNode"]["mse"]/activePath["statisticsJ"]["parentNode"]["nn_argsY"]
 
     for colName in colNames:
-        if className in CategoricalVariables: # Classification Algorithm
-             colName, gain, threshold = compute_gini(colName, activePath["thresholdsJ"][colName],  activePath["classNumbersJ"][colName], activePath["samples"], CategoricalVariables[className])
-        elif className not in CategoricalVariables: # Regression Algorithm
-            colName, gain, threshold = compute_mse(colName, activePath["thresholdsJ"][colName], activePath["statisticsJ"][colName], gainNode, activePath["statisticsJ"]["parentNode"]["nn_argsY"])
-        if bestGain == None or bestGain > gain:
-            bestColName = colName
-            bestGain = gain
-            bestThreshold = threshold
+        if len(activePath["thresholdsJ"][colName])>0:
+            if className in CategoricalVariables : # Classification Algorithm
+                colName, gain, threshold = compute_gini(colName, activePath["thresholdsJ"][colName],  activePath["classNumbersJ"][colName], activePath["samples"], CategoricalVariables[className])
+            elif className not in CategoricalVariables:  # Regression Algorithm
+                colName, gain, threshold = compute_mse(colName, activePath["thresholdsJ"][colName], activePath["statisticsJ"][colName], gainNode, activePath["statisticsJ"]["parentNode"]["nn_argsY"])
+            if bestGain == None or bestGain > gain:
+                bestColName = colName
+                bestGain = gain
+                bestThreshold = threshold
 
     return  bestColName, gainNode, bestGain, bestThreshold
 
@@ -588,12 +617,13 @@ def cart_step_3_global(args_X, args_Y, CategoricalVariables, globalTree , active
     elif args_Y[0] in CategoricalVariables: # Classification Algorithm
         criterion = "gini"
 
+    #logging.warning(["activePaths:", activePaths])
+
     activePathsNew = dict()
     no = 0
     for key in activePaths:
-        if activePaths[key]["samples"] > PRIVACY_MAGIC_NUMBER and max([len(activePaths[key]['thresholdsJ'][i]) for i in args_X]) > 0 : # if activePaths[key]["samples"] > PRIVACY_MAGIC_NUMBER:
+        if activePaths[key]["samples"] > 1 and max([len(activePaths[key]['thresholdsJ'][i]) for i in args_X]) > 0 : # if activePaths[key]["samples"] > PRIVACY_MAGIC_NUMBER:
             bestColName, valueParentNode, bestValue, bestThreshold = best_splits(activePaths[key], args_X, args_Y[0], CategoricalVariables)
-
             if valueParentNode > 0 : #If the number of samples>PRIVACY_NYMBER then I have privacy issues or #If GiniNode = 0 then I am in a leaf wih pure class.
                  #print ("MYKEY", key,activePaths[key]["samples"])
                  activePathsNew[no]=dict()
@@ -605,20 +635,21 @@ def cart_step_3_global(args_X, args_Y, CategoricalVariables, globalTree , active
                  activePathsNew[no+1]["thresholdsJ"] = None
                  activePathsNew[no+1]["filter"] = activePaths[key]['filter'][:]
                  activePathsNew[no+1]["filter"].append( { "variable" : bestColName, "operator" : ">", "value" : bestThreshold })
-
                  no = no + 2
-                 samplesPerClass = None
-                 if args_Y[0] in CategoricalVariables: # Classification Algorithm
-                     samplesPerClass = activePaths[key]["classNumbersJ"]["parentNode"]["counts"]
-                 classValue = None
-                 if args_Y[0] not in CategoricalVariables: # Regression Algorithm
-                    classValue = activePaths[key]["statisticsJ"]["parentNode"]["ss_argsY"] /activePaths[key]["statisticsJ"]["parentNode"]["nn_argsY"]
-                 if globalTree is None:
-                     globalTree = Node(criterion, bestColName, valueParentNode, bestThreshold, activePaths[key]["samples"], samplesPerClass, classValue)
-                     #globalTreeJ = globalTree.tree_to_json()
-                     #raise ValueError("AA", criterion, bestColName, valueParentNode, bestThreshold, activePaths[key]["samples"], samplesPerClass)
-                 else:
-                     globalTree.grow_tree(activePaths[key]['filter'], criterion, bestColName, valueParentNode, bestThreshold,activePaths[key]["samples"], samplesPerClass, classValue)
+
+            samplesPerClass = None
+            if args_Y[0] in CategoricalVariables: # Classification Algorithm
+                samplesPerClass = activePaths[key]["classNumbersJ"]["parentNode"]["counts"]
+                classValue = None
+            if args_Y[0] not in CategoricalVariables: # Regression Algorithm
+                classValue = activePaths[key]["statisticsJ"]["parentNode"]["ss_argsY"] /activePaths[key]["statisticsJ"]["parentNode"]["nn_argsY"]
+
+            if globalTree is None:
+                globalTree = Node(criterion, bestColName, valueParentNode, bestThreshold, activePaths[key]["samples"], samplesPerClass, classValue)
+                 #globalTreeJ = globalTree.tree_to_json()
+                 #raise ValueError("AA", criterion, bestColName, valueParentNode, bestThreshold, activePaths[key]["samples"], samplesPerClass)
+            else:
+                globalTree.grow_tree(activePaths[key]['filter'], criterion, bestColName, valueParentNode, bestThreshold,activePaths[key]["samples"], samplesPerClass, classValue)
         else: #It is leaf -->TODO
             samplesPerClass = None
             if args_Y[0] in CategoricalVariables: # Classification Algorithm
@@ -627,6 +658,7 @@ def cart_step_3_global(args_X, args_Y, CategoricalVariables, globalTree , active
             if args_Y[0] not in CategoricalVariables: # Regression Algorithm
                 classValue = activePaths[key]["statisticsJ"]["parentNode"]["ss_argsY"] /activePaths[key]["statisticsJ"]["parentNode"]["nn_argsY"]
             globalTree.grow_tree(activePaths[key]['filter'], criterion, None, None, None,activePaths[key]["samples"], samplesPerClass, classValue) #Isws edw na dinw kai alla stoixeia. Alla logw privacy den xreiazetai
+    #logging.warning(["activePathsNew:", activePathsNew])
     activePaths = activePathsNew
     #globalTreeJ = globalTree.tree_to_json()
 

@@ -11,7 +11,7 @@
 			"columnValuesSQLType": "real, integer, text",
 			"columnValuesIsCategorical": "",
 			"columnValuesNumOfEnumerations": "",
-			"value": "lefthippocampus,righthippocampus",
+			"value": "rightententorhinalarea,lefthippocampus,righthippocampus",
 			"valueNotBlank": true,
 			"valueMultiple": true,
 			"valueType": "string"
@@ -41,6 +41,19 @@
 			"valueType": "integer"
 		},
 		{
+			"name": "no_split_points",
+			"label": "no_split_points",
+			"desc": "Minimum number of split points to be considered during each split",
+			"type": "other",
+			"value": "10",
+			"min": 2,
+			"max": 500,
+			"enumerations": null,
+			"valueNotBlank": false,
+			"valueMultiple": false,
+			"valueType": "integer"
+		},
+		{
 			"name": "dataset",
 			"label": "dataset",
 			"desc": "The names of one or more datasets, in which the algorithm will be executed.",
@@ -49,7 +62,8 @@
 			"valueNotBlank": true,
 			"valueMultiple": true,
 			"valueType": "string"
-		}, {
+		},
+		{
 			"name": "filter",
 			"label": "filter",
 			"desc": "",

@@ -11,17 +11,15 @@ sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath
 
 
 from algorithm_utils import StateData
-from cart_lib import Cart_Glob2Loc_TD, CartIter1_Loc2Glob_TD
+from cart_lib import Cart_Glob2Loc_TD, CartIter1_Loc2Glob_TD, cart_step_1_global
 
 def main():
     # Parse arguments
     parser = ArgumentParser()
-    parser.add_argument('-cur_state_pkl', required=True,
-                        help='Path to the pickle file holding the current state.')
-    parser.add_argument('-prev_state_pkl', required=True,
-                        help='Path to the pickle file holding the previous state.')
-    parser.add_argument('-local_step_dbs', required=True,
-                        help='Path to db holding local step results.')
+    parser.add_argument('-no_split_points', required=True, type=int, help='Number of split points')
+    parser.add_argument('-cur_state_pkl', required=True, help='Path to the pickle file holding the current state.')
+    parser.add_argument('-prev_state_pkl', required=True, help='Path to the pickle file holding the previous state.')
+    parser.add_argument('-local_step_dbs', required=True, help='Path to db holding local step results.')
     args, unknown = parser.parse_known_args()
     fname_cur_state = path.abspath(args.cur_state_pkl)
     fname_prev_state = path.abspath(args.prev_state_pkl)
@@ -32,6 +30,9 @@ def main():
     # Load local nodes output
     activePaths = CartIter1_Loc2Glob_TD.load(local_dbs).get_data()
 
+    # Run algorithm global iteration step
+    activePaths = cart_step_1_global(global_state['args_X'], global_state['args_Y'], global_state['CategoricalVariables'], activePaths, args.no_split_points)
+
     global_out = Cart_Glob2Loc_TD(  global_state['globalTree'], activePaths )
     # Save global state
     # Save global state
@@ -40,7 +41,8 @@ def main():
                                 args_Y = global_state['args_Y'],
                                 CategoricalVariables = global_state['CategoricalVariables'],
                                 globalTree = global_state['globalTree'],
-                                activePaths = activePaths )
+                                activePaths = activePaths,
+                                t1 = global_state['t1'] )
 
     global_state.save(fname=fname_cur_state)
     # Return the algorithm's output

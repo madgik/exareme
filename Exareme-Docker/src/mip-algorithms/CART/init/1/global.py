@@ -9,7 +9,7 @@ import pandas as pd
 sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) + '/utils/')
 sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) + '/CART/')
 
-from algorithm_utils import StateData, ExaremeError
+from algorithm_utils import StateData, ExaremeError, init_logger
 from cart_lib import CartInit_Loc2Glob_TD, Cart_Glob2Loc_TD, cart_init_1_global
 
 def main():
@@ -24,7 +24,7 @@ def main():
     local_dbs = path.abspath(args.local_step_dbs)
 
     # Merge local nodes output
-    args_X, args_Y, CategoricalVariables = CartInit_Loc2Glob_TD.load(local_dbs).get_data()
+    args_X, args_Y, CategoricalVariables, t1 = CartInit_Loc2Glob_TD.load(local_dbs).get_data()
 
     # Run algorithm global step
     globalTree, activePaths = cart_init_1_global()
@@ -35,7 +35,8 @@ def main():
                                 args_Y = args_Y,
                                 CategoricalVariables = CategoricalVariables,
                                 globalTree = globalTree,
-                                activePaths = activePaths )
+                                activePaths = activePaths,
+                                t1 = t1)
     global_state.save(fname=fname_cur_state)
 
     # Transfer local output

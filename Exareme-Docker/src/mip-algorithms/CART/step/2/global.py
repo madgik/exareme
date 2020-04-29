@@ -41,7 +41,8 @@ def main():
                                 args_Y = global_state['args_Y'],
                                 CategoricalVariables = global_state['CategoricalVariables'],
                                 globalTree = global_state['globalTree'],
-                                activePaths = activePaths )
+                                activePaths = activePaths,
+                                t1 = global_state['t1'] )
 
     global_state.save(fname=fname_cur_state)
     # Return the algorithm's output
