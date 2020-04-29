@@ -16,14 +16,14 @@ import numpy as np
 import pandas as pd
 from patsy import dmatrix, dmatrices
 
-env_type = os.environ['ENVIRONMENT_TYPE']
-if env_type in {'DEV', 'PROD'}:
+env_type = os.environ["ENVIRONMENT_TYPE"]
+if env_type in {"DEV", "PROD"}:
     PRIVACY_MAGIC_NUMBER = 10
-elif env_type == 'TEST':
+elif env_type == "TEST":
     PRIVACY_MAGIC_NUMBER = 1
-    
+
 P_VALUE_CUTOFF = 0.001
-P_VALUE_CUTOFF_STR = '< ' + str(P_VALUE_CUTOFF)
+P_VALUE_CUTOFF_STR = "< " + str(P_VALUE_CUTOFF)
 
 
 class TransferAndAggregateData(object):
@@ -35,72 +35,77 @@ class TransferAndAggregateData(object):
             self.reduce_type[k] = v[1]
 
     def __repr__(self):
-        ret = ''
+        ret = ""
         for k in self.data.keys():
-            ret += '{k} : {val}, reduce by {red_type}\n'.format(k=k, val=self.data[k],
-                                                                red_type=self.reduce_type[k])
+            ret += "{k} : {val}, reduce by {red_type}\n".format(
+                k=k, val=self.data[k], red_type=self.reduce_type[k]
+            )
         return ret
 
     def __add__(self, other):
         kwargs = OrderedDict()
         for k in self.data.keys():
-            if self.reduce_type[k] == 'add':
-                kwargs[k] = (self.data[k] + other.data[k], 'add')
-            elif self.reduce_type[k] == 'max':
-                kwargs[k] = (max(self.data[k], other.data[k]), 'max')
-            elif self.reduce_type[k] == 'concat':
-                kwargs[k] = (np.concatenate(self.data[k], other.data[k]), 'concat')
-            elif self.reduce_type[k] == 'do_nothing':
-                kwargs[k] = (self.data[k], 'do_nothing')
+            if self.reduce_type[k] == "add":
+                kwargs[k] = (self.data[k] + other.data[k], "add")
+            elif self.reduce_type[k] == "max":
+                kwargs[k] = (max(self.data[k], other.data[k]), "max")
+            elif self.reduce_type[k] == "concat":
+                kwargs[k] = (np.concatenate(self.data[k], other.data[k]), "concat")
+            elif self.reduce_type[k] == "do_nothing":
+                kwargs[k] = (self.data[k], "do_nothing")
             else:
                 raise ValueError(
-                        '{rt} is not implemented as a reduce method.'.format(
-                            rt=self.reduce_type[k]))
+                    "{rt} is not implemented as a reduce method.".format(
+                        rt=self.reduce_type[k]
+                    )
+                )
         return TransferAndAggregateData(**kwargs)
 
     @classmethod
     def load(cls, inputDB):
         conn = sqlite3.connect(inputDB)
         cur = conn.cursor()
-        cur.execute('SELECT data FROM transfer')
+        cur.execute("SELECT data FROM transfer")
         first = True
         result = None
         for row in cur:
             if first:
-                result = pickle.loads(codecs.decode(row[0], 'ascii'))
+                result = pickle.loads(codecs.decode(row[0], "utf-8"))
                 first = False
             else:
-                result += pickle.loads(codecs.decode(row[0], 'ascii'))
+                result += pickle.loads(codecs.decode(row[0], "utf-8"))
         return result
 
     def transfer(self):
-        print(codecs.encode(pickle.dumps(self), 'ascii'))
+        print(codecs.encode(pickle.dumps(self), "utf-8"))
 
     def get_data(self):
         return self.data
 
 
-class TransferData():
+class TransferData:
     def __add__(self, other):
-        raise NotImplementedError('The __add__ method should be implemented by the child class.')
+        raise NotImplementedError(
+            "The __add__ method should be implemented by the child class."
+        )
 
     @classmethod
     def load(cls, inputDB):
         conn = sqlite3.connect(inputDB)
         cur = conn.cursor()
-        cur.execute('SELECT data FROM transfer')
+        cur.execute("SELECT data FROM transfer")
         first = True
         result = None
         for row in cur:
             if first:
-                result = pickle.loads(codecs.decode(row[0], 'ascii'))
+                result = pickle.loads(codecs.decode(row[0], "utf-8"))
                 first = False
             else:
-                result += pickle.loads(codecs.decode(row[0], 'ascii'))
+                result += pickle.loads(codecs.decode(row[0], "utf-8"))
         return result
 
     def transfer(self):
-        print(codecs.encode(pickle.dumps(self), 'ascii'))
+        print(codecs.encode(pickle.dumps(self), "utf-8"))
 
 
 def query_with_privacy(fname_db, query):
@@ -110,14 +115,23 @@ def query_with_privacy(fname_db, query):
     schema = [description[0] for description in cur.description]
     data = cur.fetchall()
     if len(data) < PRIVACY_MAGIC_NUMBER:
-        raise PrivacyError('Query results in illegal number of datapoints.')
+        raise PrivacyError("Query results in illegal number of datapoints.")
     return schema, data
 
 
-def query_from_formula(fname_db, formula, variables, dataset, query_filter,
-                       data_table, metadata_table, metadata_code_column,
-                       metadata_isCategorical_column,
-                       no_intercept=False, coding=None):
+def query_from_formula(
+    fname_db,
+    formula,
+    variables,
+    dataset,
+    query_filter,
+    data_table,
+    metadata_table,
+    metadata_code_column,
+    metadata_isCategorical_column,
+    no_intercept=False,
+    coding=None,
+):
     """
     Queries a database based on a list of variables and a patsy (R language) formula. Additionally performs privacy
     check and returns results only if number of datapoints is sufficient.
@@ -158,131 +172,157 @@ def query_from_formula(fname_db, formula, variables, dataset, query_filter,
     """
     from numpy import log as log
     from numpy import exp as exp
-    _ = log(exp(1))  # This line is needed to prevent import opimizer from removing above lines
 
-    assert coding in {None, 'Treatment', 'Poly', 'Sum', 'Diff', 'Helmert'}
-    dataset = dataset.replace(' ', '').split(',')
+    _ = log(
+        exp(1)
+    )  # This line is needed to prevent import opimizer from removing above lines
+
+    assert coding in {None, "Treatment", "Poly", "Sum", "Diff", "Helmert"}
+    dataset = dataset.replace(" ", "").split(",")
 
     # If no formula is given, generate a trivial one
-    if formula == '':
-        formula = '~'.join(map(lambda x: '+'.join(x), variables))
+    if formula == "":
+        formula = "~".join(map(lambda x: "+".join(x), variables))
     variables = reduce(lambda a, b: a + b, variables)
 
     # Parse filter if given
-    if query_filter == '':
-        query_filter_clause = ''
+    if query_filter == "":
+        query_filter_clause = ""
     else:
         query_filter_clause = parse_filter(json.loads(query_filter))
 
     if no_intercept:
-        formula += '-1'
+        formula += "-1"
     conn = sqlite3.connect(fname_db)
 
     # Define query forming functions
     def iscateg_query(var):
         return "SELECT {is_cat} FROM {metadata} WHERE {code}=='{var}';".format(
-                is_cat=metadata_isCategorical_column,
-                metadata=metadata_table,
-                code=metadata_code_column,
-                var=var)
+            is_cat=metadata_isCategorical_column,
+            metadata=metadata_table,
+            code=metadata_code_column,
+            var=var,
+        )
 
     def count_query(varz):
         return "SELECT COUNT({var}) FROM {data} WHERE ({var_clause}) AND ({ds_clause}) {flt_clause};".format(
-                var=varz[0],
-                data=data_table,
-                var_clause=' AND '.join(["{v}!='' and {v} is not null".format(v=v) for v in varz]),
-                ds_clause=' OR '.join(["dataset=='{d}'".format(d=d) for d in dataset]),
-                flt_clause='' if query_filter_clause == '' else 'AND ({flt_clause})'.format(
-                        flt_clause=query_filter_clause)
+            var=varz[0],
+            data=data_table,
+            var_clause=" AND ".join(
+                ["{v}!='' and {v} is not null".format(v=v) for v in varz]
+            ),
+            ds_clause=" OR ".join(["dataset=='{d}'".format(d=d) for d in dataset]),
+            flt_clause=""
+            if query_filter_clause == ""
+            else "AND ({flt_clause})".format(flt_clause=query_filter_clause),
         )
 
     def data_query(varz, is_cat):
-        variables_casts = ', '.join(
-                [v if not c else 'CAST({v} AS text) AS {v}'.format(v=v) for v, c in
-                 zip(varz, is_cat)]
+        variables_casts = ", ".join(
+            [
+                v if not c else "CAST({v} AS text) AS {v}".format(v=v)
+                for v, c in zip(varz, is_cat)
+            ]
         )
         return "SELECT {variables} FROM {data} WHERE ({var_clause}) AND ({ds_clause})  {flt_clause};".format(
-                variables=variables_casts,
-                data=data_table,
-                var_clause=' AND '.join(["{v}!='' and {v} is not null".format(v=v) for v in varz]),
-                ds_clause=' OR '.join(["dataset=='{d}'".format(d=d) for d in dataset]),
-                flt_clause='' if query_filter_clause == '' else 'AND ({flt_clause})'.format(
-                        flt_clause=query_filter_clause)
+            variables=variables_casts,
+            data=data_table,
+            var_clause=" AND ".join(
+                ["{v}!='' and {v} is not null".format(v=v) for v in varz]
+            ),
+            ds_clause=" OR ".join(["dataset=='{d}'".format(d=d) for d in dataset]),
+            flt_clause=""
+            if query_filter_clause == ""
+            else "AND ({flt_clause})".format(flt_clause=query_filter_clause),
         )
 
     # Perform privacy check
-    if pd.read_sql_query(sql=count_query(variables), con=conn).iat[0, 0] < PRIVACY_MAGIC_NUMBER:
-        raise PrivacyError('Query results in illegal number of datapoints.')
+    if (
+        pd.read_sql_query(sql=count_query(variables), con=conn).iat[0, 0]
+        < PRIVACY_MAGIC_NUMBER
+    ):
+        raise PrivacyError("Query results in illegal number of datapoints.")
     # Pull is_categorical from metadata table
-    is_categorical = [pd.read_sql_query(sql=iscateg_query(v), con=conn).iat[0, 0] for v in
-                      variables]
+    is_categorical = [
+        pd.read_sql_query(sql=iscateg_query(v), con=conn).iat[0, 0] for v in variables
+    ]
     if coding is not None:
         for c, v in zip(is_categorical, variables):
             if c:
-                formula = formula.replace(v, 'C({v}, {coding})'.format(v=v, coding=coding))
+                formula = formula.replace(
+                    v, "C({v}, {coding})".format(v=v, coding=coding)
+                )
     # Pull data from db and return design matrix(-ces)
     data = pd.read_sql_query(sql=data_query(variables, is_categorical), con=conn)
-    if '~' in formula:
-        lhs_dm, rhs_dm = dmatrices(formula, data, return_type='dataframe')
+    if "~" in formula:
+        lhs_dm, rhs_dm = dmatrices(formula, data, return_type="dataframe")
         return lhs_dm, rhs_dm
     else:
-        rhs_dm = dmatrix(formula, data, return_type='dataframe')
+        rhs_dm = dmatrix(formula, data, return_type="dataframe")
         return None, rhs_dm
 
 
 def parse_filter(query_filter):
     _operators = {
-        "equal"      : "=",
-        "not_equal"  : "!=",
-        "less"       : "<",
-        "greater"    : ">",
-        "between"    : "between",
-        "not_between": "not_between"
+        "equal": "=",
+        "not_equal": "!=",
+        "less": "<",
+        "greater": ">",
+        "between": "between",
+        "not_between": "not_between",
     }
 
     def add_spaces(s):
-        return ' ' + s + ' '
+        return " " + s + " "
 
     def format_rule(rule):
-        id_ = rule['id']
-        op = _operators[rule['operator']]
-        val = rule['value']
-        type_ = rule['type']
-        if type_ == 'string':
+        id_ = rule["id"]
+        op = _operators[rule["operator"]]
+        val = rule["value"]
+        type_ = rule["type"]
+        if type_ == "string":
             if type(val) == list:
                 val = ["'{v}'".format(v=v) for v in val]
             else:
                 val = "'{v}'".format(v=val)
-        if op == 'between':
-            return "{id} BETWEEN {val1} AND {val2}".format(id=id_, op=op, val1=val[0], val2=val[1])
-        elif op == 'not_between':
-            return "{id} NOT BETWEEN {val1} AND {val2}".format(id=id_, op=op, val1=val[0],
-                                                               val2=val[1])
+        if op == "between":
+            return "{id} BETWEEN {val1} AND {val2}".format(
+                id=id_, op=op, val1=val[0], val2=val[1]
+            )
+        elif op == "not_between":
+            return "{id} NOT BETWEEN {val1} AND {val2}".format(
+                id=id_, op=op, val1=val[0], val2=val[1]
+            )
         else:
             return "{id}{op}{val}".format(id=id_, op=op, val=val)
 
     def format_group(group):
-        return '({group})'.format(group=group)
+        return "({group})".format(group=group)
 
-    cond = query_filter['condition']
-    rules = query_filter['rules']
+    cond = query_filter["condition"]
+    rules = query_filter["rules"]
     return add_spaces(cond).join(
-            [format_rule(rule=rule)
-             if 'id' in rule else format_group(group=parse_filter(rule)) for rule in rules])
+        [
+            format_rule(rule=rule)
+            if "id" in rule
+            else format_group(group=parse_filter(rule))
+            for rule in rules
+        ]
+    )
 
 
 def value_casting(value, type):
-    if type == 'text':
-        return str(value)
-    elif type == 'real' or type == 'int':
+    if type == "text":
+        return value
+    elif type == "real" or type == "int":
         return float(value)
 
 
 def variable_type(value):
-    if str(value) == 'text':
-        return 'S16'
-    elif str(value) == 'real' or str(value) == 'int':
-        return 'float64'
+    if str(value) == "text":
+        return "S16"
+    elif str(value) == "real" or str(value) == "int":
+        return "float64"
 
 
 def query_database(fname_db, queryData, queryMetadata):
@@ -293,7 +333,7 @@ def query_database(fname_db, queryData, queryMetadata):
     cur.execute(queryData)
     data = cur.fetchall()
     if len(data) < PRIVACY_MAGIC_NUMBER:
-        raise PrivacyError('Query results in illegal number of datapoints.')
+        raise PrivacyError("Query results in illegal number of datapoints.")
     dataSchema = [description[0] for description in cur.description]
 
     cur.execute(queryMetadata)
@@ -316,11 +356,15 @@ def query_database(fname_db, queryData, queryMetadata):
 
 def variable_categorical_getDistinctValues(metadata):
     distinctValues = dict()
-    dataTypes = zip((str(x) for x in list(zip(*metadata)[0])),
-                    (str(x) for x in list(zip(*metadata)[1])))
+    dataTypes = zip(
+        (str(x) for x in list(zip(*metadata)[0])),
+        (str(x) for x in list(zip(*metadata)[1])),
+    )
     for md in metadata:
         if md[3] == 1:  # when variable is categorical
-            distinctValues[str(md[0])] = [value_casting(x, str(md[2])) for x in md[4].split(',')]
+            distinctValues[str(md[0])] = [
+                value_casting(x, str(md[2])) for x in md[4].split(",")
+            ]
     return distinctValues
 
 
@@ -338,25 +382,25 @@ class StateData(object):
             except OSError as exc:  # Guard against race condition
                 if exc.errno != errno.EEXIST:
                     raise
-        with open(fname, 'wb') as f:
+        with open(fname, "wb") as f:
             try:
                 pickle.dump(self, f, protocol=pickle_protocol)
             except pickle.PicklingError:
-                print('Unpicklable object.')
+                print("Unpicklable object.")
 
     @classmethod
     def load(cls, fname):
-        with open(fname, 'rb') as f:
+        with open(fname, "rb") as f:
             try:
                 obj = pickle.load(f)
             except pickle.UnpicklingError:
-                print('Cannot unpickle.')
+                print("Cannot unpickle.")
                 raise
         return obj
 
 
 def init_logger():
-    logging.basicConfig(filename='/var/log/exaremePythonAlgorithms.log')
+    logging.basicConfig(filename="/var/log/exaremePythonAlgorithms.log")
 
 
 class Global2Local_TD(TransferData):
@@ -388,32 +432,44 @@ def make_json_raw(**kwargs):
 def parse_exareme_args(fp):
     import json
     from os import path
+
     # Find properties.json and parse algorithm parameters
     prop_path = path.abspath(fp)
-    while not path.isfile(prop_path + '/properties.json'):
+    while not path.isfile(prop_path + "/properties.json"):
         prop_path = path.dirname(prop_path)
-    with open(prop_path + '/properties.json', 'r') as prop:
-        params = json.load(prop)['parameters']
+    with open(prop_path + "/properties.json", "r") as prop:
+        params = json.load(prop)["parameters"]
     parser = ArgumentParser()
     # Add Exareme arguments
-    parser.add_argument('-input_local_DB', required=False, help='Path to local db.')
-    parser.add_argument('-db_query', required=False, help='Query to be executed on local db.')
-    parser.add_argument('-cur_state_pkl', required=False,
-                        help='Path to the pickle file holding the current state.')
-    parser.add_argument('-prev_state_pkl', required=False,
-                        help='Path to the pickle file holding the previous state.')
-    parser.add_argument('-local_step_dbs', required=False, help='Path to local db.')
-    parser.add_argument('-global_step_db', required=False,
-                        help='Path to db holding global step results.')
-    parser.add_argument('-data_table', required=False)
-    parser.add_argument('-metadata_table', required=False)
-    parser.add_argument('-metadata_code_column', required=False)
-    parser.add_argument('-metadata_isCategorical_column', required=False)
+    parser.add_argument("-input_local_DB", required=False, help="Path to local db.")
+    parser.add_argument(
+        "-db_query", required=False, help="Query to be executed on local db."
+    )
+    parser.add_argument(
+        "-cur_state_pkl",
+        required=False,
+        help="Path to the pickle file holding the current state.",
+    )
+    parser.add_argument(
+        "-prev_state_pkl",
+        required=False,
+        help="Path to the pickle file holding the previous state.",
+    )
+    parser.add_argument("-local_step_dbs", required=False, help="Path to local db.")
+    parser.add_argument(
+        "-global_step_db",
+        required=False,
+        help="Path to db holding global step results.",
+    )
+    parser.add_argument("-data_table", required=False)
+    parser.add_argument("-metadata_table", required=False)
+    parser.add_argument("-metadata_code_column", required=False)
+    parser.add_argument("-metadata_isCategorical_column", required=False)
     # Add algorithm arguments
     for p in params:
-        name = '-' + p['name']
-        required = p['valueNotBlank']
-        if name != 'pathology':
+        name = "-" + p["name"]
+        required = p["valueNotBlank"]
+        if name != "pathology":
             parser.add_argument(name, required=required)
 
     args, unknown = parser.parse_known_args()
@@ -421,12 +477,12 @@ def parse_exareme_args(fp):
 
 
 def main():
-    fname_db = '/Users/zazon/madgik/mip_data/dementia/datasets.db'
-    lhs = ['lefthippocampus']
-    rhs = ['alzheimerbroadcategory']
+    fname_db = "/Users/zazon/madgik/mip_data/dementia/datasets.db"
+    lhs = ["lefthippocampus"]
+    rhs = ["alzheimerbroadcategory"]
     variables = (lhs, rhs)
     # formula = 'gender ~ alzheimerbroadcategory + lefthippocampus'
-    formula = ''
+    formula = ""
     query_filter = """
     {
         "condition":"AND",
@@ -451,13 +507,19 @@ def main():
         "valid":true
     }
     """
-    Y, X = query_from_formula(fname_db, formula, variables, data_table='DATA',
-                              dataset='adni, ppmi, edsd',
-                              query_filter=query_filter,
-                              metadata_table='METADATA',
-                              metadata_code_column='code',
-                              metadata_isCategorical_column='isCategorical',
-                              no_intercept=True, coding=None)
+    Y, X = query_from_formula(
+        fname_db,
+        formula,
+        variables,
+        data_table="DATA",
+        dataset="adni, ppmi, edsd",
+        query_filter=query_filter,
+        metadata_table="METADATA",
+        metadata_code_column="code",
+        metadata_isCategorical_column="isCategorical",
+        no_intercept=True,
+        coding=None,
+    )
     print(X.shape)
     print(Y.shape)
     print(X.design_info.column_names)
@@ -465,5 +527,5 @@ def main():
     # print(Y)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
