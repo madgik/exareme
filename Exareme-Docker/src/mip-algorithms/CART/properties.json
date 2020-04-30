@@ -8,7 +8,7 @@
 			"label": "x",
 			"desc": "Independent variables: A list of variables from database.",
 			"type": "column",
-			"columnValuesSQLType": "real, integer, text",
+			"columnValuesSQLType": "real, integer",
 			"columnValuesIsCategorical": "",
 			"columnValuesNumOfEnumerations": "",
 			"value": "rightententorhinalarea,lefthippocampus,righthippocampus",

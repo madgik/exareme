@@ -353,11 +353,11 @@ def compute_local_thresholds(X, args_X, CategoricalVariables):
                     #print diff, list(comb)
                     if diff != [] and list(comb) != []:
                         L.append({"left" : diff, "right" : list(comb)})
-            thresholdsJ[varx] = L[0:len(L)/2]
+            thresholdsJ[varx] = L[0:int(len(L)/2)]
 
-        thresholdsJ[varx] = set(thresholdsJ[varx]) #keep unique values
-        thresholdsJ[varx] = list(thresholdsJ[varx])
-        thresholdsJ[varx].sort()
+        #thresholdsJ[varx] = set(thresholdsJ[varx]) #keep unique values
+        #thresholdsJ[varx] = list(thresholdsJ[varx])
+        #thresholdsJ[varx].sort()
     return  thresholdsJ
 
 
@@ -451,8 +451,8 @@ def node_computations(dataFrame, colNames, activePath, className, CategoricalVar
                 dfLeft = df.loc[df[colName] <= thresholds[i]]
                 dfRight = df.loc[df[colName] > thresholds[i]]
             elif colName in CategoricalVariables:
-                dfLeft = df.loc[df[colName] in thresholds[i]['left']]
-                dfRight = df.loc[df[colName] in thresholds[i]['right']]
+                dfLeft = df.loc[df[colName].isin(thresholds[i]['left'])]
+                dfRight = df.loc[df[colName].isin(thresholds[i]['right'])]
 
             if flag == "classNumbers":
                 countsLeft[i] = json.loads(dfLeft.groupby(className)[className].count().to_json())
@@ -515,8 +515,8 @@ def compute_statistics2_in_the_node(dataFrame, colNames, activePath, className, 
                 dfLeft = df.loc[df[colName] <= thresholds[i]]
                 dfRight = df.loc[df[colName] > thresholds[i]]
             elif colName in CategoricalVariables:  # TODO!!! : Check this (what happens if it is a string)!! (how I compute mseLeft and mseRight)
-                dfLeft = df.loc[df[colName] in thresholds[i]['left']]
-                dfRight = df.loc[df[colName] in thresholds[i]['right']]
+                dfLeft = df.loc[df[colName].isin(thresholds[i]['left'])]
+                dfRight = df.loc[df[colName].isin(thresholds[i]['right'])]
             mseLeft[i] = None
             mseRight[i] = None
             if activePath["statisticsJ"][colName]["meanLeft"][i] is not None:
