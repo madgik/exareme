@@ -4,7 +4,7 @@ import requests
 import math
 import numpy as np
 
-from lib import vmUrl
+from tests.lib import vmUrl
 
 endpointUrl = vmUrl + 'PCA'
 

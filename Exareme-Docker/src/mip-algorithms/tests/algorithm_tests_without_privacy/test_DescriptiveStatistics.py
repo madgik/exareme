@@ -2,7 +2,7 @@ import pytest
 import json
 import requests
 import math
-from tests.algorithm_tests.lib import vmUrl
+from tests.lib import vmUrl
 endpointUrl= vmUrl+'DESCRIPTIVE_STATS'
 
 

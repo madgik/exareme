@@ -2,7 +2,7 @@ import requests
 import json
 import logging
 import math
-from tests.algorithm_tests.lib import vmUrl
+from tests.lib import vmUrl
 endpointUrl= vmUrl+'PEARSON_CORRELATION'
 
 # Required datasets: adni_9rows, adni, data_pr1, desd-synthdata
