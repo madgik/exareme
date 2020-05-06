@@ -7,12 +7,24 @@
     "parameters": [
         {
             "name": "y",
-            "label": "y",
+            "label": "Target variable",
             "desc": "A single categorical variable whose values describe a binary event.",
             "type": "column",
             "columnValuesSQLType": "integer, text",
             "columnValuesIsCategorical": true,
             "value": "alzheimerbroadcategory",
+            "valueNotBlank": false,
+            "valueMultiple": false,
+            "valueType": "string"
+        },
+        {
+            "name": "x",
+            "label": "Control variable",
+            "desc": "A single categorical variable based on which patients are grouped.",
+            "type": "column",
+            "columnValuesSQLType": "integer, text",
+            "columnValuesIsCategorical": true,
+            "value": "apoe4",
             "valueNotBlank": false,
             "valueMultiple": false,
             "valueType": "string"
@@ -30,9 +42,9 @@
         {
             "name": "dataset",
             "label": "dataset",
-            "desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty",
+            "desc": "",
             "type": "dataset",
-            "value": "fake_longitudinal",
+            "value": "alzheimer_fake_cohort",
             "valueNotBlank": true,
             "valueMultiple": true,
             "valueType": "string"
@@ -62,17 +74,17 @@
             "label": "Negative outcome",
             "desc": "",
             "type": "other",
-            "value": "CN",
+            "value": "MCI",
             "valueNotBlank": true,
             "valueMultiple": false,
             "valueType": "string"
         },
         {
-            "name": "max_age",
-            "label": "Maximum age",
+            "name": "total_duration",
+            "label": "Total duration of experiment in days",
             "desc": "",
             "type": "other",
-            "value": 100,
+            "value": 1100,
             "valueNotBlank": true,
             "valueMultiple": false,
             "valueType": "real"
