@@ -29,7 +29,7 @@ def run_local_step(args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWi
                 else:
                     data.append(0)
             Hist[varx,None] = {"Data" :  data, "Categoriesx" : categories, "Categoriesy" :None}
-            logging.debug(["A. Hist",varx, None, Hist[varx,None]])
+            logging.info(["A. Hist",varx, None, Hist[varx,None]])
 
             for vary in args_Y:
                 #Histogram thn varx group by var y
@@ -44,7 +44,7 @@ def run_local_step(args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWi
                             data.append (0)
                     dataTotal.append(data)
                 Hist[varx,vary] = {"Data" :  dataTotal, "Categoriesx" : categories, "Categoriesy" :CategoricalVariablesWithDistinctValues[vary]  }
-                logging.debug(["B. Hist",varx, vary, Hist[varx,vary]])
+                logging.info(["B. Hist",varx, vary, Hist[varx,vary]])
         if varx not in  CategoricalVariablesWithDistinctValues: # varx is not categorical
              #print varx
              if globalStatistics[varx,None,None,None]['count'] > PRIVACY_MAGIC_NUMBER :
@@ -53,11 +53,11 @@ def run_local_step(args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWi
                                                                                                 globalStatistics[varx,None,None,None]['max']],  bins = args_bins[varx])]
                  mycategories = [str(myhist[1][i+1])+"-"+str(myhist[1][i]) for i in range(len(myhist[1])-1)]
                  Hist[varx,None] = { "Data" : myhist[0], "Categoriesx" : mycategories , "Categoriesy" : None }
-                 logging.debug(["C. Hist",varx, None, Hist[varx,None]])
+                 logging.info(["C. Hist",varx, None, Hist[varx,None]])
              else:
                  mycategories = None
                  Hist[varx,None] = { "Data" : [0]*args_bins[varx], "Categoriesx" : mycategories , "Categoriesy" : None }
-                 logging.debug(["D. Hist",varx, None, Hist[varx,None]])
+                 logging.info(["D. Hist",varx, None, Hist[varx,None]])
              #Histogram thn varx group by var y
              for vary in args_Y:
                  dfs = dataFrame.groupby(vary)[varx]
@@ -77,7 +77,7 @@ def run_local_step(args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWi
                     else:
                         data.append([0]*args_bins[varx])
                     Hist[varx,vary] = {  "Data" : data ,  "Categoriesx" : mycategories, "Categoriesy" : CategoricalVariablesWithDistinctValues[vary] }
-                    logging.debug(["D. Hist",varx, vary, Hist[varx,vary]])
+                    logging.info(["D. Hist",varx, vary, Hist[varx,vary]])
 
     # # Histogram modification due to privacy
     # for key in Hist:
@@ -108,9 +108,9 @@ def main():
     globalStatistics = Global2Local_TD.load(global_db).get_data()['global_in']
 
     init_logger()
-    logging.debug(["args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWithDistinctValues:", local_state['args_X'], local_state['args_Y'] ,local_state['args_bins'], local_state['dataSchema'], local_state['CategoricalVariablesWithDistinctValues'],])
+    logging.info(["args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWithDistinctValues:", local_state['args_X'], local_state['args_Y'] ,local_state['args_bins'], local_state['dataSchema'], local_state['CategoricalVariablesWithDistinctValues'],])
     logging.debug(["dataFrame=",local_state['dataFrame'][0:5]])
-    logging.debug(["globalStatistics=", globalStatistics])
+    logging.info(["globalStatistics=", globalStatistics])
 
     # Run algorithm local step
     Hist = run_local_step(local_state['args_X'], local_state['args_Y'] ,

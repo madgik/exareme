@@ -24,7 +24,7 @@ def main():
     globalStatistics = multipleHist1_Loc2Glob_TD.load(local_dbs).get_data()
 
     init_logger()
-    logging.debug(["globalStatistics:", globalStatistics])
+    logging.info(["globalStatistics:", globalStatistics])
 
     #raise ValueError(globalStatistics)
     global_out = Global2Local_TD(global_in = globalStatistics)

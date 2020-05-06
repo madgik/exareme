@@ -72,7 +72,7 @@ def main():
     args_X, args_Y,CategoricalVariablesWithDistinctValues, GlobalHist = multipleHist2_Loc2Glob_TD.load(local_dbs).get_data()
 
     init_logger()
-    logging.debug(["GlobalHist= ", GlobalHist])
+    logging.info(["GlobalHist= ", GlobalHist])
 
     # Histogram modification due to privacy --> Move it to local.py
     for key in GlobalHist:
