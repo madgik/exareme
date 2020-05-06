@@ -109,9 +109,9 @@ def main():
     local_state.save(fname = fname_cur_state)
 
     init_logger()
-    logging.warning(["args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWithDistinctValues:", args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWithDistinctValues])
+    logging.debug(["args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWithDistinctValues:", args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWithDistinctValues])
     logging.debug(["dataFrame:",dataFrame[0:5]])
-    logging.warning(["localStatistics:", localStatistics])
+    logging.debug(["localStatistics:", localStatistics])
 
     # Transfer local output
     local_out = multipleHist1_Loc2Glob_TD(localStatistics)
