@@ -4,7 +4,7 @@ import logging
 import math
 
 # Required datasets: data_logisticRegression.csv
-from tests.lib import vmUrl
+from tests.vm_url import vmUrl
 endpointUrl= vmUrl+'LOGISTIC_REGRESSION'
 
 

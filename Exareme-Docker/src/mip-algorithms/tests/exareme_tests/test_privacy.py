@@ -5,7 +5,7 @@ import unittest
 
 import requests
 from tests.algorithm_tests_with_privacy.test_ANOVA import endpointUrl as url_anova
-from tests.algorithm_tests.lib import vmUrl \
+from tests.vm_url import vmUrl \
     as url_descr_stat
 from tests.algorithm_tests_with_privacy.test_Histograms import endpointUrl as url_hist
 from tests.algorithm_tests_with_privacy.test_ID3 import endpointUrl as url_id3
@@ -25,7 +25,7 @@ from tests.algorithm_tests_with_privacy.test_ttest_onesample import endpointUrl 
 from tests.algorithm_tests_with_privacy.test_ttest_paired import endpointUrl \
     as url_ttest_paired
 
-from tests.algorithm_tests.lib import vmUrl
+from tests.vm_url import vmUrl
 url_calibration= vmUrl+'CALIBRATION_BELT'
 
 url_descr_stat += 'DESCRIPTIVE_STATS'
