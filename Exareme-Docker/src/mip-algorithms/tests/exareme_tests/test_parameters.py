@@ -4,11 +4,11 @@ import json
 import logging
 import sys
 sys.path.insert(0,'../')
-from tests.algorithm_tests.lib import vmUrl
+from tests.vm_url import vmUrl
 
 
 def test_valueEnumerationsParameter():
-    
+
     endpointUrl1=vmUrl+'LINEAR_REGRESSION'
 
     logging.info("---------- TEST : valueEnumerations throwing error.")
@@ -26,7 +26,7 @@ def test_valueEnumerationsParameter():
 
 
 def test_parameter_max_value():
-    
+
     endpointUrl=vmUrl+'ANOVA'
 
     logging.info("---------- TEST : Algorithms for User Error")
@@ -41,9 +41,9 @@ def test_parameter_max_value():
     headers = {'Content-type': 'application/json', "Accept": "text/plain"}
     r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
     result = json.loads(r.text)
-    
+
     assert r.text == "{\"result\" : [{\"data\":\"The value(s) of the parameter 'sstype' should be less than 3.0 .\",\"type\":\"text/plain+error\"}]}"
-    
+
 
 if __name__ == '__main__':
     unittest.main()

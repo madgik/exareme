@@ -400,7 +400,10 @@ class StateData(object):
 
 
 def init_logger():
-    logging.basicConfig(filename="/var/log/exaremePythonAlgorithms.log")
+    if env_type == "PROD":
+        logging.basicConfig(filename="/var/log/exaremePythonAlgorithms.log", level=logging.INFO)
+    else:
+        logging.basicConfig(filename="/var/log/exaremePythonAlgorithms.log", level=logging.DEBUG)
 
 
 class Global2Local_TD(TransferData):
