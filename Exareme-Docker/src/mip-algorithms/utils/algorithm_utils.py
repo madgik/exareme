@@ -400,7 +400,7 @@ class StateData(object):
 
 
 def init_logger():
-    if env_type is "DEV":
+    if env_type == "DEV":
         logging.basicConfig(filename="/var/log/exaremePythonAlgorithms.log", level=logging.DEBUG)
     else:
         logging.basicConfig(filename="/var/log/exaremePythonAlgorithms.log")
