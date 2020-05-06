@@ -37,9 +37,8 @@ class TransferAndAggregateData(object):
     def __repr__(self):
         ret = ""
         for k in self.data.keys():
-            ret += "{k} : {val}, reduce by {red_type}\n".format(
-                k=k, val=self.data[k], red_type=self.reduce_type[k]
-            )
+            ret += '{k} : {val}, reduce by {red_type}\n'.format(k=k, val=self.data[k],
+                                                                red_type=self.reduce_type[k])
         return ret
 
     def __add__(self, other):
@@ -75,14 +74,14 @@ class TransferAndAggregateData(object):
         result = None
         for row in cur:
             if first:
-                result = pickle.loads(codecs.decode(row[0], "ascii"))
+                result = pickle.loads(codecs.decode(row[0], "utf-8"))
                 first = False
             else:
-                result += pickle.loads(codecs.decode(row[0], "ascii"))
+                result += pickle.loads(codecs.decode(row[0], "utf-8"))
         return result
 
     def transfer(self):
-        print(codecs.encode(pickle.dumps(self), "ascii"))
+        print(codecs.encode(pickle.dumps(self), "utf-8"))
 
     def get_data(self):
         return self.data
@@ -103,14 +102,14 @@ class TransferData:
         result = None
         for row in cur:
             if first:
-                result = pickle.loads(codecs.decode(row[0], "ascii"))
+                result = pickle.loads(codecs.decode(row[0], "utf-8"))
                 first = False
             else:
-                result += pickle.loads(codecs.decode(row[0], "ascii"))
+                result += pickle.loads(codecs.decode(row[0], "utf-8"))
         return result
 
     def transfer(self):
-        print(codecs.encode(pickle.dumps(self), "ascii"))
+        print(codecs.encode(pickle.dumps(self), "utf-8"))
 
 
 def query_with_privacy(fname_db, query):
@@ -120,7 +119,7 @@ def query_with_privacy(fname_db, query):
     schema = [description[0] for description in cur.description]
     data = cur.fetchall()
     if len(data) < PRIVACY_MAGIC_NUMBER:
-        raise PrivacyError("Query results in illegal number of datapoints.")
+        raise PrivacyError('Query results in illegal number of datapoints.')
     return schema, data
 
 
@@ -318,7 +317,7 @@ def parse_filter(query_filter):
 
 def value_casting(value, type):
     if type == "text":
-        return str(value)
+        return value
     elif type == "real" or type == "int":
         return float(value)
 
@@ -405,7 +404,10 @@ class StateData(object):
 
 
 def init_logger():
-    logging.basicConfig(filename="/var/log/exaremePythonAlgorithms.log")
+    if env_type == "PROD":
+        logging.basicConfig(filename="/var/log/exaremePythonAlgorithms.log", level=logging.INFO)
+    else:
+        logging.basicConfig(filename="/var/log/exaremePythonAlgorithms.log", level=logging.DEBUG)
 
 
 class Global2Local_TD(TransferData):

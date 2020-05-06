@@ -19,7 +19,6 @@ def run_local_step(args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWi
     Hist = dict()
     for varx in args_X:
         if varx in CategoricalVariablesWithDistinctValues: # varx is  categorical
-            #print varx ," IS CATEGORICAL"
             # Histogram categorical of varx
             df_count = dataFrame.groupby(varx)[varx].count()
             categories = CategoricalVariablesWithDistinctValues[varx]
@@ -30,6 +29,7 @@ def run_local_step(args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWi
                 else:
                     data.append(0)
             Hist[varx,None] = {"Data" :  data, "Categoriesx" : categories, "Categoriesy" :None}
+            logging.info(["A. Hist",varx, None, Hist[varx,None]])
 
             for vary in args_Y:
                 #Histogram thn varx group by var y
@@ -44,26 +44,20 @@ def run_local_step(args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWi
                             data.append (0)
                     dataTotal.append(data)
                 Hist[varx,vary] = {"Data" :  dataTotal, "Categoriesx" : categories, "Categoriesy" :CategoricalVariablesWithDistinctValues[vary]  }
-
+                logging.info(["B. Hist",varx, vary, Hist[varx,vary]])
         if varx not in  CategoricalVariablesWithDistinctValues: # varx is not categorical
              #print varx
-             logging.warning("A. globalStatistics[varx,None,None,None]['count']=")
-             logging.warning(globalStatistics[varx,None,None,None]['count'])
              if globalStatistics[varx,None,None,None]['count'] > PRIVACY_MAGIC_NUMBER :
                  dataFrameNew = dataFrame[varx].dropna()
-                 logging.warning("A. globalStatistics[varx,None,None,None]['min']=")
-                 logging.warning( globalStatistics[varx,None,None,None]['min'])
-                 logging.warning("A. globalStatistics[varx,None,None,None]['max']=")
-                 logging.warning( globalStatistics[varx,None,None,None]['max'])
-                 logging.warning("A. args_bins[varx]=")
-                 logging.warning( args_bins[varx])
                  myhist = [x.tolist() for x in np.histogram(dataFrameNew, range = [ globalStatistics[varx,None,None,None]['min'],
                                                                                                 globalStatistics[varx,None,None,None]['max']],  bins = args_bins[varx])]
                  mycategories = [str(myhist[1][i+1])+"-"+str(myhist[1][i]) for i in range(len(myhist[1])-1)]
                  Hist[varx,None] = { "Data" : myhist[0], "Categoriesx" : mycategories , "Categoriesy" : None }
+                 logging.info(["C. Hist",varx, None, Hist[varx,None]])
              else:
                  mycategories = None
                  Hist[varx,None] = { "Data" : [0]*args_bins[varx], "Categoriesx" : mycategories , "Categoriesy" : None }
+                 logging.info(["D. Hist",varx, None, Hist[varx,None]])
              #Histogram thn varx group by var y
              for vary in args_Y:
                  dfs = dataFrame.groupby(vary)[varx]
@@ -73,26 +67,17 @@ def run_local_step(args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWi
                     #print groupLevely
                     if groupLevely in dfs.groups:
                         df = dfs.get_group(groupLevely)
-                        logging.warning("B.  globalStatistics[varx,vary,None,groupLevely]['count'] =")
-                        logging.warning( globalStatistics[varx,vary,None,groupLevely]['count'] )
                         if  globalStatistics[varx,vary,None,groupLevely]['count'] > PRIVACY_MAGIC_NUMBER :
                             dfNew = df.dropna()
-                            logging.warning("B.globalStatistics[varx,vary,None,groupLevely]['min']=")
-                            logging.warning(globalStatistics[varx,vary,None,groupLevely]['min'])
-                            logging.warning("B.globalStatistics[varx,vary,None,groupLevely]['max']=")
-                            logging.warning( globalStatistics[varx,vary,None,groupLevely]['max'])
-                            logging.warning("B. args_bins[varx]=")
-                            logging.warning( args_bins[varx])
-                            myhist =  [x.tolist() for x in np.histogram(dfNew, range = [globalStatistics[varx,vary,None,groupLevely]['min'],
-                                                                         globalStatistics[varx,vary,None,groupLevely]['max']], bins = args_bins[varx])]
+                            myhist =  [x.tolist() for x in np.histogram(dfNew, range = [globalStatistics[varx,None,None,None]['min'],
+                                                                         globalStatistics[varx,None,None,None]['max']], bins = args_bins[varx])]
                             data.append(myhist[0])
                         else:
                             data.append([0]*args_bins[varx])
-                        #Hist[varx,vary] = { "count" : None, "level" : None, "hist" : myhist,  "Categoriesy" :CategoricalVariablesWithDistinctValues[vary] }
                     else:
                         data.append([0]*args_bins[varx])
-                        #Hist[varx,vary] = { "count" : None, "level" : None, "hist" : None}
                     Hist[varx,vary] = {  "Data" : data ,  "Categoriesx" : mycategories, "Categoriesy" : CategoricalVariablesWithDistinctValues[vary] }
+                    logging.info(["D. Hist",varx, vary, Hist[varx,vary]])
 
     # # Histogram modification due to privacy
     # for key in Hist:
@@ -123,22 +108,9 @@ def main():
     globalStatistics = Global2Local_TD.load(global_db).get_data()['global_in']
 
     init_logger()
-    logging.warning("args_X= ")
-    logging.warning(local_state['args_X'])
-    logging.warning("args_Y=")
-    logging.warning(local_state['args_Y'])
-    logging.warning("args_bins=")
-    logging.warning(local_state['args_bins'])
-    logging.warning("local_state['dataSchema']=")
-    logging.warning(local_state['dataSchema'])
-    logging.warning("CategoricalVariablesWithDistinctValues= ")
-    logging.warning(local_state['CategoricalVariablesWithDistinctValues'])
-    logging.warning("dataFrame=")
-    logging.warning(local_state['dataFrame'])
-    logging.warning("globalStatistics=")
-    logging.warning(globalStatistics)
-
-    #raise ValueError(globalStatistics,local_state['args_X'])
+    logging.info(["args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWithDistinctValues:", local_state['args_X'], local_state['args_Y'] ,local_state['args_bins'], local_state['dataSchema'], local_state['CategoricalVariablesWithDistinctValues'],])
+    logging.debug(["dataFrame=",local_state['dataFrame'][0:5]])
+    logging.info(["globalStatistics=", globalStatistics])
 
     # Run algorithm local step
     Hist = run_local_step(local_state['args_X'], local_state['args_Y'] ,

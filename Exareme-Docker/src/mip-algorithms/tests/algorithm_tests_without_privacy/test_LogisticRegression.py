@@ -4,7 +4,7 @@ import logging
 import math
 
 # Required datasets: data_logisticRegression.csv
-from tests.algorithm_tests.lib import vmUrl
+from tests.vm_url import vmUrl
 endpointUrl= vmUrl+'LOGISTIC_REGRESSION'
 
 
@@ -177,4 +177,3 @@ def check_result(exareme_coeffs, r_coeffs):
             assert exa_coeff['p value'] == r_coeff['p value']
         else:
             assert math.isclose(exa_coeff['p value'], r_coeff['p value'], rel_tol=1e-03)
-
