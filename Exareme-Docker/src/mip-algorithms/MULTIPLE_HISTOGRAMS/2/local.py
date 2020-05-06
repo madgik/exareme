@@ -19,7 +19,6 @@ def run_local_step(args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWi
     Hist = dict()
     for varx in args_X:
         if varx in CategoricalVariablesWithDistinctValues: # varx is  categorical
-            #print varx ," IS CATEGORICAL"
             # Histogram categorical of varx
             df_count = dataFrame.groupby(varx)[varx].count()
             categories = CategoricalVariablesWithDistinctValues[varx]
@@ -109,8 +108,8 @@ def main():
     globalStatistics = Global2Local_TD.load(global_db).get_data()['global_in']
 
     init_logger()
-    logging.debug(["args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWithDistinctValues:", local_state['args_X'], local_state['args_Y'] ,local_state['args_bins'], local_state['dataSchema'], local_state['CategoricalVariablesWithDistinctValues'],])
-    logging.debug(["dataFrame=",local_state['dataFrame']])
+    logging.warning(["args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWithDistinctValues:", local_state['args_X'], local_state['args_Y'] ,local_state['args_bins'], local_state['dataSchema'], local_state['CategoricalVariablesWithDistinctValues'],])
+    logging.debug(["dataFrame=",local_state['dataFrame'][0:5]])
     logging.warning(["globalStatistics=", globalStatistics])
 
     # Run algorithm local step

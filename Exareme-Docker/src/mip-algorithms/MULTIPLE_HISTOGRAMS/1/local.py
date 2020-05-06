@@ -109,8 +109,8 @@ def main():
     local_state.save(fname = fname_cur_state)
 
     init_logger()
-    logging.debug(["args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWithDistinctValues:", args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWithDistinctValues])
-    logging.debug(["dataFrame:",dataFrame])
+    logging.warning(["args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWithDistinctValues:", args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWithDistinctValues])
+    logging.debug(["dataFrame:",dataFrame[0:5]])
     logging.warning(["localStatistics:", localStatistics])
 
     # Transfer local output
