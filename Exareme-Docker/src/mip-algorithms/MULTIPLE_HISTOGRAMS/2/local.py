@@ -69,8 +69,8 @@ def run_local_step(args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWi
                         df = dfs.get_group(groupLevely)
                         if  globalStatistics[varx,vary,None,groupLevely]['count'] > PRIVACY_MAGIC_NUMBER :
                             dfNew = df.dropna()
-                            myhist =  [x.tolist() for x in np.histogram(dfNew, range = [globalStatistics[varx,vary,None,groupLevely]['min'],
-                                                                         globalStatistics[varx,vary,None,groupLevely]['max']], bins = args_bins[varx])]
+                            myhist =  [x.tolist() for x in np.histogram(dfNew, range = [globalStatistics[varx,None,None,None]['min'],
+                                                                         globalStatistics[varx,None,None,None]['max']], bins = args_bins[varx])]
                             data.append(myhist[0])
                         else:
                             data.append([0]*args_bins[varx])
