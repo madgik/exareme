@@ -75,14 +75,14 @@ class TransferAndAggregateData(object):
         result = None
         for row in cur:
             if first:
-                result = pickle.loads(codecs.decode(row[0], "ascii"))
+                result = pickle.loads(codecs.decode(row[0], "utf-8"))
                 first = False
             else:
-                result += pickle.loads(codecs.decode(row[0], "ascii"))
+                result += pickle.loads(codecs.decode(row[0], "utf-8"))
         return result
 
     def transfer(self):
-        print(codecs.encode(pickle.dumps(self), "ascii"))
+        print(codecs.encode(pickle.dumps(self), "utf-8"))
 
     def get_data(self):
         return self.data
@@ -103,14 +103,14 @@ class TransferData:
         result = None
         for row in cur:
             if first:
-                result = pickle.loads(codecs.decode(row[0], "ascii"))
+                result = pickle.loads(codecs.decode(row[0], "utf-8"))
                 first = False
             else:
-                result += pickle.loads(codecs.decode(row[0], "ascii"))
+                result += pickle.loads(codecs.decode(row[0], "utf-8"))
         return result
 
     def transfer(self):
-        print(codecs.encode(pickle.dumps(self), "ascii"))
+        print(codecs.encode(pickle.dumps(self), "utf-8"))
 
 
 def query_with_privacy(fname_db, query):
@@ -318,7 +318,7 @@ def parse_filter(query_filter):
 
 def value_casting(value, type):
     if type == "text":
-        return str(value)
+        return value
     elif type == "real" or type == "int":
         return float(value)
 
