@@ -274,7 +274,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             return true;
         }
         else {
-            //ArtRegistryLocator.getArtRegistryProxy().removeContainer();
+            //TODO ArtRegistryLocator.getArtRegistryProxy().removeContainer();
             HashMap<String, String> names = HttpAsyncMiningQueryHelper.getNamesOfActiveNodes();
             String name = names.get(IP);
 
@@ -282,13 +282,12 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             String pathologyKey = HttpAsyncMiningQueryHelper.searchConsul(System.getenv("DATA") + "/" + name + "?keys");
             String[] pathologyKeyArray = gson.fromJson(pathologyKey, String[].class);
             for (String p : pathologyKeyArray) {
-                log.info(("pathology= "+p));
                 deleteFromConsul(p);            //Delete every pathology for node with name $name
             }
             //Delete IP of active_worker with name $name
-            log.info("name = "+name);
             deleteFromConsul(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/" + name);
-            throw new Exception("Node "+names.get(name)+" is not responding. Re run your experiment");
+            //TODO maybe add the datasets
+            throw new Exception("Node "+name+"is not responding. Re run your experiment");
         }
     }
 
