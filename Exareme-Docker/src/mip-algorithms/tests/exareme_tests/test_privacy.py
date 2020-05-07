@@ -11,13 +11,13 @@ from tests.algorithm_tests_with_privacy.test_Histograms import endpointUrl as ur
 from tests.algorithm_tests_with_privacy.test_ID3 import endpointUrl as url_id3
 from tests.algorithm_tests_with_privacy.test_KMEANS import endpointUrl as url_kmeans
 from tests.algorithm_tests_with_privacy.test_LinearRegression import endpointUrl as url_linreg
-from tests.algorithm_tests.test_LogisticRegression import endpointUrl as url_logreg
+from tests.algorithm_tests_without_privacy.test_LogisticRegression import endpointUrl as url_logreg
 from tests.algorithm_tests_with_privacy.test_MultipleHistograms import endpointUrl \
     as url_multi_hist
 from tests.algorithm_tests_with_privacy.test_NaiveBayes import url1
 from tests.algorithm_tests_with_privacy.test_NaiveBayes_Training_Standalone import \
     endpointUrl as url_naive_bayes_standalone
-from tests.algorithm_tests.test_PearsonCorrelation import endpointUrl as url_pearson
+from tests.algorithm_tests_without_privacy.test_PearsonCorrelation import endpointUrl as url_pearson
 from tests.algorithm_tests_with_privacy.test_ttest_independent import endpointUrl \
     as url_ttest_indep
 from tests.algorithm_tests_with_privacy.test_ttest_onesample import endpointUrl \
