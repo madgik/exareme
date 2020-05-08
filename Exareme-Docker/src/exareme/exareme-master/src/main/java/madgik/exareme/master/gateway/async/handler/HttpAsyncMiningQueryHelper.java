@@ -189,14 +189,26 @@ public class HttpAsyncMiningQueryHelper {
         String[] userDatasets = null;
         String pathology = null;
         HashMap<String, String[]> nodeDatasets = new HashMap<>();
-        //TODO list_variables will cause error because it only has pathology
-        if (inputContent == null || !inputContent.containsKey("dataset")) {
+
+        if (inputContent == null ) {        //list_datasets
             for (ContainerProxy containerProxy : ArtRegistryLocator.getArtRegistryProxy().getContainers()) {
                 System.out.println("ContainerProxy : " + containerProxy.getEntityName().getIP());
                 nodesToBeChecked.add(containerProxy.getEntityName().getIP());
             }
-	    return nodesToBeChecked;
-        } else {
+	        return nodesToBeChecked;
+        }
+        else if(inputContent.size()==1 && inputContent.containsKey("pathology")) {  //list_variables
+            pathology = inputContent.get("pathology");
+            nodeDatasets = getNodesForPathology(pathology);
+
+            for (ContainerProxy containerProxy : ArtRegistryLocator.getArtRegistryProxy().getContainers()) {
+                System.out.println("ContainerProxy : " + containerProxy.getEntityName().getIP());
+                nodesToBeChecked.add(containerProxy.getEntityName().getIP());
+            }
+            return nodesToBeChecked;
+        }
+
+        else {
             if (inputContent.containsKey("pathology")) {
                 pathology = inputContent.get("pathology");
                 nodeDatasets = getNodesForPathology(pathology);

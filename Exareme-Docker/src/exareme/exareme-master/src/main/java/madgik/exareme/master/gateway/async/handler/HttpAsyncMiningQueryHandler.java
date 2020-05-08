@@ -27,7 +27,6 @@ import madgik.exareme.worker.art.registry.ArtRegistryLocator;
 import org.apache.http.*;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -37,14 +36,12 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
-import javax.print.DocFlavor;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.rmi.ServerException;
 import java.util.*;
 import static madgik.exareme.master.gateway.GatewayConstants.COOKIE_ALGORITHM_EXECUTION_ID;
-import madgik.exareme.common.art.entity.EntityName;
 
 public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<HttpRequest> {
 
@@ -142,12 +139,17 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         try {
             nodesToBeChecked=HttpAsyncMiningQueryHelper.getInputAlgo(inputContent);
 
+            if (nodesToBeChecked == null)
+                throw new Exception("No nodes found to run experiment");
             for(String node : nodesToBeChecked) {
-                pingContainer(node, inputContent.get("pathology"));
+                if(inputContent!=null && inputContent.containsKey("pathology"))
+                    pingContainer(node, inputContent.get("pathology"));
+                else
+                    pingContainer(node, null);
             }
 
 
-	    ContainerProxy[] usedContainerProxies;
+	        ContainerProxy[] usedContainerProxies;
             
             List<ContainerProxy> usedContainerProxiesList = new ArrayList<>();
             for (ContainerProxy containerProxy : ArtRegistryLocator.getArtRegistryProxy().getContainers()) {
@@ -264,14 +266,13 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
     }
 
 
-    private boolean pingContainer(String IP, String pathology) throws Exception {
+    private void pingContainer(String IP, String pathology) throws Exception {
         InetAddress checkIP = InetAddress.getByName(IP);
         Gson gson = new Gson();
         String availableDatasets;
         log.debug("Checking worker with IP "+IP);
         if (checkIP.isReachable(5000)) {
             log.info("Host is reachable");
-            return true;
         }
         else {
             for (ContainerProxy containerProxy : ArtRegistryLocator.getArtRegistryProxy().getContainers()) {
@@ -283,7 +284,6 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
 
             HashMap<String, String> names = HttpAsyncMiningQueryHelper.getNamesOfActiveNodesInConsul();
             String name = names.get(IP);
-
             //Delete pathologies and IP of the node
             String pathologyKey = HttpAsyncMiningQueryHelper.searchConsul(System.getenv("DATA") + "/" + name + "?keys");
             String[] pathologyKeyArray = gson.fromJson(pathologyKey, String[].class);
@@ -292,7 +292,11 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             }
             //Delete IP of active_worker with name $name
             deleteFromConsul(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/" + name);
-            //TODO maybe add the datasets and not the name
+
+            if (pathology==null){
+                throw new Exception("Re run your experiment using available data");
+            }
+
             availableDatasets = HttpAsyncMiningQueryHelper.getAvailableDatasetsFromConsul(pathology);
             if (availableDatasets!=null){
                 throw new Exception("Re run your experiment using available data: '"+availableDatasets+"'");
