@@ -44,6 +44,7 @@ import java.net.InetAddress;
 import java.rmi.ServerException;
 import java.util.*;
 import static madgik.exareme.master.gateway.GatewayConstants.COOKIE_ALGORITHM_EXECUTION_ID;
+import madgik.exareme.common.art.entity.EntityName;
 
 public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<HttpRequest> {
 
@@ -141,10 +142,8 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         try {
             nodesToBeChecked=HttpAsyncMiningQueryHelper.getInputAlgo(inputContent);
 
-            for(String node : nodesToBeChecked){
-                if (pingContainer(node)){
-                    continue;
-                }
+            for(String node : nodesToBeChecked) {
+                pingContainer(node, inputContent.get("pathology"));
             }
 
 
@@ -265,17 +264,24 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
     }
 
 
-    private boolean pingContainer(String IP) throws Exception {
+    private boolean pingContainer(String IP, String pathology) throws Exception {
         InetAddress checkIP = InetAddress.getByName(IP);
         Gson gson = new Gson();
+        String availableDatasets;
         log.debug("Checking worker with IP "+IP);
         if (checkIP.isReachable(5000)) {
             log.info("Host is reachable");
             return true;
         }
         else {
-            //TODO ArtRegistryLocator.getArtRegistryProxy().removeContainer();
-            HashMap<String, String> names = HttpAsyncMiningQueryHelper.getNamesOfActiveNodes();
+            for (ContainerProxy containerProxy : ArtRegistryLocator.getArtRegistryProxy().getContainers()) {
+                if (IP.equals(containerProxy.getEntityName().getIP())) {
+                    log.info("Going to delete "+containerProxy.getEntityName()+" with IP "+IP);
+                    ArtRegistryLocator.getArtRegistryProxy().removeContainer(containerProxy.getEntityName());
+                }
+            }
+
+            HashMap<String, String> names = HttpAsyncMiningQueryHelper.getNamesOfActiveNodesInConsul();
             String name = names.get(IP);
 
             //Delete pathologies and IP of the node
@@ -286,8 +292,14 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             }
             //Delete IP of active_worker with name $name
             deleteFromConsul(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/" + name);
-            //TODO maybe add the datasets
-            throw new Exception("Node "+name+"is not responding. Re run your experiment");
+            //TODO maybe add the datasets and not the name
+            availableDatasets = HttpAsyncMiningQueryHelper.getAvailableDatasetsFromConsul(pathology);
+            if (availableDatasets!=null){
+                throw new Exception("Re run your experiment using available data: '"+availableDatasets+"'");
+            }
+            else{
+                throw new Exception("No data available to run any other experiments. Consult your system administration.");
+            }
         }
     }
 
@@ -321,4 +333,5 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
     }
 
 }
+
 

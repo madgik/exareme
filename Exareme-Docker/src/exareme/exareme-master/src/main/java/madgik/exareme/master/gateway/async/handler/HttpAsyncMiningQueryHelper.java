@@ -28,7 +28,7 @@ public class HttpAsyncMiningQueryHelper {
     private static final Logger log = Logger.getLogger(HttpAsyncMiningQueryHandler.class);
     private static final String user_error = new String("text/plain+user_error");
 
-    public static HashMap<String, String[]> getDatasetsFromConsul(String pathology) throws IOException, PathologyException {
+    public static HashMap<String, String[]> getNodesForPathology(String pathology) throws IOException, PathologyException {
         Gson gson = new Gson();
         HashMap<String, String[]> nodeDatasets = new HashMap<>();
         List<String> pathologyNodes = new ArrayList<String>();
@@ -82,7 +82,7 @@ public class HttpAsyncMiningQueryHelper {
 
 
 
-    public static HashMap<String, String> getNamesOfActiveNodes() throws Exception {
+    public static HashMap<String, String> getNamesOfActiveNodesInConsul() throws Exception {
         Gson gson = new Gson();
         HashMap<String, String> nodeNames = new HashMap<>();
         String masterKey = searchConsul(System.getenv("EXAREME_MASTER_PATH") + "/?keys");
@@ -189,7 +189,7 @@ public class HttpAsyncMiningQueryHelper {
         String[] userDatasets = null;
         String pathology = null;
         HashMap<String, String[]> nodeDatasets = new HashMap<>();
-
+        //TODO list_variables will cause error because it only has pathology
         if (inputContent == null || !inputContent.containsKey("dataset")) {
             for (ContainerProxy containerProxy : ArtRegistryLocator.getArtRegistryProxy().getContainers()) {
                 System.out.println("ContainerProxy : " + containerProxy.getEntityName().getIP());
@@ -199,7 +199,7 @@ public class HttpAsyncMiningQueryHelper {
         } else {
             if (inputContent.containsKey("pathology")) {
                 pathology = inputContent.get("pathology");
-                nodeDatasets = getDatasetsFromConsul(pathology);
+                nodeDatasets = getNodesForPathology(pathology);
             }
             if (inputContent.containsKey("dataset")) {
                 datasets = inputContent.get("dataset");
@@ -253,8 +253,29 @@ public class HttpAsyncMiningQueryHelper {
         return nodesToBeChecked;
     }
 
+
+    public static String getAvailableDatasetsFromConsul(String pathology) throws Exception {
+        HashMap<String,String> names = getNamesOfActiveNodesInConsul();
+        StringBuilder datasets=new StringBuilder();
+        Gson gson = new Gson();
+
+        for (Map.Entry<String, String> entry : names.entrySet()) {
+            String dataRaw = searchConsul(System.getenv("DATA") + "/" + entry.getValue() + "/" + pathology + "?raw");
+            String[] data = gson.fromJson(dataRaw,String[].class);
+            for (String d : data){
+                if(!d.isEmpty())
+                    datasets.append(d).append(",");
+            }
+        }
+        if(!datasets.toString().isEmpty())
+            return datasets.substring(0, datasets.length() - 1);
+        else
+            return null;
+    }
+
     public static String defaultOutputFormat(String data, String type) {
         return "{\"result\" : [{\"data\":" + "\"" + data + "\",\"type\":" + "\"" + type + "\"}]}";
     }
 }
+
 
