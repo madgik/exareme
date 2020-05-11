@@ -7,7 +7,7 @@
     "parameters": [
         {
             "name": "y",
-            "label": "Target variable",
+            "label": "y",
             "desc": "A single categorical variable whose values describe a binary event.",
             "type": "column",
             "columnValuesSQLType": "integer, text",
@@ -19,7 +19,7 @@
         },
         {
             "name": "x",
-            "label": "Control variable",
+            "label": "x",
             "desc": "A single categorical variable based on which patients are grouped.",
             "type": "column",
             "columnValuesSQLType": "integer, text",
