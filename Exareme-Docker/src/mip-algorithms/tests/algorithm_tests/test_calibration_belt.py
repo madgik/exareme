@@ -9,7 +9,7 @@ expected_file = Path(__file__).parent / "expected" / "calibration_belt_expected.
 
 
 @pytest.mark.parametrize(
-    "test_input, expected", get_test_params(expected_file, slice(28))
+    "test_input, expected", get_test_params(expected_file, slice(38))
 )
 def test_calibrationbelt_algorithm_local(test_input, expected):
     result = get_algorithm_result(CalibrationBelt, test_input, num_workers=1)
@@ -20,13 +20,13 @@ def test_calibrationbelt_algorithm_local(test_input, expected):
     assert np.isclose(result["p value"], expected["p value"], atol=1e-3)
 
 
-@pytest.mark.parametrize(
-    "test_input, expected", get_test_params(expected_file, slice(28, 38))
-)
-def test_calibrationbelt_algorithm_federated(test_input, expected):
-    result = get_algorithm_result(CalibrationBelt, test_input, num_workers=3)
-
-    expected = expected[0]
-    assert int(result["n_obs"]) == int(expected["n_obs"])
-    assert int(result["Model degree"]) == int(expected["Model degree"])
-    assert np.isclose(result["p value"], expected["p value"], atol=1e-3)
+# @pytest.mark.parametrize(
+#     "test_input, expected", get_test_params(expected_file, slice(28, 38))
+# )
+# def test_calibrationbelt_algorithm_federated(test_input, expected):
+#     result = get_algorithm_result(CalibrationBelt, test_input, num_workers=3)
+#
+#     expected = expected[0]
+#     assert int(result["n_obs"]) == int(expected["n_obs"])
+#     assert int(result["Model degree"]) == int(expected["Model degree"])
+#     assert np.isclose(result["p value"], expected["p value"], atol=1e-3)
