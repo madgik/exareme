@@ -37,9 +37,8 @@ class TransferAndAggregateData(object):
     def __repr__(self):
         ret = ""
         for k in self.data.keys():
-            ret += "{k} : {val}, reduce by {red_type}\n".format(
-                k=k, val=self.data[k], red_type=self.reduce_type[k]
-            )
+            ret += '{k} : {val}, reduce by {red_type}\n'.format(k=k, val=self.data[k],
+                                                                red_type=self.reduce_type[k])
         return ret
 
     def __add__(self, other):
@@ -51,6 +50,11 @@ class TransferAndAggregateData(object):
                 kwargs[k] = (max(self.data[k], other.data[k]), "max")
             elif self.reduce_type[k] == "concat":
                 kwargs[k] = (np.concatenate(self.data[k], other.data[k]), "concat")
+            elif self.reduce_type[k] == "concatdict":
+                kwargs[k] = {}
+                for key in self.data[k].keys():
+                    kwargs[key] = np.concatenate(self.data[k][key], other.data[k][key])
+                kwargs[k] = (kwargs[k], "concatdict")
             elif self.reduce_type[k] == "do_nothing":
                 kwargs[k] = (self.data[k], "do_nothing")
             else:
@@ -115,7 +119,7 @@ def query_with_privacy(fname_db, query):
     schema = [description[0] for description in cur.description]
     data = cur.fetchall()
     if len(data) < PRIVACY_MAGIC_NUMBER:
-        raise PrivacyError("Query results in illegal number of datapoints.")
+        raise PrivacyError('Query results in illegal number of datapoints.')
     return schema, data
 
 
@@ -400,7 +404,10 @@ class StateData(object):
 
 
 def init_logger():
-    logging.basicConfig(filename="/var/log/exaremePythonAlgorithms.log")
+    if env_type == "PROD":
+        logging.basicConfig(filename="/var/log/exaremePythonAlgorithms.log", level=logging.INFO)
+    else:
+        logging.basicConfig(filename="/var/log/exaremePythonAlgorithms.log", level=logging.DEBUG)
 
 
 class Global2Local_TD(TransferData):

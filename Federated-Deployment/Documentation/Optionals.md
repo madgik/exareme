@@ -175,3 +175,5 @@ More guidance will be provided in that matter if you select to deploy via script
 By default, Portainer’s web interface and API are exposed over HTTP. If you want them to be exposed over HTTPS check
 <a href="https://github.com/madgik/exareme/tree/master/Documentation/SecurePortainer.md">here</a>.<br />
 
+# [Optional] Test Datasets
+In order to start testing exareme, follow the instructions presented [here](https://github.com/madgik/exareme/tree/master/Exareme-Docker/src/mip-algorithms/tests/data).
