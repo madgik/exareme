@@ -4,8 +4,8 @@
 	"label": "Descriptive Statistics",
 	"type": "python_local_global",
 	"parameters": [{
-			"name": "x",
-			"label": "x",
+			"name": "y",
+			"label": "y",
 			"desc": "A list of variables from database. The variable should be Real, Integer or String. The variable can be either numerical or categorical. It cannot be empty",
 			"type": "column",
 			"columnValuesSQLType": "real, integer, text",

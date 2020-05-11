@@ -120,7 +120,7 @@ class DataBase(object):
 
     @logged
     def read_data_from_db(self, args):
-        var_names = list(args.y)
+        var_names = list(args.y) + ["dataset"]
         if hasattr(args, "x") and args.x:
             var_names.extend(args.x)
         data = self.select_vars_from_data(

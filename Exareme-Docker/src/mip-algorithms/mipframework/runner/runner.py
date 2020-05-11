@@ -17,6 +17,7 @@ ALGORITHM_TYPES = {
     "Pearson": "local-global",
     "LogisticRegression": "iterative",
     "CalibrationBelt": "iterative",
+    "DescriptiveStats": "local-global",
 }
 
 

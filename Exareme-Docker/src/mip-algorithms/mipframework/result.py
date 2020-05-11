@@ -35,8 +35,12 @@ class TabularDataResource(object):
     @logged
     def render(self):
         header = []
-        for datum, name in zip(self.data[0], self.fields):
-            dt = "string" if type(datum) == str else "number"
+        if type(self.data) == list:
+            dat = self.data[0]
+        else:
+            dat = self.data
+        for datum, name in zip(dat, self.fields):
+            dt = "string" if isinstance(datum, basestring) else "number"
             header.append({"name": name, "type": dt})
         return {
             "name": self.title,
