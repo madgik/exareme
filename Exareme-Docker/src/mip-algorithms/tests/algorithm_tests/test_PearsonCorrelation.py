@@ -2,9 +2,9 @@ import requests
 import json
 import logging
 import numpy as np
-from tests.algorithm_tests.lib import vmUrl
+from tests import vm_url
 
-endpointUrl = vmUrl + "PEARSON_CORRELATION"
+endpointUrl = vm_url + "PEARSON_CORRELATION"
 
 # Required datasets: adni_9rows, adni, data_pr1, desd-synthdata
 

@@ -2,9 +2,9 @@ import pytest
 import json
 import requests
 import math
-from tests.vm_url import vmUrl
+from tests import vm_url
 
-endpointUrl = vmUrl + "DESCRIPTIVE_STATS"
+endpointUrl = vm_url + "DESCRIPTIVE_STATS"
 
 
 def get_test_params():
