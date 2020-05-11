@@ -6,6 +6,7 @@ from itertools import ifilterfalse, ifilter
 from collections import Counter
 
 from mipframework import Algorithm, AlgorithmResult, TabularDataResource
+from mipframework.constants import PRIVACY_THRESHOLD
 
 
 class DescriptiveStats(Algorithm):
@@ -29,7 +30,7 @@ class DescriptiveStats(Algorithm):
             data_group = data[data.dataset == dataset]
             n_obs = len(data_group)
             self.push_and_add(**{"n_obs_" + dataset: n_obs})
-            if n_obs == 0:
+            if n_obs <= PRIVACY_THRESHOLD:
                 continue
             for numerical in numericals:
                 numvar = data_group[numerical]
@@ -55,8 +56,8 @@ class DescriptiveStats(Algorithm):
         for dataset in self.parameters.dataset:
             n_obs = self.fetch("n_obs_" + dataset)
             for numerical in numericals:
-                if n_obs == 0:
-                    tables.append(empty_table(numerical, dataset))
+                if n_obs <= PRIVACY_THRESHOLD:
+                    tables.append(empty_table(n_obs, numerical, dataset))
                     continue
                 sx = self.fetch("sx_" + numerical + "_" + dataset)
                 sxx = self.fetch("sxx_" + numerical + "_" + dataset)
@@ -85,7 +86,7 @@ class DescriptiveStats(Algorithm):
                 )
             for categorical in categoricals:
                 if n_obs == 0:
-                    tables.append(empty_table(numerical, dataset))
+                    tables.append(empty_table(n_obs, categorical, dataset))
                     continue
                 counter = self.fetch("counter_" + categorical + "_" + dataset)
                 tables.append(
@@ -122,12 +123,12 @@ fields = [
 ]
 
 
-def empty_table(var, dataset):
+def empty_table(n_obs, var, dataset):
     return TabularDataResource(
         fields=fields,
         data=(
             var,
-            0,
+            n_obs,
             "NOT ENOUGH DATA",
             "NOT ENOUGH DATA",
             "NOT ENOUGH DATA",
