@@ -97,7 +97,7 @@ def cart_1_local(dataFrame, dataSchema, categoricalVariables, args_X, args_Y, gl
     confusionMatrix = dict() # ConfusionMatrix['ActualValue', 'PredictedValue'] = ...
     mse= 0 # mean square error
     if args_Y[0] in categoricalVariables:  #case of Classification tree
-        for element in itertools.product(categoricalVariables['alzheimerbroadcategory'],categoricalVariables['alzheimerbroadcategory']):
+        for element in itertools.product(categoricalVariables[args_Y[0]],categoricalVariables[args_Y[0]]):
             confusionMatrix[element[0],element[1]] = 0
         for index, row in dataFrame.iterrows():
             predictedValue = predict(globalTreeJ, row, args_Y, True)
