@@ -3,7 +3,11 @@ from __future__ import print_function
 
 from os import path
 
-from utils.algorithm_utils import parse_exareme_args, set_algorithms_output_data, TransferAndAggregateData
+from utils.algorithm_utils import (
+    parse_exareme_args,
+    set_algorithms_output_data,
+    TransferAndAggregateData,
+)
 from KAPLAN_MEIER.km_lib import global_1
 
 
@@ -17,6 +21,6 @@ def main(args):
     set_algorithms_output_data(global_out)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     args = parse_exareme_args(__file__)
     main(args)

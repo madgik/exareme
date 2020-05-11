@@ -4,7 +4,7 @@ import json
 import logging
 import sys
 sys.path.insert(0,'../')
-from tests.algorithm_tests.lib import vmUrl
+from tests.vm_url import vmUrl
 
 endpointUrl=vmUrl+'LINEAR_REGRESSION'
 
@@ -28,4 +28,3 @@ def check_result(result):
     assert result == "{\"result\" : [{\"data\":\"The value of the parameter 'dataset' should not be blank.\",\"type\":\"text/plain+error\"}]}"
 if __name__ == '__main__':
     unittest.main()
-

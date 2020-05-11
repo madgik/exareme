@@ -7,7 +7,7 @@ from decimal import *
 import sys
 from os import path
 sys.path.append(path.abspath(__file__))
-from tests.algorithm_tests.lib import vmUrl
+from tests.vm_url import vmUrl
 url1=vmUrl+'CROSS_VALIDATION_K_FOLD'
 url2=vmUrl+'NAIVE_BAYES_TRAINING'
 url3=vmUrl+'NAIVE_BAYES_TESTING'

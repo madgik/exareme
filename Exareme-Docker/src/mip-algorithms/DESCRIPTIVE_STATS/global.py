@@ -17,7 +17,7 @@ def descr_stats_global(global_in):
 
         if var.is_categorical:
             is_categorical, var_name, count, freqs = var.get_data()
-            freqs = {str(key): freqs[key] for key in freqs.keys()}
+            freqs = {key: freqs[key] for key in freqs.keys()}
         else:
             is_categorical, var_name, nn, sx, sxx, xmin, xmax = var.get_data()
             mean = sx / nn
@@ -27,31 +27,35 @@ def descr_stats_global(global_in):
 
         if is_categorical:
             # Raw data
-            results.append({
-                'Label'         : var_name,
-                'Count'         : count,
-                'Min'           : None,
-                'Max'           : None,
-                'Mean'          : None,
-                'Std.Err.'      : None,
-                'Mean + Std.Err': None,
-                'Mean - Std.Err': None,
-                'Frequencies'   : freqs
-            })
+            results.append(
+                {
+                    "Label": var_name,
+                    "Count": count,
+                    "Min": None,
+                    "Max": None,
+                    "Mean": None,
+                    "Std.Err.": None,
+                    "Mean + Std.Err": None,
+                    "Mean - Std.Err": None,
+                    "Frequencies": freqs,
+                }
+            )
 
         else:
             # Raw data
-            results.append({
-                'Label'         : var_name,
-                'Count'         : nn,
-                'Min'           : xmin,
-                'Max'           : xmax,
-                'Mean'          : mean,
-                'Std.Err.'      : std,
-                'Mean + Std.Err': upper_ci,
-                'Mean - Std.Err': lower_ci,
-                'Frequencies'   : None
-            })
+            results.append(
+                {
+                    "Label": var_name,
+                    "Count": nn,
+                    "Min": xmin,
+                    "Max": xmax,
+                    "Mean": mean,
+                    "Std.Err.": std,
+                    "Mean + Std.Err": upper_ci,
+                    "Mean - Std.Err": lower_ci,
+                    "Frequencies": None,
+                }
+            )
 
     schema = {
         "fields": [
@@ -63,18 +67,15 @@ def descr_stats_global(global_in):
             {"name": "Std.Err.", "type": "real"},
             {"name": "Mean + Std.Err", "type": "real"},
             {"name": "Mean - Std.Err", "type": "real"},
-            {"name": "Frequencies", "type": "object"}
+            {"name": "Frequencies", "type": "object"},
         ]
     }
 
     result = {
-        'result': [
+        "result": [
             {
                 "type": "application/vnd.dataresource+json",
-                "data": {
-                    "data"  : results,
-                    "schema": schema
-                }
+                "data": {"data": results, "schema": schema},
             }
         ]
     }
@@ -82,7 +83,7 @@ def descr_stats_global(global_in):
     try:
         global_out = json.dumps(result, allow_nan=False)
     except ValueError:
-        print('Result contains NaNs.')
+        print("Result contains NaNs.")
     else:
         return global_out
 
@@ -90,7 +91,7 @@ def descr_stats_global(global_in):
 def main():
     # Parse arguments
     parser = ArgumentParser()
-    parser.add_argument('-local_step_dbs', required=True, help='Path to local db.')
+    parser.add_argument("-local_step_dbs", required=True, help="Path to local db.")
     args, unknown = parser.parse_known_args()
     local_dbs = path.abspath(args.local_step_dbs)
 
@@ -101,5 +102,5 @@ def main():
     set_algorithms_output_data(global_out)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

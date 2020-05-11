@@ -8,7 +8,7 @@ The file should contain the following lines, modify them depending on the versio
 
 ```
 EXAREME_IMAGE: "hbpmip/exareme"
-EXAREME_TAG: "v21.2.0"
+EXAREME_TAG: "22.0.1"
 ```
 
 # [Optional] Initialize Hosts
@@ -55,12 +55,13 @@ worker88_197_53_100 become_user="{{worker88_197_53_100_become_user}}"
 worker88_197_53_100 ansible_become_pass="{{worker88_197_53_100_become_pass}}"
 worker88_197_53_100 ansible_ssh_pass="{{worker88_197_53_100_ssh_pass}}"
 ```
-You can find the hostname of any machine by executing ```hostname``` in terminal. Please mind that the ```hostname``` of the Target node *Must Not* include dashes[.] If that is the case, change your hostname configurations in the Target node as needed.
+You can find the hostname of any machine by executing ```hostname``` in terminal.<br/>
 
-[Requirement1: Mind that the variable ```data_path``` is the path where pathology folders are stored in your Target machine (Each Pathology folder includes the Data CSV (datasets.csv) and the Metadata file (CDEsMetadata.json))]<br/>
-
-[Requirement2: Mind that the variable ```home_path``` is the path where ```Federated-Deployment/Compose-Files/``` will be copied and stored in the master node. Compose-Files contains 2 docker-compose.yaml files for deploying the services.
-The ```home_path``` can be Any path in which become_user has permissions. If the path does not exist in the master node,then any sub-folders are created automatically during the copy.]<br/>
+Please follow these requirements:
+1) Mind that the ```hostname``` of the Target node *Must Not* include dashes ( **.** ) If that is the case, change your hostname configurations in the Target node as needed.
+2) Mind that the variable ```data_path``` is the path where pathology folders are stored in your Target machine (Each Pathology folder includes the Data CSV (datasets.csv) and the Metadata file (CDEsMetadata.json))
+3) Mind that the variable ```home_path``` is the path where ```Federated-Deployment/Compose-Files/``` will be copied and stored in the master node. Compose-Files contains 2 docker-compose.yaml files for deploying the services.
+The ```home_path``` can be Any path in which become_user has permissions. If the path does not exist in the master node,then any sub-folders are created automatically during the copy.
 
 You can see that there are 2 main categories in hosts.ini file. The first one is ```[master]```, the second one is ```[workers]```. <br/>
 You can always add more workers following the template given above: </br>
@@ -109,13 +110,13 @@ As you can also see in hosts.ini file we have some sensitive data like usernames
 ```
 
 It is not a valid technique to just fill in your sensitive data (credentials) there, so we will use ```Ansible-Vault```.
-Ansible-vault comes with the installation of ansible. Make sure you have it installed by running: ```ansible-vault --version```
+Ansible-vault comes with the installation of ```ansible```. Make sure you have it installed by running: ```ansible-vault --version```
 
 With ansible-vault we can have an encrypted file which will contain sensitive information (credentials) like the ones shown above.
 
-In order to create the file you need to run
+In order to create the file, you need to run
 ```ansible-vault create vault.yaml``` inside ```Federated-Deployment/Docker-Ansible/``` folder.
-It will ask for a vault-password that you will need to enter it each time you run a playbook. So keep it in mind.
+It will ask for a vault-password which you will need to enter each time you run a playbook. So keep it in mind.
 
 Here you will add
 ```
@@ -138,15 +139,18 @@ all in plaintext where:<br/>
 a)remote_user and ssh_pass will be user to login to the target hostname<br/>
 b)become_user and become_pass will be used to execute docker and other commands. Make sure that become_user has permission to run docker commands (add user to docker group in the target machines).You could use root for become_user if possible.
 <br/><br/>
-Keep in mind that you must be able to ```ssh remote_user@ansible_host``` in *all target machines* by only providing the ```ssh_pass``` as a password.If this is not the case, consider to change your ssh configurations.
+Keep in mind that you must be able to ```ssh remote_user@ansible_host``` in *all target machines* by only providing the ```ssh_pass``` as a password. If this is not the case, consider to change your ssh configurations.
 
 If you have more than 2 workers, you will add those too by adding ```workerX_...``` in front of each variable where X is the IP of the node with ```.``` replaced by ```_```.<br/>
 [Keep in mind that your password can be anything you want But ansible has a special character for comments ```#``` . If your password contains that specific character ansible will take the characters next to it as comments.]<br/>
 When you exit you can see that vault.yaml is encrypted with all your sensitive information (credentials) in there.
 
 If you want to edit the file you can do so whenever by running:
-```ansible-vault edit vault.yaml```
+```ansible-vault edit vault.yaml```<br/>
 Place your vault password and edit the file.
+
+Note: ```ansible``` uses the ```vim``` editor by default, you may use a different editor (like ```nano```) by applying ```env EDITOR=nano``` right before the ```ansible-vault``` commands.<br/>
+For example: ```env EDITOR=nano ansible-vault edit vault.yaml```
 
 ## [Optional] Regarding Ansible-vault password.
 (source https://docs.ansible.com/ansible/latest/user_guide/playbooks_vault.html)
@@ -171,3 +175,5 @@ More guidance will be provided in that matter if you select to deploy via script
 By default, Portainer’s web interface and API are exposed over HTTP. If you want them to be exposed over HTTPS check
 <a href="https://github.com/madgik/exareme/tree/master/Documentation/SecurePortainer.md">here</a>.<br />
 
+# [Optional] Test Datasets
+In order to start testing exareme, follow the instructions presented [here](https://github.com/madgik/exareme/tree/master/Exareme-Docker/src/mip-algorithms/tests/data).
