@@ -149,7 +149,7 @@ class DataBase(object):
         data.replace("", np.nan, inplace=True)  # fixme remove
         data = data.dropna()
         # Privacy check
-        if len(data) <= PRIVACY_THRESHOLD:
+        if len(data) < PRIVACY_THRESHOLD:
             raise PrivacyError
         return data
 
