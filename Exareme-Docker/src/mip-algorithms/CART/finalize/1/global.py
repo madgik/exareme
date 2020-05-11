@@ -38,9 +38,9 @@ def main():
     t1 = global_state['t1']
     t2 = time.localtime(time.time())
     t0 = [ 'yy','mm','dd','hh','min','sec','wday','yday','isdst']
-    logging.warning(" Time: ")
+    logging.info(" Time: ")
     for i in range(len(t1)):
-        logging.warning([t0[i], t2[i], t1[i], t2[i]- t1[i]])
+        logging.info([t0[i], t2[i], t1[i], t2[i]- t1[i]])
     set_algorithms_output_data(myresult)
 
 if __name__ == '__main__':   main()

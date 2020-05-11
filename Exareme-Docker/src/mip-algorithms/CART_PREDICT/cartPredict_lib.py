@@ -14,18 +14,9 @@ import csv
 
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))) + '/utils/')
 
-from algorithm_utils import TransferData, PRIVACY_MAGIC_NUMBER, LOGS
+from algorithm_utils import TransferData, PRIVACY_MAGIC_NUMBER
 
-# dataset = "desd-synthdata"
-# args_X = ['lefthippocampus','righthippocampus']
-# args_Y = ['alzheimerbroadcategory'] #alzheimerbroadcategory, or #subjectage
-# categoricalVariables = {'alzheimerbroadcategory':['AD',"CN","Other"]} #or {}
-# #1. Load dataset
-# dataFrame = pd.read_csv("~/Desktop/HBP/exareme/Exareme-Docker/src/mip-algorithms/unit_tests/data/dementia/desd-synthdata.csv", index_col ="subjectcode")
-# print(dataFrame.head())
-# dataFrame = dataFrame[['lefthippocampus', 'righthippocampus', args_Y[0]]]
-# dataFrame = dataFrame.dropna()
-# #dataFrame['alzheimerbroadcategory'] = dataFrame['alzheimerbroadcategory'].map({'AD': 0, 'CN': 1,'Other':2})
+LOGS = True
 
 def totabulardataresourceformat(name, data, fields):
     # Tabular data resource summary 2
@@ -105,8 +96,7 @@ def cart_1_local(dataFrame, dataSchema, categoricalVariables, args_X, args_Y, gl
                 rowcopy = [row[elem] for elem in dataSchema]
                 rowcopy.append(predictedValue)
                 wr.writerow(rowcopy)
-                if predictedValue != row[args_Y[0]]:
-                    logging.warning(["wrongPrediction", row, predictedValue])
+            logging.debug(["Predictions", row, predictedValue])
             confusionMatrix[row[args_Y[0]],predictedValue] = confusionMatrix[row[args_Y[0]],predictedValue] + 1
     elif args_Y[0] not in categoricalVariables: #case of regression tree
         for index, row in dataFrame.iterrows():
@@ -115,7 +105,7 @@ def cart_1_local(dataFrame, dataSchema, categoricalVariables, args_X, args_Y, gl
                 rowcopy = [row[elem] for elem in dataSchema]
                 rowcopy.append(predictedValue)
                 wr.writerow(rowcopy)
-                logging.warning(["Predictions", row, predictedValue])
+            logging.debug(["Predictions", row, predictedValue])
             mse = mse + (row[args_Y[0]] - predictedValue) ** 2
     if LOGS:
         file.close()

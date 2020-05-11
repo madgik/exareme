@@ -5,7 +5,6 @@ import sys
 from os import path
 from argparse import ArgumentParser
 import pandas as pd
-import logging
 
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/utils/')
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/CART_PREDICT/')

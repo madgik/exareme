@@ -13,7 +13,7 @@ sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/CART_PREDICT/')
 
 
-from algorithm_utils import query_database, variable_categorical_getDistinctValues, StateData, PrivacyError, ExaremeError, PRIVACY_MAGIC_NUMBER, LOGS, init_logger
+from algorithm_utils import query_database, variable_categorical_getDistinctValues, StateData, PrivacyError, ExaremeError, PRIVACY_MAGIC_NUMBER, init_logger
 from cartPredict_lib import cart_1_local, Cart_Loc2Glob_TD
 
 def main():
@@ -44,10 +44,9 @@ def main():
     else:
         raise ExaremeError('Only one of the fields treeJson and treeFile should be empty.')
 
-    if LOGS:
-        init_logger()
-        logging.warning("Init1Local: args_X, args_Y")
-        logging.warning([args_X, args_Y])
+
+    init_logger()
+    logging.info(["Init1Local: args_X, args_Y",[args_X, args_Y])
 
     #1. Query database and metadata
     queryMetadata = "select * from metadata where code in (" + "'" + "','".join(args_X) + "','" + "','".join(args_Y) + "'"  + ");"
