@@ -1,4 +1,4 @@
-from collections import defaultdict
+from collections import defaultdict, namedtuple
 import json
 import random
 import numpy as np
@@ -106,7 +106,7 @@ class AlgorithmTest(object):
             elif param["name"] == "filter":
                 param_value = ""  # todo implement get_random_filter method
             elif param["name"] == "dataset":
-                param_value = "adni"
+                param_value = self.get_random_datasets()
             elif param["name"] == "pathology":
                 param_value = "dementia"
             else:
@@ -152,13 +152,50 @@ class AlgorithmTest(object):
             ma = param["maxValue"] if param["maxValue"] else 1000
             return random.randint(mi, ma)
 
-    def get_data(self, variables):
+    def get_data(self, variables, datasets=None):
+        if not datasets:
+            datasets = ["adni"]
+        else:
+            datasets = datasets.split(",")
         variables = variables.split(",")
         data = self.db.select_vars_from_data(
-            variables, datasets=["adni"], filter_rules=None
+            variables, datasets=datasets, filter_rules=None
         )
         return data
+
+    def get_metadata(self, variables):
+        global args
+        variables = variables.split(",")
+        label, is_categorical, enumerations, minmax = self.db.select_md_from_metadata(
+            variables, args
+        )
+        return MetaData(label, is_categorical, enumerations, minmax)
 
     def to_json(self, fname):
         with open(fname, "w") as file:
             json.dump({"test_cases": self.test_cases}, file, indent=4)
+
+    @staticmethod
+    def get_random_datasets():
+        datasets = ["adni", "ppmi", "edsd"]
+        num_datasets = random.randint(1, len(datasets))
+        chosen = permutation(datasets)[:num_datasets].tolist()
+        return ",".join(chosen)
+
+
+MetaData = namedtuple("MetaData", "label is_categorical enumerations minmax")
+
+
+Args = namedtuple(
+    "Args",
+    [
+        "metadata_code_column",
+        "metadata_label_column",
+        "metadata_isCategorical_column",
+        "metadata_enumerations_column",
+        "metadata_minValue_column",
+        "metadata_maxValue_column",
+    ],
+)
+
+args = Args("code", "label", "isCategorical", "enumerations", "min", "max")

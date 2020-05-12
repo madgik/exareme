@@ -53,8 +53,11 @@ class DescriptiveStats(Algorithm):
 
         global fields
 
+        raw_out = dict()
         for dataset in self.parameters.dataset:
             n_obs = self.fetch("n_obs_" + dataset)
+            if n_obs > PRIVACY_THRESHOLD:
+                raw_out[dataset] = dict()
             for numerical in numericals:
                 if n_obs <= PRIVACY_THRESHOLD:
                     tables.append(empty_table(n_obs, numerical, dataset))
@@ -67,6 +70,12 @@ class DescriptiveStats(Algorithm):
                 std = ((sxx - n_obs * (mean ** 2)) / (n_obs - 1)) ** 0.5
                 upper_ci = mean + std
                 lower_ci = mean - std
+                raw_out[dataset][numerical] = {
+                    "mean": mean,
+                    "std": std,
+                    "min": min_,
+                    "max": max_,
+                }
                 tables.append(
                     TabularDataResource(
                         fields=fields,
@@ -89,6 +98,7 @@ class DescriptiveStats(Algorithm):
                     tables.append(empty_table(n_obs, categorical, dataset))
                     continue
                 counter = self.fetch("counter_" + categorical + "_" + dataset)
+                raw_out[dataset][categorical] = dict(counter)
                 tables.append(
                     TabularDataResource(
                         fields=fields,
@@ -107,7 +117,7 @@ class DescriptiveStats(Algorithm):
                     )
                 )
 
-        self.result = AlgorithmResult(raw_data={}, tables=tables)
+        self.result = AlgorithmResult(raw_data=raw_out, tables=tables)
 
 
 fields = [

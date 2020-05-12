@@ -26,7 +26,7 @@ def test_pca_algorithm_local(test_input, expected):
 
 
 @pytest.mark.parametrize(
-    "test_input, expected", get_test_params(expected_file, slice(80, 90))
+    "test_input, expected", get_test_params(expected_file, slice(80, 95))
 )
 def test_pca_algorithm_federated(test_input, expected):
     result = get_algorithm_result(PCA, test_input, num_workers=10)
@@ -38,7 +38,7 @@ def test_pca_algorithm_federated(test_input, expected):
 
 
 @pytest.mark.parametrize(
-    "test_input, expected", get_test_params(expected_file, slice(90, 100))
+    "test_input, expected", get_test_params(expected_file, slice(95, 100))
 )
 def test_pca_algorithm_exareme(test_input, expected):
     result = requests.post(url, data=json.dumps(test_input), headers=headers)
