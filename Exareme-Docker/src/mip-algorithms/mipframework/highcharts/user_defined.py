@@ -8,6 +8,9 @@ from .core import (
     DataLabels,
     Label,
     RenderableList,
+    Tooltip,
+    Annotations,
+    LabelOptions,
 )
 
 
@@ -33,17 +36,35 @@ class CorrelationHeatmap(HighchartTemplate):
         heatmap_data = []
         for i in range(len(matrix)):
             for j in range(len(matrix[0])):
-                heatmap_data.append([i, j, matrix[i][j]])
+                heatmap_data.append(
+                    {
+                        "y": i,
+                        "x": j,
+                        "value": round(matrix[i][j], 4),
+                        "name": ynames[i] + " ~ " + xnames[j],
+                    }
+                )
         self.chart = (
             Heatmap_(title=Title(text=title))
             .set(xAxis=Axis(categories=xnames))
             .set(yAxis=Axis(categories=ynames))
             .set(
                 colorAxis=ColorAxis(
-                    min=min_val, max=max_val, minColor="#ff0000", maxColor="#0000ff"
+                    min=min_val,
+                    max=max_val,
+                    minColor="#ff0000",
+                    maxColor="#0000ff",
+                    stops=[[0, "#c4463a"], [0.5, "#ffffff"], [0.9, "#3060cf"]],
                 )
             )
             .set(series=Series(data=heatmap_data))
+            .set(
+                tooltip=Tooltip(
+                    headerFormat="",
+                    pointFormat="<b>{point.name}: {" "point.value}</b>",
+                    enabled=True,
+                )
+            )
         )
 
 
@@ -78,8 +99,15 @@ class ConfusionMatrix(HighchartTemplate):
                 "value": confusion_matrix["True Negatives"],
             },
         ]
-        dataLables = DataLabels(
-            format="{point.name}: {point.value}", enabled=True, color="#333333"
+        data_labels = DataLabels(
+            format="{point.name}: {point.value}",
+            enabled=True,
+            color="#222222",
+            borderRadius=3,
+            backgroundColor="rgba(252, 255, 197, 0.7)",
+            borderWidth=2,
+            borderColor="#AAA",
+            padding=5,
         )
         self.chart = (
             Heatmap_(title=Title(text=title))
@@ -95,8 +123,9 @@ class ConfusionMatrix(HighchartTemplate):
                     min=min_val, max=max_val, minColor="#ffffff", maxColor="#0000ff"
                 )
             )
-            .set(series=Series(data=data, borderWidth=1, dataLabels=dataLables))
+            .set(series=Series(data=data, borderWidth=1, dataLabels=data_labels))
             .set(legend=Legend(enabled=False))
+            .set(tooltip=Tooltip(enabled=False))
         )
 
 
@@ -183,7 +212,24 @@ class BubbleGridPlot(HighchartTemplate):
 
 
 class CalibrationBeltPlot(HighchartTemplate):
-    def __init__(self, title, data, confidence_levels, e_name, o_name):
+    def __init__(
+        self,
+        title,
+        data,
+        confidence_levels,
+        e_name,
+        o_name,
+        model_deg,
+        thres,
+        p_val,
+        n,
+        cl1,
+        under1,
+        over1,
+        cl2,
+        under2,
+        over2,
+    ):
         self.chart = (
             Line_(title=Title(text=title))
             .set(xAxis=Axis(title=Title(text="EXPECTED ({})".format(e_name))))
@@ -221,6 +267,83 @@ class CalibrationBeltPlot(HighchartTemplate):
                             allowPointSelect=False,
                             marker={"enabled": False},
                             label={"enabled": False},
+                        ),
+                    ]
+                )
+            )
+            .set(
+                annotations=RenderableList(
+                    [
+                        Annotations(
+                            labels=RenderableList(
+                                [
+                                    Label(
+                                        point={"x": 100, "y": 100},
+                                        text="Polynomial degree: "
+                                        + str(model_deg)
+                                        + " <br/>Model selection significance level: "
+                                        + str(thres)
+                                        + " <br/>p-value: "
+                                        + str(p_val)
+                                        + " <br/>n: "
+                                        + str(n),
+                                        padding=10,
+                                        shape="rect",
+                                    )
+                                ]
+                            ),
+                            labelOptions=LabelOptions(
+                                borderRadius=5,
+                                backgroundColor="#bbd9fa",
+                                borderWidth=1,
+                                borderColor="#9aa2ab",
+                            ),
+                        ),
+                        Annotations(
+                            labels=RenderableList(
+                                [
+                                    Label(
+                                        point={"x": 800, "y": 600},
+                                        text="Confidence level: "
+                                        + str(cl1)
+                                        + "<br/>Under the bisector: "
+                                        + str(under1)
+                                        + "<br/>Over the bisector: "
+                                        + str(over1),
+                                        padding=10,
+                                        shape="rect",
+                                    )
+                                ]
+                            ),
+                            labelOptions=LabelOptions(
+                                borderRadius=5,
+                                backgroundColor="#6e7d8f",
+                                borderWidth=1,
+                                borderColor="#AAA",
+                            ),
+                        ),
+                        Annotations(
+                            labels=RenderableList(
+                                [
+                                    Label(
+                                        point={"x": 1000, "y": 600},
+                                        text="Confidence level: "
+                                        + str(cl2)
+                                        + "<br/>Under the bisector: "
+                                        + str(under2)
+                                        + "<br/>Over the bisector: "
+                                        + str(over2),
+                                        padding=10,
+                                        shape="rect",
+                                    )
+                                ]
+                            ),
+                            labelOptions=LabelOptions(
+                                borderRadius=5,
+                                backgroundColor="#a5b4c7",
+                                borderWidth=1,
+                                borderColor="#AAA",
+                            ),
                         ),
                     ]
                 )

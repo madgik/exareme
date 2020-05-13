@@ -183,6 +183,16 @@ class CalibrationBelt(Algorithm):
             confidence_levels=[cl1, cl2],
             e_name=self.fetch("e_name"),
             o_name=self.fetch("o_name"),
+            model_deg=model_deg,
+            thres=threshold,
+            p_val=p_value,
+            n=self.load("n_obs"),
+            cl1=cl1,
+            under1=under_bisect1,
+            over1=over_bisect1,
+            cl2=cl2,
+            under2=under_bisect2,
+            over2=over_bisect2,
         )
 
         self.result = AlgorithmResult(raw_data, highcharts=[chart])

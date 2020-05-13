@@ -41,6 +41,8 @@ class Pearson(Algorithm):
         self.push_and_add(sxy=sxy)
         self.push_and_add(syy=syy)
         self.push_and_agree(pair_names=pair_names)
+        self.push_and_agree(x_names=x_names.tolist())
+        self.push_and_agree(y_names=y_names.tolist())
 
     def global_(self):
         n_obs = self.fetch("n_obs")
@@ -50,6 +52,8 @@ class Pearson(Algorithm):
         sxy = self.fetch("sxy")
         syy = self.fetch("syy")
         pair_names = self.fetch("pair_names")
+        x_names = self.fetch("x_names")
+        y_names = self.fetch("y_names")
 
         correlation, p_value = get_correlation_and_pvalue(n_obs, sx, sxx, sxy, sy, syy)
         ci_hi, ci_lo = get_confidence_intervals(n_obs, correlation)
@@ -96,6 +100,8 @@ class Pearson(Algorithm):
             matrix=correlation,
             min_val=-1,
             max_val=1,
+            xnames=x_names,
+            ynames=y_names,
         )
 
         self.result = AlgorithmResult(

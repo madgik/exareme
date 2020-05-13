@@ -11,25 +11,25 @@ class Field(object):
 
     def __init__(self, **kwargs):
         for name, value in kwargs.items():
-            if name in self._fields:
-                if isinstance(value, ListField):
-                    setattr(self, name, RenderableList([value]))
-                else:
-                    setattr(self, name, value)
-            else:
-                raise ValueError("Unrecognized field {}.".format(name))
-
-    def set(self, **kwargs):
-        assert len(kwargs) == 1, "Add one item at the time."
-        name, value = kwargs.popitem()
-        if name in self._fields:
+            # if name in self._fields:
             if isinstance(value, ListField):
                 setattr(self, name, RenderableList([value]))
             else:
                 setattr(self, name, value)
-            return self
+            # else:
+            #     raise ValueError("Unrecognized field {}.".format(name))
+
+    def set(self, **kwargs):
+        assert len(kwargs) == 1, "Add one item at the time."
+        name, value = kwargs.popitem()
+        # if name in self._fields:
+        if isinstance(value, ListField):
+            setattr(self, name, RenderableList([value]))
         else:
-            raise ValueError("Unrecognized field {}.".format(name))
+            setattr(self, name, value)
+        return self
+        # else:
+        #     raise ValueError("Unrecognized field {}.".format(name))
 
     def render(self):
         return {
@@ -61,6 +61,7 @@ class Highchart(Field):
         "zAxis",
         "colorAxis",
         "legend",
+        "tooltip",
     ]
 
 
@@ -96,8 +97,21 @@ class Label(Field):
     _fields = ["onArea"]
 
 
+class LabelOptions(Field):
+    _fields = []
+
+
 class DataLabels(ListField):
-    _fields = ["format", "enabled", "color"]
+    _fields = [
+        "format",
+        "enabled",
+        "color",
+        "borderRadius",
+        "backgroundColor",
+        "borderWidth",
+        "borderColor",
+        "padding",
+    ]
 
 
 class Title(Field):
@@ -119,11 +133,23 @@ class Axis(Field):
 
 
 class ColorAxis(Field):
-    _fields = ["min", "max", "minColor", "maxColor"]
+    _fields = ["min", "max", "minColor", "maxColor", "stops"]
 
 
 class PlotOptions(Field):
     _fields = []
+
+
+class Tooltip(Field):
+    _fields = [
+        "headerFormat",
+        "pointFormat",
+        "enabled",
+    ]
+
+
+class Annotations(ListField):
+    _fields = ["labels", "labelOptions"]
 
 
 class Area_(Highchart):
