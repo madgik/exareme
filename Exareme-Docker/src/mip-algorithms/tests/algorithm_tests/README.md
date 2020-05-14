@@ -35,5 +35,5 @@ To make a virtual environment do the following
 Now we are ready to run the tests
 ```bash
 cd Exareme-Docker/src/mip-algorithms/tests/algorithm_tests/
-python -m pytest
+python -B -m pytest
 ```
