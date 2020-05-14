@@ -297,6 +297,17 @@ Switch ENVIRONMENT_TYPE to 'DEV' to see Error messages coming from EXAREME..Exit
 fi
 
 echo '*/15  *  *  *  *	./set-local-datasets.sh' >> /etc/crontabs/root
+
+echo '*/30  *  *  *  * if [ $FEDERATION_ROLE = "master" ]; then \
+cd /tmp/demo/db/ \
+&& find . -type d -path "./*" -mmin +30 -exec rm -rf {} +\
+&& cd /tmp/demo/algorithms-generation/ \
+&& find . -type d -path "./*" -mmin +30 -exec rm -rf {} +; \
+else \
+cd /tmp/demo/db/ \
+&& find . -type d -path "./*" -mmin +30 -exec rm -rf {} + \
+&& find . -type f -path "./*" -mmin +30 -delete; \
+f' >> /etc/crontabs/root
 crond
 
 # Creating the python log file
