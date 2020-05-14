@@ -56,4 +56,4 @@ crashlytics-build.properties
 tests/data/output
 
 # Hypothesis db
-.hypothesis
+*.hypothesis
