@@ -60,7 +60,7 @@ class PCA(Algorithm):
 
         table_eigvecs = TabularDataResource(
             fields=[name for name in var_names],
-            data=[zip(*eigenvectors)],
+            data=list(zip(*eigenvectors)),
             title="Eigenvectors",
         )
 
