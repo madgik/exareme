@@ -27,6 +27,10 @@ To make a virtual environment do the following
     ```bash
     pip install -r Exareme-Docker/src/mip-algorithms/tests/tests_requirements.txt
     ```
+- Add environment variable for testing
+    ```bash
+    export ENVIRONMENT_TYPE=TEST
+    ```
 
 Now we are ready to run the tests
 ```bash

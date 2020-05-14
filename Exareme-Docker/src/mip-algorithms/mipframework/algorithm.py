@@ -8,7 +8,7 @@ from .loggingutils import logged
 from .decorators import algorithm_methods_decorator
 from .parameters import Parameters, parse_exareme_args
 from .transfer import AddMe, MaxMe, MinMe, ConcatMe, DoNothing, TransferStruct
-from .utils import one_kwarg
+from .helpers import one_kwarg
 
 _MAIN_METHODS = re.compile(
     r"""^((local_|global_)

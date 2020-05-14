@@ -12,3 +12,4 @@ pathlib
 tqdm
 colour
 pytest
+requests

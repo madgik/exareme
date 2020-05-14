@@ -2,7 +2,7 @@ import logging
 import pickle
 
 from .loggingutils import logged
-from .utils import one_kwarg, make_dirs
+from .helpers import one_kwarg, make_dirs
 
 
 class State(object):
