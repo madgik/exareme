@@ -2,7 +2,7 @@ from numbers import Number
 
 import numpy as np
 import pytest
-from DESCRIPTIVE_STATS import DescriptiveStats
+from DESCRIPTIVE_STATS_v2 import DescriptiveStats
 from mipframework.testutils import get_test_params, get_algorithm_result
 from pathlib import Path
 

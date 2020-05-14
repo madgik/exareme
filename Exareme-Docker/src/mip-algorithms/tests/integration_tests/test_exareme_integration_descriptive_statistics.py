@@ -10,7 +10,7 @@ from tests.algorithm_tests.test_descriptive_statistics import (
 )
 
 headers = {"Content-type": "application/json", "Accept": "text/plain"}
-url = vm_url + "DESCRIPTIVE_STATS"
+url = vm_url + "DESCRIPTIVE_STATS_v2"
 
 
 @pytest.mark.parametrize(

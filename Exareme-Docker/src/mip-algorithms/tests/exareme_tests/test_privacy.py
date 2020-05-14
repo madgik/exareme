@@ -32,7 +32,7 @@ from tests.algorithm_tests_with_privacy.test_ttest_paired import (
 
 url_calibration = vm_url + "CALIBRATION_BELT"
 
-url_descr_stat += "DESCRIPTIVE_STATS"
+url_descr_stat += "DESCRIPTIVE_STATS_v2"
 
 
 def check_privacy_result(result):
