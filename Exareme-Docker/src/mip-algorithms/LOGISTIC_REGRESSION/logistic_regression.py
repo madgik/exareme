@@ -243,16 +243,15 @@ def update_local_model_parameters(X, y, coeff):
     z = np.dot(X, coeff)
     s = expit(z)
     d = np.multiply(s, (1 - s))
-    D = np.diag(d)
     # Hessian
-    hess = np.dot(np.transpose(X), np.dot(D, X))
+    hess = np.einsum("ij, j, jk -> ik", X.T, d, X)
     # Stable computation of (Y - s) / d
     y_ratio = (y - s) / d
     y_ratio[(y == 0) & (s == 0)] = -1
     y_ratio[(y == 1) & (s == 1)] = 1
     y_ratio = y_ratio.clip(-1e6, 1e6)  # clip inf's to avoid nan's in grad
     # Gradient
-    grad = np.dot(np.transpose(X), np.dot(D, z + y_ratio))
+    grad = np.einsum("ij, j, j -> i", X.T, d, z + y_ratio)
     # Log-likelihood
     ll = np.sum(xlogy(y, s) + xlogy(1 - y, 1 - s))
     return grad, hess, ll
