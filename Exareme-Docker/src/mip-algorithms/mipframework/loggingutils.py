@@ -1,14 +1,27 @@
 import logging
+import logging.handlers
+import os
 
 from .constants import LOGGING_LEVEL_ALG
+
+LOG_FILENAME = os.path.join(os.path.dirname(__file__), "logs/mip.log")
+
+miplogger = logging.getLogger("miplogger")
+handler = logging.handlers.RotatingFileHandler(
+    LOG_FILENAME, maxBytes=int(1e7), backupCount=10
+)
+formatter = logging.Formatter("%(asctime)s - %(levelname)s: %(message)s")
+handler.setFormatter(formatter)
+miplogger.setLevel(LOGGING_LEVEL_ALG)
+miplogger.addHandler(handler)
 
 
 def log_this(method, **kwargs):
     if LOGGING_LEVEL_ALG == logging.INFO:
-        logging.info("Starting: {method}".format(method=method))
+        miplogger.info("Starting: {method}".format(method=method))
     elif LOGGING_LEVEL_ALG == logging.DEBUG:
         arguments = ",".join(["\n{k}={v}".format(k=k, v=v) for k, v in kwargs.items()])
-        logging.debug(
+        miplogger.debug(
             "Starting: {method}, "
             "{arguments}".format(method=method, arguments=arguments)
         )
@@ -27,9 +40,9 @@ def logged(func):
     def logging_wrapper(*args, **kwargs):
         cls = get_class_name(args)
         if LOGGING_LEVEL_ALG == logging.INFO:
-            logging.info("Starting: {0}{1}".format(cls, func.__name__))
+            miplogger.info("Starting: {0}{1}".format(cls, func.__name__))
         elif LOGGING_LEVEL_ALG == logging.DEBUG:
-            logging.debug(
+            miplogger.debug(
                 "Starting: {0}{1},\nargs: \n{2},\nkwargs: \n{3}".format(
                     cls, func.__name__, args, kwargs
                 )
