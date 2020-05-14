@@ -70,3 +70,6 @@ crashlytics-build.properties
 
 # emacs files
 *~
+
+# python virtual environment
+venv
