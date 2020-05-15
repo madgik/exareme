@@ -307,7 +307,7 @@ else \
 cd /tmp/demo/db/ \
 && find . -type d -path "./*" -mmin +30 -exec rm -rf {} + \
 && find . -type f -path "./*" -mmin +30 -delete; \
-if' >> /etc/crontabs/root
+fi' >> /etc/crontabs/root
 crond
 
 # Creating the python log file
