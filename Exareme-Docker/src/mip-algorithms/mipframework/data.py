@@ -31,6 +31,7 @@ class AlgorithmData(object):
             db_path=args.input_local_DB,
             data_table_name=args.data_table,
             metadata_table_name=args.metadata_table,
+            privacy=args.privacy,
         )
         self.full = db.read_data_from_db(args)
         self.metadata = db.read_metadata_from_db(args)
@@ -103,12 +104,13 @@ class AlgorithmMetadata(object):
 
 
 class DataBase(object):
-    def __init__(self, db_path, data_table_name, metadata_table_name):
+    def __init__(self, db_path, data_table_name, metadata_table_name, privacy=True):
         self.db_path = db_path
         self.engine = create_engine("sqlite:///{}".format(self.db_path), echo=False)
         self.sqla_md = MetaData(self.engine)
         self.data_table = self.create_table(data_table_name)
         self.metadata_table = self.create_table(metadata_table_name)
+        self.privacy = privacy
 
     def __repr__(self):
         name = type(self).__name__
@@ -149,7 +151,7 @@ class DataBase(object):
         data.replace("", np.nan, inplace=True)  # fixme remove
         data = data.dropna()
         # Privacy check
-        if len(data) < PRIVACY_THRESHOLD:
+        if self.privacy and len(data) < PRIVACY_THRESHOLD:
             raise PrivacyError
         return data
 

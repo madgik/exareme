@@ -11,7 +11,9 @@ from mipframework.constants import PRIVACY_THRESHOLD
 
 class DescriptiveStats(Algorithm):
     def __init__(self, cli_args):
-        super(DescriptiveStats, self).__init__(__file__, cli_args, intercept=False)
+        super(DescriptiveStats, self).__init__(
+            __file__, cli_args, intercept=False, privacy=False
+        )
 
     def local_(self):
         data = self.data.full
@@ -94,7 +96,7 @@ class DescriptiveStats(Algorithm):
                     )
                 )
             for categorical in categoricals:
-                if n_obs == 0:
+                if n_obs <= PRIVACY_THRESHOLD:
                     tables.append(empty_table(n_obs, categorical, dataset))
                     continue
                 counter = self.fetch("counter_" + categorical + "_" + dataset)
