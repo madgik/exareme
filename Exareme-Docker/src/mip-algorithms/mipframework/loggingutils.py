@@ -1,19 +1,25 @@
 import logging
 import logging.handlers
-import os
+from pathlib import Path
 
 from .constants import LOGGING_LEVEL_ALG
 
-LOG_FILENAME = os.path.join(os.path.dirname(__file__), "logs/mip.log")
+
+LOG_PATH = Path(__file__).parent / "logs"
+if not LOG_PATH.exists():
+    LOG_PATH.mkdir()
+
+LOG_FILENAME = LOG_PATH / "mip.log"
 
 miplogger = logging.getLogger("miplogger")
 handler = logging.handlers.RotatingFileHandler(
-    LOG_FILENAME, maxBytes=int(1e7), backupCount=10
+    str(LOG_FILENAME), maxBytes=int(1e7), backupCount=10
 )
 formatter = logging.Formatter("%(asctime)s - %(levelname)s: %(message)s")
 handler.setFormatter(formatter)
 miplogger.setLevel(LOGGING_LEVEL_ALG)
 miplogger.addHandler(handler)
+miplogger.propagate = False
 
 
 def log_this(method, **kwargs):

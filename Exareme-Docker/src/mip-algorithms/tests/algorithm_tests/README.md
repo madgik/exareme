@@ -15,11 +15,15 @@ To make a virtual environment do the following
     ```bash
     cd exareme
     ```
-- Create virtual environment
+- Install virtualenv
     ```bash
-    python2.7 -m venv venv
+    pip install virtualenv
     ```  
-- Activate virtual env
+- Create virtualenv using python 2.7
+    ```bash
+    virtualenv -p $(which python2.7) venv
+    ```
+- Activate virtualenv
     ```bash
     source venv/bin/activate
     ```
@@ -36,4 +40,9 @@ Now we are ready to run the tests
 ```bash
 cd Exareme-Docker/src/mip-algorithms/tests/algorithm_tests/
 python -B -m pytest
+```
+
+To exit virtualenv
+```bash
+deactivate
 ```
