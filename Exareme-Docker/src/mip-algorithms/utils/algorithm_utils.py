@@ -20,7 +20,7 @@ env_type = os.environ["ENVIRONMENT_TYPE"]
 if env_type in {"DEV", "PROD"}:
     PRIVACY_MAGIC_NUMBER = 10
 elif env_type == "TEST":
-    PRIVACY_MAGIC_NUMBER = 1
+    PRIVACY_MAGIC_NUMBER = 0
 
 P_VALUE_CUTOFF = 0.001
 P_VALUE_CUTOFF_STR = "< " + str(P_VALUE_CUTOFF)
@@ -37,8 +37,9 @@ class TransferAndAggregateData(object):
     def __repr__(self):
         ret = ""
         for k in self.data.keys():
-            ret += '{k} : {val}, reduce by {red_type}\n'.format(k=k, val=self.data[k],
-                                                                red_type=self.reduce_type[k])
+            ret += "{k} : {val}, reduce by {red_type}\n".format(
+                k=k, val=self.data[k], red_type=self.reduce_type[k]
+            )
         return ret
 
     def __add__(self, other):
@@ -119,7 +120,7 @@ def query_with_privacy(fname_db, query):
     schema = [description[0] for description in cur.description]
     data = cur.fetchall()
     if len(data) < PRIVACY_MAGIC_NUMBER:
-        raise PrivacyError('Query results in illegal number of datapoints.')
+        raise PrivacyError("Query results in illegal number of datapoints.")
     return schema, data
 
 
@@ -405,9 +406,13 @@ class StateData(object):
 
 def init_logger():
     if env_type == "PROD":
-        logging.basicConfig(filename="/var/log/exaremePythonAlgorithms.log", level=logging.INFO)
+        logging.basicConfig(
+            filename="/var/log/exaremePythonAlgorithms.log", level=logging.INFO
+        )
     else:
-        logging.basicConfig(filename="/var/log/exaremePythonAlgorithms.log", level=logging.DEBUG)
+        logging.basicConfig(
+            filename="/var/log/exaremePythonAlgorithms.log", level=logging.DEBUG
+        )
 
 
 class Global2Local_TD(TransferData):

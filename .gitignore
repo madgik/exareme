@@ -64,3 +64,12 @@ crashlytics-build.properties
 #R 
 .RData
 .Rhistory
+
+# pre-commit confing
+.pre-commit-config.yaml
+
+# emacs files
+*~
+
+# python virtual environment
+venv

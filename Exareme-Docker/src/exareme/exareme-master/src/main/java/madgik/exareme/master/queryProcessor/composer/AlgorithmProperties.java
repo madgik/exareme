@@ -39,19 +39,19 @@ public class AlgorithmProperties {
 
     public void validateAlgorithmPropertiesInitialization() throws AlgorithmException {
         if (name == null) {
-            throw new AlgorithmException("The parameter field 'name' was not initialized in the properties.json file");
+            throw new AlgorithmException("No algorithm name defined!", "The parameter field 'name' was not initialized in the properties.json file");
         }
         if (desc == null) {
-            throw new AlgorithmException("The parameter field 'desc' was not initialized in the properties.json file");
+            throw new AlgorithmException(name, "The parameter field 'desc' was not initialized in the properties.json file");
         }
         if (label == null) {
-            throw new AlgorithmException("The parameter field 'label' was not initialized in the properties.json file");
+            throw new AlgorithmException(name, "The parameter field 'label' was not initialized in the properties.json file");
         }
         if (type == null) {
-            throw new AlgorithmException("The parameter field 'type' was not initialized in the properties.json file");
+            throw new AlgorithmException(name, "The parameter field 'type' was not initialized in the properties.json file");
         }
         for (ParameterProperties parameterProperties : parameters)
-            parameterProperties.validateParameterPropertiesInitialization();
+            parameterProperties.validateParameterPropertiesInitialization(name);
     }
 
     public String getName() {
@@ -152,16 +152,16 @@ public class AlgorithmProperties {
             if (value != null && !value.equals("")) {
                 if (!parameterProperties.getValueMultiple() && value.contains(",")
                         && !parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.json)) {
-                    throw new AlgorithmException(
+                    throw new AlgorithmException(name,
                             "The value of the parameter '" + parameterProperties.getName()
                                     + "' should contain only one value.");
                 }
-                validateAlgorithmParameterValueType(value, parameterProperties);
-                validateAlgorithmParameterType(value, parameterProperties, pathology);
+                validateAlgorithmParameterValueType(name, value, parameterProperties);
+                validateAlgorithmParameterType(name, value, parameterProperties, pathology);
 
             } else {            // if value not given or it is blank
                 if (parameterProperties.getValueNotBlank()) {
-                    throw new AlgorithmException(
+                    throw new AlgorithmException(name,
                             "The value of the parameter '" + parameterProperties.getName() + "' should not be blank.");
                 }
 
@@ -178,40 +178,42 @@ public class AlgorithmProperties {
     /**
      * Checks if the given parameter input has acceptable values for that specific parameter.
      *
+     * @param algorithmName       the name of the algorithm
      * @param value               the value given as input
      * @param parameterProperties the rules that the value should follow
      * @param pathology           the pathology that the algorithm will run on
      */
     private static void validateAlgorithmParameterType(
+            String algorithmName,
             String value,
             ParameterProperties parameterProperties,
             String pathology
     ) throws AlgorithmException, CDEsMetadataException {
         // First we split in case we have multiple values.
         String[] values = value.split(",");
-        for(String singleValue: values) {
+        for (String singleValue : values) {
             if (parameterProperties.getType().equals(ParameterProperties.ParameterType.column)) {
-                validateCDEVariables(values, parameterProperties, pathology);
+                validateCDEVariables(algorithmName, values, parameterProperties, pathology);
             } else if (parameterProperties.getType().equals(ParameterProperties.ParameterType.formula)) {
                 String[] formulaValues = singleValue.split("[+\\-*:0]+");
-                validateCDEVariables(formulaValues, parameterProperties, pathology);
+                validateCDEVariables(algorithmName, formulaValues, parameterProperties, pathology);
             }
             // If value is not a column (type=other) then check for min-max-enumerations
             else if (parameterProperties.getType().equals(ParameterProperties.ParameterType.other)) {
                 if (parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.integer)
                         || parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.real)) {
                     if (parameterProperties.getValueMin() != null && Double.parseDouble(singleValue) < parameterProperties.getValueMin())
-                        throw new AlgorithmException("The value(s) of the parameter '" + parameterProperties.getName()
+                        throw new AlgorithmException(algorithmName, "The value(s) of the parameter '" + parameterProperties.getName()
                                 + "' should be greater than " + parameterProperties.getValueMin() + " .");
                     if (parameterProperties.getValueMax() != null && Double.parseDouble(singleValue) > parameterProperties.getValueMax())
-                        throw new AlgorithmException("The value(s) of the parameter '" + parameterProperties.getName()
+                        throw new AlgorithmException(algorithmName, "The value(s) of the parameter '" + parameterProperties.getName()
                                 + "' should be less than " + parameterProperties.getValueMax() + " .");
                 } else if (parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.string)) {
                     if (parameterProperties.getValueEnumerations() == null)
                         return;
                     List<String> enumerations = Arrays.asList(parameterProperties.getValueEnumerations());
                     if (!enumerations.contains(singleValue))
-                        throw new AlgorithmException("The value '" + singleValue + "' of the parameter '" + parameterProperties.getName()
+                        throw new AlgorithmException(algorithmName, "The value '" + singleValue + "' of the parameter '" + parameterProperties.getName()
                                 + "' is not included in the valueEnumerations " + Arrays.toString(parameterProperties.getValueEnumerations()) + " .");
                 }
             }
@@ -223,11 +225,13 @@ public class AlgorithmProperties {
      * the parameter property's columnValueType and columnValueCategorical.
      * The information about the CDEs are taken from the metadata.
      *
+     * @param algorithmName       the name of the algorithm
      * @param variables           a list with the variables
      * @param parameterProperties the rules that the variables should follow
      * @param pathology           the pathology that the algorithm will run on
      */
     private static void validateCDEVariables(
+            String algorithmName,
             String[] variables,
             ParameterProperties parameterProperties,
             String pathology
@@ -235,20 +239,20 @@ public class AlgorithmProperties {
         CDEsMetadata.PathologyCDEsMetadata metadata = CDEsMetadata.getInstance().getPathologyCDEsMetadata(pathology);
         for (String curValue : variables) {
             if (!metadata.columnExists(curValue)) {
-                throw new AlgorithmException("The CDE '" + curValue + "' does not exist.");
+                throw new AlgorithmException(algorithmName, "The CDE '" + curValue + "' does not exist.");
             }
 
             String allowedSQLTypeValues = parameterProperties.getColumnValuesSQLType();
             String columnValuesSQLType = metadata.getColumnValuesSQLType(curValue);
             if (!allowedSQLTypeValues.contains(columnValuesSQLType) && !allowedSQLTypeValues.equals("")) {
-                throw new AlgorithmException("The CDE '" + curValue + "' does not have one of the allowed SQL Types '"
+                throw new AlgorithmException(algorithmName, "The CDE '" + curValue + "' does not have one of the allowed SQL Types '"
                         + allowedSQLTypeValues + "' for the algorithm.");
             }
 
             String allowedIsCategoricalValue = parameterProperties.getColumnValuesIsCategorical();
             String columnValuesIsCategorical = metadata.getColumnValuesIsCategorical(curValue);
             if (!allowedIsCategoricalValue.equals(columnValuesIsCategorical) && !allowedIsCategoricalValue.equals("")) {
-                throw new AlgorithmException("The CDE '" + curValue + "' does not match the categorical value '"
+                throw new AlgorithmException(algorithmName, "The CDE '" + curValue + "' does not match the categorical value '"
                         + allowedIsCategoricalValue + "' specified for the algorithm.");
             }
         }
@@ -257,21 +261,23 @@ public class AlgorithmProperties {
     /**
      * Checks if the parameterValue has the correct type
      *
+     * @param algorithmName       the name of the algorithm
      * @param value               the value of the parameter
      * @param parameterProperties the type of the value
      */
     private static void validateAlgorithmParameterValueType(
+            String algorithmName,
             String value,
             ParameterProperties parameterProperties
     ) throws AlgorithmException {
-        if(parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.json)){
+        if (parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.json)) {
             try {
                 new JSONObject(value);
             } catch (JSONException ex) {
                 try {
                     new JSONArray(value);
                 } catch (JSONException ex1) {
-                    throw new AlgorithmException(
+                    throw new AlgorithmException(algorithmName,
                             "The value of the parameter '"
                                     + parameterProperties.getName() + "' cannot be parsed into json.");
                 }
@@ -280,24 +286,24 @@ public class AlgorithmProperties {
 
         // If it is not json it could be more than one value
         String[] values = value.split(",");
-        for(String curValue: values) {
+        for (String curValue : values) {
             if (parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.real)) {
                 try {
                     Double.parseDouble(curValue);
                 } catch (NumberFormatException nfe) {
-                    throw new AlgorithmException(
+                    throw new AlgorithmException(algorithmName,
                             "The value of the parameter '" + parameterProperties.getName() + "' should be a real number.");
                 }
             } else if (parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.integer)) {
                 try {
                     Integer.parseInt(curValue);
                 } catch (NumberFormatException e) {
-                    throw new AlgorithmException(
+                    throw new AlgorithmException(algorithmName,
                             "The value of the parameter '" + parameterProperties.getName() + "' should be an integer.");
                 }
             } else if (parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.string)) {
                 if (curValue.equals("")) {
-                    throw new AlgorithmException(
+                    throw new AlgorithmException(algorithmName,
                             "The value of the parameter '" + parameterProperties.getName()
                                     + "' contains an empty string.");
                 }
