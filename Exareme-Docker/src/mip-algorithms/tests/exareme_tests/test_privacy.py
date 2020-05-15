@@ -30,7 +30,7 @@ from tests.algorithm_tests_with_privacy.test_ttest_paired import (
 )
 
 url_calibration = vm_url + "CALIBRATION_BELT"
-url_pearson = url_pearson + "PEARSON_CORRELATION"
+url_pearson = vm_url + "PEARSON_CORRELATION"
 
 
 def check_privacy_result(result):
