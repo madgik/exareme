@@ -19,7 +19,6 @@ from tests.algorithm_tests_with_privacy.test_NaiveBayes import url1
 from tests.algorithm_tests_with_privacy.test_NaiveBayes_Training_Standalone import (
     endpointUrl as url_naive_bayes_standalone,
 )
-from tests.algorithm_tests.test_PearsonCorrelation import endpointUrl as url_pearson
 from tests.algorithm_tests_with_privacy.test_ttest_independent import (
     endpointUrl as url_ttest_indep,
 )
@@ -253,7 +252,7 @@ def test_PearsonCorrlation_Privacy():
     ]
 
     headers = {"Content-type": "application/json", "Accept": "text/plain"}
-    r = requests.post(url_pearson, data=json.dumps(data), headers=headers)
+    r = requests.post(vm_url, data=json.dumps(data), headers=headers)
 
     result = json.loads(r.text)
 
