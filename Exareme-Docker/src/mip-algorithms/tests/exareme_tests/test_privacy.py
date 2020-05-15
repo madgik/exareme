@@ -5,7 +5,7 @@ import unittest
 
 import requests
 from tests.algorithm_tests_with_privacy.test_ANOVA import endpointUrl as url_anova
-from tests import vm_url as url_descr_stat, vm_url
+from tests import vm_url
 from tests.algorithm_tests_with_privacy.test_Histograms import endpointUrl as url_hist
 from tests.algorithm_tests_with_privacy.test_ID3 import endpointUrl as url_id3
 from tests.algorithm_tests_with_privacy.test_KMEANS import endpointUrl as url_kmeans
@@ -156,7 +156,7 @@ def test_LogisticRegression_Privacy():
             "name": "x",
             "value": "leftententorhinalarea_logreg_test, rightententorhinalarea_logreg_test, lefthippocampus_logreg_test, righthippocampus_logreg_test",
         },
-        {"name": "y", "value": "alzheimerbroadcategory_logreg_test"},
+        {"name": "y", "value": "gender"},
         {"name": "pathology", "value": "dementia"},
         {"name": "dataset", "value": "adni_9rows"},
         {"name": "filter", "value": ""},
