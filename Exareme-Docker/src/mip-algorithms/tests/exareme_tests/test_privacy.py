@@ -31,6 +31,7 @@ from tests.algorithm_tests_with_privacy.test_ttest_paired import (
 
 url_calibration = vm_url + "CALIBRATION_BELT"
 url_pearson = vm_url + "PEARSON_CORRELATION"
+url_logreg = vm_url + "LOGISTIC_REGRESSION"
 
 
 def check_privacy_result(result):
@@ -163,7 +164,7 @@ def test_LogisticRegression_Privacy():
     ]
 
     headers = {"Content-type": "application/json", "Accept": "text/plain"}
-    r = requests.post(url_linreg, data=json.dumps(data), headers=headers)
+    r = requests.post(url_logreg, data=json.dumps(data), headers=headers)
     result = json.loads(r.text)
 
     check_privacy_result(r.text)
