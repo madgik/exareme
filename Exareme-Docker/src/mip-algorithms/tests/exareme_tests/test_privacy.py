@@ -30,8 +30,7 @@ from tests.algorithm_tests_with_privacy.test_ttest_paired import (
 )
 
 url_calibration = vm_url + "CALIBRATION_BELT"
-
-url_descr_stat += "DESCRIPTIVE_STATS_v2"
+url_pearson = url_pearson + "PEARSON_CORRELATION"
 
 
 def check_privacy_result(result):
@@ -55,20 +54,6 @@ def test_ANOVA_Privacy():
 
     headers = {"Content-type": "application/json", "Accept": "text/plain"}
     r = requests.post(url_anova, data=json.dumps(data), headers=headers)
-    result = json.loads(r.text)
-    check_privacy_result(r.text)
-
-
-def test_Descriptive_Statistics_Privacy():
-    logging.info("---------- TEST : Algorithms for Privacy Error")
-    data = [
-        {"name": "x", "value": "leftmpogpostcentralgyrusmedialsegment"},
-        {"name": "dataset", "value": "adni_9rows"},
-        {"name": "filter", "value": ""},
-        {"name": "pathology", "value": "dementia"},
-    ]
-    headers = {"Content-type": "application/json", "Accept": "text/plain"}
-    r = requests.post(url_descr_stat, data=json.dumps(data), headers=headers)
     result = json.loads(r.text)
     check_privacy_result(r.text)
 
@@ -252,10 +237,9 @@ def test_PearsonCorrlation_Privacy():
     ]
 
     headers = {"Content-type": "application/json", "Accept": "text/plain"}
-    r = requests.post(vm_url, data=json.dumps(data), headers=headers)
+    r = requests.post(url_pearson, data=json.dumps(data), headers=headers)
 
     result = json.loads(r.text)
-
     check_privacy_result(r.text)
 
 
