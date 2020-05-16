@@ -23,25 +23,30 @@ def build(c):
             c.run("sudo ./deployLocal.sh", watchers=[responder])
 
 
-@task
+@task(
+    help={
+        "tests": "Groups of tests to run, a=algorithm_tests, i=integration_tests,"
+        "e=exareme_tests, p=algorithm_tests_with_privacy"
+    }
+)
 def test(c, tests="aiep"):
     with c.cd(root):
         c.run("source venv/bin/activate")
-        # c.run('pip install -r Exareme-Docker/src/mip-algorithms/tests/tests_requirements.txt')
+        options = " --disable-warnings --color=yes"
         with c.cd(os.path.join("Exareme-Docker", "src", "mip-algorithms", "tests")):
             with environ(ENVIRONMENT_TYPE="TEST"):
                 if "a" in tests:
                     with c.cd("algorithm_tests"):
-                        c.run("python -B -m pytest")
+                        c.run("python -B -m pytest" + options)
                 if "i" in tests:
                     with c.cd("integration_tests"):
-                        c.run("python -B -m pytest")
+                        c.run("python -B -m pytest" + options)
             if "e" in tests:
                 with c.cd("exareme_tests"):
-                    c.run("python3.6 -m pytest")
+                    c.run("python3.6 -m pytest" + options)
             if "p" in tests:
                 with c.cd("algorithm_tests_with_privacy"):
-                    c.run("python3.6 -m pytest")
+                    c.run("python3.6 -m pytest" + options)
         c.run("deactivate")
 
 
