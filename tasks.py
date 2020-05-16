@@ -24,20 +24,24 @@ def build(c):
 
 
 @task
-def test(c):
+def test(c, tests="aiep"):
     with c.cd(root):
         c.run("source venv/bin/activate")
         # c.run('pip install -r Exareme-Docker/src/mip-algorithms/tests/tests_requirements.txt')
         with c.cd(os.path.join("Exareme-Docker", "src", "mip-algorithms", "tests")):
             with environ(ENVIRONMENT_TYPE="TEST"):
-                with c.cd("algorithm_tests"):
-                    c.run("python -B -m pytest")
-                with c.cd("integration_tests"):
-                    c.run("python -B -m pytest")
-            with c.cd("exareme_tests"):
-                c.run("python3.6 -m pytest")
-            with c.cd("algorithm_tests_with_privacy"):
-                c.run("python3.6 -m pytest")
+                if "a" in tests:
+                    with c.cd("algorithm_tests"):
+                        c.run("python -B -m pytest")
+                if "i" in tests:
+                    with c.cd("integration_tests"):
+                        c.run("python -B -m pytest")
+            if "e" in tests:
+                with c.cd("exareme_tests"):
+                    c.run("python3.6 -m pytest")
+            if "p" in tests:
+                with c.cd("algorithm_tests_with_privacy"):
+                    c.run("python3.6 -m pytest")
         c.run("deactivate")
 
 
