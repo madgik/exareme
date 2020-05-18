@@ -127,7 +127,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
     private void handleInternal(HttpRequest request, HttpResponse response, HttpContext context)
             throws Exception {
 
-        List<String> nodesToBeChecked;
+        List<ContainerProxy> nodesToBeChecked;
         int numberOfContainers;
 
         //Check given method
@@ -141,7 +141,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
 
             if (nodesToBeChecked == null)
                 throw new Exception("No nodes found to run experiment");
-            for(String node : nodesToBeChecked) {
+            for(ContainerProxy node : nodesToBeChecked) {
                 if(inputContent!=null && inputContent.containsKey("pathology"))
                     pingContainer(node, inputContent.get("pathology"));
                 else
@@ -149,20 +149,12 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             }
 
 
-	        ContainerProxy[] usedContainerProxies;
-            
-            List<ContainerProxy> usedContainerProxiesList = new ArrayList<>();
-            for (ContainerProxy containerProxy : ArtRegistryLocator.getArtRegistryProxy().getContainers()) {
-                if (nodesToBeChecked.contains(containerProxy.getEntityName().getIP())) {
-                    usedContainerProxiesList.add(containerProxy);
-                }
-            }
-            usedContainerProxies = usedContainerProxiesList.toArray(new ContainerProxy[usedContainerProxiesList.size()]);
+            ContainerProxy[] usedContainerProxies = nodesToBeChecked.toArray(new ContainerProxy[nodesToBeChecked.size()]);
             
 
 
-            numberOfContainers = usedContainerProxies.length;
-            log.info("Containers: " + numberOfContainers);
+            numberOfContainers = nodesToBeChecked.size();
+            log.debug("Containers: " + numberOfContainers);
             String algorithmKey = algorithmName + "_" + System.currentTimeMillis();
             String dfl;
             AdpDBClientQueryStatus queryStatus;
@@ -266,24 +258,19 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
     }
 
 
-    private void pingContainer(String IP, String pathology) throws Exception {
-        InetAddress checkIP = InetAddress.getByName(IP);
+    private void pingContainer(ContainerProxy container, String pathology) throws Exception {
+        InetAddress checkIP = InetAddress.getByName(container.getEntityName().getIP());
         Gson gson = new Gson();
         String availableDatasets;
-        log.debug("Checking worker with IP "+IP);
+        log.debug("Checking worker with IP "+container.getEntityName().getIP());
         if (checkIP.isReachable(5000)) {
-            log.info("Host is reachable");
+            log.debug("Host "+ container.getEntityName().getIP()+"is reachable");
         }
         else {
-            for (ContainerProxy containerProxy : ArtRegistryLocator.getArtRegistryProxy().getContainers()) {
-                if (IP.equals(containerProxy.getEntityName().getIP())) {
-                    log.info("Going to delete "+containerProxy.getEntityName()+" with IP "+IP);
-                    ArtRegistryLocator.getArtRegistryProxy().removeContainer(containerProxy.getEntityName());
-                }
-            }
+            ArtRegistryLocator.getArtRegistryProxy().removeContainer(container.getEntityName());
 
             HashMap<String, String> names = HttpAsyncMiningQueryHelper.getNamesOfActiveNodesInConsul();
-            String name = names.get(IP);
+            String name = names.get(container.getEntityName().getIP());
             //Delete pathologies and IP of the node
             String pathologyKey = HttpAsyncMiningQueryHelper.searchConsul(System.getenv("DATA") + "/" + name + "?keys");
             String[] pathologyKeyArray = gson.fromJson(pathologyKey, String[].class);
@@ -321,7 +308,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         //curl -X DELETE $CONSULURL/v1/kv/$DATASETS/$NODE_NAME
         //curl -X DELETE $CONSULURL/v1/kv/$1/$NODE_NAME
 
-        log.info("Running: " + httpDelete.getURI());
+        log.debug("Running: " + httpDelete.getURI());
 
         CloseableHttpResponse response = null;
         if (httpDelete.toString().contains(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/") || httpDelete.toString().contains(System.getenv("DATA") + "/")) {    //if we can not contact : http://exareme-keystore:8500/v1/kv/master* or http://exareme-keystore:8500/v1/kv/datasets*

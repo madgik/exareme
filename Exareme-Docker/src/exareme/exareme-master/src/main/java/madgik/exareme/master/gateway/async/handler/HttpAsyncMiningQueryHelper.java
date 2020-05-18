@@ -28,7 +28,7 @@ public class HttpAsyncMiningQueryHelper {
     private static final Logger log = Logger.getLogger(HttpAsyncMiningQueryHandler.class);
     private static final String user_error = new String("text/plain+user_error");
 
-    public static HashMap<String, String[]> getNodesForPathology(String pathology) throws IOException, PathologyException {
+    private static HashMap<String, String[]> getNodesForPathology(String pathology) throws IOException, PathologyException {
         Gson gson = new Gson();
         HashMap<String, String[]> nodeDatasets = new HashMap<>();
         List<String> pathologyNodes = new ArrayList<String>();
@@ -82,7 +82,7 @@ public class HttpAsyncMiningQueryHelper {
 
 
 
-    public static HashMap<String, String> getNamesOfActiveNodesInConsul() throws Exception {
+    static HashMap<String, String> getNamesOfActiveNodesInConsul() throws Exception {
         Gson gson = new Gson();
         HashMap<String, String> nodeNames = new HashMap<>();
         String masterKey = searchConsul(System.getenv("EXAREME_MASTER_PATH") + "/?keys");
@@ -105,7 +105,7 @@ public class HttpAsyncMiningQueryHelper {
     }
 
 
-    public static HashMap<String, String> getAlgoParameters(HttpRequest request) throws IOException {
+    static HashMap<String, String> getAlgoParameters(HttpRequest request) throws IOException {
 
         log.debug("Parsing content ...");
         HashMap<String, String> inputContent = new HashMap<>();
@@ -144,7 +144,7 @@ public class HttpAsyncMiningQueryHelper {
     }
 
 
-    public static String searchConsul(String query) throws IOException {
+    static String searchConsul(String query) throws IOException {
         String result = null;
         CloseableHttpClient httpclient = HttpClients.createDefault();
         String consulURL = System.getenv("CONSULURL");
@@ -183,28 +183,22 @@ public class HttpAsyncMiningQueryHelper {
         return result;
     }
 
-    public static List<String> getInputAlgo(HashMap<String, String> inputContent) throws IOException, DatasetsException, PathologyException {
-        List<String> nodesToBeChecked = new ArrayList<>();
+     static List<ContainerProxy> getInputAlgo(HashMap<String, String> inputContent) throws IOException, DatasetsException, PathologyException {
+        List<ContainerProxy> nodesToBeChecked = new ArrayList<>();
         String datasets;
         String[] userDatasets = null;
         String pathology = null;
         HashMap<String, String[]> nodeDatasets = new HashMap<>();
 
         if (inputContent == null ) {        //list_datasets
-            for (ContainerProxy containerProxy : ArtRegistryLocator.getArtRegistryProxy().getContainers()) {
-                System.out.println("ContainerProxy : " + containerProxy.getEntityName().getIP());
-                nodesToBeChecked.add(containerProxy.getEntityName().getIP());
-            }
+            nodesToBeChecked.addAll(Arrays.asList(ArtRegistryLocator.getArtRegistryProxy().getContainers()));
 	        return nodesToBeChecked;
         }
         else if(inputContent.size()==1 && inputContent.containsKey("pathology")) {  //list_variables
             pathology = inputContent.get("pathology");
             nodeDatasets = getNodesForPathology(pathology);
 
-            for (ContainerProxy containerProxy : ArtRegistryLocator.getArtRegistryProxy().getContainers()) {
-                System.out.println("ContainerProxy : " + containerProxy.getEntityName().getIP());
-                nodesToBeChecked.add(containerProxy.getEntityName().getIP());
-            }
+            nodesToBeChecked.addAll(Arrays.asList(ArtRegistryLocator.getArtRegistryProxy().getContainers()));
             return nodesToBeChecked;
         }
 
@@ -224,9 +218,9 @@ public class HttpAsyncMiningQueryHelper {
     }
 
 
-    private static List<String> checkDatasets(HashMap<String, String[]> nodeDatasets, String[] userDatasets, String pathology) throws DatasetsException {
+    private static List<ContainerProxy> checkDatasets(HashMap<String, String[]> nodeDatasets, String[] userDatasets, String pathology) throws DatasetsException, RemoteException {
         List<String> notFoundDatasets = new ArrayList<>();
-        List<String> nodesToBeChecked = new ArrayList<>();
+        List<ContainerProxy> nodesToBeChecked = new ArrayList<>();
         Boolean flag;
 
         //for every dataset provided by the user
@@ -241,32 +235,34 @@ public class HttpAsyncMiningQueryHelper {
                 //if dataset exist in that Exareme node
                 if (Arrays.asList(datasets).contains(data)) {
                     //and Exareme node not already added to list nodesToBeChecked
-                    if (!nodesToBeChecked.contains(IP))
-                        nodesToBeChecked.add(IP);
-                    flag = true;
-                    continue;
+                    for (ContainerProxy containerProxy : ArtRegistryLocator.getArtRegistryProxy().getContainers()) {
+                        if (containerProxy.getEntityName().getIP().equals(IP) && !nodesToBeChecked.contains(containerProxy)) {
+                            nodesToBeChecked.add(containerProxy);
+                            flag = true;
+                        }
+                    }
+                }
+                //if flag=false then dataset(s) provided by user are not contained in ANY Exareme node
+                if (!flag) {
+                    notFoundDatasets.add(data);
                 }
             }
-            //if flag=false then dataset(s) provided by user are not contained in ANY Exareme node
-            if (!flag) {
-                notFoundDatasets.add(data);
+            //if notFoundDatasets list is not empty, there are dataset(s) provided by user not contained in ANY Exareme node
+            if (notFoundDatasets.size() != 0) {
+                StringBuilder notFound = new StringBuilder();
+                for (String ds : notFoundDatasets)
+                    notFound.append(ds).append(", ");
+                String notFoundSring = notFound.toString();
+                notFoundSring = notFoundSring.substring(0, notFoundSring.length() - 2);
+                //Show appropriate error message to user
+                throw new DatasetsException("Dataset(s) " + notFoundSring + " not found for pathology " + pathology + "!");
             }
         }
-        //if notFoundDatasets list is not empty, there are dataset(s) provided by user not contained in ANY Exareme node
-        if (notFoundDatasets.size() != 0) {
-            StringBuilder notFound = new StringBuilder();
-            for (String ds : notFoundDatasets)
-                notFound.append(ds).append(", ");
-            String notFoundSring = notFound.toString();
-            notFoundSring = notFoundSring.substring(0, notFoundSring.length() - 2);
-            //Show appropriate error message to user
-            throw new DatasetsException("Dataset(s) " + notFoundSring + " not found for pathology " +pathology + "!");
-        }
-        return nodesToBeChecked;
+            return nodesToBeChecked;
     }
 
 
-    public static String getAvailableDatasetsFromConsul(String pathology) throws Exception {
+    static String getAvailableDatasetsFromConsul(String pathology) throws Exception {
         HashMap<String,String> names = getNamesOfActiveNodesInConsul();
         StringBuilder datasets=new StringBuilder();
         Gson gson = new Gson();
@@ -285,7 +281,7 @@ public class HttpAsyncMiningQueryHelper {
             return null;
     }
 
-    public static String defaultOutputFormat(String data, String type) {
+    static String defaultOutputFormat(String data, String type) {
         return "{\"result\" : [{\"data\":" + "\"" + data + "\",\"type\":" + "\"" + type + "\"}]}";
     }
 }
