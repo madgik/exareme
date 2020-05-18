@@ -29,7 +29,7 @@ public class HttpAsyncMiningQueryHelper {
     private static final Logger log = Logger.getLogger(HttpAsyncMiningQueryHandler.class);
     private static final String user_error = new String("text/plain+user_error");
 
-    public static HashMap<String, String[]> getNodesForPathology(String pathology) throws IOException, PathologyException {
+    private static HashMap<String, String[]> getNodesForPathology(String pathology) throws IOException, PathologyException {
         Gson gson = new Gson();
         HashMap<String, String[]> nodeDatasets = new HashMap<>();
         List<String> pathologyNodes = new ArrayList<String>();
@@ -83,7 +83,7 @@ public class HttpAsyncMiningQueryHelper {
 
 
 
-    public static HashMap<String, String> getNamesOfActiveNodesInConsul() throws Exception {
+    static HashMap<String, String> getNamesOfActiveNodesInConsul() throws Exception {
         Gson gson = new Gson();
         HashMap<String, String> nodeNames = new HashMap<>();
         String masterKey = searchConsul(System.getenv("EXAREME_MASTER_PATH") + "/?keys");
@@ -106,7 +106,7 @@ public class HttpAsyncMiningQueryHelper {
     }
 
 
-    public static HashMap<String, String> getAlgoParameters(HttpRequest request) throws IOException {
+    static HashMap<String, String> getAlgoParameters(HttpRequest request) throws IOException {
 
         log.debug("Parsing content ...");
         HashMap<String, String> inputContent = new HashMap<>();
@@ -145,7 +145,7 @@ public class HttpAsyncMiningQueryHelper {
     }
 
 
-    public static String searchConsul(String query) throws IOException {
+    static String searchConsul(String query) throws IOException {
         String result = null;
         CloseableHttpClient httpclient = HttpClients.createDefault();
         String consulURL = System.getenv("CONSULURL");
@@ -192,18 +192,14 @@ public class HttpAsyncMiningQueryHelper {
         HashMap<String, String[]> nodeDatasets = new HashMap<>();
 
         if (inputContent == null ) {        //list_datasets
-            for (ContainerProxy containerProxy : ArtRegistryLocator.getArtRegistryProxy().getContainers()) {
-                nodesToBeChecked.add(containerProxy);
-            }
+            nodesToBeChecked.addAll(Arrays.asList(ArtRegistryLocator.getArtRegistryProxy().getContainers()));
 	        return nodesToBeChecked;
         }
         else if(inputContent.size()==1 && inputContent.containsKey("pathology")) {  //list_variables
             pathology = inputContent.get("pathology");
             nodeDatasets = getNodesForPathology(pathology);
 
-            for (ContainerProxy containerProxy : ArtRegistryLocator.getArtRegistryProxy().getContainers()) {
-                nodesToBeChecked.add(containerProxy);
-            }
+            nodesToBeChecked.addAll(Arrays.asList(ArtRegistryLocator.getArtRegistryProxy().getContainers()));
             return nodesToBeChecked;
         }
 
@@ -231,6 +227,7 @@ public class HttpAsyncMiningQueryHelper {
         List<String> notFoundDatasets = new ArrayList<>();
         List<String> nodesToBeChecked = new ArrayList<>();
         List<ContainerProxy> containers = new ArrayList<>();
+
         Boolean flag;
 
         //for every dataset provided by the user
@@ -274,10 +271,11 @@ public class HttpAsyncMiningQueryHelper {
             throw new DatasetsException("Dataset(s) " + notFoundSring + " not found for pathology " +pathology + "!");
         }
         return containers;
+
     }
 
 
-    public static String getAvailableDatasetsFromConsul(String pathology) throws Exception {
+    static String getAvailableDatasetsFromConsul(String pathology) throws Exception {
         HashMap<String,String> names = getNamesOfActiveNodesInConsul();
         StringBuilder datasets=new StringBuilder();
         Gson gson = new Gson();
@@ -296,7 +294,7 @@ public class HttpAsyncMiningQueryHelper {
             return null;
     }
 
-    public static String defaultOutputFormat(String data, String type) {
+    static String defaultOutputFormat(String data, String type) {
         return "{\"result\" : [{\"data\":" + "\"" + data + "\",\"type\":" + "\"" + type + "\"}]}";
     }
 }

@@ -150,11 +150,10 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             }
 
 
-	        ContainerProxy[] usedContainerProxies;
-            usedContainerProxies = nodesToBeChecked.toArray(new ContainerProxy[nodesToBeChecked.size()]);
 
-            numberOfContainers = usedContainerProxies.length;
-            log.info("Containers: " + numberOfContainers);
+            ContainerProxy[] usedContainerProxies = nodesToBeChecked.toArray(new ContainerProxy[nodesToBeChecked.size()]);
+            numberOfContainers = nodesToBeChecked.size();
+            log.debug("Containers: " + numberOfContainers);
             String algorithmKey = algorithmName + "_" + System.currentTimeMillis();
             String dfl;
             AdpDBClientQueryStatus queryStatus;
@@ -264,7 +263,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         String availableDatasets;
         log.debug("Checking worker with IP "+container.getEntityName().getIP());
         if (checkIP.isReachable(5000)) {
-            log.debug("Host"+container.getEntityName().getIP()+" is reachable");
+            log.debug("Host "+ container.getEntityName().getIP()+"is reachable");
         }
         else {
             ArtRegistryLocator.getArtRegistryProxy().removeContainer(container.getEntityName());
@@ -308,7 +307,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         //curl -X DELETE $CONSULURL/v1/kv/$DATASETS/$NODE_NAME
         //curl -X DELETE $CONSULURL/v1/kv/$1/$NODE_NAME
 
-        log.info("Running: " + httpDelete.getURI());
+        log.debug("Running: " + httpDelete.getURI());
 
         CloseableHttpResponse response = null;
         if (httpDelete.toString().contains(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/") || httpDelete.toString().contains(System.getenv("DATA") + "/")) {    //if we can not contact : http://exareme-keystore:8500/v1/kv/master* or http://exareme-keystore:8500/v1/kv/datasets*
