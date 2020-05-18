@@ -73,3 +73,9 @@ crashlytics-build.properties
 
 # python virtual environment
 venv
+
+# invoke tasks
+tasks.py
+
+# tox
+.tox
