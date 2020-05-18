@@ -7,7 +7,7 @@
 *.pyc
 
 ##__pycahe__
-**/__pycache__
+**/__pycache__/
 
 ## Directory-based project format:
 .idea/
