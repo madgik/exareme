@@ -300,13 +300,13 @@ echo '*/15  *  *  *  *	./set-local-datasets.sh' >> /etc/crontabs/root
 
 echo '0 *  *  *  * if [ $FEDERATION_ROLE = "master" ]; then \
 cd /tmp/demo/db/ \
-&& find . -type d -path "./*" -mmin +$DELETE_TIME -exec rm -rf {} +\
+&& find . -type d -path "./*" -mmin +$TEMP_FILES_CLEANUP_TIME -exec rm -rf {} +\
 && cd /tmp/demo/algorithms-generation/ \
-&& find . -type d -path "./*" -mmin +$DELETE_TIME -exec rm -rf {} +;\
+&& find . -type d -path "./*" -mmin +$TEMP_FILES_CLEANUP_TIME -exec rm -rf {} +;\
 else \
 cd /tmp/demo/db/ \
-&& find . -type d -path "./*" -mmin +$DELETE_TIME -exec rm -rf {} +\
-&& find . -type f -path "./*" -mmin +$DELETE_TIME -delete; \
+&& find . -type d -path "./*" -mmin +$TEMP_FILES_CLEANUP_TIME -exec rm -rf {} +\
+&& find . -type f -path "./*" -mmin +$TEMP_FILES_CLEANUP_TIME -delete; \
 fi' >> /etc/crontabs/root
 crond
 
