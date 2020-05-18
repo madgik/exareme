@@ -95,6 +95,12 @@ function start_exareme(){               #Starts exareme daemon
        -Djava.rmi.server.codebase=file:$EXAREME_HOME/lib/exareme/   \
        -Djava.security.policy=$EXAREME_HOME/etc/exareme/art.policy  \
        -Djava.rmi.server.hostname=$EXAREME_MASTER                   \
+       -Dsun.rmi.activation.execTimeout=$NODE_COMMUNICATION_TIMEOUT          \
+       -Dsun.rmi.activation.groupTimeout=$NODE_COMMUNICATION_TIMEOUT         \
+       -Dsun.rmi.transport.connectionTimeout=$NODE_COMMUNICATION_TIMEOUT     \
+       -Dsun.rmi.transport.proxy.connectTimeout=$NODE_COMMUNICATION_TIMEOUT  \
+       -Dsun.rmi.transport.tcp.handshakeTimeout=$NODE_COMMUNICATION_TIMEOUT  \
+       -Dsun.rmi.transport.tcp.responseTimeout=$NODE_COMMUNICATION_TIMEOUT   \
        -Dcom.sun.management.jmxremote.port=$EXAREME_ADMIN_JMX_PORT  \
        -Dcom.sun.management.jmxremote.authenticate=false            \
        -Dcom.sun.management.jmxremote.ssl=false                     \
