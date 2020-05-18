@@ -3,6 +3,7 @@ package madgik.exareme.master.gateway.async.handler;
 import com.google.gson.Gson;
 import madgik.exareme.master.gateway.async.handler.Exceptions.DatasetsException;
 import madgik.exareme.master.gateway.async.handler.Exceptions.PathologyException;
+import madgik.exareme.worker.art.container.Container;
 import madgik.exareme.worker.art.container.ContainerProxy;
 import madgik.exareme.worker.art.registry.ArtRegistryLocator;
 import org.apache.http.HttpEntity;
@@ -183,8 +184,8 @@ public class HttpAsyncMiningQueryHelper {
         return result;
     }
 
-    public static List<String> getInputAlgo(HashMap<String, String> inputContent) throws IOException, DatasetsException, PathologyException {
-        List<String> nodesToBeChecked = new ArrayList<>();
+    public static List<ContainerProxy> getInputAlgo(HashMap<String, String> inputContent) throws IOException, DatasetsException, PathologyException {
+        List<ContainerProxy> nodesToBeChecked = new ArrayList<>();
         String datasets;
         String[] userDatasets = null;
         String pathology = null;
@@ -192,8 +193,7 @@ public class HttpAsyncMiningQueryHelper {
 
         if (inputContent == null ) {        //list_datasets
             for (ContainerProxy containerProxy : ArtRegistryLocator.getArtRegistryProxy().getContainers()) {
-                System.out.println("ContainerProxy : " + containerProxy.getEntityName().getIP());
-                nodesToBeChecked.add(containerProxy.getEntityName().getIP());
+                nodesToBeChecked.add(containerProxy);
             }
 	        return nodesToBeChecked;
         }
@@ -202,8 +202,7 @@ public class HttpAsyncMiningQueryHelper {
             nodeDatasets = getNodesForPathology(pathology);
 
             for (ContainerProxy containerProxy : ArtRegistryLocator.getArtRegistryProxy().getContainers()) {
-                System.out.println("ContainerProxy : " + containerProxy.getEntityName().getIP());
-                nodesToBeChecked.add(containerProxy.getEntityName().getIP());
+                nodesToBeChecked.add(containerProxy);
             }
             return nodesToBeChecked;
         }
@@ -213,20 +212,25 @@ public class HttpAsyncMiningQueryHelper {
                 pathology = inputContent.get("pathology");
                 nodeDatasets = getNodesForPathology(pathology);
             }
+            else
+                throw new PathologyException("The parameter pathology should not be blank");
             if (inputContent.containsKey("dataset")) {
                 datasets = inputContent.get("dataset");
                 //Get datasets provided by user
                 userDatasets = datasets.split(",");
             }
+            else
+                throw new DatasetsException("The parameter dataset should not be blank");
             nodesToBeChecked = checkDatasets(nodeDatasets, userDatasets, pathology);
         }
         return nodesToBeChecked;
     }
 
 
-    private static List<String> checkDatasets(HashMap<String, String[]> nodeDatasets, String[] userDatasets, String pathology) throws DatasetsException {
+    private static List<ContainerProxy> checkDatasets(HashMap<String, String[]> nodeDatasets, String[] userDatasets, String pathology) throws DatasetsException, RemoteException {
         List<String> notFoundDatasets = new ArrayList<>();
         List<String> nodesToBeChecked = new ArrayList<>();
+        List<ContainerProxy> containers = new ArrayList<>();
         Boolean flag;
 
         //for every dataset provided by the user
@@ -241,8 +245,15 @@ public class HttpAsyncMiningQueryHelper {
                 //if dataset exist in that Exareme node
                 if (Arrays.asList(datasets).contains(data)) {
                     //and Exareme node not already added to list nodesToBeChecked
-                    if (!nodesToBeChecked.contains(IP))
+                    if (!nodesToBeChecked.contains(IP)) {
                         nodesToBeChecked.add(IP);
+                        for(ContainerProxy cp : ArtRegistryLocator.getArtRegistryProxy().getContainers()){
+                            if (cp.getEntityName().getIP().equals(IP)) {
+                                containers.add(cp);
+                                break;
+                            }
+                        }
+                    }
                     flag = true;
                     continue;
                 }
@@ -262,7 +273,7 @@ public class HttpAsyncMiningQueryHelper {
             //Show appropriate error message to user
             throw new DatasetsException("Dataset(s) " + notFoundSring + " not found for pathology " +pathology + "!");
         }
-        return nodesToBeChecked;
+        return containers;
     }
 
 
