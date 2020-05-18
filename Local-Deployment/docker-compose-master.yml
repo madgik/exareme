@@ -48,8 +48,9 @@ services:
       - CONSULURL=${EXAREME_KEYSTORE}
       - FEDERATION_ROLE=${FEDERATION_ROLE}
       - NODE_NAME=${FEDERATION_NODE}
-      - ENVIRONMENT_TYPE=PROD                   # TEST / DEV / PROD
+      - TEMP_FILES_CLEANUP_TIME=30
       - NODE_COMMUNICATION_TIMEOUT=30000        # (MILIS) NODE COMMUNICATION WILL DROP IF TIMEOUT IS PASSED
+      - ENVIRONMENT_TYPE=PROD                   # TEST / DEV / PROD
     depends_on:
       - exareme-keystore
     deploy:
