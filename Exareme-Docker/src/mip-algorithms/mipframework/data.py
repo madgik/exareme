@@ -90,8 +90,10 @@ def get_formula(args, is_categorical):
             args.coding = "Treatment"
         for var in var_names:
             if is_categorical[var]:
-                formula = formula.replace(
-                    var, "C({v}, {coding})".format(v=var, coding=args.coding)
+                formula = re.sub(
+                    r"\b({})\b".format(var),
+                    r"C(\g<0>, {})".format(args.coding),
+                    formula,
                 )
     return formula
 
