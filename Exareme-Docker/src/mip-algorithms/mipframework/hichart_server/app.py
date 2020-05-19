@@ -6,6 +6,7 @@ from PCA import PCA
 from PEARSON_CORRELATION import Pearson
 from LOGISTIC_REGRESSION import LogisticRegression
 from CALIBRATION_BELT import CalibrationBelt
+from KAPLAN_MEIER import KaplanMeier
 
 app = Flask(__name__)
 
@@ -29,6 +30,10 @@ charts_info = {
     },
     "logistic_roc": {"title": "Logistic Regression ROC", "url": "logistic_roc",},
     "calibration_belt": {"title": "Calibration Belt", "url": "calibration_belt"},
+    "kaplan_meier_survival": {
+        "title": "Kaplan-Meier Survival Curves",
+        "url": "kaplan_meier_survival",
+    },
 }
 
 
@@ -236,6 +241,54 @@ def calibration_belt():
     return render_template(
         "highchart_layout.html", title="Calibration Belt", data=result,
     )
+
+
+@app.route("/kaplan_meier_survival")
+def kaplan_meier_survival():
+    args = [
+        "-x",
+        "apoe4",
+        "-y",
+        "alzheimerbroadcategory",
+        "-pathology",
+        "dementia",
+        "-dataset",
+        "alzheimer_fake_cohort",
+        "-filter",
+        """
+        {
+            "condition":"OR",
+            "rules":[
+                {
+                    "id":"alzheimerbroadcategory",
+                    "field":"alzheimerbroadcategory",
+                    "type":"string",
+                    "input":"select",
+                    "operator":"equal",
+                    "value":"AD"
+                },
+                {
+                    "id":"alzheimerbroadcategory",
+                    "field":"alzheimerbroadcategory",
+                    "type":"string",
+                    "input":"select",
+                    "operator":"equal",
+                    "value":"MCI"
+                }
+            ],
+            "valid":true
+        }
+        """,
+        "-outcome_pos",
+        "AD",
+        "-outcome_neg",
+        "MCI",
+        "-total_duration",
+        "1100",
+    ]
+    result = get_algorithm_result(KaplanMeier, args)
+    result = result["result"][1]["data"]
+    return render_template("highchart_layout.html", title="Kaplan Meier", data=result,)
 
 
 if __name__ == "__main__":
