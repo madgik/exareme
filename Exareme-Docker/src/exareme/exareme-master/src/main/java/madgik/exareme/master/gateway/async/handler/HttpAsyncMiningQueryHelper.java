@@ -217,6 +217,9 @@ public class HttpAsyncMiningQueryHelper {
             }
             else
                 throw new DatasetsException("The parameter dataset should not be blank");
+            if(nodeDatasets.isEmpty()){
+                throw new PathologyException("Existing nodes do not have data for pathology: "+pathology);
+            }
             nodesToBeChecked = checkDatasets(nodeDatasets, userDatasets, pathology);
         }
         return nodesToBeChecked;
