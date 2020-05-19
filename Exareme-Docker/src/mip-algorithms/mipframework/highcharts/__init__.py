@@ -4,6 +4,7 @@ from .user_defined import (
     ROC,
     ScreePlot,
     CalibrationBeltPlot,
+    SurvivalCurves,
 )
 
 __all__ = [
@@ -12,4 +13,5 @@ __all__ = [
     "ROC",
     "ScreePlot",
     "CalibrationBeltPlot",
+    "SurvivalCurves",
 ]

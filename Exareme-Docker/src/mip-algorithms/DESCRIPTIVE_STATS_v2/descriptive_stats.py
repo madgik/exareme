@@ -159,11 +159,11 @@ if __name__ == "__main__":
 
     algorithm_args = [
         "-y",
-        "leftaccumbensarea, subjectage,righthippocampus,lefthippocampus, gender",
+        "montrealcognitiveassessment,updrstotal",
         "-pathology",
         "dementia",
         "-dataset",
-        "adni, ppmi, edsd",
+        "ppmi",
         "-filter",
         "",
     ]

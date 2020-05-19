@@ -1,3 +1,6 @@
+from colour import Color
+
+
 from .core import Heatmap_, Area_, Column_, Bubble_, Line_
 from .core import (
     Title,
@@ -349,3 +352,87 @@ class CalibrationBeltPlot(HighchartTemplate):
                 )
             )
         )
+
+
+class SurvivalCurves:
+    def __init__(
+        self,
+        timeline_dict,
+        survival_function_dict,
+        confidence_interval_dict,
+        control_variable,
+    ):
+        global colors_dark, colors_light
+        self.survival_function_dict = survival_function_dict
+        self.timeline_dict = timeline_dict
+        self.confidence_interval_dict = {}
+        for key, ci in confidence_interval_dict.items():
+            self.confidence_interval_dict[key] = [
+                [x, y[0], y[1]] for x, y in zip(self.timeline_dict[key], ci)
+            ]
+        self.light_colors = {}
+        for i, key in enumerate(self.timeline_dict.keys()):
+            self.light_colors[key] = colors_light[i]
+        self.dark_colors = {}
+        for i, key in enumerate(self.timeline_dict.keys()):
+            self.dark_colors[key] = colors_dark[i]
+        self.control_variable = control_variable
+
+    def render(self):
+        return {
+            "chart": {
+                "type": "arearange",
+                "zoomType": "x",
+                "scrollablePlotArea": {"minWidth": 600, "scrollPositionX": 1},
+            },
+            "title": {"text": "Survival curve"},
+            "xAxis": {"title": {"text": "Days since first visit"}},
+            "plotOptions": {"arearange": {"step": "left"}},
+            "yAxis": {"title": {"text": "Survival Probability"}},
+            "tooltip": {"crosshairs": True, "shared": True,},
+            "legend": {
+                "align": "left",
+                "verticalAlign": "middle",
+                "layout": "vertical",
+            },
+            "series": [
+                {
+                    "data": list(self.confidence_interval_dict[key]),
+                    "color": self.light_colors[key],
+                    "marker": {"enabled": False},
+                    "showInLegend": False,
+                }
+                for key in self.timeline_dict.keys()
+            ]
+            + [
+                {
+                    "type": "line",
+                    "name": self.control_variable + ": " + str(key),
+                    "step": True,
+                    "data": zip(
+                        self.timeline_dict[key], self.survival_function_dict[key]
+                    ),
+                    "color": self.dark_colors[key],
+                    "marker": {"enabled": False},
+                }
+                for key in self.timeline_dict.keys()
+            ],
+        }
+
+
+colors_dark = [
+    "#7cb5ec",
+    "#434348",
+    "#90ed7d",
+    "#f7a35c",
+    "#8085e9",
+    "#f15c80",
+    "#e4d354",
+    "#2b908f",
+    "#f45b5b",
+    "#91e8e1",
+]
+colors_light = [Color(c) for c in colors_dark]
+for c in colors_light:
+    c.luminance = (1 + c.luminance) / 2
+colors_light = [c.get_hex() for c in colors_light]

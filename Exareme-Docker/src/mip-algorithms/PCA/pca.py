@@ -127,17 +127,13 @@ if __name__ == "__main__":
 
     algorithm_args = [
         "-y",
-        "subjectage,rightventraldc,rightaccumbensarea, gender",
+        "pib",
         "-pathology",
-        "dementia, leftaccumbensarea",
+        "dementia",
         "-dataset",
         "adni",
         "-filter",
         "",
-        "-formula",
-        "",
-        "-coding",
-        "Treatment",
     ]
     runner = create_runner(PCA, algorithm_args=algorithm_args, num_workers=1,)
     start = time.time()
