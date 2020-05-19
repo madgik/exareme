@@ -1,11 +1,5 @@
-In order for you to run the unit_tests, you need to:
+## Tests
 
-1)Install python3
-
-2)Inside a test folder:
-
-Run: ```python3 -m pytest``` for running all the unit_tests
-
-OR
-
-Run: ```python3 -m pytest test_*.py``` for running a specific unit_test
+1. Deploy Exareme
+2. `pip install --user tox` (if not already installed)
+3. `tox` 
