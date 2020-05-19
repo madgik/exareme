@@ -315,8 +315,11 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             nodeDatasets.put(masterIP, datasetKeysArray);                 //Map Master IP-> Matser Datasets
 
         String workersKey = searchConsul(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/?keys");
-        if (workersKey == null)     //No workers running
-            return nodeDatasets;             //return master's Datasets only
+        if (workersKey == null) {     //No workers running
+            if(pathologyNodes.isEmpty())
+                throw new PathologyException("Pathology " + pathology + " not found!");
+            return nodeDatasets;         //return master's Datasets only
+        }
         String[] workerKeysArray = gson.fromJson(workersKey, String[].class);
         for (String worker : workerKeysArray) {
             String workerName = worker.replace(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/", "");
