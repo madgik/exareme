@@ -161,7 +161,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             AlgorithmProperties algorithmProperties = Algorithms.getInstance().getAlgorithmProperties(algorithmName);
 
             if (algorithmProperties == null)
-                throw new AlgorithmException("The algorithm '" + algorithmName + "' does not exist.");
+                throw new AlgorithmException(algorithmName,"The algorithm '" + algorithmName + "' does not exist.");
 
             algorithmProperties.mergeAlgorithmParametersWithInputContent(inputContent);
 
