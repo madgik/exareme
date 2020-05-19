@@ -33,6 +33,7 @@ class AlgorithmData(object):
             metadata_table_name=args.metadata_table,
             privacy=args.privacy,
         )
+        self.db = db
         self.full = db.read_data_from_db(args)
         self.metadata = db.read_metadata_from_db(args)
         self.variables, self.covariables = self.build_variables(
@@ -123,6 +124,22 @@ class DataBase(object):
     @logged
     def read_data_from_db(self, args):
         var_names = list(args.y) + ["dataset"]
+        if hasattr(args, "x") and args.x:
+            var_names.extend(args.x)
+        data = self.select_vars_from_data(
+            var_names=var_names, datasets=args.dataset, filter_rules=args.filter
+        )
+        return data
+
+    @logged
+    def read_longitudinal_data_from_db(self, args):
+        var_names = list(args.y) + [
+            "subjectcode",
+            "subjectvisitdate",
+            "subjectage",
+            "subjectvisitid",
+            "dataset",
+        ]
         if hasattr(args, "x") and args.x:
             var_names.extend(args.x)
         data = self.select_vars_from_data(
