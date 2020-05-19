@@ -1,0 +1,15 @@
+apsw==3.9.2-r1
+NumPy==1.16.3
+titus
+patsy
+scipy==1.2.1
+scikit-learn==0.20.3
+pandas
+lifelines
+liac-arff
+sqlalchemy
+pathlib
+tqdm
+colour
+requests
+pytest

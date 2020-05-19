@@ -49,6 +49,7 @@ services:
       - FEDERATION_ROLE=${FEDERATION_ROLE}
       - NODE_NAME=${FEDERATION_NODE}
       - ENVIRONMENT_TYPE=PROD   # TEST / DEV / PROD
+      - TEMP_FILES_CLEANUP_TIME=30
     depends_on:
       - exareme-keystore
     deploy:

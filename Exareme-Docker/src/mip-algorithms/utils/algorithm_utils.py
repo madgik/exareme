@@ -20,7 +20,7 @@ env_type = os.environ["ENVIRONMENT_TYPE"]
 if env_type in {"DEV", "PROD"}:
     PRIVACY_MAGIC_NUMBER = 10
 elif env_type == "TEST":
-    PRIVACY_MAGIC_NUMBER = 1
+    PRIVACY_MAGIC_NUMBER = 0
 
 P_VALUE_CUTOFF = 0.001
 P_VALUE_CUTOFF_STR = "< " + str(P_VALUE_CUTOFF)
@@ -51,6 +51,11 @@ class TransferAndAggregateData(object):
                 kwargs[k] = (max(self.data[k], other.data[k]), "max")
             elif self.reduce_type[k] == "concat":
                 kwargs[k] = (np.concatenate(self.data[k], other.data[k]), "concat")
+            elif self.reduce_type[k] == "concatdict":
+                kwargs[k] = {}
+                for key in self.data[k].keys():
+                    kwargs[key] = np.concatenate(self.data[k][key], other.data[k][key])
+                kwargs[k] = (kwargs[k], "concatdict")
             elif self.reduce_type[k] == "do_nothing":
                 kwargs[k] = (self.data[k], "do_nothing")
             else:
@@ -400,7 +405,14 @@ class StateData(object):
 
 
 def init_logger():
-    logging.basicConfig(filename="/var/log/exaremePythonAlgorithms.log")
+    if env_type == "PROD":
+        logging.basicConfig(
+            filename="/var/log/exaremePythonAlgorithms.log", level=logging.INFO
+        )
+    else:
+        logging.basicConfig(
+            filename="/var/log/exaremePythonAlgorithms.log", level=logging.DEBUG
+        )
 
 
 class Global2Local_TD(TransferData):
