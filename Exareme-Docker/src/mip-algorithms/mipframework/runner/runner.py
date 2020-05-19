@@ -18,6 +18,7 @@ ALGORITHM_TYPES = {
     "LogisticRegression": "iterative",
     "CalibrationBelt": "iterative",
     "DescriptiveStats": "local-global",
+    "KaplanMeier": "local-global",
 }
 
 
