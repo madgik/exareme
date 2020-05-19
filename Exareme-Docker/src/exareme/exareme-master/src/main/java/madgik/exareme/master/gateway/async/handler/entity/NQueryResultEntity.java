@@ -89,16 +89,6 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();
-            } else if (queryStatus.getError().contains("UserError")) {
-                // todo: display error message to user
-                String data = "The user input is not valid.";
-                //type could be error, user_error, warning regarding the error occured along the process
-                String type = warning;
-                String result = defaultOutputFormat(data, type);
-                logErrorMessage(result);
-                encoder.write(ByteBuffer.wrap(result.getBytes()));
-                encoder.complete();
-                close();
             } else if (queryStatus.getError().contains("java.rmi.RemoteException")) {
                 String data = "One or more containers are not responding. Please inform the system administrator.";
                 //type could be error, user_error, warning regarding the error occured along the process

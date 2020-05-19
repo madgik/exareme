@@ -8,11 +8,11 @@ import numpy as np
 from lifelines import KaplanMeierFitter
 
 from mipframework import Algorithm, AlgorithmResult
-from mipframework.exceptions import PrivacyError, UserError
+from mipframework.exceptions import PrivacyError
 from mipframework.constants import PRIVACY_MAGIC_NUMBER
 from mipframework.highcharts import SurvivalCurves
 
-from utils.algorithm_utils import make_json_raw
+from utils.algorithm_utils import make_json_raw, ExaremeError
 
 
 class KaplanMeier(Algorithm):
@@ -93,7 +93,7 @@ class KaplanMeier(Algorithm):
                     pos=outcome_pos, neg=outcome_neg
                 )
             )
-            raise UserError(msg)
+            raise ExaremeError(msg)
 
         self.push_and_concat(
             grouped_durations_observed_dict=grouped_durations_observed_dict
