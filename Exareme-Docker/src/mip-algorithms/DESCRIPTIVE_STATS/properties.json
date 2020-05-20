@@ -4,14 +4,14 @@
 	"label": "Descriptive Statistics",
 	"type": "python_local_global",
 	"parameters": [{
-			"name": "x",
-			"label": "x",
+			"name": "y",
+			"label": "y",
 			"desc": "A list of variables from database. The variable should be Real, Integer or String. The variable can be either numerical or categorical. It cannot be empty",
 			"type": "column",
 			"columnValuesSQLType": "real, integer, text",
 			"columnValuesIsCategorical": "",
 			"columnValuesNumOfEnumerations": "",
-			"value": "leftaccumbensarea",
+			"value": "rightcuncuneus,rightaorganteriororbitalgyrus,leftpogpostcentralgyrus,leftmcggmiddlecingulategyrus,leftsmcsupplementarymotorcortex,leftsogsuperioroccipitalgyrus,leftmtgmiddletemporalgyrus,rightpoparietaloperculum",
 			"valueNotBlank": true,
 			"valueMultiple": true,
 			"valueType": "string"
@@ -20,7 +20,7 @@
 			"label": "dataset",
 			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty",
 			"type": "dataset",
-			"value": "adni",
+			"value": "adni,edsd",
 			"valueNotBlank": true,
 			"valueMultiple": true,
 			"valueType": "string"
