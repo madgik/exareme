@@ -60,7 +60,7 @@ public class ExecUtils {
                                          ProcessManager procManager) throws RemoteException {
 
         //sql based algorithms use the madis function "execnselect" which cannot be currently be processed by the MadisServer
-        if(false)//(!query.toString().contains("execnselect"))
+        if(!query.toString().contains("execnselect"))
             return runQueryOnTable(query, madisMainDB, directory);
 
         else {
@@ -154,7 +154,7 @@ public class ExecUtils {
         query= query.replaceAll("  ", " ");
         //query= query.replaceAll("\n", "");
         query= query.replaceAll("(?m)^[ \t]*\r?\n", "");
-        
+
         //semicolons
         query=query.replaceAll(";","%3B");
         try{
