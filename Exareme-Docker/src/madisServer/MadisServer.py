@@ -8,7 +8,7 @@ import logging
 
 import MadisInstance
 
-MAX_WORKERS=2
+MAX_WORKERS=1
 NUMBER_OF_MADIS_INSTANCES=1
 
 
@@ -57,12 +57,13 @@ class MainHandler(tornado.web.RequestHandler):
     query=self.get_argument("query")
     
     self.logger.debug("(MadisServer::post) dbfilename={}  query={}".format(dbFilename,query))
+    
     str_result=yield self.execQuery(dbFilename,query)
 
     self.logger.debug("(MadisServer::post) str_result-> {}".format(str_result))
     self.write("{}".format(str_result))
     
-    #self.finish() #is this needed??
+    self.finish() #is this needed??
 
 application=tornado.web.Application([(r"/", MainHandler),])
 application.listen(8888)

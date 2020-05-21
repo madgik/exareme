@@ -1,17 +1,19 @@
 import sys
 sys.path.insert(1,'/root/exareme/lib/madis/src')
+#sys.path.insert(1,'/home/sskoull/Desktop/AthinaInstitute/tornadoServer/madis')
 
 class MadisInstance:
   import madis
   
   def connectToDb(self,dbFilename):
-    self.cursor=self.madis.functions.Connection(dbFilename).cursor()
-
+    self.connection=self.madis.functions.Connection(dbFilename)
+    self.cursor=self.connection.cursor()
+    
     self.logger.debug("(MadisInstance::connectToDB) finished")
    
   def closeConnectionToDb(self):
-    #self.connection.close()
     self.cursor.close()
+    self.connection.close()
   
   def execute(self,query):
     self.logger.debug("(MadisInstance::execute) query={}".format(query))
@@ -22,6 +24,7 @@ class MadisInstance:
     for q in queries:
       q=q+";"
       self.logger.debug("(MadisInstance::execute) in for. q={}".format(q))
+  
       result=self.cursor.execute(q)
 
       for row in result:
