@@ -5,6 +5,7 @@ package madgik.exareme.master.engine.executor;
 
 import com.google.gson.JsonObject;
 import madgik.exareme.utils.association.Pair;
+import madgik.exareme.utils.file.InputStreamConsumerThread;
 import madgik.exareme.utils.properties.AdpProperties;
 import madgik.exareme.worker.art.concreteOperator.manager.MadisWebAPICaller;
 import madgik.exareme.worker.art.concreteOperator.manager.ProcessManager;
@@ -58,40 +59,45 @@ public class ExecUtils {
     public static String runQueryOnTable(StringBuilder query, String madisMainDB, File directory,
                                          ProcessManager procManager) throws RemoteException {
 
-        return runQueryOnTable(query, madisMainDB, directory);
+        //sql based algorithms use the madis function "execnselect" which cannot be currently be processed by the MadisServer
+        if(false)//(!query.toString().contains("execnselect"))
+            return runQueryOnTable(query, madisMainDB, directory);
 
-        /*
-        log.debug("Process Directory: " + directory.getAbsolutePath());
-        try {
-            Process p = procManager.createProcess(directory, python, engine, madisMainDB);
-            p.getOutputStream().write(query.toString().getBytes());
-            p.getOutputStream().flush();
-            p.getOutputStream().close();
+        else {
+            log.debug("Process Directory: " + directory.getAbsolutePath());
 
-            InputStreamConsumerThread stdout =
-                    new InputStreamConsumerThread(p.getInputStream(), false);
-            stdout.start();
+            log.debug("(ExecUtils::runQueryOnTable) running on MTERM process. query="+query.toString());
 
-            InputStreamConsumerThread stderr =
-                    new InputStreamConsumerThread(p.getErrorStream(), false);
-            stderr.start();
+            try {
+                Process p = procManager.createProcess(directory, python, engine, madisMainDB);
+                p.getOutputStream().write(query.toString().getBytes());
+                p.getOutputStream().flush();
+                p.getOutputStream().close();
 
-            int exitCode = p.waitFor();
-            stdout.join();
-            stderr.join();
+                InputStreamConsumerThread stdout =
+                        new InputStreamConsumerThread(p.getInputStream(), false);
+                stdout.start();
 
-            if (exitCode != 0 || stderr.getOutput().trim().isEmpty() == false) {
-                log.error(stderr.getOutput());
-                throw new ServerException(
-                        "Cannot execute db (code: " + exitCode + "): " + stderr.getOutput());
+                InputStreamConsumerThread stderr =
+                        new InputStreamConsumerThread(p.getErrorStream(), false);
+                stderr.start();
+
+                int exitCode = p.waitFor();
+                stdout.join();
+                stderr.join();
+
+                if (exitCode != 0 || stderr.getOutput().trim().isEmpty() == false) {
+                    log.error(stderr.getOutput());
+                    throw new ServerException(
+                            "Cannot execute db (code: " + exitCode + "): " + stderr.getOutput());
+                }
+                String output = stdout.getOutput();
+                log.debug(output);
+                return output;
+            } catch (Exception e) {
+                throw new ServerException("Cannot run query", e);
             }
-            String output = stdout.getOutput();
-            log.debug(output);
-            return output;
-        } catch (Exception e) {
-            throw new ServerException("Cannot run query", e);
         }
-        */
     }
 
     private static String runQueryOnTable(StringBuilder query, String madisMainDB, File directory){
@@ -148,7 +154,7 @@ public class ExecUtils {
         query= query.replaceAll("  ", " ");
         //query= query.replaceAll("\n", "");
         query= query.replaceAll("(?m)^[ \t]*\r?\n", "");
-
+        
         //semicolons
         query=query.replaceAll(";","%3B");
         try{
