@@ -46,7 +46,7 @@ def main():
 
 
     init_logger()
-    logging.info(["Init1Local: args_X, args_Y",[args_X, args_Y])
+    logging.info(["Init1Local: args_X, args_Y",args_X, args_Y])
 
     #1. Query database and metadata
     queryMetadata = "select * from metadata where code in (" + "'" + "','".join(args_X) + "','" + "','".join(args_Y) + "'"  + ");"
@@ -54,12 +54,12 @@ def main():
     categoricalVariables = variable_categorical_getDistinctValues(metadata)
 
     #2. Run algorithm
-    confusionMatrix, mse, counts = cart_1_local(dataFrame, dataSchema, categoricalVariables, args_X, args_Y, args_globalTreeJ)
+    confusionMatrix, mse, counts, predictions = cart_1_local(dataFrame, dataSchema, categoricalVariables, args_X, args_Y, args_globalTreeJ)
 
     #3. Save local state : Pass/
 
     #4. Transfer local output
-    local_out = Cart_Loc2Glob_TD(args_X, args_Y, categoricalVariables, confusionMatrix, mse, counts)
+    local_out = Cart_Loc2Glob_TD(args_X, args_Y, categoricalVariables, confusionMatrix, mse, counts, predictions)
     local_out.transfer()
 
 if __name__ == '__main__':

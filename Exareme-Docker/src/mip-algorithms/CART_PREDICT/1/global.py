@@ -20,9 +20,10 @@ def main():
     args, unknown = parser.parse_known_args()
 
     #1. Merge local outputs
-    args_X, args_Y, categoricalVariables,confusionMatrix,mse, counts = Cart_Loc2Glob_TD.load(path.abspath(args.local_step_dbs)).get_data()
+    args_X, args_Y, categoricalVariables, confusionMatrix, mse, counts, predictions = Cart_Loc2Glob_TD.load(path.abspath(args.local_step_dbs)).get_data()
 
-    global_out = cart_1_global(args_X, args_Y, categoricalVariables, confusionMatrix, mse, counts)
+
+    global_out = cart_1_global(args_X, args_Y, categoricalVariables, confusionMatrix, mse, counts, predictions)
     set_algorithms_output_data(global_out)
 
 

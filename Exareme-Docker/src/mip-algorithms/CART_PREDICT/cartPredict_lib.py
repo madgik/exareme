@@ -77,52 +77,55 @@ def cart_1_local(dataFrame, dataSchema, categoricalVariables, args_X, args_Y, gl
     if counts < PRIVACY_MAGIC_NUMBER:
         raise PrivacyError('The Experiment could not run with the input provided because there are insufficient data.')
 
-    #3.
-    if LOGS:
-        file = open("/root/prediction.csv",'wb')
-        wr = csv.writer(file, dialect='excel')
-        ds = [elem for elem in dataSchema]
-        ds.append("prediction")
-        wr.writerow(ds)
-
     confusionMatrix = dict() # ConfusionMatrix['ActualValue', 'PredictedValue'] = ...
     mse= 0 # mean square error
+
+    predictions = dict()
+    predictions["ids"] = []
+    predictions["predictions"] = []
     if args_Y[0] in categoricalVariables:  #case of Classification tree
         for element in itertools.product(categoricalVariables[args_Y[0]],categoricalVariables[args_Y[0]]):
             confusionMatrix[element[0],element[1]] = 0
         for index, row in dataFrame.iterrows():
             predictedValue = predict(globalTreeJ, row, args_Y, True)
-            if LOGS:
-                rowcopy = [row[elem] for elem in dataSchema]
-                rowcopy.append(predictedValue)
-                wr.writerow(rowcopy)
+            if "IdForTesting" in dataSchema:
+                predictions["ids"].append(row["IdForTesting"])
+                predictions["predictions"].append(predictedValue)
             logging.debug(["Predictions", row, predictedValue])
             confusionMatrix[row[args_Y[0]],predictedValue] = confusionMatrix[row[args_Y[0]],predictedValue] + 1
     elif args_Y[0] not in categoricalVariables: #case of regression tree
         for index, row in dataFrame.iterrows():
             predictedValue = predict(globalTreeJ, row, args_Y, False)
-            if LOGS:
-                rowcopy = [row[elem] for elem in dataSchema]
-                rowcopy.append(predictedValue)
-                wr.writerow(rowcopy)
+            if "IdForTesting" in dataSchema:
+                predictions["ids"].append(row["IdForTesting"])
+                predictions["predictions"].append(predictedValue)
+
             logging.debug(["Predictions", row, predictedValue])
             mse = mse + (row[args_Y[0]] - predictedValue) ** 2
-    if LOGS:
-        file.close()
-    return confusionMatrix, mse, counts
 
 
-def cart_1_global(args_X, args_Y, categoricalVariables, confusionMatrix, mse, counts):
+    return confusionMatrix, mse, counts, predictions
+
+
+def cart_1_global(args_X, args_Y, categoricalVariables, confusionMatrix, mse, counts, predictions):
     if args_Y[0] in categoricalVariables:
         fields = [{"name": "Actual Value", "type": "text"},{"name": "Predicted Value", "type": "text"},{"name": "Counts", "type": "number"}]
         table = totabulardataresourceformat("Confusion Matrix", [[key[0], key[1], confusionMatrix[key]] for key in confusionMatrix], fields)
-        result = {"result": [ table ]}
+        predictions = {
+            "type": "application/json",
+            "data":  predictions
+        }
+        result = {"result": [ table, predictions ]}
 
     if args_Y[0] not in categoricalVariables:  #case of Classification tree
         mse = np.sqrt(mse / counts)
         fields = [{"name": "mse", "type": "number"}]
         table = totabulardataresourceformat("Mean Square Error", [mse] , fields)
-        result = {"result": [ table ]}
+        predictions = {
+            "type": "application/json",
+            "data":  predictions
+        }
+        result = {"result": [ table, predictions ]}
     try:
         global_out = json.dumps(result, allow_nan=False)
     except ValueError:
@@ -132,7 +135,7 @@ def cart_1_global(args_X, args_Y, categoricalVariables, confusionMatrix, mse, co
 
 class Cart_Loc2Glob_TD(TransferData):
     def __init__(self, *args):
-        if len(args) != 6:
+        if len(args) != 7:
             raise ValueError('Illegal number of arguments.')
         self.args_X = args[0]
         self.args_Y = args[1]
@@ -140,16 +143,23 @@ class Cart_Loc2Glob_TD(TransferData):
         self.confusionMatrix = args[3]
         self.mse = args[4]
         self.counts = args[5]
+        self.predictions = args[6]
 
     def get_data(self):
-        return self.args_X, self.args_Y, self.categoricalVariables, self.confusionMatrix, self.mse, self.counts
+        return self.args_X, self.args_Y, self.categoricalVariables, self.confusionMatrix, self.mse, self.counts, self.predictions
 
     def __add__(self, other):
+
+        predictionsTotal = dict()
+        predictionsTotal["ids"] = self.predictions["ids"] + other.predictions["ids"]
+        predictionsTotal["predictions"] = self.predictions["predictions"] + other.predictions["predictions"]
+        
         return Cart_Loc2Glob_TD(
             self.args_X,
             self.args_Y,
             self.categoricalVariables,
             add_dict(self.confusionMatrix,other.confusionMatrix),
             add_vals(self.mse, other.mse),
-            add_vals(self.counts, other.counts)
+            add_vals(self.counts, other.counts),
+            predictionsTotal
         )
