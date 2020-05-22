@@ -22,9 +22,9 @@ from scipy import stats
 from os import path
 sys.path.append(path.abspath(__file__))
 
-from tests.vm_url import vmUrl
-endpointUrl_CartTraining= vmUrl+'CART'
-endpointUrl_CartPredict= vmUrl+'CART_PREDICT'
+from tests import vm_url
+endpointUrl_CartTraining= vm_url + 'CART'
+endpointUrl_CartPredict= vm_url + 'CART_PREDICT'
 path = '../data/dementia/'
 
 # argsX = "montrealcognitiveassessment,"
@@ -147,8 +147,8 @@ class Test_Cart(unittest.TestCase):
                         "max_depth": 200}
 
         sklearnResult = run_sklearn_classification( path+data_sklearn['trainingDataset']+".csv",
-                                                      path+data_sklearn['testingDataset']+".csv",
-                                                      data_sklearn['x'], data_sklearn['y'], data_sklearn['max_depth'])
+                                                    path+data_sklearn['testingDataset']+".csv",
+                                                    data_sklearn['x'], data_sklearn['y'], data_sklearn['max_depth'])
 
         #CompareResults
         exaremeResult = pd.DataFrame.from_dict(exaremeResult_Predict["result"][1]["data"])
@@ -179,7 +179,7 @@ class Test_Cart(unittest.TestCase):
         data_Cart = [{ "name": "x", "value": "Cement,BlastFurnaceSlag,FlyAsh,Water,Superplasticizer,CoarseAggregate,FineAggregate,Age"},
                 {"name": "y", "value": "ConcreteCompressiveStrength"},
                 {"name": "max_depth", "value": "200"},
-                {"name": "no_split_points","value": "50"},
+                {"name": "no_split_points","value": "20"},
                 {"name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "concrete_data_training"},
                 {"name": "filter", "value": ""}]
