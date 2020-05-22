@@ -2,6 +2,88 @@
 {
     "variables": [
       {
+          "code": "IdForTesting",
+          "description": "",
+          "label": "IdForTesting",
+          "methodology": "Concrete_data",
+          "type": "real",
+          "sql_type": "real",
+          "isCategorical": false
+      },
+      {
+          "code": "Cement",
+          "description": "",
+          "label": "Cement",
+          "methodology": "Concrete_data",
+          "type": "real",
+          "sql_type": "real",
+          "isCategorical": false
+      },
+      {
+          "code": "BlastFurnaceSlag",
+          "description": "",
+          "label": "BlastFurnaceSlag",
+          "methodology": "Concrete_data",
+          "type": "real",
+          "sql_type": "real",
+          "isCategorical": false
+      },
+      {
+          "code": "FlyAsh",
+          "description": "",
+          "label": "FlyAsh",
+          "methodology": "Concrete_data",
+          "type": "real",
+          "sql_type": "real",
+          "isCategorical": false
+      },
+      {
+          "code": "Water",
+          "description": "",
+          "label": "Water",
+          "methodology": "Concrete_data",
+          "type": "real",
+          "sql_type": "real",
+          "isCategorical": false
+      },
+      {
+          "code": "Superplasticizer",
+          "description": "",
+          "label": "Superplasticizer",
+          "methodology": "Concrete_data",
+          "type": "real",
+          "sql_type": "real",
+          "isCategorical": false
+      },
+      {
+          "code": "CoarseAggregate",
+          "description": "",
+          "label": "CoarseAggregate",
+          "methodology": "Concrete_data",
+          "type": "real",
+          "sql_type": "real",
+          "isCategorical": false
+      },
+      {
+          "code": "FineAggregate",
+          "description": "",
+          "label": "FineAggregate",
+          "methodology": "Concrete_data",
+          "type": "real",
+          "sql_type": "real",
+          "isCategorical": false
+      },
+
+      {
+          "code": "ConcreteCompressiveStrength",
+          "description": "",
+          "label": "ConcreteCompressiveStrength",
+          "methodology": "Concrete_data",
+          "type": "real",
+          "sql_type": "real",
+          "isCategorical": false
+      },
+      {
           "code": "Pregnancies",
           "description": "",
           "label": "Pregnancies",
@@ -844,6 +926,18 @@
             "sql_type": "text",
             "description": "Variable used to differentiate datasets",
             "enumerations": [
+              {
+                  "code": "concrete_data_testing_GS",
+                  "label": "concrete_data_testing_GS"
+              },
+              {
+                  "code": "concrete_data_testing",
+                  "label": "concrete_data_testing"
+              },
+              {
+                  "code": "concrete_data_training",
+                  "label": "concrete_data_training"
+              },
               {
                   "code": "diabetes_training",
                   "label": "diabetes_training"
