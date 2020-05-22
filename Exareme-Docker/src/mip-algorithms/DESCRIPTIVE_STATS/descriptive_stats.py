@@ -73,29 +73,44 @@ class DescriptiveStats(Algorithm):
             data_group = data[data.dataset == dataset]
             n_obs = len(data_group)
             self.push_and_add(**{"model__" + "n_obs_" + dataset: n_obs})
-            if n_obs <= PRIVACY_THRESHOLD:
-                continue
-            for numerical in numericals:
-                numvar = data_group[numerical]
-                sx = numvar.sum()
-                self.push_and_add(**{"model__" + "sx_" + numerical + "_" + dataset: sx})
-                sxx = (numvar * numvar).sum()
-                self.push_and_add(
-                    **{"model__" + "sxx_" + numerical + "_" + dataset: sxx}
-                )
-                min_ = numvar.min()
-                self.push_and_min(
-                    **{"model__" + "min_" + numerical + "_" + dataset: min_}
-                )
-                max_ = numvar.max()
-                self.push_and_max(
-                    **{"model__" + "max_" + numerical + "_" + dataset: max_}
-                )
-            for categorical in categoricals:
-                counter = Counter(data_group[categorical])
-                self.push_and_add(
-                    **{"model__" + "counter_" + categorical + "_" + dataset: counter}
-                )
+            for var in numericals + categoricals:
+                if var in numericals:
+                    numerical = var
+                    numvar = data_group[numerical]
+                    if n_obs <= PRIVACY_THRESHOLD:
+                        sx, sxx, min_, max_ = 0, 0, 0, 0
+                    else:
+                        sx = numvar.sum()
+                        sxx = (numvar * numvar).sum()
+                        min_ = numvar.min()
+                        max_ = numvar.max()
+                    self.push_and_add(
+                        **{"model__" + "sx_" + numerical + "_" + dataset: sx}
+                    )
+                    self.push_and_add(
+                        **{"model__" + "sxx_" + numerical + "_" + dataset: sxx}
+                    )
+                    self.push_and_min(
+                        **{"model__" + "min_" + numerical + "_" + dataset: min_}
+                    )
+                    self.push_and_max(
+                        **{"model__" + "max_" + numerical + "_" + dataset: max_}
+                    )
+                elif var in categoricals:
+                    categorical = var
+                    if n_obs <= PRIVACY_THRESHOLD:
+                        counter = Counter()
+                    else:
+                        counter = Counter(data_group[categorical])
+                    self.push_and_add(
+                        **{
+                            "model__"
+                            + "counter_"
+                            + categorical
+                            + "_"
+                            + dataset: counter
+                        }
+                    )
 
     def global_(self):
         numericals = self.fetch("numericals")
