@@ -8,13 +8,14 @@ import sqlite3
 
 def main():
     conn = sqlite3.connect(
-            "/home/jason/madgik/exareme/Exareme-Docker/src/mip-algorithms/DESCRIPTIVE_STATS/unittest_generation/datasets.db")
+        "/home/jason/madgik/exareme/Exareme-Docker/src/mip-algorithms/DESCRIPTIVE_STATS/unittest_generation/datasets.db"
+    )
     cur = conn.cursor()
-    adni = pd.read_csv('../../unit_tests/data/dementia/CSVs/adni.csv')
+    adni = pd.read_csv("../../unit_tests/data/dementia/CSVs/adni.csv")
 
     var_names = adni.axes[1]
-    dataset_idx = list(adni.axes[1]).index('dataset')
-    subjectcode_idx = list(adni.axes[1]).index('subjectcode')
+    dataset_idx = list(adni.axes[1]).index("dataset")
+    subjectcode_idx = list(adni.axes[1]).index("subjectcode")
     num_vars = len(var_names)
     idx_range = list(range(num_vars))
     idx_range.pop(dataset_idx)
@@ -28,8 +29,10 @@ def main():
         cur.execute("select isCategorical from metadata where code = '" + x_name + "';")
         is_categorical = cur.fetchall()[0][0]
         if is_categorical:
-            cur.execute("select enumerations from metadata where code = '" + x_name + "';")
-            enums = cur.fetchall()[0][0].split(',')
+            cur.execute(
+                "select enumerations from metadata where code = '" + x_name + "';"
+            )
+            enums = cur.fetchall()[0][0].split(",")
             x = adni[x_name]
             freqs = dict()
             if False not in x.isna():
@@ -50,75 +53,41 @@ def main():
                     freqs = {str(key): int(freqs[key]) for key in freqs.keys()}
                 count = sum(freqs.values())
                 input_data = [
-                    {
-                        "name" : "x",
-                        "value": x_name
-                    },
-                    {
-                        "name" : "dataset",
-                        "value": "adni"
-                    },
-                    {
-                        "name" : "filter",
-                        "value": ""
-                    },
-                    {
-                        "name" : "pathology",
-                        "value": "dementia"
-                    }
+                    {"name": "x", "value": x_name},
+                    {"name": "dataset", "value": "adni"},
+                    {"name": "filter", "value": ""},
+                    {"name": "pathology", "value": "dementia"},
                 ]
-                output_data = {
-                    'Label'    : x_name,
-                    'Count'    : int(count),
-                    'Frequency': freqs
-                }
-                results.append({
-                    "input" : input_data,
-                    "output": output_data
-                })
+                output_data = {"Label": x_name, "Count": int(count), "Frequency": freqs}
+                results.append({"input": input_data, "output": output_data})
                 num_tests += 1
         else:
             xm = np.ma.masked_invalid(adni[x_name])
             if False in xm.mask:
                 input_data = [
-                    {
-                        "name" : "x",
-                        "value": x_name
-                    },
-                    {
-                        "name" : "dataset",
-                        "value": "adni"
-                    },
-                    {
-                        "name" : "filter",
-                        "value": ""
-                    },
-                    {
-                        "name" : "pathology",
-                        "value": "dementia"
-                    }
+                    {"name": "x", "value": x_name},
+                    {"name": "dataset", "value": "adni"},
+                    {"name": "filter", "value": ""},
+                    {"name": "pathology", "value": "dementia"},
                 ]
                 output_data = {
-                    'Label'         : str(x_name),
-                    'Count'         : int(xm.count()),
-                    'Min'           : float(xm.min()),
-                    'Max'           : float(xm.max()),
-                    'Mean'          : float(xm.mean()),
-                    'Std.Err.'      : float(xm.std()),
-                    'Mean + Std.Err': float(xm.mean() + xm.std()),
-                    'Mean - Std.Err': float(xm.mean() - xm.std())
+                    "Label": str(x_name),
+                    "Count": int(xm.count()),
+                    "Min": float(xm.min()),
+                    "Max": float(xm.max()),
+                    "Mean": float(xm.mean()),
+                    "Std.Err.": float(xm.std()),
+                    "Mean + Std.Err": float(xm.mean() + xm.std()),
+                    "Mean - Std.Err": float(xm.mean() - xm.std()),
                 }
-                results.append({
-                    "input" : input_data,
-                    "output": output_data
-                })
+                results.append({"input": input_data, "output": output_data})
                 num_tests += 1
 
     print(num_tests)
     results = {"results": results}
-    with open('descr_stats_runs.json', 'w') as f:
+    with open("descr_stats_runs.json", "w") as f:
         json.dump(results, f)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

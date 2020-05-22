@@ -1,9 +1,6 @@
-import sys
 from os import path
 
-sys.path.append(path.dirname(path.dirname(path.abspath(__file__))) + '/utils/')
-
-from algorithm_utils import TransferData, ExaremeError
+from utils.algorithm_utils import TransferData, ExaremeError
 
 def merge_two_dicts(x, y):
     z = x.copy()   # start with x's keys and values

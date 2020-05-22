@@ -1,0 +1,5083 @@
+{
+    "test_cases": [
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "rightsfgsuperiorfrontalgyrus,leftbasalforebrain,rightfugfusiformgyrus"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "edsd": {
+                    "leftbasalforebrain": {
+                        "std": 0.041293430379088815, 
+                        "max": 0.56403, 
+                        "min": 0.13799, 
+                        "mean": 0.368424874141876
+                    }, 
+                    "rightfugfusiformgyrus": {
+                        "std": 0.8350911331339516, 
+                        "max": 9.4739, 
+                        "min": 3.8349, 
+                        "mean": 7.07725881006865
+                    }, 
+                    "rightsfgsuperiorfrontalgyrus": {
+                        "std": 2.0653162712129576, 
+                        "max": 19.5882, 
+                        "min": 0.00029, 
+                        "mean": 13.919113089244853
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "leftbasalforebrain"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "edsd": {
+                    "leftbasalforebrain": {
+                        "std": 0.041293430379088815, 
+                        "max": 0.56403, 
+                        "min": 0.13799, 
+                        "mean": 0.368424874141876
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "leftfofrontaloperculum"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,adni,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "leftfofrontaloperculum": {
+                        "std": 0.22111566635733293, 
+                        "max": 2.9576, 
+                        "min": 1.0498, 
+                        "mean": 2.0069130252100833
+                    }
+                }, 
+                "adni": {
+                    "leftfofrontaloperculum": {
+                        "std": 0.21028668217266916, 
+                        "max": 2.73465, 
+                        "min": 1.31745, 
+                        "mean": 1.9391248874296443
+                    }
+                }, 
+                "edsd": {
+                    "leftfofrontaloperculum": {
+                        "std": 0.279815619705402, 
+                        "max": 2.6485, 
+                        "min": 1e-05, 
+                        "mean": 1.8939826773455364
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "leftpcggposteriorcingulategyrus"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "adni": {
+                    "leftpcggposteriorcingulategyrus": {
+                        "std": 0.4878934121605557, 
+                        "max": 6.15975, 
+                        "min": 2.85425, 
+                        "mean": 4.335250037523453
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "rightsmgsupramarginalgyrus"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "rightsmgsupramarginalgyrus": {
+                        "std": 0.8948858997335277, 
+                        "max": 10.7466, 
+                        "min": 5.2243, 
+                        "mean": 8.18375644257703
+                    }
+                }, 
+                "edsd": {
+                    "rightsmgsupramarginalgyrus": {
+                        "std": 1.1163042783023602, 
+                        "max": 10.7194, 
+                        "min": 0.01333, 
+                        "mean": 7.616723455377567
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "csfglobal,rightmtgmiddletemporalgyrus,rightpoparietaloperculum"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,adni,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "rightmtgmiddletemporalgyrus": {
+                        "std": 1.57434356141805, 
+                        "max": 20.7703, 
+                        "min": 8.6731, 
+                        "mean": 14.35320210084035
+                    }, 
+                    "rightpoparietaloperculum": {
+                        "std": 0.3164410640785628, 
+                        "max": 3.4457, 
+                        "min": 1.3588, 
+                        "mean": 2.2435745098039233
+                    }, 
+                    "csfglobal": {
+                        "std": 0.4409542336832194, 
+                        "max": 4.2014, 
+                        "min": 0.60997, 
+                        "mean": 1.3616250140056019
+                    }
+                }, 
+                "edsd": {
+                    "rightmtgmiddletemporalgyrus": {
+                        "std": 1.7437247508648561, 
+                        "max": 19.0242, 
+                        "min": 7.0908, 
+                        "mean": 13.585833638443924
+                    }, 
+                    "rightpoparietaloperculum": {
+                        "std": 0.3619819401510522, 
+                        "max": 3.2482, 
+                        "min": 0.0, 
+                        "mean": 2.124535423340962
+                    }, 
+                    "csfglobal": {
+                        "std": 0.48339364674321944, 
+                        "max": 3.7567, 
+                        "min": 0.39686, 
+                        "mean": 1.5819972540045768
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "rightaorganteriororbitalgyrus"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,edsd,ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "rightaorganteriororbitalgyrus": {
+                        "std": 0.2296497643316561, 
+                        "max": 2.5816, 
+                        "min": 0.7806, 
+                        "mean": 1.7925288515406166
+                    }
+                }, 
+                "adni": {
+                    "rightaorganteriororbitalgyrus": {
+                        "std": 0.20988788679102507, 
+                        "max": 2.49793, 
+                        "min": 0.886175, 
+                        "mean": 1.7091453555347098
+                    }
+                }, 
+                "edsd": {
+                    "rightaorganteriororbitalgyrus": {
+                        "std": 0.27829646493901633, 
+                        "max": 2.7957, 
+                        "min": 0.0, 
+                        "mean": 1.6966385125858117
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "rightmcggmiddlecingulategyrus,rightsplsuperiorparietallobule"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,edsd,ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "rightsplsuperiorparietallobule": {
+                        "std": 1.1958387996701134, 
+                        "max": 14.7662, 
+                        "min": 6.013, 
+                        "mean": 10.695999579831936
+                    }, 
+                    "rightmcggmiddlecingulategyrus": {
+                        "std": 0.5523913575113728, 
+                        "max": 10.1014, 
+                        "min": 3.0425, 
+                        "mean": 4.690909803921564
+                    }
+                }, 
+                "adni": {
+                    "rightsplsuperiorparietallobule": {
+                        "std": 1.185359793874018, 
+                        "max": 15.5338, 
+                        "min": 7.16417, 
+                        "mean": 10.309862007504673
+                    }, 
+                    "rightmcggmiddlecingulategyrus": {
+                        "std": 0.5527900622143483, 
+                        "max": 9.84033, 
+                        "min": 2.93644, 
+                        "mean": 4.549243236397755
+                    }
+                }, 
+                "edsd": {
+                    "rightsplsuperiorparietallobule": {
+                        "std": 1.4399070931190756, 
+                        "max": 15.7637, 
+                        "min": 0.04308, 
+                        "mean": 9.917742402746011
+                    }, 
+                    "rightmcggmiddlecingulategyrus": {
+                        "std": 0.6823909372576454, 
+                        "max": 8.5193, 
+                        "min": 0.0, 
+                        "mean": 4.4616100915331804
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "rightphgparahippocampalgyrus,rs3851179_a,rs610932_a"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "adni": {
+                    "rightphgparahippocampalgyrus": {
+                        "std": 0.30637395539238915, 
+                        "max": 3.87243, 
+                        "min": 1.79738, 
+                        "mean": 2.808815208098986
+                    }, 
+                    "rs610932_a": {
+                        "1": 459, 
+                        "0": 285, 
+                        "2": 145
+                    }, 
+                    "rs3851179_a": {
+                        "1": 393, 
+                        "0": 390, 
+                        "2": 106
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "leftsmcsupplementarymotorcortex,leftpcuprecuneus"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,edsd,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "leftsmcsupplementarymotorcortex": {
+                        "std": 0.6299572278067757, 
+                        "max": 8.6787, 
+                        "min": 3.5573, 
+                        "mean": 5.4228557422969175
+                    }, 
+                    "leftpcuprecuneus": {
+                        "std": 1.1918746372164504, 
+                        "max": 15.3204, 
+                        "min": 7.1042, 
+                        "mean": 10.96245476190477
+                    }
+                }, 
+                "adni": {
+                    "leftsmcsupplementarymotorcortex": {
+                        "std": 0.6118021613792187, 
+                        "max": 8.61715, 
+                        "min": 3.11474, 
+                        "mean": 5.2813342964352685
+                    }, 
+                    "leftpcuprecuneus": {
+                        "std": 1.1833543220617853, 
+                        "max": 14.5636, 
+                        "min": 7.35483, 
+                        "mean": 10.635359634146331
+                    }
+                }, 
+                "edsd": {
+                    "leftsmcsupplementarymotorcortex": {
+                        "std": 0.7872097027664064, 
+                        "max": 8.4787, 
+                        "min": 0.0, 
+                        "mean": 5.1485762013729985
+                    }, 
+                    "leftpcuprecuneus": {
+                        "std": 1.2396762970143003, 
+                        "max": 15.0284, 
+                        "min": 3.5147, 
+                        "mean": 10.188530205949666
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "rightsplsuperiorparietallobule"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "edsd": {
+                    "rightsplsuperiorparietallobule": {
+                        "std": 1.4399070931190756, 
+                        "max": 15.7637, 
+                        "min": 0.04308, 
+                        "mean": 9.917742402746011
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "leftmsfgsuperiorfrontalgyrusmedialsegment,_4thventricle,leftfrpfrontalpole,leftfofrontaloperculum"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,ppmi,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "_4thventricle": {
+                        "std": 0.47654930292388276, 
+                        "max": 5.0006, 
+                        "min": 1.0385, 
+                        "mean": 2.0099389355742288
+                    }, 
+                    "leftfofrontaloperculum": {
+                        "std": 0.22111566635733293, 
+                        "max": 2.9576, 
+                        "min": 1.0498, 
+                        "mean": 2.0069130252100833
+                    }, 
+                    "leftfrpfrontalpole": {
+                        "std": 0.41822289030164245, 
+                        "max": 4.9831, 
+                        "min": 2.5555, 
+                        "mean": 3.5741530812324926
+                    }, 
+                    "leftmsfgsuperiorfrontalgyrusmedialsegment": {
+                        "std": 0.8324350508412898, 
+                        "max": 10.2854, 
+                        "min": 4.7405, 
+                        "mean": 7.0970768907563
+                    }
+                }, 
+                "edsd": {
+                    "_4thventricle": {
+                        "std": 0.5375052788124249, 
+                        "max": 6.1146, 
+                        "min": 0.25159, 
+                        "mean": 2.018279382151028
+                    }, 
+                    "leftfofrontaloperculum": {
+                        "std": 0.279815619705402, 
+                        "max": 2.6485, 
+                        "min": 1e-05, 
+                        "mean": 1.8939826773455364
+                    }, 
+                    "leftfrpfrontalpole": {
+                        "std": 0.5135545004098901, 
+                        "max": 4.7688, 
+                        "min": 0.0, 
+                        "mean": 3.3296958810068644
+                    }, 
+                    "leftmsfgsuperiorfrontalgyrusmedialsegment": {
+                        "std": 1.0307225806270783, 
+                        "max": 9.8321, 
+                        "min": 0.00018, 
+                        "mean": 6.6805303661327216
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "leftthalamusproper,brainstem,leftmfgmiddlefrontalgyrus,leftcerebralwhitematter,lefthippocampus"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "leftthalamusproper": {
+                        "std": 0.7759651406478834, 
+                        "max": 11.2182, 
+                        "min": 5.8644, 
+                        "mean": 8.353912184873947
+                    }, 
+                    "leftmfgmiddlefrontalgyrus": {
+                        "std": 2.1619531712556026, 
+                        "max": 26.6336, 
+                        "min": 10.689, 
+                        "mean": 18.92511484593839
+                    }, 
+                    "leftcerebralwhitematter": {
+                        "std": 28.22673688637306, 
+                        "max": 325.6604, 
+                        "min": 155.2237, 
+                        "mean": 230.23247871148456
+                    }, 
+                    "brainstem": {
+                        "std": 1.9736241771144385, 
+                        "max": 26.1547, 
+                        "min": 13.7754, 
+                        "mean": 18.986911484593822
+                    }, 
+                    "lefthippocampus": {
+                        "std": 0.2918412933538043, 
+                        "max": 4.1781, 
+                        "min": 2.37, 
+                        "mean": 3.210442156862746
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "leftcaudate,leftpoparietaloperculum,rs3764650_g"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,edsd,ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "adni": {
+                    "rs3764650_g": {
+                        "1": 153, 
+                        "0": 717, 
+                        "2": 22
+                    }, 
+                    "leftpoparietaloperculum": {
+                        "std": 0.3143350787748151, 
+                        "max": 3.48588, 
+                        "min": 1.37284, 
+                        "mean": 2.3745444170403593
+                    }, 
+                    "leftcaudate": {
+                        "std": 0.39179325527310727, 
+                        "max": 4.7246, 
+                        "min": 1.88486, 
+                        "mean": 2.963661031390138
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "leftinflatvent,leftcocentraloperculum,rightofugoccipitalfusiformgyrus,leftsmgsupramarginalgyrus,leftstgsuperiortemporalgyrus,leftainsanteriorinsula,leftmsfgsuperiorfrontalgyrusmedialsegment,cerebellarvermallobulesiv,leftmogmiddleoccipitalgyrus,rightfugfusiformgyrus"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,ppmi,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "leftmogmiddleoccipitalgyrus": {
+                        "std": 0.7850021809753601, 
+                        "max": 9.0994, 
+                        "min": 4.13, 
+                        "mean": 6.3760039215686355
+                    }, 
+                    "leftinflatvent": {
+                        "std": 0.24328725245267172, 
+                        "max": 2.5746, 
+                        "min": 0.25951, 
+                        "mean": 0.5578057422969189
+                    }, 
+                    "leftmsfgsuperiorfrontalgyrusmedialsegment": {
+                        "std": 0.8324350508412898, 
+                        "max": 10.2854, 
+                        "min": 4.7405, 
+                        "mean": 7.0970768907563
+                    }, 
+                    "rightofugoccipitalfusiformgyrus": {
+                        "std": 0.4647318609205073, 
+                        "max": 6.6355, 
+                        "min": 2.9714, 
+                        "mean": 4.419887114845936
+                    }, 
+                    "rightfugfusiformgyrus": {
+                        "std": 0.7289503970808117, 
+                        "max": 10.3175, 
+                        "min": 5.4376, 
+                        "mean": 7.6663631652661115
+                    }, 
+                    "leftainsanteriorinsula": {
+                        "std": 0.4382453388912246, 
+                        "max": 5.9416, 
+                        "min": 3.1347, 
+                        "mean": 4.337726890756307
+                    }, 
+                    "leftstgsuperiortemporalgyrus": {
+                        "std": 0.809518964983472, 
+                        "max": 9.9243, 
+                        "min": 4.8783, 
+                        "mean": 7.366470728291314
+                    }, 
+                    "leftsmgsupramarginalgyrus": {
+                        "std": 0.9950528955216256, 
+                        "max": 12.9766, 
+                        "min": 5.8702, 
+                        "mean": 9.095355462184862
+                    }, 
+                    "cerebellarvermallobulesiv": {
+                        "std": 0.5137181319078772, 
+                        "max": 7.4442, 
+                        "min": 3.4291, 
+                        "mean": 4.8407229691876745
+                    }, 
+                    "leftcocentraloperculum": {
+                        "std": 0.46076888740600624, 
+                        "max": 5.6602, 
+                        "min": 2.6704, 
+                        "mean": 4.073828011204488
+                    }
+                }, 
+                "edsd": {
+                    "leftmogmiddleoccipitalgyrus": {
+                        "std": 0.7409533489358604, 
+                        "max": 8.9713, 
+                        "min": 3.9079, 
+                        "mean": 5.864272540045763
+                    }, 
+                    "leftinflatvent": {
+                        "std": 0.44489448853237396, 
+                        "max": 2.8079, 
+                        "min": 0.27558, 
+                        "mean": 0.8202179405034323
+                    }, 
+                    "leftmsfgsuperiorfrontalgyrusmedialsegment": {
+                        "std": 1.0307225806270783, 
+                        "max": 9.8321, 
+                        "min": 0.00018, 
+                        "mean": 6.6805303661327216
+                    }, 
+                    "rightofugoccipitalfusiformgyrus": {
+                        "std": 0.5215862428900659, 
+                        "max": 5.5638, 
+                        "min": 1.0875, 
+                        "mean": 4.087254233409609
+                    }, 
+                    "rightfugfusiformgyrus": {
+                        "std": 0.8350911331339516, 
+                        "max": 9.4739, 
+                        "min": 3.8349, 
+                        "mean": 7.07725881006865
+                    }, 
+                    "leftainsanteriorinsula": {
+                        "std": 0.5454672158163502, 
+                        "max": 5.7224, 
+                        "min": 0.46849, 
+                        "mean": 4.093719748283754
+                    }, 
+                    "leftstgsuperiortemporalgyrus": {
+                        "std": 0.8386332993093802, 
+                        "max": 9.3392, 
+                        "min": 3.4718, 
+                        "mean": 6.970399313501144
+                    }, 
+                    "leftsmgsupramarginalgyrus": {
+                        "std": 1.1898430196180192, 
+                        "max": 12.1, 
+                        "min": 0.29404, 
+                        "mean": 8.490322745995421
+                    }, 
+                    "cerebellarvermallobulesiv": {
+                        "std": 0.5070749788497424, 
+                        "max": 6.2257, 
+                        "min": 2.6869, 
+                        "mean": 4.634720823798628
+                    }, 
+                    "leftcocentraloperculum": {
+                        "std": 0.5717634346267644, 
+                        "max": 5.4632, 
+                        "min": 0.00108, 
+                        "mean": 3.9359432723112127
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "leftsfgsuperiorfrontalgyrus,rightsfgsuperiorfrontalgyrus,csfglobal"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,edsd,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "leftsfgsuperiorfrontalgyrus": {
+                        "std": 1.6581141147417449, 
+                        "max": 20.3791, 
+                        "min": 7.5144, 
+                        "mean": 14.73949369747897
+                    }, 
+                    "csfglobal": {
+                        "std": 0.4409542336832194, 
+                        "max": 4.2014, 
+                        "min": 0.60997, 
+                        "mean": 1.3616250140056019
+                    }, 
+                    "rightsfgsuperiorfrontalgyrus": {
+                        "std": 1.6574277418714765, 
+                        "max": 21.7697, 
+                        "min": 7.2783, 
+                        "mean": 14.711879551820717
+                    }
+                }, 
+                "edsd": {
+                    "leftsfgsuperiorfrontalgyrus": {
+                        "std": 2.0788136881676316, 
+                        "max": 19.4519, 
+                        "min": 2e-05, 
+                        "mean": 13.859568947368416
+                    }, 
+                    "csfglobal": {
+                        "std": 0.48339364674321944, 
+                        "max": 3.7567, 
+                        "min": 0.39686, 
+                        "mean": 1.5819972540045768
+                    }, 
+                    "rightsfgsuperiorfrontalgyrus": {
+                        "std": 2.0653162712129576, 
+                        "max": 19.5882, 
+                        "min": 0.00029, 
+                        "mean": 13.919113089244853
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "alzheimerbroadcategory"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "edsd": {
+                    "alzheimerbroadcategory": {
+                        "Other": 76, 
+                        "CN": 151, 
+                        "AD": 141
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "leftcaudate"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,adni,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "leftcaudate": {
+                        "std": 0.37723320190585524, 
+                        "max": 4.7487, 
+                        "min": 1.9841, 
+                        "mean": 3.1018658263305348
+                    }
+                }, 
+                "adni": {
+                    "leftcaudate": {
+                        "std": 0.4013034480667148, 
+                        "max": 4.7246, 
+                        "min": 1.75582, 
+                        "mean": 2.9556700187617286
+                    }
+                }, 
+                "edsd": {
+                    "leftcaudate": {
+                        "std": 0.472550482466418, 
+                        "max": 3.7946, 
+                        "min": 0.0, 
+                        "mean": 2.683106773455376
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "leftmfcmedialfrontalcortex,montrealcognitiveassessment,rightsmgsupramarginalgyrus,rightpallidum,av45,rightstgsuperiortemporalgyrus"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,ppmi,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "adni": {
+                    "rightstgsuperiortemporalgyrus": {
+                        "std": 0.7864989940009055, 
+                        "max": 9.48678, 
+                        "min": 4.79311, 
+                        "mean": 7.172901677704196
+                    }, 
+                    "rightsmgsupramarginalgyrus": {
+                        "std": 0.8601123592894254, 
+                        "max": 10.395, 
+                        "min": 5.36295, 
+                        "mean": 7.95219677704194
+                    }, 
+                    "leftmfcmedialfrontalcortex": {
+                        "std": 0.2272487150551308, 
+                        "max": 2.59496, 
+                        "min": 0.967331, 
+                        "mean": 1.763856933774834
+                    }, 
+                    "montrealcognitiveassessment": {
+                        "std": 4.404130385592659, 
+                        "max": 30.0, 
+                        "min": 6.0, 
+                        "mean": 22.81898454746137
+                    }, 
+                    "rightpallidum": {
+                        "std": 0.17734640426384904, 
+                        "max": 2.02071, 
+                        "min": 1.03479, 
+                        "mean": 1.5079755187637962
+                    }, 
+                    "av45": {
+                        "std": 0.22976201554140396, 
+                        "max": 1.99501, 
+                        "min": 0.838697, 
+                        "mean": 1.2196464039735087
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "leftinflatvent,alzheimerbroadcategory"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "leftinflatvent": {
+                        "std": 0.24328725245267172, 
+                        "max": 2.5746, 
+                        "min": 0.25951, 
+                        "mean": 0.5578057422969189
+                    }, 
+                    "alzheimerbroadcategory": {
+                        "Other": 714
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "rightaorganteriororbitalgyrus,minimentalstate,brainstem,rightcaudate,leftporgposteriororbitalgyrus"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,adni,ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "edsd": {
+                    "rightaorganteriororbitalgyrus": {
+                        "std": 0.2209765487074671, 
+                        "max": 2.7957, 
+                        "min": 1.047, 
+                        "mean": 1.7241922005571015
+                    }, 
+                    "rightcaudate": {
+                        "std": 0.40795194002439106, 
+                        "max": 4.2284, 
+                        "min": 1.5969, 
+                        "mean": 2.8279376044568254
+                    }, 
+                    "leftporgposteriororbitalgyrus": {
+                        "std": 0.27447401752620654, 
+                        "max": 3.2494, 
+                        "min": 1.181, 
+                        "mean": 2.4238314763231195
+                    }, 
+                    "brainstem": {
+                        "std": 2.068473340160235, 
+                        "max": 27.2308, 
+                        "min": 10.4775, 
+                        "mean": 17.45973398328691
+                    }, 
+                    "minimentalstate": {
+                        "std": 4.987864390670642, 
+                        "max": 30.0, 
+                        "min": 4.0, 
+                        "mean": 25.12256267409471
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "leftpcuprecuneus"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,ppmi,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "leftpcuprecuneus": {
+                        "std": 1.1918746372164504, 
+                        "max": 15.3204, 
+                        "min": 7.1042, 
+                        "mean": 10.96245476190477
+                    }
+                }, 
+                "adni": {
+                    "leftpcuprecuneus": {
+                        "std": 1.1833543220617853, 
+                        "max": 14.5636, 
+                        "min": 7.35483, 
+                        "mean": 10.635359634146331
+                    }
+                }, 
+                "edsd": {
+                    "leftpcuprecuneus": {
+                        "std": 1.2396762970143003, 
+                        "max": 15.0284, 
+                        "min": 3.5147, 
+                        "mean": 10.188530205949666
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "rightaccumbensarea,leftttgtransversetemporalgyrus,rightpogpostcentralgyrus,rs10498633_t"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,edsd,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "adni": {
+                    "rightpogpostcentralgyrus": {
+                        "std": 1.1594939566827003, 
+                        "max": 15.5928, 
+                        "min": 7.30427, 
+                        "mean": 10.199695145739923
+                    }, 
+                    "rs10498633_t": {
+                        "1": 289, 
+                        "0": 559, 
+                        "2": 44
+                    }, 
+                    "rightaccumbensarea": {
+                        "std": 0.04764908067209862, 
+                        "max": 0.549402, 
+                        "min": 0.191923, 
+                        "mean": 0.37426581502242084
+                    }, 
+                    "leftttgtransversetemporalgyrus": {
+                        "std": 0.22885071650269612, 
+                        "max": 2.41946, 
+                        "min": 0.911232, 
+                        "mean": 1.6014223004484294
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "leftaorganteriororbitalgyrus"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "leftaorganteriororbitalgyrus": {
+                        "std": 0.19668424281670233, 
+                        "max": 2.4559, 
+                        "min": 0.89933, 
+                        "mean": 1.5959525910364154
+                    }
+                }, 
+                "adni": {
+                    "leftaorganteriororbitalgyrus": {
+                        "std": 0.18608946055251713, 
+                        "max": 2.1394, 
+                        "min": 0.806233, 
+                        "mean": 1.5050496078799265
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "rightpallidum"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "rightpallidum": {
+                        "std": 0.17502020507904154, 
+                        "max": 2.0317, 
+                        "min": 0.95909, 
+                        "mean": 1.459141022408965
+                    }
+                }, 
+                "adni": {
+                    "rightpallidum": {
+                        "std": 0.17508784575009098, 
+                        "max": 2.13739, 
+                        "min": 1.03479, 
+                        "mean": 1.5148680675422155
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "dataset,agegroup"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "edsd": {
+                    "agegroup": {
+                        "70-79y": 170, 
+                        "60-69y": 117, 
+                        "+80y": 47, 
+                        "50-59y": 22, 
+                        "-50y": 118
+                    }, 
+                    "dataset": {
+                        "edsd": 474
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "leftopifgopercularpartoftheinferiorfrontalgyrus,rightofugoccipitalfusiformgyrus,rightmcggmiddlecingulategyrus,leftpogpostcentralgyrus,cerebellarvermallobulesiv,leftainsanteriorinsula,rightinflatvent"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,adni,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "rightmcggmiddlecingulategyrus": {
+                        "std": 0.5523913575113728, 
+                        "max": 10.1014, 
+                        "min": 3.0425, 
+                        "mean": 4.690909803921564
+                    }, 
+                    "rightofugoccipitalfusiformgyrus": {
+                        "std": 0.4647318609205073, 
+                        "max": 6.6355, 
+                        "min": 2.9714, 
+                        "mean": 4.419887114845936
+                    }, 
+                    "leftainsanteriorinsula": {
+                        "std": 0.4382453388912246, 
+                        "max": 5.9416, 
+                        "min": 3.1347, 
+                        "mean": 4.337726890756307
+                    }, 
+                    "rightinflatvent": {
+                        "std": 0.24167034641982418, 
+                        "max": 2.3673, 
+                        "min": 0.30037, 
+                        "mean": 0.6217093277310922
+                    }, 
+                    "cerebellarvermallobulesiv": {
+                        "std": 0.5137181319078772, 
+                        "max": 7.4442, 
+                        "min": 3.4291, 
+                        "mean": 4.8407229691876745
+                    }, 
+                    "leftpogpostcentralgyrus": {
+                        "std": 1.254841298633711, 
+                        "max": 15.8343, 
+                        "min": 6.5366, 
+                        "mean": 11.866437394957973
+                    }, 
+                    "leftopifgopercularpartoftheinferiorfrontalgyrus": {
+                        "std": 0.3864260143812992, 
+                        "max": 4.6716, 
+                        "min": 1.7325, 
+                        "mean": 3.355332773109241
+                    }
+                }, 
+                "edsd": {
+                    "rightmcggmiddlecingulategyrus": {
+                        "std": 0.6823909372576454, 
+                        "max": 8.5193, 
+                        "min": 0.0, 
+                        "mean": 4.4616100915331804
+                    }, 
+                    "rightofugoccipitalfusiformgyrus": {
+                        "std": 0.5215862428900659, 
+                        "max": 5.5638, 
+                        "min": 1.0875, 
+                        "mean": 4.087254233409609
+                    }, 
+                    "leftainsanteriorinsula": {
+                        "std": 0.5454672158163502, 
+                        "max": 5.7224, 
+                        "min": 0.46849, 
+                        "mean": 4.093719748283754
+                    }, 
+                    "rightinflatvent": {
+                        "std": 0.5244373732937321, 
+                        "max": 4.1536, 
+                        "min": 0.32887, 
+                        "mean": 0.8827508924485121
+                    }, 
+                    "cerebellarvermallobulesiv": {
+                        "std": 0.5070749788497424, 
+                        "max": 6.2257, 
+                        "min": 2.6869, 
+                        "mean": 4.634720823798628
+                    }, 
+                    "leftpogpostcentralgyrus": {
+                        "std": 1.5992934941144763, 
+                        "max": 15.2824, 
+                        "min": 0.0, 
+                        "mean": 11.068306132723118
+                    }, 
+                    "leftopifgopercularpartoftheinferiorfrontalgyrus": {
+                        "std": 0.4885484103637412, 
+                        "max": 4.7752, 
+                        "min": 0.0, 
+                        "mean": 3.224807734553775
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "leftventraldc,lefttrifgtriangularpartoftheinferiorfrontalgyrus,rightgregyrusrectus,rs190982_g,rs11767557_c"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "adni": {
+                    "rs190982_g": {
+                        "1": 244, 
+                        "0": 215, 
+                        "2": 70
+                    }, 
+                    "rightgregyrusrectus": {
+                        "std": 0.21873723749148274, 
+                        "max": 2.8819, 
+                        "min": 0.993285, 
+                        "mean": 2.0472958317580323
+                    }, 
+                    "leftventraldc": {
+                        "std": 0.4581152133763691, 
+                        "max": 6.1975, 
+                        "min": 3.56596, 
+                        "mean": 4.7115547448015125
+                    }, 
+                    "rs11767557_c": {
+                        "1": 165, 
+                        "0": 338, 
+                        "2": 26
+                    }, 
+                    "lefttrifgtriangularpartoftheinferiorfrontalgyrus": {
+                        "std": 0.4096047230252249, 
+                        "max": 5.02993, 
+                        "min": 2.75013, 
+                        "mean": 3.823764688090737
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "leftmogmiddleoccipitalgyrus,rightpcuprecuneus,rightputamen"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "edsd": {
+                    "leftmogmiddleoccipitalgyrus": {
+                        "std": 0.7409533489358604, 
+                        "max": 8.9713, 
+                        "min": 3.9079, 
+                        "mean": 5.864272540045763
+                    }, 
+                    "rightpcuprecuneus": {
+                        "std": 1.261096457884922, 
+                        "max": 14.9955, 
+                        "min": 2.9491, 
+                        "mean": 10.210308924485139
+                    }, 
+                    "rightputamen": {
+                        "std": 0.5091629190935196, 
+                        "max": 4.8434, 
+                        "min": 0.23437, 
+                        "mean": 3.454221784897027
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "rightinflatvent"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,adni,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "rightinflatvent": {
+                        "std": 0.24167034641982418, 
+                        "max": 2.3673, 
+                        "min": 0.30037, 
+                        "mean": 0.6217093277310922
+                    }
+                }, 
+                "edsd": {
+                    "rightinflatvent": {
+                        "std": 0.5244373732937321, 
+                        "max": 4.1536, 
+                        "min": 0.32887, 
+                        "mean": 0.8827508924485121
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "rightcuncuneus,leftpinsposteriorinsula,rightangangulargyrus"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "rightcuncuneus": {
+                        "std": 0.6272243189691642, 
+                        "max": 8.0425, 
+                        "min": 3.2533, 
+                        "mean": 4.958402240896357
+                    }, 
+                    "rightangangulargyrus": {
+                        "std": 1.1761203743308688, 
+                        "max": 15.1495, 
+                        "min": 6.906, 
+                        "mean": 10.560376190476191
+                    }, 
+                    "leftpinsposteriorinsula": {
+                        "std": 0.25046887396227535, 
+                        "max": 3.0882, 
+                        "min": 1.7073, 
+                        "mean": 2.3584025210084025
+                    }
+                }, 
+                "edsd": {
+                    "rightcuncuneus": {
+                        "std": 0.6096579784653384, 
+                        "max": 6.5936, 
+                        "min": 2.8214, 
+                        "mean": 4.5200755148741445
+                    }, 
+                    "rightangangulargyrus": {
+                        "std": 1.252461112174001, 
+                        "max": 14.1407, 
+                        "min": 1.1839, 
+                        "mean": 9.72729221967964
+                    }, 
+                    "leftpinsposteriorinsula": {
+                        "std": 0.27160909491385976, 
+                        "max": 3.1971, 
+                        "min": 1.2675, 
+                        "mean": 2.272651258581236
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "opticchiasm"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,adni,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "opticchiasm": {
+                        "std": 0.009150537565032724, 
+                        "max": 0.10033, 
+                        "min": 0.038146, 
+                        "mean": 0.07637201540616252
+                    }
+                }, 
+                "edsd": {
+                    "opticchiasm": {
+                        "std": 0.009154063742359527, 
+                        "max": 0.10986, 
+                        "min": 0.04755, 
+                        "mean": 0.0777833867276888
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "leftphgparahippocampalgyrus,rightpcuprecuneus"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "rightpcuprecuneus": {
+                        "std": 1.2126428460396093, 
+                        "max": 16.2714, 
+                        "min": 7.213, 
+                        "mean": 10.997860084033617
+                    }, 
+                    "leftphgparahippocampalgyrus": {
+                        "std": 0.2764222816120589, 
+                        "max": 4.1332, 
+                        "min": 2.3659, 
+                        "mean": 3.252158683473389
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "leftlorglateralorbitalgyrus,leftamygdala,leftainsanteriorinsula,rightangangulargyrus"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "leftamygdala": {
+                        "std": 0.08856156116773851, 
+                        "max": 1.2276, 
+                        "min": 0.58602, 
+                        "mean": 0.8865948879551825
+                    }, 
+                    "leftlorglateralorbitalgyrus": {
+                        "std": 0.27379386980711085, 
+                        "max": 3.4108, 
+                        "min": 1.2581, 
+                        "mean": 2.4407063025210087
+                    }, 
+                    "rightangangulargyrus": {
+                        "std": 1.1761203743308688, 
+                        "max": 15.1495, 
+                        "min": 6.906, 
+                        "mean": 10.560376190476191
+                    }, 
+                    "leftainsanteriorinsula": {
+                        "std": 0.4382453388912246, 
+                        "max": 5.9416, 
+                        "min": 3.1347, 
+                        "mean": 4.337726890756307
+                    }
+                }, 
+                "adni": {
+                    "leftamygdala": {
+                        "std": 0.11762830515182261, 
+                        "max": 1.14743, 
+                        "min": 0.43301, 
+                        "mean": 0.7946160412757973
+                    }, 
+                    "leftlorglateralorbitalgyrus": {
+                        "std": 0.2567218332350192, 
+                        "max": 3.26841, 
+                        "min": 1.36195, 
+                        "mean": 2.3316048311444675
+                    }, 
+                    "rightangangulargyrus": {
+                        "std": 1.1394791725677273, 
+                        "max": 13.6797, 
+                        "min": 6.00759, 
+                        "mean": 9.943485684802978
+                    }, 
+                    "leftainsanteriorinsula": {
+                        "std": 0.45203139126981035, 
+                        "max": 5.81951, 
+                        "min": 2.97578, 
+                        "mean": 4.245664502814257
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "rightstgsuperiortemporalgyrus,rs2718058_g,agegroup"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,ppmi,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "adni": {
+                    "rightstgsuperiortemporalgyrus": {
+                        "std": 0.8098866909575675, 
+                        "max": 10.0422, 
+                        "min": 4.82425, 
+                        "mean": 7.04358996376812
+                    }, 
+                    "agegroup": {
+                        "70-79y": 308, 
+                        "60-69y": 89, 
+                        "+80y": 140, 
+                        "50-59y": 15
+                    }, 
+                    "rs2718058_g": {
+                        "1": 250, 
+                        "0": 227, 
+                        "2": 75
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "rs744373_c"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,ppmi,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "adni": {
+                    "rs744373_c": {
+                        "1": 332, 
+                        "0": 411, 
+                        "2": 95
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "dataset"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "dataset": {
+                        "ppmi": 714
+                    }
+                }, 
+                "edsd": {
+                    "dataset": {
+                        "edsd": 474
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "leftmfcmedialfrontalcortex,rightstgsuperiortemporalgyrus,rightsmgsupramarginalgyrus,rightgregyrusrectus,_3rdventricle,leftpogpostcentralgyrus"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,ppmi,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "rightgregyrusrectus": {
+                        "std": 0.24748903866315008, 
+                        "max": 3.1352, 
+                        "min": 1.5184, 
+                        "mean": 2.131113165266107
+                    }, 
+                    "rightstgsuperiortemporalgyrus": {
+                        "std": 0.8518315591084247, 
+                        "max": 10.461, 
+                        "min": 4.8641, 
+                        "mean": 7.487990196078428
+                    }, 
+                    "rightsmgsupramarginalgyrus": {
+                        "std": 0.8948858997335277, 
+                        "max": 10.7466, 
+                        "min": 5.2243, 
+                        "mean": 8.18375644257703
+                    }, 
+                    "leftmfcmedialfrontalcortex": {
+                        "std": 0.24109440138149815, 
+                        "max": 2.7813, 
+                        "min": 1.1814, 
+                        "mean": 1.857107563025211
+                    }, 
+                    "leftpogpostcentralgyrus": {
+                        "std": 1.254841298633711, 
+                        "max": 15.8343, 
+                        "min": 6.5366, 
+                        "mean": 11.866437394957973
+                    }, 
+                    "_3rdventricle": {
+                        "std": 0.48654950333132746, 
+                        "max": 3.4569, 
+                        "min": 0.46137, 
+                        "mean": 1.3408655042016824
+                    }
+                }, 
+                "edsd": {
+                    "rightgregyrusrectus": {
+                        "std": 0.2878900981346353, 
+                        "max": 3.6083, 
+                        "min": 0.23156, 
+                        "mean": 1.9766640503432484
+                    }, 
+                    "rightstgsuperiortemporalgyrus": {
+                        "std": 0.8707286950098423, 
+                        "max": 9.9739, 
+                        "min": 3.4409, 
+                        "mean": 7.07892883295195
+                    }, 
+                    "rightsmgsupramarginalgyrus": {
+                        "std": 1.1163042783023602, 
+                        "max": 10.7194, 
+                        "min": 0.01333, 
+                        "mean": 7.616723455377567
+                    }, 
+                    "leftmfcmedialfrontalcortex": {
+                        "std": 0.28562958927228876, 
+                        "max": 3.0114, 
+                        "min": 0.03454, 
+                        "mean": 1.719398077803204
+                    }, 
+                    "leftpogpostcentralgyrus": {
+                        "std": 1.5992934941144763, 
+                        "max": 15.2824, 
+                        "min": 0.0, 
+                        "mean": 11.068306132723118
+                    }, 
+                    "_3rdventricle": {
+                        "std": 0.5170725376198338, 
+                        "max": 3.7693, 
+                        "min": 0.48792, 
+                        "mean": 1.6765120137299776
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "leftmprgprecentralgyrusmedialsegment"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "leftmprgprecentralgyrusmedialsegment": {
+                        "std": 0.3311473256788725, 
+                        "max": 4.5262, 
+                        "min": 1.7464, 
+                        "mean": 2.6614526610644247
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "rs3764650_g,rs2718058_g"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "adni": {
+                    "rs3764650_g": {
+                        "1": 102, 
+                        "0": 437, 
+                        "2": 13
+                    }, 
+                    "rs2718058_g": {
+                        "1": 250, 
+                        "0": 227, 
+                        "2": 75
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "rs11136000_t,rs1476679_c,rs610932_a"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "adni": {
+                    "rs11136000_t": {
+                        "1": 279, 
+                        "0": 186, 
+                        "2": 69
+                    }, 
+                    "rs610932_a": {
+                        "1": 280, 
+                        "0": 169, 
+                        "2": 85
+                    }, 
+                    "rs1476679_c": {
+                        "1": 206, 
+                        "0": 281, 
+                        "2": 47
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "leftpallidum,leftpinsposteriorinsula,leftsogsuperioroccipitalgyrus"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "adni": {
+                    "leftpallidum": {
+                        "std": 0.17587826722127436, 
+                        "max": 2.12979, 
+                        "min": 1.08448, 
+                        "mean": 1.5087024296435267
+                    }, 
+                    "leftsogsuperioroccipitalgyrus": {
+                        "std": 0.47754406772643376, 
+                        "max": 5.28127, 
+                        "min": 2.29083, 
+                        "mean": 3.5294413508442775
+                    }, 
+                    "leftpinsposteriorinsula": {
+                        "std": 0.26834864241107276, 
+                        "max": 3.38977, 
+                        "min": 1.6439, 
+                        "mean": 2.324148536585367
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "lefttrifgtriangularpartoftheinferiorfrontalgyrus"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,adni,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "lefttrifgtriangularpartoftheinferiorfrontalgyrus": {
+                        "std": 0.47567250322383464, 
+                        "max": 5.7613, 
+                        "min": 1.8985, 
+                        "mean": 3.8880474789916013
+                    }
+                }, 
+                "adni": {
+                    "lefttrifgtriangularpartoftheinferiorfrontalgyrus": {
+                        "std": 0.4382753332044106, 
+                        "max": 5.5606, 
+                        "min": 2.3624, 
+                        "mean": 3.774055093808623
+                    }
+                }, 
+                "edsd": {
+                    "lefttrifgtriangularpartoftheinferiorfrontalgyrus": {
+                        "std": 0.5652363348980852, 
+                        "max": 4.9952, 
+                        "min": 0.0, 
+                        "mean": 3.6552869794050347
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "rightthalamusproper"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,adni,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "rightthalamusproper": {
+                        "std": 0.7622705775020566, 
+                        "max": 11.077, 
+                        "min": 5.8133, 
+                        "mean": 8.10525238095238
+                    }
+                }, 
+                "adni": {
+                    "rightthalamusproper": {
+                        "std": 0.6633602259875785, 
+                        "max": 9.15485, 
+                        "min": 4.45451, 
+                        "mean": 6.649514183864915
+                    }
+                }, 
+                "edsd": {
+                    "rightthalamusproper": {
+                        "std": 0.7873090909488191, 
+                        "max": 9.902, 
+                        "min": 1.8203, 
+                        "mean": 6.553360411899309
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "rightioginferioroccipitalgyrus,rightthalamusproper,leftlateralventricle,leftcaudate,rightmprgprecentralgyrusmedialsegment"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "edsd": {
+                    "rightmprgprecentralgyrusmedialsegment": {
+                        "std": 0.4033780786874342, 
+                        "max": 4.4218, 
+                        "min": 0.0, 
+                        "mean": 2.4641908466819227
+                    }, 
+                    "leftlateralventricle": {
+                        "std": 8.9495732153414, 
+                        "max": 58.4504, 
+                        "min": 2.7368, 
+                        "mean": 20.141077345537752
+                    }, 
+                    "rightioginferioroccipitalgyrus": {
+                        "std": 0.8216183409532369, 
+                        "max": 8.7332, 
+                        "min": 4.083, 
+                        "mean": 6.353377116704802
+                    }, 
+                    "rightthalamusproper": {
+                        "std": 0.7873090909488191, 
+                        "max": 9.902, 
+                        "min": 1.8203, 
+                        "mean": 6.553360411899309
+                    }, 
+                    "leftcaudate": {
+                        "std": 0.472550482466418, 
+                        "max": 3.7946, 
+                        "min": 0.0, 
+                        "mean": 2.683106773455376
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "rs3764650_g"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,ppmi,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "adni": {
+                    "rs3764650_g": {
+                        "1": 153, 
+                        "0": 717, 
+                        "2": 22
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "leftsfgsuperiorfrontalgyrus"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "adni": {
+                    "leftsfgsuperiorfrontalgyrus": {
+                        "std": 1.578945206670207, 
+                        "max": 20.011, 
+                        "min": 8.17187, 
+                        "mean": 14.255983742964341
+                    }
+                }, 
+                "edsd": {
+                    "leftsfgsuperiorfrontalgyrus": {
+                        "std": 2.0788136881676316, 
+                        "max": 19.4519, 
+                        "min": 2e-05, 
+                        "mean": 13.859568947368416
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "rightangangulargyrus"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,ppmi,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "rightangangulargyrus": {
+                        "std": 1.1761203743308688, 
+                        "max": 15.1495, 
+                        "min": 6.906, 
+                        "mean": 10.560376190476191
+                    }
+                }, 
+                "adni": {
+                    "rightangangulargyrus": {
+                        "std": 1.1394791725677273, 
+                        "max": 13.6797, 
+                        "min": 6.00759, 
+                        "mean": 9.943485684802978
+                    }
+                }, 
+                "edsd": {
+                    "rightangangulargyrus": {
+                        "std": 1.252461112174001, 
+                        "max": 14.1407, 
+                        "min": 1.1839, 
+                        "mean": 9.72729221967964
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "leftttgtransversetemporalgyrus,leftputamen"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "leftputamen": {
+                        "std": 0.47085426013502896, 
+                        "max": 5.8814, 
+                        "min": 2.756, 
+                        "mean": 4.302202100840334
+                    }, 
+                    "leftttgtransversetemporalgyrus": {
+                        "std": 0.24012150864065662, 
+                        "max": 2.9459, 
+                        "min": 1.043, 
+                        "mean": 1.64604243697479
+                    }
+                }, 
+                "edsd": {
+                    "leftputamen": {
+                        "std": 0.5229357147425436, 
+                        "max": 5.3069, 
+                        "min": 0.32999, 
+                        "mean": 3.518661029748283
+                    }, 
+                    "leftttgtransversetemporalgyrus": {
+                        "std": 0.23466754490915628, 
+                        "max": 2.5225, 
+                        "min": 0.31108, 
+                        "mean": 1.5512805034324932
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "leftaccumbensarea,rs3851179_a"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "adni": {
+                    "leftaccumbensarea": {
+                        "std": 0.05148563510803813, 
+                        "max": 0.596434, 
+                        "min": 0.201871, 
+                        "mean": 0.41229768049327364
+                    }, 
+                    "rs3851179_a": {
+                        "1": 393, 
+                        "0": 391, 
+                        "2": 108
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "leftfugfusiformgyrus"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "leftfugfusiformgyrus": {
+                        "std": 0.6975626709639572, 
+                        "max": 9.9427, 
+                        "min": 5.3667, 
+                        "mean": 7.470950700280111
+                    }
+                }, 
+                "adni": {
+                    "leftfugfusiformgyrus": {
+                        "std": 0.7354961379719027, 
+                        "max": 9.46734, 
+                        "min": 4.85218, 
+                        "mean": 6.892707654784236
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "rightioginferioroccipitalgyrus,rightitginferiortemporalgyrus,leftmsfgsuperiorfrontalgyrusmedialsegment,rightfugfusiformgyrus,rightsogsuperioroccipitalgyrus,lefttrifgtriangularpartoftheinferiorfrontalgyrus,rightcalccalcarinecortex,rightacgganteriorcingulategyrus,rs3818361_t,rs3764650_g"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "adni": {
+                    "rightitginferiortemporalgyrus": {
+                        "std": 1.2886690074253977, 
+                        "max": 15.4582, 
+                        "min": 6.57371, 
+                        "mean": 10.888714248878948
+                    }, 
+                    "rightsogsuperioroccipitalgyrus": {
+                        "std": 0.5204343447068047, 
+                        "max": 6.34525, 
+                        "min": 2.81366, 
+                        "mean": 4.212318396860984
+                    }, 
+                    "lefttrifgtriangularpartoftheinferiorfrontalgyrus": {
+                        "std": 0.4315753859736377, 
+                        "max": 5.22844, 
+                        "min": 2.64685, 
+                        "mean": 3.7844222309416966
+                    }, 
+                    "leftmsfgsuperiorfrontalgyrusmedialsegment": {
+                        "std": 0.8324370788175347, 
+                        "max": 9.64373, 
+                        "min": 4.6882, 
+                        "mean": 6.989871042600896
+                    }, 
+                    "rightfugfusiformgyrus": {
+                        "std": 0.7780970757615777, 
+                        "max": 9.38824, 
+                        "min": 4.33262, 
+                        "mean": 7.090006266816146
+                    }, 
+                    "rs3818361_t": {
+                        "1": 281, 
+                        "0": 575, 
+                        "2": 36
+                    }, 
+                    "rightcalccalcarinecortex": {
+                        "std": 0.4854073716552414, 
+                        "max": 5.32945, 
+                        "min": 1.90772, 
+                        "mean": 3.2309210538116564
+                    }, 
+                    "rs3764650_g": {
+                        "1": 153, 
+                        "0": 717, 
+                        "2": 22
+                    }, 
+                    "rightioginferioroccipitalgyrus": {
+                        "std": 0.7925605367358715, 
+                        "max": 9.78156, 
+                        "min": 4.04371, 
+                        "mean": 6.436952029147983
+                    }, 
+                    "rightacgganteriorcingulategyrus": {
+                        "std": 0.5474561638567504, 
+                        "max": 5.89817, 
+                        "min": 2.6671, 
+                        "mean": 4.082549820627803
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "rightcuncuneus,rs11136000_t"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,edsd,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "adni": {
+                    "rs11136000_t": {
+                        "1": 451, 
+                        "0": 314, 
+                        "2": 126
+                    }, 
+                    "rightcuncuneus": {
+                        "std": 0.5988663870939748, 
+                        "max": 6.85326, 
+                        "min": 2.82536, 
+                        "mean": 4.714462704826035
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "rightporgposteriororbitalgyrus"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "edsd": {
+                    "rightporgposteriororbitalgyrus": {
+                        "std": 0.28555608904778385, 
+                        "max": 3.0954, 
+                        "min": 0.63246, 
+                        "mean": 2.2662011441647585
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "leftmpogpostcentralgyrusmedialsegment,rightocpoccipitalpole"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,ppmi,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "rightocpoccipitalpole": {
+                        "std": 0.46977170723345907, 
+                        "max": 4.8403, 
+                        "min": 1.8019, 
+                        "mean": 3.0369949579831927
+                    }, 
+                    "leftmpogpostcentralgyrusmedialsegment": {
+                        "std": 0.15683593484411262, 
+                        "max": 1.7623, 
+                        "min": 0.71055, 
+                        "mean": 1.149255518207284
+                    }
+                }, 
+                "adni": {
+                    "rightocpoccipitalpole": {
+                        "std": 0.45728197553453465, 
+                        "max": 4.44937, 
+                        "min": 1.69073, 
+                        "mean": 2.905220497185742
+                    }, 
+                    "leftmpogpostcentralgyrusmedialsegment": {
+                        "std": 0.15416003202576872, 
+                        "max": 1.68537, 
+                        "min": 0.722792, 
+                        "mean": 1.1231552467166965
+                    }
+                }, 
+                "edsd": {
+                    "rightocpoccipitalpole": {
+                        "std": 0.4823000107686516, 
+                        "max": 5.4531, 
+                        "min": 1.5521, 
+                        "mean": 2.8646471395880995
+                    }, 
+                    "leftmpogpostcentralgyrusmedialsegment": {
+                        "std": 0.18691220581159879, 
+                        "max": 2.0477, 
+                        "min": 0.0, 
+                        "mean": 1.0873560183066355
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "rs2718058_g,rs744373_c"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,edsd,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "adni": {
+                    "rs744373_c": {
+                        "1": 210, 
+                        "0": 252, 
+                        "2": 58
+                    }, 
+                    "rs2718058_g": {
+                        "1": 237, 
+                        "0": 214, 
+                        "2": 69
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "leftangangulargyrus,leftinflatvent,rightmorgmedialorbitalgyrus,rightventraldc,leftcerebralwhitematter,leftventraldc,leftlateralventricle,rightmprgprecentralgyrusmedialsegment"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,adni,ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "leftinflatvent": {
+                        "std": 0.24328725245267172, 
+                        "max": 2.5746, 
+                        "min": 0.25951, 
+                        "mean": 0.5578057422969189
+                    }, 
+                    "rightmorgmedialorbitalgyrus": {
+                        "std": 0.4180940851626489, 
+                        "max": 5.5534, 
+                        "min": 2.3589, 
+                        "mean": 3.8763394957983186
+                    }, 
+                    "leftventraldc": {
+                        "std": 0.46039819411151933, 
+                        "max": 6.5984, 
+                        "min": 3.5549, 
+                        "mean": 4.8135348739495845
+                    }, 
+                    "leftcerebralwhitematter": {
+                        "std": 28.22673688637306, 
+                        "max": 325.6604, 
+                        "min": 155.2237, 
+                        "mean": 230.23247871148456
+                    }, 
+                    "rightmprgprecentralgyrusmedialsegment": {
+                        "std": 0.33247985372921673, 
+                        "max": 4.526, 
+                        "min": 1.8046, 
+                        "mean": 2.6492114845938364
+                    }, 
+                    "leftlateralventricle": {
+                        "std": 8.18630140193076, 
+                        "max": 70.464, 
+                        "min": 4.7233, 
+                        "mean": 15.862700560224091
+                    }, 
+                    "rightventraldc": {
+                        "std": 0.4423498812702896, 
+                        "max": 6.134, 
+                        "min": 3.3513, 
+                        "mean": 4.604086974789914
+                    }, 
+                    "leftangangulargyrus": {
+                        "std": 1.069219793238794, 
+                        "max": 13.5823, 
+                        "min": 6.1273, 
+                        "mean": 9.502652941176473
+                    }
+                }, 
+                "edsd": {
+                    "leftinflatvent": {
+                        "std": 0.44489448853237396, 
+                        "max": 2.8079, 
+                        "min": 0.27558, 
+                        "mean": 0.8202179405034323
+                    }, 
+                    "rightmorgmedialorbitalgyrus": {
+                        "std": 0.49960355418387337, 
+                        "max": 5.6107, 
+                        "min": 0.5615, 
+                        "mean": 3.6864475972540043
+                    }, 
+                    "leftventraldc": {
+                        "std": 0.4843626086454141, 
+                        "max": 6.8376, 
+                        "min": 1.0756, 
+                        "mean": 4.681015789473685
+                    }, 
+                    "leftcerebralwhitematter": {
+                        "std": 31.009284860268107, 
+                        "max": 312.4062, 
+                        "min": 69.2732, 
+                        "mean": 210.9447572082379
+                    }, 
+                    "rightmprgprecentralgyrusmedialsegment": {
+                        "std": 0.4033780786874342, 
+                        "max": 4.4218, 
+                        "min": 0.0, 
+                        "mean": 2.4641908466819227
+                    }, 
+                    "leftlateralventricle": {
+                        "std": 8.9495732153414, 
+                        "max": 58.4504, 
+                        "min": 2.7368, 
+                        "mean": 20.141077345537752
+                    }, 
+                    "rightventraldc": {
+                        "std": 0.45913502114859417, 
+                        "max": 6.6725, 
+                        "min": 1.1205, 
+                        "mean": 4.455629748283753
+                    }, 
+                    "leftangangulargyrus": {
+                        "std": 1.1124976258123522, 
+                        "max": 12.0496, 
+                        "min": 2.2506, 
+                        "mean": 8.760460640732262
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "apoe4"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "adni": {
+                    "apoe4": {
+                        "1": 395, 
+                        "0": 542, 
+                        "2": 124
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "leftioginferioroccipitalgyrus,leftmcggmiddlecingulategyrus,fdg,leftphgparahippocampalgyrus,rs17125944_c"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "adni": {
+                    "rs17125944_c": {
+                        "1": 89, 
+                        "0": 490, 
+                        "2": 6
+                    }, 
+                    "leftmcggmiddlecingulategyrus": {
+                        "std": 0.5450334927821711, 
+                        "max": 9.56777, 
+                        "min": 3.17787, 
+                        "mean": 4.683392290598291
+                    }, 
+                    "leftioginferioroccipitalgyrus": {
+                        "std": 0.7497699033088784, 
+                        "max": 8.99533, 
+                        "min": 3.80891, 
+                        "mean": 6.233813213675213
+                    }, 
+                    "fdg": {
+                        "std": 0.7297819575468424, 
+                        "max": 8.35249, 
+                        "min": 3.49076, 
+                        "mean": 6.1694153162393155
+                    }, 
+                    "leftphgparahippocampalgyrus": {
+                        "std": 0.3041620213726049, 
+                        "max": 4.05192, 
+                        "min": 2.12062, 
+                        "mean": 3.066385897435897
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "lefthippocampus,rightgregyrusrectus,leftfofrontaloperculum,righttmptemporalpole,rs11767557_c"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,adni,ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "adni": {
+                    "rightgregyrusrectus": {
+                        "std": 0.22557259003233415, 
+                        "max": 2.8819, 
+                        "min": 0.993285, 
+                        "mean": 2.0327032937853104
+                    }, 
+                    "leftfofrontaloperculum": {
+                        "std": 0.20900372990703658, 
+                        "max": 2.73465, 
+                        "min": 1.3886, 
+                        "mean": 1.9391448587570632
+                    }, 
+                    "lefthippocampus": {
+                        "std": 0.3521572593314884, 
+                        "max": 3.8422, 
+                        "min": 1.91962, 
+                        "mean": 2.9366365197740096
+                    }, 
+                    "rs11767557_c": {
+                        "1": 255, 
+                        "0": 590, 
+                        "2": 40
+                    }, 
+                    "righttmptemporalpole": {
+                        "std": 0.8543925346900784, 
+                        "max": 9.8447, 
+                        "min": 4.89716, 
+                        "mean": 7.539789627118641
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "pib,leftfugfusiformgyrus"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "adni": {
+                    "leftfugfusiformgyrus": {
+                        "std": 0.9495180025642429, 
+                        "max": 8.59277, 
+                        "min": 5.14148, 
+                        "mean": 7.284884615384614
+                    }, 
+                    "pib": {
+                        "std": 0.38374253521512747, 
+                        "max": 2.2325, 
+                        "min": 1.155, 
+                        "mean": 1.6300000000000001
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "brainstem,leftaccumbensarea,rightaorganteriororbitalgyrus,rightcerebralwhitematter"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "edsd": {
+                    "leftaccumbensarea": {
+                        "std": 0.06781194451884313, 
+                        "max": 0.66196, 
+                        "min": 0.0003, 
+                        "mean": 0.3908437757437071
+                    }, 
+                    "rightaorganteriororbitalgyrus": {
+                        "std": 0.27829646493901633, 
+                        "max": 2.7957, 
+                        "min": 0.0, 
+                        "mean": 1.6966385125858117
+                    }, 
+                    "rightcerebralwhitematter": {
+                        "std": 31.759412531119775, 
+                        "max": 334.9526, 
+                        "min": 61.8725, 
+                        "mean": 214.37923592677333
+                    }, 
+                    "brainstem": {
+                        "std": 2.2102915309762663, 
+                        "max": 27.2308, 
+                        "min": 2.0826, 
+                        "mean": 17.426419679633867
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "leftliglingualgyrus,rightfofrontaloperculum,leftmfgmiddlefrontalgyrus,rightangangulargyrus"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,ppmi,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "leftmfgmiddlefrontalgyrus": {
+                        "std": 2.1619531712556026, 
+                        "max": 26.6336, 
+                        "min": 10.689, 
+                        "mean": 18.92511484593839
+                    }, 
+                    "rightfofrontaloperculum": {
+                        "std": 0.2138867750467644, 
+                        "max": 2.8656, 
+                        "min": 1.005, 
+                        "mean": 1.988419047619049
+                    }, 
+                    "rightangangulargyrus": {
+                        "std": 1.1761203743308688, 
+                        "max": 15.1495, 
+                        "min": 6.906, 
+                        "mean": 10.560376190476191
+                    }, 
+                    "leftliglingualgyrus": {
+                        "std": 0.7662085656435238, 
+                        "max": 10.315, 
+                        "min": 5.3413, 
+                        "mean": 7.668123529411773
+                    }
+                }, 
+                "adni": {
+                    "leftmfgmiddlefrontalgyrus": {
+                        "std": 2.0258510429695518, 
+                        "max": 27.3957, 
+                        "min": 11.3305, 
+                        "mean": 18.24644221388368
+                    }, 
+                    "rightfofrontaloperculum": {
+                        "std": 0.2096317737595471, 
+                        "max": 2.76407, 
+                        "min": 1.27596, 
+                        "mean": 1.9308381613508454
+                    }, 
+                    "rightangangulargyrus": {
+                        "std": 1.1394791725677273, 
+                        "max": 13.6797, 
+                        "min": 6.00759, 
+                        "mean": 9.943485684802978
+                    }, 
+                    "leftliglingualgyrus": {
+                        "std": 0.7831176176454548, 
+                        "max": 10.8338, 
+                        "min": 4.82775, 
+                        "mean": 7.350888358348982
+                    }
+                }, 
+                "edsd": {
+                    "leftmfgmiddlefrontalgyrus": {
+                        "std": 2.694403625595296, 
+                        "max": 25.1051, 
+                        "min": 0.0, 
+                        "mean": 17.924711441647588
+                    }, 
+                    "rightfofrontaloperculum": {
+                        "std": 0.2874427541462988, 
+                        "max": 2.5755, 
+                        "min": 0.0, 
+                        "mean": 1.889796384439358
+                    }, 
+                    "rightangangulargyrus": {
+                        "std": 1.252461112174001, 
+                        "max": 14.1407, 
+                        "min": 1.1839, 
+                        "mean": 9.72729221967964
+                    }, 
+                    "leftliglingualgyrus": {
+                        "std": 0.7946081549209638, 
+                        "max": 9.6118, 
+                        "min": 3.9167, 
+                        "mean": 7.129834096109837
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "leftaorganteriororbitalgyrus,rightcuncuneus,minimentalstate"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,edsd,ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "adni": {
+                    "leftaorganteriororbitalgyrus": {
+                        "std": 0.18608946055251713, 
+                        "max": 2.1394, 
+                        "min": 0.806233, 
+                        "mean": 1.5050496078799265
+                    }, 
+                    "rightcuncuneus": {
+                        "std": 0.6008260681366892, 
+                        "max": 6.85326, 
+                        "min": 2.82536, 
+                        "mean": 4.7243440619136985
+                    }, 
+                    "minimentalstate": {
+                        "std": 2.7060684595162, 
+                        "max": 30.0, 
+                        "min": 19.0, 
+                        "mean": 27.0140712945591
+                    }
+                }, 
+                "edsd": {
+                    "leftaorganteriororbitalgyrus": {
+                        "std": 0.1926390319709619, 
+                        "max": 2.235, 
+                        "min": 0.55737, 
+                        "mean": 1.5099244289693596
+                    }, 
+                    "rightcuncuneus": {
+                        "std": 0.6140380324831193, 
+                        "max": 6.5936, 
+                        "min": 2.8214, 
+                        "mean": 4.537928412256272
+                    }, 
+                    "minimentalstate": {
+                        "std": 4.987864390670642, 
+                        "max": 30.0, 
+                        "min": 4.0, 
+                        "mean": 25.12256267409471
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "rightsfgsuperiorfrontalgyrus,leftcalccalcarinecortex,rightlateralventricle,gender"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "rightlateralventricle": {
+                        "std": 7.303742943301742, 
+                        "max": 59.1634, 
+                        "min": 4.1121, 
+                        "mean": 14.069150560224092
+                    }, 
+                    "leftcalccalcarinecortex": {
+                        "std": 0.4868242479309984, 
+                        "max": 5.5892, 
+                        "min": 1.8119, 
+                        "mean": 3.2550935574229722
+                    }, 
+                    "rightsfgsuperiorfrontalgyrus": {
+                        "std": 1.6574277418714765, 
+                        "max": 21.7697, 
+                        "min": 7.2783, 
+                        "mean": 14.711879551820717
+                    }, 
+                    "gender": {
+                        "M": 458, 
+                        "F": 256
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "leftphgparahippocampalgyrus,rightgregyrusrectus,rs190982_g"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "adni": {
+                    "rs190982_g": {
+                        "1": 247, 
+                        "0": 218, 
+                        "2": 71
+                    }, 
+                    "rightgregyrusrectus": {
+                        "std": 0.21783769011924367, 
+                        "max": 2.8819, 
+                        "min": 0.993285, 
+                        "mean": 2.046376016791043
+                    }, 
+                    "leftphgparahippocampalgyrus": {
+                        "std": 0.298135417753615, 
+                        "max": 4.05192, 
+                        "min": 2.12062, 
+                        "mean": 3.096890708955224
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "leftacgganteriorcingulategyrus,leftputamen,leftsmgsupramarginalgyrus,rightmcggmiddlecingulategyrus,leftaccumbensarea,leftioginferioroccipitalgyrus"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,ppmi,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "leftaccumbensarea": {
+                        "std": 0.05209911019144664, 
+                        "max": 0.62896, 
+                        "min": 0.23604, 
+                        "mean": 0.457287661064426
+                    }, 
+                    "rightmcggmiddlecingulategyrus": {
+                        "std": 0.5523913575113728, 
+                        "max": 10.1014, 
+                        "min": 3.0425, 
+                        "mean": 4.690909803921564
+                    }, 
+                    "leftioginferioroccipitalgyrus": {
+                        "std": 0.8060671697927769, 
+                        "max": 9.3496, 
+                        "min": 4.5309, 
+                        "mean": 6.627674929971987
+                    }, 
+                    "leftsmgsupramarginalgyrus": {
+                        "std": 0.9950528955216256, 
+                        "max": 12.9766, 
+                        "min": 5.8702, 
+                        "mean": 9.095355462184862
+                    }, 
+                    "leftacgganteriorcingulategyrus": {
+                        "std": 0.570731649471063, 
+                        "max": 6.7107, 
+                        "min": 3.16, 
+                        "mean": 4.687571988795517
+                    }, 
+                    "leftputamen": {
+                        "std": 0.47085426013502896, 
+                        "max": 5.8814, 
+                        "min": 2.756, 
+                        "mean": 4.302202100840334
+                    }
+                }, 
+                "adni": {
+                    "leftaccumbensarea": {
+                        "std": 0.05225599155189677, 
+                        "max": 0.596434, 
+                        "min": 0.201871, 
+                        "mean": 0.4106431716697937
+                    }, 
+                    "rightmcggmiddlecingulategyrus": {
+                        "std": 0.5527900622143483, 
+                        "max": 9.84033, 
+                        "min": 2.93644, 
+                        "mean": 4.549243236397755
+                    }, 
+                    "leftioginferioroccipitalgyrus": {
+                        "std": 0.7850966920124468, 
+                        "max": 8.99533, 
+                        "min": 3.80891, 
+                        "mean": 6.157853780487806
+                    }, 
+                    "leftsmgsupramarginalgyrus": {
+                        "std": 0.9723475854743698, 
+                        "max": 12.5257, 
+                        "min": 5.59139, 
+                        "mean": 8.700449943714823
+                    }, 
+                    "leftacgganteriorcingulategyrus": {
+                        "std": 0.559072095313077, 
+                        "max": 6.63962, 
+                        "min": 2.71921, 
+                        "mean": 4.562232120075047
+                    }, 
+                    "leftputamen": {
+                        "std": 0.4305910374718846, 
+                        "max": 5.43217, 
+                        "min": 2.4163, 
+                        "mean": 3.7684943058161315
+                    }
+                }, 
+                "edsd": {
+                    "leftaccumbensarea": {
+                        "std": 0.06781194451884313, 
+                        "max": 0.66196, 
+                        "min": 0.0003, 
+                        "mean": 0.3908437757437071
+                    }, 
+                    "rightmcggmiddlecingulategyrus": {
+                        "std": 0.6823909372576454, 
+                        "max": 8.5193, 
+                        "min": 0.0, 
+                        "mean": 4.4616100915331804
+                    }, 
+                    "leftioginferioroccipitalgyrus": {
+                        "std": 0.7977629457381716, 
+                        "max": 8.9127, 
+                        "min": 2.918, 
+                        "mean": 6.125588329519452
+                    }, 
+                    "leftsmgsupramarginalgyrus": {
+                        "std": 1.1898430196180192, 
+                        "max": 12.1, 
+                        "min": 0.29404, 
+                        "mean": 8.490322745995421
+                    }, 
+                    "leftacgganteriorcingulategyrus": {
+                        "std": 0.6968857633215452, 
+                        "max": 6.5349, 
+                        "min": 0.00124, 
+                        "mean": 4.454173935926776
+                    }, 
+                    "leftputamen": {
+                        "std": 0.5229357147425436, 
+                        "max": 5.3069, 
+                        "min": 0.32999, 
+                        "mean": 3.518661029748283
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "righttrifgtriangularpartoftheinferiorfrontalgyrus,righthippocampus,rightporgposteriororbitalgyrus,leftocpoccipitalpole,apoe4"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "adni": {
+                    "leftocpoccipitalpole": {
+                        "std": 0.5195666887369448, 
+                        "max": 5.5306, 
+                        "min": 1.98618, 
+                        "mean": 3.3926724410933056
+                    }, 
+                    "rightporgposteriororbitalgyrus": {
+                        "std": 0.23482301174120063, 
+                        "max": 3.11956, 
+                        "min": 1.36835, 
+                        "mean": 2.2609695664467453
+                    }, 
+                    "righttrifgtriangularpartoftheinferiorfrontalgyrus": {
+                        "std": 0.40235121319592965, 
+                        "max": 5.03748, 
+                        "min": 2.20985, 
+                        "mean": 3.4803507822808655
+                    }, 
+                    "apoe4": {
+                        "1": 395, 
+                        "0": 542, 
+                        "2": 124
+                    }, 
+                    "righthippocampus": {
+                        "std": 0.37451259637347123, 
+                        "max": 4.27919, 
+                        "min": 1.85114, 
+                        "mean": 3.1339029217719143
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "rightphgparahippocampalgyrus,righthippocampus,leftmsfgsuperiorfrontalgyrusmedialsegment"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "rightphgparahippocampalgyrus": {
+                        "std": 0.26399744494277355, 
+                        "max": 3.9314, 
+                        "min": 2.1372, 
+                        "mean": 3.007853221288517
+                    }, 
+                    "righthippocampus": {
+                        "std": 0.3000049420191848, 
+                        "max": 4.4035, 
+                        "min": 2.581, 
+                        "mean": 3.409496918767508
+                    }, 
+                    "leftmsfgsuperiorfrontalgyrusmedialsegment": {
+                        "std": 0.8324350508412898, 
+                        "max": 10.2854, 
+                        "min": 4.7405, 
+                        "mean": 7.0970768907563
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "minimentalstate,rightinflatvent"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,edsd,ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "edsd": {
+                    "rightinflatvent": {
+                        "std": 0.5363753843578261, 
+                        "max": 4.1536, 
+                        "min": 0.32887, 
+                        "mean": 0.8844918941504176
+                    }, 
+                    "minimentalstate": {
+                        "std": 4.987864390670642, 
+                        "max": 30.0, 
+                        "min": 4.0, 
+                        "mean": 25.12256267409471
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "rightopifgopercularpartoftheinferiorfrontalgyrus,rs3851179_a"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,ppmi,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "adni": {
+                    "rightopifgopercularpartoftheinferiorfrontalgyrus": {
+                        "std": 0.37754779147250167, 
+                        "max": 4.69298, 
+                        "min": 2.30122, 
+                        "mean": 3.3496066143497787
+                    }, 
+                    "rs3851179_a": {
+                        "1": 393, 
+                        "0": 391, 
+                        "2": 108
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "rightpcuprecuneus,rightaccumbensarea,rightcocentraloperculum,rightsmgsupramarginalgyrus"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "edsd": {
+                    "rightcocentraloperculum": {
+                        "std": 0.5694463618454609, 
+                        "max": 5.3782, 
+                        "min": 2e-05, 
+                        "mean": 3.823000068649884
+                    }, 
+                    "rightpcuprecuneus": {
+                        "std": 1.261096457884922, 
+                        "max": 14.9955, 
+                        "min": 2.9491, 
+                        "mean": 10.210308924485139
+                    }, 
+                    "rightaccumbensarea": {
+                        "std": 0.06364983828729416, 
+                        "max": 0.68265, 
+                        "min": 9e-05, 
+                        "mean": 0.3546391762013734
+                    }, 
+                    "rightsmgsupramarginalgyrus": {
+                        "std": 1.1163042783023602, 
+                        "max": 10.7194, 
+                        "min": 0.01333, 
+                        "mean": 7.616723455377567
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "leftofugoccipitalfusiformgyrus"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,edsd,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "leftofugoccipitalfusiformgyrus": {
+                        "std": 0.46628251671452386, 
+                        "max": 6.3604, 
+                        "min": 3.0193, 
+                        "mean": 4.416928851540618
+                    }
+                }, 
+                "adni": {
+                    "leftofugoccipitalfusiformgyrus": {
+                        "std": 0.476413403049632, 
+                        "max": 5.99124, 
+                        "min": 2.5476, 
+                        "mean": 4.09936636022514
+                    }
+                }, 
+                "edsd": {
+                    "leftofugoccipitalfusiformgyrus": {
+                        "std": 0.5335674387349483, 
+                        "max": 5.784, 
+                        "min": 0.40331, 
+                        "mean": 4.100505743707095
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "leftcerebellumexterior"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "leftcerebellumexterior": {
+                        "std": 4.457659434611986, 
+                        "max": 66.8592, 
+                        "min": 32.9487, 
+                        "mean": 47.76835084033615
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "rightofugoccipitalfusiformgyrus"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "rightofugoccipitalfusiformgyrus": {
+                        "std": 0.4647318609205073, 
+                        "max": 6.6355, 
+                        "min": 2.9714, 
+                        "mean": 4.419887114845936
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "_4thventricle"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "_4thventricle": {
+                        "std": 0.47654930292388276, 
+                        "max": 5.0006, 
+                        "min": 1.0385, 
+                        "mean": 2.0099389355742288
+                    }
+                }, 
+                "edsd": {
+                    "_4thventricle": {
+                        "std": 0.5375052788124249, 
+                        "max": 6.1146, 
+                        "min": 0.25159, 
+                        "mean": 2.018279382151028
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "rightsogsuperioroccipitalgyrus,rightpoparietaloperculum,rightmpogpostcentralgyrusmedialsegment"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,ppmi,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "rightmpogpostcentralgyrusmedialsegment": {
+                        "std": 0.15216133131407455, 
+                        "max": 1.804, 
+                        "min": 0.72321, 
+                        "mean": 1.1058147478991596
+                    }, 
+                    "rightpoparietaloperculum": {
+                        "std": 0.3164410640785628, 
+                        "max": 3.4457, 
+                        "min": 1.3588, 
+                        "mean": 2.2435745098039233
+                    }, 
+                    "rightsogsuperioroccipitalgyrus": {
+                        "std": 0.550834436796872, 
+                        "max": 6.3012, 
+                        "min": 2.9723, 
+                        "mean": 4.408490896358541
+                    }
+                }, 
+                "adni": {
+                    "rightmpogpostcentralgyrusmedialsegment": {
+                        "std": 0.15251070421228516, 
+                        "max": 1.64085, 
+                        "min": 0.694227, 
+                        "mean": 1.0772342045028134
+                    }, 
+                    "rightpoparietaloperculum": {
+                        "std": 0.302360127286798, 
+                        "max": 3.34823, 
+                        "min": 1.30568, 
+                        "mean": 2.1712405065666003
+                    }, 
+                    "rightsogsuperioroccipitalgyrus": {
+                        "std": 0.5218479602254812, 
+                        "max": 6.34525, 
+                        "min": 2.72391, 
+                        "mean": 4.21774289868668
+                    }
+                }, 
+                "edsd": {
+                    "rightmpogpostcentralgyrusmedialsegment": {
+                        "std": 0.1778717733892989, 
+                        "max": 1.5659, 
+                        "min": 0.0, 
+                        "mean": 1.0395185125858122
+                    }, 
+                    "rightpoparietaloperculum": {
+                        "std": 0.3619819401510522, 
+                        "max": 3.2482, 
+                        "min": 0.0, 
+                        "mean": 2.124535423340962
+                    }, 
+                    "rightsogsuperioroccipitalgyrus": {
+                        "std": 0.5215490971366722, 
+                        "max": 5.9885, 
+                        "min": 2.7508, 
+                        "mean": 4.092889931350114
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "rightocpoccipitalpole,leftstgsuperiortemporalgyrus"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "adni": {
+                    "leftstgsuperiortemporalgyrus": {
+                        "std": 0.8093229506914276, 
+                        "max": 9.35151, 
+                        "min": 4.01336, 
+                        "mean": 6.959202467166968
+                    }, 
+                    "rightocpoccipitalpole": {
+                        "std": 0.45728197553453465, 
+                        "max": 4.44937, 
+                        "min": 1.69073, 
+                        "mean": 2.905220497185742
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "leftsogsuperioroccipitalgyrus,rightmsfgsuperiorfrontalgyrusmedialsegment,rightsfgsuperiorfrontalgyrus,leftaccumbensarea,rightpinsposteriorinsula"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "leftaccumbensarea": {
+                        "std": 0.05209911019144664, 
+                        "max": 0.62896, 
+                        "min": 0.23604, 
+                        "mean": 0.457287661064426
+                    }, 
+                    "rightmsfgsuperiorfrontalgyrusmedialsegment": {
+                        "std": 0.9946835471215848, 
+                        "max": 12.0931, 
+                        "min": 5.4889, 
+                        "mean": 7.9687023809523865
+                    }, 
+                    "leftsogsuperioroccipitalgyrus": {
+                        "std": 0.4822974739997304, 
+                        "max": 5.2064, 
+                        "min": 2.1463, 
+                        "mean": 3.713061344537815
+                    }, 
+                    "rightsfgsuperiorfrontalgyrus": {
+                        "std": 1.6574277418714765, 
+                        "max": 21.7697, 
+                        "min": 7.2783, 
+                        "mean": 14.711879551820717
+                    }, 
+                    "rightpinsposteriorinsula": {
+                        "std": 0.25023636693079615, 
+                        "max": 3.5259, 
+                        "min": 1.6347, 
+                        "mean": 2.3414044817927158
+                    }
+                }, 
+                "edsd": {
+                    "leftaccumbensarea": {
+                        "std": 0.06781194451884313, 
+                        "max": 0.66196, 
+                        "min": 0.0003, 
+                        "mean": 0.3908437757437071
+                    }, 
+                    "rightmsfgsuperiorfrontalgyrusmedialsegment": {
+                        "std": 1.1834363274904134, 
+                        "max": 11.2819, 
+                        "min": 0.00038, 
+                        "mean": 7.519692105263159
+                    }, 
+                    "leftsogsuperioroccipitalgyrus": {
+                        "std": 0.46053122634459503, 
+                        "max": 4.9429, 
+                        "min": 2.0489, 
+                        "mean": 3.4159597254004597
+                    }, 
+                    "rightsfgsuperiorfrontalgyrus": {
+                        "std": 2.0653162712129576, 
+                        "max": 19.5882, 
+                        "min": 0.00029, 
+                        "mean": 13.919113089244853
+                    }, 
+                    "rightpinsposteriorinsula": {
+                        "std": 0.2735766879874873, 
+                        "max": 3.3168, 
+                        "min": 0.89588, 
+                        "mean": 2.265711395881007
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "rightsmgsupramarginalgyrus"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,edsd,ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "rightsmgsupramarginalgyrus": {
+                        "std": 0.8948858997335277, 
+                        "max": 10.7466, 
+                        "min": 5.2243, 
+                        "mean": 8.18375644257703
+                    }
+                }, 
+                "adni": {
+                    "rightsmgsupramarginalgyrus": {
+                        "std": 0.8656352870364729, 
+                        "max": 11.6158, 
+                        "min": 5.36295, 
+                        "mean": 7.828850440900565
+                    }
+                }, 
+                "edsd": {
+                    "rightsmgsupramarginalgyrus": {
+                        "std": 1.1163042783023602, 
+                        "max": 10.7194, 
+                        "min": 0.01333, 
+                        "mean": 7.616723455377567
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "rightangangulargyrus"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "rightangangulargyrus": {
+                        "std": 1.1761203743308688, 
+                        "max": 15.1495, 
+                        "min": 6.906, 
+                        "mean": 10.560376190476191
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "leftsfgsuperiorfrontalgyrus,montrealcognitiveassessment,rightpcggposteriorcingulategyrus,leftthalamusproper,rs190982_g"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "adni": {
+                    "rs190982_g": {
+                        "1": 156, 
+                        "0": 121, 
+                        "2": 45
+                    }, 
+                    "leftsfgsuperiorfrontalgyrus": {
+                        "std": 1.5509487176045906, 
+                        "max": 20.011, 
+                        "min": 10.1531, 
+                        "mean": 14.420484161490682
+                    }, 
+                    "leftthalamusproper": {
+                        "std": 0.6603450199668881, 
+                        "max": 9.12595, 
+                        "min": 5.43646, 
+                        "mean": 7.098486956521736
+                    }, 
+                    "rightpcggposteriorcingulategyrus": {
+                        "std": 0.429777772274054, 
+                        "max": 5.14055, 
+                        "min": 2.96834, 
+                        "mean": 4.00919751552795
+                    }, 
+                    "montrealcognitiveassessment": {
+                        "std": 3.783160115377416, 
+                        "max": 30.0, 
+                        "min": 9.0, 
+                        "mean": 23.527950310559007
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "rightliglingualgyrus,rightppplanumpolare"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "adni": {
+                    "rightliglingualgyrus": {
+                        "std": 0.8461231759583947, 
+                        "max": 11.4146, 
+                        "min": 5.42651, 
+                        "mean": 7.896607213883675
+                    }, 
+                    "rightppplanumpolare": {
+                        "std": 0.23177901975736745, 
+                        "max": 3.29822, 
+                        "min": 1.38045, 
+                        "mean": 2.0824456003752325
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "gender"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "edsd": {
+                    "gender": {
+                        "M": 227, 
+                        "F": 247
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "rightsmcsupplementarymotorcortex,rightppplanumpolare,rightbasalforebrain,opticchiasm"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "opticchiasm": {
+                        "std": 0.009150537565032724, 
+                        "max": 0.10033, 
+                        "min": 0.038146, 
+                        "mean": 0.07637201540616252
+                    }, 
+                    "rightbasalforebrain": {
+                        "std": 0.037729080398861324, 
+                        "max": 0.55154, 
+                        "min": 0.26482, 
+                        "mean": 0.4035735854341736
+                    }, 
+                    "rightsmcsupplementarymotorcortex": {
+                        "std": 0.6364834770841865, 
+                        "max": 8.2411, 
+                        "min": 3.5954, 
+                        "mean": 5.427443697478989
+                    }, 
+                    "rightppplanumpolare": {
+                        "std": 0.2237844630087201, 
+                        "max": 2.9748, 
+                        "min": 1.4105, 
+                        "mean": 2.08182787114846
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "rs190982_g,rs3865444_t,neurodegenerativescategories,gender,rs744373_c"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "adni": {
+                    "rs190982_g": {
+                        "1": 154, 
+                        "0": 130, 
+                        "2": 35
+                    }, 
+                    "gender": {
+                        "M": 187, 
+                        "F": 132
+                    }, 
+                    "rs744373_c": {
+                        "1": 120, 
+                        "0": 166, 
+                        "2": 33
+                    }, 
+                    "neurodegenerativescategories": {
+                        "AD": 24, 
+                        "MCI": 295
+                    }, 
+                    "rs3865444_t": {
+                        "1": 137, 
+                        "0": 154, 
+                        "2": 28
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "rightocpoccipitalpole,leftmtgmiddletemporalgyrus,cerebellarvermallobulesiv,leftputamen,leftlorglateralorbitalgyrus,leftocpoccipitalpole"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,edsd,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "rightocpoccipitalpole": {
+                        "std": 0.46977170723345907, 
+                        "max": 4.8403, 
+                        "min": 1.8019, 
+                        "mean": 3.0369949579831927
+                    }, 
+                    "leftmtgmiddletemporalgyrus": {
+                        "std": 1.551868554861766, 
+                        "max": 20.5341, 
+                        "min": 8.8172, 
+                        "mean": 14.007781232492997
+                    }, 
+                    "leftocpoccipitalpole": {
+                        "std": 0.5468835680768638, 
+                        "max": 5.8216, 
+                        "min": 2.0227, 
+                        "mean": 3.547528151260507
+                    }, 
+                    "cerebellarvermallobulesiv": {
+                        "std": 0.5137181319078772, 
+                        "max": 7.4442, 
+                        "min": 3.4291, 
+                        "mean": 4.8407229691876745
+                    }, 
+                    "leftlorglateralorbitalgyrus": {
+                        "std": 0.27379386980711085, 
+                        "max": 3.4108, 
+                        "min": 1.2581, 
+                        "mean": 2.4407063025210087
+                    }, 
+                    "leftputamen": {
+                        "std": 0.47085426013502896, 
+                        "max": 5.8814, 
+                        "min": 2.756, 
+                        "mean": 4.302202100840334
+                    }
+                }, 
+                "edsd": {
+                    "rightocpoccipitalpole": {
+                        "std": 0.4823000107686516, 
+                        "max": 5.4531, 
+                        "min": 1.5521, 
+                        "mean": 2.8646471395880995
+                    }, 
+                    "leftmtgmiddletemporalgyrus": {
+                        "std": 1.6484373239127161, 
+                        "max": 18.8747, 
+                        "min": 7.3624, 
+                        "mean": 13.175991533180794
+                    }, 
+                    "leftocpoccipitalpole": {
+                        "std": 0.5465866341121534, 
+                        "max": 5.7639, 
+                        "min": 1.2586, 
+                        "mean": 3.3128421052631567
+                    }, 
+                    "cerebellarvermallobulesiv": {
+                        "std": 0.5070749788497424, 
+                        "max": 6.2257, 
+                        "min": 2.6869, 
+                        "mean": 4.634720823798628
+                    }, 
+                    "leftlorglateralorbitalgyrus": {
+                        "std": 0.3441693368879193, 
+                        "max": 3.0911, 
+                        "min": 0.02822, 
+                        "mean": 2.2895320366132736
+                    }, 
+                    "leftputamen": {
+                        "std": 0.5229357147425436, 
+                        "max": 5.3069, 
+                        "min": 0.32999, 
+                        "mean": 3.518661029748283
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "rightitginferiortemporalgyrus,leftitginferiortemporalgyrus"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,adni,ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "rightitginferiortemporalgyrus": {
+                        "std": 1.2184846780623546, 
+                        "max": 15.883, 
+                        "min": 7.5613, 
+                        "mean": 11.717118347338943
+                    }, 
+                    "leftitginferiortemporalgyrus": {
+                        "std": 1.2048783713787288, 
+                        "max": 15.0815, 
+                        "min": 7.6335, 
+                        "mean": 11.380762184873952
+                    }
+                }, 
+                "adni": {
+                    "rightitginferiortemporalgyrus": {
+                        "std": 1.307590154670838, 
+                        "max": 15.4582, 
+                        "min": 6.57371, 
+                        "mean": 10.878795225140738
+                    }, 
+                    "leftitginferiortemporalgyrus": {
+                        "std": 1.247032782648002, 
+                        "max": 15.0442, 
+                        "min": 6.60284, 
+                        "mean": 10.539472242026276
+                    }
+                }, 
+                "edsd": {
+                    "rightitginferiortemporalgyrus": {
+                        "std": 1.3749522944774804, 
+                        "max": 15.13, 
+                        "min": 5.5287, 
+                        "mean": 10.960506636155607
+                    }, 
+                    "leftitginferiortemporalgyrus": {
+                        "std": 1.327469497055511, 
+                        "max": 14.593, 
+                        "min": 5.4301, 
+                        "mean": 10.647539816933635
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "rightfofrontaloperculum"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "rightfofrontaloperculum": {
+                        "std": 0.2138867750467644, 
+                        "max": 2.8656, 
+                        "min": 1.005, 
+                        "mean": 1.988419047619049
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "rightainsanteriorinsula,rightmfcmedialfrontalcortex,rightbasalforebrain,leftliglingualgyrus,leftmtgmiddletemporalgyrus"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "edsd": {
+                    "rightbasalforebrain": {
+                        "std": 0.04123069309725813, 
+                        "max": 0.57889, 
+                        "min": 0.13082, 
+                        "mean": 0.37145393592677356
+                    }, 
+                    "leftmtgmiddletemporalgyrus": {
+                        "std": 1.6484373239127161, 
+                        "max": 18.8747, 
+                        "min": 7.3624, 
+                        "mean": 13.175991533180794
+                    }, 
+                    "rightmfcmedialfrontalcortex": {
+                        "std": 0.28747663908342974, 
+                        "max": 3.0691, 
+                        "min": 0.03295, 
+                        "mean": 1.711103363844393
+                    }, 
+                    "leftliglingualgyrus": {
+                        "std": 0.7946081549209638, 
+                        "max": 9.6118, 
+                        "min": 3.9167, 
+                        "mean": 7.129834096109837
+                    }, 
+                    "rightainsanteriorinsula": {
+                        "std": 0.5376034585613356, 
+                        "max": 5.378, 
+                        "min": 0.12458, 
+                        "mean": 3.912540022883295
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "rightioginferioroccipitalgyrus"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "adni": {
+                    "rightioginferioroccipitalgyrus": {
+                        "std": 0.798416485346769, 
+                        "max": 9.78156, 
+                        "min": 4.04371, 
+                        "mean": 6.43569678236398
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "leftmfcmedialfrontalcortex"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "edsd": {
+                    "leftmfcmedialfrontalcortex": {
+                        "std": 0.28562958927228876, 
+                        "max": 3.0114, 
+                        "min": 0.03454, 
+                        "mean": 1.719398077803204
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "leftpoparietaloperculum,leftacgganteriorcingulategyrus,opticchiasm,rightocpoccipitalpole,rightppplanumpolare,leftaccumbensarea,leftcerebralwhitematter,leftcaudate"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "leftaccumbensarea": {
+                        "std": 0.05209911019144664, 
+                        "max": 0.62896, 
+                        "min": 0.23604, 
+                        "mean": 0.457287661064426
+                    }, 
+                    "rightocpoccipitalpole": {
+                        "std": 0.46977170723345907, 
+                        "max": 4.8403, 
+                        "min": 1.8019, 
+                        "mean": 3.0369949579831927
+                    }, 
+                    "leftcaudate": {
+                        "std": 0.37723320190585524, 
+                        "max": 4.7487, 
+                        "min": 1.9841, 
+                        "mean": 3.1018658263305348
+                    }, 
+                    "rightppplanumpolare": {
+                        "std": 0.2237844630087201, 
+                        "max": 2.9748, 
+                        "min": 1.4105, 
+                        "mean": 2.08182787114846
+                    }, 
+                    "leftpoparietaloperculum": {
+                        "std": 0.3427265776742552, 
+                        "max": 3.9414, 
+                        "min": 1.6214, 
+                        "mean": 2.437430112044818
+                    }, 
+                    "leftcerebralwhitematter": {
+                        "std": 28.22673688637306, 
+                        "max": 325.6604, 
+                        "min": 155.2237, 
+                        "mean": 230.23247871148456
+                    }, 
+                    "leftacgganteriorcingulategyrus": {
+                        "std": 0.570731649471063, 
+                        "max": 6.7107, 
+                        "min": 3.16, 
+                        "mean": 4.687571988795517
+                    }, 
+                    "opticchiasm": {
+                        "std": 0.009150537565032724, 
+                        "max": 0.10033, 
+                        "min": 0.038146, 
+                        "mean": 0.07637201540616252
+                    }
+                }, 
+                "edsd": {
+                    "leftaccumbensarea": {
+                        "std": 0.06781194451884313, 
+                        "max": 0.66196, 
+                        "min": 0.0003, 
+                        "mean": 0.3908437757437071
+                    }, 
+                    "rightocpoccipitalpole": {
+                        "std": 0.4823000107686516, 
+                        "max": 5.4531, 
+                        "min": 1.5521, 
+                        "mean": 2.8646471395880995
+                    }, 
+                    "leftcaudate": {
+                        "std": 0.472550482466418, 
+                        "max": 3.7946, 
+                        "min": 0.0, 
+                        "mean": 2.683106773455376
+                    }, 
+                    "rightppplanumpolare": {
+                        "std": 0.22820030579953618, 
+                        "max": 2.9434, 
+                        "min": 1.236, 
+                        "mean": 2.0271517162471393
+                    }, 
+                    "leftpoparietaloperculum": {
+                        "std": 0.362051053063454, 
+                        "max": 3.2184, 
+                        "min": 0.02077, 
+                        "mean": 2.306195491990847
+                    }, 
+                    "leftcerebralwhitematter": {
+                        "std": 31.009284860268107, 
+                        "max": 312.4062, 
+                        "min": 69.2732, 
+                        "mean": 210.9447572082379
+                    }, 
+                    "leftacgganteriorcingulategyrus": {
+                        "std": 0.6968857633215452, 
+                        "max": 6.5349, 
+                        "min": 0.00124, 
+                        "mean": 4.454173935926776
+                    }, 
+                    "opticchiasm": {
+                        "std": 0.009154063742359527, 
+                        "max": 0.10986, 
+                        "min": 0.04755, 
+                        "mean": 0.0777833867276888
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "lefthippocampus,leftpoparietaloperculum,rightsmgsupramarginalgyrus,rs3865444_t"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,ppmi,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "adni": {
+                    "rs3865444_t": {
+                        "1": 372, 
+                        "0": 448, 
+                        "2": 72
+                    }, 
+                    "rightsmgsupramarginalgyrus": {
+                        "std": 0.8523501861804347, 
+                        "max": 11.6158, 
+                        "min": 5.54262, 
+                        "mean": 7.845249181614354
+                    }, 
+                    "lefthippocampus": {
+                        "std": 0.3518605189861273, 
+                        "max": 3.8422, 
+                        "min": 1.91962, 
+                        "mean": 2.9378366479820612
+                    }, 
+                    "leftpoparietaloperculum": {
+                        "std": 0.3143350787748151, 
+                        "max": 3.48588, 
+                        "min": 1.37284, 
+                        "mean": 2.3745444170403593
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "leftputamen,leftbasalforebrain,leftpcuprecuneus,rightangangulargyrus"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "leftbasalforebrain": {
+                        "std": 0.037101710243741017, 
+                        "max": 0.51791, 
+                        "min": 0.26997, 
+                        "mean": 0.3988864985994397
+                    }, 
+                    "rightangangulargyrus": {
+                        "std": 1.1761203743308688, 
+                        "max": 15.1495, 
+                        "min": 6.906, 
+                        "mean": 10.560376190476191
+                    }, 
+                    "leftputamen": {
+                        "std": 0.47085426013502896, 
+                        "max": 5.8814, 
+                        "min": 2.756, 
+                        "mean": 4.302202100840334
+                    }, 
+                    "leftpcuprecuneus": {
+                        "std": 1.1918746372164504, 
+                        "max": 15.3204, 
+                        "min": 7.1042, 
+                        "mean": 10.96245476190477
+                    }
+                }, 
+                "edsd": {
+                    "leftbasalforebrain": {
+                        "std": 0.041293430379088815, 
+                        "max": 0.56403, 
+                        "min": 0.13799, 
+                        "mean": 0.368424874141876
+                    }, 
+                    "rightangangulargyrus": {
+                        "std": 1.252461112174001, 
+                        "max": 14.1407, 
+                        "min": 1.1839, 
+                        "mean": 9.72729221967964
+                    }, 
+                    "leftputamen": {
+                        "std": 0.5229357147425436, 
+                        "max": 5.3069, 
+                        "min": 0.32999, 
+                        "mean": 3.518661029748283
+                    }, 
+                    "leftpcuprecuneus": {
+                        "std": 1.2396762970143003, 
+                        "max": 15.0284, 
+                        "min": 3.5147, 
+                        "mean": 10.188530205949666
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "rightliglingualgyrus"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "adni": {
+                    "rightliglingualgyrus": {
+                        "std": 0.8461231759583947, 
+                        "max": 11.4146, 
+                        "min": 5.42651, 
+                        "mean": 7.896607213883675
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "leftmorgmedialorbitalgyrus"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "leftmorgmedialorbitalgyrus": {
+                        "std": 0.42053201173171756, 
+                        "max": 5.7151, 
+                        "min": 2.8359, 
+                        "mean": 4.063790196078428
+                    }
+                }, 
+                "edsd": {
+                    "leftmorgmedialorbitalgyrus": {
+                        "std": 0.5023989256431309, 
+                        "max": 5.6412, 
+                        "min": 1.2391, 
+                        "mean": 3.8337498855835275
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "_4thventricle,leftptplanumtemporale,rightsfgsuperiorfrontalgyrus,leftmprgprecentralgyrusmedialsegment"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "leftmprgprecentralgyrusmedialsegment": {
+                        "std": 0.3311473256788725, 
+                        "max": 4.5262, 
+                        "min": 1.7464, 
+                        "mean": 2.6614526610644247
+                    }, 
+                    "_4thventricle": {
+                        "std": 0.47654930292388276, 
+                        "max": 5.0006, 
+                        "min": 1.0385, 
+                        "mean": 2.0099389355742288
+                    }, 
+                    "rightsfgsuperiorfrontalgyrus": {
+                        "std": 1.6574277418714765, 
+                        "max": 21.7697, 
+                        "min": 7.2783, 
+                        "mean": 14.711879551820717
+                    }, 
+                    "leftptplanumtemporale": {
+                        "std": 0.30456382948777316, 
+                        "max": 3.4814, 
+                        "min": 1.3796, 
+                        "mean": 2.0743514005602233
+                    }
+                }, 
+                "edsd": {
+                    "leftmprgprecentralgyrusmedialsegment": {
+                        "std": 0.41927020422015454, 
+                        "max": 4.4095, 
+                        "min": 0.0, 
+                        "mean": 2.510892906178488
+                    }, 
+                    "_4thventricle": {
+                        "std": 0.5375052788124249, 
+                        "max": 6.1146, 
+                        "min": 0.25159, 
+                        "mean": 2.018279382151028
+                    }, 
+                    "rightsfgsuperiorfrontalgyrus": {
+                        "std": 2.0653162712129576, 
+                        "max": 19.5882, 
+                        "min": 0.00029, 
+                        "mean": 13.919113089244853
+                    }, 
+                    "leftptplanumtemporale": {
+                        "std": 0.3014735282238393, 
+                        "max": 2.9964, 
+                        "min": 0.26866, 
+                        "mean": 1.958033546910756
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "rightptplanumtemporale"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,ppmi,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "rightptplanumtemporale": {
+                        "std": 0.26190136951224824, 
+                        "max": 2.8503, 
+                        "min": 1.1837, 
+                        "mean": 1.9330813725490184
+                    }
+                }, 
+                "adni": {
+                    "rightptplanumtemporale": {
+                        "std": 0.2481965299717149, 
+                        "max": 2.89878, 
+                        "min": 1.1888, 
+                        "mean": 1.8732797842401527
+                    }
+                }, 
+                "edsd": {
+                    "rightptplanumtemporale": {
+                        "std": 0.2657324965103533, 
+                        "max": 2.6404, 
+                        "min": 0.00244, 
+                        "mean": 1.8292851945080106
+                    }
+                }
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "y", 
+                    "value": "rightpogpostcentralgyrus,rightfugfusiformgyrus,rightmsfgsuperiorfrontalgyrusmedialsegment,rightptplanumtemporale"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }
+            ], 
+            "output": {
+                "ppmi": {
+                    "rightpogpostcentralgyrus": {
+                        "std": 1.1737788484093188, 
+                        "max": 14.52, 
+                        "min": 6.3771, 
+                        "mean": 10.46244481792718
+                    }, 
+                    "rightmsfgsuperiorfrontalgyrusmedialsegment": {
+                        "std": 0.9946835471215848, 
+                        "max": 12.0931, 
+                        "min": 5.4889, 
+                        "mean": 7.9687023809523865
+                    }, 
+                    "rightfugfusiformgyrus": {
+                        "std": 0.7289503970808117, 
+                        "max": 10.3175, 
+                        "min": 5.4376, 
+                        "mean": 7.6663631652661115
+                    }, 
+                    "rightptplanumtemporale": {
+                        "std": 0.26190136951224824, 
+                        "max": 2.8503, 
+                        "min": 1.1837, 
+                        "mean": 1.9330813725490184
+                    }
+                }
+            }
+        }
+    ]
+}

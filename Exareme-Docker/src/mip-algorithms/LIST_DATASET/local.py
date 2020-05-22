@@ -1,14 +1,9 @@
-import sys
 import os
-from os import listdir
 from os import path
-
-sys.path.append(path.dirname(path.dirname(path.abspath(__file__))) + '/utils/')
-
 import sqlite3
 from argparse import ArgumentParser
-from list_dataset_lib import ListDatasetLocalDT
 
+from LIST_DATASET.list_dataset_lib import ListDatasetLocalDT
 
 def main():
     # Parse arguments
