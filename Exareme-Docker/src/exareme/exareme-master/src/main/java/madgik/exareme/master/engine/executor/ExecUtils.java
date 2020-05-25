@@ -58,46 +58,41 @@ public class ExecUtils {
 
     public static String runQueryOnTable(StringBuilder query, String madisMainDB, File directory,
                                          ProcessManager procManager) throws RemoteException {
+        return runQueryOnTable(query, madisMainDB, directory);
 
-        //sql based algorithms use the madis function "execnselect" which cannot be currently be processed by the MadisServer
-        if(!query.toString().contains("execnselect"))
-            return runQueryOnTable(query, madisMainDB, directory);
+        /*
+        log.debug("Process Directory: " + directory.getAbsolutePath());
+        log.debug("(ExecUtils::runQueryOnTable) running on MTERM process. query="+query.toString());
+        try {
+            Process p = procManager.createProcess(directory, python, engine, madisMainDB);
+            p.getOutputStream().write(query.toString().getBytes());
+            p.getOutputStream().flush();
+            p.getOutputStream().close();
 
-        else {
-            log.debug("Process Directory: " + directory.getAbsolutePath());
+            InputStreamConsumerThread stdout =
+                    new InputStreamConsumerThread(p.getInputStream(), false);
+            stdout.start();
 
-            log.debug("(ExecUtils::runQueryOnTable) running on MTERM process. query="+query.toString());
+            InputStreamConsumerThread stderr =
+                    new InputStreamConsumerThread(p.getErrorStream(), false);
+            stderr.start();
 
-            try {
-                Process p = procManager.createProcess(directory, python, engine, madisMainDB);
-                p.getOutputStream().write(query.toString().getBytes());
-                p.getOutputStream().flush();
-                p.getOutputStream().close();
+            int exitCode = p.waitFor();
+            stdout.join();
+            stderr.join();
 
-                InputStreamConsumerThread stdout =
-                        new InputStreamConsumerThread(p.getInputStream(), false);
-                stdout.start();
-
-                InputStreamConsumerThread stderr =
-                        new InputStreamConsumerThread(p.getErrorStream(), false);
-                stderr.start();
-
-                int exitCode = p.waitFor();
-                stdout.join();
-                stderr.join();
-
-                if (exitCode != 0 || stderr.getOutput().trim().isEmpty() == false) {
-                    log.error(stderr.getOutput());
-                    throw new ServerException(
-                            "Cannot execute db (code: " + exitCode + "): " + stderr.getOutput());
-                }
-                String output = stdout.getOutput();
-                log.debug(output);
-                return output;
-            } catch (Exception e) {
-                throw new ServerException("Cannot run query", e);
+            if (exitCode != 0 || stderr.getOutput().trim().isEmpty() == false) {
+                log.error(stderr.getOutput());
+                throw new ServerException(
+                        "Cannot execute db (code: " + exitCode + "): " + stderr.getOutput());
             }
+            String output = stdout.getOutput();
+            log.debug(output);
+            return output;
+        } catch (Exception e) {
+            throw new ServerException("Cannot run query", e);
         }
+        */
     }
 
     private static String runQueryOnTable(StringBuilder query, String madisMainDB, File directory){
@@ -156,9 +151,9 @@ public class ExecUtils {
         query= query.replaceAll("(?m)^[ \t]*\r?\n", "");
 
         //semicolons
-        query=query.replaceAll(";","%3B");
+        //query=query.replaceAll(";","%3B");
         try{
-            URLEncoder.encode(query, StandardCharsets.UTF_8.toString());
+            query=URLEncoder.encode(query, StandardCharsets.UTF_8.toString());
         } catch (UnsupportedEncodingException ex) {
             theLog+="(ExecuteUtils::processQueryString) UnsupportedEncodingException: "+ex;
             throw new RuntimeException(ex.getCause());
