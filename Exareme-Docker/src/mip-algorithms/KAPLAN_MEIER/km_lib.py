@@ -98,7 +98,7 @@ def convert_timelines_to_events(total_duration, outcome_pos, timelines):
 
 def local_1(local_in):
     # Unpack data
-    events_dict, durations_dict, max_duration, control_variable = local_in
+    events_dict, durations_dict, total_duration, control_variable = local_in
 
     grouped_durations_observed_dict = {}
     grouped_durations_non_observed_dict = {}
@@ -111,7 +111,7 @@ def local_1(local_in):
 
         # Split events into observed and non_observed groups
         durations_observed = np.array([d for d, e in zip(durations, events) if e == 1])
-        durations_non_observed = np.array([max_duration for e in events if e == 0])
+        durations_non_observed = np.array([total_duration for e in events if e == 0])
 
         # Remove some observations at random to allow grouping (see below)
         n_rem_o = len(durations_observed) % PRIVACY_MAGIC_NUMBER

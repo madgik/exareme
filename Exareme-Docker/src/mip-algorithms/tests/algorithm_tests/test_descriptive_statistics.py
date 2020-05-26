@@ -2,7 +2,7 @@ from numbers import Number
 
 import numpy as np
 import pytest
-from DESCRIPTIVE_STATS_v2 import DescriptiveStats
+from DESCRIPTIVE_STATS import DescriptiveStats
 from mipframework.testutils import get_test_params, get_algorithm_result
 from pathlib import Path
 
@@ -35,8 +35,10 @@ def recursive_isclose(first, second):
             recursive_isclose(first[key], second[key])
     elif isinstance(first, list):
         assert np.isclose(first, second, rtol=1e-6).all()
-    else:
+    elif isinstance(first, Number):
         assert np.isclose(first, second, rtol=1e-6)
+    elif isinstance(first, basestring):
+        assert first == second
 
 
 def assert_same_type(first, second):
