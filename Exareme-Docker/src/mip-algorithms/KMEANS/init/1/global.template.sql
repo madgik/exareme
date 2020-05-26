@@ -22,4 +22,10 @@ select %{renamecolnamestoschema} from (select jsontotable('%{centers2}','clid,%{
 drop table if exists defaultDB.clustercenters_global;
 create table defaultDB.clustercenters_global as select * from defaultDB.clustercentersnew_global;
 
+
+drop table if exists defaultDB.iterations;
+create table defaultDB.iterations (val);
+insert into defaultDB.iterations select 1;
+
+
 select * from defaultDB.clustercentersnew_global;
