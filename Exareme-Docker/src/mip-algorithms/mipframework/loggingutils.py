@@ -1,3 +1,4 @@
+import os
 import logging
 import logging.handlers
 from pathlib import Path
@@ -5,11 +6,11 @@ from pathlib import Path
 from .constants import LOGGING_LEVEL_ALG
 
 
-LOG_PATH = Path(__file__).parent / "logs"
-if not LOG_PATH.exists():
-    LOG_PATH.mkdir()
-
-LOG_FILENAME = LOG_PATH / "mip.log"
+LOG_FILENAME = "/var/log/mipframework.log"
+try:
+    open(LOG_FILENAME, "w")
+except IOError:
+    LOG_FILENAME = os.path.expanduser("~/mipframework.log")
 
 miplogger = logging.getLogger("miplogger")
 handler = logging.handlers.RotatingFileHandler(
@@ -26,7 +27,7 @@ def log_this(method, **kwargs):
     if LOGGING_LEVEL_ALG == logging.INFO:
         miplogger.info("Starting: {method}".format(method=method))
     elif LOGGING_LEVEL_ALG == logging.DEBUG:
-        arguments = ",".join(["\n{k}={v}".format(k=k, v=v) for k, v in kwargs.items()])
+        arguments = ",".join(["{k}={v}".format(k=k, v=v) for k, v in kwargs.items()])
         miplogger.debug(
             "Starting: {method}, "
             "{arguments}".format(method=method, arguments=arguments)
@@ -38,7 +39,7 @@ def repr_with_logging(self, **kwargs):
     if LOGGING_LEVEL_ALG == logging.INFO:
         return "{cls}()".format(cls=cls)
     elif LOGGING_LEVEL_ALG == logging.DEBUG:
-        arguments = ",".join(["\n{k}={v}".format(k=k, v=v) for k, v in kwargs.items()])
+        arguments = ",".join(["{k}={v}".format(k=k, v=v) for k, v in kwargs.items()])
         return "{cls}({arguments})".format(cls=cls, arguments=arguments)
 
 
@@ -49,11 +50,16 @@ def logged(func):
             miplogger.info("Starting: {0}{1}".format(cls, func.__name__))
         elif LOGGING_LEVEL_ALG == logging.DEBUG:
             miplogger.debug(
-                "Starting: {0}{1},\nargs: \n{2},\nkwargs: \n{3}".format(
+                "Starting: {0}{1},args: {2},kwargs: {3}".format(
                     cls, func.__name__, args, kwargs
                 )
             )
-        return func(*args, **kwargs)
+        try:
+            res = func(*args, **kwargs)
+        except Exception as e:
+            miplogger.error(e)
+            raise
+        return res
 
     def get_class_name(args):
         if is_classmethod(args[0]):
