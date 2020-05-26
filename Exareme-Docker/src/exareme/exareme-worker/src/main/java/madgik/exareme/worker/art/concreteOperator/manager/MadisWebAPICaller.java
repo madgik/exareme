@@ -14,7 +14,7 @@ public class MadisWebAPICaller {
     private final static Logger log = Logger.getLogger(MadisWebAPICaller.class);
 
     private static HttpURLConnection connection;
-    public String postRequest(String dbFilename, String query) throws IOException{
+    public String postRequest(String dbFilename, String query) throws MadisServerException, IOException {
         String url_str = "http://localhost:8888";
         String parameters = "dbfilename="+dbFilename+"&"+"query="+query;
         log.debug("(MadisWebAPICaller::postRequest) parameters: ->\n\n"+parameters+"\n\n<-");
@@ -47,15 +47,25 @@ public class MadisWebAPICaller {
                 }
                 reply=content.toString();
             }catch(Exception e) {
-                log.debug("(MadisWebAPICaller::postRequest::BufferedReader) EXCEPTION:"+e);
+                BufferedReader errorStreamReader=new BufferedReader(new InputStreamReader(connection.getErrorStream()));
+                String errorMessage="";
+                String line;
+                while ((line = errorStreamReader.readLine()) != null) {
+                    errorMessage+=line+"\n";
+                }
+                throw new MadisServerException(errorMessage);
             }
-
-
         } finally {
-
-        connection.disconnect();
-
+            connection.disconnect();
         }
         return reply;
     }
+
+    public class MadisServerException extends Exception{
+        MadisServerException(String errorMessage){
+            super(errorMessage);
+        }
+    }
+
 }
+

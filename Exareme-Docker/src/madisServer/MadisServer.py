@@ -7,6 +7,7 @@ from tornado.log import enable_pretty_logging
 import logging
 
 import MadisInstance
+from MadisInstance import QueryExecutionException
 
 MAX_WORKERS=1
 NUMBER_OF_MADIS_INSTANCES=1
@@ -43,10 +44,11 @@ class MainHandler(tornado.web.RequestHandler):
     self.logger.debug("(MadisServer::execQuery) will call madisInstance.connectToDb({})".format(dbFilename))
     madisInstance.connectToDb(dbFilename)
 
-    self.logger.debug("(MadisServer::execQuery) will call madisInstance.execute({})".format(query))
-    result= madisInstance.execute(query)
-    
-    madisInstance.closeConnectionToDb()
+    try:
+      self.logger.debug("(MadisServer::execQuery) will call madisInstance.execute({})".format(query))
+      result= madisInstance.execute(query)
+    finally:
+      madisInstance.closeConnectionToDb()
 
     return result
 
@@ -57,13 +59,22 @@ class MainHandler(tornado.web.RequestHandler):
     query=self.get_argument("query")
     
     self.logger.debug("(MadisServer::post) dbfilename={}  query={}".format(dbFilename,query))
+   
+    try:
+      str_result=yield self.execQuery(dbFilename,query)
+    except QueryExecutionException as e:
+      #raise tornado.web.HTTPError(status_code=500,log_message="...the log message??")
+      self.logger.debug("(MadisServer::post) QueryExecutionException: {}".format(str(e)))
+      #print "QueryExecutionException ->{}".format(str(e))
+      self.set_status(500)
+      self.write(str(e))
+      self.finish()
+      return
     
-    str_result=yield self.execQuery(dbFilename,query)
-
     self.logger.debug("(MadisServer::post) str_result-> {}".format(str_result))
     self.write("{}".format(str_result))
     
-    self.finish() #is this needed??
+    self.finish()
 
 application=tornado.web.Application([(r"/", MainHandler),])
 application.listen(8888)

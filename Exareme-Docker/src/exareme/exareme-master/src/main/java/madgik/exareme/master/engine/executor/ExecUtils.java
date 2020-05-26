@@ -20,6 +20,7 @@ import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -58,6 +59,7 @@ public class ExecUtils {
 
     public static String runQueryOnTable(StringBuilder query, String madisMainDB, File directory,
                                          ProcessManager procManager) throws RemoteException {
+
         return runQueryOnTable(query, madisMainDB, directory);
 
         /*
@@ -87,7 +89,7 @@ public class ExecUtils {
                         "Cannot execute db (code: " + exitCode + "): " + stderr.getOutput());
             }
             String output = stdout.getOutput();
-            log.debug(output);
+
             return output;
         } catch (Exception e) {
             throw new ServerException("Cannot run query", e);
@@ -95,7 +97,7 @@ public class ExecUtils {
         */
     }
 
-    private static String runQueryOnTable(StringBuilder query, String madisMainDB, File directory){
+    private static String runQueryOnTable(StringBuilder query, String madisMainDB, File directory) throws RemoteException{
 
         String theLog="";
 
@@ -108,21 +110,19 @@ public class ExecUtils {
         MadisWebAPICaller madisWebAPICaller=new MadisWebAPICaller();
         String reply="";
         try {
-            //DEBUG
-            long start = System.nanoTime();
-            //////
-
             reply=madisWebAPICaller.postRequest(databaseFullPath, queryString);
             theLog+="\n(ExecuteUtils::runQueryOnTable) just after post request. reply: ->\n\n"+reply+"\n\n<-";
+        }
 
+        catch (MadisWebAPICaller.MadisServerException |IOException e){
+            if(e instanceof MadisWebAPICaller.MadisServerException)
+                theLog+="\n(ExecuteUtils::runQueryOnTable) MadisServerException: "+e.getMessage();
+            else if(e instanceof IOException)
+                theLog+="\n(ExecuteUtils::runQueryOnTable) IOException: "+e.getMessage();
 
-            //DEBUG
-            long elapsedTime = System.nanoTime() - start;
-            theLog+="\n(ExecuteUtils::runQueryOnTable::madisWebAPICaller) posting query and receiving reply elapsed time: "+elapsedTime;
-            ///////
-
-        }catch (Exception e){
-            theLog+="\n(ExecuteUtils::runQueryOnTable) EXCEPTION while posting query: "+e;
+            //this abomination of a line is here to replicate the pipeline of error handling that the previous solution
+            //with the mterm process was using
+            throw new ServerException("Cannot run query", new ServerException("Cannot execute db (code: " + 1 + "): " + e.getMessage()));
         }
         finally {
             log.debug(theLog);
@@ -130,6 +130,17 @@ public class ExecUtils {
 
         return reply;
 
+        /*
+        catch (MadisWebAPICaller.MadisServerException mse){
+            theLog+="\n(ExecuteUtils::runQueryOnTable) MadisServerException: "+mse.getMessage();
+            //return mse.getMessage();
+            throw new ServerException("Cannot run query", mse);
+        }catch (IOException ioe){
+            theLog+="\n(ExecuteUtils::runQueryOnTable) IOException: "+ioe.getMessage();
+            throw new ServerException("Cannot run query", ioe);
+            //return ioe.getMessage();
+        }
+        */
     }
 
     private static String processQueryString(String query){
@@ -147,11 +158,8 @@ public class ExecUtils {
         query=query.replaceAll("-- Script END","");
 
         query= query.replaceAll("  ", " ");
-        //query= query.replaceAll("\n", "");
         query= query.replaceAll("(?m)^[ \t]*\r?\n", "");
 
-        //semicolons
-        //query=query.replaceAll(";","%3B");
         try{
             query=URLEncoder.encode(query, StandardCharsets.UTF_8.toString());
         } catch (UnsupportedEncodingException ex) {
