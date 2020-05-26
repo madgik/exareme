@@ -6,6 +6,8 @@
 ## .pyc files
 *.pyc
 
+*.py.swp
+
 ##__pycahe__
 **/__pycache__/
 
