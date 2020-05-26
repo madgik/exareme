@@ -74,7 +74,7 @@ ADD files/requirements.txt /root/requirements.txt
 RUN apk add --update py-psycopg2 py-pip ca-certificates gcc musl-dev python-dev lapack-dev g++ gfortran
 RUN pip install -r /root/requirements.txt
 RUN pip install scipy==1.2.1 scikit-learn==0.20.3
-RUN pip install pandas
+RUN pip install pandas==0.22.0
 RUN apk add --update freetype-dev libjpeg-turbo-dev libpng-dev
 RUN pip install lifelines
 RUN pip install liac-arff

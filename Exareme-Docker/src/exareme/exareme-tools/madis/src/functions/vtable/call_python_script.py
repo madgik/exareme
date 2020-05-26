@@ -1,5 +1,4 @@
 """
-
 .. function:: pipe(query:None[,lines:t])
 
 Executes *query* as a shell command and returns the standard output lines as rows of one column table.
@@ -36,17 +35,34 @@ Examples::
 
 import functions
 import subprocess
-
+import importlib
 import vtbase
-
+import sys
 registered = True
 #external_stream = True
+import re
+from cStringIO import StringIO
+
+def rchop(s, suffix):
+    if suffix and s.endswith(suffix):
+        return s[:-len(suffix)]
+    return s
+
+from contextlib import contextmanager
+
+@contextmanager
+def stdout_redirector(stream):
+    old_stdout = sys.stdout
+    sys.stdout = stream
+    try:
+        yield
+    finally:
+        sys.stdout = old_stdout
 
 
 class CallPythonScriptVT(vtbase.VT):
     def VTiter(self, *parsedArgs, **envars):
         largs, dictargs = self.full_parse(parsedArgs)
-
         # Execute the query
         if 'query' in dictargs:
             query = dictargs['query']
@@ -60,17 +76,33 @@ class CallPythonScriptVT(vtbase.VT):
         if command is None:
             raise functions.OperatorError(__name__.rsplit('.')[-1], "No command argument found")
 
+
         yield [('data', 'text')]
+        if ('DESCRIPTIVE_STATS_v2' in command) or ('LOGISTIC_REGRESSION' in command):
+            command = re.sub('\s+', ' ', command)
+            arguments = command.split()
+            get_import = re.sub('\.py$','',(re.sub('/','.',re.search("mip-algorithms/(.+)",arguments[1]).groups()[0])))
+            mpackage = re.search("(^[^.]*)(.+)",get_import).group(1)
+            sys.path.append("/root/mip-algorithms/" + mpackage)
+            myimport = re.search("(^[^.]*)(.+)",get_import).group(2)[1:]
+            algo = importlib.import_module(myimport)
+            sys.path.remove("/root/mip-algorithms/" + mpackage)
+            for i in xrange(len(arguments)):
+                arguments[i] = re.sub('\"','',arguments[i])
+            f = StringIO()
+            with stdout_redirector(f):
+                algo.main(arguments)
+            yield [f.getvalue()]
+        else:
+            child = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-        child = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            output, error = child.communicate()
+            print "call pythn script output --> "+output
+            yield [output]
 
-        output, error = child.communicate()
-        yield [output]
-
-        if child.returncode != 0:
-            raise functions.OperatorError(__name__.rsplit('.')[-1], "Command '%s' failed to execute because:\n%s" % (
-                command, error.rstrip('\n\t ')))
-
+            if child.returncode != 0:
+                raise functions.OperatorError(__name__.rsplit('.')[-1], "Command '%s' failed to execute because:\n%s" % (
+                    command, error.rstrip('\n\t ')))
 
 def Source():
     return vtbase.VTGenerator(CallPythonScriptVT)
