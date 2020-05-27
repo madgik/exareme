@@ -78,15 +78,16 @@ class CallPythonScriptVT(vtbase.VT):
 
 
         yield [('data', 'text')]
-        if ('LIST_DATASET' not in command) and ('LIST_VARIABLES' not in command) and ('HEALTH_CHECK' not in command):
+        if  ('MULTIPLE_HISTOGRAMS' not in command) and ('LIST_DATASET' not in command) and ('LIST_VARIABLES' not in command) and ('HEALTH_CHECK' not in command):
             command = re.sub('\s+', ' ', command)
             arguments = command.split()
-            get_import = re.sub('\.py$','',(re.sub('/','.',re.search("mip-algorithms/(.+)",arguments[1]).groups()[0])))
+            get_import = re.sub('\.py$','',(re.sub('/+','.',re.search("mip-algorithms(?:/+)(.+)",arguments[1]).groups()[0])))
             mpackage = re.search("(^[^.]*)(.+)",get_import).group(1)
-            sys.path.append("/root/mip-algorithms/" + mpackage)
-            myimport = re.search("(^[^.]*)(.+)",get_import).group(2)[1:]
-            algo = importlib.import_module(myimport)
-            sys.path.remove("/root/mip-algorithms/" + mpackage)
+            #sys.path.append("/root/mip-algorithms/" + mpackage)
+            myimport = re.search("(^[^.]*)(.+)",get_import).group(2)
+            parentpackage = importlib.import_module(mpackage)
+            algo = importlib.import_module(myimport,mpackage)
+            #sys.path.remove("/root/mip-algorithms/" + mpackage)
             for i in xrange(len(arguments)):
                 arguments[i] = re.sub('\"','',arguments[i])
             f = StringIO()
