@@ -78,21 +78,14 @@ class CallPythonScriptVT(vtbase.VT):
 
 
         yield [('data', 'text')]
-        if ('HEALTH' not in command) and ('LIST_VARIABLES' not in command) and ('LIST_DATASET' not in command):
-        #if ('DESCRIPTIVE_STATS' in command) or ('LOGISTIC_REGRESSION' in command):
-            print "callpythonscript is here: " + command
+        if ('LIST_DATASET' not in command) and ('LIST_VARIABLES' not in command) and ('HEALTH_CHECK' not in command):
             command = re.sub('\s+', ' ', command)
             arguments = command.split()
             get_import = re.sub('\.py$','',(re.sub('/','.',re.search("mip-algorithms/(.+)",arguments[1]).groups()[0])))
             mpackage = re.search("(^[^.]*)(.+)",get_import).group(1)
             sys.path.append("/root/mip-algorithms/" + mpackage)
             myimport = re.search("(^[^.]*)(.+)",get_import).group(2)[1:]
-            try:
-                algo = importlib.import_module(myimport)
-            except:
-                sys.path.remove("/root/mip-algorithms/" + mpackage)
-                raise
-            print "callpythonscript is here: " + mpackage
+            algo = importlib.import_module(myimport)
             sys.path.remove("/root/mip-algorithms/" + mpackage)
             for i in xrange(len(arguments)):
                 arguments[i] = re.sub('\"','',arguments[i])
