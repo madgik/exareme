@@ -1,4 +1,4 @@
-requirevars 'defaultDB' 'y' 'e';
+requirevars 'defaultDB' 'y' 'e' 'iterations_max_number';
 attach database '%{defaultDB}' as defaultDB;
 
 var 'x' '%{y}';
@@ -14,8 +14,9 @@ where clid_old=clid_new);
 
 -- update iterationsDB.iterations_condition_check_result_tbl set iterations_condition_check_result = ( select  %{maxdifference}> %{e});
 -- select "ok";
+var 'iteration' from select count(val) from defaultDB.iterations;
 
-var 'returnValue' from select case when %{maxdifference}> %{e} then
+var 'returnValue' from select case when %{maxdifference}> %{e} and %{iteration} <= %{iterations_max_number} then
 '"CONTINUE"'
 else
 '"STOP"' end;

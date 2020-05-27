@@ -33,6 +33,7 @@ class AlgorithmData(object):
             metadata_table_name=args.metadata_table,
             privacy=args.privacy,
         )
+        self.db = db
         self.full = db.read_data_from_db(args)
         self.metadata = db.read_metadata_from_db(args)
         self.variables, self.covariables = self.build_variables(
@@ -55,11 +56,15 @@ class AlgorithmData(object):
         formula = get_formula(args, is_categorical)
         # Create variables (and possibly covariables)
         if args.formula_is_equation:
+            if len(self.full) == 0:
+                return pd.DataFrame(), pd.DataFrame()
             variables, covariables = dmatrices(
                 formula, self.full, return_type="dataframe"
             )
             return variables, covariables
         else:
+            if len(self.full) == 0:
+                return pd.DataFrame(), None
             variables = dmatrix(formula, self.full, return_type="dataframe")
             return variables, None
 
@@ -85,8 +90,10 @@ def get_formula(args, is_categorical):
             args.coding = "Treatment"
         for var in var_names:
             if is_categorical[var]:
-                formula = formula.replace(
-                    var, "C({v}, {coding})".format(v=var, coding=args.coding)
+                formula = re.sub(
+                    r"\b({})\b".format(var),
+                    r"C(\g<0>, {})".format(args.coding),
+                    formula,
                 )
     return formula
 
@@ -123,6 +130,22 @@ class DataBase(object):
     @logged
     def read_data_from_db(self, args):
         var_names = list(args.y) + ["dataset"]
+        if hasattr(args, "x") and args.x:
+            var_names.extend(args.x)
+        data = self.select_vars_from_data(
+            var_names=var_names, datasets=args.dataset, filter_rules=args.filter
+        )
+        return data
+
+    @logged
+    def read_longitudinal_data_from_db(self, args):
+        var_names = list(args.y) + [
+            "subjectcode",
+            "subjectvisitdate",
+            "subjectage",
+            "subjectvisitid",
+            "dataset",
+        ]
         if hasattr(args, "x") and args.x:
             var_names.extend(args.x)
         data = self.select_vars_from_data(

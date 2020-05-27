@@ -5,8 +5,10 @@
 
 ## .pyc files
 *.pyc
-
 *.py.swp
+
+##__pycahe__
+**/__pycache__/
 
 ## Directory-based project format:
 .idea/
@@ -54,9 +56,6 @@ crashlytics-build.properties
 # Mac related
 *.DS_Store
 
-
-
-=======
 # intellij
 .idea
 
@@ -75,3 +74,9 @@ crashlytics-build.properties
 
 # python virtual environment
 venv
+
+# invoke tasks
+tasks.py
+
+# tox
+.tox

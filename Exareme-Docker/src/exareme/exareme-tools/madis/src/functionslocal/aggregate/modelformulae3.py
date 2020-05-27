@@ -334,7 +334,8 @@ class anovastatistics:
             self.df[modelvariables] = 1
 
         #2. Mean Square Computation
-        self.meansquare[modelvariables] =  self.sumofsquares[modelvariables] / self.df[modelvariables]
+        if  self.df[modelvariables] != 0:
+            self.meansquare[modelvariables] =  self.sumofsquares[modelvariables] / self.df[modelvariables]
 
     def final(self):
         # print str(self.df['residuals']), str(self.dfTotal)
@@ -345,13 +346,17 @@ class anovastatistics:
 
         for c in xrange(len(self.rows)):
             key = self.rows[c]
-            F = self.meansquare[key]/self.meansquare['residuals']
-            P = stats.f.sf(F,self.df[key],self.df['residuals'])
+            if self.df[key] !=0:
+                F = self.meansquare[key]/self.meansquare['residuals']
+                P = stats.f.sf(F,self.df[key],self.df['residuals'])
             etasquared = self.sumofsquares[key] / self.SStotal
             # print etasquared
             partetasquared = self.sumofsquares[key]/(self.sumofsquares[key]+self.sumofsquares['residuals'])
             omegasquared = (self.sumofsquares[key] - self.df[key] *self.meansquare['residuals'])/(self.SStotal + self.meansquare['residuals'])
-            yield c,key,self.sumofsquares[key],self.df[key],self.meansquare[key],F,P,etasquared,partetasquared,omegasquared
+            if self.df[key] != 0: 
+                yield c,key,self.sumofsquares[key],self.df[key],self.meansquare[key],F,P,etasquared,partetasquared,omegasquared
+            else:
+                yield c,key,self.sumofsquares[key],self.df[key],None,None,None,etasquared,partetasquared,omegasquared
 
 
 
