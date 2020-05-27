@@ -90,7 +90,7 @@ class HomeHandler(BaseHandler):
 
 def main():
     sockets = tornado.netutil.bind_sockets(options.port)
-    tornado.process.fork_processes(0)
+    #tornado.process.fork_processes(0)
     server = tornado.httpserver.HTTPServer(Application())
     server.add_sockets(sockets)
     tornado.ioloop.IOLoop.instance().start()
