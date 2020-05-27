@@ -197,35 +197,22 @@ class DescriptiveStats(Algorithm):
         self.result = AlgorithmResult(raw_data=raw_out)
 
 
-fields = [
-    "Label",
-    "Count",
-    "Min",
-    "Max",
-    "Mean",
-    "Std.Err.",
-    "Mean + Std.Err",
-    "Mean - Std.Err",
-    "Frequencies",
-]
-
-
 if __name__ == "__main__":
     import time
     from mipframework import create_runner
 
     algorithm_args = [
         "-y",
-        "rightententorhinalarea,leftporgposteriororbitalgyrus,leftorifgorbitalpartoftheinferiorfrontalgyrus,csfglobal,dataset",
+        "rightphgparahippocampalgyrus",
         "-pathology",
         "dementia",
         "-dataset",
-        "ppmi, edsd",
+        "lille_simulation",
         "-filter",
         "",
     ]
     runner = create_runner(
-        DescriptiveStats, algorithm_args=algorithm_args, num_workers=1,
+        DescriptiveStats, algorithm_args=algorithm_args, num_workers=2,
     )
     start = time.time()
     runner.run()
