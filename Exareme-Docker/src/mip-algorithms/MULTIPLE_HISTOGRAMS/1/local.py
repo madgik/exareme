@@ -56,42 +56,41 @@ def run_local_step(args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWi
 
     return localstatistics
 
-def main():
+def main(args):
 
-    # Parse arguments
-    parser = ArgumentParser()
-    parser.add_argument('-x', required=True, help='Variable names, comma seperated ')
-    parser.add_argument('-y', required=True, help='Categorical variables names, comma seperated.')
-    parser.add_argument('-bins', required=True, help='Dictionary of variables names (key) and number of bins (value)')
-    parser.add_argument('-input_local_DB', required=True, help='Path to local db.')
-    parser.add_argument('-db_query', required=True, help='Query to be executed on local db.')
-    parser.add_argument('-cur_state_pkl', required=True, help='Path to the pickle file holding the current state.')
-    args, unknown = parser.parse_known_args()
-    query = args.db_query
-    fname_cur_state = path.abspath(args.cur_state_pkl)
-    fname_loc_db = path.abspath(args.input_local_DB)
+    # # Parse arguments
+    # parser = ArgumentParser()
+    # parser.add_argument('-x', required=True, help='Variable names, comma seperated ')
+    # parser.add_argument('-y', required=True, help='Categorical variables names, comma seperated.')
+    # parser.add_argument('-bins', required=True, help='Dictionary of variables names (key) and number of bins (value)')
+    # parser.add_argument('-input_local_DB', required=True, help='Path to local db.')
+    # parser.add_argument('-db_query', required=True, help='Query to be executed on local db.')
+    # parser.add_argument('-cur_state_pkl', required=True, help='Path to the pickle file holding the current state.')
+    # args, unknown = parser.parse_known_args()
+    dictargs = {}
+    for i in range(0, len(args), 2): dictargs[args[i][1:]] = args[i + 1]
 
-    #if args.x == '':
-     #   raise ExaremeError('Field x must be non empty.')
+    fname_cur_state = path.abspath(dictargs['cur_state_pkl'])
+    fname_loc_db = path.abspath(dictargs['input_local_DB'])
 
     # Get data
-    if args.x == '':
-        args_X = list(args.y.replace(' ', '').split(','))
+    if dictargs['x'] == '':
+        args_X = list(dictargs['y'].replace(' ', '').split(','))
         args_Y = []
-        varNames = "'" + "','".join(list(args.y.replace(' ', '').split(','))) + "'"
+        varNames = "'" + "','".join(list(dictargs['y'].replace(' ', '').split(','))) + "'"
     else:
-        args_X = list(args.y.replace(' ', '').split(','))
-        args_Y = list(args.x.replace(' ', '').split(','))
-        varNames = "'" + "','".join(list(args.y.replace(' ', '').split(','))) + "','" + "','".join(
-                        list(args.x.replace(' ', '').split(','))) + "'"
-    if args.bins == '':
+        args_X = list(dictargs['y'].replace(' ', '').split(','))
+        args_Y = list(dictargs['x'].replace(' ', '').split(','))
+        varNames = "'" + "','".join(list(dictargs['y'].replace(' ', '').split(','))) + "','" + "','".join(
+                        list(dictargs['x'].replace(' ', '').split(','))) + "'"
+    if dictargs['bins'] == '':
         args_bins = {}
     else:
-        args_bins = json.loads(args.bins)
+        args_bins = json.loads(dictargs['bins'])
         #args_bins = dict( (str(key), val) for key, val in args_bins.items())
 
     queryMetadata = "select * from metadata where code in (" + varNames  + ");"
-    dataSchema, metadataSchema, metadata, dataFrame  = query_database(fname_db=fname_loc_db, queryData=query, queryMetadata=queryMetadata)
+    dataSchema, metadataSchema, metadata, dataFrame  = query_database(fname_db=fname_loc_db, queryData= dictargs['db_query'], queryMetadata=queryMetadata)
     CategoricalVariablesWithDistinctValues = variable_categorical_getDistinctValues(metadata)
 
     #Checking bins input
@@ -119,4 +118,4 @@ def main():
     local_out.transfer()
 
 if __name__ == '__main__':
-    main()
+    main(sys.argv[1:])
