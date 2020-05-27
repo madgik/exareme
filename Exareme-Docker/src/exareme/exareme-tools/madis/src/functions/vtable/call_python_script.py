@@ -78,11 +78,8 @@ class CallPythonScriptVT(vtbase.VT):
 
 
         yield [('data', 'text')]
-<<<<<<< HEAD
         if ('HEALTH' not in command) and ('LIST_VARIABLES' not in command) and ('LIST_DATASETS' not in command):
-=======
-        if ('DESCRIPTIVE_STATS' in command) or ('LOGISTIC_REGRESSION' in command):
->>>>>>> d0602def64502d0b6c717687fb329cc4ba78aa34
+        #if ('DESCRIPTIVE_STATS' in command) or ('LOGISTIC_REGRESSION' in command):
             command = re.sub('\s+', ' ', command)
             arguments = command.split()
             get_import = re.sub('\.py$','',(re.sub('/','.',re.search("mip-algorithms/(.+)",arguments[1]).groups()[0])))
