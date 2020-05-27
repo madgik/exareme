@@ -78,7 +78,7 @@ class CallPythonScriptVT(vtbase.VT):
 
 
         yield [('data', 'text')]
-        if ('DESCRIPTIVE_STATS_v2' in command) or ('LOGISTIC_REGRESSION' in command):
+        if ('DESCRIPTIVE_STATS' in command) or ('LOGISTIC_REGRESSION' in command):
             command = re.sub('\s+', ' ', command)
             arguments = command.split()
             get_import = re.sub('\.py$','',(re.sub('/','.',re.search("mip-algorithms/(.+)",arguments[1]).groups()[0])))
