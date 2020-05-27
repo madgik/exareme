@@ -48,7 +48,7 @@ class DescriptiveStats(Algorithm):
                 if var_name in numericals:
                     X = single_df
                     if n_obs <= PRIVACY_THRESHOLD:
-                        sx, sxx, min_, max_ = 0, 0, 0, 0
+                        sx, sxx, min_, max_ = 0, 0, int(1e9), -int(1e9)
                     else:
                         sx = X.sum()
                         sxx = (X * X).sum()
@@ -83,7 +83,7 @@ class DescriptiveStats(Algorithm):
                     numerical = var
                     numvar = data_group[numerical]
                     if n_obs <= PRIVACY_THRESHOLD:
-                        sx, sxx, min_, max_ = 0, 0, 0, 0
+                        sx, sxx, min_, max_ = 0, 0, int(1e9), -int(1e9)
                     else:
                         sx = numvar.sum()
                         sxx = (numvar * numvar).sum()
@@ -168,7 +168,7 @@ class DescriptiveStats(Algorithm):
             raw_out["model"][dataset]["num_datapoints"] = n_obs
             for numerical in numericals:
                 if n_obs <= PRIVACY_THRESHOLD:
-                    raw_out["model"][dataset]["data"] = "NOT ENOUGH DATA"
+                    raw_out["model"][dataset]["data"][numerical] = "NOT ENOUGH DATA"
                     continue
                 sx = self.fetch("model__" + "sx_" + numerical + "_" + dataset)
                 sxx = self.fetch("model__" + "sxx_" + numerical + "_" + dataset)
@@ -188,7 +188,7 @@ class DescriptiveStats(Algorithm):
                 }
             for categorical in categoricals:
                 if n_obs <= PRIVACY_THRESHOLD:
-                    raw_out["model"][dataset]["data"] = "NOT ENOUGH DATA"
+                    raw_out["model"][dataset]["data"][categorical] = "NOT ENOUGH DATA"
                     continue
                 counter = self.fetch(
                     "model__" + "counter_" + categorical + "_" + dataset
@@ -203,11 +203,11 @@ if __name__ == "__main__":
 
     algorithm_args = [
         "-y",
-        "rightphgparahippocampalgyrus",
+        "rightphgparahippocampalgyrus, gender, alzheimerbroadcategory, rs10498633_t",
         "-pathology",
         "dementia",
         "-dataset",
-        "lille_simulation",
+        "lille_simulation, lille_simulation1",
         "-filter",
         "",
     ]

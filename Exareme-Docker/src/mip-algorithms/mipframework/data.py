@@ -57,15 +57,16 @@ class AlgorithmData(object):
         formula = get_formula(args, is_categorical)
         # Create variables (and possibly covariables)
         if args.formula_is_equation:
-            if len(self.full) == 0:
+            if self.full.dropna().shape[0] == 0:
                 return pd.DataFrame(), pd.DataFrame()
             variables, covariables = dmatrices(
                 formula, self.full, return_type="dataframe"
             )
             return variables, covariables
         else:
-            if len(self.full) == 0:
+            if self.full.dropna().shape[0] == 0:
                 return pd.DataFrame(), None
+            #           import sys; sys.stdout = sys.__stdout__; import pdb; pdb.set_trace()
             variables = dmatrix(formula, self.full, return_type="dataframe")
             return variables, None
 
