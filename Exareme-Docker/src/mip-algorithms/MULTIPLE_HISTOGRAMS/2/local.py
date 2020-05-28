@@ -94,20 +94,14 @@ def run_local_step(args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWi
 
 
 def main(args):
-
-    # # Parse arguments
-    # parser = ArgumentParser()
-    # parser.add_argument('-prev_state_pkl', required=True, help='Path to the pickle file holding the previous state.')
-    # parser.add_argument('-global_step_db', required=True, help='Path to db holding global step results.')
-    # args, unknown = parser.parse_known_args()
-    # fname_prev_state = path.abspath(args.prev_state_pkl)
-    # global_db = path.abspath(args.global_step_db)
-
-    dictargs = {}
-    for i in range(0, len(args), 2): dictargs[args[i][1:]] = args[i + 1]
-
-    fname_prev_state = path.abspath(dictargs['prev_state_pkl'])
-    global_db = path.abspath(dictargs['global_step_db'])
+    # Parse arguments
+    sys.argv = args
+    parser = ArgumentParser()
+    parser.add_argument('-prev_state_pkl', required=True, help='Path to the pickle file holding the previous state.')
+    parser.add_argument('-global_step_db', required=True, help='Path to db holding global step results.')
+    args, unknown = parser.parse_known_args()
+    fname_prev_state = path.abspath(args.prev_state_pkl)
+    global_db = path.abspath(args.global_step_db)
 
     # Load local state
     local_state = StateData.load(fname_prev_state).get_data()
@@ -132,4 +126,4 @@ def main(args):
 
 
 if __name__ == '__main__':
-    main(sys.argv[1:])
+    main()

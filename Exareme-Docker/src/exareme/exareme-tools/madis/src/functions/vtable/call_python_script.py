@@ -78,7 +78,7 @@ class CallPythonScriptVT(vtbase.VT):
 
 
         yield [('data', 'text')]
-        if  ('LIST_DATASET' not in command) and ('LIST_VARIABLES' not in command) and ('HEALTH_CHECK' not in command):
+        if  1 == 1:
             get_import = re.sub('\.py$','',(re.sub('/+','.',re.search("mip-algorithms(?:/+)(.+)",command).groups()[0])))
             mpackage = re.search("(^[^.]*)(.+)",get_import).group(1)
             myimport = re.search("(^[^.]*)(.+)",get_import).group(2)
