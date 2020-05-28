@@ -634,7 +634,7 @@ public class Composer {
         for (Pair<String, String> csvDatabaseProperty : csvDatabaseProperties) {
             dflScript.append(String.format("'-%s' '%s' ", csvDatabaseProperty.getA(), csvDatabaseProperty.getB()));
         }
-        dflScript.append("'\n);\n");
+        dflScript.append("\n);\n");
 
         return dflScript.toString();
     }
@@ -676,7 +676,7 @@ public class Composer {
         for (Pair<String, String> csvDatabaseProperty : csvDatabaseProperties) {
             dflScript.append(String.format("'-%s' '%s' ", csvDatabaseProperty.getA(), csvDatabaseProperty.getB()));
         }
-        dflScript.append("'\n);\n");
+        dflScript.append("\n);\n");
 
         // Format global
         dflScript.append(String
@@ -767,7 +767,7 @@ public class Composer {
                 dflScript.append(String.format("select * from (output '%s' select * from %s)\n);\n",
                         localTransferDBFilePath, prevOutputGlobalTbl));
             } else
-                dflScript.append("'\n);\n");
+                dflScript.append("\n);\n");
 
             // Format global
             if (iteration != listFiles.length) {
@@ -836,7 +836,7 @@ public class Composer {
                 dflScript.append(String.format("'-%s' '%s' ", parameter.getName(), parameter.getValue().replace("\"", "\\\"")));
             }
             dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.prevStatePKLKey, prevGlobalStatePKLFile));
-            dflScript.append("'\n);\n");
+            dflScript.append("\n);\n");
 
             return dflScript.toString();
         }
@@ -924,9 +924,9 @@ public class Composer {
             } else if (!iterativeAlgorithmPhase.equals(init)) {
                 dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.prevStatePKLKey, prevLocalStatePKLFile));
                 dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.globalDBKey, phaseChangeTransferDBFilePath));
-                dflScript.append("'\n);\n");
+                dflScript.append("\n);\n");
             } else {
-                dflScript.append("'\n);\n");
+                dflScript.append("\n);\n");
             }
 
             // Format global
