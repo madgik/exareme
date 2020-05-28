@@ -627,7 +627,7 @@ public class Composer {
         dflScript.append("distributed create table " + outputGlobalTbl + " as direct \n");
         dflScript.append("select * from (\n  call_python_script '" + localPythonScriptPath + "' ");
         for (ParameterProperties parameter : algorithmParameters) {
-            dflScript.append(String.format("'-%s' '%s' ", parameter.getName(), parameter.getValue().replace("'", "\\'")));
+            dflScript.append(String.format("'-%s' '%s' ", parameter.getName(), parameter.getValue().replace("\\\"", "\"")));
         }
         dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.inputLocalDBKey, inputLocalDB));
         dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.dbQueryKey, dbQuery));
@@ -669,7 +669,7 @@ public class Composer {
         dflScript.append("distributed create temporary table input_global_tbl to 1 as virtual \n");
         dflScript.append("select * from (\n  call_python_script '" + localPythonScriptPath + "' ");
         for (ParameterProperties parameter : algorithmParameters) {
-            dflScript.append(String.format("'-%s' '%s' ", parameter.getName(), parameter.getValue().replace("\"", "\\\"")));
+            dflScript.append(String.format("'-%s' '%s' ", parameter.getName(), parameter.getValue().replace("\\\"", "\"")));
         }
         dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.inputLocalDBKey, inputLocalDB));
         dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.dbQueryKey, dbQuery));
@@ -684,7 +684,7 @@ public class Composer {
                         outputGlobalTbl));
         dflScript.append("select * from (\n  call_python_script '" + globalPythonScriptPath + "' ");
         for (ParameterProperties parameter : algorithmParameters) {
-            dflScript.append(String.format("'-%s' '%s' ", parameter.getName(), parameter.getValue().replace("\"", "\\\"")));
+            dflScript.append(String.format("'-%s' '%s' ", parameter.getName(), parameter.getValue().replace("\\\"", "\"")));
         }
         dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.localDBsKey, transferDBFilePath));
         dflScript.append(
@@ -753,7 +753,7 @@ public class Composer {
                     .format("distributed create temporary table %s to 1 as virtual \n", inputGlobalTbl));
             dflScript.append("select * from (\n  call_python_script '" + localScriptPath + "' ");
             for (ParameterProperties parameter : algorithmParameters) {
-                dflScript.append(String.format("'-%s' '%s' ", parameter.getName(), parameter.getValue().replace("\"", "\\\"")));
+                dflScript.append(String.format("'-%s' '%s' ", parameter.getName(), parameter.getValue().replace("\\\"", "\"")));
             }
             dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.inputLocalDBKey, inputLocalDB));
             dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.dbQueryKey, dbQuery));
@@ -782,7 +782,7 @@ public class Composer {
 
             dflScript.append("select * from (\n  call_python_script '" + globalScriptPath + "' ");
             for (ParameterProperties parameter : algorithmParameters) {
-                dflScript.append(String.format("'-%s' '%s' ", parameter.getName(), parameter.getValue().replace("\"", "\\\"")));
+                dflScript.append(String.format("'-%s' '%s' ", parameter.getName(), parameter.getValue().replace("\\\"", "\"")));
             }
             dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.localDBsKey, globalTransferDBFilePath));
             dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.curStatePKLKey, globalStatePKLFile));
@@ -833,7 +833,7 @@ public class Composer {
             dflScript.append("distributed create table " + outputGlobalTbl + " as direct \n");
             dflScript.append("select * from (\n  call_python_script '" + globalScriptPath + "' ");
             for (ParameterProperties parameter : algorithmParameters) {
-                dflScript.append(String.format("'-%s' '%s' ", parameter.getName(), parameter.getValue().replace("\"", "\\\"")));
+                dflScript.append(String.format("'-%s' '%s' ", parameter.getName(), parameter.getValue().replace("\\\"", "\"")));
             }
             dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.prevStatePKLKey, prevGlobalStatePKLFile));
             dflScript.append("\n);\n");
@@ -908,7 +908,7 @@ public class Composer {
                     .format("distributed create temporary table %s to 1 as virtual \n", inputGlobalTbl));
             dflScript.append("select * from (\n  call_python_script '" + localScriptPath + "' ");
             for (ParameterProperties parameter : algorithmParameters) {
-                dflScript.append(String.format("'-%s' '%s' ", parameter.getName(), parameter.getValue().replace("\"", "\\\"")));
+                dflScript.append(String.format("'-%s' '%s' ", parameter.getName(), parameter.getValue().replace("\\\"", "\"")));
             }
             dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.inputLocalDBKey, inputLocalDB));
             dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.dbQueryKey, dbQuery));
@@ -938,7 +938,7 @@ public class Composer {
 
                 dflScript.append("select * from (\n  call_python_script '" + globalScriptPath + "' ");
                 for (ParameterProperties parameter : algorithmParameters) {
-                    dflScript.append(String.format("'-%s' '%s' ", parameter.getName(), parameter.getValue().replace("\"", "\\\"")));
+                    dflScript.append(String.format("'-%s' '%s' ", parameter.getName(), parameter.getValue().replace("\\\"", "\"")));
                 }
                 dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.localDBsKey, globalTransferDBFilePath));
                 dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.curStatePKLKey, globalStatePKLFile));
@@ -954,7 +954,7 @@ public class Composer {
 
             dflScript.append("select * from (\n  call_python_script '" + globalScriptPath + "' ");
             for (ParameterProperties parameter : algorithmParameters) {
-                dflScript.append(String.format("'-%s' '%s' ", parameter.getName(), parameter.getValue().replace("\"", "\\\"")));
+                dflScript.append(String.format("'-%s' '%s' ", parameter.getName(), parameter.getValue().replace("\\\"", "\"")));
             }
             dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.localDBsKey, globalTransferDBFilePath));
             dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.curStatePKLKey, globalStatePKLFile));
