@@ -7,7 +7,7 @@ from collections import namedtuple
 import numpy as np
 import scipy.stats as st
 from scipy.special import expit, xlogy
-from mipframework import Algorithm, AlgorithmResult, UserError
+from mipframework import Algorithm, AlgorithmResult
 from mipframework import TabularDataResource
 from mipframework import create_runner
 from mipframework.highcharts import ConfusionMatrix, ROC
@@ -18,6 +18,7 @@ from mipframework.constants import (
     MAX_ITER,
     CONFIDENCE,
 )
+from utils.algorithm_utils import ExaremeError
 
 
 class LogisticRegression(Algorithm):
@@ -49,7 +50,7 @@ class LogisticRegression(Algorithm):
         x_names = self.fetch("x_names")
 
         if self.fetch("n_y_pos") < n_cols or self.fetch("n_y_neg") < n_cols:
-            raise UserError("There are not enough data to perform this experiment.")
+            raise ExaremeError("There are not enough data to perform this experiment.")
 
         coeff, iter_, ll = init_model(n_cols, n_obs)
 
