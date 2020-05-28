@@ -87,10 +87,10 @@ class CallPythonScriptVT(vtbase.VT):
             
             f = StringIO()
             with stdout_redirector(f):
-                print("lala")
-                algo.main(largs[1:])
+                algo.main(largs)
             yield [f.getvalue()]
         else:
+            command = "python " + re.sub("'","",' '.join(largs))
             child = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
             output, error = child.communicate()
