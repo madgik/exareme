@@ -58,9 +58,9 @@ public class ExecUtils {
 
     public static String runQueryOnTable(StringBuilder query, String madisMainDB, File directory,
                                          ProcessManager procManager) throws RemoteException {
-        return runQueryOnTable(query, madisMainDB, directory);
+        //return runQueryOnTable(query, madisMainDB, directory);
 
-        /*
+        
         log.debug("Process Directory: " + directory.getAbsolutePath());
         log.debug("(ExecUtils::runQueryOnTable) running on MTERM process. query="+query.toString());
         try {
@@ -92,7 +92,7 @@ public class ExecUtils {
         } catch (Exception e) {
             throw new ServerException("Cannot run query", e);
         }
-        */
+        
     }
 
     private static String runQueryOnTable(StringBuilder query, String madisMainDB, File directory){
