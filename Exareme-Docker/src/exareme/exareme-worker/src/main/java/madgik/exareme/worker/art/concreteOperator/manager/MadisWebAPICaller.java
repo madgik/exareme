@@ -55,8 +55,6 @@ public class MadisWebAPICaller {
                 }
                 throw new MadisServerException(errorMessage);
             }
-        } finally {
-            connection.disconnect();
         }
         return reply;
     }
