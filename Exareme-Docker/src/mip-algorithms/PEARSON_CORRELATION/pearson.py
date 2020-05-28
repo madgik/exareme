@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 import numpy as np
 import scipy.special as special
 import scipy.stats as st
+import warnings
 
 from mipframework import Algorithm, AlgorithmResult, TabularDataResource, UserError
 from mipframework.constants import P_VALUE_CUTOFF, P_VALUE_CUTOFF_STR, CONFIDENCE
@@ -13,6 +14,7 @@ from mipframework.highcharts import CorrelationHeatmap
 
 class Pearson(Algorithm):
     def __init__(self, cli_args):
+        warnings.filterwarnings("ignore")
         super(Pearson, self).__init__(__file__, cli_args, intercept=False)
 
     def local_(self):
