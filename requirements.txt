@@ -13,3 +13,5 @@ tqdm
 colour
 requests
 pytest
+pytest-xdist
+
