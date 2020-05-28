@@ -71,28 +71,24 @@ class CallPythonScriptVT(vtbase.VT):
 
         command = None
         if len(largs) > 0:
-            command = largs[-1]
-            command.replace("\\\"","\"")
+            command = largs[0]
+            args = largs[1:]
         if command is None:
             raise functions.OperatorError(__name__.rsplit('.')[-1], "No command argument found")
 
 
         yield [('data', 'text')]
         if  ('MULTIPLE_HISTOGRAMS' not in command) and ('LIST_DATASET' not in command) and ('LIST_VARIABLES' not in command) and ('HEALTH_CHECK' not in command):
-            command = re.sub('\s+', ' ', command)
-            arguments = command.split()
-            get_import = re.sub('\.py$','',(re.sub('/+','.',re.search("mip-algorithms(?:/+)(.+)",arguments[1]).groups()[0])))
+            get_import = re.sub('\.py$','',(re.sub('/+','.',re.search("mip-algorithms(?:/+)(.+)",command).groups()[0])))
             mpackage = re.search("(^[^.]*)(.+)",get_import).group(1)
-            #sys.path.append("/root/mip-algorithms/" + mpackage)
             myimport = re.search("(^[^.]*)(.+)",get_import).group(2)
             parentpackage = importlib.import_module(mpackage)
             algo = importlib.import_module(myimport,mpackage)
-            #sys.path.remove("/root/mip-algorithms/" + mpackage)
-            for i in xrange(len(arguments)):
-                arguments[i] = re.sub('\"','',arguments[i])
+            
             f = StringIO()
             with stdout_redirector(f):
-                algo.main(arguments)
+                print("lala")
+                algo.main(largs[1:])
             yield [f.getvalue()]
         else:
             child = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
