@@ -78,7 +78,7 @@ class CallPythonScriptVT(vtbase.VT):
 
 
         yield [('data', 'text')]
-        if  ('MULTIPLE_HISTOGRAMS' not in command) and ('LIST_DATASET' not in command) and ('LIST_VARIABLES' not in command) and ('HEALTH_CHECK' not in command):
+        if  ('LIST_DATASET' not in command) and ('LIST_VARIABLES' not in command) and ('HEALTH_CHECK' not in command):
             get_import = re.sub('\.py$','',(re.sub('/+','.',re.search("mip-algorithms(?:/+)(.+)",command).groups()[0])))
             mpackage = re.search("(^[^.]*)(.+)",get_import).group(1)
             myimport = re.search("(^[^.]*)(.+)",get_import).group(2)
@@ -90,7 +90,7 @@ class CallPythonScriptVT(vtbase.VT):
                 algo.main(largs)
             yield [f.getvalue()]
         else:
-            command = "python " + re.sub("'","",' '.join(largs))
+            command = "python " + ' '.join(largs)
             child = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
             output, error = child.communicate()
