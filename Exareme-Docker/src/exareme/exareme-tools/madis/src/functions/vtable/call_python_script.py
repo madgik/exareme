@@ -43,11 +43,6 @@ registered = True
 import re
 from cStringIO import StringIO
 
-def rchop(s, suffix):
-    if suffix and s.endswith(suffix):
-        return s[:-len(suffix)]
-    return s
-
 from contextlib import contextmanager
 
 @contextmanager
@@ -59,6 +54,10 @@ def stdout_redirector(stream):
     finally:
         sys.stdout = old_stdout
 
+def rchop(s, suffix):
+    if suffix and s.endswith(suffix):
+        return s[:-len(suffix)]
+    return s
 
 class CallPythonScriptVT(vtbase.VT):
     def VTiter(self, *parsedArgs, **envars):
@@ -71,17 +70,24 @@ class CallPythonScriptVT(vtbase.VT):
 
         command = None
         if len(largs) > 0:
-            command = largs[0]
-            args = largs[1:]
+            command = rchop(largs[0],'.py')
+            command = re.sub('/+','/',command)
         if command is None:
             raise functions.OperatorError(__name__.rsplit('.')[-1], "No command argument found")
 
+        for i in xrange(len(largs)):
+            largs[i] = largs[i].replace("\\\"","\"")
+
 
         yield [('data', 'text')]
+        command = command.split("/")
+        mpackage = ""
+        myimport = ""
+        for i,directory in enumerate(command):
+            if directory == "mip-algorithms":
+                mpackage = command[i+1]
+                myimport = '.'+'.'.join(command[i+2:])
 
-        get_import = re.sub('\.py$','',(re.sub('/+','.',re.search("mip-algorithms(?:/+)(.+)",command).groups()[0])))
-        mpackage = re.search("(^[^.]*)(.+)",get_import).group(1)
-        myimport = re.search("(^[^.]*)(.+)",get_import).group(2)
         parentpackage = importlib.import_module(mpackage)
         algo = importlib.import_module(myimport,mpackage)
 

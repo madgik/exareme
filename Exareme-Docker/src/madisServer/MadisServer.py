@@ -11,6 +11,9 @@ from MadisInstance import QueryExecutionException
 WEB_SERVER_PORT=8888
 define("port", default=WEB_SERVER_PORT, help="run on the given port", type=int)
 
+import MadisInstance
+from MadisInstance import QueryExecutionException
+
 class Application(tornado.web.Application):
     def __init__(self):
         handlers = [

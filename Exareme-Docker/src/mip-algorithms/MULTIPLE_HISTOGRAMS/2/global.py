@@ -59,9 +59,9 @@ def histogramToHighchart (Hist, args_X, args_Y):
 
     return json.dumps(myjsonresult)
 
-def main():
-    # Parse arguments
+def main(args):
     sys.argv = args
+    # Parse arguments
     parser = ArgumentParser()
     parser.add_argument('-local_step_dbs', required=True, help='Path to db holding local step results.')
     args, unknown = parser.parse_known_args()
