@@ -10,6 +10,9 @@ import logging
 WEB_SERVER_PORT=8888
 define("port", default=WEB_SERVER_PORT, help="run on the given port", type=int)
 
+import MadisInstance
+from MadisInstance import QueryExecutionException
+
 class Application(tornado.web.Application):
     def __init__(self):
         handlers = [
@@ -38,8 +41,6 @@ class MainHandler(BaseHandler):
   access_log.addHandler(hdlr)
   app_log.addHandler(hdlr)
   gen_log.addHandler(hdlr)  
-  import MadisInstance
-  from MadisInstance import QueryExecutionException
   madisInstance=MadisInstance.MadisInstance(logger)
   
   def execQuery(self,dbFilename,query):

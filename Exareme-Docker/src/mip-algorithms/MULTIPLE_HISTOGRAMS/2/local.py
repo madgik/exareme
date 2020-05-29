@@ -94,8 +94,8 @@ def run_local_step(args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWi
 
 
 def main(args):
-    # Parse arguments
     sys.argv = args
+    # Parse arguments
     parser = ArgumentParser()
     parser.add_argument('-prev_state_pkl', required=True, help='Path to the pickle file holding the previous state.')
     parser.add_argument('-global_step_db', required=True, help='Path to db holding global step results.')
