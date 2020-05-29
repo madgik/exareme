@@ -78,18 +78,20 @@ class CallPythonScriptVT(vtbase.VT):
 
 
         yield [('data', 'text')]
-        if  1 == 1:
-            get_import = re.sub('\.py$','',(re.sub('/+','.',re.search("mip-algorithms(?:/+)(.+)",command).groups()[0])))
-            mpackage = re.search("(^[^.]*)(.+)",get_import).group(1)
-            myimport = re.search("(^[^.]*)(.+)",get_import).group(2)
-            parentpackage = importlib.import_module(mpackage)
-            algo = importlib.import_module(myimport,mpackage)
-            
-            f = StringIO()
-            with stdout_redirector(f):
-                algo.main(largs)
-            yield [f.getvalue()]
-        else:
+
+        get_import = re.sub('\.py$','',(re.sub('/+','.',re.search("mip-algorithms(?:/+)(.+)",command).groups()[0])))
+        mpackage = re.search("(^[^.]*)(.+)",get_import).group(1)
+        myimport = re.search("(^[^.]*)(.+)",get_import).group(2)
+        parentpackage = importlib.import_module(mpackage)
+        algo = importlib.import_module(myimport,mpackage)
+
+        f = StringIO()
+        with stdout_redirector(f):
+            algo.main(largs)
+        yield [f.getvalue()]
+
+        """
+            // Old way, by opening subprocess
             command = "python " + ' '.join(largs)
             child = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
@@ -100,6 +102,7 @@ class CallPythonScriptVT(vtbase.VT):
             if child.returncode != 0:
                 raise functions.OperatorError(__name__.rsplit('.')[-1], "Command '%s' failed to execute because:\n%s" % (
                     command, error.rstrip('\n\t ')))
+        """
 
 def Source():
     return vtbase.VTGenerator(CallPythonScriptVT)

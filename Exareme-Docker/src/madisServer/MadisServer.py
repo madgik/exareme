@@ -9,9 +9,6 @@ import logging
 import MadisInstance
 from MadisInstance import QueryExecutionException
 
-MAX_WORKERS=1
-NUMBER_OF_MADIS_INSTANCES=1
-
 
 class MainHandler(tornado.web.RequestHandler):
   #logging stuff..
@@ -31,10 +28,6 @@ class MainHandler(tornado.web.RequestHandler):
   gen_log.addHandler(hdlr)  
   ###
 
-  executor=ThreadPoolExecutor(max_workers=MAX_WORKERS)
-
-  madisInstances=[MadisInstance.MadisInstance(logger) for i in range(NUMBER_OF_MADIS_INSTANCES)]
-  currentMadisInstanceIndex=0; 
   
   @run_on_executor
   def execQuery(self,dbFilename,query):
@@ -61,7 +54,7 @@ class MainHandler(tornado.web.RequestHandler):
     self.logger.debug("(MadisServer::post) dbfilename={}  query={}".format(dbFilename,query))
    
     try:
-      str_result=yield self.execQuery(dbFilename,query)
+      str_result=self.execQuery(dbFilename,query)
     except QueryExecutionException as e:
       #raise tornado.web.HTTPError(status_code=500,log_message="...the log message??")
       self.logger.debug("(MadisServer::post) QueryExecutionException: {}".format(str(e)))
