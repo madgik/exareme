@@ -152,7 +152,7 @@ public class Composer {
         String inputLocalDB = getDataPath(algorithmProperties);
         String dbQuery = createLocalTableQuery(algorithmProperties);
         // Escaping double quotes for python algorithms because they are needed elsewhere
-        String pythonDBQuery = dbQuery.replace("\"", "\\\"");
+        String pythonDBQuery = dbQuery.replace("\\\"", "\"");
         ArrayList<Pair<String, String>> csvDatabaseProperties = getCSVDatabaseProperties();
         String outputGlobalTbl = "output_" + algorithmKey;
 
