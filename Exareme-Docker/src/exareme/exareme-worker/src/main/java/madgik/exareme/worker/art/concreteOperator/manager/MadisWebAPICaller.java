@@ -13,8 +13,9 @@ import java.nio.charset.StandardCharsets;
 public class MadisWebAPICaller {
     private final static Logger log = Logger.getLogger(MadisWebAPICaller.class);
 
-    private static HttpURLConnection connection;
+
     public String postRequest(String dbFilename, String query) throws MadisServerException, IOException {
+        HttpURLConnection connection;
         String url_str = "http://localhost:8888";
         String parameters = "dbfilename="+dbFilename+"&"+"query="+query;
         log.debug("(MadisWebAPICaller::postRequest) parameters: ->\n\n"+parameters+"\n\n<-");
@@ -31,13 +32,12 @@ public class MadisWebAPICaller {
         connection.setRequestProperty("Content-Length", Integer.toString(postDataLength));
         connection.setUseCaches(false);
         connection.setRequestProperty("User-Agent", "Java client");
-        try (DataOutputStream wr = new DataOutputStream(connection.getOutputStream())) {
-            wr.write(postData);
-        } catch (Exception e) {
-            log.debug("(MadisWebAPICaller::postRequest::DataOutputStream) EXCEPTION:" + e);
-        }
-        StringBuilder content;
+        
+        DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
+        wr.write(postData);
+
         try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+            StringBuilder content;            
             String line;
             content = new StringBuilder();
             while ((line = br.readLine()) != null) {
