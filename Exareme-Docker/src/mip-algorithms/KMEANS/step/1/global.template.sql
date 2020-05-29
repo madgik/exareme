@@ -4,6 +4,8 @@ attach database '%{defaultDB}' as defaultDB;
 var 'x' '%{y}';
 --var 'input_global_tbl' 'defaultDB.partialclustercenters'; --DELETE
 
+insert into defaultDB.iterations select 1;
+
 drop table if exists defaultDB.clustercenters_global;
 create table defaultDB.clustercenters_global as select * from defaultDB.clustercentersnew_global;
 
