@@ -12,7 +12,7 @@ from mipframework.constants import PRIVACY_THRESHOLD
 class DescriptiveStats(Algorithm):
     def __init__(self, cli_args):
         super(DescriptiveStats, self).__init__(
-            __file__, cli_args, intercept=False, privacy=False
+            __file__, cli_args, intercept=False, privacy=False, dropna=False
         )
 
     def local_(self):
@@ -28,47 +28,52 @@ class DescriptiveStats(Algorithm):
         self.push_and_agree(categoricals=categoricals)
         self.push_and_agree(labels=self.metadata.label)
         # Single variables
+        df = self.data.full
         var_names = self.parameters.var_names
         datasets = self.parameters.dataset
-        filter_ = self.parameters.filter
-        single_vars = {
-            vname: self.data.db.select_vars_from_data(
-                [vname, "dataset"], datasets, filter_
-            )
-            for vname in var_names
-        }
-        for vname, var in single_vars.items():
+
+        for var_name in var_names:
             for dataset in datasets:
-                var_subgroup = var[var.dataset == dataset]
-                n_obs = len(var_subgroup)
-                self.push_and_add(
-                    **{"single__" + "n_obs_" + vname + "_" + dataset: n_obs}
-                )
-                if vname in numericals:
-                    numvar = var_subgroup[vname]
-                    sx = numvar.sum()
-                    self.push_and_add(
-                        **{"single__" + "sx_" + vname + "_" + dataset: sx}
-                    )
-                    sxx = (numvar * numvar).sum()
-                    self.push_and_add(
-                        **{"single__" + "sxx_" + vname + "_" + dataset: sxx}
-                    )
-                    min_ = numvar.min()
-                    self.push_and_min(
-                        **{"single__" + "min_" + vname + "_" + dataset: min_}
-                    )
-                    max_ = numvar.max()
-                    self.push_and_max(
-                        **{"single__" + "max_" + vname + "_" + dataset: max_}
-                    )
-                elif vname in categoricals:
-                    counter = Counter(var_subgroup[vname])
-                    self.push_and_add(
-                        **{"single__" + "counter_" + vname + "_" + dataset: counter}
-                    )
+                if var_name != "dataset":
+                    varlst = [var_name, "dataset"]
+                else:
+                    varlst = [var_name]
+                single_df = df[varlst]
+                single_df = single_df.dropna()
+                single_df = single_df[single_df.dataset == dataset]
+                single_df = single_df[var_name]
+                n_obs = len(single_df)
+                kwarg = {"single__" + "n_obs_" + var_name + "_" + dataset: n_obs}
+                self.push_and_add(**kwarg)
+                if var_name in numericals:
+                    X = single_df
+                    if n_obs <= PRIVACY_THRESHOLD:
+                        sx, sxx, min_, max_ = 0, 0, int(1e9), -int(1e9)
+                    else:
+                        sx = X.sum()
+                        sxx = (X * X).sum()
+                        min_ = X.min()
+                        max_ = X.max()
+                    kwarg = {"single__" + "sx_" + var_name + "_" + dataset: sx}
+                    self.push_and_add(**kwarg)
+                    kwarg = {"single__" + "sxx_" + var_name + "_" + dataset: sxx}
+                    self.push_and_add(**kwarg)
+                    kwarg = {"single__" + "min_" + var_name + "_" + dataset: min_}
+                    self.push_and_min(**kwarg)
+                    kwarg = {"single__" + "max_" + var_name + "_" + dataset: max_}
+                    self.push_and_max(**kwarg)
+                elif var_name in categoricals:
+                    if n_obs <= PRIVACY_THRESHOLD:
+                        counter = Counter()
+                    else:
+                        counter = Counter(single_df)
+                    kwarg = {
+                        "single__" + "counter_" + var_name + "_" + dataset: counter
+                    }
+                    self.push_and_add(**kwarg)
+
         # Set of variables
-        data = self.data.full
+        data = self.data.full.dropna()
         for dataset in datasets:
             data_group = data[data.dataset == dataset]
             n_obs = len(data_group)
@@ -78,39 +83,30 @@ class DescriptiveStats(Algorithm):
                     numerical = var
                     numvar = data_group[numerical]
                     if n_obs <= PRIVACY_THRESHOLD:
-                        sx, sxx, min_, max_ = 0, 0, 0, 0
+                        sx, sxx, min_, max_ = 0, 0, int(1e9), -int(1e9)
                     else:
                         sx = numvar.sum()
                         sxx = (numvar * numvar).sum()
                         min_ = numvar.min()
                         max_ = numvar.max()
-                    self.push_and_add(
-                        **{"model__" + "sx_" + numerical + "_" + dataset: sx}
-                    )
-                    self.push_and_add(
-                        **{"model__" + "sxx_" + numerical + "_" + dataset: sxx}
-                    )
-                    self.push_and_min(
-                        **{"model__" + "min_" + numerical + "_" + dataset: min_}
-                    )
-                    self.push_and_max(
-                        **{"model__" + "max_" + numerical + "_" + dataset: max_}
-                    )
+                    kwarg = {"model__" + "sx_" + numerical + "_" + dataset: sx}
+                    self.push_and_add(**kwarg)
+                    kwarg = {"model__" + "sxx_" + numerical + "_" + dataset: sxx}
+                    self.push_and_add(**kwarg)
+                    kwarg = {"model__" + "min_" + numerical + "_" + dataset: min_}
+                    self.push_and_min(**kwarg)
+                    kwarg = {"model__" + "max_" + numerical + "_" + dataset: max_}
+                    self.push_and_max(**kwarg)
                 elif var in categoricals:
                     categorical = var
                     if n_obs <= PRIVACY_THRESHOLD:
                         counter = Counter()
                     else:
                         counter = Counter(data_group[categorical])
-                    self.push_and_add(
-                        **{
-                            "model__"
-                            + "counter_"
-                            + categorical
-                            + "_"
-                            + dataset: counter
-                        }
-                    )
+                    kwarg = {
+                        "model__" + "counter_" + categorical + "_" + dataset: counter
+                    }
+                    self.push_and_add(**kwarg)
 
     def global_(self):
         numericals = self.fetch("numericals")
@@ -172,7 +168,7 @@ class DescriptiveStats(Algorithm):
             raw_out["model"][dataset]["num_datapoints"] = n_obs
             for numerical in numericals:
                 if n_obs <= PRIVACY_THRESHOLD:
-                    raw_out["model"][dataset]["data"] = "NOT ENOUGH DATA"
+                    raw_out["model"][dataset]["data"][numerical] = "NOT ENOUGH DATA"
                     continue
                 sx = self.fetch("model__" + "sx_" + numerical + "_" + dataset)
                 sxx = self.fetch("model__" + "sxx_" + numerical + "_" + dataset)
@@ -192,7 +188,7 @@ class DescriptiveStats(Algorithm):
                 }
             for categorical in categoricals:
                 if n_obs <= PRIVACY_THRESHOLD:
-                    raw_out["model"][dataset]["data"] = "NOT ENOUGH DATA"
+                    raw_out["model"][dataset]["data"][categorical] = "NOT ENOUGH DATA"
                     continue
                 counter = self.fetch(
                     "model__" + "counter_" + categorical + "_" + dataset
@@ -201,35 +197,22 @@ class DescriptiveStats(Algorithm):
         self.result = AlgorithmResult(raw_data=raw_out)
 
 
-fields = [
-    "Label",
-    "Count",
-    "Min",
-    "Max",
-    "Mean",
-    "Std.Err.",
-    "Mean + Std.Err",
-    "Mean - Std.Err",
-    "Frequencies",
-]
-
-
 if __name__ == "__main__":
     import time
     from mipframework import create_runner
 
     algorithm_args = [
         "-y",
-        "ppmicategory",
+        "rightphgparahippocampalgyrus, gender, alzheimerbroadcategory, rs10498633_t",
         "-pathology",
         "dementia",
         "-dataset",
-        "ppmi",
+        "lille_simulation, lille_simulation1",
         "-filter",
         "",
     ]
     runner = create_runner(
-        DescriptiveStats, algorithm_args=algorithm_args, num_workers=1,
+        DescriptiveStats, algorithm_args=algorithm_args, num_workers=2,
     )
     start = time.time()
     runner.run()

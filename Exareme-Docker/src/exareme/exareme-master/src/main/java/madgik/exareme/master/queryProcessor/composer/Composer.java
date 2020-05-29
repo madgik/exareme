@@ -326,20 +326,14 @@ public class Composer {
         StringBuilder dflScript = new StringBuilder();
 
         String algorithmFolderPath = ComposerConstants.getAlgorithmFolderPath(algorithmName);
-        File[] listFiles = new File(algorithmFolderPath).listFiles(new FileFilter() {
-            @Override
-            public boolean accept(File pathname) {
-                return pathname.isDirectory();
-            }
-        });
-        Arrays.sort(listFiles);
+        File[] localGlobalFolders = getLocalGlobalFolders(algorithmFolderPath);
 
         // Iterating through all the local_global folders of the algorithm
-        for (int iteration = 1; iteration <= listFiles.length; iteration++) {
+        for (int iteration = 1; iteration <= localGlobalFolders.length; iteration++) {
             String inputGlobalTbl = "input_global_tbl_" + iteration;
             String tempOutputGlobalTbl = "output_global_tbl_" + iteration;
             String prevOutputGlobalTbl = "output_global_tbl_" + (iteration - 1);
-            String currentIterationAlgorithmFolderPath = algorithmFolderPath + "/" + listFiles[iteration - 1].getName();
+            String currentIterationAlgorithmFolderPath = algorithmFolderPath + "/" + localGlobalFolders[iteration - 1].getName();
             String localScriptPath = currentIterationAlgorithmFolderPath + "/local.template.sql";
             String globalScriptPath = currentIterationAlgorithmFolderPath + "/global.template.sql";
 
@@ -365,7 +359,7 @@ public class Composer {
             dflScript.append(");\n");
 
             // Format global
-            if (iteration != listFiles.length) {
+            if (iteration != localGlobalFolders.length) {
                 dflScript.append(String.format(
                         "\nusing %s \ndistributed create temporary table %s as direct \n",
                         inputGlobalTbl, tempOutputGlobalTbl));
@@ -535,15 +529,9 @@ public class Composer {
         }
 
         // The iteration works like multiple_local_global in the init,step,finalize steps
-        File[] listFiles = new File(algorithmFolderPath).listFiles(new FileFilter() {
-            @Override
-            public boolean accept(File pathname) {
-                return pathname.isDirectory();
-            }
-        });
-        Arrays.sort(listFiles);
+        File[] localGlobalFolders = getLocalGlobalFolders(algorithmFolderPath);
 
-        for (int iteration = 1; iteration <= listFiles.length; iteration++) {
+        for (int iteration = 1; iteration <= localGlobalFolders.length; iteration++) {
             String inputGlobalTbl = "input_global_tbl_" + iteration;
             String tempOutputGlobalTbl = "output_global_tbl_" + iteration;
             String prevOutputGlobalTbl = "output_global_tbl_" + (iteration - 1);
@@ -575,7 +563,7 @@ public class Composer {
             dflScript.append(");\n");
 
             // format global
-            if (iteration != listFiles.length) {
+            if (iteration != localGlobalFolders.length) {
                 dflScript.append(String.format(
                         "\nusing %s \ndistributed create temporary table %s as direct \n",
                         inputGlobalTbl, tempOutputGlobalTbl));
@@ -717,20 +705,14 @@ public class Composer {
         StringBuilder dflScript = new StringBuilder();
 
         String algorithmFolderPath = ComposerConstants.getAlgorithmFolderPath(algorithmName);
-        File[] listFiles = new File(algorithmFolderPath).listFiles(new FileFilter() {
-            @Override
-            public boolean accept(File pathname) {
-                return pathname.isDirectory();
-            }
-        });
-        Arrays.sort(listFiles);
+        File[] localGlobalFolders = getLocalGlobalFolders(algorithmFolderPath);
 
         // Iterating through all the local_global folders of the algorithm
-        for (int iteration = 1; iteration <= listFiles.length; iteration++) {
+        for (int iteration = 1; iteration <= localGlobalFolders.length; iteration++) {
             String inputGlobalTbl = "input_global_tbl_" + iteration;
             String prevOutputGlobalTbl = "output_global_tbl_" + (iteration - 1);
             String tempOutputGlobalTbl = "output_global_tbl_" + iteration;
-            String currentIterationAlgorithmFolderPath = algorithmFolderPath + "/" + listFiles[iteration - 1].getName();
+            String currentIterationAlgorithmFolderPath = algorithmFolderPath + "/" + localGlobalFolders[iteration - 1].getName();
             String localScriptPath = currentIterationAlgorithmFolderPath + "/local.py";
             String globalScriptPath = currentIterationAlgorithmFolderPath + "/global.py";
             String localTransferDBFilePath = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey
@@ -770,7 +752,7 @@ public class Composer {
                 dflScript.append("\n);\n");
 
             // Format global
-            if (iteration != listFiles.length) {
+            if (iteration != localGlobalFolders.length) {
                 dflScript.append(String.format(
                         "\nusing %s \ndistributed create temporary table %s as direct \n",
                         inputGlobalTbl, tempOutputGlobalTbl));
@@ -842,16 +824,10 @@ public class Composer {
         }
 
         // The iteration works like multiple_local_global in the init,step,finalize steps
-        File[] listFiles = new File(algorithmFolderPath).listFiles(new FileFilter() {
-            @Override
-            public boolean accept(File pathname) {
-                return pathname.isDirectory();
-            }
-        });
-        Arrays.sort(listFiles);
+        File[] localGlobalFolders = getLocalGlobalFolders(algorithmFolderPath);
 
         // Iterating through all the local_global folders of the algorithm
-        for (int iteration = 1; iteration <= listFiles.length; iteration++) {
+        for (int iteration = 1; iteration <= localGlobalFolders.length; iteration++) {
             String inputGlobalTbl = "input_global_tbl_" + iteration;
             String tempOutputGlobalTbl = "output_global_tbl_" + iteration;
             String prevOutputGlobalTbl = "output_global_tbl_" + (iteration - 1);
@@ -865,7 +841,7 @@ public class Composer {
             String prevGlobalStatePKLFile;
             String localStatePKLFile;
             String globalStatePKLFile;
-            if (iteration == 1 && iteration == listFiles.length) {
+            if (iteration == 1 && iteration == localGlobalFolders.length) {
                 prevLocalStatePKLFile = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey + "/phase_local_state.pkl";
                 prevGlobalStatePKLFile = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey + "/phase_global_state.pkl";
                 localStatePKLFile = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey + "/phase_local_state.pkl";
@@ -877,7 +853,7 @@ public class Composer {
                         + "/" + iterativeAlgorithmPhase.name() + "/" + iteration + "/local_state.pkl";
                 globalStatePKLFile = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey
                         + "/" + iterativeAlgorithmPhase.name() + "/" + iteration + "/global_state.pkl";
-            } else if (iteration == listFiles.length) {
+            } else if (iteration == localGlobalFolders.length) {
                 prevLocalStatePKLFile = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey
                         + "/" + iterativeAlgorithmPhase.name() + "/" + (iteration - 1) + "/local_state.pkl";
                 prevGlobalStatePKLFile = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey
@@ -932,7 +908,7 @@ public class Composer {
             // Format global
             // If this is the last iteration of finalize, print the result from global.py
             // and don't create virtual last table with phase
-            if ((iteration == listFiles.length) && iterativeAlgorithmPhase.equals(finalize)) {
+            if ((iteration == localGlobalFolders.length) && iterativeAlgorithmPhase.equals(finalize)) {
                 dflScript.append(String.format("\nusing %s \ndistributed create table %s as direct \n",
                         inputGlobalTbl, outputGlobalTbl));
 
@@ -964,7 +940,7 @@ public class Composer {
             dflScript.append(
                     String.format("select * from (output '%s' select * from %s)\n);\n", globalTransferDBFilePath, inputGlobalTbl));
 
-            if (iteration == listFiles.length) {
+            if (iteration == localGlobalFolders.length) {
                 dflScript.append(String
                         .format("\nusing %s \ndistributed create table %s as virtual \n",
                                 tempOutputGlobalTbl, outputGlobalTbl));
@@ -1064,6 +1040,18 @@ public class Composer {
             IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase,
             int iteration) {
         return ComposerConstants.getAlgorithmFolderPath(algorithmName) + "/" + iterativeAlgorithmPhase.name() + "/" + iteration;
+    }
+
+    private static File[] getLocalGlobalFolders(String algorithmFolderPath){
+        File[] localGlobalFolders = new File(algorithmFolderPath).listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File pathname) {
+                // Return if it is a directory and ends with a number
+                return pathname.isDirectory() && pathname.toString().matches(".*\\d$");
+            }
+        });
+        Arrays.sort(localGlobalFolders);
+        return localGlobalFolders;
     }
 
     /**

@@ -32,6 +32,7 @@ class AlgorithmData(object):
             data_table_name=args.data_table,
             metadata_table_name=args.metadata_table,
             privacy=args.privacy,
+            dropna=args.dropna,
         )
         self.db = db
         self.full = db.read_data_from_db(args)
@@ -56,15 +57,16 @@ class AlgorithmData(object):
         formula = get_formula(args, is_categorical)
         # Create variables (and possibly covariables)
         if args.formula_is_equation:
-            if len(self.full) == 0:
+            if self.full.dropna().shape[0] == 0:
                 return pd.DataFrame(), pd.DataFrame()
             variables, covariables = dmatrices(
                 formula, self.full, return_type="dataframe"
             )
             return variables, covariables
         else:
-            if len(self.full) == 0:
+            if self.full.dropna().shape[0] == 0:
                 return pd.DataFrame(), None
+            #           import sys; sys.stdout = sys.__stdout__; import pdb; pdb.set_trace()
             variables = dmatrix(formula, self.full, return_type="dataframe")
             return variables, None
 
@@ -111,13 +113,16 @@ class AlgorithmMetadata(object):
 
 
 class DataBase(object):
-    def __init__(self, db_path, data_table_name, metadata_table_name, privacy=True):
+    def __init__(
+        self, db_path, data_table_name, metadata_table_name, privacy=True, dropna=True
+    ):
         self.db_path = db_path
         self.engine = create_engine("sqlite:///{}".format(self.db_path), echo=False)
         self.sqla_md = MetaData(self.engine)
         self.data_table = self.create_table(data_table_name)
         self.metadata_table = self.create_table(metadata_table_name)
         self.privacy = privacy
+        self.dropna = dropna
 
     def __repr__(self):
         name = type(self).__name__
@@ -172,7 +177,8 @@ class DataBase(object):
             sel_stmt = sel_stmt.where(filter_clause)
         data = pd.read_sql(sel_stmt, self.engine)
         data.replace("", np.nan, inplace=True)  # fixme remove
-        data = data.dropna()
+        if self.dropna:
+            data = data.dropna()
         # Privacy check
         if self.privacy and len(data) < PRIVACY_THRESHOLD:
             raise PrivacyError
