@@ -5,7 +5,8 @@ from tornado import gen
 from tornado.log import enable_pretty_logging
 from tornado.options import define, options
 import logging
-
+import MadisInstance
+from MadisInstance import QueryExecutionException
 
 WEB_SERVER_PORT=8888
 define("port", default=WEB_SERVER_PORT, help="run on the given port", type=int)
@@ -37,9 +38,7 @@ class MainHandler(BaseHandler):
   gen_log = logging.getLogger("tornado.general")
   access_log.addHandler(hdlr)
   app_log.addHandler(hdlr)
-  gen_log.addHandler(hdlr)  
-  import MadisInstance
-  from MadisInstance import QueryExecutionException
+  gen_log.addHandler(hdlr)
   madisInstance=MadisInstance.MadisInstance(logger)
   
   def execQuery(self,dbFilename,query):
