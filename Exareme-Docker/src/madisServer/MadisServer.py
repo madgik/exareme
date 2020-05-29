@@ -1,16 +1,28 @@
 import tornado.web
 from tornado import gen 
-from concurrent.futures import ThreadPoolExecutor
-from tornado.concurrent import run_on_executor
+#from concurrent.futures import ThreadPoolExecutor
+#from tornado.concurrent import run_on_executor
 from tornado.log import enable_pretty_logging
-
+from tornado.options import define, options
 import logging
 
-import MadisInstance
-from MadisInstance import QueryExecutionException
+
+WEB_SERVER_PORT=8888
+define("port", default=WEB_SERVER_PORT, help="run on the given port", type=int)
+
+class Application(tornado.web.Application):
+    def __init__(self):
+        handlers = [
+            (r"/", MainHandler)
+        ]
+        tornado.web.Application.__init__(self, handlers)
+
+class BaseHandler(tornado.web.RequestHandler):
+    def __init__(self, *args):
+        tornado.web.RequestHandler.__init__(self, *args)
 
 
-class MainHandler(tornado.web.RequestHandler):
+class MainHandler(BaseHandler):
   #logging stuff..
   enable_pretty_logging()
   logger = logging.getLogger('MainHandler')
@@ -26,22 +38,20 @@ class MainHandler(tornado.web.RequestHandler):
   access_log.addHandler(hdlr)
   app_log.addHandler(hdlr)
   gen_log.addHandler(hdlr)  
-  ###
-
+  import MadisInstance
+  from MadisInstance import QueryExecutionException
+  madisInstance=MadisInstance.MadisInstance(logger)
   
-  @run_on_executor
   def execQuery(self,dbFilename,query):
-    madisInstance=self.madisInstances[self.currentMadisInstanceIndex]
-    #self.currentMadisInstanceIndex+=1
 
     self.logger.debug("(MadisServer::execQuery) will call madisInstance.connectToDb({})".format(dbFilename))
-    madisInstance.connectToDb(dbFilename)
+    self.madisInstance.connectToDb(dbFilename)
 
     try:
       self.logger.debug("(MadisServer::execQuery) will call madisInstance.execute({})".format(query))
-      result= madisInstance.execute(query)
+      result= self.madisInstance.execute(query)
     finally:
-      madisInstance.closeConnectionToDb()
+      self.madisInstance.closeConnectionToDb()
 
     return result
 
@@ -69,6 +79,14 @@ class MainHandler(tornado.web.RequestHandler):
     
     self.finish()
 
-application=tornado.web.Application([(r"/", MainHandler),])
-application.listen(8888)
-tornado.ioloop.IOLoop.instance().start()
+def main():
+    sockets = tornado.netutil.bind_sockets(options.port)
+    tornado.process.fork_processes(0)
+    server = tornado.httpserver.HTTPServer(Application())
+    server.add_sockets(sockets)
+    tornado.ioloop.IOLoop.instance().start()
+
+
+if __name__ == "__main__":
+    main()
+
