@@ -5,7 +5,6 @@ package madgik.exareme.master.engine.executor;
 
 import com.google.gson.JsonObject;
 import madgik.exareme.utils.association.Pair;
-import madgik.exareme.utils.file.InputStreamConsumerThread;
 import madgik.exareme.utils.properties.AdpProperties;
 import madgik.exareme.worker.art.concreteOperator.manager.MadisWebAPICaller;
 import madgik.exareme.worker.art.concreteOperator.manager.ProcessManager;
@@ -95,36 +94,34 @@ public class ExecUtils {
             throw new ServerException("Cannot run query", e);
         }
         */
+
     }
 
-    private static String runQueryOnTable(StringBuilder query, String madisMainDB, File directory) throws RemoteException{
+    private static String runQueryOnTable(StringBuilder query, String madisMainDB, File directory) throws RemoteException {
 
-        String theLog="";
+        String theLog = "";
 
-        theLog+="(ExecuteUtils::runQueryOnTable) directory=" + directory.getAbsolutePath();
-        theLog+="\n(ExecuteUtils::runQueryOnTable) madisMainDB=" + madisMainDB;
+        theLog += "(ExecuteUtils::runQueryOnTable) directory=" + directory.getAbsolutePath();
+        theLog += "\n(ExecuteUtils::runQueryOnTable) madisMainDB=" + madisMainDB;
 
-        String databaseFullPath= Paths.get(directory.getAbsolutePath(),madisMainDB).toString();
-        String queryString=processQueryString(query.toString());
+        String databaseFullPath = Paths.get(directory.getAbsolutePath(), madisMainDB).toString();
+        String queryString = processQueryString(query.toString());
 
-        MadisWebAPICaller madisWebAPICaller=new MadisWebAPICaller();
-        String reply="";
+        MadisWebAPICaller madisWebAPICaller = new MadisWebAPICaller();
+        String reply = "";
         try {
-            reply=madisWebAPICaller.postRequest(databaseFullPath, queryString);
-            theLog+="\n(ExecuteUtils::runQueryOnTable) just after post request. reply: ->\n\n"+reply+"\n\n<-";
-        }
-
-        catch (MadisWebAPICaller.MadisServerException |IOException e){
-            if(e instanceof MadisWebAPICaller.MadisServerException)
-                theLog+="\n(ExecuteUtils::runQueryOnTable) MadisServerException: "+e.getMessage();
-            else if(e instanceof IOException)
-                theLog+="\n(ExecuteUtils::runQueryOnTable) IOException: "+e.getMessage();
+            reply = madisWebAPICaller.postRequest(databaseFullPath, queryString);
+            theLog += "\n(ExecuteUtils::runQueryOnTable) just after post request. reply: ->\n\n" + reply + "\n\n<-";
+        } catch (MadisWebAPICaller.MadisServerException | IOException e) {
+            if (e instanceof MadisWebAPICaller.MadisServerException)
+                theLog += "\n(ExecuteUtils::runQueryOnTable) MadisServerException: " + e.getMessage();
+            else if (e instanceof IOException)
+                theLog += "\n(ExecuteUtils::runQueryOnTable) IOException: " + e.getMessage();
 
             //this abomination of a line is here to replicate the pipeline of error handling that the previous solution
             //with the mterm process was using
             throw new ServerException("Cannot run query", new ServerException("Cannot execute db (code: " + 1 + "): " + e.getMessage()));
-        }
-        finally {
+        } finally {
             log.debug(theLog);
         }
 
@@ -143,29 +140,29 @@ public class ExecUtils {
         */
     }
 
-    private static String processQueryString(String query){
+    private static String processQueryString(String query) {
 
-        String theLog="(ExecuteUtils::processQueryString) UNPROCESSED query: " +query;
+        String theLog = "(ExecuteUtils::processQueryString) UNPROCESSED query: " + query;
 
-        query=query.replaceAll("-- Script BEGIN ","");
-        query=query.replaceAll("-- Optimization Pragmas","");
-        query=query.replaceAll("-- Additional Commands","");
-        query=query.replaceAll("-- Run Query","");
-        query=query.replaceAll("-- Mappings ","");
-        query=query.replaceAll("-- Attach databases","");
-        query=query.replaceAll("-- Create tables","");
-        query=query.replaceAll("-- Cleanup","");
-        query=query.replaceAll("-- Script END","");
+        query = query.replaceAll("-- Script BEGIN ", "");
+        query = query.replaceAll("-- Optimization Pragmas", "");
+        query = query.replaceAll("-- Additional Commands", "");
+        query = query.replaceAll("-- Run Query", "");
+        query = query.replaceAll("-- Mappings ", "");
+        query = query.replaceAll("-- Attach databases", "");
+        query = query.replaceAll("-- Create tables", "");
+        query = query.replaceAll("-- Cleanup", "");
+        query = query.replaceAll("-- Script END", "");
 
-        query= query.replaceAll("  ", " ");
-        query= query.replaceAll("(?m)^[ \t]*\r?\n", "");
+        query = query.replaceAll("  ", " ");
+        query = query.replaceAll("(?m)^[ \t]*\r?\n", "");
 
-        try{
-            query=URLEncoder.encode(query, StandardCharsets.UTF_8.toString());
+        try {
+            query = URLEncoder.encode(query, StandardCharsets.UTF_8.toString());
         } catch (UnsupportedEncodingException ex) {
-            theLog+="(ExecuteUtils::processQueryString) UnsupportedEncodingException: "+ex;
+            theLog += "(ExecuteUtils::processQueryString) UnsupportedEncodingException: " + ex;
             throw new RuntimeException(ex.getCause());
-        }finally {
+        } finally {
             theLog += "(ExecuteUtils::processQueryString) PROCESSED query: " + query;
             log.debug(theLog);
         }

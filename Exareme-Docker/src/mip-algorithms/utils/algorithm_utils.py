@@ -11,6 +11,7 @@ import pickle
 import sqlite3
 from argparse import ArgumentParser
 from collections import OrderedDict
+import warnings
 
 import numpy as np
 import pandas as pd
@@ -24,6 +25,8 @@ elif env_type == "TEST":
 
 P_VALUE_CUTOFF = 0.001
 P_VALUE_CUTOFF_STR = "< " + str(P_VALUE_CUTOFF)
+
+warnings.filterwarnings("ignore")
 
 
 class TransferAndAggregateData(object):

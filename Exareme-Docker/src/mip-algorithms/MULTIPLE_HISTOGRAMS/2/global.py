@@ -61,6 +61,7 @@ def histogramToHighchart (Hist, args_X, args_Y):
 
 def main():
     # Parse arguments
+    sys.argv = args
     parser = ArgumentParser()
     parser.add_argument('-local_step_dbs', required=True, help='Path to db holding local step results.')
     args, unknown = parser.parse_known_args()

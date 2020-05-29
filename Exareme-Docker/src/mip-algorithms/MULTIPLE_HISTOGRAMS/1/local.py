@@ -56,8 +56,8 @@ def run_local_step(args_X, args_Y, args_bins, dataSchema, CategoricalVariablesWi
 
     return localstatistics
 
-def main():
-
+def main(args):
+    sys.argv = args
     # Parse arguments
     parser = ArgumentParser()
     parser.add_argument('-x', required=True, help='Variable names, comma seperated ')
