@@ -1,13 +1,10 @@
 import tornado.web
 from tornado import gen 
-#from concurrent.futures import ThreadPoolExecutor
-#from tornado.concurrent import run_on_executor
 from tornado.log import enable_pretty_logging
 from tornado.options import define, options
 import logging
-import MadisInstance
-from MadisInstance import QueryExecutionException
 
+PROCESSES_PER_CPU = 3
 WEB_SERVER_PORT=8888
 define("port", default=WEB_SERVER_PORT, help="run on the given port", type=int)
 
@@ -41,7 +38,7 @@ class MainHandler(BaseHandler):
   gen_log = logging.getLogger("tornado.general")
   access_log.addHandler(hdlr)
   app_log.addHandler(hdlr)
-  gen_log.addHandler(hdlr)
+  gen_log.addHandler(hdlr)  
   madisInstance=MadisInstance.MadisInstance(logger)
   
   def execQuery(self,dbFilename,query):
@@ -83,7 +80,7 @@ class MainHandler(BaseHandler):
 
 def main():
     sockets = tornado.netutil.bind_sockets(options.port)
-    tornado.process.fork_processes(0)
+    tornado.process.fork_processes(tornado.process.cpu_count() * PROCESSES_PER_CPU)
     server = tornado.httpserver.HTTPServer(Application())
     server.add_sockets(sockets)
     tornado.ioloop.IOLoop.instance().start()
