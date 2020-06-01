@@ -4,7 +4,7 @@ from tornado.log import enable_pretty_logging
 from tornado.options import define, options
 import logging
 
-PROCESSES_PER_CPU = 3
+PROCESSES_PER_CPU = 2
 WEB_SERVER_PORT=8888
 define("port", default=WEB_SERVER_PORT, help="run on the given port", type=int)
 
