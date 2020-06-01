@@ -75,10 +75,6 @@ class CallPythonScriptVT(vtbase.VT):
         if command is None:
             raise functions.OperatorError(__name__.rsplit('.')[-1], "No command argument found")
 
-        for i in xrange(len(largs)):
-            largs[i] = largs[i].replace("\\\"","\"")
-
-
         yield [('data', 'text')]
         command = command.split("/")
         mpackage = ""
