@@ -59,7 +59,9 @@ insert into defaultDB.partialclustercenters
 select  %{partialSums}
 from (   select rid, clid, %{x}
          from defaultDB.localinputtbl,
-              (select rid as rid1,idofset as clid from (sklearnkfold splits:%{k} select distinct rid from defaultDB.localinputtbl))
+         (select rid1, clid from ( select rid as rid1, idofset as clid from (sklearnkfold splits:%{k} select distinct rid from defaultDB.localinputtbl) where %{k}>1
+                                  union
+                                  select rid as rid1, 0 as clid from defaultDB.localinputtbl where %{k}=1))
          where rid1 =rid)
 where %{centersisempty} = 1
 group by clid;
