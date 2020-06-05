@@ -31,6 +31,7 @@ def main(args):
     query = args.db_query
     fname_cur_state = path.abspath(args.cur_state_pkl)
     fname_loc_db = path.abspath(args.input_local_DB)
+    query = query.replace("\\\"","\"")
 
     # Get variable
     args_X = list(args.x.replace(' ', '').split(','))

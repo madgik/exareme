@@ -102,7 +102,7 @@ class Node:
         if self.right is not None or self.left is not None:
             myclass = None
 
-        return { "colName" : None if self.gain == 0 or (self.right is None and self.left is None) else self.colName ,
+        return { "colName" : None if self.gain == 0 or (self.right is None and self.left is None) else str(self.colName) ,
                  "threshold" : None if self.gain == 0 or (self.right is None and self.left is None) else self.threshold,
                  "criterion" :self.criterion,
                  "gain" : self.gain,
