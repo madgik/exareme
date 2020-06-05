@@ -83,6 +83,10 @@ exit 0
 
 mkdir -p  /tmp/demo/db/
 
+echo "Strarting Madis Server..."
+python /root/madisServer/MadisServer.py &
+echo "Madis Server started"
+
 #This is the Worker
 if [[ "${FEDERATION_ROLE}" != "master" ]]; then
 
@@ -316,5 +320,5 @@ echo "Exareme Python Algorithms log file created." > /var/log/exaremePythonAlgor
 # Running something in foreground, otherwise the container will stop
 while true
 do
-   tail -f /var/log/exareme.log -f /var/log/exaremePythonAlgorithms.log
+   tail -fn +1 /var/log/exareme.log -fn +1 /var/log/exaremePythonAlgorithms.log -fn +1 /var/log/MadisServer.log
 done

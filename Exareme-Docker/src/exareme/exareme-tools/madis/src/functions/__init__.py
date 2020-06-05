@@ -199,6 +199,20 @@ class Cursor(object):
         if not parse:
             self.__query = statements
             return self.executetrace(statements,bindings)
+            
+        # simple hack to run .schema command from here - just for hbp    
+        if ".schema" in statements:
+            arg = statements.split()[1]
+            argument = arg.rstrip('; ')
+           
+            db='main'
+            if '.' in arg:
+                sa=argument.split('.')
+                db=sa[0]
+                argument=''.join(sa[1:])
+            q="select sql from (select * from "+db+".sqlite_master union all select * from sqlite_temp_master) where tbl_name like '%s' and sql is not null;" % argument
+            return self.executetrace(q)
+        # end of hbp update    
 
         svts=sqltransform.transform(statements, multiset_functions.keys(), functions['vtable'], functions['row'].keys(), substitute=functions['row']['subst'])
         s=svts[0]

@@ -2,11 +2,12 @@ import os
 from os import path
 import sqlite3
 from argparse import ArgumentParser
-
+import sys
 from LIST_DATASET.list_dataset_lib import ListDatasetLocalDT
 
-def main():
+def main(args):
     # Parse arguments
+    sys.argv = args
     parser = ArgumentParser()
     parser.add_argument('-input_local_DB', required=True, help='Path to the folder with the dbs.')
     args, unknown = parser.parse_known_args()

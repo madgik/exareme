@@ -5,6 +5,7 @@
 
 ## .pyc files
 *.pyc
+*.py.swp
 
 ##__pycahe__
 **/__pycache__/
@@ -55,9 +56,6 @@ crashlytics-build.properties
 # Mac related
 *.DS_Store
 
-
-
-=======
 # intellij
 .idea
 
