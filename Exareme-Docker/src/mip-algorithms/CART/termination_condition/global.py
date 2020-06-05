@@ -10,7 +10,8 @@ sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))
 
 from algorithm_utils import StateData, set_algorithms_output_data
 
-def main():
+def main(args):
+    sys.argv =args
     # Parse arguments
     parser = ArgumentParser()
     parser.add_argument('-prev_state_pkl', required=True,

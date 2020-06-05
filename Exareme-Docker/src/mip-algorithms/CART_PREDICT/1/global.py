@@ -12,8 +12,9 @@ sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))
 from algorithm_utils import init_logger, StateData, set_algorithms_output_data
 from cartPredict_lib import cart_1_global, Cart_Loc2Glob_TD
 
-def main():
+def main(args):
     # Parse arguments
+    sys.argv =args
     parser = ArgumentParser()
     #parser.add_argument('-cur_state_pkl', required=True, help='Path to the pickle file holding the current state.')
     parser.add_argument('-local_step_dbs', required=True, help='Path to db holding local step results.')

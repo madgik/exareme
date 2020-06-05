@@ -12,8 +12,9 @@ sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath
 from algorithm_utils import StateData, ExaremeError, init_logger
 from cart_lib import CartInit_Loc2Glob_TD, Cart_Glob2Loc_TD, cart_init_1_global
 
-def main():
+def main(args):
     # Parse arguments
+    sys.argv =args
     parser = ArgumentParser()
     parser.add_argument('-cur_state_pkl', required=True,
                         help='Path to the pickle file holding the current state.')

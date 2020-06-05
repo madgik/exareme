@@ -12,7 +12,8 @@ sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath
 
 from cart_lib import Cart_Glob2Loc_TD,Node
 
-def main():
+def main(args):
+    sys.argv =args
     # Parse arguments
     parser = ArgumentParser()
     parser.add_argument('-cur_state_pkl', required=True, help='Path to the pickle file holding the current state.')

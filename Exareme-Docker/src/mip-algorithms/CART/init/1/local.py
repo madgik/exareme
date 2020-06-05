@@ -15,10 +15,12 @@ sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath
 from algorithm_utils import query_database, variable_categorical_getDistinctValues, StateData, PrivacyError, PRIVACY_MAGIC_NUMBER
 from cart_lib import CartInit_Loc2Glob_TD, cart_init_1_local
 
-def main():
+def main(args):
+
     t1 = time.localtime(time.time())
 
     # Parse arguments
+    sys.argv =args
     parser = ArgumentParser()
     parser.add_argument('-x', required=True, help='Independent variable names, comma separated.')
     parser.add_argument('-y', required=True, help='Dependent variable name')

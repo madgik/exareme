@@ -13,7 +13,8 @@ sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath
 from algorithm_utils import StateData
 from cart_lib import Cart_Glob2Loc_TD, CartIter1_Loc2Glob_TD, cart_step_1_global
 
-def main():
+def main(args):
+    sys.argv =args
     # Parse arguments
     parser = ArgumentParser()
     parser.add_argument('-no_split_points', required=True, type=int, help='Number of split points')

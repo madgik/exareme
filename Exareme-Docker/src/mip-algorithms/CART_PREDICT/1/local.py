@@ -16,7 +16,8 @@ sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))
 from algorithm_utils import query_database, variable_categorical_getDistinctValues, StateData, PrivacyError, ExaremeError, PRIVACY_MAGIC_NUMBER, init_logger
 from cartPredict_lib import cart_1_local, Cart_Loc2Glob_TD
 
-def main():
+def main(args):
+    sys.argv =args
     # Parse arguments
     parser = ArgumentParser()
     parser.add_argument('-x', required=True, help='Independent variable names, comma separated.')

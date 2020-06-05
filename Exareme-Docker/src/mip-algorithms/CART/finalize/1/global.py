@@ -15,7 +15,8 @@ sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath
 from algorithm_utils import StateData,set_algorithms_output_data,init_logger
 from cart_lib import Node
 
-def main():
+def main(args):
+    sys.argv =args
     init_logger()
     # Parse arguments
     parser = ArgumentParser()
