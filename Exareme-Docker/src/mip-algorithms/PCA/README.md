@@ -21,8 +21,8 @@ whereas those running on Master are called _global_.
 #### Algorithm Description
 
 The are usually two approaches for computing the *principal components*. The first is by 
-diagonalizing the covariance matrix, while the second is by *SVD* docomposition on the data
-matrix *X*. In most imlementations the second approach is preferred due to its numerical 
+diagonalizing the covariance matrix, while the second is by *SVD* decomposition on the data
+matrix *X*. In most implementations the second approach is preferred due to its numerical 
 stability. Here however, we took the first approach since it better fits with our privacy 
 requirements. Additionally, as a first step, data is centered and standardized.
 
