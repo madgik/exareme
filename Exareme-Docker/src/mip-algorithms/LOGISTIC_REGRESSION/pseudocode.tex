@@ -1,0 +1,69 @@
+% Set the Page Layout
+\documentclass[12pt]{article}
+\usepackage[inner = 2.0cm, outer = 2.0cm, top = 2.0cm, bottom = 2.0cm]{geometry}
+
+
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{mathtools}
+% Package to write pseudo-codes
+\usepackage{algorithm}
+
+% Remove the 'end' at the end of the algorithm
+\usepackage[noend]{algpseudocode}
+
+% Define Left Justified Comments
+\algnewcommand{\LeftComment}[1]{\Statex \(\triangleright\) #1}
+
+% New Operators
+\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\mean}{mean}
+\DeclareMathOperator*{\sigmoid}{sigmoid}
+\DeclareMathOperator*{\diag}{diag}
+
+% Remove the Numbering of the Algorithm
+\usepackage{caption}
+\DeclareCaptionLabelFormat{algnonumber}{Algorithm}
+\captionsetup[algorithm]{labelformat = algnonumber}
+
+\begin{document}
+
+\pagenumbering{gobble}
+
+\begin{algorithm}
+
+  \caption{Logistic Regression Training}
+
+  \begin{algorithmic}[1] % The number tells where the line numbering should start
+          \Procedure{GlobalInit}{}
+                  \State Initialize weights $\mathbf{w} \gets \mathbf{0}$
+                  \State \textbf{return} $\mathbf{w}$
+          \EndProcedure
+          \Loop
+                  \Procedure{LocalStep}{$\mathbf{w}$} \Comment{run for each Worker $l = 1, \dots, L$}
+                          \State $\eta_i \gets \mathbf{w}^{\top} \mathbf{x}_i^{(l)}$ 
+                                \Comment{$\mathbf{x}_i^{(l)}$ is the local dataset}
+                          \State $\mu_i \gets \sigmoid(\eta_i)$
+                          \State $s_i \gets \mu_i (1 - \mu_i)$
+                          \State $z_i \gets \eta_i + \frac{y_i^{(l)} - \mu_i}{s_i}$
+                          \State $\mathbf{S} \gets \diag(s_{1:N})$
+                          \State $\mathbf{A}^{(l)} \gets X^{(l)\top} \mathbf{S} X^{(l)}$
+                          \State $\mathbf{b}^{(l)} \gets X^{(l)\top} \mathbf{S} \mathbf{z}$
+                          \State \textbf{return} $\mathbf{A}^{(l)}$, $\mathbf{b}^{(l)}$
+                  \EndProcedure
+                  \Procedure{GlobalStep}{$\{ \mathbf{A}^{(l)}, \mathbf{b}^{(l)} | l = 1, \dots, L\}$}
+                          \State $\mathbf{A} \gets \sum_l \mathbf{A}^{(l)}$
+                          \State $\mathbf{b} \gets \sum_l \mathbf{b}^{(l)}$
+                          \State $\mathbf{w'} \gets \mathbf{A}^{-1} \mathbf{b}$
+                          \If {$\| \mathbf{w'} - \mathbf{w} \| < \epsilon$}
+                                  \State \textbf{break}
+                          \EndIf
+                          \State \textbf{return} $\mathbf{w}$
+                  \EndProcedure
+          \EndLoop
+  \end{algorithmic}
+
+\end{algorithm}
+
+\end{document}
