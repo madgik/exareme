@@ -26,6 +26,8 @@ from tests import vm_url
 endpointUrl_CartTraining= vm_url + 'CART'
 endpointUrl_CartPredict= vm_url + 'CART_PREDICT'
 path = '../data/dementia/'
+sys.path.append('../../CART_PREDICT/')
+from cartPredict_lib import cart_1_local, cart_1_global
 
 # argsX = "montrealcognitiveassessment,"
 # argsX +="rightpcggposteriorcingulategyrus,leftpcggposteriorcingulategyrus,"
@@ -110,6 +112,26 @@ def run_sklearn_regression(trainingDatasetPath, PredictionDatasetPath, argsX, ar
 
     return df
 
+
+#PredictionDatasetPath, argsX, argsY, args_globalTreeJ, CategoricalVariables = path+"diabetes_testing.csv", data_CartPredict[0]['value'], data_CartPredict[1]['value'],exaremeResult_Training, {'Outcome': [u'0', u'1']}
+def ExaremePredictSimulation(PredictionDatasetPath, argsX, argsY, args_globalTreeJ, categoricalVariables):
+    df = pd.read_csv(PredictionDatasetPath)#, index_col ="subjectcode")
+    args_X = list(argsX.replace(" ", "").split(","))
+    args_Y = [argsY.replace(" ", "")][0]
+    varNames = [x for x in args_X]
+    varNames.append(args_Y)
+    df = df[varNames]
+    df = df.dropna()
+    X = df.drop(args_Y, axis=1)
+    y = df[args_Y]
+    #CategoricalVariables =  {'Outcome': [u'0', u'1']}
+    dataSchema = varNames
+    if args_Y in categoricalVariables:
+        df[args_Y] = df[args_Y].astype(str)
+    confusionMatrix, mse, counts, predictions = cart_1_local(df, dataSchema, categoricalVariables, args_X, [args_Y], args_globalTreeJ)
+    global_out = cart_1_global(args_X, args_Y, categoricalVariables, confusionMatrix, mse, counts, predictions)
+    return global_out
+
 class Test_Cart(unittest.TestCase):
     def test_Cart_1(self):
         #Run Exareme Cart Training Algorithm
@@ -124,20 +146,23 @@ class Test_Cart(unittest.TestCase):
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl_CartTraining,data=json.dumps(data_Cart),headers=headers)
         exaremeResult_Training = json.loads(r.text)
+        print ("exaremeResult_Training", r.text)
 
         #########################'##########################################
-        #Run Exareme Cart Prediction Algorithm
+        # #Run Exareme Cart Prediction Algorithm
         data_CartPredict = [{ "name": "x", "value": "Pregnancies,Glucose,BloodPressure,SkinThickness,Insulin,BMI,DiabetesPedigreeFunction,Age,IdForTesting"},
-                {"name": "y", "value":  "Outcome"},
-                {"name": "treeJson", "value": ""},
-                {"name": "treeFile", "value": "tree.txt"},
-                {"name": "pathology","value":"dementia"},
-                {"name": "dataset", "value": "diabetes_testing"},
-                {"name": "filter", "value": ""}]
-        headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-        r = requests.post(endpointUrl_CartPredict,data=json.dumps(data_CartPredict),headers=headers)
-        exaremeResult_Predict = json.loads(r.text)
-
+                 {"name": "y", "value":  "Outcome"},
+                 {"name": "treeJson", "value": ""},
+                 {"name": "treeFile", "value": "tree.txt"},
+                 {"name": "pathology","value":"dementia"},
+                 {"name": "dataset", "value": "diabetes_testing"},
+                 {"name": "filter", "value": ""}]
+        # headers = {'Content-type': 'application/json', "Accept": "text/plain"}
+        # r = requests.post(endpointUrl_CartPredict,data=json.dumps(data_CartPredict),headers=headers)
+        # exaremeResult_Predict = json.loads(r.text)
+        r = ExaremePredictSimulation(path+"diabetes_testing.csv", data_CartPredict[0]['value'], data_CartPredict[1]['value'],exaremeResult_Training['result'][0]['data'], {'Outcome': [u'0', u'1']})
+        exaremeResult_Predict = json.loads(r)
+        print (exaremeResult_Predict)
         ####################################################################
         #Run Python
         data_sklearn = {"trainingDataset": "diabetes_training",
@@ -186,6 +211,7 @@ class Test_Cart(unittest.TestCase):
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
         r = requests.post(endpointUrl_CartTraining,data=json.dumps(data_Cart),headers=headers)
         exaremeResult_Training = json.loads(r.text)
+        print ("exaremeResult_Training", r.text)
 
         ####################################################################
         #Run Exareme Cart Prediction Algorithm
@@ -196,11 +222,13 @@ class Test_Cart(unittest.TestCase):
                 {"name": "pathology","value":"dementia"},
                 {"name": "dataset", "value": "concrete_data_testing"},
                 {"name": "filter", "value": ""}]
-        headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-        r = requests.post(endpointUrl_CartPredict,data=json.dumps(data_CartPredict),headers=headers)
-        print ("ExaremeResult", r.text)
-        exaremeResult_Predict = json.loads(r.text)
-
+        #headers = {'Content-type': 'application/json', "Accept": "text/plain"}
+        #r = requests.post(endpointUrl_CartPredict,data=json.dumps(data_CartPredict),headers=headers)
+        #print ("ExaremeResult", r.text)
+        #exaremeResult_Predict = json.loads(r.text)
+        r = ExaremePredictSimulation(path+"concrete_data_testing.csv", data_CartPredict[0]['value'], data_CartPredict[1]['value'],exaremeResult_Training['result'][0]['data'], {})
+        exaremeResult_Predict = json.loads(r)
+        print (exaremeResult_Predict)
         ####################################################################
         #Run Python
         data_sklearn = {"trainingDataset": "concrete_data_training",
