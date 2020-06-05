@@ -15,15 +15,15 @@ and implement them in procedures that run on Workers.
 aggregates from all Workers and implementing these parts in procedures that run on 
 Matser.
 
-Our naming convention is that procedures run on Workers are given the adjective __local__
-whereas those running on Master are called __global__.
+Our naming convention is that procedures run on Workers are given the adjective _local_
+whereas those running on Master are called _global_.
 
 #### Algorithm Description
 
 Logistic Regression training is done by Maximum Likelihood Estimation (MLE) by gradient 
 descent using, for example, Newton's method. Applying Newton's method leads to the 
 following algorithm, called __Iteratively Reweighted Least Squares__ (IRLS).  Here 
-the dependent variable $y$ has to be binary.
+the dependent variable *y* has to be binary.
 
 ![pseudo](pseudocode.png)
 

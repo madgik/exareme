@@ -15,13 +15,13 @@ and implement them in procedures that run on Workers.
 aggregates from all Workers and implementing these parts in procedures that run on 
 Matser.
 
-Our naming convention is that procedures run on Workers are given the adjective __local__
-whereas those running on Master are called __global__.
+Our naming convention is that procedures run on Workers are given the adjective _local_
+whereas those running on Master are called _global_.
 
 #### Algorithm Description
 
-This algorithm computes the Pearson correlation coefficient between two vectors $x$ and 
-$y$ using the eq.(1)
+This algorithm computes the Pearson correlation coefficient between two vectors *x* and 
+*y* using the eq.(1)
 
 ![pseudo](pseudocode.png)
 
