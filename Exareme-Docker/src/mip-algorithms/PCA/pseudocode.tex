@@ -1,0 +1,71 @@
+% Set the Page Layout
+\documentclass[10pt]{article}
+\usepackage[inner = 2.0cm, outer = 2.0cm, top = 2.0cm, bottom = 2.0cm]{geometry}
+
+
+\usepackage{inconsolata}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{mathtools}
+% Package to write pseudo-codes
+\usepackage{algorithm}
+
+% Remove the 'end' at the end of the algorithm
+\usepackage[noend]{algpseudocode}
+
+% Define Left Justified Comments
+\algnewcommand{\LeftComment}[1]{\Statex \(\triangleright\) #1}
+
+% New Operators
+\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\mean}{mean}
+\DeclareMathOperator*{\sigmoid}{sigmoid}
+\DeclareMathOperator*{\diag}{diag}
+
+% Remove the Numbering of the Algorithm
+\usepackage{caption}
+\DeclareCaptionLabelFormat{algnonumber}{Algorithm}
+\captionsetup[algorithm]{labelformat = algnonumber}
+
+\begin{document}
+
+\pagenumbering{gobble}
+
+\begin{algorithm}
+
+  \caption{Principal Components Analysis}
+
+  \begin{algorithmic}[1] % The number tells where the line numbering should start
+          \Procedure{Local1}{}
+                \State $n^{(l)} \gets \texttt{length}(\mathbf{X}^{(l)})$ \Comment{$\mathbf{X}^{(l)}$ is the local dataset}
+                \State $\mathbf{s}_x^{(l)} \gets \sum_{i = 1}^n \mathbf{X}^{(l)}$
+                \State $\mathbf{s}_{xx}^{(l)} \gets \sum_{i = 1}^n \mathbf{X}^{(l)} * \mathbf{X}^{(l)}$ \Comment{where $*$ means element-wise multiplication, not matrix multiplication}
+                \State \textbf{return} $n^{(l)}$, $\mathbf{s}_x^{(l)}$, $\mathbf{s}_{xx}^{(l)}$
+          \EndProcedure
+          \Procedure{Global1}{${n^{(l)}, \mathbf{s}_x^{(l)}, \mathbf{s}_{xx}^{(l)}}$}
+                  \State $n \gets \sum_l n^{(l)}$
+                  \State $\mathbf{s}_x \gets \sum_l \mathbf{s}_x^{(l)}$
+                  \State $\mathbf{s}_{xx} \gets \sum_l \mathbf{s}_{xx}^{(l)}$
+                  \State $\texttt{mean} \gets \frac{\mathbf{s}_x}{n}$
+                  \State $\texttt{stderr} \gets \left( \frac{\mathbf{s}_{xx} - n \texttt{mean}^2}{n - 1} \right)^\frac{1}{2}$
+                  \State \textbf{return} $\texttt{mean}, \texttt{stderr}$
+          \EndProcedure
+          \Procedure{Local2}{$\texttt{mean}, \texttt{stderr}$}
+                \State $\mathbf{X}^{(l)} \gets \frac{\mathbf{X}^{(l)} - \texttt{mean}}{\texttt{stderr}}$
+                \State $\mathbf{C}^{(l)} \gets \mathbf{X}^{(l)\top} \mathbf{X}^{(l)}$
+                \State \textbf{return} $\mathbf{C}^{(l)}$
+        \EndProcedure
+        \Procedure{Global2}{$\mathbf{C}^{(l)}$}
+                \State $\mathbf{C} \gets \sum_l \mathbf{C}^{(l)}$
+                \State $\texttt{eigenvalues}, \texttt{eigenvectors} \gets \texttt{eig}(\mathbf{C})$ \Comment{
+                        \texttt{eig} is a procedure for computing eigenvalues and eigenvectors
+                }
+                \State \textbf{return} $\texttt{eigenvalues}, \texttt{eigenvectors}$
+        \EndProcedure
+  \end{algorithmic}
+
+\end{algorithm}
+
+\end{document}
+

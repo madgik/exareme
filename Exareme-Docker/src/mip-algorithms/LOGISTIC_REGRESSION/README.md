@@ -13,7 +13,7 @@ In general, this means two things.
 and implement them in procedures that run on Workers.  
 2. On the other hand, identifying the parts of the algothm that need to see the 
 aggregates from all Workers and implementing these parts in procedures that run on 
-Matser.
+Master.
 
 Our naming convention is that procedures run on Workers are given the adjective _local_
 whereas those running on Master are called _global_.
