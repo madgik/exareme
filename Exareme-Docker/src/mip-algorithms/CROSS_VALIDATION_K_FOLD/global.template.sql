@@ -1,6 +1,4 @@
 requirevars 'defaultDB' 'input_global_tbl' 'dbIdentifier';
---var 'input_global_tbl' 'defaultDB.localmetadatatbl';
-
 attach database '%{defaultDB}' as defaultDB;
 
 drop table if exists defaultDB.globalmetadatatbl;
