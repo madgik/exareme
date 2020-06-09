@@ -3,6 +3,7 @@ import logging
 import os
 import re
 from string import capwords
+import warnings
 
 from .loggingutils import logged
 from .decorators import algorithm_methods_decorator
@@ -50,6 +51,7 @@ class Algorithm(object):
     __metaclass__ = MetaAlgorithm
 
     def __init__(self, alg_file, cli_args, intercept=True, privacy=True, dropna=True):
+        warnings.filterwarnings("ignore")
         self._folder_path, name = os.path.split(alg_file)
         self._name = os.path.splitext(name)[0]
         self._args = parse_exareme_args(self._folder_path, cli_args)
