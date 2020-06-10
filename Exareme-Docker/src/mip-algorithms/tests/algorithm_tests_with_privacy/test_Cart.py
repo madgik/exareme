@@ -24,9 +24,9 @@ sys.path.append(path.abspath(__file__))
 
 from tests import vm_url
 endpointUrl_CartTraining= vm_url + 'CART'
-endpointUrl_CartPredict= vm_url + 'CART_PREDICT'
+#endpointUrl_CartPredict= vm_url + 'CART_PREDICT'
 path = '../data/dementia/'
-sys.path.append('../../CART_PREDICT/')
+
 from cartPredict_lib import cart_1_local, cart_1_global
 
 # argsX = "montrealcognitiveassessment,"

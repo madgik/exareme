@@ -12,8 +12,8 @@ import logging
 import itertools
 import csv
 
-sys.path.append(path.dirname(path.dirname(path.abspath(__file__))) + '/utils/')
-
+#sys.path.append(path.dirname(path.dirname(path.abspath(__file__))) + '/utils/')
+sys.path.append('../../utils/')
 from algorithm_utils import TransferData, PRIVACY_MAGIC_NUMBER
 
 LOGS = True

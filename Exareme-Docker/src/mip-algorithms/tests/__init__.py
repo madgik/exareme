@@ -1,1 +1,1 @@
-vm_url = "http://127.0.0.1:9090/mining/query/"
+vm_url = "http://88.197.53.34:9090/mining/query/"
