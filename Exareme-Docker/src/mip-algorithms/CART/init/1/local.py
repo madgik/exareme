@@ -7,16 +7,20 @@ from argparse import ArgumentParser
 import sqlite3
 import json
 import pandas as pd
+import time
 
 sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) + '/utils/')
 sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) + '/CART/')
 
 from algorithm_utils import query_database, variable_categorical_getDistinctValues, StateData, PrivacyError, PRIVACY_MAGIC_NUMBER
-from cart_lib import CartInit_Loc2Glob_TD
-from cart_steps import cart_init_1_local
+from cart_lib import CartInit_Loc2Glob_TD, cart_init_1_local
 
-def main():
+def main(args):
+
+    t1 = time.localtime(time.time())
+
     # Parse arguments
+    sys.argv =args
     parser = ArgumentParser()
     parser.add_argument('-x', required=True, help='Independent variable names, comma separated.')
     parser.add_argument('-y', required=True, help='Dependent variable name')
@@ -27,30 +31,23 @@ def main():
     query = args.db_query
     fname_cur_state = path.abspath(args.cur_state_pkl)
     fname_loc_db = path.abspath(args.input_local_DB)
+    query = query.replace("\\\"","\"")
 
-    if args.x == '':
-        raise ExaremeError('Field x must be non empty.')
-    if args.y == '':
-        raise ExaremeError('Field y must be non empty.')
-
-    # Get data
+    # Get variable
     args_X = list(args.x.replace(' ', '').split(','))
     args_Y = [args.y.replace(' ', '')]
 
+    #1. Query database and metadata
     queryMetadata = "select * from metadata where code in (" + "'" + "','".join(args_X) + "','" + "','".join(args_Y) + "'"  + ");"
     dataSchema, metadataSchema, metadata, dataFrame  = query_database(fname_db=fname_loc_db, queryData=query, queryMetadata=queryMetadata)
     CategoricalVariables = variable_categorical_getDistinctValues(metadata)
 
-    # dataFrame = dataFrame.dropna()
-    # for x in dataSchema:
-    #     if x in CategoricalVariables:
-    #         dataFrame = dataFrame[dataFrame[x].astype(bool)]
-    
-    dataFrame = cart_init_1_local(dataFrame, dataSchema, CategoricalVariables)
+    #2. Run algorithm
+    dataFrame, CategoricalVariables = cart_init_1_local(dataFrame, dataSchema, CategoricalVariables)
     if len(dataFrame) < PRIVACY_MAGIC_NUMBER:
         raise PrivacyError('The Experiment could not run with the input provided because there are insufficient data.')
 
-    # Save local state
+    #3. Save local state
     local_state = StateData( dataFrame = dataFrame,
                              args_X = args_X,
                              args_Y = args_Y,
@@ -58,8 +55,7 @@ def main():
     local_state.save(fname = fname_cur_state)
 
     # Transfer local output
-    local_out = CartInit_Loc2Glob_TD( args_X, args_Y, CategoricalVariables)
-    #raise ValueError( local_out.get_data())
+    local_out = CartInit_Loc2Glob_TD(args_X, args_Y, CategoricalVariables, t1)
     local_out.transfer()
 
 if __name__ == '__main__':
