@@ -1,0 +1,36 @@
+\documentclass[10pt]{article}
+\usepackage[inner = 2.0cm, outer = 2.0cm, top = 2.0cm, bottom = 2.0cm]{geometry}
+\usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\begin{document}
+\begin{algorithm}
+	\caption{\underline{\textsc{Naive Bayes Train}}}
+	\label{naivebayes_train}
+	\begin{algorithmic}[1] % The number tells where the line numbering should start
+		\Procedure{Local1}{${X}^{(l)}, y^{(l)}$} \Comment{run for $l = 1, \dots, L$}
+			\If{categorical attribute}
+					\State Compute $\text{count}(x| y=C_m)$ for all values of $x$ and all classes
+			\ElsIf{continuous attribute}
+					\State $S_{C_m}^{(l)} \gets \sum_{i:y_i=C_m} \mathbf{x}^{(l)}_{i}$ for all classes
+					\State $V_{C_m}^{(l)} \gets \sum_{i:y_i=C_m} {(\mathbf{x}^{(l)}_{i})}^2$ for all classes
+					\State $N_{C_m}^{(l)} \gets |\{\mathbf{x}_i^{(l)}| y_i=C_m \}|$ for all classes
+			\EndIf
+			\State \textbf{return} $\text{count}(x| y=C_m)$, $S_{C_m}^{(l)}$, $V_{C_m}^{(l)}$, $N_{C_m}^{(l)}$
+		\EndProcedure
+		\Procedure{Global1}{$\{\text{count}(x| y=C_m), S_{C_m}^{(l)}, V_{C_m}^{(l)}, N_{C_m}^{(l)}\}, \alpha$}
+			\State Sum local counts to obtain corresponding global counts
+			\State For categorical attributes add Laplace smoothing $\alpha$
+			\State For categorical attributes compute likelihood terms from count ratios
+			\State For continuous attributes $\mu_j \gets \frac{\sum_l S_{C_m}^{(l)}}{\sum_l N_{C_m}^{(l)}}$ for all classes
+			% \State For continuous attributes $\mu_j \gets \frac{\sum_l S_{C_m}^{(l)}}{\sum_l N_{C_m^{(l)}}$ for all classes
+			\State For continuous attributes $\sigma_j^2 \gets \frac{\sum_l V_{C_m}^{(l)}}{\sum_l N_{C_m}^{(l)}} - \mu_{j}^2$ for all classes
+			\State For continuous attributes compute likelihood terms as $\mathcal{N}(\mu_j, \sigma_j^2 | C_m)$ for all classes
+			\State \textbf{return} likelihood terms
+		\EndProcedure
+	\end{algorithmic}
+\end{algorithm}
+\end{document}
