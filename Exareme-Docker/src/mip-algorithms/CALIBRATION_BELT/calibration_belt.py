@@ -10,13 +10,14 @@ import numpy as np
 from scipy.integrate import quad
 from scipy.stats import chi2
 from scipy.special import expit, logit, xlogy
-from mipframework import Algorithm, AlgorithmResult, UserError
+from mipframework import Algorithm, AlgorithmResult
 from mipframework.highcharts import CalibrationBeltPlot
 from mipframework import create_runner
 from mipframework.constants import (
     PREC,
     MAX_ITER,
 )
+from utils.algorithm_utils import ExaremeError
 
 
 class CalibrationBelt(Algorithm):
@@ -29,12 +30,12 @@ class CalibrationBelt(Algorithm):
         max_deg = int(self.parameters.max_deg)
         if self.parameters.devel == "external":
             if not 2 <= max_deg <= 4:
-                raise UserError(
-                    "Max deg should be between 2 and 4 for " "`devel`=`external`."
+                raise ExaremeError(
+                    "Max deg should be between 2 and 4 for `devel`=`external`."
                 )
         elif self.parameters.devel == "internal":
             if not 3 <= max_deg <= 4:
-                raise UserError(
+                raise ExaremeError(
                     "Max deg should be between 3 and 4 for `devel`=`internal`."
                 )
         n_obs = len(expected)
@@ -62,7 +63,7 @@ class CalibrationBelt(Algorithm):
         max_deg = int(self.parameters.max_deg)
 
         # if self.fetch("n_y_pos") < max_deg + 1 or self.fetch("n_y_neg") < max_deg + 1:
-        #     raise UserError("There are not enough data to perform this experiment.")
+        #     raise ExaremeError("There are not enough data to perform this experiment.")
 
         iter_ = 0
 

@@ -6,9 +6,10 @@ import numpy as np
 import scipy.special as special
 import scipy.stats as st
 
-from mipframework import Algorithm, AlgorithmResult, TabularDataResource, UserError
+from mipframework import Algorithm, AlgorithmResult, TabularDataResource
 from mipframework.constants import P_VALUE_CUTOFF, P_VALUE_CUTOFF_STR, CONFIDENCE
 from mipframework.highcharts import CorrelationHeatmap
+from utils.algorithm_utils import ExaremeError
 
 
 class Pearson(Algorithm):
@@ -26,7 +27,7 @@ class Pearson(Algorithm):
         if any(len(set(column)) == 1 for column in X.T) or any(
             len(set(column)) == 1 for column in Y.T
         ):
-            raise UserError(
+            raise ExaremeError(
                 "Data contains a constant row and the Pearson correlation coefficient "
                 "is not defined in this case."
             )
