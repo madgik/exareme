@@ -1,4 +1,4 @@
-subjectcode,Cement,BlastFurnaceSlag,FlyAsh,Water,Superplasticizer,CoarseAggregate,FineAggregate,Age,ConcreteCompressiveStrength,dataset 
+subjectcode,Cement,BlastFurnaceSlag,FlyAsh,Water,Superplasticizer,CoarseAggregate,FineAggregate,Age,ConcreteCompressiveStrength,dataset
 1,540,0,0,162,2.5,1040,676,28,79.99,concrete_data
 2,540,0,0,162,2.5,1055,676,28,61.89,concrete_data
 3,332.5,142.5,0,228,0,932,594,270,40.27,concrete_data
