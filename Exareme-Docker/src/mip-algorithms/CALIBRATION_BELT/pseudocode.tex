@@ -43,7 +43,7 @@
                 \State $\mathbf{g}_e^{(l)} \gets \logit \mathbf{e}^{(l)}$
                 \For{$d = 1, \dots, d_{\text{max}}$} 
                         \State $\mathbf{X}_d^{(l)} 
-                        \gets \sum_{d=0}^{\texttt{max\_deg}} (\mathbf{g}_e^{(l)})^d$
+                        \gets \sum_{d=0} (\mathbf{g}_e^{(l)})^d$
                 \EndFor
           \EndProcedure
           \EndFor
@@ -70,20 +70,33 @@
                   \EndFor
                   \EndProcedure
                 \EndFor
-                  \Procedure{GlobalStep}{$\{ \mathbf{A}^{(l)}, \mathbf{b}^{(l)} | l = 1, \dots, L\}$}
-                          \State $\mathbf{A} \gets \sum_l \mathbf{A}^{(l)}$
-                          \State $\mathbf{b} \gets \sum_l \mathbf{b}^{(l)}$
-                          \State $\mathbf{w'} \gets \mathbf{A}^{-1} \mathbf{b}$
-                          \If {$\| \mathbf{w'} - \mathbf{w} \| < \epsilon$}
+                  \Procedure{GlobalStep}{$\{ \mathbf{A}_d^{(l)}, \mathbf{b}_d^{(l)} \}$}
+                          \For{$d = 1, \dots, d_{\text{max}}$} 
+                                  \State $\mathbf{A}_d \gets \sum_l \mathbf{A}_d^{(l)}$
+                                  \State $\mathbf{b}_d \gets \sum_l \mathbf{b}_d^{(l)}$
+                                  \State $\mathbf{w'}_d \gets \mathbf{A}_d^{-1} \mathbf{b}_d$
+                          \EndFor
+                          \If {$ \wedge_d \left( \| \mathbf{w'}_d - \mathbf{w}_d \| < \epsilon \right) $}
                                   \State \textbf{break}
                           \EndIf
-                          \State $\mathbf{w} \gets \mathbf{w'}$ 
-                          \State \textbf{return} $\mathbf{w}$
+                          \State $\mathbf{w}_d \gets \mathbf{w'}_d$ 
+                          \State \textbf{return} $\mathbf{w}_d$
                   \EndProcedure
           \EndLoop
+          \Procedure{GlobalFinal}{}
+               \State $m \gets \argmin_d \{ D_{d+1} | D_{d+1} <= \chi_{1, q}^2 \}$ 
+                \State $\hat{l} \gets l_m$
+                \State $\hat{\mathbf{w}} \gets \mathbf{w}_m $
+                \State Compute \texttt{calibration\_belt} using eq.(9-10) of [1]
+                \State \textbf{return} \texttt{calibration\_belt}
+          \EndProcedure
   \end{algorithmic}
 
 \end{algorithm}
+        
+where $D_{d+1} = 2 (l_{d+1} - l_d)$, $\chi_{1, q}^2$ is the inverse  of the $\chi^2$ 
+cumulative distribution with 1 degree of freedom and $l$ is the estimated log-likelihood 
+of the model.
 
 \end{document}
 
