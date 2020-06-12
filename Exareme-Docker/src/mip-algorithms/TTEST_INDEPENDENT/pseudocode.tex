@@ -1,0 +1,49 @@
+% Set the Page Layout
+\documentclass[10pt]{article}
+\usepackage[inner = 2.0cm, outer = 2.0cm, top = 2.0cm, bottom = 2.0cm]{geometry}
+
+
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\DeclareMathOperator*{\summ}{sum}
+\DeclareMathOperator*{\n}{n}
+\DeclareMathOperator*{\mean}{mean}
+\DeclareMathOperator*{\SE}{SE}
+\DeclareMathOperator*{\sse}{sse}
+
+\begin{document}
+\begin{algorithm}
+	\caption{\underline{\textsc{Independent T-test }}}
+	\label{naivebayes_train}
+	\begin{algorithmic}[1] % The number tells where the line numbering should start
+		\Procedure{Local1}{${x}, {y}, hypothesis$} \Comment{run for $l = 1, \dots, L$}
+			\For{$\text{each variable } {y_m} \text{ and i=1,2 } $}
+				\State Compute  $\summ_{y_m|x_i}$,  $\summ_{y^2_m|x_i}$ , $n_{y_m|x_i}$
+		   \EndFor
+		\State \textbf{return} (\{ $sum_{(.)}, n_{(.)}\}$)
+		\EndProcedure
+		
+		\Procedure{Global 1}{ \{ $sum_{(.)}, n_{(.)}$\}}
+		    \For{$\text{ each variable } {y_m}  \text{ and i=1,2 } $}
+				\State Sum local outputs and compute $\mean_{y_m|x_i}$, $\SE_{y_m|x_i}$,  $n_{y_m|x_i}$   
+			\EndFor
+			\State \textbf{return} (\{$\mean_{(.)}$, $\SE_{(.)}$,  $n_{(.)}$\}) 
+		\EndProcedure
+		\Procedure{Local2}{${x}, {y}, \{mean_{(.)}$\}} \Comment{run for $l = 1, \dots, L$}
+			\For{$\text{each variable } {y_m} \text{ and i=1,2 } $}
+			\State Compute $\sse_{y_m|x_i}, $ where $sse_y =sum(y-mean)^2$
+			\EndFor
+			\State \textbf{return} (\{$\sse_{(.)}$\})
+		\EndProcedure
+		\Procedure{Global2}{\{$sse_{(.)}$\}}
+			\For{$\text{each variable } {y_m} $}
+			\State Sum local outputs 
+			\State Compute and output statistics, p-values
+			\EndFor
+		\EndProcedure
+	\end{algorithmic}
+\end{algorithm}
+\end{document}

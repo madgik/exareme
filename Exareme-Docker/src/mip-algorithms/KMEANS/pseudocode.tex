@@ -1,0 +1,42 @@
+% Set the Page Layout
+\documentclass[10pt]{article}
+\usepackage[inner = 2.0cm, outer = 2.0cm, top = 2.0cm, bottom = 2.0cm]{geometry}
+
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\DeclareMathOperator*{\argmin}{argmin}
+
+\begin{document}
+\begin{algorithm}
+    \caption{\underline{\textsc{$k$-means Train}}}
+    \label{kmeans}
+    \begin{algorithmic}[1] % The number tells where the line numbering should start
+		\Procedure{Local1}{${X}^{(l)}$, $k$} \Comment{run for $l = 1, \dots, L$}
+			\State Randomly assign each point $i$ to a cluster $c_i$
+		\EndProcedure
+		\Loop
+			\Procedure{Local2}{${X}^{(l)}$} \Comment{run for $l = 1, \dots, L$}
+				\For{$\text{every cluster } c = 1, \dots, C$}
+						\State $n_c^{(l)} \gets \# \{\text{points in cluster }c \}$
+						\State $\mathbf{v}_{c}^{(l)} \gets \sum_{i \text{ in cluster }c} \mathbf{x}_{i}^{(l)}$
+				\EndFor
+				\State \textbf{return } $\{ n_c^{(l)}, \mathbf{v}_{c}^{(l)} \}$
+			\EndProcedure
+			\Procedure{Global1}{$ \{n_c^{(l)}, \mathbf{v}_{c}^{(l)} \}$}
+				\State Compute new center for each cluster $\bar{\mathbf{v}}_{c} \gets \frac{\sum_l \mathbf{v}_{c}^{(l)}}{\sum_l n_c^{(l)}} $
+				\State Check for convergence (compare new centers to old ones) and return
+				\State \textbf{return} $\bar{\mathbf{v}}_{c}$
+			\EndProcedure
+			\Procedure{Local3}{${X}^{(l)}$,$\{ \bar{\mathbf{v}}_{c} \}$} \Comment{run for $l = 1, \dots, L$}
+				\State Assign each point $i$ to nearest cluster $c_i = \argmin_c \| \mathbf{x}_{i}^{(l)} - \bar{\mathbf{v}}_{c} \|_2$
+			\EndProcedure
+		\EndLoop
+    \end{algorithmic}
+\end{algorithm}
+
+
+\end{document}

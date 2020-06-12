@@ -1,0 +1,27 @@
+\documentclass[10pt]{article}
+\usepackage[inner = 2.0cm, outer = 2.0cm, top = 2.0cm, bottom = 2.0cm]{geometry}
+\usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\begin{document}
+\begin{algorithm}
+	\caption{\underline{\textsc{Linear Regression Train}}}
+	\label{linreg}
+	\begin{algorithmic}[1] % The number tells where the line numbering should start
+		\Procedure{Local}{${X}^{(l)}$} \Comment{run for $l = 1, \dots, L$}
+			\State $\mathbf{A}^{(l)} \gets X^{(l){\top}} X^{(l)}$
+			\State $\mathbf{b}^{(l)} \gets X^{(l){\top}} y^{(l)}$
+			\State \textbf{return}  $\mathbf{A}^{(l)}$ , $\mathbf{b}^{(l)}$
+		\EndProcedure
+		\Procedure{Global}{$\{ \mathbf{A}^{(l)}, \mathbf{b}^{(l)} \}$}
+			\State $\mathbf{A} \gets \sum_l \mathbf{A}^{(l)}$
+			\State $\mathbf{b} \gets \sum_l \mathbf{b}^{(l)}$
+			\State $\mathbf{w} = \mathbf{A}^{-1} \mathbf{b}$
+			\State \textbf{return} $\mathbf{w}$
+		\EndProcedure
+	\end{algorithmic}
+\end{algorithm}
+\end{document}
