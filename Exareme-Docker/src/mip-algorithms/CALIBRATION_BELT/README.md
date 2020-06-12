@@ -22,14 +22,14 @@ whereas those running on Master are called _global_.
 
 This is an original algorithm aiming to compute a confidence band for the calibration 
 curve, in order to validate the predictive power of some model against independent 
-samples. Here we follow the approach described in [[1]][1]. The algorithm is given 
+samples. Here we follow the approach described in [1]. The algorithm is given 
 samples from two variables as input, the *expected* outcome of some binary variable, 
 obtained from the model we want to asses, and the actual observed outcome. Then the 
 algorithm fits a series of calibration curves given by the *logit* of a polynomial in 
 the *expected* variable (the degrees of the polynomial are constrained between 1 and 4). 
 In the end the best fit is selected using a *likelihood-ratio test*. Finally, the 
 confidence belt is derived from the variance of the logistic model (see eq.(9-10) of 
-[[1]][1]).
+[1]).
 
 ![pseudo](pseudocode.png)
 
