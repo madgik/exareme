@@ -1,0 +1,102 @@
+% Set the Page Layout
+\documentclass[10pt]{article}
+\usepackage[inner = 2.0cm, outer = 2.0cm, top = 2.0cm, bottom = 2.0cm]{geometry}
+
+
+\usepackage{inconsolata}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{mathtools}
+% Package to write pseudo-codes
+\usepackage{algorithm}
+
+% Remove the 'end' at the end of the algorithm
+\usepackage[noend]{algpseudocode}
+
+% Define Left Justified Comments
+\algnewcommand{\LeftComment}[1]{\Statex \(\triangleright\) #1}
+
+% New Operators
+\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\mean}{mean}
+\DeclareMathOperator*{\sigmoid}{sigmoid}
+\DeclareMathOperator*{\diag}{diag}
+\DeclareMathOperator*{\logit}{logit}
+
+% Remove the Numbering of the Algorithm
+\usepackage{caption}
+\DeclareCaptionLabelFormat{algnonumber}{Algorithm}
+\captionsetup[algorithm]{labelformat = algnonumber}
+
+\begin{document}
+
+\pagenumbering{gobble}
+
+\begin{algorithm}
+
+  \caption{Calibration Belt}
+
+  \begin{algorithmic}[1] % The number tells where the line numbering should start
+          \For{each Worker $l = 1, \dots, L$}
+          \Procedure{LocalInit}{$\mathbf{e}^{(l)}, \mathbf{o}^{(l)}$}
+                \State $\mathbf{g}_e^{(l)} \gets \logit \mathbf{e}^{(l)}$
+                \For{$d = 1, \dots, d_{\text{max}}$} 
+                        \State $\mathbf{X}_d^{(l)} 
+                        \gets \sum_{d=0} (\mathbf{g}_e^{(l)})^d$
+                \EndFor
+          \EndProcedure
+          \EndFor
+          \Procedure{GlobalInit}{}
+                \For{$d = 1, \dots, d_{\text{max}}$} \Comment{for each degree $d$}
+                        \State Initialize weights $\mathbf{w}_d \gets \mathbf{0}$
+                \EndFor
+                \State \textbf{return} $\{\mathbf{w}_d\}$
+          \EndProcedure
+          \Loop
+                \For{each Worker $l = 1, \dots, L$}
+                  \Procedure{LocalStep}{$\{\mathbf{w}_d\}$} 
+                  \For{$d = 1, \dots, d_{\text{max}}$} 
+                          \State $\mathbf{\eta}_i \gets \mathbf{w}_d^{\top} \mathbf{x}_{di}^{(l)}$ 
+                          \State $\mathbf{\mu}_i \gets \sigmoid(\mathbf{\eta}_i)$
+                          \State $\mathbf{s}_i \gets \mathbf{\mu}_i (1 - \mathbf{\mu}_i)$
+                          \State $\mathbf{z}_i \gets \mathbf{\eta}_i 
+                                + \frac{\mathbf{y}_i^{(l)} - \mu_i}{\mathbf{s}_i}$
+                          \State $\mathbf{S} \gets \diag(s_{1:N})$
+                          \State $\mathbf{A}_d^{(l)} 
+                                \gets \mathbf{x}_{di}^{(l)\top} \mathbf{S} \mathbf{x}_{di}^{(l)}$
+                          \State $\mathbf{b}_d^{(l)} \gets \mathbf{x}_{di}^{(l)\top} \mathbf{S} \mathbf{z}$
+                          \State \textbf{return} $\{ \mathbf{A}_d^{(l)}$, $\mathbf{b}_d^{(l)} \}$
+                  \EndFor
+                  \EndProcedure
+                \EndFor
+                  \Procedure{GlobalStep}{$\{ \mathbf{A}_d^{(l)}, \mathbf{b}_d^{(l)} \}$}
+                          \For{$d = 1, \dots, d_{\text{max}}$} 
+                                  \State $\mathbf{A}_d \gets \sum_l \mathbf{A}_d^{(l)}$
+                                  \State $\mathbf{b}_d \gets \sum_l \mathbf{b}_d^{(l)}$
+                                  \State $\mathbf{w'}_d \gets \mathbf{A}_d^{-1} \mathbf{b}_d$
+                          \EndFor
+                          \If {$ \wedge_d \left( \| \mathbf{w'}_d - \mathbf{w}_d \| < \epsilon \right) $}
+                                  \State \textbf{break}
+                          \EndIf
+                          \State $\mathbf{w}_d \gets \mathbf{w'}_d$ 
+                          \State \textbf{return} $\mathbf{w}_d$
+                  \EndProcedure
+          \EndLoop
+          \Procedure{GlobalFinal}{}
+               \State $d^* \gets \argmin_d \{ D_{d+1} | D_{d+1} <= \chi_{1, q}^2 \}$ 
+                \State $\hat{l} \gets l_{d^*}$
+                \State $\hat{\mathbf{w}} \gets \mathbf{w}_{d^*} $
+                \State Compute \texttt{calibration\_belt} using eq.(9-10) of [1]
+                \State \textbf{return} \texttt{calibration\_belt}
+          \EndProcedure
+  \end{algorithmic}
+
+\end{algorithm}
+        
+where $D_{d+1} = 2 (l_{d+1} - l_d)$, $\chi_{1, q}^2$ is the inverse  of the $\chi^2$ 
+cumulative distribution with 1 degree of freedom and $l$ is the estimated log-likelihood 
+of the model.
+
+\end{document}
+
