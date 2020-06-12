@@ -59,6 +59,7 @@
                           \If {$\| \mathbf{w'} - \mathbf{w} \| < \epsilon$}
                                   \State \textbf{break}
                           \EndIf
+                          \State $\mathbf{w} \gets \mathbf{w'}$ 
                           \State \textbf{return} $\mathbf{w}$
                   \EndProcedure
           \EndLoop

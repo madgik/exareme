@@ -44,12 +44,12 @@
                 \State \textbf{return} $n^{(l)}$, $\mathbf{s}_x^{(l)}$, $\mathbf{s}_{xx}^{(l)}$
           \EndProcedure
           \Procedure{Global1}{${n^{(l)}, \mathbf{s}_x^{(l)}, \mathbf{s}_{xx}^{(l)}}$}
-                  \State $n \gets \sum_l n^{(l)}$
-                  \State $\mathbf{s}_x \gets \sum_l \mathbf{s}_x^{(l)}$
-                  \State $\mathbf{s}_{xx} \gets \sum_l \mathbf{s}_{xx}^{(l)}$
-                  \State $\texttt{mean} \gets \frac{\mathbf{s}_x}{n}$
-                  \State $\texttt{stderr} \gets \left( \frac{\mathbf{s}_{xx} - n \texttt{mean}^2}{n - 1} \right)^\frac{1}{2}$
-                  \State \textbf{return} $\texttt{mean}, \texttt{stderr}$
+                \State $n \gets \sum_l n^{(l)}$
+                \State $\mathbf{s}_x \gets \sum_l \mathbf{s}_x^{(l)}$
+                \State $\mathbf{s}_{xx} \gets \sum_l \mathbf{s}_{xx}^{(l)}$
+                \State $\texttt{mean} \gets \frac{\mathbf{s}_x}{n}$
+                \State $\texttt{stderr} \gets \left( \frac{\mathbf{s}_{xx} - n \texttt{mean}^2}{n - 1} \right)^\frac{1}{2}$
+                \State \textbf{return} $\texttt{mean}, \texttt{stderr}$
           \EndProcedure
           \Procedure{Local2}{$\texttt{mean}, \texttt{stderr}$}
                 \State $\mathbf{X}^{(l)} \gets \frac{\mathbf{X}^{(l)} - \texttt{mean}}{\texttt{stderr}}$
