@@ -84,9 +84,9 @@
                   \EndProcedure
           \EndLoop
           \Procedure{GlobalFinal}{}
-               \State $m \gets \argmin_d \{ D_{d+1} | D_{d+1} <= \chi_{1, q}^2 \}$ 
-                \State $\hat{l} \gets l_m$
-                \State $\hat{\mathbf{w}} \gets \mathbf{w}_m $
+               \State $d^* \gets \argmin_d \{ D_{d+1} | D_{d+1} <= \chi_{1, q}^2 \}$ 
+                \State $\hat{l} \gets l_{d^*}$
+                \State $\hat{\mathbf{w}} \gets \mathbf{w}_{d^*} $
                 \State Compute \texttt{calibration\_belt} using eq.(9-10) of [1]
                 \State \textbf{return} \texttt{calibration\_belt}
           \EndProcedure
