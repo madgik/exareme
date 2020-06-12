@@ -4,14 +4,14 @@ from __future__ import print_function
 import sys
 from os import path
 from argparse import ArgumentParser
-import logging
 
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/utils/')
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))) + '/CART/')
 
 from algorithm_utils import StateData, set_algorithms_output_data
 
-def main():
+def main(args):
+    sys.argv =args
     # Parse arguments
     parser = ArgumentParser()
     parser.add_argument('-prev_state_pkl', required=True,

@@ -12,60 +12,10 @@ sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath
 sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) + '/CART/')
 
 from algorithm_utils import StateData
-from cart_lib import Cart_Glob2Loc_TD, CartIter2_Loc2Glob_TD, DataFrameFilter
-from cart_steps import cart_step_2_local
+from cart_lib import Cart_Glob2Loc_TD, CartIter2_Loc2Glob_TD, cart_step_2_local
 
-#
-# def node_computations(dataFrame, colNames, activePath, className, CategoricalVariables, flag):
-#     if flag == "classNumbers":
-#         classNumbersJ = dict()
-#     elif flag == "statistics":
-#         statisticsJ = dict()
-#
-#     for colName in colNames:
-#         df = dataFrame[[colName,className]]
-#         thresholds =  activePath["thresholdsJ"][colName]
-#         if flag == "classNumbers":
-#             countsLeft = [None]*len(thresholds)
-#             countsRight = [None]*len(thresholds)
-#         elif flag == "statistics":
-#             ssLeft = [None]*len(thresholds)
-#             ssRight = [None]*len(thresholds)
-#             nnLeft = [None]*len(thresholds)
-#             nnRight = [None]*len(thresholds)
-#
-#         for i in xrange(len(thresholds)):
-#             if colName not in CategoricalVariables:
-#                 dfLeft = df.loc[df[colName] <= thresholds[i]]
-#                 dfRight = df.loc[df[colName] > thresholds[i]]
-#             elif colName in CategoricalVariables:
-#                 dfLeft = df.loc[df[colName] in thresholds[i]['left']]
-#                 dfRight = df.loc[df[colName] in thresholds[i]['right']]
-#
-#             if flag == "classNumbers":
-#                 countsLeft[i] = json.loads(dfLeft.groupby(className)[className].count().to_json())
-#                 countsRight[i] = json.loads(dfRight.groupby(className)[className].count().to_json())
-#             elif flag == "statistics":
-#                 ssLeft[i] = np.sum(dfLeft[className])
-#                 ssRight[i] = np.sum(dfRight[className])
-#                 nnLeft[i] = len(dfLeft[className])
-#                 nnRight[i] = len(dfRight[className])
-#
-#         if flag == "classNumbers":
-#             classNumbersJ[colName]= { "countsLeft" : countsLeft, "countsRight": countsRight }
-#         elif flag == "statistics":
-#             statisticsJ[colName] =  { "ssLeft" : ssLeft, "ssRight" : ssRight,  "nnLeft" : nnLeft, "nnRight" : nnRight}
-#
-#     if flag == "classNumbers":
-#         return classNumbersJ
-#     if flag == "statistics":
-#         return statisticsJ
-
-
-
-
-
-def main():
+def main(args):
+    sys.argv =args
     # Parse arguments
     parser = ArgumentParser()
     parser.add_argument('-cur_state_pkl', required=True,

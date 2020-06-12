@@ -1,7 +1,180 @@
 
 {
     "variables": [
-        {
+      {
+          "code": "IdForTesting",
+          "description": "",
+          "label": "IdForTesting",
+          "methodology": "Concrete_data",
+          "type": "real",
+          "sql_type": "real",
+          "isCategorical": false
+      },
+      {
+          "code": "Cement",
+          "description": "",
+          "label": "Cement",
+          "methodology": "Concrete_data",
+          "type": "real",
+          "sql_type": "real",
+          "isCategorical": false
+      },
+      {
+          "code": "BlastFurnaceSlag",
+          "description": "",
+          "label": "BlastFurnaceSlag",
+          "methodology": "Concrete_data",
+          "type": "real",
+          "sql_type": "real",
+          "isCategorical": false
+      },
+      {
+          "code": "FlyAsh",
+          "description": "",
+          "label": "FlyAsh",
+          "methodology": "Concrete_data",
+          "type": "real",
+          "sql_type": "real",
+          "isCategorical": false
+      },
+      {
+          "code": "Water",
+          "description": "",
+          "label": "Water",
+          "methodology": "Concrete_data",
+          "type": "real",
+          "sql_type": "real",
+          "isCategorical": false
+      },
+      {
+          "code": "Superplasticizer",
+          "description": "",
+          "label": "Superplasticizer",
+          "methodology": "Concrete_data",
+          "type": "real",
+          "sql_type": "real",
+          "isCategorical": false
+      },
+      {
+          "code": "CoarseAggregate",
+          "description": "",
+          "label": "CoarseAggregate",
+          "methodology": "Concrete_data",
+          "type": "real",
+          "sql_type": "real",
+          "isCategorical": false
+      },
+      {
+          "code": "FineAggregate",
+          "description": "",
+          "label": "FineAggregate",
+          "methodology": "Concrete_data",
+          "type": "real",
+          "sql_type": "real",
+          "isCategorical": false
+      },
+
+      {
+          "code": "ConcreteCompressiveStrength",
+          "description": "",
+          "label": "ConcreteCompressiveStrength",
+          "methodology": "Concrete_data",
+          "type": "real",
+          "sql_type": "real",
+          "isCategorical": false
+      },
+      {
+          "code": "Pregnancies",
+          "description": "",
+          "label": "Pregnancies",
+          "methodology": "Diabetes",
+          "type": "real",
+          "sql_type": "real",
+          "isCategorical": false
+      },
+      {
+          "code": "Glucose",
+          "description": "",
+          "label": "Glucose",
+          "methodology": "Diabetes",
+          "type": "real",
+          "sql_type": "real",
+          "isCategorical": false
+      },
+      {
+          "code": "BloodPressure",
+          "description": "",
+          "label": "BloodPressure",
+          "methodology": "Diabetes",
+          "type": "real",
+          "sql_type": "real",
+          "isCategorical": false
+      },
+      {
+          "code": "SkinThickness",
+          "description": "",
+          "label": "SkinThickness",
+          "methodology": "Diabetes",
+          "type": "real",
+          "sql_type": "real",
+          "isCategorical": false
+      },
+      {
+          "code": "Insulin",
+          "description": "",
+          "label": "Insulin",
+          "methodology": "Diabetes",
+          "type": "real",
+          "sql_type": "real",
+          "isCategorical": false
+      },
+      {
+          "code": "BMI",
+          "description": "",
+          "label": "BMI",
+          "methodology": "Diabetes",
+          "type": "real",
+          "sql_type": "real",
+          "isCategorical": false
+      },
+      {
+          "code": "DiabetesPedigreeFunction",
+          "description": "",
+          "label": "DiabetesPedigreeFunction",
+          "methodology": "Diabetes",
+          "type": "real",
+          "sql_type": "real",
+          "isCategorical": false
+      },
+      {
+          "code": "Age",
+          "description": "",
+          "label": "Age",
+          "methodology": "Diabetes",
+          "type": "real",
+          "sql_type": "real",
+          "isCategorical": false
+      },
+      {
+          "code": "Outcome",
+          "description": "",
+          "enumerations": [
+              {
+                  "code": "0",
+                  "label": "0"
+              },
+              {
+                  "code": "1",
+                  "label": "1"
+              }
+          ],
+          "label": "Outcome",
+          "methodology": "Diabetes",
+          "type": "binominal",
+          "sql_type": "text",
+          "isCategorical": true
+      },
+      {
             "code": "cb_var1",
             "description": "",
             "enumerations": [
@@ -753,6 +926,26 @@
             "sql_type": "text",
             "description": "Variable used to differentiate datasets",
             "enumerations": [
+              {
+                  "code": "concrete_data_testing_GS",
+                  "label": "concrete_data_testing_GS"
+              },
+              {
+                  "code": "concrete_data_testing",
+                  "label": "concrete_data_testing"
+              },
+              {
+                  "code": "concrete_data_training",
+                  "label": "concrete_data_training"
+              },
+              {
+                  "code": "diabetes_training",
+                  "label": "diabetes_training"
+              },
+              {
+                    "code": "diabetes_testing",
+                    "label": "diabetes_testing"
+                },
                 {
                     "code": "adni",
                     "label": "ADNI"
