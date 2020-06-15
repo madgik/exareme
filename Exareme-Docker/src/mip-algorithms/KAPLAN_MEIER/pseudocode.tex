@@ -60,7 +60,7 @@
                 \Procedure{Global}{$\{\mathbf{e}^{(l)}, \mathbf{d}^{(l)}\}$}
                         \State $e \gets \bigoplus_l \mathbf{e}^{(l)}$ \Comment{Concatenation of partial results}
                         \State $d \gets \bigoplus_l \mathbf{d}^{(l)}$
-                        \State $\texttt{survival\_curve} = \texttt{KaplanMeierFitter.fit}(e, d)$
+                        \State $\texttt{survival\_curve} = \texttt{KaplanMeierFitter.fit}(e, d)$ \Comment{Using procedure from \texttt{lifelines} library}
                         \State \textbf{return} \texttt{survival\_curve}
                 \EndProcedure
         \end{algorithmic}
