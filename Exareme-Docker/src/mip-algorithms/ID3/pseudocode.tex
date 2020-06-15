@@ -1,0 +1,50 @@
+% Set the Page Layout
+\documentclass[10pt]{article}
+\usepackage[inner = 2.0cm, outer = 2.0cm, top = 2.0cm, bottom = 2.0cm]{geometry}
+
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+
+\DeclareMathOperator*{\log1}{log}
+
+% Remove the Numbering of the Algorithm
+\usepackage{caption}
+\DeclareCaptionLabelFormat{algnonumber}{Algorithm}
+\captionsetup[algorithm]{labelformat = algnonumber}
+
+\begin{document}
+\begin{algorithm}
+	\caption{\underline{\textsc{ID3 Train}}}
+	\label{id3}
+	\begin{algorithmic}[1] % The number tells where the line numbering should start
+		\Procedure{Global1}{}
+				\State $\texttt{Tree} \gets \{\}$
+		\EndProcedure
+		\Loop
+			\Procedure{Local1}{${X}^{(l)}, y^{(l)}$ } \Comment{run for $l = 1, \dots, L$}
+					\State For each attribute \textbf{return} $\text{count}^{(l)}(x | y=C_m)$ for all $x$ values and all classes
+			\EndProcedure
+			\Procedure{Global2}{$\{ \text{count}^{(l)}(x| y=C_m) \} $}
+					\State Sum local counts to obtain corresponding global counts
+					\State Find data partition maximizing the Information Gain ($IG$) with probabilities computed from counts
+					\State Add corresponding node to \texttt{Tree}
+					\State \textbf{return} \texttt{Tree}
+			\EndProcedure
+			\Procedure{Local2}{${X}^{(l)}$, \texttt{Tree}}
+					\State Split ${X}^{(l)}$ dataset according to \texttt{Tree}
+			\EndProcedure
+		\EndLoop
+	\end{algorithmic}
+\end{algorithm}
+
+The information gain is defined as  $IG = H(y) - \sum_{\text{values of } x} p(x) H(y | x)$
+
+where  $H(y | x) = - \sum_{\text{values of } y} p(y|x) \log1 p(y|x)$
+
+The first term in IG is constant so we only need to compute the second for the minimization.
+
+
+\end{document}

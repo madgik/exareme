@@ -1,0 +1,22 @@
+\documentclass[10pt]{article}
+\usepackage[inner = 2.0cm, outer = 2.0cm, top = 2.0cm, bottom = 2.0cm]{geometry}
+\usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\DeclareMathOperator*{\argmax}{argmax}
+
+\begin{document}
+\begin{algorithm}
+	\caption{\underline{\textsc{Naive Bayes Predict}}}
+	\label{naivebayes_pred}
+	\begin{algorithmic}[1] % The number tells where the line numbering should start
+			\Procedure{Local}{$\mathbf{q}$, likelihood terms} \Comment{run for $l = 1, \dots, L$}
+					\State $\hat{y} \gets \argmax_k \prod_l p(q_l | C_k)$
+					\State \textbf{return} $\hat{y}$
+			\EndProcedure
+	\end{algorithmic}
+\end{algorithm}
+\end{document}

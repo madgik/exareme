@@ -1,0 +1,31 @@
+\documentclass[10pt]{article}
+\usepackage[inner = 2.0cm, outer = 2.0cm, top = 2.0cm, bottom = 2.0cm]{geometry}
+\usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\DeclareMathOperator*{\mean}{mean}
+\DeclareMathOperator*{\std}{std}
+
+\begin{document}
+\begin{algorithm}
+        \caption{\underline{\textsc{One Sample T-test }}}
+        \label{naivebayes_train}
+        \begin{algorithmic}[1] % The number tells where the line numbering should start
+                \Procedure{Local1}{${x_j^{(l)}}, hypothesis$} \Comment{run for $l = 1, \dots, L$}
+					\State $n^{(l)} \gets \text{count}^{(l)}(x_j^{(l)})$
+                    \State $s_x^{(l)} \gets \sum_j x_j^{(l)}$
+                    \State $s_{xx}^{(l)} \gets \sum_j {(x_j^{(l)})^2}$
+                    \State \textbf{return} $(n^{(l)}, s_x^{(l)}, s_{xx}^{(l)})$
+                \EndProcedure
+                \Procedure{Global}{\{$n^{(l)}, s_x^{(l)}, s_{xx}^{(l)}\}, \mu$}
+                     \State $n \gets \sum_l n^{(l)}$
+                     \State $s_x \gets \sum_l s_x^{(l)}$
+                     \State $s_{xx} \gets \sum_l s_{xx}^{(l)}$
+                     \State Compute and output statistics, p-values
+                \EndProcedure
+        \end{algorithmic}
+\end{algorithm}
+\end{document}
