@@ -80,3 +80,7 @@ tasks.py
 
 # tox
 .tox
+
+# vim related
+.vim/
+Session.vim
