@@ -15,4 +15,4 @@ Our naming convention is that procedures run on Workers are given the adjective 
 
 <b><h4>Federated k-Fold Cross Validation</b></h4>
 In k-Fold Cross Validation the dataset is random partitioned into k consecutive folds. Each fold is then used once as a validation while the k - 1 remaining folds form the training set.
-Federated k-Fold Cross Validation runs on Workers and it provides train/test indices that split local datasets in traininig/testing sets.
+Federated k-Fold Cross Validation runs on Workers and it provides train/test indices that split local datasets in training/testing sets.

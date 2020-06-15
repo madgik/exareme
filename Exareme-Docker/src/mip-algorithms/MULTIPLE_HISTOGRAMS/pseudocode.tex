@@ -18,7 +18,7 @@
 						\State $\mathbf{n_{j|{C_{x_j},C_{y_k}}}^{(l)}} \gets \text{count}({x_{j}}^{(l)}|{x_{j}}^{(l)}=C_{x_j}$ and ${y_{k}}^{(l)}=C_{y_k})$  for all $C_{x_j},C_{y_k}$ classes of ${x_{j}}^{(l)}$, ${y_{k}}^{(l)}$
 					\EndFor
 			\EndFor
-			\For {each continious attribute ${x_j}^{(l)}$}
+			\For {each continuous attribute ${x_j}^{(l)}$}
 					\State $\mathbf{min_j^{(l)}} \gets \min(x_j^{(l)})$
 					\State $\mathbf{max_j^{(l)}} \gets \max(x_j^{(l)})$
 					\State $\mathbf{n_j^{(l)}} \gets \text{count}(x_j^{(l)})$
@@ -38,7 +38,7 @@
 		\EndProcedure
 		\State {}
 		\Procedure{Local2}{${X}^{(l)}, Y^{(l)},b,\{min_j,max_j\}  $} \Comment{run for $l = 1, \dots, L$}
-			\For {each continious attribute ${x_j}^{(l)}$ }
+			\For {each continuous attribute ${x_j}^{(l)}$ }
 				\State $\mathbf{h_{j}^{(l)}} \gets  Hist({x_j}^{(l)}, range = [min_j,max_j], bins =b)$  \Comment{where $b$ is defined by the user}
 									\State\Comment{where $Hist$ computes the local histogram}
 				\For { each categorical attribute ${y_j}^{(l)}$}
@@ -49,7 +49,7 @@
 		\EndProcedure
 		\State {}
 		\Procedure{Global2}{\{${h}_{(.)}^{(l)}$\}}
-			\For {each continious attribute ${x_j}^{(l)}$ }
+			\For {each continuous attribute ${x_j}^{(l)}$ }
 				\State Sum local ${h}_{(.)}^{(l)}$ to obtain global $ h_{(.)}$
 			\EndFor
 			\For {each categorical attribute ${x_j}$}
