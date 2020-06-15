@@ -1,0 +1,71 @@
+% Set the Page Layout
+\documentclass[10pt]{article}
+\usepackage[inner = 2.0cm, outer = 2.0cm, top = 2.0cm, bottom = 2.0cm]{geometry}
+
+
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{mathtools}
+% Package to write pseudo-codes
+\usepackage{algorithm}
+
+% Remove the 'end' at the end of the algorithm
+\usepackage[noend]{algpseudocode}
+
+% Define Left Justified Comments
+\algnewcommand{\LeftComment}[1]{\Statex \(\triangleright\) #1}
+
+% New Operators
+\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\mean}{mean}
+\DeclareMathOperator*{\sigmoid}{sigmoid}
+\DeclareMathOperator*{\diag}{diag}
+
+% New commands
+\newcommand{\be}[1]{\begin{equation} \label{eq:#1}}
+\newcommand{\ee}{\end{equation}}
+\newcommand{\bea}[1]{\begin{eqnarray} \label{eq:#1}}
+\newcommand{\eea}{\end{eqnarray}}
+\newcommand{\ba}{\begin{array}}
+\newcommand{\ea}{\end{array}}
+\newcommand{\eqRef}[1]{eq.~\eqref{eq:#1}}
+
+% Remove the Numbering of the Algorithm
+\usepackage{caption}
+\DeclareCaptionLabelFormat{algnonumber}{Algorithm}
+\captionsetup[algorithm]{labelformat = algnonumber}
+
+\begin{document}
+
+\pagenumbering{gobble}
+
+\begin{algorithm}
+
+        \caption{\underline{\textsc{Kaplan-Meier Estimator}}}
+        \label{kaplanmeier}
+        \begin{algorithmic}[1] % The number tells where the line numbering should start
+          \For{each Worker $l = 1, \dots, L$}
+                \Procedure{Local}{}
+                        \State For each patient assign a binary variable 
+                                $e = 1 \text{ if event occurs in the given time period}, 0 \text{ otherwise}$
+                        \State For each patient for which the event occurs record the time of first occurrence.
+                        \State Sort all events into one timeline and compute the duration between
+                                successive events $d$.
+                        \State Apply aggregation step: concentrate every \texttt{privacy\_threshold} events 
+                                to the last time in the group.
+                        \State \textbf{return} ${\mathbf{e}^{(l)}, \mathbf{d}^{(l)}}$
+                \EndProcedure
+          \EndFor
+                \Procedure{Global}{$\{\mathbf{e}^{(l)}, \mathbf{d}^{(l)}\}$}
+                        \State $e \gets \bigoplus_l \mathbf{e}^{(l)}$ \Comment{Concatenation of partial results}
+                        \State $d \gets \bigoplus_l \mathbf{d}^{(l)}$
+                        \State $\texttt{survival\_curve} = \texttt{KaplanMeierFitter.fit}(e, d)$ \Comment{Using procedure from \texttt{lifelines} library}
+                        \State \textbf{return} \texttt{survival\_curve}
+                \EndProcedure
+        \end{algorithmic}
+
+\end{algorithm}
+
+\end{document}
+
