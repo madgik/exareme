@@ -40,9 +40,9 @@
             "valueNotBlank": true,
             "valueMultiple": false,
             "valueType": "string",
-            "min": null,
-            "max": null,
-            "enumerations": [
+            "valueMin": null,
+            "valueMax": null,
+            "valueEnumerations": [
                 "internal",
                 "external"
             ]
@@ -56,9 +56,9 @@
             "valueNotBlank": true,
             "valueMultiple": false,
             "valueType": "integer",
-            "min": 1,
-            "max": 4,
-            "enumerations": null
+            "valueMin": 2,
+            "valueMax": 4,
+            "valueEnumerations": null
         },
         {
             "name": "confLevels",
@@ -79,9 +79,9 @@
             "valueNotBlank": true,
             "valueMultiple": false,
             "valueType": "real",
-            "min": 0,
-            "max": 1,
-            "enumerations": null
+            "valueMin": 0,
+            "valueMax": 1,
+            "valueEnumerations": null
         },
         {
             "name": "num_points",
@@ -92,9 +92,9 @@
             "valueNotBlank": true,
             "valueMultiple": false,
             "valueType": "integer",
-            "min": 10,
-            "max": 200,
-            "enumerations": null
+            "valueMin": 10,
+            "valueMax": 200,
+            "valueEnumerations": null
         },
         {
             "name": "dataset",
