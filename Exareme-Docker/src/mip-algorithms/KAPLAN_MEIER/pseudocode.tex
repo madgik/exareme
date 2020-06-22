@@ -48,19 +48,24 @@
           \For{each Worker $l = 1, \dots, L$}
                 \Procedure{Local}{}
                         \State For each patient assign a binary variable 
-                                $e = 1 \text{ if event occurs in the given time period}, 0 \text{ otherwise}$
-                        \State For each patient for which the event occurs record the time of first occurrence.
-                        \State Sort all events into one timeline and compute the duration between
-                                successive events $d$.
-                        \State Apply aggregation step: concentrate every \texttt{privacy\_threshold} events 
-                                to the last time in the group.
+                                $e = 1 \text{ if event occurs in the given time period}, 
+                                0 \text{ otherwise}$
+                        \State For each patient for which the event occurs record the time 
+                                of first occurrence.
+                        \State Sort all events into one timeline and compute the duration 
+                                between successive events $d$.
+                        \State Apply aggregation step: concentrate every 
+                                \texttt{privacy\_threshold} events to the last time in the group.
                         \State \textbf{return} ${\mathbf{e}^{(l)}, \mathbf{d}^{(l)}}$
                 \EndProcedure
           \EndFor
                 \Procedure{Global}{$\{\mathbf{e}^{(l)}, \mathbf{d}^{(l)}\}$}
-                        \State $e \gets \bigoplus_l \mathbf{e}^{(l)}$ \Comment{Concatenation of partial results}
+                        \State $e \gets \bigoplus_l \mathbf{e}^{(l)}$ 
+                                \Comment{Concatenation of partial results}
                         \State $d \gets \bigoplus_l \mathbf{d}^{(l)}$
-                        \State $\texttt{survival\_curve} = \texttt{KaplanMeierFitter.fit}(e, d)$ \Comment{Using procedure from \texttt{lifelines} library}
+                        \State $\texttt{survival\_curve} = 
+                                \texttt{KaplanMeierFitter.fit}(e, d)$ 
+                                \Comment{Using procedure from \texttt{lifelines} library}
                         \State \textbf{return} \texttt{survival\_curve}
                 \EndProcedure
         \end{algorithmic}

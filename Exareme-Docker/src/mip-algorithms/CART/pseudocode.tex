@@ -19,7 +19,7 @@
 \State {}
 			\Procedure{Local 1}{$X^{(l)}$} \Comment{run for $l = 1, \dots, L$}
 				\State $\text{Split dataset according to } \texttt{Tree}$
-				\For {$\text{each continious attribute } j \text{ of } X^{(l)}$}
+				\For {$\text{each continuous attribute } j \text{ of } X^{(l)}$}
 						\State $\mathbf{min}_j^{(l)} \gets \min(x_j^{(l)})$
 						\State $\mathbf{max}_j^{(l)} \gets \max(x_j^{(l)})$
 				\EndFor
@@ -35,11 +35,11 @@
 			\EndProcedure
 \State {}
 			\Procedure{Local 2}{${X}^{(l)}, y^{(l)}, \mathbf{min}_j, \mathbf{max}_j$} \Comment{run for $l = 1, \dots, L$}
-				\For {$\text{each continious attribute } j \text{ of } X^{(l)}$}
+				\For {$\text{each continuous attribute } j \text{ of } X^{(l)}$}
 					\State
 					\State $\mathbf{T_{j}}\gets [ \mathbf{min}_j,\mathbf{min}_j+d_j,\mathbf{min}_j+2d_j,\cdots, \mathbf{max}_j ] \text{ where } {d_j} \gets \frac{(\mathbf{max}_j - \mathbf{min}_j)}{q}$
 					\State \Comment{\text{where} $\mathbf{T_{j}}$ \text{are the split points}}
-					\If {$\text{y is continious attribute}$}
+					\If {$\text{y is continuous attribute}$}
 						\State $\mathbf{nLeft}_{j}^{(l)} \gets  [ \text{ count}{(x_{ij}^{(l)} \leq t)} \text{, for t} \in \mathbf{T_{j}} \text{ }]$
 						\State $\mathbf{nRight}_{j}^{(l)} \gets [ \text{ count}{(x_{ij}^{(l)} > t)} \text{, for t} \in \mathbf{T_{j}} \text{ }]$
 						\State $\mathbf{sLeft}_{j}^{(l)} \gets  [ \text{ }\sum{(x_{ij}^{(l)} \leq t)} \text{, for t} \in \mathbf{T_{j}} \text{ }]$
@@ -54,7 +54,7 @@
 					\State $\mathbf{T_{j}}\gets [ \{\{t_{k1}\},\{t_{k2}\}\}, \text{ for all possible binary splits } k ].$
 					\State\Comment{ $\text{where } k $\text{ splits the domain of } j $\text{ into two sets \{} t_{k1} \text{\} and \{} t_{k2} \text{\}} $}
 
-					\If {$\text{y is continious attribute}$}
+					\If {$\text{y is continuous attribute}$}
 						\State $\mathbf{nLeft}_{j}^{(l)} \gets  [ \text{ count}{(x_{ij}^{(l)} \in \{t_{k1}\})} \text{, for all } k ]$
 						\State $\mathbf{nRight}_{j}^{(l)} \gets [ \text{ count}{(x_{ij}^{(l)} \in \{t_{k2}\})} \text{, for all } k ]$
 						\State $\mathbf{sLeft}_{j}^{(l)} \gets  [ \text{ }\sum{(x_{ij}^{(l)} \in \{t_{k1}\})} \text{, for all } k ]$
@@ -70,7 +70,7 @@
 \State {}
 			\Procedure{Global 2}{$\{{nLeft}_{C_m,j}^{(l)},{nRight}_{C_m,j}^{(l)},{nLeft}_{j}^{(l)},{nRight}_{j}^{(l)},{sLeft}_{j}^{(l)},{sRight}_{j}^{(l)}\}$}
 				\State \text{Sum local counts to obtain corresponding global counts}
-				\If {\text{y is continious attribute}}
+				\If {\text{y is continuous attribute}}
 					\State $\mathbf{meanLeft_j} \gets \frac{sLeft_j}{nLeft_j}$
 					\State $\mathbf{meanRight_j} \gets \frac{sRight_j}{nRight_j}$
 				\EndIf
@@ -78,7 +78,7 @@
 			\EndProcedure
 \State {}
 		\Procedure{Local 3}{${X}^{(l)}, y^{(l)}, \{meanLeft_j, meanRight_j\}$ } \Comment{run for $l = 1, \dots, L$}
-			\If {$\text{y is continious attribute}$}
+			\If {$\text{y is continuous attribute}$}
 				\State $\mathbf{mseLeft}_{j}^{(l)} \gets \sum ({{y}_{i}^{(l)} - meanLeft_j})^2$
 				\State $\mathbf{mseRight}_{j}^{(l)} \gets \sum( {{y}_{i}^{(l)} - meanRight_j})^2$
 			\EndIf
@@ -93,7 +93,7 @@
 				\State $\mathbf{GiniRight_j(t)} \gets 1 - \sum{(\frac{nRight_{C_m,j}(t)}{n})}^2$
 				\State $\mathbf{Gain_{j}(t)} \gets \frac{nLeft_j(t)}{n} GiniLeft_j(t) + \frac{nRight_j(t)}{n} GiniRight(t) $
 			\EndIf
-			\If {\text{y is continious attribute}}
+			\If {\text{y is continuous attribute}}
 				\State $\mathbf{n} \gets nRight_{j}+nLeft_{j}$
 				\State $\mathbf{Gain_{j}(t)} \gets ({mseLeft}_{j}+{mseRight}_{j})/ n$
 			\EndIf
