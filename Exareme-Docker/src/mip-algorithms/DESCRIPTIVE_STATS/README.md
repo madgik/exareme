@@ -21,8 +21,8 @@ whereas those running on Master are called _global_.
 #### Algorithm Description
 
 This is a simple algorithm for computing some basic descriptive statistics for the selected
-variables. It is used whenever the user selects a group of variabes and produces a summary
-table for those variabes. The algorithm operates by first computing some aggregates (sums, 
+variables. It is used whenever the user selects a group of variables and produces a summary
+table for those variables. The algorithm operates by first computing some aggregates (sums, 
 counts, bounds, etc.) on every Worker and then merging these aggregates on Master in order
 to compute the relevant statistics.
 
