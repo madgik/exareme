@@ -73,3 +73,6 @@ tests/data/output
 
 # Hypothesis db
 *.hypothesis/*
+
+# Test data folders
+**/tests/data/
