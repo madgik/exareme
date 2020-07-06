@@ -75,4 +75,4 @@ tests/data/output
 *.hypothesis/*
 
 # Test data folders
-/mip-algorithms/tests/data/
+**/tests/data/
