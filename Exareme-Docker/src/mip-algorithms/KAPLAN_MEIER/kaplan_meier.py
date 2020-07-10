@@ -2,7 +2,7 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from datetime import datetime
+from typing import List
 
 import numpy as np
 from lifelines import KaplanMeierFitter
@@ -14,22 +14,34 @@ from mipframework.highcharts import SurvivalCurves
 
 from utils.algorithm_utils import make_json_raw, ExaremeError
 
+TIMEPOINTS = [
+    "BL",
+    "FU1",
+    "FU2",
+]  # TODO replace with universal ordinal variable [0, 1, 2, ...]
+
 
 class KaplanMeier(Algorithm):
     def __init__(self, cli_args):
-        super(KaplanMeier, self).__init__(__file__, cli_args, intercept=False)
+        super(KaplanMeier, self).__init__(
+            __file__, cli_args, intercept=False, privacy=False
+        )
 
     def local_(self):
         bin_var = self.parameters.y[0]
         control_variable = self.parameters.x[0]
         outcome_pos = self.parameters.outcome_pos
         outcome_neg = self.parameters.outcome_neg
-        total_duration = self.parameters.total_duration
+        total_duration = len(TIMEPOINTS) - 1
 
-        data = self.data.db.read_longitudinal_data_from_db(self._args)
+        data = self.data.db.read_data_from_db(
+            self._args, "subjectcode", "participant_group", "timepoint",
+        )
+        # data = self.data.db.read_longitudinal_data_from_db(self._args)
         data.replace("", np.nan, inplace=True)
         data = data.dropna()
         data = data[(data[bin_var] == outcome_pos) | (data[bin_var] == outcome_neg)]
+        data = data[data["participant_group"] == "compliant"]
         if len(data) < PRIVACY_MAGIC_NUMBER:
             raise PrivacyError("Query results in illegal number of datapoints.")
         levels = list(set(data[control_variable]))
@@ -132,12 +144,6 @@ class KaplanMeier(Algorithm):
             kmf = KaplanMeierFitter()
             kmf.fit(durations=durations, event_observed=events)
 
-            # *****************************************
-            # kmf.plot()
-            # plt.xlim(0, 3*365)  # XXX for local runs
-            # plt.show()
-            # *****************************************
-
             survival_function_dict[key] = list(kmf.survival_function_.iloc[:, 0])
             confidence_interval_dict[key] = kmf.confidence_interval_.iloc[
                 1:, :
@@ -146,6 +152,16 @@ class KaplanMeier(Algorithm):
             ci_tmp.extend(confidence_interval_dict[key])
             confidence_interval_dict[key] = ci_tmp
             timeline_dict[key] = kmf.timeline.tolist()
+
+            # Remove nans from result
+            confidence_interval_dict[key] = replace_nans_with_nones(
+                confidence_interval_dict[key]
+            )
+            timeline_dict[key] = replace_nans_with_nones(timeline_dict[key])
+
+        # Yet another temp hack for mapping visit numbers to labels
+        for key, tl in timeline_dict.items():
+            timeline_dict[key] = [TIMEPOINTS[int(v)] for v in tl]
 
         self.result = AlgorithmResult(
             make_json_raw(
@@ -159,6 +175,7 @@ class KaplanMeier(Algorithm):
                     survival_function_dict,
                     confidence_interval_dict,
                     control_variable,
+                    TIMEPOINTS,
                 )
             ],
         )
@@ -167,12 +184,10 @@ class KaplanMeier(Algorithm):
 def build_timelines(df, time_axis, var):
     timelines = []
     for g in df.groupby("subjectcode"):
-        dates = [
-            datetime.strptime(s.replace(" 0:00", ""), "%Y-%m-%d")
-            for s in g[1][time_axis].tolist()
-        ]
-        deltas_in_days = [(d - min(dates)).days for d in dates]
-        timeline = (deltas_in_days, g[1][var].tolist())
+        timeline = (
+            list(range(len(TIMEPOINTS))),
+            [g[1][g[1]["timepoint"] == tp][var].iloc[0] for tp in TIMEPOINTS],
+        )
         timelines.append(timeline)
 
     return timelines
@@ -196,6 +211,14 @@ def convert_timelines_to_events(total_duration, outcome_pos, timelines):
     return durations, events
 
 
+def replace_nans_with_nones(lst):
+    # import pdb; pdb.set_trace()
+    if isinstance(lst[0], List):
+        return [replace_nans_with_nones(item) for item in lst]
+    else:
+        return [None if np.isnan(item) else item for item in lst]
+
+
 if __name__ == "__main__":
     import time
     from mipframework import create_runner
@@ -208,7 +231,8 @@ if __name__ == "__main__":
         "-pathology",
         "dementia",
         "-dataset",
-        "alzheimer_fake_cohort",
+        # "alzheimer_fake_cohort",
+        "aachen_longitudinal",
         "-filter",
         """
         {
@@ -235,9 +259,9 @@ if __name__ == "__main__":
         }
         """,
         "-outcome_pos",
-        "MCI",
-        "-outcome_neg",
         "AD",
+        "-outcome_neg",
+        "MCI",
         "-total_duration",
         "1100",
     ]

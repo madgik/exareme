@@ -361,6 +361,7 @@ class SurvivalCurves:
         survival_function_dict,
         confidence_interval_dict,
         control_variable,
+        xcategories,
     ):
         global colors_dark, colors_light
         self.survival_function_dict = survival_function_dict
@@ -377,6 +378,7 @@ class SurvivalCurves:
         for i, key in enumerate(self.timeline_dict.keys()):
             self.dark_colors[key] = colors_dark[i]
         self.control_variable = control_variable
+        self.xcategories = xcategories
 
     def render(self):
         return {
@@ -386,10 +388,10 @@ class SurvivalCurves:
                 "scrollablePlotArea": {"minWidth": 600, "scrollPositionX": 1},
             },
             "title": {"text": "Survival curve"},
-            "xAxis": {"title": {"text": "Days since first visit"}},
+            "xAxis": {"title": {"text": "Visit"}, "categories": self.xcategories},
             "plotOptions": {"arearange": {"step": "left"}},
             "yAxis": {"title": {"text": "Survival Probability"}},
-            "tooltip": {"crosshairs": True, "shared": True,},
+            "tooltip": {"crosshairs": True, "shared": True},
             "legend": {
                 "align": "left",
                 "verticalAlign": "middle",

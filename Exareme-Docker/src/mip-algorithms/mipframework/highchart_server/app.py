@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from flask import Flask, render_template
 
 from mipframework.hichart_server.algorun import get_algorithm_result
@@ -28,7 +30,7 @@ charts_info = {
         "title": "Logistic Regression Confusion Matrix",
         "url": "logistic_confmat",
     },
-    "logistic_roc": {"title": "Logistic Regression ROC", "url": "logistic_roc",},
+    "logistic_roc": {"title": "Logistic Regression ROC", "url": "logistic_roc"},
     "calibration_belt": {"title": "Calibration Belt", "url": "calibration_belt"},
     "kaplan_meier_survival": {
         "title": "Kaplan-Meier Survival Curves",
@@ -253,7 +255,7 @@ def kaplan_meier_survival():
         "-pathology",
         "dementia",
         "-dataset",
-        "alzheimer_fake_cohort",
+        "aachen_longitudinal",
         "-filter",
         """
         {

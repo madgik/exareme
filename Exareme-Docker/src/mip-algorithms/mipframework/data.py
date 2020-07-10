@@ -66,7 +66,6 @@ class AlgorithmData(object):
         else:
             if self.full.dropna().shape[0] == 0:
                 return pd.DataFrame(), None
-            #           import sys; sys.stdout = sys.__stdout__; import pdb; pdb.set_trace()
             variables = dmatrix(formula, self.full, return_type="dataframe")
             return variables, None
 
@@ -133,10 +132,12 @@ class DataBase(object):
         return Table(table_name, self.sqla_md, autoload=True)
 
     @logged
-    def read_data_from_db(self, args):
+    def read_data_from_db(self, args, *extra_columns):
         var_names = list(args.y) + ["dataset"]
         if hasattr(args, "x") and args.x:
             var_names.extend(args.x)
+        if extra_columns:
+            var_names.extend(extra_columns)
         data = self.select_vars_from_data(
             var_names=var_names, datasets=args.dataset, filter_rules=args.filter
         )

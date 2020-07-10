@@ -81,8 +81,6 @@ def patients():
             apoe4,
             "alzheimer_fake_cohort",
         )
-        # if random.random() < 0.01:
-        #     break
 
 
 def cohort(num_patients):
