@@ -8,20 +8,20 @@
 
 # db files
 *.db
-!mipframework/runner/dbs/datasets.db
-!mipframework/runner/dbs/1LocalDBs/local_dataset0.db
-!mipframework/runner/dbs/10LocalDBs/local_dataset0.db
-!mipframework/runner/dbs/10LocalDBs/local_dataset1.db
-!mipframework/runner/dbs/10LocalDBs/local_dataset2.db
-!mipframework/runner/dbs/10LocalDBs/local_dataset3.db
-!mipframework/runner/dbs/10LocalDBs/local_dataset4.db
-!mipframework/runner/dbs/10LocalDBs/local_dataset5.db
-!mipframework/runner/dbs/10LocalDBs/local_dataset6.db
-!mipframework/runner/dbs/10LocalDBs/local_dataset7.db
-!mipframework/runner/dbs/10LocalDBs/local_dataset8.db
-!mipframework/runner/dbs/10LocalDBs/local_dataset9.db
-!mipframework/runner/dbs/2LocalDBs/local_dataset0.db
-!mipframework/runner/dbs/2LocalDBs/local_dataset1.db
+#!mipframework/runner/dbs/datasets.db
+#!mipframework/runner/dbs/1LocalDBs/local_dataset0.db
+#!mipframework/runner/dbs/10LocalDBs/local_dataset0.db
+#!mipframework/runner/dbs/10LocalDBs/local_dataset1.db
+#!mipframework/runner/dbs/10LocalDBs/local_dataset2.db
+#!mipframework/runner/dbs/10LocalDBs/local_dataset3.db
+#!mipframework/runner/dbs/10LocalDBs/local_dataset4.db
+#!mipframework/runner/dbs/10LocalDBs/local_dataset5.db
+#!mipframework/runner/dbs/10LocalDBs/local_dataset6.db
+#!mipframework/runner/dbs/10LocalDBs/local_dataset7.db
+#!mipframework/runner/dbs/10LocalDBs/local_dataset8.db
+#!mipframework/runner/dbs/10LocalDBs/local_dataset9.db
+#!mipframework/runner/dbs/2LocalDBs/local_dataset0.db
+#!mipframework/runner/dbs/2LocalDBs/local_dataset1.db
 
 *.pkl
 
