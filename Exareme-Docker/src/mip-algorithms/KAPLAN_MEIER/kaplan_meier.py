@@ -212,7 +212,6 @@ def convert_timelines_to_events(total_duration, outcome_pos, timelines):
 
 
 def replace_nans_with_nones(lst):
-    # import pdb; pdb.set_trace()
     if isinstance(lst[0], List):
         return [replace_nans_with_nones(item) for item in lst]
     else:

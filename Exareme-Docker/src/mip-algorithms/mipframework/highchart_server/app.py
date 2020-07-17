@@ -2,7 +2,7 @@
 
 from flask import Flask, render_template
 
-from mipframework.hichart_server.algorun import get_algorithm_result
+from mipframework.highchart_server.algorun import get_algorithm_result
 
 from PCA import PCA
 from PEARSON_CORRELATION import Pearson
