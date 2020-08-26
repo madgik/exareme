@@ -39,16 +39,16 @@ deleteKeysFromConsul () {
 transformCsvToDB () {
 	# Both Master and Worker should transform the csvs to sqlite db files
 	# Removing all previous .db files from the DOCKER_DATA_FOLDER
-	echo "Deleting previous db files. "
+	echo "$date Deleting previous db files. "
 	rm -rf ${DOCKER_DATA_FOLDER}/**/*.db
 
-	echo "Parsing the csv files in " ${DOCKER_DATA_FOLDER} " to db files. "
+	echo "$date Parsing the csv files in " ${DOCKER_DATA_FOLDER} " to db files. "
 	python ./convert-csv-dataset-to-db.py -f ${DOCKER_DATA_FOLDER} -t ${1}
 	#Get the status code from previous command
 	py_script=$?
 	#If status code != 0 an error has occurred
 	if [[ ${py_script} -ne 0 ]]; then
-		 echo "Script: \"convert-csv-dataset-to-db.py\" exited with error." >&2
+		 echo "$date Script: \"convert-csv-dataset-to-db.py\" exited with error." >&2
 		 exit 1
 	fi
 }
@@ -82,10 +82,11 @@ exit 0
 }
 
 mkdir -p  /tmp/demo/db/
+date=`date +%F' '%T`
 
-echo "Strarting Madis Server..."
+echo "Starting Madis Server..."
 python /root/madisServer/MadisServer.py &
-echo "Madis Server started"
+echo "Madis Server started."
 
 #This is the Worker
 if [[ "${FEDERATION_ROLE}" != "master" ]]; then
@@ -94,29 +95,29 @@ if [[ "${FEDERATION_ROLE}" != "master" ]]; then
 	MY_IP=$(/sbin/ifconfig eth0 | grep "inet" | awk -F: '{print $2}' | cut -d ' ' -f 1)
 
 	#Try accessing Consul[key-value store]
-	echo -e "\nWorker node["${NODE_NAME}","${MY_IP}"] trying to connect with Consul[key-value store]"
+	echo -e "\n$date Worker node["${NODE_NAME}","${MY_IP}"] trying to connect with Consul[key-value store]"
 	n=0
 	#Wait until Consul [key-value store] is up and running
 	while [[ "$(curl -s ${CONSULURL}/v1/health/state/passing | jq -r '.[].Status')" != "passing" ]]; do
-		echo -e "\nWorker node["${NODE_NAME}","${MY_IP}"] trying to connect with Consul[key-value store]"
+		echo -e "\n$date Worker node["${NODE_NAME}","${MY_IP}"] trying to connect with Consul[key-value store]"
 		sleep 2
 		n=$((${n} + 1))
 		#After 4 attempts-Show error
 		if [[ ${n} -ge 5 ]]; then
-			echo -e "\nConsul[key-value store] may not be initialized or Worker node["${NODE_NAME}","${MY_IP}"] can not contact Consul[key-value store]"
+			echo -e "\n$date Consul[key-value store] may not be initialized or Worker node["${NODE_NAME}","${MY_IP}"] can not contact Consul[key-value store]"
 			exit 1  #Simple exit 1. Exareme is not up yet
 		fi
 	done
 
 	#Try retrieve Master's IP from Consul[key-value store]
-	echo -e "Retrieving Master's info from Consul[key-value store]"
+	echo -e "$date Retrieving Master's info from Consul[key-value store]"
 	n=0
 	while [[ "$(curl -s -o  /dev/null -i -w "%{http_code}\n" ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/?keys)" != "200" ]]; do
 		sleep 5
 		n=$((${n} + 1))
-		echo -e "Retrieving Master's info from Consul[key-value store]"
+		echo -e "$date Retrieving Master's info from Consul[key-value store]"
 		if [[ ${n} -ge 30 ]]; then
-			echo "Is Master node initialized? Check Master's logs. Terminating Worker node["${NODE_NAME}","${MY_IP}"]"
+			echo "$date Is Master node initialized? Check Master's logs. Terminating Worker node["${NODE_NAME}","${MY_IP}"]"
 			exit 1
 		fi
 	done
@@ -129,16 +130,16 @@ if [[ "${FEDERATION_ROLE}" != "master" ]]; then
 	transformCsvToDB "worker"
 
 	. ./start-worker.sh
-	echo "Worker node["${MY_IP}","${NODE_NAME}]" trying to connect with Master node["${MASTER_IP}","${MASTER_NAME}"]"
+	echo "$date Worker node["${MY_IP}","${NODE_NAME}]" trying to connect with Master node["${MASTER_IP}","${MASTER_NAME}"]"
 	while [[ ! -f /var/log/exareme.log ]]; do
-		echo "Worker node["${MY_IP}","${NODE_NAME}]" trying to connect with Master node["${MASTER_IP}","${MASTER_NAME}"]"
+		echo "$date Worker node["${MY_IP}","${NODE_NAME}]" trying to connect with Master node["${MASTER_IP}","${MASTER_NAME}"]"
 		sleep 1
 	done
-	echo "Waiting to establish connection for Worker node["${MY_IP}","${NODE_NAME}"] with Master node["${MASTER_IP}","${MASTER_NAME}"]"
+	echo "$date Waiting to establish connection for Worker node["${MY_IP}","${NODE_NAME}"] with Master node["${MASTER_IP}","${MASTER_NAME}"]"
 	tail -f /var/log/exareme.log | while read LOGLINE
 	do
 		[[ "${LOGLINE}" == *"Worker node started."* ]] && pkill -P $$ tail
-		echo "Waiting to establish connection for Worker node["${MY_IP}","${NODE_NAME}"] with Master node["${MASTER_IP}","${MASTER_NAME}"]"
+		echo "$date Waiting to establish connection for Worker node["${MY_IP}","${NODE_NAME}"] with Master node["${MASTER_IP}","${MASTER_NAME}"]"
 		sleep 1
 
 		#Java's exception in StartWorker.java
@@ -148,21 +149,21 @@ if [[ "${FEDERATION_ROLE}" != "master" ]]; then
 	done
 
     if [[ ${ENVIRONMENT_TYPE} == "DEV" ]] || [[ ${ENVIRONMENT_TYPE} == "TEST" ]]; then
-        echo "Running set-local-datasets."
+        echo "$date Running set-local-datasets."
 	    ./set-local-datasets.sh
 
-        echo -e "\nDEV version: Worker node["${MY_IP}","${NODE_NAME}"] may be connected to Master node["${MASTER_IP}","${MASTER_NAME}"]"
+        echo -e "\n$date DEV version: Worker node["${MY_IP}","${NODE_NAME}"] may be connected to Master node["${MASTER_IP}","${MASTER_NAME}"]"
         curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_ACTIVE_WORKERS_PATH}/${NODE_NAME} <<< ${MY_IP}
     elif [[ ${ENVIRONMENT_TYPE} == "PROD" ]]; then
         #Health check for Worker. HEALTH_CHECK algorithm execution
-        echo "Health check for Worker node["${MY_IP}","${NODE_NAME}"]"
+        echo "$date Health check for Worker node["${MY_IP}","${NODE_NAME}"]"
 
         check="$(curl -s ${MASTER_IP}:9092/check/worker?IP_MASTER=${MASTER_IP}?IP_WORKER=${MY_IP})"
 
         if [[ -z ${check} ]]; then
             #If curl returned nothing, something is wrong. We can not know what is wrong though..
-            printf "Health_Check algorithm did not return anything...Switch ENVIRONMENT_TYPE to 'DEV' to see Error messages coming\
-from EXAREME..Exiting"
+            printf "%s Health_Check algorithm did not return anything...Switch ENVIRONMENT_TYPE to 'DEV' to see Error messages coming\
+from EXAREME..Exiting" "$date"
             exit 1
         else
             #check if what curl returned is JSON
@@ -170,22 +171,22 @@ from EXAREME..Exiting"
             #if NOT JSON an error code will be returned (!=0)
             check_code=$?
             if [[ ${check_code} -ne 0 ]]; then
-                echo "An error has occurred: " ${check} ".....Exiting"
+                echo "$date An error has occurred: " ${check} ".....Exiting"
                 exit 1
             else
                 getNames="$( echo ${check} | jq '.active_nodes')"
 
                 #Retrieve result as json. If $NODE_NAME exists in result, the algorithm run in the specific node
                 if [[ ${getNames} = *${NODE_NAME}* ]]; then
-                    echo -e "\nWorker node["${MY_IP}","${NODE_NAME}"] connected to Master node["${MASTER_IP}","${MASTER_NAME}"]"
+                    echo -e "\n$date Worker node["${MY_IP}","${NODE_NAME}"] connected to Master node["${MASTER_IP}","${MASTER_NAME}"]"
                     curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_ACTIVE_WORKERS_PATH}/${NODE_NAME} <<< ${MY_IP}
 
-                    echo "Running set-local-datasets."
+                    echo "$date Running set-local-datasets."
                     ./set-local-datasets.sh
 
                 else
                     echo ${check}
-                    echo "Worker node["${MY_IP}","${NODE_NAME}]" seems that is not connected with the Master..\
+                    echo "$date Worker node["${MY_IP}","${NODE_NAME}]" seems that is not connected with the Master..\
 Switch ENVIRONMENT_TYPE to 'DEV' to see Error messages coming from EXAREME..Exiting..."
                     exit 1
                 fi
@@ -198,19 +199,19 @@ else
 	DESC="exareme-master"
 	MY_IP=$(/sbin/ifconfig eth0 | grep "inet" | awk -F: '{print $2}' | cut -d ' ' -f 1)
 
-	echo -e "\nMaster node["${NODE_NAME}","${MY_IP}"] trying to connect with Consul[key-value store]"
+	echo -e "\n$date Master node["${NODE_NAME}","${MY_IP}"] trying to connect with Consul[key-value store]"
 
 	#Try accessing Consul[key-value store]
-	echo -e "\nMaster node["${NODE_NAME}","${MY_IP}"] trying to connect with Consul[key-value store]"
+	echo -e "\n$date Master node["${NODE_NAME}","${MY_IP}"] trying to connect with Consul[key-value store]"
 	n=0
 	#Wait until Consul [key-value store] is up and running
 	while [[ "$(curl -s ${CONSULURL}/v1/health/state/passing | jq -r '.[].Status')" != "passing" ]]; do
-		echo -e "\nMaster node["${NODE_NAME}","${MY_IP}"] trying to connect with Consul[key-value store]"
+		echo -e "\n$date Master node["${NODE_NAME}","${MY_IP}"] trying to connect with Consul[key-value store]"
 		n=$((${n} + 1))
 		sleep 1
 		#After 30 attempts-Show error
 		if [[ ${n} -ge 30 ]]; then
-			echo -e "\nConsul[key-value store] may not be initialized or Master node["${NODE_NAME}","${MY_IP}"] can not contact Consul[key-value store]"
+			echo -e "\n$date Consul[key-value store] may not be initialized or Master node["${NODE_NAME}","${MY_IP}"] can not contact Consul[key-value store]"
 			exit 1  #Simple exit 1. Exareme is not up yet
 		fi
 	done
@@ -226,25 +227,26 @@ else
 			#TODO check what if master restarts with different IP while workers are already connected to the master's registry with previous IP
 		else
 			./exareme-admin.sh --start
-			echo "Master node["${MY_IP}","$NODE_NAME"] trying to re-boot..."
+			echo "$date Master node["${MY_IP}","$NODE_NAME"] trying to re-boot..."
 			while [[ ! -f /var/log/exareme.log ]]; do
-				echo "Master node["$MY_IP"," $NODE_NAME"] re-booted..."
+				echo "$date Master node["$MY_IP"," $NODE_NAME"] re-booted..."
 			done
 		fi
 
 	#Master node just created
 	else
 		./exareme-admin.sh --start
-		echo "Initializing Master node["${MY_IP}","${NODE_NAME}"]"
+		echo "$date Initializing Master node["${MY_IP}","${NODE_NAME}"]"
 
 		while [[ ! -f /var/log/exareme.log ]]; do
-			echo "Initializing Master node["${MY_IP}","${NODE_NAME}"]"
+			sleep 1
+			echo "$date Initializing Master node["${MY_IP}","${NODE_NAME}"]"
 		done
-		echo "Initializing Master node["${MY_IP}","${NODE_NAME}"]"
+		echo "$date Initializing Master node["${MY_IP}","${NODE_NAME}"]"
 		tail -f /var/log/exareme.log | while read LOGLINE
 		do
 			[[ "${LOGLINE}" == *"Master node started."* ]] && pkill -P $$ tail
-			echo "Initializing Master node["${MY_IP}","${NODE_NAME}"]"
+			echo "$date Initializing Master node["${MY_IP}","${NODE_NAME}"]"
 
 			#Java's exception in StartMaster.java
 			if [[ "${LOGLINE}" == *"java.rmi.RemoteException"* ]]; then
@@ -253,21 +255,21 @@ else
 		done
 	
         if [[ ${ENVIRONMENT_TYPE} == "DEV" ]] || [[ ${ENVIRONMENT_TYPE} == "TEST" ]] ; then
-             echo "Running set-local-datasets."
+             echo "$date Running set-local-datasets."
 		    ./set-local-datasets.sh
 
-            echo -e "\nDEV version: Master node["${MY_IP}","${NODE_NAME}"] may be initialized"
+            echo -e "\n$date DEV version: Master node["${MY_IP}","${NODE_NAME}"] may be initialized"
             curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/${NODE_NAME} <<< ${MY_IP}
         elif [[ ${ENVIRONMENT_TYPE} == "PROD" ]]; then
 		    #Health check for Master. HEALTH_CHECK algorithm execution
-		    echo "Health check for Master node["${MY_IP}","${NODE_NAME}"]"
+		    echo "$date Health check for Master node["${MY_IP}","${NODE_NAME}"]"
 
 		    check=$(curl -s ${MY_IP}:9092/check/worker?IP_MASTER=${MY_IP}?IP_WORKER=${MY_IP})    #Master has a Worker instance. So in this case IP_MASTER / IP_WORKER is the same
 
             if [[ -z ${check} ]]; then
             #if curl returned nothing, something is wrong. We can not know what is wrong though
-                printf "Health_Check algorithm did not return anything...Switch ENVIRONMENT_TYPE to 'DEV' to see Error messages coming\
-from EXAREME..Exiting"
+                printf "$s Health_Check algorithm did not return anything...Switch ENVIRONMENT_TYPE to 'DEV' to see Error messages coming\
+from EXAREME..Exiting" "$date"
                 exit 1
             else
                 #check if what curl returned is JSON
@@ -275,22 +277,22 @@ from EXAREME..Exiting"
                 #if NOT JSON an error code will be returned (!=0)
                 check_code=$?
                 if [[ ${check_code} -ne 0 ]]; then
-                    echo "An error has occurred: " ${check} ".....Exiting"
+                    echo "$date An error has occurred: " ${check} ".....Exiting"
                     exit 1
                 else
                     getNames="$( echo ${check} | jq '.active_nodes')"
 
                     #Retrieve result as json. If $NODE_NAME exists in result, the algorithm run in the specific node
                     if [[ ${getNames} = *${NODE_NAME}* ]]; then
-                        echo -e "\nMaster node["${MY_IP}","${NODE_NAME}"] initialized"
+                        echo -e "\n$date Master node["${MY_IP}","${NODE_NAME}"] initialized"
                         curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${EXAREME_MASTER_PATH}/${NODE_NAME} <<< ${MY_IP}
 
-                        echo "Running set-local-datasets."
+                        echo "$date Running set-local-datasets."
                         ./set-local-datasets.sh
 
                     else
                         echo ${check}
-                        echo "Master node["${MY_IP}","${NODE_NAME}]" seems that could not be initialized..\
+                        echo "$date Master node["${MY_IP}","${NODE_NAME}]" seems that could not be initialized..\
 Switch ENVIRONMENT_TYPE to 'DEV' to see Error messages coming from EXAREME..Exiting..."
                         exit 1
                     fi
@@ -315,7 +317,7 @@ fi' >> /etc/crontabs/root
 crond
 
 # Creating the python log file
-echo "Exareme Python Algorithms log file created." > /var/log/exaremePythonAlgorithms.log
+echo "$date Exareme Python Algorithms log file created." > /var/log/exaremePythonAlgorithms.log
 
 # Running something in foreground, otherwise the container will stop
 while true
