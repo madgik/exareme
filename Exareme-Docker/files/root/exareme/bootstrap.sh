@@ -84,9 +84,9 @@ exit 0
 mkdir -p  /tmp/demo/db/
 date=`date +%F' '%T`
 
-echo "Strarting Madis Server..."
+echo "Starting Madis Server..."
 python /root/madisServer/MadisServer.py &
-echo "Madis Server started"
+echo "Madis Server started."
 
 #This is the Worker
 if [[ "${FEDERATION_ROLE}" != "master" ]]; then
@@ -239,6 +239,7 @@ else
 		echo "$date Initializing Master node["${MY_IP}","${NODE_NAME}"]"
 
 		while [[ ! -f /var/log/exareme.log ]]; do
+			sleep 1
 			echo "$date Initializing Master node["${MY_IP}","${NODE_NAME}"]"
 		done
 		echo "$date Initializing Master node["${MY_IP}","${NODE_NAME}"]"
