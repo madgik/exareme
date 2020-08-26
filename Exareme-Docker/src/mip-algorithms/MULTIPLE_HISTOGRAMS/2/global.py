@@ -59,7 +59,8 @@ def histogramToHighchart (Hist, args_X, args_Y):
 
     return json.dumps(myjsonresult)
 
-def main():
+def main(args):
+    sys.argv = args
     # Parse arguments
     parser = ArgumentParser()
     parser.add_argument('-local_step_dbs', required=True, help='Path to db holding local step results.')
@@ -72,8 +73,7 @@ def main():
     args_X, args_Y,CategoricalVariablesWithDistinctValues, GlobalHist = multipleHist2_Loc2Glob_TD.load(local_dbs).get_data()
 
     init_logger()
-    logging.warning("GlobalHist= ")
-    logging.warning(GlobalHist)
+    logging.info(["GlobalHist= ", GlobalHist])
 
     # Histogram modification due to privacy --> Move it to local.py
     for key in GlobalHist:

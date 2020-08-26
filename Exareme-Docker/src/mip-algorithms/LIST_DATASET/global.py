@@ -1,15 +1,13 @@
-import sys
 import json
 from os import path
 from argparse import ArgumentParser
+import sys
+from utils.algorithm_utils import set_algorithms_output_data
+from LIST_DATASET.list_dataset_lib import ListDatasetLocalDT
 
-sys.path.append(path.dirname(path.dirname(path.abspath(__file__))) + '/utils/')
-
-from algorithm_utils import set_algorithms_output_data
-from list_dataset_lib import ListDatasetLocalDT
-
-def main():
+def main(args):
     # Parse arguments
+    sys.argv = args
     parser = ArgumentParser()
     parser.add_argument('-local_step_dbs', required=True, help='Path to local db.')
     args, unknown = parser.parse_known_args()

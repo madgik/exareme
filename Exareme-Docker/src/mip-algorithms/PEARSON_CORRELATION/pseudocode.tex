@@ -1,0 +1,75 @@
+% Set the Page Layout
+\documentclass[10pt]{article}
+\usepackage[inner = 2.0cm, outer = 2.0cm, top = 2.0cm, bottom = 2.0cm]{geometry}
+
+
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{mathtools}
+% Package to write pseudo-codes
+\usepackage{algorithm}
+
+% Remove the 'end' at the end of the algorithm
+\usepackage[noend]{algpseudocode}
+
+% Define Left Justified Comments
+\algnewcommand{\LeftComment}[1]{\Statex \(\triangleright\) #1}
+
+% New Operators
+\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\mean}{mean}
+\DeclareMathOperator*{\sigmoid}{sigmoid}
+\DeclareMathOperator*{\diag}{diag}
+
+% New commands
+\newcommand{\be}[1]{\begin{equation} \label{eq:#1}}
+\newcommand{\ee}{\end{equation}}
+\newcommand{\bea}[1]{\begin{eqnarray} \label{eq:#1}}
+\newcommand{\eea}{\end{eqnarray}}
+\newcommand{\ba}{\begin{array}}
+\newcommand{\ea}{\end{array}}
+\newcommand{\eqRef}[1]{eq.~\eqref{eq:#1}}
+
+% Remove the Numbering of the Algorithm
+\usepackage{caption}
+\DeclareCaptionLabelFormat{algnonumber}{Algorithm}
+\captionsetup[algorithm]{labelformat = algnonumber}
+
+\begin{document}
+
+\be{pearsonr}
+r_{xy} =\frac{\sum ^n _{i=1}(x_i - \bar{x})(y_i - \bar{y})}{\sqrt{\sum ^n _{i=1}(x_i - \bar{x})^2} \sqrt{\sum ^n _{i=1}(y_i - \bar{y})^2}}
+\ee
+
+\pagenumbering{gobble}
+
+\begin{algorithm}
+
+        \caption{\underline{\textsc{Pearson Correlation Coefficient}}}
+        \label{pearson}
+        \begin{algorithmic}[1] % The number tells where the line numbering should start
+                \Procedure{Local}{} \Comment{run for each Worker $l = 1, \dots, L$}
+                        \State $n^{(l)} \gets \# \{\text{datapoints in local db } l\}$
+                        \State $s_x^{(l)} \gets \sum_i x_i$
+                        \State $s_y^{(l)} \gets \sum_i y_i$
+                        \State $s_{xx}^{(l)} \gets \sum_i x_i^2$
+                        \State $s_{xy}^{(l)} \gets \sum_i x_i y_i$
+                        \State $s_{yy}^{(l)} \gets \sum_i y_i^2$
+                        \State \textbf{return} $(n^{(l)}, s_x^{(l)}, s_y^{(l)}, s_{xx}^{(l)}, s_{xy}^{(l)}, s_{yy}^{(l)} )$ \EndProcedure
+                \Procedure{Global}{$n^{(l)}, s_x^{(l)}, s_y^{(l)}, s_{xx}^{(l)}, s_{xy}^{(l)}, s_{yy}^{(l)}$}
+                        \State $n \gets \sum_l n^{(l)}$
+                        \State $s_x \gets \sum_l s_x^{(l)}$
+                        \State $s_y \gets \sum_l s_y^{(l)}$
+                        \State $s_{xx} \gets \sum_l s_{xx}^{(l)}$
+                        \State $s_{xy} \gets \sum_l s_{xy}^{(l)}$
+                        \State $s_{yy} \gets \sum_l s_{yy}^{(l)}$
+                        \State Compute $r_{xy}$ according to eq. (1)
+                        \State \textbf{return} $r_{xy}$
+                        \EndProcedure
+        \end{algorithmic}
+
+\end{algorithm}
+
+\end{document}
+

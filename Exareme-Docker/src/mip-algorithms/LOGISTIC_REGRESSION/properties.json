@@ -1,9 +1,8 @@
 {
     "name": "LOGISTIC_REGRESSION",
-    "desc": "Binary Logistic Regression without regularization using Newton-Raphson method",
+    "desc": "",
     "label": "Logistic Regression",
     "type": "python_iterative",
-    "status": "enabled",
     "parameters": [
         {
             "name": "x",
@@ -12,8 +11,7 @@
             "type": "column",
             "columnValuesSQLType": "real, integer, text",
             "columnValuesIsCategorical": "",
-            "columnValuesNumOfEnumerations": "",
-            "value": "alzheimerbroadcategory, lefthippocampus",
+            "value": "leftaccumbensarea, leftacgganteriorcingulategyrus, leftainsanteriorinsula, rightaccumbensarea, rightacgganteriorcingulategyrus, rightainsanteriorinsula",
             "valueNotBlank": true,
             "valueMultiple": true,
             "valueType": "string"
@@ -25,7 +23,6 @@
             "type": "column",
             "columnValuesSQLType": "text, integer",
             "columnValuesIsCategorical": "true",
-            "columnValuesNumOfEnumerations": "",
             "value": "gender",
             "valueNotBlank": true,
             "valueMultiple": false,

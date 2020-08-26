@@ -1,0 +1,7 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <h1>Exareme Highcharts</h1>
+    {% for chart in charts_info.values() %}
+        <p><a href="{{ url_for(chart['url']) }}">{{ chart['title'] }}</a></p>
+    {% endfor %}
+{% endblock content %}

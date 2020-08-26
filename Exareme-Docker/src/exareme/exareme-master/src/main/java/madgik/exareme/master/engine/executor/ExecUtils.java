@@ -5,8 +5,8 @@ package madgik.exareme.master.engine.executor;
 
 import com.google.gson.JsonObject;
 import madgik.exareme.utils.association.Pair;
-import madgik.exareme.utils.file.InputStreamConsumerThread;
 import madgik.exareme.utils.properties.AdpProperties;
+import madgik.exareme.worker.art.concreteOperator.manager.MadisWebAPICaller;
 import madgik.exareme.worker.art.concreteOperator.manager.ProcessManager;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -19,6 +19,11 @@ import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 import java.rmi.RemoteException;
 import java.rmi.ServerException;
 import java.util.LinkedList;
@@ -53,7 +58,12 @@ public class ExecUtils {
 
     public static String runQueryOnTable(StringBuilder query, String madisMainDB, File directory,
                                          ProcessManager procManager) throws RemoteException {
+
+        return runQueryOnTable(query, madisMainDB, directory);
+
+        /*
         log.debug("Process Directory: " + directory.getAbsolutePath());
+        log.debug("(ExecUtils::runQueryOnTable) running on MTERM process. query="+query.toString());
         try {
             Process p = procManager.createProcess(directory, python, engine, madisMainDB);
             p.getOutputStream().write(query.toString().getBytes());
@@ -78,11 +88,86 @@ public class ExecUtils {
                         "Cannot execute db (code: " + exitCode + "): " + stderr.getOutput());
             }
             String output = stdout.getOutput();
-            log.debug(output);
+
             return output;
         } catch (Exception e) {
             throw new ServerException("Cannot run query", e);
         }
+        */
+
+    }
+
+    private static String runQueryOnTable(StringBuilder query, String madisMainDB, File directory) throws RemoteException {
+
+        String theLog = "";
+
+        theLog += "(ExecuteUtils::runQueryOnTable) directory=" + directory.getAbsolutePath();
+        theLog += "\n(ExecuteUtils::runQueryOnTable) madisMainDB=" + madisMainDB;
+
+        String databaseFullPath = Paths.get(directory.getAbsolutePath(), madisMainDB).toString();
+        String queryString = processQueryString(query.toString());
+
+        MadisWebAPICaller madisWebAPICaller = new MadisWebAPICaller();
+        String reply = "";
+        try {
+            reply = madisWebAPICaller.postRequest(databaseFullPath, queryString);
+            theLog += "\n(ExecuteUtils::runQueryOnTable) just after post request. reply: ->\n\n" + reply + "\n\n<-";
+        } catch (MadisWebAPICaller.MadisServerException | IOException e) {
+            if (e instanceof MadisWebAPICaller.MadisServerException)
+                theLog += "\n(ExecuteUtils::runQueryOnTable) MadisServerException: " + e.getMessage();
+            else if (e instanceof IOException)
+                theLog += "\n(ExecuteUtils::runQueryOnTable) IOException: " + e.getMessage();
+
+            //this abomination of a line is here to replicate the pipeline of error handling that the previous solution
+            //with the mterm process was using
+            throw new ServerException("Cannot run query", new ServerException("Cannot execute db (code: " + 1 + "): " + e.getMessage()));
+        } finally {
+            log.debug(theLog);
+        }
+
+        return reply;
+
+        /*
+        catch (MadisWebAPICaller.MadisServerException mse){
+            theLog+="\n(ExecuteUtils::runQueryOnTable) MadisServerException: "+mse.getMessage();
+            //return mse.getMessage();
+            throw new ServerException("Cannot run query", mse);
+        }catch (IOException ioe){
+            theLog+="\n(ExecuteUtils::runQueryOnTable) IOException: "+ioe.getMessage();
+            throw new ServerException("Cannot run query", ioe);
+            //return ioe.getMessage();
+        }
+        */
+    }
+
+    private static String processQueryString(String query) {
+
+        String theLog = "(ExecuteUtils::processQueryString) UNPROCESSED query: " + query;
+
+        query = query.replaceAll("-- Script BEGIN ", "");
+        query = query.replaceAll("-- Optimization Pragmas", "");
+        query = query.replaceAll("-- Additional Commands", "");
+        query = query.replaceAll("-- Run Query", "");
+        query = query.replaceAll("-- Mappings ", "");
+        query = query.replaceAll("-- Attach databases", "");
+        query = query.replaceAll("-- Create tables", "");
+        query = query.replaceAll("-- Cleanup", "");
+        query = query.replaceAll("-- Script END", "");
+
+        query = query.replaceAll("  ", " ");
+        query = query.replaceAll("(?m)^[ \t]*\r?\n", "");
+
+        try {
+            query = URLEncoder.encode(query, StandardCharsets.UTF_8.toString());
+        } catch (UnsupportedEncodingException ex) {
+            theLog += "(ExecuteUtils::processQueryString) UnsupportedEncodingException: " + ex;
+            throw new RuntimeException(ex.getCause());
+        } finally {
+            theLog += "(ExecuteUtils::processQueryString) PROCESSED query: " + query;
+            log.debug(theLog);
+        }
+        return query;
+
     }
 
     public static String runQueryOnTable(StringBuilder query, String madisMainDB, File directory,

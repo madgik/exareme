@@ -6,7 +6,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/
 from health_check_lib import HealthCheckLocalDT
 
 
-def main():
+def main(args):
     # Get node_name from env variable and return it
     local_out = HealthCheckLocalDT(os.environ['NODE_NAME'])
 

@@ -27,9 +27,9 @@ public class AdpDBArtJobMonitor implements Runnable {
     private static final Logger log = Logger.getLogger(AdpDBArtJobMonitor.class);
     private static final int statsUpdateSecs =
             AdpDBProperties.getAdpDBProps().getInt("db.client.statisticsUpdate_sec");
-    private static int statsOldOP = 0;
-    private static int statsOldDT = 0;
-    private static int statsOldER = 0;
+    private int statsOldOP = 0;
+    private int statsOldDT = 0;
+    private int statsOldER = 0;
 
     private final ExecutionEngineSessionPlan sessionPlan;
     private final AdpDBStatus status;

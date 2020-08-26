@@ -1,13 +1,10 @@
 requirevars 'defaultDB' 'input_global_tbl' 'y' 'alpha' 'dbIdentifier';
 attach database '%{defaultDB}' as defaultDB;
 
---var 'input_global_tbl' 'defaultDB.local_counts';
---var 'alpha' 0.1;
-
 --------------------------------------------------------------------------------------------------------
 -- Merge local_counts
 drop table if exists global_counts1;
-create table global_counts1 as
+create temp table global_counts1 as
 select  colname, val, classval, "NA" as S1, "NA" as S2, sum(quantity) as quantity
 from %{input_global_tbl}
 where colname  in (select code from defaultDB.globalmetadatatbl where categorical = 1 )
@@ -30,58 +27,58 @@ from ( select *from( setschema  'c1,c2,uniqueclassval' from select jsplit(c1), u
        (select distinct(classval) as uniqueclassval from global_counts1)))
 where colname in (select code from defaultDB.globalmetadatatbl  where categorical= 1);
 
-drop table if exists defaultDB.global_counts;
-create table defaultDB.global_counts as
+drop table if exists global_counts;
+create temp table global_counts as
 select colname, val, classval, S1, S2, max(quantity) as quantity
 from global_counts1
 group by colname,classval,val;
 drop table if exists global_counts1;
 
 -- For each categorical column: Add Laplace smoothing (https://en.wikipedia.org/wiki/Additive_smoothing)
-update  defaultDB.global_counts
+update  global_counts
 set quantity = quantity + %{alpha}
 where colname in (select code from defaultDB.globalmetadatatbl  where categorical= 1 and code <> '%{y}')
-and  0 in (select min(quantity) from defaultDB.global_counts);
+and  0 in (select min(quantity) from global_counts);
 
 -------------------------------------------------------------------------------------------------
 -- For each non categorical column: compute avg and std for each classval
-drop table if exists defaultDB.statistics;
-create table defaultDB.statistics as
+drop table if exists statistics;
+create temp table statistics as
 select colname, classval, cast(S1 as float)/cast(quantity as float) as average ,
        SQROOT( FARITH('/', '-', '*', quantity, S2, '*', S1, S1, '*', quantity, '-', quantity, 1))  as sigma
-from defaultDB.global_counts
+from global_counts
 where colname  in (select code from defaultDB.globalmetadatatbl  where categorical= 0)
 group by colname, classval;
 
 -----------------------------------------------------------------------------------------------
 -- Compute Naive Bayes ---
 --1. Compute class prior probabilities (classname, classval, probability)
-drop table if exists defaultDB.global_probabilities;
-create table defaultDB.global_probabilities  as
+drop table if exists global_probabilities;
+create temp table global_probabilities  as
 select '%{y}' as  colname, val, val as classval, "NA" as average, "NA" as sigma, cast(classquantity as float)/cast(totalquantity as float) as probability
-from (select val, sum(quantity) as classquantity from defaultDB.global_counts where colname='%{y}' group by val),
-     (select sum(quantity) as totalquantity from defaultDB.global_counts where colname='%{y}');
+from (select val, sum(quantity) as classquantity from global_counts where colname='%{y}' group by val),
+     (select sum(quantity) as totalquantity from global_counts where colname='%{y}');
 
 --2. Compute likelihoods for categorical variables
-insert into defaultDB.global_probabilities
+insert into global_probabilities
 select colname,val, classval, "NA" as average,"NA" as sigma, cast(quantity as float)/cast(classquantity +  %{alpha} * novals  as float) as probability
-from (select colname, val, classval,quantity from defaultDB.global_counts),
-     (select val as classval1, sum(quantity) as classquantity from defaultDB.global_counts where colname ='%{y}' group by val),
-     (select colname as colname1, count( distinct val) as novals from defaultdb.global_counts group by colname)
+from (select colname, val, classval,quantity from global_counts),
+     (select val as classval1, sum(quantity) as classquantity from global_counts where colname ='%{y}' group by val),
+     (select colname as colname1, count( distinct val) as novals from global_counts group by colname)
 where classval = classval1
 and colname =colname1
 and colname in (select code from defaultDB.globalmetadatatbl  where categorical= 1 and code <> '%{y}');
 
 --3. Compute likelihoods for non categorical variables
-insert into defaultDB.global_probabilities
+insert into global_probabilities
 select colname,"NA" as val, classval, average, sigma, "NA" as probability
-from defaultDB.statistics
+from statistics
 where colname in (select code from defaultDB.globalmetadatatbl  where categorical= 0)
 and colname <> '%{y}';
 
---select * from defaultDB.global_probabilities;
+--select * from global_probabilities;
 var 'jsonResult' from select '{ "type": "application/json", "data": ' || componentresult || ', "dbIdentifier": ' || '%{dbIdentifier}'   || '}' from
 ( select tabletojson(colname,val,classval,average,sigma,probability, "colname,val,classval,average,sigma,probability",0)  as componentresult
-from defaultdb.global_probabilities);
+from global_probabilities);
 
 select '{"result": [' || '%{jsonResult}' || ']}';

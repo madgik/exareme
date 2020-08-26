@@ -6,14 +6,18 @@ from os import path
 from argparse import ArgumentParser
 import numpy as np
 import json
+import time
+import logging
 
 sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) + '/utils/')
 sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) + '/CART/')
 
-from algorithm_utils import StateData,set_algorithms_output_data
+from algorithm_utils import StateData,set_algorithms_output_data,init_logger
 from cart_lib import Node
 
-def main():
+def main(args):
+    sys.argv =args
+    init_logger()
     # Parse arguments
     parser = ArgumentParser()
     parser.add_argument('-cur_state_pkl', required=True,
@@ -32,8 +36,12 @@ def main():
     globalTreeJ = global_state['globalTree'].tree_to_json()
 
     myresult =  {"result": [{"type": "application/json", "data": globalTreeJ}]}
-
+    t1 = global_state['t1']
+    t2 = time.localtime(time.time())
+    t0 = [ 'yy','mm','dd','hh','min','sec','wday','yday','isdst']
+    logging.info(" Time: ")
+    for i in range(len(t1)):
+        logging.info([t0[i], t2[i], t1[i], t2[i]- t1[i]])
     set_algorithms_output_data(myresult)
 
-if __name__ == '__main__':
-    main()
+if __name__ == '__main__':   main()

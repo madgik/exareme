@@ -1,0 +1,65 @@
+\documentclass[10pt]{article}
+\usepackage[inner = 2.0cm, outer = 2.0cm, top = 2.0cm, bottom = 2.0cm]{geometry}
+\usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\begin{document}
+\begin{algorithm}
+	\caption{\underline{\textsc{Multiple Histograms}}}
+	\label{Multiple_Histograms}
+	\begin{algorithmic}[1] % The number tells where the line numbering should start
+		\Procedure{Local1}{${X}^{(l)}, Y^{(l)}$} \Comment{run for $l = 1, \dots, L$}
+			\For {each categorical attribute ${x_j}^{(l)}$}
+					\State $\mathbf{n_{j|C_{x_j}}^{(l)}} \gets \text{count}({x_{j}}^{(l)}|{x_{j}}^{(l)}=C_{x_j})$ for all $C_{x_j}$ classes of ${x_{j}}^{(l)}$
+					\For { each attribute ${y_k}^{(l)}$}
+						\State $\mathbf{n_{j|{C_{x_j},C_{y_k}}}^{(l)}} \gets \text{count}({x_{j}}^{(l)}|{x_{j}}^{(l)}=C_{x_j}$ and ${y_{k}}^{(l)}=C_{y_k})$  for all $C_{x_j},C_{y_k}$ classes of ${x_{j}}^{(l)}$, ${y_{k}}^{(l)}$
+					\EndFor
+			\EndFor
+			\For {each continuous attribute ${x_j}^{(l)}$}
+					\State $\mathbf{min_j^{(l)}} \gets \min(x_j^{(l)})$
+					\State $\mathbf{max_j^{(l)}} \gets \max(x_j^{(l)})$
+					\State $\mathbf{n_j^{(l)}} \gets \text{count}(x_j^{(l)})$
+					\For { each categorical attribute ${y_k}^{(l)}$}
+						\State $\mathbf{n_{j|C_{y_k}}^{(l)}} \gets \text{count}({x_{j}}^{(l)}|{y_{k}}^{(l)}=C_{y_k})$ for all $C_{y_k}$ 
+						classes of ${y_{k}}^{(l)}$
+					\EndFor
+			\EndFor
+			\State \textbf{return} (\{$  {n}_{j|C_{x_j}}^{(l)} ,{n}_{j|{C_{x_j},C_{y_k}}}^{(l)},{min}_j^{(l)},{max}_j^{(l)} ,{n}_j^{(l)},{count}_{j|C_{y_k}}^{(l)} $\})
+		\EndProcedure
+		\State {}
+		\Procedure{Global1} {\{$  {n}_{j|C_{x_j}}^{(l)} ,{n}_{j|{C_{x_j},C_{y_k}}}^{(l)},{min}_j^{(l)},{max}_j^{(l)} ,{n}_j^{(l)},{n}_{j|C_{y_k}}^{(l)} $\}}
+			\State Sum local $n_{(.)}^{(l)}$ to obtain corresponding global $n_{(.)}$
+			\State Min local $min_{(.)}^{(l)}$ to obtain corresponding global $min_{(.)}$
+			\State Max local $max_{(.)}^{(l)}$ to obtain corresponding global $max_{(.)}$
+			\State \textbf{return} ({\{$ {n}_{j|C_{x_j}},{n}_{j|{C_{x_j},C_{y_k}}},min_j,max_j,n_j,n_{j|C_{y_k}} $\}})
+		\EndProcedure
+		\State {}
+		\Procedure{Local2}{${X}^{(l)}, Y^{(l)},b,\{min_j,max_j\}  $} \Comment{run for $l = 1, \dots, L$}
+			\For {each continuous attribute ${x_j}^{(l)}$ }
+				\State $\mathbf{h_{j}^{(l)}} \gets  Hist({x_j}^{(l)}, range = [min_j,max_j], bins =b)$  \Comment{where $b$ is defined by the user}
+									\State\Comment{where $Hist$ computes the local histogram}
+				\For { each categorical attribute ${y_j}^{(l)}$}
+					\State $\mathbf{h_{j|C_{y_k}}^{(l)}} \gets  Hist({x_{j}}^{(l)}|{y_{k}}^{(l)}=C_{y_k}, range = [min_j,max_j], bins =b)$  
+				\EndFor
+			\EndFor
+			\State \textbf{return} \{${h}_{(.)}^{(l)}$\}
+		\EndProcedure
+		\State {}
+		\Procedure{Global2}{\{${h}_{(.)}^{(l)}$\}}
+			\For {each continuous attribute ${x_j}^{(l)}$ }
+				\State Sum local ${h}_{(.)}^{(l)}$ to obtain global $ h_{(.)}$
+			\EndFor
+			\For {each categorical attribute ${x_j}$}
+					\State $\mathbf{h_{j|C_{x_j}}} \gets {n}_{j|C_{x_j}}$
+					\For {each attribute ${y_k}$}
+						\State $\mathbf{h_{j|{C_{x_j},C_{y_k}}}} \gets {n}_{j|{C_{x_j},C_{y_k}}}$
+					\EndFor
+			\EndFor
+			\State \textbf{return} (\{$ h_{(.)}$\})
+		\EndProcedure
+	\end{algorithmic}
+\end{algorithm}
+\end{document}

@@ -85,7 +85,7 @@ public class HttpAsyncCheckWorker implements HttpAsyncRequestHandler<HttpRequest
         AlgorithmProperties algorithmProperties = Algorithms.getInstance().getAlgorithmProperties(algorithmName);
 
         if (algorithmProperties == null)
-            throw new AlgorithmException("The algorithm does not exist.");
+            throw new AlgorithmException(algorithmName, "The algorithm does not exist.");
 
         algorithmProperties.mergeAlgorithmParametersWithInputContent(inputContent);
 

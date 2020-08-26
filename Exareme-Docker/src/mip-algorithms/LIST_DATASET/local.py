@@ -1,17 +1,13 @@
-import sys
 import os
-from os import listdir
 from os import path
-
-sys.path.append(path.dirname(path.dirname(path.abspath(__file__))) + '/utils/')
-
 import sqlite3
 from argparse import ArgumentParser
-from list_dataset_lib import ListDatasetLocalDT
+import sys
+from LIST_DATASET.list_dataset_lib import ListDatasetLocalDT
 
-
-def main():
+def main(args):
     # Parse arguments
+    sys.argv = args
     parser = ArgumentParser()
     parser.add_argument('-input_local_DB', required=True, help='Path to the folder with the dbs.')
     args, unknown = parser.parse_known_args()

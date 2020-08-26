@@ -1,8 +1,6 @@
 requirevars 'defaultDB'  'input_global_tbl' ;
 attach database '%{defaultDB}' as defaultDB;
 
---var 'input_global_tbl' 'localsss';
-
 hidden var 'sse' from select sum(sse) from  %{input_global_tbl};
 hidden var 'sst' from select sum(sst) from  %{input_global_tbl};
 hidden var 'ssregs' from select sum(sst)- sum(sse) from  %{input_global_tbl};

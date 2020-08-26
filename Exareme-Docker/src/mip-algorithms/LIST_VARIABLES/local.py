@@ -1,20 +1,21 @@
-import sys
-import os
 from os import path
 import json
 import sqlite3
 
-sys.path.append(path.dirname(path.dirname(path.abspath(__file__))) + '/utils/')
-
 from argparse import ArgumentParser
-from algorithm_utils import set_algorithms_output_data
+from utils.algorithm_utils import set_algorithms_output_data
 
-def main():
+def main(args):
     # Parse arguments
-    parser = ArgumentParser()
-    parser.add_argument('-input_local_DB', required=True, help='Path to the folder with the dbs.')
-    args, unknown = parser.parse_known_args()
-    db_path = path.abspath(args.input_local_DB)
+    dbpath = ""
+    for i,arg in enumerate(args):
+        if arg == "-input_local_DB":
+            db_path = args[i+1]
+
+    #parser = ArgumentParser()
+    #parser.add_argument('-input_local_DB', required=True, help='Path to the folder with the dbs.')
+    #args, unknown = parser.parse_known_args()
+    #db_path = path.abspath(args.input_local_DB)
     
     variables = {}
     # Get the datasets for each pathology

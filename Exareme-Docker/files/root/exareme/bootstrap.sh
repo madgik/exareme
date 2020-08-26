@@ -84,6 +84,10 @@ exit 0
 mkdir -p  /tmp/demo/db/
 date=`date +%F' '%T`
 
+echo "Strarting Madis Server..."
+python /root/madisServer/MadisServer.py &
+echo "Madis Server started"
+
 #This is the Worker
 if [[ "${FEDERATION_ROLE}" != "master" ]]; then
 
@@ -298,6 +302,17 @@ Switch ENVIRONMENT_TYPE to 'DEV' to see Error messages coming from EXAREME..Exit
 fi
 
 echo '*/15  *  *  *  *	./set-local-datasets.sh' >> /etc/crontabs/root
+
+echo '0 *  *  *  * if [ $FEDERATION_ROLE = "master" ]; then \
+cd /tmp/demo/db/ \
+&& find . -type d -path "./*" -mmin +$TEMP_FILES_CLEANUP_TIME -exec rm -rf {} +\
+&& cd /tmp/demo/algorithms-generation/ \
+&& find . -type d -path "./*" -mmin +$TEMP_FILES_CLEANUP_TIME -exec rm -rf {} +;\
+else \
+cd /tmp/demo/db/ \
+&& find . -type d -path "./*" -mmin +$TEMP_FILES_CLEANUP_TIME -exec rm -rf {} +\
+&& find . -type f -path "./*" -mmin +$TEMP_FILES_CLEANUP_TIME -delete; \
+fi' >> /etc/crontabs/root
 crond
 
 # Creating the python log file
@@ -306,5 +321,5 @@ echo "$date Exareme Python Algorithms log file created." > /var/log/exaremePytho
 # Running something in foreground, otherwise the container will stop
 while true
 do
-   tail -f /var/log/exareme.log -f /var/log/exaremePythonAlgorithms.log
+   tail -fn +1 /var/log/exareme.log -fn +1 /var/log/exaremePythonAlgorithms.log -fn +1 /var/log/MadisServer.log
 done

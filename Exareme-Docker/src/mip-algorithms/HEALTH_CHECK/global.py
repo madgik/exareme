@@ -8,8 +8,9 @@ sys.path.append(path.dirname(path.dirname(path.abspath(__file__))) + '/utils/')
 from algorithm_utils import set_algorithms_output_data
 from health_check_lib import HealthCheckLocalDT
 
-def main():
+def main(args):
     # Parse arguments
+    sys.argv = args
     parser = ArgumentParser()
     parser.add_argument('-local_step_dbs', required=True, help='Path to local db.')
     args, unknown = parser.parse_known_args()

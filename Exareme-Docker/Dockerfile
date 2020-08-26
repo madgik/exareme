@@ -78,6 +78,13 @@ RUN pip install pandas
 RUN apk add --update freetype-dev libjpeg-turbo-dev libpng-dev
 RUN pip install lifelines
 RUN pip install liac-arff
+RUN pip install sqlalchemy
+RUN pip install pathlib
+RUN pip install tqdm
+RUN pip install colour
+
+RUN pip install tornado #tornado server is used in the Madis Server
+
 RUN apk del py-pip ca-certificates gcc musl-dev python-dev lapack-dev gfortran
 RUN rm -rf /tmp/* /var/cache/apk/*
 
@@ -91,6 +98,9 @@ ADD src/exareme/exareme-distribution/target/exareme /root/exareme
 
 # Add the algorithms
 ADD src/mip-algorithms /root/mip-algorithms
+
+# Add Madis Server
+ADD src/madisServer /root/madisServer
 
 # Exareme configuration, ssh keys and so on
 # This has to be done after copying in the algorithms and exareme, as some

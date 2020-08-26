@@ -152,7 +152,7 @@ public class Composer {
         String inputLocalDB = getDataPath(algorithmProperties);
         String dbQuery = createLocalTableQuery(algorithmProperties);
         // Escaping double quotes for python algorithms because they are needed elsewhere
-        String pythonDBQuery = dbQuery.replace("\"", "\\\"");
+        String pythonDBQuery = dbQuery.replace("\\\"", "\"");
         ArrayList<Pair<String, String>> csvDatabaseProperties = getCSVDatabaseProperties();
         String outputGlobalTbl = "output_" + algorithmKey;
 
@@ -326,20 +326,14 @@ public class Composer {
         StringBuilder dflScript = new StringBuilder();
 
         String algorithmFolderPath = ComposerConstants.getAlgorithmFolderPath(algorithmName);
-        File[] listFiles = new File(algorithmFolderPath).listFiles(new FileFilter() {
-            @Override
-            public boolean accept(File pathname) {
-                return pathname.isDirectory();
-            }
-        });
-        Arrays.sort(listFiles);
+        File[] localGlobalFolders = getLocalGlobalFolders(algorithmFolderPath);
 
         // Iterating through all the local_global folders of the algorithm
-        for (int iteration = 1; iteration <= listFiles.length; iteration++) {
+        for (int iteration = 1; iteration <= localGlobalFolders.length; iteration++) {
             String inputGlobalTbl = "input_global_tbl_" + iteration;
             String tempOutputGlobalTbl = "output_global_tbl_" + iteration;
             String prevOutputGlobalTbl = "output_global_tbl_" + (iteration - 1);
-            String currentIterationAlgorithmFolderPath = algorithmFolderPath + "/" + listFiles[iteration - 1].getName();
+            String currentIterationAlgorithmFolderPath = algorithmFolderPath + "/" + localGlobalFolders[iteration - 1].getName();
             String localScriptPath = currentIterationAlgorithmFolderPath + "/local.template.sql";
             String globalScriptPath = currentIterationAlgorithmFolderPath + "/global.template.sql";
 
@@ -365,7 +359,7 @@ public class Composer {
             dflScript.append(");\n");
 
             // Format global
-            if (iteration != listFiles.length) {
+            if (iteration != localGlobalFolders.length) {
                 dflScript.append(String.format(
                         "\nusing %s \ndistributed create temporary table %s as direct \n",
                         inputGlobalTbl, tempOutputGlobalTbl));
@@ -535,15 +529,9 @@ public class Composer {
         }
 
         // The iteration works like multiple_local_global in the init,step,finalize steps
-        File[] listFiles = new File(algorithmFolderPath).listFiles(new FileFilter() {
-            @Override
-            public boolean accept(File pathname) {
-                return pathname.isDirectory();
-            }
-        });
-        Arrays.sort(listFiles);
+        File[] localGlobalFolders = getLocalGlobalFolders(algorithmFolderPath);
 
-        for (int iteration = 1; iteration <= listFiles.length; iteration++) {
+        for (int iteration = 1; iteration <= localGlobalFolders.length; iteration++) {
             String inputGlobalTbl = "input_global_tbl_" + iteration;
             String tempOutputGlobalTbl = "output_global_tbl_" + iteration;
             String prevOutputGlobalTbl = "output_global_tbl_" + (iteration - 1);
@@ -575,7 +563,7 @@ public class Composer {
             dflScript.append(");\n");
 
             // format global
-            if (iteration != listFiles.length) {
+            if (iteration != localGlobalFolders.length) {
                 dflScript.append(String.format(
                         "\nusing %s \ndistributed create temporary table %s as direct \n",
                         inputGlobalTbl, tempOutputGlobalTbl));
@@ -625,16 +613,16 @@ public class Composer {
 
         // Format local
         dflScript.append("distributed create table " + outputGlobalTbl + " as direct \n");
-        dflScript.append("select * from (\n  call_python_script 'python " + localPythonScriptPath + " ");
+        dflScript.append("select * from (\n  call_python_script '" + localPythonScriptPath + "' ");
         for (ParameterProperties parameter : algorithmParameters) {
-            dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue().replace("\"", "\\\"")));
+            dflScript.append(String.format("'-%s' '%s' ", parameter.getName(), parameter.getValue().replace("\\\"", "\"")));
         }
-        dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.inputLocalDBKey, inputLocalDB));
-        dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.dbQueryKey, dbQuery));
+        dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.inputLocalDBKey, inputLocalDB));
+        dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.dbQueryKey, dbQuery));
         for (Pair<String, String> csvDatabaseProperty : csvDatabaseProperties) {
-            dflScript.append(String.format("-%s \"%s\" ", csvDatabaseProperty.getA(), csvDatabaseProperty.getB()));
+            dflScript.append(String.format("'-%s' '%s' ", csvDatabaseProperty.getA(), csvDatabaseProperty.getB()));
         }
-        dflScript.append("'\n);\n");
+        dflScript.append("\n);\n");
 
         return dflScript.toString();
     }
@@ -667,28 +655,28 @@ public class Composer {
 
         // Format local
         dflScript.append("distributed create temporary table input_global_tbl to 1 as virtual \n");
-        dflScript.append("select * from (\n  call_python_script 'python " + localPythonScriptPath + " ");
+        dflScript.append("select * from (\n  call_python_script '" + localPythonScriptPath + "' ");
         for (ParameterProperties parameter : algorithmParameters) {
-            dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue().replace("\"", "\\\"")));
+            dflScript.append(String.format("'-%s' '%s' ", parameter.getName(), parameter.getValue().replace("\\\"", "\"")));
         }
-        dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.inputLocalDBKey, inputLocalDB));
-        dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.dbQueryKey, dbQuery));
+        dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.inputLocalDBKey, inputLocalDB));
+        dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.dbQueryKey, dbQuery));
         for (Pair<String, String> csvDatabaseProperty : csvDatabaseProperties) {
-            dflScript.append(String.format("-%s \"%s\" ", csvDatabaseProperty.getA(), csvDatabaseProperty.getB()));
+            dflScript.append(String.format("'-%s' '%s' ", csvDatabaseProperty.getA(), csvDatabaseProperty.getB()));
         }
-        dflScript.append("'\n);\n");
+        dflScript.append("\n);\n");
 
         // Format global
         dflScript.append(String
                 .format("\nusing input_global_tbl \ndistributed create table %s as direct \n",
                         outputGlobalTbl));
-        dflScript.append("select * from (\n  call_python_script 'python " + globalPythonScriptPath + " ");
+        dflScript.append("select * from (\n  call_python_script '" + globalPythonScriptPath + "' ");
         for (ParameterProperties parameter : algorithmParameters) {
-            dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue().replace("\"", "\\\"")));
+            dflScript.append(String.format("'-%s' '%s' ", parameter.getName(), parameter.getValue().replace("\\\"", "\"")));
         }
-        dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.localDBsKey, transferDBFilePath));
+        dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.localDBsKey, transferDBFilePath));
         dflScript.append(
-                String.format("' select * from (output '%s' select * from input_global_tbl)\n);\n", transferDBFilePath));
+                String.format("select * from (output '%s' select * from input_global_tbl)\n);\n", transferDBFilePath));
 
         return dflScript.toString();
     }
@@ -717,20 +705,14 @@ public class Composer {
         StringBuilder dflScript = new StringBuilder();
 
         String algorithmFolderPath = ComposerConstants.getAlgorithmFolderPath(algorithmName);
-        File[] listFiles = new File(algorithmFolderPath).listFiles(new FileFilter() {
-            @Override
-            public boolean accept(File pathname) {
-                return pathname.isDirectory();
-            }
-        });
-        Arrays.sort(listFiles);
+        File[] localGlobalFolders = getLocalGlobalFolders(algorithmFolderPath);
 
         // Iterating through all the local_global folders of the algorithm
-        for (int iteration = 1; iteration <= listFiles.length; iteration++) {
+        for (int iteration = 1; iteration <= localGlobalFolders.length; iteration++) {
             String inputGlobalTbl = "input_global_tbl_" + iteration;
             String prevOutputGlobalTbl = "output_global_tbl_" + (iteration - 1);
             String tempOutputGlobalTbl = "output_global_tbl_" + iteration;
-            String currentIterationAlgorithmFolderPath = algorithmFolderPath + "/" + listFiles[iteration - 1].getName();
+            String currentIterationAlgorithmFolderPath = algorithmFolderPath + "/" + localGlobalFolders[iteration - 1].getName();
             String localScriptPath = currentIterationAlgorithmFolderPath + "/local.py";
             String globalScriptPath = currentIterationAlgorithmFolderPath + "/global.py";
             String localTransferDBFilePath = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey
@@ -751,26 +733,26 @@ public class Composer {
                 dflScript.append(String.format("using %s\n", prevOutputGlobalTbl));
             dflScript.append(String
                     .format("distributed create temporary table %s to 1 as virtual \n", inputGlobalTbl));
-            dflScript.append("select * from (\n  call_python_script 'python " + localScriptPath + " ");
+            dflScript.append("select * from (\n  call_python_script '" + localScriptPath + "' ");
             for (ParameterProperties parameter : algorithmParameters) {
-                dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue().replace("\"", "\\\"")));
+                dflScript.append(String.format("'-%s' '%s' ", parameter.getName(), parameter.getValue().replace("\\\"", "\"")));
             }
-            dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.inputLocalDBKey, inputLocalDB));
-            dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.dbQueryKey, dbQuery));
+            dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.inputLocalDBKey, inputLocalDB));
+            dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.dbQueryKey, dbQuery));
             for (Pair<String, String> csvDatabaseProperty : csvDatabaseProperties) {
-                dflScript.append(String.format("-%s \"%s\" ", csvDatabaseProperty.getA(), csvDatabaseProperty.getB()));
+                dflScript.append(String.format("'-%s' '%s' ", csvDatabaseProperty.getA(), csvDatabaseProperty.getB()));
             }
-            dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.curStatePKLKey, localStatePKLFile));
+            dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.curStatePKLKey, localStatePKLFile));
             if (iteration > 1) {
-                dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.prevStatePKLKey, prevLocalStatePKLFile));
-                dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.globalDBKey, localTransferDBFilePath));
-                dflScript.append(String.format("' select * from (output '%s' select * from %s)\n);\n",
+                dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.prevStatePKLKey, prevLocalStatePKLFile));
+                dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.globalDBKey, localTransferDBFilePath));
+                dflScript.append(String.format("select * from (output '%s' select * from %s)\n);\n",
                         localTransferDBFilePath, prevOutputGlobalTbl));
             } else
-                dflScript.append("'\n);\n");
+                dflScript.append("\n);\n");
 
             // Format global
-            if (iteration != listFiles.length) {
+            if (iteration != localGlobalFolders.length) {
                 dflScript.append(String.format(
                         "\nusing %s \ndistributed create temporary table %s as direct \n",
                         inputGlobalTbl, tempOutputGlobalTbl));
@@ -780,16 +762,16 @@ public class Composer {
                                 inputGlobalTbl, outputGlobalTbl));
             }
 
-            dflScript.append("select * from (\n  call_python_script 'python " + globalScriptPath + " ");
+            dflScript.append("select * from (\n  call_python_script '" + globalScriptPath + "' ");
             for (ParameterProperties parameter : algorithmParameters) {
-                dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue().replace("\"", "\\\"")));
+                dflScript.append(String.format("'-%s' '%s' ", parameter.getName(), parameter.getValue().replace("\\\"", "\"")));
             }
-            dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.localDBsKey, globalTransferDBFilePath));
-            dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.curStatePKLKey, globalStatePKLFile));
+            dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.localDBsKey, globalTransferDBFilePath));
+            dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.curStatePKLKey, globalStatePKLFile));
             if (iteration > 1) {
-                dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.prevStatePKLKey, prevGlobalStatePKLFile));
+                dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.prevStatePKLKey, prevGlobalStatePKLFile));
             }
-            dflScript.append(String.format("' select * from (output '%s' select * from %s)\n);\n",
+            dflScript.append(String.format("select * from (output '%s' select * from %s)\n);\n",
                     globalTransferDBFilePath, inputGlobalTbl));
         }
         return dflScript.toString();
@@ -831,27 +813,21 @@ public class Composer {
             String prevGlobalStatePKLFile = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey + "/phase_global_state.pkl";
 
             dflScript.append("distributed create table " + outputGlobalTbl + " as direct \n");
-            dflScript.append("select * from (\n  call_python_script 'python " + globalScriptPath + " ");
+            dflScript.append("select * from (\n  call_python_script '" + globalScriptPath + "' ");
             for (ParameterProperties parameter : algorithmParameters) {
-                dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue().replace("\"", "\\\"")));
+                dflScript.append(String.format("'-%s' '%s' ", parameter.getName(), parameter.getValue().replace("\\\"", "\"")));
             }
-            dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.prevStatePKLKey, prevGlobalStatePKLFile));
-            dflScript.append("'\n);\n");
+            dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.prevStatePKLKey, prevGlobalStatePKLFile));
+            dflScript.append("\n);\n");
 
             return dflScript.toString();
         }
 
         // The iteration works like multiple_local_global in the init,step,finalize steps
-        File[] listFiles = new File(algorithmFolderPath).listFiles(new FileFilter() {
-            @Override
-            public boolean accept(File pathname) {
-                return pathname.isDirectory();
-            }
-        });
-        Arrays.sort(listFiles);
+        File[] localGlobalFolders = getLocalGlobalFolders(algorithmFolderPath);
 
         // Iterating through all the local_global folders of the algorithm
-        for (int iteration = 1; iteration <= listFiles.length; iteration++) {
+        for (int iteration = 1; iteration <= localGlobalFolders.length; iteration++) {
             String inputGlobalTbl = "input_global_tbl_" + iteration;
             String tempOutputGlobalTbl = "output_global_tbl_" + iteration;
             String prevOutputGlobalTbl = "output_global_tbl_" + (iteration - 1);
@@ -865,7 +841,7 @@ public class Composer {
             String prevGlobalStatePKLFile;
             String localStatePKLFile;
             String globalStatePKLFile;
-            if (iteration == 1 && iteration == listFiles.length) {
+            if (iteration == 1 && iteration == localGlobalFolders.length) {
                 prevLocalStatePKLFile = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey + "/phase_local_state.pkl";
                 prevGlobalStatePKLFile = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey + "/phase_global_state.pkl";
                 localStatePKLFile = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey + "/phase_local_state.pkl";
@@ -877,7 +853,7 @@ public class Composer {
                         + "/" + iterativeAlgorithmPhase.name() + "/" + iteration + "/local_state.pkl";
                 globalStatePKLFile = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey
                         + "/" + iterativeAlgorithmPhase.name() + "/" + iteration + "/global_state.pkl";
-            } else if (iteration == listFiles.length) {
+            } else if (iteration == localGlobalFolders.length) {
                 prevLocalStatePKLFile = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey
                         + "/" + iterativeAlgorithmPhase.name() + "/" + (iteration - 1) + "/local_state.pkl";
                 prevGlobalStatePKLFile = HBPConstants.DEMO_DB_WORKING_DIRECTORY + algorithmKey
@@ -906,45 +882,45 @@ public class Composer {
                 dflScript.append(String.format("using %s\n", prevOutputGlobalTbl));
             dflScript.append(String
                     .format("distributed create temporary table %s to 1 as virtual \n", inputGlobalTbl));
-            dflScript.append("select * from (\n  call_python_script 'python " + localScriptPath + " ");
+            dflScript.append("select * from (\n  call_python_script '" + localScriptPath + "' ");
             for (ParameterProperties parameter : algorithmParameters) {
-                dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue().replace("\"", "\\\"")));
+                dflScript.append(String.format("'-%s' '%s' ", parameter.getName(), parameter.getValue().replace("\\\"", "\"")));
             }
-            dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.inputLocalDBKey, inputLocalDB));
-            dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.dbQueryKey, dbQuery));
+            dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.inputLocalDBKey, inputLocalDB));
+            dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.dbQueryKey, dbQuery));
             for (Pair<String, String> csvDatabaseProperty : csvDatabaseProperties) {
-                dflScript.append(String.format("-%s \"%s\" ", csvDatabaseProperty.getA(), csvDatabaseProperty.getB()));
+                dflScript.append(String.format("'-%s' '%s' ", csvDatabaseProperty.getA(), csvDatabaseProperty.getB()));
             }
-            dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.curStatePKLKey, localStatePKLFile));
+            dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.curStatePKLKey, localStatePKLFile));
             if (iteration > 1) {
-                dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.prevStatePKLKey, prevLocalStatePKLFile));
-                dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.globalDBKey, localTransferDBFilePath));
-                dflScript.append(String.format("' select * from (output '%s' select * from %s)\n);\n",
+                dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.prevStatePKLKey, prevLocalStatePKLFile));
+                dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.globalDBKey, localTransferDBFilePath));
+                dflScript.append(String.format("select * from (output '%s' select * from %s)\n);\n",
                         localTransferDBFilePath, prevOutputGlobalTbl));
             } else if (!iterativeAlgorithmPhase.equals(init)) {
-                dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.prevStatePKLKey, prevLocalStatePKLFile));
-                dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.globalDBKey, phaseChangeTransferDBFilePath));
-                dflScript.append("'\n);\n");
+                dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.prevStatePKLKey, prevLocalStatePKLFile));
+                dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.globalDBKey, phaseChangeTransferDBFilePath));
+                dflScript.append("\n);\n");
             } else {
-                dflScript.append("'\n);\n");
+                dflScript.append("\n);\n");
             }
 
             // Format global
             // If this is the last iteration of finalize, print the result from global.py
             // and don't create virtual last table with phase
-            if ((iteration == listFiles.length) && iterativeAlgorithmPhase.equals(finalize)) {
+            if ((iteration == localGlobalFolders.length) && iterativeAlgorithmPhase.equals(finalize)) {
                 dflScript.append(String.format("\nusing %s \ndistributed create table %s as direct \n",
                         inputGlobalTbl, outputGlobalTbl));
 
-                dflScript.append("select * from (\n  call_python_script 'python " + globalScriptPath + " ");
+                dflScript.append("select * from (\n  call_python_script '" + globalScriptPath + "' ");
                 for (ParameterProperties parameter : algorithmParameters) {
-                    dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue().replace("\"", "\\\"")));
+                    dflScript.append(String.format("'-%s' '%s' ", parameter.getName(), parameter.getValue().replace("\\\"", "\"")));
                 }
-                dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.localDBsKey, globalTransferDBFilePath));
-                dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.curStatePKLKey, globalStatePKLFile));
-                dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.prevStatePKLKey, prevGlobalStatePKLFile));
+                dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.localDBsKey, globalTransferDBFilePath));
+                dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.curStatePKLKey, globalStatePKLFile));
+                dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.prevStatePKLKey, prevGlobalStatePKLFile));
                 dflScript.append(
-                        String.format("' select * from (output '%s' select * from %s)\n);\n",
+                        String.format("select * from (output '%s' select * from %s)\n);\n",
                                 globalTransferDBFilePath, inputGlobalTbl));
                 return dflScript.toString();
             }
@@ -952,19 +928,19 @@ public class Composer {
             dflScript.append(String.format("\nusing %s \ndistributed create temporary table %s as direct \n",
                     inputGlobalTbl, tempOutputGlobalTbl));
 
-            dflScript.append("select * from (\n  call_python_script 'python " + globalScriptPath + " ");
+            dflScript.append("select * from (\n  call_python_script '" + globalScriptPath + "' ");
             for (ParameterProperties parameter : algorithmParameters) {
-                dflScript.append(String.format("-%s \"%s\" ", parameter.getName(), parameter.getValue().replace("\"", "\\\"")));
+                dflScript.append(String.format("'-%s' '%s' ", parameter.getName(), parameter.getValue().replace("\\\"", "\"")));
             }
-            dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.localDBsKey, globalTransferDBFilePath));
-            dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.curStatePKLKey, globalStatePKLFile));
+            dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.localDBsKey, globalTransferDBFilePath));
+            dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.curStatePKLKey, globalStatePKLFile));
             if (iteration > 1 || !iterativeAlgorithmPhase.equals(init)) {
-                dflScript.append(String.format("-%s \"%s\" ", ComposerConstants.prevStatePKLKey, prevGlobalStatePKLFile));
+                dflScript.append(String.format("'-%s' '%s' ", ComposerConstants.prevStatePKLKey, prevGlobalStatePKLFile));
             }
             dflScript.append(
-                    String.format("' select * from (output '%s' select * from %s)\n);\n", globalTransferDBFilePath, inputGlobalTbl));
+                    String.format("select * from (output '%s' select * from %s)\n);\n", globalTransferDBFilePath, inputGlobalTbl));
 
-            if (iteration == listFiles.length) {
+            if (iteration == localGlobalFolders.length) {
                 dflScript.append(String
                         .format("\nusing %s \ndistributed create table %s as virtual \n",
                                 tempOutputGlobalTbl, outputGlobalTbl));
@@ -1064,6 +1040,18 @@ public class Composer {
             IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase,
             int iteration) {
         return ComposerConstants.getAlgorithmFolderPath(algorithmName) + "/" + iterativeAlgorithmPhase.name() + "/" + iteration;
+    }
+
+    private static File[] getLocalGlobalFolders(String algorithmFolderPath){
+        File[] localGlobalFolders = new File(algorithmFolderPath).listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File pathname) {
+                // Return if it is a directory and ends with a number
+                return pathname.isDirectory() && pathname.toString().matches(".*\\d$");
+            }
+        });
+        Arrays.sort(localGlobalFolders);
+        return localGlobalFolders;
     }
 
     /**
