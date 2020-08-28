@@ -13,7 +13,7 @@ do
 
         pathology=$(basename ${PATHOLOGY})
 
-        curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${DATA}/${NODE_NAME}/${pathology} <<< ${PATHOLOGY_DATASETS}
+        curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${CONSUL_DATA_PATH}/${NODE_NAME}/${pathology} <<< ${PATHOLOGY_DATASETS}
 
         PATHOLOGY_DATASETS=''
 	fi

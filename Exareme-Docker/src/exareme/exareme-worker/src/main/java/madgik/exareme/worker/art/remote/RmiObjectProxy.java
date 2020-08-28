@@ -106,12 +106,12 @@ public abstract class RmiObjectProxy<T> implements ObjectProxy<T> {
                             log.info("Found node with name: "+name+" that seems to be down..");
 
                             try {
-                                String pathologyKey = searchConsul(System.getenv("DATA") + "/" + name + "?keys");
+                                String pathologyKey = searchConsul(System.getenv("CONSUL_DATA_PATH") + "/" + name + "?keys");
                                 String[] pathologyKeyArray = gson.fromJson(pathologyKey, String[].class);
                                 for( String p: pathologyKeyArray) {
                                     deleteFromConsul(p);            //Delete every pathology for node with name $name
                                 }
-                                deleteFromConsul(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/" + name);
+                                deleteFromConsul(System.getenv("CONSUL_ACTIVE_WORKERS_PATH") + "/" + name);
                                 log.info("Worker node:[" + name + "," + regEntityName.getIP() + "]" + " removed from Consul key-value store");
                             } catch (IOException E) {
                                 throw new RemoteException("Can not contact Consul Key value Store");
@@ -135,20 +135,20 @@ public abstract class RmiObjectProxy<T> implements ObjectProxy<T> {
     private HashMap <String,String> getNamesOfActiveNodes() throws IOException {
         Gson gson = new Gson();
         HashMap <String,String> map = new HashMap<>();
-        String masterKey = searchConsul(System.getenv("EXAREME_MASTER_PATH")+"/?keys");
+        String masterKey = searchConsul(System.getenv("CONSUL_MASTER_PATH")+"/?keys");
         String[] masterKeysArray = gson.fromJson(masterKey, String[].class);
 
-        String masterName = masterKeysArray[0].replace(System.getenv("EXAREME_MASTER_PATH")+"/", "");
-        String masterIP = searchConsul(System.getenv("EXAREME_MASTER_PATH")+"/"+masterName+"?raw");
+        String masterName = masterKeysArray[0].replace(System.getenv("CONSUL_MASTER_PATH")+"/", "");
+        String masterIP = searchConsul(System.getenv("CONSUL_MASTER_PATH")+"/"+masterName+"?raw");
         map.put(masterIP,masterName);
 
-        String workersKey = searchConsul(System.getenv("EXAREME_ACTIVE_WORKERS_PATH")+"/?keys");
+        String workersKey = searchConsul(System.getenv("CONSUL_ACTIVE_WORKERS_PATH")+"/?keys");
         if (workersKey == null)   //No workers running
             return map;             //return master only
         String[] workerKeysArray = gson.fromJson(workersKey, String[].class);
         for(String worker: workerKeysArray){
-            String workerName = worker.replace(System.getenv("EXAREME_ACTIVE_WORKERS_PATH")+"/", "");
-            String workerIP = searchConsul(System.getenv("EXAREME_ACTIVE_WORKERS_PATH")+"/"+workerName+"?raw");
+            String workerName = worker.replace(System.getenv("CONSUL_ACTIVE_WORKERS_PATH")+"/", "");
+            String workerIP = searchConsul(System.getenv("CONSUL_ACTIVE_WORKERS_PATH")+"/"+workerName+"?raw");
             map.put(workerIP,workerName);
         }
         return map;
@@ -167,7 +167,7 @@ public abstract class RmiObjectProxy<T> implements ObjectProxy<T> {
             httpGet = new HttpGet(consulURL + "/v1/kv/" + query);
             log.debug("Running: " + httpGet.getURI());
             CloseableHttpResponse response = null;
-            if (httpGet.toString().contains(System.getenv("EXAREME_MASTER_PATH")+"/") || httpGet.toString().contains(System.getenv("DATA")+"/")) {    //if we can not contact : http://exareme-keystore:8500/v1/kv/master* or http://exareme-keystore:8500/v1/kv/datasets*
+            if (httpGet.toString().contains(System.getenv("CONSUL_MASTER_PATH")+"/") || httpGet.toString().contains(System.getenv("CONSUL_DATA_PATH")+"/")) {    //if we can not contact : http://exareme-keystore:8500/v1/kv/master* or http://exareme-keystore:8500/v1/kv/datasets*
                 try {   //then throw exception
                     response = httpclient.execute(httpGet);
                     if (response.getStatusLine().getStatusCode() != 200) {
@@ -179,7 +179,7 @@ public abstract class RmiObjectProxy<T> implements ObjectProxy<T> {
                     response.close();
                 }
             }
-            if (httpGet.toString().contains(System.getenv("EXAREME_ACTIVE_WORKERS_PATH")+"/")) {    //if we can not contact : http://exareme-keystore:8500/v1/kv/active_workers*
+            if (httpGet.toString().contains(System.getenv("CONSUL_ACTIVE_WORKERS_PATH")+"/")) {    //if we can not contact : http://exareme-keystore:8500/v1/kv/active_workers*
                 try {   //then maybe there are no workers running
                     response = httpclient.execute(httpGet);
                     if (response.getStatusLine().getStatusCode() != 200) {
@@ -213,7 +213,7 @@ public abstract class RmiObjectProxy<T> implements ObjectProxy<T> {
             //curl -X DELETE $CONSULURL/v1/kv/$1/$NODE_NAME
             log.debug("Running: " + httpDelete.getURI());
             CloseableHttpResponse response = null;
-            if (httpDelete.toString().contains(System.getenv("EXAREME_ACTIVE_WORKERS_PATH")+"/") || httpDelete.toString().contains(System.getenv("DATA")+"/")) {    //if we can not contact : http://exareme-keystore:8500/v1/kv/master* or http://exareme-keystore:8500/v1/kv/datasets*
+            if (httpDelete.toString().contains(System.getenv("CONSUL_ACTIVE_WORKERS_PATH")+"/") || httpDelete.toString().contains(System.getenv("CONSUL_DATA_PATH")+"/")) {    //if we can not contact : http://exareme-keystore:8500/v1/kv/master* or http://exareme-keystore:8500/v1/kv/datasets*
                 try {   //then throw exception
                     response = httpclient.execute(httpDelete);
                     if (response.getStatusLine().getStatusCode() != 200) {

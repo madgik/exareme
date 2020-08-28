@@ -34,11 +34,6 @@ services:
       - NODE_COMMUNICATION_TIMEOUT=30000        # (MILIS) NODE COMMUNICATION WILL DROP IF TIMEOUT IS PASSED
       - ENVIRONMENT_TYPE=PROD                   # TEST / DEV / PROD
     deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 5s
-        max_attempts: 3
-        window: 120s
       placement:
         constraints:
           - node.role == worker # Ensures we only start on worker nodes

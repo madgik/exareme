@@ -271,13 +271,13 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
             HashMap<String, String> names = HttpAsyncMiningQueryHelper.getNamesOfActiveNodesInConsul();
             String name = names.get(container.getEntityName().getIP());
             //Delete pathologies and IP of the node
-            String pathologyKey = HttpAsyncMiningQueryHelper.searchConsul(System.getenv("DATA") + "/" + name + "?keys");
+            String pathologyKey = HttpAsyncMiningQueryHelper.searchConsul(System.getenv("CONSUL_DATA_PATH") + "/" + name + "?keys");
             String[] pathologyKeyArray = gson.fromJson(pathologyKey, String[].class);
             for (String p : pathologyKeyArray) {
                 deleteFromConsul(p);            //Delete every pathology for node with name $name
             }
             //Delete IP of active_worker with name $name
-            deleteFromConsul(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/" + name);
+            deleteFromConsul(System.getenv("CONSUL_ACTIVE_WORKERS_PATH") + "/" + name);
 
             if (pathology==null){
                 throw new Exception("Re run your experiment using available data");
@@ -310,7 +310,7 @@ public class HttpAsyncMiningQueryHandler implements HttpAsyncRequestHandler<Http
         log.debug("Running: " + httpDelete.getURI());
 
         CloseableHttpResponse response = null;
-        if (httpDelete.toString().contains(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/") || httpDelete.toString().contains(System.getenv("DATA") + "/")) {    //if we can not contact : http://exareme-keystore:8500/v1/kv/master* or http://exareme-keystore:8500/v1/kv/datasets*
+        if (httpDelete.toString().contains(System.getenv("CONSUL_ACTIVE_WORKERS_PATH") + "/") || httpDelete.toString().contains(System.getenv("CONSUL_DATA_PATH") + "/")) {    //if we can not contact : http://exareme-keystore:8500/v1/kv/master* or http://exareme-keystore:8500/v1/kv/datasets*
             try {   //then throw exception
                 response = httpclient.execute(httpDelete);
                 if (response.getStatusLine().getStatusCode() != 200) {

@@ -3,23 +3,18 @@ package madgik.exareme.master.gateway.async.handler;
 import com.google.gson.Gson;
 import madgik.exareme.master.gateway.async.handler.Exceptions.DatasetsException;
 import madgik.exareme.master.gateway.async.handler.Exceptions.PathologyException;
-import madgik.exareme.worker.art.container.Container;
 import madgik.exareme.worker.art.container.ContainerProxy;
 import madgik.exareme.worker.art.registry.ArtRegistryLocator;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpRequest;
-import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
-import javax.xml.crypto.Data;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.*;
@@ -34,41 +29,41 @@ public class HttpAsyncMiningQueryHelper {
         HashMap<String, String[]> nodeDatasets = new HashMap<>();
         List<String> pathologyNodes = new ArrayList<String>();
 
-        String masterKey = searchConsul(System.getenv("EXAREME_MASTER_PATH") + "/?keys");
+        String masterKey = searchConsul(System.getenv("CONSUL_MASTER_PATH") + "/?keys");
         String[] masterKeysArray = gson.fromJson(masterKey, String[].class);
 
-        String masterName = masterKeysArray[0].replace(System.getenv("EXAREME_MASTER_PATH") + "/", "");
-        String masterIP = searchConsul(System.getenv("EXAREME_MASTER_PATH") + "/" + masterName + "?raw");
+        String masterName = masterKeysArray[0].replace(System.getenv("CONSUL_MASTER_PATH") + "/", "");
+        String masterIP = searchConsul(System.getenv("CONSUL_MASTER_PATH") + "/" + masterName + "?raw");
 
-        String pathologyKey = searchConsul(System.getenv("DATA") + "/" + masterName + "/" + pathology + "?keys");
+        String pathologyKey = searchConsul(System.getenv("CONSUL_DATA_PATH") + "/" + masterName + "/" + pathology + "?keys");
         String[] pathologyKeyKeysArray = gson.fromJson(pathologyKey, String[].class);
 
         if (pathologyKeyKeysArray != null) {
             pathologyNodes.add(pathologyKeyKeysArray[0]);                 //Add Master Pathology
         }
 
-        String datasetKey = searchConsul(System.getenv("DATA") + "/" + masterName + "/" + pathology + "?raw");
+        String datasetKey = searchConsul(System.getenv("CONSUL_DATA_PATH") + "/" + masterName + "/" + pathology + "?raw");
         String[] datasetKeysArray = gson.fromJson(datasetKey, String[].class);
         if (datasetKeysArray != null)
-            nodeDatasets.put(masterIP, datasetKeysArray);                 //Map Master IP-> Matser Datasets
+            nodeDatasets.put(masterIP, datasetKeysArray);                 //Map Master IP-> Master Datasets
 
-        String workersKey = searchConsul(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/?keys");
+        String workersKey = searchConsul(System.getenv("CONSUL_ACTIVE_WORKERS_PATH") + "/?keys");
         if (workersKey == null)     //No workers running
             return nodeDatasets;             //return master's Datasets only
         String[] workerKeysArray = gson.fromJson(workersKey, String[].class);
         for (String worker : workerKeysArray) {
-            String workerName = worker.replace(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/", "");
-            String workerIP = searchConsul(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/" + workerName + "?raw");
+            String workerName = worker.replace(System.getenv("CONSUL_ACTIVE_WORKERS_PATH") + "/", "");
+            String workerIP = searchConsul(System.getenv("CONSUL_ACTIVE_WORKERS_PATH") + "/" + workerName + "?raw");
 
 
-            pathologyKey = searchConsul(System.getenv("DATA") + "/" + workerName + "/" + pathology + "?keys");
+            pathologyKey = searchConsul(System.getenv("CONSUL_DATA_PATH") + "/" + workerName + "/" + pathology + "?keys");
             pathologyKeyKeysArray = gson.fromJson(pathologyKey, String[].class);
 
             if (pathologyKeyKeysArray != null) {
                 pathologyNodes.add(pathologyKeyKeysArray[0]);                 //Add worker Pathology
             }
 
-            datasetKey = searchConsul(System.getenv("DATA") + "/" + workerName + "/" + pathology + "?raw");
+            datasetKey = searchConsul(System.getenv("CONSUL_DATA_PATH") + "/" + workerName + "/" + pathology + "?raw");
             datasetKeysArray = gson.fromJson(datasetKey, String[].class);
             if (datasetKeysArray != null)
                 nodeDatasets.put(workerIP, datasetKeysArray);        //Map Worker's IP-> Worker's Datasets
@@ -82,24 +77,23 @@ public class HttpAsyncMiningQueryHelper {
     }
 
 
-
     static HashMap<String, String> getNamesOfActiveNodesInConsul() throws Exception {
         Gson gson = new Gson();
         HashMap<String, String> nodeNames = new HashMap<>();
-        String masterKey = searchConsul(System.getenv("EXAREME_MASTER_PATH") + "/?keys");
+        String masterKey = searchConsul(System.getenv("CONSUL_MASTER_PATH") + "/?keys");
         String[] masterKeysArray = gson.fromJson(masterKey, String[].class);    //Map Master's IP-> Master's Name
 
-        String masterName = masterKeysArray[0].replace(System.getenv("EXAREME_MASTER_PATH") + "/", "");
-        String masterIP = searchConsul(System.getenv("EXAREME_MASTER_PATH") + "/" + masterName + "?raw");
+        String masterName = masterKeysArray[0].replace(System.getenv("CONSUL_MASTER_PATH") + "/", "");
+        String masterIP = searchConsul(System.getenv("CONSUL_MASTER_PATH") + "/" + masterName + "?raw");
         nodeNames.put(masterIP, masterName);
 
-        String workersKey = searchConsul(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/?keys");
+        String workersKey = searchConsul(System.getenv("CONSUL_ACTIVE_WORKERS_PATH") + "/?keys");
         if (workersKey == null)             //No workers running
             return nodeNames;               //return master only
         String[] workerKeysArray = gson.fromJson(workersKey, String[].class);
         for (String worker : workerKeysArray) {
-            String workerName = worker.replace(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/", "");
-            String workerIP = searchConsul(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/" + workerName + "?raw");
+            String workerName = worker.replace(System.getenv("CONSUL_ACTIVE_WORKERS_PATH") + "/", "");
+            String workerIP = searchConsul(System.getenv("CONSUL_ACTIVE_WORKERS_PATH") + "/" + workerName + "?raw");
             nodeNames.put(workerIP, workerName);         //Map Worker's IP-> Worker's Name
         }
         return nodeNames;
@@ -158,7 +152,7 @@ public class HttpAsyncMiningQueryHelper {
         httpGet = new HttpGet(consulURL + "/v1/kv/" + query);
         log.debug("Running: " + httpGet.getURI());
         CloseableHttpResponse response = null;
-        if (httpGet.toString().contains(System.getenv("EXAREME_MASTER_PATH") + "/") || httpGet.toString().contains(System.getenv("DATA") + "/")) {    //if we can not contact : http://exareme-keystore:8500/v1/kv/master* or http://exareme-keystore:8500/v1/kv/datasets*
+        if (httpGet.toString().contains(System.getenv("CONSUL_MASTER_PATH") + "/") || httpGet.toString().contains(System.getenv("CONSUL_DATA_PATH") + "/")) {    //if we can not contact : http://exareme-keystore:8500/v1/kv/master* or http://exareme-keystore:8500/v1/kv/datasets*
             try {   //then throw exception
                 response = httpclient.execute(httpGet);
             } catch (Exception e) {
@@ -166,7 +160,7 @@ public class HttpAsyncMiningQueryHelper {
             }
             result = EntityUtils.toString(response.getEntity());
         }
-        if (httpGet.toString().contains(System.getenv("EXAREME_ACTIVE_WORKERS_PATH") + "/")) {    //if we can not contact : http://exareme-keystore:8500/v1/kv/active_workers*
+        if (httpGet.toString().contains(System.getenv("CONSUL_ACTIVE_WORKERS_PATH") + "/")) {    //if we can not contact : http://exareme-keystore:8500/v1/kv/active_workers*
             //then maybe there are no workers running
             try {
                 response = httpclient.execute(httpGet);
@@ -176,8 +170,7 @@ public class HttpAsyncMiningQueryHelper {
                 } else {
                     result = EntityUtils.toString(response.getEntity());
                 }
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 response.close();
             }
         }
@@ -191,34 +184,31 @@ public class HttpAsyncMiningQueryHelper {
         String pathology = null;
         HashMap<String, String[]> nodeDatasets = new HashMap<>();
 
-        if (inputContent == null ) {        //list_datasets
+        if (inputContent == null) {        //list_datasets
             nodesToBeChecked.addAll(Arrays.asList(ArtRegistryLocator.getArtRegistryProxy().getContainers()));
-	        return nodesToBeChecked;
-        }
-        else if(inputContent.size()==1 && inputContent.containsKey("pathology")) {  //list_variables
+            return nodesToBeChecked;
+        } else if (inputContent.size() == 1 && inputContent.containsKey("pathology")) {  //list_variables
             pathology = inputContent.get("pathology");
             nodeDatasets = getNodesForPathology(pathology);
 
             nodesToBeChecked.addAll(Arrays.asList(ArtRegistryLocator.getArtRegistryProxy().getContainers()));
             return nodesToBeChecked;
-        }
-
-        else {
+        } else {
             if (inputContent.containsKey("pathology")) {
                 pathology = inputContent.get("pathology");
                 nodeDatasets = getNodesForPathology(pathology);
-            }
-            else
+            } else
                 throw new PathologyException("The parameter pathology should not be blank");
+
             if (inputContent.containsKey("dataset")) {
                 datasets = inputContent.get("dataset");
                 //Get datasets provided by user
                 userDatasets = datasets.split(",");
-            }
-            else
+            } else
                 throw new DatasetsException("The parameter dataset should not be blank");
-            if(nodeDatasets.isEmpty()){
-                throw new PathologyException("Existing nodes do not have data for pathology: "+pathology);
+
+            if (nodeDatasets.isEmpty()) {
+                throw new PathologyException("Existing nodes do not have data for pathology: " + pathology);
             }
             nodesToBeChecked = checkDatasets(nodeDatasets, userDatasets, pathology);
         }
@@ -247,7 +237,7 @@ public class HttpAsyncMiningQueryHelper {
                     //and Exareme node not already added to list nodesToBeChecked
                     if (!nodesToBeChecked.contains(IP)) {
                         nodesToBeChecked.add(IP);
-                        for(ContainerProxy cp : ArtRegistryLocator.getArtRegistryProxy().getContainers()){
+                        for (ContainerProxy cp : ArtRegistryLocator.getArtRegistryProxy().getContainers()) {
                             if (cp.getEntityName().getIP().equals(IP)) {
                                 containers.add(cp);
                                 break;
@@ -271,7 +261,7 @@ public class HttpAsyncMiningQueryHelper {
             String notFoundSring = notFound.toString();
             notFoundSring = notFoundSring.substring(0, notFoundSring.length() - 2);
             //Show appropriate error message to user
-            throw new DatasetsException("Dataset(s) " + notFoundSring + " not found for pathology " +pathology + "!");
+            throw new DatasetsException("Dataset(s) " + notFoundSring + " not found for pathology " + pathology + "!");
         }
         return containers;
 
@@ -279,19 +269,19 @@ public class HttpAsyncMiningQueryHelper {
 
 
     static String getAvailableDatasetsFromConsul(String pathology) throws Exception {
-        HashMap<String,String> names = getNamesOfActiveNodesInConsul();
-        StringBuilder datasets=new StringBuilder();
+        HashMap<String, String> names = getNamesOfActiveNodesInConsul();
+        StringBuilder datasets = new StringBuilder();
         Gson gson = new Gson();
 
         for (Map.Entry<String, String> entry : names.entrySet()) {
-            String dataRaw = searchConsul(System.getenv("DATA") + "/" + entry.getValue() + "/" + pathology + "?raw");
-            String[] data = gson.fromJson(dataRaw,String[].class);
-            for (String d : data){
-                if(!d.isEmpty())
+            String dataRaw = searchConsul(System.getenv("CONSUL_DATA_PATH") + "/" + entry.getValue() + "/" + pathology + "?raw");
+            String[] data = gson.fromJson(dataRaw, String[].class);
+            for (String d : data) {
+                if (!d.isEmpty())
                     datasets.append(d).append(",");
             }
         }
-        if(!datasets.toString().isEmpty())
+        if (!datasets.toString().isEmpty())
             return datasets.substring(0, datasets.length() - 1);
         else
             return null;
