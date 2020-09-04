@@ -148,75 +148,74 @@ waitForExaremeWorkerToStart() {
 }
 
 # Health check for exareme node
-exaremeHealthCheck() {
+exaremeNodeHealthCheck() {
   if [[ ${ENVIRONMENT_TYPE} != "PROD" ]]; then
     return 0
   fi
 
-  echo "$(timestamp) Health check for Master node  with IP: ${NODE_IP} and nodeName: ${NODE_NAME}"
+  echo "$(timestamp) HEALTH CHECK for node with IP ${NODE_IP} and name ${NODE_NAME} ."
 
   # Ping exareme to see if node is available.
-  if [[ "${FEDERATION_ROLE}" == "master" ]]; then
-    check=$(curl -s ${NODE_IP}:9092/check/worker?NODE_IP=${NODE_IP})
-  else
-    check=$(curl -s ${MASTER_IP}:9092/check/worker?NODE_IP=${NODE_IP})
-  fi
+  check=$(curl -s ${MASTER_IP}:9092/check/worker?NODE_IP=${NODE_IP})
 
   if [[ -z ${check} ]]; then
-    echo "$(timestamp) HEALTH_CHECK algorithm did not return anything. Switch ENVIRONMENT_TYPE to 'DEV' to see error messages coming from EXAREME. Exiting.."
-    exit 1
+    return 1
   fi
 
   # Check if what curl returned is JSON
   echo ${check} | jq empty
   check_code=$?
   if [[ ${check_code} -ne 0 ]]; then
-    echo "$(timestamp) An error has occurred: " ${check} " Exiting... "
-    exit 1
+    return 1
   fi
 
   # Retrieve result as json. If $NODE_NAME exists in result, the algorithm run in the specific node
   getNames="$(echo ${check} | jq '.active_nodes')"
   if ! [[ ${getNames} == *${NODE_NAME}* ]]; then
-    echo "$(timestamp) Master node  with IP: ${NODE_IP} and nodeName: ${NODE_NAME} could not be initialized. Switch ENVIRONMENT_TYPE to 'DEV' to see error messages coming from EXAREME. Exiting..."
-    exit 1
+    return 1
   fi
+
+  return 0
 }
 
-# Stop Exareme service
-stop_exareme() {
-  kill -9 "$(cat /tmp/exareme/var/run/*.pid)"
-  rm /tmp/exareme/var/run/*.pid
-  echo "Stopped."
-  exit 0
+# Periodic check for exareme's health.
+# If it fails shutdown the container
+periodicExaremeNodeHealthCheck() {
+  # Make a health check every 5 minutes.
+  while true; do
+    sleep 10	# TODO Increase
+
+    # If health check fails then try again until it succeeds or close the container.
+    if ! exaremeNodeHealthCheck; then
+      attempts=0
+      while ! exaremeNodeHealthCheck; do
+        if [[ ${attempts} -ge 10 ]]; then
+          echo -e "\n$(timestamp) HEALTH CHECK FAILED. Closing the container."
+          pkill -f 1 # Closing main bootstrap.sh process to stop the container.
+        fi
+        echo "$(timestamp) HEALTH CHECK failed. Trying again..."
+        attempts=$((${attempts} + 1))
+        sleep 5
+      done
+    fi
+    echo "$(timestamp) HEALTH CHECK successful. MASTER_IP: $MASTER_IP and NODE_IP: $NODE_IP"
+  done
 }
 
-# Setup signal handlers
-trap term_handler SIGTERM
+# Verify that exareme master IP on consul is the same.
+# If not master has restarted, so workers need to restart as well.
+checkExaremeMasterState() {
+  while true; do
+    PREVIOUS_MASTER_IP=$MASTER_IP
+    getMasterIPFromConsul
 
-# This function will be executed when the container receives the SIGTERM signal (when stopping)
-term_handler() {
+    if [[ $PREVIOUS_MASTER_IP != $MASTER_IP ]]; then
+      echo "$(timestamp) Master restarted, shutting down worker."
+      pkill -f 1 # Closing main bootstrap.sh process
+    fi
 
-  if [[ "${FEDERATION_ROLE}" != "master" ]]; then #worker
-    echo "*******************************Stopping Worker**************************************"
-    if [[ "$(curl -s ${CONSULURL}/v1/health/state/passing | jq -r '.[].Status')" == "passing" ]]; then
-      deleteKeysFromConsul "$CONSUL_ACTIVE_WORKERS_PATH"
-    fi
-    if [[ "$(curl -s -o /dev/null -i -w "%{http_code}\n" ${CONSULURL}/v1/kv/${CONSUL_MASTER_PATH}/?keys)" == "200" ]]; then
-      NODE_IP=$(/sbin/ifconfig eth0 | grep "inet" | awk -F: '{print $2}' | cut -d ' ' -f 1)
-      MASTER_IP=$(curl -s ${CONSULURL}/v1/kv/${CONSUL_MASTER_PATH}/$(curl -s ${CONSULURL}/v1/kv/${CONSUL_MASTER_PATH}/?keys | jq -r '.[]' | sed "s/${CONSUL_MASTER_PATH}\///g")?raw)
-      # Delete worker from master's registry
-      curl -s ${MASTER_IP}:9091/remove/worker?IP=${NODE_IP}
-    fi
-    stop_exareme
-  else #master
-    echo "*******************************Stopping Master**************************************"
-    if [[ "$(curl -s ${CONSULURL}/v1/health/state/passing | jq -r '.[].Status')" == "passing" ]]; then
-      deleteKeysFromConsul "$CONSUL_MASTER_PATH"
-    fi
-    stop_exareme
-  fi
-  exit 0
+    sleep 30
+  done
 }
 
 # Periodic deletion of temp files
@@ -247,6 +246,7 @@ waitForConsulToStart
 
 # Running bootstrap on a master node
 if [[ "${FEDERATION_ROLE}" == "master" ]]; then
+  MASTER_IP=$NODE_IP
 
   echo "$(timestamp) Starting Exareme on master node with IP: ${NODE_IP} and nodeName: ${NODE_NAME}"
   ./exareme-admin.sh --start
@@ -257,7 +257,12 @@ if [[ "${FEDERATION_ROLE}" == "master" ]]; then
   echo -e "\n$(timestamp) Updating consul with master node IP."
   curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${CONSUL_MASTER_PATH}/${NODE_NAME} <<<${NODE_IP}
 
-  exaremeHealthCheck
+  if ! exaremeNodeHealthCheck; then
+    echo "$(timestamp) HEALTH CHECK algorithm failed. Switch ENVIRONMENT_TYPE to 'DEV' to see error messages coming from EXAREME. Exiting..."
+    exit 1
+  fi
+
+  periodicExaremeNodeHealthCheck &
 
   # Prepare datasets from CSVs to SQLite db files
   convertCSVsToDB "master"
@@ -275,7 +280,12 @@ else ##### Running bootstrap on a worker node #####
   echo -e "\n$(timestamp) Updating consul with worker node IP."
   curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${CONSUL_ACTIVE_WORKERS_PATH}/${NODE_NAME} <<<${NODE_IP}
 
-  exaremeHealthCheck
+  if ! exaremeNodeHealthCheck; then
+    echo "$(timestamp) HEALTH CHECK algorithm failed. Switch ENVIRONMENT_TYPE to 'DEV' to see error messages coming from EXAREME. Exiting..."
+    exit 1
+  fi
+
+  periodicExaremeNodeHealthCheck &
 
   # Prepare datasets from CSVs to SQLite db files
   convertCSVsToDB "worker"
@@ -291,7 +301,5 @@ startTempFilesDeletionTask
 # Creating the python log file
 echo "$(timestamp) Exareme Python Algorithms log file created." >/var/log/exaremePythonAlgorithms.log
 
-# Running something in foreground, otherwise the container will stop
-while true; do
-  tail -fn +1 /var/log/exareme.log -fn +1 /var/log/exaremePythonAlgorithms.log -fn +1 /var/log/MadisServer.log
-done
+# Printing logs of Exareme, madis server and python algorithms.
+tail -fn +1 /var/log/exareme.log -fn +1 /var/log/exaremePythonAlgorithms.log -fn +1 /var/log/MadisServer.log
