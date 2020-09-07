@@ -77,9 +77,6 @@ public class HttpAsyncCheckWorker implements HttpAsyncRequestHandler<HttpRequest
         if (getIP[1].split("=")[0].equals("NODE_IP"))
             NODE_IP = getIP[1].split("=")[1];
 
-        log.debug("NODE: " + NODE_IP);
-
-
         // Execute HEALTH_CHECK algorithm for health checks in bootstrap.sh via "curl -s ${MASTER_IP}:9092/check/worker?NODE_IP=${NODE_IP}"
         // Retrieve json result and check of the NODE_NAME of the node exist in the result.
         String algorithmKey = algorithmName + "_" + System.currentTimeMillis();
