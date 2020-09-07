@@ -50,7 +50,6 @@ public class NetUtil {
         for (String a : aList) {
             if (a.startsWith("-Djava.rmi.server.hostname")) {
                 log.debug("netutil bef split $$$ " + a);
-                log.info("a: " + a);
                 return a.split("=")[1].trim();
             }
         }

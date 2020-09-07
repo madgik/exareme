@@ -9,11 +9,11 @@ export CONSUL_DATA_PATH="data"
 export CONSUL_MASTER_PATH="master"
 export CONSUL_ACTIVE_WORKERS_PATH="active_workers"
 
-CONSUL_CONNECTION_MAX_ATTEMPTS=30
-CONSUL_WAIT_FOR_MASTER_IP_MAX_ATTEMPTS=30
-WAIT_FOR_EXAREME_MASTER_STARTUP_MAX_ATTEMPTS=30
-WAIT_FOR_EXAREME_WORKER_STARTUP_MAX_ATTEMPTS=30
+CONSUL_CONNECTION_MAX_ATTEMPTS=20
+CONSUL_WAIT_FOR_MASTER_IP_MAX_ATTEMPTS=20
+EXAREME_NODE_STARTUP_HEALTH_CHECK_MAX_ATTEMPTS=10
 PERIODIC_EXAREME_NODES_HEALTH_CHECK_MAX_RETRIES=10
+PERIODIC_EXAREME_NODES_HEALTH_CHECK_INTERVAL=120
 
 if [[ -z ${CONSULURL} ]]; then
   echo "CONSULURL is unset. Check docker-compose file."
@@ -43,12 +43,12 @@ waitForConsulToStart() {
     echo -e "\n$(timestamp) Trying to connect with Consul [key-value store]... "
 
     # Exit after 30 attempts
-    if [[ ${attempts} -ge $CONSUL_CONNECTION_MAX_ATTEMPTS ]]; then
+    if [[ $attempts -ge $CONSUL_CONNECTION_MAX_ATTEMPTS ]]; then
       echo -e "\n$(timestamp) Consul[key-value store] may not be initialized or Node with IP: ${NODE_IP} and name: ${NODE_NAME} can not contact it."
       exit 1
     fi
 
-    attempts=$((${attempts} + 1))
+    attempts=$(($attempts + 1))
     sleep 5
   done
   echo -e "\n$(timestamp) Node connected to the consul."
@@ -62,7 +62,7 @@ getMasterIPFromConsul() {
 
     if [[ $attempts -ge $CONSUL_WAIT_FOR_MASTER_IP_MAX_ATTEMPTS ]]; then
       echo "$(timestamp) Is Master node initialized? Check Master's logs. Terminating Worker node with IP: ${NODE_IP} and nodeName: ${NODE_NAME}."
-      exit 1
+      return 1
     fi
 
     attempts=$(($attempts + 1))
@@ -71,8 +71,8 @@ getMasterIPFromConsul() {
 
   MASTER_IP=$(curl -s ${CONSULURL}/v1/kv/${CONSUL_MASTER_PATH}/$(curl -s ${CONSULURL}/v1/kv/${CONSUL_MASTER_PATH}/?keys | jq -r '.[]' | sed "s/${CONSUL_MASTER_PATH}\///g")?raw)
 
-  echo -e "\n$(timestamp) Fetched master node's IP ${MASTER_IP}."
-
+  echo -e "\n$(timestamp) Fetched master node's IP ${MASTER_IP}"
+  return 0
 }
 
 # Convert CSVs to DB
@@ -93,54 +93,6 @@ convertCSVsToDB() {
     echo "$(timestamp) Script: \"convert-csv-dataset-to-db.py\" exited with error." >&2
     exit 1
   fi
-}
-
-# Wait for exareme master to be up and running
-waitForExaremeMasterToStart() {
-
-  attempts=0
-  while [[ $(curl -s -o /dev/null -w "%{http_code}" ${NODE_IP}:9092/check/worker?NODE_IP=${NODE_IP}) == "000" ]]; do
-    # Exit after 10 attempts
-    if [[ $attempts -ge $WAIT_FOR_EXAREME_MASTER_STARTUP_MAX_ATTEMPTS ]]; then
-      echo -e "\n$(timestamp) Exareme could not be initialized. Exiting."
-      exit 1
-    fi
-
-    echo "$(timestamp) Waiting for exareme to be initialized..."
-    attempts=$(($attempts + 1))
-    sleep 5
-  done
-
-  echo "$(timestamp) Exareme initialized."
-}
-
-# Wait for exareme worker to be up and running
-waitForExaremeWorkerToStart() {
-
-  while [[ ! -f /var/log/exareme.log ]]; do
-    echo "$(timestamp) Waiting for exareme to be initialized..."
-    sleep 1
-  done
-
-  attempts=0
-  tail -f /var/log/exareme.log | while read LOGLINE; do
-    [[ "${LOGLINE}" == *"Worker node started."* ]] && pkill -P $$ tail
-    echo "$(timestamp) Waiting for exareme to be initialized..."
-    sleep 5
-
-    #Java's exception in StartWorker.java
-    if [[ "${LOGLINE}" == *"java.rmi.RemoteException"* ]]; then
-      echo -e "\n$(timestamp) Exareme could not be initialized. Exiting."
-      exit 1
-    fi
-
-    # Exit after 30 attempts
-    if [[ $attempts -ge $WAIT_FOR_EXAREME_WORKER_STARTUP_MAX_ATTEMPTS ]]; then
-      echo -e "\n$(timestamp) Exareme takes too long to start. Exiting."
-      exit 1
-    fi
-    attempts=$(($attempts + 1))
-  done
 }
 
 # Health check for exareme nodes.
@@ -179,12 +131,36 @@ exaremeNodesHealthCheck() {
   return 0
 }
 
+# Exareme health check on startup
+startupExaremeNodesHealthCheck() {
+  # If health check fails then try again until it succeeds or close the container.
+  if ! exaremeNodesHealthCheck; then
+    attempts=0
+    while ! exaremeNodesHealthCheck; do
+      if [[ $attempts -ge $EXAREME_NODE_STARTUP_HEALTH_CHECK_MAX_ATTEMPTS ]]; then
+        echo -e "\n$(timestamp) HEALTH CHECK FAILED. Closing the container."
+        return 1 # Exiting
+      fi
+      echo "$(timestamp) HEALTH CHECK failed. Trying again..."
+      attempts=$(($attempts + 1))
+      sleep 5
+    done
+  fi
+  echo "$(timestamp) HEALTH CHECK successful on NODE_IP: $NODE_IP"
+  return 0
+}
+
 # Periodic check for exareme's health.
 # If it fails shutdown the container
 periodicExaremeNodesHealthCheck() {
   # Make a health check every 5 minutes.
   while true; do
-    sleep 300
+    sleep $PERIODIC_EXAREME_NODES_HEALTH_CHECK_INTERVAL
+
+    # If consul doesn't have master node's IP it means that it restarted. The nodes should restart.
+    if ! getMasterIPFromConsul; then
+      pkill -f 1 # Closing main bootstrap.sh process to stop the container.
+    fi
 
     # If health check fails then try again until it succeeds or close the container.
     if ! exaremeNodesHealthCheck; then
@@ -231,18 +207,15 @@ waitForConsulToStart
 
 # Running bootstrap on a master node
 if [[ "${FEDERATION_ROLE}" == "master" ]]; then
-  MASTER_IP=$NODE_IP
 
   echo "$(timestamp) Starting Exareme on master node with IP: ${NODE_IP} and nodeName: ${NODE_NAME}"
   ./exareme-admin.sh --start
-
-  waitForExaremeMasterToStart
 
   # Updating consul with node IP
   echo -e "\n$(timestamp) Updating consul with master node IP."
   curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${CONSUL_MASTER_PATH}/${NODE_NAME} <<<${NODE_IP}
 
-  if ! exaremeNodesHealthCheck; then
+  if ! startupExaremeNodesHealthCheck; then
     echo "$(timestamp) HEALTH CHECK algorithm failed. Switch ENVIRONMENT_TYPE to 'DEV' to see error messages coming from EXAREME. Exiting..."
     exit 1
   fi
@@ -254,18 +227,19 @@ if [[ "${FEDERATION_ROLE}" == "master" ]]; then
 
 else ##### Running bootstrap on a worker node #####
 
-  getMasterIPFromConsul
+  if ! getMasterIPFromConsul; then
+    echo "$(timestamp) Could not fetch master node's IP. Exiting..."
+    exit 1
+  fi
 
   echo "$(timestamp) Starting Exareme on worker node with IP: ${NODE_IP} and nodeName: ${NODE_NAME}"
   . ./start-worker.sh
-
-  waitForExaremeWorkerToStart
 
   # Updating consul with node IP
   echo -e "\n$(timestamp) Updating consul with worker node IP."
   curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${CONSUL_ACTIVE_WORKERS_PATH}/${NODE_NAME} <<<${NODE_IP}
 
-  if ! exaremeNodesHealthCheck; then
+  if ! startupExaremeNodesHealthCheck; then
     echo "$(timestamp) HEALTH CHECK algorithm failed. Switch ENVIRONMENT_TYPE to 'DEV' to see error messages coming from EXAREME. Exiting..."
     exit 1
   fi
