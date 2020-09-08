@@ -10,12 +10,12 @@ import madgik.exareme.master.engine.AdpDBManager;
 import madgik.exareme.master.engine.AdpDBManagerLocator;
 import madgik.exareme.master.gateway.ExaremeGatewayUtils;
 import madgik.exareme.master.gateway.async.handler.entity.NQueryResultEntity;
-import madgik.exareme.master.queryProcessor.composer.AlgorithmProperties;
-import madgik.exareme.master.queryProcessor.composer.Algorithms;
-import madgik.exareme.master.queryProcessor.composer.Composer;
-import madgik.exareme.master.queryProcessor.composer.Exceptions.AlgorithmException;
-import madgik.exareme.master.queryProcessor.composer.Exceptions.CDEsMetadataException;
-import madgik.exareme.master.queryProcessor.composer.Exceptions.ComposerException;
+import madgik.exareme.master.queryProcessor.HBP.AlgorithmProperties;
+import madgik.exareme.master.queryProcessor.HBP.Algorithms;
+import madgik.exareme.master.queryProcessor.HBP.Composer;
+import madgik.exareme.master.queryProcessor.HBP.Exceptions.AlgorithmException;
+import madgik.exareme.master.queryProcessor.HBP.Exceptions.CDEsMetadataException;
+import madgik.exareme.master.queryProcessor.HBP.Exceptions.ComposerException;
 import madgik.exareme.worker.art.container.ContainerProxy;
 import madgik.exareme.worker.art.registry.ArtRegistryLocator;
 import org.apache.http.*;
@@ -87,7 +87,7 @@ public class HttpAsyncCheckWorker implements HttpAsyncRequestHandler<HttpRequest
         if (algorithmProperties == null)
             throw new AlgorithmException(algorithmName, "The algorithm does not exist.");
 
-        algorithmProperties.mergeAlgorithmParametersWithInputContent(inputContent);
+        algorithmProperties.mergeWithAlgorithmParameters(inputContent);
 
         dfl = Composer.composeDFLScript(algorithmKey, algorithmProperties, 1);  //each time a Worker that try to connect with Exareme and the Master
         log.debug(dfl);

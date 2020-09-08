@@ -2,7 +2,7 @@ package madgik.exareme.master.gateway.async.handler.entity;
 
 import madgik.exareme.master.client.AdpDBClientQueryStatus;
 import madgik.exareme.master.connector.DataSerialization;
-import org.apache.commons.io.IOUtils;
+import madgik.exareme.master.gateway.async.handler.HBP.HBPQueryHelper;
 import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.nio.ContentEncoder;
 import org.apache.http.nio.IOControl;
@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
-import java.nio.charset.StandardCharsets;
 
 /**
  * TODO flush output before suspend
@@ -75,7 +74,7 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
                 String data = queryStatus.getError().substring(queryStatus.getError().lastIndexOf("ExaremeError:") + "ExaremeError:".length()).replaceAll("\\s", " ");
                 //type could be error, user_error, warning regarding the error occurred along the process
                 String type = user_error;
-                String result = defaultOutputFormat(data, type);
+                String result = HBPQueryHelper.ErrorResponse.createErrorResponse(data, type);
                 logErrorMessage(result);
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
@@ -84,7 +83,7 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
                 String data = "The Experiment could not run with the input provided because there are insufficient data.";
                 //type could be error, user_error, warning regarding the error occurred along the process
                 String type = warning;
-                String result = defaultOutputFormat(data, type);
+                String result = HBPQueryHelper.ErrorResponse.createErrorResponse(data, type);
                 logErrorMessage(result);
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
@@ -93,7 +92,7 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
                 String data = "One or more containers are not responding. Please inform the system administrator.";
                 //type could be error, user_error, warning regarding the error occurred along the process
                 String type = error;
-                String result = defaultOutputFormat(data, type);
+                String result = HBPQueryHelper.ErrorResponse.createErrorResponse(data, type);
                 logErrorMessage(result);
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
@@ -102,7 +101,7 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
                 String data = "Something went wrong. Please inform the system administrator.";
                 //type could be error, user_error, warning regarding the error occurred along the process
                 String type = error;
-                String result = defaultOutputFormat(data, type);
+                String result = HBPQueryHelper.ErrorResponse.createErrorResponse(data, type);
                 logErrorMessage(result);
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
@@ -111,7 +110,7 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
                 String data = "Something went wrong. Please inform the system administrator.";
                 //type could be error, user_error, warning regarding the error occurred along the process
                 String type = error;
-                String result = defaultOutputFormat(data, type);
+                String result = HBPQueryHelper.ErrorResponse.createErrorResponse(data, type);
                 logErrorMessage(result);
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
@@ -120,11 +119,7 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
         }
     }
 
-    private String defaultOutputFormat(String data, String type) {
-        return "{\"result\" : [{\"data\":" + "\"" + data + "\",\"type\":" + "\"" + type + "\"}]}";
-    }
-
-    private void logErrorMessage(String error){
+    private void logErrorMessage(String error) {
         log.info("Algorithm exited with error and returned:\n " + error);
     }
 

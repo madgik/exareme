@@ -214,6 +214,7 @@ if [[ "${FEDERATION_ROLE}" == "master" ]]; then
   # Updating consul with node IP
   echo -e "\n$(timestamp) Updating consul with master node IP."
   curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${CONSUL_MASTER_PATH}/${NODE_NAME} <<<${NODE_IP}
+  curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${CONSUL_ACTIVE_WORKERS_PATH}/${NODE_NAME} <<<${NODE_IP}
 
   if ! startupExaremeNodesHealthCheck; then
     echo "$(timestamp) HEALTH CHECK algorithm failed. Switch ENVIRONMENT_TYPE to 'DEV' to see error messages coming from EXAREME. Exiting..."

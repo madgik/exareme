@@ -1,8 +1,8 @@
-package madgik.exareme.master.queryProcessor.composer;
+package madgik.exareme.master.queryProcessor.HBP;
 
-import madgik.exareme.master.queryProcessor.composer.Exceptions.AlgorithmException;
-import madgik.exareme.master.queryProcessor.composer.Exceptions.CDEsMetadataException;
-import madgik.exareme.master.queryProcessor.composer.Exceptions.ComposerException;
+import madgik.exareme.master.queryProcessor.HBP.Exceptions.AlgorithmException;
+import madgik.exareme.master.queryProcessor.HBP.Exceptions.CDEsMetadataException;
+import madgik.exareme.master.queryProcessor.HBP.Exceptions.ComposerException;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -136,19 +136,19 @@ public class AlgorithmProperties {
      * Gets the AlgorithmProperties from the cached Algorithms.
      * Merges the default algorithm properties with the parameters given in the HashMap.
      *
-     * @param inputContent a HashMap with the properties from the request
+     * @param algorithmParameters a HashMap with the parameters from the request
      * @return the merge algorithm's properties
-     * @throws AlgorithmException when algorithm's properties do not match the inputContent
+     * @throws AlgorithmException when algorithm's properties do not match the algorithmParameters
      */
-    public void mergeAlgorithmParametersWithInputContent(HashMap<String, String> inputContent)
+    public void mergeWithAlgorithmParameters(HashMap<String, String> algorithmParameters)
             throws AlgorithmException, CDEsMetadataException {
-        if (inputContent == null)
+        if (algorithmParameters == null)
             return;
 
-        String pathology = inputContent.get(ComposerConstants.getPathologyPropertyName());
+        String pathology = algorithmParameters.get(ComposerConstants.getPathologyPropertyName());
 
         for (ParameterProperties parameterProperties : this.getParameters()) {
-            String value = inputContent.get(parameterProperties.getName());
+            String value = algorithmParameters.get(parameterProperties.getName());
             if (value != null && !value.equals("")) {
                 if (!parameterProperties.getValueMultiple() && value.contains(",")
                         && !parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.json)) {

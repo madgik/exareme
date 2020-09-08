@@ -26,11 +26,11 @@ networks:
 services:
   exareme-keystore:
     image: bitnami/consul:1.8.3
-    ports:
-      - target: 8500     # TODO - Remove 
-        published: 8500
-        protocol: tcp
-        mode: host
+    #ports:         # Used for Debugging
+    #  - target: 8500     
+    #    published: 8500
+    #    protocol: tcp
+    #    mode: host
     environment:
       - CONSUL_BIND_INTERFACE=lo
     deploy:

@@ -4,6 +4,7 @@ import madgik.exareme.master.engine.AdpDBManager;
 import madgik.exareme.master.gateway.ExaremeGateway;
 import madgik.exareme.master.gateway.ExaremeGatewayUtils;
 import madgik.exareme.master.gateway.async.handler.*;
+import madgik.exareme.master.gateway.async.handler.HBP.HBPQueryHandler;
 import madgik.exareme.master.gateway.control.handler.HttpAsyncCheckWorker;
 import madgik.exareme.master.gateway.control.handler.HttpAsyncRemoveWorkerHandler;
 import org.apache.http.config.ConnectionConfig;
@@ -61,8 +62,8 @@ public class HttpAsyncExaremeGateway implements ExaremeGateway {
         registry.register(ExaremeGatewayUtils.GW_API_QUERY, new HttpAsyncQueryHandler());
         registry.register(ExaremeGatewayUtils.GW_API_TABLE, new HttpAsyncTableHandler());
         registry.register(ExaremeGatewayUtils.GW_API_MINING_ALGORITHMS, new HttpAsyncMiningAlgorithmsHandler());
-        registry.register(ExaremeGatewayUtils.GW_API_MINING_QUERY, new HttpAsyncMiningQueryHandler());
-        registry.register("/v1/mining/*", new HttpAsyncMiningQueryHandler());
+        registry.register(ExaremeGatewayUtils.GW_API_MINING_QUERY, new HBPQueryHandler());
+        registry.register("/v1/mining/*", new HBPQueryHandler());
 
         final HttpAsyncService handler = new HttpAsyncService(httpproc, null, null, registry, null, null);
 

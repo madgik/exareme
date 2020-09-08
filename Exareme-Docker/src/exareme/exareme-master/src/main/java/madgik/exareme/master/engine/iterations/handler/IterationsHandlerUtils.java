@@ -1,7 +1,6 @@
 package madgik.exareme.master.engine.iterations.handler;
 
 import madgik.exareme.common.consts.HBPConstants;
-import madgik.exareme.master.queryProcessor.composer.Algorithms;
 import org.apache.log4j.Logger;
 
 /**

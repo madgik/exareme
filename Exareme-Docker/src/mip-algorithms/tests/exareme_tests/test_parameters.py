@@ -52,7 +52,7 @@ def test_parameter_max_value():
 
     assert (
         r.text
-        == '{"result" : [{"data":"The value(s) of the parameter \'sstype\' should be less than 3.0 .  Algorithm: ANOVA","type":"text/plain+error"}]}'
+        == '{"result" : [{"data":"The value(s) of the parameter \'sstype\' should be less than 3.0 .  Algorithm: ANOVA","type":"text/plain+user_error"}]}'
     )
 
 
