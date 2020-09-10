@@ -113,7 +113,6 @@ public class AlgorithmProperties {
      *
      * @param parameterName     the name of a parameter
      * @param newParameterValue the new value of the parameter
-     * @return true if it was changed, false otherwise
      */
     public void setParameterValue(String parameterName, String newParameterValue) throws ComposerException {
         String allowedDynamicParameters = ComposerConstants.dbIdentifierKey;
@@ -138,7 +137,6 @@ public class AlgorithmProperties {
      * Merges the default algorithm properties with the parameters given in the HashMap.
      *
      * @param algorithmParameters a HashMap with the parameters from the request
-     * @return the merge algorithm's properties
      * @throws AlgorithmException when algorithm's properties do not match the algorithmParameters
      */
     public void mergeWithAlgorithmParameters(HashMap<String, String> algorithmParameters)
@@ -157,7 +155,7 @@ public class AlgorithmProperties {
                             + "' should contain only one value.");
                 }
                 validateAlgorithmParameterValueType(name, value, parameterProperties);
-                validateAlgorithmParameterType(name, value, parameterProperties, pathology);
+                validateAlgorithmParameterType(value, parameterProperties, pathology);
 
             } else {            // if value not given or it is blank
                 if (parameterProperties.getValueNotBlank()) {
@@ -178,13 +176,11 @@ public class AlgorithmProperties {
     /**
      * Checks if the given parameter input has acceptable values for that specific parameter.
      *
-     * @param algorithmName       the name of the algorithm
      * @param value               the value given as input
      * @param parameterProperties the rules that the value should follow
      * @param pathology           the pathology that the algorithm will run on
      */
     private static void validateAlgorithmParameterType(
-            String algorithmName,
             String value,
             ParameterProperties parameterProperties,
             String pathology
@@ -193,10 +189,10 @@ public class AlgorithmProperties {
         String[] values = value.split(",");
         for (String singleValue : values) {
             if (parameterProperties.getType().equals(ParameterProperties.ParameterType.column)) {
-                validateCDEVariables(algorithmName, values, parameterProperties, pathology);
+                validateCDEVariables(values, parameterProperties, pathology);
             } else if (parameterProperties.getType().equals(ParameterProperties.ParameterType.formula)) {
                 String[] formulaValues = singleValue.split("[+\\-*:0]+");
-                validateCDEVariables(algorithmName, formulaValues, parameterProperties, pathology);
+                validateCDEVariables(formulaValues, parameterProperties, pathology);
             }
             // If value is not a column (type=other) then check for min-max-enumerations
             else if (parameterProperties.getType().equals(ParameterProperties.ParameterType.other)) {
@@ -225,13 +221,11 @@ public class AlgorithmProperties {
      * the parameter property's columnValueType and columnValueCategorical.
      * The information about the CDEs are taken from the metadata.
      *
-     * @param algorithmName       the name of the algorithm
      * @param variables           a list with the variables
      * @param parameterProperties the rules that the variables should follow
      * @param pathology           the pathology that the algorithm will run on
      */
     private static void validateCDEVariables(
-            String algorithmName,
             String[] variables,
             ParameterProperties parameterProperties,
             String pathology

@@ -87,10 +87,10 @@ public class HBPQueryHelper {
      *
      * @param algorithmParameters are used to get the dataset/pathology
      * @return the containers on which the algorithm should run
-     * @throws ConsulException    if consul is unreachable
+     * @throws ConsulException if consul is unreachable
      * @throws UserException   if dataset's node is inactive or doesn't exist in the pathology
      *                         or if the pathology is not available or not provided
-     * @throws RemoteException    if the Exareme Registry is unreachable
+     * @throws RemoteException if the Exareme Registry is unreachable
      */
     public static ContainerProxy[] getAlgorithmNodes(HashMap<String, String> algorithmParameters)
             throws ConsulException, UserException, RemoteException {
@@ -151,8 +151,8 @@ public class HBPQueryHelper {
      * @param datasets                              of the algorithm
      * @param consulNodesPathologiesAndDatasetsInfo are the consul information needed
      * @return the containers to run the algorithm
-     * @throws UserException if dataset's node is inactive or doesn't exist in the pathology
-     * @throws RemoteException  if the Exareme Registry is unreachable
+     * @throws UserException   if dataset's node is inactive or doesn't exist in the pathology
+     * @throws RemoteException if the Exareme Registry is unreachable
      */
     private static ContainerProxy[] getAlgorithmNodes(
             String pathology,
