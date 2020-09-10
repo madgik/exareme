@@ -185,9 +185,7 @@ public class HBPQueryHandler implements HttpAsyncRequestHandler<HttpRequest> {
             response.setStatusCode(HttpStatus.SC_BAD_REQUEST);
             response.setEntity(createErrorResponseEntity(e.getMessage(), errorType));
 
-        } catch (ComposerException | CDEsMetadataException |
-                ConsulException | IOException | AlgorithmException |
-                UnsupportedHttpVersionException e) {
+        } catch (Exception e) {
             log.error(e.getMessage());
             String errorType = HBPQueryHelper.ErrorResponse.ErrorResponseTypes.error;
             response.setStatusCode(HttpStatus.SC_BAD_REQUEST);
