@@ -50,6 +50,7 @@ services:
       - TEMP_FILES_CLEANUP_TIME=30
       - NODE_COMMUNICATION_TIMEOUT=30000        # (MILIS) NODE COMMUNICATION WILL DROP IF TIMEOUT IS PASSED
       - ENVIRONMENT_TYPE=PROD                   # TEST / DEV / PROD
+      - LOG_LEVEL=INFO                          # INFO / DEBUG
     depends_on:
       - exareme-keystore
     deploy:

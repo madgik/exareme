@@ -30,7 +30,7 @@ public class StartWorker {
         String masterRegistryIP = args[0];
         int registryPort = AdpProperties.getArtProps().getInt("art.registry.rmi.defaultPort");
         int dataTransferPort = AdpProperties.getArtProps().getInt("art.container.data.port");
-        String logLevel = AdpProperties.getArtProps().getString("art.log.level");
+        String logLevel = System.getenv("LOG_LEVEL");
         Logger.getRootLogger().setLevel(Level.toLevel(logLevel));
 
         manager = ArtManagerFactory.createRmiArtManager(
