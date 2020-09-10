@@ -1,7 +1,7 @@
 package madgik.exareme.master.gateway.async.handler.HBP.Exceptions;
 
-public class DatasetException extends Exception{
-    public DatasetException(String message) {
+public class UserException extends Exception{
+    public UserException(String message) {
         super(message);
     }
 }
