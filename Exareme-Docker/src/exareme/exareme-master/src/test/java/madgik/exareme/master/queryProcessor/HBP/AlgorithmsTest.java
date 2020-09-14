@@ -1,7 +1,6 @@
-package madgik.exareme.master.queryProcessor.composer;
+package madgik.exareme.master.queryProcessor.HBP;
 
 import com.google.gson.Gson;
-import madgik.exareme.master.engine.iterations.handler.IterationsConstants;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.junit.Before;

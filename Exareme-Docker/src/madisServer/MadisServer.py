@@ -3,6 +3,7 @@ from tornado import gen
 from tornado.log import enable_pretty_logging
 from tornado.options import define, options
 import logging
+import os
 
 PROCESSES_PER_CPU = 2
 WEB_SERVER_PORT=8888
@@ -31,7 +32,10 @@ class MainHandler(BaseHandler):
   formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
   hdlr.setFormatter(formatter)
   logger.addHandler(hdlr)
-  logger.setLevel(logging.DEBUG)
+  if os.environ['LOG_LEVEL'] == "DEBUG":
+    logger.setLevel(logging.DEBUG)
+  else:
+    logger.setLevel(logging.INFO)
 
   access_log = logging.getLogger("tornado.access")
   app_log = logging.getLogger("tornado.application")

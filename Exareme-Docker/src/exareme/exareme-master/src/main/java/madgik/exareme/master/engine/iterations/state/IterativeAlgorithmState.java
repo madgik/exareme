@@ -5,7 +5,7 @@ import madgik.exareme.master.client.AdpDBClientQueryStatus;
 import madgik.exareme.master.engine.iterations.handler.IterationsConstants;
 import madgik.exareme.master.engine.iterations.handler.IterationsHandlerDFLUtils;
 import madgik.exareme.master.engine.iterations.state.exceptions.IterationsStateFatalException;
-import madgik.exareme.master.queryProcessor.composer.AlgorithmProperties;
+import madgik.exareme.master.queryProcessor.HBP.AlgorithmProperties;
 import org.apache.commons.lang3.text.StrSubstitutor;
 import org.apache.http.nio.IOControl;
 import org.apache.log4j.Logger;

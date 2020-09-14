@@ -27,7 +27,7 @@ def test_valueEnumerationsParameter():
     result = json.loads(r.text)
     assert (
         r.text
-        == '{"result" : [{"data":"The value \'abcd\' of the parameter \'encodingparameter\' is not included in the valueEnumerations [dummycoding, sumscoding, simplecoding] .  Algorithm: LINEAR_REGRESSION","type":"text/plain+error"}]}'
+        == '{"result" : [{"data":"The value \'abcd\' of the parameter \'encodingparameter\' is not included in the valueEnumerations [dummycoding, sumscoding, simplecoding] .","type":"text/plain+user_error"}]}'
     )
 
 
@@ -52,7 +52,7 @@ def test_parameter_max_value():
 
     assert (
         r.text
-        == '{"result" : [{"data":"The value(s) of the parameter \'sstype\' should be less than 3.0 .  Algorithm: ANOVA","type":"text/plain+error"}]}'
+        == '{"result" : [{"data":"The value(s) of the parameter \'sstype\' should be less than 3.0 .","type":"text/plain+user_error"}]}'
     )
 
 

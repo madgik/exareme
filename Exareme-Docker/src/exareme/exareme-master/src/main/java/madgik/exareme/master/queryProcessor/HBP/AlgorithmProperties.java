@@ -1,8 +1,9 @@
-package madgik.exareme.master.queryProcessor.composer;
+package madgik.exareme.master.queryProcessor.HBP;
 
-import madgik.exareme.master.queryProcessor.composer.Exceptions.AlgorithmException;
-import madgik.exareme.master.queryProcessor.composer.Exceptions.CDEsMetadataException;
-import madgik.exareme.master.queryProcessor.composer.Exceptions.ComposerException;
+import madgik.exareme.master.gateway.async.handler.HBP.Exceptions.UserException;
+import madgik.exareme.master.queryProcessor.HBP.Exceptions.AlgorithmException;
+import madgik.exareme.master.queryProcessor.HBP.Exceptions.CDEsMetadataException;
+import madgik.exareme.master.queryProcessor.HBP.Exceptions.ComposerException;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -112,7 +113,6 @@ public class AlgorithmProperties {
      *
      * @param parameterName     the name of a parameter
      * @param newParameterValue the new value of the parameter
-     * @return true if it was changed, false otherwise
      */
     public void setParameterValue(String parameterName, String newParameterValue) throws ComposerException {
         String allowedDynamicParameters = ComposerConstants.dbIdentifierKey;
@@ -136,32 +136,30 @@ public class AlgorithmProperties {
      * Gets the AlgorithmProperties from the cached Algorithms.
      * Merges the default algorithm properties with the parameters given in the HashMap.
      *
-     * @param inputContent a HashMap with the properties from the request
-     * @return the merge algorithm's properties
-     * @throws AlgorithmException when algorithm's properties do not match the inputContent
+     * @param algorithmParameters a HashMap with the parameters from the request
+     * @throws AlgorithmException when algorithm's properties do not match the algorithmParameters
      */
-    public void mergeAlgorithmParametersWithInputContent(HashMap<String, String> inputContent)
-            throws AlgorithmException, CDEsMetadataException {
-        if (inputContent == null)
+    public void mergeWithAlgorithmParameters(HashMap<String, String> algorithmParameters)
+            throws AlgorithmException, CDEsMetadataException, UserException {
+        if (algorithmParameters == null)
             return;
 
-        String pathology = inputContent.get(ComposerConstants.getPathologyPropertyName());
+        String pathology = algorithmParameters.get(ComposerConstants.getPathologyPropertyName());
 
         for (ParameterProperties parameterProperties : this.getParameters()) {
-            String value = inputContent.get(parameterProperties.getName());
+            String value = algorithmParameters.get(parameterProperties.getName());
             if (value != null && !value.equals("")) {
                 if (!parameterProperties.getValueMultiple() && value.contains(",")
                         && !parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.json)) {
-                    throw new AlgorithmException(name,
-                            "The value of the parameter '" + parameterProperties.getName()
-                                    + "' should contain only one value.");
+                    throw new UserException("The value of the parameter '" + parameterProperties.getName()
+                            + "' should contain only one value.");
                 }
                 validateAlgorithmParameterValueType(name, value, parameterProperties);
-                validateAlgorithmParameterType(name, value, parameterProperties, pathology);
+                validateAlgorithmParameterType(value, parameterProperties, pathology);
 
             } else {            // if value not given or it is blank
                 if (parameterProperties.getValueNotBlank()) {
-                    throw new AlgorithmException(name,
+                    throw new UserException(
                             "The value of the parameter '" + parameterProperties.getName() + "' should not be blank.");
                 }
 
@@ -178,42 +176,40 @@ public class AlgorithmProperties {
     /**
      * Checks if the given parameter input has acceptable values for that specific parameter.
      *
-     * @param algorithmName       the name of the algorithm
      * @param value               the value given as input
      * @param parameterProperties the rules that the value should follow
      * @param pathology           the pathology that the algorithm will run on
      */
     private static void validateAlgorithmParameterType(
-            String algorithmName,
             String value,
             ParameterProperties parameterProperties,
             String pathology
-    ) throws AlgorithmException, CDEsMetadataException {
+    ) throws CDEsMetadataException, UserException {
         // First we split in case we have multiple values.
         String[] values = value.split(",");
         for (String singleValue : values) {
             if (parameterProperties.getType().equals(ParameterProperties.ParameterType.column)) {
-                validateCDEVariables(algorithmName, values, parameterProperties, pathology);
+                validateCDEVariables(values, parameterProperties, pathology);
             } else if (parameterProperties.getType().equals(ParameterProperties.ParameterType.formula)) {
                 String[] formulaValues = singleValue.split("[+\\-*:0]+");
-                validateCDEVariables(algorithmName, formulaValues, parameterProperties, pathology);
+                validateCDEVariables(formulaValues, parameterProperties, pathology);
             }
             // If value is not a column (type=other) then check for min-max-enumerations
             else if (parameterProperties.getType().equals(ParameterProperties.ParameterType.other)) {
                 if (parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.integer)
                         || parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.real)) {
                     if (parameterProperties.getValueMin() != null && Double.parseDouble(singleValue) < parameterProperties.getValueMin())
-                        throw new AlgorithmException(algorithmName, "The value(s) of the parameter '" + parameterProperties.getName()
+                        throw new UserException("The value(s) of the parameter '" + parameterProperties.getName()
                                 + "' should be greater than " + parameterProperties.getValueMin() + " .");
                     if (parameterProperties.getValueMax() != null && Double.parseDouble(singleValue) > parameterProperties.getValueMax())
-                        throw new AlgorithmException(algorithmName, "The value(s) of the parameter '" + parameterProperties.getName()
+                        throw new UserException("The value(s) of the parameter '" + parameterProperties.getName()
                                 + "' should be less than " + parameterProperties.getValueMax() + " .");
                 } else if (parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.string)) {
                     if (parameterProperties.getValueEnumerations() == null)
                         return;
                     List<String> enumerations = Arrays.asList(parameterProperties.getValueEnumerations());
                     if (!enumerations.contains(singleValue))
-                        throw new AlgorithmException(algorithmName, "The value '" + singleValue + "' of the parameter '" + parameterProperties.getName()
+                        throw new UserException("The value '" + singleValue + "' of the parameter '" + parameterProperties.getName()
                                 + "' is not included in the valueEnumerations " + Arrays.toString(parameterProperties.getValueEnumerations()) + " .");
                 }
             }
@@ -225,34 +221,32 @@ public class AlgorithmProperties {
      * the parameter property's columnValueType and columnValueCategorical.
      * The information about the CDEs are taken from the metadata.
      *
-     * @param algorithmName       the name of the algorithm
      * @param variables           a list with the variables
      * @param parameterProperties the rules that the variables should follow
      * @param pathology           the pathology that the algorithm will run on
      */
     private static void validateCDEVariables(
-            String algorithmName,
             String[] variables,
             ParameterProperties parameterProperties,
             String pathology
-    ) throws AlgorithmException, CDEsMetadataException {
+    ) throws CDEsMetadataException, UserException {
         CDEsMetadata.PathologyCDEsMetadata metadata = CDEsMetadata.getInstance().getPathologyCDEsMetadata(pathology);
         for (String curValue : variables) {
             if (!metadata.columnExists(curValue)) {
-                throw new AlgorithmException(algorithmName, "The CDE '" + curValue + "' does not exist.");
+                throw new UserException("The CDE '" + curValue + "' does not exist.");
             }
 
             String allowedSQLTypeValues = parameterProperties.getColumnValuesSQLType();
             String columnValuesSQLType = metadata.getColumnValuesSQLType(curValue);
             if (!allowedSQLTypeValues.contains(columnValuesSQLType) && !allowedSQLTypeValues.equals("")) {
-                throw new AlgorithmException(algorithmName, "The CDE '" + curValue + "' does not have one of the allowed SQL Types '"
+                throw new UserException("The CDE '" + curValue + "' does not have one of the allowed SQL Types '"
                         + allowedSQLTypeValues + "' for the algorithm.");
             }
 
             String allowedIsCategoricalValue = parameterProperties.getColumnValuesIsCategorical();
             String columnValuesIsCategorical = metadata.getColumnValuesIsCategorical(curValue);
             if (!allowedIsCategoricalValue.equals(columnValuesIsCategorical) && !allowedIsCategoricalValue.equals("")) {
-                throw new AlgorithmException(algorithmName, "The CDE '" + curValue + "' does not match the categorical value '"
+                throw new UserException("The CDE '" + curValue + "' does not match the categorical value '"
                         + allowedIsCategoricalValue + "' specified for the algorithm.");
             }
         }

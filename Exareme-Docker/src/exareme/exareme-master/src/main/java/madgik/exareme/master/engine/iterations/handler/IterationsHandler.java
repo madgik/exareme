@@ -10,9 +10,9 @@ import madgik.exareme.master.engine.iterations.scheduler.IterationsScheduler;
 import madgik.exareme.master.engine.iterations.state.IterationsStateManager;
 import madgik.exareme.master.engine.iterations.state.IterationsStateManagerImpl;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
-import madgik.exareme.master.queryProcessor.composer.AlgorithmProperties;
-import madgik.exareme.master.queryProcessor.composer.Composer;
-import madgik.exareme.master.queryProcessor.composer.Exceptions.ComposerException;
+import madgik.exareme.master.queryProcessor.HBP.AlgorithmProperties;
+import madgik.exareme.master.queryProcessor.HBP.Composer;
+import madgik.exareme.master.queryProcessor.HBP.Exceptions.ComposerException;
 import madgik.exareme.worker.art.container.ContainerProxy;
 import org.apache.log4j.Logger;
 

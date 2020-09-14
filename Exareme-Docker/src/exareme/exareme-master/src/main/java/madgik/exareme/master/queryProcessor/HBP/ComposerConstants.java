@@ -1,4 +1,4 @@
-package madgik.exareme.master.queryProcessor.composer;
+package madgik.exareme.master.queryProcessor.HBP;
 
 import madgik.exareme.utils.properties.AdpProperties;
 
