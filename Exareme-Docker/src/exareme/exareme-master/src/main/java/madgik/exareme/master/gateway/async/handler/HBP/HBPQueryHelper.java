@@ -216,18 +216,18 @@ public class HBPQueryHelper {
 
     /**
      * Get nodes that are inactive from the list provided.
+     * An inactive node is a node that doesn't exist in the Exareme registry.
      *
-     * @param nodes to check
+     * @param algorithmNodes to check
      * @return nodes that are inactive
      */
-    private static ArrayList<String> getInactiveNodes(ArrayList<String> nodes) {
-        ArrayList<String> inactiveNodes = new ArrayList<>();
-        for (String node : nodes) {
-            if (nodeUnreachable(node)) {
-                inactiveNodes.add(node);
-            }
+    private static ArrayList<String> getInactiveNodes(ArrayList<String> algorithmNodes) throws RemoteException {
+        ArrayList<String> nodes = new ArrayList<>(algorithmNodes);
+        ContainerProxy[] allActiveExaremeContainers = getAllActiveExaremeContainers();
+        for (ContainerProxy container : allActiveExaremeContainers) {
+            nodes.remove(container.getEntityName().getIP());
         }
-        return inactiveNodes;
+        return nodes;
     }
 
     /**
@@ -267,7 +267,8 @@ public class HBPQueryHelper {
         }
 
         if (nodes.size() > 0) {
-            throw new RemoteException("The following nodes are not active: " + String.join(", ", nodes));
+            log.info("The following nodes are not active: " + String.join(", ", nodes));
+            throw new RemoteException(nodesUnavailable);
         }
 
         return containers.toArray(new ContainerProxy[0]);

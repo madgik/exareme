@@ -6,4 +6,6 @@ public class HBPQueryConstants {
     public static String datasetXDoesNotExistInPathologyY = "Dataset(s) %s does not exist in pathology %s.";
 
     public static String datasetsXYZAreInactive = "The following datasets %s are currently unavailable. Please try again later.";
+
+    public static String nodesUnavailable = "Some nodes are unavailable. Please try again later.";
 }
