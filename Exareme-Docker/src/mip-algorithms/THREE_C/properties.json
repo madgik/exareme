@@ -1,0 +1,39 @@
+{
+    "name": "THREE_C",
+    "desc": "",
+    "label": "3C",
+    "type": "python_local_global",
+    "status": "enabled",
+    "parameters": [
+        {
+            "name": "pathology",
+            "label": "pathology",
+            "desc": "The name of the pathology that the dataset belongs to.",
+            "type": "pathology",
+            "value": "dementia",
+            "valueNotBlank": true,
+            "valueMultiple": false,
+            "valueType": "string"
+        },
+        {
+            "name": "dataset",
+            "label": "dataset",
+            "desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty",
+            "type": "dataset",
+            "value": "adni",
+            "valueNotBlank": true,
+            "valueMultiple": true,
+            "valueType": "string"
+        },
+        {
+            "name": "filter",
+            "label": "filter",
+            "desc": "",
+            "type": "filter",
+            "value": "",
+            "valueNotBlank": false,
+            "valueMultiple": true,
+            "valueType": "string"
+        }
+    ]
+}
