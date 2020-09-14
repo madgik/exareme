@@ -2,18 +2,24 @@ import json
 import logging
 import os
 import re
-from string import capwords
 import warnings
 
-from .loggingutils import logged
-from .decorators import algorithm_methods_decorator
-from .parameters import Parameters, parse_exareme_args
-from .transfer import AddMe, MaxMe, MinMe, ConcatMe, DoNothing, TransferStruct
-from .helpers import one_kwarg
+from mipframework.loggingutils import logged
+from mipframework.decorators import algorithm_methods_decorator
+from mipframework.parameters import Parameters, parse_exareme_args
+from mipframework.transfer import (
+    AddMe,
+    MaxMe,
+    MinMe,
+    ConcatMe,
+    DoNothing,
+    TransferStruct,
+)
+from mipframework.helpers import one_kwarg
 
 _MAIN_METHODS = re.compile(
     r"""^((local_|global_)
-        (init|step(_[2-9])?|final|)?
+        (init|step(_[2-9])?|final|pure|)?
         |termination_condition)$""",
     re.VERBOSE,
 )
@@ -73,7 +79,7 @@ class Algorithm(object):
     def set_output(self):
         try:
             res = json.dumps(self.result.output())
-            logging.debug("Algorithm output:\n {res}".format(res=res, indent=4))
+            logging.debug("Algorithm output:\n {res}".format(res=res))
             print(json.dumps(self.result.output(), allow_nan=True, indent=4))
         except ValueError:
             logging.error("Result contains NaNs.")

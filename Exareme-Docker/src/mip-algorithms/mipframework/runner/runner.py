@@ -19,6 +19,7 @@ ALGORITHM_TYPES = {
     "CalibrationBelt": "iterative",
     "DescriptiveStats": "local-global",
     "KaplanMeier": "local-global",
+    "ThreeC": "local",
 }
 
 
@@ -127,6 +128,11 @@ class RunnerABC(object):
         local-global, multiple-local-global, iterative)"""
 
 
+class LocalRunner(RunnerABC):
+    def run(self):
+        self.workers[0].local_pure()
+
+
 class LocalGlobalRunner(RunnerABC):
     def run(self):
         self.execute_runner_steps("local_")
@@ -157,6 +163,11 @@ class IterativeRunner(RunnerABC):
 
 def create_runner(algorithm_class, algorithm_args, num_workers=3):
     alg_type = ALGORITHM_TYPES[algorithm_class.__name__]
+    if alg_type == "local" and num_workers > 1:
+        raise ValueError(
+            "Purely local algorithms should only have one worker. Please set"
+            " num_workers=1."
+        )
     if alg_type == "local-global":
         return LocalGlobalRunner(
             alg_cls=algorithm_class, algorithm_args=algorithm_args, num_wrk=num_workers
@@ -167,6 +178,10 @@ def create_runner(algorithm_class, algorithm_args, num_workers=3):
         )
     elif alg_type == "iterative":
         return IterativeRunner(
+            alg_cls=algorithm_class, algorithm_args=algorithm_args, num_wrk=num_workers
+        )
+    elif alg_type == "local":
+        return LocalRunner(
             alg_cls=algorithm_class, algorithm_args=algorithm_args, num_wrk=num_workers
         )
 
