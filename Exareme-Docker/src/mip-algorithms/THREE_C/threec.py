@@ -55,20 +55,30 @@ if __name__ == "__main__":
     from mipframework import create_runner
 
     algorithm_args = [
-        "-x",
-        "rightioginferioroccipitalgyrus,rightmfcmedialfrontalcortex",
         "-y",
-        "subjectage,rightventraldc,rightaccumbensarea",
+        "lefthippocampus",
+        "-x",
+        "righthippocampus",
         "-pathology",
-        "dementia, leftaccumbensarea",
+        "dementia",
         "-dataset",
         "adni",
         "-filter",
         "",
-        "-formula",
+        "-dx",
+        "alzheimerbroadcategory",
+        "-c2_feature_selection_method",
+        "RF",
+        "-c2_num_clusters_method",
+        "Euclidean",
+        "-c2_num_clusters",
         "",
-        "-coding",
-        "",
+        "-c2_clustering_method",
+        "Euclidean",
+        "-c3_feature_selection_method",
+        "RF",
+        "-c3_classification_method",
+        "RF",
     ]
     runner = create_runner(ThreeC, algorithm_args=algorithm_args, num_workers=1,)
     start = time.time()
