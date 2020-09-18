@@ -1,0 +1,29 @@
+version: '3.2'
+
+services:
+  exareme_keystore:
+    image: bitnami/consul:1.8.3
+    environment:
+      - CONSUL_AGENT_MODE=server
+      - CONSUL_BOOTSTRAP_EXPECT=1
+      - CONSUL_CLIENT_LAN_ADDRESS=0.0.0.0
+      - CONSUL_ENABLE_UI=true
+    restart: unless-stopped
+
+  exareme_master:
+    image: ${EXAREME_IMAGE}
+    environment:
+      - CONSULURL=exareme_keystore:8500
+      - FEDERATION_ROLE=master
+      - NODE_NAME=miplocal
+      - TEMP_FILES_CLEANUP_TIME=30
+      - NODE_COMMUNICATION_TIMEOUT=30000        # (MILIS) NODE COMMUNICATION WILL DROP IF TIMEOUT IS PASSED
+      - ENVIRONMENT_TYPE=PROD                   # TEST / DEV / PROD
+      - LOG_LEVEL=INFO                          # INFO / DEBUG
+    depends_on:
+      - exareme_keystore
+    ports:
+      - '9090:9090'
+    volumes:
+      - ${DATA_FOLDER}:/root/exareme/data/
+    restart: unless-stopped
