@@ -17,7 +17,8 @@ fi
 #load environmental variables like JAVA, python
 . ./exareme-env.sh  &> /dev/null
 
-EXAREME_MASTER=`/sbin/ifconfig eth0 | grep "inet" | awk -F: '{print $2}' | cut -d ' ' -f 1`;
+# Getting the IP and removing white spaces
+EXAREME_MASTER=$(hostname -I | sed 's/ *$//g')
 
 ####################################################################################################
 # parse command line arguments
