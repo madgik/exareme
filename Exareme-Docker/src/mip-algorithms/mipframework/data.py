@@ -66,7 +66,6 @@ class AlgorithmData(object):
         else:
             if self.full.dropna().shape[0] == 0:
                 return pd.DataFrame(), None
-            #           import sys; sys.stdout = sys.__stdout__; import pdb; pdb.set_trace()
             variables = dmatrix(formula, self.full, return_type="dataframe")
             return variables, None
 
