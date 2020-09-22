@@ -1,7 +1,7 @@
 package madgik.exareme.master;
 
 import madgik.exareme.master.engine.iterations.IterationsTestGenericUtils;
-import madgik.exareme.master.gateway.async.handler.HttpAsyncMiningQueryHandler;
+import madgik.exareme.master.gateway.async.handler.HBP.HBPQueryHandler;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.HeaderIterator;
 import org.apache.http.HttpEntity;
@@ -299,12 +299,12 @@ public class AlgorithmTestExecutionHelper {
             else
                 throw new NoSuchElementException("Header for cookies (" + SET_COOKIE_HEADER_NAME
                         + ") does not contain \"" + COOKIE_ALGORITHM_EXECUTION_ID + "\" cookie.\n"
-                        + "Maybe " + HttpAsyncMiningQueryHandler.class.getSimpleName()
+                        + "Maybe " + HBPQueryHandler.class.getSimpleName()
                         + "#handle function's code has been changed.");
         } else
             throw new NoSuchElementException("Header for cookies (" + SET_COOKIE_HEADER_NAME + ")" +
                     " has not been set for testing. \nMaybe "
-                    + HttpAsyncMiningQueryHandler.class.getSimpleName() + "#handle function's "
+                    + HBPQueryHandler.class.getSimpleName() + "#handle function's "
                     + "code has been changed to not \"echo\" the algorithm execution id cookie.");
     }
 

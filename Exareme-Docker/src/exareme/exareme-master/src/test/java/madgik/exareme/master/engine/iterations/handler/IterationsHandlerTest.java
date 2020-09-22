@@ -7,8 +7,8 @@ import madgik.exareme.master.engine.iterations.IterationsTestGenericUtils;
 import madgik.exareme.master.engine.iterations.state.IterationsStateManager;
 import madgik.exareme.master.engine.iterations.state.IterationsStateManagerImpl;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
-import madgik.exareme.master.queryProcessor.composer.AlgorithmProperties;
-import madgik.exareme.master.queryProcessor.composer.Algorithms;
+import madgik.exareme.master.queryProcessor.HBP.AlgorithmProperties;
+import madgik.exareme.master.queryProcessor.HBP.Algorithms;
 import madgik.exareme.worker.art.registry.ArtRegistryLocator;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -52,7 +52,7 @@ public class IterationsHandlerTest {
         stateManager = IterationsStateManagerImpl.getInstance();
 
         algorithmProperties = Algorithms.getInstance().getAlgorithmProperties(algorithmName);
-        algorithmProperties.mergeAlgorithmParametersWithInputContent(
+        algorithmProperties.mergeWithAlgorithmParameters(
                 IterationsTestGenericUtils.prepareParameterProperties(
                         algorithmName,  "2"));
 

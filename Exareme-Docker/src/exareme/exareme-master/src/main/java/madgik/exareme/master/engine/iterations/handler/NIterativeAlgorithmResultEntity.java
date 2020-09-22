@@ -3,6 +3,7 @@ package madgik.exareme.master.engine.iterations.handler;
 import madgik.exareme.master.client.AdpDBClientQueryStatus;
 import madgik.exareme.master.connector.DataSerialization;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
+import madgik.exareme.master.gateway.async.handler.HBP.HBPQueryHelper;
 import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.nio.ContentEncoder;
 import org.apache.http.nio.IOControl;
@@ -124,24 +125,24 @@ public class NIterativeAlgorithmResultEntity extends BasicHttpEntity
                 String result = iterativeAlgorithmState.getAlgorithmError();
                 if (result.contains("ExaremeError:")) {
                     String data = result.substring(result.lastIndexOf("ExaremeError:") + "ExaremeError:".length()).replaceAll("\\s", " ");
-                    String type = user_error;
-                    String output = defaultOutputFormat(data,type);
+                    String type = HBPQueryHelper.ErrorResponse.ErrorResponseTypes.user_error;
+                    String output = HBPQueryHelper.ErrorResponse.createErrorResponse(data, type);
                     logErrorMessage(output);
                     channel = Channels.newChannel(
                             new ByteArrayInputStream(output.getBytes(StandardCharsets.UTF_8)));
 
                 } else if (result.contains("PrivacyError")) {
                     String data = "The Experiment could not run with the input provided because there are insufficient data.";
-                    String type = warning;
-                    String output = defaultOutputFormat(data,type);
+                    String type = HBPQueryHelper.ErrorResponse.ErrorResponseTypes.warning;
+                    String output = HBPQueryHelper.ErrorResponse.createErrorResponse(data, type);
                     logErrorMessage(output);
                     channel = Channels.newChannel(
                             new ByteArrayInputStream(output.getBytes(StandardCharsets.UTF_8)));
 
                 } else if (result.matches("java.rmi.RemoteException: Containers:.*not responding")) {
                     String data = "One or more containers are not responding. Please inform the system administrator.";
-                    String type = error;
-                    String output = defaultOutputFormat(data,type);
+                    String type = HBPQueryHelper.ErrorResponse.ErrorResponseTypes.error;
+                    String output = HBPQueryHelper.ErrorResponse.createErrorResponse(data, type);
                     logErrorMessage(output);
                     channel = Channels.newChannel(
                             new ByteArrayInputStream(output.getBytes(StandardCharsets.UTF_8)));
@@ -150,8 +151,8 @@ public class NIterativeAlgorithmResultEntity extends BasicHttpEntity
                     String data = "Something went wrong with the execution of algorithm: ["
                             + iterativeAlgorithmState.getAlgorithmKey()
                             + "]. Please inform your system administrator to consult the logs.";
-                    String type = error;
-                    String output = defaultOutputFormat(data,type);
+                    String type = HBPQueryHelper.ErrorResponse.ErrorResponseTypes.error;
+                    String output = HBPQueryHelper.ErrorResponse.createErrorResponse(data, type);
                     logErrorMessage(output);
                     channel = Channels.newChannel(
                             new ByteArrayInputStream(output.getBytes(StandardCharsets.UTF_8)));
@@ -184,11 +185,7 @@ public class NIterativeAlgorithmResultEntity extends BasicHttpEntity
         return false;
     }
 
-    private String defaultOutputFormat(String data, String type){
-        return "{\"result\" : [{\"data\":"+"\""+data+"\",\"type\":"+"\""+type+"\"}]}";
-    }
-
-    private void logErrorMessage(String error){
+    private void logErrorMessage(String error) {
         log.info("Algorithm exited with error and returned:\n " + error);
     }
 }

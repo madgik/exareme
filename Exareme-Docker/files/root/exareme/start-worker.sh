@@ -10,7 +10,7 @@ EXAREME_ADMIN_WORKER_CLASS="madgik.exareme.worker.admin.StartWorker"
 EXAREME_ADMIN_OPTS="${EXAREME_JAVA_OPTS}  \
     -Djava.rmi.server.codebase=file:$EXAREME_HOME/lib/exareme/ \
     -Djava.security.policy=$EXAREME_HOME/etc/exareme/art.policy\
-    -Djava.rmi.server.hostname=$MY_IP                          \
+    -Djava.rmi.server.hostname=$NODE_IP                          \
     -Dsun.rmi.activation.execTimeout=$NODE_COMMUNICATION_TIMEOUT    \
     -Dsun.rmi.activation.groupTimeout=$NODE_COMMUNICATION_TIMEOUT   \
     -Dsun.rmi.dgc.ackTimeout=$NODE_COMMUNICATION_TIMEOUT            \
@@ -20,22 +20,14 @@ EXAREME_ADMIN_OPTS="${EXAREME_JAVA_OPTS}  \
     -Dcom.sun.management.jmxremote.ssl=false                   \
     -Djava.security.egd=file:///dev/urandom "
 
-DESC="exareme-worker"
-
 EXAREME_ADMIN_CLASS=${EXAREME_ADMIN_WORKER_CLASS}
 EXAREME_ADMIN_CLASS_ARGS=${MASTER_IP}
-
-echo ${EXAREME_ADMIN_CLASS_PATH}
-echo ${EXAREME_JAVA}
-echo ${EXAREME_ADMIN_CLASS}
-echo ${EXAREME_ADMIN_CLASS_ARGS}
-
 
 mkdir -p /tmp/exareme/var/log /tmp/exareme/var/run
 
 ${EXAREME_JAVA} -cp ${EXAREME_ADMIN_CLASS_PATH} \
 ${EXAREME_ADMIN_OPTS} ${EXAREME_ADMIN_CLASS}  \
-${EXAREME_ADMIN_CLASS_ARGS} > /var/log/exareme.log 2>&1 & echo $! > /tmp/exareme/var/run/${DESC}.pid
+${EXAREME_ADMIN_CLASS_ARGS} > /var/log/exareme.log 2>&1 & echo $! > /tmp/exareme/var/run/exareme-worker.pid
 
 
-echo "${DESC} started."
+echo "Worker started."

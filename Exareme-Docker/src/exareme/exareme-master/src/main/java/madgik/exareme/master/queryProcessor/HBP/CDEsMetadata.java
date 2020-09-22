@@ -1,12 +1,11 @@
-package madgik.exareme.master.queryProcessor.composer;
+package madgik.exareme.master.queryProcessor.HBP;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.sql.*;
 import java.util.HashMap;
-import java.util.Set;
 
-import madgik.exareme.master.queryProcessor.composer.Exceptions.CDEsMetadataException;
+import madgik.exareme.master.queryProcessor.HBP.Exceptions.CDEsMetadataException;
 import org.apache.log4j.Logger;
 
 /**

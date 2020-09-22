@@ -133,7 +133,7 @@ public class AdpDBArtJobMonitor implements Runnable {
                 statsOldOP = operatorsCompleted;
                 return true;
             }
-        } catch (UnmarshalException _) {
+        } catch (UnmarshalException e) {
             log.error("Cannot decode information ...");
         }
         return false;

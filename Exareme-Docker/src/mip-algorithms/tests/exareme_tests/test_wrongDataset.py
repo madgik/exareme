@@ -30,7 +30,7 @@ def test_LINEAR_REGRESSION():
 def check_result(result):
     assert (
         result
-        == '{"result" : [{"data":"Dataset(s) demo1 not found for pathology dementia!","type":"text/plain+user_error"}]}'
+        == '{"result" : [{"data":"Dataset(s) demo1 does not exist in pathology dementia.","type":"text/plain+user_error"}]}'
     )
 
 

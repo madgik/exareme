@@ -2,9 +2,9 @@ package madgik.exareme.master.gateway.async.handler;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import madgik.exareme.master.queryProcessor.composer.AlgorithmProperties;
-import madgik.exareme.master.queryProcessor.composer.Algorithms;
-import madgik.exareme.master.queryProcessor.composer.Exceptions.AlgorithmException;
+import madgik.exareme.master.queryProcessor.HBP.AlgorithmProperties;
+import madgik.exareme.master.queryProcessor.HBP.Algorithms;
+import madgik.exareme.master.queryProcessor.HBP.Exceptions.AlgorithmException;
 import org.apache.http.*;
 import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.entity.ContentType;
