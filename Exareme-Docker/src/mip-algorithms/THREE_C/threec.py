@@ -11,11 +11,56 @@ import pandas as pd
 from mipframework import Algorithm, AlgorithmResult, TabularDataResource
 
 
+FEATURESELECT_METHODS = {
+    "Random Forest": "RF",
+    "AIC": "AIC",
+    "AIC with MSFDR": "AIC_MSFDR",
+    "BIC": "BIC",
+}
+C2_NUMCLUSTERS_METHODS = {
+    "Euclidean": "Euclidean",
+    "Manhattan": "Manhattan",
+    "Hierarchical Euclidean": "hclust_Euclidean",
+    "Hierarchical Manhattan": "hclust_Manhattan",
+}
+C2_CLUSTERING_METHODS = {
+    "Euclidean": "Euclidean",
+    "Manhattan": "Manhattan",
+    "Hierarchical Euclidean": "Heuclidean",
+    "Hierarchical Manhattan": "Hmanhattan",
+}
+C3_CLASSIFICATION_METHODS = {
+    "Random Forest": "RF",
+    "Random Forest Downsampling": "RF_downsampling",
+    "CART Information": "CART_information",
+    "CART Gini": "CART_gini",
+}
+
+
 class ThreeC(Algorithm):
     def __init__(self, cli_args):
         super(ThreeC, self).__init__(__file__, cli_args, intercept=False)
 
     def local_pure(self):
+        c2_feature_selection_method = self.parameters.c2_feature_selection_method
+        c2_feature_selection_method = FEATURESELECT_METHODS[c2_feature_selection_method]
+        c2_num_clusters_method = self.parameters.c2_num_clusters_method
+        c2_num_clusters_method = C2_NUMCLUSTERS_METHODS[c2_num_clusters_method]
+        c2_clustering_method = self.parameters.c2_clustering_method
+        c2_clustering_method = C2_CLUSTERING_METHODS[c2_clustering_method]
+        # =======================================================================
+        # NOTE: number_of_clusters parameter default value doesn't work in R code
+        # =======================================================================
+        #  try:
+        #      c2_num_clusters = int(self.parameters.c2_num_clusters)
+        #      c2_num_clusters_expr = 'k={}'.format(c2_num_clusters)
+        #  except ValueError:
+        #      c2_num_clusters_expr = ''
+        c3_feature_selection_method = self.parameters.c3_feature_selection_method
+        c3_feature_selection_method = FEATURESELECT_METHODS[c3_feature_selection_method]
+        c3_classification_method = self.parameters.c3_classification_method
+        c3_classification_method = C3_CLASSIFICATION_METHODS[c3_classification_method]
+
         cm_names = self.parameters.x
         pb_names = self.parameters.y
         markers_and_biomarkers = self.data.full[cm_names + pb_names]
@@ -47,15 +92,20 @@ class ThreeC(Algorithm):
         robjects.r(
             """
             C2_results <- C2(x,
-                             y,
-                             feature_selection_method="RF",
-                             num_clusters_method="Manhattan",
-                             clustering_method="Manhattan",
-                             plot.num.clus=TRUE,
-                             plot.clustering=TRUE,
-                             k=6
+            y,
+            feature_selection_method="{fsm}",
+            num_clusters_method="{ncm}",
+            clustering_method="{cm}",
+            plot.num.clus=TRUE,
+            plot.clustering=TRUE,
+            k=6
             )
-            """
+            """.format(
+                fsm=c2_feature_selection_method,
+                ncm=c2_num_clusters_method,
+                cm=c2_clustering_method,
+                #  nc_expr=c2_num_clusters_expr
+            )
         )
         robjects.r(
             """
@@ -66,13 +116,14 @@ class ThreeC(Algorithm):
         robjects.r(
             """
             C3_results <- C3(PBx = PBx,
-                             newy = new_y,
-                             feature_selection_method = "RF",
-                             classification_method="RF"
+            newy = new_y,
+            feature_selection_method = "{fsm}",
+            classification_method="{cm}"
             )
-
             result <- table(new_y, C3_results[[2]])
-            """
+            """.format(
+                fsm=c3_feature_selection_method, cm=c3_classification_method
+            )
         )
         res = list(robjects.globalenv["result"])
         table_out = TabularDataResource(
@@ -1214,7 +1265,7 @@ if __name__ == "__main__":
         "-dx",
         "alzheimerbroadcategory",
         "-c2_feature_selection_method",
-        "RF",
+        "AIC",
         "-c2_num_clusters_method",
         "Euclidean",
         "-c2_num_clusters",
@@ -1222,9 +1273,9 @@ if __name__ == "__main__":
         "-c2_clustering_method",
         "Euclidean",
         "-c3_feature_selection_method",
-        "RF",
+        "Random Forest",
         "-c3_classification_method",
-        "RF",
+        "Random Forest",
     ]
     runner = create_runner(ThreeC, algorithm_args=algorithm_args, num_workers=1,)
     start = time.time()
