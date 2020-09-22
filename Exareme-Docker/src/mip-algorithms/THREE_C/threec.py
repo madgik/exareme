@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from __future__ import print_function
+from __future__ import division
 
 
 import rpy2.robjects as robjects
@@ -226,7 +227,9 @@ def rdef_Feature_Selection_dummy_regressions():
 # Feature Selection - sub-functions
 # =================================
 
-### Random Forests ###
+# ==============
+# Random Forests
+# ==============
 def rdef_Feature_Selection_RF():
     robjects.r(
         """
