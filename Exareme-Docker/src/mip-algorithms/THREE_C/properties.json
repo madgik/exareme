@@ -1,6 +1,6 @@
 {
     "name": "THREE_C",
-    "desc": "",
+    "desc": "Categorization, Clustering and Classification",
     "label": "3C",
     "type": "python_local",
     "status": "enabled",
@@ -108,10 +108,10 @@
             "label": "C2: Number of clusters",
             "desc": "",
             "type": "other",
-            "value": "",
-            "defaultValue": "",
+            "value": "6",
+            "defaultValue": "6",
             "valueMin": 2,
-            "valueNotBlank": false,
+            "valueNotBlank": true,
             "valueMultiple": false,
             "valueType": "integer"
         },

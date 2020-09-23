@@ -7,6 +7,7 @@ from __future__ import division
 import rpy2.robjects as robjects
 from rpy2.robjects import pandas2ri
 import pandas as pd
+import numpy as np
 
 from mipframework import Algorithm, AlgorithmResult, TabularDataResource
 
@@ -51,11 +52,8 @@ class ThreeC(Algorithm):
         # =======================================================================
         # NOTE: number_of_clusters parameter default value doesn't work in R code
         # =======================================================================
-        #  try:
-        #      c2_num_clusters = int(self.parameters.c2_num_clusters)
-        #      c2_num_clusters_expr = 'k={}'.format(c2_num_clusters)
-        #  except ValueError:
-        #      c2_num_clusters_expr = ''
+        c2_num_clusters = int(self.parameters.c2_num_clusters)
+
         c3_feature_selection_method = self.parameters.c3_feature_selection_method
         c3_feature_selection_method = FEATURESELECT_METHODS[c3_feature_selection_method]
         c3_classification_method = self.parameters.c3_classification_method
@@ -98,13 +96,13 @@ class ThreeC(Algorithm):
             clustering_method="{cm}",
             plot.num.clus=TRUE,
             plot.clustering=TRUE,
-            k=6
+            k={nc}
             )
             """.format(
                 fsm=c2_feature_selection_method,
                 ncm=c2_num_clusters_method,
                 cm=c2_clustering_method,
-                #  nc_expr=c2_num_clusters_expr
+                nc=c2_num_clusters,
             )
         )
         robjects.r(
@@ -125,9 +123,13 @@ class ThreeC(Algorithm):
                 fsm=c3_feature_selection_method, cm=c3_classification_method
             )
         )
-        res = list(robjects.globalenv["result"])
+        res = np.array(list(robjects.globalenv["result"]))
+        res = res.reshape(c2_num_clusters, c2_num_clusters).tolist()
+
         table_out = TabularDataResource(
-            fields=[""] * len(res), data=[tuple(res)], title="3C result"
+            fields=[str(i + 1) for i in range(len(res))],
+            data=[tuple(res)],
+            title="3C result",
         )
         self.result = AlgorithmResult(
             raw_data=dict(), tables=[table_out], highcharts=[],
@@ -169,7 +171,7 @@ def rdef_get_xy_from_DATA_C2():
         #' Title get_xy_from_DATA_C2
         #'
         #' @param DATA Full data matrix, includes all observations for all the variables
-        #' @param META_DATA Need to have at least 2 columns, one with all variables name, another one which indicate 
+        #' @param META_DATA Need to have at least 2 columns, one with all variables name, another one which indicate
         #' the type of each variable (CM, DX, PB)
         #'
         #' @return a list of important variables
@@ -203,31 +205,31 @@ def rdef_feature_selection():
         #' @param ... further arguments to be passed to or from other methods
         #'
         #' @return a list of important variables
-        #' 
+        #'
         #' @export
         #'
-        #' @examples 
+        #' @examples
         #' # feature_selection(x, y, method='RF')
         #' # feature_selection(x[, 1:30], y, method='BIC')
         #' # feature_selection(x, y, method='FDR_screening')
         feature_selection <- function(x, y, method = "RF", ...) {
           if (method == "RF") {
-            output <- Feature_Selection_dummy_regressions(x, y, Feature_Selection_RF, 
+            output <- Feature_Selection_dummy_regressions(x, y, Feature_Selection_RF,
                                                           ...)  # ('...' : p)
           }
           if (method == "AIC_MSFDR") {
-            output <- Feature_Selection_dummy_regressions(x, y, Feature_Selection_AIC_MSFDR, 
+            output <- Feature_Selection_dummy_regressions(x, y, Feature_Selection_AIC_MSFDR,
                                                           ...)  # ('...' : q, print.the.steps)
           }
           if (method == "BIC") {
-            output <- Feature_Selection_dummy_regressions(x, y, Feature_Selection_BIC, 
+            output <- Feature_Selection_dummy_regressions(x, y, Feature_Selection_BIC,
                                                           ...)  # ('...' : nbest, nvmax, nmin, plot)
           }
           if (method == "AIC") {
             output <- Feature_Selection_dummy_regressions(x, y, Feature_Selection_AIC)
           }
           if (method == "FDR_screening") {
-            output <- Feature_Selection_dummy_regressions(x, y, FDR_selection, 
+            output <- Feature_Selection_dummy_regressions(x, y, FDR_selection,
                                                           ...)  # ('...' : q, eta)
           }
           if (method == "LASSO") {
@@ -247,26 +249,26 @@ def rdef_Feature_Selection_dummy_regressions():
         #'
         #' @param x Data matrix
         #' @param y Dependent variable
-        #' @param FUN Indicating which method to use for feature selection 
+        #' @param FUN Indicating which method to use for feature selection
         #' @param ... further arguments to be passed to or from other methods
         #'
         #' @return a vector with the names of the important variables
         #' @export
         #'
-        #' @examples 
+        #' @examples
         #' Feature_Selection_dummy_regressions(x, y, Feature_Selection_RF)
-        #' 
+        #'
         Feature_Selection_dummy_regressions <- function(x, y, FUN, ...) {
-          
+
           u_y <- unique(y)
           selected_variables <- list()
-          
+
           for (i in seq_along(u_y)) {
             dummy_y <- as.numeric(y == u_y[i])
             # FUN(x, y, ...)
             selected_variables[[i]] <- FUN(x, dummy_y, ...)
           }
-          
+
           # Union of all selected variables
           unique(unlist(selected_variables))
         }
@@ -289,28 +291,28 @@ def rdef_Feature_Selection_RF():
         #' @param x Data matrix
         #' @param y Categorial dependent variable (factor)
         #' @param p Precentage of the number of variables to be chosen from x. Default value is 0.1.
-        #' @return list of p precentage of the variables chosen by their Gini importance index.  
-        #'         
+        #' @return list of p precentage of the variables chosen by their Gini importance index. 
+        #'        
         #' @export
         #'
-        #' @examples 
+        #' @examples
         #' # Feature_Selection_RF(x, y, p = 0.1)
-        #' 
+        #'
         Feature_Selection_RF <- function(x, y, p = 0.1) {
           library(randomForest)
-          
+
           if (!is.factor(y)) {
             warning("y is not a factor - but was coerced into one.")
             y <- as.factor(y)
           }
-          
+
           rf_DX_by_CM <- randomForest(y ~ ., data = x, importance = TRUE, proximity = TRUE)
-          
+
           var_import <- importance(rf_DX_by_CM)[, "MeanDecreaseAccuracy"]
           m <- round(dim(x)[2] * p)  # We'll save just 10% of the variables, the precentage can be changed
           subset_vars <- sort(var_import, decreasing = TRUE)[1:m]  # Sort the variables by their Gini importance index
           important_var_RF <- names(subset_vars)
-          
+
           return(unlist(important_var_RF))
         }
     """
@@ -332,28 +334,28 @@ def rdef_Feature_Selection_BIC():
         #' @param nmin number of minimum varibles to be included in the suggested final model
         #' @param plot.BIC if TRUE (default) the function plots a table of models showing which variables are in each model.
         #'             The models are ordered by the specified model selection statistic.
-        #' @return 
+        #' @return
         #' vector with the names of variables of the model with minimum BIC between the models including more then 'nmin' variables' of regsubsets object
-        #' @export 
+        #' @export
         #'
-        #' @examples 
+        #' @examples
         #' #  Feature_Selection_BIC(x[, 1:30], y, nbest=1, nvmax=5, plot.BIC=TRUE, nmin=4)
-        Feature_Selection_BIC <- function(x, y, nbest = 1, nvmax = 12, nmin = 4, 
+        Feature_Selection_BIC <- function(x, y, nbest = 1, nvmax = 12, nmin = 4,
                                           plot.BIC = FALSE) {
           library(leaps)
           library(car)
           fulldata <- data.frame(x, y)  # Creating  one joint data.frame of the data
-          RET <- regsubsets(y ~ ., data = fulldata, nbest = nbest, nvmax = nvmax, 
+          RET <- regsubsets(y ~ ., data = fulldata, nbest = nbest, nvmax = nvmax,
                             really.big = TRUE)
           # if (plot.BIC) { plot(RET, scale = 'bic') }
           summary_RET <- summary(RET)  # Saving the summary of the rugsubsets output
-          help_mat <- matrix(as.numeric(summary_RET$which), nrow = (nvmax * nbest), 
+          help_mat <- matrix(as.numeric(summary_RET$which), nrow = (nvmax * nbest),
                              ncol = (dim(x)[2] + 1))  # Which variables were chosen for each model
           num_var_each_model <- apply(help_mat, 1, sum)  # Counting the number of variables chosen for each model
           chosen_models <- summary_RET$bic[which(num_var_each_model >= nmin)]  # Saving the BIC value of the models which includes more then 'nmin' variables
-          ind_model_min_BIC <- which(chosen_models == min(chosen_models))  # Which model with more then 3 variables have the minimum BIC 
-          
-          return(unlist(colnames(x)[which(help_mat[ind_model_min_BIC, ] == 1) - 
+          ind_model_min_BIC <- which(chosen_models == min(chosen_models))  # Which model with more then 3 variables have the minimum BIC
+
+          return(unlist(colnames(x)[which(help_mat[ind_model_min_BIC, ] == 1) -
                                       1]))
         }
     """
@@ -375,72 +377,72 @@ def rdef_MSFDR():
         #'        Default as FALSE
         #' @param print.running.time  If TRUE the running time will be printed, it is equal to the value of print.the.steps
         #'        Default as False.
-        #' @return 
+        #' @return
         #' Final model, running time, summary of AIC_MSFDR object
-        #' @export 
+        #' @export
         #'
-        #' @examples 
+        #' @examples
         #' # Feature_Selection_AIC_MSFDR(x, y, q = 0.5, print.the.steps = FALSE)
-        #' 
+        #'
         MSFDR <- function(minimal.lm, maximal.lm, q, print.the.steps, print.running.time = print.the.steps) {
           # computes forward model selection using the multiple stage FDR
           # controlling procedure (MSFDR)
-          
+
           if (!(class(minimal.lm) == "lm" & class(maximal.lm) == "lm")) {
             print("one of the models you entered aren't linear models (lm), please try fitting lm only")
             break
           }
-          
-          if (print.running.time) 
+
+          if (print.running.time)
             time <- proc.time()
-          
+
           library(MASS)
           algorithm.direction <- "forward"  # always forward
           the.scope <- list(lower = minimal.lm, upper = maximal.lm)
           trace.stepAIC <- ifelse(print.the.steps, 1, 0)
           iteration.number <- 1
-          
+
           m <- extractAIC(maximal.lm)[1] - 1  # check if the full model should include the intercept or not !!!!!!
           i <- max(extractAIC(minimal.lm)[1] - 1, 1)  # so if the model is with intercept only, the i size won't be 0.
           # q = .05 # default
-          
+
           Lambda <- qnorm((1 - 0.5 * q * i/(m + 1 - i * (1 - q))))^2
-          
+
           if (print.the.steps) {
             print(paste("Starting Lambda is: ", Lambda))
           }
-          
+
           # first step of the algorithm
-          new.lm <- stepAIC(minimal.lm, direction = algorithm.direction, scope = the.scope, 
+          new.lm <- stepAIC(minimal.lm, direction = algorithm.direction, scope = the.scope,
                             k = Lambda, trace = trace.stepAIC)
           new.lm.model.size <- extractAIC(new.lm)[1] - 1
-          
-          
+
+
           while (new.lm.model.size > i) {
             iteration.number <- iteration.number + 1
-            
+
             if (print.the.steps) {
               print("=========================================")
               print("=========================================")
               print(paste("iteration number: ", iteration.number))
-              print(paste("current model size is:", new.lm.model.size, ">", 
+              print(paste("current model size is:", new.lm.model.size, ">",
                           i, " (which is bigger then the old model size)"))
             }
-            
+
             i <- new.lm.model.size
             Lambda <- qnorm((1 - 0.5 * q * i/(m + 1 - i * (1 - q))))^2
-            
+
             if (print.the.steps) {
               print(paste("new Lambda is: ", Lambda))
             }
-            
-            new.lm <- stepAIC(new.lm, direction = algorithm.direction, scope = the.scope, 
+
+            new.lm <- stepAIC(new.lm, direction = algorithm.direction, scope = the.scope,
                               k = Lambda, trace = trace.stepAIC)
-            
+
             new.lm.model.size <- extractAIC(new.lm)[1] - 1
           }
-          
-          
+
+
           if (print.the.steps) {
             print("=========================================")
             print("=========================================")
@@ -448,15 +450,15 @@ def rdef_MSFDR():
             print("The final model is: ")
             print(new.lm$call)
           }
-          
+
           if (print.running.time) {
             print("")
             print("Algorithm running time was:")
             print(proc.time() - time)
           }
-          
+
           return(new.lm)
-          
+
         }
     """
     )
@@ -476,14 +478,14 @@ def rdef_Feature_Selection_AIC_MSFDR():
           # largest lm we wish to progress through
           smallest_linear_model <- lm(y ~ +1, data = fulldata)
           largest_linear_model <- lm(y ~ ., data = fulldata)
-          
+
           # Implementing the MSFDR functions (with q = 0.05)
-          AIC_MSDFR <- MSFDR(minimal.lm = smallest_linear_model, maximal.lm = largest_linear_model, 
+          AIC_MSDFR <- MSFDR(minimal.lm = smallest_linear_model, maximal.lm = largest_linear_model,
                              q, print.the.steps)
           sum <- summary(AIC_MSDFR)  # Saving the summary of the AIC.MSFDR procedure
           important_var_FDR <- which(!is.na(AIC_MSDFR$coeff))
           important_var_FDR <- names(important_var_FDR)
-          
+
           return(unlist(important_var_FDR[2:length(important_var_FDR)]))
         }
     """
@@ -506,19 +508,19 @@ def rdef_Feature_Selection_AIC():
         #' is NA if print.summary.AIC==FALSE or the summary of AIC if TRUE.
         #' @export
         #'
-        #' @examples 
+        #' @examples
         #' # Feature_Selection_AIC(x, y)
         Feature_Selection_AIC <- function(x, y) {
           library(MASS)
           y <- as.numeric(y)
-          fulldata <- data.frame(x, y)  # Creating  one joint data.frame of the data 
+          fulldata <- data.frame(x, y)  # Creating  one joint data.frame of the data
           smallest_linear_model <- lm(y ~ +1, data = fulldata)
           largest_linear_model <- lm(y ~ . + 1, data = fulldata)
-          
-          AIC_procedure <- stepAIC(object = smallest_linear_model, scope = list(lower = smallest_linear_model, 
+
+          AIC_procedure <- stepAIC(object = smallest_linear_model, scope = list(lower = smallest_linear_model,
                                                                                 upper = largest_linear_model), direction = "forward", trace = FALSE)
           important_var_AIC <- names(AIC_procedure$coeff)
-          
+
           return(unlist(important_var_AIC[2:length(important_var_AIC)]))  # Extracting the print of 'Intercept'
         }
     """
@@ -536,26 +538,26 @@ def rdef_FDR_selection():
     #' @param x data matrix
     #' @param y categorical variable (factor)
     #' @param q adjusted p value threshold level. The chosen variables will have adjusted p value smaller than q
-    #' @param eta eta squared threshold, the chosen variables will have eta value greater then eta. 
+    #' @param eta eta squared threshold, the chosen variables will have eta value greater then eta.
     #'
     #' @return
     #' Returns a list of the selected variables
     #' @export
     #'
-    #' @examples 
+    #' @examples
     #' # FDR_selection(x, y, q = 0.001, eta = 0.1)
     FDR_selection <- function(x, y, q = 0.05, eta = 0.1) {
-      
+
       if (!is.factor(y)) {
         warning("y is not a factor - but was coerced into one.")
         y <- as.factor(y)
       }
-      
+
       eta_squared    <- rep(NA, dim(x)[2])
       original_p_val <- rep(NA, dim(x)[2])
       for (i in 1:dim(x)[2]) {
         # variable is discrete
-        if (sum(floor(x[, i]) == x[, i]) == dim(x)[2]) 
+        if (sum(floor(x[, i]) == x[, i]) == dim(x)[2])
         {
           original_p_val[i] <- chisq.test(x = x[, i], y)$p.value
           eta_squared[i] <- summary.lm(lm(as.factor(x[, i]) ~ as.factor(y)))$r.squared
@@ -568,14 +570,14 @@ def rdef_FDR_selection():
       }
       names(original_p_val) <- colnames(x)
       adjust_p_val <- p.adjust(original_p_val, method = "BH")
-      
+
       is_smaller <- ifelse(adjust_p_val < q & eta_squared > eta, 1, 0)
       screening <- data.frame("var" = names(original_p_val), original_p_val, adjust_p_val,
                               eta_squared, is_smaller, row.names = c(1:length(original_p_val)))
       keep_vars <- screening$var[which(is_smaller == 1)]
       screening <- screening[order(original_p_val), ]
-      
-      
+
+
       return(as.character(keep_vars))
     }
     #' Title LASSO
@@ -583,12 +585,12 @@ def rdef_FDR_selection():
     #' @param x Data matrix
     #' @param y Dependent variable
     #'
-    #' @return 
+    #' @return
     #' plot and table which advises how many clusters should be
-    #' 
+    #'
     #' @export
     #'
-    #' @examples 
+    #' @examples
     #' # LASSO_selection(x, y)
     # LASSO_selection<-function(x, y) { cvfit <- cv.glmnet(as.matrix(x), y)
     # important_var_LASSO <- as.matrix(coef(cvfit, s = 'lambda.1se'))
@@ -609,50 +611,50 @@ def rdef_number_of_clusters():
     #' Title Deciding on Number of Clusters
     #'
     #' @param x Data matrix
-    #' @param method character string indicating how the "optimal" number of clusters: Euclidean (default), Manhattan, 
+    #' @param method character string indicating how the "optimal" number of clusters: Euclidean (default), Manhattan,
     #'        heirarchical euclidean or heirarchcal manhattan
     #' @param K.max the maximum number of clusters to consider, must be at least two. Default value is 10.
     #' @param B integer, number of Monte Carlo ("bootstrap") samples. Default value is 100.
     #' @param verbose integer or logical, determining if "progress" output should be printed. The default prints
     #'                one bit per bootstrap sample. Default value is FALSE.
-    #' @param scale if TRUE (default) the data matrix will be scaled. 
-    #' @param diss if TRUE (default as FALSE) x will be considered as a dissimilarity matrix. 
+    #' @param scale if TRUE (default) the data matrix will be scaled.
+    #' @param diss if TRUE (default as FALSE) x will be considered as a dissimilarity matrix.
     #' @param cluster.only if true (default as FALSE) only the clustering will be computed and returned, see details.
     #' @param plot.num.clus if TRUE (default) the gap statistic plot will be printed
     #'
-    #' @return 
+    #' @return
     #' plot and table which advises how many clusters should be
-    #' 
+    #'
     #' @export
     #'
     #' @examples
     #' # number_of_clusters(subx, B=50, method='Euclidean')
-    #' 
-    number_of_clusters <- function(x, method = "Euclidean", K.max = 10, B = 100, 
-                                   verbose = FALSE, plot.num.clus = TRUE, scale = TRUE, diss = FALSE, 
+    #'
+    number_of_clusters <- function(x, method = "Euclidean", K.max = 10, B = 100,
+                                   verbose = FALSE, plot.num.clus = TRUE, scale = TRUE, diss = FALSE,
                                    cluster.only = TRUE) {
       # scale
       if (scale) {
         x <- scale(x)
       }
-      
+
       # TODO: what we SHOULD do is pass Euclidean/Man to the functions, as
       # well as hclust vs pam...
-      
+
       if (method == "Euclidean") {
         k_clusters <- k_euclidean(x, K.max, B, verbose, plot.num.clus)
       }
       if (method == "Manhattan") {
-        k_clusters <- k_manhattan(x, K.max, diss, B, cluster.only, verbose, 
+        k_clusters <- k_manhattan(x, K.max, diss, B, cluster.only, verbose,
                                   plot.num.clus)
       }
       if (method == "hclust_Euclidean") {
         k_clusters <- khclust_euc(x, K.max, B, verbose, plot.num.clus)
-        
+
       }
       if (method == "hclust_Manhattan") {
         k_clusters <- khclust_man(x, K.max, B, verbose, plot.num.clus)
-        
+
       }
       return(list(k_clusters))
     }
@@ -666,8 +668,8 @@ def rdef_k_euclidean():
     #' Title Gap statisic with k-medoids euclidean
     #'
     #' @param x Data matrix
-    #' @param K.max the maximum number of clusters to consider, must be at least two. Default value is 10. 
-    #' @param B integer, number of Monte Carlo ("bootstrap") samples. Default value is 100. 
+    #' @param K.max the maximum number of clusters to consider, must be at least two. Default value is 10.
+    #' @param B integer, number of Monte Carlo ("bootstrap") samples. Default value is 100.
     #' @param verbose integer or logical, determining if "progress" output should be printed. The default prints
     #'                 one bit per bootstrap sample. Default value is FALSE.
     #' @param plot.num.clus if TRUE (default) the gap statistic plot will be printed
@@ -677,14 +679,14 @@ def rdef_k_euclidean():
     #'
     #' @examples
     #' # k_euclidean(subx, K.max=8, B=50, verbose=FALSE, plot.num.clus=TRUE)
-    #' 
+    #'
     k_euclidean <- function(x, K.max, B, verbose, plot.num.clus) {
       library(cluster)
       library(clusterCrit)
-      
+
       clusGap_best <- cluster::clusGap(x, FUN = pam, K.max = K.max, B, verbose)
-      
-      
+
+
       if (plot.num.clus) {
         plot(clusGap_best, main = "Gap Statistic for k-medoids Euclidean")
       }
@@ -694,7 +696,7 @@ def rdef_k_euclidean():
       # if (as.numeric(sil[i]) > max_sil) { max_sil_means <- sil[i]
       # clust_num_sil <- i } } if (plot.num.clus) { plot(as.numeric(sil),
       # type = 'l', main = 'Silhouette criteria k-medoids Euclidean') }
-      
+
       # return(list(clusGap_best, clust))
       return(list(clusGap_best))
     }
@@ -708,13 +710,13 @@ def rdef_k_manhattan():
     #' Title Gap statisic with k-medoids manhattan
     #'
     #' @param x data matrix
-    #' @param K.max positive integer specifying the number of clusters, less than the number of observations. 
-    #'              Default value is 10. 
-    #' @param diss if TRUE (default as FALSE) x will be considered as a dissimilarity matrix        
-    #' @param B integer, number of Monte Carlo ("bootstrap") samples. Default value is 100. 
+    #' @param K.max positive integer specifying the number of clusters, less than the number of observations.
+    #'              Default value is 10.
+    #' @param diss if TRUE (default as FALSE) x will be considered as a dissimilarity matrix       
+    #' @param B integer, number of Monte Carlo ("bootstrap") samples. Default value is 100.
     #' @param cluster.only  if true (default) only the clustering will be computed and returned, see details.
     #' @param verbose integer or logical, determining if "progress" output should be printed. The default prints
-    #'                one bit per bootstrap sample. Default as FALSE. 
+    #'                one bit per bootstrap sample. Default as FALSE.
     #' @param plot.num.clus if TRUE (default) the gap statistic plot will be printed
     #' @param ... another objects of pam function
     #'
@@ -723,23 +725,23 @@ def rdef_k_manhattan():
     #'
     #' @examples
     #' #  k_manhattan (subx, K.max = 8, diss=FALSE, B = 50, cluster.only = TRUE, verbose = FALSE)
-    #' 
+    #'
     k_manhattan <- function(x, K.max, diss, B, cluster.only, verbose, plot.num.clus) {
       library(cluster)
       library(clusterCrit)
       library(magrittr)
       library(fpc)
-      
+
       pam_1 <- function(x, k, ...) {
-        clusters <- x %>% pam(k = k, diss = diss, metric = "manhattan", 
+        clusters <- x %>% pam(k = k, diss = diss, metric = "manhattan",
                               cluster.only = cluster.only)
         list(clusters = clusters)
       }
       set.seed(40)
       clusGap_best <- clusGap(x, FUN = pam_1, K.max = K.max, B = B, verbose = verbose)
-      
+
       if (plot.num.clus) {
-        
+
         plot(clusGap_best, main = "Gap Statistic for k-medoids Manhattan")
       }
       # #Silhouette criteria with k-medoids manhattan
@@ -774,7 +776,7 @@ def rdef_khclust_euc():
     #'
     #' @examples
     #' # khclust_euc(subx,K.max=10, B=60, verbose = FALSE, plot.num.clus=TRUE )
-    #' 
+    #'
     khclust_euc <- function(x, K.max, B, verbose, plot.num.clus) {
       hclust_k_euc <- function(x, k, ...) {
         library(magrittr)
@@ -782,8 +784,8 @@ def rdef_khclust_euc():
         clusters <- x %>% dist %>% hclust %>% cutree(k = k)
         list(clusters = clusters)
       }
-      
-      clusGap_best <- clusGap(x, FUN = hclust_k_euc, K.max = K.max, B = B, 
+
+      clusGap_best <- clusGap(x, FUN = hclust_k_euc, K.max = K.max, B = B,
                               verbose = verbose)
       if (plot.num.clus) {
         plot(clusGap_best, main = "Gap statistic, hclust Euclidean")
@@ -802,9 +804,9 @@ def rdef_khclust_man():
     #' @param x data matrix
     #' @param K.max positive integer specifying the number of clusters, less than the number of observations.
     #' Default value is 10
-    #' @param B integer, number of Monte Carlo ("bootstrap") samples. Default value is 100. 
+    #' @param B integer, number of Monte Carlo ("bootstrap") samples. Default value is 100.
     #' @param verbose integer or logical, determining if "progress" output should be printed. The default prints
-    #'                   one bit per bootstrap sample. Default value is FALSE. 
+    #'                   one bit per bootstrap sample. Default value is FALSE.
     #' @param plot.num.clus if TRUE (default) the gap statistic plot will be printed
     #'
     #' @return the clusGap function output
@@ -812,15 +814,15 @@ def rdef_khclust_man():
     #'
     #' @examples
     #' # khclust_man(subx, K.max=8, B=60, verbose=FALSE, plot.num.clus=TRUE)
-    #' 
+    #'
     khclust_man <- function(x, K.max, B, verbose, plot.num.clus) {
       hclust_k_man <- function(x, k, ...) {
         library(magrittr)
         clusters <- x %>% dist(method = "manhattan") %>% hclust %>% cutree(k = k)
         list(clusters = clusters)
       }
-      
-      clusGap_best <- clusGap(x, FUN = hclust_k_man, K.max = K.max, B = B, 
+
+      clusGap_best <- clusGap(x, FUN = hclust_k_man, K.max = K.max, B = B,
                               verbose = verbose)
       if (plot.num.clus) {
         plot(clusGap_best, main = "Gap statistic, hclust Manhattan")
@@ -841,7 +843,7 @@ def rdef_clustering():
     #'
     #' @param x data matrix
     #' @param k.gap positive integer specifying the number of clusters, less than the number of observation. Default value is 10.
-    #' @param method Indicating which method to use for clustering. Default is 'Euclidean'. 
+    #' @param method Indicating which method to use for clustering. Default is 'Euclidean'.
     #' @param plot.clustering if TRUE (default) a 2-dimensional "clusplot" plot will be printed
     #'
     #' @return vector withnew assigned clusters
@@ -849,9 +851,9 @@ def rdef_clustering():
     #'
     #' @examples
     #'  clustering(subx, k.gap = 5, method='Euclidean', plot.clustering=TRUE)
-    #' 
+    #'
     clustering <- function(x, k.gap = 2, method = "Euclidean", plot.clustering = FALSE) {
-      
+
       if (method == "Euclidean") {
         clusters <- cluster_euclidean(x, k.gap, plot.clustering)
       }
@@ -869,18 +871,18 @@ def rdef_clustering():
     ### Euclidean ###
     #' Title Clustering Using Euclidean distances
     #'
-    #' @param x data matrix 
+    #' @param x data matrix
     #' @param k.gap positive integer specifying the number of clusters, less than the number of observation. Default value is 10.
     #' @param plot.clustering if TRUE (default) a 2-dimensional "clusplot" plot will be printed
     #'
-    #' @return 
-    #' vector with the new assigned clusters 
-    #' 
+    #' @return
+    #' vector with the new assigned clusters
+    #'
     #' @export
     #'
-    #' @examples 
+    #' @examples
     #' # cluster_euclidean(subx,  k.gap = 5, plot.clustering = TRUE)
-    #' 
+    #'
     """
     )
 
@@ -893,11 +895,11 @@ def rdef_cluster_euclidean():
           library(cluster)
           pam_4 <- pam(x, k.gap, diss = FALSE)
           if (plot.clustering) {
-            clusplot(x, pam_4$cluster, color = TRUE, main = c("k-medoids,", 
+            clusplot(x, pam_4$cluster, color = TRUE, main = c("k-medoids,",
                                                               paste = k.gap, "clusters"))
           }
           clusters <- pam_4$cluster
-          
+
           return(unlist(clusters))
         }
     """
@@ -912,25 +914,25 @@ def rdef_cluster_manhattan():
         """
         #' Title Clustering Using Manhattan Distances
         #'
-        #' @param x data matrix 
+        #' @param x data matrix
         #' @param k.gap positive integer specifying the number of clusters, less than the number of observation. Default value is 10.
         #' @param plot.clustering if TRUE (default) a 2-dimensional "clusplot" plot will be printed
         #'
-        #' @return 
+        #' @return
         #' vector with the new assigned clusters
         #' @export
         #'
         #' @examples
         #' # cluster_manhattan(subx, k.gap=4, plot.clustering=TRUE)
-        #' 
+        #'
         cluster_manhattan <- function(x, k.gap, plot.clustering) {
           pam_3_man <- pam(x, k.gap, diss = FALSE, metric = "manhattan")
           if (plot.clustering) {
-            clusplot(x, pam_3_man$cluster, color = TRUE, main = c("k-medoids,manhattan", 
+            clusplot(x, pam_3_man$cluster, color = TRUE, main = c("k-medoids,manhattan",
                                                                   paste(k.gap), "clusters"))
           }
           clusters <- pam_3_man$cluster
-          
+
           return(unlist(clusters))
         }
     """
@@ -943,19 +945,19 @@ def rdef_hclust_euc():
         ### Hierarchical clustering euclidean ###
         #'  Title Deciding on number of clusters by using Hierarchical clustering euclidean
         #'
-        #' @param x data matrix 
+        #' @param x data matrix
         #' @param y Dependent variable
         #' @param k.gap positive integer specifying the number of clusters, less than the number of observation. Default value is 10.
         #' @param plot.clustering if TRUE (default) a 2-dimensional "clusplot" plot will be printed
-        #' 
         #'
-        #' @return  
-        #' summary table of the distribution to clusters 
+        #'
+        #' @return 
+        #' summary table of the distribution to clusters
         #' @export
         #'
         #' @examples
         #' hclust_euc(subx, k.gap = 5, plot.clustering=TRUE)
-        #' 
+        #'
         hclust_euc <- function(x, k.gap, plot.clustering) {
           d <- dist(x, method = "euclidean")
           fit_best <- hclust(d, method = "ward.D")
@@ -979,29 +981,29 @@ def rdef_hclust_man():
         """
         #' Title Deciding on number of clusters by Hierarchical clustering manhattan
         #'
-        #' @param x data matrix 
+        #' @param x data matrix
         #' @param plot.clustering if TRUE (default) a 2-dimensional 'clusplot' plot will be printed
         #'
-        #' @return 
+        #' @return
         #' a list of two variables the hclust function description and a summary table
         #'  of the distribution to clusters
         #' @export
         #'
         #' @examples
         #' hclust_man(subx, k.gap = 5, plot.clustering=TRUE)
-        #' 
+        #'
         hclust_man <- function(x, k.gap, plot.clustering) {
-          
+
           d_man <- dist(x, method = "manhattan")
           fit_best_man <- hclust(d_man, method = "ward.D")
           if (plot.clustering) {
-            plot(fit_best_man, main = c("hclust, manhattan,", paste(k.gap), 
+            plot(fit_best_man, main = c("hclust, manhattan,", paste(k.gap),
                                         "7 clusters"))
           }
           groups_best_4_man <- cutree(fit_best_man, k = k.gap)
           rect.hclust(fit_best_man, k = k.gap, border = "red")
           clusters <- groups_best_4_man
-          
+
           return(unlist(clusters))
         }
     """
@@ -1016,24 +1018,24 @@ def rdef_C2():
         """
     #' Title C2
     #'
-    #' @param x data matrix 
+    #' @param x data matrix
     #' @param y Dependent variable
     #' @param feature_selection_method method for the feature selection of the clinical measurements stage. Default RF.
-    #' @param num_clusters_method method for the choosing number of clusters by using the clinical measurements. Default Euclidean. 
+    #' @param num_clusters_method method for the choosing number of clusters by using the clinical measurements. Default Euclidean.
     #' @param k number of clusters to use. If missing, we use a detection method. Defaukt as NULL
-    #' @param clustering_method method for clustering using the reduced clinical measures. Default is Hmanhattan, 
+    #' @param clustering_method method for clustering using the reduced clinical measures. Default is Hmanhattan,
     #'
-    #' @return a list of three variables: 
+    #' @return a list of three variables:
     #' 1) vector with the names of the omportant variables chosen.
-    #' 2) number of classes that will be used for clustering 
+    #' 2) number of classes that will be used for clustering
     #' 3) vector of the new assigned clusterst
-    #' 
+    #'
     #' @export
     #'
     #' @examples
     #' resultC2 <- C2(x, y, feature_selection_method='RF', num_clusters_method='Manhattan', clustering_method='Manhattan', plot.num.clus=TRUE, plot.clustering=TRUE)
     #' C2(x, y, feature_selection_method='BIC', num_clusters_method='Manhattan', clustering_method='Hmanhattan', plot.num.clus=TRUE, plot.clustering=FALSE, nbest=1, nvmax=8, B=50)
-    C2 <- function(x, y, feature_selection_method, num_clusters_method, k = NULL, 
+    C2 <- function(x, y, feature_selection_method, num_clusters_method, k = NULL,
                    clustering_method, ...) {
       # Feature selection
       imp_var <- feature_selection(x, y, method = feature_selection_method)
@@ -1046,13 +1048,13 @@ def rdef_C2():
         print(num_clust)
         # library(car)
         user_choise <- function() {
-          k <- readline(prompt = paste("Enter the chosen number of clusters", 
+          k <- readline(prompt = paste("Enter the chosen number of clusters",
                                        ":\n"))
           k <- as.numeric(k)
           return(k)
         }
         num_clust <- user_choise()
-        
+
       } else {
         num_clust <- k
       }
@@ -1069,18 +1071,18 @@ def rdef_get_PBx_from_DATA_C3():
     robjects.r(
         """
     #' Title get_PBx_from_DATA_C3
-    #' 
+    #'
     #' @param DATA Full data matrix, includes all observations for all the variables
-    #' @param META_DATA Need to have at least 2 columns, one with all variables name, another one which indicate 
+    #' @param META_DATA Need to have at least 2 columns, one with all variables name, another one which indicate
     #' the type of each variable (CM, DX, PB)
     #'
     #' @return a list of important variables
-    #' 
+    #'
     #' @export
     #'
-    #' @examples 
+    #' @examples
     #' # PBx <- get_PBx_from_DATA_C3(DATA, META_DATA)
-    #' 
+    #'
     get_PBx_from_DATA_C3 <- function(DATA, META_DATA) {
       x <- DATA[, META_DATA$varName[META_DATA$varCategory == "PB"]]
       return(PBx = x)
@@ -1094,19 +1096,19 @@ def rdef_C3():
         """
     #' Title C3
     #'
-    #' @param PBx data matrix 
+    #' @param PBx data matrix
     #' @param newy new assigned clusters, results from C2.
     #' @param feature_selection_method method for the feature selection of the Potential Bio-Markers
     #' @param classification_method method for classification  using the potential bio-markers
     #'
-    #' @return a list of two variables: 
-    #' 1) vector with the names of important variables chosen 
-    #' 2) classification result for each observation 
+    #' @return a list of two variables:
+    #' 1) vector with the names of important variables chosen
+    #' 2) classification result for each observation
     #' @export
     #'
     #' @examples
-    #' C3(PBx, newy, feature_selection_method='RF', classification_method='RF') 
-    #' 
+    #' C3(PBx, newy, feature_selection_method='RF', classification_method='RF')
+    #'
     C3 <- function(PBx, newy, feature_selection_method, classification_method) {
       # Feature selection if(!factor(newy)){ newy <- as.factor(newy) }
       imp_var <- feature_selection(PBx, newy, method = feature_selection_method)
@@ -1125,18 +1127,18 @@ def rdef_classification_fun():
     ####################################### Potential biomarkers classification #
     #' Title Classification for the potential Biomarkers
     #'
-    #' @param PBx data matrix 
+    #' @param PBx data matrix
     #' @param newy New assigned clusters
     #' @param method Classification method for the function to use
     #'
     #' @return Predicted values for each observation
-    #' 
+    #'
     #' @export
     #'
     #' @examples
     #' # classification_fun(PBx, newy, method='RF')
     classification_fun <- function(PBx, newy, method = "RF") {
-      
+
       if (method == "RF") {
         output <- RF_classify(PBx, newy)
       }
@@ -1161,11 +1163,11 @@ def rdef_RF_classify():
     ### Random Forest Without Down Sampling ###
     #' Title Classification Using Random Forest Without Down Sampling
     #'
-    #' @param PBx data matrix 
+    #' @param PBx data matrix
     #' @param newy New assigned clusters
     #'
-    #' @return The predicted values for each observation 
-    #'  
+    #' @return The predicted values for each observation
+    #' 
     #' @export
     #'
     #' @examples
@@ -1178,7 +1180,7 @@ def rdef_RF_classify():
       }
       fulldata <- data.frame(PBx, newy)
       rf_clus_PB <- randomForest(newy ~ ., data = fulldata, ntree = 50)
-      model <<- rf_clus_PB 
+      model <<- rf_clus_PB
       return(rf_clus_PB$predicted)
     }
     """
@@ -1191,7 +1193,7 @@ def rdef_RF_one_by_one():
     ### Random forest with down sampling ###
     #' Title Classification Using Random Forest Without Down Sampling
     #'
-    #' @param PBx data matrix 
+    #' @param PBx data matrix
     #' @param newy New assigned clusters
     #'
     #' @return a list of two variables: the hclust function description and a summary table
@@ -1210,7 +1212,7 @@ def rdef_RF_one_by_one():
       for (i in 1:length(unique(newy))) {
         class_2 <- ifelse(newy == i, 1, 0)
         nmin <- sum(class_2 == 1)
-        rflist[[i]] <- randomForest(factor(class_2) ~ ., data = PBx, ntree = 1000, 
+        rflist[[i]] <- randomForest(factor(class_2) ~ ., data = PBx, ntree = 1000,
                                     importance = TRUE, proximity = TRUE, sampsize = rep(nmin, 2))
       }
       return(rflist)
@@ -1226,7 +1228,7 @@ def rdef_cart_function():
     ### CART ###
     #' Title Classification Using CART
     #'
-    #' @param PBx data matrix 
+    #' @param PBx data matrix
     #' @param newy New assigned clusters
     #' @param criteria gini or information
     #'
@@ -1236,10 +1238,10 @@ def rdef_cart_function():
     #'
     #' @examples
     cart_function <- function(PBx, newy, criteria = "gini") {
-      
+
       fulldata <- data.frame(PBx, newy)
       cart <- rpart(newy ~ ., data = fulldata, method = "class", parms = list(split = criteria))
-      model <<- cart 
+      model <<- cart
       pred <- predict(cart, type = "class")
       return(pred)
       }
@@ -1265,11 +1267,11 @@ if __name__ == "__main__":
         "-dx",
         "alzheimerbroadcategory",
         "-c2_feature_selection_method",
-        "AIC",
+        "Random Forest",
         "-c2_num_clusters_method",
         "Euclidean",
         "-c2_num_clusters",
-        "",
+        "5",
         "-c2_clustering_method",
         "Euclidean",
         "-c3_feature_selection_method",
