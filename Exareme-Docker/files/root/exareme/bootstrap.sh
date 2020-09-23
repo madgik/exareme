@@ -14,6 +14,7 @@ CONSUL_WAIT_FOR_MASTER_IP_MAX_ATTEMPTS=20
 EXAREME_NODE_STARTUP_HEALTH_CHECK_MAX_ATTEMPTS=10
 PERIODIC_EXAREME_NODES_HEALTH_CHECK_MAX_RETRIES=10
 PERIODIC_EXAREME_NODES_HEALTH_CHECK_INTERVAL=120
+PERIODIC_TEMP_FILES_REMOVAL=300
 
 if [[ -z ${CONSULURL} ]]; then
   echo "CONSULURL is unset. Check docker-compose file."
@@ -181,22 +182,25 @@ periodicExaremeNodesHealthCheck() {
 
 # Periodic deletion of temp files
 startTempFilesDeletionTask() {
-  echo '0 *  *  *  * if [ $FEDERATION_ROLE = "master" ]; then \
-cd /tmp/demo/db/ \
-&& find . -type d -path "./*" -mmin +$TEMP_FILES_CLEANUP_TIME -exec rm -rf {} +\
-&& cd /tmp/demo/algorithms-generation/ \
-&& find . -type d -path "./*" -mmin +$TEMP_FILES_CLEANUP_TIME -exec rm -rf {} +;\
-else \
-cd /tmp/demo/db/ \
-&& find . -type d -path "./*" -mmin +$TEMP_FILES_CLEANUP_TIME -exec rm -rf {} +\
-&& find . -type f -path "./*" -mmin +$TEMP_FILES_CLEANUP_TIME -delete; \
-fi' >>/etc/crontabs/root
-  crond
+  while true; do
+    sleep $PERIODIC_TEMP_FILES_REMOVAL
+    if [ $FEDERATION_ROLE = "master" ]; then
+      cd /tmp/demo/db/;
+      find . -type d -path "./*" -mmin +$TEMP_FILES_CLEANUP_TIME -exec rm -rf {} +;
+      cd /tmp/demo/algorithms-generation/;
+      find . -type d -path "./*" -mmin +$TEMP_FILES_CLEANUP_TIME -exec rm -rf {} +;
+    else
+      cd /tmp/demo/db/;
+      find . -type d -path "./*" -mmin +$TEMP_FILES_CLEANUP_TIME -exec rm -rf {} +;
+      find . -type f -path "./*" -mmin +$TEMP_FILES_CLEANUP_TIME -delete;
+    fi
+  done
 }
 
 mkdir -p /tmp/demo/db/
 
-NODE_IP=$(/sbin/ifconfig eth0 | grep "inet" | awk -F: '{print $2}' | cut -d ' ' -f 1)
+# Getting the IP and removing white spaces
+NODE_IP=$(hostname -I | sed 's/ *$//g')
 
 # Start Exareme and MadisServer
 echo "Starting Madis Server..."
@@ -256,7 +260,7 @@ fi
 echo "$(timestamp) Updating consul with node's datasets."
 ./set-local-datasets.sh
 
-startTempFilesDeletionTask
+startTempFilesDeletionTask &
 
 # Creating the python log file
 echo "$(timestamp) Exareme Python Algorithms log file created." >/var/log/exaremePythonAlgorithms.log
