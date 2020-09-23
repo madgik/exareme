@@ -200,7 +200,7 @@ startTempFilesDeletionTask() {
 mkdir -p /tmp/demo/db/
 
 # Getting the IP and removing white spaces
-NODE_IP=$(hostname -I | sed 's/ *$//g')
+NODE_IP=$(hostname -i | sed 's/ *$//g')
 
 # Start Exareme and MadisServer
 echo "Starting Madis Server..."
