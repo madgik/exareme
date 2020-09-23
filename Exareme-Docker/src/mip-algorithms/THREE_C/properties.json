@@ -80,9 +80,9 @@
             "valueMultiple": false,
             "valueType": "string",
             "enumValues": [
-                "Random Forest",
+                "RF",
                 "AIC",
-                "AIC with MSFDR",
+                "AIC_MSFDR",
                 "BIC"
             ]
         },
@@ -99,8 +99,8 @@
             "enumValues": [
                 "Euclidean",
                 "Manhattan",
-                "Hierarchical Euclidean",
-                "Hierarchical Manhattan"
+                "hclust_Euclidean",
+                "hclust_Manhattan"
             ]
         },
         {
@@ -128,8 +128,8 @@
             "enumValues": [
                 "Euclidean",
                 "Manhattan",
-                "Hierarchical Euclidean",
-                "Hierarchical Manhattan"
+                "Heuclidean",
+                "Hmanhattan"
             ]
         },
         {
@@ -143,9 +143,9 @@
             "valueMultiple": false,
             "valueType": "string",
             "enumValues": [
-                "Random Forest",
+                "RF",
                 "AIC",
-                "AIC with MSFDR",
+                "AIC_MSFDR",
                 "BIC"
             ]
         },
@@ -160,10 +160,10 @@
             "valueMultiple": false,
             "valueType": "string",
             "enumValues": [
-                "Random Forest",
-                "Random Forest Downsampling",
-                "CART Information",
-                "CART Gini"
+                "RF",
+                "RF_downsampling",
+                "CART_information",
+                "CART_gini"
             ]
         }
     ]

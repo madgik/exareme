@@ -12,52 +12,21 @@ import numpy as np
 from mipframework import Algorithm, AlgorithmResult, TabularDataResource
 
 
-FEATURESELECT_METHODS = {
-    "Random Forest": "RF",
-    "AIC": "AIC",
-    "AIC with MSFDR": "AIC_MSFDR",
-    "BIC": "BIC",
-}
-C2_NUMCLUSTERS_METHODS = {
-    "Euclidean": "Euclidean",
-    "Manhattan": "Manhattan",
-    "Hierarchical Euclidean": "hclust_Euclidean",
-    "Hierarchical Manhattan": "hclust_Manhattan",
-}
-C2_CLUSTERING_METHODS = {
-    "Euclidean": "Euclidean",
-    "Manhattan": "Manhattan",
-    "Hierarchical Euclidean": "Heuclidean",
-    "Hierarchical Manhattan": "Hmanhattan",
-}
-C3_CLASSIFICATION_METHODS = {
-    "Random Forest": "RF",
-    "Random Forest Downsampling": "RF_downsampling",
-    "CART Information": "CART_information",
-    "CART Gini": "CART_gini",
-}
-
-
 class ThreeC(Algorithm):
     def __init__(self, cli_args):
         super(ThreeC, self).__init__(__file__, cli_args, intercept=False)
 
     def local_pure(self):
         c2_feature_selection_method = self.parameters.c2_feature_selection_method
-        c2_feature_selection_method = FEATURESELECT_METHODS[c2_feature_selection_method]
         c2_num_clusters_method = self.parameters.c2_num_clusters_method
-        c2_num_clusters_method = C2_NUMCLUSTERS_METHODS[c2_num_clusters_method]
         c2_clustering_method = self.parameters.c2_clustering_method
-        c2_clustering_method = C2_CLUSTERING_METHODS[c2_clustering_method]
         # =======================================================================
         # NOTE: number_of_clusters parameter default value doesn't work in R code
         # =======================================================================
         c2_num_clusters = int(self.parameters.c2_num_clusters)
 
         c3_feature_selection_method = self.parameters.c3_feature_selection_method
-        c3_feature_selection_method = FEATURESELECT_METHODS[c3_feature_selection_method]
         c3_classification_method = self.parameters.c3_classification_method
-        c3_classification_method = C3_CLASSIFICATION_METHODS[c3_classification_method]
 
         cm_names = self.parameters.x
         pb_names = self.parameters.y
@@ -1267,7 +1236,7 @@ if __name__ == "__main__":
         "-dx",
         "alzheimerbroadcategory",
         "-c2_feature_selection_method",
-        "Random Forest",
+        "RF",
         "-c2_num_clusters_method",
         "Euclidean",
         "-c2_num_clusters",
@@ -1275,9 +1244,9 @@ if __name__ == "__main__":
         "-c2_clustering_method",
         "Euclidean",
         "-c3_feature_selection_method",
-        "Random Forest",
+        "RF",
         "-c3_classification_method",
-        "Random Forest",
+        "RF",
     ]
     runner = create_runner(ThreeC, algorithm_args=algorithm_args, num_workers=1,)
     start = time.time()
