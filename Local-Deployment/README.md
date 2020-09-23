@@ -45,6 +45,10 @@ For more information on what these files should contain you can see <a href="../
 
 # Deployment
 
-Edit the ```.env``` file to your needs.
+Create a ```.env``` file in the *Local-Deployment* folder and add the following:
+```
+EXAREME_IMAGE=hbpmip/exareme:23.0.0
+DATA_FOLDER=/home/user/data
+```
 
-In the *Local-Deployment/* folder, run the ```docker-compose up ``` to start the deployment. You can run ```docker-compose up -d``` to run it in the background.
+Then run the ```docker-compose up``` to start the deployment. You can run ```docker-compose up -d``` to run it in the background.

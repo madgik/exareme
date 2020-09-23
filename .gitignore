@@ -84,3 +84,4 @@ tasks.py
 # vim related
 .vim/
 Session.vim
+Local-Deployment/.env

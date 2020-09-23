@@ -1,0 +1,170 @@
+{
+    "name": "THREE_C",
+    "desc": "Categorization, Clustering and Classification",
+    "label": "3C",
+    "type": "python_local",
+    "status": "enabled",
+    "parameters": [
+        {
+            "name": "y",
+            "label": "y",
+            "desc": "Potential biomarkers. Imaging, Proteins, Genetics etc.",
+            "type": "column",
+            "columnValuesSQLType": "real, integer, text",
+            "columnValuesIsCategorical": "",
+            "value": "lefthippocampus",
+            "valueNotBlank": true,
+            "valueMultiple": true,
+            "valueType": "string"
+        },
+        {
+            "name": "x",
+            "label": "x",
+            "desc": "Clinical measurements. Disease symptoms, Patients' functional state and abilities.",
+            "type": "column",
+            "columnValuesSQLType": "real, integer, text",
+            "columnValuesIsCategorical": "",
+            "value": "righthippocampus",
+            "valueNotBlank": true,
+            "valueMultiple": true,
+            "valueType": "string"
+        },
+        {
+            "name": "pathology",
+            "label": "pathology",
+            "desc": "The name of the pathology that the dataset belongs to.",
+            "type": "pathology",
+            "value": "dementia",
+            "valueNotBlank": true,
+            "valueMultiple": false,
+            "valueType": "string"
+        },
+        {
+            "name": "dataset",
+            "label": "dataset",
+            "desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty",
+            "type": "dataset",
+            "value": "adni",
+            "valueNotBlank": true,
+            "valueMultiple": true,
+            "valueType": "string"
+        },
+        {
+            "name": "filter",
+            "label": "filter",
+            "desc": "",
+            "type": "filter",
+            "value": "",
+            "valueNotBlank": false,
+            "valueMultiple": true,
+            "valueType": "string"
+        },
+        {
+            "name": "dx",
+            "label": "DX",
+            "desc": "Diagnosis.",
+            "type": "other",
+            "value": "alzheimerbroadcategory",
+            "valueNotBlank": true,
+            "valueMultiple": false,
+            "valueType": "string"
+        },
+        {
+            "name": "c2_feature_selection_method",
+            "label": "C2: Feature selection method",
+            "desc": "",
+            "type": "other",
+            "value": "RF",
+            "defaultValue": "RF",
+            "valueNotBlank": true,
+            "valueMultiple": false,
+            "valueType": "string",
+            "enumValues": [
+                "RF",
+                "AIC",
+                "AIC_MSFDR",
+                "BIC"
+            ]
+        },
+        {
+            "name": "c2_num_clusters_method",
+            "label": "C2: Number of clusters method",
+            "desc": "",
+            "type": "other",
+            "value": "Euclidean",
+            "defaultValue": "Euclidean",
+            "valueNotBlank": true,
+            "valueMultiple": false,
+            "valueType": "string",
+            "enumValues": [
+                "Euclidean",
+                "Manhattan",
+                "hclust_Euclidean",
+                "hclust_Manhattan"
+            ]
+        },
+        {
+            "name": "c2_num_clusters",
+            "label": "C2: Number of clusters",
+            "desc": "",
+            "type": "other",
+            "value": "6",
+            "defaultValue": "6",
+            "valueMin": 2,
+            "valueNotBlank": true,
+            "valueMultiple": false,
+            "valueType": "integer"
+        },
+        {
+            "name": "c2_clustering_method",
+            "label": "C2: Clustering method",
+            "desc": "",
+            "type": "other",
+            "value": "Euclidean",
+            "defaultValue": "Euclidean",
+            "valueNotBlank": true,
+            "valueMultiple": false,
+            "valueType": "string",
+            "enumValues": [
+                "Euclidean",
+                "Manhattan",
+                "Heuclidean",
+                "Hmanhattan"
+            ]
+        },
+        {
+            "name": "c3_feature_selection_method",
+            "label": "C3: Feature selection method",
+            "desc": "",
+            "type": "other",
+            "value": "RF",
+            "defaultValue": "RF",
+            "valueNotBlank": true,
+            "valueMultiple": false,
+            "valueType": "string",
+            "enumValues": [
+                "RF",
+                "AIC",
+                "AIC_MSFDR",
+                "BIC"
+            ]
+        },
+        {
+            "name": "c3_classification_method",
+            "label": "C3: Classification method",
+            "desc": "",
+            "type": "other",
+            "value": "RF",
+            "defaultValue": "RF",
+            "valueNotBlank": true,
+            "valueMultiple": false,
+            "valueType": "string",
+            "enumValues": [
+                "RF",
+                "RF_downsampling",
+                "CART_information",
+                "CART_gini"
+            ]
+        }
+    ]
+}

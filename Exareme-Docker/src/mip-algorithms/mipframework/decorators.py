@@ -33,6 +33,9 @@ def algorithm_methods_decorator(func):
         wrapper = make_wrapper(node="global", step="last", state="load")(func)
     elif func_name == "termination_condition":
         wrapper = make_termination_wrapper(func)
+    # Purely local algorithms
+    elif func_name == "local_pure":
+        wrapper = make_pure_local_wrapper(func)
     # Error
     else:
         logging.error("Unknown function name.")
@@ -104,5 +107,17 @@ def make_termination_wrapper(func):
         self._termination = self._state.termination
         # Execute termination condition
         func(self)
+
+    return wrapper
+
+
+def make_pure_local_wrapper(func):
+    @wraps(func)
+    def wrapper(self):
+        self.data = AlgorithmData(self._args)
+        self.metadata = self.data.metadata
+        del self.data.metadata
+        func(self)
+        self.set_output()
 
     return wrapper
