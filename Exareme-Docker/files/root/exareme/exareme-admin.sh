@@ -18,7 +18,7 @@ fi
 . ./exareme-env.sh  &> /dev/null
 
 # Getting the IP and removing white spaces
-EXAREME_MASTER=$(hostname -I | sed 's/ *$//g')
+EXAREME_MASTER=$(hostname -i | sed 's/ *$//g')
 
 ####################################################################################################
 # parse command line arguments
