@@ -148,6 +148,7 @@ public class NIterativeAlgorithmResultEntity extends BasicHttpEntity
                             new ByteArrayInputStream(output.getBytes(StandardCharsets.UTF_8)));
 
                 } else {   // Unexpected error
+                    log.info("Exception from madis: " + result);
                     String data = "Something went wrong with the execution of algorithm: ["
                             + iterativeAlgorithmState.getAlgorithmKey()
                             + "]. Please inform your system administrator to consult the logs.";

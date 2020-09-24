@@ -82,13 +82,11 @@ public class ConsulNodesPathologiesAndDatasetsInfo {
 
             // Get the datasets for the specified pathology only
             ArrayList<String> nodeDatasets = nodeData.getValue().pathologyDatasets.get(pathology);
-            if(nodeDatasets == null){
-                continue;
-            }
+
+            // Skip nodes without datasets on that pathology
+            if (nodeDatasets == null) continue;
 
             // If the nodeDatasets contains any of the required datasets
-            log.info("nodeDatasets: " + nodeDatasets);
-            log.info("datasets: " + datasets);
             if (!Collections.disjoint(nodeDatasets, datasets)) {
                 nodeIPToDatasets.put(nodeData.getKey(), nodeDatasets);
             }
@@ -192,7 +190,7 @@ public class ConsulNodesPathologiesAndDatasetsInfo {
 
             HttpGet httpGet = new HttpGet(consulURL + "/v1/kv/" + query);
             CloseableHttpResponse response = httpclient.execute(httpGet);
-            if (response.getStatusLine().getStatusCode() != 200){
+            if (response.getStatusLine().getStatusCode() != 200) {
                 return null;
             }
 

@@ -25,7 +25,7 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
     private final ByteBuffer buffer;
     private ReadableByteChannel channel;
     private NQueryStatusEntity.QueryStatusListener l;
-    private DataSerialization format;
+    private final DataSerialization format;
     private final static String user_error = "text/plain+user_error";
     private final static String error = "text/plain+error";
     private final static String warning = "text/plain+warning";
@@ -42,15 +42,15 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
 
 
     @Override
-    public void produceContent(ContentEncoder encoder, IOControl ioctrl)
+    public void produceContent(ContentEncoder encoder, IOControl iocontrol)
             throws IOException {
 
         if (!queryStatus.hasFinished() && !queryStatus.hasError()) {
             if (l == null) {
-                l = new NQueryStatusEntity.QueryStatusListener(ioctrl);
+                l = new NQueryStatusEntity.QueryStatusListener(iocontrol);
                 queryStatus.registerListener(l);
             }
-            ioctrl.suspendOutput();
+            iocontrol.suspendOutput();
             return;
         }
 
@@ -73,8 +73,7 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
             if (queryStatus.getError().contains("ExaremeError:")) {
                 String data = queryStatus.getError().substring(queryStatus.getError().lastIndexOf("ExaremeError:") + "ExaremeError:".length()).replaceAll("\\s", " ");
                 //type could be error, user_error, warning regarding the error occurred along the process
-                String type = user_error;
-                String result = HBPQueryHelper.ErrorResponse.createErrorResponse(data, type);
+                String result = HBPQueryHelper.ErrorResponse.createErrorResponse(data, user_error);
                 logErrorMessage(result);
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
@@ -82,8 +81,7 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
             } else if (queryStatus.getError().contains("PrivacyError")) {
                 String data = "The Experiment could not run with the input provided because there are insufficient data.";
                 //type could be error, user_error, warning regarding the error occurred along the process
-                String type = warning;
-                String result = HBPQueryHelper.ErrorResponse.createErrorResponse(data, type);
+                String result = HBPQueryHelper.ErrorResponse.createErrorResponse(data, warning);
                 logErrorMessage(result);
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
@@ -91,26 +89,16 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
             } else if (queryStatus.getError().contains("java.rmi.RemoteException")) {
                 String data = "One or more containers are not responding. Please inform the system administrator.";
                 //type could be error, user_error, warning regarding the error occurred along the process
-                String type = error;
-                String result = HBPQueryHelper.ErrorResponse.createErrorResponse(data, type);
-                logErrorMessage(result);
-                encoder.write(ByteBuffer.wrap(result.getBytes()));
-                encoder.complete();
-                close();
-            } else if (queryStatus.getError().contains("java.lang.IndexOutOfBoundsException:")) {
-                String data = "Something went wrong. Please inform the system administrator.";
-                //type could be error, user_error, warning regarding the error occurred along the process
-                String type = error;
-                String result = HBPQueryHelper.ErrorResponse.createErrorResponse(data, type);
+                String result = HBPQueryHelper.ErrorResponse.createErrorResponse(data, error);
                 logErrorMessage(result);
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
                 close();
             } else {
+                log.info("Exception from madis: " + queryStatus.getError());
                 String data = "Something went wrong. Please inform the system administrator.";
                 //type could be error, user_error, warning regarding the error occurred along the process
-                String type = error;
-                String result = HBPQueryHelper.ErrorResponse.createErrorResponse(data, type);
+                String result = HBPQueryHelper.ErrorResponse.createErrorResponse(data, error);
                 logErrorMessage(result);
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();

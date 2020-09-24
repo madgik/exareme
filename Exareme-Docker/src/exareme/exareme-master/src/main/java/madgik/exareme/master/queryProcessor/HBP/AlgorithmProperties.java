@@ -1,11 +1,9 @@
 package madgik.exareme.master.queryProcessor.HBP;
 
 import madgik.exareme.master.gateway.async.handler.HBP.Exceptions.UserException;
-import madgik.exareme.master.gateway.async.handler.HBP.HBPQueryHandler;
 import madgik.exareme.master.queryProcessor.HBP.Exceptions.AlgorithmException;
 import madgik.exareme.master.queryProcessor.HBP.Exceptions.CDEsMetadataException;
 import madgik.exareme.master.queryProcessor.HBP.Exceptions.ComposerException;
-import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -18,7 +16,6 @@ import java.util.List;
  * AlgorithmProperties contains all the information about the properties in each algorithm's properties.json file.
  */
 public class AlgorithmProperties {
-    private static final Logger log = Logger.getLogger(HBPQueryHandler.class);
 
     private String name;
     private String desc;
@@ -241,7 +238,6 @@ public class AlgorithmProperties {
 
             String allowedSQLTypeValues = parameterProperties.getColumnValuesSQLType();
             String columnValuesSQLType = metadata.getColumnValuesSQLType(curValue);
-
             if (!allowedSQLTypeValues.contains(columnValuesSQLType) && !allowedSQLTypeValues.equals("")) {
                 throw new UserException("The CDE '" + curValue + "' does not have one of the allowed SQL Types '"
                         + allowedSQLTypeValues + "' for the algorithm.");
