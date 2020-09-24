@@ -190,6 +190,11 @@ public class HBPQueryHandler implements HttpAsyncRequestHandler<HttpRequest> {
 
         } catch (Exception e) {
             log.error(e.getMessage());
+            for (StackTraceElement stack : e.getStackTrace()) {
+                log.error("Stack: " + stack.toString());
+                log.error("Stack class: " + stack.getClassName() + ", name: " + stack.getMethodName() + ", line: " + stack.getLineNumber());
+            }
+            log.error(e.getStackTrace());
             String errorType = HBPQueryHelper.ErrorResponse.ErrorResponseTypes.error;
             response.setStatusCode(HttpStatus.SC_BAD_REQUEST);
             response.setEntity(createErrorResponseEntity(e.getMessage(), errorType));
