@@ -43,10 +43,10 @@ class categoricalcoding(functions.vtable.vtbase.VT):
                 colval = myrow[i]
 
                 if colname in metadata.keys():
-                    print colname,colval
+                    #print colname,colval
                     newcolvals = metadata[colname].split(',')
                     nvals =len(newcolvals)
-                    print nvals
+                    #print nvals
                     # newcolvals.sort()
                     for v in xrange(0,len(newcolvals)):
                         newcolval =newcolvals[v]
@@ -73,8 +73,8 @@ class categoricalcoding(functions.vtable.vtbase.VT):
                 else: # gia mh categorical columns:
                     newSchema.append(str(colname))
                     newrow.append(colval)
-            print "oldrow",myrow
-            print "newrow",newrow
+            # print "oldrow",myrow
+            # print "newrow",newrow
 
             if noRow == 0:
                 yield tuple((x,) for x in newSchema)

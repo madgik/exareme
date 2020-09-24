@@ -32,6 +32,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import static madgik.exareme.master.gateway.GatewayConstants.COOKIE_ALGORITHM_EXECUTION_ID;
 
@@ -102,6 +103,11 @@ public class HBPQueryHandler implements HttpAsyncRequestHandler<HttpRequest> {
             log.info("Executing algorithm: " + algorithmName + " with key: " + algorithmKey);
 
             HashMap<String, String> algorithmParameters = HBPQueryHelper.getAlgorithmParameters(request);
+            log.info("Request for algorithm: " + algorithmName);
+            if (algorithmParameters != null) {
+                for (Map.Entry<String, String> parameter : algorithmParameters.entrySet())
+                    log.info("Parameter: " + parameter.getKey() + ", with value: " + parameter.getValue());
+            }
 
             ContainerProxy[] algorithmContainers = HBPQueryHelper.getAlgorithmNodes(algorithmParameters);
 
