@@ -14,6 +14,7 @@ from argparse import ArgumentParser
 
 MAX_ROWS_TO_INSERT_INTO_SQL = 100
 
+
 # This metadata dictionary contains only code and sqltype so that processing will be faster
 # It also includes the subjectcode
 def createMetadataDictionary(CDEsMetadataPath):
@@ -177,7 +178,6 @@ def createDataTable(metadataDictionary, cur):
 
 
 def addCSVInTheDataTable(csvFilePath, metadataDictionary, cur):
-    
     # Open the csv
     csvFile = open(csvFilePath, 'r')
     csvReader = csv.reader(csvFile)
@@ -190,7 +190,7 @@ def addCSVInTheDataTable(csvFilePath, metadataDictionary, cur):
             raise KeyError('Column ' + column + ' does not exist in the metadata!')
         columnsString += ', ' + column
     columnsQuery = 'INSERT INTO DATA (' + columnsString + ') VALUES '
-    
+
     # Insert data
     number_of_rows = 0
     valuesOfQuery = '('
@@ -216,11 +216,13 @@ def addCSVInTheDataTable(csvFilePath, metadataDictionary, cur):
             valuesOfQuery = valuesOfQuery[:-2]
             valuesOfQuery += '),('
 
+
 def findErrorBulkInsertQuery(cur, valuesOfQuery, csvHeader, metadataDictionary, csvFilePath):
     # Call findErrorOnSqlQuery for each row in the bulk query
-    valuesOfQuery = valuesOfQuery[1:-2].replace("\'","")
+    valuesOfQuery = valuesOfQuery[1:-2].replace("\'", "")
     for row in valuesOfQuery.split('),('):
         findErrorOnSqlQuery(cur, row.split(','), csvHeader, metadataDictionary, csvFilePath)
+
 
 def findErrorOnSqlQuery(cur, row, csvHeader, metadataDictionary, csvFilePath):
     # Insert the code column into the database and then update it for each row to find where the problem is
@@ -291,5 +293,7 @@ def main():
 
         con.commit()
         con.close()
+
+
 if __name__ == '__main__':
     main()
