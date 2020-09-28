@@ -12,7 +12,7 @@
             "type": "column",
             "columnValuesSQLType": "real, integer, text",
             "columnValuesIsCategorical": "",
-            "value": "lefthippocampus",
+            "value": "lefthippocampus, righthippocampus, leftcaudate",
             "valueNotBlank": true,
             "valueMultiple": true,
             "valueType": "string"
@@ -24,7 +24,7 @@
             "type": "column",
             "columnValuesSQLType": "real, integer, text",
             "columnValuesIsCategorical": "",
-            "value": "righthippocampus",
+            "value": "apoe4, gender, agegroup",
             "valueNotBlank": true,
             "valueMultiple": true,
             "valueType": "string"
@@ -61,7 +61,7 @@
         },
         {
             "name": "dx",
-            "label": "DX",
+            "label": "dx",
             "desc": "Diagnosis.",
             "type": "other",
             "value": "alzheimerbroadcategory",
@@ -71,7 +71,7 @@
         },
         {
             "name": "c2_feature_selection_method",
-            "label": "C2: Feature selection method",
+            "label": "c2_feature_selection_method",
             "desc": "",
             "type": "other",
             "value": "RF",
@@ -88,7 +88,7 @@
         },
         {
             "name": "c2_num_clusters_method",
-            "label": "C2: Number of clusters method",
+            "label": "c2_num_clusters_method",
             "desc": "",
             "type": "other",
             "value": "Euclidean",
@@ -105,7 +105,7 @@
         },
         {
             "name": "c2_num_clusters",
-            "label": "C2: Number of clusters",
+            "label": "c2_num_clusters",
             "desc": "",
             "type": "other",
             "value": "6",
@@ -117,7 +117,7 @@
         },
         {
             "name": "c2_clustering_method",
-            "label": "C2: Clustering method",
+            "label": "c2_clustering_method",
             "desc": "",
             "type": "other",
             "value": "Euclidean",
@@ -134,7 +134,7 @@
         },
         {
             "name": "c3_feature_selection_method",
-            "label": "C3: Feature selection method",
+            "label": "c3_feature_selection_method",
             "desc": "",
             "type": "other",
             "value": "RF",
@@ -151,7 +151,7 @@
         },
         {
             "name": "c3_classification_method",
-            "label": "C3: Classification method",
+            "label": "c3_classification_method",
             "desc": "",
             "type": "other",
             "value": "RF",
