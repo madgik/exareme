@@ -97,7 +97,7 @@ class ThreeC(Algorithm):
 
         table_out = TabularDataResource(
             fields=[str(i + 1) for i in range(len(res))],
-            data=[tuple(res)],
+            data=tuple(res),
             title="3C result",
         )
         self.result = AlgorithmResult(
@@ -1226,11 +1226,11 @@ if __name__ == "__main__":
         "-y",
         "lefthippocampus, righthippocampus, leftcaudate",
         "-x",
-        "apoe4, gender, agegroup",
+        "gender, agegroup",
         "-pathology",
         "dementia",
         "-dataset",
-        "adni",
+        "edsd, ppmi",
         "-filter",
         "",
         "-dx",
@@ -1240,7 +1240,7 @@ if __name__ == "__main__":
         "-c2_num_clusters_method",
         "Euclidean",
         "-c2_num_clusters",
-        "5",
+        "6",
         "-c2_clustering_method",
         "Euclidean",
         "-c3_feature_selection_method",
