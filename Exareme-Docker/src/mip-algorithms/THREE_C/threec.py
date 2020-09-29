@@ -97,7 +97,7 @@ class ThreeC(Algorithm):
 
         table_out = TabularDataResource(
             fields=[str(i + 1) for i in range(len(res))],
-            data=[tuple(res)],
+            data=tuple(res),
             title="3C result",
         )
         self.result = AlgorithmResult(
