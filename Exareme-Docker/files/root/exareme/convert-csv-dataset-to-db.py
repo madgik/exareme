@@ -188,11 +188,8 @@ def addCSVInTheDataTable(csvFilePath, metadataDictionary, cur):
         if column not in metadataDictionary:
             raise KeyError('Column ' + column + ' does not exist in the metadata!')
         columnsString += ', ' + column
-<<<<<<< HEAD
     columnsSectionOfSQLQuery = 'INSERT INTO DATA (' + columnsString + ') VALUES '
-=======
-    columnsQuery = 'INSERT INTO DATA (' + columnsString + ') VALUES '
->>>>>>> bec9f53e7edbce81b8768df77c34154b2e1ff413
+
 
     # Insert data
     number_of_rows = 0
@@ -220,7 +217,6 @@ def addCSVInTheDataTable(csvFilePath, metadataDictionary, cur):
             valuesSectionOfSQLQuery += '),('
 
 
-<<<<<<< HEAD
 def findErrorOnBulkInsertQuery(cur, valuesOfQuery, csvHeader, metadataDictionary, csvFilePath):
     # Removing the first and last parenthesis
     valuesOfQuery = valuesOfQuery[1:-2]
@@ -229,15 +225,7 @@ def findErrorOnBulkInsertQuery(cur, valuesOfQuery, csvHeader, metadataDictionary
     # Call findErrorOnSqlQuery for each row in the bulk query
     for row in valuesOfQuery.split('),('):
         findErrorOnSqlQuery(cur, row.split(','), csvHeader, metadataDictionary, csvFilePath)
-=======
-def findErrorBulkInsertQuery(cur, valuesOfQuery, csvHeader, metadataDictionary, csvFilePath):
-    # Call findErrorOnSqlQuery for each row in the bulk query
-    valuesOfQuery = valuesOfQuery[1:-2].replace("\'", "")
-    for row in valuesOfQuery.split('),('):
-        findErrorOnSqlQuery(cur, row.split(','), csvHeader, metadataDictionary, csvFilePath)
 
-
->>>>>>> bec9f53e7edbce81b8768df77c34154b2e1ff413
 def findErrorOnSqlQuery(cur, row, csvHeader, metadataDictionary, csvFilePath):
     # Insert the code column into the database and then update it for each row to find where the problem is
     firstRow = True
