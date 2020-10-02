@@ -5,14 +5,14 @@
 This script creates multiple dbs for each pathology folder containing a dataset csv file and a metadata json file.
 """
 
-import os
-import sys
 import csv
-import sqlite3
 import json
+import os
+import sqlite3
 from argparse import ArgumentParser
 
 MAX_ROWS_TO_INSERT_INTO_SQL = 100
+
 
 # This metadata dictionary contains only code and sqltype so that processing will be faster
 # It also includes the subjectcode
@@ -177,7 +177,6 @@ def createDataTable(metadataDictionary, cur):
 
 
 def addCSVInTheDataTable(csvFilePath, metadataDictionary, cur):
-    
     # Open the csv
     csvFile = open(csvFilePath, 'r')
     csvReader = csv.reader(csvFile)
@@ -189,39 +188,42 @@ def addCSVInTheDataTable(csvFilePath, metadataDictionary, cur):
         if column not in metadataDictionary:
             raise KeyError('Column ' + column + ' does not exist in the metadata!')
         columnsString += ', ' + column
-    columnsQuery = 'INSERT INTO DATA (' + columnsString + ') VALUES '
-    
+    columnsSectionOfSQLQuery = 'INSERT INTO DATA (' + columnsString + ') VALUES '
+
     # Insert data
     number_of_rows = 0
-    valuesOfQuery = '('
+    valuesSectionOfSQLQuery = '('
     for row in csvReader:
         number_of_rows += 1
         for (value, column) in zip(row, csvHeader):
             if metadataDictionary[column] == 'text':
-                valuesOfQuery += "'" + value + "', "
+                valuesSectionOfSQLQuery += "'" + value + "', "
             elif value == '':
-                valuesOfQuery += 'null, '
+                valuesSectionOfSQLQuery += 'null, '
             else:
-                valuesOfQuery += value + ", "
+                valuesSectionOfSQLQuery += value + ", "
         if (number_of_rows % int(MAX_ROWS_TO_INSERT_INTO_SQL) == 0 or next(csvReader, None) == None):
-            valuesOfQuery = valuesOfQuery[:-2]
-            valuesOfQuery += ');'
+            valuesSectionOfSQLQuery = valuesSectionOfSQLQuery[:-2]
+            valuesSectionOfSQLQuery += ');'
 
             try:
-                cur.execute(columnsQuery + valuesOfQuery)
+                cur.execute(columnsSectionOfSQLQuery + valuesSectionOfSQLQuery)
             except:
-                findErrorBulkInsertQuery(cur, valuesOfQuery, csvHeader, metadataDictionary, csvFilePath)
-            valuesOfQuery = '('
+                findErrorOnBulkInsertQuery(cur, valuesSectionOfSQLQuery, csvHeader, metadataDictionary, csvFilePath)
+            valuesSectionOfSQLQuery = '('
         else:
-            valuesOfQuery = valuesOfQuery[:-2]
-            valuesOfQuery += '),('
+            valuesSectionOfSQLQuery = valuesSectionOfSQLQuery[:-2]
+            valuesSectionOfSQLQuery += '),('
 
-def findErrorBulkInsertQuery(cur, valuesOfQuery, csvHeader, metadataDictionary, csvFilePath):
+
+def findErrorOnBulkInsertQuery(cur, valuesOfQuery, csvHeader, metadataDictionary, csvFilePath):
+    # Removing the first and last parenthesis
+    valuesOfQuery = valuesOfQuery[1:-2]
+    # Removing the ' from character values
+    valuesOfQuery = valuesOfQuery.replace("\'", "")
     # Call findErrorOnSqlQuery for each row in the bulk query
-    valuesOfQuery = valuesOfQuery[1:-2].replace("\'","")
     for row in valuesOfQuery.split('),('):
         findErrorOnSqlQuery(cur, row.split(','), csvHeader, metadataDictionary, csvFilePath)
-
 def findErrorOnSqlQuery(cur, row, csvHeader, metadataDictionary, csvFilePath):
     # Insert the code column into the database and then update it for each row to find where the problem is
     firstRow = True
@@ -256,7 +258,6 @@ def main():
     parser.add_argument('-t', '--nodeType', required=True,
                         help='Is this a master or a worker node?'
                         )
-
     args = parser.parse_args()
     pathologiesFolderPath = os.path.abspath(args.pathologiesFolderPath)
 
@@ -291,5 +292,7 @@ def main():
 
         con.commit()
         con.close()
+
+
 if __name__ == '__main__':
     main()
