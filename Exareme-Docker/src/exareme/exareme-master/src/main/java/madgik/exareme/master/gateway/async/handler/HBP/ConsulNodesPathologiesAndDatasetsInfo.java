@@ -10,6 +10,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -191,13 +192,15 @@ public class ConsulNodesPathologiesAndDatasetsInfo {
             HttpGet httpGet = new HttpGet(consulURL + "/v1/kv/" + query);
             CloseableHttpResponse response = httpclient.execute(httpGet);
             if (response.getStatusLine().getStatusCode() != 200) {
-                return null;
+                throw new ConsulException(
+                        "There was an error contacting consul. StatusCode: " + response.getStatusLine().getStatusCode());
             }
 
             return EntityUtils.toString(response.getEntity());
 
-        } catch (Exception e) {
-            return null;
+        } catch (IOException e) {
+            throw new ConsulException(
+                    "An exception occurred while contacting Consul. Exception: " + e.getMessage());
         }
     }
 
