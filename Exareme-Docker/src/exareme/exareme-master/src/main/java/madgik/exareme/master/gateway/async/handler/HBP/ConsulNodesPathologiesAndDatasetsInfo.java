@@ -163,7 +163,10 @@ public class ConsulNodesPathologiesAndDatasetsInfo {
                     pathologyDatasets.put(pathology, new ArrayList<>(Arrays.asList(nodePathologyDatasets)));
                 }
             } catch (JsonSyntaxException e) {
-                throw new ConsulException("There was a problem contacting consul: " + e.getMessage());
+                throw new ConsulException("There was a problem parsing the response from consul: " + e.getMessage());
+            } catch (ConsulException e) {
+                // The node is up but the data are not added yet.
+                // continue;
             }
         }
     }
