@@ -192,6 +192,7 @@ public class ConsulNodesPathologiesAndDatasetsInfo {
             HttpGet httpGet = new HttpGet(consulURL + "/v1/kv/" + query);
             CloseableHttpResponse response = httpclient.execute(httpGet);
             if (response.getStatusLine().getStatusCode() != 200) {
+                log.error("Failed consul query: " + consulURL + "/v1/kv/" + query);
                 throw new ConsulException(
                         "There was an error contacting consul. StatusCode: " + response.getStatusLine().getStatusCode());
             }
@@ -199,6 +200,7 @@ public class ConsulNodesPathologiesAndDatasetsInfo {
             return EntityUtils.toString(response.getEntity());
 
         } catch (IOException e) {
+            log.error("Failed consul query: " + consulURL + "/v1/kv/" + query);
             throw new ConsulException(
                     "An exception occurred while contacting Consul. Exception: " + e.getMessage());
         }
