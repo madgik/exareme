@@ -25,6 +25,8 @@ public class ConsulNodesPathologiesAndDatasetsInfo {
     private final HashMap<String, String> nodeIPsToNames;
     private String masterNodeIP;
 
+    private static final CloseableHttpClient httpClient = HttpClients.createDefault();
+
     /**
      * Fetches the node information from CONSUL.
      *
@@ -185,33 +187,33 @@ public class ConsulNodesPathologiesAndDatasetsInfo {
         log.debug("Consul Query: " + query);
 
         String consulURL = getConsulUrl();
-        if (!consulURL.startsWith("http://")) {
-            consulURL = "http://" + consulURL;
-        }
-
+        HttpGet request = new HttpGet(consulURL + "/v1/kv/" + query);
         try {
-            CloseableHttpClient httpclient = HttpClients.createDefault();
-
-            HttpGet httpGet = new HttpGet(consulURL + "/v1/kv/" + query);
-            CloseableHttpResponse response = httpclient.execute(httpGet);
+            CloseableHttpResponse response = httpClient.execute(request);
             if (response.getStatusLine().getStatusCode() != 200) {
                 log.error("Failed consul query: " + consulURL + "/v1/kv/" + query);
                 throw new ConsulException(
                         "There was an error contacting consul. StatusCode: " + response.getStatusLine().getStatusCode());
             }
-
             return EntityUtils.toString(response.getEntity());
 
         } catch (IOException e) {
             log.error("Failed consul query: " + consulURL + "/v1/kv/" + query);
             throw new ConsulException(
                     "An exception occurred while contacting Consul. Exception: " + e.getMessage());
+        } finally {
+            request.releaseConnection();
         }
     }
 
     private static String getConsulUrl() throws ConsulException {
         String consulURL = System.getenv("CONSULURL");
         if (consulURL == null) throw new ConsulException("CONSULURL environment variable is not set.");
+
+        if (!consulURL.startsWith("http://")) {
+            consulURL = "http://" + consulURL;
+        }
+
         return consulURL;
     }
 
