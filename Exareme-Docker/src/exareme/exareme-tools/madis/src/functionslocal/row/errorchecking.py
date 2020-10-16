@@ -95,6 +95,16 @@ def histograms_inputerrorchecking(xisCategorical,bins):
 histograms_inputerrorchecking.registered = True
 
 
+def pairedttest_inputerrorchecking(variableNo):
+    if variableNo%2 == 1:
+        raise functions.OperatorError("ExaremeError", "The input should be in the form of y1-y2,y3-y4,.. Therefore the number of variables should be modulo 2")            
+    else:
+        return "OK"
+
+pairedttest_inputerrorchecking.registered = True
+
+
+
 if not ('.' in __name__):
     """
     This is needed to be able to test the function, put it at the end of every
