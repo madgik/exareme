@@ -349,8 +349,8 @@ def query_database(fname_db, queryData, queryMetadata):
 
     cur.execute(queryData)
     data = cur.fetchall()
-    if len(data) < PRIVACY_MAGIC_NUMBER:
-        raise PrivacyError("Query results in illegal number of datapoints.")
+    #if len(data) < PRIVACY_MAGIC_NUMBER:
+    #    raise PrivacyError("Query results in illegal number of datapoints.")
     dataSchema = [description[0] for description in cur.description]
 
     cur.execute(queryMetadata)
@@ -360,6 +360,12 @@ def query_database(fname_db, queryData, queryMetadata):
 
     # Save data to pd.Dataframe
     dataFrame = pd.DataFrame.from_records(data=data, columns=dataSchema)
+    
+    #Check privacy.
+    df = dataFrame.dropna()
+    if len(df) < PRIVACY_MAGIC_NUMBER:
+        raise PrivacyError("Query results in illegal number of datapoints.")
+
 
     # Cast Dataframe based on metadata
     metadataVarNames = [str(x) for x in list(zip(*metadata)[0])]
