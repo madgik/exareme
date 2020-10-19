@@ -263,7 +263,7 @@ public class AlgorithmProperties {
             String algorithmName,
             String value,
             ParameterProperties parameterProperties
-    ) throws AlgorithmException {
+    ) throws AlgorithmException, UserException {
         if (parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.json)) {
             try {
                 new JSONObject(value);
@@ -285,19 +285,19 @@ public class AlgorithmProperties {
                 try {
                     Double.parseDouble(curValue);
                 } catch (NumberFormatException nfe) {
-                    throw new AlgorithmException(algorithmName,
+                    throw new UserException(
                             "The value of the parameter '" + parameterProperties.getName() + "' should be a real number.");
                 }
             } else if (parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.integer)) {
                 try {
                     Integer.parseInt(curValue);
                 } catch (NumberFormatException e) {
-                    throw new AlgorithmException(algorithmName,
+                    throw new UserException(
                             "The value of the parameter '" + parameterProperties.getName() + "' should be an integer.");
                 }
             } else if (parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.string)) {
                 if (curValue.equals("")) {
-                    throw new AlgorithmException(algorithmName,
+                    throw new UserException(
                             "The value of the parameter '" + parameterProperties.getName()
                                     + "' contains an empty string.");
                 }
