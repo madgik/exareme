@@ -190,12 +190,11 @@ def addCSVInTheDataTable(csvFilePath, metadataDictionary, cur):
         columnsString += ', ' + column
     columnsSectionOfSQLQuery = 'INSERT INTO DATA (' + columnsString + ') VALUES '
 
-
     # Insert data
-    number_of_rows = 0
+    numberOfRows = 0
     valuesSectionOfSQLQuery = '('
     for row in csvReader:
-        number_of_rows += 1
+        numberOfRows += 1
         for (value, column) in zip(row, csvHeader):
             if metadataDictionary[column] == 'text':
                 valuesSectionOfSQLQuery += "'" + value + "', "
@@ -203,7 +202,7 @@ def addCSVInTheDataTable(csvFilePath, metadataDictionary, cur):
                 valuesSectionOfSQLQuery += 'null, '
             else:
                 valuesSectionOfSQLQuery += value + ", "
-        if (number_of_rows % int(MAX_ROWS_TO_INSERT_INTO_SQL) == 0 or next(csvReader, None) == None):
+        if numberOfRows % int(MAX_ROWS_TO_INSERT_INTO_SQL) == 0:
             valuesSectionOfSQLQuery = valuesSectionOfSQLQuery[:-2]
             valuesSectionOfSQLQuery += ');'
 
@@ -211,10 +210,20 @@ def addCSVInTheDataTable(csvFilePath, metadataDictionary, cur):
                 cur.execute(columnsSectionOfSQLQuery + valuesSectionOfSQLQuery)
             except:
                 findErrorOnBulkInsertQuery(cur, valuesSectionOfSQLQuery, csvHeader, metadataDictionary, csvFilePath)
+                raise ValueError("Error inserting the CSV to the database.")
             valuesSectionOfSQLQuery = '('
         else:
             valuesSectionOfSQLQuery = valuesSectionOfSQLQuery[:-2]
             valuesSectionOfSQLQuery += '),('
+
+    if numberOfRows % int(MAX_ROWS_TO_INSERT_INTO_SQL) != 0:
+        valuesSectionOfSQLQuery = valuesSectionOfSQLQuery[:-3]
+        valuesSectionOfSQLQuery += ');'
+
+        try:
+            cur.execute(columnsSectionOfSQLQuery + valuesSectionOfSQLQuery)
+        except:
+            findErrorOnBulkInsertQuery(cur, valuesSectionOfSQLQuery, csvHeader, metadataDictionary, csvFilePath)
 
 
 def findErrorOnBulkInsertQuery(cur, valuesOfQuery, csvHeader, metadataDictionary, csvFilePath):
@@ -225,6 +234,7 @@ def findErrorOnBulkInsertQuery(cur, valuesOfQuery, csvHeader, metadataDictionary
     # Call findErrorOnSqlQuery for each row in the bulk query
     for row in valuesOfQuery.split('),('):
         findErrorOnSqlQuery(cur, row.split(','), csvHeader, metadataDictionary, csvFilePath)
+
 
 def findErrorOnSqlQuery(cur, row, csvHeader, metadataDictionary, csvFilePath):
     # Insert the code column into the database and then update it for each row to find where the problem is
