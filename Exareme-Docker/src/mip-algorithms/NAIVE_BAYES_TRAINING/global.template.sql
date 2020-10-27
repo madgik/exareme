@@ -76,7 +76,7 @@ from statistics
 where colname in (select code from defaultDB.globalmetadatatbl  where categorical= 0)
 and colname <> '%{y}';
 
---create table defaultDB.lala as select * from global_probabilities;
+
 select Naive_Bayes_Training_inputerrorchecking('%{y}',no) from (select count(distinct classval) as no from global_probabilities);
 
 
