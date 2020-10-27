@@ -43,6 +43,8 @@ RUN apt update
 RUN apt install -y r-base
 RUN Rscript -e 'install.packages("randomForest", repos="https://cloud.r-project.org")'
 
+RUN Rscript -e 'install.packages("caret")'
+RUN Rscript -e 'install.packages("e1071")'
 RUN pip install rpy2==2.8.6
 
 # Add Madis Server
