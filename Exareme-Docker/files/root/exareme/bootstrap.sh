@@ -85,6 +85,7 @@ convertCSVsToDB() {
   
   # Skip convertion if flag is false
   if [[ ${CONVERT_CSVS} == "FALSE" ]]; then
+    echo "$(timestamp) CSV convertion turned off. "
 	return 0
   fi
 
