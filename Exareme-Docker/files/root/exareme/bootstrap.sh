@@ -32,6 +32,10 @@ if [[ -z ${ENVIRONMENT_TYPE} ]]; then
   echo "ENVIRONMENT_TYPE is unset. Check docker-compose file."
   exit
 fi
+if [[ -z ${CONVERT_CSVS} ]]; then
+  echo "CONVERT_CSVS is unset. Check docker-compose file."
+  exit
+fi
 
 timestamp() {
   date +%F' '%T
@@ -78,6 +82,12 @@ getMasterIPFromConsul() {
 
 # Convert CSVs to DB
 convertCSVsToDB() {
+  
+  # Skip convertion if flag is false
+  if [[ ${CONVERT_CSVS} == "FALSE" ]]; then
+	return 0
+  fi
+
   # Both Master and Worker should transform the csvs to sqlite db files
   NODE_TYPE=${1}
 
