@@ -73,7 +73,7 @@ class rconfusionmatrixtable(functions.vtable.vtbase.VT): #predictedclass,actualc
 	ResultOverall = { "data": {
 				"profile": "tabular-data-resource",
 				"data": dataOverall,
-				"name": "Overall",
+				"name": "Overall Statistic Results",
 				"schema": {
 				  "fields": [
 					{
@@ -120,7 +120,7 @@ class rconfusionmatrixtable(functions.vtable.vtbase.VT): #predictedclass,actualc
 	"data": {
 	    "profile": "tabular-data-resource",
 	    "data": DataClassNames,
-	    "name": "ClassNames",
+	    "name": "Statistic Results per Class",
 	    "schema": {"fields": FieldClassNames}
 		},
 	"type": "application/vnd.dataresource+json"}
