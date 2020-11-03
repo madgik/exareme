@@ -279,7 +279,7 @@ def main():
     if args.pathologies != None:
         pathologiesToConvert = args.pathologies.split(",")
         pathologiesList = list(set(pathologiesList) & set(pathologiesToConvert))
-    print (pathologiesList)
+    print ("Converting csvs for pathologies: " + ",".join(pathologiesList))
 
     # Create the datasets db for each pathology
     for pathologyName in pathologiesList:
