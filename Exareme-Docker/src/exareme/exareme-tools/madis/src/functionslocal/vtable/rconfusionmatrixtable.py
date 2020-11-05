@@ -64,11 +64,11 @@ class rconfusionmatrixtable(functions.vtable.vtbase.VT): #predictedclass,actualc
 	#Rresult[2] -->overall statistics
 	dataOverall.append(["Accuracy",(Rresult[2][0])])
 	dataOverall.append(["Kappa",(Rresult[2][1])])
-	dataOverall.append(["AccuracyLower",(Rresult[2][2])])
-	dataOverall.append(["AccuracyUpper",(Rresult[2][3])])
-	dataOverall.append(["AccuracyNull",(Rresult[2][4])])
-	dataOverall.append(["AccuracyPValue",(Rresult[2][5])])
-	dataOverall.append(["McnemarPValue",(Rresult[2][6])])
+	dataOverall.append(["Accuracy Lower",(Rresult[2][2])])
+	dataOverall.append(["Accuracy Upper",(Rresult[2][3])])
+	dataOverall.append(["Accuracy Null",(Rresult[2][4])])
+	dataOverall.append(["Accuracy P Value",(Rresult[2][5])])
+	dataOverall.append(["Mcnemar P Value",(Rresult[2][6])])
 
 	ResultOverall = { "data": {
 				"profile": "tabular-data-resource",
@@ -78,7 +78,7 @@ class rconfusionmatrixtable(functions.vtable.vtbase.VT): #predictedclass,actualc
 				  "fields": [
 					{
 					  "type": "text",
-					  "name": "StatisticName"
+					  "name": "Statistic Name"
 					},
 					{
 					  "type": "real",
@@ -94,7 +94,7 @@ class rconfusionmatrixtable(functions.vtable.vtbase.VT): #predictedclass,actualc
 
 	FieldClassNames =  [
 		  { "type": "text",
-			"name": "StatisticName" }]
+			"name": "Statistic Name" }]
         for i in range(len(classnames)):
 	    FieldClassNames.append(
 			  {
@@ -130,11 +130,11 @@ class rconfusionmatrixtable(functions.vtable.vtbase.VT): #predictedclass,actualc
         yield (['statscolname'],['statsval'],)
 
         a = json.dumps(ResultOverall)
-        a = a.replace(' ','')
+        #a = a.replace(' ','')
         yield ("ResultOverall" , a)
 
         b = json.dumps(ResultClassNames)
-        b = b.replace(' ','')
+        #b = b.replace(' ','')
         yield ("ResultClassNames",b)
 
 
