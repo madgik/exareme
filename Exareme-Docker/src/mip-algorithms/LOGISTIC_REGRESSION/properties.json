@@ -68,6 +68,28 @@
             "valueNotBlank": false,
             "valueMultiple": false,
             "valueType": "string"
+        },
+        {
+            "name": "positive_level",
+            "label": "other",
+            "desc": "Level of the target variable to assign to the positive outcome.",
+            "type": "other",
+            "value": "",
+            "defaultValue": "",
+            "valueNotBlank": true,
+            "valueMultiple": false,
+            "valueType": "string"
+        },
+        {
+            "name": "negative_level",
+            "label": "other",
+            "desc": "Level of the target variable to assign to the negative outcome.",
+            "type": "other",
+            "value": "",
+            "defaultValue": "",
+            "valueNotBlank": true,
+            "valueMultiple": false,
+            "valueType": "string"
         }
     ]
 }

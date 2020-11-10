@@ -2,6 +2,7 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+import re
 from collections import namedtuple
 
 import numpy as np
@@ -19,6 +20,8 @@ from mipframework.constants import (
     CONFIDENCE,
 )
 from utils.algorithm_utils import ExaremeError
+from utils.algorithm_utils import PrivacyError
+from utils.algorithm_utils import PRIVACY_MAGIC_NUMBER
 
 
 class LogisticRegression(Algorithm):
@@ -26,9 +29,12 @@ class LogisticRegression(Algorithm):
         super(LogisticRegression, self).__init__(__file__, cli_args)
 
     def local_init(self):
-        y, X = self.data.variables.iloc[:, 1], self.data.covariables
+        negl = self.parameters.negative_level
+        posl = self.parameters.positive_level
+        X, y = self.data.covariables, self.data.variables
+        X, y = keep_levels(X, y, positive_level=posl, negative_level=negl)
 
-        n_obs = len(y)  # todo make these variables automatically available on global
+        n_obs = len(y)
         n_cols = len(X.columns)
         y_name = y.name
         x_names = list(X.columns)
@@ -36,6 +42,8 @@ class LogisticRegression(Algorithm):
         n_y_pos = len(y[y == 1])
         n_y_neg = len(y[y == 0])
 
+        self.store(y=y)
+        self.store(X=X)
         self.push_and_add(n_obs=n_obs)
         self.push_and_add(n_y_pos=n_y_pos)
         self.push_and_add(n_y_neg=n_y_neg)
@@ -63,7 +71,7 @@ class LogisticRegression(Algorithm):
         self.push(coeff=coeff)
 
     def local_step(self):
-        y, X = self.data.variables.iloc[:, 1], self.data.covariables
+        y, X = self.load("y"), self.load("X")
         coeff = self.fetch("coeff")
 
         grad, hess, ll = update_local_model_parameters(X, y, coeff)
@@ -95,10 +103,10 @@ class LogisticRegression(Algorithm):
         self.push(coeff=coeff)
 
     def local_final(self):
-        y = self.data.variables.iloc[:, 1]
+        y, X = self.load("y"), self.load("X")
 
         thresholds = np.linspace(1.0, 0.0, num=2 ** 7 + 1)  # odd otherwise no half_idx
-        yhats = np.array([self.predict(threshold=thr) for thr in thresholds])
+        yhats = np.array([self.predict(x=X, threshold=thr) for thr in thresholds])
         fn, fp, tn, tp = compute_classification_results(y, yhats)
         half_idx = np.where(thresholds == 0.5)[0][0]
 
@@ -230,6 +238,23 @@ class LogisticRegression(Algorithm):
         return np.array(
             [1 if prob >= threshold else 0 for prob in expit(np.dot(x, coeff))]
         )
+
+
+def keep_levels(X, y, positive_level, negative_level):
+    posl_pattern = r"[^\[]+\[{pl}\]".format(pl=positive_level)
+    posl_idx = [
+        re.search(posl_pattern, colname) is not None for colname in y.columns
+    ].index(True)
+    negl_pattern = r"[^\[]+\[{nl}\]".format(nl=negative_level)
+    negl_idx = [
+        re.search(negl_pattern, colname) is not None for colname in y.columns
+    ].index(True)
+    keep_rows = np.logical_or(y.iloc[:, negl_idx] == 1.0, y.iloc[:, posl_idx] == 1.0)
+    X, y = X[keep_rows], y[keep_rows]
+    y = y.iloc[:, posl_idx]
+    if y.shape[0] < PRIVACY_MAGIC_NUMBER:
+        raise PrivacyError("Query results in illegal number of datapoints.")
+    return X, y
 
 
 def init_model(n_cols, n_obs):
@@ -429,32 +454,13 @@ if __name__ == "__main__":
         "-dataset",
         "adni",
         "-filter",
-        """
-        {
-            "condition": "OR",
-            "rules": [
-                {
-                    "id": "alzheimerbroadcategory",
-                    "field": "alzheimerbroadcategory",
-                    "type": "string",
-                    "input": "text",
-                    "operator": "equal",
-                    "value": "AD"
-                },
-                {
-                    "id": "alzheimerbroadcategory",
-                    "field": "alzheimerbroadcategory",
-                    "type": "string",
-                    "input": "text",
-                    "operator": "equal",
-                    "value": "CN"
-                }
-            ],
-            "valid": true
-        }
-        """,
+        "",
         "-formula",
         "",
+        "-positive_level",
+        "AD",
+        "-negative_level",
+        "CN",
     ]
     runner = create_runner(
         LogisticRegression, num_workers=1, algorithm_args=algorithm_args,
