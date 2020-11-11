@@ -241,18 +241,23 @@ class LogisticRegression(Algorithm):
 
 
 def keep_levels(X, y, positive_level, negative_level):
-    posl_pattern = r"[^\[]+\[{pl}\]".format(pl=positive_level)
-    posl_idx = [
-        re.search(posl_pattern, colname) is not None for colname in y.columns
-    ].index(True)
-    negl_pattern = r"[^\[]+\[{nl}\]".format(nl=negative_level)
-    negl_idx = [
-        re.search(negl_pattern, colname) is not None for colname in y.columns
-    ].index(True)
-    keep_rows = np.logical_or(y.iloc[:, negl_idx] == 1.0, y.iloc[:, posl_idx] == 1.0)
-    X, y = X[keep_rows], y[keep_rows]
-    y = y.iloc[:, posl_idx]
-    if y.shape[0] < PRIVACY_MAGIC_NUMBER:
+    if len(y) > 0:
+        posl_pattern = r"[^\[]+\[{pl}\]".format(pl=re.escape(positive_level))
+        posl_idx = [
+            re.search(posl_pattern, colname) is not None for colname in y.columns
+        ].index(True)
+        negl_pattern = r"[^\[]+\[{nl}\]".format(nl=re.escape(negative_level))
+        negl_idx = [
+            re.search(negl_pattern, colname) is not None for colname in y.columns
+        ].index(True)
+        keep_rows = np.logical_or(
+            y.iloc[:, negl_idx] == 1.0, y.iloc[:, posl_idx] == 1.0
+        )
+        X, y = X[keep_rows], y[keep_rows]
+        y = y.iloc[:, posl_idx]
+        if y.shape[0] < PRIVACY_MAGIC_NUMBER:
+            raise PrivacyError("Query results in illegal number of datapoints.")
+    else:
         raise PrivacyError("Query results in illegal number of datapoints.")
     return X, y
 
