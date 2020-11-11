@@ -62,12 +62,12 @@ class AlgorithmData(object):
             variables, covariables = dmatrices(
                 formula, self.full, return_type="dataframe"
             )
-            return variables, covariables
         else:
             if self.full.dropna().shape[0] == 0:
                 return pd.DataFrame(), None
             variables = dmatrix(formula, self.full, return_type="dataframe")
-            return variables, None
+            covariables = None
+        return variables, covariables
 
 
 @logged
