@@ -22,6 +22,7 @@ COMMON_ALGORITHM_ARGUMENTS = {
     "metadata_enumerations_column",
     "metadata_minValue_column",
     "metadata_maxValue_column",
+    "metadata_sqlType_column",
 }
 
 
