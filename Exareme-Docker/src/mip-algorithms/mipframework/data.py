@@ -2,12 +2,12 @@ import re
 
 import numpy as np
 import pandas as pd
-from mipframework.constants import PRIVACY_THRESHOLD
 import patsy
 from sqlalchemy import between, not_, and_, or_, Table, select, create_engine, MetaData
 
-from .loggingutils import log_this, repr_with_logging, logged
-from .exceptions import PrivacyError
+from mipframework.constants import PRIVACY_THRESHOLD
+from mipframework.loggingutils import log_this, repr_with_logging, logged
+from mipframework.exceptions import PrivacyError
 
 FILTER_OPERATORS = {
     "equal": lambda a, b: a == b,
@@ -49,17 +49,14 @@ class AlgorithmData(object):
         repr_with_logging(self, variables=self.variables, covariables=self.covariables)
 
     def build_variables(self, args):
-        is_categorical = self.metadata.is_categorical
-        log_this(
-            "AlgorithmData.build_variables", args=args, is_categorical=is_categorical
-        )
+        log_this("AlgorithmData.build_variables", args=args)
 
         from numpy import log as log
         from numpy import exp as exp
 
         # This line is needed to prevent import optimizer from removing above lines
         _ = log(exp(1))
-        formula = get_formula(args, is_categorical)
+        formula = self.get_formula(args)
         if args.formula_is_equation:
             if self.full.dropna().shape[0] == 0:
                 return pd.DataFrame(), pd.DataFrame()
@@ -95,34 +92,34 @@ class AlgorithmData(object):
             dmatrix[var_level] = missing_column
         return dmatrix
 
-
-@logged
-def get_formula(args, is_categorical):
-    # Get formula from args or build if doesn't exist
-    if hasattr(args, "formula") and args.formula:
-        formula = args.formula
-    else:
-        if hasattr(args, "x") and args.x:
-            formula = "+".join(args.y) + "~" + "+".join(args.x)
-            if not args.intercept:
-                formula += "-1"
+    def get_formula(self, args):
+        log_this("AlgorithmData.add_missing_levels", args=args)
+        is_categorical = self.metadata.is_categorical
+        # Get formula from args or build if doesn't exist
+        if hasattr(args, "formula") and args.formula:
+            formula = args.formula
         else:
-            formula = "+".join(args.y) + "-1"
-    # Process categorical vars
-    var_names = list(args.y)
-    if hasattr(args, "x") and args.x:
-        var_names.extend(args.x)
-    if 1 in is_categorical.values():
-        if not hasattr(args, "coding") or not args.coding:
-            args.coding = "Treatment"
-        for var in var_names:
-            if is_categorical[var]:
-                formula = re.sub(
-                    r"\b({})\b".format(var),
-                    r"C(\g<0>, {})".format(args.coding),
-                    formula,
-                )
-    return formula
+            if hasattr(args, "x") and args.x:
+                formula = "+".join(args.y) + "~" + "+".join(args.x)
+                if not args.intercept:
+                    formula += "-1"
+            else:
+                formula = "+".join(args.y) + "-1"
+        # Process categorical vars
+        var_names = list(args.y)
+        if hasattr(args, "x") and args.x:
+            var_names.extend(args.x)
+        if 1 in is_categorical.values():
+            if not hasattr(args, "coding") or not args.coding:
+                args.coding = "Treatment"
+            for var in var_names:
+                if is_categorical[var]:
+                    formula = re.sub(
+                        r"\b({})\b".format(var),
+                        r"C(\g<0>, {})".format(args.coding),
+                        formula,
+                    )
+        return formula
 
 
 class AlgorithmMetadata(object):
