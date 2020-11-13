@@ -26,7 +26,7 @@ def test_logistic_regression_algorithm_local(test_input, expected):
     "test_input, expected", get_test_params(expected_file, slice(80, 95))
 )
 def test_logistic_regression_algorithm_federated(test_input, expected):
-    result = get_algorithm_result(LogisticRegression, test_input, 5)
+    result = get_algorithm_result(LogisticRegression, test_input, 10)
 
     assert are_collinear(result["Coefficients"], expected["coeff"])
 
