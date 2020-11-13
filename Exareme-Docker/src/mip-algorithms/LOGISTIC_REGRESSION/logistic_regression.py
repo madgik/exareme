@@ -468,7 +468,7 @@ if __name__ == "__main__":
         "CN",
     ]
     runner = create_runner(
-        LogisticRegression, num_workers=1, algorithm_args=algorithm_args,
+        LogisticRegression, num_workers=10, algorithm_args=algorithm_args,
     )
     start = time.time()
     runner.run()
