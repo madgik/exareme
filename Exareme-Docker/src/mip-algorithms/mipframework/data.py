@@ -3,7 +3,7 @@ import re
 import numpy as np
 import pandas as pd
 from mipframework.constants import PRIVACY_THRESHOLD
-from patsy import dmatrix, dmatrices
+import patsy
 from sqlalchemy import between, not_, and_, or_, Table, select, create_engine, MetaData
 
 from .loggingutils import log_this, repr_with_logging, logged
@@ -27,6 +27,7 @@ FILTER_CONDITIONS = {
 
 class AlgorithmData(object):
     def __init__(self, args):
+        log_this("AlgorithmData.__init__", args=args)
         db = DataBase(
             db_path=args.input_local_DB,
             data_table_name=args.data_table,
@@ -37,14 +38,18 @@ class AlgorithmData(object):
         self.db = db
         self.full = db.read_data_from_db(args)
         self.metadata = db.read_metadata_from_db(args)
-        self.variables, self.covariables = self.build_variables(
-            args, self.metadata.is_categorical
-        )
+        variables, covariables = self.build_variables(args)
+        if 1 in self.metadata.is_categorical.values():
+            variables = self.add_missing_levels(args.y, args.coding, variables)
+            if covariables is not None:  # truth value of dataframe is ambiguous
+                covariables = self.add_missing_levels(args.x, args.coding, covariables)
+        self.variables, self.covariables = variables, covariables
 
     def __repr__(self):
         repr_with_logging(self, variables=self.variables, covariables=self.covariables)
 
-    def build_variables(self, args, is_categorical):
+    def build_variables(self, args):
+        is_categorical = self.metadata.is_categorical
         log_this(
             "AlgorithmData.build_variables", args=args, is_categorical=is_categorical
         )
@@ -55,19 +60,40 @@ class AlgorithmData(object):
         # This line is needed to prevent import optimizer from removing above lines
         _ = log(exp(1))
         formula = get_formula(args, is_categorical)
-        # Create variables (and possibly covariables)
         if args.formula_is_equation:
             if self.full.dropna().shape[0] == 0:
                 return pd.DataFrame(), pd.DataFrame()
-            variables, covariables = dmatrices(
+            variables, covariables = patsy.dmatrices(
                 formula, self.full, return_type="dataframe"
             )
         else:
             if self.full.dropna().shape[0] == 0:
                 return pd.DataFrame(), None
-            variables = dmatrix(formula, self.full, return_type="dataframe")
+            variables = patsy.dmatrix(formula, self.full, return_type="dataframe")
             covariables = None
         return variables, covariables
+
+    def add_missing_levels(self, varnames, coding, dmatrix):
+        log_this(
+            "AlgorithmData.add_missing_levels",
+            varnames=varnames,
+            coding=coding,
+            dmatrix=dmatrix.columns,
+        )
+        categorical_variables = (
+            var for var in varnames if self.metadata.is_categorical[var]
+        )
+        all_var_levels = (
+            "C({var}, {coding})[{level}]".format(var=var, coding=coding, level=level)
+            for var in categorical_variables
+            for level in self.metadata.enumerations[var]
+        )
+        for var_level in all_var_levels:
+            if var_level in dmatrix.columns:
+                continue
+            missing_column = pd.Series(np.zeros((len(dmatrix),)), index=dmatrix.index)
+            dmatrix[var_level] = missing_column
+        return dmatrix
 
 
 @logged
