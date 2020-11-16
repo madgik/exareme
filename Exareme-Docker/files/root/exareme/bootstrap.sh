@@ -12,6 +12,7 @@ export CONSUL_ACTIVE_WORKERS_PATH="active_workers"
 CONSUL_CONNECTION_MAX_ATTEMPTS=20
 CONSUL_WAIT_FOR_MASTER_IP_MAX_ATTEMPTS=20
 EXAREME_NODE_STARTUP_HEALTH_CHECK_MAX_ATTEMPTS=10
+EXAREME_NODE_HEALTH_CHECK_TIMEOUT=30
 PERIODIC_EXAREME_NODES_HEALTH_CHECK_MAX_RETRIES=10
 PERIODIC_EXAREME_NODES_HEALTH_CHECK_INTERVAL=120
 PERIODIC_TEMP_FILES_REMOVAL=300
@@ -115,9 +116,9 @@ exaremeNodesHealthCheck() {
   echo "$(timestamp) HEALTH CHECK for node with IP ${NODE_IP} and name ${NODE_NAME} ."
 
   if [[ "${FEDERATION_ROLE}" == "master" ]]; then
-    check=$(curl -s -X POST ${NODE_IP}:9090/mining/query/HEALTH_CHECK)
+    check=$(curl -s -X POST --max-time ${EXAREME_NODE_HEALTH_CHECK_TIMEOUT} ${NODE_IP}:9090/mining/query/HEALTH_CHECK)
   else
-    check=$(curl -s ${MASTER_IP}:9092/check/worker?NODE_IP=${NODE_IP})
+    check=$(curl -s --max-time ${EXAREME_NODE_HEALTH_CHECK_TIMEOUT} ${MASTER_IP}:9092/check/worker?NODE_IP=${NODE_IP})
   fi
 
   if [[ -z ${check} ]]; then
