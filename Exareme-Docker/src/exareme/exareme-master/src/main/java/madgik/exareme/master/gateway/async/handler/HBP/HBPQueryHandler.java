@@ -99,9 +99,14 @@ public class HBPQueryHandler implements HttpAsyncRequestHandler<HttpRequest> {
             preExecutionChecks(request);
 
             String algorithmName = getAlgorithmName(request);
-            String algorithmKey = algorithmName + "_" + System.currentTimeMillis();
-            log.info("Executing algorithm: " + algorithmName + " with key: " + algorithmKey);
+            AlgorithmProperties algorithmProperties = Algorithms.getInstance().getAlgorithmProperties(algorithmName);
+            if (algorithmProperties == null)
+                throw new RequestException(algorithmName, "The algorithm '" + algorithmName + "' does not exist.");
 
+            String algorithmKey = algorithmName + "_" + System.currentTimeMillis();
+
+            // Logging the algorithm execution parameters
+            log.info("Executing algorithm: " + algorithmName + " with key: " + algorithmKey);
             HashMap<String, String> algorithmParameters = HBPQueryHelper.getAlgorithmParameters(request);
             log.info("Request for algorithm: " + algorithmName);
             if (algorithmParameters != null) {
@@ -112,10 +117,6 @@ public class HBPQueryHandler implements HttpAsyncRequestHandler<HttpRequest> {
             ContainerProxy[] algorithmContainers = HBPQueryHelper.getAlgorithmNodes(algorithmParameters);
 
             AdpDBClientQueryStatus queryStatus;
-
-            AlgorithmProperties algorithmProperties = Algorithms.getInstance().getAlgorithmProperties(algorithmName);
-            if (algorithmProperties == null)
-                throw new RequestException(algorithmName, "The algorithm '" + algorithmName + "' does not exist.");
 
             algorithmProperties.mergeWithAlgorithmParameters(algorithmParameters);
 
