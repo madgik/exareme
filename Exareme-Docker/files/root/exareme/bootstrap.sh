@@ -32,6 +32,10 @@ if [[ -z ${ENVIRONMENT_TYPE} ]]; then
   echo "ENVIRONMENT_TYPE is unset. Check docker-compose file."
   exit
 fi
+if [[ -z ${CONVERT_CSVS} ]]; then
+  echo "CONVERT_CSVS is unset. Check docker-compose file."
+  exit
+fi
 
 timestamp() {
   date +%F' '%T
@@ -78,15 +82,19 @@ getMasterIPFromConsul() {
 
 # Convert CSVs to DB
 convertCSVsToDB() {
-  # Both Master and Worker should transform the csvs to sqlite db files
-  NODE_TYPE=${1}
+  
+  # Skip convertion if flag is false
+  if [[ ${CONVERT_CSVS} == "FALSE" ]]; then
+    echo "$(timestamp) CSV convertion turned off. "
+	return 0
+  fi
 
   # Removing all previous .db files from the DOCKER_DATA_FOLDER
   echo "$(timestamp) Deleting previous db files. "
   rm -rf ${DOCKER_DATA_FOLDER}/**/*.db
 
   echo "$(timestamp) Parsing the csv files in " ${DOCKER_DATA_FOLDER} " to db files. "
-  python ./convert-csv-dataset-to-db.py -f ${DOCKER_DATA_FOLDER} -t ${NODE_TYPE}
+  python3 ./convert-csv-dataset-to-db.py -f ${DOCKER_DATA_FOLDER}
   #Get the status code from previous command
   py_script=$?
   #If status code != 0 an error has occurred
@@ -228,7 +236,7 @@ if [[ "${FEDERATION_ROLE}" == "master" ]]; then
   periodicExaremeNodesHealthCheck &
 
   # Prepare datasets from CSVs to SQLite db files
-  convertCSVsToDB "master"
+  convertCSVsToDB
 
 else ##### Running bootstrap on a worker node #####
 
@@ -252,7 +260,7 @@ else ##### Running bootstrap on a worker node #####
   periodicExaremeNodesHealthCheck &
 
   # Prepare datasets from CSVs to SQLite db files
-  convertCSVsToDB "worker"
+  convertCSVsToDB
 
 fi
 
