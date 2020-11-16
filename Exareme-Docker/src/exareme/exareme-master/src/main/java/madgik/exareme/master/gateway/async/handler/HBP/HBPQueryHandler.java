@@ -1,6 +1,5 @@
 package madgik.exareme.master.gateway.async.handler.HBP;
 
-import com.google.gson.JsonSyntaxException;
 import madgik.exareme.common.consts.HBPConstants;
 import madgik.exareme.master.client.AdpDBClient;
 import madgik.exareme.master.client.AdpDBClientFactory;
@@ -14,12 +13,12 @@ import madgik.exareme.master.engine.iterations.handler.IterationsHandler;
 import madgik.exareme.master.engine.iterations.handler.NIterativeAlgorithmResultEntity;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.master.gateway.ExaremeGatewayUtils;
+import madgik.exareme.master.gateway.async.handler.HBP.Exceptions.RequestException;
 import madgik.exareme.master.gateway.async.handler.HBP.Exceptions.UserException;
 import madgik.exareme.master.gateway.async.handler.entity.NQueryResultEntity;
 import madgik.exareme.master.queryProcessor.HBP.AlgorithmProperties;
 import madgik.exareme.master.queryProcessor.HBP.Algorithms;
 import madgik.exareme.master.queryProcessor.HBP.Composer;
-import madgik.exareme.master.queryProcessor.HBP.Exceptions.AlgorithmException;
 import madgik.exareme.worker.art.container.ContainerProxy;
 import org.apache.http.*;
 import org.apache.http.entity.BasicHttpEntity;
@@ -116,7 +115,7 @@ public class HBPQueryHandler implements HttpAsyncRequestHandler<HttpRequest> {
 
             AlgorithmProperties algorithmProperties = Algorithms.getInstance().getAlgorithmProperties(algorithmName);
             if (algorithmProperties == null)
-                throw new AlgorithmException(algorithmName, "The algorithm '" + algorithmName + "' does not exist.");
+                throw new RequestException(algorithmName, "The algorithm '" + algorithmName + "' does not exist.");
 
             algorithmProperties.mergeWithAlgorithmParameters(algorithmParameters);
 
@@ -167,6 +166,18 @@ public class HBPQueryHandler implements HttpAsyncRequestHandler<HttpRequest> {
                 response.setStatusCode(HttpStatus.SC_OK);
                 response.setEntity(entity);
             }
+        } catch (UserException e) {
+            log.error(e.getMessage());
+            String errorType = HBPQueryHelper.ErrorResponse.ErrorResponseTypes.user_error;
+            response.setStatusCode(HttpStatus.SC_OK);
+            response.setEntity(createErrorResponseEntity(e.getMessage(), errorType));
+
+        } catch (RequestException e) {
+            log.error(e.getMessage());
+            String errorType = HBPQueryHelper.ErrorResponse.ErrorResponseTypes.user_error;
+            response.setStatusCode(HttpStatus.SC_BAD_REQUEST);
+            response.setEntity(createErrorResponseEntity(e.getMessage(), errorType));
+
         } catch (IterationsFatalException e) {
             log.error(e);
             if (e.getErroneousAlgorithmKey() != null)
@@ -174,20 +185,8 @@ public class HBPQueryHandler implements HttpAsyncRequestHandler<HttpRequest> {
                         e.getErroneousAlgorithmKey());
             log.error(e);
             String errorType = HBPQueryHelper.ErrorResponse.ErrorResponseTypes.error;
-            response.setStatusCode(HttpStatus.SC_BAD_REQUEST);
+            response.setStatusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
             response.setEntity(createErrorResponseEntity(e.getMessage(), errorType));
-
-        } catch (UserException e) {
-            log.error(e.getMessage());
-            String errorType = HBPQueryHelper.ErrorResponse.ErrorResponseTypes.user_error;
-            response.setStatusCode(HttpStatus.SC_BAD_REQUEST);
-            response.setEntity(createErrorResponseEntity(e.getMessage(), errorType));
-
-        } catch (JsonSyntaxException e) {
-            log.error("Could not parse the algorithms properly.");
-            String errorType = HBPQueryHelper.ErrorResponse.ErrorResponseTypes.error;
-            response.setStatusCode(HttpStatus.SC_BAD_REQUEST);
-            response.setEntity(createErrorResponseEntity(serverErrorOccurred, errorType));
 
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -197,7 +196,7 @@ public class HBPQueryHandler implements HttpAsyncRequestHandler<HttpRequest> {
             }
             log.error(e.getStackTrace());
             String errorType = HBPQueryHelper.ErrorResponse.ErrorResponseTypes.error;
-            response.setStatusCode(HttpStatus.SC_BAD_REQUEST);
+            response.setStatusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
             response.setEntity(createErrorResponseEntity(serverErrorOccurred, errorType));
         }
     }
