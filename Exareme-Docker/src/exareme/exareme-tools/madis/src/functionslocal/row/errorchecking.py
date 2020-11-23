@@ -58,6 +58,15 @@ def holdoutvalidation_inputerrorchecking2(train_size, test_size):
 
 holdoutvalidation_inputerrorchecking2.registered = True
 
+def naive_bayes_training_inputerrorchecking(colname,noLevels):
+    if (noLevels < 2):
+        raise functions.OperatorError("ExaremeError",  colname + ": should contain more than two distinct values")
+    else:
+        return "OK"
+
+naive_bayes_training_inputerrorchecking.registered = True
+
+
 # def maxnumberofiterations_errorhandling(maxnumberofiterations,no): # For most of the iterative algorithms
 #     if maxnumberofiterations< no:
 #         raise functions.OperatorError("ExaremeError", "The algorithm could not complete in the max number of iterations given. Please increase the iterations_max_number and try again.")
@@ -84,6 +93,16 @@ def histograms_inputerrorchecking(xisCategorical,bins):
         return "OK"
 
 histograms_inputerrorchecking.registered = True
+
+
+def pairedttest_inputerrorchecking(variableNo):
+    if variableNo%2 == 1:
+        raise functions.OperatorError("ExaremeError", "The input should be in the form of y1-y2,y3-y4,.. Therefore the number of variables should be modulo 2")            
+    else:
+        return "OK"
+
+pairedttest_inputerrorchecking.registered = True
+
 
 
 if not ('.' in __name__):
