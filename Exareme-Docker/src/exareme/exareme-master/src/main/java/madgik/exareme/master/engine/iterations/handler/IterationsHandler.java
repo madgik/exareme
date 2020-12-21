@@ -10,6 +10,7 @@ import madgik.exareme.master.engine.iterations.scheduler.IterationsScheduler;
 import madgik.exareme.master.engine.iterations.state.IterationsStateManager;
 import madgik.exareme.master.engine.iterations.state.IterationsStateManagerImpl;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
+import madgik.exareme.master.gateway.async.handler.HBP.Exceptions.BadUserInputException;
 import madgik.exareme.master.queryProcessor.HBP.AlgorithmProperties;
 import madgik.exareme.master.queryProcessor.HBP.Composer;
 import madgik.exareme.master.queryProcessor.HBP.Exceptions.ComposerException;
@@ -65,7 +66,7 @@ public class IterationsHandler {
      */
     public IterativeAlgorithmState handleNewIterativeAlgorithmRequest(
             AdpDBManager adpDBManager, String algorithmKey,
-            AlgorithmProperties algorithmProperties, ContainerProxy[] usedContainerProxies) {
+            AlgorithmProperties algorithmProperties, ContainerProxy[] usedContainerProxies) throws BadUserInputException {
 
         // Generate the AdpDBClient for this iterative algorithm that will be used to execute all the phases' queries
         AdpDBClient adpDBClient;
