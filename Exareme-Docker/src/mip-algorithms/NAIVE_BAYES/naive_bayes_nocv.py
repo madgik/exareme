@@ -13,6 +13,69 @@ from mipframework import Algorithm
 from mipframework import AlgorithmResult
 
 
+class MixedAdditiveNB(object):
+    def __init__(self, alpha=1.0):
+        self.alpha = alpha
+
+    def fit(self, X_num, X_cat, y):
+        self.gnb = AdditiveGaussianNB()
+        self.gnb.fit(X_num, y)
+        self.cnb = AdditiveCategoricalNB(alpha=self.alpha)
+        self.cnb.fit(X_cat, y)
+
+    def predict(self, X_num, X_cat):
+        jll = (
+            self.gnb.predict_log_proba(X_num)
+            + self.cnb.predict_log_proba(X_cat)
+            - self.gnb.class_log_prior_
+        )
+        return np.array([self.gnb.classes_[i] for i in jll.argmax(axis=1)])
+
+
+class MixedNaiveBayesTrain(Algorithm):
+    def __init__(self, cli_args):
+        super(MixedNaiveBayesTrain, self).__init__(__file__, cli_args, intercept=False)
+
+    def local_(self):
+        data = self.data.full
+        y, X = data[self.parameters.y], data[self.parameters.x]
+        X_num = np.array(X.iloc[:, :3])
+        X_cat = np.array(X.iloc[:, 3:])
+        y = np.array(y)
+        mnb = MixedAdditiveNB()
+        mnb.fit(X_num, X_cat, y)
+        pass
+
+
+def run_mixed():
+    import time
+    from mipframework import create_runner
+
+    algorithm_args = [
+        "-x",
+        "lefthippocampus,righthippocampus,leftaccumbensarea,gender,apoe4,agegroup",
+        "-y",
+        "alzheimerbroadcategory",
+        "-alpha",
+        "1",
+        "-k",
+        "1",
+        "-pathology",
+        "dementia",
+        "-dataset",
+        "adni",
+        "-filter",
+        "",
+    ]
+    runner = create_runner(
+        MixedNaiveBayesTrain, algorithm_args=algorithm_args, num_workers=1,
+    )
+    start = time.time()
+    runner.run()
+    end = time.time()
+    print("Completed in ", end - start)
+
+
 class CategoricalNaiveBayesTrain(Algorithm):
     def __init__(self, cli_args):
         super(CategoricalNaiveBayesTrain, self).__init__(
@@ -143,7 +206,7 @@ class AdditiveCategoricalNB(BaseDiscreteNB):
         return total_ll
 
     def __eq__(self, other):
-        pass
+        raise NotImplementedError
 
 
 def run_categorical():
@@ -200,7 +263,19 @@ class GaussianNaiveBayesTrain(Algorithm):
 class AdditiveGaussianNB(GaussianNB):
     def fit(self, X, y):
         self.n_obs_, self.n_feats_ = X.shape
+        self._class_log_prior_ = np.array([])
         super(AdditiveGaussianNB, self).fit(X, y)
+
+    @property
+    def class_log_prior_(self):
+        if not self._class_log_prior_.any():
+            with warnings.catch_warnings():
+                # silence the warning when count is 0 because class was not yet
+                # observed
+                warnings.simplefilter("ignore", RuntimeWarning)
+                log_class_count = np.log(self.class_count_)
+            self._class_log_prior_ = log_class_count - np.log(self.class_count_.sum())
+        return self._class_log_prior_
 
     def __add__(self, other):
         if self.var_smoothing != other.var_smoothing:
@@ -304,4 +379,5 @@ def run_gaussian():
 
 if __name__ == "__main__":
     # run_gaussian()
-    run_categorical()
+    # run_categorical()
+    run_mixed()
