@@ -1,0 +1,80 @@
+{
+	"name": "NAIVE_BAYES",
+	"desc": "Naive Bayes classifier for numerical data (Gaussian NB) and nominal data (Categorical NB).",
+	"label": "Naive Bayes classifier",
+	"type": "python_multiple_local_global",
+    "status": "enabled",
+	"parameters": [
+        {
+			"name": "x",
+			"label": "x",
+			"desc": "Independent variables: A list of variables from database.",
+			"type": "column",
+			"columnValuesSQLType": "",
+			"columnValuesIsCategorical": "",
+			"columnValuesNumOfEnumerations": "",
+			"value": "righthippocampus,lefthippocampus",
+			"valueNotBlank": true,
+			"valueMultiple": true,
+			"valueType": "string"
+		}, {
+			"name": "y",
+			"label": "y",
+			"desc": "Dependent variable: A categorical variable form database.",
+			"type": "column",
+			"columnValuesSQLType": "",
+			"columnValuesIsCategorical": "true",
+			"columnValuesNumOfEnumerations": "",
+			"value": "alzheimerbroadcategory",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "string"
+		}, {
+			"name": "alpha",
+			"label": "alpha",
+			"desc": "Additive smoothing parameter (0 for no smoothing)",
+			"type": "other",
+			"value": 0.1,
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "real"
+		}, {
+			"name": "k",
+			"label": "number of batches",
+			"desc": "The number of batches that will be used in k-fold crossvalidation.",
+			"type": "other",
+			"value": 10,
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "int",
+            "valueMin": 2
+		}, {
+			"name": "pathology",
+			"label": "pathology",
+			"desc": "The name of the pathology in which the dataset belongs to.",
+			"type": "pathology",
+			"value": "dementia",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "string"
+		}, {
+			"name": "dataset",
+			"label": "dataset",
+			"desc": "The names of one or more datasets, in which the algorithm will be executed.",
+			"type": "dataset",
+			"value": "desd-synthdata",
+			"valueNotBlank": true,
+			"valueMultiple": true,
+			"valueType": "string"
+		}, {
+			"name": "filter",
+			"label": "filter",
+			"desc": "",
+			"type": "filter",
+			"value": "",
+			"valueNotBlank": false,
+			"valueMultiple": true,
+			"valueType": "string"
+		}
+	]
+}
