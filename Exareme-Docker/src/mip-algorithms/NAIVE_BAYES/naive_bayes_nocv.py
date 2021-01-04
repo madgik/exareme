@@ -16,20 +16,38 @@ from mipframework import AlgorithmResult
 class MixedAdditiveNB(object):
     def __init__(self, alpha=1.0):
         self.alpha = alpha
+        self.gnb = None
+        self.cnb = None
 
-    def fit(self, X_num, X_cat, y):
-        self.gnb = AdditiveGaussianNB()
-        self.gnb.fit(X_num, y)
-        self.cnb = AdditiveCategoricalNB(alpha=self.alpha)
-        self.cnb.fit(X_cat, y)
+    def fit(self, X_num=None, X_cat=None, y=None):
+        if X_num is not None:
+            self.gnb = AdditiveGaussianNB()
+            self.gnb.fit(X_num, y)
+        if X_cat is not None:
+            self.cnb = AdditiveCategoricalNB(alpha=self.alpha)
+            self.cnb.fit(X_cat, y)
 
     def predict(self, X_num, X_cat):
-        jll = (
-            self.gnb.predict_log_proba(X_num)
-            + self.cnb.predict_log_proba(X_cat)
-            - self.gnb.class_log_prior_
-        )
-        return np.array([self.gnb.classes_[i] for i in jll.argmax(axis=1)])
+        if X_num is not None and X_cat is not None:
+            jll = (
+                self.gnb.predict_log_proba(X_num)
+                + self.cnb.predict_log_proba(X_cat)
+                - self.gnb.class_log_prior_
+            )
+            return np.array([self.gnb.classes_[i] for i in jll.argmax(axis=1)])
+        elif X_num is not None:
+            return self.gnb.predict(X_num)
+        elif X_cat is not None:
+            return self.cnb.predict(X_cat)
+
+    def __add__(self, other):
+        result = MixedAdditiveNB()
+        if self.gnb and other.gnb:
+            result.gnb = self.gnb + other.gnb
+        if self.cnb and other.cnb:
+            result.alpha = self.alpha
+            result.cnb = self.cnb + other.cnb
+        return result
 
 
 class MixedNaiveBayesTrain(Algorithm):
