@@ -7,6 +7,7 @@ from PEARSON_CORRELATION import Pearson
 from LOGISTIC_REGRESSION import LogisticRegression
 from CALIBRATION_BELT import CalibrationBelt
 from KAPLAN_MEIER import KaplanMeier
+from NAIVE_BAYES import NaiveBayes
 
 app = Flask(__name__)
 
@@ -33,6 +34,10 @@ charts_info = {
     "kaplan_meier_survival": {
         "title": "Kaplan-Meier Survival Curves",
         "url": "kaplan_meier_survival",
+    },
+    "naive_bayes_confusion_matrix": {
+        "title": "NaiveBayes CM",
+        "url": "naive_bayes_confusion_matrix",
     },
 }
 
@@ -289,6 +294,31 @@ def kaplan_meier_survival():
     result = get_algorithm_result(KaplanMeier, args)
     result = result["result"][1]["data"]
     return render_template("highchart_layout.html", title="Kaplan Meier", data=result,)
+
+
+@app.route("/naive_bayes_confusion_matrix")
+def naive_bayes_confusion_matrix():
+    nb_args = [
+        "-x",
+        "lefthippocampus,righthippocampus,leftaccumbensarea,gender,agegroup,apoe4",
+        "-y",
+        "alzheimerbroadcategory",
+        "-alpha",
+        "1",
+        "-k",
+        "2",
+        "-pathology",
+        "dementia",
+        "-dataset",
+        "adni",
+        "-filter",
+        "",
+    ]
+    result = get_algorithm_result(NaiveBayes, nb_args)
+    result = result["result"][1]["data"]
+    return render_template(
+        "highchart_layout.html", title="NaiveBayes Confusion Martix", data=result
+    )
 
 
 if __name__ == "__main__":

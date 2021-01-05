@@ -132,6 +132,46 @@ class ConfusionMatrix(HighchartTemplate):
         )
 
 
+class MultilabelConfisionMatrix(HighchartTemplate):
+    def __init__(self, title, confusion_matrix, classes):
+        min_val = 0
+        max_val = confusion_matrix.max()
+        data = [
+            {
+                "name": str(confusion_matrix[i, j]),
+                "x": i,
+                "y": j,
+                # "y": confusion_matrix.shape[1] - j - 1,
+                "value": confusion_matrix[i, j],
+            }
+            for i in range(confusion_matrix.shape[0])
+            for j in range(confusion_matrix.shape[1])
+        ]
+        data_labels = DataLabels(
+            format="{point.name}",
+            enabled=True,
+            color="#222222",
+            borderRadius=3,
+            backgroundColor="rgba(245, 255, 255, 0.5)",
+            borderWidth=2,
+            borderColor="#AAA",
+            padding=5,
+        )
+        self.chart = (
+            Heatmap_(title=Title(text=title))
+            .set(xAxis=Axis(categories=classes))
+            .set(yAxis=Axis(categories=list(classes), title=None,))
+            .set(
+                colorAxis=ColorAxis(
+                    min=min_val, max=max_val, minColor="#ffffff", maxColor="#0000ff"
+                )
+            )
+            .set(series=Series(data=data, borderWidth=1, dataLabels=data_labels))
+            .set(legend=Legend(enabled=False))
+            .set(tooltip=Tooltip(enabled=False))
+        )
+
+
 class ROC(HighchartTemplate):
     def __init__(self, title, roc_curve, auc, gini):
         self.chart = (

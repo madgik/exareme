@@ -6,13 +6,14 @@ from collections import Counter
 import warnings
 
 import numpy as np
-import scipy
-import sklearn.metrics
+from sklearn import metrics
 from sklearn.naive_bayes import GaussianNB
 from sklearn.naive_bayes import BaseDiscreteNB
 
 from mipframework import Algorithm
 from mipframework import AlgorithmResult
+from mipframework.funclib.crossvalidation import kfold_split_design_matrices
+from mipframework.highcharts.user_defined import MultilabelConfisionMatrix
 
 
 class NaiveBayes(Algorithm):
@@ -28,40 +29,57 @@ class NaiveBayes(Algorithm):
         X_cat = np.array(X[categ_names]) if categ_names else None
         X_num = np.array(X[numer_names]) if numer_names else None
         y = np.array(y)
-        # n_splits = int(self.parameters.k)
-        nb_model = MixedAdditiveNB(float(self.parameters.alpha))
-        nb_model.fit(y, X_num, X_cat)
+        n_splits = int(self.parameters.k)
 
-        self.store(X_cat=X_cat)
-        self.store(X_num=X_num)
+        train_sets, test_sets = kfold_split_design_matrices(n_splits, y, X_num, X_cat)
+        models = [MixedAdditiveNB(float(self.parameters.alpha))] * n_splits
+        [m.fit(yt, Xnt, Xct) for m, (yt, Xnt, Xct) in zip(models, train_sets)]
+
+        self.store(train_sets=train_sets)
+        self.store(test_sets=test_sets)
         self.store(y=y)
-        self.push_and_add(nb_model=nb_model)
+        self.push_and_agree(n_splits=n_splits)
+        for k in range(n_splits):
+            self.push_and_add(**{"model" + str(k): models[k]})
 
     def global_init(self):
-        nb_model = self.fetch("nb_model")
+        n_splits = self.fetch("n_splits")
+        models = [self.fetch("model" + str(k)) for k in range(n_splits)]
 
-        self.push(nb_model=nb_model)
+        self.store(classes=models[0].gnb.classes_)
+        for k in range(n_splits):
+            self.push_and_add(**{"model" + str(k): models[k]})
 
     def local_final(self):
+        n_splits = int(self.parameters.k)
         y = self.load("y")
-        X_num = self.load("X_num")
-        X_cat = self.load("X_cat")
-        nb_model = self.fetch("nb_model")
+        n_obs = len(y)
+        test_sets = self.load("test_sets")
+        models = [self.fetch("model" + str(k)) for k in range(n_splits)]
 
-        y_pred = nb_model.predict(X_num, X_cat)
-        n_hits = sum(y_pred == np.array(y).flatten())
-        n_miss = len(y) - n_hits
+        y_preds = [m.predict(Xnt, Xct) for m, (_, Xnt, Xct) in zip(models, test_sets)]
+        y_pred = np.array(y).flatten()
+        idx = 0
+        for yp in y_preds:
+            y_pred[idx : idx + len(yp)] = yp
+            idx += len(yp)
 
-        self.push_and_add(n_hits=n_hits)
-        self.push_and_add(n_miss=n_miss)
+        confusion_matrix = metrics.confusion_matrix(y, y_pred)
+        accuracy = metrics.accuracy_score(y, y_pred)
+
+        self.push_and_add(confusion_matrix=confusion_matrix)
+        self.push_and_add(accuracy=Mediant(accuracy * n_obs, n_obs))
 
     def global_final(self):
-        n_hits = self.fetch("n_hits")
-        n_miss = self.fetch("n_miss")
+        classes = self.load("classes")
+        confusion_matrix = self.fetch("confusion_matrix")
+        # accuracy = self.fetch("accuracy").get_value()
 
-        self.result = AlgorithmResult(
-            raw_data={"precision": n_hits / (n_hits + n_miss)}
+        cm_chart = MultilabelConfisionMatrix(
+            "Confusion Matrix", confusion_matrix, classes.tolist()
         )
+
+        self.result = AlgorithmResult(raw_data={}, highcharts=[cm_chart])
 
 
 class MixedAdditiveNB(object):
@@ -99,6 +117,9 @@ class MixedAdditiveNB(object):
             result.alpha = self.alpha
             result.cnb = self.cnb + other.cnb
         return result
+
+    def __repr__(self):
+        return repr({"gnb": self.gnb.__dict__, "cnb": self.cnb.__dict__})
 
 
 class AdditiveCategoricalNB(BaseDiscreteNB):
@@ -158,7 +179,7 @@ class AdditiveCategoricalNB(BaseDiscreteNB):
         if not all(
             [(c1 == c2).all() for c1, c2 in zip(self.categories_, other.categories_)]
         ):
-            raise ValueError("catefories_ do not agree")
+            raise ValueError("categories_ do not agree")
         result.categories_ = self.categories_
 
         result.n_categories_ = sum_elementwise(self.n_categories_, other.n_categories_)
@@ -295,6 +316,21 @@ class AdditiveGaussianNB(GaussianNB):
         return True
 
 
+class Mediant(object):
+    def __init__(self, num, den):
+        self.num = num
+        self.den = den
+
+    def __add__(self, other):
+        return Mediant(self.num + other.num, self.den + other.den)
+
+    def __repr__(self):
+        return str(self.get_value())
+
+    def get_value(self):
+        return float(self.num) / float(self.den)
+
+
 if __name__ == "__main__":
     import time
     from mipframework import create_runner
@@ -307,7 +343,7 @@ if __name__ == "__main__":
         "-alpha",
         "1",
         "-k",
-        "1",
+        "2",
         "-pathology",
         "dementia",
         "-dataset",
@@ -315,7 +351,7 @@ if __name__ == "__main__":
         "-filter",
         "",
     ]
-    runner = create_runner(NaiveBayes, algorithm_args=algorithm_args, num_workers=2,)
+    runner = create_runner(NaiveBayes, algorithm_args=algorithm_args, num_workers=1,)
     start = time.time()
     runner.run()
     end = time.time()
