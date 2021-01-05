@@ -19,7 +19,9 @@ def test_logistic_regression_algorithm_exareme(test_input, expected):
     result = json.loads(result.text)
     result = result["result"][0]["data"]
 
-    assert (
-        np.isclose(result["Coefficients"], expected["coeff"], rtol=1e-3).all()
-        or np.isclose(result["Coefficients"], expected["coeff"], atol=1e-3).all()
-    )
+    assert are_collinear(result["Coefficients"], expected["coeff"])
+
+
+def are_collinear(u, v):
+    cosine_similarity = np.dot(v, u) / (np.sqrt(np.dot(v, v)) * np.sqrt(np.dot(u, u)))
+    return np.isclose(abs(cosine_similarity), 1, rtol=1e-5)
