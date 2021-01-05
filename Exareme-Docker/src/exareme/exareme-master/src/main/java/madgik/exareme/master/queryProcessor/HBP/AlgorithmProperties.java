@@ -1,9 +1,8 @@
 package madgik.exareme.master.queryProcessor.HBP;
 
-import madgik.exareme.master.gateway.async.handler.HBP.Exceptions.UserException;
+import madgik.exareme.master.gateway.async.handler.HBP.Exceptions.BadUserInputException;
 import madgik.exareme.master.queryProcessor.HBP.Exceptions.AlgorithmException;
 import madgik.exareme.master.queryProcessor.HBP.Exceptions.CDEsMetadataException;
-import madgik.exareme.master.queryProcessor.HBP.Exceptions.ComposerException;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -114,13 +113,13 @@ public class AlgorithmProperties {
      * @param parameterName     the name of a parameter
      * @param newParameterValue the new value of the parameter
      */
-    public void setParameterValue(String parameterName, String newParameterValue) throws ComposerException {
+    public void setParameterValue(String parameterName, String newParameterValue) throws BadUserInputException {
         String allowedDynamicParameters = ComposerConstants.dbIdentifierKey;
 
         // Not all parameters are allowed to be changed.
         // This is a safety check
         if (!allowedDynamicParameters.contains(parameterName)) {
-            throw new ComposerException("The value of the parameter " + parameterName + " should not be set manually.");
+            throw new BadUserInputException("The value of the parameter " + parameterName + " should not be set manually.");
         }
 
         for (ParameterProperties parameter : parameters) {
@@ -129,7 +128,7 @@ public class AlgorithmProperties {
                 return;
             }
         }
-        throw new ComposerException("The parameter " + parameterName + " does not exist.");
+        throw new BadUserInputException("The parameter " + parameterName + " does not exist.");
     }
 
     /**
@@ -140,7 +139,7 @@ public class AlgorithmProperties {
      * @throws AlgorithmException when algorithm's properties do not match the algorithmParameters
      */
     public void mergeWithAlgorithmParameters(HashMap<String, String> algorithmParameters)
-            throws AlgorithmException, CDEsMetadataException, UserException {
+            throws AlgorithmException, CDEsMetadataException, BadUserInputException {
         if (algorithmParameters == null)
             return;
 
@@ -151,7 +150,7 @@ public class AlgorithmProperties {
             if (value != null && !value.equals("")) {
                 if (!parameterProperties.getValueMultiple() && value.contains(",")
                         && !parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.json)) {
-                    throw new UserException("The value of the parameter '" + parameterProperties.getName()
+                    throw new BadUserInputException("The value of the parameter '" + parameterProperties.getName()
                             + "' should contain only one value.");
                 }
                 validateAlgorithmParameterValueType(name, value, parameterProperties);
@@ -159,7 +158,7 @@ public class AlgorithmProperties {
 
             } else {            // if value not given or it is blank
                 if (parameterProperties.getValueNotBlank()) {
-                    throw new UserException(
+                    throw new BadUserInputException(
                             "The value of the parameter '" + parameterProperties.getName() + "' should not be blank.");
                 }
 
@@ -184,7 +183,7 @@ public class AlgorithmProperties {
             String value,
             ParameterProperties parameterProperties,
             String pathology
-    ) throws CDEsMetadataException, UserException {
+    ) throws CDEsMetadataException, BadUserInputException {
         // First we split in case we have multiple values.
         String[] values = value.split(",");
         for (String singleValue : values) {
@@ -199,17 +198,17 @@ public class AlgorithmProperties {
                 if (parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.integer)
                         || parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.real)) {
                     if (parameterProperties.getValueMin() != null && Double.parseDouble(singleValue) < parameterProperties.getValueMin())
-                        throw new UserException("The value(s) of the parameter '" + parameterProperties.getName()
+                        throw new BadUserInputException("The value(s) of the parameter '" + parameterProperties.getName()
                                 + "' should be greater than " + parameterProperties.getValueMin() + " .");
                     if (parameterProperties.getValueMax() != null && Double.parseDouble(singleValue) > parameterProperties.getValueMax())
-                        throw new UserException("The value(s) of the parameter '" + parameterProperties.getName()
+                        throw new BadUserInputException("The value(s) of the parameter '" + parameterProperties.getName()
                                 + "' should be less than " + parameterProperties.getValueMax() + " .");
                 } else if (parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.string)) {
                     if (parameterProperties.getValueEnumerations() == null)
                         return;
                     List<String> enumerations = Arrays.asList(parameterProperties.getValueEnumerations());
                     if (!enumerations.contains(singleValue))
-                        throw new UserException("The value '" + singleValue + "' of the parameter '" + parameterProperties.getName()
+                        throw new BadUserInputException("The value '" + singleValue + "' of the parameter '" + parameterProperties.getName()
                                 + "' is not included in the valueEnumerations " + Arrays.toString(parameterProperties.getValueEnumerations()) + " .");
                 }
             }
@@ -229,24 +228,24 @@ public class AlgorithmProperties {
             String[] variables,
             ParameterProperties parameterProperties,
             String pathology
-    ) throws CDEsMetadataException, UserException {
+    ) throws CDEsMetadataException, BadUserInputException {
         CDEsMetadata.PathologyCDEsMetadata metadata = CDEsMetadata.getInstance().getPathologyCDEsMetadata(pathology);
         for (String curValue : variables) {
             if (!metadata.columnExists(curValue)) {
-                throw new UserException("The CDE '" + curValue + "' does not exist.");
+                throw new BadUserInputException("The CDE '" + curValue + "' does not exist.");
             }
 
             String allowedSQLTypeValues = parameterProperties.getColumnValuesSQLType();
             String columnValuesSQLType = metadata.getColumnValuesSQLType(curValue);
             if (!allowedSQLTypeValues.contains(columnValuesSQLType) && !allowedSQLTypeValues.equals("")) {
-                throw new UserException("The CDE '" + curValue + "' does not have one of the allowed SQL Types '"
+                throw new BadUserInputException("The CDE '" + curValue + "' does not have one of the allowed SQL Types '"
                         + allowedSQLTypeValues + "' for the algorithm.");
             }
 
             String allowedIsCategoricalValue = parameterProperties.getColumnValuesIsCategorical();
             String columnValuesIsCategorical = metadata.getColumnValuesIsCategorical(curValue);
             if (!allowedIsCategoricalValue.equals(columnValuesIsCategorical) && !allowedIsCategoricalValue.equals("")) {
-                throw new UserException("The CDE '" + curValue + "' does not match the categorical value '"
+                throw new BadUserInputException("The CDE '" + curValue + "' does not match the categorical value '"
                         + allowedIsCategoricalValue + "' specified for the algorithm.");
             }
         }
@@ -263,7 +262,7 @@ public class AlgorithmProperties {
             String algorithmName,
             String value,
             ParameterProperties parameterProperties
-    ) throws AlgorithmException, UserException {
+    ) throws AlgorithmException, BadUserInputException {
         if (parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.json)) {
             try {
                 new JSONObject(value);
@@ -285,19 +284,19 @@ public class AlgorithmProperties {
                 try {
                     Double.parseDouble(curValue);
                 } catch (NumberFormatException nfe) {
-                    throw new UserException(
+                    throw new BadUserInputException(
                             "The value of the parameter '" + parameterProperties.getName() + "' should be a real number.");
                 }
             } else if (parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.integer)) {
                 try {
                     Integer.parseInt(curValue);
                 } catch (NumberFormatException e) {
-                    throw new UserException(
+                    throw new BadUserInputException(
                             "The value of the parameter '" + parameterProperties.getName() + "' should be an integer.");
                 }
             } else if (parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.string)) {
                 if (curValue.equals("")) {
-                    throw new UserException(
+                    throw new BadUserInputException(
                             "The value of the parameter '" + parameterProperties.getName()
                                     + "' contains an empty string.");
                 }

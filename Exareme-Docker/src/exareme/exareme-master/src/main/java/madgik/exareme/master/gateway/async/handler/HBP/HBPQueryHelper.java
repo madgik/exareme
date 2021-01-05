@@ -2,7 +2,7 @@ package madgik.exareme.master.gateway.async.handler.HBP;
 
 import com.google.gson.Gson;
 import madgik.exareme.master.gateway.async.handler.HBP.Exceptions.ConsulException;
-import madgik.exareme.master.gateway.async.handler.HBP.Exceptions.UserException;
+import madgik.exareme.master.gateway.async.handler.HBP.Exceptions.BadUserInputException;
 import madgik.exareme.worker.art.container.ContainerProxy;
 import madgik.exareme.worker.art.registry.ArtRegistryLocator;
 import org.apache.http.HttpEntity;
@@ -88,12 +88,12 @@ public class HBPQueryHelper {
      * @param algorithmParameters are used to get the dataset/pathology
      * @return the containers on which the algorithm should run
      * @throws ConsulException if consul is unreachable
-     * @throws UserException   if dataset's node is inactive or doesn't exist in the pathology
+     * @throws BadUserInputException   if dataset's node is inactive or doesn't exist in the pathology
      *                         or if the pathology is not available or not provided
      * @throws RemoteException if the Exareme Registry is unreachable
      */
     public static ContainerProxy[] getAlgorithmNodes(HashMap<String, String> algorithmParameters)
-            throws ConsulException, UserException, RemoteException {
+            throws ConsulException, BadUserInputException, RemoteException {
         ConsulNodesPathologiesAndDatasetsInfo consulNodesPathologiesAndDatasetsInfo =
                 new ConsulNodesPathologiesAndDatasetsInfo();
 
@@ -139,7 +139,7 @@ public class HBPQueryHelper {
 
         } else {
             // If an algorithm parameter exists, a pathology should be provided.
-            throw new UserException(pathologyNotProvided);
+            throw new BadUserInputException(pathologyNotProvided);
         }
     }
 
@@ -151,14 +151,14 @@ public class HBPQueryHelper {
      * @param datasets                              of the algorithm
      * @param consulNodesPathologiesAndDatasetsInfo are the consul information needed
      * @return the containers to run the algorithm
-     * @throws UserException   if dataset's node is inactive or doesn't exist in the pathology
+     * @throws BadUserInputException   if dataset's node is inactive or doesn't exist in the pathology
      * @throws RemoteException if the Exareme Registry is unreachable
      */
     private static ContainerProxy[] getAlgorithmNodes(
             String pathology,
             ArrayList<String> datasets,
             ConsulNodesPathologiesAndDatasetsInfo consulNodesPathologiesAndDatasetsInfo
-    ) throws RemoteException, UserException {
+    ) throws RemoteException, BadUserInputException {
 
         HashMap<String, ArrayList<String>> algorithmNodeIPsAndDatasets = consulNodesPathologiesAndDatasetsInfo.getNodeDatasets(pathology, datasets);
         ArrayList<String> algorithmNodes = new ArrayList<>(algorithmNodeIPsAndDatasets.keySet());
@@ -179,7 +179,7 @@ public class HBPQueryHelper {
                 }
             }
         }
-        throw new UserException(
+        throw new BadUserInputException(
                 String.format(
                         datasetsXYZAreInactive,
                         String.join(", ", inactiveDatasets)
@@ -191,25 +191,25 @@ public class HBPQueryHelper {
             String pathology,
             ArrayList<String> datasets,
             ConsulNodesPathologiesAndDatasetsInfo nodesInformation
-    ) throws UserException {
+    ) throws BadUserInputException {
 
         if (pathology != null) {
             log.debug("Available pathologies: " + nodesInformation.getAllAvailablePathologies());
             if (!nodesInformation.getAllAvailablePathologies().contains(pathology)) {
-                throw new UserException(String.format(pathologyXNotAvailable, pathology));
+                throw new BadUserInputException(String.format(pathologyXNotAvailable, pathology));
             }
 
             if (datasets != null) {
                 ArrayList<String> datasetsOfPathology = nodesInformation.getDatasetsOfPathology(pathology);
                 for (String dataset : datasets) {
                     if (!datasetsOfPathology.contains(dataset)) {
-                        throw new UserException(String.format(datasetXDoesNotExistInPathologyY, dataset, pathology));
+                        throw new BadUserInputException(String.format(datasetXDoesNotExistInPathologyY, dataset, pathology));
                     }
                 }
             }
         } else {
             if (datasets != null) {
-                throw new UserException(pathologyNotProvided);
+                throw new BadUserInputException(pathologyNotProvided);
             }
         }
     }
