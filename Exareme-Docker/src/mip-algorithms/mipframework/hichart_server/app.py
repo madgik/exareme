@@ -29,7 +29,7 @@ charts_info = {
         "title": "Logistic Regression Confusion Matrix",
         "url": "logistic_confmat",
     },
-    "logistic_roc": {"title": "Logistic Regression ROC", "url": "logistic_roc",},
+    "logistic_roc": {"title": "Logistic Regression ROC", "url": "logistic_roc"},
     "calibration_belt": {"title": "Calibration Belt", "url": "calibration_belt"},
     "kaplan_meier_survival": {
         "title": "Kaplan-Meier Survival Curves",
@@ -39,6 +39,7 @@ charts_info = {
         "title": "NaiveBayes CM",
         "url": "naive_bayes_confusion_matrix",
     },
+    "naive_bayes_roc": {"title": "NaiveBayes ROC", "url": "naive_bayes_roc",},
 }
 
 
@@ -319,6 +320,31 @@ def naive_bayes_confusion_matrix():
     return render_template(
         "highchart_layout.html", title="NaiveBayes Confusion Martix", data=result
     )
+
+
+@app.route("/naive_bayes_roc")
+def naive_bayes_roc():
+    nb_args = [
+        "-x",
+        # "lefthippocampus,righthippocampus,leftaccumbensarea",
+        # "gender,apoe4,agegroup",
+        "lefthippocampus,righthippocampus,leftaccumbensarea,gender,apoe4,agegroup",
+        "-y",
+        "alzheimerbroadcategory",
+        "-alpha",
+        "1",
+        "-k",
+        "2",
+        "-pathology",
+        "dementia",
+        "-dataset",
+        "adni",
+        "-filter",
+        "",
+    ]
+    result = get_algorithm_result(NaiveBayes, nb_args)
+    result = result["result"][2]["data"]
+    return render_template("highchart_layout.html", title="NaiveBayes ROC", data=result)
 
 
 if __name__ == "__main__":
