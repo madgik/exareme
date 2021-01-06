@@ -194,6 +194,40 @@ class ROC(HighchartTemplate):
         )
 
 
+class MulticlassROCCurve(HighchartTemplate):
+    def __init__(self, title, roc_curves, classes):
+        self.chart = (
+            Line_(title=Title(text=title))
+            .set(
+                xAxis=Axis(min=-0.05, max=1.05, title=Title(text="False Positive Rate"))
+            )
+            .set(
+                yAxis=Axis(min=-0.05, max=1.05, title=Title(text="True Positive Rate"))
+            )
+            .set(legend=Legend(enabled=True))
+        )
+        series = RenderableList(
+            [
+                Series(data=map(list, zip(*curve)), name=class_)
+                for class_, curve in zip(classes, roc_curves)
+            ]
+        )
+        series.append(
+            Series(
+                name="Bisector",
+                data=[[0, 0], [1, 1]],
+                zIndex=2,
+                color="#fc7938",
+                lineWidth=1.5,
+                dashStyle="Dash",
+                allowPointSelect=False,
+                marker={"enabled": False},
+                label={"enabled": False},
+            )
+        )
+        self.chart.set(series=series)
+
+
 class ScreePlot(HighchartTemplate):
     def __init__(self, title, data, xtitle):
         self.chart = (

@@ -13,7 +13,9 @@ from sklearn.naive_bayes import BaseDiscreteNB
 from mipframework import Algorithm
 from mipframework import AlgorithmResult
 from mipframework.funclib.crossvalidation import kfold_split_design_matrices
+from mipframework.funclib.crossvalidation import AdditiveMulticlassROCCurve
 from mipframework.highcharts.user_defined import MultilabelConfisionMatrix
+from mipframework.highcharts.user_defined import MulticlassROCCurve
 
 
 class NaiveBayes(Algorithm):
@@ -28,16 +30,35 @@ class NaiveBayes(Algorithm):
         numer_names = [k for k, v in self.metadata.is_categorical.items() if v == 0]
         X_cat = np.array(X[categ_names]) if categ_names else None
         X_num = np.array(X[numer_names]) if numer_names else None
+        if X_num is not None and X_cat is not None:
+            xtypes = "both"
+        elif X_num is not None:
+            xtypes = "numerical"
+        elif X_cat is not None:
+            xtypes = "categorical"
         y = np.array(y)
         n_splits = int(self.parameters.k)
 
-        train_sets, test_sets = kfold_split_design_matrices(n_splits, y, X_num, X_cat)
+        matrices_to_split = [y]
+        if X_num is not None:
+            matrices_to_split.append(X_num)
+        if X_cat is not None:
+            matrices_to_split.append(X_cat)
+        train_sets, test_sets = kfold_split_design_matrices(
+            n_splits, *matrices_to_split
+        )
         models = [MixedAdditiveNB(float(self.parameters.alpha))] * n_splits
-        [m.fit(yt, Xnt, Xct) for m, (yt, Xnt, Xct) in zip(models, train_sets)]
+        if xtypes == "numerical":
+            [m.fit(yt, X_num=Xt) for m, (yt, Xt) in zip(models, train_sets)]
+        elif xtypes == "categorical":
+            [m.fit(yt, X_cat=Xt) for m, (yt, Xt) in zip(models, train_sets)]
+        elif xtypes == "both":
+            [m.fit(yt, Xnt, Xct) for m, (yt, Xnt, Xct) in zip(models, train_sets)]
 
         self.store(train_sets=train_sets)
         self.store(test_sets=test_sets)
         self.store(y=y)
+        self.store(xtypes=xtypes)
         self.push_and_agree(n_splits=n_splits)
         for k in range(n_splits):
             self.push_and_add(**{"model" + str(k): models[k]})
@@ -45,8 +66,12 @@ class NaiveBayes(Algorithm):
     def global_init(self):
         n_splits = self.fetch("n_splits")
         models = [self.fetch("model" + str(k)) for k in range(n_splits)]
+        if models[0].gnb:
+            classes = models[0].gnb.classes_
+        else:
+            classes = models[0].cnb.classes_
 
-        self.store(classes=models[0].gnb.classes_)
+        self.store(classes=classes)
         for k in range(n_splits):
             self.push_and_add(**{"model" + str(k): models[k]})
 
@@ -55,31 +80,74 @@ class NaiveBayes(Algorithm):
         y = self.load("y")
         n_obs = len(y)
         test_sets = self.load("test_sets")
+        xtypes = self.load("xtypes")
         models = [self.fetch("model" + str(k)) for k in range(n_splits)]
+        classes = models[0].classes_
+        n_classes = len(classes)
 
-        y_preds = [m.predict(Xnt, Xct) for m, (_, Xnt, Xct) in zip(models, test_sets)]
+        if xtypes == "numerical":
+            y_preds = [m.predict(X_num=Xt) for m, (_, Xt) in zip(models, test_sets)]
+        elif xtypes == "categorical":
+            y_preds = [m.predict(X_cat=Xt) for m, (_, Xt) in zip(models, test_sets)]
+        else:
+            y_preds = [
+                m.predict(Xnt, Xct) for m, (_, Xnt, Xct) in zip(models, test_sets)
+            ]
         y_pred = np.array(y).flatten()
         idx = 0
         for yp in y_preds:
             y_pred[idx : idx + len(yp)] = yp
             idx += len(yp)
 
+        if xtypes == "numerical":
+            y_pred_proba_per_class_kfold = [
+                m.predict_proba(X_num=Xt) for m, (_, Xt) in zip(models, test_sets)
+            ]
+        elif xtypes == "categorical":
+            y_pred_proba_per_class_kfold = [
+                m.predict_proba(X_cat=Xt) for m, (_, Xt) in zip(models, test_sets)
+            ]
+        else:
+            y_pred_proba_per_class_kfold = [
+                m.predict_proba(Xnt, Xct) for m, (_, Xnt, Xct) in zip(models, test_sets)
+            ]
+        y_pred_proba_per_class = np.empty((n_obs, n_classes))
+        idx = 0
+        for yp in y_pred_proba_per_class_kfold:
+            y_pred_proba_per_class[idx : idx + len(yp)] = yp
+            idx += len(yp)
+
         confusion_matrix = metrics.confusion_matrix(y, y_pred)
         accuracy = metrics.accuracy_score(y, y_pred)
 
+        roc_curve = AdditiveMulticlassROCCurve(
+            y_true=y, y_pred_proba_per_class=y_pred_proba_per_class, classes=classes
+        )
+
         self.push_and_add(confusion_matrix=confusion_matrix)
         self.push_and_add(accuracy=Mediant(accuracy * n_obs, n_obs))
+        self.push_and_add(roc_curve=roc_curve)
 
     def global_final(self):
         classes = self.load("classes")
         confusion_matrix = self.fetch("confusion_matrix")
-        # accuracy = self.fetch("accuracy").get_value()
+        accuracy = self.fetch("accuracy").get_value()
+        roc_curves = self.fetch("roc_curve").get_curves()
 
         cm_chart = MultilabelConfisionMatrix(
             "Confusion Matrix", confusion_matrix, classes.tolist()
         )
+        roc_chart = MulticlassROCCurve("ROC", roc_curves, classes)
 
-        self.result = AlgorithmResult(raw_data={}, highcharts=[cm_chart])
+        self.result = AlgorithmResult(
+            raw_data={
+                "accuracy": accuracy,
+                "confusion_matrix": confusion_matrix.tolist(),
+                "roc_curve": roc_curves,
+                "classes": classes.tolist(),
+            },
+            highcharts=[cm_chart, roc_chart],
+        )
 
 
 class MixedAdditiveNB(object):
@@ -87,6 +155,15 @@ class MixedAdditiveNB(object):
         self.alpha = alpha
         self.gnb = None
         self.cnb = None
+
+    @property
+    def classes_(self):
+        if self.gnb:
+            return self.gnb.classes_
+        elif self.cnb:
+            return self.cnb.classes_
+        else:
+            raise ValueError("model hasn't been trained yet")
 
     def fit(self, y, X_num=None, X_cat=None):
         if X_num is not None:
@@ -96,7 +173,7 @@ class MixedAdditiveNB(object):
             self.cnb = AdditiveCategoricalNB(alpha=self.alpha)
             self.cnb.fit(X_cat, y)
 
-    def predict(self, X_num, X_cat):
+    def predict(self, X_num=None, X_cat=None):
         if X_num is not None and X_cat is not None:
             jll = (
                 self.gnb.predict_log_proba(X_num)
@@ -109,6 +186,17 @@ class MixedAdditiveNB(object):
         elif X_cat is not None:
             return self.cnb.predict(X_cat)
 
+    def predict_proba(self, X_num=None, X_cat=None):
+        if X_num is not None and X_cat is not None:
+            probs_num = self.gnb.predict_proba(X_num)
+            probs_cat = self.cnb.predict_proba(X_cat)
+            normalizations = (probs_num * probs_cat).sum(axis=1)[:, np.newaxis]
+            return probs_num * probs_cat / normalizations
+        elif X_num is not None:
+            return self.gnb.predict_proba(X_num)
+        elif X_cat is not None:
+            return self.cnb.predict_proba(X_cat)
+
     def __add__(self, other):
         result = MixedAdditiveNB()
         if self.gnb and other.gnb:
@@ -118,8 +206,8 @@ class MixedAdditiveNB(object):
             result.cnb = self.cnb + other.cnb
         return result
 
-    def __repr__(self):
-        return repr({"gnb": self.gnb.__dict__, "cnb": self.cnb.__dict__})
+    # def __repr__(self):
+    #     return repr({"gnb": self.gnb.__dict__, "cnb": self.cnb.__dict__})
 
 
 class AdditiveCategoricalNB(BaseDiscreteNB):
@@ -337,7 +425,9 @@ if __name__ == "__main__":
 
     algorithm_args = [
         "-x",
-        "lefthippocampus,righthippocampus,leftaccumbensarea,gender,apoe4,agegroup",
+        "lefthippocampus,righthippocampus,leftaccumbensarea",
+        # "gender,apoe4,agegroup",
+        # "lefthippocampus,righthippocampus,leftaccumbensarea,gender,apoe4,agegroup",
         "-y",
         "alzheimerbroadcategory",
         "-alpha",
@@ -351,8 +441,8 @@ if __name__ == "__main__":
         "-filter",
         "",
     ]
-    runner = create_runner(NaiveBayes, algorithm_args=algorithm_args, num_workers=1,)
+    runner = create_runner(NaiveBayes, algorithm_args=algorithm_args, num_workers=3,)
     start = time.time()
     runner.run()
     end = time.time()
-    print("Completed in ", end - start)
+    # print("Completed in ", end - start)
