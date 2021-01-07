@@ -297,26 +297,30 @@ def kaplan_meier_survival():
     return render_template("highchart_layout.html", title="Kaplan Meier", data=result,)
 
 
+nb_args = [
+    "-x",
+    # "lefthippocampus,righthippocampus,leftaccumbensarea",
+    # "gender,alzheimerbroadcategory,agegroup",
+    "lefthippocampus,righthippocampus,leftaccumbensarea,apoe4,alzheimerbroadcategory",
+    "-y",
+    "agegroup",
+    "-alpha",
+    "1",
+    "-k",
+    "10",
+    "-pathology",
+    "dementia",
+    "-dataset",
+    "adni, ppmi",
+    "-filter",
+    "",
+]
+
+
 @app.route("/naive_bayes_confusion_matrix")
 def naive_bayes_confusion_matrix():
-    nb_args = [
-        "-x",
-        "lefthippocampus,righthippocampus,leftaccumbensarea,gender,agegroup,apoe4",
-        "-y",
-        "alzheimerbroadcategory",
-        "-alpha",
-        "1",
-        "-k",
-        "2",
-        "-pathology",
-        "dementia",
-        "-dataset",
-        "adni",
-        "-filter",
-        "",
-    ]
     result = get_algorithm_result(NaiveBayes, nb_args)
-    result = result["result"][1]["data"]
+    result = result["result"][4]["data"]
     return render_template(
         "highchart_layout.html", title="NaiveBayes Confusion Martix", data=result
     )
@@ -324,26 +328,8 @@ def naive_bayes_confusion_matrix():
 
 @app.route("/naive_bayes_roc")
 def naive_bayes_roc():
-    nb_args = [
-        "-x",
-        # "lefthippocampus,righthippocampus,leftaccumbensarea",
-        # "gender,apoe4,agegroup",
-        "lefthippocampus,righthippocampus,leftaccumbensarea,gender,apoe4,agegroup",
-        "-y",
-        "alzheimerbroadcategory",
-        "-alpha",
-        "1",
-        "-k",
-        "2",
-        "-pathology",
-        "dementia",
-        "-dataset",
-        "adni",
-        "-filter",
-        "",
-    ]
     result = get_algorithm_result(NaiveBayes, nb_args)
-    result = result["result"][2]["data"]
+    result = result["result"][5]["data"]
     return render_template("highchart_layout.html", title="NaiveBayes ROC", data=result)
 
 

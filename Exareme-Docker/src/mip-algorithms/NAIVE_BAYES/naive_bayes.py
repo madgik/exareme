@@ -12,8 +12,10 @@ from sklearn.naive_bayes import BaseDiscreteNB
 
 from mipframework import Algorithm
 from mipframework import AlgorithmResult
+from mipframework import TabularDataResource
 from mipframework.funclib.crossvalidation import kfold_split_design_matrices
 from mipframework.funclib.crossvalidation import AdditiveMulticlassROCCurve
+from mipframework.funclib.crossvalidation import AdditiveMulticlassClassificationReport
 from mipframework.highcharts.user_defined import MultilabelConfisionMatrix
 from mipframework.highcharts.user_defined import MulticlassROCCurve
 
@@ -47,7 +49,9 @@ class NaiveBayes(Algorithm):
         train_sets, test_sets = kfold_split_design_matrices(
             n_splits, *matrices_to_split
         )
-        models = [MixedAdditiveNB(float(self.parameters.alpha))] * n_splits
+        models = [
+            MixedAdditiveNB(float(self.parameters.alpha)) for _ in range(n_splits)
+        ]
         if xtypes == "numerical":
             [m.fit(yt, X_num=Xt) for m, (yt, Xt) in zip(models, train_sets)]
         elif xtypes == "categorical":
@@ -124,20 +128,88 @@ class NaiveBayes(Algorithm):
             y_true=y, y_pred_proba_per_class=y_pred_proba_per_class, classes=classes
         )
 
+        classification_report = AdditiveMulticlassClassificationReport(
+            y_true=y, y_pred=y_pred, classes=classes
+        )
+
+        self.push_and_add(n_obs=n_obs)
         self.push_and_add(confusion_matrix=confusion_matrix)
         self.push_and_add(accuracy=Mediant(accuracy * n_obs, n_obs))
         self.push_and_add(roc_curve=roc_curve)
+        self.push_and_add(classification_report=classification_report)
 
     def global_final(self):
         classes = self.load("classes")
         confusion_matrix = self.fetch("confusion_matrix")
+
         accuracy = self.fetch("accuracy").get_value()
+        n_obs = self.fetch("n_obs")
+        accuracy_ci = 1.96 * np.sqrt((accuracy * (1 - accuracy)) / n_obs)
+
         roc_curves = self.fetch("roc_curve").get_curves()
+        (
+            precision,
+            recall,
+            specificity,
+            f_score,
+            precision_avgs,
+            recall_avgs,
+            specificity_avgs,
+            f_score_avgs,
+        ) = self.fetch("classification_report").get_values()
+        precision = precision.tolist()
+        recall = recall.tolist()
+        specificity = specificity.tolist()
+        f_score = f_score.tolist()
 
         cm_chart = MultilabelConfisionMatrix(
             "Confusion Matrix", confusion_matrix, classes.tolist()
         )
+
+        aucs = []
+        ginis = []
+        for tpr, fpr in roc_curves:
+            auc = np.trapz(tpr, fpr)
+            gini = 2 * auc - 1
+            aucs.append(auc)
+            ginis.append(gini)
+
         roc_chart = MulticlassROCCurve("ROC", roc_curves, classes)
+
+        accuracy_report = TabularDataResource(
+            fields=["Statistic", "Value"],
+            data=list(
+                zip(
+                    *[
+                        ["Accuracy", "Lower c.i.", "Upper c.i."],
+                        [accuracy, accuracy - accuracy_ci, accuracy + accuracy_ci],
+                    ]
+                )
+            ),
+            title="Overall classification statistics",
+        )
+
+        clf_report = TabularDataResource(
+            fields=["", "Precision", "Recall", "Specificity", "F score"],
+            data=list(
+                zip(
+                    *[
+                        classes.tolist() + ["micro avg", "macro avg", "weighted avg"],
+                        precision + precision_avgs,
+                        recall + recall_avgs,
+                        specificity + specificity_avgs,
+                        f_score + f_score_avgs,
+                    ]
+                )
+            ),
+            title="Classification Report",
+        )
+
+        roc_report = TabularDataResource(
+            fields=["Class", "AUC", "Gini coefficient"],
+            data=list(zip(*[classes.tolist(), aucs, ginis])),
+            title="ROC report",
+        )
 
         self.result = AlgorithmResult(
             raw_data={
@@ -145,7 +217,11 @@ class NaiveBayes(Algorithm):
                 "confusion_matrix": confusion_matrix.tolist(),
                 "roc_curve": roc_curves,
                 "classes": classes.tolist(),
+                "precision": precision,
+                "recall": recall,
+                "f_score": f_score,
             },
+            tables=[clf_report, roc_report, accuracy_report],
             highcharts=[cm_chart, roc_chart],
         )
 
@@ -425,15 +501,15 @@ if __name__ == "__main__":
 
     algorithm_args = [
         "-x",
-        "lefthippocampus,righthippocampus,leftaccumbensarea",
+        # "lefthippocampus,righthippocampus,leftaccumbensarea",
         # "gender,apoe4,agegroup",
-        # "lefthippocampus,righthippocampus,leftaccumbensarea,gender,apoe4,agegroup",
+        "lefthippocampus,righthippocampus,leftaccumbensarea,gender,apoe4,agegroup",
         "-y",
         "alzheimerbroadcategory",
         "-alpha",
         "1",
         "-k",
-        "2",
+        "10",
         "-pathology",
         "dementia",
         "-dataset",

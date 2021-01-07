@@ -157,17 +157,105 @@ class AdditiveMulticlassROCCurve(object):
         return curves
 
 
-if __name__ == "__main__":
-    classes = np.array(["AD", "CN", "Other"])
-    y_true = np.array(["AD", "AD", "Other", "CN", "CN", "AD"])
-    y_pred_proba_per_class = np.array(
-        [
-            [0.6, 0.2, 0.1],
-            [0.38, 0.42, 0.2],
-            [0.4, 0.1, 0.5],
-            [0.3, 0.3, 0.4],
-            [0.2, 0.45, 0.35],
-            [0.5, 0.3, 0.2],
+class AdditiveMulticlassClassificationReport(object):
+    def __init__(
+        self,
+        y_true=None,
+        y_pred=None,
+        classes=None,
+        class_count=None,
+        tp=None,
+        tn=None,
+        fp=None,
+        fn=None,
+    ):
+        if tp is not None and tn is not None and fp is not None and fn is not None:
+            self.tp = tp
+            self.tn = tn
+            self.fp = fp
+            self.fn = fn
+            self.classes = classes
+            self.class_count = class_count
+
+        elif (tp, tn, fp, fn) == (None, None, None, None):
+            if len(y_true.shape) > 1:
+                y_true = y_true.flatten()
+            self.classes = classes[:, np.newaxis]
+            _, self.class_count = np.unique(y_true, return_counts=True)
+            self.tp = ((y_true == self.classes) & (y_pred == self.classes)).sum(axis=1)
+            self.tn = ((y_true != self.classes) & (y_pred != self.classes)).sum(axis=1)
+            self.fp = ((y_true != self.classes) & (y_pred == self.classes)).sum(axis=1)
+            self.fn = ((y_true == self.classes) & (y_pred != self.classes)).sum(axis=1)
+
+    def __add__(self, other):
+        return AdditiveMulticlassClassificationReport(
+            tp=self.tp + other.tp,
+            tn=self.tn + other.tn,
+            fp=self.fp + other.fp,
+            fn=self.fn + other.fn,
+            classes=self.classes,
+            class_count=self.class_count + other.class_count,
+        )
+
+    def get_values(self):
+        tp_sum = sum(self.tp)
+        tn_sum = sum(self.tn)
+        fp_sum = sum(self.fp)
+        fn_sum = sum(self.fn)
+
+        precision = self.tp / (self.tp + self.fp)
+        precision[np.isnan(precision)] = 1.0
+        precision_micro_avg = tp_sum / (tp_sum + fp_sum)
+        precision_micro_avg = (
+            1.0 if np.isnan(precision_micro_avg) else precision_micro_avg
+        )
+        precicion_avgs = [
+            precision_micro_avg,
+            precision.mean(),
+            np.average(precision, weights=self.class_count),
         ]
-    )
-    roc = MulticlassROCCurve(y_true, y_pred_proba_per_class, classes)
+
+        recall = self.tp / (self.tp + self.fn)
+        recall[np.isnan(recall)] = 1.0
+        recall_micro_avg = tp_sum / (tp_sum + fn_sum)
+        recall_micro_avg = 1.0 if np.isnan(recall_micro_avg) else recall_micro_avg
+        recall_avgs = [
+            recall_micro_avg,
+            recall.mean(),
+            np.average(recall, weights=self.class_count),
+        ]
+
+        specificity = self.tn / (self.tn + self.fp)
+        specificity[np.isnan(specificity)] = 1.0
+        specificity_micro_avg = tn_sum / (tn_sum + fp_sum)
+        specificity_micro_avg = (
+            1.0 if np.isnan(specificity_micro_avg) else specificity_micro_avg
+        )
+        specificity_avgs = [
+            specificity_micro_avg,
+            specificity.mean(),
+            np.average(specificity, weights=self.class_count),
+        ]
+
+        f_score = 2.0 * (precision * recall) / (precision + recall)
+        f_score_micro_avg = (
+            2.0
+            * (precision_micro_avg * recall_micro_avg)
+            / (precision_micro_avg + recall_micro_avg)
+        )
+        f_score_avgs = [
+            f_score_micro_avg,
+            f_score.mean(),
+            np.average(f_score, weights=self.class_count),
+        ]
+
+        return (
+            precision,
+            recall,
+            specificity,
+            f_score,
+            precicion_avgs,
+            recall_avgs,
+            specificity_avgs,
+            f_score_avgs,
+        )
