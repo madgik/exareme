@@ -7,6 +7,7 @@ import madgik.exareme.common.consts.HBPConstants;
 import madgik.exareme.master.engine.iterations.handler.IterationsConstants;
 import madgik.exareme.master.engine.iterations.handler.IterationsHandlerDFLUtils;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
+import madgik.exareme.master.gateway.async.handler.HBP.Exceptions.BadUserInputException;
 import madgik.exareme.master.queryProcessor.HBP.Exceptions.ComposerException;
 import madgik.exareme.utils.association.Pair;
 import madgik.exareme.utils.file.FileUtil;
@@ -41,7 +42,7 @@ public class Composer {
      * @param algorithmProperties the properties of the algorithm
      * @return a query for the local database
      */
-    private static String createLocalTableQuery(AlgorithmProperties algorithmProperties) throws ComposerException {
+    private static String createLocalTableQuery(AlgorithmProperties algorithmProperties) throws BadUserInputException {
         List<String> variables = new ArrayList<>();
         List<String> datasets = new ArrayList<>();
         String filters = "";
@@ -52,7 +53,7 @@ public class Composer {
             if (parameter.getType() == ParameterProperties.ParameterType.column) {
                 for (String variable : Arrays.asList(parameter.getValue().split("[,]"))) {
                     if (variables.contains(variable)) {
-                        throw new ComposerException("Column '" + variable + "' was given twice as input. This is not allowed.");
+                        throw new BadUserInputException("Column '" + variable + "' was given twice as input. This is not allowed.");
                     }
                     variables.add(variable);
                 }
@@ -75,7 +76,7 @@ public class Composer {
             } else if (parameter.getType() == ParameterProperties.ParameterType.dataset) {
                 for (String dataset : Arrays.asList(parameter.getValue().split("[,]"))) {
                     if (datasets.contains(dataset)) {
-                        throw new ComposerException("Dataset '" + dataset + "' was given twice as input. This is not allowed.");
+                        throw new BadUserInputException("Dataset '" + dataset + "' was given twice as input. This is not allowed.");
                     }
                     datasets.add(dataset);
                 }
@@ -132,7 +133,7 @@ public class Composer {
             String algorithmKey,
             AlgorithmProperties algorithmProperties,
             int numberOfWorkers
-    ) throws ComposerException {
+    ) throws BadUserInputException, ComposerException {
         // Assigning the proper identifier for the defaultDB
         //      if the dbIdentifier is provided as a parameter or not
         String dbIdentifier = algorithmProperties.getParameterValue(ComposerConstants.dbIdentifierKey);
@@ -484,7 +485,7 @@ public class Composer {
             String algorithmKey,
             AlgorithmProperties algorithmProperties,
             IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase
-    ) throws ComposerException {
+    ) throws BadUserInputException, ComposerException {
         if (iterativeAlgorithmPhase == null)
             throw new ComposerException("Unsupported iterative algorithm phase.");
 
@@ -790,7 +791,7 @@ public class Composer {
             String algorithmKey,
             AlgorithmProperties algorithmProperties,
             IterativeAlgorithmState.IterativeAlgorithmPhasesModel iterativeAlgorithmPhase
-    ) throws ComposerException {
+    ) throws BadUserInputException, ComposerException {
 
         if (iterativeAlgorithmPhase == null)
             throw new ComposerException("Unsupported iterative algorithm phase.");
@@ -1042,7 +1043,7 @@ public class Composer {
         return ComposerConstants.getAlgorithmFolderPath(algorithmName) + "/" + iterativeAlgorithmPhase.name() + "/" + iteration;
     }
 
-    private static File[] getLocalGlobalFolders(String algorithmFolderPath){
+    private static File[] getLocalGlobalFolders(String algorithmFolderPath) {
         File[] localGlobalFolders = new File(algorithmFolderPath).listFiles(new FileFilter() {
             @Override
             public boolean accept(File pathname) {

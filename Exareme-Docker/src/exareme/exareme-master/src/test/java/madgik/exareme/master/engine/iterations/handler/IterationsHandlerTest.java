@@ -58,23 +58,4 @@ public class IterationsHandlerTest {
 
     }
 
-    // Functional tests -------------------------------------------------------------------------
-    @Test
-    public void ensureIterativeAlgorithmIsSubmittedToStateManager() throws IOException {
-        String algorithmKey = IterationsTestGenericUtils.generateAlgorithmKey(algorithmProperties);
-
-        final IterativeAlgorithmState ias = handler.handleNewIterativeAlgorithmRequest(
-                AdpDBManagerLocator.getDBManager(), algorithmKey, algorithmProperties,
-                ArtRegistryLocator.getArtRegistryProxy().getContainers());
-
-        final Map<String, IterativeAlgorithmState> iterativeAlgorithmMapping =
-                Whitebox.getInternalState(stateManager, "iterativeAlgorithmMapping");
-
-        TestCase.assertFalse(iterativeAlgorithmMapping.isEmpty());
-
-        // Remove generated files
-        FileUtils.deleteDirectory(new File(
-                HBPConstants.DEMO_ALGORITHMS_WORKING_DIRECTORY + "/"
-                        + ias.getAlgorithmKey()));
-    }
 }

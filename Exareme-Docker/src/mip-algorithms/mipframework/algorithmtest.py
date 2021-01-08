@@ -31,9 +31,9 @@ class AlgorithmTest(object):
     __metaclass__ = abc.ABCMeta
     """
     A base class for generating random test-cases for algorithm testing.
-    The test-cases are generated based on specifications gathered from 
-    the algorithm's properties.json file, uniformly at random whenever 
-    possible. The class must be subclassed for each algorithm and the 
+    The test-cases are generated based on specifications gathered from
+    the algorithm's properties.json file, uniformly at random whenever
+    possible. The class must be subclassed for each algorithm and the
     `get_expected` method must be implemented by the subclass using some
     standard library for computing the expected results.
     """

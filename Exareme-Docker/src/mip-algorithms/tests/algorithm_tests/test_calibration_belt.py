@@ -24,7 +24,7 @@ def test_calibrationbelt_algorithm_local(test_input, expected):
     "test_input, expected", get_test_params(expected_file, slice(28, 33))
 )
 def test_calibrationbelt_algorithm_federated(test_input, expected):
-    result = get_algorithm_result(CalibrationBelt, test_input, num_workers=2)
+    result = get_algorithm_result(CalibrationBelt, test_input, num_workers=5)
 
     expected = expected[0]
     assert int(result["n_obs"]) == int(expected["n_obs"])

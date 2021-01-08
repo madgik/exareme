@@ -10,7 +10,7 @@ import madgik.exareme.master.engine.AdpDBManager;
 import madgik.exareme.master.engine.AdpDBManagerLocator;
 import madgik.exareme.master.gateway.ExaremeGatewayUtils;
 import madgik.exareme.master.gateway.async.handler.HBP.Exceptions.RequestException;
-import madgik.exareme.master.gateway.async.handler.HBP.Exceptions.UserException;
+import madgik.exareme.master.gateway.async.handler.HBP.Exceptions.BadUserInputException;
 import madgik.exareme.master.gateway.async.handler.entity.NQueryResultEntity;
 import madgik.exareme.master.queryProcessor.HBP.AlgorithmProperties;
 import madgik.exareme.master.queryProcessor.HBP.Algorithms;
@@ -55,7 +55,7 @@ public class HttpAsyncCheckWorker implements HttpAsyncRequestHandler<HttpRequest
         HttpResponse response = httpexchange.getResponse();
         try {
             handleInternal(request, response, context);
-        } catch (AlgorithmException | CDEsMetadataException | ComposerException | UserException | RequestException e) {
+        } catch (AlgorithmException | CDEsMetadataException | ComposerException | BadUserInputException | RequestException e) {
             e.printStackTrace();
         }
         httpexchange.submitResponse(new BasicAsyncResponseProducer(response));
@@ -65,7 +65,7 @@ public class HttpAsyncCheckWorker implements HttpAsyncRequestHandler<HttpRequest
             final HttpRequest request,
             final HttpResponse response,
             final HttpContext context
-    ) throws HttpException, IOException, AlgorithmException, CDEsMetadataException, ComposerException, UserException, RequestException {
+    ) throws HttpException, IOException, AlgorithmException, CDEsMetadataException, ComposerException, BadUserInputException, RequestException {
 
         String method = request.getRequestLine().getMethod().toUpperCase(Locale.ENGLISH);
         if (!method.equals("GET") && !method.equals("HEAD") && !method.equals("POST")) {
