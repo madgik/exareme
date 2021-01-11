@@ -221,7 +221,7 @@ periodicReachableMasterNodeCheck() {
     if ! exaremeNodesReachableMasterHealthCheck; then
       attempts=0
       while ! exaremeNodesReachableMasterHealthCheck; do
-        if [[ $attempts -ge 2 ]]; then
+        if [[ $attempts -ge 1 ]]; then
           echo -e "\n$(timestamp) HEALTH CHECK FAILED. MASTER NODE IS UNREACHABLE. Closing the container."
           pkill -f 1 # Closing main bootstrap.sh process to stop the container.
         fi
@@ -230,7 +230,7 @@ periodicReachableMasterNodeCheck() {
         sleep 2
       done
     fi
-    echo "$(timestamp) HEALTH CHECK successful on NODE_IP: $NODE_IP"
+    #echo "$(timestamp) HEALTH CHECK successful from NODE_IP: $NODE_IP, MASTER NODE IS REACHABLE"
   done
 }
 
