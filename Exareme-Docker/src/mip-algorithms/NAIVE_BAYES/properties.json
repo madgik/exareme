@@ -34,7 +34,7 @@
 			"label": "alpha",
 			"desc": "Additive smoothing parameter (0 for no smoothing)",
 			"type": "other",
-			"value": 0.1,
+			"value": "0.1",
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "real"
@@ -43,10 +43,10 @@
 			"label": "number of batches",
 			"desc": "The number of batches that will be used in k-fold crossvalidation.",
 			"type": "other",
-			"value": 10,
+			"value": "10",
 			"valueNotBlank": true,
 			"valueMultiple": false,
-			"valueType": "int",
+			"valueType": "integer",
             "valueMin": 2
 		}, {
 			"name": "pathology",
