@@ -72,16 +72,26 @@ public class HttpAsyncCheckWorker implements HttpAsyncRequestHandler<HttpRequest
         }
         AdpDBClientQueryStatus queryStatus;
         String NODE_IP = null;
+        String NODE_NAME = null;
         DataSerialization ds = DataSerialization.summary;
 
-        String[] getIP = request.getRequestLine().getUri().split("\\?");
+        String[] url = request.getRequestLine().getUri().split("\\?");
+        String[] urlParameters = url[1].split("&");
 
-        if (getIP[1].split("=")[0].equals("NODE_IP"))
-            NODE_IP = getIP[1].split("=")[1];
+        if (urlParameters[0].split("=")[0].equals("NODE_IP"))
+            NODE_IP = urlParameters[0].split("=")[1];
+
+        if (urlParameters[0].split("=")[0].equals("NODE_NAME"))
+            NODE_NAME = urlParameters[0].split("=")[1];
 
         // Execute HEALTH_CHECK algorithm for health checks in bootstrap.sh via "curl -s ${MASTER_IP}:9092/check/worker?NODE_IP=${NODE_IP}"
         // Retrieve json result and check of the NODE_NAME of the node exist in the result.
         String algorithmKey = algorithmName + "_" + System.currentTimeMillis();
+        log.info("Executing algorithm: " + algorithmName + " with key: " + algorithmKey);
+
+        log.info("Algorithm Nodes: ");
+        log.info(" IP: " + NODE_IP + " , NAME: " + NODE_NAME);
+
         String dfl;
         HashMap<String, String> inputContent = new HashMap<>();
         AlgorithmProperties algorithmProperties = Algorithms.getInstance().getAlgorithmProperties(algorithmName);
