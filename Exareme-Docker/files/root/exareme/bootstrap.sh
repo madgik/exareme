@@ -119,7 +119,7 @@ exaremeNodesHealthCheck() {
   if [[ "${FEDERATION_ROLE}" == "master" ]]; then
     check=$(curl -s -X POST --max-time ${EXAREME_NODE_HEALTH_CHECK_TIMEOUT} ${NODE_IP}:9090/mining/query/HEALTH_CHECK)
   else
-    check=$(curl -s --max-time ${EXAREME_NODE_HEALTH_CHECK_TIMEOUT} ${MASTER_IP}:9092/check/worker?NODE_IP=${NODE_IP}&NODE_NAME=${NODE_NAME})
+    check=$(curl -s --max-time ${EXAREME_NODE_HEALTH_CHECK_TIMEOUT} "${MASTER_IP}:9092/check/worker?NODE_IP=${NODE_IP}&NODE_NAME=${NODE_NAME}")
   fi
 
   if [[ -z ${check} ]]; then
