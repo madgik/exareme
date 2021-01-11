@@ -62,7 +62,7 @@
 			"label": "dataset",
 			"desc": "The names of one or more datasets, in which the algorithm will be executed.",
 			"type": "dataset",
-			"value": "desd-synthdata",
+			"value": "edsd",
 			"valueNotBlank": true,
 			"valueMultiple": true,
 			"valueType": "string"
