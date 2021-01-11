@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import java.rmi.RemoteException;
 import java.rmi.UnmarshalException;
 import java.util.ArrayList;
+import java.util.concurrent.TimeoutException;
 
 /**
  * @author herald
@@ -50,6 +51,7 @@ public class AdpDBArtJobMonitor implements Runnable {
 
     @Override
     public void run() {
+        //int tries_remaining = 300; // Restart after 5 minutes
         try {
             sessionManager = sessionPlan.getPlanSessionStatusManagerProxy();
             statsManager = sessionPlan.getPlanSessionStatisticsManagerProxy();
@@ -59,13 +61,24 @@ public class AdpDBArtJobMonitor implements Runnable {
             statusManager.getStatistics(status.getId()).setTotalOperators(stats.getTotalProc());
             statusManager.getStatistics(status.getId()).setTotalDataTransfers(stats.getTotalData());
 
+            log.info("Monitor: " + status.getId() + " Line 62 status: " + status.getId());
 
             while (sessionManager.hasFinished() == false && sessionManager.hasError() == false) {
 
-                Thread.sleep(100 * statsUpdateSecs);
+                Thread.sleep(1000 * statsUpdateSecs);
+                //tries_remaining--;
+                //if (tries_remaining == 0) {
+                //    throw new TimeoutException("Session stuck and stopped after 5 minutes.");
+                //}
                 boolean updateProgressStatistics = updateProgressStatistics();
+                //log.info("Monitor: " + status.getId() + " Line 68 update: " + updateProgressStatistics);
+                //log.info("Monitor: " + status.getId() + " Line 69 update: " + sessionPlan);
                 sessionManager = sessionPlan.getPlanSessionStatusManagerProxy();
+                //log.info("Monitor: " + status.getId() + " Line 69.5 update: " + sessionManager);
+                //log.info("Monitor: " + status.getId() + " Line 70 update: " + sessionManager.hasFinished() + " " + sessionManager.hasError());
                 statsManager = sessionPlan.getPlanSessionStatisticsManagerProxy();
+                //log.info("Monitor: " + status.getId() + " Line 71.5 update: " + statsManager);
+                //log.info("Monitor: " + status.getId() + " Line 72 update: " + statsManager);
                 if (sessionManager == null || statsManager == null) {
                     log.info("--+ error");
                 }
@@ -75,26 +88,38 @@ public class AdpDBArtJobMonitor implements Runnable {
                     synchronized (listeners) {
                         for (AdpDBQueryListener l : listeners) {
                             log.debug(status.toString());
+
+                            //log.info("Monitor: " + status.getId() + " Line 81 statusToBeChanged");
                             l.statusChanged(queryID, status);
+
+                            //log.info("Monitor: " + status.getId() + " Line 84 statusChanged");
                         }
                     }
                 }
-
-
             }
+
+            //log.info("Monitor: " + status.getId() + " Line 90 update");
             updateProgressStatistics();
+            //log.info("Monitor: " + status.getId() + " Line 92 update");
             statusManager.getStatistics(status.getId())
                     .setAdpEngineStatistics(statsManager.getStatistics());
 
+            //log.info("Monitor: " + status.getId() + " Line 96 update");
             if (sessionManager != null && sessionManager.hasError() == false) {
                 statusManager.setFinished(status.getId());
+
+            //    log.info("Monitor: " + status.getId() + " Line 100 update");
             } else {
+
+            //    log.info("Monitor: " + status.getId() + " Line 103 update");
                 statusManager.setError(status.getId(), sessionManager.getErrorList().get(0));
             }
+            //log.info("Monitor: " + status.getId() + " Line 106 update");
             sessionPlan.close();
         } catch (Exception e) {
             statusManager.setError(status.getId(), e);
-            log.error("Cannot monitor job!", e);
+            log.error("Cannot monitor job, queryId: " + queryID.getLongId(), e);
+            log.error("Cannot monitor job, status: " + status.getId(), e);
         } finally {
             log.debug("Terminate listeners ( " + listeners.size() + ")...");
             synchronized (listeners) {
