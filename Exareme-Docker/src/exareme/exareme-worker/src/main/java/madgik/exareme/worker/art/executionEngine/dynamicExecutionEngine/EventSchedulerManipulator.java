@@ -5,16 +5,15 @@ package madgik.exareme.worker.art.executionEngine.dynamicExecutionEngine;
 
 import madgik.exareme.common.art.PlanSessionID;
 import madgik.exareme.worker.art.executionEngine.session.PlanSessionReportID;
+import org.apache.log4j.Logger;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author heraldkllapi
  */
 public class EventSchedulerManipulator {
+    private static final Logger log = Logger.getLogger(EventSchedulerManipulator.class);
     private PlanEventScheduler globalScheduler = null;
     private Map<PlanSessionID, PlanEventScheduler> activeSchedulers = null;
     private Map<PlanSessionReportID, PlanEventScheduler> activeSchedulersReportIdMap = null;
