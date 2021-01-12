@@ -14,7 +14,6 @@ import org.apache.log4j.Logger;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
-import java.util.Arrays;
 import java.util.Date;
 
 /**
@@ -51,7 +50,7 @@ public class RmiPlanSessionReportManagerProxy extends RmiObjectProxy<PlanSession
             throws RemoteException {
         //    System.out.println("OperatorSuccess: " + operatorID.operatorName + " " + " " + exidCode);
         //    System.out.println("RPSMP before get");
-        log.info("Reporting operatorSuccess: " + operatorID.operatorName);
+        log.debug("Reporting operatorSuccess: " + operatorID.operatorName);
         boolean success = false;
         int max_retries = 100;
         // System.out.println("RPSMP after get");
