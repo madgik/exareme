@@ -138,9 +138,9 @@ public class RmiContainer extends RmiRemoteObject<ContainerProxy> implements Con
         log.debug("Create update deamon ...");
         long lifeTime =
                 AdpProperties.getArtProps().getLong("art.container.rmi.RmiContainer.lifetime");
-        if(lifeTime == 0) {
-            registryUpdateDeamon =
-                    RegistryUpdateDeamonFactory.createDeamon(this.createProxy(), (long) (0.75 * lifeTime));
+        registryUpdateDeamon =
+                RegistryUpdateDeamonFactory.createDeamon(this.createProxy(), (long) (0.75 * lifeTime));
+        if(lifeTime != 0) {
             registryUpdateDeamon.startDeamon();
         }
 

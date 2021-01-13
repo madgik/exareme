@@ -63,7 +63,7 @@ public class RmiAdpDBClientQueryStatus implements AdpDBClientQueryStatus {
 
         try {
             String algorithmResult = IOUtils.toString(getResult(DataSerialization.summary), StandardCharsets.UTF_8);
-            log.info("Algorithm with queryId" + getQueryID() + " terminated. Result: \n " + algorithmResult);
+            log.info("Algorithm with queryId " + getQueryID().getQueryID() + " terminated. Result: \n " + algorithmResult);
         } catch (IOException e) {
             log.error("Could not read the algorithm result table." + getQueryID());
         }

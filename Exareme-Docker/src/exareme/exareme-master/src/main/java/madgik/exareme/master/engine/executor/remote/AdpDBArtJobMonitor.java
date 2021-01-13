@@ -59,21 +59,12 @@ public class AdpDBArtJobMonitor implements Runnable {
             statusManager.getStatistics(status.getId()).setTotalOperators(stats.getTotalProc());
             statusManager.getStatistics(status.getId()).setTotalDataTransfers(stats.getTotalData());
 
-            while (sessionManager.hasFinished() == false && sessionManager.hasError() == false) {
-
-                Thread.sleep(1000 * statsUpdateSecs);
-
-                // Was causing crashes, is this needed?
-                // sessionManager = sessionPlan.getPlanSessionStatusManagerProxy();
-                // statsManager = sessionPlan.getPlanSessionStatisticsManagerProxy();
-
-                if (sessionManager == null || statsManager == null) {
-                    log.error("Session Manager or stats Manager null! " + sessionManager + ", " + statsManager);
-                }
+            while (!sessionManager.hasFinished() && !sessionManager.hasError()) {
 
                 boolean updateProgressStatistics = updateProgressStatistics();
                 if (updateProgressStatistics) {
-                    log.info("Session is running...");
+                    log.info("Session is running... ID: " + sessionPlan.getSessionID().getLongId()
+                            + " , QueryID: " + queryID.getQueryID());
                     log.debug("Update listeners ...");
                     synchronized (listeners) {
                         for (AdpDBQueryListener l : listeners) {
@@ -82,21 +73,36 @@ public class AdpDBArtJobMonitor implements Runnable {
                         }
                     }
                 }
+
+                Thread.sleep(100 * statsUpdateSecs);
+
+                // Reload the managers
+                sessionManager = sessionPlan.getPlanSessionStatusManagerProxy();
+                statsManager = sessionPlan.getPlanSessionStatisticsManagerProxy();
+                if (sessionManager == null || statsManager == null) {
+                    log.error("Session Manager or stats Manager null! " + sessionManager + ", " + statsManager);
+                }
             }
 
             updateProgressStatistics();
             statusManager.getStatistics(status.getId())
                     .setAdpEngineStatistics(statsManager.getStatistics());
 
-            if (sessionManager != null && sessionManager.hasError() == false) {
+            if (sessionManager != null && !sessionManager.hasError()) {
+                log.info("Session finished, closing! ID: " + sessionPlan.getSessionID().getLongId()
+                        + " , QueryID: " + queryID.getQueryID());
                 statusManager.setFinished(status.getId());
             } else {
                 statusManager.setError(status.getId(), sessionManager.getErrorList().get(0));
             }
+            log.info("Session closing! ID: "+ sessionPlan.getSessionID().getLongId()
+                    + " , QueryID: " + queryID.getQueryID());
             sessionPlan.close();
+
         } catch (Exception e) {
             statusManager.setError(status.getId(), e);
-            log.error("Cannot monitor job, status: " + status.getId(), e);
+            log.error("Cannot monitor job, sessionID: " + sessionPlan.getSessionID().getLongId());
+            log.error("Cannot monitor job, queryID: " + status.getQueryID().getQueryID(), e);
         } finally {
             log.debug("Terminate listeners ( " + listeners.size() + ")...");
             synchronized (listeners) {

@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
 
 import java.rmi.RemoteException;
 import java.rmi.ServerException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -85,6 +86,7 @@ public class DynamicPlanManager implements PlanSessionManagerInterface {
 
     @Override
     public PlanSessionID createNewSession() throws RemoteException {
+        // TODO Is this thread safe?
         PlanSessionID sessionID = new PlanSessionID(sessionCount);
         PlanSessionReportID reportID = new PlanSessionReportID(sessionCount);
         reportID.reportManagerProxy = executionEngine.getPlanSessionReportManagerProxy(reportID);
@@ -118,23 +120,27 @@ public class DynamicPlanManager implements PlanSessionManagerInterface {
 
     @Override
     public void destroySession(PlanSessionID sessionID) throws RemoteException {
+        log.info("Inside Destroying session with ID: " + sessionID.getLongId());
         try {
             PlanEventScheduler eventScheduler = schedulerMap.get(sessionID);
             IndependentEvents jobs = new IndependentEvents(eventScheduler.getState());
             eventScheduler.closeSession(jobs);
             eventScheduler.queueIndependentEvents(jobs);
             Semaphore sem = new Semaphore(0);
-            if (eventScheduler.getState().isTerminated() == false) {
+            if (!eventScheduler.getState().isTerminated()) {
+                log.info("State not yet terminated. " + sessionID.getLongId());
                 eventScheduler.getState()
                         .registerTerminationListener(new SemaphoreTerminationListener(sem));
 
                 log.debug(
                         "Waiting '" + forceSessionStopAfter_sec + "' seconds for session to stop ...");
                 boolean stopped = sem.tryAcquire(forceSessionStopAfter_sec, TimeUnit.SECONDS);
-                if (stopped == false) {
-                    log.warn("Force stop!");
+                if (!stopped) {
+                    log.error("Force stop! SessionID: " + sessionID.getLongId() + "\n" + Arrays.toString(Thread.currentThread().getStackTrace()).concat("\n"));
                 }
             }
+
+            log.info("Destroying session with ID: " + sessionID.getLongId());
             PlanSessionReportID reportID = eventScheduler.getState().getPlanSessionReportID();
             schedulerMap.remove(sessionID);
             containerSessionMap.remove(sessionID);

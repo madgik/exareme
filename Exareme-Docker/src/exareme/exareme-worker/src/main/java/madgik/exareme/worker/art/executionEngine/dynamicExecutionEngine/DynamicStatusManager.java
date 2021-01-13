@@ -27,6 +27,9 @@ public class DynamicStatusManager extends EventSchedulerManipulator
     @Override
     public boolean hasFinished(PlanSessionID sessionID) throws RemoteException {
         PlanEventScheduler eventScheduler = getSchedulerWithId(sessionID);
+        if(eventScheduler == null){
+            log.error("Scheduler does not exist with SessionID: " + sessionID.getLongId() );
+        }
         return eventScheduler.getState().getPlanSession().getPlanSessionStatus().hasFinished();
     }
 
