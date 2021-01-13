@@ -30,6 +30,7 @@ import madgik.exareme.worker.art.managementBean.ExecutionEngineManagement;
 import madgik.exareme.worker.art.managementBean.ManagementUtil;
 import madgik.exareme.worker.art.registry.ArtRegistryLocator;
 import madgik.exareme.worker.art.registry.ArtRegistryProxy;
+import madgik.exareme.worker.art.registry.PolicyFactory;
 import madgik.exareme.worker.art.registry.updateDeamon.RegistryUpdateDeamon;
 import madgik.exareme.worker.art.registry.updateDeamon.RegistryUpdateDeamonFactory;
 import madgik.exareme.worker.art.remote.RmiRemoteObject;
@@ -93,11 +94,12 @@ public class RmiExecutionEngine extends RmiRemoteObject<ExecutionEngineProxy>
 
         long lifeTime = AdpProperties.getArtProps()
                 .getLong("art.executionEngine.rmi.RmiExecutionEngine.lifetime");
+        if(lifeTime == 0) {
+            registryUpdateDeamon =
+                    RegistryUpdateDeamonFactory.createDeamon(this.createProxy(), (long) (0.75 * lifeTime));
 
-        registryUpdateDeamon =
-                RegistryUpdateDeamonFactory.createDeamon(this.createProxy(), (long) (0.75 * lifeTime));
-
-        registryUpdateDeamon.startDeamon();
+            registryUpdateDeamon.startDeamon();
+        }
     }
 
     @Override
