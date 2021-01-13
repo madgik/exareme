@@ -58,7 +58,7 @@ public class HttpAsyncExaremeGateway implements ExaremeGateway {
         );
 
         final UriHttpAsyncRequestHandlerMapper registry = new UriHttpAsyncRequestHandlerMapper();
-        // registry.register(ExaremeGatewayUtils.GW_API_FILE, new HttpAsyncFileHandler());
+        registry.register(ExaremeGatewayUtils.GW_API_FILE, new HttpAsyncFileHandler());
         registry.register(ExaremeGatewayUtils.GW_API_QUERY, new HttpAsyncQueryHandler());
         registry.register(ExaremeGatewayUtils.GW_API_TABLE, new HttpAsyncTableHandler());
         registry.register(ExaremeGatewayUtils.GW_API_MINING_ALGORITHMS, new HttpAsyncMiningAlgorithmsHandler());
