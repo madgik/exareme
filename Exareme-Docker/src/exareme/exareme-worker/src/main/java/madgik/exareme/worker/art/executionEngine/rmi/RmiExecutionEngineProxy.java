@@ -43,7 +43,11 @@ public class RmiExecutionEngineProxy extends RmiObjectProxy<ExecutionEngine>
         this.entityName = new EntityName(regEntryName, ip);
         long lifeTime = AdpProperties.getArtProps()
                 .getLong("art.executionEngine.rmi.RmiExecutionEngine.lifetime");
-        this.registerPolicy = PolicyFactory.generateTimeExpirationDeletePolicy(lifeTime);
+        if(lifeTime == 0) {
+            this.registerPolicy = PolicyFactory.generateNoExpirationPolicy();
+        }else{
+            this.registerPolicy = PolicyFactory.generateTimeExpirationDeletePolicy(lifeTime);
+        }
     }
 
     @Override
