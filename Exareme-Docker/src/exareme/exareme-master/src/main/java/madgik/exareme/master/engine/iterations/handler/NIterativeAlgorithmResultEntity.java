@@ -168,17 +168,24 @@ public class NIterativeAlgorithmResultEntity extends BasicHttpEntity
         } finally {
             if (iterativeAlgorithmState != null)
                 iterativeAlgorithmState.releaseLock();
+
+            closeQuery();
+            close();
         }
     }
 
-    @Override
-    public void close() throws IOException {
+    public void closeQuery() throws IOException {
         if (finalizeQueryStatus != null) {
             // Case in which algorithm execution failed
             finalizeQueryStatus.close();
             finalizeQueryStatus = null;
         }
         iterativeAlgorithmState = null;
+    }
+
+    @Override
+    public void close() throws IOException {
+
     }
 
     @Override

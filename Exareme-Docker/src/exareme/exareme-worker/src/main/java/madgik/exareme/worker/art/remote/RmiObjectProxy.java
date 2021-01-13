@@ -41,6 +41,8 @@ public abstract class RmiObjectProxy<T> implements ObjectProxy<T> {
                 Registry registry = RmiRegistryCache.getRegistry(regEntityName);
                 remoteObject = (T) registry.lookup(regEntryName);
                 isConnected = true;
+                log.debug("Connected to " +
+                        regEntityName.getIP() + ":" + regEntityName.getPort() + " ...");
                 return remoteObject;
             } catch (Exception e) {
                 log.error("Cannot connect to " +

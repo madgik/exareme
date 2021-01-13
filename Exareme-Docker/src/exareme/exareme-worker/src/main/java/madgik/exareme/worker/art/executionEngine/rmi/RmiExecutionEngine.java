@@ -94,10 +94,9 @@ public class RmiExecutionEngine extends RmiRemoteObject<ExecutionEngineProxy>
 
         long lifeTime = AdpProperties.getArtProps()
                 .getLong("art.executionEngine.rmi.RmiExecutionEngine.lifetime");
-        if(lifeTime == 0) {
-            registryUpdateDeamon =
-                    RegistryUpdateDeamonFactory.createDeamon(this.createProxy(), (long) (0.75 * lifeTime));
-
+        registryUpdateDeamon =
+                RegistryUpdateDeamonFactory.createDeamon(this.createProxy(), (long) (0.75 * lifeTime));
+        if(lifeTime != 0) {
             registryUpdateDeamon.startDeamon();
         }
     }

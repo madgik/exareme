@@ -94,7 +94,7 @@ public class ExecutionEngineSessionPlan implements Serializable {
     public void close() throws RemoteException {
         lock.lock();
         try {
-            if (isClosed == false) {
+            if (!isClosed) {
                 engine.destroySession(sessionID);
                 isClosed = true;
             }

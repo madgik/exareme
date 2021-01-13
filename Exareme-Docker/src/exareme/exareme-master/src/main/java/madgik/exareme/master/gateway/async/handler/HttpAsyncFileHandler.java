@@ -77,7 +77,7 @@ public class HttpAsyncFileHandler implements HttpAsyncRequestHandler<HttpRequest
                     "<html><body><h1>Access denied</h1></body></html>",
                     ContentType.create("text/html", "UTF-8"));
             response.setEntity(entity);
-            System.out.println("Cannot read file " + file.getPath());
+            log.debug("Cannot read file " + file.getPath());
 
         } else if (file.getPath().endsWith(".ser")) {
             HttpCoreContext coreContext = HttpCoreContext.adapt(context);

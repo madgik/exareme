@@ -12,10 +12,11 @@ export CONSUL_ACTIVE_WORKERS_PATH="active_workers"
 CONSUL_CONNECTION_MAX_ATTEMPTS=20
 CONSUL_WAIT_FOR_MASTER_IP_MAX_ATTEMPTS=20
 EXAREME_NODE_STARTUP_HEALTH_CHECK_MAX_ATTEMPTS=10
-EXAREME_NODE_HEALTH_CHECK_TIMEOUT=30
+EXAREME_NODE_HEALTH_CHECK_TIMEOUT=60
 MASTER_NODE_REACHABLE_TIMEOUT=5
 PERIODIC_EXAREME_NODES_HEALTH_CHECK_MAX_RETRIES=3
 PERIODIC_EXAREME_NODES_HEALTH_CHECK_INTERVAL=120
+EXAREME_HEALTH_CHECK_AWAIT_TIME=20
 PERIODIC_TEMP_FILES_REMOVAL=300
 
 if [[ -z ${CONSULURL} ]]; then
@@ -117,7 +118,7 @@ exaremeNodesHealthCheck() {
   echo "$(timestamp) HEALTH CHECK for node with IP ${NODE_IP} and name ${NODE_NAME} ."
 
   if [[ "${FEDERATION_ROLE}" == "master" ]]; then
-    check=$(curl -s -X POST --max-time ${EXAREME_NODE_HEALTH_CHECK_TIMEOUT} ${NODE_IP}:9090/mining/query/HEALTH_CHECK)
+    check=$(curl -s --max-time ${EXAREME_NODE_HEALTH_CHECK_TIMEOUT} "${NODE_IP}:9092/check/worker?NODE_IP=${NODE_IP}&NODE_NAME=${NODE_NAME}")
   else
     check=$(curl -s --max-time ${EXAREME_NODE_HEALTH_CHECK_TIMEOUT} "${MASTER_IP}:9092/check/worker?NODE_IP=${NODE_IP}&NODE_NAME=${NODE_NAME}")
   fi
@@ -142,36 +143,19 @@ exaremeNodesHealthCheck() {
   return 0
 }
 
-# Health check that the MASTER is reachable (ping) 
-exaremeNodesReachableMasterHealthCheck() {
-  if [[ ${ENVIRONMENT_TYPE} != "PROD" ]]; then
-    return 0
-  fi
-
-  check=$(curl -s --head ${MASTER_IP}:9090 --max-time ${MASTER_NODE_REACHABLE_TIMEOUT})
-
-  if [[ -z ${check} ]]; then
-    return 1
-  fi
-
-  return 0
-}
-
 # Exareme health check on startup
 startupExaremeNodesHealthCheck() {
   # If health check fails then try again until it succeeds or close the container.
-  if ! exaremeNodesHealthCheck; then
-    attempts=0
-    while ! exaremeNodesHealthCheck; do
-      if [[ $attempts -ge $EXAREME_NODE_STARTUP_HEALTH_CHECK_MAX_ATTEMPTS ]]; then
-        echo -e "\n$(timestamp) HEALTH CHECK FAILED. Closing the container."
-        return 1 # Exiting
-      fi
-      echo "$(timestamp) HEALTH CHECK failed. Trying again..."
-      attempts=$(($attempts + 1))
-      sleep 5
-    done
-  fi
+  attempts=0
+  while ! exaremeNodesHealthCheck; do
+    if [[ $attempts -ge $EXAREME_NODE_STARTUP_HEALTH_CHECK_MAX_ATTEMPTS ]]; then
+      echo -e "\n$(timestamp) HEALTH CHECK FAILED. Closing the container."
+      return 1 # Exiting
+    fi
+    echo "$(timestamp) HEALTH CHECK failed. Trying again..."
+    attempts=$(($attempts + 1))
+    sleep $EXAREME_HEALTH_CHECK_AWAIT_TIME
+  done
   echo "$(timestamp) HEALTH CHECK successful on NODE_IP: $NODE_IP"
   return 0
 }
@@ -189,18 +173,16 @@ periodicExaremeNodesHealthCheck() {
     sleep $PERIODIC_EXAREME_NODES_HEALTH_CHECK_INTERVAL
 
     # If health check fails then try again until it succeeds or close the container.
-    if ! exaremeNodesHealthCheck; then
-      attempts=0
-      while ! exaremeNodesHealthCheck; do
-        if [[ $attempts -ge $PERIODIC_EXAREME_NODES_HEALTH_CHECK_MAX_RETRIES ]]; then
-          echo -e "\n$(timestamp) HEALTH CHECK FAILED. Closing the container."
-          pkill -f 1 # Closing main bootstrap.sh process to stop the container.
-        fi
-        echo "$(timestamp) HEALTH CHECK failed. Trying again..."
-        attempts=$(($attempts + 1))
-        sleep 5
-      done
-    fi
+    attempts=0
+    while ! exaremeNodesHealthCheck; do
+      if [[ $attempts -ge $PERIODIC_EXAREME_NODES_HEALTH_CHECK_MAX_RETRIES ]]; then
+        echo -e "\n$(timestamp) HEALTH CHECK FAILED. Closing the container."
+        pkill -f 1 # Closing main bootstrap.sh process to stop the container.
+      fi
+      echo "$(timestamp) HEALTH CHECK failed. Trying again..."
+      attempts=$(($attempts + 1))
+      sleep $EXAREME_HEALTH_CHECK_AWAIT_TIME
+    done
     echo "$(timestamp) HEALTH CHECK successful on NODE_IP: $NODE_IP"
   done
 }
@@ -213,23 +195,15 @@ periodicReachableMasterNodeCheck() {
     pkill -f 1 # Closing main bootstrap.sh process to stop the container.
   fi
 
-  # Check that master is reachable every 2 seconds.
+  # Check that master is reachable every 5 seconds.
   while true; do
-    sleep 2
+    sleep 5
 	
-    # If master node isn't reachable, close the container
-    if ! exaremeNodesReachableMasterHealthCheck; then
-      attempts=0
-      while ! exaremeNodesReachableMasterHealthCheck; do
-        if [[ $attempts -ge 1 ]]; then
-          echo -e "\n$(timestamp) HEALTH CHECK FAILED. MASTER NODE IS UNREACHABLE. Closing the container."
-          pkill -f 1 # Closing main bootstrap.sh process to stop the container.
-        fi
-        echo -e "\n$(timestamp) HEALTH CHECK FAILED. MASTER NODE IS UNREACHABLE. Trying again..."
-        attempts=$(($attempts + 1))
-        sleep 2
-      done
-    fi
+    if ! ping -c 5 -W 2 $MASTER_IP &>/dev/null ; then
+	    echo -e "\n$(timestamp) MASTER NODE IS UNREACHABLE. Closing the container."
+	    pkill -f 1 # Closing main bootstrap.sh process to stop the container.
+	fi
+	
     #echo "$(timestamp) HEALTH CHECK successful from NODE_IP: $NODE_IP, MASTER NODE IS REACHABLE"
   done
 }

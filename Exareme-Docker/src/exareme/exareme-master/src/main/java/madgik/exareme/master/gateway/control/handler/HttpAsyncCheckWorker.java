@@ -70,7 +70,6 @@ public class HttpAsyncCheckWorker implements HttpAsyncRequestHandler<HttpRequest
         if (!method.equals("GET") && !method.equals("HEAD") && !method.equals("POST")) {
             throw new MethodNotSupportedException(method + " method not supported");
         }
-        AdpDBClientQueryStatus queryStatus;
         String NODE_IP = null;
         String NODE_NAME = null;
         DataSerialization ds = DataSerialization.summary;
@@ -135,7 +134,11 @@ public class HttpAsyncCheckWorker implements HttpAsyncRequestHandler<HttpRequest
         clientProperties.setContainerProxies(usedContainerProxies);
         AdpDBClient dbClient =
                 AdpDBClientFactory.createDBClient(manager, clientProperties);
-        queryStatus = dbClient.query(algorithmKey, dfl);
+
+        AdpDBClientQueryStatus queryStatus = dbClient.query(algorithmKey, dfl);
+        log.info("Executing algorithm " + algorithmKey +
+                " started with queryId " + queryStatus.getQueryID().getQueryID());
+
         BasicHttpEntity entity = new NQueryResultEntity(queryStatus, ds,
                 ExaremeGatewayUtils.RESPONSE_BUFFER_SIZE);
         response.setStatusCode(HttpStatus.SC_OK);
