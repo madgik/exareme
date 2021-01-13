@@ -96,7 +96,6 @@ public class AdpDBArtJobMonitor implements Runnable {
             sessionPlan.close();
         } catch (Exception e) {
             statusManager.setError(status.getId(), e);
-            log.error("Cannot monitor job, queryId: " + queryID.getLongId(), e);
             log.error("Cannot monitor job, status: " + status.getId(), e);
         } finally {
             log.debug("Terminate listeners ( " + listeners.size() + ")...");

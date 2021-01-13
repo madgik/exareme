@@ -38,9 +38,7 @@ public class PeriodicContainersStatusCheck {
 
     private class PeriodicCheck extends Thread {
         public void run() {
-            int i = 10;
             while (!planEventScheduler.getState().isTerminated()) {
-                i--;
                 Set<EntityName> faultyContainers = new HashSet<>();
                 for (EntityName containerName : containersToCheck) {
                     log.debug("Checking container: " + containerName);
@@ -56,6 +54,8 @@ public class PeriodicContainersStatusCheck {
                 if (!faultyContainers.isEmpty()) {
                     if (planEventScheduler != null) {
                         planEventScheduler.containersError(faultyContainers);
+                        log.error("Reported container error and exiting!");
+                        return;
                     } else {
                         log.error("PlanEventScheduler should not be null!");
                     }
