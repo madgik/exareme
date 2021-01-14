@@ -85,7 +85,7 @@ class GetStatsAndCloseSession extends Thread {
     @Override
     public void run() {
         try {
-            log.trace("Closing session: " + session.getSessionID().getLongId());
+            log.info("Closing session: " + session.getSessionID().getLongId());
             ContainerJobs jobs = new ContainerJobs();
             jobs.addJob(GetStatisticsJob.instance);
             results = session.execJobs(jobs);
