@@ -1,7 +1,7 @@
 {
 	"name": "ANOVA",
 	"desc": "Two-way analysis of variance (ANOVA)",
-	"label": "ANOVA",
+	"label": "Two-way ANOVA",
 	"type": "iterative",
 	"parameters": [{
 			"name": "x",
