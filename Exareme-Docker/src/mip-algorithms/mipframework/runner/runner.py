@@ -20,6 +20,8 @@ ALGORITHM_TYPES = {
     "DescriptiveStats": "local-global",
     "KaplanMeier": "local-global",
     "ThreeC": "local",
+    "AnovaOld": "multiple-local-global",
+    "Anova": "local-global",
 }
 
 

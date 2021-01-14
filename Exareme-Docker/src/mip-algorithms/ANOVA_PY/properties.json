@@ -1,0 +1,60 @@
+{
+	"name": "ANOVA",
+	"desc": "One-way analysis of variance (ANOVA)",
+	"label": "ANOVA",
+	"type": "python_multiple_local_global",
+	"parameters": [{
+			"name": "x",
+			"label": "x",
+			"desc": "TODO",
+			"type": "column",
+			"columnValuesSQLType": "",
+			"columnValuesIsCategorical": "true",
+			"columnValuesNumOfEnumerations": "",
+			"value": "alzheimerbroadcategory",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "string"
+		}, {
+			"name": "y",
+			"label": "y",
+			"desc": "TODO",
+			"type": "column",
+			"columnValuesSQLType": "real,integer",
+			"columnValuesIsCategorical": "",
+			"columnValuesNumOfEnumerations": "",
+			"value": "lefthippocampus",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "string"
+		}, {
+			"name": "pathology",
+			"label": "pathology",
+			"desc": "The name of the pathology in which the dataset belongs to.",
+			"type": "pathology",
+			"value": "dementia",
+			"valueNotBlank": true,
+			"valueMultiple": false,
+			"valueType": "string"
+		}, {
+			"name": "dataset",
+			"label": "dataset",
+			"desc": "The names of one or more datasets, in which the algorithm will be executed.",
+			"type": "dataset",
+			"value": "ppmi",
+			"valueNotBlank": true,
+			"valueMultiple": true,
+			"valueType": "string"
+		}, {
+			"name": "filter",
+			"label": "filter",
+			"desc": "",
+			"type": "filter",
+			"value": "",
+			"valueNotBlank": false,
+			"valueMultiple": true,
+			"valueType": "string"
+		}
+	]
+}
+
