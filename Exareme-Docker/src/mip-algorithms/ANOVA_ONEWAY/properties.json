@@ -6,19 +6,19 @@
 	"parameters": [{
 			"name": "x",
 			"label": "x",
-			"desc": "TODO",
+			"desc": "A categorical variable on whose levels we perform the Anova.",
 			"type": "column",
 			"columnValuesSQLType": "",
 			"columnValuesIsCategorical": "true",
 			"columnValuesNumOfEnumerations": "",
-			"value": "alzheimerbroadcategory",
+			"value": "ppmicategory",
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "string"
 		}, {
 			"name": "y",
 			"label": "y",
-			"desc": "TODO",
+			"desc": "A numerical response variable.",
 			"type": "column",
 			"columnValuesSQLType": "real,integer",
 			"columnValuesIsCategorical": "",

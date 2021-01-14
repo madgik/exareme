@@ -194,7 +194,7 @@ class AdditiveAnovaModel(object):
 
 
 def create_mean_plot(group_stats, variable, covariable, categories):
-    title = "Mean plot: {v} ~ {c}".format(v=variable, c=covariable)
+    title = "Means plot: {v} ~ {c}".format(v=variable, c=covariable)
     means = group_stats["sum"] / group_stats["count"]
     variances = group_stats["sum_sq"] / group_stats["count"] - means ** 2
     sample_vars = (group_stats["count"] - 1) / group_stats["count"] * variances
@@ -205,7 +205,11 @@ def create_mean_plot(group_stats, variable, covariable, categories):
     sample_stds = [sample_stds[cat] for cat in categories]
     data = [[m - s, m, m + s] for m, s in zip(means, sample_stds)]
     return LineWithErrorbars(
-        title=title, data=data, categories=categories, xname=covariable, yname=variable
+        title=title,
+        data=data,
+        categories=categories,
+        xname=covariable,
+        yname="95% CI: " + variable,
     )
 
 
