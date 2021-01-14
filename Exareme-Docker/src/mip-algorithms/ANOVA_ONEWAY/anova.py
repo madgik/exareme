@@ -2,12 +2,15 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+import numpy as np
 import pandas as pd
 import scipy.stats
 
 from mipframework import Algorithm
 from mipframework import AlgorithmResult
 from mipframework import TabularDataResource
+from mipframework.highcharts import LineWithErrorbars
+from utils.algorithm_utils import ExaremeError
 
 
 class Anova(Algorithm):
@@ -18,20 +21,29 @@ class Anova(Algorithm):
         X = self.data.full
         variable = self.parameters.y[0]
         covariable = self.parameters.x[0]
+        var_label = self.metadata.label[variable]
         covar_label = self.metadata.label[covariable]
+        covar_enums = self.metadata.enumerations[covariable]
 
         model = AdditiveAnovaModel(X, variable, covariable)
 
         self.push_and_add(model=model)
+        self.push_and_agree(var_label=var_label)
         self.push_and_agree(covar_label=covar_label)
+        self.push_and_agree(covar_enums=covar_enums)
 
     def global_(self):
         model = self.fetch("model")
+        var_label = self.fetch("var_label")
         covar_label = self.fetch("covar_label")
+        covar_enums = self.fetch("covar_enums")
+
+        if len(model.group_stats) < 2:
+            raise ExaremeError("Cannot perform Anova when there is only one level")
 
         res = model.get_anova_table()
 
-        table = TabularDataResource(
+        anova_table = TabularDataResource(
             fields=["", "df", "sum_sq", "mean_sq", "F", "Pr(>F)"],
             data=[
                 [
@@ -54,8 +66,20 @@ class Anova(Algorithm):
             title="Anova Summary",
         )
 
+        tuckey_hsd_table = TabularDataResource(
+            ["Placeholder"] * 5,
+            [[42] * 5] * ((len(model.group_stats) - 1) * len(model.group_stats) // 2),
+            title="Tuckey Honest Significant Differences",
+        )
+
+        mean_plot = create_mean_plot(
+            model.group_stats, var_label, covar_label, covar_enums
+        )
+
         self.result = AlgorithmResult(
-            raw_data={"anova_table": res,}, tables=[table], highcharts=[],
+            raw_data={"anova_table": res,},
+            tables=[anova_table, tuckey_hsd_table],
+            highcharts=[mean_plot],
         )
 
 
@@ -103,8 +127,12 @@ class AdditiveAnovaModel(object):
     def get_group_stats(self, X):
         variable = self.variable
         covar = self.covariable
+        var_sq = self.var_sq
         group_stats = X[[variable, covar]].groupby(covar).agg(["count", "sum"])
         group_stats.columns = ["count", "sum"]
+        group_ssq = X[[var_sq, covar]].groupby(covar).sum()
+        group_ssq.columns = ["sum_sq"]
+        group_stats = group_stats.join(group_ssq)
         return group_stats
 
     def get_df_explained(self):
@@ -165,6 +193,22 @@ class AdditiveAnovaModel(object):
         return dd
 
 
+def create_mean_plot(group_stats, variable, covariable, categories):
+    title = "Mean plot: {v} ~ {c}".format(v=variable, c=covariable)
+    means = group_stats["sum"] / group_stats["count"]
+    variances = group_stats["sum_sq"] / group_stats["count"] - means ** 2
+    sample_vars = (group_stats["count"] - 1) / group_stats["count"] * variances
+    sample_stds = np.sqrt(sample_vars)
+
+    categories = [c for c in categories if c in group_stats.index]
+    means = [means[cat] for cat in categories]
+    sample_stds = [sample_stds[cat] for cat in categories]
+    data = [[m - s, m, m + s] for m, s in zip(means, sample_stds)]
+    return LineWithErrorbars(
+        title=title, data=data, categories=categories, xname=covariable, yname=variable
+    )
+
+
 if __name__ == "__main__":
     import time
     from mipframework import create_runner
@@ -173,15 +217,15 @@ if __name__ == "__main__":
         "-y",
         "lefthippocampus",
         "-x",
-        "ppmicategory",
+        "alzheimerbroadcategory",
         "-pathology",
         "dementia",
         "-dataset",
-        "ppmi",
+        "adni",
         "-filter",
         "",
     ]
-    runner = create_runner(Anova, algorithm_args=algorithm_args, num_workers=1,)
+    runner = create_runner(Anova, algorithm_args=algorithm_args, num_workers=3,)
     start = time.time()
     runner.run()
     end = time.time()

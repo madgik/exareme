@@ -1,8 +1,8 @@
 {
-	"name": "ANOVA",
+	"name": "ANOVA_ONEWAY",
 	"desc": "One-way analysis of variance (ANOVA)",
-	"label": "ANOVA",
-	"type": "python_multiple_local_global",
+	"label": "One-way ANOVA",
+	"type": "python_local_global",
 	"parameters": [{
 			"name": "x",
 			"label": "x",
