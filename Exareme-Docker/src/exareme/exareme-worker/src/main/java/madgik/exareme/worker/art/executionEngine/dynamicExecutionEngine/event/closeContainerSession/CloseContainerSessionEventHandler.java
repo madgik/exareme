@@ -38,17 +38,16 @@ public class CloseContainerSessionEventHandler
     public void preProcess(CloseContainerSessionEvent event, PlanEventSchedulerState state)
             throws RemoteException {
         try {
-            ExecutorService service =
-                    Executors.newFixedThreadPool(ExecEngineConstants.THREADS_PER_INDEPENDENT_TASKS);
             ArrayList<GetStatsAndCloseSession> workers = new ArrayList<GetStatsAndCloseSession>();
             List<ContainerSession> sessions = state.getContSessions(event.containerSessionID);
+            ExecutorService service = Executors.newFixedThreadPool(sessions.size());
             for (ContainerSession session : sessions) {
                 GetStatsAndCloseSession w = new GetStatsAndCloseSession(session);
                 workers.add(w);
                 service.submit(w);
             }
             service.shutdown();
-            service.awaitTermination(1, TimeUnit.DAYS);
+            service.awaitTermination(2, TimeUnit.MINUTES);
             for (GetStatsAndCloseSession w : workers) {
                 state.getStatistics().containerStats.add(w.stats.getStats());
             }
@@ -85,7 +84,7 @@ class GetStatsAndCloseSession extends Thread {
     @Override
     public void run() {
         try {
-            log.info("Closing session: " + session.getSessionID().getLongId());
+            log.info("Closing session: " + session.getSessionID().getLongId() + " , " + this.toString());
             ContainerJobs jobs = new ContainerJobs();
             jobs.addJob(GetStatisticsJob.instance);
             results = session.execJobs(jobs);
@@ -93,7 +92,9 @@ class GetStatsAndCloseSession extends Thread {
             session.closeSession();
         } catch (RemoteException e) {
             exception = e;
-            log.error("Cannot close session", e);
+            log.error("Cannot close session " + session.getSessionID().getLongId(), e);
+        }finally{
+            log.info("Closed session: " + session.getSessionID().getLongId() + " , " + this.toString());
         }
     }
 }

@@ -64,6 +64,8 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
             this.buffer.compact();
             if (i < 1 && !buffering) {
                 encoder.complete();
+                closeQuery();
+                close();
             }
         } else {
             log.trace("|" + queryStatus.getError() + "|");
@@ -97,9 +99,9 @@ public class NQueryResultEntity extends BasicHttpEntity implements HttpAsyncCont
                 encoder.write(ByteBuffer.wrap(result.getBytes()));
                 encoder.complete();
             }
+            closeQuery();
+            close();
         }
-        closeQuery();
-        close();
     }
 
     @Override

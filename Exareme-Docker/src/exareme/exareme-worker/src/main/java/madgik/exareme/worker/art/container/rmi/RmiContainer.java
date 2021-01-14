@@ -170,6 +170,7 @@ public class RmiContainer extends RmiRemoteObject<ContainerProxy> implements Con
     public ContainerJobResults execJobs(ContainerJobs jobs) throws RemoteException {
         ContainerJobResults results = new ContainerJobResults();
         ContainerJobResult result = null;
+        log.debug("Executing " + jobs.getJobs().size() + " Jobs!");
         for (ContainerJob job : jobs.getJobs()) {
             log.debug("Executing Job: " + job.getType().name() + " " + job.toString());
             if (job.getType()
