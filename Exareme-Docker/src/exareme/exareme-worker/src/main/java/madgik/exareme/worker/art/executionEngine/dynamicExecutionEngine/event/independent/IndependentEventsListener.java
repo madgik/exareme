@@ -22,7 +22,7 @@ public class IndependentEventsListener implements EventListener<IndependentEvent
     public void processed(IndependentEvents event, RemoteException exception,
                           EventProcessor processor) {
         if (exception != null) {
-            LogUtils.logException("Independent", exception);
+            LogUtils.logException("Exception on Independent Event with sessionID: " + event.state.getSessionID().getLongId(), exception);
             PlanEventScheduler.engineInternalException(event, exception);
         }
         event.done();

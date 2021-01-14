@@ -19,7 +19,7 @@ public class ExecEngineConstants {
     public static final String PRAGMA_INTER_CONTAINER_DATA_TRANSFER =
             "inter_container_data_transfer";
 
-    public static final int THREADS_PER_INDEPENDENT_TASKS = 1024;
+    public static final int THREADS_PER_INDEPENDENT_TASKS = 20;
     public static double DATA_TRANSFER_MEM = 0.0;
 
     private ExecEngineConstants() {
