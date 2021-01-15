@@ -106,7 +106,7 @@ class Node:
                  "threshold" : None if self.gain == 0 or (self.right is None and self.left is None) else self.threshold,
                  "criterion" :self.criterion,
                  "gain" : self.gain,
-                 #"samples" : "Less than " + str(PRIVACY_MAGIC_NUMBER) if self.samples <= PRIVACY_MAGIC_NUMBER else self.samples,
+                 "samples" : "Less than " + str(PRIVACY_MAGIC_NUMBER) if self.samples <= PRIVACY_MAGIC_NUMBER else self.samples,
                  #"samplesPerClass" : samplesPerClass,
                  "classValue" : myclassValue,
                  "class" : myclass,
