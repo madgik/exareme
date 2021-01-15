@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -30,6 +31,7 @@ public class CloseContainerSessionEventHandler
     public static final CloseContainerSessionEventHandler instance =
             new CloseContainerSessionEventHandler();
     private static final long serialVersionUID = 1L;
+    private static final Logger log = Logger.getLogger(CloseContainerSessionEventHandler.class);
 
     public CloseContainerSessionEventHandler() {
     }
@@ -47,7 +49,10 @@ public class CloseContainerSessionEventHandler
                 service.submit(w);
             }
             service.shutdown();
-            service.awaitTermination(2, TimeUnit.MINUTES);
+            if(!service.awaitTermination(2, TimeUnit.MINUTES)){
+                log.error("Timeout when trying to fetch stats.");
+                throw new RemoteException("Timeout when trying to fetch stats." + Arrays.toString(Thread.currentThread().getStackTrace()));
+            }
             for (GetStatsAndCloseSession w : workers) {
                 state.getStatistics().containerStats.add(w.stats.getStats());
             }
