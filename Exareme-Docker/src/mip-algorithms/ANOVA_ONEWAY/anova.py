@@ -2,6 +2,8 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+import itertools
+
 import numpy as np
 import pandas as pd
 import scipy.stats
@@ -44,7 +46,7 @@ class Anova(Algorithm):
         res = model.get_anova_table()
 
         anova_table = TabularDataResource(
-            fields=["", "df", "sum_sq", "mean_sq", "F", "Pr(>F)"],
+            fields=["", "df", "sum sq", "mean sq", "F value", "Pr(>F)"],
             data=[
                 [
                     covar_label,
@@ -66,9 +68,10 @@ class Anova(Algorithm):
             title="Anova Summary",
         )
 
+        tuckey_data = pairwise_tuckey(model, covar_enums)
         tuckey_hsd_table = TabularDataResource(
-            ["Placeholder"] * 5,
-            [[42] * 5] * ((len(model.group_stats) - 1) * len(model.group_stats) // 2),
+            fields=list(tuckey_data.columns),
+            data=list([list(row) for row in tuckey_data.values]),
             title="Tuckey Honest Significant Differences",
         )
 
@@ -77,7 +80,7 @@ class Anova(Algorithm):
         )
 
         self.result = AlgorithmResult(
-            raw_data={"anova_table": res,},
+            raw_data={"anova_table": res},
             tables=[anova_table, tuckey_hsd_table],
             highcharts=[mean_plot],
         )
@@ -85,6 +88,7 @@ class Anova(Algorithm):
 
 class AdditiveAnovaModel(object):
     def __init__(self, X=None, variable=None, covariable=None):
+        self._table = None
         if X is not None and variable and covariable:
             self.variable = variable
             self.covariable = covariable
@@ -179,6 +183,40 @@ class AdditiveAnovaModel(object):
         )
 
     @property
+    def table(self):
+        if self._table is None:
+            table = pd.DataFrame(
+                columns=["df", "sum_sq", "mean_sq", "F", "PR(>F)"],
+                index=[self.covariable, "Residual"],
+            )
+            df_explained = self.get_df_explained()
+            df_residual = self.get_df_residual()
+            ss_explained = self.get_ss_explained()
+            ss_residual = self.get_ss_residual()
+            ms_explained = ss_explained / df_explained
+            ms_residual = ss_residual / df_residual
+            f_stat = ms_explained / ms_residual
+            p_value = 1 - scipy.stats.f.cdf(f_stat, df_explained, df_residual)
+            table.loc[self.covariable] = {
+                "df": df_explained,
+                "sum_sq": ss_explained,
+                "mean_sq": ms_explained,
+                "F": f_stat,
+                "PR(>F)": p_value,
+            }
+            table.loc["Residual"] = {
+                "df": df_residual,
+                "sum_sq": ss_residual,
+                "mean_sq": ms_residual,
+                "F": None,
+                "PR(>F)": None,
+            }
+            self._table = table
+            return table
+
+        return self._table
+
+    @property
     def overall_mean(self):
         return self.overall_stats["sum"] / self.overall_stats["count"]
 
@@ -211,6 +249,41 @@ def create_mean_plot(group_stats, variable, covariable, categories):
         xname=covariable,
         yname="95% CI: " + variable,
     )
+
+
+def pairwise_tuckey(aov, categories):
+    categories = np.array([c for c in categories if c in aov.group_stats.index])
+    n_groups = len(categories)
+    gnobs = aov.group_stats["count"].to_numpy()
+    gmeans = (aov.group_stats["sum"] / aov.group_stats["count"]).to_numpy()
+    gvar = aov.table.at[aov.covariable, "mean_sq"] / gnobs
+    g1, g2 = np.array(list(itertools.combinations(np.arange(n_groups), 2))).T
+    mn = gmeans[g1] - gmeans[g2]
+    se = np.sqrt(gvar[g1] + gvar[g2])
+    tval = mn / se
+    pval = scipy.stats.t.sf(np.abs(tval), gnobs[g1].size + gnobs[g2].size - 2) * 2
+    thsd = pd.DataFrame(
+        columns=[
+            "A",
+            "B",
+            "mean(A)",
+            "mean(B)",
+            "diff",
+            "Std.Err.",
+            "t value",
+            "Pr(>|t|)",
+        ],
+        index=range(n_groups * (n_groups - 1) // 2),
+    )
+    thsd["A"] = categories[g1]
+    thsd["B"] = categories[g2]
+    thsd["mean(A)"] = gmeans[g1]
+    thsd["mean(B)"] = gmeans[g2]
+    thsd["diff"] = mn
+    thsd["Std.Err."] = se
+    thsd["t value"] = tval
+    thsd["Pr(>|t|)"] = pval
+    return thsd
 
 
 if __name__ == "__main__":
