@@ -465,7 +465,6 @@ public class HttpAsyncDecomposerHandler implements HttpAsyncRequestHandler<HttpR
                                     if (timeoutMs > 0) {
                                         long timePassed = System.currentTimeMillis() - start;
                                         if (timePassed > timeoutMs) {
-                                            log.info("Closing session!!!!");
                                             status.close();
                                             log.warn("Time out:" + timeoutMs + " ms passed");
                                             throw new RuntimeException("Time out:" + timeoutMs + " ms passed");

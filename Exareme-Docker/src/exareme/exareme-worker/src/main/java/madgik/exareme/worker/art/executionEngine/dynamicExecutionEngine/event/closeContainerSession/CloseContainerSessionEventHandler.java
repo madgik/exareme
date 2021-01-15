@@ -89,7 +89,7 @@ class GetStatsAndCloseSession extends Thread {
     @Override
     public void run() {
         try {
-            log.info("Closing session: " + session.getSessionID().getLongId() + " , " + this.toString());
+            log.debug("Closing session: " + session.getSessionID().getLongId() + " , " + this.toString());
             ContainerJobs jobs = new ContainerJobs();
             jobs.addJob(GetStatisticsJob.instance);
             results = session.execJobs(jobs);
@@ -99,7 +99,7 @@ class GetStatsAndCloseSession extends Thread {
             exception = e;
             log.error("Cannot close session " + session.getSessionID().getLongId(), e);
         }finally{
-            log.info("Closed session: " + session.getSessionID().getLongId() + " , " + this.toString());
+            log.debug("Closed session: " + session.getSessionID().getLongId() + " , " + this.toString());
         }
     }
 }
