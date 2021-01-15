@@ -89,13 +89,13 @@ public class AdpDBArtJobMonitor implements Runnable {
                     .setAdpEngineStatistics(statsManager.getStatistics());
 
             if (sessionManager != null && !sessionManager.hasError()) {
-                log.info("Session finished, closing! ID: " + sessionPlan.getSessionID().getLongId()
+                log.debug("Session finished, closing! ID: " + sessionPlan.getSessionID().getLongId()
                         + " , QueryID: " + queryID.getQueryID());
                 statusManager.setFinished(status.getId());
             } else {
                 statusManager.setError(status.getId(), sessionManager.getErrorList().get(0));
             }
-            log.info("Session closing! ID: "+ sessionPlan.getSessionID().getLongId()
+            log.debug("Session closing! ID: "+ sessionPlan.getSessionID().getLongId()
                     + " , QueryID: " + queryID.getQueryID());
             sessionPlan.close();
 

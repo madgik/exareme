@@ -120,7 +120,6 @@ public class DynamicPlanManager implements PlanSessionManagerInterface {
 
     @Override
     public void destroySession(PlanSessionID sessionID) throws RemoteException {
-        log.info("Inside Destroying session with ID: " + sessionID.getLongId());
         try {
             PlanEventScheduler eventScheduler = schedulerMap.get(sessionID);
             IndependentEvents jobs = new IndependentEvents(eventScheduler.getState());
@@ -128,10 +127,8 @@ public class DynamicPlanManager implements PlanSessionManagerInterface {
             eventScheduler.queueIndependentEvents(jobs);
             Semaphore sem = new Semaphore(0);
             if (!eventScheduler.getState().isTerminated()) {
-                log.info("State not yet terminated. " + sessionID.getLongId());
                 eventScheduler.getState()
                         .registerTerminationListener(new SemaphoreTerminationListener(sem));
-
                 log.debug(
                         "Waiting '" + forceSessionStopAfter_sec + "' seconds for session to stop ...");
                 boolean stopped = sem.tryAcquire(forceSessionStopAfter_sec, TimeUnit.SECONDS);
@@ -140,7 +137,7 @@ public class DynamicPlanManager implements PlanSessionManagerInterface {
                 }
             }
 
-            log.info("Destroying session with ID: " + sessionID.getLongId());
+            log.debug("Destroying session with ID: " + sessionID.getLongId());
             PlanSessionReportID reportID = eventScheduler.getState().getPlanSessionReportID();
             schedulerMap.remove(sessionID);
             containerSessionMap.remove(sessionID);
