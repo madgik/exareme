@@ -70,7 +70,7 @@ class MainHandler(BaseHandler):
       str_result=self.execQuery(dbFilename,query)
     except QueryExecutionException as e:
       #raise tornado.web.HTTPError(status_code=500,log_message="...the log message??")
-      self.logger.debug("(MadisServer::post) QueryExecutionException: {}".format(str(e)))
+      self.logger.error("(MadisServer::post) QueryExecutionException: {}".format(str(e)))
       #print "QueryExecutionException ->{}".format(str(e))
       self.set_status(500)
       self.write(str(e))

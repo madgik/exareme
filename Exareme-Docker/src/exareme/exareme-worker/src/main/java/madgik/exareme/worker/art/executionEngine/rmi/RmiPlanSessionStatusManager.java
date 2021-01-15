@@ -48,7 +48,6 @@ public class RmiPlanSessionStatusManager extends RmiRemoteObject<PlanSessionStat
     }
 
     public boolean hasFinished(PlanSessionID sessionID) throws RemoteException {
-
         return statusManagerInterface.hasFinished(sessionID);
     }
 

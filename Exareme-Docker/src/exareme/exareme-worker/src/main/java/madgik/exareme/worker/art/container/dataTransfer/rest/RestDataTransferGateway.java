@@ -25,7 +25,7 @@ public class RestDataTransferGateway implements DataTransferGateway {
 
     private static final Logger log = Logger.getLogger(RestDataTransferGateway.class);
     // TODO(herald): this looks like a magic number!
-    private final int threads = 1000;
+    private final int threads = 20;
     private final int secondsToWait = 30;
     private String artRegistry = null;
     private ArtManager artManager = null;

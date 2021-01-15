@@ -7,6 +7,8 @@ import madgik.exareme.common.art.PlanSessionID;
 import madgik.exareme.worker.art.executionEngine.session.ActiveExecutionPlan;
 import madgik.exareme.worker.art.executionEngine.session.ConcreteOperatorStatus;
 import madgik.exareme.worker.art.executionEngine.statusMgr.PlanSessionStatusManagerInterface;
+import madgik.exareme.worker.art.remote.RmiObjectProxy;
+import org.apache.log4j.Logger;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -17,6 +19,7 @@ import java.util.concurrent.Semaphore;
  */
 public class DynamicStatusManager extends EventSchedulerManipulator
         implements PlanSessionStatusManagerInterface {
+    private static final Logger log = Logger.getLogger(DynamicStatusManager.class);
 
     public DynamicStatusManager() {
     }
@@ -24,6 +27,9 @@ public class DynamicStatusManager extends EventSchedulerManipulator
     @Override
     public boolean hasFinished(PlanSessionID sessionID) throws RemoteException {
         PlanEventScheduler eventScheduler = getSchedulerWithId(sessionID);
+        if(eventScheduler == null){
+            log.error("Scheduler does not exist with SessionID: " + sessionID.getLongId() );
+        }
         return eventScheduler.getState().getPlanSession().getPlanSessionStatus().hasFinished();
     }
 

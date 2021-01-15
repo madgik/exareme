@@ -63,10 +63,11 @@ public class RmiArmCompute extends RmiRemoteObject<ArmComputeProxy> implements A
 
         long lifeTime =
                 AdpProperties.getArmProps().getLong("arm.compute.rmi.RmiArmCompute.lifetime");
-
         registryUpdateDeamon =
                 RegistryUpdateDeamonFactory.createDeamon(this.createProxy(), (long) (0.75 * lifeTime));
-        registryUpdateDeamon.startDeamon();
+        if(lifeTime != 0) {
+            registryUpdateDeamon.startDeamon();
+        }
     }
 
     @Override

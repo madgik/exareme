@@ -159,6 +159,8 @@ public class HBPQueryHandler implements HttpAsyncRequestHandler<HttpRequest> {
                         AdpDBClientFactory.createDBClient(manager, clientProperties);
                 queryStatus = dbClient.query(algorithmKey, dfl);
 
+                log.info("Executing algorithm " + algorithmKey +
+                        " started with queryId " + queryStatus.getQueryID().getQueryID());
                 log.debug("Algorithm " + algorithmKey + " with queryID "
                         + queryStatus.getQueryID() + " execution started. DFL Script: \n " + dfl);
 

@@ -100,6 +100,7 @@ public class OperatorElasticTreeTerminatedEventHandler
                 state.eventScheduler.queueIndependentEvents(termJobs);
 
                 IndependentEvents closeJobs = new IndependentEvents(state);
+                log.info("Operators finished (2), Closing session!: " +  state.getPlanSessionID().getLongId());
                 state.eventScheduler.closeSession(closeJobs);
                 state.eventScheduler.queueIndependentEvents(closeJobs);
 

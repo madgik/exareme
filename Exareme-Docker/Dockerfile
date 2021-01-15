@@ -14,7 +14,7 @@ RUN apt install -y --no-install-recommends python2
 RUN ln -s /usr/bin/python2 /usr/bin/python
 
 # Installing Exareme requirements
-RUN apt install -y openjdk-8-jdk curl jq
+RUN apt install -y openjdk-8-jdk curl jq iputils-ping
 
 # Installing pip
 RUN curl -O https://raw.githubusercontent.com/pypa/get-pip/master/get-pip.py
