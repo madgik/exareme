@@ -21,7 +21,7 @@
 			"desc": "A numerical response variable.",
 			"type": "column",
 			"columnValuesSQLType": "real,integer",
-			"columnValuesIsCategorical": "",
+			"columnValuesIsCategorical": "false",
 			"columnValuesNumOfEnumerations": "",
 			"value": "lefthippocampus",
 			"valueNotBlank": true,
