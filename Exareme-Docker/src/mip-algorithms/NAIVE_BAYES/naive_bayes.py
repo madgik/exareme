@@ -168,7 +168,7 @@ class NaiveBayes(Algorithm):
 
         aucs = []
         ginis = []
-        for tpr, fpr in roc_curves:
+        for fpr, tpr in roc_curves:
             auc = np.trapz(tpr, fpr)
             gini = 2 * auc - 1
             aucs.append(auc)
