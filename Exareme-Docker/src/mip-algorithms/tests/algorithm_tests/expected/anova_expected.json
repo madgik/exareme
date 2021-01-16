@@ -1,0 +1,3404 @@
+{
+    "test_cases": [
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "edsdcategory"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightgregyrusrectus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.0003900445065096259, 
+                "ss_residual": 22.996010330445237, 
+                "df_residual": 365.0, 
+                "ms_residual": 0.0630027680286171, 
+                "ss_explained": 1.0106264447449735, 
+                "ms_explained": 0.5053132223724868, 
+                "f_stat": 8.020492403491916, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs2718058_g"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightmfgmiddlefrontalgyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,edsd,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.627538606984094, 
+                "ss_residual": 2153.4678833902963, 
+                "df_residual": 549.0, 
+                "ms_residual": 3.922528020747352, 
+                "ss_explained": 3.658508717511342, 
+                "ms_explained": 1.829254358755671, 
+                "f_stat": 0.4663457721857514, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "edsdcategory"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "leftcuncuneus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,ppmi,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.0008429070406297211, 
+                "ss_residual": 125.58476465648303, 
+                "df_residual": 365.0, 
+                "ms_residual": 0.3440678483739261, 
+                "ss_explained": 4.9667752634082225, 
+                "ms_explained": 2.4833876317041113, 
+                "f_stat": 7.217726513653245, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs610932_a"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightangangulargyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.6079671521048657, 
+                "ss_residual": 1115.781274425861, 
+                "df_residual": 886.0, 
+                "ms_residual": 1.259346810864403, 
+                "ss_explained": 1.2540928983702009, 
+                "ms_explained": 0.6270464491851004, 
+                "f_stat": 0.49791403271566, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "agegroup"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "leftioginferioroccipitalgyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,ppmi,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 2.676733196463088e-26, 
+                "ss_residual": 1425.1155221782665, 
+                "df_residual": 2212.0, 
+                "ms_residual": 0.6442656067713682, 
+                "ss_explained": 83.55285386220069, 
+                "ms_explained": 20.888213465550173, 
+                "f_stat": 32.421742284564964, 
+                "df_explained": 4.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "ppmicategory"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightmcggmiddlecingulategyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,edsd,ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.004422480490594242, 
+                "ss_residual": 213.58711204728598, 
+                "df_residual": 710.0, 
+                "ms_residual": 0.30082691837645914, 
+                "ss_explained": 3.9750070040869407, 
+                "ms_explained": 1.325002334695647, 
+                "f_stat": 4.404533815812054, 
+                "df_explained": 3.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs3865444_t"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightcaudate"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,edsd,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.3989976296249159, 
+                "ss_residual": 188.5102470276297, 
+                "df_residual": 889.0, 
+                "ms_residual": 0.21204752196583768, 
+                "ss_explained": 0.39006144042138874, 
+                "ms_explained": 0.19503072021069437, 
+                "f_stat": 0.9197500560375101, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs3818361_t"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightmcggmiddlecingulategyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,ppmi,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.9575754641605805, 
+                "ss_residual": 275.091348096199, 
+                "df_residual": 889.0, 
+                "ms_residual": 0.30943908672238357, 
+                "ss_explained": 0.026830139609334808, 
+                "ms_explained": 0.013415069804667404, 
+                "f_stat": 0.043352861290929516, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "alzheimerbroadcategory"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "subjectageyears"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,ppmi,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 2.054321083688998e-44, 
+                "ss_residual": 197449.0464834702, 
+                "df_residual": 2145.0, 
+                "ms_residual": 92.05083752143133, 
+                "ss_explained": 19415.7952297559, 
+                "ms_explained": 9707.89761487795, 
+                "f_stat": 105.46234967843449, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "alzheimerbroadcategory"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "leftmcggmiddlecingulategyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 4.5856216592145697e-10, 
+                "ss_residual": 318.7940407745507, 
+                "df_residual": 1079.0, 
+                "ms_residual": 0.29545323519420824, 
+                "ss_explained": 12.962832343489108, 
+                "ms_explained": 6.481416171744554, 
+                "f_stat": 21.937198174473092, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs11767557_c"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "leftsmgsupramarginalgyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,ppmi,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.9248326988437211, 
+                "ss_residual": 790.2335055667629, 
+                "df_residual": 882.0, 
+                "ms_residual": 0.8959563555178718, 
+                "ss_explained": 0.14003680918855094, 
+                "ms_explained": 0.07001840459427547, 
+                "f_stat": 0.07814934752463933, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "alzheimerbroadcategory"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "av45"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 1.1573721593888919e-15, 
+                "ss_residual": 20.78647814527032, 
+                "df_residual": 455.0, 
+                "ms_residual": 0.04568456735224246, 
+                "ss_explained": 3.392390539481828, 
+                "ms_explained": 1.696195269740914, 
+                "f_stat": 37.12840830170749, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs3865444_t"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "righttmptemporalpole"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,ppmi,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.14059165013028913, 
+                "ss_residual": 644.7755494628497, 
+                "df_residual": 889.0, 
+                "ms_residual": 0.7252818329165913, 
+                "ss_explained": 2.8521442460135407, 
+                "ms_explained": 1.4260721230067703, 
+                "f_stat": 1.9662316885452322, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs190982_g"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "leftliglingualgyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.07545817375697564, 
+                "ss_residual": 304.51648747410775, 
+                "df_residual": 533.0, 
+                "ms_residual": 0.5713254924467313, 
+                "ss_explained": 2.967174814293493, 
+                "ms_explained": 1.4835874071467465, 
+                "f_stat": 2.5967463849603596, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "dataset"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightcocentraloperculum"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.0005679322812960706, 
+                "ss_residual": 348.7604539831501, 
+                "df_residual": 1501.0, 
+                "ms_residual": 0.2323520679434711, 
+                "ss_explained": 2.77181187773214, 
+                "ms_explained": 2.77181187773214, 
+                "f_stat": 11.929361775280148, 
+                "df_explained": 1.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs1476679_c"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightttgtransversetemporalgyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.5758856334473552, 
+                "ss_residual": 18.49971896775119, 
+                "df_residual": 532.0, 
+                "ms_residual": 0.034773907834118774, 
+                "ss_explained": 0.038419536164048834, 
+                "ms_explained": 0.019209768082024417, 
+                "f_stat": 0.5524190198484554, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "neurodegenerativescategories"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "leftpcggposteriorcingulategyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,ppmi,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 2.3335384794155888e-29, 
+                "ss_residual": 359.9045185900106, 
+                "df_residual": 1417.0, 
+                "ms_residual": 0.2539904859491959, 
+                "ss_explained": 35.097592241591485, 
+                "ms_explained": 17.548796120795743, 
+                "f_stat": 69.09233649132007, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs1476679_c"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightangangulargyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,ppmi,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.38203007393972954, 
+                "ss_residual": 636.7490502848881, 
+                "df_residual": 532.0, 
+                "ms_residual": 1.1968967110618196, 
+                "ss_explained": 2.3076133368651366, 
+                "ms_explained": 1.1538066684325683, 
+                "f_stat": 0.9639985286691746, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "apoe4"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "leftaccumbensarea"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.09233271414136983, 
+                "ss_residual": 2.888032629010037, 
+                "df_residual": 1058.0, 
+                "ms_residual": 0.0027297094792155356, 
+                "ss_explained": 0.013035614680767027, 
+                "ms_explained": 0.0065178073403835135, 
+                "f_stat": 2.387729313324802, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "dataset"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "leftputamen"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 1.9550141643787663e-119, 
+                "ss_residual": 277.30409067128545, 
+                "df_residual": 1149.0, 
+                "ms_residual": 0.24134385611077933, 
+                "ss_explained": 166.42856056165738, 
+                "ms_explained": 166.42856056165738, 
+                "f_stat": 689.5910392898709, 
+                "df_explained": 1.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs17125944_c"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightstgsuperiortemporalgyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.05217797035502303, 
+                "ss_residual": 552.5476436442444, 
+                "df_residual": 885.0, 
+                "ms_residual": 0.6243476199369994, 
+                "ss_explained": 3.699847572736426, 
+                "ms_explained": 1.849923786368213, 
+                "f_stat": 2.9629708311451273, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "dataset"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightpinsposteriorinsula"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.00033730243312129777, 
+                "ss_residual": 110.74910446891467, 
+                "df_residual": 1501.0, 
+                "ms_residual": 0.07378354728108905, 
+                "ss_explained": 0.9525799625884795, 
+                "ms_explained": 0.9525799625884795, 
+                "f_stat": 12.91046578391642, 
+                "df_explained": 1.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "edsdcategory"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightfugfusiformgyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 3.8938919015774555e-13, 
+                "ss_residual": 220.5339250239569, 
+                "df_residual": 365.0, 
+                "ms_residual": 0.6042025343122107, 
+                "ss_explained": 37.37911678212977, 
+                "ms_explained": 18.689558391064885, 
+                "f_stat": 30.93260509464761, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs11767557_c"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "leftlorglateralorbitalgyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,adni,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.4727145015345048, 
+                "ss_residual": 56.92086557826926, 
+                "df_residual": 882.0, 
+                "ms_residual": 0.0645361287735479, 
+                "ss_explained": 0.09679135403738305, 
+                "ms_explained": 0.048395677018691526, 
+                "f_stat": 0.7499005276332591, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs2718058_g"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "leftocpoccipitalpole"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.7998460204161418, 
+                "ss_residual": 147.76403971393256, 
+                "df_residual": 549.0, 
+                "ms_residual": 0.2691512563095311, 
+                "ss_explained": 0.12027127415849984, 
+                "ms_explained": 0.06013563707924992, 
+                "f_stat": 0.22342692322450966, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "gender"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightfofrontaloperculum"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,ppmi,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 5.873426909028777e-63, 
+                "ss_residual": 104.23044486746136, 
+                "df_residual": 2215.0, 
+                "ms_residual": 0.047056634251675555, 
+                "ss_explained": 14.074367559221697, 
+                "ms_explained": 14.074367559221697, 
+                "f_stat": 299.0942251404338, 
+                "df_explained": 1.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "neurodegenerativescategories"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "leftmprgprecentralgyrusmedialsegment"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,ppmi,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 1.3355461470620864e-06, 
+                "ss_residual": 171.45984250111985, 
+                "df_residual": 1417.0, 
+                "ms_residual": 0.12100200599937887, 
+                "ss_explained": 3.304833840634039, 
+                "ms_explained": 1.6524169203170196, 
+                "f_stat": 13.656111786489737, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs744373_c"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "leftsmgsupramarginalgyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,ppmi,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.07211471052839438, 
+                "ss_residual": 744.2743062647124, 
+                "df_residual": 835.0, 
+                "ms_residual": 0.8913464745685179, 
+                "ss_explained": 4.702378874466016, 
+                "ms_explained": 2.351189437233008, 
+                "f_stat": 2.637795183260437, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "agegroup"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "leftcaudate"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,ppmi,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.0006216111352250377, 
+                "ss_residual": 414.29387507604184, 
+                "df_residual": 2212.0, 
+                "ms_residual": 0.18729379524233356, 
+                "ss_explained": 3.6700852364564875, 
+                "ms_explained": 0.9175213091141219, 
+                "f_stat": 4.898834517859868, 
+                "df_explained": 4.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs744373_c"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightthalamusproper"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,adni,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.03181343102617412, 
+                "ss_residual": 359.30933946888536, 
+                "df_residual": 835.0, 
+                "ms_residual": 0.43031058619028184, 
+                "ss_explained": 2.97959344654859, 
+                "ms_explained": 1.489796723274295, 
+                "f_stat": 3.4621428593334955, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs3865444_t"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "subjectage"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,edsd,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.846631467311287, 
+                "ss_residual": 47381.89194329692, 
+                "df_residual": 889.0, 
+                "ms_residual": 53.29796619043523, 
+                "ss_explained": 17.75045765765003, 
+                "ms_explained": 8.875228828825016, 
+                "f_stat": 0.16652096624313123, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "dataset"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightttgtransversetemporalgyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 1.2515531793577873e-07, 
+                "ss_residual": 60.324845954928065, 
+                "df_residual": 1501.0, 
+                "ms_residual": 0.04018977078942576, 
+                "ss_explained": 1.1337866493161708, 
+                "ms_explained": 1.1337866493161708, 
+                "f_stat": 28.210826462699778, 
+                "df_explained": 1.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "adnicategory"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightcalccalcarinecortex"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,adni,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.0006240534012963459, 
+                "ss_residual": 245.00133818558928, 
+                "df_residual": 1063.0, 
+                "ms_residual": 0.23048103310027213, 
+                "ss_explained": 3.4252887760353294, 
+                "ms_explained": 1.7126443880176647, 
+                "f_stat": 7.430738941857175, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "parkinsonbroadcategory"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "leftcuncuneus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,adni,ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.14187086946133076, 
+                "ss_residual": 255.14113989280472, 
+                "df_residual": 711.0, 
+                "ms_residual": 0.3588482980208224, 
+                "ss_explained": 1.4054017419427105, 
+                "ms_explained": 0.7027008709713553, 
+                "f_stat": 1.9582115195947802, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs3818361_t"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "leftitginferiortemporalgyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.9114446711115907, 
+                "ss_residual": 1347.951424398251, 
+                "df_residual": 889.0, 
+                "ms_residual": 1.5162558204704735, 
+                "ss_explained": 0.28121711533310273, 
+                "ms_explained": 0.14060855766655136, 
+                "f_stat": 0.0927340596278288, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs3865444_t"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "leftpallidum"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.13634402577500024, 
+                "ss_residual": 27.56273487734637, 
+                "df_residual": 889.0, 
+                "ms_residual": 0.031004201211863182, 
+                "ss_explained": 0.12383367875855493, 
+                "ms_explained": 0.061916839379277465, 
+                "f_stat": 1.9970467536375727, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs3764650_g"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "leftacgganteriorcingulategyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,adni,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.1543177614754534, 
+                "ss_residual": 271.3658386833928, 
+                "df_residual": 889.0, 
+                "ms_residual": 0.3052484124672585, 
+                "ss_explained": 1.143262236088965, 
+                "ms_explained": 0.5716311180444825, 
+                "f_stat": 1.8726751547177882, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs3818361_t"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "leftopifgopercularpartoftheinferiorfrontalgyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.9292618450124053, 
+                "ss_residual": 113.88578250588702, 
+                "df_residual": 889.0, 
+                "ms_residual": 0.12810549213260633, 
+                "ss_explained": 0.018798399194029328, 
+                "ms_explained": 0.009399199597014664, 
+                "f_stat": 0.07337077779058242, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "dataset"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "leftcerebralwhitematter"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 4.1601529672979034e-26, 
+                "ss_residual": 987328.8313847862, 
+                "df_residual": 1149.0, 
+                "ms_residual": 859.2940220929383, 
+                "ss_explained": 100847.74190886451, 
+                "ms_explained": 100847.74190886451, 
+                "f_stat": 117.36115848127844, 
+                "df_explained": 1.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "alzheimerbroadcategory"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightpcuprecuneus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 7.842071436064449e-07, 
+                "ss_residual": 1434.2284662528102, 
+                "df_residual": 1063.0, 
+                "ms_residual": 1.3492271554588995, 
+                "ss_explained": 38.442647706763935, 
+                "ms_explained": 19.221323853381968, 
+                "f_stat": 14.246173281951478, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "ppmicategory"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "leftsmgsupramarginalgyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.000324339018520856, 
+                "ss_residual": 687.681775503159, 
+                "df_residual": 710.0, 
+                "ms_residual": 0.9685658809903648, 
+                "ss_explained": 18.281103360540364, 
+                "ms_explained": 6.093701120180121, 
+                "f_stat": 6.291467869949407, 
+                "df_explained": 3.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs744373_c"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightmpogpostcentralgyrusmedialsegment"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,edsd,ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.14960561402762174, 
+                "ss_residual": 19.38476079899833, 
+                "df_residual": 835.0, 
+                "ms_residual": 0.023215282394009974, 
+                "ss_explained": 0.0884075784435189, 
+                "ms_explained": 0.04420378922175945, 
+                "f_stat": 1.9040814783784388, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "alzheimerbroadcategory"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "leftgregyrusrectus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.014457299455396429, 
+                "ss_residual": 53.777452189025226, 
+                "df_residual": 1063.0, 
+                "ms_residual": 0.050590265464746216, 
+                "ss_explained": 0.43036991736993546, 
+                "ms_explained": 0.21518495868496773, 
+                "f_stat": 4.253485462236192, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs11136000_t"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightocpoccipitalpole"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,ppmi,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.6260867977755555, 
+                "ss_residual": 181.95526828899264, 
+                "df_residual": 888.0, 
+                "ms_residual": 0.20490458140652323, 
+                "ss_explained": 0.1920010346810131, 
+                "ms_explained": 0.09600051734050655, 
+                "f_stat": 0.4685132791152435, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "edsdcategory"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "opticchiasm"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,edsd,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.9890631864521257, 
+                "ss_residual": 0.030025547219876943, 
+                "df_residual": 365.0, 
+                "ms_residual": 8.22617732051423e-05, 
+                "ss_explained": 1.8093298513182806e-06, 
+                "ms_explained": 9.046649256591403e-07, 
+                "f_stat": 0.010997391502892967, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "gender"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "leftainsanteriorinsula"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 7.932883223314178e-93, 
+                "ss_residual": 283.17428274374066, 
+                "df_residual": 1778.0, 
+                "ms_residual": 0.1592656258401241, 
+                "ss_explained": 75.00184881010172, 
+                "ms_explained": 75.00184881010172, 
+                "f_stat": 470.9230156505394, 
+                "df_explained": 1.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs190982_g"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightphgparahippocampalgyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,adni,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.7075976807931899, 
+                "ss_residual": 46.14570040954908, 
+                "df_residual": 533.0, 
+                "ms_residual": 0.08657729907982942, 
+                "ss_explained": 0.05992952380016417, 
+                "ms_explained": 0.029964761900082085, 
+                "f_stat": 0.3461041429861746, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "parkinsonbroadcategory"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "leftttgtransversetemporalgyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,ppmi,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.0003392155072511918, 
+                "ss_residual": 40.1968567734462, 
+                "df_residual": 711.0, 
+                "ms_residual": 0.05653566353508607, 
+                "ss_explained": 0.9135388707133072, 
+                "ms_explained": 0.4567694353566536, 
+                "f_stat": 8.079315016320312, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs2718058_g"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "minimentalstate"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.7686304766961606, 
+                "ss_residual": 3982.2078649045525, 
+                "df_residual": 549.0, 
+                "ms_residual": 7.253566238441808, 
+                "ss_explained": 3.8193090084906807, 
+                "ms_explained": 1.9096545042453403, 
+                "f_stat": 0.2632711195390651, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs11767557_c"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "minimentalstate"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,ppmi,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.36646988191361, 
+                "ss_residual": 5994.819931871052, 
+                "df_residual": 882.0, 
+                "ms_residual": 6.796847995318653, 
+                "ss_explained": 13.661424061148374, 
+                "ms_explained": 6.830712030574187, 
+                "f_stat": 1.0049823146374404, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs190982_g"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightsmgsupramarginalgyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,adni,ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.30753519853790817, 
+                "ss_residual": 363.4757684485681, 
+                "df_residual": 533.0, 
+                "ms_residual": 0.6819432803913097, 
+                "ss_explained": 1.611811504855833, 
+                "ms_explained": 0.8059057524279165, 
+                "f_stat": 1.1817782733565103, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "agegroup"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightainsanteriorinsula"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,ppmi,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.019752257512605235, 
+                "ss_residual": 457.5936791916905, 
+                "df_residual": 2212.0, 
+                "ms_residual": 0.20686875189497764, 
+                "ss_explained": 2.425062712857526, 
+                "ms_explained": 0.6062656782143815, 
+                "f_stat": 2.9306778943693157, 
+                "df_explained": 4.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "agegroup"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightopifgopercularpartoftheinferiorfrontalgyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,adni,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 2.3130591323561426e-11, 
+                "ss_residual": 379.30527170389774, 
+                "df_residual": 2212.0, 
+                "ms_residual": 0.171476162614782, 
+                "ss_explained": 9.668795388416822, 
+                "ms_explained": 2.4171988471042054, 
+                "f_stat": 14.096413228784444, 
+                "df_explained": 4.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs17125944_c"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightamygdala"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.11194306709878685, 
+                "ss_residual": 11.775715867819413, 
+                "df_residual": 885.0, 
+                "ms_residual": 0.01330589363595414, 
+                "ss_explained": 0.05841798181522593, 
+                "ms_explained": 0.029208990907612965, 
+                "f_stat": 2.1951919733287757, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs3865444_t"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightscasubcallosalarea"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,adni,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.3631131027849418, 
+                "ss_residual": 16.80295195810357, 
+                "df_residual": 889.0, 
+                "ms_residual": 0.018900958333074883, 
+                "ss_explained": 0.03833855955072919, 
+                "ms_explained": 0.019169279775364596, 
+                "f_stat": 1.0141961818846073, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "parkinsonbroadcategory"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "leftcerebellumwhitematter"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.002872766595985639, 
+                "ss_residual": 2770.684319713475, 
+                "df_residual": 711.0, 
+                "ms_residual": 3.89688371267718, 
+                "ss_explained": 45.990389630380406, 
+                "ms_explained": 22.995194815190203, 
+                "f_stat": 5.900918916410872, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs2718058_g"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightporgposteriororbitalgyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,ppmi,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.06544618037077088, 
+                "ss_residual": 30.53187731783179, 
+                "df_residual": 549.0, 
+                "ms_residual": 0.055613619886761, 
+                "ss_explained": 0.30477520398832325, 
+                "ms_explained": 0.15238760199416163, 
+                "f_stat": 2.740112984992692, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs744373_c"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightmfcmedialfrontalcortex"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,adni,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.1414213810263985, 
+                "ss_residual": 43.29704999671157, 
+                "df_residual": 835.0, 
+                "ms_residual": 0.051852754487079725, 
+                "ss_explained": 0.20332507314483333, 
+                "ms_explained": 0.10166253657241667, 
+                "f_stat": 1.9606005038314438, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs11136000_t"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightententorhinalarea"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.9774257524056866, 
+                "ss_residual": 47.2327580147411, 
+                "df_residual": 888.0, 
+                "ms_residual": 0.05319004280939313, 
+                "ss_explained": 0.002429033273626223, 
+                "ms_explained": 0.0012145166368131115, 
+                "f_stat": 0.022833533734224278, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "ppmicategory"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightitginferiortemporalgyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,ppmi,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.00019518547221449598, 
+                "ss_residual": 1029.6356638348211, 
+                "df_residual": 710.0, 
+                "ms_residual": 1.4501910758236918, 
+                "ss_explained": 28.958937474830698, 
+                "ms_explained": 9.6529791582769, 
+                "f_stat": 6.656349855686512, 
+                "df_explained": 3.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs3865444_t"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightmcggmiddlecingulategyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.21357016758482233, 
+                "ss_residual": 274.1643245818885, 
+                "df_residual": 889.0, 
+                "ms_residual": 0.30839631561517267, 
+                "ss_explained": 0.9538536539199055, 
+                "ms_explained": 0.47692682695995275, 
+                "f_stat": 1.546473815708869, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs1476679_c"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "leftmfgmiddlefrontalgyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,edsd,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.9718145161272724, 
+                "ss_residual": 2090.997912228101, 
+                "df_residual": 532.0, 
+                "ms_residual": 3.9304472034362803, 
+                "ss_explained": 0.22475756322587237, 
+                "ms_explained": 0.11237878161293618, 
+                "f_stat": 0.028591856294287975, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs3764650_g"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "leftitginferiortemporalgyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,adni,ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.4738622202455275, 
+                "ss_residual": 1345.969274007318, 
+                "df_residual": 889.0, 
+                "ms_residual": 1.5140261799857346, 
+                "ss_explained": 2.263367506265367, 
+                "ms_explained": 1.1316837531326835, 
+                "f_stat": 0.7474664362430948, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "ppmicategory"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "leftpoparietaloperculum"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,adni,ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 5.011937351299995e-05, 
+                "ss_residual": 81.13373571025295, 
+                "df_residual": 710.0, 
+                "ms_residual": 0.11427286719753936, 
+                "ss_explained": 2.6163188123381986, 
+                "ms_explained": 0.8721062707793995, 
+                "f_stat": 7.631787774011315, 
+                "df_explained": 3.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs2718058_g"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightttgtransversetemporalgyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.7333103928118334, 
+                "ss_residual": 22.976007498195735, 
+                "df_residual": 549.0, 
+                "ms_residual": 0.0418506511806844, 
+                "ss_explained": 0.025977664535741074, 
+                "ms_explained": 0.012988832267870537, 
+                "f_stat": 0.31036153324814586, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "gender"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightaorganteriororbitalgyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,adni,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 1.4208168751572193e-41, 
+                "ss_residual": 112.35285353331597, 
+                "df_residual": 2215.0, 
+                "ms_residual": 0.05072363590668892, 
+                "ss_explained": 9.64810041514353, 
+                "ms_explained": 9.64810041514353, 
+                "f_stat": 190.20916467605264, 
+                "df_explained": 1.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs17125944_c"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightfrpfrontalpole"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.37322734100679744, 
+                "ss_residual": 186.94483780446703, 
+                "df_residual": 885.0, 
+                "ms_residual": 0.21123710486380456, 
+                "ss_explained": 0.41684090911025345, 
+                "ms_explained": 0.20842045455512673, 
+                "f_stat": 0.9866659301617778, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "adnicategory"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightpogpostcentralgyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,ppmi,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 8.202217922864499e-07, 
+                "ss_residual": 1463.0128630688118, 
+                "df_residual": 1063.0, 
+                "ms_residual": 1.3763056096602182, 
+                "ss_explained": 39.08727232035754, 
+                "ms_explained": 19.54363616017877, 
+                "f_stat": 14.200070117423772, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs2718058_g"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightmfcmedialfrontalcortex"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,ppmi,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.13739651042591236, 
+                "ss_residual": 28.98072910390933, 
+                "df_residual": 549.0, 
+                "ms_residual": 0.05278821330402428, 
+                "ss_explained": 0.21031646441513524, 
+                "ms_explained": 0.10515823220756762, 
+                "f_stat": 1.992077883029069, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "adnicategory"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "leftorifgorbitalpartoftheinferiorfrontalgyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,ppmi,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.004096357184679529, 
+                "ss_residual": 33.41478524267818, 
+                "df_residual": 1063.0, 
+                "ms_residual": 0.03143441697335671, 
+                "ss_explained": 0.3474250232460856, 
+                "ms_explained": 0.1737125116230428, 
+                "f_stat": 5.526188437669407, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "adnicategory"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightfrpfrontalpole"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,edsd,ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.18072151279618456, 
+                "ss_residual": 229.00226573694937, 
+                "df_residual": 1063.0, 
+                "ms_residual": 0.21543016532168333, 
+                "ss_explained": 0.7383025982276387, 
+                "ms_explained": 0.36915129911381933, 
+                "f_stat": 1.7135543602382586, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs744373_c"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "righttrifgtriangularpartoftheinferiorfrontalgyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.08231070432838124, 
+                "ss_residual": 137.81619186998918, 
+                "df_residual": 835.0, 
+                "ms_residual": 0.16504933158082538, 
+                "ss_explained": 0.8268105415359129, 
+                "ms_explained": 0.41340527076795647, 
+                "f_stat": 2.5047376248567845, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "alzheimerbroadcategory"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "leftpoparietaloperculum"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,edsd,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 1.7004311794278003e-07, 
+                "ss_residual": 230.70006203166062, 
+                "df_residual": 2145.0, 
+                "ms_residual": 0.10755247647163665, 
+                "ss_explained": 3.377370000841009, 
+                "ms_explained": 1.6886850004205045, 
+                "f_stat": 15.701033168360734, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs1476679_c"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "lefttmptemporalpole"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.6851251016985103, 
+                "ss_residual": 362.07451693548853, 
+                "df_residual": 532.0, 
+                "ms_residual": 0.6805911972471589, 
+                "ss_explained": 0.5151023879551665, 
+                "ms_explained": 0.25755119397758325, 
+                "f_stat": 0.37842275218856924, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "ppmicategory"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightententorhinalarea"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.004831331328686951, 
+                "ss_residual": 23.02942447455981, 
+                "df_residual": 710.0, 
+                "ms_residual": 0.032435809119098324, 
+                "ss_explained": 0.4223356959724696, 
+                "ms_explained": 0.14077856532415653, 
+                "f_stat": 4.340220550911603, 
+                "df_explained": 3.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "agegroup"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightsfgsuperiorfrontalgyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.00031763549769975264, 
+                "ss_residual": 1771.7534336408355, 
+                "df_residual": 432.0, 
+                "ms_residual": 4.101281096390823, 
+                "ss_explained": 88.01821321889406, 
+                "ms_explained": 22.004553304723515, 
+                "f_stat": 5.365287769250391, 
+                "df_explained": 4.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "alzheimerbroadcategory"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "leftmcggmiddlecingulategyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 7.139813150478738e-05, 
+                "ss_residual": 100.22943871009437, 
+                "df_residual": 365.0, 
+                "ms_residual": 0.27460120194546406, 
+                "ss_explained": 5.382939529660989, 
+                "ms_explained": 2.6914697648304946, 
+                "f_stat": 9.80137648984152, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "agegroup"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightmorgmedialorbitalgyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.0015384169797039563, 
+                "ss_residual": 121.59823611991882, 
+                "df_residual": 709.0, 
+                "ms_residual": 0.1715066799998855, 
+                "ss_explained": 3.0360633462997075, 
+                "ms_explained": 0.7590158365749269, 
+                "f_stat": 4.425575940105852, 
+                "df_explained": 4.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs11767557_c"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightfrpfrontalpole"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,adni,ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.9761423261167912, 
+                "ss_residual": 187.53284915606807, 
+                "df_residual": 882.0, 
+                "ms_residual": 0.2126222779547257, 
+                "ss_explained": 0.010268609222939745, 
+                "ms_explained": 0.005134304611469872, 
+                "f_stat": 0.024147538352322303, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs3764650_g"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightmprgprecentralgyrusmedialsegment"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.3965712072949692, 
+                "ss_residual": 97.959526732461, 
+                "df_residual": 889.0, 
+                "ms_residual": 0.11019069373730146, 
+                "ss_explained": 0.2040428802487812, 
+                "ms_explained": 0.1020214401243906, 
+                "f_stat": 0.9258625811687269, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "gender"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightttgtransversetemporalgyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 2.690453935239985e-33, 
+                "ss_residual": 42.27773452025355, 
+                "df_residual": 1149.0, 
+                "ms_residual": 0.036795243272631464, 
+                "ss_explained": 5.670494593076879, 
+                "ms_explained": 5.670494593076879, 
+                "f_stat": 154.10944700274965, 
+                "df_explained": 1.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "ppmicategory"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightventraldc"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.002098765900834629, 
+                "ss_residual": 136.6596337679417, 
+                "df_residual": 710.0, 
+                "ms_residual": 0.1924783574196362, 
+                "ss_explained": 2.8555128809241554, 
+                "ms_explained": 0.9518376269747185, 
+                "f_stat": 4.945167029348382, 
+                "df_explained": 3.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs610932_a"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "leftsmcsupplementarymotorcortex"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.38980653405290533, 
+                "ss_residual": 321.0103332948306, 
+                "df_residual": 886.0, 
+                "ms_residual": 0.36231414593096006, 
+                "ss_explained": 0.68340216096907, 
+                "ms_explained": 0.341701080484535, 
+                "f_stat": 0.9431072021947691, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "gender"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "leftcerebellumwhitematter"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 1.3530711680325671e-17, 
+                "ss_residual": 2542.317283768508, 
+                "df_residual": 712.0, 
+                "ms_residual": 3.5706703423715, 
+                "ss_explained": 274.35742557535764, 
+                "ms_explained": 274.35742557535764, 
+                "f_stat": 76.83639184488258, 
+                "df_explained": 1.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "apoe4"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightocpoccipitalpole"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.5980364479992153, 
+                "ss_residual": 221.62810281889062, 
+                "df_residual": 1058.0, 
+                "ms_residual": 0.2094783580518815, 
+                "ss_explained": 0.21549184126036885, 
+                "ms_explained": 0.10774592063018443, 
+                "f_stat": 0.5143534713189751, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs10498633_t"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "leftstgsuperiortemporalgyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,edsd,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.37739927233225223, 
+                "ss_residual": 571.192079554094, 
+                "df_residual": 889.0, 
+                "ms_residual": 0.6425107756513994, 
+                "ss_explained": 1.2535648301911064, 
+                "ms_explained": 0.6267824150955532, 
+                "f_stat": 0.9755204719486608, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs10498633_t"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "leftptplanumtemporale"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "ppmi,adni,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.3185590284160015, 
+                "ss_residual": 76.40986497545902, 
+                "df_residual": 889.0, 
+                "ms_residual": 0.08595035430310351, 
+                "ss_explained": 0.19689864047047131, 
+                "ms_explained": 0.09844932023523566, 
+                "f_stat": 1.1454207610134404, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "dataset"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightliglingualgyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 3.3641034751374688e-28, 
+                "ss_residual": 822.7584925183472, 
+                "df_residual": 1149.0, 
+                "ms_residual": 0.7160648324789793, 
+                "ss_explained": 91.61327064068628, 
+                "ms_explained": 91.61327064068628, 
+                "f_stat": 127.93991058536682, 
+                "df_explained": 1.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs3865444_t"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightocpoccipitalpole"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.11251958307288566, 
+                "ss_residual": 181.25789560960763, 
+                "df_residual": 889.0, 
+                "ms_residual": 0.20388964635501422, 
+                "ss_explained": 0.893038816325957, 
+                "ms_explained": 0.4465194081629785, 
+                "f_stat": 2.1900053099581895, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs11136000_t"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightmfcmedialfrontalcortex"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.175941644694759, 
+                "ss_residual": 45.26122296885274, 
+                "df_residual": 888.0, 
+                "ms_residual": 0.05096984568564498, 
+                "ss_explained": 0.17747775854183626, 
+                "ms_explained": 0.08873887927091813, 
+                "f_stat": 1.7410074148195887, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "apoe4"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "leftppplanumpolare"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,edsd,ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.8898257286420475, 
+                "ss_residual": 62.95044649797389, 
+                "df_residual": 1058.0, 
+                "ms_residual": 0.05949947684118515, 
+                "ss_explained": 0.013892238411971838, 
+                "ms_explained": 0.006946119205985919, 
+                "f_stat": 0.11674252572886255, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs17125944_c"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "leftscasubcallosalarea"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.0817878481756271, 
+                "ss_residual": 17.36179002083548, 
+                "df_residual": 885.0, 
+                "ms_residual": 0.01961784183145252, 
+                "ss_explained": 0.09850991885002798, 
+                "ms_explained": 0.04925495942501399, 
+                "f_stat": 2.510722629338638, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs190982_g"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightmfgmiddlefrontalgyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.6436887651259366, 
+                "ss_residual": 2083.8721498788877, 
+                "df_residual": 533.0, 
+                "ms_residual": 3.9097038459266185, 
+                "ss_explained": 3.4476102670080953, 
+                "ms_explained": 1.7238051335040476, 
+                "f_stat": 0.440904273427262, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "edsdcategory"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "leftlorglateralorbitalgyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,adni"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 3.146739650329489e-07, 
+                "ss_residual": 23.78916727773273, 
+                "df_residual": 365.0, 
+                "ms_residual": 0.06517580076091159, 
+                "ss_explained": 2.033874631587903, 
+                "ms_explained": 1.0169373157939514, 
+                "f_stat": 15.602989206445583, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs10498633_t"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightpinsposteriorinsula"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.7990329396422045, 
+                "ss_residual": 64.03250785335302, 
+                "df_residual": 889.0, 
+                "ms_residual": 0.07202756788903603, 
+                "ss_explained": 0.03232737506671409, 
+                "ms_explained": 0.016163687533357046, 
+                "f_stat": 0.22440973653668886, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "parkinsonbroadcategory"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "leftlorglateralorbitalgyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.006553349169577054, 
+                "ss_residual": 52.69808255239625, 
+                "df_residual": 711.0, 
+                "ms_residual": 0.07411825956736463, 
+                "ss_explained": 0.7505957292422225, 
+                "ms_explained": 0.37529786462111125, 
+                "f_stat": 5.063500773112601, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "rs10498633_t"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightliglingualgyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,adni,ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 0.6854671818107552, 
+                "ss_residual": 631.6643866744251, 
+                "df_residual": 889.0, 
+                "ms_residual": 0.71053361830644, 
+                "ss_explained": 0.5369007059454433, 
+                "ms_explained": 0.26845035297272163, 
+                "f_stat": 0.37781513225591523, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "edsdcategory"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightcaudate"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,adni,ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 1.5734549745746134e-05, 
+                "ss_residual": 57.009229516502394, 
+                "df_residual": 365.0, 
+                "ms_residual": 0.15618966990822575, 
+                "ss_explained": 3.5616357923834348, 
+                "ms_explained": 1.7808178961917174, 
+                "f_stat": 11.401636851131666, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "neurodegenerativescategories"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "rightaccumbensarea"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "edsd,ppmi"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 2.9053057664549554e-52, 
+                "ss_residual": 1.6415685233717439, 
+                "df_residual": 619.0, 
+                "ms_residual": 0.0026519685353339965, 
+                "ss_explained": 0.7670906920753393, 
+                "ms_explained": 0.38354534603766965, 
+                "f_stat": 144.62665786845955, 
+                "df_explained": 2.0
+            }
+        }, 
+        {
+            "input": [
+                {
+                    "name": "x", 
+                    "value": "adnicategory"
+                }, 
+                {
+                    "name": "y", 
+                    "value": "leftaorganteriororbitalgyrus"
+                }, 
+                {
+                    "name": "pathology", 
+                    "value": "dementia"
+                }, 
+                {
+                    "name": "dataset", 
+                    "value": "adni,edsd"
+                }, 
+                {
+                    "name": "filter", 
+                    "value": ""
+                }
+            ], 
+            "output": {
+                "p_value": 1.7244552772412502e-05, 
+                "ss_residual": 36.126931601434386, 
+                "df_residual": 1063.0, 
+                "ms_residual": 0.03398582464857421, 
+                "ss_explained": 0.7532594036596517, 
+                "ms_explained": 0.37662970182982586, 
+                "f_stat": 11.081964487380075, 
+                "df_explained": 2.0
+            }
+        }
+    ]
+}
