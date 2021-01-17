@@ -32,6 +32,7 @@ from tests.algorithm_tests_with_privacy.test_ttest_paired import (
 url_calibration = vm_url + "CALIBRATION_BELT"
 url_pearson = vm_url + "PEARSON_CORRELATION"
 url_logreg = vm_url + "LOGISTIC_REGRESSION"
+url_anovaoneway = vm_url + "ANOVA_ONEWAY"
 
 
 def check_privacy_result(result):
@@ -56,6 +57,22 @@ def test_ANOVA_Privacy():
 
     headers = {"Content-type": "application/json", "Accept": "text/plain"}
     r = requests.post(url_anova, data=json.dumps(data), headers=headers)
+    check_privacy_result(r.text)
+
+
+def test_ANOVA_ONEWAY_Privacy():
+    logging.info("---------- TEST : Anova Oneway privacy test")
+
+    data = [
+        {"name": "x", "value": "alzheimerbroadcategory"},
+        {"name": "y", "value": "rightmprgprecentralgyrusmedialsegment"},
+        {"name": "pathology", "value": "dementia"},
+        {"name": "dataset", "value": "adni_9rows"},
+        {"name": "filter", "value": ""},
+    ]
+
+    headers = {"Content-type": "application/json", "Accept": "text/plain"}
+    r = requests.post(url_anovaoneway, data=json.dumps(data), headers=headers)
     check_privacy_result(r.text)
 
 
