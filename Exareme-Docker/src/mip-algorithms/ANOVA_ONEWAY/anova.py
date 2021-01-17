@@ -7,6 +7,7 @@ import itertools
 import numpy as np
 import pandas as pd
 import scipy.stats
+from statsmodels.stats.libqsturng import psturng
 
 from mipframework import Algorithm
 from mipframework import AlgorithmResult
@@ -68,20 +69,21 @@ class Anova(Algorithm):
             title="Anova Summary",
         )
 
-        tuckey_data = pairwise_tuckey(model, covar_enums)
-        tuckey_hsd_table = TabularDataResource(
-            fields=list(tuckey_data.columns),
-            data=list([list(row) for row in tuckey_data.values]),
+        tukey_data = pairwise_tuckey(model, covar_enums)
+        tukey_hsd_table = TabularDataResource(
+            fields=list(tukey_data.columns),
+            data=list([list(row) for row in tukey_data.values]),
             title="Tuckey Honest Significant Differences",
         )
+        tukey_dict = tukey_table_to_dict(tukey_data)
 
         mean_plot = create_mean_plot(
             model.group_stats, var_label, covar_label, covar_enums
         )
 
         self.result = AlgorithmResult(
-            raw_data={"anova_table": res},
-            tables=[anova_table, tuckey_hsd_table],
+            raw_data={"anova_table": res, "tukey_table": tukey_dict},
+            tables=[anova_table, tukey_hsd_table],
             highcharts=[mean_plot],
         )
 
@@ -252,16 +254,17 @@ def create_mean_plot(group_stats, variable, covariable, categories):
 
 
 def pairwise_tuckey(aov, categories):
-    categories = np.array([c for c in categories if c in aov.group_stats.index])
+    categories = np.array(aov.group_stats.index)
     n_groups = len(categories)
     gnobs = aov.group_stats["count"].to_numpy()
     gmeans = (aov.group_stats["sum"] / aov.group_stats["count"]).to_numpy()
-    gvar = aov.table.at[aov.covariable, "mean_sq"] / gnobs
+    gvar = aov.table.at["Residual", "mean_sq"] / gnobs
     g1, g2 = np.array(list(itertools.combinations(np.arange(n_groups), 2))).T
     mn = gmeans[g1] - gmeans[g2]
     se = np.sqrt(gvar[g1] + gvar[g2])
     tval = mn / se
-    pval = scipy.stats.t.sf(np.abs(tval), gnobs[g1].size + gnobs[g2].size - 2) * 2
+    df = aov.table.at["Residual", "df"]
+    pval = psturng(np.sqrt(2) * np.abs(tval), n_groups, df)
     thsd = pd.DataFrame(
         columns=[
             "A",
@@ -286,19 +289,35 @@ def pairwise_tuckey(aov, categories):
     return thsd
 
 
+def tukey_table_to_dict(table):
+    tukey_dict = []
+    for _, row in table.iterrows():
+        tukey_row = dict()
+        tukey_row["groupA"] = row["A"]
+        tukey_row["groupB"] = row["B"]
+        tukey_row["meanA"] = row["mean(A)"]
+        tukey_row["meanB"] = row["mean(B)"]
+        tukey_row["diff"] = row["diff"]
+        tukey_row["se"] = row["Std.Err."]
+        tukey_row["t_stat"] = row["t value"]
+        tukey_row["p_tukey"] = row["Pr(>|t|)"]
+        tukey_dict.append(tukey_row)
+    return tukey_dict
+
+
 if __name__ == "__main__":
     import time
     from mipframework import create_runner
 
     algorithm_args = [
         "-y",
-        "lefthippocampus",
+        "rightmprgprecentralgyrusmedialsegment",
         "-x",
         "alzheimerbroadcategory",
         "-pathology",
         "dementia",
         "-dataset",
-        "adni",
+        "ppmi,adni",
         "-filter",
         "",
     ]
