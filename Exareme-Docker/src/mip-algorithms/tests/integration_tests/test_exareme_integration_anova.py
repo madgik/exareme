@@ -14,7 +14,7 @@ url = vm_url + "ANOVA_ONEWAY"
 @pytest.mark.parametrize(
     "test_input, expected", get_test_params(expected_file, slice(95, 100))
 )
-def test_pearson_algorithm_exareme(test_input, expected):
+def test_anovaoneway_algorithm_exareme(test_input, expected):
     result = requests.post(url, data=json.dumps(test_input), headers=headers)
     result = json.loads(result.text)
     result = result["result"][0]["data"]
