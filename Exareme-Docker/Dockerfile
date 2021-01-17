@@ -34,6 +34,7 @@ RUN pip install pathlib
 RUN pip install tqdm
 RUN pip install colour
 RUN pip install tornado
+RUN pip install statsmodels==0.10.2
 
 # Installing R
 RUN apt install -y  software-properties-common
