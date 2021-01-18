@@ -99,11 +99,15 @@ public class NIterativeAlgorithmResultEntity extends BasicHttpEntity
                     this.buffer.compact();
                     if (i < 1 && !buffering) {
                         encoder.complete();
+                        closeQuery();
+                        close();
                     }
                 } else {
                     encoder.write(ByteBuffer.wrap(
                             finalizeQueryStatus.getError().getBytes()));
                     encoder.complete();
+                    closeQuery();
+                    close();
                 }
             } else {
                 // Algorithm execution failed, notify the client.
@@ -164,13 +168,12 @@ public class NIterativeAlgorithmResultEntity extends BasicHttpEntity
                 encoder.write(buffer);
                 this.buffer.compact();
                 encoder.complete();
+                closeQuery();
+                close();
             }
         } finally {
             if (iterativeAlgorithmState != null)
                 iterativeAlgorithmState.releaseLock();
-
-            closeQuery();
-            close();
         }
     }
 
