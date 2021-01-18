@@ -138,10 +138,11 @@ public class RmiContainer extends RmiRemoteObject<ContainerProxy> implements Con
         log.debug("Create update deamon ...");
         long lifeTime =
                 AdpProperties.getArtProps().getLong("art.container.rmi.RmiContainer.lifetime");
-
         registryUpdateDeamon =
                 RegistryUpdateDeamonFactory.createDeamon(this.createProxy(), (long) (0.75 * lifeTime));
-        registryUpdateDeamon.startDeamon();
+        if(lifeTime != 0) {
+            registryUpdateDeamon.startDeamon();
+        }
 
         //TODO(DSH): check
         executor
@@ -169,6 +170,7 @@ public class RmiContainer extends RmiRemoteObject<ContainerProxy> implements Con
     public ContainerJobResults execJobs(ContainerJobs jobs) throws RemoteException {
         ContainerJobResults results = new ContainerJobResults();
         ContainerJobResult result = null;
+        log.debug("Executing " + jobs.getJobs().size() + " Jobs!");
         for (ContainerJob job : jobs.getJobs()) {
             log.debug("Executing Job: " + job.getType().name() + " " + job.toString());
             if (job.getType()

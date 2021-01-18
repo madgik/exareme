@@ -35,7 +35,11 @@ public class RmiArmComputeProxy extends RmiObjectProxy<ArmCompute> implements Ar
 
         long lifeTime =
                 AdpProperties.getArmProps().getLong("arm.compute.rmi.RmiArmCompute.lifetime");
-        this.registerPolicy = PolicyFactory.generateTimeExpirationDeletePolicy(lifeTime);
+        if(lifeTime == 0) {
+            this.registerPolicy = PolicyFactory.generateNoExpirationPolicy();
+        }else {
+            this.registerPolicy = PolicyFactory.generateTimeExpirationDeletePolicy(lifeTime);
+        }
     }
 
     @Override

@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -30,6 +31,7 @@ public class CloseContainerSessionEventHandler
     public static final CloseContainerSessionEventHandler instance =
             new CloseContainerSessionEventHandler();
     private static final long serialVersionUID = 1L;
+    private static final Logger log = Logger.getLogger(CloseContainerSessionEventHandler.class);
 
     public CloseContainerSessionEventHandler() {
     }
@@ -38,17 +40,19 @@ public class CloseContainerSessionEventHandler
     public void preProcess(CloseContainerSessionEvent event, PlanEventSchedulerState state)
             throws RemoteException {
         try {
-            ExecutorService service =
-                    Executors.newFixedThreadPool(ExecEngineConstants.THREADS_PER_INDEPENDENT_TASKS);
             ArrayList<GetStatsAndCloseSession> workers = new ArrayList<GetStatsAndCloseSession>();
             List<ContainerSession> sessions = state.getContSessions(event.containerSessionID);
+            ExecutorService service = Executors.newFixedThreadPool(sessions.size());
             for (ContainerSession session : sessions) {
                 GetStatsAndCloseSession w = new GetStatsAndCloseSession(session);
                 workers.add(w);
                 service.submit(w);
             }
             service.shutdown();
-            service.awaitTermination(1, TimeUnit.DAYS);
+            if(!service.awaitTermination(2, TimeUnit.MINUTES)){
+                log.error("Timeout when trying to fetch stats.");
+                throw new RemoteException("Timeout when trying to fetch stats." + Arrays.toString(Thread.currentThread().getStackTrace()));
+            }
             for (GetStatsAndCloseSession w : workers) {
                 state.getStatistics().containerStats.add(w.stats.getStats());
             }
@@ -85,7 +89,7 @@ class GetStatsAndCloseSession extends Thread {
     @Override
     public void run() {
         try {
-            log.trace("Closing session: " + session.getSessionID().getLongId());
+            log.debug("Closing session: " + session.getSessionID().getLongId() + " , " + this.toString());
             ContainerJobs jobs = new ContainerJobs();
             jobs.addJob(GetStatisticsJob.instance);
             results = session.execJobs(jobs);
@@ -93,7 +97,9 @@ class GetStatsAndCloseSession extends Thread {
             session.closeSession();
         } catch (RemoteException e) {
             exception = e;
-            log.error("Cannot close session", e);
+            log.error("Cannot close session " + session.getSessionID().getLongId(), e);
+        }finally{
+            log.debug("Closed session: " + session.getSessionID().getLongId() + " , " + this.toString());
         }
     }
 }

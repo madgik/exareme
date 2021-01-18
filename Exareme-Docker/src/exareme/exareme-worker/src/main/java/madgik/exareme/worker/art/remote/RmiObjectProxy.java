@@ -9,7 +9,6 @@ import org.apache.log4j.Logger;
 import java.rmi.AccessException;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
-import java.util.concurrent.Semaphore;
 
 /**
  * University of Athens /
@@ -36,12 +35,14 @@ public abstract class RmiObjectProxy<T> implements ObjectProxy<T> {
         int tries = 0;
         while (true) {
             try {
-                log.trace("Connecting to (" + tries + ") " +
+                log.debug("Connecting to (" + tries + ") " +
                         regEntityName.getIP() + ":" + regEntityName.getPort() + " ...");
                 tries++;
                 Registry registry = RmiRegistryCache.getRegistry(regEntityName);
                 remoteObject = (T) registry.lookup(regEntryName);
                 isConnected = true;
+                log.debug("Connected to " +
+                        regEntityName.getIP() + ":" + regEntityName.getPort() + " ...");
                 return remoteObject;
             } catch (Exception e) {
                 log.error("Cannot connect to " +
@@ -62,18 +63,12 @@ public abstract class RmiObjectProxy<T> implements ObjectProxy<T> {
 
     @Override
     public T getRemoteObject() throws RemoteException {
-        Semaphore semaphore = new Semaphore(1);
 
         if (!isConnected) {
             try {
                 connect();      // try to connect to remote object. If the connection is failing, maybe java is not running
             } catch (RemoteException exception) {
                 throw new RemoteException("There was an error with worker " + "[" + regEntityName.getIP() + "].");
-            } finally {
-                boolean acquired = semaphore.tryAcquire();
-                if (!acquired) {
-                    semaphore.release();
-                }
             }
         }
         return remoteObject;

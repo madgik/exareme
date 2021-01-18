@@ -44,7 +44,11 @@ public class RmiContainerProxy extends RmiObjectProxy<Container> implements Cont
                 regEntityName.getDataTransferPort());
         long lifeTime =
                 AdpProperties.getArtProps().getLong("art.container.rmi.RmiContainer.lifetime");
-        this.registerPolicy = PolicyFactory.generateTimeExpirationDeletePolicy(lifeTime);
+        if(lifeTime == 0) {
+            this.registerPolicy = PolicyFactory.generateNoExpirationPolicy();
+        }else{
+            this.registerPolicy = PolicyFactory.generateTimeExpirationDeletePolicy(lifeTime);
+        }
     }
 
     @Override

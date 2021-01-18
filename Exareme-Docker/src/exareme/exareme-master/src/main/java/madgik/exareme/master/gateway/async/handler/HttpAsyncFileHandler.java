@@ -63,7 +63,6 @@ public class HttpAsyncFileHandler implements HttpAsyncRequestHandler<HttpRequest
         String target = request.getRequestLine().getUri();
         final File file = new File(this.docRoot, URLDecoder.decode(target, "UTF-8"));
         if (!file.exists()) {
-
             response.setStatusCode(HttpStatus.SC_NOT_FOUND);
             NStringEntity entity = new NStringEntity(
                     "<html><body><h1>File" +
@@ -71,7 +70,6 @@ public class HttpAsyncFileHandler implements HttpAsyncRequestHandler<HttpRequest
                     ContentType.create("text/html", "UTF-8"));
             response.setEntity(entity);
             System.out.println("File " + file.getPath() + " not found");
-
         } else if (!file.canRead() || file.isDirectory() || !file.getCanonicalPath().startsWith(this.docRoot.getCanonicalPath())) {
 
             response.setStatusCode(HttpStatus.SC_FORBIDDEN);
@@ -79,7 +77,7 @@ public class HttpAsyncFileHandler implements HttpAsyncRequestHandler<HttpRequest
                     "<html><body><h1>Access denied</h1></body></html>",
                     ContentType.create("text/html", "UTF-8"));
             response.setEntity(entity);
-            System.out.println("Cannot read file " + file.getPath());
+            log.debug("Cannot read file " + file.getPath());
 
         } else if (file.getPath().endsWith(".ser")) {
             HttpCoreContext coreContext = HttpCoreContext.adapt(context);

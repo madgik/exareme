@@ -71,18 +71,27 @@ public class HttpAsyncCheckWorker implements HttpAsyncRequestHandler<HttpRequest
         if (!method.equals("GET") && !method.equals("HEAD") && !method.equals("POST")) {
             throw new MethodNotSupportedException(method + " method not supported");
         }
-        AdpDBClientQueryStatus queryStatus;
         String NODE_IP = null;
+        String NODE_NAME = null;
         DataSerialization ds = DataSerialization.summary;
 
-        String[] getIP = request.getRequestLine().getUri().split("\\?");
+        String[] url = request.getRequestLine().getUri().split("\\?");
+        String[] urlParameters = url[1].split("&");
 
-        if (getIP[1].split("=")[0].equals("NODE_IP"))
-            NODE_IP = getIP[1].split("=")[1];
+        if (urlParameters[0].split("=")[0].equals("NODE_IP"))
+            NODE_IP = urlParameters[0].split("=")[1];
+
+        if (urlParameters[1].split("=")[0].equals("NODE_NAME"))
+            NODE_NAME = urlParameters[1].split("=")[1];
 
         // Execute HEALTH_CHECK algorithm for health checks in bootstrap.sh via "curl -s ${MASTER_IP}:9092/check/worker?NODE_IP=${NODE_IP}"
         // Retrieve json result and check of the NODE_NAME of the node exist in the result.
         String algorithmKey = algorithmName + "_" + System.currentTimeMillis();
+        log.info("Executing algorithm: " + algorithmName + " with key: " + algorithmKey);
+
+        log.info("Algorithm Nodes: ");
+        log.info(" IP: " + NODE_IP + " , NAME: " + NODE_NAME);
+
         String dfl;
         HashMap<String, String> inputContent = new HashMap<>();
         AlgorithmProperties algorithmProperties = Algorithms.getInstance().getAlgorithmProperties(algorithmName);
@@ -126,7 +135,11 @@ public class HttpAsyncCheckWorker implements HttpAsyncRequestHandler<HttpRequest
         clientProperties.setContainerProxies(usedContainerProxies);
         AdpDBClient dbClient =
                 AdpDBClientFactory.createDBClient(manager, clientProperties);
-        queryStatus = dbClient.query(algorithmKey, dfl);
+
+        AdpDBClientQueryStatus queryStatus = dbClient.query(algorithmKey, dfl);
+        log.info("Executing algorithm " + algorithmKey +
+                " started with queryId " + queryStatus.getQueryID().getQueryID());
+
         BasicHttpEntity entity = new NQueryResultEntity(queryStatus, ds,
                 ExaremeGatewayUtils.RESPONSE_BUFFER_SIZE);
         response.setStatusCode(HttpStatus.SC_OK);
