@@ -1,43 +1,32 @@
 {
-	"name": "ANOVA",
-	"desc": "Two-way analysis of variance (ANOVA)",
-	"label": "Two-way ANOVA",
-	"type": "iterative",
+	"name": "ANOVA_ONEWAY",
+	"desc": "One-way analysis of variance (ANOVA)",
+	"label": "One-way ANOVA",
+	"type": "python_local_global",
 	"parameters": [{
 			"name": "x",
 			"label": "x",
-			"desc": "The right part of the linear predictor function, that contains the indepedent variables in an equation supporting the symbols +, :, * , R notation.The independent variables are variables of the input dataset.",
-			"type": "formula",
+			"desc": "A categorical variable on whose levels we perform the Anova.",
+			"type": "column",
 			"columnValuesSQLType": "",
 			"columnValuesIsCategorical": "true",
 			"columnValuesNumOfEnumerations": "",
-			"value": "ANOVA_var_I1*ANOVA_var_I2*ANOVA_var_I3",
+			"value": "ppmicategory",
 			"valueNotBlank": true,
-			"valueMultiple": true,
+			"valueMultiple": false,
 			"valueType": "string"
 		}, {
 			"name": "y",
 			"label": "y",
-			"desc": "The left part of the linear predictor function, that contains the dependent variable.The dependent variable is a variable of the input dataset.",
+			"desc": "A numerical response variable.",
 			"type": "column",
 			"columnValuesSQLType": "real,integer",
-			"columnValuesIsCategorical": "",
+			"columnValuesIsCategorical": "false",
 			"columnValuesNumOfEnumerations": "",
-			"value": "ANOVA_var_D",
+			"value": "lefthippocampus",
 			"valueNotBlank": true,
 			"valueMultiple": false,
 			"valueType": "string"
-		}, {
-			"name": "sstype",
-			"label": "sstype",
-			"desc": "Type of sum of squares to use. It can be 1 or 2 or 3.",
-			"type": "other",
-			"value": "3",
-			"valueMin": 1,
-			"valueMax": 3,
-			"valueNotBlank": true,
-			"valueMultiple": false,
-			"valueType": "integer"
 		}, {
 			"name": "pathology",
 			"label": "pathology",
@@ -52,7 +41,7 @@
 			"label": "dataset",
 			"desc": "The names of one or more datasets, in which the algorithm will be executed.",
 			"type": "dataset",
-			"value": "ANOVA_Balanced_with_inter_V1V2",
+			"value": "ppmi",
 			"valueNotBlank": true,
 			"valueMultiple": true,
 			"valueType": "string"
@@ -68,3 +57,4 @@
 		}
 	]
 }
+

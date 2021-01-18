@@ -7,6 +7,7 @@ from PEARSON_CORRELATION import Pearson
 from LOGISTIC_REGRESSION import LogisticRegression
 from CALIBRATION_BELT import CalibrationBelt
 from KAPLAN_MEIER import KaplanMeier
+from ANOVA_ONEWAY import Anova
 from NAIVE_BAYES import NaiveBayes
 
 app = Flask(__name__)
@@ -35,6 +36,7 @@ charts_info = {
         "title": "Kaplan-Meier Survival Curves",
         "url": "kaplan_meier_survival",
     },
+    "anova_errorbars": {"title": "Anova Mean Plot", "url": "anova_errorbars"},
     "naive_bayes_confusion_matrix": {
         "title": "NaiveBayes CM",
         "url": "naive_bayes_confusion_matrix",
@@ -48,6 +50,27 @@ charts_info = {
 def home():
     return render_template(
         "home.html", title="Exareme Highcharts", charts_info=charts_info
+    )
+
+
+@app.route("/anova_errorbars")
+def anova_errorbars():
+    anova_args = [
+        "-y",
+        "lefthippocampus",
+        "-x",
+        "alzheimerbroadcategory",
+        "-pathology",
+        "dementia",
+        "-dataset",
+        "adni",
+        "-filter",
+        "",
+    ]
+    result = get_algorithm_result(Anova, anova_args)
+    result = result["result"][3]["data"]
+    return render_template(
+        "highchart_layout.html", title="Anova Mean Plot", data=result
     )
 
 

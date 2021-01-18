@@ -1,7 +1,7 @@
 from colour import Color
 
 
-from .core import Heatmap_, Area_, Column_, Bubble_, Line_
+from .core import Heatmap_, Area_, Column_, Bubble_, Line_, Errorbar_
 from .core import (
     Title,
     Axis,
@@ -492,6 +492,34 @@ class SurvivalCurves:
                 for key in self.timeline_dict.keys()
             ],
         }
+
+
+class LineWithErrorbars(HighchartTemplate):
+    def __init__(self, title, data, categories, xname, yname):
+        self.chart = (
+            Errorbar_(title=Title(text=title))
+            .set(xAxis=Axis(categories=categories, title=Title(text=xname)))
+            .set(yAxis=Axis(title=Title(text=yname)))
+            .set(
+                series=RenderableList(
+                    [
+                        Series(
+                            data=[[p[0], p[2]] for p in data],
+                            type="errorbar",
+                            pointWidth=200,
+                            lineWidth=2,
+                        ),
+                        Series(
+                            data=[p[1] for p in data],
+                            type="line",
+                            color="#0A1E6E",
+                            name="",
+                        ),
+                    ]
+                )
+            )
+            .set(legend=Legend(enabled=False))
+        )
 
 
 colors_dark = [
