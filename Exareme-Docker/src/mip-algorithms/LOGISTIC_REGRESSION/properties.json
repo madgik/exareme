@@ -71,7 +71,7 @@
         },
         {
             "name": "positive_level",
-            "label": "other",
+            "label": "Positive level",
             "desc": "Level of the target variable to assign to the positive outcome.",
             "type": "other",
             "value": "",
@@ -82,7 +82,7 @@
         },
         {
             "name": "negative_level",
-            "label": "other",
+            "label": "Negative level",
             "desc": "Level of the target variable to assign to the negative outcome.",
             "type": "other",
             "value": "",

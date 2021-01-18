@@ -21,6 +21,11 @@ ALGORITHM_TYPES = {
     "KaplanMeier": "local-global",
     "ThreeC": "local",
     "Anova": "local-global",
+    "NaiveBayes": "multiple-local-global",
+    "NaiveBayesTrain": "local-global",
+    "GaussianNaiveBayesTrain": "local-global",
+    "CategoricalNaiveBayesTrain": "local-global",
+    "MixedNaiveBayesTrain": "local-global",
 }
 
 
