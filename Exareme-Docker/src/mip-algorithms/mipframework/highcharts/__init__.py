@@ -5,6 +5,8 @@ from .user_defined import (
     ScreePlot,
     CalibrationBeltPlot,
     SurvivalCurves,
+    MultilabelConfisionMatrix,
+    MulticlassROCCurve,
 )
 
 __all__ = [
@@ -14,4 +16,6 @@ __all__ = [
     "ScreePlot",
     "CalibrationBeltPlot",
     "SurvivalCurves",
+    "MultilabelConfisionMatrix",
+    "MulticlassROCCurve",
 ]
