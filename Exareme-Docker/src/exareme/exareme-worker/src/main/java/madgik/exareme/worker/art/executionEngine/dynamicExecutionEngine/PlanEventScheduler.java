@@ -301,7 +301,6 @@ public class PlanEventScheduler {
     public void execute(ExecutionPlan plan) throws RemoteException {
         lock.lock();
         try {
-            log.debug("Plan submitted for execution ...");
             EditableExecutionPlan newPlan = preprocessPlan(plan);
             validatePlan(newPlan);
             log.debug("PlanAfterPreprocessing: " + newPlan.toString());

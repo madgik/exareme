@@ -160,7 +160,7 @@ public class HBPQueryHandler implements HttpAsyncRequestHandler<HttpRequest> {
                 queryStatus = dbClient.query(algorithmKey, dfl);
 
                 log.info("Algorithm " + algorithmKey + " with queryID "
-                                + queryStatus.getQueryID() + " execution started.");
+                        + queryStatus.getQueryID().getQueryID() + " execution started.");
                 log.debug("DFL Script: \n " + dfl);
 
                 BasicHttpEntity entity = new NQueryResultEntity(queryStatus, ds,

@@ -35,6 +35,7 @@ public class AdpDBJobSession {
 
 
     public boolean hasError() {
+        log.error("Line 46 Getting error: " + error + " !!!" + queryID.getQueryID());
         return error;
     }
 
@@ -43,6 +44,7 @@ public class AdpDBJobSession {
     }
 
     public void setError(boolean error, Exception exception) {
+        log.error("Line 46 Setting error!!!" + queryID.getQueryID());
         this.error = error;
         this.exception = exception;
     }

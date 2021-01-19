@@ -109,8 +109,7 @@ public class PhaseCompletionEventHandler extends IterationsEventHandler<PhaseCom
 
                         String terminationConditionResult;
                         try {
-                            InputStream previousResultStream = ias.getAdpDBClientQueryStatus().getResult();
-                            terminationConditionResult = IOUtils.toString(previousResultStream, StandardCharsets.UTF_8);
+                            terminationConditionResult = ias.getAdpDBClientQueryStatus().getResult();
                         } catch (IOException e) {
                             throw new IterationsStateFatalException(
                                     "Could not read the termination_condition result table.", ias.getAlgorithmKey());

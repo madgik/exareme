@@ -60,10 +60,9 @@ public class AdpDBArtJobMonitor implements Runnable {
             statusManager.getStatistics(status.getId()).setTotalDataTransfers(stats.getTotalData());
 
             while (!sessionManager.hasFinished() && !sessionManager.hasError()) {
-
                 boolean updateProgressStatistics = updateProgressStatistics();
                 if (updateProgressStatistics) {
-                    log.info("Session is running... ID: " + sessionPlan.getSessionID().getLongId()
+                    log.info("Session is updating... ID: " + sessionPlan.getSessionID().getLongId()
                             + " , QueryID: " + queryID.getQueryID());
                     log.debug("Update listeners ...");
                     synchronized (listeners) {
@@ -89,13 +88,15 @@ public class AdpDBArtJobMonitor implements Runnable {
                     .setAdpEngineStatistics(statsManager.getStatistics());
 
             if (sessionManager != null && !sessionManager.hasError()) {
-                log.debug("Session finished, closing! ID: " + sessionPlan.getSessionID().getLongId()
+                log.error("Session finished, closing! ID: " + sessionPlan.getSessionID().getLongId()
                         + " , QueryID: " + queryID.getQueryID());
                 statusManager.setFinished(status.getId());
             } else {
+                log.error("Session error! ID: " + sessionPlan.getSessionID().getLongId()
+                        + " , QueryID: " + queryID.getQueryID());
                 statusManager.setError(status.getId(), sessionManager.getErrorList().get(0));
             }
-            log.debug("Session closing! ID: "+ sessionPlan.getSessionID().getLongId()
+            log.debug("Session closing! ID: " + sessionPlan.getSessionID().getLongId()
                     + " , QueryID: " + queryID.getQueryID());
             sessionPlan.close();
 
@@ -104,7 +105,6 @@ public class AdpDBArtJobMonitor implements Runnable {
             log.error("Cannot monitor job, sessionID: " + sessionPlan.getSessionID().getLongId());
             log.error("Cannot monitor job, queryID: " + status.getQueryID().getQueryID(), e);
         } finally {
-            log.debug("Terminate listeners ( " + listeners.size() + ")...");
             synchronized (listeners) {
                 for (AdpDBQueryListener l : listeners) {
                     l.terminated(queryID, status);

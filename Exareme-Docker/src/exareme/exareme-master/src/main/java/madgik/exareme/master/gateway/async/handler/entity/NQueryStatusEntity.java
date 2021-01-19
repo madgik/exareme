@@ -69,7 +69,7 @@ public class NQueryStatusEntity extends BasicHttpEntity implements HttpAsyncCont
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
 
     }
 
