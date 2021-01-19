@@ -13,8 +13,8 @@ import madgik.exareme.master.engine.iterations.handler.IterationsHandler;
 import madgik.exareme.master.engine.iterations.handler.NIterativeAlgorithmResultEntity;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.master.gateway.ExaremeGatewayUtils;
-import madgik.exareme.master.gateway.async.handler.HBP.Exceptions.RequestException;
 import madgik.exareme.master.gateway.async.handler.HBP.Exceptions.BadUserInputException;
+import madgik.exareme.master.gateway.async.handler.HBP.Exceptions.RequestException;
 import madgik.exareme.master.gateway.async.handler.entity.NQueryResultEntity;
 import madgik.exareme.master.queryProcessor.HBP.AlgorithmProperties;
 import madgik.exareme.master.queryProcessor.HBP.Algorithms;
@@ -160,7 +160,7 @@ public class HBPQueryHandler implements HttpAsyncRequestHandler<HttpRequest> {
                 queryStatus = dbClient.query(algorithmKey, dfl);
 
                 log.info("Algorithm " + algorithmKey + " with queryID "
-                                + queryStatus.getQueryID() + " execution started.");
+                        + queryStatus.getQueryID().getQueryID() + " execution started.");
                 log.debug("DFL Script: \n " + dfl);
 
                 BasicHttpEntity entity = new NQueryResultEntity(queryStatus, ds,

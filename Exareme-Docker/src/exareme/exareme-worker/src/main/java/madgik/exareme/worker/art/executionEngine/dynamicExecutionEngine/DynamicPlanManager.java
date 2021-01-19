@@ -105,8 +105,7 @@ public class DynamicPlanManager implements PlanSessionManagerInterface {
     }
 
     @Override
-    public ContainerSessionID createContainerSession(PlanSessionID planSessionID)
-            throws RemoteException {
+    public ContainerSessionID createContainerSession(PlanSessionID planSessionID) {
         ContainerSessionID containerSessionID = new ContainerSessionID(containerSessionCount);
         containerSessionCount++;
         LinkedList<ContainerSessionID> containerSessionIDs = containerSessionMap.get(planSessionID);

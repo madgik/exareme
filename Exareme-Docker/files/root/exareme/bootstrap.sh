@@ -118,7 +118,7 @@ exaremeNodesHealthCheck() {
   echo "$(timestamp) HEALTH CHECK for node with IP ${NODE_IP} and name ${NODE_NAME} ."
 
   if [[ "${FEDERATION_ROLE}" == "master" ]]; then
-    check=$(curl -s --max-time ${EXAREME_NODE_HEALTH_CHECK_TIMEOUT} "${NODE_IP}:9092/check/worker?NODE_IP=${NODE_IP}&NODE_NAME=${NODE_NAME}")
+    check=$(curl -s -X POST --max-time ${EXAREME_NODE_HEALTH_CHECK_TIMEOUT} ${NODE_IP}:9090/mining/query/HEALTH_CHECK)
   else
     check=$(curl -s --max-time ${EXAREME_NODE_HEALTH_CHECK_TIMEOUT} "${MASTER_IP}:9092/check/worker?NODE_IP=${NODE_IP}&NODE_NAME=${NODE_NAME}")
   fi
@@ -140,23 +140,6 @@ exaremeNodesHealthCheck() {
     return 1
   fi
 
-  return 0
-}
-
-# Exareme health check on startup
-startupExaremeNodesHealthCheck() {
-  # If health check fails then try again until it succeeds or close the container.
-  attempts=0
-  while ! exaremeNodesHealthCheck; do
-    if [[ $attempts -ge $EXAREME_NODE_STARTUP_HEALTH_CHECK_MAX_ATTEMPTS ]]; then
-      echo -e "\n$(timestamp) HEALTH CHECK FAILED. Closing the container."
-      return 1 # Exiting
-    fi
-    echo "$(timestamp) HEALTH CHECK failed. Trying again..."
-    attempts=$(($attempts + 1))
-    sleep $EXAREME_HEALTH_CHECK_AWAIT_TIME
-  done
-  echo "$(timestamp) HEALTH CHECK successful on NODE_IP: $NODE_IP"
   return 0
 }
 
@@ -255,11 +238,6 @@ if [[ "${FEDERATION_ROLE}" == "master" ]]; then
   curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${CONSUL_MASTER_PATH}/${NODE_NAME} <<<${NODE_IP}
   curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${CONSUL_ACTIVE_WORKERS_PATH}/${NODE_NAME} <<<${NODE_IP}
 
-  if ! startupExaremeNodesHealthCheck; then
-    echo "$(timestamp) HEALTH CHECK algorithm failed. Switch ENVIRONMENT_TYPE to 'DEV' to see error messages coming from EXAREME. Exiting..."
-    exit 1
-  fi
-
   periodicExaremeNodesHealthCheck &
 
 else ##### Running bootstrap on a worker node #####
@@ -275,11 +253,6 @@ else ##### Running bootstrap on a worker node #####
   # Updating consul with node IP
   echo -e "\n$(timestamp) Updating consul with worker node IP."
   curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${CONSUL_ACTIVE_WORKERS_PATH}/${NODE_NAME} <<<${NODE_IP}
-
-  if ! startupExaremeNodesHealthCheck; then
-    echo "$(timestamp) HEALTH CHECK algorithm failed. Switch ENVIRONMENT_TYPE to 'DEV' to see error messages coming from EXAREME. Exiting..."
-    exit 1
-  fi
 
   periodicExaremeNodesHealthCheck &
 

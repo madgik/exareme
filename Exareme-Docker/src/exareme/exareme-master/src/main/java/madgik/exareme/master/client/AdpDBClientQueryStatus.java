@@ -28,8 +28,8 @@ public interface AdpDBClientQueryStatus {
 
     void registerListener(AdpDBQueryListener listener) throws RemoteException;
 
-    InputStream getResult() throws RemoteException;
+    String getResult() throws RemoteException;
 
-    InputStream getResult(DataSerialization ds) throws RemoteException;
+    String getResult(DataSerialization ds) throws RemoteException;
 
 }
