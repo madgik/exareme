@@ -47,11 +47,6 @@ public class NIterativeAlgorithmResultEntity extends BasicHttpEntity
         this.dataSerialization = dataSerialization;
     }
 
-    private final static String user_error = new String("text/plain+user_error");
-    private final static String error = new String("text/plain+error");
-    private final static String warning = new String("text/plain+warning");
-
-
     /**
      * @param encoder is used to save the output
      * @param ioctrl  will be used from the iterativeAlgorithmState, when the algorithm is complete,
@@ -87,9 +82,11 @@ public class NIterativeAlgorithmResultEntity extends BasicHttpEntity
                 if (!finalizeQueryStatus.hasError() &&
                         finalizeQueryStatus.hasFinished()) {
                     if (channel == null) {
+                        String result = iterativeAlgorithmState.getAdpDBClientQueryStatus().getResult(dataSerialization);
+                        log.info("Iterative algorithm with key " + iterativeAlgorithmState.getAlgorithmKey()
+                                + " terminated. Result: \n " + result);
                         channel = Channels.newChannel(
-                                iterativeAlgorithmState.getAdpDBClientQueryStatus()
-                                        .getResult(dataSerialization));
+                                new ByteArrayInputStream(result.getBytes(StandardCharsets.UTF_8)));
                     }
                     // Reading from the channel to the buffer, flip is required by the API
                     channel.read(buffer);
@@ -183,11 +180,13 @@ public class NIterativeAlgorithmResultEntity extends BasicHttpEntity
             finalizeQueryStatus.close();
             finalizeQueryStatus = null;
         }
+        if (iterativeAlgorithmState != null)
+            iterativeAlgorithmState.releaseLock();
         iterativeAlgorithmState = null;
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
 
     }
 

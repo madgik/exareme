@@ -33,8 +33,8 @@ public class PlanTerminationEventHandler implements ExecEngineEventHandler<PlanT
                 try {
                     log.debug("closing session of container : " + proxy.getEntityName().getName());
                     proxy.destroySessions(state.getPlanSessionID());
-                } catch (RemoteException e) {
-                    //   state.addException(e);
+                } catch (Exception e) {
+                    log.error("Cannot close the sessions for proxy: " + proxy, e);
                     // throw new ServerException("Cannot close all sessions", e);
                 }
             }

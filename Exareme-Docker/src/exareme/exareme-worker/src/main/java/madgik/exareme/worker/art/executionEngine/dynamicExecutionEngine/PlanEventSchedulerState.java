@@ -308,7 +308,7 @@ public class PlanEventSchedulerState {
         for (String containerName : plan.iterateContainers()) {
             try {
                 if (!containerName.contains("any")) {
-                    pcsc.addConainerToCheck(plan.getContainer(containerName));
+                    pcsc.addContainerToCheck(plan.getContainer(containerName));
                 }
             } catch (SemanticError semanticError) {
                 semanticError.printStackTrace();

@@ -25,6 +25,8 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author herald
@@ -34,6 +36,7 @@ public class DynamicPlanManager implements PlanSessionManagerInterface {
     private final HashMap<PlanSessionID, PlanSessionReportID> elasticTreeSessions = new HashMap<>();
     private EventProcessor eventProcessor = null;
     private long sessionCount = 0;
+    ReentrantLock sessionCountLock = new ReentrantLock();
     private long containerSessionCount = 0;
     /* ROOT sessions */
     private Map<PlanSessionID, PlanEventScheduler> schedulerMap = null;
@@ -71,11 +74,13 @@ public class DynamicPlanManager implements PlanSessionManagerInterface {
 
     @Override
     public void createGlobalScheduler() throws RemoteException {
+        sessionCountLock.lock();
         PlanSessionID sessionID = new PlanSessionID(sessionCount);
         PlanSessionReportID reportID = new PlanSessionReportID(sessionCount);
-        reportID.reportManagerProxy = executionEngine.getPlanSessionReportManagerProxy(reportID);
         sessionCount++;
+        sessionCountLock.unlock();
 
+        reportID.reportManagerProxy = executionEngine.getPlanSessionReportManagerProxy(reportID);
         PlanEventScheduler eventScheduler =
                 new PlanEventScheduler(sessionID, reportID, eventProcessor, this, resourceManager,
                         registryProxy);
@@ -86,12 +91,13 @@ public class DynamicPlanManager implements PlanSessionManagerInterface {
 
     @Override
     public PlanSessionID createNewSession() throws RemoteException {
-        // TODO Is this thread safe?
+        sessionCountLock.lock();
         PlanSessionID sessionID = new PlanSessionID(sessionCount);
         PlanSessionReportID reportID = new PlanSessionReportID(sessionCount);
-        reportID.reportManagerProxy = executionEngine.getPlanSessionReportManagerProxy(reportID);
         sessionCount++;
+        sessionCountLock.unlock();
 
+        reportID.reportManagerProxy = executionEngine.getPlanSessionReportManagerProxy(reportID);
         PlanEventScheduler eventScheduler =
                 new PlanEventScheduler(sessionID, reportID, eventProcessor, this, resourceManager,
                         registryProxy);
@@ -105,8 +111,7 @@ public class DynamicPlanManager implements PlanSessionManagerInterface {
     }
 
     @Override
-    public ContainerSessionID createContainerSession(PlanSessionID planSessionID)
-            throws RemoteException {
+    public ContainerSessionID createContainerSession(PlanSessionID planSessionID) {
         ContainerSessionID containerSessionID = new ContainerSessionID(containerSessionCount);
         containerSessionCount++;
         LinkedList<ContainerSessionID> containerSessionIDs = containerSessionMap.get(planSessionID);

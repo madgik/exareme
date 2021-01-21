@@ -21,7 +21,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.rmi.RemoteException;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.concurrent.FutureTask;
 
 /**
  * @author alex
@@ -35,7 +37,8 @@ public class RmiAdpDBClientQueryStatus implements AdpDBClientQueryStatus {
     private String lastStatus;
     private TimeFormat timeF;
     private boolean finished;
-    private InputStream result;
+    private boolean error;
+    private String result;
 
     public RmiAdpDBClientQueryStatus(AdpDBQueryID queryId, AdpDBClientProperties properties,
                                      AdpDBQueryExecutionPlan plan, AdpDBStatus status) {
@@ -45,6 +48,7 @@ public class RmiAdpDBClientQueryStatus implements AdpDBClientQueryStatus {
         this.lastStatus = null;
         this.timeF = new TimeFormat(TimeUnit.min);
         this.finished = false;
+        this.error = false;
         result = null;
     }
 
@@ -60,13 +64,6 @@ public class RmiAdpDBClientQueryStatus implements AdpDBClientQueryStatus {
 
         if (!status.hasFinished() && !status.hasError())
             return false;
-
-        try {
-            String algorithmResult = IOUtils.toString(getResult(DataSerialization.summary), StandardCharsets.UTF_8);
-            log.info("Algorithm with queryId " + getQueryID().getQueryID() + " terminated. Result: \n " + algorithmResult);
-        } catch (IOException e) {
-            log.error("Could not read the algorithm result table." + getQueryID());
-        }
 
         finished = true;
         return true;
@@ -113,7 +110,7 @@ public class RmiAdpDBClientQueryStatus implements AdpDBClientQueryStatus {
     }
 
     @Override
-    public InputStream getResult() throws RemoteException {
+    public String getResult() throws RemoteException {
         return getResult(DataSerialization.ldjson);
     }
 
@@ -129,14 +126,27 @@ public class RmiAdpDBClientQueryStatus implements AdpDBClientQueryStatus {
      * @throws RemoteException
      */
     @Override
-    public InputStream getResult(DataSerialization ds) throws RemoteException {
+    public String getResult(DataSerialization ds) throws RemoteException {
 
         // The registry should be updated the 1st time we fetch a result stream.
         if (result == null) {
             updateRegistry();
         }
-        result = new RmiAdpDBClient(AdpDBManagerLocator.getDBManager(), properties)
+        InputStream resultStream = new RmiAdpDBClient(AdpDBManagerLocator.getDBManager(), properties)
                 .readTable(plan.getResultTables().get(0).getName(), ds);
+
+        FutureTask<String> getResultFromStream;
+        try {
+            getResultFromStream = new FutureTask<>(() ->
+                    IOUtils.toString(resultStream, StandardCharsets.UTF_8));
+
+            new Thread(getResultFromStream).start();
+            result = getResultFromStream.get(30, java.util.concurrent.TimeUnit.SECONDS);
+        } catch (Exception e) {
+            log.error("Error reading the result table! QueryID:" + status.getQueryID().getQueryID(), e);
+            throw new RemoteException("Could not read the result table!");
+        }
+
         return result;
     }
 

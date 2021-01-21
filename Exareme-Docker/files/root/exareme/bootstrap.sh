@@ -14,7 +14,7 @@ CONSUL_WAIT_FOR_MASTER_IP_MAX_ATTEMPTS=20
 EXAREME_NODE_STARTUP_HEALTH_CHECK_MAX_ATTEMPTS=10
 EXAREME_NODE_HEALTH_CHECK_TIMEOUT=60
 MASTER_NODE_REACHABLE_TIMEOUT=5
-PERIODIC_EXAREME_NODES_HEALTH_CHECK_MAX_RETRIES=3
+PERIODIC_EXAREME_NODES_HEALTH_CHECK_MAX_RETRIES=5
 PERIODIC_EXAREME_NODES_HEALTH_CHECK_INTERVAL=120
 EXAREME_HEALTH_CHECK_AWAIT_TIME=60
 PERIODIC_TEMP_FILES_REMOVAL=300
@@ -118,7 +118,7 @@ exaremeNodesHealthCheck() {
   echo "$(timestamp) HEALTH CHECK for node with IP ${NODE_IP} and name ${NODE_NAME} ."
 
   if [[ "${FEDERATION_ROLE}" == "master" ]]; then
-    check=$(curl -s --max-time ${EXAREME_NODE_HEALTH_CHECK_TIMEOUT} "${NODE_IP}:9092/check/worker?NODE_IP=${NODE_IP}&NODE_NAME=${NODE_NAME}")
+    check=$(curl -s -X POST --max-time ${EXAREME_NODE_HEALTH_CHECK_TIMEOUT} ${NODE_IP}:9090/mining/query/HEALTH_CHECK)
   else
     check=$(curl -s --max-time ${EXAREME_NODE_HEALTH_CHECK_TIMEOUT} "${MASTER_IP}:9092/check/worker?NODE_IP=${NODE_IP}&NODE_NAME=${NODE_NAME}")
   fi
@@ -255,11 +255,6 @@ if [[ "${FEDERATION_ROLE}" == "master" ]]; then
   curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${CONSUL_MASTER_PATH}/${NODE_NAME} <<<${NODE_IP}
   curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${CONSUL_ACTIVE_WORKERS_PATH}/${NODE_NAME} <<<${NODE_IP}
 
-  if ! startupExaremeNodesHealthCheck; then
-    echo "$(timestamp) HEALTH CHECK algorithm failed. Switch ENVIRONMENT_TYPE to 'DEV' to see error messages coming from EXAREME. Exiting..."
-    exit 1
-  fi
-
   periodicExaremeNodesHealthCheck &
 
 else ##### Running bootstrap on a worker node #####
@@ -271,15 +266,15 @@ else ##### Running bootstrap on a worker node #####
 
   echo "$(timestamp) Starting Exareme on worker node with IP: ${NODE_IP} and nodeName: ${NODE_NAME}"
   . ./start-worker.sh
-
-  # Updating consul with node IP
-  echo -e "\n$(timestamp) Updating consul with worker node IP."
-  curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${CONSUL_ACTIVE_WORKERS_PATH}/${NODE_NAME} <<<${NODE_IP}
-
+  
   if ! startupExaremeNodesHealthCheck; then
     echo "$(timestamp) HEALTH CHECK algorithm failed. Switch ENVIRONMENT_TYPE to 'DEV' to see error messages coming from EXAREME. Exiting..."
     exit 1
   fi
+
+  # Updating consul with node IP
+  echo -e "\n$(timestamp) Updating consul with worker node IP."
+  curl -s -X PUT -d @- ${CONSULURL}/v1/kv/${CONSUL_ACTIVE_WORKERS_PATH}/${NODE_NAME} <<<${NODE_IP}
 
   periodicExaremeNodesHealthCheck &
 

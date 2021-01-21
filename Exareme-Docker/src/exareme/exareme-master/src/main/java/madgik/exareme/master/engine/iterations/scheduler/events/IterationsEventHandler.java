@@ -3,7 +3,6 @@ package madgik.exareme.master.engine.iterations.scheduler.events;
 import madgik.exareme.common.app.engine.AdpDBQueryID;
 import madgik.exareme.master.client.AdpDBClientQueryStatus;
 import madgik.exareme.master.engine.iterations.scheduler.IterationsDispatcher;
-import madgik.exareme.master.engine.iterations.scheduler.events.phaseCompletion.PhaseCompletionEventHandler;
 import madgik.exareme.master.engine.iterations.state.IterationsStateManager;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.utils.eventProcessor.EventHandler;
@@ -56,8 +55,9 @@ public abstract class IterationsEventHandler<T extends IterationsEvent>
                 ias.getAlgorithmKey(),
                 dflScript);
 
-        log.info("New Iterative phase: " + currentPhase);
-        log.info("Executing Iterative DFL Script: \n" + dflScript);
+        log.info("New Iterative phase: " + currentPhase + " for algorithm: " + ias.getAlgorithmKey() +
+                " with queryID: " + queryStatus.getQueryID().getQueryID());
+        log.debug("Executing Iterative DFL Script: \n" + dflScript);
 
         ias.setCurrentExecutionPhase(currentPhase);
 
