@@ -141,9 +141,9 @@ public class RmiAdpDBClientQueryStatus implements AdpDBClientQueryStatus {
                     IOUtils.toString(resultStream, StandardCharsets.UTF_8));
 
             new Thread(getResultFromStream).start();
-            result = getResultFromStream.get(10, java.util.concurrent.TimeUnit.SECONDS);
+            result = getResultFromStream.get(30, java.util.concurrent.TimeUnit.SECONDS);
         } catch (Exception e) {
-            log.error("Error reading the result table!", e);
+            log.error("Error reading the result table! QueryID:" + status.getQueryID().getQueryID(), e);
             throw new RemoteException("Could not read the result table!");
         }
 
