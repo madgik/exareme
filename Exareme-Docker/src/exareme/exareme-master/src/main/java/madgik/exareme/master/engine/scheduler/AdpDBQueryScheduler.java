@@ -29,6 +29,7 @@ import madgik.exareme.master.registry.Registry;
 import madgik.exareme.utils.eventProcessor.EventProcessor;
 
 import java.rmi.RemoteException;
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
