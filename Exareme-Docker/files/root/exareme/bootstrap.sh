@@ -143,6 +143,23 @@ exaremeNodesHealthCheck() {
   return 0
 }
 
+# Exareme health check on startup
+startupExaremeNodesHealthCheck() {
+  # If health check fails then try again until it succeeds or close the container.
+  attempts=0
+  while ! exaremeNodesHealthCheck; do
+    if [[ $attempts -ge $EXAREME_NODE_STARTUP_HEALTH_CHECK_MAX_ATTEMPTS ]]; then
+      echo -e "\n$(timestamp) HEALTH CHECK FAILED. Closing the container."
+      return 1 # Exiting
+    fi
+    echo "$(timestamp) HEALTH CHECK failed. Trying again..."
+    attempts=$(($attempts + 1))
+    sleep $EXAREME_HEALTH_CHECK_AWAIT_TIME
+  done
+  echo "$(timestamp) HEALTH CHECK successful on NODE_IP: $NODE_IP"
+  return 0
+}
+
 # Periodic check for exareme's health.
 # If it fails shutdown the container
 periodicExaremeNodesHealthCheck() {
@@ -249,6 +266,11 @@ else ##### Running bootstrap on a worker node #####
 
   echo "$(timestamp) Starting Exareme on worker node with IP: ${NODE_IP} and nodeName: ${NODE_NAME}"
   . ./start-worker.sh
+  
+  if ! startupExaremeNodesHealthCheck; then
+    echo "$(timestamp) HEALTH CHECK algorithm failed. Switch ENVIRONMENT_TYPE to 'DEV' to see error messages coming from EXAREME. Exiting..."
+    exit 1
+  fi
 
   # Updating consul with node IP
   echo -e "\n$(timestamp) Updating consul with worker node IP."
