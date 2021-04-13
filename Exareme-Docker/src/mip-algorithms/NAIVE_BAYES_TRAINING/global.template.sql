@@ -76,6 +76,10 @@ from statistics
 where colname in (select code from defaultDB.globalmetadatatbl  where categorical= 0)
 and colname <> '%{y}';
 
+
+select Naive_Bayes_Training_inputerrorchecking('%{y}',no) from (select count(distinct classval) as no from global_probabilities);
+
+
 --select * from global_probabilities;
 var 'jsonResult' from select '{ "type": "application/json", "data": ' || componentresult || ', "dbIdentifier": ' || '%{dbIdentifier}'   || '}' from
 ( select tabletojson(colname,val,classval,average,sigma,probability, "colname,val,classval,average,sigma,probability",0)  as componentresult

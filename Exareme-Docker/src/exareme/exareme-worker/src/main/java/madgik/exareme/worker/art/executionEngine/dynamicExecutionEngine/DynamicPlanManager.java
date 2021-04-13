@@ -19,11 +19,14 @@ import org.apache.log4j.Logger;
 
 import java.rmi.RemoteException;
 import java.rmi.ServerException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author herald
@@ -33,6 +36,7 @@ public class DynamicPlanManager implements PlanSessionManagerInterface {
     private final HashMap<PlanSessionID, PlanSessionReportID> elasticTreeSessions = new HashMap<>();
     private EventProcessor eventProcessor = null;
     private long sessionCount = 0;
+    ReentrantLock sessionCountLock = new ReentrantLock();
     private long containerSessionCount = 0;
     /* ROOT sessions */
     private Map<PlanSessionID, PlanEventScheduler> schedulerMap = null;
@@ -70,11 +74,13 @@ public class DynamicPlanManager implements PlanSessionManagerInterface {
 
     @Override
     public void createGlobalScheduler() throws RemoteException {
+        sessionCountLock.lock();
         PlanSessionID sessionID = new PlanSessionID(sessionCount);
         PlanSessionReportID reportID = new PlanSessionReportID(sessionCount);
-        reportID.reportManagerProxy = executionEngine.getPlanSessionReportManagerProxy(reportID);
         sessionCount++;
+        sessionCountLock.unlock();
 
+        reportID.reportManagerProxy = executionEngine.getPlanSessionReportManagerProxy(reportID);
         PlanEventScheduler eventScheduler =
                 new PlanEventScheduler(sessionID, reportID, eventProcessor, this, resourceManager,
                         registryProxy);
@@ -85,11 +91,13 @@ public class DynamicPlanManager implements PlanSessionManagerInterface {
 
     @Override
     public PlanSessionID createNewSession() throws RemoteException {
+        sessionCountLock.lock();
         PlanSessionID sessionID = new PlanSessionID(sessionCount);
         PlanSessionReportID reportID = new PlanSessionReportID(sessionCount);
-        reportID.reportManagerProxy = executionEngine.getPlanSessionReportManagerProxy(reportID);
         sessionCount++;
+        sessionCountLock.unlock();
 
+        reportID.reportManagerProxy = executionEngine.getPlanSessionReportManagerProxy(reportID);
         PlanEventScheduler eventScheduler =
                 new PlanEventScheduler(sessionID, reportID, eventProcessor, this, resourceManager,
                         registryProxy);
@@ -103,8 +111,7 @@ public class DynamicPlanManager implements PlanSessionManagerInterface {
     }
 
     @Override
-    public ContainerSessionID createContainerSession(PlanSessionID planSessionID)
-            throws RemoteException {
+    public ContainerSessionID createContainerSession(PlanSessionID planSessionID) {
         ContainerSessionID containerSessionID = new ContainerSessionID(containerSessionCount);
         containerSessionCount++;
         LinkedList<ContainerSessionID> containerSessionIDs = containerSessionMap.get(planSessionID);
@@ -124,17 +131,18 @@ public class DynamicPlanManager implements PlanSessionManagerInterface {
             eventScheduler.closeSession(jobs);
             eventScheduler.queueIndependentEvents(jobs);
             Semaphore sem = new Semaphore(0);
-            if (eventScheduler.getState().isTerminated() == false) {
+            if (!eventScheduler.getState().isTerminated()) {
                 eventScheduler.getState()
                         .registerTerminationListener(new SemaphoreTerminationListener(sem));
-
                 log.debug(
                         "Waiting '" + forceSessionStopAfter_sec + "' seconds for session to stop ...");
                 boolean stopped = sem.tryAcquire(forceSessionStopAfter_sec, TimeUnit.SECONDS);
-                if (stopped == false) {
-                    log.warn("Force stop!");
+                if (!stopped) {
+                    log.error("Force stop! SessionID: " + sessionID.getLongId() + "\n" + Arrays.toString(Thread.currentThread().getStackTrace()).concat("\n"));
                 }
             }
+
+            log.debug("Destroying session with ID: " + sessionID.getLongId());
             PlanSessionReportID reportID = eventScheduler.getState().getPlanSessionReportID();
             schedulerMap.remove(sessionID);
             containerSessionMap.remove(sessionID);

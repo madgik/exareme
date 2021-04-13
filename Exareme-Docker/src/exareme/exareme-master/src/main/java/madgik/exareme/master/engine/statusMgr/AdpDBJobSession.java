@@ -8,7 +8,6 @@ import madgik.exareme.common.app.engine.AdpDBQueryListener;
 import madgik.exareme.common.app.engine.AdpDBStatistics;
 import madgik.exareme.master.engine.AdpDBManagerLocator;
 import madgik.exareme.worker.art.executionEngine.session.ExecutionEngineSessionPlan;
-import org.apache.log4j.Logger;
 
 import java.rmi.RemoteException;
 import java.util.Map;
@@ -17,7 +16,6 @@ import java.util.Map;
  * @author herald
  */
 public class AdpDBJobSession {
-    private static final Logger log = Logger.getLogger(AdpDBJobSession.class);
     private boolean finished = false;
     private boolean error = false;
     private Exception exception = null;

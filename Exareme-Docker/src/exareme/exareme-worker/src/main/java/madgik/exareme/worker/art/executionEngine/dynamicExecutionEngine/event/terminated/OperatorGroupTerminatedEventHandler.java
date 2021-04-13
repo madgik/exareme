@@ -71,7 +71,7 @@ public class OperatorGroupTerminatedEventHandler
             activeOperator.exitMessage = event.exitMessage;
             activeOperator.exitDate = new Date();
             // Check if the group has terminated
-            if ((activeGroup.hasError == false) && group.hasTerminated) {
+            if (!activeGroup.hasError && group.hasTerminated) {
                 log.trace("Operator Group Terminated: " + group.toString());
                 state.groupDependencySolver().setTerminated(group);
                 // Close the container sessions
@@ -90,6 +90,7 @@ public class OperatorGroupTerminatedEventHandler
                 state.eventScheduler.queueIndependentEvents(termJobs);
 
                 IndependentEvents closeJobs = new IndependentEvents(state);
+                log.info("Operators finished (1), Closing session! ID: " +  state.getPlanSessionID().getLongId());
                 state.eventScheduler.closeSession(closeJobs);
                 state.eventScheduler.queueIndependentEvents(closeJobs);
             }

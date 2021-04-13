@@ -14,4 +14,4 @@ colour
 requests
 pytest
 pytest-xdist
-
+statsmodels==0.10.2

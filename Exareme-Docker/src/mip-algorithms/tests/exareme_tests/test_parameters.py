@@ -8,6 +8,27 @@ sys.path.insert(0, "../")
 from tests import vm_url
 
 
+
+def test_parameter_modulo2():
+
+    endpointUrl1 = vm_url + "TTEST_PAIRED"
+
+    logging.info("---------- TEST : t-test input parameters throwing error.")
+    data = [
+       {"name": "y", "value": "lefthippocampus-righthippocampus,leftententorhinalarea"},
+       {"name": "hypothesis", "value": "different"},
+       {"name": "pathology", "value": "dementia"},
+       {"name": "dataset", "value": "desd-synthdata"},
+       {"name": "filter", "value": ""},
+    ]
+    headers = {"Content-type": "application/json", "Accept": "text/plain"}
+    r = requests.post(endpointUrl1, data=json.dumps(data), headers=headers)
+    result = json.loads(r.text)
+    assert(result["result"][0]["data"]==" The input should be in the form of y1-y2,y3-y4,.. Therefore the number of variables should be modulo 2 ")
+    assert(result["result"][0]["type"]=="text/plain+user_error")
+    
+
+
 def test_valueEnumerationsParameter():
 
     endpointUrl1 = vm_url + "LINEAR_REGRESSION"
@@ -27,7 +48,7 @@ def test_valueEnumerationsParameter():
     result = json.loads(r.text)
     assert (
         r.text
-        == '{"result" : [{"data":"The value \'abcd\' of the parameter \'encodingparameter\' is not included in the valueEnumerations [dummycoding, sumscoding, simplecoding] .  Algorithm: LINEAR_REGRESSION","type":"text/plain+error"}]}'
+        == '{"result" : [{"data":"The value \'abcd\' of the parameter \'encodingparameter\' is not included in the valueEnumerations [dummycoding, sumscoding, simplecoding] .","type":"text/plain+user_error"}]}'
     )
 
 
@@ -52,7 +73,7 @@ def test_parameter_max_value():
 
     assert (
         r.text
-        == '{"result" : [{"data":"The value(s) of the parameter \'sstype\' should be less than 3.0 .  Algorithm: ANOVA","type":"text/plain+error"}]}'
+        == '{"result" : [{"data":"The value(s) of the parameter \'sstype\' should be less than 3.0 .","type":"text/plain+user_error"}]}'
     )
 
 

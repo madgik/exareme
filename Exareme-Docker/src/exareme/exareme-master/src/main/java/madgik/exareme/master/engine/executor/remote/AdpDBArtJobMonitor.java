@@ -59,18 +59,11 @@ public class AdpDBArtJobMonitor implements Runnable {
             statusManager.getStatistics(status.getId()).setTotalOperators(stats.getTotalProc());
             statusManager.getStatistics(status.getId()).setTotalDataTransfers(stats.getTotalData());
 
-
-            while (sessionManager.hasFinished() == false && sessionManager.hasError() == false) {
-
-                Thread.sleep(100 * statsUpdateSecs);
+            while (!sessionManager.hasFinished() && !sessionManager.hasError()) {
                 boolean updateProgressStatistics = updateProgressStatistics();
-                sessionManager = sessionPlan.getPlanSessionStatusManagerProxy();
-                statsManager = sessionPlan.getPlanSessionStatisticsManagerProxy();
-                if (sessionManager == null || statsManager == null) {
-                    log.info("--+ error");
-                }
                 if (updateProgressStatistics) {
-                    log.info("Session is running...");
+                    log.info("Session is updating... ID: " + sessionPlan.getSessionID().getLongId()
+                            + " , QueryID: " + queryID.getQueryID());
                     log.debug("Update listeners ...");
                     synchronized (listeners) {
                         for (AdpDBQueryListener l : listeners) {
@@ -80,23 +73,38 @@ public class AdpDBArtJobMonitor implements Runnable {
                     }
                 }
 
+                Thread.sleep(100 * statsUpdateSecs);
 
+                // Reload the managers
+                sessionManager = sessionPlan.getPlanSessionStatusManagerProxy();
+                statsManager = sessionPlan.getPlanSessionStatisticsManagerProxy();
+                if (sessionManager == null || statsManager == null) {
+                    log.error("Session Manager or stats Manager null! " + sessionManager + ", " + statsManager);
+                }
             }
+
             updateProgressStatistics();
             statusManager.getStatistics(status.getId())
                     .setAdpEngineStatistics(statsManager.getStatistics());
 
-            if (sessionManager != null && sessionManager.hasError() == false) {
+            if (sessionManager != null && !sessionManager.hasError()) {
+                log.info("Session finished, closing! ID: " + sessionPlan.getSessionID().getLongId()
+                        + " , QueryID: " + queryID.getQueryID());
                 statusManager.setFinished(status.getId());
             } else {
+                log.info("Session error! ID: " + sessionPlan.getSessionID().getLongId()
+                        + " , QueryID: " + queryID.getQueryID());
                 statusManager.setError(status.getId(), sessionManager.getErrorList().get(0));
             }
+            log.debug("Session closing! ID: " + sessionPlan.getSessionID().getLongId()
+                    + " , QueryID: " + queryID.getQueryID());
             sessionPlan.close();
+
         } catch (Exception e) {
             statusManager.setError(status.getId(), e);
-            log.error("Cannot monitor job!", e);
+            log.error("Cannot monitor job, sessionID: " + sessionPlan.getSessionID().getLongId());
+            log.error("Cannot monitor job, queryID: " + status.getQueryID().getQueryID(), e);
         } finally {
-            log.debug("Terminate listeners ( " + listeners.size() + ")...");
             synchronized (listeners) {
                 for (AdpDBQueryListener l : listeners) {
                     l.terminated(queryID, status);
@@ -133,7 +141,7 @@ public class AdpDBArtJobMonitor implements Runnable {
                 statsOldOP = operatorsCompleted;
                 return true;
             }
-        } catch (UnmarshalException _) {
+        } catch (UnmarshalException e) {
             log.error("Cannot decode information ...");
         }
         return false;

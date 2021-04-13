@@ -30,7 +30,7 @@ def test_LINEAR_REGRESSION():
 def check_result(result):
     assert (
         result
-        == '{"result" : [{"data":"Pathology pathology1 not found!","type":"text/plain+user_error"}]}'
+        == '{"result" : [{"data":"Pathology pathology1 is not available.","type":"text/plain+user_error"}]}'
     )
 
 

@@ -12,6 +12,16 @@ var 'xnames' from
 select group_concat(xname) as  xname from
 (select distinct xname from (select strsplitv(regexpr("\-",'%{x}',"+") ,'delimiter:+') as xname) where xname!=0);
 
+
+--Check input: number of variables is modulo 2 
+select pairedttest_inputerrorchecking(no) from
+(select count(*) as no from
+(select strsplitv(xname,'dialect:csv') from
+(select group_concat(xname) as  xname from
+(select distinct xname from (select strsplitv(regexpr("\-",'%{x}',"+") ,'delimiter:+') as xname) where xname!=0))));
+
+
+
 --Read dataset and Cast values of columns using cast function.
 var 'cast_x' from select create_complex_query("","tonumber(?) as ?", "," , "" , '%{xnames}');
 drop table if exists localinputtblflat;

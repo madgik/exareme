@@ -3,6 +3,7 @@ from tornado import gen
 from tornado.log import enable_pretty_logging
 from tornado.options import define, options
 import logging
+import os
 
 PROCESSES_PER_CPU = 2
 WEB_SERVER_PORT=8888
@@ -31,7 +32,10 @@ class MainHandler(BaseHandler):
   formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
   hdlr.setFormatter(formatter)
   logger.addHandler(hdlr)
-  logger.setLevel(logging.DEBUG)
+  if os.environ['LOG_LEVEL'] == "DEBUG":
+    logger.setLevel(logging.DEBUG)
+  else:
+    logger.setLevel(logging.INFO)
 
   access_log = logging.getLogger("tornado.access")
   app_log = logging.getLogger("tornado.application")
@@ -66,7 +70,7 @@ class MainHandler(BaseHandler):
       str_result=self.execQuery(dbFilename,query)
     except QueryExecutionException as e:
       #raise tornado.web.HTTPError(status_code=500,log_message="...the log message??")
-      self.logger.debug("(MadisServer::post) QueryExecutionException: {}".format(str(e)))
+      self.logger.error("(MadisServer::post) QueryExecutionException: {}".format(str(e)))
       #print "QueryExecutionException ->{}".format(str(e))
       self.set_status(500)
       self.write(str(e))

@@ -28,15 +28,13 @@ public class PlanTerminationEventHandler implements ExecEngineEventHandler<PlanT
     @Override
     public void preProcess(PlanTerminationEvent event, PlanEventSchedulerState state)
             throws RemoteException {
-        if (state.isTerminated() == false) {
+        if (!state.isTerminated()) {
             for (ContainerProxy proxy : state.getContainerProxies()) {
                 try {
-
                     log.debug("closing session of container : " + proxy.getEntityName().getName());
                     proxy.destroySessions(state.getPlanSessionID());
-
-                } catch (RemoteException e) {
-                    //   state.addException(e);
+                } catch (Exception e) {
+                    log.error("Cannot close the sessions for proxy: " + proxy, e);
                     // throw new ServerException("Cannot close all sessions", e);
                 }
             }
@@ -54,7 +52,7 @@ public class PlanTerminationEventHandler implements ExecEngineEventHandler<PlanT
             state.terminationListeners.clear();
             log.debug("Triggered " + listenerCount + " listeners!");
         }
-        if (state.isTerminated() == false) {
+        if (!state.isTerminated()) {
             state.setTerminated(true);
             state.getPlanSession().getPlanSessionStatus().setFinished(new Date());
         }

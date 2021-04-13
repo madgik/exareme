@@ -2,9 +2,8 @@ package madgik.exareme.master.engine.iterations;
 
 import madgik.exareme.common.consts.HBPConstants;
 import madgik.exareme.master.engine.iterations.handler.IterationsConstants;
-import madgik.exareme.master.queryProcessor.composer.AlgorithmProperties;
-import madgik.exareme.master.queryProcessor.composer.Composer;
-import madgik.exareme.master.queryProcessor.composer.ComposerConstants;
+import madgik.exareme.master.queryProcessor.HBP.AlgorithmProperties;
+import madgik.exareme.master.queryProcessor.HBP.ComposerConstants;
 import madgik.exareme.utils.properties.AdpProperties;
 import madgik.exareme.utils.properties.MutableProperties;
 

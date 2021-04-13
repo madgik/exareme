@@ -7,6 +7,7 @@ import madgik.exareme.common.art.entity.EntityName;
 import madgik.exareme.worker.art.registry.Registerable;
 import madgik.exareme.worker.art.registry.Registerable.Type;
 import madgik.exareme.worker.art.registry.RegistryResourceStorage;
+import org.apache.log4j.Logger;
 
 import java.rmi.NoSuchObjectException;
 import java.rmi.RemoteException;
@@ -21,6 +22,7 @@ import java.util.concurrent.Semaphore;
  * @since 1.0
  */
 public class MemoryResourceStorage implements RegistryResourceStorage {
+    private static Logger log = Logger.getLogger(MemoryResourceStorage.class);
 
     private Semaphore semaphore = null;
     private RegistryResourceStorageStatus registryResourceStorageStatus;
@@ -52,12 +54,12 @@ public class MemoryResourceStorage implements RegistryResourceStorage {
             }
             l.add(r);
 
-            semaphore.release();
         } catch (Exception e) {
-            semaphore.release();
             throw new RemoteException(
                     "Cannot store object: '" + r.getEntityName().getName() + "' at " + r.getEntityName()
                             .getIP() + ":" + r.getEntityName().getPort(), e);
+        } finally {
+            semaphore.release();
         }
     }
 
@@ -66,7 +68,7 @@ public class MemoryResourceStorage implements RegistryResourceStorage {
         try {
             semaphore.acquire();
             Registerable r = objectMap.get(epr.getName());
-            semaphore.release();
+
             if (r == null) {
                 throw new NoSuchObjectException(
                         "Object was not found: '" + epr.getName() + "' at " + epr.getIP() + ":" + epr
@@ -74,8 +76,9 @@ public class MemoryResourceStorage implements RegistryResourceStorage {
             }
             return r;
         } catch (Exception e) {
-            semaphore.release();
             throw new RemoteException("Cannot retrieve object.", e);
+        } finally {
+            semaphore.release();
         }
     }
 
@@ -93,10 +96,11 @@ public class MemoryResourceStorage implements RegistryResourceStorage {
             registryResourceStorageStatus.decreaseStoredObjects();
             List<Registerable> l = typeMap.get(r.getType());
             l.remove(r);
-            semaphore.release();
+
         } catch (Exception e) {
-            semaphore.release();
             throw new RemoteException("Cannot delete object.", e);
+        } finally {
+            semaphore.release();
         }
     }
 
@@ -106,9 +110,10 @@ public class MemoryResourceStorage implements RegistryResourceStorage {
         try {
             semaphore.acquire();
             col = typeMap.get(type);
-            semaphore.release();
         } catch (InterruptedException ex) {
             throw new ServerException("Cannot retrieve all objects of type: " + type, ex);
+        } finally {
+            semaphore.release();
         }
         return col;
     }
@@ -133,9 +138,10 @@ public class MemoryResourceStorage implements RegistryResourceStorage {
             while (it.hasNext()) {
                 col.addAll(it.next());
             }
-            semaphore.release();
         } catch (InterruptedException ex) {
             throw new ServerException("Cannot retrieve all objects", ex);
+        } finally {
+            semaphore.release();
         }
         return col;
     }

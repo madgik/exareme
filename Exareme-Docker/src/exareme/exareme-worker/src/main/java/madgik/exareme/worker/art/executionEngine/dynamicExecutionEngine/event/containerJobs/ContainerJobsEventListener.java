@@ -20,7 +20,7 @@ public class ContainerJobsEventListener implements EventListener<ContainerJobsEv
     public void processed(ContainerJobsEvent event, RemoteException exception,
                           EventProcessor processor) {
         if (exception != null) {
-            LogUtils.logException("Create", exception);
+            LogUtils.logException("Exception on Container Job Handler with sessionID: " + event.session.getSessionID().getLongId(), exception);
             PlanEventScheduler.engineInternalException(event, exception);
         }
         event.done();

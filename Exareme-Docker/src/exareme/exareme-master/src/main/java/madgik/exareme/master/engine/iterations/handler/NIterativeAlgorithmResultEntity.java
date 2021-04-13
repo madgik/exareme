@@ -3,6 +3,7 @@ package madgik.exareme.master.engine.iterations.handler;
 import madgik.exareme.master.client.AdpDBClientQueryStatus;
 import madgik.exareme.master.connector.DataSerialization;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
+import madgik.exareme.master.gateway.async.handler.HBP.HBPQueryHelper;
 import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.nio.ContentEncoder;
 import org.apache.http.nio.IOControl;
@@ -46,11 +47,6 @@ public class NIterativeAlgorithmResultEntity extends BasicHttpEntity
         this.dataSerialization = dataSerialization;
     }
 
-    private final static String user_error = new String("text/plain+user_error");
-    private final static String error = new String("text/plain+error");
-    private final static String warning = new String("text/plain+warning");
-
-
     /**
      * @param encoder is used to save the output
      * @param ioctrl  will be used from the iterativeAlgorithmState, when the algorithm is complete,
@@ -86,9 +82,11 @@ public class NIterativeAlgorithmResultEntity extends BasicHttpEntity
                 if (!finalizeQueryStatus.hasError() &&
                         finalizeQueryStatus.hasFinished()) {
                     if (channel == null) {
+                        String result = iterativeAlgorithmState.getAdpDBClientQueryStatus().getResult(dataSerialization);
+                        log.info("Iterative algorithm with key " + iterativeAlgorithmState.getAlgorithmKey()
+                                + " terminated. Result: \n " + result);
                         channel = Channels.newChannel(
-                                iterativeAlgorithmState.getAdpDBClientQueryStatus()
-                                        .getResult(dataSerialization));
+                                new ByteArrayInputStream(result.getBytes(StandardCharsets.UTF_8)));
                     }
                     // Reading from the channel to the buffer, flip is required by the API
                     channel.read(buffer);
@@ -98,11 +96,15 @@ public class NIterativeAlgorithmResultEntity extends BasicHttpEntity
                     this.buffer.compact();
                     if (i < 1 && !buffering) {
                         encoder.complete();
+                        closeQuery();
+                        close();
                     }
                 } else {
                     encoder.write(ByteBuffer.wrap(
                             finalizeQueryStatus.getError().getBytes()));
                     encoder.complete();
+                    closeQuery();
+                    close();
                 }
             } else {
                 // Algorithm execution failed, notify the client.
@@ -124,34 +126,35 @@ public class NIterativeAlgorithmResultEntity extends BasicHttpEntity
                 String result = iterativeAlgorithmState.getAlgorithmError();
                 if (result.contains("ExaremeError:")) {
                     String data = result.substring(result.lastIndexOf("ExaremeError:") + "ExaremeError:".length()).replaceAll("\\s", " ");
-                    String type = user_error;
-                    String output = defaultOutputFormat(data,type);
+                    String type = HBPQueryHelper.ErrorResponse.ErrorResponseTypes.user_error;
+                    String output = HBPQueryHelper.ErrorResponse.createErrorResponse(data, type);
                     logErrorMessage(output);
                     channel = Channels.newChannel(
                             new ByteArrayInputStream(output.getBytes(StandardCharsets.UTF_8)));
 
                 } else if (result.contains("PrivacyError")) {
                     String data = "The Experiment could not run with the input provided because there are insufficient data.";
-                    String type = warning;
-                    String output = defaultOutputFormat(data,type);
+                    String type = HBPQueryHelper.ErrorResponse.ErrorResponseTypes.warning;
+                    String output = HBPQueryHelper.ErrorResponse.createErrorResponse(data, type);
                     logErrorMessage(output);
                     channel = Channels.newChannel(
                             new ByteArrayInputStream(output.getBytes(StandardCharsets.UTF_8)));
 
                 } else if (result.matches("java.rmi.RemoteException: Containers:.*not responding")) {
                     String data = "One or more containers are not responding. Please inform the system administrator.";
-                    String type = error;
-                    String output = defaultOutputFormat(data,type);
+                    String type = HBPQueryHelper.ErrorResponse.ErrorResponseTypes.error;
+                    String output = HBPQueryHelper.ErrorResponse.createErrorResponse(data, type);
                     logErrorMessage(output);
                     channel = Channels.newChannel(
                             new ByteArrayInputStream(output.getBytes(StandardCharsets.UTF_8)));
 
                 } else {   // Unexpected error
+                    log.info("Exception from madis: " + result);
                     String data = "Something went wrong with the execution of algorithm: ["
                             + iterativeAlgorithmState.getAlgorithmKey()
                             + "]. Please inform your system administrator to consult the logs.";
-                    String type = error;
-                    String output = defaultOutputFormat(data,type);
+                    String type = HBPQueryHelper.ErrorResponse.ErrorResponseTypes.error;
+                    String output = HBPQueryHelper.ErrorResponse.createErrorResponse(data, type);
                     logErrorMessage(output);
                     channel = Channels.newChannel(
                             new ByteArrayInputStream(output.getBytes(StandardCharsets.UTF_8)));
@@ -162,6 +165,8 @@ public class NIterativeAlgorithmResultEntity extends BasicHttpEntity
                 encoder.write(buffer);
                 this.buffer.compact();
                 encoder.complete();
+                closeQuery();
+                close();
             }
         } finally {
             if (iterativeAlgorithmState != null)
@@ -169,14 +174,20 @@ public class NIterativeAlgorithmResultEntity extends BasicHttpEntity
         }
     }
 
-    @Override
-    public void close() throws IOException {
+    public void closeQuery() throws IOException {
         if (finalizeQueryStatus != null) {
             // Case in which algorithm execution failed
             finalizeQueryStatus.close();
             finalizeQueryStatus = null;
         }
+        if (iterativeAlgorithmState != null)
+            iterativeAlgorithmState.releaseLock();
         iterativeAlgorithmState = null;
+    }
+
+    @Override
+    public void close() {
+
     }
 
     @Override
@@ -184,11 +195,7 @@ public class NIterativeAlgorithmResultEntity extends BasicHttpEntity
         return false;
     }
 
-    private String defaultOutputFormat(String data, String type){
-        return "{\"result\" : [{\"data\":"+"\""+data+"\",\"type\":"+"\""+type+"\"}]}";
-    }
-
-    private void logErrorMessage(String error){
+    private void logErrorMessage(String error) {
         log.info("Algorithm exited with error and returned:\n " + error);
     }
 }

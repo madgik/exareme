@@ -13,15 +13,13 @@ if [[ -z ${EXAREME_HOME} ]]; then
         export EXAREME_HOME="$(pwd)";
     fi
 fi
-echo "EXAREME HOME DIR: $EXAREME_HOME";
 
 #load environmental variables like JAVA, python
 . ./exareme-env.sh  &> /dev/null
 
-#maybe simply pass MASTER_IP from bootstrap
-EXAREME_MASTER=`/sbin/ifconfig eth0 | grep "inet" | awk -F: '{print $2}' | cut -d ' ' -f 1`;
-echo "EXAREME_HOST : $EXAREME_MASTER";
-echo "EXAREME_USER: $EXAREME_USER";
+# Getting the IP and removing white spaces
+EXAREME_MASTER=$(hostname -i | sed 's/ *$//g')
+
 ####################################################################################################
 # parse command line arguments
 ####################################################################################################
@@ -106,18 +104,12 @@ function start_exareme(){               #Starts exareme daemon
        -Dcom.sun.management.jmxremote.ssl=false                     \
        -Djava.security.egd=file:///dev/urandom "
 
-    DESC="exareme-master"
     EXAREME_ADMIN_CLASS=${EXAREME_ADMIN_MASTER_CLASS}
-
-    echo ${EXAREME_ADMIN_CLASS_PATH}
-    echo ${EXAREME_JAVA}
-    echo ${EXAREME_ADMIN_CLASS}
-    echo ${EXAREME_MASTER}
 
     mkdir -p /tmp/exareme/var/log /tmp/exareme/var/run
 
         $EXAREME_JAVA -cp $EXAREME_ADMIN_CLASS_PATH \
-        $EXAREME_ADMIN_OPTS $EXAREME_ADMIN_CLASS > /var/log/exareme.log 2>&1 & echo $! > /tmp/exareme/var/run/$DESC.pid    #-cp requires class path specification
+        $EXAREME_ADMIN_OPTS $EXAREME_ADMIN_CLASS > /var/log/exareme.log 2>&1 & echo $! > /tmp/exareme/var/run/exareme-master.pid    #-cp requires class path specification
 
     exit 0
 

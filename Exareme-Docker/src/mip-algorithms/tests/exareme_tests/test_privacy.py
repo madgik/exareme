@@ -32,12 +32,14 @@ from tests.algorithm_tests_with_privacy.test_ttest_paired import (
 url_calibration = vm_url + "CALIBRATION_BELT"
 url_pearson = vm_url + "PEARSON_CORRELATION"
 url_logreg = vm_url + "LOGISTIC_REGRESSION"
+url_anovaoneway = vm_url + "ANOVA_ONEWAY"
 
 
 def check_privacy_result(result):
     assert (
         result
-        == '{"result" : [{"data":"The Experiment could not run with the input provided because there are insufficient data.","type":"text/plain+warning"}]}'
+        == '{"result" : [{"data":"The Experiment could not run with the input provided '
+        'because there are insufficient data.","type":"text/plain+warning"}]}'
     )
 
 
@@ -55,7 +57,22 @@ def test_ANOVA_Privacy():
 
     headers = {"Content-type": "application/json", "Accept": "text/plain"}
     r = requests.post(url_anova, data=json.dumps(data), headers=headers)
-    result = json.loads(r.text)
+    check_privacy_result(r.text)
+
+
+def test_ANOVA_ONEWAY_Privacy():
+    logging.info("---------- TEST : Anova Oneway privacy test")
+
+    data = [
+        {"name": "x", "value": "alzheimerbroadcategory"},
+        {"name": "y", "value": "rightmprgprecentralgyrusmedialsegment"},
+        {"name": "pathology", "value": "dementia"},
+        {"name": "dataset", "value": "adni_9rows"},
+        {"name": "filter", "value": ""},
+    ]
+
+    headers = {"Content-type": "application/json", "Accept": "text/plain"}
+    r = requests.post(url_anovaoneway, data=json.dumps(data), headers=headers)
     check_privacy_result(r.text)
 
 
@@ -72,7 +89,6 @@ def test_Histogram_Privacy():
 
     headers = {"Content-type": "application/json", "Accept": "text/plain"}
     r = requests.post(url_hist, data=json.dumps(data), headers=headers)
-    result = json.loads(r.text)
     check_privacy_result(r.text)
 
 
@@ -88,7 +104,10 @@ def test_ID3_Privacy():
         {"name": "dataset", "value": "contact-lenses"},
         {
             "name": "filter",
-            "value": '{"condition": "AND", "rules": [{"id": "CL_age", "field": "CL_age", "type": "string", "input": "text", "operator": "equal", "value": "Young"}], "valid": true}',
+            "value": '{"condition": "AND", "rules": '
+            '[{"id": "CL_age", "field": "CL_age", "type": "string", '
+            '"input": "text", "operator": "equal", "value": "Young"}], '
+            '"valid": true}',
         },
         {"name": "pathology", "value": "dementia"},
     ]
@@ -125,7 +144,6 @@ def test_KMEANS_Privacy():
     ]
     headers = {"Content-type": "application/json", "Accept": "text/plain"}
     r = requests.post(url_kmeans, data=json.dumps(data), headers=headers)
-    result = json.loads(r.text)
     check_privacy_result(r.text)
 
 
@@ -145,7 +163,6 @@ def test_LinearRegression_Privacy():
     ]
     headers = {"Content-type": "application/json", "Accept": "text/plain"}
     r = requests.post(url_linreg, data=json.dumps(data), headers=headers)
-    result = json.loads(r.text)
     check_privacy_result(r.text)
 
 
@@ -155,18 +172,21 @@ def test_LogisticRegression_Privacy():
     data = [
         {
             "name": "x",
-            "value": "leftententorhinalarea_logreg_test, rightententorhinalarea_logreg_test, lefthippocampus_logreg_test, righthippocampus_logreg_test",
+            "value": "leftententorhinalarea_logreg_test, "
+            "rightententorhinalarea_logreg_test, "
+            "lefthippocampus_logreg_test, "
+            "righthippocampus_logreg_test",
         },
         {"name": "y", "value": "gender"},
         {"name": "pathology", "value": "dementia"},
         {"name": "dataset", "value": "adni_9rows"},
         {"name": "filter", "value": ""},
+        {"name": "positive_level", "value": "F"},
+        {"name": "negative_level", "value": "M"},
     ]
 
     headers = {"Content-type": "application/json", "Accept": "text/plain"}
     r = requests.post(url_logreg, data=json.dumps(data), headers=headers)
-    result = json.loads(r.text)
-
     check_privacy_result(r.text)
 
 
@@ -183,7 +203,6 @@ def test_Multiple_Histogram_Privacy():
 
     headers = {"Content-type": "application/json", "Accept": "text/plain"}
     r = requests.post(url_multi_hist, data=json.dumps(data), headers=headers)
-    result = json.loads(r.text)
     check_privacy_result(r.text)
 
 
@@ -203,7 +222,6 @@ def test_NAIVEBAYES_privacy():
 
     headers = {"Content-type": "application/json", "Accept": "text/plain"}
     r = requests.post(url1, data=json.dumps(data1), headers=headers)
-    result1 = json.loads(r.text)
     check_privacy_result(r.text)
 
 
@@ -222,7 +240,6 @@ def test_NaiveBayesStandalone_Privacy():
     r = requests.post(
         url_naive_bayes_standalone, data=json.dumps(data), headers=headers
     )
-    result = json.loads(r.text)
     check_privacy_result(r.text)
 
 
@@ -240,7 +257,6 @@ def test_PearsonCorrlation_Privacy():
     headers = {"Content-type": "application/json", "Accept": "text/plain"}
     r = requests.post(url_pearson, data=json.dumps(data), headers=headers)
 
-    result = json.loads(r.text)
     check_privacy_result(r.text)
 
 
@@ -257,7 +273,6 @@ def test_UnpairedTtest__Privacy():
     ]
     headers = {"Content-type": "application/json", "Accept": "text/plain"}
     r = requests.post(url_ttest_indep, data=json.dumps(data), headers=headers)
-    result = json.loads(r.text)
     check_privacy_result(r.text)
 
 
@@ -273,7 +288,6 @@ def test_onesamplettest_Privacy():
     ]
     headers = {"Content-type": "application/json", "Accept": "text/plain"}
     r = requests.post(url_ttest_onesample, data=json.dumps(data), headers=headers)
-    result = json.loads(r.text)
     check_privacy_result(r.text)
 
 
@@ -288,7 +302,6 @@ def test_pairedttest_Privacy():
     ]
     headers = {"Content-type": "application/json", "Accept": "text/plain"}
     r = requests.post(url_ttest_paired, data=json.dumps(data), headers=headers)
-    result = json.loads(r.text)
     check_privacy_result(r.text)
 
 
@@ -311,7 +324,6 @@ def test_calibration_Privacy():
     ]
     headers = {"Content-type": "application/json", "Accept": "text/plain"}
     r = requests.post(url_calibration, data=json.dumps(data), headers=headers)
-    result = json.loads(r.text)
     check_privacy_result(r.text)
 
 

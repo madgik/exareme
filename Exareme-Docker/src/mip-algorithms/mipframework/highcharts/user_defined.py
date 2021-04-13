@@ -1,7 +1,7 @@
 from colour import Color
 
 
-from .core import Heatmap_, Area_, Column_, Bubble_, Line_
+from .core import Heatmap_, Area_, Column_, Bubble_, Line_, Errorbar_
 from .core import (
     Title,
     Axis,
@@ -132,6 +132,46 @@ class ConfusionMatrix(HighchartTemplate):
         )
 
 
+class MultilabelConfisionMatrix(HighchartTemplate):
+    def __init__(self, title, confusion_matrix, classes):
+        min_val = 0
+        max_val = confusion_matrix.max()
+        data = [
+            {
+                "name": str(confusion_matrix[i, j]),
+                "x": i,
+                "y": j,
+                # "y": confusion_matrix.shape[1] - j - 1,
+                "value": confusion_matrix[i, j],
+            }
+            for i in range(confusion_matrix.shape[0])
+            for j in range(confusion_matrix.shape[1])
+        ]
+        data_labels = DataLabels(
+            format="{point.name}",
+            enabled=True,
+            color="#222222",
+            borderRadius=3,
+            backgroundColor="rgba(245, 255, 255, 0.5)",
+            borderWidth=2,
+            borderColor="#AAA",
+            padding=5,
+        )
+        self.chart = (
+            Heatmap_(title=Title(text=title))
+            .set(xAxis=Axis(categories=classes))
+            .set(yAxis=Axis(categories=list(classes), title=None,))
+            .set(
+                colorAxis=ColorAxis(
+                    min=min_val, max=max_val, minColor="#ffffff", maxColor="#0000ff"
+                )
+            )
+            .set(series=Series(data=data, borderWidth=1, dataLabels=data_labels))
+            .set(legend=Legend(enabled=False))
+            .set(tooltip=Tooltip(enabled=False))
+        )
+
+
 class ROC(HighchartTemplate):
     def __init__(self, title, roc_curve, auc, gini):
         self.chart = (
@@ -152,6 +192,40 @@ class ROC(HighchartTemplate):
             )
             .set(legend=Legend(enabled=False))
         )
+
+
+class MulticlassROCCurve(HighchartTemplate):
+    def __init__(self, title, roc_curves, classes):
+        self.chart = (
+            Line_(title=Title(text=title))
+            .set(
+                xAxis=Axis(min=-0.05, max=1.05, title=Title(text="False Positive Rate"))
+            )
+            .set(
+                yAxis=Axis(min=-0.05, max=1.05, title=Title(text="True Positive Rate"))
+            )
+            .set(legend=Legend(enabled=True))
+        )
+        series = RenderableList(
+            [
+                Series(data=map(list, zip(*curve)), name=class_)
+                for class_, curve in zip(classes, roc_curves)
+            ]
+        )
+        series.append(
+            Series(
+                name="Bisector",
+                data=[[0, 0], [1, 1]],
+                zIndex=2,
+                color="#fc7938",
+                lineWidth=1.5,
+                dashStyle="Dash",
+                allowPointSelect=False,
+                marker={"enabled": False},
+                label={"enabled": False},
+            )
+        )
+        self.chart.set(series=series)
 
 
 class ScreePlot(HighchartTemplate):
@@ -420,6 +494,34 @@ class SurvivalCurves:
                 for key in self.timeline_dict.keys()
             ],
         }
+
+
+class LineWithErrorbars(HighchartTemplate):
+    def __init__(self, title, data, categories, xname, yname):
+        self.chart = (
+            Errorbar_(title=Title(text=title))
+            .set(xAxis=Axis(categories=categories, title=Title(text=xname)))
+            .set(yAxis=Axis(title=Title(text=yname)))
+            .set(
+                series=RenderableList(
+                    [
+                        Series(
+                            data=[[p[0], p[2]] for p in data],
+                            type="errorbar",
+                            pointWidth=200,
+                            lineWidth=2,
+                        ),
+                        Series(
+                            data=[p[1] for p in data],
+                            type="line",
+                            color="#0A1E6E",
+                            name="",
+                        ),
+                    ]
+                )
+            )
+            .set(legend=Legend(enabled=False))
+        )
 
 
 colors_dark = [

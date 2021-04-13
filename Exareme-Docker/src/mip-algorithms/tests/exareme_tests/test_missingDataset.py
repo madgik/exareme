@@ -30,7 +30,7 @@ def test_LINEAR_REGRESSION():
 def check_result(result):
     assert (
         result
-        == '{"result" : [{"data":"The value of the parameter \'dataset\' should not be blank.  Algorithm: LINEAR_REGRESSION","type":"text/plain+error"}]}'
+        == '{"result" : [{"data":"The value of the parameter \'dataset\' should not be blank.","type":"text/plain+user_error"}]}'
     )
 
 

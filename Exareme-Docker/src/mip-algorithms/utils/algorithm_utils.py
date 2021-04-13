@@ -144,18 +144,20 @@ def query_from_formula(
     coding=None,
 ):
     """
-    Queries a database based on a list of variables and a patsy (R language) formula. Additionally performs privacy
-    check and returns results only if number of datapoints is sufficient.
+    Queries a database based on a list of variables and a patsy (R language)
+    formula. Additionally performs privacy check and returns results only if
+    number of datapoints is sufficient.
 
     Parameters
     ----------
     fname_db : string
         Path and name of database.
     formula : string or None
-        Formula in patsy (R language) syntax. E.g. 'y ~ x1 + x2 * x3'. If None a trivial formula of the form 'lhs ~
-        rhs' is generated.
+        Formula in patsy (R language) syntax. E.g. 'y ~ x1 + x2 * x3'. If None
+        a trivial formula of the form 'lhs ~ rhs' is generated.
     variables : tuple of list of strings
-        A tuple of the form (`lhs`, `rhs`) or (`rhs`,) where `lhs` and `rhs` are lists of the variable names.
+        A tuple of the form (`lhs`, `rhs`) or (`rhs`,) where `lhs` and `rhs`
+        are lists of the variable names.
     dataset : string
         A string of a list of datasets.
     query_filter : string
@@ -169,17 +171,19 @@ def query_from_formula(
     metadata_isCategorical_column : string
         The name of the is_categorical column in the metadata table in the database.
     no_intercept : bool
-        If no_intercept is True there is no intercept in the returned matrix(-ices). To use in the case where only a
-        rhs expression is needed, not a full formula.
+        If no_intercept is True there is no intercept in the returned
+        matrix(-ices). To use in the case where only a rhs expression is
+        needed, not a full formula.
     coding : None or string
-        Specifies the coding scheme for categorical variables. Must be in {None, 'Treatment', 'Poly', 'Sum', 'Diff',
-        Helmert'}.
+        Specifies the coding scheme for categorical variables. Must be in
+        {None, 'Treatment', 'Poly', 'Sum', 'Diff', Helmert'}.
 
     Returns
     -------
     (lhs_dm, rhs_dm) or rhs_dm : pandas.DataFrame objects
-        When a tilda is present in the formula, the function returns two design matrices (lhs_dm, rhs_dm).
-        When it is not the function returns just the rhs_dm.
+        When a tilda is present in the formula, the function returns two design
+        matrices (lhs_dm, rhs_dm).  When it is not the function returns just
+        the rhs_dm.
     """
     from numpy import log as log
     from numpy import exp as exp
@@ -304,11 +308,11 @@ def parse_filter(query_filter):
                 val = "'{v}'".format(v=val)
         if op == "between":
             return "{id} BETWEEN {val1} AND {val2}".format(
-                id=id_, op=op, val1=val[0], val2=val[1]
+                id=id_, val1=val[0], val2=val[1]
             )
         elif op == "not_between":
             return "{id} NOT BETWEEN {val1} AND {val2}".format(
-                id=id_, op=op, val1=val[0], val2=val[1]
+                id=id_, val1=val[0], val2=val[1]
             )
         else:
             return "{id}{op}{val}".format(id=id_, op=op, val=val)
@@ -349,8 +353,8 @@ def query_database(fname_db, queryData, queryMetadata):
 
     cur.execute(queryData)
     data = cur.fetchall()
-    if len(data) < PRIVACY_MAGIC_NUMBER:
-        raise PrivacyError("Query results in illegal number of datapoints.")
+    # if len(data) < PRIVACY_MAGIC_NUMBER:
+    #    raise PrivacyError("Query results in illegal number of datapoints.")
     dataSchema = [description[0] for description in cur.description]
 
     cur.execute(queryMetadata)
@@ -360,6 +364,11 @@ def query_database(fname_db, queryData, queryMetadata):
 
     # Save data to pd.Dataframe
     dataFrame = pd.DataFrame.from_records(data=data, columns=dataSchema)
+
+    # Check privacy.
+    df = dataFrame.dropna()
+    if len(df) < PRIVACY_MAGIC_NUMBER:
+        raise PrivacyError("Query results in illegal number of datapoints.")
 
     # Cast Dataframe based on metadata
     metadataVarNames = [str(x) for x in list(zip(*metadata)[0])]

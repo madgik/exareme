@@ -149,7 +149,6 @@ public class AdpDBExecutorRemote implements AdpDBExecutor {
         AdpDBArtJobMonitor monitor =
                 new AdpDBArtJobMonitor(sessionPlan, status, statusManager, execPlan.getQueryID());
         monitors.put(execPlan.getQueryID(), monitor);
-
         executor.submit(monitor);
         statusArray.add(status);
         return status;

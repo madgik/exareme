@@ -25,17 +25,15 @@ networks:
 
 services:
   exareme-keystore:
-    image: ${CONSUL_IMAGE}:${CONSUL_VERSION}
-    image: progrium/consul
-    command:
-      - -server
-      - -bootstrap
+    image: bitnami/consul:1.8.3
+    #ports:         # Used for Debugging
+    #  - target: 8500     
+    #    published: 8500
+    #    protocol: tcp
+    #    mode: host
+    environment:
+      - CONSUL_BIND_INTERFACE=lo
     deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 5s
-        max_attempts: 3
-        window: 120s
       placement:
         constraints:
           - node.role == manager       # Ensures we only start on manager nodes
@@ -52,14 +50,11 @@ services:
       - TEMP_FILES_CLEANUP_TIME=30
       - NODE_COMMUNICATION_TIMEOUT=30000        # (MILIS) NODE COMMUNICATION WILL DROP IF TIMEOUT IS PASSED
       - ENVIRONMENT_TYPE=PROD                   # TEST / DEV / PROD
+      - LOG_LEVEL=INFO                          # INFO / DEBUG
+      - CONVERT_CSVS=FALSE                       # TRUE / FALSE
     depends_on:
       - exareme-keystore
     deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 5s
-        max_attempts: 3
-        window: 120s
       placement:
         constraints:
           - node.role == manager # Ensures we only start on manager nodes

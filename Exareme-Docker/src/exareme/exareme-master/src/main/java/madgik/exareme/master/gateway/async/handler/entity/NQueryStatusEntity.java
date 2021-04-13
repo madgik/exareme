@@ -69,7 +69,7 @@ public class NQueryStatusEntity extends BasicHttpEntity implements HttpAsyncCont
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
 
     }
 
@@ -84,7 +84,6 @@ public class NQueryStatusEntity extends BasicHttpEntity implements HttpAsyncCont
         @Override
         public void statusChanged(AdpDBQueryID queryID, AdpDBStatus status) {
             ioctl.requestOutput();
-
         }
 
         @Override
