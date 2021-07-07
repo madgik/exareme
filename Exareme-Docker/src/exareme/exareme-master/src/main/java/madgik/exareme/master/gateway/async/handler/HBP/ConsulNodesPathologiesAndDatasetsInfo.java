@@ -151,7 +151,9 @@ public class ConsulNodesPathologiesAndDatasetsInfo {
             // Get the available pathologies of the node from CONSUL.
             Gson gson = new Gson();
             try {
-                String nodePathologiesPathsJson = searchConsulKeys(getConsulDataPath() + "/" + nodeName);
+                // IMPORTANT The "/" at the end of the nodeName is needed, otherwise the query will respond with
+                // all the nodes that have the prefix of "nodeName"
+                String nodePathologiesPathsJson = searchConsulKeys(getConsulDataPath() + "/" + nodeName + "/");
                 if (nodePathologiesPathsJson == null) {
                     return;
                 }
