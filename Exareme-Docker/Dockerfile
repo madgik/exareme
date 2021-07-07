@@ -17,7 +17,7 @@ RUN ln -s /usr/bin/python2 /usr/bin/python
 RUN apt install -y openjdk-8-jdk curl jq iputils-ping
 
 # Installing pip
-RUN curl -O https://raw.githubusercontent.com/pypa/get-pip/master/get-pip.py
+RUN curl https://bootstrap.pypa.io/pip/2.7/get-pip.py -o get-pip.py
 RUN python get-pip.py
 RUN apt-get install -y python-dev  \
      build-essential libssl-dev libffi-dev \
