@@ -12,9 +12,8 @@ import sys
 from os import path
 
 sys.path.append(path.abspath(__file__))
-from tests import vm_url
+from tests import ttest_independent_url
 
-endpointUrl = vm_url + "TTEST_INDEPENDENT"
 folderPath = "R_scripts"
 file = "ttest_independent.Rmd"
 
@@ -48,7 +47,7 @@ class TestTTESTIndependent(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(ttest_independent_url, data=json.dumps(data), headers=headers)
         result = json.loads(r.text)
         print(r.text)
         resultsComparison(
@@ -67,7 +66,7 @@ class TestTTESTIndependent(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(ttest_independent_url, data=json.dumps(data), headers=headers)
         result = json.loads(r.text)
         print(r.text)
         resultsComparison(
@@ -88,7 +87,7 @@ class TestTTESTIndependent(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(ttest_independent_url, data=json.dumps(data), headers=headers)
         result = json.loads(r.text)
         print(r.text)
         resultsComparison(
@@ -107,7 +106,7 @@ class TestTTESTIndependent(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(ttest_independent_url, data=json.dumps(data), headers=headers)
         result = json.loads(r.text)
         print(r.text)
         resultsComparison(

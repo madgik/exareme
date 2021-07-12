@@ -13,9 +13,8 @@ import sys
 from os import path
 
 sys.path.append(path.abspath(__file__))
-from tests import vm_url
+from tests import linear_regression_url
 
-endpointUrl = vm_url + "LINEAR_REGRESSION"
 folderPath = "R_scripts"
 file = "LinearRegression.Rmd"
 
@@ -46,7 +45,7 @@ class TestLinearRegression(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(linear_regression_url, data=json.dumps(data), headers=headers)
         print(r.text)
         result = json.loads(r.text)
 
@@ -74,7 +73,7 @@ class TestLinearRegression(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(linear_regression_url, data=json.dumps(data), headers=headers)
         print(r.text)
         result = json.loads(r.text)
         resultsComparison(
@@ -101,7 +100,7 @@ class TestLinearRegression(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(linear_regression_url, data=json.dumps(data), headers=headers)
         print(r.text)
         result = json.loads(r.text)
         resultsComparison(
@@ -128,7 +127,7 @@ class TestLinearRegression(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(linear_regression_url, data=json.dumps(data), headers=headers)
         print(r.text)
         result = json.loads(r.text)
         resultsComparison(
@@ -155,7 +154,7 @@ class TestLinearRegression(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(linear_regression_url, data=json.dumps(data), headers=headers)
         print(r.text)
         result = json.loads(r.text)
         resultsComparison(
@@ -182,7 +181,7 @@ class TestLinearRegression(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(linear_regression_url, data=json.dumps(data), headers=headers)
         print(r.text)
         result = json.loads(r.text)
         resultsComparison(
@@ -206,7 +205,7 @@ class TestLinearRegression(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(linear_regression_url, data=json.dumps(data), headers=headers)
         print(r.text)
         result = json.loads(r.text)
         resultsComparison(
@@ -230,7 +229,7 @@ class TestLinearRegression(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(linear_regression_url, data=json.dumps(data), headers=headers)
         print(r.text)
         result = json.loads(r.text)
         resultsComparison(
@@ -254,7 +253,7 @@ class TestLinearRegression(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(linear_regression_url, data=json.dumps(data), headers=headers)
         print(r.text)
         result = json.loads(r.text)
         resultsComparison(
@@ -278,7 +277,7 @@ class TestLinearRegression(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(linear_regression_url, data=json.dumps(data), headers=headers)
         print(r.text)
         result = json.loads(r.text)
         resultsComparison(
@@ -300,7 +299,7 @@ class TestLinearRegression(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(linear_regression_url, data=json.dumps(data), headers=headers)
         print(r.text)
         result = json.loads(r.text)
         resultsComparison(
@@ -324,7 +323,7 @@ class TestLinearRegression(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(linear_regression_url, data=json.dumps(data), headers=headers)
         print(r.text)
         result = json.loads(r.text)
         resultsComparison(
@@ -348,7 +347,7 @@ class TestLinearRegression(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(linear_regression_url, data=json.dumps(data), headers=headers)
         print(r.text)
         result = json.loads(r.text)
         resultsComparison(
@@ -372,7 +371,7 @@ class TestLinearRegression(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(linear_regression_url, data=json.dumps(data), headers=headers)
         print(r.text)
         result = json.loads(r.text)
         resultsComparison(
@@ -396,7 +395,7 @@ class TestLinearRegression(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(linear_regression_url, data=json.dumps(data), headers=headers)
         print(r.text)
         result = json.loads(r.text)
         resultsComparison(
@@ -420,7 +419,7 @@ class TestLinearRegression(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(linear_regression_url, data=json.dumps(data), headers=headers)
         print(r.text)
         result = json.loads(r.text)
         resultsComparison(
@@ -444,7 +443,7 @@ class TestLinearRegression(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(linear_regression_url, data=json.dumps(data), headers=headers)
         print(r.text)
         result = json.loads(r.text)
         resultsComparison(
@@ -468,7 +467,7 @@ class TestLinearRegression(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(linear_regression_url, data=json.dumps(data), headers=headers)
         print(r.text)
         result = json.loads(r.text)
         resultsComparison(
@@ -492,7 +491,7 @@ class TestLinearRegression(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(linear_regression_url, data=json.dumps(data), headers=headers)
         print(r.text)
         result = json.loads(r.text)
         resultsComparison(
@@ -516,7 +515,7 @@ class TestLinearRegression(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(linear_regression_url, data=json.dumps(data), headers=headers)
         print(r.text)
         result = json.loads(r.text)
         resultsComparison(
@@ -540,7 +539,7 @@ class TestLinearRegression(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(linear_regression_url, data=json.dumps(data), headers=headers)
         print(r.text)
         result = json.loads(r.text)
         resultsComparison(
@@ -564,7 +563,7 @@ class TestLinearRegression(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(linear_regression_url, data=json.dumps(data), headers=headers)
         print(r.text)
         result = json.loads(r.text)
         resultsComparison(
@@ -588,7 +587,7 @@ class TestLinearRegression(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(linear_regression_url, data=json.dumps(data), headers=headers)
         print(r.text)
         result = json.loads(r.text)
         resultsComparison(
@@ -612,7 +611,7 @@ class TestLinearRegression(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(linear_regression_url, data=json.dumps(data), headers=headers)
         print(r.text)
         result = json.loads(r.text)
         resultsComparison(
@@ -636,7 +635,7 @@ class TestLinearRegression(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(linear_regression_url, data=json.dumps(data), headers=headers)
         print(r.text)
         result = json.loads(r.text)
         resultsComparison(
@@ -660,7 +659,7 @@ class TestLinearRegression(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(linear_regression_url, data=json.dumps(data), headers=headers)
         print(r.text)
         result = json.loads(r.text)
         resultsComparison(
@@ -684,7 +683,7 @@ class TestLinearRegression(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(linear_regression_url, data=json.dumps(data), headers=headers)
         print(r.text)
         result = json.loads(r.text)
         resultsComparison(
@@ -711,7 +710,7 @@ class TestLinearRegression(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(linear_regression_url, data=json.dumps(data), headers=headers)
         print(r.text)
         result = json.loads(r.text)
         resultsComparison(
@@ -738,7 +737,7 @@ class TestLinearRegression(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(linear_regression_url, data=json.dumps(data), headers=headers)
         print(r.text)
         result = json.loads(r.text)
         resultsComparison(
@@ -765,7 +764,7 @@ class TestLinearRegression(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(linear_regression_url, data=json.dumps(data), headers=headers)
         print(r.text)
         result = json.loads(r.text)
         resultsComparison(
@@ -792,7 +791,7 @@ class TestLinearRegression(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(linear_regression_url, data=json.dumps(data), headers=headers)
         print(r.text)
         result = json.loads(r.text)
         resultsComparison(

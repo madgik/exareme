@@ -4,35 +4,23 @@ import logging
 import unittest
 
 import requests
-from tests.algorithm_tests_with_privacy.test_ANOVA import endpointUrl as url_anova
+from tests import anova_url
+from tests import histograms_url
+from tests import id3_url
+from tests import kmeans_url
+from tests import linear_regression_url
+from tests import multiple_histograms_url
+from tests import cross_validation_url
+from tests import naive_bayes_standalone_url
+from tests import ttest_independent_url
+from tests import ttest_onesample_url
+from tests import ttest_paired_url
 from tests import vm_url
-from tests.algorithm_tests_with_privacy.test_Histograms import endpointUrl as url_hist
-from tests.algorithm_tests_with_privacy.test_ID3 import endpointUrl as url_id3
-from tests.algorithm_tests_with_privacy.test_KMEANS import endpointUrl as url_kmeans
-from tests.algorithm_tests_with_privacy.test_LinearRegression import (
-    endpointUrl as url_linreg,
-)
-from tests.algorithm_tests_with_privacy.test_MultipleHistograms import (
-    endpointUrl as url_multi_hist,
-)
-from tests.algorithm_tests_with_privacy.test_NaiveBayes import url1
-from tests.algorithm_tests_with_privacy.test_NaiveBayes_Training_Standalone import (
-    endpointUrl as url_naive_bayes_standalone,
-)
-from tests.algorithm_tests_with_privacy.test_ttest_independent import (
-    endpointUrl as url_ttest_indep,
-)
-from tests.algorithm_tests_with_privacy.test_ttest_onesample import (
-    endpointUrl as url_ttest_onesample,
-)
-from tests.algorithm_tests_with_privacy.test_ttest_paired import (
-    endpointUrl as url_ttest_paired,
-)
 
 url_calibration = vm_url + "CALIBRATION_BELT"
 url_pearson = vm_url + "PEARSON_CORRELATION"
 url_logreg = vm_url + "LOGISTIC_REGRESSION"
-url_anovaoneway = vm_url + "ANOVA_ONEWAY"
+anova_urloneway = vm_url + "ANOVA_ONEWAY"
 
 
 def check_privacy_result(result):
@@ -56,7 +44,7 @@ def test_ANOVA_Privacy():
     ]
 
     headers = {"Content-type": "application/json", "Accept": "text/plain"}
-    r = requests.post(url_anova, data=json.dumps(data), headers=headers)
+    r = requests.post(anova_url, data=json.dumps(data), headers=headers)
     check_privacy_result(r.text)
 
 
@@ -72,7 +60,7 @@ def test_ANOVA_ONEWAY_Privacy():
     ]
 
     headers = {"Content-type": "application/json", "Accept": "text/plain"}
-    r = requests.post(url_anovaoneway, data=json.dumps(data), headers=headers)
+    r = requests.post(anova_urloneway, data=json.dumps(data), headers=headers)
     check_privacy_result(r.text)
 
 
@@ -88,7 +76,7 @@ def test_Histogram_Privacy():
     ]
 
     headers = {"Content-type": "application/json", "Accept": "text/plain"}
-    r = requests.post(url_hist, data=json.dumps(data), headers=headers)
+    r = requests.post(histograms_url, data=json.dumps(data), headers=headers)
     check_privacy_result(r.text)
 
 
@@ -113,7 +101,7 @@ def test_ID3_Privacy():
     ]
 
     headers = {"Content-type": "application/json", "Accept": "text/plain"}
-    r = requests.post(url_id3, data=json.dumps(data), headers=headers)
+    r = requests.post(id3_url, data=json.dumps(data), headers=headers)
     result = json.loads(r.text)
     print(result)
 
@@ -143,7 +131,7 @@ def test_KMEANS_Privacy():
         {"name": "filter", "value": ""},
     ]
     headers = {"Content-type": "application/json", "Accept": "text/plain"}
-    r = requests.post(url_kmeans, data=json.dumps(data), headers=headers)
+    r = requests.post(kmeans_url, data=json.dumps(data), headers=headers)
     check_privacy_result(r.text)
 
 
@@ -162,7 +150,7 @@ def test_LinearRegression_Privacy():
         {"name": "filter", "value": ""},
     ]
     headers = {"Content-type": "application/json", "Accept": "text/plain"}
-    r = requests.post(url_linreg, data=json.dumps(data), headers=headers)
+    r = requests.post(linear_regression_url, data=json.dumps(data), headers=headers)
     check_privacy_result(r.text)
 
 
@@ -202,7 +190,7 @@ def test_Multiple_Histogram_Privacy():
     ]
 
     headers = {"Content-type": "application/json", "Accept": "text/plain"}
-    r = requests.post(url_multi_hist, data=json.dumps(data), headers=headers)
+    r = requests.post(multiple_histograms_url, data=json.dumps(data), headers=headers)
     check_privacy_result(r.text)
 
 
@@ -221,7 +209,7 @@ def test_NAIVEBAYES_privacy():
     ]
 
     headers = {"Content-type": "application/json", "Accept": "text/plain"}
-    r = requests.post(url1, data=json.dumps(data1), headers=headers)
+    r = requests.post(cross_validation_url, data=json.dumps(data1), headers=headers)
     check_privacy_result(r.text)
 
 
@@ -238,7 +226,7 @@ def test_NaiveBayesStandalone_Privacy():
 
     headers = {"Content-type": "application/json", "Accept": "text/plain"}
     r = requests.post(
-        url_naive_bayes_standalone, data=json.dumps(data), headers=headers
+        naive_bayes_standalone_url, data=json.dumps(data), headers=headers
     )
     check_privacy_result(r.text)
 
@@ -272,7 +260,7 @@ def test_UnpairedTtest__Privacy():
         {"name": "filter", "value": ""},
     ]
     headers = {"Content-type": "application/json", "Accept": "text/plain"}
-    r = requests.post(url_ttest_indep, data=json.dumps(data), headers=headers)
+    r = requests.post(ttest_independent_url, data=json.dumps(data), headers=headers)
     check_privacy_result(r.text)
 
 
@@ -287,7 +275,7 @@ def test_onesamplettest_Privacy():
         {"name": "filter", "value": ""},
     ]
     headers = {"Content-type": "application/json", "Accept": "text/plain"}
-    r = requests.post(url_ttest_onesample, data=json.dumps(data), headers=headers)
+    r = requests.post(ttest_onesample_url, data=json.dumps(data), headers=headers)
     check_privacy_result(r.text)
 
 
@@ -301,7 +289,7 @@ def test_pairedttest_Privacy():
         {"name": "filter", "value": ""},
     ]
     headers = {"Content-type": "application/json", "Accept": "text/plain"}
-    r = requests.post(url_ttest_paired, data=json.dumps(data), headers=headers)
+    r = requests.post(ttest_paired_url, data=json.dumps(data), headers=headers)
     check_privacy_result(r.text)
 
 

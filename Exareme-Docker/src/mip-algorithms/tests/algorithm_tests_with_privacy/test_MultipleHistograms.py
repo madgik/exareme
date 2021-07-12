@@ -12,9 +12,8 @@ import sys
 from os import path
 
 sys.path.append(path.abspath(__file__))
-from tests import vm_url
+from tests import multiple_histograms_url
 
-endpointUrl = vm_url + "MULTIPLE_HISTOGRAMS"
 folderPath = "R_scripts"
 file = "MultipleHistograms.Rmd"
 
@@ -44,7 +43,7 @@ class TestHistogram(unittest.TestCase):
         ]
 
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(multiple_histograms_url, data=json.dumps(data), headers=headers)
         result = json.loads(r.text)
         print("AAAA", r.text)
         print("RRRR", self.TestResult[0:5])
@@ -65,7 +64,7 @@ class TestHistogram(unittest.TestCase):
         ]
 
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(multiple_histograms_url, data=json.dumps(data), headers=headers)
         result = json.loads(r.text)
         print(r.text)
         print(self.TestResult[6])

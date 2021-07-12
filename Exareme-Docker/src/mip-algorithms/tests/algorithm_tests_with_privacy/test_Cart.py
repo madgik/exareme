@@ -22,8 +22,8 @@ from scipy import stats
 from os import path
 sys.path.append(path.abspath(__file__))
 
-from tests import vm_url
-endpointUrl_CartTraining= vm_url + 'CART'
+from tests import cartTraining_url
+
 #endpointUrl_CartPredict= vm_url + 'CART_PREDICT'
 path = '../data/dementia/'
 
@@ -144,7 +144,7 @@ class Test_Cart(unittest.TestCase):
                 {"name": "dataset", "value": "diabetes_training"},
                 {"name": "filter", "value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-        r = requests.post(endpointUrl_CartTraining,data=json.dumps(data_Cart),headers=headers)
+        r = requests.post(cartTraining_url,data=json.dumps(data_Cart),headers=headers)
         exaremeResult_Training = json.loads(r.text)
         print ("exaremeResult_Training", r.text)
 
@@ -209,7 +209,7 @@ class Test_Cart(unittest.TestCase):
                 {"name": "dataset", "value": "concrete_data_training"},
                 {"name": "filter", "value": ""}]
         headers = {'Content-type': 'application/json', "Accept": "text/plain"}
-        r = requests.post(endpointUrl_CartTraining,data=json.dumps(data_Cart),headers=headers)
+        r = requests.post(cartTraining_url,data=json.dumps(data_Cart),headers=headers)
         exaremeResult_Training = json.loads(r.text)
         print ("exaremeResult_Training", r.text)
 

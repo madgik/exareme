@@ -12,9 +12,7 @@ import sys
 from os import path
 
 sys.path.append(path.abspath(__file__))
-from tests import vm_url
-
-endpointUrl = vm_url + "ANOVA"
+from tests import anova_url
 
 folderPath = "R_scripts"
 file = "ANOVA.Rmd"
@@ -96,7 +94,7 @@ class TestANOVA(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(anova_url, data=json.dumps(data), headers=headers)
         result = json.loads(r.text)
         print(r.text)
         resultsComparison(result["result"][0]["data"], json.loads(self.Test1Result))
@@ -114,7 +112,7 @@ class TestANOVA(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(anova_url, data=json.dumps(data), headers=headers)
         result = json.loads(r.text)
         print(r.text)
         resultsComparison(result["result"][0]["data"], json.loads(self.Test2Result))
@@ -132,7 +130,7 @@ class TestANOVA(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(anova_url, data=json.dumps(data), headers=headers)
         result = json.loads(r.text)
         print(r.text)
         resultsComparison(result["result"][0]["data"], json.loads(self.Test3Result))
@@ -150,7 +148,7 @@ class TestANOVA(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(anova_url, data=json.dumps(data), headers=headers)
         result = json.loads(r.text)
         print(r.text)
         resultsComparison(result["result"][0]["data"], json.loads(self.Test4Result))
@@ -168,7 +166,7 @@ class TestANOVA(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(anova_url, data=json.dumps(data), headers=headers)
         result = json.loads(r.text)
         print(r.text)
         resultsComparison(result["result"][0]["data"], json.loads(self.Test5Result))
@@ -186,7 +184,7 @@ class TestANOVA(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(anova_url, data=json.dumps(data), headers=headers)
         result = json.loads(r.text)
         print(r.text)
         resultsComparison(result["result"][0]["data"], json.loads(self.Test6Result))
@@ -204,7 +202,7 @@ class TestANOVA(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(anova_url, data=json.dumps(data), headers=headers)
         result = json.loads(r.text)
         print(r.text)
         resultsComparison(result["result"][0]["data"], json.loads(self.Test7Result))
@@ -225,7 +223,7 @@ class TestANOVA(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(anova_url, data=json.dumps(data), headers=headers)
         result = json.loads(r.text)
         print(r.text)
         resultsComparison(result["result"][0]["data"], json.loads(self.Test8Result))
@@ -246,7 +244,7 @@ class TestANOVA(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(anova_url, data=json.dumps(data), headers=headers)
         result = json.loads(r.text)
         print(r.text)
         resultsComparison(result["result"][0]["data"], json.loads(self.Test9Result))
@@ -267,7 +265,7 @@ class TestANOVA(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(anova_url, data=json.dumps(data), headers=headers)
         result = json.loads(r.text)
         print(r.text)
         resultsComparison(result["result"][0]["data"], json.loads(self.Test10Result))
@@ -288,7 +286,7 @@ class TestANOVA(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(anova_url, data=json.dumps(data), headers=headers)
         result = json.loads(r.text)
         print(r.text)
         resultsComparison(result["result"][0]["data"], json.loads(self.Test11Result))
@@ -312,7 +310,7 @@ class TestANOVA(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(anova_url, data=json.dumps(data), headers=headers)
         result = json.loads(r.text)
         print(r.text)
         resultsComparison(result["result"][0]["data"], json.loads(self.Test12Result))
@@ -336,7 +334,7 @@ class TestANOVA(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(anova_url, data=json.dumps(data), headers=headers)
         result = json.loads(r.text)
         print(r.text)
         resultsComparison(result["result"][0]["data"], json.loads(self.Test13Result))
@@ -360,7 +358,7 @@ class TestANOVA(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(anova_url, data=json.dumps(data), headers=headers)
         result = json.loads(r.text)
         print(r.text)
         resultsComparison(result["result"][0]["data"], json.loads(self.Test14Result))
@@ -384,7 +382,7 @@ class TestANOVA(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(anova_url, data=json.dumps(data), headers=headers)
         result = json.loads(r.text)
         print(r.text)
         resultsComparison(result["result"][0]["data"], json.loads(self.Test15Result))
@@ -408,7 +406,7 @@ class TestANOVA(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(anova_url, data=json.dumps(data), headers=headers)
         result = json.loads(r.text)
         print(r.text)
         resultsComparison(result["result"][0]["data"], json.loads(self.Test16Result))
@@ -432,7 +430,7 @@ class TestANOVA(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(anova_url, data=json.dumps(data), headers=headers)
         result = json.loads(r.text)
         print(r.text)
         resultsComparison(result["result"][0]["data"], json.loads(self.Test17Result))

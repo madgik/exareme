@@ -12,9 +12,8 @@ import sys
 from os import path
 
 sys.path.append(path.abspath(__file__))
-from tests import vm_url
+from tests import kmeans_url
 
-endpointUrl = vm_url + "KMEANS"
 folderPath = "R_scripts"
 file = "kMeans.Rmd"
 
@@ -46,7 +45,7 @@ class TestkMeans(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(kmeans_url, data=json.dumps(data), headers=headers)
         result = json.loads(r.text)
         print("EXAREME", result)
         self.Test1Result = json.loads(self.Test1Result)
@@ -74,7 +73,7 @@ class TestkMeans(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(kmeans_url, data=json.dumps(data), headers=headers)
         result = json.loads(r.text)
         print("EXAREME", result)
         self.Test2Result = json.loads(self.Test2Result)
@@ -106,7 +105,7 @@ class TestkMeans(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(kmeans_url, data=json.dumps(data), headers=headers)
         result = json.loads(r.text)
         print("EXAREME", result)
         self.Test3Result = json.loads(self.Test3Result)

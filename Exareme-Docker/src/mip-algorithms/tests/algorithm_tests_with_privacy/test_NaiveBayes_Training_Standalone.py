@@ -13,9 +13,8 @@ import sys
 from os import path
 
 sys.path.append(path.abspath(__file__))
-from tests import vm_url
+from tests import naive_bayes_standalone_url
 
-endpointUrl = vm_url + "NAIVE_BAYES_TRAINING_STANDALONE"
 folderPath = "R_scripts"
 file = "NaiveBayes_Training_Standalone.Rmd"
 
@@ -40,7 +39,7 @@ class TestNaiveBayesStandalone(unittest.TestCase):
         ]
 
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(naive_bayes_standalone_url, data=json.dumps(data), headers=headers)
         result = json.loads(r.text)
         # print ("AAAA", r.text)
         print("BBBB1", self.Test1Result)
@@ -66,7 +65,7 @@ class TestNaiveBayesStandalone(unittest.TestCase):
         ]
 
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(naive_bayes_standalone_url, data=json.dumps(data), headers=headers)
         result = json.loads(r.text)
         print("AAAA", r.text)
         print("BBBB1", self.Test2Result)

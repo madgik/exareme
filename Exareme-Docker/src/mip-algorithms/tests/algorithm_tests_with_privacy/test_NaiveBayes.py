@@ -8,11 +8,7 @@ import sys
 from os import path
 
 sys.path.append(path.abspath(__file__))
-from tests import vm_url
-
-url1 = vm_url + "CROSS_VALIDATION_K_FOLD"
-url2 = vm_url + "NAIVE_BAYES_TRAINING"
-url3 = vm_url + "NAIVE_BAYES_TESTING"
+from tests import cross_validation_url, naive_bayes_training_url, naive_bayes_testing_url
 
 
 def test_NAIVEBAYES_1():
@@ -33,7 +29,7 @@ def test_NAIVEBAYES_1():
     ]
 
     headers = {"Content-type": "application/json", "Accept": "text/plain"}
-    r = requests.post(url1, data=json.dumps(data1), headers=headers)
+    r = requests.post(cross_validation_url, data=json.dumps(data1), headers=headers)
     result1 = json.loads(r.text)
     print(r.text)
 
@@ -54,7 +50,7 @@ def test_NAIVEBAYES_1():
     )
 
     headers = {"Content-type": "application/json", "Accept": "text/plain"}
-    r = requests.post(url2, data=json.dumps(data2), headers=headers)
+    r = requests.post(naive_bayes_training_url, data=json.dumps(data2), headers=headers)
     trainingResult = json.loads(r.text)
     print(r.text)
 
@@ -810,7 +806,7 @@ def test_NAIVEBAYES_1():
     )
 
     headers = {"Content-type": "application/json", "Accept": "text/plain"}
-    r = requests.post(url3, data=json.dumps(data3), headers=headers)
+    r = requests.post(naive_bayes_testing_url, data=json.dumps(data3), headers=headers)
     testingResult = json.loads(r.text)
     print(r.text)
 

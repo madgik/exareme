@@ -13,9 +13,8 @@ import sys
 from os import path
 
 sys.path.append(path.abspath(__file__))
-from tests import vm_url
+from tests import ttest_onesample_url
 
-endpointUrl = vm_url + "TTEST_ONESAMPLE"
 folderPath = "R_scripts"
 file = "ttest_onesample.Rmd"
 
@@ -47,7 +46,7 @@ class TestTTESTOneSample(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(ttest_onesample_url, data=json.dumps(data), headers=headers)
         result = json.loads(r.text)
         print(r.text)
         resultsComparison(
@@ -67,7 +66,7 @@ class TestTTESTOneSample(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(ttest_onesample_url, data=json.dumps(data), headers=headers)
         result = json.loads(r.text)
         print(r.text)
         resultsComparison(
@@ -87,7 +86,7 @@ class TestTTESTOneSample(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(ttest_onesample_url, data=json.dumps(data), headers=headers)
         result = json.loads(r.text)
         print(r.text)
         resultsComparison(
@@ -107,7 +106,7 @@ class TestTTESTOneSample(unittest.TestCase):
             {"name": "filter", "value": ""},
         ]
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(ttest_onesample_url, data=json.dumps(data), headers=headers)
         result = json.loads(r.text)
         print(r.text)
         resultsComparison(

@@ -7,9 +7,7 @@ import sys
 from os import path
 
 sys.path.append(path.abspath(__file__))
-from tests import vm_url
-
-endpointUrl = vm_url + "ID3"
+from tests import id3_url
 
 
 def test_ID3_1():
@@ -25,7 +23,7 @@ def test_ID3_1():
         {"name": "pathology", "value": "dementia"},
     ]
     headers = {"Content-type": "application/json", "Accept": "text/plain"}
-    r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+    r = requests.post(id3_url, data=json.dumps(data), headers=headers)
     result = json.loads(r.text)
 
     print(result["result"])

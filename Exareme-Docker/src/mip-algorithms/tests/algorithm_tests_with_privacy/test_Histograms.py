@@ -12,9 +12,8 @@ import sys
 from os import path
 
 sys.path.append(path.abspath(__file__))
-from tests import vm_url
+from tests import histograms_url
 
-endpointUrl = vm_url + "HISTOGRAMS"
 folderPath = "R_scripts"
 file = "Histograms.Rmd"
 
@@ -45,7 +44,7 @@ class TestHistogram(unittest.TestCase):
         ]
 
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(histograms_url, data=json.dumps(data), headers=headers)
         result = json.loads(r.text)
         print("AAAA", r.text)
         print("BBBB1", self.Test1Result)
@@ -65,7 +64,7 @@ class TestHistogram(unittest.TestCase):
         ]
 
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(histograms_url, data=json.dumps(data), headers=headers)
         result = json.loads(r.text)
         print("AAAA", r.text)
         print("BBBB2", self.Test2Result)
@@ -85,7 +84,7 @@ class TestHistogram(unittest.TestCase):
         ]
 
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(histograms_url, data=json.dumps(data), headers=headers)
         result = json.loads(r.text)
         print(r.text)
         resultsComparison(result["result"][0]["data"], json.loads(self.Test3Result))
@@ -105,7 +104,7 @@ class TestHistogram(unittest.TestCase):
         ]
 
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(histograms_url, data=json.dumps(data), headers=headers)
         result = json.loads(r.text)
         print(r.text)
         resultsComparison(result["result"][0]["data"], json.loads(self.Test4Result))
@@ -127,7 +126,7 @@ class TestHistogram(unittest.TestCase):
         ]
 
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+        r = requests.post(histograms_url, data=json.dumps(data), headers=headers)
         result = json.loads(r.text)
         print(r.text)
         resultsComparison(result["result"][0]["data"], json.loads(self.Test5Result))
