@@ -2,9 +2,9 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from itertools import ifilterfalse, ifilter
 from collections import Counter
-from copy import deepcopy
+
+import pandas as pd
 
 from mipframework import Algorithm, AlgorithmResult
 from mipframework.constants import PRIVACY_THRESHOLD
