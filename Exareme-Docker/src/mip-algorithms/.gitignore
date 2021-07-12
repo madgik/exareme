@@ -8,7 +8,7 @@
 
 # db files
 *.db
-# !mipframework/runner/dbs/datasets.db
+!mipframework/runner/dbs/datasets.db
 # !mipframework/runner/dbs/1LocalDBs/local_dataset0.db
 # !mipframework/runner/dbs/10LocalDBs/local_dataset0.db
 # !mipframework/runner/dbs/10LocalDBs/local_dataset1.db
