@@ -9,7 +9,7 @@ import madgik.exareme.master.connector.DataSerialization;
 import madgik.exareme.master.engine.AdpDBManager;
 import madgik.exareme.master.engine.AdpDBManagerLocator;
 import madgik.exareme.master.gateway.ExaremeGatewayUtils;
-import madgik.exareme.master.gateway.async.handler.HBP.Exceptions.RequestException;
+import madgik.exareme.master.gateway.async.handler.HBP.Exceptions.BadRequestException;
 import madgik.exareme.master.gateway.async.handler.HBP.Exceptions.BadUserInputException;
 import madgik.exareme.master.gateway.async.handler.entity.NQueryResultEntity;
 import madgik.exareme.master.queryProcessor.HBP.AlgorithmProperties;
@@ -55,7 +55,7 @@ public class HttpAsyncCheckWorker implements HttpAsyncRequestHandler<HttpRequest
         HttpResponse response = httpexchange.getResponse();
         try {
             handleInternal(request, response, context);
-        } catch (AlgorithmException | CDEsMetadataException | ComposerException | BadUserInputException | RequestException e) {
+        } catch (AlgorithmException | CDEsMetadataException | ComposerException | BadUserInputException | BadRequestException e) {
             e.printStackTrace();
         }
         httpexchange.submitResponse(new BasicAsyncResponseProducer(response));
@@ -65,7 +65,7 @@ public class HttpAsyncCheckWorker implements HttpAsyncRequestHandler<HttpRequest
             final HttpRequest request,
             final HttpResponse response,
             final HttpContext context
-    ) throws HttpException, IOException, AlgorithmException, CDEsMetadataException, ComposerException, BadUserInputException, RequestException {
+    ) throws HttpException, IOException, AlgorithmException, CDEsMetadataException, ComposerException, BadUserInputException, BadRequestException {
 
         String method = request.getRequestLine().getMethod().toUpperCase(Locale.ENGLISH);
         if (!method.equals("GET") && !method.equals("HEAD") && !method.equals("POST")) {
@@ -97,7 +97,7 @@ public class HttpAsyncCheckWorker implements HttpAsyncRequestHandler<HttpRequest
         AlgorithmProperties algorithmProperties = Algorithms.getInstance().getAlgorithmProperties(algorithmName);
 
         if (algorithmProperties == null)
-            throw new RequestException(algorithmName, "The algorithm does not exist.");
+            throw new BadRequestException(algorithmName, "The algorithm does not exist.");
 
         algorithmProperties.mergeWithAlgorithmParameters(inputContent);
 
