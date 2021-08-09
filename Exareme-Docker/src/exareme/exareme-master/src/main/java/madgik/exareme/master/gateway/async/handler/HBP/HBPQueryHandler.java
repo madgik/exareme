@@ -13,8 +13,8 @@ import madgik.exareme.master.engine.iterations.handler.IterationsHandler;
 import madgik.exareme.master.engine.iterations.handler.NIterativeAlgorithmResultEntity;
 import madgik.exareme.master.engine.iterations.state.IterativeAlgorithmState;
 import madgik.exareme.master.gateway.ExaremeGatewayUtils;
+import madgik.exareme.master.gateway.async.handler.HBP.Exceptions.BadRequestException;
 import madgik.exareme.master.gateway.async.handler.HBP.Exceptions.BadUserInputException;
-import madgik.exareme.master.gateway.async.handler.HBP.Exceptions.RequestException;
 import madgik.exareme.master.gateway.async.handler.entity.NQueryResultEntity;
 import madgik.exareme.master.queryProcessor.HBP.AlgorithmProperties;
 import madgik.exareme.master.queryProcessor.HBP.Algorithms;
@@ -101,7 +101,7 @@ public class HBPQueryHandler implements HttpAsyncRequestHandler<HttpRequest> {
             String algorithmName = getAlgorithmName(request);
             AlgorithmProperties algorithmProperties = Algorithms.getInstance().getAlgorithmProperties(algorithmName);
             if (algorithmProperties == null)
-                throw new RequestException(algorithmName, "The algorithm '" + algorithmName + "' does not exist.");
+                throw new BadRequestException(algorithmName, "The algorithm '" + algorithmName + "' does not exist.");
 
             String algorithmKey = algorithmName + "_" + System.currentTimeMillis();
 
@@ -168,13 +168,7 @@ public class HBPQueryHandler implements HttpAsyncRequestHandler<HttpRequest> {
                 response.setStatusCode(HttpStatus.SC_OK);
                 response.setEntity(entity);
             }
-        } catch (BadUserInputException e) {
-            log.error(e.getMessage());
-            String errorType = HBPQueryHelper.ErrorResponse.ErrorResponseTypes.user_error;
-            response.setStatusCode(HttpStatus.SC_OK);
-            response.setEntity(createErrorResponseEntity(e.getMessage(), errorType));
-
-        } catch (RequestException e) {
+        } catch (BadUserInputException | BadRequestException e) {
             log.error(e.getMessage());
             String errorType = HBPQueryHelper.ErrorResponse.ErrorResponseTypes.user_error;
             response.setStatusCode(HttpStatus.SC_BAD_REQUEST);
