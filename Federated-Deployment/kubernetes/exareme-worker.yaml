@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: exareme-worker-deployment
+  labels:
+    app: exareme-worker
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: exareme-worker
+  template:
+    metadata:
+      labels:
+        app: exareme-worker
+    spec:
+      nodeSelector:
+        nodeType: worker
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - exareme-worker
+            topologyKey: "kubernetes.io/hostname"
+      containers:
+      - name: exareme-worker
+        image: hbpmip/exareme:24.1.2
+        ports:
+          - containerPort: 9090
+        volumeMounts:
+        - mountPath: /root/exareme/data
+          name: csvs
+        env:
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: CONSULURL
+          value: "exareme-keystore-service:8500"
+        - name: FEDERATION_ROLE
+          value: "worker"
+        - name: TEMP_FILES_CLEANUP_TIME
+          value: "30"
+        - name: NODE_COMMUNICATION_TIMEOUT
+          value: "30000"
+        - name: ENVIRONMENT_TYPE
+          value: "PROD"
+        - name: LOG_LEVEL
+          value: "INFO"
+        - name: CONVERT_CSVS
+          value: "TRUE"
+      volumes:
+      - name: csvs
+        hostPath:
+          path: /etc/exareme

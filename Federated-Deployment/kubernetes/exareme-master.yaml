@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: exareme-master-deployment
+  labels:
+    app: exareme-master
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: exareme-master
+  template:
+    metadata:
+      labels:
+        app: exareme-master
+    spec:
+      nodeSelector:
+        nodeType: master
+      containers:
+      - name: exareme-master
+        image: hbpmip/exareme:24.1.2
+        ports:
+          - containerPort: 9090
+        volumeMounts:
+        - mountPath: /root/exareme/data
+          name: csvs
+        env:
+        - name: CONSULURL
+          value: "exareme-keystore-service:8500"
+        - name: FEDERATION_ROLE
+          value: "master"
+        - name: NODE_NAME
+          value: "master"
+        - name: TEMP_FILES_CLEANUP_TIME
+          value: "30"
+        - name: NODE_COMMUNICATION_TIMEOUT
+          value: "30000"
+        - name: ENVIRONMENT_TYPE
+          value: "PROD"
+        - name: LOG_LEVEL
+          value: "INFO"
+        - name: CONVERT_CSVS
+          value: "TRUE"
+      volumes:
+      - name: csvs
+        hostPath:
+          path: /etc/exareme
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: exareme-master-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: exareme-master
+  ports:
+    - protocol: TCP
+      port: 9090
+      targetPort: 9090
+      nodePort: 30090
