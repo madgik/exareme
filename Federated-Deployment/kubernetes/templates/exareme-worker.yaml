@@ -5,7 +5,7 @@ metadata:
   labels:
     app: exareme-worker
 spec:
-  replicas: 2
+  replicas: {{ .Values.workers }}
   selector:
     matchLabels:
       app: exareme-worker
@@ -28,32 +28,33 @@ spec:
             topologyKey: "kubernetes.io/hostname"
       containers:
       - name: exareme-worker
-        image: hbpmip/exareme:24.1.2
+        image: {{ .Values.exareme_images.repository }}/exareme:{{ .Values.exareme_images.version }}
+        imagePullPolicy: IfNotPresent
         ports:
           - containerPort: 9090
         volumeMounts:
         - mountPath: /root/exareme/data
-          name: csvs
+          name: data
         env:
-        - name: NODE_NAME
-          valueFrom:
-            fieldRef:
-              fieldPath: spec.nodeName
+        - name: ENVIRONMENT_TYPE
+          value: "{{ .Values.exareme.environment_type }}"
+        - name: LOG_LEVEL
+          value: "{{ .Values.exareme.log_level }}"
+        - name: CONVERT_CSVS
+          value: "{{ .Values.exareme.convert_csvs }}"
+        - name: TEMP_FILES_CLEANUP_TIME
+          value: "{{ .Values.exareme.temp_file_cleanup_time }}"
+        - name: NODE_COMMUNICATION_TIMEOUT
+          value: "{{ .Values.exareme.node_communication_timeout }}"
         - name: CONSULURL
           value: "exareme-keystore-service:8500"
         - name: FEDERATION_ROLE
           value: "worker"
-        - name: TEMP_FILES_CLEANUP_TIME
-          value: "30"
-        - name: NODE_COMMUNICATION_TIMEOUT
-          value: "30000"
-        - name: ENVIRONMENT_TYPE
-          value: "PROD"
-        - name: LOG_LEVEL
-          value: "INFO"
-        - name: CONVERT_CSVS
-          value: "TRUE"
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
       volumes:
-      - name: csvs
+      - name: data
         hostPath:
-          path: /etc/exareme
+          path: {{ .Values.data_path }}
