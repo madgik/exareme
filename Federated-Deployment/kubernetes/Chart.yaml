@@ -1,0 +1,8 @@
+apiVersion: v2
+name: exareme
+description: A helm chart for Kubernetes deployment of Exareme
+
+version: 0.1.0
+
+type: application
+

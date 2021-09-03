@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: exareme-master-deployment
+  labels:
+    app: exareme-master
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: exareme-master
+  template:
+    metadata:
+      labels:
+        app: exareme-master
+    spec:
+      nodeSelector:
+        nodeType: master
+      containers:
+      - name: exareme-master
+        image: {{ .Values.exareme_images.repository }}/exareme:{{ .Values.exareme_images.version }}
+        imagePullPolicy: IfNotPresent
+        ports:
+          - containerPort: 9090
+        volumeMounts:
+        - mountPath: /root/exareme/data
+          name: data
+        env:
+        - name: ENVIRONMENT_TYPE
+          value: "{{ .Values.exareme.environment_type }}"
+        - name: LOG_LEVEL
+          value: "{{ .Values.exareme.log_level }}"
+        - name: CONVERT_CSVS
+          value: "{{ .Values.exareme.convert_csvs }}"
+        - name: TEMP_FILES_CLEANUP_TIME
+          value: "{{ .Values.exareme.temp_file_cleanup_time }}"
+        - name: NODE_COMMUNICATION_TIMEOUT
+          value: "{{ .Values.exareme.node_communication_timeout }}"
+        - name: CONSULURL
+          value: "exareme-keystore-service:8500"
+        - name: FEDERATION_ROLE
+          value: "master"
+        - name: NODE_NAME
+          value: "master"
+      volumes:
+      - name: data
+        hostPath:
+          path: {{ .Values.data_path }}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: exareme-master-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: exareme-master
+  ports:
+    - protocol: TCP
+      port: 9090
+      targetPort: 9090
+      nodePort: 30000

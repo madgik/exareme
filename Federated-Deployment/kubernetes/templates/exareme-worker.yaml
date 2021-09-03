@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: exareme-worker-deployment
+  labels:
+    app: exareme-worker
+spec:
+  replicas: {{ .Values.workers }}
+  selector:
+    matchLabels:
+      app: exareme-worker
+  template:
+    metadata:
+      labels:
+        app: exareme-worker
+    spec:
+      nodeSelector:
+        nodeType: worker
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - exareme-worker
+            topologyKey: "kubernetes.io/hostname"
+      containers:
+      - name: exareme-worker
+        image: {{ .Values.exareme_images.repository }}/exareme:{{ .Values.exareme_images.version }}
+        imagePullPolicy: IfNotPresent
+        ports:
+          - containerPort: 9090
+        volumeMounts:
+        - mountPath: /root/exareme/data
+          name: data
+        env:
+        - name: ENVIRONMENT_TYPE
+          value: "{{ .Values.exareme.environment_type }}"
+        - name: LOG_LEVEL
+          value: "{{ .Values.exareme.log_level }}"
+        - name: CONVERT_CSVS
+          value: "{{ .Values.exareme.convert_csvs }}"
+        - name: TEMP_FILES_CLEANUP_TIME
+          value: "{{ .Values.exareme.temp_file_cleanup_time }}"
+        - name: NODE_COMMUNICATION_TIMEOUT
+          value: "{{ .Values.exareme.node_communication_timeout }}"
+        - name: CONSULURL
+          value: "exareme-keystore-service:8500"
+        - name: FEDERATION_ROLE
+          value: "worker"
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+      volumes:
+      - name: data
+        hostPath:
+          path: {{ .Values.data_path }}

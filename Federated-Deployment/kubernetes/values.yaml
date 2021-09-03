@@ -1,0 +1,14 @@
+exareme_images:
+  repository: hbpmip
+  version: 24.2.0
+
+data_path: /opt/data
+
+exareme:
+  log_level: INFO
+  environment_type: PROD
+  convert_csvs: TRUE
+  temp_file_cleanup_time: 30
+  node_communication_timeout: 30000
+
+workers: 2
