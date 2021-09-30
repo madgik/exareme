@@ -107,3 +107,5 @@ def process_args(args):
     args.filter = json.loads(args.filter) if args.filter else None
     if hasattr(args, "coding"):
         args.coding = None if args.coding == "null" else args.coding
+    if hasattr(args, "formula"):
+        args.formula = json.loads(args.formula)

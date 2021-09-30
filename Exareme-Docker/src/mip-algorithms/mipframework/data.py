@@ -8,6 +8,10 @@ from sqlalchemy import between, not_, and_, or_, Table, select, create_engine, M
 from mipframework.constants import PRIVACY_THRESHOLD
 from mipframework.loggingutils import log_this, repr_with_logging, logged
 from mipframework.exceptions import PrivacyError
+from mipframework.formula import generate_formula
+
+
+# TODO remove formula_is_equation flag and always prepend 'y ~ ' to formula
 
 FILTER_OPERATORS = {
     "equal": lambda a, b: a == b,
@@ -54,9 +58,11 @@ class AlgorithmData(object):
         from numpy import log as log
         from numpy import exp as exp
 
-        # This line is needed to prevent import optimizer from removing above lines
-        _ = log(exp(1))
         formula = self.get_formula(args)
+        # FIXME: hack, should remove formula_is_equation flag and always prepend 'y ~ ' to formula
+        args.formula_is_equation = True
+        formula = args.y[0] + " ~ " + formula
+        # end of hack
         if args.formula_is_equation:
             if self.full.dropna().shape[0] == 0:
                 return pd.DataFrame(), pd.DataFrame()
@@ -93,11 +99,11 @@ class AlgorithmData(object):
         return dmatrix
 
     def get_formula(self, args):
-        log_this("AlgorithmData.add_missing_levels", args=args)
+        log_this("AlgorithmData.get_formula", args=args)
         is_categorical = self.metadata.is_categorical
         # Get formula from args or build if doesn't exist
         if hasattr(args, "formula") and args.formula:
-            formula = args.formula
+            formula = generate_formula(args.formula)
         else:
             if hasattr(args, "x") and args.x:
                 formula = "+".join(args.y) + "~" + "+".join(args.x)
