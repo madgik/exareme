@@ -1,5 +1,4 @@
 import pytest
-import pdb
 
 from mipframework.data import DataBase, AlgorithmData
 
@@ -115,6 +114,7 @@ class TestAlgorithmData:
         args.dropna = False
         args.y = ["gender"]
         args.x = ["lefthippocampus", "righthippocampus"]
+        args.var_names = args.y + args.x
         args.intercept = True
         args.formula = {
             "single": [

@@ -8,10 +8,12 @@ from sqlalchemy import between, not_, and_, or_, Table, select, create_engine, M
 from mipframework.constants import PRIVACY_THRESHOLD
 from mipframework.loggingutils import log_this, repr_with_logging, logged
 from mipframework.exceptions import PrivacyError
-from mipframework.formula import generate_formula
+from mipframework.formula import (
+    generate_formula,
+    generate_formula_from_variable_lists,
+    insert_explicit_coding_for_categorical_vars,
+)
 
-
-# TODO remove formula_is_equation flag and always prepend 'y ~ ' to formula
 
 FILTER_OPERATORS = {
     "equal": lambda a, b: a == b,
@@ -42,8 +44,22 @@ class AlgorithmData(object):
         self.db = db
         self.full = db.read_data_from_db(args)
         self.metadata = db.read_metadata_from_db(args)
-        variables, covariables = self.build_variables(args)
-        if 1 in self.metadata.is_categorical.values():
+        if hasattr(args, "formula") and args.formula:
+            formula = generate_formula(args.formula, args.y[0])
+        else:
+            formula = generate_formula_from_variable_lists(args)
+        if self.some_vars_are_categorical():
+            formula = insert_explicit_coding_for_categorical_vars(
+                formula,
+                args,
+                self.metadata.is_categorical,
+            )
+        variables, covariables = self.build_variables_from_formula(
+            formula,
+            args,
+            full_data_table=self.full,
+        )
+        if self.some_vars_are_categorical():
             variables = self.add_missing_levels(args.y, args.coding, variables)
             if covariables is not None:  # truth value of dataframe is ambiguous
                 covariables = self.add_missing_levels(args.x, args.coding, covariables)
@@ -52,27 +68,22 @@ class AlgorithmData(object):
     def __repr__(self):
         repr_with_logging(self, variables=self.variables, covariables=self.covariables)
 
-    def build_variables(self, args):
-        log_this("AlgorithmData.build_variables", args=args)
+    def some_vars_are_categorical(self):
+        return 1 in self.metadata.is_categorical.values()
 
-        from numpy import log as log
-        from numpy import exp as exp
+    def build_variables_from_formula(self, formula, args, full_data_table):
+        log_this("AlgorithmData.build_variables_from_formula", args=args)
 
-        formula = self.get_formula(args)
-        # FIXME: hack, should remove formula_is_equation flag and always prepend 'y ~ ' to formula
-        args.formula_is_equation = True
-        formula = args.y[0] + " ~ " + formula
-        # end of hack
-        if args.formula_is_equation:
-            if self.full.dropna().shape[0] == 0:
+        if "~" in formula:
+            if full_data_table.dropna().shape[0] == 0:
                 return pd.DataFrame(), pd.DataFrame()
             variables, covariables = patsy.dmatrices(
-                formula, self.full, return_type="dataframe"
+                formula, full_data_table, return_type="dataframe"
             )
         else:
-            if self.full.dropna().shape[0] == 0:
+            if full_data_table.dropna().shape[0] == 0:
                 return pd.DataFrame(), None
-            variables = patsy.dmatrix(formula, self.full, return_type="dataframe")
+            variables = patsy.dmatrix(formula, full_data_table, return_type="dataframe")
             covariables = None
         return variables, covariables
 
@@ -97,35 +108,6 @@ class AlgorithmData(object):
             missing_column = pd.Series(np.zeros((len(dmatrix),)), index=dmatrix.index)
             dmatrix[var_level] = missing_column
         return dmatrix
-
-    def get_formula(self, args):
-        log_this("AlgorithmData.get_formula", args=args)
-        is_categorical = self.metadata.is_categorical
-        # Get formula from args or build if doesn't exist
-        if hasattr(args, "formula") and args.formula:
-            formula = generate_formula(args.formula)
-        else:
-            if hasattr(args, "x") and args.x:
-                formula = "+".join(args.y) + "~" + "+".join(args.x)
-                if not args.intercept:
-                    formula += "-1"
-            else:
-                formula = "+".join(args.y) + "-1"
-        # Process categorical vars
-        var_names = list(args.y)
-        if hasattr(args, "x") and args.x:
-            var_names.extend(args.x)
-        if 1 in is_categorical.values():
-            if not hasattr(args, "coding") or not args.coding:
-                args.coding = "Treatment"
-            for var in var_names:
-                if is_categorical[var]:
-                    formula = re.sub(
-                        r"\b({})\b".format(var),
-                        r"C(\g<0>, {})".format(args.coding),
-                        formula,
-                    )
-        return formula
 
 
 class AlgorithmMetadata(object):

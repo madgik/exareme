@@ -98,14 +98,12 @@ def remove_escape_chars_from_args(args, escaped_argnames):
 def process_args(args):
     args.y = re.split(r"\s*,\s*", args.y)
     args.var_names = list(args.y)
-    args.formula_is_equation = False
     if hasattr(args, "x") and args.x:
         args.x = re.split(r"\s*,\s*", args.x)
         args.var_names += list(args.x)
-        args.formula_is_equation = True
     args.dataset = re.split(r"\s*,\s*", args.dataset)
     args.filter = json.loads(args.filter) if args.filter else None
     if hasattr(args, "coding"):
         args.coding = None if args.coding == "null" else args.coding
-    if hasattr(args, "formula"):
+    if hasattr(args, "formula") and args.formula:
         args.formula = json.loads(args.formula)
