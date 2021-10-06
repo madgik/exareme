@@ -66,8 +66,6 @@ def generate_formula_from_variable_lists(args):
 
 
 def insert_explicit_coding_for_categorical_vars(formula, args, is_categorical):
-    if not hasattr(args, "coding") or not args.coding:
-        args.coding = "Treatment"
     for var in args.var_names:
         if is_categorical[var]:
             formula = re.sub(
