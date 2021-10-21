@@ -24,7 +24,19 @@
 			"valueNotBlank": true,
 			"valueMultiple": true,
 			"valueType": "string"
-		}, {
+		},
+        {
+            "name": "formula",
+            "label": "formula",
+            "desc": "Patsy formula  (R language syntax).",
+            "type": "other",
+            "value": "",
+            "defaultValue": "",
+            "valueNotBlank": false,
+            "valueMultiple": false,
+            "valueType": "string"
+        },
+        {
 			"name": "filter",
 			"label": "filter",
 			"desc": "",

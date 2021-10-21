@@ -284,6 +284,7 @@ def test_logistic_regression_formula_standardize():
     assert len(result["Names"]) == len(result["z score"]) == len(result["Coefficients"])
 
 
+@pytest.mark.xfail(reason="Formula doesn't work with categorical vars")
 def test_logistic_regression_formula_categorical_covariate():
     test_input = [
         {"name": "x", "value": "righthippocampus,gender"},
@@ -323,6 +324,7 @@ def test_logistic_regression_formula_categorical_covariate():
     assert len(result["Names"]) == len(result["z score"]) == len(result["Coefficients"])
 
 
+@pytest.mark.xfail(reason="Formula doesn't work with categorical vars")
 def test_logistic_regression_formula_categorical_covariate_with_interaction():
     test_input = [
         {"name": "x", "value": "righthippocampus,gender"},
@@ -368,9 +370,7 @@ def test_logistic_regression_formula_categorical_covariate_with_interaction():
     assert len(result["Names"]) == len(result["z score"]) == len(result["Coefficients"])
 
 
-@pytest.mark.xfail(
-    reason="AlgorithmData.add_missing_levels only works with dummy coding"
-)
+@pytest.mark.xfail(reason="Formula doesn't work with categorical vars")
 def test_logistic_regression_formula_categorical_covariate_diff():
     test_input = [
         {"name": "x", "value": "righthippocampus,gender"},
@@ -409,9 +409,7 @@ def test_logistic_regression_formula_categorical_covariate_diff():
     assert len(result["Names"]) == len(result["z score"]) == len(result["Coefficients"])
 
 
-@pytest.mark.xfail(
-    reason="AlgorithmData.add_missing_levels only works with dummy coding"
-)
+@pytest.mark.xfail(reason="Formula doesn't work with categorical vars")
 def test_logistic_regression_formula_categorical_covariate_poly():
     test_input = [
         {"name": "x", "value": "righthippocampus,gender"},
@@ -450,9 +448,7 @@ def test_logistic_regression_formula_categorical_covariate_poly():
     assert len(result["Names"]) == len(result["z score"]) == len(result["Coefficients"])
 
 
-@pytest.mark.xfail(
-    reason="AlgorithmData.add_missing_levels only works with dummy coding"
-)
+@pytest.mark.xfail(reason="Formula doesn't work with categorical vars")
 def test_logistic_regression_formula_categorical_covariate_sum():
     test_input = [
         {"name": "x", "value": "righthippocampus,gender"},
@@ -491,9 +487,7 @@ def test_logistic_regression_formula_categorical_covariate_sum():
     assert len(result["Names"]) == len(result["z score"]) == len(result["Coefficients"])
 
 
-@pytest.mark.xfail(
-    reason="AlgorithmData.add_missing_levels only works with dummy coding"
-)
+@pytest.mark.xfail(reason="Formula doesn't work with categorical vars")
 def test_logistic_regression_formula_categorical_covariate_helmert():
     test_input = [
         {"name": "x", "value": "righthippocampus,gender"},
