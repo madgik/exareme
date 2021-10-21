@@ -2,6 +2,7 @@ from itertools import ifilterfalse, ifilter
 from pathlib import Path
 
 from mipframework.algorithmtest import AlgorithmTest
+from DESCRIPTIVE_STATS.descriptive_stats import get_counts_and_percentages
 
 
 class DescriptiveStatisticsTest(AlgorithmTest):
@@ -20,11 +21,14 @@ class DescriptiveStatisticsTest(AlgorithmTest):
         # Single
         out["single"] = dict()
         for numerical in numericals:
-            out["single"][numerical] = dict()
-            vartab = self.get_data(numerical + ",dataset", datasets)
+            varlabel = metadata.label[numerical]
+            out["single"][varlabel] = dict()
+            data_df = self.get_data(numerical + ",dataset", datasets)
             for dataset in datasets.split(","):
-                numvar = vartab[vartab.dataset == dataset][numerical]
-                out["single"][numerical][dataset] = dict()
+                numvar = data_df[data_df.dataset == dataset][numerical]
+                out["single"][varlabel][dataset] = dict()
+                n_total = len(numvar)
+                numvar = numvar.dropna()
                 n_obs = len(numvar)
                 if n_obs <= 0:
                     return None
@@ -32,27 +36,34 @@ class DescriptiveStatisticsTest(AlgorithmTest):
                 std = numvar.std()
                 min_ = numvar.min()
                 max_ = numvar.max()
-                out["single"][numerical][dataset]["num_datapoints"] = n_obs
-                out["single"][numerical][dataset]["data"] = {
+                out["single"][varlabel][dataset]["num_total"] = n_total
+                out["single"][varlabel][dataset]["num_datapoints"] = n_obs
+                out["single"][varlabel][dataset]["num_nulls"] = n_total - n_obs
+                out["single"][varlabel][dataset]["data"] = {
                     "mean": mean,
                     "std": std,
                     "min": min_,
                     "max": max_,
-                    "upper_confidence": mean + std,
-                    "lower_confidence": mean - std,
                 }
         for categorical in categoricals:
-            out["single"][categorical] = dict()
-            vartab = self.get_data(categorical + ",dataset", datasets)
+            varlabel = metadata.label[categorical]
+            out["single"][varlabel] = dict()
+            data_df = self.get_data(categorical + ",dataset", datasets)
             for dataset in datasets.split(","):
-                out["single"][categorical][dataset] = dict()
-                catvar = vartab[vartab.dataset == dataset][categorical]
+                out["single"][varlabel][dataset] = dict()
+                catvar = data_df[data_df.dataset == dataset][categorical]
+                n_total = len(catvar)
+                catvar = catvar.dropna()
                 n_obs = len(catvar)
                 if n_obs <= 0:
                     return None
                 counts = catvar.value_counts()
-                out["single"][categorical][dataset]["num_datapoints"] = n_obs
-                out["single"][categorical][dataset]["data"] = dict(counts)
+                out["single"][varlabel][dataset]["num_total"] = n_total
+                out["single"][varlabel][dataset]["num_datapoints"] = n_obs
+                out["single"][varlabel][dataset]["num_nulls"] = n_total - n_obs
+                out["single"][varlabel][dataset]["data"] = get_counts_and_percentages(
+                    counts
+                )
 
         # # Model
         data = self.get_data(y_names + ",dataset", datasets)
@@ -61,8 +72,11 @@ class DescriptiveStatisticsTest(AlgorithmTest):
         out["model"] = dict()
         for dataset in datasets.split(","):
             data_group = data[data.dataset == dataset]
-            # if len(data_group) == 0:
-            #     continue
+            n_total = len(data_group)
+            data_group = data_group.dropna()
+            n_obs = len(data_group)
+            if n_obs == 0:
+                return None
             df_num = data_group[numericals]
             df_cat = data_group[categoricals]
             means = df_num.mean()
@@ -74,25 +88,31 @@ class DescriptiveStatisticsTest(AlgorithmTest):
             ]
             out["model"][dataset] = dict()
             out["model"][dataset]["data"] = dict()
-            out["model"][dataset]["num_datapoints"] = len(data_group)
+            out["model"][dataset]["num_datapoints"] = n_obs
+            out["model"][dataset]["num_total"] = n_total
+            out["model"][dataset]["num_nulls"] = n_total - n_obs
             for numerical in numericals:
-                out["model"][dataset]["data"][numerical] = {
+                varlabel = metadata.label[numerical]
+                out["model"][dataset]["data"][varlabel] = {
                     "mean": means[numerical],
                     "std": stds[numerical],
                     "min": mins[numerical],
                     "max": maxs[numerical],
-                    "upper_confidence": means[numerical] + stds[numerical],
-                    "lower_confidence": means[numerical] - stds[numerical],
                 }
             for i, categorical in enumerate(categoricals):
+                varlabel = metadata.label[categorical]
                 if counts[i].name != categorical:
                     raise ValueError("WAT??")
-                out["model"][dataset]["data"][categorical] = dict(counts[i])
+                out["model"][dataset]["data"][varlabel] = get_counts_and_percentages(
+                    counts[i]
+                )
         return out
 
 
 if __name__ == "__main__":
     prop_path = dbs_folder = Path(__file__).parent / "properties.json"
-    descriptive_stats_test = DescriptiveStatisticsTest(prop_path.as_posix())
+    descriptive_stats_test = DescriptiveStatisticsTest(
+        prop_path.as_posix(), dropna=False
+    )
     descriptive_stats_test.generate_test_cases(num_tests=100)
     descriptive_stats_test.to_json("descriptive_stats_expected.json")

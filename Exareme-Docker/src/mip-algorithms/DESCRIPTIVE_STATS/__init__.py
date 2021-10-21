@@ -1,3 +1,3 @@
-from descriptive_stats import DescriptiveStats
+from .descriptive_stats import DescriptiveStats
 
 __all__ = ["DescriptiveStats"]

@@ -2,8 +2,9 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from itertools import ifilterfalse, ifilter
 from collections import Counter
+
+import pandas as pd
 
 from mipframework import Algorithm, AlgorithmResult
 from mipframework.constants import PRIVACY_THRESHOLD
@@ -16,205 +17,220 @@ class DescriptiveStats(Algorithm):
         )
 
     def local_(self):
-        numericals = list(
-            ifilterfalse(
-                lambda var: self.metadata.is_categorical[var], self.parameters.y
-            )
-        )
-        categoricals = list(
-            ifilter(lambda var: self.metadata.is_categorical[var], self.parameters.y)
-        )
-        self.push_and_agree(numericals=numericals)
-        self.push_and_agree(categoricals=categoricals)
-        self.push_and_agree(labels=self.metadata.label)
-        # Single variables
-        df = self.data.full
+        is_categorical = self.metadata.is_categorical
         var_names = self.parameters.var_names
         datasets = self.parameters.dataset
+        data = self.data.full
+        labels = self.metadata.label
 
-        for var_name in var_names:
+        self.push_and_agree(var_names=var_names)
+        self.push_and_agree(is_categorical=is_categorical)
+        self.push_and_agree(labels=self.metadata.label)
+
+        all_single_stats = MonoidMapping()
+        for varname in var_names:
             for dataset in datasets:
-                if var_name != "dataset":
-                    varlst = [var_name, "dataset"]
-                else:
-                    varlst = [var_name]
-                single_df = df[varlst]
-                single_df = single_df.dropna()
-                single_df = single_df[single_df.dataset == dataset]
-                single_df = single_df[var_name]
-                n_obs = len(single_df)
-                kwarg = {"single__" + "n_obs_" + var_name + "_" + dataset: n_obs}
-                self.push_and_add(**kwarg)
-                if var_name in numericals:
-                    X = single_df
-                    if n_obs <= PRIVACY_THRESHOLD:
-                        sx, sxx, min_, max_ = 0, 0, int(1e9), -int(1e9)
-                    else:
-                        sx = X.sum()
-                        sxx = (X * X).sum()
-                        min_ = X.min()
-                        max_ = X.max()
-                    kwarg = {"single__" + "sx_" + var_name + "_" + dataset: sx}
-                    self.push_and_add(**kwarg)
-                    kwarg = {"single__" + "sxx_" + var_name + "_" + dataset: sxx}
-                    self.push_and_add(**kwarg)
-                    kwarg = {"single__" + "min_" + var_name + "_" + dataset: min_}
-                    self.push_and_min(**kwarg)
-                    kwarg = {"single__" + "max_" + var_name + "_" + dataset: max_}
-                    self.push_and_max(**kwarg)
-                elif var_name in categoricals:
-                    if n_obs <= PRIVACY_THRESHOLD:
-                        counter = Counter()
-                    else:
-                        counter = Counter(single_df)
-                    kwarg = {
-                        "single__" + "counter_" + var_name + "_" + dataset: counter
-                    }
-                    self.push_and_add(**kwarg)
+                var_df = get_df_for_single_var(varname, data, dataset)
+                stats = get_single_stats_monoid(var_df, is_categorical[varname])
+                all_single_stats[varname, dataset] = stats
+        self.push_and_add(all_single_stats=all_single_stats)
 
-        # Set of variables
-        data = self.data.full.dropna()
+        all_group_stats = MonoidMapping()
         for dataset in datasets:
             data_group = data[data.dataset == dataset]
-            n_obs = len(data_group)
-            self.push_and_add(**{"model__" + "n_obs_" + dataset: n_obs})
-            for var in numericals + categoricals:
-                if var in numericals:
-                    numerical = var
-                    numvar = data_group[numerical]
-                    if n_obs <= PRIVACY_THRESHOLD:
-                        sx, sxx, min_, max_ = 0, 0, int(1e9), -int(1e9)
-                    else:
-                        sx = numvar.sum()
-                        sxx = (numvar * numvar).sum()
-                        min_ = numvar.min()
-                        max_ = numvar.max()
-                    kwarg = {"model__" + "sx_" + numerical + "_" + dataset: sx}
-                    self.push_and_add(**kwarg)
-                    kwarg = {"model__" + "sxx_" + numerical + "_" + dataset: sxx}
-                    self.push_and_add(**kwarg)
-                    kwarg = {"model__" + "min_" + numerical + "_" + dataset: min_}
-                    self.push_and_min(**kwarg)
-                    kwarg = {"model__" + "max_" + numerical + "_" + dataset: max_}
-                    self.push_and_max(**kwarg)
-                elif var in categoricals:
-                    categorical = var
-                    if n_obs <= PRIVACY_THRESHOLD:
-                        counter = Counter()
-                    else:
-                        counter = Counter(data_group[categorical])
-                    kwarg = {
-                        "model__" + "counter_" + categorical + "_" + dataset: counter
-                    }
-                    self.push_and_add(**kwarg)
+            for varname in var_names:
+                stats = get_model_stats_monoid(
+                    varname, data_group, is_categorical[varname]
+                )
+                all_group_stats[dataset, varname] = stats
+        self.push_and_add(all_group_stats=all_group_stats)
 
     def global_(self):
-        numericals = self.fetch("numericals")
-        categoricals = self.fetch("categoricals")
-
-        global fields
-        raw_out = dict()
+        var_names = self.fetch("var_names")
+        is_categorical = self.fetch("is_categorical")
+        labels = self.fetch("labels")
         datasets = self.parameters.dataset
 
-        # Single variables
-        raw_out["single"] = dict()
-        for numerical in numericals:
-            raw_out["single"][numerical] = dict()
-            for dataset in datasets:
-                raw_out["single"][numerical][dataset] = dict()
-                n_obs = self.fetch("single__" + "n_obs_" + numerical + "_" + dataset)
-                if n_obs <= PRIVACY_THRESHOLD:
-                    raw_out["single"][numerical][dataset]["num_datapoints"] = n_obs
-                    raw_out["single"][numerical][dataset]["data"] = "NOT ENOUGH DATA"
-                else:
-                    sx = self.fetch("single__" + "sx_" + numerical + "_" + dataset)
-                    sxx = self.fetch("single__" + "sxx_" + numerical + "_" + dataset)
-                    min_ = self.fetch("single__" + "min_" + numerical + "_" + dataset)
-                    max_ = self.fetch("single__" + "max_" + numerical + "_" + dataset)
-                    mean = sx / n_obs
-                    std = ((sxx - n_obs * (mean ** 2)) / (n_obs - 1)) ** 0.5
-                    upper_ci = mean + std
-                    lower_ci = mean - std
-                    raw_out["single"][numerical][dataset]["num_datapoints"] = n_obs
-                    raw_out["single"][numerical][dataset]["data"] = {
-                        "mean": mean,
-                        "std": std,
-                        "min": min_,
-                        "max": max_,
-                        "upper_confidence": upper_ci,
-                        "lower_confidence": lower_ci,
-                    }
-        for categorical in categoricals:
-            raw_out["single"][categorical] = dict()
-            for dataset in datasets:
-                raw_out["single"][categorical][dataset] = dict()
-                n_obs = self.fetch("single__" + "n_obs_" + categorical + "_" + dataset)
-                if n_obs <= PRIVACY_THRESHOLD:
-                    raw_out["single"][categorical][dataset]["num_datapoints"] = n_obs
-                    raw_out["single"][categorical][dataset]["data"] = "NOT ENOUGH DATA"
-                else:
-                    counter = self.fetch(
-                        "single__" + "counter_" + categorical + "_" + dataset
-                    )
-                    raw_out["single"][categorical][dataset]["num_datapoints"] = n_obs
-                    raw_out["single"][categorical][dataset]["data"] = dict(counter)
+        raw_out = init_raw_out([labels[var] for var in var_names], datasets)
 
-        # Model
-        raw_out["model"] = dict()
-        for dataset in datasets:
-            n_obs = self.fetch("model__" + "n_obs_" + dataset)
-            raw_out["model"][dataset] = dict()
-            raw_out["model"][dataset]["data"] = dict()
-            raw_out["model"][dataset]["num_datapoints"] = n_obs
-            for numerical in numericals:
-                if n_obs <= PRIVACY_THRESHOLD:
-                    raw_out["model"][dataset]["data"][numerical] = "NOT ENOUGH DATA"
-                    continue
-                sx = self.fetch("model__" + "sx_" + numerical + "_" + dataset)
-                sxx = self.fetch("model__" + "sxx_" + numerical + "_" + dataset)
-                min_ = self.fetch("model__" + "min_" + numerical + "_" + dataset)
-                max_ = self.fetch("model__" + "max_" + numerical + "_" + dataset)
-                mean = sx / n_obs
-                std = ((sxx - n_obs * (mean ** 2)) / (n_obs - 1)) ** 0.5
-                upper_ci = mean + std
-                lower_ci = mean - std
-                raw_out["model"][dataset]["data"][numerical] = {
-                    "mean": mean,
-                    "std": std,
-                    "min": min_,
-                    "max": max_,
-                    "upper_confidence": upper_ci,
-                    "lower_confidence": lower_ci,
+        single_out = raw_out["single"]
+        all_single_stats = self.fetch("all_single_stats")
+        for (varname, dataset), single_stats in all_single_stats.items():
+            current_out = single_out[labels[varname]][dataset]
+            current_out["num_datapoints"] = single_stats.n_obs
+            current_out["num_nulls"] = single_stats.n_nulls
+            current_out["num_total"] = single_stats.n_obs + single_stats.n_nulls
+            if not single_stats.enough_data:
+                current_out["data"] = "NOT ENOUGH DATA"
+                continue
+            if is_categorical[varname]:
+                current_out["data"] = get_counts_and_percentages(single_stats.counter)
+            else:
+                current_out["data"] = {
+                    "mean": single_stats.mean,
+                    "std": single_stats.std,
+                    "min": single_stats.min_,
+                    "max": single_stats.max_,
                 }
-            for categorical in categoricals:
-                if n_obs <= PRIVACY_THRESHOLD:
-                    raw_out["model"][dataset]["data"][categorical] = "NOT ENOUGH DATA"
-                    continue
-                counter = self.fetch(
-                    "model__" + "counter_" + categorical + "_" + dataset
+
+        group_out = raw_out["model"]
+        all_group_stats = self.fetch("all_group_stats")
+        for (dataset, varname), group_stats in all_group_stats.items():
+            current_out = group_out[dataset]
+            group_stats = all_group_stats[dataset, varname]
+            current_out["num_datapoints"] = group_stats.n_obs
+            current_out["num_nulls"] = group_stats.n_nulls
+            current_out["num_total"] = group_stats.n_obs + group_stats.n_nulls
+            if not group_stats.enough_data:
+                current_out["data"][labels[varname]] = "NOT ENOUGH DATA"
+                continue
+            if is_categorical[varname]:
+                current_out["data"][labels[varname]] = get_counts_and_percentages(
+                    group_stats.counter
                 )
-                raw_out["model"][dataset]["data"][categorical] = dict(counter)
+            else:
+                current_out["data"][labels[varname]] = {
+                    "mean": group_stats.mean,
+                    "std": group_stats.std,
+                    "min": group_stats.min_,
+                    "max": group_stats.max_,
+                }
+
         self.result = AlgorithmResult(raw_data=raw_out)
 
 
-if __name__ == "__main__":
-    import time
-    from mipframework import create_runner
+def init_raw_out(varnames, datasets):
+    raw_out = dict()
 
-    algorithm_args = [
-        "-y",
-        "rightphgparahippocampalgyrus, gender, alzheimerbroadcategory, rs10498633_t",
-        "-pathology",
-        "dementia",
-        "-dataset",
-        "lille_simulation, lille_simulation1",
-        "-filter",
-        "",
-    ]
-    runner = create_runner(
-        DescriptiveStats, algorithm_args=algorithm_args, num_workers=2,
-    )
-    start = time.time()
-    runner.run()
-    end = time.time()
-    print("Completed in ", end - start)
+    raw_out["single"] = dict()
+    for varname in varnames:
+        raw_out["single"][varname] = dict()
+        for dataset in datasets:
+            raw_out["single"][varname][dataset] = dict()
+
+    raw_out["model"] = dict()
+    for dataset in datasets:
+        raw_out["model"][dataset] = dict()
+        raw_out["model"][dataset]["data"] = dict()
+    return raw_out
+
+
+def get_df_for_single_var(var_name, df, dataset):
+    if var_name != "dataset":
+        varlst = [var_name, "dataset"]
+    else:
+        varlst = [var_name]
+    df = df[varlst]
+    df = df[df.dataset == dataset]
+    df = df[var_name]
+    return df
+
+
+class NumericalVarStats(object):
+    def __init__(self, n_obs, n_nulls, sx, sxx, min_, max_):
+        self.n_obs = n_obs
+        self.n_nulls = n_nulls
+        self.enough_data = n_obs >= PRIVACY_THRESHOLD
+        self.sx = sx if self.enough_data else 0
+        self.sxx = sxx if self.enough_data else 0
+        self.min_ = min_ if self.enough_data else int(1e9)
+        self.max_ = max_ if self.enough_data else -int(1e9)
+
+    @property
+    def mean(self):
+        return self.sx / self.n_obs
+
+    @property
+    def std(self):
+        return ((self.sxx - self.n_obs * (self.mean ** 2)) / (self.n_obs - 1)) ** 0.5
+
+    @property
+    def upper_ci(self):
+        return self.mean + self.std
+
+    @property
+    def lower_ci(self):
+        return self.mean - self.std
+
+    def __add__(self, other):
+        return NumericalVarStats(
+            n_obs=self.n_obs + other.n_obs,
+            n_nulls=self.n_nulls + other.n_nulls,
+            sx=self.sx + other.sx,
+            sxx=self.sxx + other.sxx,
+            min_=min(self.min_, other.min_),
+            max_=max(self.max_, other.max_),
+        )
+
+
+class CategoricalVarStats(object):
+    def __init__(self, n_obs, n_nulls, counter):
+        self.n_obs = n_obs
+        self.n_nulls = n_nulls
+        self.enough_data = n_obs >= PRIVACY_THRESHOLD
+        self.counter = counter if self.enough_data else Counter()
+
+    def __add__(self, other):
+        return CategoricalVarStats(
+            n_obs=self.n_obs + other.n_obs,
+            n_nulls=self.n_nulls + other.n_nulls,
+            counter=self.counter + other.counter,
+        )
+
+
+def get_single_stats_monoid(df, is_categorical):
+    n_tot = len(df)
+    df = df.dropna()
+    n_obs = len(df)
+    n_nulls = n_tot - n_obs
+    if is_categorical:
+        return get_categorical_stats_monoid(df, n_obs, n_nulls)
+    return get_numerical_stats_monoid(df, n_obs, n_nulls)
+
+
+def get_numerical_stats_monoid(df, n_obs, n_nulls):
+    sx = df.sum()
+    sxx = (df * df).sum()
+    min_ = df.min()
+    max_ = df.max()
+    return NumericalVarStats(n_obs, n_nulls, sx, sxx, min_, max_)
+
+
+def get_categorical_stats_monoid(df, n_obs, n_nulls):
+    counter = Counter(df)
+    return CategoricalVarStats(n_obs, n_nulls, counter)
+
+
+def get_model_stats_monoid(varname, data_group, is_categorical):
+    n_tot = len(data_group)
+    data_group = data_group.dropna()
+    n_obs = len(data_group)
+    n_nulls = n_tot - n_obs
+    df = data_group[varname]
+    if is_categorical:
+        return get_categorical_stats_monoid(df, n_obs, n_nulls)
+    return get_numerical_stats_monoid(df, n_obs, n_nulls)
+
+
+class MonoidMapping(dict):
+    def __add__(self, other):
+        all_keys = set(self.keys()) | set(other.keys())
+        result = {}
+        for key in all_keys:
+            if key in self and key in other:
+                result[key] = self[key] + other[key]
+            elif key in self and key not in other:
+                result[key] = self[key]
+            else:
+                result[key] = other[key]
+        return MonoidMapping(result)
+
+
+def get_counts_and_percentages(counter):
+    if isinstance(counter, pd.Series):
+        counter = {key: counter[key] for key in counter.index}
+    total = sum(counter.values())
+    return {
+        key: {"count": value, "percentage": round(100 * value / total, ndigits=2)}
+        for key, value in counter.items()
+    }
