@@ -255,15 +255,6 @@ def test_generate_formula_from_variable_list_xy_without_intercept(args):
     assert formula == expected_formula
 
 
-def test_insert_explicit_coding_for_categorical_vars_no_coding(args):
-    args.var_names = ["a", "b", "c"]
-    formula = "a+b+c"
-    is_categorical = {"a": False, "b": False, "c": True}
-    expected_formula = "a+b+C(c, Treatment)"
-    formula = insert_explicit_coding_for_categorical_vars(formula, args, is_categorical)
-    assert formula == expected_formula
-
-
 def test_insert_explicit_coding_for_categorical_vars_with_coding(args):
     args.var_names = ["a", "b", "c"]
     args.coding = "Helmert"

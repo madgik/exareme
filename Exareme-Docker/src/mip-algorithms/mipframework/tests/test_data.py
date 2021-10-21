@@ -123,6 +123,7 @@ class TestAlgorithmData:
             ],
             "interactions": [{"var1": "lefthippocampus", "var2": "righthippocampus"}],
         }
+        args.coding = "Treatment"
         args.formula_is_equation = False
         args.filter = ""
         args.dataset = ["adni"]
