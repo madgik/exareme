@@ -65,12 +65,12 @@ def generate_formula_from_variable_lists(args):
     return formula
 
 
-def insert_explicit_coding_for_categorical_vars(formula, args, is_categorical):
-    for var in args.var_names:
+def insert_explicit_coding_for_categorical_vars(formula, var_names, is_categorical):
+    for var in var_names:
         if is_categorical[var]:
             formula = re.sub(
                 r"\b({})\b".format(var),
-                r"C(\g<0>, {})".format(args.coding),
+                r"C(\g<0>, Treatment)",
                 formula,
             )
     return formula

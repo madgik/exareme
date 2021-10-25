@@ -103,9 +103,5 @@ def process_args(args):
         args.var_names += list(args.x)
     args.dataset = re.split(r"\s*,\s*", args.dataset)
     args.filter = json.loads(args.filter) if args.filter else None
-    if hasattr(args, "coding"):
-        args.coding = None if args.coding == "null" else args.coding
     if hasattr(args, "formula") and args.formula:
         args.formula = json.loads(args.formula)
-    if not hasattr(args, "coding") or not args.coding:
-        args.coding = "Treatment"

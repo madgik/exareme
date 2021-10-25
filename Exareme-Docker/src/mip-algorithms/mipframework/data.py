@@ -51,7 +51,7 @@ class AlgorithmData(object):
         if self.some_vars_are_categorical():
             formula = insert_explicit_coding_for_categorical_vars(
                 formula,
-                args,
+                args.var_names,
                 self.metadata.is_categorical,
             )
         variables, covariables = self.build_variables_from_formula(
@@ -60,9 +60,9 @@ class AlgorithmData(object):
             full_data_table=self.full,
         )
         if self.some_vars_are_categorical():
-            variables = self.add_missing_levels(args.y, args.coding, variables)
+            variables = self.add_missing_levels(args.y, variables)
             if covariables is not None:  # truth value of dataframe is ambiguous
-                covariables = self.add_missing_levels(args.x, args.coding, covariables)
+                covariables = self.add_missing_levels(args.x, covariables)
         self.variables, self.covariables = variables, covariables
 
     def __repr__(self):
@@ -87,18 +87,17 @@ class AlgorithmData(object):
             covariables = None
         return variables, covariables
 
-    def add_missing_levels(self, varnames, coding, dmatrix):
+    def add_missing_levels(self, varnames, dmatrix):
         log_this(
             "AlgorithmData.add_missing_levels",
             varnames=varnames,
-            coding=coding,
             dmatrix=dmatrix.columns,
         )
         categorical_variables = (
             var for var in varnames if self.metadata.is_categorical[var]
         )
         all_var_levels = (
-            "C({var}, {coding})[{level}]".format(var=var, coding=coding, level=level)
+            "C({var}, Treatment)[{level}]".format(var=var, level=level)
             for var in categorical_variables
             for level in self.metadata.enumerations[var]
         )
