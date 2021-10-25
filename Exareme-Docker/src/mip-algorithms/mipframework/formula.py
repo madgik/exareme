@@ -32,11 +32,6 @@ def get_term_unary_op(var_name, op):
         "exp": "np.exp({})",
         "center": "patsy.center({})",
         "standardize": "patsy.standardize({})",
-        "dummy": "C({}, Treatment)",
-        "diff": "C({}, Diff)",
-        "poly": "C({}, Poly)",
-        "sum": "C({}, Sum)",
-        "Helmert": "C({}, Helmert)",
     }
     if op in op_to_formula_term.keys():
         return op_to_formula_term[op].format(var_name)
@@ -45,9 +40,9 @@ def get_term_unary_op(var_name, op):
 
 def get_term_binary_op(var_name, op, operand):
     if op == "mul":
-        return "{0}*{1}".format(operand, var_name)
+        return "I({0}*{1})".format(var_name, operand)
     if op == "div":
-        return "{0}/{1}".format(var_name, operand)
+        return "I({0}/{1})".format(var_name, operand)
     raise FormulaInvalidOperator("Invalid operator: {}".format(op))
 
 
