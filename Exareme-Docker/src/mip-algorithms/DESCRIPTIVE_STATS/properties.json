@@ -11,7 +11,7 @@
 			"columnValuesSQLType": "real, integer, text",
 			"columnValuesIsCategorical": "",
 			"columnValuesNumOfEnumerations": "",
-			"value": "rightcuncuneus,rightaorganteriororbitalgyrus,leftpogpostcentralgyrus,leftmcggmiddlecingulategyrus,leftsmcsupplementarymotorcortex,leftsogsuperioroccipitalgyrus,leftmtgmiddletemporalgyrus,rightpoparietaloperculum",
+			"value": "lefthippocampus,righthippocampus",
 			"valueNotBlank": true,
 			"valueMultiple": true,
 			"valueType": "string"
@@ -20,7 +20,7 @@
 			"label": "dataset",
 			"desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty",
 			"type": "dataset",
-			"value": "adni,edsd",
+			"value": "adni,edsd, ppmi",
 			"valueNotBlank": true,
 			"valueMultiple": true,
 			"valueType": "string"
@@ -30,7 +30,7 @@
             "label": "formula",
             "desc": "Patsy formula  (R language syntax).",
             "type": "formula_description",
-            "value": "",
+            "value": "{\"single\":[{\"var_name\":\"lefthippocampus\",\"unary_operation\":\"log\"},{\"var_name\":\"righthippocampus\",\"unary_operation\":\"exp\"}],\"interactions\":[]}",
             "defaultValue": "",
             "valueNotBlank": false,
             "valueMultiple": false,
