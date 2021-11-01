@@ -69,7 +69,7 @@ def test_unparse_formula_one_single_binop():
         ],
         "interactions": [],
     }
-    expected = "var1 + 2*var2"
+    expected = "var1 + I(var2*2)"
     result = generate_formula(formula_data)
     assert expected == result
 
@@ -85,7 +85,7 @@ def test_unparse_formula_multiple_singles():
         ],
         "interactions": [],
     }
-    expected = "var1 + np.log(var2) + patsy.center(var3) + 2*var4 + var5/2"
+    expected = "var1 + np.log(var2) + patsy.center(var3) + I(var4*2) + I(var5/2)"
     result = generate_formula(formula_data)
     assert expected == result
 
@@ -214,7 +214,7 @@ def test_get_term_binary_op_mul():
     var_name = "var1"
     op = "mul"
     operand = 2
-    expected = "2*var1"
+    expected = "I(var1*2)"
     result = get_term_binary_op(var_name, op, operand)
     assert result == expected
 
@@ -223,7 +223,7 @@ def test_get_term_binary_op_div():
     var_name = "var1"
     op = "div"
     operand = 2
-    expected = "var1/2"
+    expected = "I(var1/2)"
     result = get_term_binary_op(var_name, op, operand)
     assert result == expected
 
