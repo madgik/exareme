@@ -44,6 +44,38 @@ def test_descriptive_stats_formula_nop_no_interaction():
     assert "Right Hippocampus" in model_results["edsd"]["data"].keys()
 
 
+def test_descriptive_stats_formula_with_categorical_not_in_formula():
+    test_input = [
+        {"name": "y", "value": "lefthippocampus,alzheimerbroadcategory"},
+        {"name": "pathology", "value": "dementia"},
+        {"name": "dataset", "value": "edsd,ppmi"},
+        {"name": "filter", "value": ""},
+        {
+            "name": "formula",
+            "value": json.dumps(
+                {
+                    "single": [
+                        {
+                            "var_name": "lefthippocampus",
+                            "unary_operation": "log",
+                        },
+                    ],
+                    "interactions": [],
+                }
+            ),
+        },
+    ]
+    result = get_algorithm_result(DescriptiveStats, test_input, num_workers=1)
+
+    single_results = result["single"]
+    assert "Left Hippocampus" in single_results
+    assert "Alzheimer Broad Category" in single_results
+
+    model_results = result["model"]
+    assert "log(lefthippocampus)" in model_results["ppmi"]["data"].keys()
+    assert len(model_results["ppmi"]["data"]) == 1
+
+
 def test_descriptive_stats_formula_no_interaction_center_standardize_should_be_excluded():
     test_input = [
         {"name": "y", "value": "lefthippocampus,righthippocampus"},

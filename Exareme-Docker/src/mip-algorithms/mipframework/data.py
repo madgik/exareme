@@ -45,7 +45,8 @@ class AlgorithmData(object):
         self.full = db.read_data_from_db(args)
         self.metadata = db.read_metadata_from_db(args)
         if hasattr(args, "formula") and args.formula:
-            formula = generate_formula(args.formula, args.y[0])
+            dependant_var = args.y[0] if hasattr(args, "x") else ""
+            formula = generate_formula(args.formula, dependant_var)
         else:
             formula = generate_formula_from_variable_lists(args)
         if self.some_vars_are_categorical():
