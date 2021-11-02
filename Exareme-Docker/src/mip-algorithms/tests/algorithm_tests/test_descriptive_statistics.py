@@ -45,7 +45,7 @@ def recursive_isclose(first, second):
     elif isinstance(first, list):
         assert np.isclose(first, second, rtol=1e-6).all()
     elif isinstance(first, Number):
-        assert np.isclose(first, second, rtol=1e-6)
+        assert np.isclose(first, round(second, 2), rtol=1e-6)
     elif isinstance(first, basestring):
         assert first == second
 
@@ -126,10 +126,10 @@ def test_result_format(capsys):
                 "num_datapoints": 1066,
                 "num_nulls": 0,
                 "data": {
-                    "max": 0.596434,
-                    "mean": 0.41064317166979364,
-                    "min": 0.201871,
-                    "std": 0.05225599155189687,
+                    "max": 0.60,
+                    "mean": 0.41,
+                    "min": 0.20,
+                    "std": 0.05,
                 },
             }
         },
@@ -148,10 +148,10 @@ def test_result_format(capsys):
                     "2": {"count": 124, "percentage": 11.69},
                 },
                 "Left Accumbens Area": {
-                    "max": 0.596434,
-                    "mean": 0.41060622808671066,
-                    "min": 0.201871,
-                    "std": 0.052314977144891826,
+                    "max": 0.60,
+                    "mean": 0.41,
+                    "min": 0.20,
+                    "std": 0.05,
                 },
             },
         }

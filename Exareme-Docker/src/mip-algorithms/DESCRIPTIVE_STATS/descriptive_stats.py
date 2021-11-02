@@ -3,11 +3,15 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 from collections import Counter
+import re
 
+import numpy as np  # type: ignore    XXX needed for patsy to know how to take logs and exps
 import pandas as pd
+import patsy
 
 from mipframework import Algorithm, AlgorithmResult
 from mipframework.constants import PRIVACY_THRESHOLD
+from mipframework.formula import generate_formula
 
 
 class DescriptiveStats(Algorithm):
@@ -17,15 +21,11 @@ class DescriptiveStats(Algorithm):
         )
 
     def local_(self):
-        is_categorical = self.metadata.is_categorical
-        var_names = self.parameters.var_names
-        datasets = self.parameters.dataset
-        data = self.data.full
-        labels = self.metadata.label
-
-        self.push_and_agree(var_names=var_names)
-        self.push_and_agree(is_categorical=is_categorical)
-        self.push_and_agree(labels=self.metadata.label)
+        is_categorical = self.metadata.is_categorical  # type: ignore
+        var_names = self.parameters.var_names  # type: ignore
+        datasets = self.parameters.dataset  # type: ignore
+        data = self.data.full  # type: ignore
+        labels = self.metadata.label  # type: ignore
 
         all_single_stats = MonoidMapping()
         for varname in var_names:
@@ -35,21 +35,50 @@ class DescriptiveStats(Algorithm):
                 all_single_stats[varname, dataset] = stats
         self.push_and_add(all_single_stats=all_single_stats)
 
+        if self.parameters.formula:  # type: ignore
+            formula = generate_formula(formula_data=self.parameters.formula)  # type: ignore
+            dummy = get_formula_transformed_data(formula, data)
+            included_columns = [
+                column for column in dummy.columns if column != "dataset"
+            ]
+            group_var_names = included_columns
+            is_categorical = get_extended_iscategorical(
+                is_categorical,
+                included_columns,
+            )
+            labels = get_extended_labels(labels, included_columns)
+        else:
+            formula = None
+            group_var_names = var_names
+
         all_group_stats = MonoidMapping()
         for dataset in datasets:
             data_group = data[data.dataset == dataset]
-            for varname in var_names:
-                stats = get_model_stats_monoid(
-                    varname, data_group, is_categorical[varname]
-                )
+            for varname in group_var_names:
+                if formula:
+                    stats = get_model_stats_monoid_from_formula(
+                        varname,
+                        data_group,
+                        is_categorical[varname],
+                        formula,
+                    )
+                else:
+                    stats = get_model_stats_monoid(
+                        varname,
+                        data_group,
+                        is_categorical[varname],
+                    )
                 all_group_stats[dataset, varname] = stats
         self.push_and_add(all_group_stats=all_group_stats)
+        self.push_and_agree(var_names=var_names)
+        self.push_and_agree(is_categorical=is_categorical)
+        self.push_and_agree(labels=labels)
 
     def global_(self):
         var_names = self.fetch("var_names")
         is_categorical = self.fetch("is_categorical")
         labels = self.fetch("labels")
-        datasets = self.parameters.dataset
+        datasets = self.parameters.dataset  # type: ignore
 
         raw_out = init_raw_out([labels[var] for var in var_names], datasets)
 
@@ -67,10 +96,10 @@ class DescriptiveStats(Algorithm):
                 current_out["data"] = get_counts_and_percentages(single_stats.counter)
             else:
                 current_out["data"] = {
-                    "mean": single_stats.mean,
-                    "std": single_stats.std,
-                    "min": single_stats.min_,
-                    "max": single_stats.max_,
+                    "mean": round(single_stats.mean, 2),
+                    "std": round(single_stats.std, 2),
+                    "min": round(single_stats.min_, 2),
+                    "max": round(single_stats.max_, 2),
                 }
 
         group_out = raw_out["model"]
@@ -90,13 +119,23 @@ class DescriptiveStats(Algorithm):
                 )
             else:
                 current_out["data"][labels[varname]] = {
-                    "mean": group_stats.mean,
-                    "std": group_stats.std,
-                    "min": group_stats.min_,
-                    "max": group_stats.max_,
+                    "mean": round(group_stats.mean, 2),
+                    "std": round(group_stats.std, 2),
+                    "min": round(group_stats.min_, 2),
+                    "max": round(group_stats.max_, 2),
                 }
 
         self.result = AlgorithmResult(raw_data=raw_out)
+
+
+def get_formula_transformed_data(formula, data):
+    processed_data = patsy.dmatrix(
+        formula,
+        data,
+        return_type="dataframe",
+    )
+    del processed_data["Intercept"]
+    return processed_data
 
 
 def init_raw_out(varnames, datasets):
@@ -124,6 +163,31 @@ def get_df_for_single_var(var_name, df, dataset):
     df = df[df.dataset == dataset]
     df = df[var_name]
     return df
+
+
+def get_extended_labels(labels, new_columns):
+    labels = dict(labels)
+    for column in new_columns:
+        if column not in labels:
+            labels[column] = column
+    formatted_labels = {}
+    for column, label in labels.items():
+        # Format id labels
+        label = re.sub(r"I(\([^()]+\))", r"\g<1>", label)
+        # Format numpy labels
+        label = re.sub(r"np.(exp|log)(.+)", r"\g<1>\g<2>", label)
+        # Format patsy labels
+        label = re.sub(r"patsy.(center|standardize)(.+)", r"\g<1>\g<2>", label)
+        formatted_labels[column] = label
+    return formatted_labels
+
+
+def get_extended_iscategorical(is_categorical, new_columns):
+    is_categorical = dict(is_categorical)
+    for column in new_columns:
+        if column not in is_categorical:
+            is_categorical[column] = 0
+    return is_categorical
 
 
 class NumericalVarStats(object):
@@ -199,6 +263,23 @@ def get_numerical_stats_monoid(df, n_obs, n_nulls):
 def get_categorical_stats_monoid(df, n_obs, n_nulls):
     counter = Counter(df)
     return CategoricalVarStats(n_obs, n_nulls, counter)
+
+
+def get_model_stats_monoid_from_formula(
+    varname,
+    data_group,
+    is_categorical,
+    formula,
+):
+    n_tot = len(data_group)
+    data_group = data_group.dropna()
+    data_group = get_formula_transformed_data(formula, data_group)
+    n_obs = len(data_group)
+    n_nulls = n_tot - n_obs
+    df = data_group[varname]
+    if is_categorical:
+        return get_categorical_stats_monoid(df, n_obs, n_nulls)
+    return get_numerical_stats_monoid(df, n_obs, n_nulls)
 
 
 def get_model_stats_monoid(varname, data_group, is_categorical):
