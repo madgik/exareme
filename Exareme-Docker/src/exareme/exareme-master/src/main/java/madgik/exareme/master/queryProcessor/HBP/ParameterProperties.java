@@ -21,6 +21,7 @@ public class ParameterProperties {
     public enum ParameterType {
         column,                // used for selecting specific columns from the database
         formula,               // used for parsing the input as a formula of R, '+ - * : 0' are allowed.
+        formula_description,    // used for providing a formula description to the algorithm in json format
         filter,                // used for filtering on the database input
         dataset,               // used for choosing database input
         pathology,             // used for specifying what database to use
@@ -33,7 +34,6 @@ public class ParameterProperties {
         real,
         json
     }
-
     public ParameterProperties() {
     }
 
@@ -50,13 +50,15 @@ public class ParameterProperties {
         if (type == null) {
             throw new AlgorithmException(algorithmName, "The parameter field 'type' was not initialized in the properties.json file.");
         } else if (type.equals(ParameterType.column) || type.equals(ParameterType.formula)) {
-            if (columnValuesSQLType == null) {
-            }
-
             if (columnValuesIsCategorical == null) {
                 throw new AlgorithmException(algorithmName, "The parameter field 'columnValuesIsCategorical' was not initialized in the properties.json file.");
             }
-        } else if (valueType.equals(ParameterValueType.json)){
+        }else if (type.equals(ParameterType.formula_description)) {
+            if (!valueType.equals(ParameterValueType.json)) {
+                throw new AlgorithmException(algorithmName, "The parameter field 'valueType' must be json since the 'type' is formula_description.");
+            }
+        }
+        if (valueType.equals(ParameterValueType.json)){
             if(valueMultiple) {
                 throw new AlgorithmException(algorithmName, "The parameter field 'valueMultiple' cannot be true because the 'valueType' is json.");
             }
