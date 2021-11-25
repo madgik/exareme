@@ -264,6 +264,8 @@ public class AlgorithmProperties {
             ParameterProperties parameterProperties
     ) throws AlgorithmException, BadUserInputException {
         if (parameterProperties.getValueType().equals(ParameterProperties.ParameterValueType.json)) {
+            if (value.equals(""))
+                return;
             try {
                 new JSONObject(value);
             } catch (JSONException ex) {
