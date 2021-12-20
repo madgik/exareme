@@ -146,7 +146,7 @@ def test_logistic_regression_formula_log():
     assert result["Names"] == [
         "Intercept",
         "righthippocampus",
-        "np.log(lefthippocampus)",
+        "log(lefthippocampus)",
         "righthippocampus:lefthippocampus",
     ]
     assert len(result["Names"]) == len(result["z score"]) == len(result["Coefficients"])
@@ -190,7 +190,7 @@ def test_logistic_regression_formula_exp():
     assert result["Names"] == [
         "Intercept",
         "righthippocampus",
-        "np.exp(lefthippocampus)",
+        "exp(lefthippocampus)",
         "righthippocampus:lefthippocampus",
     ]
     assert len(result["Names"]) == len(result["z score"]) == len(result["Coefficients"])
@@ -234,7 +234,7 @@ def test_logistic_regression_formula_center():
     assert result["Names"] == [
         "Intercept",
         "righthippocampus",
-        "patsy.center(lefthippocampus)",
+        "center(lefthippocampus)",
         "righthippocampus:lefthippocampus",
     ]
     assert len(result["Names"]) == len(result["z score"]) == len(result["Coefficients"])
@@ -278,7 +278,7 @@ def test_logistic_regression_formula_standardize():
     assert result["Names"] == [
         "Intercept",
         "righthippocampus",
-        "patsy.standardize(lefthippocampus)",
+        "standardize(lefthippocampus)",
         "righthippocampus:lefthippocampus",
     ]
     assert len(result["Names"]) == len(result["z score"]) == len(result["Coefficients"])
