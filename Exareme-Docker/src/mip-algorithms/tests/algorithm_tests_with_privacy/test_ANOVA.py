@@ -10,11 +10,8 @@ import rpy2.robjects as robjects
 
 import sys
 from os import path
-
 sys.path.append(path.abspath(__file__))
-from tests import vm_url
-
-endpointUrl = vm_url + "ANOVA"
+from tests import anova_url as endpointUrl
 
 folderPath = "R_scripts"
 file = "ANOVA.Rmd"

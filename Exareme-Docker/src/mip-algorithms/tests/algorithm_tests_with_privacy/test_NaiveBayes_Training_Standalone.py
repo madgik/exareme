@@ -11,11 +11,9 @@ import rpy2.robjects as robjects
 
 import sys
 from os import path
-
 sys.path.append(path.abspath(__file__))
-from tests import vm_url
+from tests import naive_bayes_training_standalone_url as endpointUrl
 
-endpointUrl = vm_url + "NAIVE_BAYES_TRAINING_STANDALONE"
 folderPath = "R_scripts"
 file = "NaiveBayes_Training_Standalone.Rmd"
 

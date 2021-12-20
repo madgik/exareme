@@ -5,9 +5,7 @@ import logging
 import sys
 
 sys.path.insert(0, "../")
-from tests import vm_url
-
-endpointUrl = vm_url + "LINEAR_REGRESSION"
+from tests import linear_regression_url as endpointUrl
 
 
 def test_LINEAR_REGRESSION():

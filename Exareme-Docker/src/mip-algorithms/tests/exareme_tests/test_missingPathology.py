@@ -5,9 +5,7 @@ import logging
 import sys
 
 sys.path.insert(0, "../")
-from tests import vm_url
-
-endpointUrl = vm_url + "LINEAR_REGRESSION"
+from tests import linear_regression_url
 
 
 def test_LINEAR_REGRESSION():
@@ -22,7 +20,7 @@ def test_LINEAR_REGRESSION():
         {"name": "filter", "value": ""},
     ]
     headers = {"Content-type": "application/json", "Accept": "text/plain"}
-    r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+    r = requests.post(linear_regression_url, data=json.dumps(data), headers=headers)
     result = json.loads(r.text)
     check_result(r.text)
 

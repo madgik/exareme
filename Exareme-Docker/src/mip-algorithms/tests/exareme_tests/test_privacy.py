@@ -4,30 +4,19 @@ import logging
 import unittest
 
 import requests
-from tests.algorithm_tests_with_privacy.test_ANOVA import endpointUrl as url_anova
+from tests import anova_url as url_anova
+from tests import histograms_url as url_hist
+from tests import id3_url as url_id3
+from tests import kmeans_url as url_kmeans
+from tests import linear_regression_url as url_linreg
+from tests import multiple_histograms_url as url_multi_hist
+from tests import cross_validation_url as url1
+from tests import naive_bayes_training_standalone_url as url_naive_bayes_standalone
+from tests import ttest_independent_url as url_ttest_indep
+from tests import ttest_onesample_url as url_ttest_onesample
+from tests import ttest_paired_url as url_ttest_paired
+
 from tests import vm_url
-from tests.algorithm_tests_with_privacy.test_Histograms import endpointUrl as url_hist
-from tests.algorithm_tests_with_privacy.test_ID3 import endpointUrl as url_id3
-from tests.algorithm_tests_with_privacy.test_KMEANS import endpointUrl as url_kmeans
-from tests.algorithm_tests_with_privacy.test_LinearRegression import (
-    endpointUrl as url_linreg,
-)
-from tests.algorithm_tests_with_privacy.test_MultipleHistograms import (
-    endpointUrl as url_multi_hist,
-)
-from tests.algorithm_tests_with_privacy.test_NaiveBayes import url1
-from tests.algorithm_tests_with_privacy.test_NaiveBayes_Training_Standalone import (
-    endpointUrl as url_naive_bayes_standalone,
-)
-from tests.algorithm_tests_with_privacy.test_ttest_independent import (
-    endpointUrl as url_ttest_indep,
-)
-from tests.algorithm_tests_with_privacy.test_ttest_onesample import (
-    endpointUrl as url_ttest_onesample,
-)
-from tests.algorithm_tests_with_privacy.test_ttest_paired import (
-    endpointUrl as url_ttest_paired,
-)
 
 url_calibration = vm_url + "CALIBRATION_BELT"
 url_pearson = vm_url + "PEARSON_CORRELATION"

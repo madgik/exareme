@@ -8,14 +8,11 @@ from decimal import *
 
 import rpy2.robjects as robjects
 
-
 import sys
 from os import path
-
 sys.path.append(path.abspath(__file__))
-from tests import vm_url
+from tests import ttest_onesample_url as endpointUrl
 
-endpointUrl = vm_url + "TTEST_ONESAMPLE"
 folderPath = "R_scripts"
 file = "ttest_onesample.Rmd"
 

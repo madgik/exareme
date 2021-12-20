@@ -21,9 +21,8 @@ from scipy import stats
 
 from os import path
 sys.path.append(path.abspath(__file__))
+from tests import cart_url as endpointUrl_CartTraining
 
-from tests import vm_url
-endpointUrl_CartTraining= vm_url + 'CART'
 #endpointUrl_CartPredict= vm_url + 'CART_PREDICT'
 path = '../data/dementia/'
 
