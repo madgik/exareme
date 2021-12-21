@@ -6,7 +6,7 @@ import warnings
 
 from mipframework.loggingutils import logged
 from mipframework.decorators import algorithm_methods_decorator
-from mipframework.parameters import Parameters, parse_exareme_args
+from mipframework.parameters import Parameters, parse_cli_args
 from mipframework.transfer import (
     AddMe,
     MaxMe,
@@ -42,11 +42,15 @@ def cannot_be_decorated(attr):
 
 
 def can_be_logged(attr):
-    return attr.__name__ not in {
-        "__init__",
-        "__repr__",
-        "__str__",
-    } and not _MAIN_METHODS.match(attr.__name__)
+    return (
+        attr.__name__
+        not in {
+            "__init__",
+            "__repr__",
+            "__str__",
+        }
+        and not _MAIN_METHODS.match(attr.__name__)
+    )
 
 
 def in_main_methods(attr):
@@ -60,7 +64,7 @@ class Algorithm(object):
         warnings.filterwarnings("ignore")
         self._folder_path, name = os.path.split(alg_file)
         self._name = os.path.splitext(name)[0]
-        self._args = parse_exareme_args(self._folder_path, cli_args)
+        self._args = parse_cli_args(self._folder_path, cli_args)
         self._args.intercept = intercept
         self._args.privacy = privacy
         self._args.dropna = dropna

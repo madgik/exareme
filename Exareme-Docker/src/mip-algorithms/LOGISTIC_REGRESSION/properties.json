@@ -62,12 +62,12 @@
             "name": "formula",
             "label": "formula",
             "desc": "Patsy formula  (R language syntax).",
-            "type": "other",
+            "type": "formula_description",
             "value": "",
             "defaultValue": "",
             "valueNotBlank": false,
             "valueMultiple": false,
-            "valueType": "string"
+            "valueType": "json"
         },
         {
             "name": "positive_level",

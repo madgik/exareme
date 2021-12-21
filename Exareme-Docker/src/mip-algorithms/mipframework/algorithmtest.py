@@ -38,7 +38,7 @@ class AlgorithmTest(object):
     standard library for computing the expected results.
     """
 
-    def __init__(self, properties_path):
+    def __init__(self, properties_path, dropna=True):
         with open(properties_path, "r") as prop:
             params = json.load(prop)["parameters"]
             params = [defaultdict(lambda: None, p) for p in params]
@@ -51,7 +51,10 @@ class AlgorithmTest(object):
             Path(__file__).parents[1] / "tests" / "data" / "dementia" / "datasets.db"
         ).as_posix()
         self.db = DataBase(
-            db_path=db_path, data_table_name="data", metadata_table_name="metadata"
+            db_path=db_path,
+            data_table_name="data",
+            metadata_table_name="metadata",
+            dropna=dropna,
         )
         categoricals, numericals = self.get_variable_groups()
         self.categorical_variables = categoricals

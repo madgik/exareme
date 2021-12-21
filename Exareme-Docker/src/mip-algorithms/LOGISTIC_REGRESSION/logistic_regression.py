@@ -118,7 +118,7 @@ class LogisticRegression(Algorithm):
         self.push_and_agree(half_idx=half_idx)
 
     def global_final(self):
-        x_names = self.load("x_names")
+        x_names = remove_prefix_from_varnames(self.load("x_names"))
         coeff = self.load("coeff")
         ll = self.load("ll")
         hess = self.load("hess")
@@ -424,6 +424,16 @@ def compute_roc(true_positives, true_negatives, false_positives, false_negatives
     return roc_curve, auc, gini
 
 
+def remove_prefix_from_varnames(varnames):
+    new_varnames = []
+    for varname in varnames:
+        varname = re.sub(r"^np.", "", varname)
+        varname = re.sub(r"^patsy.", "", varname)
+        varname = re.sub(r"I(\([^()]+\))", r"\g<1>", varname)
+        new_varnames.append(varname)
+    return new_varnames
+
+
 LogisticRegressionSummary = namedtuple(
     "LogisticRegressionSummary",
     [
@@ -468,7 +478,9 @@ if __name__ == "__main__":
         "CN",
     ]
     runner = create_runner(
-        LogisticRegression, num_workers=10, algorithm_args=algorithm_args,
+        LogisticRegression,
+        num_workers=10,
+        algorithm_args=algorithm_args,
     )
     start = time.time()
     runner.run()

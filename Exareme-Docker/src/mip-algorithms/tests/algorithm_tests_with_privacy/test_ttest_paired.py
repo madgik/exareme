@@ -10,11 +10,9 @@ import rpy2.robjects as robjects
 
 import sys
 from os import path
-
 sys.path.append(path.abspath(__file__))
-from tests import vm_url
+from tests import ttest_paired_url as endpointUrl
 
-endpointUrl = vm_url + "TTEST_PAIRED"
 folderPath = "R_scripts"
 file = "ttest_paired.Rmd"
 

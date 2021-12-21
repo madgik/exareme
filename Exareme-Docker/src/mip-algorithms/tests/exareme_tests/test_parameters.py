@@ -5,13 +5,12 @@ import logging
 import sys
 
 sys.path.insert(0, "../")
-from tests import vm_url
-
+from tests import ttest_paired_url
+from tests import linear_regression_url
+from tests import anova_url
 
 
 def test_parameter_modulo2():
-
-    endpointUrl1 = vm_url + "TTEST_PAIRED"
 
     logging.info("---------- TEST : t-test input parameters throwing error.")
     data = [
@@ -22,7 +21,7 @@ def test_parameter_modulo2():
        {"name": "filter", "value": ""},
     ]
     headers = {"Content-type": "application/json", "Accept": "text/plain"}
-    r = requests.post(endpointUrl1, data=json.dumps(data), headers=headers)
+    r = requests.post(ttest_paired_url, data=json.dumps(data), headers=headers)
     result = json.loads(r.text)
     assert(result["result"][0]["data"]==" The input should be in the form of y1-y2,y3-y4,.. Therefore the number of variables should be modulo 2 ")
     assert(result["result"][0]["type"]=="text/plain+user_error")
@@ -30,8 +29,6 @@ def test_parameter_modulo2():
 
 
 def test_valueEnumerationsParameter():
-
-    endpointUrl1 = vm_url + "LINEAR_REGRESSION"
 
     logging.info("---------- TEST : valueEnumerations throwing error.")
     data = [
@@ -44,7 +41,7 @@ def test_valueEnumerationsParameter():
         {"name": "filter", "value": ""},
     ]
     headers = {"Content-type": "application/json", "Accept": "text/plain"}
-    r = requests.post(endpointUrl1, data=json.dumps(data), headers=headers)
+    r = requests.post(linear_regression_url, data=json.dumps(data), headers=headers)
     result = json.loads(r.text)
     assert (
         r.text
@@ -53,8 +50,6 @@ def test_valueEnumerationsParameter():
 
 
 def test_parameter_max_value():
-
-    endpointUrl = vm_url + "ANOVA"
 
     logging.info("---------- TEST : Algorithms for User Error")
     data = [
@@ -68,7 +63,7 @@ def test_parameter_max_value():
         {"name": "outputformat", "value": "pfa"},
     ]
     headers = {"Content-type": "application/json", "Accept": "text/plain"}
-    r = requests.post(endpointUrl, data=json.dumps(data), headers=headers)
+    r = requests.post(anova_url, data=json.dumps(data), headers=headers)
     result = json.loads(r.text)
 
     assert (

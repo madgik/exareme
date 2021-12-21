@@ -5,11 +5,8 @@ import re
 
 import sys
 from os import path
-
 sys.path.append(path.abspath(__file__))
-from tests import vm_url
-
-endpointUrl = vm_url + "ID3"
+from tests import id3_url as endpointUrl
 
 
 def test_ID3_1():

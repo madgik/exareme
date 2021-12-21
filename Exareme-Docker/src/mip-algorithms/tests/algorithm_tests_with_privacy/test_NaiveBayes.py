@@ -6,13 +6,10 @@ from decimal import *
 
 import sys
 from os import path
-
 sys.path.append(path.abspath(__file__))
-from tests import vm_url
-
-url1 = vm_url + "CROSS_VALIDATION_K_FOLD"
-url2 = vm_url + "NAIVE_BAYES_TRAINING"
-url3 = vm_url + "NAIVE_BAYES_TESTING"
+from tests import cross_validation_url as url1
+from tests import naive_bayes_training_url as url2
+from tests import naive_bayes_testing_url as url3
 
 
 def test_NAIVEBAYES_1():

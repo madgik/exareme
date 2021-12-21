@@ -10,11 +10,9 @@ import rpy2.robjects as robjects
 
 import sys
 from os import path
-
 sys.path.append(path.abspath(__file__))
-from tests import vm_url
+from tests import multiple_histograms_url as endpointUrl
 
-endpointUrl = vm_url + "MULTIPLE_HISTOGRAMS"
 folderPath = "R_scripts"
 file = "MultipleHistograms.Rmd"
 

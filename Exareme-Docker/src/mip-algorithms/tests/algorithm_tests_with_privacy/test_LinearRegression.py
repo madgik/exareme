@@ -11,11 +11,9 @@ import rpy2.robjects as robjects
 
 import sys
 from os import path
-
 sys.path.append(path.abspath(__file__))
-from tests import vm_url
+from tests import linear_regression_url as endpointUrl
 
-endpointUrl = vm_url + "LINEAR_REGRESSION"
 folderPath = "R_scripts"
 file = "LinearRegression.Rmd"
 
