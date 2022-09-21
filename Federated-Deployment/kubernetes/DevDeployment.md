@@ -20,9 +20,9 @@ kind create cluster --config Federated-Deployment/kubernetes/kind_configuration/
 2. After the nodes are started, you need to taint them properly:
 ```
 kubectl taint nodes kind-control-plane node-role.kubernetes.io/master-
-kubectl label node kind-control-plane nodeType=master
-kubectl label node kind-worker nodeType=worker
-kubectl label node kind-worker2 nodeType=worker
+kubectl label node kind-control-plane master=true
+kubectl label node kind-worker worker=true
+kubectl label node kind-worker2 worker=true
 ```
 
 3. (Optional) Load the docker images to the kuberentes cluster, if not the images will be pulled from dockerhub:
