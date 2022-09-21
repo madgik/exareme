@@ -15,7 +15,7 @@ spec:
         app: exareme-master
     spec:
       nodeSelector:
-        nodeType: master
+        master: "true"
       containers:
       - name: exareme-master
         image: {{ .Values.exareme_images.repository }}/exareme:{{ .Values.exareme_images.version }}
@@ -61,4 +61,4 @@ spec:
     - protocol: TCP
       port: 9090
       targetPort: 9090
-      nodePort: 30000
+      nodePort: 31000
