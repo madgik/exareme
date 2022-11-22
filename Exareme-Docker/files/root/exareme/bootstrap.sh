@@ -87,7 +87,7 @@ getMasterIPFromConsul() {
 convertCSVsToDB() {
   
   # Skip convertion if flag is false
-  if [[ ${CONVERT_CSVS} == "FALSE" ]]; then
+  if [[ ${CONVERT_CSVS} == "FALSE" || ${CONVERT_CSVS} == "false" ]]; then
     echo "$(timestamp) CSV convertion turned off. "
     return 0
   fi
