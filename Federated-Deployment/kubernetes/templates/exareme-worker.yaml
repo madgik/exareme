@@ -29,7 +29,6 @@ spec:
       containers:
       - name: exareme-worker
         image: {{ .Values.exareme_images.repository }}/exareme:{{ .Values.exareme_images.version }}
-        imagePullPolicy: IfNotPresent
         ports:
           - containerPort: 9090
         volumeMounts:
