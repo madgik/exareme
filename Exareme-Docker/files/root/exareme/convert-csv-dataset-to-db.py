@@ -21,10 +21,13 @@ def createMetadataDictionary(CDEsMetadataPath):
     metadataJSON = json.load(CDEsMetadata)
 
     metadataDictionary = {}
-    metadataDictionary['subjectcode'] = 'text'
-    metadataDictionary['dataset'] = 'text'
     metadataDictionary = addGroupVariablesToDictionary(metadataJSON,
                                                        metadataDictionary)
+    if 'dataset' not in metadataDictionary:
+        raise ValueError('The CDE "dataset" does not exist in the metadata.')
+    if metadataDictionary['dataset'] != 'text':
+        raise ValueError('The CDE "dataset" type should be "text".')
+    
     return metadataDictionary
 
 
