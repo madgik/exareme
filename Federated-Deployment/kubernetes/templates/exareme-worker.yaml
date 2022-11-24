@@ -1,3 +1,4 @@
+{{ if gt .Values.workers 1.0}} # Single node deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -57,3 +58,4 @@ spec:
       - name: data
         hostPath:
           path: {{ .Values.data_path }}
+{{end}}
