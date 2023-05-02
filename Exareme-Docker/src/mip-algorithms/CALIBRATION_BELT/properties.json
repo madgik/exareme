@@ -21,7 +21,7 @@
         {
             "name": "y",
             "label": "y",
-            "desc": "Observed dichotomous outcomes.",
+            "desc": "Observed dichotomous outcome.",
             "type": "column",
             "columnValuesSQLType": "text, integer",
             "columnValuesIsCategorical": "true",
