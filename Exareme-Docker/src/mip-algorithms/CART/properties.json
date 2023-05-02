@@ -1,12 +1,12 @@
 {
 	"name": "CART",
-	"desc": "CART, used to generate a decision tree from a dataset",
-	"label": "CART",
+	"desc": "Decision tree-based algorithm that splits the data into smaller subsets based on the feature that provides the most information gain, and then builds the tree recursively on the smaller subsets.",
+	"label": "Classification and Regression Trees (CART)",
 	"type": "python_iterative",
 	"parameters": [{
 			"name": "x",
-			"label": "x",
-			"desc": "Independent variables: A list of variables from database.",
+			"label": "Covariate (independent)",
+			"desc": "One or more variables",
 			"type": "column",
 			"columnValuesSQLType": "real, integer",
 			"columnValuesIsCategorical": "",
@@ -17,8 +17,8 @@
 			"valueType": "string"
 		}, {
 			"name": "y",
-			"label": "y",
-			"desc": "Dependent variable: A variable from database.",
+			"label": "Variable (dependent)",
+			"desc": "A unique variable",
 			"type": "column",
 			"columnValuesSQLType": "real, integer, text",
 			"columnValuesIsCategorical": "",

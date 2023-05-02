@@ -1,12 +1,12 @@
 {
 	"name": "KMEANS",
-	"desc": "KMEANS_accurate",
+	"desc": "Unsupervised learning algorithm that partitions a set of data points into k clusters, where k is a user-defined parameter. The algorithm iteratively updates the centroids of each cluster until convergence.",
 	"label": "k-Means Clustering",
 	"type": "iterative",
 	"parameters": [{
 			"name": "y",
-			"label": "y",
-			"desc": "A list of real/integer variables from database.",
+			"label": "Variables (independent)",
+			"desc": "A list of continuous variables",
 			"type": "column",
 			"columnValuesSQLType": "real,integer",
 			"columnValuesIsCategorical": "false",
